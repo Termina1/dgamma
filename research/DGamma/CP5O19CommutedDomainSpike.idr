@@ -79,3 +79,15 @@ record O19PartialRun (state : Type) (effectMap : PartialMap state) (origin : sta
   constructor MkO19PartialRun
   partialRunFinal : state
   0 partialRunChecked : effectMap origin = Just partialRunFinal
+
+||| Produce a run from the actual observed evaluator result; the generic
+||| commutation theorem supplies its domain proof, never its destination.
+export
+0 o19PartialRunObserved :
+  {state : Type} -> (effectMap : PartialMap state) -> (origin : state) ->
+  (observed : Maybe state) -> (effectMap origin = observed) ->
+  (isJust observed = True) -> O19PartialRun state effectMap origin
+o19PartialRunObserved effectMap origin Nothing exact defined =
+  case defined of Refl impossible
+o19PartialRunObserved effectMap origin (Just afterState) exact defined =
+  MkO19PartialRun afterState exact
