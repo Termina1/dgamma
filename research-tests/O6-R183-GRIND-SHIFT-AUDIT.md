@@ -80,3 +80,10 @@ Begin guard along an actual aligned foreign-activation trace from the ONE
 initial guard, deriving reached well-formedness simultaneously. Classification
 /foreignness are internal source-shape hypotheses, not new O19 premises;
 obtaining them for every installed block and handling insertions remain open.
+
+A10 PASS1,3.113s (1ac5686), O19ActivationRow actual boundary/count record.
+A11 PASS1,3.128s (1c76084), simultaneous zero-row constructor.
+A12 PASS2,3.121s: explicit produced-node consumer builds the same cursor,
+uniqueness, composed finite derivation, exposed moved-right boundary, labels
+and exact incremented count. Attempt1 rejected a missing CanonicalSort import
+for uniqueInsertionsAfterFiniteDerivation; only that import fixed at attempt2.
