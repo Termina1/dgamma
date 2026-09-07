@@ -713,3 +713,14 @@ currentLifecycleTargetPresent name key world error value nameEq keyEq action lif
     (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} (actionOwner action) (registry before)) Refl of
     (fiber ** found) => replace {p = CurrentResultOwner name key world error value nameEq (actionOwner action)} raw
       (currentLifecycleResultOwner name key world error value nameEq keyEq action lifecycle before fiber found)
+
+0 currentRetireViewPresent :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) ->
+  (actor : name) -> (ambient : world) -> (source : Registry name key value world error) ->
+  (tag : RuleTag) -> (afterState : SystemState name key value world error) ->
+  RetireSuccessView name key world error value nameEq actor ambient source tag afterState ->
+  (fiber : Fiber name key value world error **
+    lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+      @{nameEq} actor (registry afterState) = Just fiber)
+currentRetireViewPresent name key world error value nameEq actor ambient source _ _ (MkRetireSuccessView old found) =
+  (retireFiber old ** lookupReplacedFiber @{nameEq} actor old (retireFiber old) source found)
