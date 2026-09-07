@@ -253,3 +253,18 @@ currentBirthAtPrefixMetadata name key world error value nameEq keyEq global prio
             (currentLocatedBirth authentication)
             (rawMetadataBirthAtPrefix name key world error value nameEq keyEq global prior later
               decomposition aligned empty selected observed found))))
+
+||| A genuine generated event birth in the scanned trace, including its stamp.
+||| The offset supports structural induction without inventing a global origin.
+public export
+record ScannedRegistrationBirth
+  (name, key, world, error : Type) (value : key -> Type)
+  (startOrdinal : Nat)
+  {first, finalState : SystemState name key value world error}
+  (trace : Transitions first finalState)
+  (event : RegistrationEvent name key world error value) where
+  constructor MkScannedRegistrationBirth
+  scannedLocatedBirth : LocatedActionOccurrence
+    (OInsert (eventChild event) (ChildOf (eventParent event)) (eventComponent event)) trace
+  0 scannedBirthStampExact : eventChildGeneration event =
+    MkRegistrationGeneration (eventChild event) (startOrdinal + locatedActionOrdinal scannedLocatedBirth)
