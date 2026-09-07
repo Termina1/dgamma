@@ -5,6 +5,7 @@ import DGamma.Coeffects
 import DGamma.Metatheory
 import DGamma.CP3
 import DGamma.CP4Support
+import DGamma.CP4SupportSolution
 import DGamma.CP4DeletionBoundaryPlan
 import DGamma.CP4DeletionBoundaryDeleted
 import DGamma.CP4DeletionInactiveInvariant
@@ -828,3 +829,20 @@ export
 currentFiberFromEmptyScan name key world error value nameEq keyEq trace finalOrdinal finalLive scan aligned =
   currentFiberScanInvariant name key world error value nameEq keyEq trace Z [] UniqueNil finalOrdinal finalLive scan aligned
     (\selected, generation, current => case current of Refl impossible)
+
+0 supportSolutionPresentObserved :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (state : SystemState name key value world error) -> (candidate : name -> Bool) ->
+  SupportSolution @{nameEq} @{keyEq} {name = name} {key = key} {value = value} {world = world} {error = error} candidate state ->
+  (selected : name) -> (candidate selected = True) ->
+  (observed : Maybe (Fiber name key value world error)) ->
+  (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} selected (registry state) = observed) ->
+  (fiber : Fiber name key value world error **
+    lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} selected (registry state) = Just fiber)
+supportSolutionPresentObserved name key world error value nameEq keyEq state candidate solution selected supported Nothing exact =
+  case trans (sym supported) (trans (solution selected)
+    (the (supportClause {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} @{keyEq} candidate selected state = False)
+      (rewrite exact in Refl))) of Refl impossible
+supportSolutionPresentObserved name key world error value nameEq keyEq state candidate solution selected supported (Just fiber) exact =
+  (fiber ** exact)
