@@ -20,3 +20,7 @@ supportClauseParent name predicate (ChildOf parent) = predicate parent
 
 0 clauseAndTrue : (left, right : Bool) -> (left = True) -> (right = True) -> (left && right = True)
 clauseAndTrue True True Refl Refl = Refl
+
+0 clauseAndParts : (left, right : Bool) -> (left && right = True) -> (left = True, right = True)
+clauseAndParts False right exact = case exact of Refl impossible
+clauseAndParts True right exact = (Refl, exact)
