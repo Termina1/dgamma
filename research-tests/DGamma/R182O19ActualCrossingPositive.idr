@@ -45,3 +45,17 @@ r182IndependentBirthPosition selected (S (S (S (S Z)))) observed = case observed
 r182IndependentBirthPosition selected (S (S (S (S (S Z))))) observed = case observed of Refl impossible
 r182IndependentBirthPosition selected (S (S (S (S (S (S later)))))) observed =
   case observed of Refl impossible
+
+||| B11: whole raw uniqueness is constructed for ALL root/generated located
+||| insertion occurrences, and is the exact source premise used by B12.
+public export
+0 r182IndependentUnique : UniqueRawNameInsertions Nat R45Key Unit String R45Value
+  r45NameEq r45KeyEq (r182IndependentTrace False)
+r182IndependentUnique = MkUniqueRawNameInsertions
+  (\selected, leftParent, rightParent, leftComponent, rightComponent, left, right =>
+    trans (r182IndependentBirthPosition selected (locatedActionOrdinal left)
+      (rawInsertionNameAtLocated Nat R45Key Unit String R45Value (r182IndependentTrace False)
+        selected leftParent leftComponent left))
+      (sym (r182IndependentBirthPosition selected (locatedActionOrdinal right)
+        (rawInsertionNameAtLocated Nat R45Key Unit String R45Value (r182IndependentTrace False)
+          selected rightParent rightComponent right))))
