@@ -149,3 +149,34 @@ currentBirthPrependLocation name key world error value step rest action
   (locatedActionOrdinal (currentBirthPrependLocation name key world error value step rest action occurrence) = S (locatedActionOrdinal occurrence))
 currentBirthPrependOrdinal name key world error value step rest action
   (MkLocatedActionOccurrence before afterState prior located later exact decomposition) = Refl
+
+||| Authenticate all current entries by forward induction over the exact scan.
+||| The embedding is structural prefix inclusion and carries its ordinal law.
+0 currentBirthScanInvariant :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) ->
+  {initial, finalState, first, last : SystemState name key value world error} ->
+  (global : Transitions initial finalState) -> (segment : Transitions first last) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (finalOrdinal : Nat) -> (finalLive : GenerationEnvironment name) ->
+  GenerationTraceScan nameEq ordinal live segment finalOrdinal finalLive ->
+  (embedding : (action : Action name key value world error) -> LocatedActionOccurrence action segment -> LocatedActionOccurrence action global) ->
+  ((action : Action name key value world error) -> (occurrence : LocatedActionOccurrence action segment) ->
+    (locatedActionOrdinal (embedding action occurrence) = ordinal + locatedActionOrdinal occurrence)) ->
+  ((selected : name) -> (generation : RegistrationGeneration name) ->
+    Elem (selected, generation) live -> CurrentGenerationBirth name key world error value global selected generation) ->
+  (selected : name) -> (generation : RegistrationGeneration name) ->
+  Elem (selected, generation) finalLive -> CurrentGenerationBirth name key world error value global selected generation
+currentBirthScanInvariant name key world error value nameEq global segment ordinal live finalOrdinal finalLive scan embedding exact previous =
+  case scan of
+    GenerationTraceScanEnd => previous
+    GenerationTraceScanStep step rest tail =>
+      currentBirthScanInvariant name key world error value nameEq global rest (S ordinal)
+        (advanceGenerationEnvironment @{nameEq} ordinal (transitionAction step) live) finalOrdinal finalLive tail
+        (\action, occurrence => embedding action (currentBirthPrependLocation name key world error value step rest action occurrence))
+        (\action, occurrence => trans (exact action (currentBirthPrependLocation name key world error value step rest action occurrence))
+          (trans (cong (ordinal +) (currentBirthPrependOrdinal name key world error value step rest action occurrence))
+            (sym (plusSuccRightSucc ordinal (locatedActionOrdinal occurrence)))))
+        (currentBirthAfterAction name key world error value nameEq global ordinal live (transitionAction step)
+          (embedding (transitionAction step) (MkLocatedActionOccurrence _ _ NoTransitions step rest Refl Refl))
+          (trans (exact (transitionAction step) (MkLocatedActionOccurrence _ _ NoTransitions step rest Refl Refl))
+            (plusZeroRightNeutral ordinal)) previous)
