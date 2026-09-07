@@ -55,3 +55,37 @@ canonicalPairInverseMember renaming selected (_ :: rest) Here =
     (renameLeftInverse renaming selected) Here
 canonicalPairInverseMember renaming selected (head :: rest) (There later) =
   There (canonicalPairInverseMember renaming selected rest later)
+
+||| Authoritative paired block SELECTION in the actual operational-left and
+||| right-canonical executions. This asserts no effects/control/view agreement.
+||| Equality fields pin both ranges to their original capital, not lookalikes.
+public export
+record SelectedCanonicalBlockPair
+  (name, key, world, error : Type) (value : key -> Type)
+  (protocol : RegistrationProtocol key value world error)
+  (nameEq : DecEq name) (keyEq : DecEq key)
+  {initial, leftFinal, rightFinal : SystemState name key value world error}
+  (leftTrace : Transitions initial leftFinal) (rightTrace : Transitions initial rightFinal)
+  (sameInputs : SameOrchestrationModuloGenerated nameEq keyEq leftTrace rightTrace)
+  (leftCapital : IndependentCanonicalSchedule name key world error value protocol nameEq keyEq leftTrace)
+  (rightCapital : IndependentCanonicalSchedule name key world error value protocol nameEq keyEq rightTrace)
+  (matching : MappedCanonicalSupportOrders name key world error value protocol nameEq keyEq leftTrace rightTrace
+    (expectedBridgeBijection sameInputs) (canonicalSchedule leftCapital) (canonicalSchedule rightCapital))
+  (operational : CertifiedOperationalCanonicalPermutation name key world error value protocol nameEq keyEq
+    leftTrace rightTrace sameInputs leftCapital rightCapital matching)
+  (selected : name) where
+  constructor MkSelectedCanonicalBlockPair
+  0 pairSelectedSupported : isSupported @{nameEq} @{keyEq} selected leftFinal = True
+  0 pairRightInCanonicalOrder : Elem (renameForward (expectedBridgeBijection sameInputs) selected)
+    (supportOrder (canonicalSchedule rightCapital))
+  0 pairLeftInOperationalOrder : Elem selected
+    (map (renameBackward (expectedBridgeBijection sameInputs)) (supportOrder (canonicalSchedule rightCapital)))
+  pairLeftBlock : LocatedOpenEpisodeBlock name key world error value nameEq keyEq selected
+    (operationalTargetTrace operational)
+  pairRightBlock : LocatedOpenEpisodeBlock name key world error value nameEq keyEq
+    (renameForward (expectedBridgeBijection sameInputs) selected) (canonicalTrace (canonicalSchedule rightCapital))
+  0 pairLeftBlockChosen : pairLeftBlock =
+    decomposedBlock (operationalTargetBlocks operational) selected pairLeftInOperationalOrder
+  0 pairRightBlockChosen : pairRightBlock =
+    decomposedBlock (canonicalActorBlockDecomposition rightCapital)
+      (renameForward (expectedBridgeBijection sameInputs) selected) pairRightInCanonicalOrder
