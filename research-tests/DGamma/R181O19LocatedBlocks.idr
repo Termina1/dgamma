@@ -135,3 +135,12 @@ r181ConsumerLocatedBlock = MkLocatedOpenEpisodeBlock
           (NoLifecycleByStep _ _ (\life, same => case same of Refl impossible)
             NoLifecycleByEnd))))) NoLifecycleByEnd
   (Builtin.snd (Builtin.snd (Builtin.snd r181EndpointReady))) Refl
+
+||| E7: exact same-trace block ordering, with zero intervening transitions.
+||| This is a structural constructor-spine identity, not a numeric observer
+||| over a nested certified execution builder.
+public export
+0 r181ProviderBeforeConsumer : BlockBefore Nat ToyKey ToyRuntime String ToyValue
+  (the (DecEq Nat) %search) (the (DecEq ToyKey) %search) r181WholeTrace 0 1
+  r181ProviderLocatedBlock r181ConsumerLocatedBlock
+r181ProviderBeforeConsumer = MkBlockBefore NoTransitions Refl
