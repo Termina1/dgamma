@@ -230,7 +230,8 @@ o19AdvanceActivationPair {name} {key} {world} {error} {value}
              diamond result (swappedTrace result) FiniteAdjacentSwapDone) sourceUnique)))
 
 ||| B13: identify a reached destination from its ACTUAL aligned equation and
-||| another exact checked result. This avoids ANY observer over a replay builder.
+||| another exact checked result. B14 also DERIVES its tag, rather than requiring
+||| tag equality first. This avoids ANY observer over a replay builder.
 public export
 0 o19AlignedDestination :
   {name, key, world, error : Type} -> {value : key -> Type} ->
@@ -239,13 +240,13 @@ public export
   (step : Transition before actualAfter) -> (rest : Transitions actualAfter finalState) ->
   AlignedTransitions name key world error value nameEq keyEq (MoreTransitions step rest) ->
   (action : Action name key value world error) -> (tag : RuleTag) ->
-  (transitionAction step = action) -> (transitionTag step = tag) ->
+  (transitionAction step = action) ->
   (expectedAfter : SystemState name key value world error) ->
   (checkedApplyAction @{nameEq} @{keyEq} action before = Just (tag, expectedAfter)) ->
-  (actualAfter = expectedAfter)
+  ((transitionTag step = tag), (actualAfter = expectedAfter))
 o19AlignedDestination {before} nameEq keyEq _ _
-  (AlignedStep actualAction actualTag checked _ _) action tag sameAction sameTag expectedAfter expected =
-    cong Builtin.snd (justInjective
-      (trans (sym checked)
-        (trans (cong (\observedAction => checkedApplyAction @{nameEq} @{keyEq} observedAction before) sameAction)
-          (trans expected (cong (\observedTag => Just (observedTag, expectedAfter)) (sym sameTag))))))
+  (AlignedStep actualAction actualTag checked _ _) action tag sameAction expectedAfter expected =
+    (cong Builtin.fst (justInjective (trans (sym checked)
+      (trans (cong (\observedAction => checkedApplyAction @{nameEq} @{keyEq} observedAction before) sameAction) expected))),
+     cong Builtin.snd (justInjective (trans (sym checked)
+      (trans (cong (\observedAction => checkedApplyAction @{nameEq} @{keyEq} observedAction before) sameAction) expected))))
