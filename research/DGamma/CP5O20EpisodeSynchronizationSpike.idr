@@ -251,3 +251,43 @@ export
 synchronizationEmptyTables name key world error value nameEq renaming ambient
   fibers empty selected = fst (synchronizationEmptyObservations name key world
     error value nameEq renaming ambient fibers empty selected)
+
+||| Invariant at ONE pair of actual cuts of supplied whole executions. The
+||| bijection is fixed by accepted orchestration, never chosen by this record.
+||| Its producer must recur along the paired supported episodes; a zero-cut
+||| instance alone is NOT that induction or an O20 endpoint theorem.
+public export
+record SupportedCanonicalEpisodeSynchronization
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (keyEq : DecEq key)
+  {initial, leftOriginalFinal, rightOriginalFinal,
+   leftExecutionFinal, rightExecutionFinal : SystemState name key value world error}
+  (leftOriginal : Transitions initial leftOriginalFinal)
+  (rightOriginal : Transitions initial rightOriginalFinal)
+  (sameInputs : SameOrchestrationModuloGenerated nameEq keyEq leftOriginal rightOriginal)
+  (leftExecution : Transitions initial leftExecutionFinal)
+  (rightExecution : Transitions initial rightExecutionFinal)
+  (selected : name) (leftCut, rightCut : SystemState name key value world error)
+  (leftPrefix : Transitions initial leftCut)
+  (leftSuffix : Transitions leftCut leftExecutionFinal)
+  (rightPrefix : Transitions initial rightCut)
+  (rightSuffix : Transitions rightCut rightExecutionFinal) where
+  constructor MkSupportedCanonicalEpisodeSynchronization
+  0 synchronizedActorSupported : isSupported {name = name} {key = key}
+    {value = value} {world = world} {error = error}
+    @{nameEq} @{keyEq} selected leftOriginalFinal = True
+  0 synchronizedLeftCutOccurrence : appendTransitions leftPrefix leftSuffix = leftExecution
+  0 synchronizedRightCutOccurrence : appendTransitions rightPrefix rightSuffix = rightExecution
+  0 synchronizedCutEffects : RenamedRuntimeEffects name key world value
+    (expectedBridgeBijection sameInputs)
+    (projectEffectState {name = name} {key = key} {value = value} {world = world}
+      {error = error} @{nameEq} leftCut)
+    (projectEffectState {name = name} {key = key} {value = value} {world = world}
+      {error = error} @{nameEq} rightCut)
+  0 synchronizedActorControls : MaybeFiberRelatedBy {name = name} {key = key}
+    {value = value} {world = world} {error = error} (expectedBridgeBijection sameInputs)
+    (lookupFiber {name = name} {key = key} {value = value} {world = world}
+      {error = error} @{nameEq} selected (registry leftCut))
+    (lookupFiber {name = name} {key = key} {value = value} {world = world}
+      {error = error} @{nameEq} (renameForward (expectedBridgeBijection sameInputs)
+        selected) (registry rightCut))
