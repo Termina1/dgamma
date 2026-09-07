@@ -33,3 +33,10 @@ r178ParentFinish = Fired r45NameEq r45KeyEq (LAdvance 0) LFinishTag
   (DGamma.CP4ProgressNoDeadlock.checkedFromRaw r45NameEq r45KeyEq
     (LAdvance 0) r45SourcePairFinal r178ParentDoneState LFinishTag
     (checkedTransitionTargetValid r45ChildInsert) Refl)
+
+public export
+r178ChildBegunState : SystemState Nat R45Key R45Value Unit String
+r178ChildBegunState = MkSystemState ()
+  (replaceBinding @{r45NameEq} 1
+    (setFiberLifecycle r45ChildFresh (Reloading [] id EmptyView))
+    (registry r178ParentDoneState))
