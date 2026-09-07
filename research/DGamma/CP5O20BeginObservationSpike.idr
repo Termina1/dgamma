@@ -1,6 +1,7 @@
 module DGamma.CP5O20BeginObservationSpike
 
 import DGamma.Core
+import DGamma.Unified
 import DGamma.Calculus
 import DGamma.Coeffects
 import DGamma.Metatheory
@@ -127,3 +128,17 @@ o20ObserveSelectedBegins {sameInputs} {selected} nameEq keyEq pair =
     (blockPreStart (pairLeftBlock pair)) (blockStart (pairLeftBlock pair)) (blockOpening (pairLeftBlock pair)),
    o20ObserveActualBegin nameEq keyEq (renameForward (expectedBridgeBijection sameInputs) selected)
     (blockPreStart (pairRightBlock pair)) (blockStart (pairRightBlock pair)) (blockOpening (pairRightBlock pair)))
+
+||| Project the actual Begin frame: its captured effect map is the identity,
+||| so PartialDefined directly owns the real before/after effect relation.
+export
+0 o20BeginFrameProjection :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (before, afterState : SystemState name key value world error) ->
+  ActualEffectFrame nameEq keyEq (LBegin actor) LBeginTag before afterState ->
+  EffectStateRelated keyEq
+    (projectEffectState {name} {key} {value} {world} {error} @{nameEq} before)
+    (projectEffectState {name} {key} {value} {world} {error} @{nameEq} afterState)
+o20BeginFrameProjection nameEq keyEq actor before afterState
+  (MkActualEffectFrame (PartialDefined related)) = related
