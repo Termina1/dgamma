@@ -511,3 +511,24 @@ matchedBirthEndpointMetadataRenamed name key world error value nameEq keyEq {lef
         @{nameEq} selected (registry leftFinal)) leftName) leftFound)
       (trans (cong (\selected => lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
         @{nameEq} selected (registry rightFinal)) rightName) rightFound)
+
+||| Two genuine insertion births of one unique raw name have the SAME stamp.
+||| This also reconciles a historical activation stamp with an actual current one.
+public export
+0 authenticatedBirthStampsSame :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (trace : Transitions initial finalState) ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq trace ->
+  (selected : name) -> (leftGeneration, rightGeneration : RegistrationGeneration name) ->
+  CurrentGenerationBirth name key world error value trace selected leftGeneration ->
+  CurrentGenerationBirth name key world error value trace selected rightGeneration ->
+  leftGeneration = rightGeneration
+authenticatedBirthStampsSame name key world error value nameEq keyEq trace unique selected leftGeneration rightGeneration leftBirth rightBirth =
+  trans (currentBirthStampExact leftBirth)
+    (trans (cong (MkRegistrationGeneration selected)
+      (uniqueInsertionPosition unique selected (currentBirthParent leftBirth) (currentBirthParent rightBirth)
+        (currentBirthComponent leftBirth) (currentBirthComponent rightBirth)
+        (currentLocatedBirth leftBirth) (currentLocatedBirth rightBirth)))
+      (sym (currentBirthStampExact rightBirth)))
