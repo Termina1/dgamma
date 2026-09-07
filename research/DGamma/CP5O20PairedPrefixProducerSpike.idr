@@ -499,3 +499,46 @@ pairedNamedTableOwnerObserved name key world error value nameEq keyEq ambient fi
             (Just (MkFiber component parent retiredFlag
               (MkOwnedTable (MkCoeffectContext entries unique) confined) lifecycle)) found))))
           present))))
+
+||| D2 DISTINCT observed-table transport statement. Both actual lookup values,
+||| named tables, table equations and yielded values are explicit; no anonymous
+||| table case crosses this interface. This is not B12's global Boolean surface.
+export
+0 pairedNamedTableOwnersUnique :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (ambient : world) -> (fibers : Registry name key value world error) ->
+  (pairwiseProvisionInvariant {name = name} {key = key} {value = value}
+    {world = world} {error = error} @{keyEq} (bindings fibers) = True) ->
+  (leftOwner, rightOwner : name) -> (wanted : key) ->
+  (leftObserved, rightObserved : Maybe (Fiber name key value world error)) ->
+  (lookupBinding {key = name} {value = FiberAt name key value world error}
+    @{nameEq} leftOwner fibers = leftObserved) ->
+  (lookupBinding {key = name} {value = FiberAt name key value world error}
+    @{nameEq} rightOwner fibers = rightObserved) ->
+  (leftTable, rightTable : CoeffectContext key value) ->
+  (effectTables (projectEffectState {name = name} {key = key} {value = value}
+    {world = world} {error = error} @{nameEq} (MkSystemState ambient fibers)) leftOwner = leftTable) ->
+  (effectTables (projectEffectState {name = name} {key = key} {value = value}
+    {world = world} {error = error} @{nameEq} (MkSystemState ambient fibers)) rightOwner = rightTable) ->
+  (leftValue, rightValue : value wanted) ->
+  (lookupBinding {key = key} {value = value} @{keyEq} wanted leftTable = Just leftValue) ->
+  (lookupBinding {key = key} {value = value} @{keyEq} wanted rightTable = Just rightValue) ->
+  leftOwner = rightOwner
+pairedNamedTableOwnersUnique name key world error value nameEq keyEq ambient
+  (MkCoeffectContext entries unique) pairwise leftOwner rightOwner wanted leftObserved
+  rightObserved leftLookup rightLookup leftTable rightTable leftTableObserved
+  rightTableObserved leftValue rightValue leftPresent rightPresent =
+    case (pairedNamedTableOwnerObserved name key world error value nameEq keyEq ambient
+            (MkCoeffectContext entries unique) leftOwner wanted leftObserved leftLookup
+            leftTable leftTableObserved leftValue leftPresent,
+          pairedNamedTableOwnerObserved name key world error value nameEq keyEq ambient
+            (MkCoeffectContext entries unique) rightOwner wanted rightObserved rightLookup
+            rightTable rightTableObserved rightValue rightPresent) of
+      ((leftFiber ** (leftFound, leftDeclares)),
+       (rightFiber ** (rightFound, rightDeclares))) =>
+        pairwiseSharedProvisionSameName keyEq entries pairwise leftOwner rightOwner
+          leftFiber rightFiber
+          (lookupEntryElemOpenAnchor nameEq leftOwner entries leftFiber leftFound)
+          (lookupEntryElemOpenAnchor nameEq rightOwner entries rightFiber rightFound)
+          wanted leftDeclares rightDeclares
