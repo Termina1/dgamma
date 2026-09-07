@@ -1,0 +1,88 @@
+{
+  "timestamp": "2026-09-07T00:56:35.103260+00:00",
+  "verifiedHead": "ad6616dbab35b23b5f0ff19b3f0b15a0d4236bbe",
+  "startHead": "c4e78e0a16806cf57095d2bb68afa3da9dfadb2c",
+  "branch": "cp5-thm73-scoping",
+  "idrisVersion": "Idris 2, version 0.8.0",
+  "holes": {
+    "CanonicalSort": [
+      "?sortClosingFreeTraceSpike_rhs"
+    ],
+    "CrossTrace": [
+      "?operationalAdjacentBlockSwapSpike_rhs",
+      "?canonicalSupportOrdersMatchSpike_rhs",
+      "?selectOperationalCanonicalPermutationSpike_rhs",
+      "?canonicalSchedulesConvergeSpike_rhs"
+    ],
+    "DeletionChain": [],
+    "LocalDiamond": [],
+    "RenamingComposition": [
+      "?replayedCanonicalToOriginalEndpointSpike_rhs"
+    ]
+  },
+  "holeCounts": [
+    1,
+    4,
+    0,
+    0,
+    1
+  ],
+  "productionDiffVs34b21c9": "empty",
+  "CP3Blob": "2c697e532e83989de8591fa6a4378747c6a501c0",
+  "LocalDiamondDiffVsStart": "empty",
+  "LocalDiamondDiffVs8b68e37": "empty",
+  "CrossTraceDiffVsStart": "empty",
+  "RenamingCompositionDiffVsStart": "empty",
+  "CanonicalSortDelta": "205 added, 0 removed",
+  "DeletionChainDelta": "38 added, 0 removed",
+  "THM73PlanDiff": "empty",
+  "O17DeclarationUnchanged": true,
+  "O17DeclarationSHA256": "1df8d174b9a4f119a5a52e2073a72907bdb890413f877d55886e905e1d0279d1",
+  "adjacentFullBytes": 1470,
+  "adjacentFullSHA256": "2d01486bf953f11191b758ac3cfb5722d1d02b1a192b6e552adc8a3f58199ecf",
+  "adjacentStatementBytes": 1154,
+  "adjacentStatementSHA256": "3aae5a9fbc5b14e0411b4a91e557a6f3dc68c9a6282b9ec2b3fc658cec337adf",
+  "LocalDiamondSourceSHA256": "4a0e38ae4be56ba8e0f53753b80bd5ec991373afce2ee778d1572fac8f564fa3",
+  "LocalDiamondTTC": {
+    "present": true,
+    "bytes": 125344796,
+    "mtimeUTC": "2026-09-06T12:04:30.921396+00:00",
+    "unmodifiedSinceBeforeShift": true
+  },
+  "reviewSHA256": "61fc23ae4cea4565b442c840be39c41746ecbac73b8c2f73d04f1e3b4f4681e8",
+  "productionTTCSeeds": "207/207",
+  "checksSerialized": true,
+  "checkCount": 49,
+  "cleanPasses": 36,
+  "diagnosticRejections": 13,
+  "engineeringInterrupts": 0,
+  "retainedNewDeclarations": 32,
+  "noCompiler": true,
+  "noStagedFiles": true,
+  "noTrackedChanges": true,
+  "tree": "?? paper/\n?? review-o6-body-adversarial.md",
+  "prohibitedAdditions": {
+    "\\bbelieve_me\\b": [],
+    "\\bassert_total\\b": [],
+    "^\\s*partial\\b": [],
+    "\\?\\w+": [],
+    "\\blet\\b": [],
+    "\\bwith\\b": [],
+    "\\bdeletionTheoremProof\\b": [],
+    "\\bpostulate\\b": [],
+    "\\b[A-Za-z_]\\w*@\\s*[\\(\\[]": []
+  },
+  "changedIdrisFiles": [
+    "research-tests/DGamma/R175OldGroupingPolicyCycle.idr",
+    "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+    "research/DGamma/CP5ConfluenceDeletionChainSpike.idr",
+    "research/DGamma/CP5ConfluenceWorkMeasureSpike.idr",
+    "research/DGamma/CP5RawClosingRankSpike.idr"
+  ],
+  "allChangedIdrisDefaultTotal": true,
+  "aggregateSuiteRun": false,
+  "independentReviewClaimed": false,
+  "unitA": "partial; A/O sealed integration proved; ranked-word progress and whole-worklist measure definition proved; operational bridge capped",
+  "unitB": "partial; immutable cross-time component/rank coherence and raw precedence transport proved; exact raw maximum unproved; capped at 15",
+  "unitC": "analysis plan complete; no signature edits"
+}

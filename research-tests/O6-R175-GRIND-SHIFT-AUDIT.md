@@ -831,3 +831,13 @@ now-proved cross-time coherence; apply C's explicit-original-uniqueness
 threading only after its surface gate. Root placement and O19 safety/O21
 withdrawal proofs remain separately paused. Final supervisor gate at the
 committed validated boundary; no further Idris declaration proposed this shift.
+
+Final automated frozen snapshot PASS **2026-09-07 00:56:35 UTC** at verified
+HEAD `ad6616d`; committed alongside this note as
+`research-tests/O6-R175-FINAL-VALIDATION.json`. The subsequent commit changes
+ONLY these reporting artifacts, not Idris source or TTCs. The O6 full/statement
+hashes match their protected values; CP3 blob matches; production/package,
+LocalDiamond/CrossTrace/RenamingComposition, O17 declaration and THM73-PLAN are
+unchanged; new existing-module deltas are additive; all 207 seeds are present;
+all 49 compiler checks serialized; no compiler or staged/tracked change at
+snapshot. Only `paper/` and the frozen adversarial review remain untracked.
