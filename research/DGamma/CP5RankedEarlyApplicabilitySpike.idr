@@ -59,3 +59,20 @@ checkedEarlyApplicationObserved name key world error value nameEq keyEq before a
     Nothing => Nothing
     Just same => Just (MkCheckedEarlyApplication afterState
       (trans exact (cong (\tag => Just (tag, afterState)) same)))
+
+||| Execute the SAME selected right action at the SAME selected before-cut.
+||| Nothing is only a failed positive check, never completeness/canonicality.
+public export
+0 checkSelectedEarlyRight :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (observe : Action name key value world error -> Maybe Nat) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (trace : Transitions initial finalState) ->
+  (choice : LocatedRankDescent name key world error value observe trace) ->
+  Maybe (CheckedEarlyApplication name key world error value nameEq keyEq
+    (traceDescentBefore choice) (transitionAction (traceDescentRight choice)) (transitionTag (traceDescentRight choice)))
+checkSelectedEarlyRight name key world error value nameEq keyEq observe trace choice =
+  checkedEarlyApplicationObserved name key world error value nameEq keyEq (traceDescentBefore choice)
+    (transitionAction (traceDescentRight choice)) (transitionTag (traceDescentRight choice))
+    (checkedApplyAction @{nameEq} @{keyEq} (transitionAction (traceDescentRight choice)) (traceDescentBefore choice)) Refl
