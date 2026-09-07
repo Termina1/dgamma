@@ -562,3 +562,26 @@ retirementLocatedSource name key world error value nameEq keyEq trace aligned se
     (\parent, component, inserted => case inserted of Refl impossible)
     (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
       @{nameEq} selected (registry (actionBeforeState occurrence))) Refl
+
+||| Any actual prefix lookup and endpoint lookup for one unique original name
+||| have identical immutable metadata, even across a retired intermediate state.
+export
+0 actualPrefixEndpointMetadata :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (trace : Transitions first finalState) -> (prior : Transitions first middle) -> (later : Transitions middle finalState) ->
+  (appendTransitions prior later = trace) -> AlignedTransitions name key world error value nameEq keyEq trace ->
+  (bindings (registry first) = []) -> UniqueRawNameInsertions name key world error value nameEq keyEq trace ->
+  (selected : name) -> (sourceFiber, finalFiber : Fiber name key value world error) ->
+  (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} selected (registry middle) = Just sourceFiber) ->
+  (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} selected (registry finalState) = Just finalFiber) ->
+  ((fiberParent sourceFiber, fiberComponent sourceFiber) = (fiberParent finalFiber, fiberComponent finalFiber))
+actualPrefixEndpointMetadata name key world error value nameEq keyEq trace prior later decomposition aligned empty unique selected sourceFiber finalFiber sourceFound finalFound =
+  uniqueRawBirthMetadata name key world error value nameEq keyEq trace unique selected
+    (fiberParent sourceFiber) (fiberParent finalFiber) (fiberComponent sourceFiber) (fiberComponent finalFiber)
+    (rawMetadataBirthAtPrefix name key world error value nameEq keyEq trace prior later decomposition
+      (fst (alignedAppendSplit prior later (replace {p = AlignedTransitions name key world error value nameEq keyEq} (sym decomposition) aligned)))
+      empty selected sourceFiber sourceFound)
+    (rawMetadataBirthAtPrefix name key world error value nameEq keyEq trace trace NoTransitions
+      (currentBirthTraceAppendEmpty name key world error value trace) aligned empty selected finalFiber finalFound)
