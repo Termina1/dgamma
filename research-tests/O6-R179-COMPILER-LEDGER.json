@@ -2558,5 +2558,252 @@
     "matchingSourceCommits": [
       "5d433e4bece5d42cecb121678daa0d6e9f8d0102"
     ]
+  },
+  {
+    "unit": "G1-1",
+    "path": "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr"
+    ],
+    "start": "2026-09-07T11:10:01.864414+00:00",
+    "end": "2026-09-07T11:10:57.951678+00:00",
+    "seconds": 56.08691137470305,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 20122784,
+    "sourceSHA256": "b22a015a829ea0a00e46a14a5d6f66828857e7b6fe01c48fe5af8cda36a0c60b",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "8/8: Building DGamma.CP5ConfluenceCanonicalSortSpike (research/DGamma/CP5ConfluenceCanonicalSortSpike.idr)\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  sorted is shadowing Data.List.sorted\n\nDGamma.CP5ConfluenceCanonicalSortSpike:4658:3--4662:39\n 4658 | 0 abstractTwoBirthOneWithdrawalAccounting :\n 4659 |   (fixture : AbstractTwoBirthOneWithdrawalAssembly name key world error value protocol\n 4660 |     nameEq keyEq original reduction ordering sorted) ->\n 4661 |   OneTraceOrchestrationAccounting name key world error value protocol nameEq keyEq\n 4662 |     original reduction ordering sorted\n\n",
+    "baselineDeclarationSource": "77577c2:research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+    "newTopLevelDeclarations": [],
+    "matchingSourceCommits": [
+      "3b76607d278a1896c9b4df2316b23cd13566cd80"
+    ]
+  },
+  {
+    "unit": "G2-1",
+    "path": "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr"
+    ],
+    "start": "2026-09-07T11:13:40.180208+00:00",
+    "end": "2026-09-07T11:14:36.572767+00:00",
+    "seconds": 56.39218879211694,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 20123248,
+    "sourceSHA256": "3b62ba1c3bc88503116ed22d82c667043f7f41dd483fb093cc25b677a55245cc",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "8/8: Building DGamma.CP5ConfluenceCanonicalSortSpike (research/DGamma/CP5ConfluenceCanonicalSortSpike.idr)\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  sorted is shadowing Data.List.sorted\n\nDGamma.CP5ConfluenceCanonicalSortSpike:4659:3--4663:39\n 4659 | 0 abstractTwoBirthOneWithdrawalAccounting :\n 4660 |   (fixture : AbstractTwoBirthOneWithdrawalAssembly name key world error value protocol\n 4661 |     nameEq keyEq original reduction ordering sorted) ->\n 4662 |   OneTraceOrchestrationAccounting name key world error value protocol nameEq keyEq\n 4663 |     original reduction ordering sorted\n\n",
+    "newTopLevelDeclarations": [],
+    "matchingSourceCommits": [
+      "a322f1d4cb55190514e857be18450daa015aade2"
+    ]
+  },
+  {
+    "unit": "G3-1",
+    "path": "research/DGamma/CP5RankedEarlyApplicabilitySpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5RankedEarlyApplicabilitySpike.idr"
+    ],
+    "start": "2026-09-07T11:15:05.169099+00:00",
+    "end": "2026-09-07T11:15:07.255274+00:00",
+    "seconds": 2.0859660003334284,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 1264192,
+    "sourceSHA256": "93d8f36bce17dc2bde9eb3432b4d3c9b368447e359b9cd37893ca145014345f9",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "10/10: Building DGamma.CP5RankedEarlyApplicabilitySpike (research/DGamma/CP5RankedEarlyApplicabilitySpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "CheckedEarlyApplication"
+    ],
+    "matchingSourceCommits": [
+      "4182847d2b1317efc4c002aecf275bd29a3bd183"
+    ]
+  },
+  {
+    "unit": "G4-1",
+    "path": "research/DGamma/CP5RankedEarlyApplicabilitySpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5RankedEarlyApplicabilitySpike.idr"
+    ],
+    "start": "2026-09-07T11:15:31.904993+00:00",
+    "end": "2026-09-07T11:15:33.979762+00:00",
+    "seconds": 2.074568500276655,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 1253168,
+    "sourceSHA256": "45361d7c58f3b0e6d873fe9870a02518fcac07e9830c9a50d9be781668228b93",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "10/10: Building DGamma.CP5RankedEarlyApplicabilitySpike (research/DGamma/CP5RankedEarlyApplicabilitySpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "observedRuleTagSame"
+    ],
+    "matchingSourceCommits": [
+      "9644ee01da8bce08760af9003ad62079e22578d7"
+    ]
+  },
+  {
+    "unit": "G5-1",
+    "path": "research/DGamma/CP5RankedEarlyApplicabilitySpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5RankedEarlyApplicabilitySpike.idr"
+    ],
+    "start": "2026-09-07T11:15:52.689764+00:00",
+    "end": "2026-09-07T11:15:54.772045+00:00",
+    "seconds": 2.0820727916434407,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 1327120,
+    "sourceSHA256": "2a0c6c7b7b527e1ef4cf4f31cfec3cbdb823d39c0c5822eefc17279be5392fcb",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "10/10: Building DGamma.CP5RankedEarlyApplicabilitySpike (research/DGamma/CP5RankedEarlyApplicabilitySpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "checkedEarlyApplicationObserved"
+    ],
+    "matchingSourceCommits": [
+      "89ffddc10b64462927a7fb50eff6fdfc9319d646"
+    ]
+  },
+  {
+    "unit": "G6-1",
+    "path": "research/DGamma/CP5RankedEarlyApplicabilitySpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5RankedEarlyApplicabilitySpike.idr"
+    ],
+    "start": "2026-09-07T11:16:58.171957+00:00",
+    "end": "2026-09-07T11:17:00.248462+00:00",
+    "seconds": 2.0763179170899093,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 1114720,
+    "sourceSHA256": "1255c35f36618961b29e0d7a105990ba63b82822de6b7714d188e7c7e53badde",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "10/10: Building DGamma.CP5RankedEarlyApplicabilitySpike (research/DGamma/CP5RankedEarlyApplicabilitySpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "checkSelectedEarlyRight"
+    ],
+    "matchingSourceCommits": [
+      "7a019d9cf4889ff573f744b9df9e3536691cb3a8"
+    ]
+  },
+  {
+    "unit": "G7-1",
+    "path": "research/DGamma/CP5RankedEarlyApplicabilitySpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5RankedEarlyApplicabilitySpike.idr"
+    ],
+    "start": "2026-09-07T11:17:31.054395+00:00",
+    "end": "2026-09-07T11:17:33.136997+00:00",
+    "seconds": 2.082427542190999,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 686784,
+    "sourceSHA256": "d54aefae02a4a03b1ea710cb79aaa224887eaec6bae7921203995238aa8e5e87",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "10/10: Building DGamma.CP5RankedEarlyApplicabilitySpike (research/DGamma/CP5RankedEarlyApplicabilitySpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "selectCanonicalObservedEarlyPair"
+    ],
+    "matchingSourceCommits": [
+      "b5c548267db0090944902071cbcf248c4558797e"
+    ]
+  },
+  {
+    "unit": "G8-1",
+    "path": "research-tests/DGamma/R179RankedTraceSelectionPositive.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R179RankedTraceSelectionPositive.idr"
+    ],
+    "start": "2026-09-07T11:18:13.600831+00:00",
+    "end": "2026-09-07T11:18:26.049793+00:00",
+    "seconds": 12.448755291756243,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 3687664,
+    "sourceSHA256": "625f5492e1fc2df3d1f995e2d33d7ffd83495140b79ca41d627260e8c65ee873",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "1/1: Building DGamma.R179RankedTraceSelectionPositive (research-tests/DGamma/R179RankedTraceSelectionPositive.idr)\n",
+    "newTopLevelDeclarations": [
+      "r179CanonicalObservedEarlyChecks"
+    ],
+    "matchingSourceCommits": [
+      "db5bd48c3bb1a139ccc81fe61613e0e842362b97"
+    ]
   }
 ]

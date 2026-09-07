@@ -18,7 +18,15 @@ for r in records:
     if r['path'] != 'package':
         names = set(re.findall(r'^(?:0 )?([A-Za-z_]\w*)\s*:',snapshot.decode(),re.M))
         names.update(re.findall(r'^record ([A-Za-z_]\w*)',snapshot.decode(),re.M))
-        prior = accepted_names.get(r['path'],set())
+        if r['path'] not in accepted_names:
+            baseline = subprocess.run(['git','show','77577c2:'+r['path']],cwd=ROOT,stdout=subprocess.PIPE,stderr=subprocess.DEVNULL)
+            base_text = baseline.stdout.decode() if baseline.returncode == 0 else ''
+            base_names = set(re.findall(r'^(?:0 )?([A-Za-z_]\w*)\s*:',base_text,re.M))
+            base_names.update(re.findall(r'^record ([A-Za-z_]\w*)',base_text,re.M))
+            accepted_names[r['path']] = base_names
+            if base_names:
+                r['baselineDeclarationSource'] = '77577c2:'+r['path']
+        prior = accepted_names[r['path']]
         assert not prior - names, (r['unit'],'removed accepted declaration')
         added = sorted(names - prior)
         assert len(added) <= 1, (r['unit'],added)

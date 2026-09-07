@@ -27,8 +27,18 @@ untracked = git('ls-files','--others','--exclude-standard').splitlines()
 assert all(p.startswith('paper/') or p == 'review-o6-body-adversarial.md' for p in untracked)
 processes = subprocess.check_output(['ps','-axo','pid,ppid,command'],text=True)
 assert not re.search(r'/idris2_app/idris2(?:\.so)?(?:\s|$)', processes)
+# Explicit G visibility ruling: exactly these two keywords, no other edits.
+visibility = {'canonicalWorkActionRank':'public export', 'canonicalWorkInspectOrientation':'export'}
+canonical_before = git('show',START+':'+PATHS['CanonicalSort'])
+canonical_authorized = canonical_before
+for declaration, keyword in visibility.items():
+    marker = '0 '+declaration+' :'
+    assert canonical_authorized.count(marker) == 1
+    canonical_authorized = canonical_authorized.replace(marker,keyword+'\n'+marker)
+assert text(PATHS['CanonicalSort']) == canonical_authorized
 for part in PARTS:
-    assert not git('diff',START,'--',PATHS[part]), part
+    if part != 'CanonicalSort':
+        assert not git('diff',START,'--',PATHS[part]), part
 local = (ROOT/PATHS['LocalDiamond']).read_bytes()
 start = local.index(b'0 adjacentSwapSuffixSpike :')
 full, statement = sha(local[start:start+1470]), sha(local[start:start+1154])
@@ -63,7 +73,7 @@ local_time = datetime.datetime.fromtimestamp(local_ttc.stat().st_mtime,datetime.
 assert local_time.startswith('2026-09-07T01:56:14.')
 report = dict(timestamp=datetime.datetime.now(datetime.timezone.utc).isoformat(),head=git('rev-parse','HEAD').strip(),start=START,
     holes=holes,split=[len(holes[p]) for p in PARTS],productionDiffVs34b21c9='empty',CP3Blob=git('hash-object','src/DGamma/CP3.idr').strip(),
-    LocalDiamondDiffVsStart='empty',CanonicalSortDiffVsStart='empty',DeletionChainDiffVsStart='empty',
+    LocalDiamondDiffVsStart='empty',CanonicalSortDiffVsStart='exactly two authorized visibility keywords',CanonicalSortAuthorizedVisibility=visibility,DeletionChainDiffVsStart='empty',
     CrossTraceDiffVsStart='empty',RenamingCompositionDiffVsStart='empty',
     adjacentFullBytes=1470,adjacentFullSHA256=full,adjacentStatementBytes=1154,adjacentStatementSHA256=statement,reviewSHA256=review,
     seeds='207/207',LocalDiamondTTC=dict(bytes=local_ttc.stat().st_size,mtimeUTC=local_time),changedIdrisFiles=changed,

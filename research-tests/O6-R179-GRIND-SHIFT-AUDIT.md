@@ -514,3 +514,53 @@ still needs that synchronization. Unsupported generated children remain a
 separate fourth-clause remainder. Full three R147 clauses and O20 body remain0.
 
 F finished11:06, leaving84min before12:30: G's ≥45min eligibility condition holds.
+
+## G completed at11:18 UTC: same-pair positive applicability and observer integration
+
+| Unit | Declaration/change | Verdict / commit |
+|---|---|---|
+| G1 | `canonicalWorkActionRank`: **public export only** | PASS1,56.09s / 3b76607 |
+| G2 | `canonicalWorkInspectOrientation`: **export only** | PASS1,56.39s / a322f1d |
+| G3 | `CheckedEarlyApplication` | PASS1 / 4182847 |
+| G4 | `observedRuleTagSame` | PASS1 / 9644ee0 |
+| G5 | `checkedEarlyApplicationObserved` | PASS1 / 89ffddc |
+| G6 | `checkSelectedEarlyRight` | PASS1 / 7a019d9 |
+| G7 | `selectCanonicalObservedEarlyPair` | PASS1 / b5c5482 |
+| G8 | `r179CanonicalObservedEarlyChecks` (existing E fixture) | PASS1,12.45s / db5bd48 |
+
+G1 needs `public export` because the exact rank computation must reduce in the
+new fixture/proof consumer. Its body/signature are unchanged. G2 is the already
+proved optional actual-pair orientation INSPECTOR; consumers use its result,
+not reduction, so only `export`. Both were separately freshly checked, detached
+and monitored. These are the ONLY old-spike edits this shift. Frozen checker now
+asserts CanonicalSort equals77577c2 with exactly those two inserted visibility
+keywords; all other bytes/four other spike files and five hole declarations stay
+exact. Evidence checker seeds the first check of an existing module's declaration
+set from77577c2, instead of falsely counting its old declarations as new G1 units.
+
+`CP5RankedEarlyApplicabilitySpike` integrates E's selector with the SAME existing
+worklist rank function on the actual checked trace and fixed order. It uses the
+SAME selected pair's existing orientation inspector and REALLY runs
+`checkedApplyAction` for the chosen right action at its exact before-left cut.
+The target is produced, not a caller's early-endpoint oracle. A finite equality
+check rejects changed tags, and the output record authenticates exact original
+action AND tag. G7 packages choice/orientation/checked early application together.
+This is a **positive Maybe producer**, NOT unconditional applicability, a diamond
+or a progress/completeness theorem. If the first descending pair fails either
+check, G7 returns Nothing; it does not search later applicable pairs.
+
+G8's real four-action E trace excludes its builder fallback and now uses the
+EXACT canonical observer [1,0], not E's custom toy observer. It selects prefix2,
+actors0/1, and executes early Begin1 successfully before Begin0. Exact observation
+is `Just (2,0,1,False,True)` (prefix/actors/early installedness observations).
+The `CheckedEarlyApplication` index retains exact action/tag. G8 does NOT claim a
+concrete run of the opaque optional orientation inspector/G7 combined producer.
+No source-bundle/completeness assertion is smuggled into this finite example.
+
+All8 units PASS1 (including two visibility checks); no additional attempt.
+Remaining O17 work: instantiate this observation consumer at the private reached
+worklist boundary, prove an adequate candidate exists for every relevant
+noncanonical state, derive actual independent/parent/child side conditions and
+a local diamond, integrate its sealed swap/decrease, and establish completeness.
+No private worklist mutation, root placement or O17 body attempted. A's full
+counterexample and exhausted prerequisites remain unchanged.
