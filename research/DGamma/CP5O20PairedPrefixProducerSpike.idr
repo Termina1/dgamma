@@ -42,3 +42,24 @@ pairedCommittedResolution name key world error value nameEq keyEq renaming deps
         renaming deps leftView rightView (projectEffectState @{nameEq} left)
         (projectEffectState @{nameEq} right) effects views)
         (resolveEffectValuesProjected nameEq keyEq deps rightView right))
+
+||| Transport a paired induction hypothesis through independently PRODUCED
+||| exact runtime projection frames. These frames compare each side only to
+||| its own observation; no cross-cut agreement is invented by this helper.
+export
+0 pairedEffectsAcrossFrames :
+  (name, key, world : Type) -> (value : key -> Type) ->
+  (keyEq : DecEq key) -> (renaming : NameBijection name) ->
+  (leftBefore, leftAfter, rightBefore, rightAfter : EffectState name key value world) ->
+  EffectStateRelated keyEq leftBefore leftAfter ->
+  RenamedRuntimeEffects name key world value renaming leftBefore rightBefore ->
+  EffectStateRelated keyEq rightBefore rightAfter ->
+  RenamedRuntimeEffects name key world value renaming leftAfter rightAfter
+pairedEffectsAcrossFrames name key world value keyEq renaming leftBefore leftAfter
+  rightBefore rightAfter leftFrame paired rightFrame =
+    MkRenamedRuntimeEffects
+      (trans (sym (ambientExact leftFrame))
+        (trans (synchronizedAmbient paired) (ambientExact rightFrame)))
+      (\selected => trans (sym (tablesExact leftFrame selected))
+        (trans (synchronizedTables paired selected)
+          (tablesExact rightFrame (renameForward renaming selected))))
