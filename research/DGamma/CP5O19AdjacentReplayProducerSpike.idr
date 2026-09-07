@@ -157,3 +157,35 @@ o19ActivationDiamond {first} nameEq keyEq protocol original earlier left right l
     Refl Refl leftActivation rightActivation distinct
     (Builtin.fst (Builtin.snd (o19SourcePairFacts nameEq keyEq protocol original earlier left right later decomposition premises)))
     (Builtin.snd (Builtin.snd (o19SourcePairFacts nameEq keyEq protocol original earlier left right later decomposition premises)))
+
+||| B7: ACTUAL sealed suffix replay, not a result supplied by a caller. The
+||| frozen producer transports registration discipline and all15 bundle fields;
+||| B3 derives the exact external evidence for the same locally built diamond.
+public export
+0 o19ActivationPairReplay :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {initial, first, middle, last, finalState : SystemState name key value world error} ->
+  (original : Transitions initial finalState) -> (earlier : Transitions initial first) ->
+  (left : Transition first middle) -> (right : Transition middle last) ->
+  (later : Transitions last finalState) ->
+  (appendTransitions earlier (MoreTransitions left (MoreTransitions right later)) = original) ->
+  ReplayInvariantBundle name key world error value protocol nameEq keyEq original ->
+  PaperActivationStep left -> PaperActivationStep right ->
+  Not (transitionActor left = transitionActor right) ->
+  CheckedEarlyApplication name key world error value nameEq keyEq first
+    (transitionAction right) (transitionTag right) ->
+  (diamond : LocalRelationalDiamond name key world error value nameEq keyEq left right **
+   AdjacentSwapResult name key world error value protocol nameEq keyEq original earlier left right later diamond)
+o19ActivationPairReplay nameEq keyEq protocol original earlier left right later
+  decomposition premises leftActivation rightActivation distinct early =
+  (o19ActivationDiamond nameEq keyEq protocol original earlier left right later
+      decomposition premises leftActivation rightActivation distinct early **
+   adjacentSwapSuffixSpike nameEq keyEq protocol original earlier left right later
+     decomposition premises
+     (o19ActivationDiamond nameEq keyEq protocol original earlier left right later
+      decomposition premises leftActivation rightActivation distinct early)
+     (o19ActivationPairExternal nameEq keyEq left right leftActivation rightActivation
+       (o19ActivationDiamond nameEq keyEq protocol original earlier left right later
+      decomposition premises leftActivation rightActivation distinct early)))
