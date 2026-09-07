@@ -3094,3 +3094,16 @@ registrationSideFoldBirth name key world error value nameEq ordinal
   RemoveListOccurrence selected source remainder -> Elem selected source
 pairingRemovedMember RemoveListHere = Here
 pairingRemovedMember (RemoveListThere later) = There (pairingRemovedMember later)
+
+||| A member is either this exact paired event or remains in the residual list.
+0 pairingClassifyMember :
+  {element : Type} -> {removed, selected : element} -> {source, remainder : List element} ->
+  RemoveListOccurrence removed source remainder -> Elem selected source ->
+  Either (selected = removed) (Elem selected remainder)
+pairingClassifyMember RemoveListHere Here = Left Refl
+pairingClassifyMember RemoveListHere (There later) = Right later
+pairingClassifyMember (RemoveListThere removal) Here = Right Here
+pairingClassifyMember (RemoveListThere removal) (There later) =
+  case pairingClassifyMember removal later of
+    Left same => Left same
+    Right kept => Right (There kept)
