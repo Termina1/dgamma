@@ -59,3 +59,32 @@ r182IndependentUnique = MkUniqueRawNameInsertions
       (sym (r182IndependentBirthPosition selected (locatedActionOrdinal right)
         (rawInsertionNameAtLocated Nat R45Key Unit String R45Value (r182IndependentTrace False)
           selected rightParent rightComponent right))))
+
+||| B12: NO INPUTS. An actual first crossing of the fully admitted A14 pair,
+||| produced through the real local diamond and FROZEN sealed suffix theorem.
+||| It owns the complete reached bundle, exact external/registration data,
+||| nonempty derivation and transported original uniqueness. No target oracle.
+||| Only the first of the required FOUR Cartesian nodes is claimed here.
+public export
+0 r182ActualFirstCrossing :
+  (diamond : LocalRelationalDiamond Nat R45Key Unit String R45Value r45NameEq r45KeyEq
+    (Fired {before = r182IndependentState 3} {afterState = r182IndependentState 4} r45NameEq r45KeyEq (LAdvance 0) LFinishTag Refl)
+    (Fired {before = r182IndependentState 4} {afterState = r182IndependentState 5} r45NameEq r45KeyEq (LBegin 1) LBeginTag Refl) **
+   (result : AdjacentSwapResult Nat R45Key Unit String R45Value r45Protocol r45NameEq r45KeyEq
+      (r182IndependentTrace False)
+      (MoreTransitions (Fired {before = r182IndependentState 0} {afterState = r182IndependentState 1} r45NameEq r45KeyEq (OInsert 0 Root r45Child) OInsertTag Refl) (MoreTransitions (Fired {before = r182IndependentState 1} {afterState = r182IndependentState 2} r45NameEq r45KeyEq (OInsert 1 Root r45Child) OInsertTag Refl) (MoreTransitions (Fired {before = r182IndependentState 2} {afterState = r182IndependentState 3} r45NameEq r45KeyEq (LBegin 0) LBeginTag Refl) NoTransitions)))
+      (Fired {before = r182IndependentState 3} {afterState = r182IndependentState 4} r45NameEq r45KeyEq (LAdvance 0) LFinishTag Refl)
+      (Fired {before = r182IndependentState 4} {afterState = r182IndependentState 5} r45NameEq r45KeyEq (LBegin 1) LBeginTag Refl)
+      (MoreTransitions (Fired {before = r182IndependentState 5} {afterState = r182IndependentState 6} r45NameEq r45KeyEq (LAdvance 1) LFinishTag Refl) NoTransitions) diamond **
+     (NonEmptyFiniteAdjacentSwapDerivation Nat R45Key Unit String R45Value r45Protocol r45NameEq r45KeyEq
+       (r182IndependentTrace False) (swappedTrace result),
+      UniqueRawNameInsertions Nat R45Key Unit String R45Value r45NameEq r45KeyEq (swappedTrace result))))
+r182ActualFirstCrossing = o19AdvanceActivationPair r45NameEq r45KeyEq r45Protocol
+  (r182IndependentTrace False)
+  (MoreTransitions (Fired {before = r182IndependentState 0} {afterState = r182IndependentState 1} r45NameEq r45KeyEq (OInsert 0 Root r45Child) OInsertTag Refl) (MoreTransitions (Fired {before = r182IndependentState 1} {afterState = r182IndependentState 2} r45NameEq r45KeyEq (OInsert 1 Root r45Child) OInsertTag Refl) (MoreTransitions (Fired {before = r182IndependentState 2} {afterState = r182IndependentState 3} r45NameEq r45KeyEq (LBegin 0) LBeginTag Refl) NoTransitions)))
+  (Fired {before = r182IndependentState 3} {afterState = r182IndependentState 4} r45NameEq r45KeyEq (LAdvance 0) LFinishTag Refl)
+  (Fired {before = r182IndependentState 4} {afterState = r182IndependentState 5} r45NameEq r45KeyEq (LBegin 1) LBeginTag Refl)
+  (MoreTransitions (Fired {before = r182IndependentState 5} {afterState = r182IndependentState 6} r45NameEq r45KeyEq (LAdvance 1) LFinishTag Refl) NoTransitions)
+  Refl r182IndependentBundle r182IndependentUnique
+  (PaperFinishStep Refl Refl) (PaperBeginStep Refl Refl)
+  uninhabited r182FirstCrossingEarly
