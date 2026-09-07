@@ -2930,3 +2930,39 @@ unsafe proof, partiality or escape.49 retained declarations across six files;
 five inherited holes unchanged. Earlier A11/B12 real stops and the reverted
 failed B11/premature B12-1 workflow violation remain unexcused and preserved for
 parent-owned independent review. No further proof unit started after F8's cap.
+
+## Status — R181 terminal G resource stop (supersedes F prefix)
+
+**Fully proved additional capital:** G1 r181ConsumerLookupAfterBegin obtains the
+actual consumer's explicit Reloading[]/id/view payload using lookupReplacedFiber
+and the THREE actual checked foreign-provider updates. It does not observe a
+nested provider builder with scalar Refl or guess the provider's accumulator.
+
+**Not proved / removed:** G2 r181IteratorStageIsProvider attempted to show every
+reachable nonterminal stage in the real count7 trace has actor0. This is the
+necessary exclusion of consumer forward/yielded generators, NOT independence
+by itself. Nested captured dependent OccursIn splits grew to48,438,144KiB RSS
+and566.615s; the supervisor authorized terminating attempt1 as interrupted/no
+verdict. SAME statement with thin LHS patterns/forced-field wildcards hit the
+unchanged48GiB guard at102.840s/max50,642,656KiB, before the authorized150s limit.
+No compiler diagnostic/verdict exists for either; they must not be represented
+as type refutations or successful proofs. Per explicit override, STOP at2/3:
+whole declaration removed, exact G1 source restored and freshly PASS2.089s.
+Third attempt and G3–G6 remain unused, not silently recycled. No extra escape.
+
+**Still partial/stated:** actual TraceIndependent (generated monoid commutation
+AND iterator-outcome stability); F8 stays a conditional bundle function, not an
+inhabitant. No full negative, no research safety revision/O19 body. NoGeneratedChild
+body proofs and final order-swap/safety assembly were explicitly deferred to the
+next shift. O20 incomplete beyond actual matched views/registration successor;
+O21 withdrawal branches obligations only.50 retained declarations across seven
+Idris files; five inherited holes unchanged. The earlier reverted B11/premature
+B12-1 workflow violation remains unexcused; parent owns independent review.
+
+**Next:** avoid direct case elimination of a stage indexed by the full closed
+trace and callback-bearing concrete source states. Produce a generic per-step
+stage-restriction certificate over abstract state indices, then instantiate with
+actual runtime observations. Even the thin LHS alternative expanded excessively;
+this is an elaboration/resource wall, not a paper or logical counterexample.
+After a real independence proof, project F8 and assemble current safety/full
+negative BEFORE any subsequent revision/body gate. No further proof work this shift.

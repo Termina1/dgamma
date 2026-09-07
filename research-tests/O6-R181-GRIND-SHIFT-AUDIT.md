@@ -485,3 +485,53 @@ not G; no revision/O19 body. On3/3 stop or cutoff, preserve the exact wall then
 fresh retained checks/seeded package/frozen gate and final supervisor gate by17:32;
 parent will run independent reviewer. Prior F final artifacts become prefix
 history. No G source declaration/check has yet been added at this ruling record.
+
+### G2 resource ruling16:39UTC (before attempt2)
+
+G1 PASS1/7ff9f0f authenticates the actual consumer Begin payload through checked
+foreign provider frames and lookupReplacedFiber. G2's all-stage actor0 classifier
+attempt1 used nested captured dependent OccursIn splits. After566.615s and
+max48,438,144KiB RSS, the supervisor explicitly authorized termination. Sent TERM
+to the owned harness, which killed the compiler process group and persisted the
+attempt as interrupted=true, fresh=false, exit=-15, no diagnostic/no verdict.
+Confirmed no compiler survived. It counts as G2 attempt1, not a rejected theorem.
+
+Supervisor authorized SAME-statement attempt2 with thin exact LHS occurrence
+patterns/forced-field wildcards. NEW hard bound: terminate at~150s or same plateau
+and stop G2 at2/3; do NOT spend the third attempt tonight. This is a specific
+supervisor stop override, not silent budget recycling. Existing17:07/17:32 guards
+remain. No source edit occurred while attempt1's compiler was alive.
+
+### G2 STOP2/3 under explicit resource override —16:45UTC
+
+Attempt2 (thin exact LHS occurrence patterns, all forced descriptor fields
+wildcards) hit the UNCHANGED48GiB harness guard at102.840s, BEFORE its additional
+150s supervisor watchdog. maxRSS50,642,656KiB, exit=-15, interrupted=true,
+fresh=false, empty diagnostic/no verdict. Attempt1 maxRSS48,438,144KiB was below
+that guard and was manually terminated only after explicit supervisor approval.
+Both are RESOURCE INTERRUPTIONS, not compiler type rejections and not evidence
+that the stage property is false. Exact sources, process metadata, empty logs,
+runners and the separate watchdog are archived. No compiler survived either stop.
+
+The WHOLE r181IteratorStageIsProvider declaration/comment/type/body was removed.
+Restored source hash EXACTLY matches G1-1/7ff9f0f and freshly PASSed G2-restored
+in2.089s. G2's third attempt is explicitly UNUSED; G3–G6 and the conditional
+bundle projection are NOT attempted or recycled. Supervisor notified. No more
+proof declarations will start in this shift.
+
+G retains ONLY r181ConsumerLookupAfterBegin: a producer-owned exact lookup of
+the actual empty consumer Begin payload, threaded through all three checked
+foreign provider updates and lookupReplacedFiber. The id/empty program here is
+R180's explicit consumer payload, not a guessed provider accumulator. The failed
+G2 attempted to classify ALL actual reachable iterator stages as provider0, to
+exclude consumer iterator-forward/yielded generators. Nested dependent case
+closures and thin exact LHS patterns BOTH expanded the full concrete trace/
+source/lifecycle indices excessively. No classifier or TraceIndependent proof
+survives. Next approach should first prove generic per-transition stage
+restriction certificates at abstract before/after states, then instantiate via
+actual observations, rather than destruct the full closed indexed stage directly.
+
+50 retained declarations across SEVEN Idris files. F8 remains conditional; no
+actual ReplayInvariantBundle/current safety/negative, no revision/O19 body. Both
+NoGeneratedChild bodies and final order-swap/safety assembly were explicitly
+deferred to NEXT SHIFT. All original scope/escape/hash invariants remain in force.

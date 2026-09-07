@@ -598,3 +598,15 @@ Remaining O19 work: actual component-specific independence, both NoGeneratedChil
 body proofs and final order-swap/safety assembly. No revision or body permission.
 Five inherited holes and all production/original spike files remain frozen.
 The earlier reverted workflow violation remains unexcused, requiring parent-owned review.
+
+### R181 final G resource stop (supersedes F prefix)
+
+| Paper frontier | Idris correspondence | Checked status |
+|---|---|---|
+| Thm73/O19 independence prerequisite | `R181O19Independence.r181ConsumerLookupAfterBegin` | Actual consumer Begin lookup proved through checked foreign-provider frames; **NOT TraceIndependent** |
+| Thm73/O19 actual stage classification | G2 declaration wholly removed | STOP2/3 under explicit supervisor resource override:566.615s manual stop,102.840s48GiB guard; both interrupted/no verdict. Third attempt unused |
+
+50 retained declarations in seven research Idris files. Real generated-monoid
+commutation and iterator-outcome stability remain unproved; F8 is still conditional.
+No negative/safety revision/body permission. Full safety assembly is next shift.
+The original B11/B12-1 workflow violation remains unexcused and independently reviewable.

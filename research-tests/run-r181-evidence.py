@@ -53,9 +53,18 @@ with tarfile.open(ROOT/'research-tests/O6-R181-COMPILER-EVIDENCE.tar.gz','w:gz')
             path = OUT/(r['unit']+suffix)
             if path.exists():
                 archive.add(path,arcname=path.name)
+    # Exact additional G2 resource supervision: 150s watch, although the
+    # unchanged harness's 48GiB guard fired first. Never mislabel no-verdict
+    # resource interruptions as compiler rejections.
+    for name in ['G2-2-watch.py', 'G2-2-watch.runner']:
+        path = OUT/name
+        if path.exists():
+            archive.add(path, arcname=path.name)
 summary = dict(checks=len(records),ordinaryPasses=sum(r['passed'] and not r['expectedDiagnostic'] for r in records),
     intendedNegativePasses=sum(r['passed'] and bool(r['expectedDiagnostic']) for r in records),
-    rejectedOrInterrupted=sum(not r['passed'] for r in records),serialized=True,
+    rejectedOrInterrupted=sum(not r['passed'] for r in records),
+    compilerRejections=sum(not r['passed'] and not r['interrupted'] for r in records),
+    interruptions=sum(r['interrupted'] for r in records),serialized=True,
     oneNewDeclarationPerInvocation=all(len(r.get('newTopLevelDeclarations', [])) <= 1 for r in records),
     workflowViolations=[dict(unit=r['unit'],detail=r['workflowViolation']) for r in records if 'workflowViolation' in r],
     seededPackageBuilds=sum(r['path']=='package' for r in records),

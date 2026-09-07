@@ -3520,3 +3520,16 @@ stability; then both concrete NoGeneratedChild proofs and order-swap/safety
 assembly. No empty-key/identity shortcut applies. F2 PASS3, F3 PASS2, other F
 units PASS1; no new workflow exception. All earlier frozen invariants and the
 unexcused B11/B12-1 exception remain. O20/O21 bodies unchanged.
+
+### R181 terminal G: actual consumer lookup retained, stage classifier resource stop
+
+G1/7ff9f0f produces the exact consumer Begin lookup through all checked foreign
+provider frames. G2's actual all-stages→actor0 classifier is WHOLLY REMOVED:
+566.615s/manual authorized interruption, then102.840s/48GiB guard with thin LHS
+patterns. Both no-verdict; explicit STOP2/3 override, third attempt/G3–G6 unused.
+Restored G1 freshly PASS. Next mechanization route is a generic per-transition
+stage restriction certificate over abstract states instantiated by actual payload
+observations, not more direct elimination of the huge closed stage index. Actual
+TraceIndependent remains uninhabited; F8 stays conditional. NoGeneratedChild and
+full negative/safety assembly next shift; no revision/body authorization now.
+All frozen invariants and the original unexcused workflow exception remain.
