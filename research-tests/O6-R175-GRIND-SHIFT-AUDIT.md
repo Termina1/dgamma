@@ -36,18 +36,18 @@ selected Iter/Finish branches. Classification alone is not an applicable swap.
 | A5 | `canonicalWorkGroupingActivationOrchestrationResult` | `fffbc2b` | PASS 1/3, 2026-09-07T00:00:33.362619+00:00–2026-09-07T00:01:28.313827+00:00, 18191888 KiB sampled |
 | A6 | `canonicalWorkAdvanceActivationOrchestration` | `1f1c9c8` | PASS 1/3, 2026-09-07T00:01:56.021981+00:00–2026-09-07T00:02:50.934951+00:00, 18153584 KiB sampled |
 
-## Unit B — raw-closing maximum under uniqueness
+## Initial Unit B plan — superseded by the cap result below
 
-Not started. The target is the existential `rawClosingMaximumUnderUniqueInsertions`
+At start, not started. The target is the existential `rawClosingMaximumUnderUniqueInsertions`
 from R174 reconnaissance, via immutable cross-time rank coherence. It does not
 cast an arbitrary scoped maximum to raw maximality or call the frozen deletion
 proof. No satisfiability discharge is claimed before its actual source checks.
 
-## Unit C — O21 uniqueness-threading plan
+## Initial Unit C plan — superseded by the completed analysis below
 
-Not started; no signature edits authorized.
+At start, not started; no signature edits authorized.
 
-## Status
+## Initial status
 
 Start census **6 = 1/4/0/0/1** (CanonicalSort / CrossTrace / DeletionChain /
 LocalDiamond / RenamingComposition), unchanged. O17 remains open; root clause
@@ -763,3 +763,71 @@ CP3/production hashes and holes audited. This plan does not preauthorize those
 future edits, a legacy stronger theorem, or any blocked semantic proof body.
 
 Unit C finished **2026-09-07 00:49:38 UTC**, under 40 minutes. Analysis/documentation only; ZERO compiler attempts or signature edits. The script's stale 5+54 comment was not trusted: its actual arrays contain 5 spikes, 57 positives, 50 negatives (62 successful research markers in fresh mode). No aggregate suite was run or claimed.
+
+## Final validation and frozen boundary
+
+- Toolchain reconfirmed: Idris 2 **0.8.0**. All changed Idris modules retain
+  `%default total`; no with/let/as-pattern/nonlinear-pattern/proof escape in
+  retained additions. No production, package, CP3, O17/O19/O21 body, root-phase,
+  Q9, G31, archived-C58, or adversarial-review edit.
+- Final retained DeletionChain rebuilt on B15-1 (00:40:42–00:42:02), followed
+  by NO further Idris source change. Whole WorkMeasure last source check D10-1;
+  whole RawClosingRank last source check B14-1; abstract fixture D1-4.
+- Final seeded package PASS **00:50:07–00:50:24 UTC**, sampled RSS 219,904 KiB.
+  This is an actual `idris2 --build dgamma.ipkg`, NOT a cold rebuild. All
+  **207/207 production TTC seeds** are preserved.
+- Final CanonicalSort fresh source check PASS **00:50:34–00:51:29 UTC**, sampled
+  RSS 18,199,824 KiB; actual Building marker. Benign existing-variable `sorted`
+  shadowing warning from the new Data.List import is recorded, not suppressed.
+- Final R8FullPipeline fresh source check PASS **00:51:35–00:53:15 UTC**, sampled
+  RSS 36,697,408 KiB; actual Building marker. Final R16 conditional assembly
+  fresh source check PASS **00:53:20–00:53:23 UTC**, actual Building marker.
+  Both remain conditional through late-capital assumptions and six open holes.
+- Committed `O6-R175-COMPILER-LEDGER.json`: **49 serialized checks**, **36 clean
+  passes**, **13 diagnostic rejections**, **0 engineering interrupts**. Of the
+  passes, 32 are immediate committed declaration units and 4 are final checks
+  with no new declaration. Zero RSS samples on fast units mean no sampled
+  nonzero process before completion, not zero memory use.
+- D1's three rejections were stopped/reverted/gated; EXACT spelling-only D1-4
+  was expressly supervisor-granted. B6's three rejections were stopped/reverted/
+  gated; B7/B8's structurally different explicit-update cure was expressly
+  authorized and passed. No self-reset or other fourth attempt occurred.
+- LocalDiamond SOURCE delta vs starting HEAD and vs `8b68e37`: **EMPTY**.
+  Protected LocalDiamond TTC remains present, 125,344,796 bytes, mtime
+  **2026-09-06 12:04:30 UTC**, before this shift; it was never deleted/rebuilt.
+  CrossTrace and RenamingComposition SOURCE deltas: **EMPTY**. DeletionChain
+  delta: only one new import + B15 (38 added lines, zero removed). CanonicalSort
+  delta: 205 added lines, zero removed. THM73-PLAN.md unchanged.
+- No aggregate R11 suite or independent reviewer pass is claimed. The supervisor
+  owns review fanout. C's future-fixture list is a plan, not test verdicts.
+- The machine-readable frozen snapshot will accompany this audit in
+  `O6-R175-FINAL-VALIDATION.json`, including exact protected hashes, six-hole
+  names, cache census, additive-only source checks, allowed untracked files and
+  no compiler orphan.
+
+## Status
+
+| Ordered assignment item | Status at gate | Checked capital / exact remainder |
+|---|---|---|
+| Selected Iter/Finish early applicability | OPEN | R174 selected non-Begin provenance remains; no new early-applicability producer this shift. |
+| Four orientation producers / sealed adjacent results | PARTIAL | A/O ACTUAL selected generated-insertion diamond, exact external evidence, sealed O6 result and reached update proved in A1–A6. A/A, O/A, O/O still lack the requested full selected early/execution integrations. |
+| Structural BlockBefore | OPEN | No numeric-range-to-structural connector added. |
+| Whole-worklist decreasing measure | PARTIAL, authorized cap PARK | Abstract old-policy cycle checked D1; D2–D10 prove exact adjacent selection + whole-word drop simultaneously; D11–D12 define the actual fixed-order whole-worklist barrier measure. Missing checked-pair location, orientation applicability and rank-segment preservation across sealed suffix. |
+| Exact registration fold alignment | OPEN | No replacement by a caller-supplied map or output-shaped law. |
+| Raw closing maximum under uniqueness | PARTIAL, authorized cap PARK | Authentic prefix births, immutable cross-time components/ranks, cross-time raw precedence increase and ranked genuine closings proved B1–B15 (B6 reverted). O7 finite rank maximum + completeness transfer + raw existential assembly remain open. CP3 satisfiability NOT reclassified. |
+| CrossTrace/O21 uniqueness-threading plan | COMPLETE (analysis) | Exact six future surfaces, sealed transport chain, unchanged general consumers, ripple estimate, diagnostic-negative/positive fixture plan committed; ZERO signature/body edits. |
+
+The six inherited holes remain **6 = 1/4/0/0/1** in CanonicalSort / CrossTrace /
+DeletionChain / LocalDiamond / RenamingComposition. No new hole or unproved
+postulate was added, and no conditional result is called the paper's full
+confluence theorem. The abstract selector cycle is NOT a full O17 countermodel.
+A8 remains an owner-scoped canonical-form/guard issue, not solved by raw
+freshness or by the new maximum capital. No attempt to restart the capped
+seams is authorized by unused wall time.
+
+**Next after owner approval:** finish the ranked-segment→authentic sealed O17
+progress bridge; separately finish finite O7 closing-rank maximum using the
+now-proved cross-time coherence; apply C's explicit-original-uniqueness
+threading only after its surface gate. Root placement and O19 safety/O21
+withdrawal proofs remain separately paused. Final supervisor gate at the
+committed validated boundary; no further Idris declaration proposed this shift.
