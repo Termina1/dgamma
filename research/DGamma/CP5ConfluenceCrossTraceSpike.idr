@@ -7,6 +7,7 @@ import DGamma.Metatheory
 import DGamma.CP3
 import DGamma.CP5UniqueRawNameInsertions
 import DGamma.CP5GeneratedOrchestrationMatched
+import DGamma.CP5AcceptedSupportTruthSpike
 import DGamma.CP5ConfluenceLocalDiamondSpike
 import DGamma.CP5ConfluenceDeletionChainSpike
 import DGamma.CP5ConfluenceCanonicalSortSpike
@@ -990,7 +991,20 @@ public export
     leftTrace rightTrace
     (currentNameBijection (endpointRenaming sameInputs))
     (canonicalSchedule leftCapital) (canonicalSchedule rightCapital)
-canonicalSupportOrdersMatchSpike = ?canonicalSupportOrdersMatchSpike_rhs
+canonicalSupportOrdersMatchSpike {name} {key} {world} {error} {value} nameEq keyEq protocol
+  leftTrace rightTrace sameInputs leftCapital rightCapital leftUnique rightUnique leftRightGeneratedMatched =
+    canonicalSupportOrdersFromTruth nameEq keyEq protocol leftTrace rightTrace
+      (currentNameBijection (endpointRenaming sameInputs)) (canonicalSchedule leftCapital) (canonicalSchedule rightCapital)
+      (acceptedSupportedTruthForward name key world error value nameEq keyEq protocol leftTrace rightTrace sameInputs leftRightGeneratedMatched
+        (replayAligned (chainReplayCapital (capitalPremises leftCapital)))
+        (replayAligned (chainReplayCapital (capitalPremises rightCapital)))
+        (replayDiscipline (chainReplayCapital (capitalPremises leftCapital)))
+        (replayInitialEmpty (chainReplayCapital (capitalPremises leftCapital))) leftUnique rightUnique)
+      (acceptedSupportedTruthBackward name key world error value nameEq keyEq protocol leftTrace rightTrace sameInputs leftRightGeneratedMatched
+        (replayAligned (chainReplayCapital (capitalPremises leftCapital)))
+        (replayAligned (chainReplayCapital (capitalPremises rightCapital)))
+        (replayDiscipline (chainReplayCapital (capitalPremises rightCapital)))
+        (replayInitialEmpty (chainReplayCapital (capitalPremises leftCapital))) leftUnique rightUnique)
 
 ||| The bridge-facing capital exposes the exact first-state blocks consumed by
 ||| O19 together with the producer's disjoint-range invariant.
