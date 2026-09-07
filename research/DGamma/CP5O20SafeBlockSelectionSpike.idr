@@ -114,3 +114,34 @@ o20CheckRightAtLeftOpening {name} {key} {world} {error} {value}
     checkedEarlyApplicationObserved name key world error value nameEq keyEq
       (blockPreStart block) (LBegin right) LBeginTag
       (checkedApplyAction @{nameEq} @{keyEq} (LBegin right) (blockPreStart block)) Refl
+
+||| Positive WHOLE-BLOCK safety producer at explicit list locations. It derives
+||| both child exclusions, actual empty gap and exact pre-left-cut Begin guard.
+||| No desired diamond, replay, target trace or safety clause is an input.
+export
+0 o20CheckSafetyAtMembers :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {sourceOrder, targetOrder : List name} ->
+  (swap : AdjacentActorOrderSwap name sourceOrder targetOrder) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (trace : Transitions initial finalState) ->
+  (blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder trace) ->
+  (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq trace) ->
+  (leftIn : Elem (actorLeft swap) sourceOrder) ->
+  (rightIn : Elem (actorRight swap) sourceOrder) ->
+  BeforeIn (actorLeft swap) (actorRight swap) sourceOrder ->
+  Maybe (AdjacentActorSwapSafety name key world error value protocol nameEq keyEq swap trace blocks premises)
+o20CheckSafetyAtMembers nameEq keyEq protocol swap trace blocks premises leftIn rightIn ordered =
+  (\leftSafe, rightSafe, early, adjacent => MkAdjacentActorSwapSafety leftIn rightIn ordered
+    (decomposedBlocksFollowOrder blocks (actorLeft swap) (actorRight swap) leftIn rightIn ordered)
+    leftSafe rightSafe early adjacent) <$>
+  (o20CheckNoGeneratedChild nameEq (actorRight swap)
+    (blockBody (decomposedBlock blocks (actorLeft swap) leftIn))) <*>
+  (o20CheckNoGeneratedChild nameEq (actorLeft swap)
+    (blockBody (decomposedBlock blocks (actorRight swap) rightIn))) <*>
+  (o20CheckRightAtLeftOpening nameEq keyEq (actorLeft swap) (actorRight swap) trace
+    (decomposedBlock blocks (actorLeft swap) leftIn)) <*>
+  (o20CheckEmptyGap (betweenBlocks
+    (decomposedBlocksFollowOrder blocks (actorLeft swap) (actorRight swap) leftIn rightIn ordered)))
