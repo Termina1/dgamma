@@ -85,3 +85,27 @@ public export
 o19SealedActionWord {name} {key} {world} {error} {value} nameEq keyEq seal =
   sealedSuffixActionFoldSame name key world error value nameEq keyEq
     (List (Action name key value world error)) (::) [] seal
+
+||| B25: derive the ACTUAL replayed suffix alignment from its same reached
+||| bundle/decomposition. No independently supplied suffix alignment is needed.
+public export
+0 o19ReplayedSuffixAligned :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {initial, first, middle, last, finalState : SystemState name key value world error} ->
+  (original : Transitions initial finalState) -> (earlier : Transitions initial first) ->
+  (left : Transition first middle) -> (right : Transition middle last) ->
+  (later : Transitions last finalState) ->
+  (diamond : LocalRelationalDiamond name key world error value nameEq keyEq left right) ->
+  (result : AdjacentSwapResult name key world error value protocol nameEq keyEq original earlier left right later diamond) ->
+  AlignedTransitions name key world error value nameEq keyEq (replayedSuffix result)
+o19ReplayedSuffixAligned {name} {key} {world} {error} {value}
+  nameEq keyEq protocol original earlier left right later diamond result =
+    Builtin.snd (alignedAppendSplit
+      (MoreTransitions (movedRight diamond) (MoreTransitions (movedLeft diamond) NoTransitions))
+      (replayedSuffix result)
+      (Builtin.snd (alignedAppendSplit earlier
+        (MoreTransitions (movedRight diamond) (MoreTransitions (movedLeft diamond) (replayedSuffix result)))
+        (replace {p = AlignedTransitions name key world error value nameEq keyEq}
+          (swappedDecomposition result) (replayAligned (swappedPremises result))))))
