@@ -194,3 +194,23 @@ parentActivationEntryFromLookup name nameEq selected ((candidate, current) :: re
   parentLookupEntryObserved name nameEq selected candidate current rest
     (decEq @{nameEq} selected candidate) Refl
     (parentActivationEntryFromLookup name nameEq selected rest) activation found
+
+||| L-Begin stores the actual currently authenticated parent generation.
+0 registrationBeginBirthsObserved :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (global : Transitions initial finalState) -> (ordinal : Nat) -> (actor : name) ->
+  (live : GenerationEnvironment name) -> (activations : List (name, RegistrationActivation name)) ->
+  (counts : List (RegistrationActivation name, Nat)) -> (deleted : List (RegistrationGeneration name)) ->
+  RegistrationIndexBirths name key world error value global (MkRegistrationIndexState live activations counts deleted) ->
+  (observed : Maybe (RegistrationGeneration name)) -> lookupCurrentGeneration @{nameEq} actor live = observed ->
+  RegistrationIndexBirths name key world error value global
+    (advanceRegistrationIndex @{nameEq} ordinal (the (Action name key value world error) (LBegin actor))
+      (MkRegistrationIndexState live activations counts deleted))
+registrationBeginBirthsObserved name key world error value nameEq global ordinal actor live activations counts deleted births Nothing exact =
+  rewrite exact in births
+registrationBeginBirthsObserved name key world error value nameEq global ordinal actor live activations counts deleted births (Just generation) exact =
+  rewrite exact in MkRegistrationIndexBirths (indexCurrentBirths births)
+    (parentBirthAfterPut name key world error value nameEq global activations actor (MkRegistrationActivation generation ordinal)
+      (indexCurrentBirths births actor generation (currentGenerationEntryFromLookup nameEq actor generation live exact))
+      (indexActivationBirths births))
