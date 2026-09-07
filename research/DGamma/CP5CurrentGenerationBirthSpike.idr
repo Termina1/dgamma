@@ -8,6 +8,7 @@ import DGamma.CP4Support
 import DGamma.CP4DeletionBoundaryPlan
 import DGamma.CP4DeletionBoundaryDeleted
 import DGamma.CP4DeletionInactiveInvariant
+import DGamma.CP4DeletionGenerationUnique
 import DGamma.CP4DeletionSelectedOwn
 import DGamma.CP5RawClosingRankSpike
 import DGamma.CP5UniqueRawNameInsertions
@@ -724,3 +725,33 @@ currentLifecycleTargetPresent name key world error value nameEq keyEq action lif
       @{nameEq} actor (registry afterState) = Just fiber)
 currentRetireViewPresent name key world error value nameEq actor ambient source _ _ (MkRetireSuccessView old found) =
   (retireFiber old ** lookupReplacedFiber @{nameEq} actor old (retireFiber old) source found)
+
+0 currentOwnerFiberAfterAction :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) -> GenerationEnvironmentNamesUnique live ->
+  (action : Action name key value world error) ->
+  (before, afterState : SystemState name key value world error) -> (tag : RuleTag) ->
+  (applyAction @{nameEq} @{keyEq} action before = Just (tag, afterState)) ->
+  (generation : RegistrationGeneration name) ->
+  (lookupCurrentGeneration @{nameEq} (actionOwner action) (advanceGenerationEnvironment @{nameEq} ordinal action live) = Just generation) ->
+  (fiber : Fiber name key value world error **
+    lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+      @{nameEq} (actionOwner action) (registry afterState) = Just fiber)
+currentOwnerFiberAfterAction name key world error value nameEq keyEq ordinal live unique (OInsert actor parent component) before afterState tag raw generation current =
+  (freshFiber component parent ** oInsertResultLookup nameEq keyEq actor parent component before afterState tag raw)
+currentOwnerFiberAfterAction name key world error value nameEq keyEq ordinal live unique (ORetire actor) (MkSystemState ambient source) afterState tag raw generation current =
+  currentRetireViewPresent name key world error value nameEq actor ambient source tag afterState
+    (retireSuccessView nameEq keyEq actor ambient source tag afterState raw)
+currentOwnerFiberAfterAction name key world error value nameEq keyEq ordinal live unique (ORemove actor) before afterState tag raw generation current =
+  case trans (sym (lookupDeleteCurrentSelf nameEq actor live unique)) current of Refl impossible
+currentOwnerFiberAfterAction name key world error value nameEq keyEq ordinal live unique (LBegin actor) before afterState tag raw generation current =
+  currentLifecycleTargetPresent name key world error value nameEq keyEq (LBegin actor) Refl before afterState tag raw
+currentOwnerFiberAfterAction name key world error value nameEq keyEq ordinal live unique (LAdvance actor) before afterState tag raw generation current =
+  currentLifecycleTargetPresent name key world error value nameEq keyEq (LAdvance actor) Refl before afterState tag raw
+currentOwnerFiberAfterAction name key world error value nameEq keyEq ordinal live unique (LDivert actor) before afterState tag raw generation current =
+  currentLifecycleTargetPresent name key world error value nameEq keyEq (LDivert actor) Refl before afterState tag raw
+currentOwnerFiberAfterAction name key world error value nameEq keyEq ordinal live unique (LLeave actor) before afterState tag raw generation current =
+  currentLifecycleTargetPresent name key world error value nameEq keyEq (LLeave actor) Refl before afterState tag raw
+currentOwnerFiberAfterAction name key world error value nameEq keyEq ordinal live unique (LUnload actor) before afterState tag raw generation current =
+  currentLifecycleTargetPresent name key world error value nameEq keyEq (LUnload actor) Refl before afterState tag raw
