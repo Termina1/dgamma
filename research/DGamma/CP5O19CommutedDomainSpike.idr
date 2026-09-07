@@ -124,3 +124,23 @@ o19ComposeMapsSameObserved state afterOld afterNew beforeOld beforeNew afterSame
 o19ComposeMapsSameObserved state afterOld afterNew beforeOld beforeNew afterSame beforeSame
   origin (Just actual) exact =
     rewrite exact in rewrite trans (sym (beforeSame origin)) exact in afterSame actual
+
+||| Transport partial commutation without assuming equality of functions.
+||| This is the small public prerequisite missing from exhausted A25, not a
+||| retry of its actual-pair early-run producer.
+export
+0 o19PartialCommuteMapsTransport :
+  (state : Type) -> (eq : Equivalence state) ->
+  (leftOld, leftNew, rightOld, rightNew : PartialMap state) ->
+  ((input : state) -> leftOld input = leftNew input) ->
+  ((input : state) -> rightOld input = rightNew input) ->
+  PartialCommute eq leftOld rightOld -> PartialCommute eq leftNew rightNew
+o19PartialCommuteMapsTransport state eq leftOld leftNew rightOld rightNew leftSame rightSame commute origin =
+  replace {p = \leftResult => PartialRelated state (relation eq) leftResult
+    (partialCompose rightNew leftNew origin)}
+    (o19ComposeMapsSameObserved state leftOld leftNew rightOld rightNew leftSame rightSame
+      origin (rightOld origin) Refl)
+    (replace {p = \rightResult => PartialRelated state (relation eq)
+      (partialCompose leftOld rightOld origin) rightResult}
+      (o19ComposeMapsSameObserved state rightOld rightNew leftOld leftNew rightSame leftSame
+        origin (leftOld origin) Refl) (commute origin))
