@@ -95,3 +95,11 @@ r181BlockRangesApart _ _ earlierMember laterMember (BeforeThere following)
     BeforeHere absent => case absent of Here impossible; There rest impossible
     BeforeThere absent =>
       case absent of BeforeHere member impossible; BeforeThere rest impossible
+
+||| F4: complete authoritative decomposition, not merely two located blocks.
+||| The SAME selector owns order, disjoint coordinate ranges and all coverage.
+public export
+0 r181ActorBlockDecomposition : ActorBlockDecomposition Nat ToyKey ToyRuntime String
+  ToyValue (the (DecEq Nat) %search) (the (DecEq ToyKey) %search) [0, 1] r181WholeTrace
+r181ActorBlockDecomposition = MkActorBlockDecomposition r181BlocksByActor
+  r181BlocksFollowOrder r181BlockRangesApart r181BlockLifecycleCoverage
