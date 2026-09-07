@@ -130,3 +130,20 @@ r182IndependentTransformationRespects actor (TraceCompose after before) {x} {y} 
   r39PartialMapsRelatedCompose {keyEq = r45KeyEq}
     (r182IndependentTransformationRespects actor after)
     (r182IndependentTransformationRespects actor before) related
+
+||| A8: observed foreign outcome, with its equation, avoids any inferred local
+||| view. R172's empty-key/Unit observation quotient is used ONLY for this truly
+||| empty-key independent positive, never for the ServiceA negative trace.
+public export
+0 r182IndependentIteratorObserved :
+  {first, last : SystemState Nat R45Key R45Value Unit String} ->
+  {trace : Transitions first last} -> (actor : Nat) ->
+  (stage : IteratorStage Nat R45Key Unit String R45Value actor trace) ->
+  (foreign : PartialMap (EffectState Nat R45Key R45Value Unit)) ->
+  (origin : EffectState Nat R45Key R45Value Unit) ->
+  (observed : Maybe (EffectState Nat R45Key R45Value Unit)) ->
+  (foreign origin = observed) -> IteratorOutcomeStableUnder r45KeyEq stage foreign origin
+r182IndependentIteratorObserved actor stage foreign origin Nothing exact = rewrite exact in ()
+r182IndependentIteratorObserved actor stage foreign origin (Just moved) exact =
+  rewrite exact in iteratorStageOutcomeRelated r45KeyEq stage moved origin
+    (r172ReuseAllEffectStatesRelated moved origin)
