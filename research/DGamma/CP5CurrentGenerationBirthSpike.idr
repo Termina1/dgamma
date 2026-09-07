@@ -697,3 +697,19 @@ currentLifecycleResultOwner name key world error value nameEq keyEq (LUnload act
   (MkFiber component parent retiredFlag table (Unloading accumulator view outcome)) found =
     currentUnloadOwner name key world error value nameEq keyEq actor before component parent retiredFlag table accumulator view outcome found
       (relied {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} actor (registry before)) Refl
+
+0 currentLifecycleTargetPresent :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (action : Action name key value world error) -> (isLifecycleAction action = True) ->
+  (before, afterState : SystemState name key value world error) -> (tag : RuleTag) ->
+  (applyAction @{nameEq} @{keyEq} action before = Just (tag, afterState)) ->
+  (fiber : Fiber name key value world error **
+    lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+      @{nameEq} (actionOwner action) (registry afterState) = Just fiber)
+currentLifecycleTargetPresent name key world error value nameEq keyEq action lifecycle before afterState tag raw =
+  case currentOwnerSourceObserved name key world error value nameEq keyEq action before afterState tag raw
+    (\parent, component, same => case trans (sym (cong isLifecycleAction same)) lifecycle of Refl impossible)
+    (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} (actionOwner action) (registry before)) Refl of
+    (fiber ** found) => replace {p = CurrentResultOwner name key world error value nameEq (actionOwner action)} raw
+      (currentLifecycleResultOwner name key world error value nameEq keyEq action lifecycle before fiber found)
