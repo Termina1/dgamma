@@ -181,3 +181,13 @@ beforeCutOccurrence name key world error value prior later action
     MkLocatedActionOccurrence before afterState earlier step (appendTransitions remaining later) exact
       (trans (sym (appendTransitionsAssociative earlier (MoreTransitions step remaining) later))
         (cong (\whole => appendTransitions whole later) decomposition))
+
+export
+0 beforeCutOccurrenceOrdinal :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (prior : Transitions first middle) -> (later : Transitions middle finalState) ->
+  (action : Action name key value world error) -> (occurrence : LocatedActionOccurrence action prior) ->
+  (locatedActionOrdinal (beforeCutOccurrence name key world error value prior later action occurrence) = locatedActionOrdinal occurrence)
+beforeCutOccurrenceOrdinal name key world error value prior later action
+  (MkLocatedActionOccurrence before afterState earlier step remaining exact decomposition) = Refl
