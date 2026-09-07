@@ -30,3 +30,18 @@ r182FirstCrossingEarly = MkCheckedEarlyApplication
       [Bind 1 (MkFiber r45Child Root False emptyOwned (Reloading [] id EmptyView)),
        Bind 0 (MkFiber r45Child Root False emptyOwned (Reloading [] id EmptyView))]
       (uniqueBindings (registry (r182IndependentState 2))))) Refl
+
+||| B10: actual insertion occurrence classifier (R181 F5 technique), not an
+||| assumed uniqueness input or a scalar Maybe-execution-builder observer.
+public export
+0 r182IndependentBirthPosition : (selected, ordinal : Nat) ->
+  (rawInsertionNameAt Nat R45Key Unit String R45Value ordinal (r182IndependentTrace False) =
+    Just selected) -> (ordinal = selected)
+r182IndependentBirthPosition selected Z observed = justInjective observed
+r182IndependentBirthPosition selected (S Z) observed = justInjective observed
+r182IndependentBirthPosition selected (S (S Z)) observed = case observed of Refl impossible
+r182IndependentBirthPosition selected (S (S (S Z))) observed = case observed of Refl impossible
+r182IndependentBirthPosition selected (S (S (S (S Z)))) observed = case observed of Refl impossible
+r182IndependentBirthPosition selected (S (S (S (S (S Z))))) observed = case observed of Refl impossible
+r182IndependentBirthPosition selected (S (S (S (S (S (S later)))))) observed =
+  case observed of Refl impossible
