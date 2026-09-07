@@ -2862,3 +2862,35 @@ absence from a raw withdrawn name or discard the mapped-current alternative.
 
 All scope/attempts/evidence are in `O6-R181-GRIND-SHIFT-AUDIT.md`, the compiler
 ledger/archive, and `O6-R181-O21-WITHDRAWAL-OBLIGATIONS.md` under research-tests.
+
+## Status — R181 D/E authorized continuation (supersedes prefix at92e2daa)
+
+D6/6 completed15:13UTC; E8/8 conditional continuation therefore met its >=60min
+remaining guard and completed15:26UTC. All D units PASS1; E4 PASS2 after importing/
+qualifying the actual CalculusChecks components rather than Section3Example's
+ToyComponent. The passed-bit assertion under set-e stopped that failed combined
+command before any premature commit or E5 invocation; no further workflow breach.
+
+**New fully proved capital:** D's one-NAMED-table B13-inside-B11 replacement
+cures the suspended case boundary. DISTINCT observed-table owner uniqueness,
+actual committed projection, actual successful provider-head correspondence and
+structurally recursive ViewRelatedBy for actual successful resolveView outputs
+are proved. This is a genuine paired Begin-view prerequisite without a view
+oracle, not a fourth B12 attempt or complete O20 producer.
+
+E constructs exact provider/consumer body traces, full InstalledTrace at every
+body state via A16, both LocatedOpenEpisodeBlock records with ALL fields on the
+same certified count7 trace, exact provider-before-consumer ordering, and full
+lifecycle coverage[0,1]. No caller-provided block or guessed callback is used.
+There was no public retained R172/R174 block builder to import; the existing
+public CP3 constructor was used and the private canonical builder stayed frozen.
+
+**Still partial:** O19 needs 3x2 numeric range disjointness and full decomposition,
+raw insertion uniqueness, real component-specific independence and bundle/current
+safety. No completed negative/revision/body permission. O20 still needs actual
+canonical pair selection, Begin/Advance/Finish successor controls/induction,
+unsupported child/gap/selector/body work; matched resolveView alone is not that.
+O21 remains obligations only. Forty-one retained new declarations, five inherited
+holes unchanged, no new escape/partiality/production or original-spike edit.
+Parent owns the independent review, including the earlier reverted dfc933e and
+premature B12-1 workflow violation, which remains explicitly not excused.

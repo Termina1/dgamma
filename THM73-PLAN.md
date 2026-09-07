@@ -3490,3 +3490,19 @@ one workflow violation: failed B11 commitdfc933e was revertedcdaee57, and premat
 B12-1 ran with two unaccepted declarations. Both failures count; no failed
 source survives. Evidence explicitly flags the exception; independent review
 must assess it rather than treating the shift as protocol-clean.
+
+### R181 D/E follow-on: named-table cure and real located blocks complete
+
+Supervisor authorized D6 then E8 iff>=60min remained before17:07; condition met
+at15:13. D re-derives B11 on B13 over ONE named table, then distinct observed-table
+owner uniqueness and actual mapped provider heads. `pairedActualResolvedViews`
+now derives complete actual-success view correspondence by dependency recursion;
+it does not assume it or fill the O20 bridge. B12 remains exhausted/removed.
+
+`R181O19LocatedBlocks` now proves both actual body InstalledTraces and all fields
+of the three-edge provider and two-edge consumer LocatedOpenEpisodeBlocks on
+r181WholeTrace, exact BlockBefore and lifecycle coverage. Next O19 work is numeric
+3x2 disjoint-range/full ActorBlockDecomposition assembly, raw uniqueness, real
+component-specific independence, and full bundle/current safety before any
+revision/O19 gate. D6/6 PASS1; E8/8, E4 PASS2; no further protocol exception.
+C, original spikes, production, protected holes and body permissions unchanged.

@@ -304,3 +304,77 @@ before17:07 AFTER D: actual located blocks on the certified count7 trace using
 existing R172/R174 builders. No safety revision/O19 body. All original stop rules,
 serialized seeded checks, immediate PASS commits and guards unchanged. Parent
 will own independent reviewer gate after the shift. Final audit remains append-only.
+
+## Unit D —6/6 complete, all first-attempt PASS
+
+| Unit | Declaration | Commit |
+|---|---|---|
+| D1 | `pairedNamedTableOwnerObserved` | 94c0038 |
+| D2 | `pairedNamedTableOwnersUnique` | e7e4db7 |
+| D3 | `pairedProviderProjectionObserved` | efa6fb3 |
+| D4 | `pairedActualProviderHeads` | c0199a4 |
+| D5 | `pairedResolveConsObserved` | 522cb81 |
+| D6 | `pairedActualResolvedViews` | 3d49866 |
+
+The supervisor's precise cure works: D1 takes a NAMED table and its actual
+projection equation, and invokes B13 INSIDE the observed-Fiber branches after
+the anonymous case has reduced. D2 is the authorized DISTINCT transport statement
+over actual lookup/table/value observations, NOT B12's exhausted Boolean surface.
+D3 equates actual committed provider values and actual projections. D4 derives
+mapped successful providerOf heads using global ordered-table agreement and
+RIGHT pairwise provision disjointness, without an all-actors Active oracle.
+D5 returns actual head/tail success equations from observed resolver values;
+D6 structurally recurses on dependencies and DERIVES ViewRelatedBy for BOTH
+actual successful resolveView outputs. No view-equality premise, weakened O20
+surface, old-block edit or fourth B12 attempt was introduced.
+
+This unblocks the paired Begin-view prerequisite, but does NOT select arbitrary
+canonical prefix pairs or produce Begin/Advance/Finish successor controls/the
+complete O20 bridge. D completed15:13UTC,114min before17:07; therefore E's
+>=60min condition was met. Supervisor was notified before E work.
+
+## Unit E —8/8 complete, located blocks at actual count7
+
+| Unit | Declaration | Commit/result |
+|---|---|---|
+| E1 | `r181ProviderBlockBody` | 1591cf0 PASS1 |
+| E2 | `r181ConsumerBlockBody` | 3e05d23 PASS1 |
+| E3 | `r181BlockBodiesInstalled` | fadb283 PASS1 |
+| E4 | `r181BeforeProviderBlock` | 197810d PASS2 |
+| E5 | `r181ProviderLocatedBlock` | f815e75 PASS1 |
+| E6 | `r181ConsumerLocatedBlock` | f21b1e1 PASS1 |
+| E7 | `r181ProviderBeforeConsumer` | fdade32 PASS1 |
+| E8 | `r181BlockLifecycleCoverage` | source commit immediately after E8-1 PASS |
+
+The source audit found no public R172/R174 located-block builder instance in
+retained fixtures; the supervisor was informed that E would use the EXISTING
+public MkLocatedOpenEpisodeBlock, not expose the private canonical builder or
+edit old spikes. Both blocks retain the SAME checked witnesses as r181WholeTrace.
+E3 constructs full InstalledTrace proofs including every endpoint through A16's
+actual observations. E5/E6 construct ALL located-block fields: source/prefix,
+Begin, body, installed body, actor-only, suffix, no earlier/later lifecycle,
+original-final Active and exact whole-trace decomposition. E7 proves zero-gap
+provider-before-consumer ordering. E8 covers the two orchestration and five
+lifecycle nodes with actors[0,1]. These are genuine three-edge/two-edge blocks,
+not endpoint packets or caller-supplied blocks.
+
+E4-1 failed because only Section3Example.providerComponent (ToyComponent) was in
+scope. Added the existing CalculusChecks import and qualified its actual calculus
+components; E4-2 PASSed. Crucially `set -e` + the JSON passed-bit assertion stopped
+the failed attempted combined command BEFORE any commit/E5 addition/check. No
+new workflow violation occurred. No accumulator comparison, scalar observer of
+a nested certified builder, proof escape, new hole or production edit.
+
+## Superseding status after D/E (15:26UTC)
+
+Earlier FINAL/PREFIX reports at92e2daa are retained history and superseded by
+this authorized continuation. Retained capital is now41 declarations across
+four Idris files. Both exact LocatedOpenEpisodeBlocks, full body installation,
+BlockBefore and complete lifecycle coverage are proved. Remaining O19 debts:
+3x2 numeric disjointness/ActorBlockDecomposition assembly, original raw uniqueness,
+component-specific TraceIndependent and ReplayInvariantBundle/current safety.
+There is STILL no complete negative, safety revision or O19 body permission.
+O20 now also derives actual successful resolved views; canonical pair selection,
+full Begin/Advance/Finish propagation and unsupported-child/gap/body work remain.
+C stays obligations only. The original workflow exception remains explicitly
+not excused; parent-owned independent review is still required.

@@ -573,3 +573,14 @@ production frozen, no safety revision or O19/O20 bodies. One failed commit was
 immediately reverted and one premature compiler invocation violated the strict
 workflow; both are explicitly preserved for review in the
 [R181 audit](research-tests/O6-R181-GRIND-SHIFT-AUDIT.md), not silently excused.
+
+### R181 authorized D/E continuation (supersedes the prefix status above)
+
+| Paper frontier | Idris correspondence | Checked status |
+|---|---|---|
+| Thm73/O20 actual matched Begin inputs | `CP5O20PairedPrefixProducerSpike.pairedNamedTableOwnerObserved`, `pairedNamedTableOwnersUnique`, `pairedActualProviderHeads`, `pairedActualResolvedViews` | Named-table cure proved; matched heads and complete ViewRelatedBy for actual successful resolveView outputs DERIVED from paired runtime tables/right pairwise provisions, not assumed. Full canonical prefix selection/step propagation remains open |
+| Thm73/O19 actual located episodes | `R181O19LocatedBlocks.r181BlockBodiesInstalled`, `r181ProviderLocatedBlock`, `r181ConsumerLocatedBlock`, `r181ProviderBeforeConsumer`, `r181BlockLifecycleCoverage` | Both full InstalledTrace bodies and actual three-edge/two-edge LocatedOpenEpisodeBlocks proved in the SAME count7 trace, including all fields, zero-gap order and lifecycle coverage. Numeric disjointness/decomposition, uniqueness, independence and full current-safety assembly still remain |
+
+D6/6 PASS1; E8/8 with one corrected import/qualification failure. No old spike,
+safety surface, O19/O20 body, O21 branch or production change. Five holes remain.
+The original disclosed protocol exception remains an independent-review concern.
