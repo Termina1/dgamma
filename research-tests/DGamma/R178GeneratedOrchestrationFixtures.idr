@@ -84,3 +84,8 @@ public export
 r178LeftTrace : Transitions r45Initial r178LeftFinal
 r178LeftTrace = appendTransitions r178CommonTrace
   (MoreTransitions r178ChildBegin (MoreTransitions r178ChildFinish NoTransitions))
+
+public export
+r178RightTrace : Transitions r45Initial r178RightFinal
+r178RightTrace = appendTransitions r178CommonTrace
+  (MoreTransitions r178ChildRetire NoTransitions)
