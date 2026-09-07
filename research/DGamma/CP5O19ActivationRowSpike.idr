@@ -223,3 +223,23 @@ o19BubbleBeginRow {name} {key} {world} {error} {value}
             (replace {p = AlignedTransitions name key world error value nameEq keyEq}
               (sym decomposition) (replayAligned premises))))
           (replayInitialWellFormed premises)) early)
+
+||| Exact occurrence classifier for a two-activation source spine. This is
+||| constructor evidence for the positive row fixture, not a block-shape oracle.
+export
+0 o19TwoForeignActivationClasses :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (actor : name) ->
+  {before, middle, afterState, selectedBefore, selectedAfter : SystemState name key value world error} ->
+  (first : Transition before middle) -> (second : Transition middle afterState) ->
+  PaperActivationStep first -> PaperActivationStep second ->
+  Not (actor = transitionActor first) -> Not (actor = transitionActor second) ->
+  (selected : Transition selectedBefore selectedAfter) ->
+  OccursIn selected (MoreTransitions first (MoreTransitions second NoTransitions)) ->
+  (PaperActivationStep selected, Not (actor = transitionActor selected))
+o19TwoForeignActivationClasses actor first second firstClass secondClass firstForeign secondForeign
+  _ OccursHere = (firstClass, firstForeign)
+o19TwoForeignActivationClasses actor first second firstClass secondClass firstForeign secondForeign
+  _ (OccursLater OccursHere) = (secondClass, secondForeign)
+o19TwoForeignActivationClasses actor first second firstClass secondClass firstForeign secondForeign
+  _ (OccursLater (OccursLater absent)) impossible
