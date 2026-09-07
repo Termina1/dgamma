@@ -301,3 +301,21 @@ registrationIndexBirthsRetarget name key world error value global source target 
       (replace {p = Elem (selected, generation)} (sym liveSame) member))
     (\selected, activation, member => indexActivationBirths births selected activation
       (replace {p = Elem (selected, activation)} (sym activationsSame) member))
+
+||| The event's observed parent activation names a genuine original parent birth.
+export
+0 registrationEventParentBirthHead :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (global : Transitions initial finalState) -> (ordinal : Nat) -> (index : RegistrationIndexState name) ->
+  (child, parent : name) -> (component : Component key value world error) ->
+  RegistrationIndexBirths name key world error value global index ->
+  (activation : RegistrationActivation name) ->
+  eventParentActivation (registrationEventAt @{nameEq} ordinal index child parent component) = Just activation ->
+  CurrentGenerationBirth name key world error value global
+    (eventParent (registrationEventAt @{nameEq} ordinal index child parent component))
+    (activationParentGeneration activation)
+registrationEventParentBirthHead name key world error value nameEq global ordinal
+  (MkRegistrationIndexState live activations counts deleted) child parent component births activation present =
+    indexActivationBirths births parent activation
+      (parentActivationEntryFromLookup name nameEq parent activations activation present)
