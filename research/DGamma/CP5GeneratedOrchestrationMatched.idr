@@ -44,3 +44,48 @@ record LocatedGeneratedOrchestration
   0 generatedCurrent : RegistrationGeneration name
   0 generatedCurrentExact :
     (lookupCurrentGeneration @{nameEq} generatedActor generatedLive = Just generatedCurrent)
+
+||| R178 A9: extra research hypothesis, NOT a frozen CP3 strengthening.
+||| Both occurrence domains are covered; inverse laws compare positions, not
+||| dependent proof tokens. Strict order preserves multiplicity and relative
+||| order even for repeated idempotent retirements of one generation.
+public export
+record GeneratedOrchestrationMatched
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name)
+  {0 initial, leftFinal, rightFinal : SystemState name key value world error}
+  (0 leftTrace : Transitions initial leftFinal)
+  (0 rightTrace : Transitions initial rightFinal)
+  (renaming : RegistrationGenerationBijection name) where
+  constructor MkGeneratedOrchestrationMatched
+  0 generatedForward :
+    LocatedGeneratedOrchestration name key world error value nameEq leftTrace ->
+    LocatedGeneratedOrchestration name key world error value nameEq rightTrace
+  0 generatedBackward :
+    LocatedGeneratedOrchestration name key world error value nameEq rightTrace ->
+    LocatedGeneratedOrchestration name key world error value nameEq leftTrace
+  0 generatedForwardKind :
+    (occurrence : LocatedGeneratedOrchestration name key world error value nameEq leftTrace) ->
+    (generatedRemoval (generatedForward occurrence) = generatedRemoval occurrence)
+  0 generatedForwardGeneration :
+    (occurrence : LocatedGeneratedOrchestration name key world error value nameEq leftTrace) ->
+    (generationForward renaming (generatedCurrent occurrence) = generatedCurrent (generatedForward occurrence))
+  0 generatedBackwardKind :
+    (occurrence : LocatedGeneratedOrchestration name key world error value nameEq rightTrace) ->
+    (generatedRemoval (generatedBackward occurrence) = generatedRemoval occurrence)
+  0 generatedBackwardGeneration :
+    (occurrence : LocatedGeneratedOrchestration name key world error value nameEq rightTrace) ->
+    (generationBackward renaming (generatedCurrent occurrence) = generatedCurrent (generatedBackward occurrence))
+  0 generatedLeftInverse :
+    (occurrence : LocatedGeneratedOrchestration name key world error value nameEq leftTrace) ->
+    (locatedActionOrdinal (generatedOccurrence (generatedBackward (generatedForward occurrence))) =
+      locatedActionOrdinal (generatedOccurrence occurrence))
+  0 generatedRightInverse :
+    (occurrence : LocatedGeneratedOrchestration name key world error value nameEq rightTrace) ->
+    (locatedActionOrdinal (generatedOccurrence (generatedForward (generatedBackward occurrence))) =
+      locatedActionOrdinal (generatedOccurrence occurrence))
+  0 generatedOrderPreserved :
+    (earlier, later : LocatedGeneratedOrchestration name key world error value nameEq leftTrace) ->
+    (LT (locatedActionOrdinal (generatedOccurrence earlier)) (locatedActionOrdinal (generatedOccurrence later))) ->
+    (LT (locatedActionOrdinal (generatedOccurrence (generatedForward earlier)))
+      (locatedActionOrdinal (generatedOccurrence (generatedForward later))))
