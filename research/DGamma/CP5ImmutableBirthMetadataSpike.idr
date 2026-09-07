@@ -451,3 +451,28 @@ matchedScannedCurrentName name key world error value right renaming leftEvent ri
         (trans (sym (matchedChildGeneration matched))
           (trans (cong (generationForward renaming) (sym currentIsEvent)) mapped)))
         (cong generationName (currentBirthStampExact rightCurrent)))
+
+||| Symmetric exact-generation name transport, using the genuine inverse law.
+public export
+0 matchedScannedCurrentNameBackward :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (left : Transitions initial finalState) ->
+  (renaming : RegistrationGenerationBijection name) ->
+  (leftEvent, rightEvent : RegistrationEvent name key world error value) ->
+  RegistrationEventMatch renaming leftEvent rightEvent ->
+  ScannedRegistrationBirth name key world error value Z left leftEvent ->
+  (leftGeneration, rightGeneration : RegistrationGeneration name) ->
+  rightGeneration = eventChildGeneration rightEvent ->
+  generationBackward renaming rightGeneration = leftGeneration ->
+  (leftSelected : name) ->
+  CurrentGenerationBirth name key world error value left leftSelected leftGeneration ->
+  eventChild leftEvent = leftSelected
+matchedScannedCurrentNameBackward name key world error value left renaming leftEvent rightEvent matched leftBirth
+  leftGeneration rightGeneration currentIsEvent mapped leftSelected leftCurrent =
+    trans (sym (cong generationName (scannedBirthStampExact leftBirth)))
+      (trans (cong generationName
+        (trans (sym (generationLeftInverse renaming (eventChildGeneration leftEvent)))
+          (trans (cong (generationBackward renaming) (matchedChildGeneration matched))
+            (trans (cong (generationBackward renaming) (sym currentIsEvent)) mapped))))
+        (cong generationName (currentBirthStampExact leftCurrent)))
