@@ -3506,3 +3506,17 @@ r181WholeTrace, exact BlockBefore and lifecycle coverage. Next O19 work is numer
 component-specific independence, and full bundle/current safety before any
 revision/O19 gate. D6/6 PASS1; E8/8, E4 PASS2; no further protocol exception.
 C, original spikes, production, protected holes and body permissions unchanged.
+
+### R181 F follow-on: real decomposition/raw uniqueness, conditional bundle
+
+F8/8 now proves actual3x2 block disjointness and complete ActorBlockDecomposition
+on the authoritative selector, all original raw insertion uniqueness, and exact
+empty-origin reachability/provenance. r181ReplayBundleFromIndependence derives
+all14 other fields of the UNCHANGED bundle but explicitly REQUIRES the still
+uninhabited real TraceIndependent input. This is not a full current-safety witness
+or negative and grants no revision/O19 body permission. Next: actual provider0
+versus table-clearing consumer1 generated-monoid commutation plus iterator-outcome
+stability; then both concrete NoGeneratedChild proofs and order-swap/safety
+assembly. No empty-key/identity shortcut applies. F2 PASS3, F3 PASS2, other F
+units PASS1; no new workflow exception. All earlier frozen invariants and the
+unexcused B11/B12-1 exception remain. O20/O21 bodies unchanged.

@@ -400,3 +400,64 @@ via the existing R172/R174 approach as far as they land. Real component-specific
 independence only if cheap. No safety revision/O19 body. Fresh3/3, immediate
 verified-PASS commits, serialized seeded checks and all guards unchanged. Parent
 owns review after the shift; this appendix supersedes D/E terminal-gate wording.
+
+## Unit F —8/8 complete at52ea260,16:02UTC
+
+| Unit | Declaration | Commit/result |
+|---|---|---|
+| F1 | `r181BlocksByActor` | 95d6e03 PASS1 |
+| F2 | `r181BlocksFollowOrder` | 5aaaab7 PASS3 |
+| F3 | `r181BlockRangesApart` | b0664ae PASS2 |
+| F4 | `r181ActorBlockDecomposition` | af9cc1e PASS1 |
+| F5 | `r181ActualBirthPosition` | 0e21a89 PASS1 |
+| F6 | `r181OriginalUniqueInsertions` | 73528e4 PASS1 |
+| F7 | `r181ReachedAndProvenance` | 7dbad18 PASS1 |
+| F8 | `r181ReplayBundleFromIndependence` | 52ea260 PASS1 |
+
+F1–F4 live in R181O19BundlePrerequisites; F5–F8 in the separate
+R181O19UniquenessAndBundle, avoiding needless re-elaboration of the68-second
+range proof on every subsequent independent declaration. Every F invocation
+contained only its one new declaration; every accepted declaration was committed
+only after checking the JSON passed bit under set-e.
+
+F1 selects E's actual blocks from actor VALUES0/1 and eliminates out-of-list
+membership; it neither compares nor guesses erased Elem certificates. F2 derives
+all selected ordering from one head dispatcher. F3 consumes ACTUAL block fields
+and proves left global ordinals2/3/4 cannot equal right5/6 (its arithmetic proof
+is stronger on the right, where nonnegativity suffices). F4 builds the complete
+ActorBlockDecomposition with the SAME selector, ordering, ranges and E8 coverage.
+F5 observes every possible raw insertion ordinal in the actual7-edge spine;
+F6 derives strong original UniqueRawNameInsertions for arbitrary located root OR
+child OInsert occurrences. It is not merely freshness of the two current names.
+
+F7 constructs exact ReachedFromEmpty plus discipline-derived provenance. F8
+calls the existing public rank, parent-rank, precedence/support and quiescence
+producers (R172/R174 method) to derive all FOURTEEN non-independence bundle
+fields. It is a checked CONDITIONAL constructor with a visible quantity0
+TraceIndependent input and TODO(proof) explanation, NOT an inhabited bundle,
+current safety or negative. No old premise/safety surface was changed and no
+frozen deletionTheoremProof was called. Component-specific independence does
+not follow from an empty consumer program: its root insertion clears table1,
+while arbitrary ToyKey probe states distinguish tables. No independent proof
+unit remained in F and no empty-key/identity shortcut was attempted.
+
+### Exact F failures (all retained in ledger/archive)
+
+* F2-1: `Pattern variable earlier unifies with: 0.` Changed only pattern binders
+  to wildcards; no nonlinear/as-pattern workaround.
+* F2-2: indexed coverage reported missing `r181BlocksFollowOrder 0 1 _ _
+  (BeforeThere _)` and analogous0/0 and0/(S(S_)) families. F2-3 moves the nested
+  split INSIDE a single BeforeHere/BeforeThere head dispatcher; total PASS.
+* F3-1: `Undefined name DGamma.R179O19ObservedExecution.r179ObservedProviderCut.`
+  Idris returned exit0 but emitted an Error; the harness correctly set
+  `passed=false` and the assertion STOPPED the combined command BEFORE any
+  commit or F4 addition/invocation. F3-2 adds the actual direct source imports,
+  PASS68.556s. F4 then independently PASS68.568s. This is NOT a workflow exception.
+
+49 retained new declarations across six Idris files. F adds11 checks8P/3F before
+final revalidation, no interruption or new protocol violation. Earlier A11/B12
+stops and the dfc933e/cdaee57/B12-1 violation remain exactly disclosed and unexcused.
+Remaining O19 debts: actual component-specific TraceIndependent, the two concrete
+NoGeneratedChild body proofs and final AdjacentActorSwapSafety/order-swap assembly.
+The complete negative is STILL absent; no revision/body gate may be inferred.
+D's actual resolved views do not close O20; C stays withdrawal obligations only.

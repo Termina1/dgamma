@@ -2894,3 +2894,39 @@ O21 remains obligations only. Forty-one retained new declarations, five inherite
 holes unchanged, no new escape/partiality/production or original-spike edit.
 Parent owns the independent review, including the earlier reverted dfc933e and
 premature B12-1 workflow violation, which remains explicitly not excused.
+
+## Status — R181 F8/8 continuation (supersedes D/E prefix)
+
+**New fully proved:** actual3x2 disjoint ranges and full ActorBlockDecomposition
+on the SAME authoritative provider/consumer blocks; strong original count7
+UniqueRawNameInsertions for arbitrary located root/child insertions; actual
+ReachedFromEmpty and protocol-derived RegistrationProvenance. F1–F4 are in
+R181O19BundlePrerequisites; F5–F8 in R181O19UniquenessAndBundle. Splitting the
+independent checks avoids repeating the68-second numeric/block-field proof on
+every later fixture unit; no original file or interface was changed.
+
+**Conditionally proved, NOT inhabited:** r181ReplayBundleFromIndependence
+constructs the exact existing ReplayInvariantBundle and derives all14 other
+fields via trace/alignment/discipline/totality/endpoint capital and existing
+rank/support producers. The single visible quantity0 TraceIndependent input is
+still NOT produced. Its TODO(proof) documents a genuine remaining obligation,
+not a postulate, new hole or modified O19 premise. Empty consumer program does
+not imply an identity generated monoid: OInsert1 clears its table. R172's empty
+key/universally-related-state proof is inapplicable to ToyKey.
+
+**Still partial/stated:** complete old-safety negative, actual component-specific
+TraceIndependent, both body NoGeneratedChild proofs and final order-swap/
+AdjacentActorSwapSafety assembly. Next is the real independence proof over both
+generated monoids AND iterator-outcome stability; then inhabit current safety
+and commit the full negative before requesting any revision/body authorization.
+O20 has actual successful-view correspondence but no full canonical pair/control
+induction/bridge body. O21 withdrawal branches remain obligations only.
+
+F2 needed3 attempts: forced index binder, then nested indexed coverage, then a
+checked single-head dispatcher. F3 needed2: the first emitted an undefined direct
+source name EVEN WITH exit0; passed=false correctly blocked its commit and the
+next declaration. Explicit direct imports repaired it. No new workflow violation,
+unsafe proof, partiality or escape.49 retained declarations across six files;
+five inherited holes unchanged. Earlier A11/B12 real stops and the reverted
+failed B11/premature B12-1 workflow violation remain unexcused and preserved for
+parent-owned independent review. No further proof unit started after F8's cap.

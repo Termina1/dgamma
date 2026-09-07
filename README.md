@@ -584,3 +584,17 @@ workflow; both are explicitly preserved for review in the
 D6/6 PASS1; E8/8 with one corrected import/qualification failure. No old spike,
 safety surface, O19/O20 body, O21 branch or production change. Five holes remain.
 The original disclosed protocol exception remains an independent-review concern.
+
+### R181 authorized F continuation (supersedes D/E prefix)
+
+| Paper frontier | Idris correspondence | Checked status |
+|---|---|---|
+| Thm73/O19 authoritative block decomposition | `R181O19BundlePrerequisites.r181BlocksByActor`, `r181BlocksFollowOrder`, `r181BlockRangesApart`, `r181ActorBlockDecomposition` | Complete actual3x2 decomposition proved: SAME selector, strict order, disjoint global ranges2/3/4 versus5/6 and full lifecycle coverage |
+| Thm73 original raw uniqueness | `R181O19UniquenessAndBundle.r181ActualBirthPosition`, `r181OriginalUniqueInsertions` | Strong UniqueRawNameInsertions proved for all located insertions of the authentic seven-edge trace |
+| Thm73/O19 replay prerequisites | `r181ReachedAndProvenance`, `r181ReplayBundleFromIndependence` | Actual reachability/provenance proved; CONDITIONAL bundle constructor derives all14 other fields. **TraceIndependent remains an explicit uninhabited input**, not a full bundle/current safety/negative |
+
+F8/8 completed;49 retained new declarations across six research Idris files.
+Remaining O19 work: actual component-specific independence, both NoGeneratedChild
+body proofs and final order-swap/safety assembly. No revision or body permission.
+Five inherited holes and all production/original spike files remain frozen.
+The earlier reverted workflow violation remains unexcused, requiring parent-owned review.
