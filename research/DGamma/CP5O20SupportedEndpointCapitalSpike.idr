@@ -198,3 +198,28 @@ originalThroughCanonicalReplayEffects name key world error value nameEq keyEq pr
       (ambientExact (replayedEffects replay)))
     (\selected => trans (tablesExact (endpointEffectsEquivalent (canonicalEndpoint (canonicalSchedule capital))) selected)
       (tablesExact (replayedEffects replay) selected))
+
+||| Full supported same-name controls through the SAME canonicalization and
+||| its actual replay relation. This is not cross-canonical control convergence.
+export
+0 originalSupportedThroughCanonicalReplayControls :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {initial, finalState, replayedFinal : SystemState name key value world error} ->
+  (original : Transitions initial finalState) ->
+  (capital : IndependentCanonicalSchedule name key world error value protocol nameEq keyEq original) ->
+  RelationalReplayEndpoint name key world error value nameEq keyEq
+    (canonicalFinal (canonicalSchedule capital)) replayedFinal ->
+  (selected : name) -> isSupported @{nameEq} @{keyEq} selected finalState = True ->
+  FiberControlMaybeRelated {name = name} {key = key} {value = value} {world = world} {error = error}
+    (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} selected (registry finalState))
+    (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} selected (registry replayedFinal))
+originalSupportedThroughCanonicalReplayControls name key world error value nameEq keyEq protocol original capital replay selected supported =
+  case canonicalSupportedEndpointView name key world error value nameEq keyEq protocol original capital selected supported of
+    MkSupportedCanonicalEndpointView fiber found truth active notRetired domain =>
+      fiberControlMaybeTransitive
+        (endpointControlsOutside (canonicalEndpoint (canonicalSchedule capital)) selected
+          (canonicalPresentOutsideWithdrawals name key world error value nameEq keyEq finalState
+            (canonicalFinal (canonicalSchedule capital)) (canonicalEndpoint (canonicalSchedule capital)) selected fiber found))
+        (controlPointwise (replayedControls replay) selected)
