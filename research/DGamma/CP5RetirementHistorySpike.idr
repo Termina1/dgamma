@@ -243,3 +243,29 @@ uniqueBirthsAcrossCutImpossible name key world error value nameEq keyEq prior la
           (afterCutOccurrence name key world error value prior later (OInsert selected rightParent rightComponent) rightBirth)))
           (beforeCutOccurrenceOrdinal name key world error value prior later (OInsert selected leftParent leftComponent) leftBirth))
         (afterCutOccurrenceBound name key world error value prior later (OInsert selected rightParent rightComponent) rightBirth))
+
+||| A retired fiber at an authentic prefix cannot be nonretired at the final
+||| endpoint under whole-original uniqueness. Its earlier birth is DERIVED.
+export
+0 retiredCutNonretiredEndpointImpossible :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (prior : Transitions first middle) -> (later : Transitions middle finalState) ->
+  AlignedTransitions name key world error value nameEq keyEq prior ->
+  AlignedTransitions name key world error value nameEq keyEq later -> (bindings (registry first) = []) ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq (appendTransitions prior later) ->
+  (selected : name) -> (retiredFiber, finalFiber : Fiber name key value world error) ->
+  (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+    @{nameEq} selected (registry middle) = Just retiredFiber) -> (retired retiredFiber = True) ->
+  (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+    @{nameEq} selected (registry finalState) = Just finalFiber) -> (retired finalFiber = False) -> Void
+retiredCutNonretiredEndpointImpossible name key world error value nameEq keyEq prior later priorAligned laterAligned empty unique
+  selected retiredFiber finalFiber retiredFound retiredTrue finalFound finalFalse =
+    case unretiredAfterRetiredHasBirth name key world error value nameEq keyEq later laterAligned selected
+      retiredFiber finalFiber retiredFound retiredTrue finalFound finalFalse of
+      (parent ** component ** laterBirth) =>
+        uniqueBirthsAcrossCutImpossible name key world error value nameEq keyEq prior later unique selected
+          (fiberParent retiredFiber) parent (fiberComponent retiredFiber) component
+          (rawMetadataBirthAtPrefix name key world error value nameEq keyEq prior prior NoTransitions
+            (currentBirthTraceAppendEmpty name key world error value prior) priorAligned empty selected retiredFiber retiredFound) laterBirth
