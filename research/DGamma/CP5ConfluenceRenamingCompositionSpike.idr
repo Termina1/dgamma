@@ -5,6 +5,7 @@ import DGamma.Coeffects
 import DGamma.Metatheory
 import DGamma.CP3
 import DGamma.CP5UniqueRawNameInsertions
+import DGamma.CP5CurrentGenerationBirthSpike
 import DGamma.CP5ConfluenceDeletionChainSpike
 import DGamma.CP5ConfluenceLocalDiamondSpike
 import DGamma.CP5ConfluenceCanonicalSortSpike
@@ -2724,3 +2725,19 @@ public export
     (currentNameBijection (endpointRenaming sameInputs))
 replayedCanonicalToOriginalEndpointSpike =
   ?replayedCanonicalToOriginalEndpointSpike_rhs
+
+||| Exact live-environment projection of the observed L-Begin scanner update.
+0 registrationBeginLiveObserved :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) ->
+  (ordinal : Nat) -> (actor : name) -> (live : GenerationEnvironment name) ->
+  (activations : List (name, RegistrationActivation name)) ->
+  (counts : List (RegistrationActivation name, Nat)) -> (deleted : List (RegistrationGeneration name)) ->
+  (observed : Maybe (RegistrationGeneration name)) ->
+  (lookupCurrentGeneration @{nameEq} actor live = observed) ->
+  (indexedLiveGenerations (advanceRegistrationIndex @{nameEq} ordinal
+    (the (Action name key value world error) (LBegin actor))
+    (MkRegistrationIndexState live activations counts deleted)) = live)
+registrationBeginLiveObserved name key world error value nameEq ordinal actor live activations counts deleted Nothing exact =
+  rewrite exact in Refl
+registrationBeginLiveObserved name key world error value nameEq ordinal actor live activations counts deleted (Just generation) exact =
+  rewrite exact in Refl
