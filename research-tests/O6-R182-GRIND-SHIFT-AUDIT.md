@@ -546,3 +546,15 @@ six-unit adjacency correction, actual four-node concrete B pipeline, generic
 A/A observed composition/measure capital, and exact R183 prerequisites. O19
 remains unclosed (ZERO body attempts), C/D unbegun as ruled, census5 unchanged.
 No closure claim or artificial body retry is hidden in the validation totals.
+
+Evidence-only correction20:30UTC: an auxiliary commit-association assertion
+incorrectly demanded a NEW shift commit for unchanged R6/R7/R8/R9/R16 regression
+fixtures. It failed (not an Idris invocation). The existing ledger correctly
+had no change commit for them. The evidence generator now also authenticates
+159ef07's source blob, including the unchanged package, before considering
+shift commits. All retained PASS snapshots then match a committed blob; only
+the explicitly disposable B probe has no committed source. No source proof,
+compiler verdict or earlier rejection was altered by this metadata correction.
+The follow-up auxiliary check also exposed that command path `package` must map
+to tracked `dgamma.ipkg`; that evidence-only alias is now explicit. Both auxiliary
+assertion failures are reported, not compiler attempts or proof failures.

@@ -34,10 +34,14 @@ for r in records:
         if r['passed']:
             accepted_names[r['path']] = names
     assert (OUT/(r['unit']+'.log')).read_text() == r['transcript']
-    history = subprocess.check_output(['git','log','--reverse','--format=%H','159ef07..HEAD','--',r['path']],cwd=ROOT,text=True).splitlines()
+    # Unchanged frozen regression fixtures/package belong to the authenticated
+    # baseline, not to a nonexistent change commit inside 159ef07..HEAD.
+    baseline_commit = subprocess.check_output(['git','rev-parse','159ef07'],cwd=ROOT,text=True).strip()
+    tracked_path = 'dgamma.ipkg' if r['path'] == 'package' else r['path']
+    history = [baseline_commit] + subprocess.check_output(['git','log','--reverse','--format=%H','159ef07..HEAD','--',tracked_path],cwd=ROOT,text=True).splitlines()
     r['matchingSourceCommits'] = []
     for commit in history:
-        result = subprocess.run(['git','show',commit+':'+r['path']],cwd=ROOT,stdout=subprocess.PIPE,stderr=subprocess.DEVNULL)
+        result = subprocess.run(['git','show',commit+':'+tracked_path],cwd=ROOT,stdout=subprocess.PIPE,stderr=subprocess.DEVNULL)
         if result.returncode == 0 and hashlib.sha256(result.stdout).hexdigest() == r['sourceSHA256']:
             r['matchingSourceCommits'].append(commit)
 (ROOT/'research-tests/O6-R182-COMPILER-LEDGER.json').write_text(json.dumps(records,indent=2)+'\n')
