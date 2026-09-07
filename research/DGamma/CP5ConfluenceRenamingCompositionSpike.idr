@@ -3107,3 +3107,12 @@ pairingClassifyMember (RemoveListThere removal) (There later) =
   case pairingClassifyMember removal later of
     Left same => Left same
     Right kept => Right (There kept)
+
+||| Embed a remaining event occurrence in the original pairing domain.
+0 pairingEmbedRemainingMember :
+  {element : Type} -> {removed, selected : element} -> {source, remainder : List element} ->
+  RemoveListOccurrence removed source remainder -> Elem selected remainder -> Elem selected source
+pairingEmbedRemainingMember RemoveListHere member = There member
+pairingEmbedRemainingMember (RemoveListThere removal) Here = Here
+pairingEmbedRemainingMember (RemoveListThere removal) (There member) =
+  There (pairingEmbedRemainingMember removal member)
