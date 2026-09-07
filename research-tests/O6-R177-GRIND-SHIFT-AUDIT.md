@@ -97,3 +97,27 @@ existence must first be connected to registry lookup/support and the exact
 located insertion; then current birth, matching birth, and endpoint raw name
 can be reconciled. Neither support-truth implication has been attempted, the
 O18 body remains untouched, and the expected five-hole gate has NOT fired.
+
+### C1 disposable probe — conditional authenticated reuse identity
+
+One declaration / **one fresh check**, PASS, 02:58:54–02:58:55 UTC. Preserved as
+`r177-probes/C1-AuthenticatedCurrentBirth.idr.txt`; disposable `.idr` removed.
+For the left accepted scan of `sameInputs`, given its exact current generation,
+a real located current insertion and exact stamp equation, and another real
+same-raw-name insertion on the SAME original trace, `uniqueInsertionPosition`
+proves the two ordinal stamps equal. Transitivity/congruence identify the
+current generation with the second birth. No distinctness or birth position is
+inferred from raw names alone. Generic trace/type parameters make this the
+same local algebraic obligation for either side (not a proof of the full
+bilateral O21 premise).
+
+**Sizing result:** the reuse-identity algebra AFTER authentication is one tiny
+checked declaration. Authentication itself remains the larger shared B/O21
+prerequisite: obtain the located birth plus exact generation stamp from the
+accepted current scanner lookup. A final deleted-generation membership or a
+raw-name equality is not such evidence. This probe assumes that restricted
+subcase's authentication explicitly and is NOT installed as the O21 body.
+
+No withdrawal branch, omitted endpoint, scanner/canonical deletion equivalence,
+or heterogeneous control/effect composition was attempted. Existing O21
+ambient/table/control combinators remain unchanged. No O21 hole was filled.

@@ -1,0 +1,33 @@
+module DGamma.R177AuthenticatedCurrentBirthProbe
+
+import DGamma.Calculus
+import DGamma.CP3
+import DGamma.CP5UniqueRawNameInsertions
+import Decidable.Equality
+
+%default total
+%unbound_implicits off
+
+||| Restricted O21 reuse-identity sizing: AFTER the exact current scanner birth
+||| has been authenticated by an actual located insertion and its stamp equation,
+||| uniqueness identifies it with any other authenticated same-raw-name birth.
+0 r177AuthenticatedCurrentBirthIdentity :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, leftFinal, rightFinal : SystemState name key value world error} ->
+  (leftTrace : Transitions initial leftFinal) ->
+  (rightTrace : Transitions initial rightFinal) ->
+  (sameInputs : SameOrchestrationModuloGenerated nameEq keyEq leftTrace rightTrace) ->
+  (unique : UniqueRawNameInsertions name key world error value nameEq keyEq leftTrace) ->
+  (selected : name) -> (generation : RegistrationGeneration name) ->
+  (lookupCurrentGeneration @{nameEq} selected (leftFinalGenerations (generatedRegistrationTree sameInputs)) = Just generation) ->
+  (currentParent, otherParent : Parent name) ->
+  (currentComponent, otherComponent : Component key value world error) ->
+  (currentBirth : LocatedActionOccurrence (OInsert selected currentParent currentComponent) leftTrace) ->
+  (generation = MkRegistrationGeneration selected (locatedActionOrdinal currentBirth)) ->
+  (otherBirth : LocatedActionOccurrence (OInsert selected otherParent otherComponent) leftTrace) ->
+  (generation = MkRegistrationGeneration selected (locatedActionOrdinal otherBirth))
+r177AuthenticatedCurrentBirthIdentity name key world error value nameEq keyEq leftTrace rightTrace sameInputs unique
+  selected generation current currentParent otherParent currentComponent otherComponent currentBirth authenticated otherBirth =
+    trans authenticated (cong (MkRegistrationGeneration selected)
+      (uniqueInsertionPosition unique selected currentParent otherParent currentComponent otherComponent currentBirth otherBirth))
