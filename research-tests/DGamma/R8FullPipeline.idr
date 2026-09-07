@@ -147,7 +147,7 @@ fullPipelineFromBundles {name} {key} {world} {error} {value}
       operational = selectOperationalCanonicalPermutationSpike nameEq keyEq
         protocol leftTrace rightTrace sameInputs leftCapital rightCapital leftUnique rightUnique matching
       convergence = canonicalSchedulesConvergeSpike nameEq keyEq protocol leftTrace
-        rightTrace sameInputs leftCapital rightCapital operational
+        rightTrace sameInputs leftCapital rightCapital leftUnique rightUnique operational
       equivalent = originalEndpointsConvergeSpike nameEq keyEq protocol leftTrace
         rightTrace sameInputs leftCapital rightCapital convergence in
     confluenceResultFromCanonicalCapital nameEq keyEq protocol leftTrace rightTrace
