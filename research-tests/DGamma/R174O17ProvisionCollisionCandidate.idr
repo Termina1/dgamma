@@ -105,3 +105,19 @@ r178R174ObservedAction (MoreTransitions step rest) wanted (S position) observed 
   (trace : Transitions first finalState) -> AvailabilityTrace Nat ToyKey ToyRuntime String ToyValue trace
 r178R174Annotate {first} NoTransitions = AvailabilityEnd first
 r178R174Annotate {first} (MoreTransitions step rest) = AvailabilityStep first step rest (r178R174Annotate rest)
+
+||| Authorized independent scalar-fixture route: the returned annotations own
+||| an ACTUAL prefix/suffix decomposition, with no located-root packet.
+0 r178R174AnnotatedPrefix :
+  {first, finalState : SystemState Nat ToyKey ToyValue ToyRuntime String} ->
+  (count : Nat) -> (trace : Transitions first finalState) ->
+  (middle : SystemState Nat ToyKey ToyValue ToyRuntime String **
+   prior : Transitions first middle ** later : Transitions middle finalState **
+   (appendTransitions prior later = trace, AvailabilityTrace Nat ToyKey ToyRuntime String ToyValue prior))
+r178R174AnnotatedPrefix {first} Z trace = (first ** NoTransitions ** trace ** (Refl, AvailabilityEnd first))
+r178R174AnnotatedPrefix {first} (S count) NoTransitions = (first ** NoTransitions ** NoTransitions ** (Refl, AvailabilityEnd first))
+r178R174AnnotatedPrefix {first} (S count) (MoreTransitions step rest) =
+  case r178R174AnnotatedPrefix count rest of
+    (middle ** prior ** later ** (decomposition, annotations)) =>
+      (middle ** MoreTransitions step prior ** later **
+        (cong (MoreTransitions step) decomposition, AvailabilityStep first step prior annotations))
