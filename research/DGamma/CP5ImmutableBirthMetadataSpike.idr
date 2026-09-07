@@ -532,3 +532,17 @@ authenticatedBirthStampsSame name key world error value nameEq keyEq trace uniqu
         (currentBirthComponent leftBirth) (currentBirthComponent rightBirth)
         (currentLocatedBirth leftBirth) (currentLocatedBirth rightBirth)))
       (sym (currentBirthStampExact rightBirth)))
+
+||| Equal exact stamps identify names only through genuine original births.
+public export
+0 authenticatedGenerationNamesSame :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (trace : Transitions initial finalState) -> (leftSelected, rightSelected : name) ->
+  (leftGeneration, rightGeneration : RegistrationGeneration name) ->
+  CurrentGenerationBirth name key world error value trace leftSelected leftGeneration ->
+  CurrentGenerationBirth name key world error value trace rightSelected rightGeneration ->
+  leftGeneration = rightGeneration -> leftSelected = rightSelected
+authenticatedGenerationNamesSame name key world error value trace leftSelected rightSelected leftGeneration rightGeneration leftBirth rightBirth same =
+  trans (sym (cong generationName (currentBirthStampExact leftBirth)))
+    (trans (cong generationName same) (cong generationName (currentBirthStampExact rightBirth)))
