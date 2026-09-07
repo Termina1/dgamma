@@ -5089,3 +5089,20 @@ canonicalWorkRankSegmentsFold name key world error value nameEq fixedOrder
         (canonicalWorkRankSegments name key world error value nameEq fixedOrder rest ** Refl)) of
           ([] ** exact) => rewrite exact in Refl
           ((segment :: later) ** exact) => rewrite exact in Refl
+
+||| Fold the exact untouched prefix over an observed suffix. Barriers stay in
+||| their actual positions because the fold still consumes every prefix action.
+0 canonicalActionFoldAppend :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (observation : Type) ->
+  (observe : Action name key value world error -> observation -> observation) ->
+  (seed : observation) ->
+  {initial, middle, finalState : SystemState name key value world error} ->
+  (prefixTrace : Transitions initial middle) -> (suffix : Transitions middle finalState) ->
+  (traceActionFold name key world error value observation observe seed (appendTransitions prefixTrace suffix) =
+   traceActionFold name key world error value observation observe
+     (traceActionFold name key world error value observation observe seed suffix) prefixTrace)
+canonicalActionFoldAppend name key world error value observation observe seed NoTransitions suffix = Refl
+canonicalActionFoldAppend name key world error value observation observe seed (MoreTransitions step rest) suffix =
+  cong (observe (transitionAction step))
+    (canonicalActionFoldAppend name key world error value observation observe seed rest suffix)
