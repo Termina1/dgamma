@@ -170,3 +170,21 @@ r180ObservedConsumerFinished = MkSystemState (worldState r180ObservedConsumerBeg
     (MkFiber emptyConsumerComponent Root False emptyOwned
       (Active id (ProviderView 0 EmptyView)))
     (registry r180ObservedConsumerBegun))
+
+||| Observe the same actual normalized provider VALUE inside consumer Finish.
+||| This raw result separately authenticates the intended Active payload.
+export
+0 r180ConsumerFinishRawObserved :
+  (table : OwnedTable ToyKey ToyValue DGamma.Section3Example.toySpecA) ->
+  (0 tableObserved : (restrictOwnedPreservingOrder @{%search}
+    DGamma.Section3Example.toySpecA (ownedValues (ownedA True)) = table)) ->
+  (binding : Maybe Bool) ->
+  (0 bindingObserved : (lookupBinding @{%search} ServiceA (ownedValues table) = binding)) ->
+  (0 present : (isJust binding = True)) ->
+  (applyAction {name = Nat} {key = ToyKey} {value = ToyValue}
+    {world = ToyRuntime} {error = String} @{%search} @{%search} (LAdvance 1)
+    r180ObservedConsumerBegun = Just (LFinishTag, r180ObservedConsumerFinished))
+r180ConsumerFinishRawObserved table tableObserved Nothing bindingObserved present =
+  case present of Refl impossible
+r180ConsumerFinishRawObserved table tableObserved (Just service) bindingObserved present =
+  rewrite tableObserved in rewrite bindingObserved in Refl
