@@ -227,3 +227,31 @@ offset and structural prepend law. B67 authenticates EVERY member of the actual
 sealed side event fold as a located insertion with its exact generation stamp.
 No caller-supplied origin map. Still no support-truth implication, retirement
 transport, premise strengthening, or O18 body fill.
+
+### B68–B84 — sealed bidirectional generated static-metadata transport
+
+B68–B80, B82–B84 PASS 1/1; B81 PASS 2/2 after repairing only generated source
+indentation (first check was a parser rejection). B69–B72 perform finite pairing
+LIST membership bookkeeping, NOT endpoint withdrawal / O21 work. B73 exports an
+AuthenticatedRegistrationMatching made only from the accepted scanner's exact
+private projection: both real event domains, both located original birth/stamp
+functions, and both actual RegistrationEventMatch directions.
+
+B74–B80 establish endpoint readback and exact current/event stamp identity AFTER
+both births are authenticated. Event raw names are then identified with current
+endpoint names through the actual generation bijection and inverse law—not by
+raw-name wishful matching. MatchedEndpointStaticMetadata retains exact component,
+dependency-list and provision-specification equality, each actual endpoint's
+birth parent, and the matched parent-activation generation relation. It does NOT
+claim endpoint parent names are related by phi, retired flags agree, or support
+truth transports.
+
+B81/B82 obtain the opposite ACTUAL registry fiber through B53/B54's accepted
+current-domain bridge, then prove all that immutable metadata for the same
+matched original events. B83/B84 seal this to `generatedRegistrationTree
+sameInputs`, its exact bijection, and endpointRenaming. Remaining explicit
+coverage premise: the supported generated fiber's birth event belongs to the
+accepted retained-event domain. No arbitrary birth/match producer is accepted at
+these final sealed boundaries. Root-birth coverage and current-parent/retirement
+transport remain separate. Both O18 support-truth implications and body unchanged;
+no O20 consumption/order-list equality used. Probe remains frozen after P2-4.
