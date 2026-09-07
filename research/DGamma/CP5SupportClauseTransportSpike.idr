@@ -17,3 +17,6 @@ public export
 supportClauseParent : (name : Type) -> (name -> Bool) -> Parent name -> Bool
 supportClauseParent name predicate Root = True
 supportClauseParent name predicate (ChildOf parent) = predicate parent
+
+0 clauseAndTrue : (left, right : Bool) -> (left = True) -> (right = True) -> (left && right = True)
+clauseAndTrue True True Refl Refl = Refl
