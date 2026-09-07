@@ -535,3 +535,22 @@ actual observations, rather than destruct the full closed indexed stage directly
 actual ReplayInvariantBundle/current safety/negative, no revision/O19 body. Both
 NoGeneratedChild bodies and final order-swap/safety assembly were explicitly
 deferred to NEXT SHIFT. All original scope/escape/hash invariants remain in force.
+
+## OWNER DECISION16:50UTC — NEXT-SHIFT O19 revision exception
+
+Documentation only; NO proof work or frozen-surface edit in this shift.
+**Owner decision, exception to R146 doctrine:** AdjacentActorSwapSafety surface
+revision under R146(iii), support incomparability / both-direction applicability,
+is AUTHORIZED NEXT SHIFT WITHOUT waiting for the complete negative.
+**Owner's reason:** "failure mechanism fully certified; missing field unrelated
+to the mechanism". The owner accepts the certified count7 trace, actual consumer
+L-Begin=None at the swapped source, both blocks, complete decomposition, strong
+original uniqueness and14/15 bundle fields as sufficient REVISION evidence.
+
+This supersedes earlier countershape-first/revision-gate next-step wording ONLY
+for that next-shift research safety revision. TraceIndependent/G2 continues as
+proof capital, no longer a revision gate. It remains uninhabited; the complete
+old-safety negative is NOT thereby proved. No O19 body authorization is inferred.
+This owner-approved doctrine exception does NOT excuse the independent earlier
+B11/B12-1 workflow violation. Finish this shift's existing validation/final gate;
+no restart, third G2 attempt or other proof work is authorized now.

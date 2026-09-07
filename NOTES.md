@@ -2966,3 +2966,22 @@ actual runtime observations. Even the thin LHS alternative expanded excessively;
 this is an elaboration/resource wall, not a paper or logical counterexample.
 After a real independence proof, project F8 and assemble current safety/full
 negative BEFORE any subsequent revision/body gate. No further proof work this shift.
+
+### Owner decision16:50UTC — superseding next-step gate, NOT a new proof
+
+**Owner decision, exception to R146 doctrine.** For the NEXT SHIFT,
+AdjacentActorSwapSafety revision under R146(iii) (support incomparability /
+both-direction applicability) is authorized WITHOUT completing the old-safety
+negative. The certified count7 trace, actual swapped-source consumer Begin=None,
+both blocks, decomposition, uniqueness and14/15 bundle fields are accepted as
+sufficient partial-negative evidence. Owner's stated reason: "failure mechanism
+fully certified; missing field unrelated to the mechanism".
+
+This supersedes the preceding requirement to finish independence/full negative
+BEFORE research safety revision. TraceIndependent continues in parallel as
+capital, NOT a gate. No mathematical inhabitant or complete negative is implied,
+no O19 body authorization is inferred, and no source revision/proof work is
+performed now. The next shift may implement the authorized safety revision and
+continue the abstract-index stage-certificate route independently. This approved
+methodology exception does NOT waive the earlier unexcused B11/B12-1 workflow
+violation or the parent-owned reviewer gate.

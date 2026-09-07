@@ -2623,5 +2623,366 @@
     "symbol": null,
     "transcript": "",
     "matchingSourceCommits": []
+  },
+  {
+    "unit": "G1-1",
+    "path": "research-tests/DGamma/R181O19Independence.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R181O19Independence.idr"
+    ],
+    "start": "2026-09-07T16:27:40.929800+00:00",
+    "end": "2026-09-07T16:27:43.026173+00:00",
+    "seconds": 2.0961615405976772,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 726304,
+    "sourceSHA256": "0a687d7d8a6b35bf969a1fab02d3db178fec8962f209ee7ba1791c29670499ec",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "5/5: Building DGamma.R181O19Independence (research-tests/DGamma/R181O19Independence.idr)\n",
+    "newTopLevelDeclarations": [
+      "r181ConsumerLookupAfterBegin"
+    ],
+    "matchingSourceCommits": [
+      "7ff9f0f24dd48f85dff949c977de6f8016bff8cf"
+    ]
+  },
+  {
+    "unit": "G2-1",
+    "path": "research-tests/DGamma/R181O19Independence.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R181O19Independence.idr"
+    ],
+    "start": "2026-09-07T16:30:06.378587+00:00",
+    "end": "2026-09-07T16:39:32.998532+00:00",
+    "seconds": 566.6150703751482,
+    "exit": -15,
+    "fresh": false,
+    "passed": false,
+    "interrupted": true,
+    "maxSampleRSSKiB": 48438144,
+    "sourceSHA256": "61249713bfd527ed659260421f88751d602cdc48f268ca0eec3baa6cccf30979",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "",
+    "newTopLevelDeclarations": [
+      "r181IteratorStageIsProvider"
+    ],
+    "matchingSourceCommits": []
+  },
+  {
+    "unit": "G2-2",
+    "path": "research-tests/DGamma/R181O19Independence.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R181O19Independence.idr"
+    ],
+    "start": "2026-09-07T16:40:57.575327+00:00",
+    "end": "2026-09-07T16:42:40.416281+00:00",
+    "seconds": 102.83992699999362,
+    "exit": -15,
+    "fresh": false,
+    "passed": false,
+    "interrupted": true,
+    "maxSampleRSSKiB": 50642656,
+    "sourceSHA256": "afb4b219e59a97fc6bba4fb82a82f1c63761af3cc6de3255174bda5798a83503",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "",
+    "newTopLevelDeclarations": [
+      "r181IteratorStageIsProvider"
+    ],
+    "matchingSourceCommits": []
+  },
+  {
+    "unit": "G2-restored",
+    "path": "research-tests/DGamma/R181O19Independence.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R181O19Independence.idr"
+    ],
+    "start": "2026-09-07T16:45:04.688598+00:00",
+    "end": "2026-09-07T16:45:06.777363+00:00",
+    "seconds": 2.0885907909832895,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 726304,
+    "sourceSHA256": "0a687d7d8a6b35bf969a1fab02d3db178fec8962f209ee7ba1791c29670499ec",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "5/5: Building DGamma.R181O19Independence (research-tests/DGamma/R181O19Independence.idr)\n",
+    "newTopLevelDeclarations": [],
+    "matchingSourceCommits": [
+      "7ff9f0f24dd48f85dff949c977de6f8016bff8cf"
+    ]
+  },
+  {
+    "unit": "G-final-installed",
+    "path": "research/DGamma/CP5ObservedInstalledLifecycleSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5ObservedInstalledLifecycleSpike.idr"
+    ],
+    "start": "2026-09-07T16:48:56.762988+00:00",
+    "end": "2026-09-07T16:48:57.801408+00:00",
+    "seconds": 1.038232833147049,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 0,
+    "sourceSHA256": "77eef9aac99afa4e9c2f0dde5d8ae00e1e74e27cde0fc5be6d4211238f2e0c47",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "1/1: Building DGamma.CP5ObservedInstalledLifecycleSpike (research/DGamma/CP5ObservedInstalledLifecycleSpike.idr)\n",
+    "newTopLevelDeclarations": [],
+    "matchingSourceCommits": [
+      "51eb5ef832849277434528ea2f5a7eb332dfe6db"
+    ]
+  },
+  {
+    "unit": "G-final-paired",
+    "path": "research/DGamma/CP5O20PairedPrefixProducerSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O20PairedPrefixProducerSpike.idr"
+    ],
+    "start": "2026-09-07T16:48:57.868046+00:00",
+    "end": "2026-09-07T16:49:00.983585+00:00",
+    "seconds": 3.1153552075847983,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 2058880,
+    "sourceSHA256": "c57be81f7d44b33ab240a0f01b77a78aa2bf00e4adda57d609705d0151f05dd0",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "31/31: Building DGamma.CP5O20PairedPrefixProducerSpike (research/DGamma/CP5O20PairedPrefixProducerSpike.idr)\n",
+    "newTopLevelDeclarations": [],
+    "matchingSourceCommits": [
+      "3d4986623a968d77b1bf9f5c51ed4bf3fea7c5b0"
+    ]
+  },
+  {
+    "unit": "G-final-negative-capital",
+    "path": "research-tests/DGamma/R181O19SafetyCompletion.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R181O19SafetyCompletion.idr"
+    ],
+    "start": "2026-09-07T16:49:01.051677+00:00",
+    "end": "2026-09-07T16:49:33.238581+00:00",
+    "seconds": 32.186424042098224,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 1733744,
+    "sourceSHA256": "821680d533db389cbaa25af65c8f180fc0224de94c9f6c9d9cfed6260d1ad180",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "3/3: Building DGamma.R181O19SafetyCompletion (research-tests/DGamma/R181O19SafetyCompletion.idr)\n",
+    "newTopLevelDeclarations": [],
+    "matchingSourceCommits": [
+      "95b4ab595c5e86851fb0de8d63cd6ff882367626"
+    ]
+  },
+  {
+    "unit": "G-final-blocks",
+    "path": "research-tests/DGamma/R181O19LocatedBlocks.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R181O19LocatedBlocks.idr"
+    ],
+    "start": "2026-09-07T16:49:33.303133+00:00",
+    "end": "2026-09-07T16:49:36.438474+00:00",
+    "seconds": 3.1351149575784802,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 550320,
+    "sourceSHA256": "e7bcb0e849d264b6951c053a50dd921fa6c4e22494bdba72484bcfefc0fd6a3f",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "4/4: Building DGamma.R181O19LocatedBlocks (research-tests/DGamma/R181O19LocatedBlocks.idr)\n",
+    "newTopLevelDeclarations": [],
+    "matchingSourceCommits": [
+      "c1667529c5489921f1774b26412a04151b0e5a08"
+    ]
+  },
+  {
+    "unit": "G-final-decomposition",
+    "path": "research-tests/DGamma/R181O19BundlePrerequisites.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R181O19BundlePrerequisites.idr"
+    ],
+    "start": "2026-09-07T16:49:36.500437+00:00",
+    "end": "2026-09-07T16:50:45.055327+00:00",
+    "seconds": 68.5802391669713,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 5347024,
+    "sourceSHA256": "f50b7a6b2fb8d89e5b1f5ce7fcb3d6661510f8c57aa3c886ffcaa9570bdda8ee",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "5/5: Building DGamma.R181O19BundlePrerequisites (research-tests/DGamma/R181O19BundlePrerequisites.idr)\n",
+    "newTopLevelDeclarations": [],
+    "matchingSourceCommits": [
+      "af9cc1edbf760454ccadc97b268f0830f35c6536"
+    ]
+  },
+  {
+    "unit": "G-final-bundle",
+    "path": "research-tests/DGamma/R181O19UniquenessAndBundle.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R181O19UniquenessAndBundle.idr"
+    ],
+    "start": "2026-09-07T16:50:45.121705+00:00",
+    "end": "2026-09-07T16:50:47.202891+00:00",
+    "seconds": 2.0822493750602007,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 921248,
+    "sourceSHA256": "341f797d187cea3c1b83c4b1c5d7e41c38cca69067090b11930c5d8b53559d9e",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "4/4: Building DGamma.R181O19UniquenessAndBundle (research-tests/DGamma/R181O19UniquenessAndBundle.idr)\n",
+    "newTopLevelDeclarations": [],
+    "matchingSourceCommits": [
+      "52ea2605616c181cf3cb73d85bca906b32d000e7"
+    ]
+  },
+  {
+    "unit": "G-final-independence-capital",
+    "path": "research-tests/DGamma/R181O19Independence.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R181O19Independence.idr"
+    ],
+    "start": "2026-09-07T16:50:47.270969+00:00",
+    "end": "2026-09-07T16:50:49.339044+00:00",
+    "seconds": 2.069013833068311,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 726320,
+    "sourceSHA256": "0a687d7d8a6b35bf969a1fab02d3db178fec8962f209ee7ba1791c29670499ec",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "5/5: Building DGamma.R181O19Independence (research-tests/DGamma/R181O19Independence.idr)\n",
+    "newTopLevelDeclarations": [],
+    "matchingSourceCommits": [
+      "7ff9f0f24dd48f85dff949c977de6f8016bff8cf"
+    ]
+  },
+  {
+    "unit": "G-final-package",
+    "path": "package",
+    "command": [
+      "idris2",
+      "--build",
+      "dgamma.ipkg"
+    ],
+    "start": "2026-09-07T16:50:49.406217+00:00",
+    "end": "2026-09-07T16:51:06.009280+00:00",
+    "seconds": 16.60802616691217,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 231616,
+    "sourceSHA256": "aee761a37757cb047ddbf0f846bc23ce830ed755422f96852d08eb435c368727",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "",
+    "matchingSourceCommits": []
   }
 ]

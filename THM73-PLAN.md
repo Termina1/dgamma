@@ -3533,3 +3533,13 @@ observations, not more direct elimination of the huge closed stage index. Actual
 TraceIndependent remains uninhabited; F8 stays conditional. NoGeneratedChild and
 full negative/safety assembly next shift; no revision/body authorization now.
 All frozen invariants and the original unexcused workflow exception remain.
+
+**Superseding OWNER DECISION2026-09-07 16:50UTC (next shift only):** exception to
+R146 countershape-first doctrine. AdjacentActorSwapSafety revision under R146(iii),
+support incomparability / both-direction applicability, is AUTHORIZED without
+waiting for the full negative. Owner accepts the fully certified failure mechanism
+(count7, same-source early rejection, both blocks/decomposition/uniqueness,14/15
+bundle fields); stated reason: "missing field unrelated to the mechanism".
+TraceIndependent stays parallel capital, not the revision gate. No full-negative
+proof or O19 body permission follows. Documentation only in this shift; finish
+existing final validation/gate, no restart. Earlier workflow violation not excused.

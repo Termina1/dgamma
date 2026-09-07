@@ -610,3 +610,12 @@ The earlier reverted workflow violation remains unexcused, requiring parent-owne
 commutation and iterator-outcome stability remain unproved; F8 is still conditional.
 No negative/safety revision/body permission. Full safety assembly is next shift.
 The original B11/B12-1 workflow violation remains unexcused and independently reviewable.
+
+**Owner decision (2026-09-07 16:50UTC), next shift only:** exception to R146's
+countershape-first doctrine. The partial negative is accepted as sufficient to
+revise AdjacentActorSwapSafety with R146(iii) support incomparability /
+both-direction applicability, WITHOUT waiting for TraceIndependent. Owner's
+reason: "failure mechanism fully certified; missing field unrelated to the
+mechanism". Independence remains unproved capital, not a revision gate. No
+current-shift surface change, full-negative claim or O19 body permission follows.
+The earlier workflow violation remains unexcused.
