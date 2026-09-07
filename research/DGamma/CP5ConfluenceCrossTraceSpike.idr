@@ -1354,6 +1354,8 @@ public export
     nameEq keyEq rightTrace) ->
   (0 leftUnique : UniqueRawNameInsertions name key world error value nameEq keyEq leftTrace) ->
   (0 rightUnique : UniqueRawNameInsertions name key world error value nameEq keyEq rightTrace) ->
+  (0 leftRightGeneratedMatched : GeneratedOrchestrationMatched name key world error value nameEq
+    leftTrace rightTrace (generatedGenerationBijection sameInputs)) ->
   {matching : MappedCanonicalSupportOrders name key world error value protocol
     nameEq keyEq leftTrace rightTrace
     (currentNameBijection (endpointRenaming sameInputs))
@@ -1367,9 +1369,9 @@ public export
     keyEq (generatedRegistrationTree sameInputs)
     (currentNameBijection (endpointRenaming sameInputs))
 originalEndpointsConvergeSpike nameEq keyEq protocol leftTrace rightTrace
-  sameInputs leftCapital rightCapital leftUnique rightUnique convergence =
+  sameInputs leftCapital rightCapital leftUnique rightUnique leftRightGeneratedMatched convergence =
     replayedCanonicalToOriginalEndpointSpike nameEq keyEq protocol leftTrace
-      rightTrace sameInputs leftCapital rightCapital leftUnique rightUnique
+      rightTrace sameInputs leftCapital rightCapital leftUnique rightUnique leftRightGeneratedMatched
       (acceptedDeletionScannerCapitalSpike nameEq keyEq protocol leftTrace
         rightTrace sameInputs leftCapital rightCapital)
       (operationalTargetTrace operational)
