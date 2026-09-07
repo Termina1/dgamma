@@ -254,3 +254,23 @@ currentBirthTraceAppendEmpty name key world error value (MoreTransitions step re
 currentRemoveViewAbsent name key world error value nameEq actor ambient source _ _
   (MkRemoveSuccessView oldFiber found guards noChild) =
     DGamma.CP4DeletionSelectedOwn.lookupDeleteSelf @{nameEq} actor source
+
+0 currentOwnerSourceObserved :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (action : Action name key value world error) ->
+  (before, afterState : SystemState name key value world error) -> (tag : RuleTag) ->
+  (applyAction @{nameEq} @{keyEq} action before = Just (tag, afterState)) ->
+  ((parent : Parent name) -> (component : Component key value world error) ->
+    Not (action = OInsert (actionOwner action) parent component)) ->
+  (observed : Maybe (Fiber name key value world error)) ->
+  (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+    @{nameEq} (actionOwner action) (registry before) = observed) ->
+  (fiber : Fiber name key value world error **
+    lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+      @{nameEq} (actionOwner action) (registry before) = Just fiber)
+currentOwnerSourceObserved name key world error value nameEq keyEq action before afterState tag raw notBirth Nothing exact =
+  case rawAbsentOwnerInsertion name key world error value nameEq keyEq action before afterState tag raw exact of
+    (parent ** component ** inserted) => void (notBirth parent component inserted)
+currentOwnerSourceObserved name key world error value nameEq keyEq action before afterState tag raw notBirth (Just fiber) exact =
+  (fiber ** exact)
