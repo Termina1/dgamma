@@ -274,3 +274,56 @@ currentOwnerSourceObserved name key world error value nameEq keyEq action before
     (parent ** component ** inserted) => void (notBirth parent component inserted)
 currentOwnerSourceObserved name key world error value nameEq keyEq action before afterState tag raw notBirth (Just fiber) exact =
   (fiber ** exact)
+
+||| The successful owner's endpoint lookup remains in the generation domain.
+0 currentDomainOwnerAction :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (action : Action name key value world error) ->
+  (before, afterState : SystemState name key value world error) -> (tag : RuleTag) ->
+  (applyAction @{nameEq} @{keyEq} action before = Just (tag, afterState)) ->
+  ((selected : name) -> (fiber : Fiber name key value world error) ->
+    (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+      @{nameEq} selected (registry before) = Just fiber) ->
+    (generation : RegistrationGeneration name ** lookupCurrentGeneration @{nameEq} selected live = Just generation)) ->
+  (observed : Fiber name key value world error) ->
+  (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+    @{nameEq} (actionOwner action) (registry afterState) = Just observed) ->
+  (generation : RegistrationGeneration name ** lookupCurrentGeneration @{nameEq} (actionOwner action)
+    (advanceGenerationEnvironment @{nameEq} ordinal action live) = Just generation)
+currentDomainOwnerAction name key world error value nameEq keyEq ordinal live (OInsert actor parent component) before afterState tag raw previous observed found =
+  (MkRegistrationGeneration actor ordinal ** lookupPutCurrentSelf nameEq actor (MkRegistrationGeneration actor ordinal) live)
+currentDomainOwnerAction name key world error value nameEq keyEq ordinal live (ORemove actor) (MkSystemState ambient source) afterState tag raw previous observed found =
+  case trans (sym (currentRemoveViewAbsent name key world error value nameEq actor ambient source tag afterState
+    (removeSuccessView nameEq keyEq actor ambient source tag afterState raw))) found of Refl impossible
+currentDomainOwnerAction name key world error value nameEq keyEq ordinal live (ORetire actor) before afterState tag raw previous observed found =
+  case currentOwnerSourceObserved name key world error value nameEq keyEq (ORetire actor) before afterState tag raw
+    (\parent, component, same => case same of Refl impossible)
+    (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} actor (registry before)) Refl of
+    (fiber ** present) => previous actor fiber present
+currentDomainOwnerAction name key world error value nameEq keyEq ordinal live (LBegin actor) before afterState tag raw previous observed found =
+  case currentOwnerSourceObserved name key world error value nameEq keyEq (LBegin actor) before afterState tag raw
+    (\parent, component, same => case same of Refl impossible)
+    (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} actor (registry before)) Refl of
+    (fiber ** present) => previous actor fiber present
+currentDomainOwnerAction name key world error value nameEq keyEq ordinal live (LAdvance actor) before afterState tag raw previous observed found =
+  case currentOwnerSourceObserved name key world error value nameEq keyEq (LAdvance actor) before afterState tag raw
+    (\parent, component, same => case same of Refl impossible)
+    (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} actor (registry before)) Refl of
+    (fiber ** present) => previous actor fiber present
+currentDomainOwnerAction name key world error value nameEq keyEq ordinal live (LDivert actor) before afterState tag raw previous observed found =
+  case currentOwnerSourceObserved name key world error value nameEq keyEq (LDivert actor) before afterState tag raw
+    (\parent, component, same => case same of Refl impossible)
+    (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} actor (registry before)) Refl of
+    (fiber ** present) => previous actor fiber present
+currentDomainOwnerAction name key world error value nameEq keyEq ordinal live (LLeave actor) before afterState tag raw previous observed found =
+  case currentOwnerSourceObserved name key world error value nameEq keyEq (LLeave actor) before afterState tag raw
+    (\parent, component, same => case same of Refl impossible)
+    (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} actor (registry before)) Refl of
+    (fiber ** present) => previous actor fiber present
+currentDomainOwnerAction name key world error value nameEq keyEq ordinal live (LUnload actor) before afterState tag raw previous observed found =
+  case currentOwnerSourceObserved name key world error value nameEq keyEq (LUnload actor) before afterState tag raw
+    (\parent, component, same => case same of Refl impossible)
+    (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} actor (registry before)) Refl of
+    (fiber ** present) => previous actor fiber present
