@@ -204,3 +204,31 @@ synchronizationPushedUndo key world error value keyEq provision leftOlder
     case observedSame of
       Refl => older (normalizeLocal @{keyEq} provision
         (rightUndo (normalizeLocal @{keyEq} provision input)))
+
+||| Executable empty-origin observations at arbitrary queried names. Only the
+||| runtime registry bindings are observed; proof certificates remain erased.
+export
+0 synchronizationEmptyObservations :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (renaming : NameBijection name) ->
+  (ambient : world) -> (fibers : Registry name key value world error) ->
+  (bindings fibers = []) -> (selected : name) ->
+  (bindings (effectTables (projectEffectState {name = name} {key = key}
+      {value = value} {world = world} {error = error} @{nameEq}
+      (MkSystemState {name = name} {key = key} {value = value} {world = world}
+        {error = error} ambient fibers)) selected) =
+    bindings (effectTables (projectEffectState {name = name} {key = key}
+      {value = value} {world = world} {error = error} @{nameEq}
+      (MkSystemState {name = name} {key = key} {value = value} {world = world}
+        {error = error} ambient fibers)) (renameForward renaming selected)),
+   MaybeFiberRelatedBy {name = name} {key = key} {value = value} {world = world}
+    {error = error} renaming
+    (lookupFiber {name = name} {key = key} {value = value} {world = world}
+      {error = error} @{nameEq} selected fibers)
+    (lookupFiber {name = name} {key = key} {value = value} {world = world}
+      {error = error} @{nameEq} (renameForward renaming selected) fibers))
+synchronizationEmptyObservations name key world error value nameEq renaming
+  ambient (MkCoeffectContext [] unique) empty selected = (Refl, RenamedAbsent)
+synchronizationEmptyObservations name key world error value nameEq renaming
+  ambient (MkCoeffectContext (entry :: later) unique) empty selected =
+    case empty of Refl impossible
