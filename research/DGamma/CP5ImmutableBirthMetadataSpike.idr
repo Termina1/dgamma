@@ -327,3 +327,26 @@ record AuthenticatedRegistrationMatching
   0 matchedEventBackward : (event : RegistrationEvent name key world error value) -> Elem event rightScannedEvents ->
     (paired : RegistrationEvent name key world error value **
       (Elem paired leftScannedEvents, RegistrationEventMatch renaming paired event))
+
+||| A real retained event reads back BOTH static fields of its actual endpoint.
+public export
+0 scannedBirthEndpointMetadata :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (trace : Transitions initial finalState) ->
+  AlignedTransitions name key world error value nameEq keyEq trace ->
+  bindings (registry initial) = [] ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq trace ->
+  (event : RegistrationEvent name key world error value) ->
+  ScannedRegistrationBirth name key world error value Z trace event ->
+  (observed : Fiber name key value world error) ->
+  lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+    @{nameEq} (eventChild event) (registry finalState) = Just observed ->
+  (ChildOf (eventParent event), eventComponent event) = (fiberParent observed, fiberComponent observed)
+scannedBirthEndpointMetadata name key world error value nameEq keyEq trace aligned empty unique event birth observed found =
+  uniqueRawBirthMetadata name key world error value nameEq keyEq trace unique (eventChild event)
+    (ChildOf (eventParent event)) (fiberParent observed) (eventComponent event) (fiberComponent observed)
+    (scannedLocatedBirth birth)
+    (rawMetadataBirthAtPrefix name key world error value nameEq keyEq trace trace NoTransitions
+      (currentBirthTraceAppendEmpty name key world error value trace) aligned empty (eventChild event) observed found)
