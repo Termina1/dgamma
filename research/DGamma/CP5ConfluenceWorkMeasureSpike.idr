@@ -192,3 +192,14 @@ export
   (SegmentedRankProgress (rankSegmentStep observed source) (rankSegmentStep observed target))
 rankSegmentObservedStepProgress Nothing progress = LaterRankSegment [] progress
 rankSegmentObservedStepProgress (Just head) progress = rankSegmentOwnedStepProgress head progress
+
+||| Producer-owned head target equation; the proof-bearing selector stays opaque.
+export
+0 rankHeadTargetExact :
+  (left, right : Nat) -> (suffix : List Nat) ->
+  (crossed : rankCrossing left right = 1) ->
+  ((rankedPrefix (rankHeadProgress left right suffix crossed) ++
+      rankedRight (rankHeadProgress left right suffix crossed) ::
+      rankedLeft (rankHeadProgress left right suffix crossed) ::
+      rankedSuffix (rankHeadProgress left right suffix crossed)) = (right :: left :: suffix))
+rankHeadTargetExact left right suffix crossed = Refl
