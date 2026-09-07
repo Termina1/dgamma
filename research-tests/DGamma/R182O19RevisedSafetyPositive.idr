@@ -161,3 +161,32 @@ r182IndependentStructure =
     (AlignedStep (OInsert 0 Root r45Child) OInsertTag Refl _ (AlignedStep (OInsert 1 Root r45Child) OInsertTag Refl _ (AlignedStep (LBegin 0) LBeginTag Refl _ (AlignedStep (LAdvance 0) LFinishTag Refl _ (AlignedStep (LBegin 1) LBeginTag Refl _ (AlignedStep (LAdvance 1) LFinishTag Refl _ AlignedEnd)))))) Refl Refl,
    (RegistrationDisciplineStep _ _ (1 ** Refl) (RegistrationDisciplineStep _ _ (1 ** Refl) (RegistrationDisciplineStep _ _ () (RegistrationDisciplineStep _ _ () (RegistrationDisciplineStep _ _ () (RegistrationDisciplineStep _ _ () RegistrationDisciplineEnd)))))),
    (TraceComponentsTotalStep _ _ (r172ReuseAnyTransitionTotal (Fired {before = r182IndependentState 0} {afterState = r182IndependentState 1} r45NameEq r45KeyEq (OInsert 0 Root r45Child) OInsertTag Refl)) (TraceComponentsTotalStep _ _ (r172ReuseAnyTransitionTotal (Fired {before = r182IndependentState 1} {afterState = r182IndependentState 2} r45NameEq r45KeyEq (OInsert 1 Root r45Child) OInsertTag Refl)) (TraceComponentsTotalStep _ _ (r172ReuseAnyTransitionTotal (Fired {before = r182IndependentState 2} {afterState = r182IndependentState 3} r45NameEq r45KeyEq (LBegin 0) LBeginTag Refl)) (TraceComponentsTotalStep _ _ (r172ReuseAnyTransitionTotal (Fired {before = r182IndependentState 3} {afterState = r182IndependentState 4} r45NameEq r45KeyEq (LAdvance 0) LFinishTag Refl)) (TraceComponentsTotalStep _ _ (r172ReuseAnyTransitionTotal (Fired {before = r182IndependentState 4} {afterState = r182IndependentState 5} r45NameEq r45KeyEq (LBegin 1) LBeginTag Refl)) (TraceComponentsTotalStep _ _ (r172ReuseAnyTransitionTotal (Fired {before = r182IndependentState 5} {afterState = r182IndependentState 6} r45NameEq r45KeyEq (LAdvance 1) LFinishTag Refl)) TraceComponentsTotalEnd)))))))
+
+||| A10: FULL inhabited fifteen-field bundle on the independent trace. Monoid
+||| commutation includes actual forward, iterator-forward and yielded generators;
+||| this is not endpoint-only equality or a conditional independence packet.
+public export
+0 r182IndependentBundle : ReplayInvariantBundle Nat R45Key Unit String R45Value
+  r45Protocol r45NameEq r45KeyEq (r182IndependentTrace False)
+r182IndependentBundle = MkReplayInvariantBundle
+  (reachAligned (Builtin.fst r182IndependentStructure)) (Builtin.fst (Builtin.snd r182IndependentStructure)) Refl Refl Refl Refl Refl
+  (Builtin.snd (Builtin.snd r182IndependentStructure))
+  (MkTraceIndependent
+    (\left, right, distinct, leftT, rightT => r172ReuseMapsCommute
+      (runTraceEffectTransformation leftT) (runTraceEffectTransformation rightT)
+      (r182IndependentTransformationRespects left leftT)
+      (r182IndependentTransformationRespects right rightT))
+    (\left, right, distinct, stage, foreign, origin =>
+      r182IndependentIteratorObserved left stage (runTraceEffectTransformation foreign)
+        origin (runTraceEffectTransformation foreign origin) Refl))
+  (registrationDisciplineProvenance r45Protocol r45NameEq (r182IndependentTrace False) (Builtin.fst (Builtin.snd r182IndependentStructure)))
+  (reachedRegistryProtocolRanked r45Protocol r45NameEq r45KeyEq (Builtin.fst r182IndependentStructure) (registrationDisciplineProvenance r45Protocol r45NameEq (r182IndependentTrace False) (Builtin.fst (Builtin.snd r182IndependentStructure))))
+  (reachedRegistryParentRanksIncrease r45Protocol r45NameEq r45KeyEq (Builtin.fst r182IndependentStructure) (registrationDisciplineProvenance r45Protocol r45NameEq (r182IndependentTrace False) (Builtin.fst (Builtin.snd r182IndependentStructure))))
+  (disciplinedEndpointPrecedenceAcyclic r45Protocol r45NameEq r45KeyEq
+    (r182IndependentState 6) (Builtin.fst r182IndependentStructure) (Builtin.fst (Builtin.snd r182IndependentStructure)))
+  (supportCombinedWellFounded r45Protocol r45NameEq (r182IndependentState 6)
+    (reachedRegistryProtocolRanked r45Protocol r45NameEq r45KeyEq (Builtin.fst r182IndependentStructure) (registrationDisciplineProvenance r45Protocol r45NameEq (r182IndependentTrace False) (Builtin.fst (Builtin.snd r182IndependentStructure))))
+    (reachedRegistryParentRanksIncrease r45Protocol r45NameEq r45KeyEq (Builtin.fst r182IndependentStructure) (registrationDisciplineProvenance r45Protocol r45NameEq (r182IndependentTrace False) (Builtin.fst (Builtin.snd r182IndependentStructure)))))
+  (deletionPremisesGiveSupportMatchesActive r45Protocol r45NameEq r45KeyEq
+    (r182IndependentState 0) (r182IndependentState 6) (r182IndependentTrace False)
+    (reachAligned (Builtin.fst r182IndependentStructure)) (Builtin.fst (Builtin.snd r182IndependentStructure)) Refl Refl Refl Refl (Builtin.snd (Builtin.snd r182IndependentStructure)))
