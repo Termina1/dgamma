@@ -3,7 +3,10 @@
 Run detached (python3 -I ...) and monitor the log: R8 may exceed 150 seconds.
 Every target is touched to force source checking; only timestamps are changed.
 """
+import datetime
 import json
+import os
+import signal
 import pathlib
 import re
 import subprocess
@@ -12,6 +15,8 @@ import time
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 POSITIVE = [
+    'research/DGamma/CP5ConfluenceWorkMeasureSpike.idr',
+    'research/DGamma/CP5ConfluenceDeletionChainSpike.idr',
     'research/DGamma/CP5ConfluenceCanonicalSortSpike.idr',
     'research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr',
     'research/DGamma/CP5ConfluenceCrossTraceSpike.idr',
@@ -47,7 +52,26 @@ def check(path, symbol=None, diagnostic=None):
     command += ['--check', path]
     print('START ' + ' '.join(command), flush=True)
     started = time.time()
-    result = subprocess.run(command, cwd=ROOT, text=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    start_utc = datetime.datetime.now(datetime.timezone.utc).isoformat()
+    log_path = pathlib.Path('/tmp/dgamma-r176') / ('final-suite-' + pathlib.Path(path).stem + '.log')
+    maximum_rss = 0
+    with log_path.open('w') as output:
+        process = subprocess.Popen(command, cwd=ROOT, stdout=output, stderr=subprocess.STDOUT, start_new_session=True)
+        def stop(signum, frame):
+            os.killpg(process.pid, signal.SIGTERM)
+            process.wait()
+            raise SystemExit(128 + signum)
+        signal.signal(signal.SIGTERM, stop)
+        signal.signal(signal.SIGINT, stop)
+        while process.poll() is None:
+            time.sleep(1)
+            for row in subprocess.check_output(['ps', '-axo', 'pid,ppid,rss,command'], text=True).splitlines():
+                fields = row.strip().split(None, 3)
+                if len(fields) == 4 and fields[0].isdigit() and '/idris2_app/idris2' in fields[3]:
+                    maximum_rss = max(maximum_rss, int(fields[2]))
+                    if maximum_rss > 80 * 1024 * 1024:
+                        stop(signal.SIGTERM, None)
+    result = subprocess.CompletedProcess(command, process.returncode, log_path.read_text())
     print(result.stdout, flush=True)
     fresh = ('Building DGamma.' + pathlib.Path(path).stem) in result.stdout
     if diagnostic:
@@ -55,7 +79,8 @@ def check(path, symbol=None, diagnostic=None):
     else:
         passed = fresh and result.returncode == 0 and not re.search(r'^Error:', result.stdout, re.M)
     record = dict(path=path, command=' '.join(command), exit=result.returncode,
-                  seconds=time.time() - started, fresh=fresh, expectedDiagnostic=diagnostic, passed=passed)
+                  seconds=time.time() - started, start=start_utc, end=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                  maxSampleRSSKiB=maximum_rss, fresh=fresh, expectedDiagnostic=diagnostic, passed=passed)
     print('RESULT ' + json.dumps(record), flush=True)
     if not passed:
         raise SystemExit('Boundary regression failed; no subsequent checks launched')
@@ -66,4 +91,4 @@ if __name__ == '__main__':
         check(path)
     for module, symbol, diagnostic in NEGATIVE:
         check('research-tests/DGamma/' + module + '.idr', symbol, diagnostic)
-    print('PASS: 10 positive fresh checks; 9 exact diagnostic-negative fresh checks', flush=True)
+    print(f'PASS: {len(POSITIVE)} positive fresh checks; {len(NEGATIVE)} exact diagnostic-negative fresh checks', flush=True)

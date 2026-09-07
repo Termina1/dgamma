@@ -123,10 +123,64 @@ status is updated, without changing any O17/O19/O21 status.
 
 ## Unit C — actual operational measure bridge
 
-Not started. Root placement excluded; no O17 body authorized.
+**PARTIAL; C11 mandatory stop ratified.** Ten checked units retained. C11
+exhausted 3/3 and was removed; C12 unspent. Full source/transcripts and precise
+wall: `O6-R176-C11-STOP-AUDIT.md` (3730297). Supervisor ratified the stop and
+permitted only final validation/audit, no further proof attempts.
+
+| Unit | Declaration | Commit | Attempts |
+|---|---|---|---|
+| C1 | traceActionFold | 8708eeb | 1 |
+| C2 | sealedSuffixActionFoldSame | 7b9d18c | 1 |
+| C3 | canonicalWorkRankStep | 718e400 | 1 |
+| C4 | canonicalWorkRankSegmentsFold | 6442aec | 2 |
+| C5 | canonicalActionFoldAppend | e9b20cd | 1 |
+| C6 | canonicalWorkSealedSuffixRankSegments | 1aec1fd | 1 |
+| C7 | canonicalWorkAdjacentTargetRankFold | e11037f | 1 |
+| C8 | canonicalWorkAcceptedResultInversionMeasure | 2523a84 | 2 |
+| C9 | SegmentedRankProgress | 24220b2 | 1 |
+| C10 | segmentedRankProgressDrops | 87525a3 | 1 |
+| C11 | canonicalWorkRankStepProgress (REMOVED) | stop 3730297 | 3/3 |
+| C12 | not started | — | 0 |
+
+C4 first rejection was definitional equality of separately generated observation
+case trees. Actual action-pattern elimination plus an exact computed-value view
+proved the equality on attempt 2. C8 first rejection (`rankInversions` versus
+`rankInversions`) was unintended implicit binding of a bare imported function in
+the type; full qualification in that same declaration passed attempt 2.
+
+C1–C8 authenticate the actual sealed target and actual reached worklist under the
+SAME fixed order, preserving all suffix/prefix barriers. C9–C10 prove strict drop
+for a structural segmented R175 choice. **No strict decrease of an actual updated
+worklist is claimed:** actual rank-selected pair location, orientation/early
+applicability, simultaneous local descending packet, prefix lift and final
+measure connection remain open. No arbitrary smaller number or standalone rank
+word is labelled an operational result. No policy reset or unconditional old
+grouping is reinstated.
+
+### Process deviation — prior LocalDiamond gate omitted; retroactively authorized
+
+The standing R167/R168 ruling permits only visibility-keyword changes in
+LocalDiamond without a prior supervisor gate. C2 added a NEW declaration and
+one import before asking: this was a PROCESS DEVIATION, not routine authorization.
+`sealedSuffixActionFoldSame` must access the hidden `SealedSuffixReplaySpine`
+constructors; that private-access justification should have been gated BEFORE
+the edit. The supervisor independently verified and RETROACTIVELY AUTHORIZED
+this narrow exception when ratifying C11's stop: quantity 0, `export` (not public
+export), no field/caller changes, no holes, unchanged frozen splice hashes, and
+fresh PASS in 500.8 seconds. Future new LocalDiamond declarations still require
+a PRIOR gate explaining why they cannot live outside. No precedent waiving that
+rule is claimed.
+
+LocalDiamond's final delta is precisely one import plus the producer-derived
+constructor-fold lemma (27 added lines, zero removed); the prior body is intact.
+Its TTC was NOT deleted. It was refreshed by the mandatory fresh source check
+and remains preserved thereafter. C3's 429.5-second dependency refresh included
+the pre-existing large ordinal-capital TTC; checks stayed serialized.
 
 ## Status
 
 Unit A structural projections and six explicit-input surfaces retained.
-A validation complete; B raw maximum complete; C not yet started.
+A validation complete; B raw maximum complete; C1–C10 retained with C11 3/3
+ratified stop; final validation only is authorized.
 No full confluence claim; six inherited holes remain open.
