@@ -149,3 +149,19 @@ export
    (head :: (rankedPrefix progress ++ rankedRight progress :: rankedLeft progress :: rankedSuffix progress)))
 rankLiftTargetExact head source
   (MkRankedAdjacentProgress prior left right suffix exact weights decreased) = Refl
+
+||| An explicit head value avoids rewriting a freshly computed ownership rank.
+||| The original lifted choice and its decrease witness remain one packet.
+export
+0 segmentedRankOwnedLift :
+  (head : Nat) ->
+  {sourceHead, targetHead : List Nat} ->
+  {sourceLater, targetLater : List (List Nat)} ->
+  (SegmentedRankProgress (sourceHead :: sourceLater) (targetHead :: targetLater)) ->
+  (SegmentedRankProgress ((head :: sourceHead) :: sourceLater) ((head :: targetHead) :: targetLater))
+segmentedRankOwnedLift head (FirstRankSegment {sourceHead} later progress) =
+  replace {p = \observed => SegmentedRankProgress ((head :: sourceHead) :: later) (observed :: later)}
+    (rankLiftTargetExact head sourceHead progress)
+    (FirstRankSegment later (rankLiftProgress head sourceHead progress))
+segmentedRankOwnedLift head (LaterRankSegment untouched later) =
+  LaterRankSegment (head :: untouched) later
