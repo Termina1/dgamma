@@ -2843,3 +2843,20 @@ acceptedLeftCurrentBirth name key world error value nameEq left right renaming r
     left (leftFinalIndex registrations) (leftRegistrationSideScan (generationTraceCorrespondence registrations)) of
     (finalOrdinal ** scan) => currentBirthFromGenerationScan name key world error value nameEq left
       finalOrdinal (leftFinalGenerations registrations) scan selected generation current
+
+||| The RIGHT accepted scanner supplies the symmetric authenticated birth.
+export
+0 acceptedRightCurrentBirth :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) ->
+  {leftFirst, leftFinal, rightFirst, rightFinal : SystemState name key value world error} ->
+  (left : Transitions leftFirst leftFinal) -> (right : Transitions rightFirst rightFinal) ->
+  (renaming : RegistrationGenerationBijection name) ->
+  (registrations : RegistrationCorrespondenceByGeneration nameEq renaming left right) ->
+  (selected : name) -> (generation : RegistrationGeneration name) ->
+  (lookupCurrentGeneration @{nameEq} selected (rightFinalGenerations registrations) = Just generation) ->
+  CurrentGenerationBirth name key world error value right selected generation
+acceptedRightCurrentBirth name key world error value nameEq left right renaming registrations selected generation current =
+  case registrationSideGenerationScan name key world error value nameEq Z emptyRegistrationIndex
+    right (rightFinalIndex registrations) (rightRegistrationSideScan (generationTraceCorrespondence registrations)) of
+    (finalOrdinal ** scan) => currentBirthFromGenerationScan name key world error value nameEq right
+      finalOrdinal (rightFinalGenerations registrations) scan selected generation current
