@@ -41,3 +41,21 @@ observedRuleTagSame LRaiseTag LRaiseTag = Just Refl
 observedRuleTagSame LLeaveTag LLeaveTag = Just Refl
 observedRuleTagSame LUnloadTag LUnloadTag = Just Refl
 observedRuleTagSame _ _ = Nothing
+
+||| Authenticate an explicitly observed checked result. A different tag is
+||| rejected even when the action itself happens to fire before the left node.
+public export
+0 checkedEarlyApplicationObserved :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (before : SystemState name key value world error) ->
+  (action : Action name key value world error) -> (expected : RuleTag) ->
+  (observed : Maybe (RuleTag, SystemState name key value world error)) ->
+  checkedApplyAction @{nameEq} @{keyEq} action before = observed ->
+  Maybe (CheckedEarlyApplication name key world error value nameEq keyEq before action expected)
+checkedEarlyApplicationObserved name key world error value nameEq keyEq before action expected Nothing exact = Nothing
+checkedEarlyApplicationObserved name key world error value nameEq keyEq before action expected (Just (actual, afterState)) exact =
+  case observedRuleTagSame actual expected of
+    Nothing => Nothing
+    Just same => Just (MkCheckedEarlyApplication afterState
+      (trans exact (cong (\tag => Just (tag, afterState)) same)))
