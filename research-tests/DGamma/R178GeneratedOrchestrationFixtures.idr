@@ -40,3 +40,10 @@ r178ChildBegunState = MkSystemState ()
   (replaceBinding @{r45NameEq} 1
     (setFiberLifecycle r45ChildFresh (Reloading [] id EmptyView))
     (registry r178ParentDoneState))
+
+public export
+r178ChildBegin : Transition r178ParentDoneState r178ChildBegunState
+r178ChildBegin = Fired r45NameEq r45KeyEq (LBegin 1) LBeginTag
+  (DGamma.CP4ProgressNoDeadlock.checkedFromRaw r45NameEq r45KeyEq
+    (LBegin 1) r178ParentDoneState r178ChildBegunState LBeginTag
+    (checkedTransitionTargetValid r178ParentFinish) Refl)
