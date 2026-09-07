@@ -3407,3 +3407,23 @@ projectionLeftBirthCoverage name key world error value nameEq left right renamin
     registrationSideFoldCoverage name key world error value nameEq Z emptyRegistrationIndex left leftFold
       selected parent component (locatedActionOrdinal birth)
       (rawClosingActionAtLocated name key world error value left (OInsert selected (ChildOf parent) component) birth)
+
+0 projectionRightBirthCoverage :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) ->
+  {leftFirst, leftFinal, rightFirst, rightFinal : SystemState name key value world error} ->
+  (left : Transitions leftFirst leftFinal) -> (right : Transitions rightFirst rightFinal) ->
+  (renaming : RegistrationGenerationBijection name) ->
+  {leftResultIndex, rightResultIndex : RegistrationIndexState name} ->
+  (projection : AlignedFiniteRegistrationProjection nameEq renaming Z
+    (the (RegistrationIndexState name) DGamma.CP3.emptyRegistrationIndex) left leftResultIndex Z
+    (the (RegistrationIndexState name) DGamma.CP3.emptyRegistrationIndex) right rightResultIndex [] []) ->
+  (selected, parent : name) -> (component : Component key value world error) ->
+  (birth : LocatedActionOccurrence (OInsert selected (ChildOf parent) component) right) ->
+  ClassifiedGeneratedBirth name key world error value Z right
+    (rightScannedEvents (authenticatedMatchingFromProjection name key world error value nameEq left right renaming projection)) selected
+projectionRightBirthCoverage name key world error value nameEq left right renaming
+  (MkAlignedFiniteRegistrationProjection plan leftScan rightScan leftEvents rightEvents planFold leftFold rightFold)
+  selected parent component birth =
+    registrationSideFoldCoverage name key world error value nameEq Z emptyRegistrationIndex right rightFold
+      selected parent component (locatedActionOrdinal birth)
+      (rawClosingActionAtLocated name key world error value right (OInsert selected (ChildOf parent) component) birth)
