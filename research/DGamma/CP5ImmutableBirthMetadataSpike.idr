@@ -546,3 +546,32 @@ public export
 authenticatedGenerationNamesSame name key world error value trace leftSelected rightSelected leftGeneration rightGeneration leftBirth rightBirth same =
   trans (sym (cong generationName (currentBirthStampExact leftBirth)))
     (trans (cong generationName same) (cong generationName (currentBirthStampExact rightBirth)))
+
+||| Reconcile actual current lookups with authenticated matched historical
+||| parent stamps. Parameterizing the mapping supports both bijection directions.
+public export
+0 parentGenerationCurrentPacket :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (right : Transitions initial finalState) ->
+  (mapping : RegistrationGeneration name -> RegistrationGeneration name) ->
+  (leftEnvironment, rightEnvironment : GenerationEnvironment name) ->
+  (leftParent, selectedRight, rightParent : name) ->
+  (leftCurrentGeneration, rightCurrentGeneration, leftHistoricalGeneration, rightHistoricalGeneration : RegistrationGeneration name) ->
+  lookupCurrentGeneration @{nameEq} leftParent leftEnvironment = Just leftCurrentGeneration ->
+  lookupCurrentGeneration @{nameEq} selectedRight rightEnvironment = Just rightCurrentGeneration ->
+  mapping leftCurrentGeneration = rightCurrentGeneration ->
+  mapping leftHistoricalGeneration = rightHistoricalGeneration ->
+  leftCurrentGeneration = leftHistoricalGeneration ->
+  CurrentGenerationBirth name key world error value right selectedRight rightCurrentGeneration ->
+  CurrentGenerationBirth name key world error value right rightParent rightHistoricalGeneration ->
+  (lookupCurrentGeneration @{nameEq} leftParent leftEnvironment = Just leftHistoricalGeneration,
+   lookupCurrentGeneration @{nameEq} rightParent rightEnvironment = Just rightHistoricalGeneration,
+   selectedRight = rightParent)
+parentGenerationCurrentPacket name key world error value nameEq right mapping leftEnvironment rightEnvironment leftParent selectedRight rightParent
+  leftCurrentGeneration rightCurrentGeneration leftHistoricalGeneration rightHistoricalGeneration leftCurrent rightCurrent mapped historicalMapped leftSame
+  rightCurrentBirth rightHistoricalBirth =
+    (trans leftCurrent (cong Just leftSame),
+     trans (cong (\selected => lookupCurrentGeneration @{nameEq} selected rightEnvironment) (sym (authenticatedGenerationNamesSame name key world error value right selectedRight rightParent rightCurrentGeneration rightHistoricalGeneration rightCurrentBirth rightHistoricalBirth (trans (sym mapped) (trans (cong mapping leftSame) historicalMapped)))))
+       (trans rightCurrent (cong Just (trans (sym mapped) (trans (cong mapping leftSame) historicalMapped)))),
+     (authenticatedGenerationNamesSame name key world error value right selectedRight rightParent rightCurrentGeneration rightHistoricalGeneration rightCurrentBirth rightHistoricalBirth (trans (sym mapped) (trans (cong mapping leftSame) historicalMapped))))
