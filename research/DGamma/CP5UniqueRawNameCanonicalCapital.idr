@@ -49,3 +49,24 @@ capitalCanonicalUniqueInsertions name key world error value protocol nameEq keyE
       uniqueInsertionsAfterFiniteDerivation name key world error value protocol nameEq keyEq
         (sortingAdjacentDerivation sorted)
         (uniqueInsertionsAfterReduction name key world error value nameEq keyEq protocol reduction unique)
+
+||| A whole block swap retains the injective all-action derivation, not just RAR.
+export
+0 blockSwapUniqueInsertions :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {sourceOrder, targetOrder : List name} ->
+  {orderSwap : AdjacentActorOrderSwap name sourceOrder targetOrder} ->
+  {initial, sourceFinal : SystemState name key value world error} ->
+  {sourceTrace : Transitions initial sourceFinal} ->
+  {sourceBlocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder sourceTrace} ->
+  {sourcePremises : ReplayInvariantBundle name key world error value protocol nameEq keyEq sourceTrace} ->
+  {safety : AdjacentActorSwapSafety name key world error value protocol nameEq keyEq orderSwap sourceTrace sourceBlocks sourcePremises} ->
+  (step : OperationalAdjacentBlockSwap name key world error value protocol nameEq keyEq
+    orderSwap sourceTrace sourceBlocks sourcePremises safety) ->
+  (UniqueRawNameInsertions name key world error value nameEq keyEq sourceTrace) ->
+  (UniqueRawNameInsertions name key world error value nameEq keyEq (blockSwapTrace step))
+blockSwapUniqueInsertions name key world error value protocol nameEq keyEq step =
+  uniqueInsertionsAfterFiniteDerivation name key world error value protocol nameEq keyEq
+    (wholeBlockFiniteDerivation (blockSwapWholeDerivation step))
