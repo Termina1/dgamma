@@ -183,3 +183,43 @@ o19BubbleActivationRow nameEq keyEq protocol source earlier _ right later
           (appendTransitions rest (MoreTransitions right later))) decomposition)
         premises unique activation (\step, occurs => classes step (OccursLater occurs)) remaining)
       (Builtin.fst (classes left OccursHere)) (Builtin.snd (classes left OccursHere)) early
+
+||| Arbitrary-length BEGIN row from the genuine ONE initial guard. All cut
+||| guards, local crossings, sealed suffix replays, reached bundles, original
+||| uniqueness and exact row count are DERIVED in one construction. This is
+||| an A/A first-row theorem, not the still-missing full Cartesian induction.
+export
+0 o19BubbleBeginRow :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) -> (actor : name) ->
+  {initial, sourceFinal, before, rightBefore, rightAfter : SystemState name key value world error} ->
+  (source : Transitions initial sourceFinal) -> (earlier : Transitions initial before) ->
+  (spine : Transitions before rightBefore) -> (opening : BeginStep nameEq keyEq actor rightBefore rightAfter) ->
+  (later : Transitions rightAfter sourceFinal) ->
+  (appendTransitions earlier (appendTransitions spine (MoreTransitions (beginTransition opening) later)) = source) ->
+  ReplayInvariantBundle name key world error value protocol nameEq keyEq source ->
+  (0 unique : UniqueRawNameInsertions name key world error value nameEq keyEq source) ->
+  (0 classes : {first, last : SystemState name key value world error} ->
+    (step : Transition first last) -> OccursIn step spine ->
+    (PaperActivationStep step, Not (actor = transitionActor step))) ->
+  CheckedEarlyApplication name key world error value nameEq keyEq before (LBegin actor) LBeginTag ->
+  O19ActivationRow name key world error value protocol nameEq keyEq source earlier
+    (beginTransition opening) (transitionCount spine)
+o19BubbleBeginRow {name} {key} {world} {error} {value}
+  nameEq keyEq protocol actor source earlier spine opening later decomposition premises unique classes early =
+    o19BubbleActivationRow nameEq keyEq protocol source earlier spine (beginTransition opening) later
+      decomposition premises unique (PaperBeginStep Refl Refl) classes
+      (o19OpeningAlongForeignActivations nameEq keyEq actor spine
+        (Builtin.fst (alignedAppendSplit spine (MoreTransitions (beginTransition opening) later)
+          (Builtin.snd (alignedAppendSplit earlier
+            (appendTransitions spine (MoreTransitions (beginTransition opening) later))
+            (replace {p = AlignedTransitions name key world error value nameEq keyEq}
+              (sym decomposition) (replayAligned premises))))))
+        classes
+        (alignedTraceWellFormedEnd nameEq keyEq earlier
+          (Builtin.fst (alignedAppendSplit earlier
+            (appendTransitions spine (MoreTransitions (beginTransition opening) later))
+            (replace {p = AlignedTransitions name key world error value nameEq keyEq}
+              (sym decomposition) (replayAligned premises))))
+          (replayInitialWellFormed premises)) early)

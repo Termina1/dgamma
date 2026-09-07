@@ -87,3 +87,12 @@ A12 PASS2,3.121s: explicit produced-node consumer builds the same cursor,
 uniqueness, composed finite derivation, exposed moved-right boundary, labels
 and exact incremented count. Attempt1 rejected a missing CanonicalSort import
 for uniqueInsertionsAfterFiniteDerivation; only that import fixed at attempt2.
+
+A13 PASS1,3.110s (1b68ec0): next actual crossing producer from reached row.
+A14 PASS1,3.120s (c59d3d5): genuine arbitrary-length one-row induction.
+A15 PASS1,3.126s: BEGIN specialization derives ALL intermediate guards from
+the original first guard and whole replay bundle, then produces the same
+actual crossings/replays/bundles/uniqueness/finite derivation/exact row count.
+This closes an arbitrary-length A/A FIRST ROW subproblem only. It does NOT
+close arbitrary Cartesian iteration, all orientations, full source-origin
+plan/Cartesian coverage, installed target blocks, or O19. No body attempted.
