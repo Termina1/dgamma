@@ -214,3 +214,48 @@ registrationBeginBirthsObserved name key world error value nameEq global ordinal
     (parentBirthAfterPut name key world error value nameEq global activations actor (MkRegistrationActivation generation ordinal)
       (indexCurrentBirths births actor generation (currentGenerationEntryFromLookup nameEq actor generation live exact))
       (indexActivationBirths births))
+
+||| Full index-action induction for real current AND historical parent births.
+export
+0 registrationIndexBirthAction :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (global : Transitions initial finalState) -> (ordinal : Nat) ->
+  (action : Action name key value world error) -> (index : RegistrationIndexState name) ->
+  LocatedActionOccurrence action global ->
+  (occurrence : LocatedActionOccurrence action global) -> locatedActionOrdinal occurrence = ordinal ->
+  RegistrationIndexBirths name key world error value global index ->
+  RegistrationIndexBirths name key world error value global (advanceRegistrationIndex @{nameEq} ordinal action index)
+registrationIndexBirthAction name key world error value nameEq global ordinal (OInsert actor Root component)
+  (MkRegistrationIndexState live activations counts deleted) unused occurrence exact births =
+    MkRegistrationIndexBirths
+      (currentBirthActionProgress name key world error value nameEq global ordinal live (OInsert actor Root component) occurrence exact (indexCurrentBirths births))
+      (indexActivationBirths births)
+registrationIndexBirthAction name key world error value nameEq global ordinal (OInsert child (ChildOf parent) component)
+  (MkRegistrationIndexState live activations counts deleted) unused occurrence exact births =
+    MkRegistrationIndexBirths
+      (currentBirthActionProgress name key world error value nameEq global ordinal live (OInsert child (ChildOf parent) component) occurrence exact (indexCurrentBirths births))
+      (indexActivationBirths births)
+registrationIndexBirthAction name key world error value nameEq global ordinal (ORetire actor)
+  (MkRegistrationIndexState live activations counts deleted) unused occurrence exact births = births
+registrationIndexBirthAction name key world error value nameEq global ordinal (ORemove actor)
+  (MkRegistrationIndexState live activations counts deleted) unused occurrence exact births =
+    MkRegistrationIndexBirths
+      (currentBirthActionProgress name key world error value nameEq global ordinal live (ORemove actor) occurrence exact (indexCurrentBirths births))
+      (\selected, activation, member => indexActivationBirths births selected activation
+        (parentDeleteEntryOrigin name nameEq actor activations selected activation member))
+registrationIndexBirthAction name key world error value nameEq global ordinal (LBegin actor)
+  (MkRegistrationIndexState live activations counts deleted) unused occurrence exact births =
+    registrationBeginBirthsObserved name key world error value nameEq global ordinal actor live activations counts deleted births
+      (lookupCurrentGeneration @{nameEq} actor live) Refl
+registrationIndexBirthAction name key world error value nameEq global ordinal (LAdvance actor)
+  (MkRegistrationIndexState live activations counts deleted) unused occurrence exact births = births
+registrationIndexBirthAction name key world error value nameEq global ordinal (LDivert actor)
+  (MkRegistrationIndexState live activations counts deleted) unused occurrence exact births = births
+registrationIndexBirthAction name key world error value nameEq global ordinal (LLeave actor)
+  (MkRegistrationIndexState live activations counts deleted) unused occurrence exact births = births
+registrationIndexBirthAction name key world error value nameEq global ordinal (LUnload actor)
+  (MkRegistrationIndexState live activations counts deleted) unused occurrence exact births =
+    MkRegistrationIndexBirths (indexCurrentBirths births)
+      (\selected, activation, member => indexActivationBirths births selected activation
+        (parentDeleteEntryOrigin name nameEq actor activations selected activation member))
