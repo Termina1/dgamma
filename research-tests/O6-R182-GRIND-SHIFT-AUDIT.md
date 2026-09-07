@@ -368,3 +368,17 @@ boundaries. The body remains the same existing hole and census5.
 - B-construct-final-package: fresh PASS 16.583s.
 
 Current time18:30UTC leaves ~117min to no-new-attempt cutoff. A substantial first-node construction milestone is checked; allocating time to the independent count7 TraceIndependent goal now requires a supervisor decision because the complete O19 Cartesian loop is not finished. No false3/3 body attempt or complete-body claim is manufactured.
+
+### Supervisor ruling after be41e70
+
+B prefix RATIFIED; do NOT switch to C. Continue B until40-minute/no-new-attempt
+guard20:27UTC: remaining three Cartesian crossings, simultaneous reached bundle/
+derivation construction, range/decomposition/origin plan, and O19 body only if
+complete construction lands before guard. Otherwise exact remaining nodes go
+to R183. C only after a real B3/3 stop with>=45min. No body attempt is fabricated.
+
+Next producer design uses DETERMINISM of ACTUAL aligned moved transitions and
+small explicit checked guards to authenticate reached cuts. It does not try
+scalar Refl on projections of the dense diamond/suffix builders. The public
+movedPairAligned/action/tag fields are enough to identify the reached middle
+and end against a separately executed checked pair, without unfolding builders.
