@@ -370,3 +370,23 @@ retirementCutCannotEndUnretired name key world error value nameEq keyEq {before}
           (replace {p = UniqueRawNameInsertions name key world error value nameEq keyEq}
             (sym (appendTransitionsAssociative prior (MoreTransitions step NoTransitions) later)) unique)
           selected retiredFiber finalFiber retiredFound retiredTrue finalFound finalFalse
+
+||| Every historical retirement of this raw name is excluded by a nonretired
+||| endpoint under strong original uniqueness; legal reuse is NOT asserted away.
+export
+0 nonretiredEndpointRejectsRetirement :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {first, finalState : SystemState name key value world error} ->
+  (trace : Transitions first finalState) -> AlignedTransitions name key world error value nameEq keyEq trace ->
+  (bindings (registry first) = []) -> UniqueRawNameInsertions name key world error value nameEq keyEq trace ->
+  (selected : name) -> (finalFiber : Fiber name key value world error) ->
+  (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+    @{nameEq} selected (registry finalState) = Just finalFiber) -> (retired finalFiber = False) ->
+  LocatedActionOccurrence (ORetire selected) trace -> Void
+nonretiredEndpointRejectsRetirement name key world error value nameEq keyEq trace aligned empty unique selected finalFiber finalFound finalFalse
+  (MkLocatedActionOccurrence before afterState prior step later exact decomposition) =
+    retirementCutCannotEndUnretired name key world error value nameEq keyEq prior step later
+      (replace {p = AlignedTransitions name key world error value nameEq keyEq} (sym decomposition) aligned) empty
+      (replace {p = UniqueRawNameInsertions name key world error value nameEq keyEq} (sym decomposition) unique)
+      selected exact finalFiber finalFound finalFalse
