@@ -33,3 +33,21 @@ record LocatedRankDescent
   0 traceDescentDescending : rankCrossing traceDescentLeftRank traceDescentRightRank = 1
   0 traceDescentDecomposition : appendTransitions traceDescentPrefix
     (MoreTransitions traceDescentLeft (MoreTransitions traceDescentRight traceDescentSuffix)) = trace
+
+||| Construct the exact head choice from the actual checked pair observations.
+public export
+0 locatedRankDescentHead :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (observe : Action name key value world error -> Maybe Nat) ->
+  {before, middle, afterState, finalState : SystemState name key value world error} ->
+  (left : Transition before middle) -> (right : Transition middle afterState) ->
+  (suffix : Transitions afterState finalState) ->
+  (leftRank, rightRank : Nat) ->
+  (observe (transitionAction left) = Just leftRank) ->
+  (observe (transitionAction right) = Just rightRank) ->
+  (rankCrossing leftRank rightRank = 1) ->
+  LocatedRankDescent name key world error value observe (MoreTransitions left (MoreTransitions right suffix))
+locatedRankDescentHead name key world error value observe {before} {middle} {afterState}
+  left right suffix leftRank rightRank leftExact rightExact crossed =
+    MkLocatedRankDescent before middle afterState NoTransitions left right suffix
+      leftRank rightRank leftExact rightExact crossed Refl
