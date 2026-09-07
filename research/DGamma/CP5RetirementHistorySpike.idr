@@ -390,3 +390,15 @@ nonretiredEndpointRejectsRetirement name key world error value nameEq keyEq trac
       (replace {p = AlignedTransitions name key world error value nameEq keyEq} (sym decomposition) aligned) empty
       (replace {p = UniqueRawNameInsertions name key world error value nameEq keyEq} (sym decomposition) unique)
       selected exact finalFiber finalFound finalFalse
+
+export
+0 retirementOccurrenceLocated :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  {first, finalState : SystemState name key value world error} ->
+  (trace : Transitions first finalState) -> (action : Action name key value world error) ->
+  ActionOccurs action trace -> LocatedActionOccurrence action trace
+retirementOccurrenceLocated name key world error value _ action (ActionOccursHere step rest exact) =
+  MkLocatedActionOccurrence _ _ NoTransitions step rest exact Refl
+retirementOccurrenceLocated name key world error value _ action (ActionOccursLater step rest later) =
+  currentBirthPrependLocation name key world error value step rest action
+    (retirementOccurrenceLocated name key world error value rest action later)
