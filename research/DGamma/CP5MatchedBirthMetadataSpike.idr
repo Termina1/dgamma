@@ -275,3 +275,26 @@ acceptedMatchedParentNames name key world error value nameEq left right renaming
     (acceptedMatchedParentBirths name key world error value nameEq left right renaming registrations leftEvent rightEvent leftMember rightMember matched))),
    cong generationName (currentBirthStampExact (snd
     (acceptedMatchedParentBirths name key world error value nameEq left right renaming registrations leftEvent rightEvent leftMember rightMember matched))))
+
+||| Endpoint parent fields are exactly the names of the AUTHENTICATED matched
+||| parent generations. Those generations are mapped by endpointEventMatch;
+||| their endpoint-currentness/phi coherence is intentionally still separate.
+export
+0 acceptedEndpointParentGenerations :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) ->
+  {leftFirst, leftFinal, rightFirst, rightFinal : SystemState name key value world error} ->
+  (left : Transitions leftFirst leftFinal) -> (right : Transitions rightFirst rightFinal) ->
+  (renaming : RegistrationGenerationBijection name) ->
+  (registrations : RegistrationCorrespondenceByGeneration nameEq renaming left right) ->
+  (leftEvent, rightEvent : RegistrationEvent name key world error value) ->
+  Elem leftEvent (leftScannedEvents (acceptedAuthenticatedRegistrationMatching name key world error value nameEq left right renaming registrations)) ->
+  Elem rightEvent (rightScannedEvents (acceptedAuthenticatedRegistrationMatching name key world error value nameEq left right renaming registrations)) ->
+  (leftFiber, rightFiber : Fiber name key value world error) ->
+  (metadata : MatchedEndpointStaticMetadata name key world error value renaming leftEvent rightEvent leftFiber rightFiber) ->
+  (fiberParent leftFiber = ChildOf (generationName (activationParentGeneration (leftMatchedActivation (endpointEventMatch metadata)))),
+   fiberParent rightFiber = ChildOf (generationName (activationParentGeneration (rightMatchedActivation (endpointEventMatch metadata)))))
+acceptedEndpointParentGenerations name key world error value nameEq left right renaming registrations leftEvent rightEvent leftMember rightMember leftFiber rightFiber metadata =
+  (trans (leftEndpointBirthParent metadata) (cong ChildOf (sym (fst
+    (acceptedMatchedParentNames name key world error value nameEq left right renaming registrations leftEvent rightEvent leftMember rightMember (endpointEventMatch metadata))))),
+   trans (rightEndpointBirthParent metadata) (cong ChildOf (sym (snd
+    (acceptedMatchedParentNames name key world error value nameEq left right renaming registrations leftEvent rightEvent leftMember rightMember (endpointEventMatch metadata))))))
