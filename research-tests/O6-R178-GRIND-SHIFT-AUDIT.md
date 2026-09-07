@@ -348,3 +348,29 @@ through the same pipeline, and additionally requires production package/statemen
 checks and a revised canonical-existence argument. No production unfreeze occurs.
 
 A8 and A9 remain **supervisor decisions under delegation, owner override pending**.
+
+### C1–C8 checked; C9 voluntary 2/3 cost stop, fully restored
+
+C1–C6 have checked and committed the complete standalone replacement surface.
+C4 needed 2/3: `transitionAction` required erased middle-state indices at runtime;
+patterning the stored Fired action directly repaired it WITHOUT changing C3's
+quantities. C6 needed the explicit Metatheory import for actionOwner (2/3).
+C7/C8 fixture-only action-observation reification and actual-state annotations
+passed and remain. These do not yet prove the R174 earliest placement shape.
+
+C9 attempts to instantiate `r178R174RootBirth` on the ACTUAL computed R174 trace
+hit a bounded elaboration cost wall, with no diagnostic verdict:
+- C9-1 began 08:20:36; its unexpected >180s cost exceeded the foreground tool
+  window, killing the monitoring runner and leaving its owned shell/Chez group.
+  The saved PID identified that exact group, explicitly terminated at 08:25:05.
+  This is charged as attempt 1, NOT a pass. No TTC seed was deleted.
+- C9-2 explicitly bound all type/context indices and ran DETACHED under a 180s
+  monitor. It was terminated cleanly after 180.45s, no verdict, sampled peak
+  673,248 KiB. This is charged as attempt 2. No orphan remains.
+
+The root-birth declaration was fully removed, source restored byte-for-byte to
+C8 (092d274c94f3938074c7e5e762a933f00a603732830604c9536d30a82a07ff74), and a
+fresh restoration check passed in 2.10s. Both exact attempts are permanently in
+`research-tests/r178-stops/C9-*`. This is a voluntary cost stop at 2/3, not a
+claimed exhausted three-attempt budget. Gate before deciding a final retry or
+independent scalar interval fixture. O18 remains closed; five holes unchanged.

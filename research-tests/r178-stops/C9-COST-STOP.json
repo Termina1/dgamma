@@ -1,0 +1,53 @@
+[
+  {
+    "unit": "C9-1",
+    "path": "research-tests/DGamma/R174O17ProvisionCollisionCandidate.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R174O17ProvisionCollisionCandidate.idr"
+    ],
+    "start": "2026-09-07T08:20:36.281332+00:00",
+    "end": "2026-09-07T08:25:05.484477+00:00",
+    "exit": null,
+    "fresh": false,
+    "passed": false,
+    "interrupted": true,
+    "sourceSHA256": "71b7c19e46c2d0e248ba4c7cc5bbfb377e29718b9a0f567e24541f0da19624e1",
+    "transcript": "",
+    "note": "Foreground 180s tool window killed monitoring runner, leaving owned shell21488/Chez21491. Explicitly terminated owned process group from saved PID; no compiler verdict. Counts as attempt1. Future fixture checks detached."
+  },
+  {
+    "unit": "C9-2",
+    "path": "research-tests/DGamma/R174O17ProvisionCollisionCandidate.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R174O17ProvisionCollisionCandidate.idr"
+    ],
+    "start": "2026-09-07T08:26:10.571225+00:00",
+    "end": "2026-09-07T08:29:11.017863+00:00",
+    "seconds": 180.44501645769924,
+    "exit": -15,
+    "fresh": false,
+    "passed": false,
+    "interrupted": true,
+    "maxSampleRSSKiB": 673248,
+    "sourceSHA256": "2e884f3350371bc7c7a8abe672ce5ad06ebd027e75feacebd1fa32157a689911",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": ""
+  }
+]
