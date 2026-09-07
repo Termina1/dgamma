@@ -6,6 +6,7 @@ import DGamma.Metatheory
 import DGamma.CP3
 import DGamma.CP5UniqueRawNameInsertions
 import DGamma.CP5CurrentGenerationBirthSpike
+import DGamma.CP5ImmutableBirthMetadataSpike
 import DGamma.CP5ConfluenceDeletionChainSpike
 import DGamma.CP5ConfluenceLocalDiamondSpike
 import DGamma.CP5ConfluenceCanonicalSortSpike
@@ -3054,3 +3055,34 @@ acceptedSupportedBackwardDomain name key world error value nameEq keyEq {rightFi
             (generatedGenerationBijection sameInputs) (generatedRegistrationTree sameInputs) leftAligned
             (renameBackward (currentNameBijection (endpointRenaming sameInputs)) selected) leftGeneration leftCurrent of
             (leftFiber ** leftFound) => (rightGeneration ** leftGeneration ** leftFiber ** (rightCurrent, leftCurrent, mapped, leftFound))
+
+||| Every member of the actual accepted side fold is an original located birth.
+||| This is producer-owned: no caller-chosen event-origin map is accepted.
+0 registrationSideFoldBirth :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (ordinal : Nat) ->
+  {index, finalIndex : RegistrationIndexState name} ->
+  {first, finalState : SystemState name key value world error} ->
+  {trace : Transitions first finalState} ->
+  {scan : RegistrationSideScan nameEq ordinal index trace finalIndex} ->
+  {events : List (RegistrationEvent name key world error value)} ->
+  RegistrationSideEventFold scan events ->
+  (event : RegistrationEvent name key world error value) -> Elem event events ->
+  ScannedRegistrationBirth name key world error value ordinal trace event
+registrationSideFoldBirth name key world error value nameEq ordinal
+  RegistrationSideEventFoldEnd event member = absurd member
+registrationSideFoldBirth name key world error value nameEq ordinal
+  (RegistrationSideEventFoldNonRegistration action step rest actionExact notRegistration later) event member =
+    scannedRegistrationBirthPrepend name key world error value ordinal step rest event
+      (registrationSideFoldBirth name key world error value nameEq (S ordinal) later event member)
+registrationSideFoldBirth name key world error value nameEq ordinal
+  (RegistrationSideEventFoldDeleted step rest actionExact deleted later) event member =
+    scannedRegistrationBirthPrepend name key world error value ordinal step rest event
+      (registrationSideFoldBirth name key world error value nameEq (S ordinal) later event member)
+registrationSideFoldBirth name key world error value nameEq ordinal
+  (RegistrationSideEventFoldSurviving {index} {child} {parent} {component} step rest actionExact surviving later) event member =
+    case member of
+      Here => scannedRegistrationBirthHead name key world error value nameEq ordinal index child parent component
+        step rest actionExact
+      There after => scannedRegistrationBirthPrepend name key world error value ordinal step rest event
+        (registrationSideFoldBirth name key world error value nameEq (S ordinal) later event after)
