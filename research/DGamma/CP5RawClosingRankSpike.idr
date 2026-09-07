@@ -51,3 +51,27 @@ rawClosingActionAtLocated name key world error value trace action occurrence =
     (trans (rawClosingActionAtSplit name key world error value
       (beforeActionOccurrence occurrence) (locatedTransition occurrence) (afterActionOccurrence occurrence))
       (cong Just (locatedAction occurrence)))
+
+||| Fresh raw names identify the immutable COMPONENT, not merely its rank.
+public export
+0 uniqueRawBirthComponents :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (trace : Transitions initial finalState) ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq trace ->
+  (selected : name) -> (leftParent, rightParent : Parent name) ->
+  (leftComponent, rightComponent : Component key value world error) ->
+  (left : LocatedActionOccurrence (OInsert selected leftParent leftComponent) trace) ->
+  (right : LocatedActionOccurrence (OInsert selected rightParent rightComponent) trace) ->
+  leftComponent = rightComponent
+uniqueRawBirthComponents name key world error value nameEq keyEq trace unique
+  selected leftParent rightParent leftComponent rightComponent left right =
+    case justInjective
+      (trans (sym (rawClosingActionAtLocated name key world error value trace
+        (OInsert selected leftParent leftComponent) left))
+        (trans (cong (\ordinal => rawClosingActionAt name key world error value ordinal trace)
+          (uniqueInsertionPosition unique selected leftParent rightParent leftComponent rightComponent left right))
+          (rawClosingActionAtLocated name key world error value trace
+            (OInsert selected rightParent rightComponent) right))) of
+      Refl => Refl
