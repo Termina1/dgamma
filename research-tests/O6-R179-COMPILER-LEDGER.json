@@ -1,0 +1,230 @@
+[
+  {
+    "unit": "A1-1",
+    "path": "research-tests/DGamma/R179O19DependencyCountershape.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R179O19DependencyCountershape.idr"
+    ],
+    "start": "2026-09-07T09:17:35.098748+00:00",
+    "end": "2026-09-07T09:17:37.169172+00:00",
+    "seconds": 2.0702134580351412,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 1439024,
+    "sourceSHA256": "fd927111628ab6a3390894e89509967e7d1244268200fa43d554334ccb1c1442",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "1/1: Building DGamma.R179O19DependencyCountershape (research-tests/DGamma/R179O19DependencyCountershape.idr)\n",
+    "matchingSourceCommits": [
+      "767f2d0e4c6cb518ffa00f35c3c8a9fec4d4a167"
+    ]
+  },
+  {
+    "unit": "A2-1",
+    "path": "research-tests/DGamma/R179O19DependencyCountershape.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R179O19DependencyCountershape.idr"
+    ],
+    "start": "2026-09-07T09:18:13.802618+00:00",
+    "end": "2026-09-07T09:18:15.898913+00:00",
+    "seconds": 2.0960929580032825,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 1139056,
+    "sourceSHA256": "5af263de349176cf64a40b5d2ecacf58f55ce02ad01339a30af1eda9e9786470",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "1/1: Building DGamma.R179O19DependencyCountershape (research-tests/DGamma/R179O19DependencyCountershape.idr)\n",
+    "matchingSourceCommits": [
+      "f31a49abff4df5a9cf014d8266f78c3cc2788198"
+    ]
+  },
+  {
+    "unit": "A3-1",
+    "path": "research-tests/DGamma/R179O19DependencyCountershape.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R179O19DependencyCountershape.idr"
+    ],
+    "start": "2026-09-07T09:18:26.734108+00:00",
+    "end": "2026-09-07T09:20:38.234522+00:00",
+    "seconds": 131.500545124989,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 2407104,
+    "sourceSHA256": "706d454a5cd92b149f094a4cd0c053046491c72f0458b259b377bc0fd382ba96",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "1/1: Building DGamma.R179O19DependencyCountershape (research-tests/DGamma/R179O19DependencyCountershape.idr)\n",
+    "matchingSourceCommits": [
+      "a5fcb7f6bc5b1f168f6b3c04697e3257b8223b02"
+    ]
+  },
+  {
+    "unit": "A4-1",
+    "path": "research-tests/DGamma/R179O19DependencyCountershape.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R179O19DependencyCountershape.idr"
+    ],
+    "start": "2026-09-07T09:21:06.743556+00:00",
+    "end": "2026-09-07T09:23:18.271328+00:00",
+    "seconds": 131.52791212499142,
+    "exit": 1,
+    "fresh": true,
+    "passed": false,
+    "interrupted": false,
+    "maxSampleRSSKiB": 677408,
+    "sourceSHA256": "997ae57cd2d8ced39e1f92d2ebc080d9033658f97dad0db75d5cc087c9d5cbeb",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "1/1: Building DGamma.R179O19DependencyCountershape (research-tests/DGamma/R179O19DependencyCountershape.idr)\nError: While processing right hand side of r179DependencySuffixChecks. Can't solve constraint between: S (assert_total (integerToNat 2)) and transitionCount (certifiedTrace r179AfterProviderFinish).\n\nDGamma.R179O19DependencyCountershape:64:30--64:34\n 60 |     noFailedFibers (certifiedFinal r179AfterProviderFinish),\n 61 |     supportedActiveAt 0 (certifiedFinal r179AfterProviderFinish),\n 62 |     supportedActiveAt 1 (certifiedFinal r179AfterProviderFinish)) =\n 63 |    (3, True, True, True, True))\n 64 | r179DependencySuffixChecks = Refl\n                                   ^^^^\n\n",
+    "matchingSourceCommits": []
+  },
+  {
+    "unit": "A5-1",
+    "path": "research-tests/DGamma/R179O19DependencyCountershape.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R179O19DependencyCountershape.idr"
+    ],
+    "start": "2026-09-07T09:26:01.235466+00:00",
+    "end": "2026-09-07T09:28:13.791120+00:00",
+    "seconds": 132.55579220876098,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 4380640,
+    "sourceSHA256": "9df6b5d76e66682cc1f1390c32347c2d71b6cf4006bcbe1d8661dee7fe120139",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "1/1: Building DGamma.R179O19DependencyCountershape (research-tests/DGamma/R179O19DependencyCountershape.idr)\n",
+    "matchingSourceCommits": [
+      "b25d2db0ace72366a0dadbf264014b178577b2bc"
+    ]
+  },
+  {
+    "unit": "A6-1",
+    "path": "research-tests/DGamma/R179O19DependencyCountershape.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R179O19DependencyCountershape.idr"
+    ],
+    "start": "2026-09-07T09:29:03.977741+00:00",
+    "end": "2026-09-07T09:34:27.291046+00:00",
+    "seconds": 323.31398012535647,
+    "exit": -15,
+    "fresh": false,
+    "passed": false,
+    "interrupted": true,
+    "maxSampleRSSKiB": 54448416,
+    "sourceSHA256": "bc421132a6338d94fd7ba7a7742cbe44e40807b54987cce2ebc78dbe579d67cd",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "",
+    "matchingSourceCommits": []
+  },
+  {
+    "unit": "A6-restored",
+    "path": "research-tests/DGamma/R179O19DependencyCountershape.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R179O19DependencyCountershape.idr"
+    ],
+    "start": "2026-09-07T09:34:29.602045+00:00",
+    "end": "2026-09-07T09:36:42.293918+00:00",
+    "seconds": 132.67046179203317,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 799072,
+    "sourceSHA256": "9df6b5d76e66682cc1f1390c32347c2d71b6cf4006bcbe1d8661dee7fe120139",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "1/1: Building DGamma.R179O19DependencyCountershape (research-tests/DGamma/R179O19DependencyCountershape.idr)\n",
+    "matchingSourceCommits": [
+      "b25d2db0ace72366a0dadbf264014b178577b2bc"
+    ]
+  },
+  {
+    "unit": "F1-package",
+    "path": "package",
+    "command": [
+      "idris2",
+      "--build",
+      "dgamma.ipkg"
+    ],
+    "start": "2026-09-07T09:37:16.136721+00:00",
+    "end": "2026-09-07T09:37:32.715752+00:00",
+    "seconds": 16.578721875324845,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 224144,
+    "sourceSHA256": "aee761a37757cb047ddbf0f846bc23ce830ed755422f96852d08eb435c368727",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "",
+    "matchingSourceCommits": []
+  }
+]
