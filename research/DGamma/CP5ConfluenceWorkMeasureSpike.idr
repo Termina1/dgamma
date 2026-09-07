@@ -81,3 +81,19 @@ rankHeadProgress left right suffix crossed =
     (\pivot => rankPlusSwap (rankCrossing pivot left) (rankCrossing pivot right)
       (foldr (+) Z (map (rankCrossing pivot) suffix)))
     (rankHeadInversionDrop left right suffix crossed)
+
+||| Lift the choice through an untouched head while extending the GLOBAL proof.
+export
+rankLiftProgress :
+  (head : Nat) -> (source : List Nat) -> RankedAdjacentProgress source ->
+  RankedAdjacentProgress (head :: source)
+rankLiftProgress head source
+  (MkRankedAdjacentProgress prior left right suffix exact weights decreased) =
+    MkRankedAdjacentProgress (head :: prior) left right suffix
+      (cong (head ::) exact)
+      (\pivot => cong (rankCrossing pivot head +) (weights pivot))
+      (rewrite weights head in
+       rewrite decreased in
+         sym (plusSuccRightSucc
+           (foldr (+) Z (map (rankCrossing head) (prior ++ right :: left :: suffix)))
+           (rankInversions (prior ++ right :: left :: suffix))))
