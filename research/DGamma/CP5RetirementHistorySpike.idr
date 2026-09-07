@@ -313,3 +313,14 @@ rawRetireTarget name key world error value nameEq keyEq selected before afterSta
   rawRetireTargetObserved name key world error value nameEq keyEq selected before afterState tag
     (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
       @{nameEq} selected (registry before)) Refl raw
+
+export
+0 retirementAlignedHeadRaw :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (step : Transition first middle) -> (rest : Transitions middle finalState) ->
+  AlignedTransitions name key world error value nameEq keyEq (MoreTransitions step rest) ->
+  (applyAction @{nameEq} @{keyEq} (transitionAction step) first = Just (transitionTag step, middle))
+retirementAlignedHeadRaw name key world error value nameEq keyEq _ _
+  (AlignedStep action tag checked rest alignedRest) = checkedActionProjects nameEq keyEq action _ _ tag checked
