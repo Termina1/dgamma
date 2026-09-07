@@ -39,3 +39,10 @@ clauseOrFromEither True right (Right exact) = Refl
 clauseAllListAt element predicate (_ :: rest) selected Here exact = fst (clauseAndParts (predicate selected) (allList predicate rest) exact)
 clauseAllListAt element predicate (head :: rest) selected (There later) exact =
   clauseAllListAt element predicate rest selected later (snd (clauseAndParts (predicate head) (allList predicate rest) exact))
+
+0 clauseAllListBuild : (element : Type) -> (predicate : element -> Bool) -> (items : List element) ->
+  ((selected : element) -> Elem selected items -> (predicate selected = True)) -> (allList predicate items = True)
+clauseAllListBuild element predicate [] each = Refl
+clauseAllListBuild element predicate (head :: rest) each =
+  clauseAndTrue (predicate head) (allList predicate rest) (each head Here)
+    (clauseAllListBuild element predicate rest (\selected, member => each selected (There member)))
