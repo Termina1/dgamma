@@ -70,3 +70,18 @@ o19TwoActionTraceObserved nameEq keyEq wantedFirst wantedSecond
 o19TwoActionTraceObserved nameEq keyEq wantedFirst wantedSecond
   (MoreTransitions first (MoreTransitions second (MoreTransitions third rest))) aligned observed =
     void (uninhabited (cong length observed))
+
+||| B24: exact producer-owned word equality, ONLY a specialization/projection
+||| of the existing sealed fold. It does not open or rebuild sealed constructors.
+public export
+0 o19SealedActionWord :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {sourceFirst, sourceFinal, replayedFirst, replayedFinal : SystemState name key value world error} ->
+  {source : Transitions sourceFirst sourceFinal} ->
+  {replayed : Transitions replayedFirst replayedFinal} ->
+  SealedSuffixReplaySpine name key world error value nameEq keyEq source replayed ->
+  (o19ActionWord replayed = o19ActionWord source)
+o19SealedActionWord {name} {key} {world} {error} {value} nameEq keyEq seal =
+  sealedSuffixActionFoldSame name key world error value nameEq keyEq
+    (List (Action name key value world error)) (::) [] seal
