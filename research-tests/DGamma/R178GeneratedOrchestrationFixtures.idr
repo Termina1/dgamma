@@ -107,3 +107,7 @@ r178RightGeneratedRetirement = MkLocatedGeneratedOrchestration 1 False
       (GenerationTraceScanStep r45ChildInsert (MoreTransitions r178ParentFinish NoTransitions)
         (GenerationTraceScanStep r178ParentFinish NoTransitions GenerationTraceScanEnd))))
   (MkRegistrationGeneration 1 2) Refl
+
+export
+0 r178RightRetirementKind : (generatedRemoval r178RightGeneratedRetirement = False)
+r178RightRetirementKind = Refl
