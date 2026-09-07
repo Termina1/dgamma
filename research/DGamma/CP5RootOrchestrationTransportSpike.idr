@@ -43,3 +43,15 @@ export
 rootActionOccursPrefix name key world error value nameEq NoTransitions later action occurrence = occurrence
 rootActionOccursPrefix name key world error value nameEq (MoreTransitions step rest) later action occurrence =
   RootActionLater step (appendTransitions rest later) (rootActionOccursPrefix name key world error value nameEq rest later action occurrence)
+
+export
+0 rootActionFromLocated :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) ->
+  {first, finalState : SystemState name key value world error} -> (trace : Transitions first finalState) ->
+  (action : Action name key value world error) -> (occurrence : LocatedActionOccurrence action trace) ->
+  RootOrchestrationStep nameEq (locatedTransition occurrence) -> RootActionOccurs name key world error value nameEq action trace
+rootActionFromLocated name key world error value nameEq trace action occurrence root =
+  replace {p = RootActionOccurs name key world error value nameEq action} (actionOccurrenceDecomposition occurrence)
+    (rootActionOccursPrefix name key world error value nameEq (beforeActionOccurrence occurrence)
+      (MoreTransitions (locatedTransition occurrence) (afterActionOccurrence occurrence)) action
+      (RootActionHere (locatedTransition occurrence) (afterActionOccurrence occurrence) root (locatedAction occurrence)))
