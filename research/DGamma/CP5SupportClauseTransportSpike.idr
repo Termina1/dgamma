@@ -241,3 +241,21 @@ supportedDependencyTransport name key world error value nameEq keyEq source targ
             (recursive provider (SupportPrecedence (MkPrecedenceEdge wanted providerFiber sourceFiber providerFound sourceFound
               (clauseListMemberTrueElem key keyEq wanted (dependencies (componentProvisions (fiberComponent providerFiber))) providerDeclares) needed)) providerSupported)
             (trans (cong (\component => listMember @{keyEq} wanted (dependencies (componentProvisions component))) componentsSame) providerDeclares)
+
+0 supportedParentTransport :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (source, target : SystemState name key value world error) -> (renaming : name -> name) ->
+  (selected : name) -> (sourceFiber : Fiber name key value world error) ->
+  (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} selected (registry source) = Just sourceFiber) ->
+  (isSupported {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} @{keyEq} selected source = True) ->
+  ((lower : name) -> SupportEdge nameEq source lower selected ->
+    (isSupported {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} @{keyEq} lower source = True) ->
+    (isSupported {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} @{keyEq} (renaming lower) target = True)) ->
+  (observedParent : Parent name) -> (fiberParent sourceFiber = observedParent) ->
+  (supportClauseParent name
+    (\actor => isSupported {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} @{keyEq} actor target)
+    (supportMapParent name renaming observedParent) = True)
+supportedParentTransport name key world error value nameEq keyEq source target renaming selected sourceFiber sourceFound supported recursive Root parentExact = Refl
+supportedParentTransport name key world error value nameEq keyEq source target renaming selected sourceFiber sourceFound supported recursive (ChildOf parent) parentExact =
+  recursive parent (SupportParent (MkParentSupportEdge sourceFiber sourceFound parentExact))
+    (computedSupportParent name key world error value nameEq keyEq source selected sourceFiber sourceFound parent parentExact supported)
