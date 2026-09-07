@@ -77,3 +77,33 @@ installedFromCutObservation name key world error value nameEq actor state observ
     (observedInstalledLookup observed))
     (trans (cong installed (observedInstalledLifecycleEquation observed))
       (observedLifecycleInstalled observed))
+
+||| COMPLETE observer equation at its named actual lookup value. At concrete
+||| cuts the producer supplies the lookup itself/Refl and a checked-transition
+||| installed fact; no scalar Refl is tried over a nested execution builder.
+public export
+0 inspectInstalledCutCorrect :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (actor : name) ->
+  (state : SystemState name key value world error) ->
+  (observed : Maybe (Fiber name key value world error)) ->
+  (0 found : (lookupFiber {name = name} {key = key} {value = value} {world = world}
+    {error = error} @{nameEq} actor (registry state) = observed)) ->
+  (isJust (inspectInstalledCutObserved name key world error value nameEq actor
+    state observed found) =
+   installedAt {name = name} {key = key} {value = value} {world = world}
+    {error = error} @{nameEq} actor state)
+inspectInstalledCutCorrect name key world error value nameEq actor state Nothing found =
+  rewrite found in Refl
+inspectInstalledCutCorrect name key world error value nameEq actor state
+  (Just (MkFiber component parent retiredFlag table (Inactive outcome))) found =
+    rewrite found in Refl
+inspectInstalledCutCorrect name key world error value nameEq actor state
+  (Just (MkFiber component parent retiredFlag table (Reloading remaining accumulator view)))
+  found = rewrite found in Refl
+inspectInstalledCutCorrect name key world error value nameEq actor state
+  (Just (MkFiber component parent retiredFlag table (Active accumulator view))) found =
+    rewrite found in Refl
+inspectInstalledCutCorrect name key world error value nameEq actor state
+  (Just (MkFiber component parent retiredFlag table (Unloading accumulator view outcome)))
+  found = rewrite found in Refl
