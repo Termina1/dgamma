@@ -27,3 +27,19 @@ record CurrentGenerationBirth
     (OInsert selected currentBirthParent currentBirthComponent) trace
   0 currentBirthStampExact : generation =
     MkRegistrationGeneration selected (locatedActionOrdinal currentLocatedBirth)
+
+||| Observe the exact dictionary decision once, retaining its equation.
+0 currentPutObserved :
+  (name : Type) -> (nameEq : DecEq name) ->
+  (inserted : name) -> (fresh : RegistrationGeneration name) ->
+  (candidate : name) -> (current : RegistrationGeneration name) ->
+  (rest : GenerationEnvironment name) -> (observed : Dec (inserted = candidate)) ->
+  (decEq @{nameEq} inserted candidate = observed) ->
+  (putCurrentGeneration @{nameEq} inserted fresh ((candidate, current) :: rest) =
+    (case observed of
+      Yes same => (inserted, fresh) :: rest
+      No distinct => (candidate, current) :: putCurrentGeneration @{nameEq} inserted fresh rest))
+currentPutObserved name nameEq inserted fresh candidate current rest (Yes same) exact =
+  rewrite exact in case same of Refl => Refl
+currentPutObserved name nameEq inserted fresh candidate current rest (No distinct) exact =
+  rewrite exact in Refl
