@@ -922,3 +922,20 @@ computedSupportParent name key world error value nameEq keyEq state selected obs
   supportSolutionParent name key world error value nameEq keyEq state
     (\actor => isSupported {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} @{keyEq} actor state)
     (supportSetIsSolution nameEq keyEq state) selected observed found parent parentExact supported
+
+0 computedSupportRetiredObserved :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (state : SystemState name key value world error) -> (selected : name) ->
+  (fiber : Fiber name key value world error) ->
+  (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+    @{nameEq} selected (registry state) = Just fiber) ->
+  (isSupported {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} @{keyEq} selected state = True) ->
+  (flag : Bool) -> (retired fiber = flag) -> (retired fiber = False)
+computedSupportRetiredObserved name key world error value nameEq keyEq state selected fiber found supported False flagExact = flagExact
+computedSupportRetiredObserved name key world error value nameEq keyEq state selected fiber found supported True flagExact =
+  case trans (sym supported) (trans (supportSetIsSolution nameEq keyEq state selected)
+    (the (supportClause {name = name} {key = key} {value = value} {world = world} {error = error}
+      @{nameEq} @{keyEq}
+      (\actor => isSupported {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} @{keyEq} actor state)
+      selected state = False) (rewrite found in rewrite flagExact in Refl))) of Refl impossible
