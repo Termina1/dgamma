@@ -1,6 +1,7 @@
 module DGamma.R181O19LocatedBlocks
 
 import DGamma.Calculus
+import DGamma.CalculusChecks
 import DGamma.Coeffects
 import DGamma.CP3
 import DGamma.CP4SupportQuiescence
@@ -73,3 +74,23 @@ r181BlockBodiesInstalled =
     (InstalledEnd (installedFromCutObservation Nat ToyKey ToyRuntime String ToyValue %search 1
       r180ObservedConsumerFinished
       (Builtin.snd (Builtin.snd (Builtin.snd (Builtin.snd r181LifecycleCutObservations)))))))
+
+||| E4: exact root prefix before the provider's located block. This is the
+||| same two-node checked constructor spine used by r181WholeTrace.
+public export
+0 r181BeforeProviderBlock : Transitions
+  (MkSystemState (MkToyRuntime False False)
+    (emptyContext {key = Nat} {value = \n => Fiber Nat ToyKey ToyValue ToyRuntime String}))
+  r179ObservedRootSource
+r181BeforeProviderBlock =
+  MoreTransitions
+    (Fired {before = MkSystemState (MkToyRuntime False False) emptyContext}
+      {afterState = MkSystemState (MkToyRuntime False False)
+        (insertBinding 0 (freshFiber DGamma.CalculusChecks.providerComponent Root) emptyContext Refl)}
+      %search %search (OInsert 0 Root DGamma.CalculusChecks.providerComponent) OInsertTag Refl)
+    (MoreTransitions
+      (Fired {before = MkSystemState (MkToyRuntime False False)
+          (insertBinding 0 (freshFiber DGamma.CalculusChecks.providerComponent Root) emptyContext Refl)}
+        {afterState = r179ObservedRootSource}
+        %search %search (OInsert 1 Root DGamma.CalculusChecks.emptyConsumerComponent) OInsertTag Refl)
+      NoTransitions)
