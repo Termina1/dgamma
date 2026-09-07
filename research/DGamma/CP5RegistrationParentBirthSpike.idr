@@ -151,3 +151,16 @@ parentDeleteEntryOrigin name nameEq removed ((candidate, current) :: rest) selec
   parentDeleteEntryObserved name nameEq removed candidate current rest
     (decEq @{nameEq} removed candidate) Refl
     (parentDeleteEntryOrigin name nameEq removed rest) selected activation member
+
+0 parentLookupObserved :
+  (name : Type) -> (nameEq : DecEq name) -> (selected, candidate : name) ->
+  (current : RegistrationActivation name) -> (rest : List (name, RegistrationActivation name)) ->
+  (observed : Dec (selected = candidate)) -> decEq @{nameEq} selected candidate = observed ->
+  lookupParentActivation @{nameEq} selected ((candidate, current) :: rest) =
+    (case observed of
+      Yes same => Just current
+      No distinct => lookupParentActivation @{nameEq} selected rest)
+parentLookupObserved name nameEq selected candidate current rest (Yes same) exact =
+  rewrite exact in case same of Refl => Refl
+parentLookupObserved name nameEq selected candidate current rest (No distinct) exact =
+  rewrite exact in Refl
