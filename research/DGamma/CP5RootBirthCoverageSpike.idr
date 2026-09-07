@@ -173,3 +173,32 @@ acceptedSupportedRootMetadataForward name key world error value nameEq keyEq {ri
               (rootBirthFromEndpoint name key world error value nameEq keyEq left leftAligned empty selected leftFiber leftFound root)) rightFiber
             (replace {p = \actor => (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
               @{nameEq} actor (registry rightFinal) = Just rightFiber)} (leftLiveRootFixed (endpointRenaming sameInputs) selected leftFiber leftFound root) rightFound)))
+
+export
+0 acceptedSupportedRootMetadataBackward :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, leftFinal, rightFinal : SystemState name key value world error} ->
+  (left : Transitions initial leftFinal) -> (right : Transitions initial rightFinal) ->
+  (sameInputs : SameOrchestrationModuloGenerated nameEq keyEq left right) ->
+  AlignedTransitions name key world error value nameEq keyEq left -> AlignedTransitions name key world error value nameEq keyEq right ->
+  (bindings (registry initial) = []) -> UniqueRawNameInsertions name key world error value nameEq keyEq left ->
+  (selected : name) -> (rightFiber : Fiber name key value world error) ->
+  (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} selected (registry rightFinal) = Just rightFiber) ->
+  (fiberParent rightFiber = Root) ->
+  (isSupported {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} @{keyEq} selected rightFinal = True) ->
+  (leftFiber : Fiber name key value world error **
+    (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+      @{nameEq} (renameBackward (currentNameBijection (endpointRenaming sameInputs)) selected) (registry leftFinal) = Just leftFiber,
+     (fiberParent leftFiber, fiberComponent leftFiber) = (Root, fiberComponent rightFiber)))
+acceptedSupportedRootMetadataBackward name key world error value nameEq keyEq {leftFinal} left right sameInputs
+  leftAligned rightAligned empty leftUnique selected rightFiber rightFound root supported =
+    case acceptedSupportedBackwardDomain name key world error value nameEq keyEq left right sameInputs leftAligned rightAligned empty selected supported of
+      (rightGeneration ** leftGeneration ** leftFiber ** (rightCurrent, leftCurrent, mapped, leftFound)) =>
+        (leftFiber ** (leftFound,
+          rootEndpointMetadataFromBirth name key world error value nameEq keyEq left leftAligned empty leftUnique selected (fiberComponent rightFiber)
+            (rootBirthBackwardLocated name key world error value (generatedGenerationBijection sameInputs) left right
+              (externalRootGenerationsCoupled sameInputs) selected (fiberComponent rightFiber)
+              (rootBirthFromEndpoint name key world error value nameEq keyEq right rightAligned empty selected rightFiber rightFound root)) leftFiber
+            (replace {p = \actor => (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+              @{nameEq} actor (registry leftFinal) = Just leftFiber)} (rightLiveRootFixed (endpointRenaming sameInputs) selected rightFiber rightFound root) leftFound)))
