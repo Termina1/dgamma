@@ -219,3 +219,20 @@ r182IndependentBlocks (S (S later)) member = case member of
   Here impossible
   There Here impossible
   There (There absent) => case absent of Here impossible; There rest impossible
+
+||| A12: all strict pair-order witnesses select the exact zero-gap block order.
+public export
+0 r182IndependentBlockOrder : (earlier, later : Nat) ->
+  (earlierMember : Elem earlier [0, 1]) -> (laterMember : Elem later [0, 1]) ->
+  BeforeIn earlier later [0, 1] ->
+  BlockBefore Nat R45Key Unit String R45Value r45NameEq r45KeyEq
+    (r182IndependentTrace False) earlier later
+    (r182IndependentBlocks earlier earlierMember) (r182IndependentBlocks later laterMember)
+r182IndependentBlockOrder _ _ earlierMember laterMember (BeforeHere following) =
+  case following of
+    Here => MkBlockBefore NoTransitions Refl
+    There absent => case absent of Here impossible; There rest impossible
+r182IndependentBlockOrder _ _ earlierMember laterMember (BeforeThere following) =
+  case following of
+    BeforeHere absent => case absent of Here impossible; There rest impossible
+    BeforeThere absent => case absent of BeforeHere member impossible; BeforeThere rest impossible
