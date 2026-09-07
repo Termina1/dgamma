@@ -30,3 +30,14 @@ r181ProviderBlockBody =
       (Fired {before = r179ObservedProviderCut} {afterState = r179ObservedProviderFinished}
         %search %search (LAdvance 0) LFinishTag
         (Builtin.fst (Builtin.snd (Builtin.snd r179ObservedProviderEdges)))) NoTransitions)
+
+||| E2: exact consumer Finish witness from the actual whole trace, not a
+||| propositionally equal replacement checked proof at the same endpoint.
+public export
+0 r181ConsumerBlockBody : Transitions r180ObservedConsumerBegun r180ObservedConsumerFinished
+r181ConsumerBlockBody = MoreTransitions
+  (Fired {before = r180ObservedConsumerBegun} {afterState = r180ObservedConsumerFinished}
+    %search %search (LAdvance 1) LFinishTag
+    (r180CheckedFromPrerequisites (LAdvance 1) r180ObservedConsumerBegun
+      r180ObservedConsumerFinished LFinishTag r180ConsumerFinishRaw
+      (Builtin.snd r180ObservedLifecycleSuffix))) NoTransitions
