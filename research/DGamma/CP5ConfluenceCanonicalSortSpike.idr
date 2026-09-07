@@ -4998,6 +4998,7 @@ independentCanonicalScheduleSpike nameEq keyEq protocol original premises
 
 ||| Observe ownership ONCE before building a segment progress packet.
 ||| This is the same R175 fixed-order rank; unowned actions remain barriers.
+public export
 0 canonicalWorkActionRank :
   (name, key, world, error : Type) -> (value : key -> Type) ->
   (nameEq : DecEq name) -> (fixedOrder : List name) ->
