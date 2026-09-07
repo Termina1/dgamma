@@ -616,3 +616,46 @@ pairedActualProviderHeads name key world error value nameEq keyEq renaming wante
           (trans (sym (pairedProviderProjectionObserved name key world error value nameEq
             keyEq rightWorld rightRegistry rightOwner wanted
             (lookupBinding @{nameEq} rightOwner rightRegistry) Refl)) rightPresent)
+
+||| Observe actual head/tail resolver VALUES before eliminating a successful
+||| cons view. No anonymous case occurs in this interface; the equations reduce
+||| to a concrete constructor INSIDE each observed-value branch.
+export
+0 pairedResolveConsObserved :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (wanted : key) -> (rest : List key) ->
+  (fibers : Registry name key value world error) ->
+  (headValue : Maybe name) ->
+  (providerOf {name = name} {key = key} {value = value} {world = world} {error = error}
+    @{nameEq} @{keyEq} wanted fibers = headValue) ->
+  (tailValue : Maybe (View name rest)) ->
+  (resolveView {name = name} {key = key} {value = value} {world = world} {error = error}
+    @{nameEq} @{keyEq} rest fibers = tailValue) ->
+  (wholeView : View name (wanted :: rest)) ->
+  (resolveView {name = name} {key = key} {value = value} {world = world} {error = error}
+    @{nameEq} @{keyEq} (wanted :: rest) fibers = Just wholeView) ->
+  (owner : name ** tailView : View name rest **
+    ((providerOf {name = name} {key = key} {value = value} {world = world} {error = error}
+      @{nameEq} @{keyEq} wanted fibers = Just owner),
+     (resolveView {name = name} {key = key} {value = value} {world = world} {error = error}
+      @{nameEq} @{keyEq} rest fibers = Just tailView),
+     (wholeView = ProviderView owner tailView)))
+pairedResolveConsObserved name key world error value nameEq keyEq wanted rest fibers
+  Nothing headObserved tailValue tailObserved wholeView resolved =
+    void (nothingIsNotJust (trans (sym (the
+      (resolveView {name = name} {key = key} {value = value} {world = world} {error = error}
+        @{nameEq} @{keyEq} (wanted :: rest) fibers = Nothing)
+      (rewrite headObserved in Refl))) resolved))
+pairedResolveConsObserved name key world error value nameEq keyEq wanted rest fibers
+  (Just owner) headObserved Nothing tailObserved wholeView resolved =
+    void (nothingIsNotJust (trans (sym (the
+      (resolveView {name = name} {key = key} {value = value} {world = world} {error = error}
+        @{nameEq} @{keyEq} (wanted :: rest) fibers = Nothing)
+      (rewrite headObserved in rewrite tailObserved in Refl))) resolved))
+pairedResolveConsObserved name key world error value nameEq keyEq wanted rest fibers
+  (Just owner) headObserved (Just tailView) tailObserved wholeView resolved =
+    (owner ** tailView ** (headObserved, tailObserved,
+      justInjective (trans (sym resolved) (the
+        (resolveView {name = name} {key = key} {value = value} {world = world} {error = error}
+          @{nameEq} @{keyEq} (wanted :: rest) fibers = Just (ProviderView owner tailView))
+        (rewrite headObserved in rewrite tailObserved in Refl)))))
