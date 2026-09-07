@@ -287,3 +287,20 @@ scannedRegistrationBirthPrepend name key world error value ordinal step rest eve
           (cong (MoreTransitions step) decomposition))
         (trans stamp (cong (MkRegistrationGeneration (eventChild event))
           (plusSuccRightSucc ordinal (transitionCount prior))))
+
+||| Producer-owned observation of registrationEventAt: never eliminate its opaque result.
+public export
+0 scannedRegistrationBirthHead :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (ordinal : Nat) -> (index : RegistrationIndexState name) ->
+  (child, parent : name) -> (component : Component key value world error) ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (step : Transition first middle) -> (rest : Transitions middle finalState) ->
+  transitionAction step = OInsert child (ChildOf parent) component ->
+  ScannedRegistrationBirth name key world error value ordinal (MoreTransitions step rest)
+    (registrationEventAt @{nameEq} ordinal index child parent component)
+scannedRegistrationBirthHead name key world error value nameEq ordinal
+  (MkRegistrationIndexState live activations counts deleted) child parent component step rest actionExact =
+    MkScannedRegistrationBirth
+      (MkLocatedActionOccurrence _ _ NoTransitions step rest actionExact Refl)
+      (cong (MkRegistrationGeneration child) (sym (plusZeroRightNeutral ordinal)))
