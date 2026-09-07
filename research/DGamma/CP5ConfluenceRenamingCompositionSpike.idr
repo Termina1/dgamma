@@ -3460,3 +3460,32 @@ export
 acceptedRightBirthCoverage name key world error value nameEq left right renaming registrations selected parent component birth =
   projectionRightBirthCoverage name key world error value nameEq left right renaming
     (alignFiniteRegistrationProjection (generationTraceCorrespondence registrations)) selected parent component birth
+
+||| ALL supported generated left endpoint names belong to the exact accepted
+||| retained-event list. The authentic original birth is derived from lookup.
+export
+0 acceptedSupportedGeneratedLeftCoverage :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (protocol : RegistrationProtocol key value world error) ->
+  {leftFirst, leftFinal, rightFirst, rightFinal : SystemState name key value world error} ->
+  (left : Transitions leftFirst leftFinal) -> (right : Transitions rightFirst rightFinal) ->
+  (renaming : RegistrationGenerationBijection name) ->
+  (registrations : RegistrationCorrespondenceByGeneration nameEq renaming left right) ->
+  AlignedTransitions name key world error value nameEq keyEq left -> RegistrationDiscipline protocol nameEq left ->
+  (bindings (registry leftFirst) = []) -> UniqueRawNameInsertions name key world error value nameEq keyEq left ->
+  (selected : name) -> (fiber : Fiber name key value world error) ->
+  (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} selected (registry leftFinal) = Just fiber) ->
+  (parent : name) -> (fiberParent fiber = ChildOf parent) ->
+  (isSupported {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} @{keyEq} selected leftFinal = True) ->
+  (event : RegistrationEvent name key world error value **
+    (Elem event (leftScannedEvents (acceptedAuthenticatedRegistrationMatching name key world error value nameEq left right renaming registrations)),
+     eventChild event = selected))
+acceptedSupportedGeneratedLeftCoverage name key world error value nameEq keyEq protocol left right renaming registrations
+  aligned discipline empty unique selected fiber found parent parentExact supported =
+    supportedClassifiedBirthRetained name key world error value nameEq keyEq protocol left aligned discipline empty unique
+      (leftScannedEvents (acceptedAuthenticatedRegistrationMatching name key world error value nameEq left right renaming registrations))
+      selected fiber found supported
+      (acceptedLeftBirthCoverage name key world error value nameEq left right renaming registrations selected parent (fiberComponent fiber)
+        (replace {p = \owner => LocatedActionOccurrence (OInsert selected owner (fiberComponent fiber)) left} parentExact
+          (rawMetadataBirthAtPrefix name key world error value nameEq keyEq left left NoTransitions
+            (currentBirthTraceAppendEmpty name key world error value left) aligned empty selected fiber found)))
