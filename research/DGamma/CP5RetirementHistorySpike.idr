@@ -217,3 +217,29 @@ afterCutOccurrenceBound name key world error value (MoreTransitions step rest) l
     (sym (currentBirthPrependOrdinal name key world error value step (appendTransitions rest later) action
       (afterCutOccurrence name key world error value rest later action occurrence)))
     (LTESucc (afterCutOccurrenceBound name key world error value rest later action occurrence))
+
+||| Strong original uniqueness excludes two births on opposite sides of an
+||| authentic cut. This compares ordinals; no dependent endpoint casts occur.
+export
+0 uniqueBirthsAcrossCutImpossible :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (prior : Transitions first middle) -> (later : Transitions middle finalState) ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq (appendTransitions prior later) ->
+  (selected : name) -> (leftParent, rightParent : Parent name) ->
+  (leftComponent, rightComponent : Component key value world error) ->
+  (leftBirth : LocatedActionOccurrence (OInsert selected leftParent leftComponent) prior) ->
+  (rightBirth : LocatedActionOccurrence (OInsert selected rightParent rightComponent) later) -> Void
+uniqueBirthsAcrossCutImpossible name key world error value nameEq keyEq prior later unique
+  selected leftParent rightParent leftComponent rightComponent leftBirth rightBirth =
+    LTImpliesNotGTE
+      (observedActionPositionBound name key world error value prior (locatedActionOrdinal leftBirth)
+        (OInsert selected leftParent leftComponent)
+        (rawClosingActionAtLocated name key world error value prior (OInsert selected leftParent leftComponent) leftBirth))
+      (replace {p = LTE (transitionCount prior)}
+        (trans (sym (uniqueInsertionPosition unique selected leftParent rightParent leftComponent rightComponent
+          (beforeCutOccurrence name key world error value prior later (OInsert selected leftParent leftComponent) leftBirth)
+          (afterCutOccurrence name key world error value prior later (OInsert selected rightParent rightComponent) rightBirth)))
+          (beforeCutOccurrenceOrdinal name key world error value prior later (OInsert selected leftParent leftComponent) leftBirth))
+        (afterCutOccurrenceBound name key world error value prior later (OInsert selected rightParent rightComponent) rightBirth))
