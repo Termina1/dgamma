@@ -157,3 +157,14 @@ unretiredAfterRetiredHasBirth name key world error value nameEq keyEq {first} tr
           (replace {p = \actor => (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
             @{nameEq} actor (registry first) = Just fiber)} same found) unretired))
       selected finalFiber finalFound finalFalse Refl
+
+export
+0 observedActionPositionBound :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  {first, finalState : SystemState name key value world error} ->
+  (trace : Transitions first finalState) -> (position : Nat) -> (action : Action name key value world error) ->
+  (rawClosingActionAt name key world error value position trace = Just action) -> LT position (transitionCount trace)
+observedActionPositionBound name key world error value NoTransitions position action observed = case observed of Refl impossible
+observedActionPositionBound name key world error value (MoreTransitions step rest) Z action observed = LTESucc LTEZero
+observedActionPositionBound name key world error value (MoreTransitions step rest) (S position) action observed =
+  LTESucc (observedActionPositionBound name key world error value rest position action observed)
