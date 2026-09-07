@@ -24,8 +24,8 @@ def sha(data):
 
 def declaration(text, name):
     start = text.index('0 '+name+' :')
-    body = text.index('\n'+name+' =', start)
-    return text[start:body], text[body+1:].split('\n\n', 1)[0]
+    body = start + re.search(r'(?m)^'+name+r'(?:\s|=)', text[start:]).start()
+    return text[start:body-1], text[body:].split('\n\n', 1)[0]
 
 def without_a9(text):
     return re.sub(r'  \(0 leftRightGeneratedMatched : GeneratedOrchestrationMatched .*?\(generatedGenerationBijection sameInputs\)\) ->\n', '', text, flags=re.S)
@@ -57,6 +57,10 @@ for part, name in [('CanonicalSort', 'sortClosingFreeTraceSpike'),
     assert old_body == new_body, name
     assert old_type == without_a9(new_type), name
     protected[name] = dict(bodyUnchanged=True, signatureChange='explicit A9 only' if old_type != new_type else 'none', bodySHA256=sha(new_body.encode()))
+old_support_type, _ = declaration(git('show', START+':'+PATHS['CrossTrace']), 'canonicalSupportOrdersMatchSpike')
+new_support_type, new_support_body = declaration(source(PATHS['CrossTrace']), 'canonicalSupportOrdersMatchSpike')
+assert old_support_type == without_a9(new_support_type)
+assert new_support_body == declaration(git('show', '108846b:'+PATHS['CrossTrace']), 'canonicalSupportOrdersMatchSpike')[1]
 old_deletion = git('show', START+':'+PATHS['DeletionChain'])
 new_deletion = source(PATHS['DeletionChain'])
 visibility = '||| R178 coverage API: existing discipline/provenance lemma only.\n||| This does not call the frozen deletion theorem or prove O21 withdrawals.\nexport\n'
@@ -85,7 +89,8 @@ assert local_time.startswith('2026-09-07T01:56:14.')
 assert 'r178R174RootBirth' not in source('research-tests/DGamma/R174O17ProvisionCollisionCandidate.idr')
 phases = [json.loads(line) for line in pathlib.Path('/tmp/dgamma-r178/final-phases.jsonl').read_text().splitlines()]
 assert [p['phase'] for p in phases] == ['package', 'boundaries', 'legacy-seeded']
-assert all(p['passed'] for p in phases)
+assert all(p['passed'] for p in phases[:2])
+assert phases[2]['optional'] and phases[2]['interrupted'] and not phases[2]['passed'] and phases[2]['compilerVerdict'] is None
 boundaries = [json.loads(line) for line in pathlib.Path('/tmp/dgamma-r178/final-suite-ledger.jsonl').read_text().splitlines()]
 final_boundaries = [r for r in boundaries if r.get('boundaryRun') == 'R178-final']
 assert len(final_boundaries) == 40 and all(r['fresh'] and r['passed'] for r in final_boundaries)
@@ -100,7 +105,7 @@ report = dict(timestamp=datetime.datetime.now(datetime.timezone.utc).isoformat()
     changedIdrisFiles=changed_idris, sourceSHA256={p:sha((ROOT/p).read_bytes()) for p in changed_idris},
     prohibitedAdditions=prohibited, allChangedIdrisDefaultTotal=True, noCompiler=True, cleanTrackedTree=True,
     allowedUntrackedOnly=True, tree=git('status','--short').strip(), validationPhases=phases,
-    freshFinalBoundaries=dict(positives=30, diagnosticNegatives=10, allPassed=True), aggregateR11SuiteRun='seeded, passed; not cold/fresh',
+    freshFinalBoundaries=dict(positives=30, diagnosticNegatives=10, allPassed=True), requiredValidationPassed=True, aggregateR11SuiteRun='OPTIONAL / INCOMPLETE / supervisor-approved legacy R23 no-verdict cost stop; no broad-suite claim',
     O18Closed=True, O18BodyCommit='108846b', implicationsCommittedBeforeBody=['ff65617','dd0df9f'],
     A8='checked standalone replacement and proved scalar R174 shape; owner migration decision open',
     A9='explicit authentic ordered matching, supervisor decision under delegation, owner override pending',

@@ -403,3 +403,26 @@ EarliestAvailableRootBirth packet, the full replacement placement record, or
 O17 inputs/producer. No fourth scalar check and no third C9 attempt were taken.
 The complete replacement surface is checked; canonical-tower migration remains
 an explicit OWNER decision, not silently solved by the scalar regression.
+
+### Primary final validation passed; OPTIONAL legacy broad suite cost stop
+
+The REQUIRED seeded production package passed at 08:39:58 (207/207 production
+TTC seeds, 17s). The final boundary suite passed at 08:46:03: **30 fresh positives
++ 10 exact-diagnostic fresh negatives**, including new capital modules, R174
+scalar shape, existing R172 exclusion, full R8 (101.64s; sampled peak
+39,212,496 KiB), and all A9/unique-original diagnostic guards.
+
+Separately, an OPTIONAL broad legacy R11 seeded run was launched. It completed
+its package/spike prefix and positive prefix through R22, then the UNCHANGED
+R23CorrectedInternalFixturePositive ran approximately12 minutes without a
+verdict (about3GB RSS). At 08:59 the supervisor APPROVED terminating that
+supplemental process group and keeping the required validation as the gate.
+The exact owned group68742 was terminated at **09:00:27 UTC**; no Idris compiler
+survives. The original driver result and explicitly reconciled interruption
+record are both preserved. This is **OPTIONAL / INCOMPLETE / NO broad-suite
+claim**, a legacy-suite elaboration COST item, NOT a new proof failure.
+No legacy source or TTC seed was deleted; LocalDiamond's original seed remains.
+
+Do not conflate the completed seeded **207/207 production package** and required
+**30+10 fresh research boundaries** with this incomplete optional aggregate.
+C9 remains separately parked at2/3; its budget was not spent by this legacy run.

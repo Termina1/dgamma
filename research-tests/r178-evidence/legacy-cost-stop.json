@@ -1,0 +1,8 @@
+{
+  "timestamp": "2026-09-07T09:00:27.129089+00:00",
+  "group": 68742,
+  "command": "bash research-tests/run-r11-suite.sh",
+  "reason": "Supervisor-approved optional legacy R11 cost stop; R23 no verdict after approximately 12 minutes; primary 207/207 and 30+10 fresh boundaries already passed",
+  "psBefore": "68742 56313 68742   2640       14:24 bash research-tests/run-r11-suite.sh\n71690 68742 68742   2272       12:52 /bin/sh /opt/homebrew/bin/idris2 --source-dir research-tests --check research-tests/DGamma/R23CorrectedInternalFixturePositive.idr\n71709 71690 68742 3007888       12:52 /opt/homebrew/opt/chezscheme/bin/chez --program /opt/homebrew/Cellar/idris2/0.8.0_2/libexec/bin/idris2_app/idris2.so --source-dir research-tests --check research-tests/DGamma/R23CorrectedInternalFixturePositive.idr",
+  "psAfter": ""
+}
