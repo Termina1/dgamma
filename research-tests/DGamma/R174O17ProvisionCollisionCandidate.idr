@@ -8,6 +8,9 @@ import DGamma.CP3
 import DGamma.CP4SupportQuiescence
 import DGamma.CP5ConfluenceLocalDiamondSpike
 import DGamma.CP5UniqueRawNameInsertions
+import DGamma.CP5AvailabilityAwarePlacement
+import DGamma.CP5CurrentGenerationBirthSpike
+import DGamma.CP5RawClosingRankSpike
 import DGamma.Metatheory
 import DGamma.Section3Example
 import DGamma.Unified
@@ -82,3 +85,15 @@ r174ProvisionBirthPosition selected (S (S (S (S (S Z))))) observed = case observ
 r174ProvisionBirthPosition selected (S (S (S (S (S (S Z)))))) observed = case observed of Refl impossible
 r174ProvisionBirthPosition selected (S (S (S (S (S (S (S Z))))))) observed = case observed of Refl impossible
 r174ProvisionBirthPosition selected (S (S (S (S (S (S (S (S later)))))))) observed = case observed of Refl impossible
+
+||| Fixture-only observation reification: exact actual actions, no placement
+||| producer or O17 capital. Kept here so the checked R174 builder can reduce.
+0 r178R174ObservedAction :
+  {first, finalState : SystemState Nat ToyKey ToyValue ToyRuntime String} ->
+  (trace : Transitions first finalState) -> (wanted : Action Nat ToyKey ToyValue ToyRuntime String) -> (position : Nat) ->
+  (rawClosingActionAt Nat ToyKey ToyRuntime String ToyValue position trace = Just wanted) -> LocatedActionOccurrence wanted trace
+r178R174ObservedAction NoTransitions wanted position observed = case observed of Refl impossible
+r178R174ObservedAction (MoreTransitions (Fired nameEq keyEq action tag checked) rest) wanted Z observed =
+  MkLocatedActionOccurrence _ _ NoTransitions (Fired nameEq keyEq action tag checked) rest (justInjective observed) Refl
+r178R174ObservedAction (MoreTransitions step rest) wanted (S position) observed =
+  currentBirthPrependLocation Nat ToyKey ToyRuntime String ToyValue step rest wanted (r178R174ObservedAction rest wanted position observed)
