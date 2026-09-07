@@ -124,3 +124,62 @@ r181ProtocolRank (MkComponent (MkCoeffectSpec (wanted :: rest) unique)
   (MkCoeffectSpec [] provisionUnique) program) = Just 1
 r181ProtocolRank (MkComponent (MkCoeffectSpec (wanted :: rest) unique)
   (MkCoeffectSpec (provided :: more) provisionUnique) program) = Nothing
+
+||| Genuine provision/dependency edges increase rank. A rank1 component cannot
+||| itself be a provider: its provision list is empty by construction.
+export
+0 r181PrecedenceRanks :
+  (provider, consumer : Component ToyKey ToyValue ToyRuntime String) ->
+  (providerRank, consumerRank : Nat) ->
+  (r181ProtocolRank provider = Just providerRank) ->
+  (r181ProtocolRank consumer = Just consumerRank) ->
+  (wanted : ToyKey) ->
+  Elem wanted (dependencies (componentProvisions provider)) ->
+  Elem wanted (dependencies (componentDependencies consumer)) ->
+  LT providerRank consumerRank
+r181PrecedenceRanks
+  (MkComponent (MkCoeffectSpec [] sourceUnique) sourceProvision sourceProgram)
+  (MkComponent (MkCoeffectSpec [] targetUnique) targetProvision targetProgram)
+  providerRank consumerRank providerRanked consumerRanked wanted provides depends =
+    case depends of Here impossible; There later impossible
+r181PrecedenceRanks
+  (MkComponent (MkCoeffectSpec [] sourceUnique) sourceProvision sourceProgram)
+  (MkComponent (MkCoeffectSpec (targetHead :: targetRest) targetUnique) (MkCoeffectSpec [] targetProvisionUnique) targetProgram)
+  providerRank consumerRank providerRanked consumerRanked wanted provides depends =
+    rewrite sym (justInjective providerRanked) in
+      rewrite sym (justInjective consumerRanked) in LTESucc LTEZero
+r181PrecedenceRanks
+  (MkComponent (MkCoeffectSpec [] sourceUnique) sourceProvision sourceProgram)
+  (MkComponent (MkCoeffectSpec (targetHead :: targetRest) targetUnique) (MkCoeffectSpec (targetProvided :: targetMore) targetProvisionUnique) targetProgram)
+  providerRank consumerRank providerRanked consumerRanked wanted provides depends =
+    case consumerRanked of Refl impossible
+r181PrecedenceRanks
+  (MkComponent (MkCoeffectSpec (sourceHead :: sourceRest) sourceUnique) (MkCoeffectSpec [] sourceProvisionUnique) sourceProgram)
+  (MkComponent (MkCoeffectSpec [] targetUnique) targetProvision targetProgram)
+  providerRank consumerRank providerRanked consumerRanked wanted provides depends =
+    case depends of Here impossible; There later impossible
+r181PrecedenceRanks
+  (MkComponent (MkCoeffectSpec (sourceHead :: sourceRest) sourceUnique) (MkCoeffectSpec [] sourceProvisionUnique) sourceProgram)
+  (MkComponent (MkCoeffectSpec (targetHead :: targetRest) targetUnique) (MkCoeffectSpec [] targetProvisionUnique) targetProgram)
+  providerRank consumerRank providerRanked consumerRanked wanted provides depends =
+    case provides of Here impossible; There later impossible
+r181PrecedenceRanks
+  (MkComponent (MkCoeffectSpec (sourceHead :: sourceRest) sourceUnique) (MkCoeffectSpec [] sourceProvisionUnique) sourceProgram)
+  (MkComponent (MkCoeffectSpec (targetHead :: targetRest) targetUnique) (MkCoeffectSpec (targetProvided :: targetMore) targetProvisionUnique) targetProgram)
+  providerRank consumerRank providerRanked consumerRanked wanted provides depends =
+    case provides of Here impossible; There later impossible
+r181PrecedenceRanks
+  (MkComponent (MkCoeffectSpec (sourceHead :: sourceRest) sourceUnique) (MkCoeffectSpec (sourceProvided :: sourceMore) sourceProvisionUnique) sourceProgram)
+  (MkComponent (MkCoeffectSpec [] targetUnique) targetProvision targetProgram)
+  providerRank consumerRank providerRanked consumerRanked wanted provides depends =
+    case depends of Here impossible; There later impossible
+r181PrecedenceRanks
+  (MkComponent (MkCoeffectSpec (sourceHead :: sourceRest) sourceUnique) (MkCoeffectSpec (sourceProvided :: sourceMore) sourceProvisionUnique) sourceProgram)
+  (MkComponent (MkCoeffectSpec (targetHead :: targetRest) targetUnique) (MkCoeffectSpec [] targetProvisionUnique) targetProgram)
+  providerRank consumerRank providerRanked consumerRanked wanted provides depends =
+    case providerRanked of Refl impossible
+r181PrecedenceRanks
+  (MkComponent (MkCoeffectSpec (sourceHead :: sourceRest) sourceUnique) (MkCoeffectSpec (sourceProvided :: sourceMore) sourceProvisionUnique) sourceProgram)
+  (MkComponent (MkCoeffectSpec (targetHead :: targetRest) targetUnique) (MkCoeffectSpec (targetProvided :: targetMore) targetProvisionUnique) targetProgram)
+  providerRank consumerRank providerRanked consumerRanked wanted provides depends =
+    case providerRanked of Refl impossible
