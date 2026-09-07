@@ -53,3 +53,19 @@ r181OriginalUniqueInsertions = MkUniqueRawNameInsertions
       (sym (r181ActualBirthPosition selected (locatedActionOrdinal right)
         (rawInsertionNameAtLocated Nat ToyKey ToyRuntime String ToyValue r181WholeTrace
           selected rightParent rightComponent right))))
+
+||| F7: actual empty-origin reachability and discipline-produced provenance.
+||| Public constructor transparency keeps reachTrace IDENTICAL to r181WholeTrace
+||| when the existing rank/support producers consume this packet.
+public export
+0 r181ReachedAndProvenance :
+  (ReachedFromEmpty Nat ToyKey ToyRuntime String ToyValue (the (DecEq Nat) %search)
+    (the (DecEq ToyKey) %search) r180ObservedConsumerFinished,
+   RegistrationProvenance r181Protocol (the (DecEq Nat) %search) r181WholeTrace)
+r181ReachedAndProvenance =
+  (MkReachedFromEmpty
+    (MkSystemState (MkToyRuntime False False)
+      (emptyContext {key = Nat} {value = \n => Fiber Nat ToyKey ToyValue ToyRuntime String}))
+    r181WholeTrace r181TraceAligned Refl Refl,
+   registrationDisciplineProvenance r181Protocol (the (DecEq Nat) %search)
+    r181WholeTrace (Builtin.fst r181TraceStructure))
