@@ -165,3 +165,10 @@ segmentedRankOwnedLift head (FirstRankSegment {sourceHead} later progress) =
     (FirstRankSegment later (rankLiftProgress head sourceHead progress))
 segmentedRankOwnedLift head (LaterRankSegment untouched later) =
   LaterRankSegment (head :: untouched) later
+
+||| Execute an observed rank or barrier, without recomputing an action's owner.
+public export
+rankSegmentStep : Maybe Nat -> List (List Nat) -> List (List Nat)
+rankSegmentStep Nothing segments = [] :: segments
+rankSegmentStep (Just head) [] = [[head]]
+rankSegmentStep (Just head) (segment :: later) = (head :: segment) :: later
