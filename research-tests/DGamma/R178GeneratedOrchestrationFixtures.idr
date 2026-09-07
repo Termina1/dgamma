@@ -124,3 +124,18 @@ r178LeftNoRetirementAt actor (S (S (S Z))) observed = case observed of Refl impo
 r178LeftNoRetirementAt actor (S (S (S (S Z)))) observed = case observed of Refl impossible
 r178LeftNoRetirementAt actor (S (S (S (S (S Z))))) observed = case observed of Refl impossible
 r178LeftNoRetirementAt actor (S (S (S (S (S (S later)))))) observed = case observed of Refl impossible
+
+export
+0 r178LeftGeneratedRetirementImpossible :
+  (occurrence : LocatedGeneratedOrchestration Nat R45Key Unit String R45Value r45NameEq r178LeftTrace) ->
+  (generatedRemoval occurrence = False) -> Void
+r178LeftGeneratedRetirementImpossible occurrence kind =
+  r178LeftNoRetirementAt (generatedActor occurrence)
+    (locatedActionOrdinal (generatedOccurrence occurrence))
+    (replace {p = \removal => (rawClosingActionAt Nat R45Key Unit String R45Value
+      (locatedActionOrdinal (generatedOccurrence occurrence)) r178LeftTrace =
+      Just (generatedOrchestrationAction Nat R45Key Unit String R45Value removal (generatedActor occurrence)))}
+      kind (rawClosingActionAtLocated Nat R45Key Unit String R45Value r178LeftTrace
+        (generatedOrchestrationAction Nat R45Key Unit String R45Value
+          (generatedRemoval occurrence) (generatedActor occurrence))
+        (generatedOccurrence occurrence)))
