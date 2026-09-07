@@ -5106,3 +5106,21 @@ canonicalActionFoldAppend name key world error value observation observe seed No
 canonicalActionFoldAppend name key world error value observation observe seed (MoreTransitions step rest) suffix =
   cong (observe (transitionAction step))
     (canonicalActionFoldAppend name key world error value observation observe seed rest suffix)
+
+||| Authentic sealed replay preserves the EXACT R175 rank segments of its
+||| suffix, including every external/unowned barrier and every owned rank.
+0 canonicalWorkSealedSuffixRankSegments :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (fixedOrder : List name) ->
+  {sourceFirst, sourceFinal, replayedFirst, replayedFinal : SystemState name key value world error} ->
+  {source : Transitions sourceFirst sourceFinal} ->
+  {replayed : Transitions replayedFirst replayedFinal} ->
+  (SealedSuffixReplaySpine name key world error value nameEq keyEq source replayed) ->
+  (canonicalWorkRankSegments name key world error value nameEq fixedOrder replayed =
+   canonicalWorkRankSegments name key world error value nameEq fixedOrder source)
+canonicalWorkSealedSuffixRankSegments name key world error value nameEq keyEq fixedOrder
+  {source} {replayed} seal =
+    trans (canonicalWorkRankSegmentsFold name key world error value nameEq fixedOrder replayed)
+      (trans (sealedSuffixActionFoldSame name key world error value nameEq keyEq (List (List Nat))
+        (canonicalWorkRankStep name key world error value nameEq fixedOrder) [[]] seal)
+        (sym (canonicalWorkRankSegmentsFold name key world error value nameEq fixedOrder source)))
