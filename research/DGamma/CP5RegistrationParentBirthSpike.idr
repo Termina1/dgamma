@@ -222,40 +222,64 @@ export
   {initial, finalState : SystemState name key value world error} ->
   (global : Transitions initial finalState) -> (ordinal : Nat) ->
   (action : Action name key value world error) -> (index : RegistrationIndexState name) ->
-  LocatedActionOccurrence action global ->
   (occurrence : LocatedActionOccurrence action global) -> locatedActionOrdinal occurrence = ordinal ->
   RegistrationIndexBirths name key world error value global index ->
   RegistrationIndexBirths name key world error value global (advanceRegistrationIndex @{nameEq} ordinal action index)
 registrationIndexBirthAction name key world error value nameEq global ordinal (OInsert actor Root component)
-  (MkRegistrationIndexState live activations counts deleted) unused occurrence exact births =
+  (MkRegistrationIndexState live activations counts deleted) occurrence exact births =
     MkRegistrationIndexBirths
       (currentBirthActionProgress name key world error value nameEq global ordinal live (OInsert actor Root component) occurrence exact (indexCurrentBirths births))
       (indexActivationBirths births)
 registrationIndexBirthAction name key world error value nameEq global ordinal (OInsert child (ChildOf parent) component)
-  (MkRegistrationIndexState live activations counts deleted) unused occurrence exact births =
+  (MkRegistrationIndexState live activations counts deleted) occurrence exact births =
     MkRegistrationIndexBirths
       (currentBirthActionProgress name key world error value nameEq global ordinal live (OInsert child (ChildOf parent) component) occurrence exact (indexCurrentBirths births))
       (indexActivationBirths births)
 registrationIndexBirthAction name key world error value nameEq global ordinal (ORetire actor)
-  (MkRegistrationIndexState live activations counts deleted) unused occurrence exact births = births
+  (MkRegistrationIndexState live activations counts deleted) occurrence exact births = births
 registrationIndexBirthAction name key world error value nameEq global ordinal (ORemove actor)
-  (MkRegistrationIndexState live activations counts deleted) unused occurrence exact births =
+  (MkRegistrationIndexState live activations counts deleted) occurrence exact births =
     MkRegistrationIndexBirths
       (currentBirthActionProgress name key world error value nameEq global ordinal live (ORemove actor) occurrence exact (indexCurrentBirths births))
       (\selected, activation, member => indexActivationBirths births selected activation
         (parentDeleteEntryOrigin name nameEq actor activations selected activation member))
 registrationIndexBirthAction name key world error value nameEq global ordinal (LBegin actor)
-  (MkRegistrationIndexState live activations counts deleted) unused occurrence exact births =
+  (MkRegistrationIndexState live activations counts deleted) occurrence exact births =
     registrationBeginBirthsObserved name key world error value nameEq global ordinal actor live activations counts deleted births
       (lookupCurrentGeneration @{nameEq} actor live) Refl
 registrationIndexBirthAction name key world error value nameEq global ordinal (LAdvance actor)
-  (MkRegistrationIndexState live activations counts deleted) unused occurrence exact births = births
+  (MkRegistrationIndexState live activations counts deleted) occurrence exact births = births
 registrationIndexBirthAction name key world error value nameEq global ordinal (LDivert actor)
-  (MkRegistrationIndexState live activations counts deleted) unused occurrence exact births = births
+  (MkRegistrationIndexState live activations counts deleted) occurrence exact births = births
 registrationIndexBirthAction name key world error value nameEq global ordinal (LLeave actor)
-  (MkRegistrationIndexState live activations counts deleted) unused occurrence exact births = births
+  (MkRegistrationIndexState live activations counts deleted) occurrence exact births = births
 registrationIndexBirthAction name key world error value nameEq global ordinal (LUnload actor)
-  (MkRegistrationIndexState live activations counts deleted) unused occurrence exact births =
+  (MkRegistrationIndexState live activations counts deleted) occurrence exact births =
     MkRegistrationIndexBirths (indexCurrentBirths births)
       (\selected, activation, member => indexActivationBirths births selected activation
         (parentDeleteEntryOrigin name nameEq actor activations selected activation member))
+
+||| Retaining a generated event changes only counters beyond its genuine births.
+export
+0 registrationSurvivingBirthsObserved :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (global : Transitions initial finalState) -> (ordinal : Nat) -> (child, parent : name) ->
+  (component : Component key value world error) ->
+  (live : GenerationEnvironment name) -> (activations : List (name, RegistrationActivation name)) ->
+  (counts : List (RegistrationActivation name, Nat)) -> (deleted : List (RegistrationGeneration name)) ->
+  (occurrence : LocatedActionOccurrence (OInsert child (ChildOf parent) component) global) ->
+  locatedActionOrdinal occurrence = ordinal ->
+  RegistrationIndexBirths name key world error value global (MkRegistrationIndexState live activations counts deleted) ->
+  (observed : Maybe (RegistrationActivation name)) -> lookupParentActivation @{nameEq} parent activations = observed ->
+  RegistrationIndexBirths name key world error value global
+    (advanceSurvivingRegistrationIndex @{nameEq} ordinal child parent component
+      (MkRegistrationIndexState live activations counts deleted))
+registrationSurvivingBirthsObserved name key world error value nameEq global ordinal child parent component
+  live activations counts deleted occurrence exact births Nothing observedExact =
+    rewrite observedExact in registrationIndexBirthAction name key world error value nameEq global ordinal (OInsert child (ChildOf parent) component) (MkRegistrationIndexState live activations counts deleted) occurrence exact births
+registrationSurvivingBirthsObserved name key world error value nameEq global ordinal child parent component
+  live activations counts deleted occurrence exact births (Just activation) observedExact =
+    rewrite observedExact in MkRegistrationIndexBirths
+      (indexCurrentBirths (registrationIndexBirthAction name key world error value nameEq global ordinal (OInsert child (ChildOf parent) component) (MkRegistrationIndexState live activations counts deleted) occurrence exact births))
+      (indexActivationBirths (registrationIndexBirthAction name key world error value nameEq global ordinal (OInsert child (ChildOf parent) component) (MkRegistrationIndexState live activations counts deleted) occurrence exact births))
