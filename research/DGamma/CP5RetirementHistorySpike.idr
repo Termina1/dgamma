@@ -269,3 +269,8 @@ retiredCutNonretiredEndpointImpossible name key world error value nameEq keyEq p
           (fiberParent retiredFiber) parent (fiberComponent retiredFiber) component
           (rawMetadataBirthAtPrefix name key world error value nameEq keyEq prior prior NoTransitions
             (currentBirthTraceAppendEmpty name key world error value prior) priorAligned empty selected retiredFiber retiredFound) laterBirth
+
+0 retirementAppliedTrue :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (fiber : Fiber name key value world error) -> (retired (retireFiber fiber) = True)
+retirementAppliedTrue name key world error value (MkFiber component parent retiredFlag table lifecycle) = Refl
