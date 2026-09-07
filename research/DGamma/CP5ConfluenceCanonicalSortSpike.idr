@@ -3900,6 +3900,23 @@ canonicalWorkRankSegments name key world error value nameEq fixedOrder
           Yes same => False
           No distinct => True) fixedOrder) :: segment) :: later
 
+||| The measure is defined on the WHOLE reached worklist and its SAME fixed
+||| order; changing which actor is currently inspected cannot reset it.
+||| Decrease across an authentic sealed result still requires the rank-segment
+||| transport/operational-choice bridge. No such premise is silently assumed.
+0 canonicalWorkGlobalInversionMeasure :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, originalFinal : SystemState name key value world error} ->
+  {original : Transitions initial originalFinal} ->
+  (ordering : SupportOrderingCapital name key world error value nameEq keyEq originalFinal) ->
+  (current : CanonicalSortingWorklist name key world error value protocol nameEq keyEq original ordering) -> Nat
+canonicalWorkGlobalInversionMeasure name key world error value protocol nameEq keyEq ordering current =
+  foldr (+) Z (map rankInversions
+    (canonicalWorkRankSegments name key world error value nameEq (orderedSupportNames ordering)
+      (sortingCurrentTrace (workReachedReplay current))))
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
