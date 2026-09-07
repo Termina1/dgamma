@@ -25,3 +25,22 @@ public export
   Transitions initial finalState -> List (Action name key value world error)
 o19ActionWord {name} {key} {world} {error} {value} trace =
   traceActionFold name key world error value (List (Action name key value world error)) (::) [] trace
+
+||| B22: observed TWO actual checked transitions, not independently supplied
+||| moved nodes. Both actions and their complete trace/alignment are owned.
+public export
+record ObservedTwoActionTrace
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (keyEq : DecEq key)
+  (wantedFirst, wantedSecond : Action name key value world error)
+  {initial, finalState : SystemState name key value world error}
+  (trace : Transitions initial finalState) where
+  constructor MkObservedTwoActionTrace
+  twoActionMiddle : SystemState name key value world error
+  twoActionFirst : Transition initial twoActionMiddle
+  twoActionSecond : Transition twoActionMiddle finalState
+  0 twoActionFirstExact : (transitionAction twoActionFirst = wantedFirst)
+  0 twoActionSecondExact : (transitionAction twoActionSecond = wantedSecond)
+  0 twoActionTraceExact : (MoreTransitions twoActionFirst (MoreTransitions twoActionSecond NoTransitions) = trace)
+  0 twoActionAligned : AlignedTransitions name key world error value nameEq keyEq
+    (MoreTransitions twoActionFirst (MoreTransitions twoActionSecond NoTransitions))
