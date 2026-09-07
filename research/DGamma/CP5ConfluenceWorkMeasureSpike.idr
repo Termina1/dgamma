@@ -19,7 +19,7 @@ public export
 rankInversions : List Nat -> Nat
 rankInversions [] = Z
 rankInversions (actor :: later) =
-  sum (map (rankCrossing actor) later) + rankInversions later
+  foldr (+) Z (map (rankCrossing actor) later) + rankInversions later
 
 ||| Readable reassociation used for every unaffected third-node contribution.
 export
@@ -38,3 +38,16 @@ rankCrossingAsymmetric Z right crossed = absurd crossed
 rankCrossingAsymmetric (S left) Z crossed = Refl
 rankCrossingAsymmetric (S left) (S right) crossed =
   rankCrossingAsymmetric left right crossed
+
+||| Swapping a descending head pair removes exactly one global inversion.
+export
+0 rankHeadInversionDrop :
+  (left, right : Nat) -> (suffix : List Nat) ->
+  rankCrossing left right = 1 ->
+  rankInversions (left :: right :: suffix) =
+    S (rankInversions (right :: left :: suffix))
+rankHeadInversionDrop left right suffix crossed =
+  rewrite crossed in
+  rewrite rankCrossingAsymmetric left right crossed in
+    cong S (rankPlusSwap (foldr (+) Z (map (rankCrossing left) suffix))
+      (foldr (+) Z (map (rankCrossing right) suffix)) (rankInversions suffix))
