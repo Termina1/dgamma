@@ -268,3 +268,27 @@ o19MovedRightDestination nameEq keyEq left right diamond early =
     (MoreTransitions (movedLeft diamond) NoTransitions) (movedPairAligned diamond)
     (transitionAction right) (transitionTag right) (movedRightAction diamond)
     (earlyApplicationFinal early) (earlyApplicationChecked early))
+
+||| B16: authenticate the opaque pair END from two checked executions. The
+||| second check is transported to the ACTUAL reached middle using B15.
+public export
+0 o19MovedPairDestination :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {first, middle, last : SystemState name key value world error} ->
+  (left : Transition first middle) -> (right : Transition middle last) ->
+  (diamond : LocalRelationalDiamond name key world error value nameEq keyEq left right) ->
+  (earlyRight : CheckedEarlyApplication name key world error value nameEq keyEq first
+    (transitionAction right) (transitionTag right)) ->
+  (earlyLeft : CheckedEarlyApplication name key world error value nameEq keyEq
+    (earlyApplicationFinal earlyRight) (transitionAction left) (transitionTag left)) ->
+  (swappedFinal diamond = earlyApplicationFinal earlyLeft)
+o19MovedPairDestination nameEq keyEq left right diamond earlyRight earlyLeft =
+  Builtin.snd (o19AlignedDestination nameEq keyEq (movedLeft diamond) NoTransitions
+    (Builtin.snd (alignedAppendSplit (MoreTransitions (movedRight diamond) NoTransitions)
+      (MoreTransitions (movedLeft diamond) NoTransitions) (movedPairAligned diamond)))
+    (transitionAction left) (transitionTag left) (movedLeftAction diamond)
+    (earlyApplicationFinal earlyLeft)
+    (trans (cong (\state => checkedApplyAction @{nameEq} @{keyEq} (transitionAction left) state)
+      (o19MovedRightDestination nameEq keyEq left right diamond earlyRight))
+      (earlyApplicationChecked earlyLeft)))
