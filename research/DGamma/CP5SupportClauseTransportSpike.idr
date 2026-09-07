@@ -58,3 +58,19 @@ export
        wanted predicate (registryFibers {name = name} {key = key} {value = value} {world = world} {error = error} (registry state))) (dependencies (componentDependencies (fiberComponent fiber)))))
 actualSupportClauseAtFiber name key world error value nameEq keyEq state predicate selected (MkFiber component Root flag table lifecycle) found = rewrite found in Refl
 actualSupportClauseAtFiber name key world error value nameEq keyEq state predicate selected (MkFiber component (ChildOf parent) flag table lifecycle) found = rewrite found in Refl
+
+export
+0 actualSupportedDependencies :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (state : SystemState name key value world error) -> (selected : name) -> (fiber : Fiber name key value world error) ->
+  (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} selected (registry state) = Just fiber) ->
+  (isSupported {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} @{keyEq} selected state = True) ->
+  (allList (\wanted => providerFromPredicate {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} @{keyEq} wanted
+    (\actor => isSupported {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} @{keyEq} actor state)
+    (registryFibers {name = name} {key = key} {value = value} {world = world} {error = error} (registry state)))
+    (dependencies (componentDependencies (fiberComponent fiber))) = True)
+actualSupportedDependencies name key world error value nameEq keyEq state selected fiber found supported =
+  snd (clauseAndParts _ _ (snd (clauseAndParts _ _
+    (trans (sym (actualSupportClauseAtFiber name key world error value nameEq keyEq state
+      (\actor => isSupported {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} @{keyEq} actor state) selected fiber found))
+      (trans (sym (supportSetIsSolution nameEq keyEq state selected)) supported)))))
