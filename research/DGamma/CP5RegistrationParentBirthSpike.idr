@@ -182,3 +182,15 @@ parentLookupEntryObserved name nameEq selected candidate current rest (Yes same)
 parentLookupEntryObserved name nameEq selected candidate current rest (No distinct) exact recur activation found =
   There (recur activation
     (trans (sym (parentLookupObserved name nameEq selected candidate current rest (No distinct) exact)) found))
+
+||| Public lookup-to-actual-entry bridge for parent-activation authentication.
+export
+0 parentActivationEntryFromLookup :
+  (name : Type) -> (nameEq : DecEq name) -> (selected : name) ->
+  (activations : List (name, RegistrationActivation name)) -> (activation : RegistrationActivation name) ->
+  lookupParentActivation @{nameEq} selected activations = Just activation -> Elem (selected, activation) activations
+parentActivationEntryFromLookup name nameEq selected [] activation found = case found of Refl impossible
+parentActivationEntryFromLookup name nameEq selected ((candidate, current) :: rest) activation found =
+  parentLookupEntryObserved name nameEq selected candidate current rest
+    (decEq @{nameEq} selected candidate) Refl
+    (parentActivationEntryFromLookup name nameEq selected rest) activation found
