@@ -299,3 +299,17 @@ rawRetireTargetObserved name key world error value nameEq keyEq selected before 
       (rewrite sourceExact in Refl))) raw)))
     (retireFiber sourceFiber ** (lookupReplacedFiber @{nameEq} selected sourceFiber (retireFiber sourceFiber) (registry before) sourceExact,
       retirementAppliedTrue name key world error value sourceFiber))
+
+export
+0 rawRetireTarget :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (before, afterState : SystemState name key value world error) -> (tag : RuleTag) ->
+  (applyAction @{nameEq} @{keyEq} (ORetire selected) before = Just (tag, afterState)) ->
+  (fiber : Fiber name key value world error **
+    (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+      @{nameEq} selected (registry afterState) = Just fiber, retired fiber = True))
+rawRetireTarget name key world error value nameEq keyEq selected before afterState tag raw =
+  rawRetireTargetObserved name key world error value nameEq keyEq selected before afterState tag
+    (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+      @{nameEq} selected (registry before)) Refl raw
