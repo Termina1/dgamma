@@ -59,3 +59,22 @@ data AvailabilityTrace :
     (first : SystemState name key value world error) -> (step : Transition first middle) ->
     (0 rest : Transitions middle finalState) -> AvailabilityTrace name key world error value rest ->
     AvailabilityTrace name key world error value (MoreTransitions step rest)
+
+||| A compatible cut preserves declaration availability at EVERY crossed
+||| state and crosses NO root input. The endpoint state is checked too;
+||| off-end positions reject. This is stricter than a snapshot insertion guard.
+public export
+rootCutCompatible :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> Component key value world error -> Nat ->
+  {0 first, finalState : SystemState name key value world error} -> {0 trace : Transitions first finalState} ->
+  AvailabilityTrace name key world error value trace -> Bool
+rootCutCompatible name key world error value nameEq keyEq component Z (AvailabilityEnd state) =
+  rootDeclaredProvisionsFree name key world error value keyEq component state
+rootCutCompatible name key world error value nameEq keyEq component (S position) (AvailabilityEnd state) = False
+rootCutCompatible name key world error value nameEq keyEq component Z (AvailabilityStep first (Fired _ _ action _ _) rest later) =
+  rootDeclaredProvisionsFree name key world error value keyEq component first &&
+  not (rootInputAtSource name key world error value nameEq action first) &&
+  rootCutCompatible name key world error value nameEq keyEq component Z later
+rootCutCompatible name key world error value nameEq keyEq component (S position) (AvailabilityStep first step rest later) =
+  rootCutCompatible name key world error value nameEq keyEq component position later
