@@ -326,3 +326,178 @@ selector returns Nothing. Structural BlockBefore, exact registration fold,
 selected Iter/Finish early applicability and the remaining actual A/A, O/A,
 O/O producers also remain OPEN. Existing A/O capital and S17 are intact.
 Proceed only after the cap gate; next authorized bounded work is Unit B then C.
+
+## Unit B bounded raw-premise attempt — B6 exhausted gate
+
+The supervisor ratified the D12 park and authorized B (15 micro-units maximum)
+then C. B1–B5 below are fresh-checked capital. They establish exact executable
+action observation and authenticity of its ordinal, then prove that ANY TWO
+authenticated O-Insert births of the same raw name carry the SAME component
+under `UniqueRawNameInsertions`. B5 also proves that a successful raw action at
+an absent owner MUST be O-Insert, excluding every other action by its evaluator.
+None of this yet identifies the birth of a fiber observed at a later prefix.
+
+| Unit | Declaration | Immediate commit | Fresh source check |
+|---|---|---|---|
+| B1 | `rawClosingActionAt` | `763696d` | PASS B1-2, 2026-09-07T00:26:08.035640+00:00–2026-09-07T00:26:10.075753+00:00, 0 KiB sampled |
+| B2 | `rawClosingActionAtSplit` | `8598c0e` | PASS B2-1, 2026-09-07T00:26:27.753762+00:00–2026-09-07T00:26:29.808474+00:00, 0 KiB sampled |
+| B3 | `rawClosingActionAtLocated` | `b1b2e96` | PASS B3-1, 2026-09-07T00:26:52.011768+00:00–2026-09-07T00:26:54.047950+00:00, 0 KiB sampled |
+| B4 | `uniqueRawBirthComponents` | `5741519` | PASS B4-1, 2026-09-07T00:27:18.511047+00:00–2026-09-07T00:27:20.568256+00:00, 0 KiB sampled |
+| B5 | `rawAbsentOwnerInsertion` | `3a7ca9e` | PASS B5-2, 2026-09-07T00:28:26.167715+00:00–2026-09-07T00:28:28.224261+00:00, 0 KiB sampled |
+
+B1-1 rejected runtime use of transitionAction because its state parameters are
+not erased; B1-2 matches Fired and returns the stored action directly. B5-1
+rejected implicit type inference at polymorphic lookupFiber; B5-2 explicitly
+supplied all five type parameters. All other B1–B5 first attempts passed.
+
+B6 (`rawComponentBirthStep`) attempted the authentic one-step birth invariant
+using the actual `applyActionLocalUpdate`. B6-1 failed a rewrite of action
+classification under dependent owner equality. B6-2 replaced it with explicit
+Equality transport and reached a COMPUTED-LOCAL-UPDATE refinement wall:
+matching LocalInsert cannot refine a rigid `registry afterState` projection
+(the LocalReplace/Delete warnings are elaborator fallout, not discarded legal
+cases). B6-3 exposed source/target state constructors via as-patterns but the
+as-bound state aliases remained rigid in the case block, producing a raw
+execution-equation state mismatch. Budget EXHAUSTED 3/3. Entire B6 declaration
+removed by restoring the B5 committed source; no fourth attempt, no hidden
+signature change, no proof escape or deletionTheoremProof call.
+
+B used 6 of 15 micro-units; B7–B15 unspent. A plausible future structural
+separation is a generic EXPLICIT RegistryLocalUpdate induction helper rather
+than case elimination on a computed update with rigid state projections, then
+a producer invoking that helper on the actual evaluator result. That is a
+new design proposal, NOT a tried repair or an assumed provenance theorem.
+The target `rawClosingMaximumUnderUniqueInsertions` remains UNPROVED; immutable
+component coherence at arbitrary reached prefix lookups, common-rank transport
+and finite closing-rank maximum are all still missing. THM73-PLAN.md must NOT
+reclassify CP3 satisfiability on these partial results. Gate before continuation.
+
+### Removed final B6 candidate
+
+```idris
+||| Every observed component after one step has an authentic birth in the
+||| chosen global trace, or inherits the SAME immutable component from before.
+public export
+0 rawComponentBirthStep :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (global : Transitions initial finalState) ->
+  (action : Action name key value world error) ->
+  (before, afterState : SystemState name key value world error) -> (tag : RuleTag) ->
+  (raw : applyAction @{nameEq} @{keyEq} action before = Just (tag, afterState)) ->
+  (occurrence : LocatedActionOccurrence action global) ->
+  ((selected : name) -> (fiber : Fiber name key value world error) ->
+    lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+      @{nameEq} selected (registry before) = Just fiber ->
+    (parent : Parent name ** LocatedActionOccurrence
+      (OInsert selected parent (fiberComponent fiber)) global)) ->
+  (selected : name) -> (observed : Fiber name key value world error) ->
+  lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+    @{nameEq} selected (registry afterState) = Just observed ->
+  (parent : Parent name ** LocatedActionOccurrence
+    (OInsert selected parent (fiberComponent observed)) global)
+rawComponentBirthStep name key world error value nameEq keyEq global action
+  before@(MkSystemState beforeWorld sourceRegistry)
+  afterState@(MkSystemState afterWorld targetRegistry) tag raw occurrence sourceBirth selected observed targetFound =
+    case decEq @{nameEq} selected (actionOwner action) of
+      No distinct => sourceBirth selected observed
+        (trans (sym (registryLocalUpdateForeign nameEq selected (actionOwner action) distinct
+          (registry before) (systemRegistryUpdate
+            (applyActionLocalUpdate nameEq keyEq action before afterState tag raw)))) targetFound)
+      Yes same => case same of
+        Refl => case systemRegistryUpdate
+          (applyActionLocalUpdate nameEq keyEq action before afterState tag raw) of
+          LocalInsert next absent =>
+            case rawAbsentOwnerInsertion name key world error value nameEq keyEq action
+              before afterState tag raw absent of
+              (parent ** (component ** inserted)) =>
+                (parent ** replace
+                  {p = \chosen => LocatedActionOccurrence (OInsert selected parent chosen) global}
+                  (cong fiberComponent (justInjective
+                    (trans (sym (oInsertResultLookup nameEq keyEq selected parent component
+                      before afterState tag (replace
+                        {p = \chosen => applyAction @{nameEq} @{keyEq} chosen before = Just (tag, afterState)}
+                        inserted raw))) targetFound)))
+                  (replace {p = \chosen => LocatedActionOccurrence chosen global} inserted occurrence))
+          LocalReplace {oldFiber} {oldFound} {staticComponent} next =>
+            case sourceBirth selected oldFiber oldFound of
+              (parent ** born) =>
+                (parent ** replace
+                  {p = \chosen => LocatedActionOccurrence (OInsert selected parent chosen) global}
+                  (trans (sym staticComponent) (cong fiberComponent
+                    (justInjective (trans (sym (lookupReplacedFiber selected oldFiber next
+                      (registry before) oldFound)) targetFound)))) born)
+          LocalDelete => void (nothingIsNotJust
+            (trans (sym (DGamma.CP4DeletionSelectedOwn.lookupDeleteSelf @{nameEq}
+              selected (registry before))) targetFound))
+```
+
+### B6-1 full diagnostic
+
+```text
+2/2: Building DGamma.CP5RawClosingRankSpike (research/DGamma/CP5RawClosingRankSpike.idr)
+Error: While processing right hand side of rawComponentBirthStep. Rewriting by ?y = action did not change type applyAction (OInsert selected parent component) before = Just (tag, afterState).
+
+DGamma.CP5RawClosingRankSpike:171:46--171:73
+ 167 |                 (parent ** replace
+ 168 |                   {p = \chosen => LocatedActionOccurrence (OInsert selected parent chosen) global}
+ 169 |                   (cong fiberComponent (justInjective
+ 170 |                     (trans (sym (oInsertResultLookup nameEq keyEq selected parent component
+ 171 |                       before afterState tag (rewrite sym inserted in raw))) targetFound)))
+                                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+```
+
+### B6-2 full diagnostic
+
+```text
+2/2: Building DGamma.CP5RawClosingRankSpike (research/DGamma/CP5RawClosingRankSpike.idr)
+Warning: Unreachable clause: case block in case block in case block in rawComponentBirthStep key value error world name initial finalState observed afterState nameEq action targetFound before global sourceBirth occurrence tag keyEq raw selected same ?postpone
+
+DGamma.CP5RawClosingRankSpike:175:11--182:73
+ 175 |           LocalReplace {oldFiber} {oldFound} {staticComponent} next =>
+ 176 |             case sourceBirth selected oldFiber oldFound of
+ 177 |               (parent ** born) =>
+ 178 |                 (parent ** replace
+ 179 |                   {p = \chosen => LocatedActionOccurrence (OInsert selected parent chosen) global}
+ 180 |                   (trans (sym staticComponent) (cong fiberComponent
+
+Warning: Unreachable clause: case block in case block in case block in rawComponentBirthStep key value error world name initial finalState observed afterState nameEq action targetFound before global sourceBirth occurrence tag keyEq raw selected same ?postpone
+
+DGamma.CP5RawClosingRankSpike:183:11--185:57
+ 183 |           LocalDelete => void (nothingIsNotJust
+ 184 |             (trans (sym (DGamma.CP4DeletionSelectedOwn.lookupDeleteSelf @{nameEq}
+ 185 |               selected (registry before))) targetFound))
+
+Error: While processing right hand side of rawComponentBirthStep. Can't solve constraint between: insertBinding (actionOwner ?_) ?next (?_ .registry) ?absent and ?_ .registry.
+
+DGamma.CP5RawClosingRankSpike:163:11--163:34
+ 159 |             (applyActionLocalUpdate nameEq keyEq action before afterState tag raw)))) targetFound)
+ 160 |       Yes same => case same of
+ 161 |         Refl => case systemRegistryUpdate
+ 162 |           (applyActionLocalUpdate nameEq keyEq action before afterState tag raw) of
+ 163 |           LocalInsert next absent =>
+                 ^^^^^^^^^^^^^^^^^^^^^^^
+
+```
+
+### B6-3 full diagnostic
+
+```text
+2/2: Building DGamma.CP5RawClosingRankSpike (research/DGamma/CP5RawClosingRankSpike.idr)
+Error: While processing right hand side of rawComponentBirthStep. When unifying:
+    applyAction action (MkSystemState beforeWorld sourceRegistry) = Just (tag, MkSystemState afterWorld targetRegistry)
+and:
+    applyAction action before = Just (tag, afterState)
+Mismatch between: MkSystemState afterWorld targetRegistry and afterState.
+
+DGamma.CP5RawClosingRankSpike:160:79--160:82
+ 156 |     case decEq @{nameEq} selected (actionOwner action) of
+ 157 |       No distinct => sourceBirth selected observed
+ 158 |         (trans (sym (registryLocalUpdateForeign nameEq selected (actionOwner action) distinct
+ 159 |           (registry before) (systemRegistryUpdate
+ 160 |             (applyActionLocalUpdate nameEq keyEq action before afterState tag raw)))) targetFound)
+                                                                                     ^^^
+
+```
