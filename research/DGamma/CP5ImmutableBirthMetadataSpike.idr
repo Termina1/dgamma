@@ -268,3 +268,22 @@ record ScannedRegistrationBirth
     (OInsert (eventChild event) (ChildOf (eventParent event)) (eventComponent event)) trace
   0 scannedBirthStampExact : eventChildGeneration event =
     MkRegistrationGeneration (eventChild event) (startOrdinal + locatedActionOrdinal scannedLocatedBirth)
+
+||| Prepend an actual checked transition while preserving the global event stamp.
+public export
+0 scannedRegistrationBirthPrepend :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (ordinal : Nat) ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (step : Transition first middle) -> (rest : Transitions middle finalState) ->
+  (event : RegistrationEvent name key world error value) ->
+  ScannedRegistrationBirth name key world error value (S ordinal) rest event ->
+  ScannedRegistrationBirth name key world error value ordinal (MoreTransitions step rest) event
+scannedRegistrationBirthPrepend name key world error value ordinal step rest event
+  (MkScannedRegistrationBirth
+    (MkLocatedActionOccurrence before afterState prior located later actionExact decomposition) stamp) =
+      MkScannedRegistrationBirth
+        (MkLocatedActionOccurrence before afterState (MoreTransitions step prior) located later actionExact
+          (cong (MoreTransitions step) decomposition))
+        (trans stamp (cong (MkRegistrationGeneration (eventChild event))
+          (plusSuccRightSucc ordinal (transitionCount prior))))
