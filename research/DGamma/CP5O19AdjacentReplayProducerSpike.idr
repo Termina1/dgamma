@@ -127,3 +127,33 @@ o19SourcePairFacts {name} {key} {world} {error} {value}
      (\selected, occurs => replace {p = OccursIn selected} decomposition
        (o19PairOccurrence earlier left right later selected occurs))
      (replayIndependent premises))
+
+||| B6: ACTUAL A/A diamond producer from the exact positive early check and
+||| existing source bundle. No supplied diamond, target state, or view equality.
+||| Propagating block-level applicability to EVERY later crossing remains open.
+public export
+0 o19ActivationDiamond :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {initial, first, middle, last, finalState : SystemState name key value world error} ->
+  (original : Transitions initial finalState) -> (earlier : Transitions initial first) ->
+  (left : Transition first middle) -> (right : Transition middle last) ->
+  (later : Transitions last finalState) ->
+  (appendTransitions earlier (MoreTransitions left (MoreTransitions right later)) = original) ->
+  ReplayInvariantBundle name key world error value protocol nameEq keyEq original ->
+  PaperActivationStep left -> PaperActivationStep right ->
+  Not (transitionActor left = transitionActor right) ->
+  CheckedEarlyApplication name key world error value nameEq keyEq first
+    (transitionAction right) (transitionTag right) ->
+  LocalRelationalDiamond name key world error value nameEq keyEq left right
+o19ActivationDiamond {first} nameEq keyEq protocol original earlier left right later
+  decomposition premises leftActivation rightActivation distinct early =
+  activationActivationDiamondSpike nameEq keyEq left right
+    (Fired {before = first} {afterState = earlyApplicationFinal early} nameEq keyEq
+      (transitionAction right) (transitionTag right) (earlyApplicationChecked early))
+    (Builtin.fst (o19SourcePairFacts nameEq keyEq protocol original earlier left right later decomposition premises))
+    (AlignedStep (transitionAction right) (transitionTag right) (earlyApplicationChecked early) NoTransitions AlignedEnd)
+    Refl Refl leftActivation rightActivation distinct
+    (Builtin.fst (Builtin.snd (o19SourcePairFacts nameEq keyEq protocol original earlier left right later decomposition premises)))
+    (Builtin.snd (Builtin.snd (o19SourcePairFacts nameEq keyEq protocol original earlier left right later decomposition premises)))
