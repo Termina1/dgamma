@@ -4996,14 +4996,13 @@ independentCanonicalScheduleSpike nameEq keyEq protocol original premises
       (canonicalAccountedGenerationClassified accounting)
 
 
-||| One action's exact R175 ownership-rank observation. External/unowned actions
-||| introduce a barrier; their ordinal is never erased into an owned segment.
-0 canonicalWorkRankStep :
+||| Observe ownership ONCE before building a segment progress packet.
+||| This is the same R175 fixed-order rank; unowned actions remain barriers.
+0 canonicalWorkActionRank :
   (name, key, world, error : Type) -> (value : key -> Type) ->
   (nameEq : DecEq name) -> (fixedOrder : List name) ->
-  (action : Action name key value world error) ->
-  (segments : List (List Nat)) -> List (List Nat)
-canonicalWorkRankStep name key world error value nameEq fixedOrder action segments =
+  (action : Action name key value world error) -> Maybe Nat
+canonicalWorkActionRank name key world error value nameEq fixedOrder action =
   case (the (Maybe name) (case action of
     OInsert child (ChildOf parent) component => Just parent
     LBegin actor => Just actor
@@ -5012,14 +5011,20 @@ canonicalWorkRankStep name key world error value nameEq fixedOrder action segmen
     LLeave actor => Just actor
     LUnload actor => Just actor
     _ => Nothing)) of
-    Nothing => [] :: segments
-    Just owner => case segments of
-      [] => [[length (Data.List.takeWhile (\candidate => case decEq @{nameEq} candidate owner of
-        Yes same => False
-        No distinct => True) fixedOrder)]]
-      segment :: later => (length (Data.List.takeWhile (\candidate => case decEq @{nameEq} candidate owner of
-        Yes same => False
-        No distinct => True) fixedOrder) :: segment) :: later
+    Nothing => Nothing
+    Just owner => Just (length (Data.List.takeWhile (\candidate => case decEq @{nameEq} candidate owner of
+      Yes same => False
+      No distinct => True) fixedOrder))
+
+||| One action's exact R175 ownership-rank observation. External/unowned actions
+||| introduce a barrier; their ordinal is never erased into an owned segment.
+0 canonicalWorkRankStep :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (fixedOrder : List name) ->
+  (action : Action name key value world error) ->
+  (segments : List (List Nat)) -> List (List Nat)
+canonicalWorkRankStep name key world error value nameEq fixedOrder action segments =
+  rankSegmentStep (canonicalWorkActionRank name key world error value nameEq fixedOrder action) segments
 
 ||| The new action fold computes EXACTLY the existing R175 whole-trace measure
 ||| input, not a replacement word or a new per-actor debt.
