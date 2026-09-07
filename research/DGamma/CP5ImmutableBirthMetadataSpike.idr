@@ -63,3 +63,45 @@ rawImmutableMetadataUpdate name key world error value nameEq property actor sour
           (trans (sym (DGamma.CP4DeletionSelectedOwn.lookupDeleteSelf @{nameEq} actor source)) found))
       No distinct => previous selected observed
         (trans (sym (registryLocalUpdateForeign nameEq selected actor distinct source LocalDelete)) found)
+
+||| Authenticate both immutable endpoint fields at the actual original birth.
+public export
+0 rawMetadataBirthStep :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (global : Transitions initial finalState) ->
+  (action : Action name key value world error) ->
+  (before, afterState : SystemState name key value world error) -> (tag : RuleTag) ->
+  (raw : applyAction @{nameEq} @{keyEq} action before = Just (tag, afterState)) ->
+  (occurrence : LocatedActionOccurrence action global) ->
+  ((selected : name) -> (fiber : Fiber name key value world error) ->
+    lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+      @{nameEq} selected (registry before) = Just fiber ->
+    LocatedActionOccurrence (OInsert selected (fiberParent fiber) (fiberComponent fiber)) global) ->
+  (selected : name) -> (observed : Fiber name key value world error) ->
+  lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+    @{nameEq} selected (registry afterState) = Just observed ->
+  LocatedActionOccurrence (OInsert selected (fiberParent observed) (fiberComponent observed)) global
+rawMetadataBirthStep name key world error value nameEq keyEq global action
+  before afterState tag raw occurrence sourceBirth =
+    rawImmutableMetadataUpdate name key world error value nameEq
+      (\selected, metadata => LocatedActionOccurrence
+        (OInsert selected (fst metadata) (snd metadata)) global)
+      (actionOwner action) (registry before) (registry afterState)
+      (systemRegistryUpdate (applyActionLocalUpdate nameEq keyEq action before afterState tag raw))
+      (\next, absent, targetIsInsert =>
+        case rawAbsentOwnerInsertion name key world error value nameEq keyEq action
+          before afterState tag raw absent of
+          (parent ** (component ** inserted)) =>
+            replace {p = \metadata => LocatedActionOccurrence
+              (OInsert (actionOwner action) (fst metadata) (snd metadata)) global}
+              (cong (\fiber => (fiberParent fiber, fiberComponent fiber)) (justInjective
+                (trans (sym (oInsertResultLookup nameEq keyEq (actionOwner action) parent component
+                  before afterState tag (replace
+                    {p = \chosen => applyAction @{nameEq} @{keyEq} chosen before = Just (tag, afterState)}
+                    inserted raw)))
+                  (trans (cong (lookupFiber @{nameEq} (actionOwner action)) targetIsInsert)
+                    (lookupInserted (actionOwner action) next (registry before) absent)))))
+              (replace {p = \chosen => LocatedActionOccurrence chosen global} inserted occurrence))
+      sourceBirth
