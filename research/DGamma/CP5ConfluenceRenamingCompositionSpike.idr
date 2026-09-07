@@ -3264,3 +3264,26 @@ projectionLeftParentBirth name key world error value nameEq left right renaming 
         (MkRegistrationIndexBirths (\selected, generation, impossibleMember => absurd impossibleMember)
           (\selected, parentActivation, impossibleMember => absurd impossibleMember))
         event member activation present
+
+0 projectionRightParentBirth :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) ->
+  {leftFirst, leftFinal, rightFirst, rightFinal : SystemState name key value world error} ->
+  (left : Transitions leftFirst leftFinal) -> (right : Transitions rightFirst rightFinal) ->
+  (renaming : RegistrationGenerationBijection name) ->
+  {leftResultIndex, rightResultIndex : RegistrationIndexState name} ->
+  (projection : AlignedFiniteRegistrationProjection nameEq renaming Z
+    (the (RegistrationIndexState name) DGamma.CP3.emptyRegistrationIndex) left leftResultIndex Z
+    (the (RegistrationIndexState name) DGamma.CP3.emptyRegistrationIndex) right rightResultIndex [] []) ->
+  (event : RegistrationEvent name key world error value) ->
+  Elem event (rightScannedEvents (authenticatedMatchingFromProjection name key world error value nameEq left right renaming projection)) ->
+  (activation : RegistrationActivation name) -> eventParentActivation event = Just activation ->
+  CurrentGenerationBirth name key world error value right (eventParent event) (activationParentGeneration activation)
+projectionRightParentBirth name key world error value nameEq left right renaming projection event member activation present =
+  case projection of
+    MkAlignedFiniteRegistrationProjection plan leftScan rightScan leftEvents rightEvents planFold leftFold rightFold =>
+      registrationSideFoldParentBirth name key world error value nameEq right right Z
+        (the (RegistrationIndexState name) DGamma.CP3.emptyRegistrationIndex) rightFold
+        (\action, occurrence => occurrence) (\action, occurrence => Refl)
+        (MkRegistrationIndexBirths (\selected, generation, impossibleMember => absurd impossibleMember)
+          (\selected, parentActivation, impossibleMember => absurd impossibleMember))
+        event member activation present
