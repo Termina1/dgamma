@@ -56,8 +56,8 @@ report = dict(timestamp=datetime.datetime.now(datetime.timezone.utc).isoformat()
     legacyTranscript=(TMP/'F-legacy-seeded.log').read_text(),
     commits=git('log','--reverse','--format=%H %s',START+'..HEAD').splitlines())
 (OUT/'O6-R178-COMPILER-LEDGER.json').write_text(json.dumps(report,indent=2)+'\n')
-text=['# R178 exact compiler transcripts','',
-      'Raw exact source snapshots/logs/wrapper JSON are in O6-R178-COMPILER-EVIDENCE.tar.gz.',
+text=['# R178 compiler transcript presentation','',
+      'Raw exact source snapshots/logs/wrapper JSON are in O6-R178-COMPILER-EVIDENCE.tar.gz; the committed JSON also preserves exact transcripts. Rendered Markdown lines are right-trimmed.',
       'Unit A pre-final boundary logs are separately preserved in r178-evidence/Unit-A-boundaries.tar.gz.',
       'The legacy suite is seeded, not a cold/fresh rebuild. Two C9 cost stops have NO compiler verdict.','']
 for row in primary:
@@ -65,7 +65,7 @@ for row in primary:
 for row in boundaries:
     text += ['## '+row.get('boundaryRun','Unit-A')+' '+row['path'],'','```text',row['transcript'].rstrip(),'```','']
 text += ['## Legacy seeded suite','','```text',report['legacyTranscript'].rstrip(),'```','']
-(OUT/'O6-R178-COMPILER-TRANSCRIPTS.md').write_text('\n'.join(text))
+(OUT/'O6-R178-COMPILER-TRANSCRIPTS.md').write_text('\n'.join(line.rstrip() for line in '\n'.join(text).splitlines())+'\n')
 
 def declarations(text):
     found={}

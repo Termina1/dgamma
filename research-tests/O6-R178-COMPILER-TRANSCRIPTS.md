@@ -1,6 +1,6 @@
-# R178 exact compiler transcripts
+# R178 compiler transcript presentation
 
-Raw exact source snapshots/logs/wrapper JSON are in O6-R178-COMPILER-EVIDENCE.tar.gz.
+Raw exact source snapshots/logs/wrapper JSON are in O6-R178-COMPILER-EVIDENCE.tar.gz; the committed JSON also preserves exact transcripts. Rendered Markdown lines are right-trimmed.
 Unit A pre-final boundary logs are separately preserved in r178-evidence/Unit-A-boundaries.tar.gz.
 The legacy suite is seeded, not a cold/fresh rebuild. Two C9 cost stops have NO compiler verdict.
 
@@ -139,7 +139,7 @@ The legacy suite is seeded, not a cold/fresh rebuild. Two C9 cost stops have NO 
 ```text
 2/2: Building DGamma.R178GeneratedOrchestrationFixtures (research-tests/DGamma/R178GeneratedOrchestrationFixtures.idr)
 Error: While processing type of r178QuietPairChecks. Maximum ambiguity depth exceeded in DGamma.R178GeneratedOrchestrationFixtures.r178QuietPairChecks:
-Builtin.MkPair --> Builtin.MkPair --> Builtin.MkPair --> === 
+Builtin.MkPair --> Builtin.MkPair --> Builtin.MkPair --> ===
 
 DGamma.R178GeneratedOrchestrationFixtures:105:48--105:49
  101 |       @{r45NameEq} @{r45KeyEq} r178RightFinal,
@@ -158,7 +158,7 @@ Suggestion: the default ambiguity depth limit is 3, the %ambiguity_depth pragma 
 
 ```text
 2/2: Building DGamma.R178GeneratedOrchestrationFixtures (research-tests/DGamma/R178GeneratedOrchestrationFixtures.idr)
-Error: While processing type of r178QuietPairChecks. Undefined name supported. 
+Error: While processing type of r178QuietPairChecks. Undefined name supported.
 
 DGamma.R178GeneratedOrchestrationFixtures:106:5--106:14
  102 |     quiet {name = Nat} {key = R45Key} {value = R45Value} {world = Unit} {error = String}
@@ -288,7 +288,7 @@ You may be unintentionally shadowing the associated global definitions:
   order is shadowing Control.Order.order
 
 DGamma.CP5ConfluenceCrossTraceSpike:41:3--41:68
- 37 | 
+ 37 |
  38 | public export
  39 | data CertifiedActorPermutation :
  40 |   (name : Type) -> List name -> List name -> Type where
@@ -375,7 +375,7 @@ You may be unintentionally shadowing the associated global definitions:
   order is shadowing Control.Order.order
 
 DGamma.CP5ConfluenceCrossTraceSpike:41:3--41:68
- 37 | 
+ 37 |
  38 | public export
  39 | data CertifiedActorPermutation :
  40 |   (name : Type) -> List name -> List name -> Type where
@@ -462,7 +462,7 @@ You may be unintentionally shadowing the associated global definitions:
   order is shadowing Control.Order.order
 
 DGamma.CP5ConfluenceCrossTraceSpike:41:3--41:68
- 37 | 
+ 37 |
  38 | public export
  39 | data CertifiedActorPermutation :
  40 |   (name : Type) -> List name -> List name -> Type where
@@ -557,7 +557,7 @@ You may be unintentionally shadowing the associated global definitions:
   order is shadowing Control.Order.order
 
 DGamma.CP5ConfluenceCrossTraceSpike:41:3--41:68
- 37 | 
+ 37 |
  38 | public export
  39 | data CertifiedActorPermutation :
  40 |   (name : Type) -> List name -> List name -> Type where
@@ -759,7 +759,7 @@ DGamma.R178WrongGenerationMatchingNegative:35:55--35:63
 
 ```text
 5/5: Building DGamma.CP5SupportedBirthCoverageSpike (research/DGamma/CP5SupportedBirthCoverageSpike.idr)
-Error: While processing right hand side of coveredHeadActionObserved. Undefined name justInjective. 
+Error: While processing right hand side of coveredHeadActionObserved. Undefined name justInjective.
 
 DGamma.CP5SupportedBirthCoverageSpike:87:3--87:16
  83 |   (wanted : Action name key value world error) ->
@@ -1121,7 +1121,7 @@ DGamma.CP5ConfluenceCanonicalSortSpike:4658:3--4662:39
 
 ```text
 10/10: Building DGamma.CP5RootBirthCoverageSpike (research/DGamma/CP5RootBirthCoverageSpike.idr)
-Error: While processing type of rootBirthFromEndpoint. Undefined name AlignedTransitions. 
+Error: While processing type of rootBirthFromEndpoint. Undefined name AlignedTransitions.
 
 DGamma.CP5RootBirthCoverageSpike:119:45--119:63
  115 | 0 rootBirthFromEndpoint :
@@ -1194,7 +1194,7 @@ DGamma.CP5RootBirthCoverageSpike:123:1--126:106
 
 ```text
 1/1: Building DGamma.CP5RetiredFlagEvaluationSpike (research/DGamma/CP5RetiredFlagEvaluationSpike.idr)
-Error: While processing right hand side of retiredBeginOwner. Undefined name currentResultOwnerReplace. 
+Error: While processing right hand side of retiredBeginOwner. Undefined name currentResultOwnerReplace.
 
 DGamma.CP5RetiredFlagEvaluationSpike:51:39--51:64
  47 |   (MkFiber component parent retiredFlag table (Inactive Nothing)) found Nothing exact =
@@ -1891,7 +1891,7 @@ You may be unintentionally shadowing the associated global definitions:
   order is shadowing Control.Order.order
 
 DGamma.CP5ConfluenceCrossTraceSpike:42:3--42:68
- 38 | 
+ 38 |
  39 | public export
  40 | data CertifiedActorPermutation :
  41 |   (name : Type) -> List name -> List name -> Type where
@@ -2030,7 +2030,7 @@ DGamma.CP5AvailabilityAwarePlacement:77:61--77:82
 
 ```text
 1/1: Building DGamma.CP5AvailabilityAwarePlacement (research/DGamma/CP5AvailabilityAwarePlacement.idr)
-Error: While processing constructor MkAvailabilityAwareCanonicalInputPlacement. Undefined name actionOwner. 
+Error: While processing constructor MkAvailabilityAwareCanonicalInputPlacement. Undefined name actionOwner.
 
 DGamma.CP5AvailabilityAwarePlacement:125:40--125:51
  121 |     {root : name} -> {component : Component key value world error} ->
@@ -2182,7 +2182,7 @@ You may be unintentionally shadowing the associated global definitions:
   order is shadowing Control.Order.order
 
 DGamma.CP5ConfluenceCrossTraceSpike:41:3--41:68
- 37 | 
+ 37 |
  38 | public export
  39 | data CertifiedActorPermutation :
  40 |   (name : Type) -> List name -> List name -> Type where
@@ -2537,7 +2537,7 @@ You may be unintentionally shadowing the associated global definitions:
   order is shadowing Control.Order.order
 
 DGamma.CP5ConfluenceCrossTraceSpike:42:3--42:68
- 38 | 
+ 38 |
  39 | public export
  40 | data CertifiedActorPermutation :
  41 |   (name : Type) -> List name -> List name -> Type where
@@ -3189,7 +3189,7 @@ DGamma.R19SuffixFreeFullAdjacentCertificatePositive:25:3--25:61
  21 |   case trans (sym advance) retire of Refl impossible
  22 | advanceIsNotOrchestration advance (PaperRemoveStep remove) =
  23 |   case trans (sym advance) remove of Refl impossible
- 24 | 
+ 24 |
  25 | 0 twoSuccCountInjective : S (S count) = S (S Z) -> count = Z
         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
