@@ -131,3 +131,32 @@ generatedPacketRetirementLocation name key world error value nameEq trace packet
   replace {p = \action => LocatedActionOccurrence action trace} (cong ORetire actorExact)
     (replace {p = \removal => LocatedActionOccurrence (generatedOrchestrationAction name key world error value removal (generatedActor packet)) trace}
       kind (generatedOccurrence packet))
+
+||| Backward A9 transport is tied to BOTH authenticated current births. The
+||| returned raw actor is proved, not guessed from an historical generation name.
+export
+0 generatedRetirementBackwardAtBirths :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, leftFinal, rightFinal : SystemState name key value world error} ->
+  (left : Transitions initial leftFinal) -> (right : Transitions initial rightFinal) ->
+  (renaming : RegistrationGenerationBijection name) -> GeneratedOrchestrationMatched name key world error value nameEq left right renaming ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq right ->
+  (leftName, rightName : name) -> (leftGeneration, rightGeneration : RegistrationGeneration name) ->
+  CurrentGenerationBirth name key world error value left leftName leftGeneration ->
+  CurrentGenerationBirth name key world error value right rightName rightGeneration ->
+  (generationForward renaming leftGeneration = rightGeneration) ->
+  (packet : LocatedGeneratedOrchestration name key world error value nameEq right) ->
+  (generatedActor packet = rightName) -> (generatedRemoval packet = False) ->
+  LocatedActionOccurrence (ORetire leftName) left
+generatedRetirementBackwardAtBirths name key world error value nameEq keyEq left right renaming matched rightUnique
+  leftName rightName leftGeneration rightGeneration leftBirth rightBirth generationMapped packet actorExact kind =
+    generatedPacketRetirementLocation name key world error value nameEq left (generatedBackward matched packet)
+      (trans (generatedBackwardKind matched packet) kind) leftName
+      (authenticatedGenerationNamesSame name key world error value left (generatedActor (generatedBackward matched packet)) leftName
+        (generatedCurrent (generatedBackward matched packet)) leftGeneration
+        (generatedPacketCurrentBirth name key world error value nameEq left (generatedBackward matched packet)) leftBirth
+        (trans (sym (generatedBackwardGeneration matched packet))
+          (trans (cong (generationBackward renaming)
+            (generatedPacketMatchesCurrentBirth name key world error value nameEq keyEq right rightUnique packet rightName actorExact rightGeneration rightBirth))
+            (trans (cong (generationBackward renaming) (sym generationMapped)) (generationLeftInverse renaming leftGeneration)))))
