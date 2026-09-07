@@ -250,3 +250,21 @@ o19AlignedDestination {before} nameEq keyEq _ _
       (trans (cong (\observedAction => checkedApplyAction @{nameEq} @{keyEq} observedAction before) sameAction) expected))),
      cong Builtin.snd (justInjective (trans (sym checked)
       (trans (cong (\observedAction => checkedApplyAction @{nameEq} @{keyEq} observedAction before) sameAction) expected))))
+
+||| B15: authenticate the opaque diamond's moved-right cut by DETERMINISM,
+||| using its actual alignment/labels. No scalar evaluation of the builder.
+public export
+0 o19MovedRightDestination :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {first, middle, last : SystemState name key value world error} ->
+  (left : Transition first middle) -> (right : Transition middle last) ->
+  (diamond : LocalRelationalDiamond name key world error value nameEq keyEq left right) ->
+  (early : CheckedEarlyApplication name key world error value nameEq keyEq first
+    (transitionAction right) (transitionTag right)) ->
+  (swappedMiddle diamond = earlyApplicationFinal early)
+o19MovedRightDestination nameEq keyEq left right diamond early =
+  Builtin.snd (o19AlignedDestination nameEq keyEq (movedRight diamond)
+    (MoreTransitions (movedLeft diamond) NoTransitions) (movedPairAligned diamond)
+    (transitionAction right) (transitionTag right) (movedRightAction diamond)
+    (earlyApplicationFinal early) (earlyApplicationChecked early))
