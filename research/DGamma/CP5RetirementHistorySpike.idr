@@ -203,3 +203,17 @@ afterCutOccurrence name key world error value NoTransitions later action occurre
 afterCutOccurrence name key world error value (MoreTransitions step rest) later action occurrence =
   currentBirthPrependLocation name key world error value step (appendTransitions rest later) action
     (afterCutOccurrence name key world error value rest later action occurrence)
+
+export
+0 afterCutOccurrenceBound :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (prior : Transitions first middle) -> (later : Transitions middle finalState) ->
+  (action : Action name key value world error) -> (occurrence : LocatedActionOccurrence action later) ->
+  LTE (transitionCount prior) (locatedActionOrdinal (afterCutOccurrence name key world error value prior later action occurrence))
+afterCutOccurrenceBound name key world error value NoTransitions later action occurrence = LTEZero
+afterCutOccurrenceBound name key world error value (MoreTransitions step rest) later action occurrence =
+  replace {p = LTE (S (transitionCount rest))}
+    (sym (currentBirthPrependOrdinal name key world error value step (appendTransitions rest later) action
+      (afterCutOccurrence name key world error value rest later action occurrence)))
+    (LTESucc (afterCutOccurrenceBound name key world error value rest later action occurrence))
