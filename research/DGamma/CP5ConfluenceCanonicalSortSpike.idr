@@ -3844,6 +3844,32 @@ canonicalWorkGroupingActivationOrchestrationResult name key world error value na
          (canonicalWorkGroupingActivationOrchestrationDiamond name key world error value nameEq keyEq protocol selected
            trace premises pair activation orchestration)))
 
+||| Integrate the real A/O grouping result into the existing simultaneous
+||| reached worklist update. No target trace or new ready-block claim is supplied.
+0 canonicalWorkAdvanceActivationOrchestration :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) -> (selected : name) ->
+  {initial, originalFinal : SystemState name key value world error} ->
+  (original : Transitions initial originalFinal) ->
+  (ReplayInvariantBundle name key world error value protocol nameEq keyEq original) ->
+  (ClosingFreeTraceShape name key world error value nameEq keyEq original) ->
+  (ordering : SupportOrderingCapital name key world error value nameEq keyEq originalFinal) ->
+  (UniqueRawNameInsertions name key world error value nameEq keyEq original) ->
+  (current : CanonicalSortingWorklist name key world error value protocol nameEq keyEq original ordering) ->
+  (pair : CanonicalWorkGroupingPair name key world error value selected (sortingCurrentTrace (workReachedReplay current))) ->
+  (PaperActivationStep (workPairLeft pair)) -> (PaperOrchestrationStep (workPairRight pair)) ->
+  (CanonicalSortingWorklist name key world error value protocol nameEq keyEq original ordering)
+canonicalWorkAdvanceActivationOrchestration name key world error value nameEq keyEq protocol selected
+  original premises shape ordering unique current pair activation orchestration =
+    case canonicalWorkGroupingActivationOrchestrationResult name key world error value nameEq keyEq protocol selected
+      (sortingCurrentTrace (workReachedReplay current)) (sortingCurrentPremises (workReachedReplay current))
+      pair activation orchestration of
+      (diamond ** result) => canonicalWorkAcceptAdjacentResult name key world error value nameEq keyEq protocol
+        original premises shape ordering unique current (workPairPrefix pair) (workPairLeft pair) (workPairRight pair)
+        (workPairSuffix pair)
+        (AdjacentActivationOrchestration (workPairLeft pair) (workPairRight pair) activation orchestration) diamond result
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
