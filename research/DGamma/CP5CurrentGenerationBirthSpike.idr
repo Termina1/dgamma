@@ -846,3 +846,17 @@ supportSolutionPresentObserved name key world error value nameEq keyEq state can
       (rewrite exact in Refl))) of Refl impossible
 supportSolutionPresentObserved name key world error value nameEq keyEq state candidate solution selected supported (Just fiber) exact =
   (fiber ** exact)
+
+export
+0 computedSupportPresent :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (state : SystemState name key value world error) -> (selected : name) ->
+  (isSupported {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} @{keyEq} selected state = True) ->
+  (fiber : Fiber name key value world error **
+    lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} selected (registry state) = Just fiber)
+computedSupportPresent name key world error value nameEq keyEq state selected supported =
+  supportSolutionPresentObserved name key world error value nameEq keyEq state
+    (\actor => isSupported {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} @{keyEq} actor state)
+    (supportSetIsSolution nameEq keyEq state) selected supported
+    (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} selected (registry state)) Refl
