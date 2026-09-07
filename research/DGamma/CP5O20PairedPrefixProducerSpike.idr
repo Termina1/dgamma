@@ -113,3 +113,26 @@ pairedSetTableBindings name key world value nameEq renaming actor leftTable righ
                   (renameLeftInverse renaming actor))))
               rightTable right (decEq @{nameEq} (renameForward renaming selected)
                 (renameForward renaming actor)) Refl)))
+
+||| Simultaneously update GLOBAL ambient and the two mapped actor tables.
+||| These are actual executable setEffectTable/setEffectAmbient outputs.
+export
+0 pairedSetRuntimeEffects :
+  (name, key, world : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (renaming : NameBijection name) -> (actor : name) ->
+  (leftWorld, rightWorld : world) -> (leftWorld = rightWorld) ->
+  (leftTable, rightTable : CoeffectContext key value) ->
+  (bindings leftTable = bindings rightTable) ->
+  (left, right : EffectState name key value world) ->
+  RenamedRuntimeEffects name key world value renaming left right ->
+  RenamedRuntimeEffects name key world value renaming
+    (setEffectTable @{nameEq} actor leftTable (setEffectAmbient leftWorld left))
+    (setEffectTable @{nameEq} (renameForward renaming actor) rightTable
+      (setEffectAmbient rightWorld right))
+pairedSetRuntimeEffects name key world value nameEq renaming actor leftWorld rightWorld
+  worldSame leftTable rightTable tableSame left right paired =
+    MkRenamedRuntimeEffects worldSame
+      (pairedSetTableBindings name key world value nameEq renaming actor leftTable
+        rightTable tableSame (setEffectAmbient leftWorld left)
+        (setEffectAmbient rightWorld right)
+        (MkRenamedRuntimeEffects worldSame (synchronizedTables paired)))
