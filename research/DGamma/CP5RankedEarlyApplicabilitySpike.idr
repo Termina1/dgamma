@@ -76,3 +76,29 @@ checkSelectedEarlyRight name key world error value nameEq keyEq observe trace ch
   checkedEarlyApplicationObserved name key world error value nameEq keyEq (traceDescentBefore choice)
     (transitionAction (traceDescentRight choice)) (transitionTag (traceDescentRight choice))
     (checkedApplyAction @{nameEq} @{keyEq} (transitionAction (traceDescentRight choice)) (traceDescentBefore choice)) Refl
+
+||| Integrate E with the EXACT existing worklist observer and orientation
+||| inspector, then execute the chosen right node at its authentic early cut.
+||| Only positive results are certified. A failed first candidate is not a
+||| search over later applicable pairs and is not an O17 progress theorem.
+export
+0 selectCanonicalObservedEarlyPair :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (fixedOrder : List name) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (trace : Transitions initial finalState) ->
+  Maybe (choice : LocatedRankDescent name key world error value
+    (canonicalWorkActionRank name key world error value nameEq fixedOrder) trace **
+    (AdjacentSwapOrientationEvidence (traceDescentLeft choice) (traceDescentRight choice),
+     CheckedEarlyApplication name key world error value nameEq keyEq (traceDescentBefore choice)
+       (transitionAction (traceDescentRight choice)) (transitionTag (traceDescentRight choice))))
+selectCanonicalObservedEarlyPair name key world error value nameEq keyEq fixedOrder trace =
+  case findActualRankDescent name key world error value
+    (canonicalWorkActionRank name key world error value nameEq fixedOrder) trace of
+    Nothing => Nothing
+    Just choice => case canonicalWorkInspectOrientation name key world error value (traceDescentLeft choice) (traceDescentRight choice) of
+      Nothing => Nothing
+      Just orientation => case checkSelectedEarlyRight name key world error value nameEq keyEq
+        (canonicalWorkActionRank name key world error value nameEq fixedOrder) trace choice of
+        Nothing => Nothing
+        Just early => Just (choice ** (orientation, early))
