@@ -476,3 +476,38 @@ matchedScannedCurrentNameBackward name key world error value left renaming leftE
           (trans (cong (generationBackward renaming) (matchedChildGeneration matched))
             (trans (cong (generationBackward renaming) (sym currentIsEvent)) mapped))))
         (cong generationName (currentBirthStampExact leftCurrent)))
+
+||| Explicit name observations transport real lookups, not scoped/raw state casts.
+public export
+0 matchedBirthEndpointMetadataRenamed :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {leftFirst, leftFinal, rightFirst, rightFinal : SystemState name key value world error} ->
+  (left : Transitions leftFirst leftFinal) -> (right : Transitions rightFirst rightFinal) ->
+  AlignedTransitions name key world error value nameEq keyEq left ->
+  AlignedTransitions name key world error value nameEq keyEq right ->
+  bindings (registry leftFirst) = [] -> bindings (registry rightFirst) = [] ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq left ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq right ->
+  (renaming : RegistrationGenerationBijection name) ->
+  (leftEvent, rightEvent : RegistrationEvent name key world error value) ->
+  ScannedRegistrationBirth name key world error value Z left leftEvent ->
+  ScannedRegistrationBirth name key world error value Z right rightEvent ->
+  RegistrationEventMatch renaming leftEvent rightEvent ->
+  (leftFiber, rightFiber : Fiber name key value world error) ->
+  (leftSelected, rightSelected : name) ->
+  eventChild leftEvent = leftSelected -> eventChild rightEvent = rightSelected ->
+  lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+    @{nameEq} leftSelected (registry leftFinal) = Just leftFiber ->
+  lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+    @{nameEq} rightSelected (registry rightFinal) = Just rightFiber ->
+  MatchedEndpointStaticMetadata name key world error value renaming leftEvent rightEvent leftFiber rightFiber
+matchedBirthEndpointMetadataRenamed name key world error value nameEq keyEq {leftFinal} {rightFinal}
+  left right leftAligned rightAligned leftEmpty rightEmpty leftUnique rightUnique renaming leftEvent rightEvent
+  leftBirth rightBirth matched leftFiber rightFiber leftSelected rightSelected leftName rightName leftFound rightFound =
+    matchedBirthEndpointMetadata name key world error value nameEq keyEq left right leftAligned rightAligned
+      leftEmpty rightEmpty leftUnique rightUnique renaming leftEvent rightEvent leftBirth rightBirth matched leftFiber rightFiber
+      (trans (cong (\selected => lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+        @{nameEq} selected (registry leftFinal)) leftName) leftFound)
+      (trans (cong (\selected => lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+        @{nameEq} selected (registry rightFinal)) rightName) rightFound)
