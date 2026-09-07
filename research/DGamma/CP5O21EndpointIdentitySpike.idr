@@ -75,3 +75,16 @@ acceptedRightEndpointBirthIdentity name key world error value nameEq keyEq left 
       (parent ** birth ** authenticated) =>
         trans authenticated (cong (MkRegistrationGeneration selected)
           (uniqueInsertionPosition unique selected parent otherParent (fiberComponent observed) otherComponent birth otherBirth))
+
+||| A producer-owned exact stamp rules out the later-same-name escape.
+||| This scalar step never infers an ordinal from raw-name equality alone.
+export
+0 exactBirthStampRejectsLater :
+  (name : Type) -> (selected : name) ->
+  (generation : RegistrationGeneration name) -> (ordinal : Nat) ->
+  (generation = MkRegistrationGeneration selected ordinal) ->
+  Not (LT (generationBirthOrdinal generation) ordinal)
+exactBirthStampRejectsLater name selected generation ordinal exact later =
+  LTImpliesNotGTE later
+    (replace {p = \position => LTE ordinal position}
+      (sym (cong generationBirthOrdinal exact)) reflexive)
