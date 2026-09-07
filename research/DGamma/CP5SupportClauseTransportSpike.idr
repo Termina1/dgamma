@@ -209,3 +209,35 @@ record SupportedClauseTransport
     (targetFiber : Fiber name key value world error) ->
     (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} (renaming selected) (registry target) = Just targetFiber) ->
     (retired targetFiber = False)
+
+0 supportedDependencyTransport :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (source, target : SystemState name key value world error) -> (renaming : name -> name) ->
+  SupportedClauseTransport name key world error value nameEq keyEq source target renaming ->
+  (selected : name) -> (sourceFiber : Fiber name key value world error) ->
+  (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} selected (registry source) = Just sourceFiber) ->
+  (isSupported {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} @{keyEq} selected source = True) ->
+  ((lower : name) -> SupportEdge nameEq source lower selected ->
+    (isSupported {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} @{keyEq} lower source = True) ->
+    (isSupported {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} @{keyEq} (renaming lower) target = True)) ->
+  (wanted : key) -> Elem wanted (dependencies (componentDependencies (fiberComponent sourceFiber))) ->
+  (providerFromPredicate {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} @{keyEq} wanted
+    (\actor => isSupported {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} @{keyEq} actor target)
+    (registryFibers {name = name} {key = key} {value = value} {world = world} {error = error} (registry target)) = True)
+supportedDependencyTransport name key world error value nameEq keyEq source target renaming transport selected sourceFiber sourceFound supported recursive wanted needed =
+  case actualProviderWitness name key world error value nameEq keyEq source wanted
+    (\actor => isSupported {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} @{keyEq} actor source)
+    (clauseAllListAt key (\dependency => providerFromPredicate {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} @{keyEq} dependency
+      (\actor => isSupported {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} @{keyEq} actor source)
+      (registryFibers {name = name} {key = key} {value = value} {world = world} {error = error} (registry source)))
+      (dependencies (componentDependencies (fiberComponent sourceFiber))) wanted needed
+      (actualSupportedDependencies name key world error value nameEq keyEq source selected sourceFiber sourceFound supported)) of
+    (provider ** providerFiber ** (providerFound, providerSupported, providerDeclares)) =>
+      case clauseImage transport provider providerFiber providerFound providerSupported of
+        (imageFiber ** (imageFound, componentsSame, parentsSame)) =>
+          actualProviderFromFacts name key world error value nameEq keyEq target wanted
+            (\actor => isSupported {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} @{keyEq} actor target)
+            (renaming provider) imageFiber imageFound
+            (recursive provider (SupportPrecedence (MkPrecedenceEdge wanted providerFiber sourceFiber providerFound sourceFound
+              (clauseListMemberTrueElem key keyEq wanted (dependencies (componentProvisions (fiberComponent providerFiber))) providerDeclares) needed)) providerSupported)
+            (trans (cong (\component => listMember @{keyEq} wanted (dependencies (componentProvisions component))) componentsSame) providerDeclares)
