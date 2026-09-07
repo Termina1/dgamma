@@ -63,3 +63,20 @@ pairedEffectsAcrossFrames name key world value keyEq renaming leftBefore leftAft
       (\selected => trans (sym (tablesExact leftFrame selected))
         (trans (synchronizedTables paired selected)
           (tablesExact rightFrame (renameForward renaming selected))))
+
+||| Observe the actual decision before projecting a foreign table update.
+||| The producer passes decEq itself; this equation is never a caller oracle.
+export
+0 pairedForeignTableObserved :
+  (name, key, world : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (selected, actor : name) ->
+  Not (selected = actor) -> (table : CoeffectContext key value) ->
+  (state : EffectState name key value world) ->
+  (decision : Dec (selected = actor)) ->
+  (decEq @{nameEq} selected actor = decision) ->
+  (bindings (effectTables (setEffectTable @{nameEq} actor table state) selected) =
+    bindings (effectTables state selected))
+pairedForeignTableObserved name key world value nameEq selected actor distinct table
+  state (Yes same) observed = void (distinct same)
+pairedForeignTableObserved name key world value nameEq selected actor distinct table
+  state (No different) observed = rewrite observed in Refl
