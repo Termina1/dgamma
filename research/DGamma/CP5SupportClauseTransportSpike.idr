@@ -99,3 +99,18 @@ actualSupportFromFacts name key world error value nameEq keyEq state selected fi
 clauseEntryKeyMember name key world error value selected fiber (_ :: rest) Here = Here
 clauseEntryKeyMember name key world error value selected fiber (head :: rest) (There later) =
   There (clauseEntryKeyMember name key world error value selected fiber rest later)
+
+0 clauseLookupFromEntry :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) ->
+  (entries : List (Binding name (FiberAt name key value world error))) -> UniqueKeys (bindingKeys entries) ->
+  (selected : name) -> (fiber : Fiber name key value world error) -> Elem (Bind selected fiber) entries ->
+  (lookupEntries {key = name} {value = FiberAt name key value world error} @{nameEq} selected entries = Just fiber)
+clauseLookupFromEntry name key world error value nameEq (_ :: rest) unique selected fiber Here =
+  case the (choice : Dec (selected = selected) ** (decEq @{nameEq} selected selected = choice)) (decEq @{nameEq} selected selected ** Refl) of
+    (Yes same ** observed) => case same of Refl => rewrite observed in Refl
+    (No different ** observed) => void (different Refl)
+clauseLookupFromEntry name key world error value nameEq (Bind current observedFiber :: rest) (UniqueCons fresh tailUnique) selected fiber (There later) =
+  case the (choice : Dec (selected = current) ** (decEq @{nameEq} selected current = choice)) (decEq @{nameEq} selected current ** Refl) of
+    (Yes same ** observed) => case same of
+      Refl => void (fresh (clauseEntryKeyMember name key world error value selected fiber rest later))
+    (No different ** observed) => rewrite observed in clauseLookupFromEntry name key world error value nameEq rest tailUnique selected fiber later
