@@ -79,3 +79,20 @@ export
 o20BeginObservationAtOwner nameEq keyEq actor ambient source afterState raw (owner ** found) =
   o20BeginObservationFromPlan nameEq keyEq actor ambient source owner found afterState
     (foreignBeginPlanView nameEq keyEq actor ambient source owner found LBeginTag afterState raw)
+
+||| Actual BeginStep alone PRODUCES its component and successful resolver
+||| observation. No caller-supplied dependency list/view is required.
+export
+0 o20ObserveActualBegin :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (before, afterState : SystemState name key value world error) ->
+  BeginStep nameEq keyEq actor before afterState ->
+  O20BeginObservation name key world error value nameEq keyEq actor before afterState
+o20ObserveActualBegin nameEq keyEq actor (MkSystemState ambient source) afterState opening =
+  o20BeginObservationAtOwner nameEq keyEq actor ambient source afterState
+    (checkedActionProjects nameEq keyEq (LBegin actor) (MkSystemState ambient source)
+      afterState LBeginTag (beginEquation opening))
+    (lifecycleActorPresent nameEq keyEq (LBegin actor) (MkSystemState ambient source)
+      afterState LBeginTag (checkedActionProjects nameEq keyEq (LBegin actor)
+        (MkSystemState ambient source) afterState LBeginTag (beginEquation opening)) Refl)
