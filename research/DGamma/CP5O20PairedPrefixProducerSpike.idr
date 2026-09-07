@@ -7,6 +7,7 @@ import DGamma.Metatheory
 import DGamma.CP3
 import DGamma.CP4DeletionFrameCore
 import DGamma.CP4RecoveryAccumulator
+import DGamma.CP5ConfluenceRenamingCompositionSpike
 import DGamma.CP5O20EpisodeSynchronizationSpike
 import Data.List.Elem
 import Data.Maybe
@@ -239,3 +240,72 @@ pairedInsertControls name key world error value nameEq renaming actor component
           (trans (cong (renameBackward renaming) same)
             (renameLeftInverse renaming actor))))
         (freshFiber component rightParent) rightRegistry rightAbsent in controls
+
+||| NONZERO paired-cut producer at actual registration outputs, not merely a
+||| standalone effect law. It extends BOTH exact prefix occurrences, preserving
+||| the original executions and expectedBridgeBijection. Actual transition
+||| endpoints are observed by equations, never replaced with a chosen replay.
+||| This handles a matched insertion pair; selecting such pairs along the
+||| canonical schedules, Begin/Advance/Finish, and gaps remain separate work.
+export
+0 synchronizationRegistrationSuccessor :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, leftOriginalFinal, rightOriginalFinal, leftExecutionFinal,
+   rightExecutionFinal, leftAfter, rightAfter : SystemState name key value world error} ->
+  (leftOriginal : Transitions initial leftOriginalFinal) ->
+  (rightOriginal : Transitions initial rightOriginalFinal) ->
+  (sameInputs : SameOrchestrationModuloGenerated nameEq keyEq leftOriginal rightOriginal) ->
+  (leftExecution : Transitions initial leftExecutionFinal) ->
+  (rightExecution : Transitions initial rightExecutionFinal) ->
+  (selected, actor : name) -> (component : Component key value world error) ->
+  (leftParent, rightParent : Parent name) ->
+  ParentRelatedBy (expectedBridgeBijection sameInputs) leftParent rightParent ->
+  (leftWorld, rightWorld : world) ->
+  (leftRegistry, rightRegistry : Registry name key value world error) ->
+  (leftAbsent : (lookupFiber {name = name} {key = key} {value = value}
+    {world = world} {error = error} @{nameEq} actor leftRegistry = Nothing)) ->
+  (rightAbsent : (lookupFiber {name = name} {key = key} {value = value}
+    {world = world} {error = error} @{nameEq}
+      (renameForward (expectedBridgeBijection sameInputs) actor) rightRegistry = Nothing)) ->
+  (leftPrefix : Transitions initial (MkSystemState leftWorld leftRegistry)) ->
+  (rightPrefix : Transitions initial (MkSystemState rightWorld rightRegistry)) ->
+  (leftEdge : Transition (MkSystemState leftWorld leftRegistry) leftAfter) ->
+  (rightEdge : Transition (MkSystemState rightWorld rightRegistry) rightAfter) ->
+  (leftTail : Transitions leftAfter leftExecutionFinal) ->
+  (rightTail : Transitions rightAfter rightExecutionFinal) ->
+  (leftAfter = MkSystemState leftWorld (insertBinding @{nameEq} actor
+    (freshFiber component leftParent) leftRegistry leftAbsent)) ->
+  (rightAfter = MkSystemState rightWorld (insertBinding @{nameEq}
+    (renameForward (expectedBridgeBijection sameInputs) actor)
+      (freshFiber component rightParent) rightRegistry rightAbsent)) ->
+  SupportedCanonicalEpisodeSynchronization name key world error value nameEq keyEq
+    leftOriginal rightOriginal sameInputs leftExecution rightExecution selected
+    (MkSystemState leftWorld leftRegistry) (MkSystemState rightWorld rightRegistry)
+    leftPrefix (MoreTransitions leftEdge leftTail)
+    rightPrefix (MoreTransitions rightEdge rightTail) ->
+  SupportedCanonicalEpisodeSynchronization name key world error value nameEq keyEq
+    leftOriginal rightOriginal sameInputs leftExecution rightExecution selected
+    leftAfter rightAfter
+    (appendTransitions leftPrefix (MoreTransitions leftEdge NoTransitions)) leftTail
+    (appendTransitions rightPrefix (MoreTransitions rightEdge NoTransitions)) rightTail
+synchronizationRegistrationSuccessor name key world error value nameEq keyEq
+  leftOriginal rightOriginal sameInputs leftExecution rightExecution selected actor
+  component leftParent rightParent parents leftWorld rightWorld leftRegistry rightRegistry
+  leftAbsent rightAbsent leftPrefix rightPrefix leftEdge rightEdge leftTail rightTail
+  Refl Refl paired =
+    MkSupportedCanonicalEpisodeSynchronization (synchronizedActorSupported paired)
+      (trans (appendTransitionsAssociative leftPrefix
+        (MoreTransitions leftEdge NoTransitions) leftTail)
+        (synchronizedLeftCutOccurrence paired))
+      (trans (appendTransitionsAssociative rightPrefix
+        (MoreTransitions rightEdge NoTransitions) rightTail)
+        (synchronizedRightCutOccurrence paired))
+      (pairedInsertEffects name key world error value nameEq keyEq
+        (expectedBridgeBijection sameInputs) actor component leftParent rightParent
+        leftWorld rightWorld leftRegistry rightRegistry leftAbsent rightAbsent
+        (synchronizedCutEffects paired))
+      (pairedInsertControls name key world error value nameEq
+        (expectedBridgeBijection sameInputs) actor component leftParent rightParent
+        parents leftRegistry rightRegistry leftAbsent rightAbsent selected
+        (synchronizedActorControls paired))
