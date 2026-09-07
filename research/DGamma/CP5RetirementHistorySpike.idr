@@ -474,3 +474,26 @@ retiredOwnerStepCause name key world error value nameEq keyEq (LLeave actor) bef
   Right (retiredLifecycleSource name key world error value nameEq keyEq (LLeave actor) Refl before afterState tag raw observed found retiredTrue)
 retiredOwnerStepCause name key world error value nameEq keyEq (LUnload actor) before afterState tag raw observed found retiredTrue =
   Right (retiredLifecycleSource name key world error value nameEq keyEq (LUnload actor) Refl before afterState tag raw observed found retiredTrue)
+
+export
+0 rawRetiredPropertyStep :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (property : name -> Type) ->
+  (action : Action name key value world error) -> (before, afterState : SystemState name key value world error) -> (tag : RuleTag) ->
+  (raw : applyAction @{nameEq} @{keyEq} action before = Just (tag, afterState)) ->
+  ((action = ORetire (actionOwner action)) -> property (actionOwner action)) ->
+  ((selected : name) -> (fiber : Fiber name key value world error) ->
+    (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+      @{nameEq} selected (registry before) = Just fiber) -> (retired fiber = True) -> property selected) ->
+  (selected : name) -> (observed : Fiber name key value world error) ->
+  (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+    @{nameEq} selected (registry afterState) = Just observed) -> (retired observed = True) -> property selected
+rawRetiredPropertyStep name key world error value nameEq keyEq property action before afterState tag raw retiredNow previous selected observed found retiredTrue =
+  case decEq @{nameEq} selected (actionOwner action) of
+    No distinct => previous selected observed
+      (trans (sym (systemLocalUpdateForeign nameEq selected (actionOwner action) distinct before afterState
+        (applyActionLocalUpdate nameEq keyEq action before afterState tag raw))) found) retiredTrue
+    Yes same => case same of
+      Refl => case retiredOwnerStepCause name key world error value nameEq keyEq action before afterState tag raw observed found retiredTrue of
+        Left exact => retiredNow exact
+        Right (sourceFiber ** (sourceFound, sourceRetired)) => previous (actionOwner action) sourceFiber sourceFound sourceRetired
