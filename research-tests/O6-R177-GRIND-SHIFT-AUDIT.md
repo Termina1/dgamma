@@ -163,3 +163,32 @@ Metatheory/Coeffects imports). Every other unit PASS 1/1. No 3/3 stop and no bod
 hole edits. The next obligation is the operational registry/current-domain
 connection needed to obtain a current lookup from endpoint support, then genuine
 cross-endpoint parent/component/retirement/provider support transport.
+
+### B22–B54 — actual domain bridge and semantic countershape gate
+
+The exact aligned generation scan now proves BOTH registry/current lookup
+directions from the original initial scan, not merely projections of an assumed
+lookup. The reverse direction explicitly covers successful insertion, retirement,
+removal, and every lifecycle branch (including effect failure and all L-Advance
+outcomes). B49/B50 export these facts for the accepted left/right scanner.
+B51/B52 derive actual registry presence from the executable support fixed point.
+B53/B54 therefore construct both supported-current DOMAIN couplings through the
+same endpoint renaming and generation bijection, including the actual target
+fiber. These are not support-TRUTH implications.
+
+B35/B36 generic computed-case transport attempts hit rigid evaluator expressions;
+explicit observed provider/Boolean equations repaired each at 2/3. B40 required
+explicit resolveCommittedValues type arguments at 2/3; B43 replaced action-wide
+rewriting with scalar lifecycle classification at 2/3. All others PASS 1/1.
+B31–B33 remain checked general result-property lifts, not used by the repaired
+explicit-observation lifecycle proof. No 3/3 stop; six holes unchanged.
+
+At 03:49 the supervisor authorized a countershape-first retirement probe, capped
+at **six micro-units or 45 minutes** (no later than **04:34 UTC**), plus independent
+read-only review. Concern: RegistrationStepDiscipline gives ORetire `()`, and
+SameExternalOrchestration skips any non-RootOrchestrationStep; thus non-root
+retirement might change support without changing accepted birth/component data.
+No full O18 counterexample is claimed. The probe must distinguish (a) accepted
+inputs, (b) both IndependentCanonicalSchedule capitals, (c) different support.
+No premise strengthening/body fill. After the probe, continue independent
+support-metadata capital as ruled. O21 withdrawal work remains forbidden.
