@@ -41,3 +41,20 @@ public export
    (checkedApplyAction @{r45NameEq} @{r45KeyEq} (LBegin 0)
       (r182IndependentState 8) = Just (LBeginTag, r182IndependentState 9)))
 r182RemainingPrimitiveChecks = (Refl, Refl, Refl, Refl, Refl, Refl)
+
+||| B27: identify the REAL second pair end, not by evaluating the replay,
+||| but by its aligned equations and the already checked primitive path.
+public export
+0 r182SecondPairEnd :
+  (firstDiamond : LocalRelationalDiamond Nat R45Key Unit String R45Value r45NameEq r45KeyEq (Fired {before = r182IndependentState 3} {afterState = r182IndependentState 4} r45NameEq r45KeyEq (LAdvance 0) LFinishTag Refl) (Fired {before = r182IndependentState 4} {afterState = r182IndependentState 5} r45NameEq r45KeyEq (LBegin 1) LBeginTag Refl)) ->
+  (secondDiamond : LocalRelationalDiamond Nat R45Key Unit String R45Value r45NameEq r45KeyEq (Fired {before = r182IndependentState 2} {afterState = r182IndependentState 3} r45NameEq r45KeyEq (LBegin 0) LBeginTag Refl) (movedRight firstDiamond)) ->
+  (swappedFinal secondDiamond = earlyApplicationFinal r182FirstCrossingEarly)
+r182SecondPairEnd firstDiamond secondDiamond =
+  o19MovedPairDestination r45NameEq r45KeyEq
+    (Fired {before = r182IndependentState 2} {afterState = r182IndependentState 3} r45NameEq r45KeyEq (LBegin 0) LBeginTag Refl) (movedRight firstDiamond) secondDiamond
+    (o19EarlyLabels r45NameEq r45KeyEq (LBegin 1) (transitionAction (movedRight firstDiamond))
+      LBeginTag (transitionTag (movedRight firstDiamond))
+      (movedRightAction firstDiamond) (movedRightTag firstDiamond)
+      (MkCheckedEarlyApplication (r182IndependentState 7) Refl))
+    (MkCheckedEarlyApplication (earlyApplicationFinal r182FirstCrossingEarly)
+      (Builtin.fst (Builtin.snd (Builtin.snd r182RemainingPrimitiveChecks))))
