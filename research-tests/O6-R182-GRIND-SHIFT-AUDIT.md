@@ -223,3 +223,23 @@ manifest committed. Exact source/log/metadata remain ONLY in evidence archive.
 No disposable declaration retained and no O19 body edit yet. This establishes
 only the new first-step boundary; remaining crossings/bundle/ranges still need
 producer-owned construction, not an oracle premise.
+
+### B adjacency addendum — further explicit owner ruling
+
+Source review found an independent specification mismatch: BlockBefore admits
+an intervening orchestration segment, while every node of WholeBlockSwapDerivation
+must cross a selected left/right source pair, so a nonempty gap admits no first
+such adjacent pair. Candidate nine-edge order: Insert0,Insert1, Begin0,Finish0,
+Insert2, Begin1,Finish1, Begin2,Finish2. Selected ranges[2,3] and[5,6] cannot
+start any Cartesian crossing. This source argument is not a full checked
+old-predicate counterexample.
+
+Supervisor AUTHORIZED≤6 micro-units, within the same O19 exception: add actual
+adjacency, reject the intervening-Insert2 candidate by that clause (no full
+counterexample construction required), retain A14 positive, update clause map;
+then resume construction/body. A third specification issue requires a gate.
+Chosen exact clause: transitionCount(betweenBlocks safetyBlocksOrdered)=0.
+Zero-length of the ALREADY OWNED ordered segment is actual adjacency, not a
+second BlockBefore or swapped-trace premise. A selector must expose that empty
+segment by construction; R177/R179 adjacent-transition selection alone is NOT
+claimed to prove arbitrary whole-block adjacency or O20 completeness.
