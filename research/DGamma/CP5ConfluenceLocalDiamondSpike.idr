@@ -1,6 +1,7 @@
 module DGamma.CP5ConfluenceLocalDiamondSpike
 
 import DGamma.Calculus
+import DGamma.CP5ConfluenceRankObservationSpike
 import DGamma.Coeffects
 import DGamma.Metatheory
 import DGamma.Core
@@ -27464,3 +27465,29 @@ adjacentSwapSuffixSpike = \nameEq, keyEq, protocol, original, tracePrefix, left,
     produceAdjacentSwapResult name key world error value nameEq keyEq protocol
       _ _ _ _ _ original tracePrefix
       left right suffix decomposition premises diamond pairExternalOrder
+
+
+||| Producer-derived action-fold preservation for the authentic sealed suffix.
+||| The sealed constructors remain hidden; bare occurrence origin maps cannot
+||| inhabit this theorem's premise. This adds no field or caller obligation.
+export
+0 sealedSuffixActionFoldSame :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (observation : Type) ->
+  (observe : Action name key value world error -> observation -> observation) ->
+  (seed : observation) ->
+  {sourceFirst, sourceFinal, replayedFirst, replayedFinal : SystemState name key value world error} ->
+  {source : Transitions sourceFirst sourceFinal} ->
+  {replayed : Transitions replayedFirst replayedFinal} ->
+  (SealedSuffixReplaySpine name key world error value nameEq keyEq source replayed) ->
+  (traceActionFold name key world error value observation observe seed replayed =
+   traceActionFold name key world error value observation observe seed source)
+sealedSuffixActionFoldSame name key world error value nameEq keyEq observation observe seed SealedSuffixReplayEnd = Refl
+sealedSuffixActionFoldSame name key world error value nameEq keyEq observation observe seed
+  (SealedSuffixReplayStep sourceStep replayedStep sourceTail replayedTail
+    sameAction sameTag headRAR headMaps headEndpoint headOccurrences headRelativeOrdinal tail) =
+      trans (cong (\action => observe action
+        (traceActionFold name key world error value observation observe seed replayedTail)) sameAction)
+        (cong (observe (transitionAction sourceStep))
+          (sealedSuffixActionFoldSame name key world error value nameEq keyEq observation observe seed tail))
