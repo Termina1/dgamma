@@ -74,3 +74,21 @@ actualSupportedDependencies name key world error value nameEq keyEq state select
     (trans (sym (actualSupportClauseAtFiber name key world error value nameEq keyEq state
       (\actor => isSupported {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} @{keyEq} actor state) selected fiber found))
       (trans (sym (supportSetIsSolution nameEq keyEq state selected)) supported)))))
+
+export
+0 actualSupportFromFacts :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (state : SystemState name key value world error) -> (selected : name) -> (fiber : Fiber name key value world error) ->
+  (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} selected (registry state) = Just fiber) ->
+  (retired fiber = False) ->
+  (supportClauseParent name (\actor => isSupported {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} @{keyEq} actor state) (fiberParent fiber) = True) ->
+  (allList (\wanted => providerFromPredicate {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} @{keyEq} wanted
+    (\actor => isSupported {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} @{keyEq} actor state)
+    (registryFibers {name = name} {key = key} {value = value} {world = world} {error = error} (registry state)))
+    (dependencies (componentDependencies (fiberComponent fiber))) = True) ->
+  (isSupported {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} @{keyEq} selected state = True)
+actualSupportFromFacts name key world error value nameEq keyEq state selected fiber found notRetired parentTrue dependenciesTrue =
+  trans (supportSetIsSolution nameEq keyEq state selected)
+    (trans (actualSupportClauseAtFiber name key world error value nameEq keyEq state
+      (\actor => isSupported {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} @{keyEq} actor state) selected fiber found)
+      (clauseAndTrue _ _ (cong not notRetired) (clauseAndTrue _ _ parentTrue dependenciesTrue)))
