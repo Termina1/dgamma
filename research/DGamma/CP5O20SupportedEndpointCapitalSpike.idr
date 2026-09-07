@@ -94,3 +94,25 @@ canonicalPresentOutsideWithdrawals name key world error value nameEq keyEq origi
       case trans (sym absent) found of Refl impossible
     NameAlreadyAbsent _ absent =>
       case trans (sym absent) found of Refl impossible
+
+||| Recover the actual ORIGINAL fiber and full same-name control relation
+||| from canonical presence. This is strictly one-sided, not an R147 bridge.
+export
+0 canonicalSupportedOriginalControl :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (original : Transitions initial finalState) ->
+  (capital : IndependentCanonicalSchedule name key world error value protocol nameEq keyEq original) ->
+  (selected : name) ->
+  (view : SupportedCanonicalEndpointView name key world error value nameEq keyEq selected (canonicalFinal (canonicalSchedule capital))) ->
+  ForeignRelatedFiberFound name key world error value nameEq selected
+    (registry (canonicalFinal (canonicalSchedule capital))) (registry finalState) (supportedCanonicalFiber view)
+canonicalSupportedOriginalControl name key world error value nameEq keyEq protocol original capital selected view =
+  foreignControlLookupFound nameEq selected (registry (canonicalFinal (canonicalSchedule capital)))
+    (registry finalState) (supportedCanonicalFiber view) (supportedCanonicalFound view)
+    (fiberControlMaybeSymmetric (endpointControlsOutside (canonicalEndpoint (canonicalSchedule capital)) selected
+      (canonicalPresentOutsideWithdrawals name key world error value nameEq keyEq finalState
+        (canonicalFinal (canonicalSchedule capital)) (canonicalEndpoint (canonicalSchedule capital)) selected
+        (supportedCanonicalFiber view) (supportedCanonicalFound view))))
