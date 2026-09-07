@@ -1,5 +1,7 @@
 # R176 complete compiler transcripts
 
+Markdown presentation trims trailing whitespace only. Exact raw UTF-8 wrapper/batch transcripts, including trailing spaces, are preserved in O6-R176-COMPILER-LEDGER.json.
+
 93 serialized compiler invocations: 61 positives, 26 intentional diagnostic negatives, 6 charged proof rejections. No engineering interrupt. See machine ledger for timing/RSS and the initial-batch clock limitation.
 
 ## A1-1 — positive
@@ -14,7 +16,7 @@ You may be unintentionally shadowing the associated global definitions:
   order is shadowing Control.Order.order
 
 DGamma.CP5ConfluenceCrossTraceSpike:39:3--39:68
- 35 | 
+ 35 |
  36 | public export
  37 | data CertifiedActorPermutation :
  38 |   (name : Type) -> List name -> List name -> Type where
@@ -184,7 +186,7 @@ You may be unintentionally shadowing the associated global definitions:
   order is shadowing Control.Order.order
 
 DGamma.CP5ConfluenceCrossTraceSpike:40:3--40:68
- 36 | 
+ 36 |
  37 | public export
  38 | data CertifiedActorPermutation :
  39 |   (name : Type) -> List name -> List name -> Type where
@@ -274,7 +276,7 @@ You may be unintentionally shadowing the associated global definitions:
   order is shadowing Control.Order.order
 
 DGamma.CP5ConfluenceCrossTraceSpike:40:3--40:68
- 36 | 
+ 36 |
  37 | public export
  38 | data CertifiedActorPermutation :
  39 |   (name : Type) -> List name -> List name -> Type where
@@ -364,7 +366,7 @@ You may be unintentionally shadowing the associated global definitions:
   order is shadowing Control.Order.order
 
 DGamma.CP5ConfluenceCrossTraceSpike:40:3--40:68
- 36 | 
+ 36 |
  37 | public export
  38 | data CertifiedActorPermutation :
  39 |   (name : Type) -> List name -> List name -> Type where
@@ -454,7 +456,7 @@ You may be unintentionally shadowing the associated global definitions:
   order is shadowing Control.Order.order
 
 DGamma.CP5ConfluenceCrossTraceSpike:40:3--40:68
- 36 | 
+ 36 |
  37 | public export
  38 | data CertifiedActorPermutation :
  39 |   (name : Type) -> List name -> List name -> Type where
@@ -568,7 +570,7 @@ You may be unintentionally shadowing the associated global definitions:
   order is shadowing Control.Order.order
 
 DGamma.CP5ConfluenceCrossTraceSpike:40:3--40:68
- 36 | 
+ 36 |
  37 | public export
  38 | data CertifiedActorPermutation :
  39 |   (name : Type) -> List name -> List name -> Type where
@@ -692,7 +694,7 @@ You may be unintentionally shadowing the associated global definitions:
   order is shadowing Control.Order.order
 
 DGamma.CP5ConfluenceCrossTraceSpike:40:3--40:68
- 36 | 
+ 36 |
  37 | public export
  38 | data CertifiedActorPermutation :
  39 |   (name : Type) -> List name -> List name -> Type where
@@ -1024,7 +1026,7 @@ DGamma.CP5ConfluenceDeletionChainSpike:3012:1--3014:19
  3013 |   GenerationActionSubsequence nameEq deletable ordinal live original surviving ->
  3014 |   Nat -> Maybe Nat
 
-Error: While processing type of rawClosingRanksSameActor. Undefined name UniqueRawNameInsertions. 
+Error: While processing type of rawClosingRanksSameActor. Undefined name UniqueRawNameInsertions.
 
 DGamma.CP5ConfluenceDeletionChainSpike:30619:4--30619:27
  30615 |   (protocol : RegistrationProtocol key value world error) ->
@@ -2041,7 +2043,7 @@ You may be unintentionally shadowing the associated global definitions:
   order is shadowing Control.Order.order
 
 DGamma.CP5ConfluenceCrossTraceSpike:40:3--40:68
- 36 | 
+ 36 |
  37 | public export
  38 | data CertifiedActorPermutation :
  39 |   (name : Type) -> List name -> List name -> Type where
@@ -2346,7 +2348,7 @@ You may be unintentionally shadowing the associated global definitions:
   order is shadowing Control.Order.order
 
 DGamma.CP5ConfluenceCrossTraceSpike:40:3--40:68
- 36 | 
+ 36 |
  37 | public export
  38 | data CertifiedActorPermutation :
  39 |   (name : Type) -> List name -> List name -> Type where

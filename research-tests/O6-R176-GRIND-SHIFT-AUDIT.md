@@ -208,6 +208,10 @@ read-only frozen checks and audit artifacts followed the supervisor's ruling.
   **48,736,704 KiB**, not an exact OS peak. The initial 19-call A batch did
   not record per-call absolute UTC or RSS; its ordered per-call durations and
   enclosing timestamp bounds are explicitly retained, not reconstructed.
+  Final snapshot preparation caught ten trailing-whitespace lines in verbatim
+  compiler Markdown. Raw transcripts are now preserved exactly in JSON strings;
+  the Markdown rendering alone trims trailing whitespace. No compiler rerun or
+  source edit was made for this documentation-only hygiene fix.
 - Census **6 = 1/4/0/0/1** (CanonicalSort/CrossTrace/DeletionChain/LocalDiamond/
   RenamingComposition). Both NEW research modules, UniqueRawNameCanonicalCapital
   and RankObservationSpike, have **0 holes**; existing WorkMeasure/RawClosingRank
