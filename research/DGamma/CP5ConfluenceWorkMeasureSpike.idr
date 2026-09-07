@@ -109,3 +109,18 @@ rankSelectProgress (left :: right :: suffix) =
     Yes crossed => Just (rankHeadProgress left right suffix crossed)
     No notDescending => map (rankLiftProgress left (right :: suffix))
       (rankSelectProgress (right :: suffix))
+
+||| A genuine local R175 transposition within exactly one owned segment.
+||| Earlier barriers/segments are retained structurally, not discarded by a
+||| scalar smaller-measure premise. The target is indexed by the stored choice.
+public export
+data SegmentedRankProgress : List (List Nat) -> List (List Nat) -> Type where
+  FirstRankSegment :
+    {sourceHead : List Nat} ->
+    (0 later : List (List Nat)) -> (0 progress : RankedAdjacentProgress sourceHead) ->
+    SegmentedRankProgress (sourceHead :: later)
+      ((rankedPrefix progress ++ rankedRight progress :: rankedLeft progress :: rankedSuffix progress) :: later)
+  LaterRankSegment :
+    {source, target : List (List Nat)} ->
+    (0 untouched : List Nat) -> (0 later : SegmentedRankProgress source target) ->
+    SegmentedRankProgress (untouched :: source) (untouched :: target)
