@@ -72,3 +72,23 @@ o19ActivationPairExternal nameEq keyEq left right leftActivation rightActivation
         (SkipRightInternal (movedLeft diamond) NoTransitions
           (o19ActivationInternal nameEq (movedLeft diamond) (movedLeftActivationBranch diamond leftActivation))
           SameExternalOrchestrationEnd)))
+
+||| B4: authentic two-node occurrence embedding with explicit observed
+||| occurrence. No captured iterator descriptor and no inferred local view.
+public export
+0 o19PairOccurrence :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {initial, first, middle, last, finalState, selectedBefore, selectedAfter :
+    SystemState name key value world error} ->
+  (earlier : Transitions initial first) ->
+  (left : Transition first middle) -> (right : Transition middle last) ->
+  (later : Transitions last finalState) ->
+  (selected : Transition selectedBefore selectedAfter) ->
+  OccursIn selected (MoreTransitions left (MoreTransitions right NoTransitions)) ->
+  OccursIn selected (appendTransitions earlier (MoreTransitions left (MoreTransitions right later)))
+o19PairOccurrence NoTransitions left right later _ OccursHere = OccursHere
+o19PairOccurrence NoTransitions left right later _ (OccursLater OccursHere) =
+  OccursLater OccursHere
+o19PairOccurrence NoTransitions left right later _ (OccursLater (OccursLater absent)) impossible
+o19PairOccurrence (MoreTransitions head rest) left right later selected occurs =
+  OccursLater (o19PairOccurrence rest left right later selected occurs)
