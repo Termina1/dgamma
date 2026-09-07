@@ -85,3 +85,20 @@ currentPutEntryOrigin name nameEq inserted fresh ((candidate, current) :: rest) 
   currentPutEntryObserved name nameEq inserted fresh candidate current rest
     (decEq @{nameEq} inserted candidate) Refl
     (currentPutEntryOrigin name nameEq inserted fresh rest) selected generation member
+
+0 currentBirthAfterPut :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (global : Transitions initial finalState) -> (live : GenerationEnvironment name) ->
+  (inserted : name) -> (fresh : RegistrationGeneration name) ->
+  CurrentGenerationBirth name key world error value global inserted fresh ->
+  ((selected : name) -> (generation : RegistrationGeneration name) ->
+    Elem (selected, generation) live -> CurrentGenerationBirth name key world error value global selected generation) ->
+  (selected : name) -> (generation : RegistrationGeneration name) ->
+  Elem (selected, generation) (putCurrentGeneration @{nameEq} inserted fresh live) ->
+  CurrentGenerationBirth name key world error value global selected generation
+currentBirthAfterPut name key world error value nameEq global live inserted fresh birth previous selected generation member =
+  case currentPutEntryOrigin name nameEq inserted fresh live selected generation member of
+    Left exact => case exact of Refl => birth
+    Right old => previous selected generation old
