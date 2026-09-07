@@ -114,3 +114,19 @@ clauseLookupFromEntry name key world error value nameEq (Bind current observedFi
     (Yes same ** observed) => case same of
       Refl => void (fresh (clauseEntryKeyMember name key world error value selected fiber rest later))
     (No different ** observed) => rewrite observed in clauseLookupFromEntry name key world error value nameEq rest tailUnique selected fiber later
+
+0 clauseProviderEntryWitness :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (wanted : key) -> (predicate : name -> Bool) -> (entries : List (Binding name (FiberAt name key value world error))) ->
+  (providerFromPredicate {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} @{keyEq} wanted predicate entries = True) ->
+  (selected : name ** fiber : Fiber name key value world error **
+    (Elem (Bind selected fiber) entries, predicate selected = True,
+     listMember @{keyEq} wanted (dependencies (componentProvisions (fiberComponent fiber))) = True))
+clauseProviderEntryWitness name key world error value nameEq keyEq wanted predicate [] exact = case exact of Refl impossible
+clauseProviderEntryWitness name key world error value nameEq keyEq wanted predicate (Bind current observed :: rest) exact =
+  case clauseOrCases (predicate current && listMember @{keyEq} wanted (dependencies (componentProvisions (fiberComponent observed))))
+    (providerFromPredicate {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} @{keyEq} wanted predicate rest) exact of
+    Left headTrue => case clauseAndParts _ _ headTrue of
+      (supported, declares) => (current ** observed ** (Here, supported, declares))
+    Right tailTrue => case clauseProviderEntryWitness name key world error value nameEq keyEq wanted predicate rest tailTrue of
+      (selected ** fiber ** (member, supported, declares)) => (selected ** fiber ** (There member, supported, declares))
