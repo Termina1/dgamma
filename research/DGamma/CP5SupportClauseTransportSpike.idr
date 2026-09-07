@@ -28,3 +28,8 @@ clauseAndParts True right exact = (Refl, exact)
 0 clauseOrCases : (left, right : Bool) -> (left || right = True) -> Either (left = True) (right = True)
 clauseOrCases False right exact = Right exact
 clauseOrCases True right exact = Left Refl
+
+0 clauseOrFromEither : (left, right : Bool) -> Either (left = True) (right = True) -> (left || right = True)
+clauseOrFromEither left right (Left exact) = rewrite exact in Refl
+clauseOrFromEither False right (Right exact) = exact
+clauseOrFromEither True right (Right exact) = Refl
