@@ -117,3 +117,31 @@ redundant type-level quiet tuple (retain the historical executed evidence), and
 prove the actual A9 negative from a located right child-retirement and the left
 trace's absence of any retirement/removal. Then finish A's explicit threading
 and regressions. Do not retry A16's imported quiet fixed-point Refl expression.
+
+## A16 stop ruling and Unit A completion
+
+Supervisor RATIFIED 4270966 and explicitly authorized the independent structural
+fixture route (06:13–06:14); the three-attempt quiet observer is permanently
+parked. A17–A22 each PASS 1/1: authentic right occurrence (four-step empty-origin
+scan, generation 1@2), producer-owned kind equation, structural left absence,
+actual-pair Not A9 for EVERY bijection, and nonempty reflexive matching positive.
+The negative contains no quiet observer and does not claim the TWO-CAPITAL GAP
+closed. Its six/five checked actions are exactly the R177 P2-4 action pair whose
+runtime observations are recorded in the R177 audit/probe archive.
+
+A23–A27 thread explicit quantity-0 A9 through O18, selector, O20, O21 signature,
+and the original-endpoint forwarder; A28/R8 and A32/R16 propagate it from their
+conditional entry points. No record silently acquires A9. O19 single-trace
+adjacent-block swap is unchanged. The only O21 implementation change is its
+hypothesis surface, not the hole/withdrawal body. Existing R8/R16 let structure
+and existing frozen calls are untouched except the explicit added argument;
+NO new let or frozen deletion call is introduced.
+
+A29/A30 preserve the EXACT prior pure-versus-operational and mixed-capital
+negative boundaries, checked against N0-old/N0-mixed baseline logs. A31 preserves
+wrong-original uniqueness rejection. A33 adds an accepted-generation-specific
+negative: `otherRenaming and sameInputs .generatedGenerationBijection` at
+`wrongGenerationMatching`. All supplied hypotheses precede the intended errors;
+none is a missing-argument/implicit-auto regression. Each changed declaration
+had its own compiler invocation, PASS and immediate commit. The R8 check ran
+DETACHED for 102.58 seconds, sampled peak 40,996,592 KiB, and exited cleanly.
