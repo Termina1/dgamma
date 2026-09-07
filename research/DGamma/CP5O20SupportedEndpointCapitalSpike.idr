@@ -163,3 +163,18 @@ supportedCanonicalCommittedView name key world error value nameEq keyEq state se
       (supportedActiveAt @{nameEq} selected state = isActive (fiberLifecycle (supportedCanonicalFiber packet)))
       (rewrite supportedCanonicalFound packet in Refl))) (supportedCanonicalActive packet))
     (supportedCanonicalViewDomain packet)
+
+||| Static projection for the actual one-sided control witness produced above.
+||| This does not promote its same-name equality to a cross-canonical renaming.
+export
+0 canonicalControlStaticFields :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {left, right : Fiber name key value world error} ->
+  FiberControlRelated left right ->
+  (fiberComponent left = fiberComponent right,
+   fiberParent left = fiberParent right,
+   retired left = retired right)
+canonicalControlStaticFields
+  (FibersControlRelated leftParent rightParent leftRetired rightRetired leftTable rightTable
+    leftLifecycle rightLifecycle parentExact retiredExact lifecycleExact) =
+      (Refl, parentExact, retiredExact)
