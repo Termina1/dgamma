@@ -71,3 +71,17 @@ o20CheckNoGeneratedAction nameEq forbidden action =
     Yes same => Nothing
     No different => Just (\parent, component, sameAction =>
       different (cong o20GeneratedChildName sameAction))
+
+||| Produce the whole NoGeneratedChild certificate by traversing the ACTUAL
+||| block body. A failure is not a canonicality/completeness claim.
+export
+0 o20CheckNoGeneratedChild :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (forbidden : name) ->
+  {first, finalState : SystemState name key value world error} ->
+  (trace : Transitions first finalState) -> Maybe (NoGeneratedChild forbidden trace)
+o20CheckNoGeneratedChild nameEq forbidden NoTransitions = Just NoGeneratedChildEnd
+o20CheckNoGeneratedChild nameEq forbidden (MoreTransitions step rest) =
+  (NoGeneratedChildStep step rest) <$>
+    (o20CheckNoGeneratedAction nameEq forbidden (transitionAction step)) <*>
+    (o20CheckNoGeneratedChild nameEq forbidden rest)
