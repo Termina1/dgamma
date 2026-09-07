@@ -2,6 +2,7 @@ module DGamma.CP5RegistrationParentBirthSpike
 
 import DGamma.Calculus
 import DGamma.Coeffects
+import DGamma.Metatheory
 import DGamma.CP3
 import DGamma.CP4DeletionBoundaryPlan
 import DGamma.CP5CurrentGenerationBirthSpike
@@ -164,3 +165,20 @@ parentLookupObserved name nameEq selected candidate current rest (Yes same) exac
   rewrite exact in case same of Refl => Refl
 parentLookupObserved name nameEq selected candidate current rest (No distinct) exact =
   rewrite exact in Refl
+
+0 parentLookupEntryObserved :
+  (name : Type) -> (nameEq : DecEq name) -> (selected, candidate : name) ->
+  (current : RegistrationActivation name) -> (rest : List (name, RegistrationActivation name)) ->
+  (observed : Dec (selected = candidate)) -> decEq @{nameEq} selected candidate = observed ->
+  ((activation : RegistrationActivation name) -> lookupParentActivation @{nameEq} selected rest = Just activation ->
+    Elem (selected, activation) rest) ->
+  (activation : RegistrationActivation name) ->
+  lookupParentActivation @{nameEq} selected ((candidate, current) :: rest) = Just activation ->
+  Elem (selected, activation) ((candidate, current) :: rest)
+parentLookupEntryObserved name nameEq selected candidate current rest (Yes same) exact recur activation found =
+  replace {p = \entry => Elem entry ((candidate, current) :: rest)}
+    (cong2 MkPair (sym same)
+      (justInjective (trans (sym (parentLookupObserved name nameEq selected candidate current rest (Yes same) exact)) found))) Here
+parentLookupEntryObserved name nameEq selected candidate current rest (No distinct) exact recur activation found =
+  There (recur activation
+    (trans (sym (parentLookupObserved name nameEq selected candidate current rest (No distinct) exact)) found))
