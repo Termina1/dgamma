@@ -60,3 +60,27 @@ allSupportedMetadataForwardByParent name key world error value nameEq keyEq prot
              sym (endpointComponentsMatch metadata),
              trans (rightEndpointBirthParent metadata) (trans (cong ChildOf (sym parentName))
                (cong (supportMapParent name (renameForward (currentNameBijection (endpointRenaming sameInputs)))) (sym (leftEndpointBirthParent metadata))))))
+
+||| Every supported original name, not merely a supplied retained event.
+export
+0 acceptedAllSupportedMetadataForward :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (protocol : RegistrationProtocol key value world error) ->
+  {initial, leftFinal, rightFinal : SystemState name key value world error} ->
+  (left : Transitions initial leftFinal) -> (right : Transitions initial rightFinal) ->
+  (sameInputs : SameOrchestrationModuloGenerated nameEq keyEq left right) ->
+  AlignedTransitions name key world error value nameEq keyEq left -> AlignedTransitions name key world error value nameEq keyEq right ->
+  RegistrationDiscipline protocol nameEq left -> (bindings (registry initial) = []) ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq left -> UniqueRawNameInsertions name key world error value nameEq keyEq right ->
+  (selected : name) -> (sourceFiber : Fiber name key value world error) ->
+  (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} selected (registry leftFinal) = Just sourceFiber) ->
+  (isSupported {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} @{keyEq} selected leftFinal = True) ->
+  (targetFiber : Fiber name key value world error **
+    (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq}
+      (renameForward (currentNameBijection (endpointRenaming sameInputs)) selected) (registry rightFinal) = Just targetFiber,
+     fiberComponent targetFiber = fiberComponent sourceFiber,
+     fiberParent targetFiber = supportMapParent name (renameForward (currentNameBijection (endpointRenaming sameInputs))) (fiberParent sourceFiber)))
+acceptedAllSupportedMetadataForward name key world error value nameEq keyEq protocol left right sameInputs leftAligned rightAligned discipline empty leftUnique rightUnique
+  selected sourceFiber sourceFound supported =
+    allSupportedMetadataForwardByParent name key world error value nameEq keyEq protocol left right sameInputs leftAligned rightAligned discipline empty leftUnique rightUnique
+      selected sourceFiber sourceFound supported (fiberParent sourceFiber) Refl
