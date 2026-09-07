@@ -52,3 +52,28 @@ public export
   O19ReachedCursor name key world error value protocol nameEq keyEq source
 o19InitialCursor {sourceFinal} nameEq keyEq protocol source premises sourceUnique =
   MkO19ReachedCursor sourceFinal source premises sourceUnique FiniteAdjacentSwapDone
+
+||| R183 A3: consume one explicit produced node package and carry its OWN
+||| reached bundle and uniqueness into the next cursor. There is no local
+||| elimination of a computed existential and no independently rebuilt target.
+public export
+0 o19CursorFromProduced :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {protocol : RegistrationProtocol key value world error} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {initial, sourceFinal, first, middle, last : SystemState name key value world error} ->
+  {source : Transitions initial sourceFinal} ->
+  (cursor : O19ReachedCursor name key world error value protocol nameEq keyEq source) ->
+  {earlier : Transitions initial first} -> {left : Transition first middle} ->
+  {right : Transition middle last} -> {later : Transitions last (cursorFinal cursor)} ->
+  (diamond : LocalRelationalDiamond name key world error value nameEq keyEq left right **
+   (result : AdjacentSwapResult name key world error value protocol nameEq keyEq
+     (cursorTrace cursor) earlier left right later diamond **
+    (NonEmptyFiniteAdjacentSwapDerivation name key world error value protocol nameEq keyEq
+       (cursorTrace cursor) (swappedTrace result),
+     UniqueRawNameInsertions name key world error value nameEq keyEq (swappedTrace result)))) ->
+  O19ReachedCursor name key world error value protocol nameEq keyEq source
+o19CursorFromProduced cursor (diamond ** (result ** (node, unique))) =
+  MkO19ReachedCursor (replayedFinal result) (swappedTrace result)
+    (swappedPremises result) unique
+    (o19AppendFinite (cursorDerivation cursor) (nonEmptyToFiniteAdjacentSwapDerivation node))
