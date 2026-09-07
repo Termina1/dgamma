@@ -4,8 +4,8 @@
   "status": "partial_milestone_gate_pending",
   "branch": "cp5-thm73-scoping",
   "requiredStart": "77577c2",
-  "validatedAtCommit": "ccb08a216e6c070ba9b71c4705ec7e9b8b1f3229",
-  "timestampUTC": "2026-09-07T10:47:35.119597+00:00",
+  "validatedAtCommit": "30ac49f64a62ca064093e14b03d668bc0e364b4e",
+  "timestampUTC": "2026-09-07T11:25:50.761403+00:00",
   "toolchain": "Idris 2 0.8.0",
   "guard": {
     "startUTC": "2026-09-07T09:10:00Z",
@@ -111,17 +111,436 @@
     "research-tests/O6-R179-COMPILER-EVIDENCE.tar.gz",
     "research-tests/O6-R179-COMPILER-LEDGER.json",
     "research-tests/O6-R179-DE-FINAL-VALIDATION.json",
+    "research-tests/O6-R179-FG-FINAL-VALIDATION.json",
     "research-tests/O6-R179-FINAL-VALIDATION.json",
     "research-tests/O6-R179-GRIND-SHIFT-AUDIT.md",
     "research-tests/run-r179-check.py",
     "research-tests/run-r179-evidence.py",
     "research-tests/run-r179-frozen-audit.py",
+    "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
     "research/DGamma/CP5O20SupportedBirthBridgeSpike.idr",
+    "research/DGamma/CP5O20SupportedEndpointCapitalSpike.idr",
     "research/DGamma/CP5O21EndpointIdentitySpike.idr",
+    "research/DGamma/CP5RankedEarlyApplicabilitySpike.idr",
     "research/DGamma/CP5RankedTraceSelectionSpike.idr"
   ],
   "tests": {
     "finalTargetChecks": [
+      {
+        "unit": "F18-canonical-visibility",
+        "path": "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+        "command": [
+          "idris2",
+          "--source-dir",
+          "src",
+          "--source-dir",
+          "research",
+          "--check",
+          "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr"
+        ],
+        "exit": 0,
+        "fresh": true,
+        "passed": true,
+        "seconds": 54.93387733306736,
+        "expectedDiagnostic": null,
+        "symbol": null,
+        "sourceSHA256": "3b62ba1c3bc88503116ed22d82c667043f7f41dd483fb093cc25b677a55245cc"
+      },
+      {
+        "unit": "F19-countershape",
+        "path": "research-tests/DGamma/R179O19DependencyCountershape.idr",
+        "command": [
+          "idris2",
+          "--source-dir",
+          "src",
+          "--source-dir",
+          "research",
+          "--source-dir",
+          "research-tests",
+          "--check",
+          "research-tests/DGamma/R179O19DependencyCountershape.idr"
+        ],
+        "exit": 0,
+        "fresh": true,
+        "passed": true,
+        "seconds": 131.61634829221293,
+        "expectedDiagnostic": null,
+        "symbol": null,
+        "sourceSHA256": "9df6b5d76e66682cc1f1390c32347c2d71b6cf4006bcbe1d8661dee7fe120139"
+      },
+      {
+        "unit": "F20-observed",
+        "path": "research-tests/DGamma/R179O19ObservedExecution.idr",
+        "command": [
+          "idris2",
+          "--source-dir",
+          "src",
+          "--source-dir",
+          "research",
+          "--source-dir",
+          "research-tests",
+          "--check",
+          "research-tests/DGamma/R179O19ObservedExecution.idr"
+        ],
+        "exit": 0,
+        "fresh": true,
+        "passed": true,
+        "seconds": 3.098675874993205,
+        "expectedDiagnostic": null,
+        "symbol": null,
+        "sourceSHA256": "71150c8e0a473464f16401cebe07066004a29aed51806caf70548df67745457d"
+      },
+      {
+        "unit": "F21-identity",
+        "path": "research/DGamma/CP5O21EndpointIdentitySpike.idr",
+        "command": [
+          "idris2",
+          "--source-dir",
+          "src",
+          "--source-dir",
+          "research",
+          "--check",
+          "research/DGamma/CP5O21EndpointIdentitySpike.idr"
+        ],
+        "exit": 0,
+        "fresh": true,
+        "passed": true,
+        "seconds": 10.34789791610092,
+        "expectedDiagnostic": null,
+        "symbol": null,
+        "sourceSHA256": "5a1d3fe32fb110a905ad5d59885637710fc13fcccd81c1d6f9ad67472f515e38"
+      },
+      {
+        "unit": "F22-current-positive",
+        "path": "research-tests/DGamma/R179O21CurrentBirthIdentityPositive.idr",
+        "command": [
+          "idris2",
+          "--source-dir",
+          "src",
+          "--source-dir",
+          "research",
+          "--source-dir",
+          "research-tests",
+          "--check",
+          "research-tests/DGamma/R179O21CurrentBirthIdentityPositive.idr"
+        ],
+        "exit": 0,
+        "fresh": true,
+        "passed": true,
+        "seconds": 2.0931487502530217,
+        "expectedDiagnostic": null,
+        "symbol": null,
+        "sourceSHA256": "e8d1f64fdf8dab1b2af4dd76dc69f6138c45ad849cc64c14b1d46a030d34d901"
+      },
+      {
+        "unit": "F23-original-negative",
+        "path": "research-tests/DGamma/R179O21WrongOriginalBirthNegative.idr",
+        "command": [
+          "idris2",
+          "--source-dir",
+          "src",
+          "--source-dir",
+          "research",
+          "--source-dir",
+          "research-tests",
+          "--check",
+          "research-tests/DGamma/R179O21WrongOriginalBirthNegative.idr"
+        ],
+        "exit": 1,
+        "fresh": true,
+        "passed": true,
+        "seconds": 1.0627230838872492,
+        "expectedDiagnostic": "Mismatch between: other and left.",
+        "symbol": "wrongOriginalBirth",
+        "sourceSHA256": "f2d7e6825c7fece1c36787ba1f2d248a59197df7d94b1fece6b651714046055b"
+      },
+      {
+        "unit": "F24-supported-bridge",
+        "path": "research/DGamma/CP5O20SupportedBirthBridgeSpike.idr",
+        "command": [
+          "idris2",
+          "--source-dir",
+          "src",
+          "--source-dir",
+          "research",
+          "--check",
+          "research/DGamma/CP5O20SupportedBirthBridgeSpike.idr"
+        ],
+        "exit": 0,
+        "fresh": true,
+        "passed": true,
+        "seconds": 3.1248447080142796,
+        "expectedDiagnostic": null,
+        "symbol": null,
+        "sourceSHA256": "fb7bf6b4750d729da2794ff38bc1ec8d51cffbb838a24db8f7db822914b4e93a"
+      },
+      {
+        "unit": "F25-supported-positive",
+        "path": "research-tests/DGamma/R179O20SupportedBirthPositive.idr",
+        "command": [
+          "idris2",
+          "--source-dir",
+          "src",
+          "--source-dir",
+          "research",
+          "--source-dir",
+          "research-tests",
+          "--check",
+          "research-tests/DGamma/R179O20SupportedBirthPositive.idr"
+        ],
+        "exit": 0,
+        "fresh": true,
+        "passed": true,
+        "seconds": 2.073729042429477,
+        "expectedDiagnostic": null,
+        "symbol": null,
+        "sourceSHA256": "010bf6fcfa480156240a4365ab8f7378fc6edf0cc253f6bf9066bbaeb8ce2f4c"
+      },
+      {
+        "unit": "F26-actual-selection",
+        "path": "research/DGamma/CP5RankedTraceSelectionSpike.idr",
+        "command": [
+          "idris2",
+          "--source-dir",
+          "src",
+          "--source-dir",
+          "research",
+          "--check",
+          "research/DGamma/CP5RankedTraceSelectionSpike.idr"
+        ],
+        "exit": 0,
+        "fresh": true,
+        "passed": true,
+        "seconds": 1.0338047076947987,
+        "expectedDiagnostic": null,
+        "symbol": null,
+        "sourceSHA256": "6b09d40d6d49287c5cee72a561f95956c1d8e8c4b44d2a00c790e16a729c1015"
+      },
+      {
+        "unit": "F27-actual-selection-positive",
+        "path": "research-tests/DGamma/R179RankedTraceSelectionPositive.idr",
+        "command": [
+          "idris2",
+          "--source-dir",
+          "src",
+          "--source-dir",
+          "research",
+          "--source-dir",
+          "research-tests",
+          "--check",
+          "research-tests/DGamma/R179RankedTraceSelectionPositive.idr"
+        ],
+        "exit": 0,
+        "fresh": true,
+        "passed": true,
+        "seconds": 12.427819416858256,
+        "expectedDiagnostic": null,
+        "symbol": null,
+        "sourceSHA256": "625f5492e1fc2df3d1f995e2d33d7ffd83495140b79ca41d627260e8c65ee873"
+      },
+      {
+        "unit": "F28-supported-endpoint",
+        "path": "research/DGamma/CP5O20SupportedEndpointCapitalSpike.idr",
+        "command": [
+          "idris2",
+          "--source-dir",
+          "src",
+          "--source-dir",
+          "research",
+          "--check",
+          "research/DGamma/CP5O20SupportedEndpointCapitalSpike.idr"
+        ],
+        "exit": 0,
+        "fresh": true,
+        "passed": true,
+        "seconds": 4.163829875178635,
+        "expectedDiagnostic": null,
+        "symbol": null,
+        "sourceSHA256": "de506cd1e996c95c10c26e9bb21fc1f18d0210504bd614933e10caa0a8032aa6"
+      },
+      {
+        "unit": "F29-early-applicability",
+        "path": "research/DGamma/CP5RankedEarlyApplicabilitySpike.idr",
+        "command": [
+          "idris2",
+          "--source-dir",
+          "src",
+          "--source-dir",
+          "research",
+          "--check",
+          "research/DGamma/CP5RankedEarlyApplicabilitySpike.idr"
+        ],
+        "exit": 0,
+        "fresh": true,
+        "passed": true,
+        "seconds": 2.0690694167278707,
+        "expectedDiagnostic": null,
+        "symbol": null,
+        "sourceSHA256": "d54aefae02a4a03b1ea710cb79aaa224887eaec6bae7921203995238aa8e5e87"
+      },
+      {
+        "unit": "F30-seeded-package",
+        "path": "package",
+        "command": [
+          "idris2",
+          "--build",
+          "dgamma.ipkg"
+        ],
+        "exit": 0,
+        "fresh": true,
+        "passed": true,
+        "seconds": 16.59155537514016,
+        "expectedDiagnostic": null,
+        "symbol": null,
+        "sourceSHA256": "aee761a37757cb047ddbf0f846bc23ce830ed755422f96852d08eb435c368727"
+      }
+    ],
+    "completeAttemptSummary": {
+      "checks": 104,
+      "ordinaryPasses": 86,
+      "intendedNegativePasses": 4,
+      "rejectedOrInterrupted": 14,
+      "serialized": true,
+      "oneNewDeclarationPerInvocation": true,
+      "seededPackageBuilds": 4
+    },
+    "ordinarySuccessClarification": "Includes4 seeded package builds, single disposable type-only C probe, and visibility/final-source checks; not86 theorem proofs",
+    "failedAttemptSplit": {
+      "diagnosticRejections": 13,
+      "noVerdictInterruptions": 1
+    },
+    "productionSeeds": "207/207 present; seeded package PASS, not a fresh 207-file regression run",
+    "legacyR11": "not run",
+    "coldBuild": false,
+    "compilerConcurrency": false,
+    "cacheDeletion": false,
+    "prefixTargetChecks": [
+      {
+        "unit": "F2-countershape",
+        "path": "research-tests/DGamma/R179O19DependencyCountershape.idr",
+        "command": [
+          "idris2",
+          "--source-dir",
+          "src",
+          "--source-dir",
+          "research",
+          "--source-dir",
+          "research-tests",
+          "--check",
+          "research-tests/DGamma/R179O19DependencyCountershape.idr"
+        ],
+        "exit": 0,
+        "fresh": true,
+        "passed": true,
+        "seconds": 132.59956795815378,
+        "expectedDiagnostic": null,
+        "symbol": null,
+        "sourceSHA256": "9df6b5d76e66682cc1f1390c32347c2d71b6cf4006bcbe1d8661dee7fe120139"
+      },
+      {
+        "unit": "F3-observed",
+        "path": "research-tests/DGamma/R179O19ObservedExecution.idr",
+        "command": [
+          "idris2",
+          "--source-dir",
+          "src",
+          "--source-dir",
+          "research",
+          "--source-dir",
+          "research-tests",
+          "--check",
+          "research-tests/DGamma/R179O19ObservedExecution.idr"
+        ],
+        "exit": 0,
+        "fresh": true,
+        "passed": true,
+        "seconds": 3.121427208185196,
+        "expectedDiagnostic": null,
+        "symbol": null,
+        "sourceSHA256": "71150c8e0a473464f16401cebe07066004a29aed51806caf70548df67745457d"
+      },
+      {
+        "unit": "F4-identity",
+        "path": "research/DGamma/CP5O21EndpointIdentitySpike.idr",
+        "command": [
+          "idris2",
+          "--source-dir",
+          "src",
+          "--source-dir",
+          "research",
+          "--check",
+          "research/DGamma/CP5O21EndpointIdentitySpike.idr"
+        ],
+        "exit": 0,
+        "fresh": true,
+        "passed": true,
+        "seconds": 3.126042041927576,
+        "expectedDiagnostic": null,
+        "symbol": null,
+        "sourceSHA256": "5a1d3fe32fb110a905ad5d59885637710fc13fcccd81c1d6f9ad67472f515e38"
+      },
+      {
+        "unit": "F5-identity-positive",
+        "path": "research-tests/DGamma/R179O21CurrentBirthIdentityPositive.idr",
+        "command": [
+          "idris2",
+          "--source-dir",
+          "src",
+          "--source-dir",
+          "research",
+          "--source-dir",
+          "research-tests",
+          "--check",
+          "research-tests/DGamma/R179O21CurrentBirthIdentityPositive.idr"
+        ],
+        "exit": 0,
+        "fresh": true,
+        "passed": true,
+        "seconds": 2.0934299998916686,
+        "expectedDiagnostic": null,
+        "symbol": null,
+        "sourceSHA256": "e8d1f64fdf8dab1b2af4dd76dc69f6138c45ad849cc64c14b1d46a030d34d901"
+      },
+      {
+        "unit": "F6-wrong-original-negative",
+        "path": "research-tests/DGamma/R179O21WrongOriginalBirthNegative.idr",
+        "command": [
+          "idris2",
+          "--source-dir",
+          "src",
+          "--source-dir",
+          "research",
+          "--source-dir",
+          "research-tests",
+          "--check",
+          "research-tests/DGamma/R179O21WrongOriginalBirthNegative.idr"
+        ],
+        "exit": 1,
+        "fresh": true,
+        "passed": true,
+        "seconds": 1.0404754998162389,
+        "expectedDiagnostic": "Mismatch between: other and left.",
+        "symbol": "wrongOriginalBirth",
+        "sourceSHA256": "f2d7e6825c7fece1c36787ba1f2d248a59197df7d94b1fece6b651714046055b"
+      },
+      {
+        "unit": "F7-package",
+        "path": "package",
+        "command": [
+          "idris2",
+          "--build",
+          "dgamma.ipkg"
+        ],
+        "exit": 0,
+        "fresh": true,
+        "passed": true,
+        "seconds": 16.570549041964114,
+        "expectedDiagnostic": null,
+        "symbol": null,
+        "sourceSHA256": "aee761a37757cb047ddbf0f846bc23ce830ed755422f96852d08eb435c368727"
+      }
+    ],
+    "DETargetChecks": [
       {
         "unit": "F8-countershape",
         "path": "research-tests/DGamma/R179O19DependencyCountershape.idr",
@@ -330,151 +749,6 @@
         "symbol": null,
         "sourceSHA256": "aee761a37757cb047ddbf0f846bc23ce830ed755422f96852d08eb435c368727"
       }
-    ],
-    "completeAttemptSummary": {
-      "checks": 70,
-      "ordinaryPasses": 56,
-      "intendedNegativePasses": 3,
-      "rejectedOrInterrupted": 11,
-      "serialized": true,
-      "oneNewDeclarationPerInvocation": true,
-      "seededPackageBuilds": 3
-    },
-    "ordinarySuccessClarification": "Includes3 seeded package builds and single disposable type-only C probe; not56 theorem proofs",
-    "failedAttemptSplit": {
-      "diagnosticRejections": 10,
-      "noVerdictInterruptions": 1
-    },
-    "productionSeeds": "207/207 present; seeded package PASS, not a fresh 207-file regression run",
-    "legacyR11": "not run",
-    "coldBuild": false,
-    "compilerConcurrency": false,
-    "cacheDeletion": false,
-    "prefixTargetChecks": [
-      {
-        "unit": "F2-countershape",
-        "path": "research-tests/DGamma/R179O19DependencyCountershape.idr",
-        "command": [
-          "idris2",
-          "--source-dir",
-          "src",
-          "--source-dir",
-          "research",
-          "--source-dir",
-          "research-tests",
-          "--check",
-          "research-tests/DGamma/R179O19DependencyCountershape.idr"
-        ],
-        "exit": 0,
-        "fresh": true,
-        "passed": true,
-        "seconds": 132.59956795815378,
-        "expectedDiagnostic": null,
-        "symbol": null,
-        "sourceSHA256": "9df6b5d76e66682cc1f1390c32347c2d71b6cf4006bcbe1d8661dee7fe120139"
-      },
-      {
-        "unit": "F3-observed",
-        "path": "research-tests/DGamma/R179O19ObservedExecution.idr",
-        "command": [
-          "idris2",
-          "--source-dir",
-          "src",
-          "--source-dir",
-          "research",
-          "--source-dir",
-          "research-tests",
-          "--check",
-          "research-tests/DGamma/R179O19ObservedExecution.idr"
-        ],
-        "exit": 0,
-        "fresh": true,
-        "passed": true,
-        "seconds": 3.121427208185196,
-        "expectedDiagnostic": null,
-        "symbol": null,
-        "sourceSHA256": "71150c8e0a473464f16401cebe07066004a29aed51806caf70548df67745457d"
-      },
-      {
-        "unit": "F4-identity",
-        "path": "research/DGamma/CP5O21EndpointIdentitySpike.idr",
-        "command": [
-          "idris2",
-          "--source-dir",
-          "src",
-          "--source-dir",
-          "research",
-          "--check",
-          "research/DGamma/CP5O21EndpointIdentitySpike.idr"
-        ],
-        "exit": 0,
-        "fresh": true,
-        "passed": true,
-        "seconds": 3.126042041927576,
-        "expectedDiagnostic": null,
-        "symbol": null,
-        "sourceSHA256": "5a1d3fe32fb110a905ad5d59885637710fc13fcccd81c1d6f9ad67472f515e38"
-      },
-      {
-        "unit": "F5-identity-positive",
-        "path": "research-tests/DGamma/R179O21CurrentBirthIdentityPositive.idr",
-        "command": [
-          "idris2",
-          "--source-dir",
-          "src",
-          "--source-dir",
-          "research",
-          "--source-dir",
-          "research-tests",
-          "--check",
-          "research-tests/DGamma/R179O21CurrentBirthIdentityPositive.idr"
-        ],
-        "exit": 0,
-        "fresh": true,
-        "passed": true,
-        "seconds": 2.0934299998916686,
-        "expectedDiagnostic": null,
-        "symbol": null,
-        "sourceSHA256": "e8d1f64fdf8dab1b2af4dd76dc69f6138c45ad849cc64c14b1d46a030d34d901"
-      },
-      {
-        "unit": "F6-wrong-original-negative",
-        "path": "research-tests/DGamma/R179O21WrongOriginalBirthNegative.idr",
-        "command": [
-          "idris2",
-          "--source-dir",
-          "src",
-          "--source-dir",
-          "research",
-          "--source-dir",
-          "research-tests",
-          "--check",
-          "research-tests/DGamma/R179O21WrongOriginalBirthNegative.idr"
-        ],
-        "exit": 1,
-        "fresh": true,
-        "passed": true,
-        "seconds": 1.0404754998162389,
-        "expectedDiagnostic": "Mismatch between: other and left.",
-        "symbol": "wrongOriginalBirth",
-        "sourceSHA256": "f2d7e6825c7fece1c36787ba1f2d248a59197df7d94b1fece6b651714046055b"
-      },
-      {
-        "unit": "F7-package",
-        "path": "package",
-        "command": [
-          "idris2",
-          "--build",
-          "dgamma.ipkg"
-        ],
-        "exit": 0,
-        "fresh": true,
-        "passed": true,
-        "seconds": 16.570549041964114,
-        "expectedDiagnostic": null,
-        "symbol": null,
-        "sourceSHA256": "aee761a37757cb047ddbf0f846bc23ce830ed755422f96852d08eb435c368727"
-      }
     ]
   },
   "commands": [
@@ -511,7 +785,7 @@
     "productionDiffVs34b21c9": "empty",
     "CP3Blob": "2c697e532e83989de8591fa6a4378747c6a501c0",
     "LocalDiamondDiffVsStart": "empty",
-    "CanonicalSortDiffVsStart": "empty",
+    "CanonicalSortDiffVsStart": "exactly two authorized visibility keywords",
     "DeletionChainDiffVsStart": "empty",
     "CrossTraceDiffVsStart": "empty",
     "RenamingCompositionDiffVsStart": "empty",
@@ -534,6 +808,10 @@
       "\\bdeletionTheoremProof\\b": [],
       "\\bpostulate\\b": [],
       "\\b[A-Za-z_]\\w*@\\s*[\\(\\[]": []
+    },
+    "CanonicalSortAuthorizedVisibility": {
+      "canonicalWorkActionRank": "public export",
+      "canonicalWorkInspectOrientation": "export"
     }
   },
   "scope": {
@@ -544,7 +822,11 @@
     "O20BodyAttempts": 0,
     "withdrawalBodyAttempts": 0,
     "newWithOrLocalLet": 0,
-    "oneNewTopLevelDeclarationPerInvocation": true
+    "oneNewTopLevelDeclarationPerInvocation": true,
+    "authorizedOldSpikeChanges": {
+      "canonicalWorkActionRank": "public export",
+      "canonicalWorkInspectOrientation": "export"
+    }
   },
   "residualRisks": [
     "Theorem73 remains unproved; all five existing holes unchanged",
@@ -556,16 +838,19 @@
     "A8 canonical-tower integration and A9 owner override remain outside this shift",
     "Archived type-only and intended-negative fixtures must not be counted as theorem proofs or a full countermodel",
     "Supported-child bridge producer is not the unconditional fourth clause; canonical unsupported children remain open",
-    "Generic actual-trace selector is not yet instantiated in the frozen worklist body; orientation/applicability and completeness remain open"
+    "Generic actual-trace selector is not yet instantiated in the frozen worklist body; orientation/applicability and completeness remain open",
+    "F proves one-sided transport, not cross-canonical synchronization; its Active domain certificate is not cross-view equality",
+    "G guarded producer certifies only successful first-candidate checks and does not prove adequate existence or a diamond"
   ],
   "evidence": {
     "audit": "research-tests/O6-R179-GRIND-SHIFT-AUDIT.md",
     "ledger": "research-tests/O6-R179-COMPILER-LEDGER.json",
     "archive": "research-tests/O6-R179-COMPILER-EVIDENCE.tar.gz",
-    "frozen": "research-tests/O6-R179-DE-FINAL-VALIDATION.json",
-    "ledgerSHA256": "e93a4e2708dd78e04c8061afa2da9d4e4b09444909fdab95c87ed2ce15b49a17",
-    "archiveSHA256": "1fdf144097a78daf3cd76f06c343a9aeb3ae351da328b8292d656f58353a41e0",
-    "prefixFrozen": "research-tests/O6-R179-FINAL-VALIDATION.json"
+    "frozen": "research-tests/O6-R179-FG-FINAL-VALIDATION.json",
+    "ledgerSHA256": "e8eb506105418978068e060599b255e92bea6f2e2f049e0403bd513e2c8ae4dc",
+    "archiveSHA256": "053d1d7f958b976b55f8390ad4f4cd0010b14a92b63e7c898f93032e5ea1b4fc",
+    "prefixFrozen": "research-tests/O6-R179-FINAL-VALIDATION.json",
+    "DEFrozen": "research-tests/O6-R179-DE-FINAL-VALIDATION.json"
   },
   "repositoryAtValidation": {
     "noCompiler": true,
@@ -574,7 +859,7 @@
     "allowedUntrackedOnly": true
   },
   "supervisorFinalGate": {
-    "status": "pending_after_authorized_D_E",
+    "status": "pending_after_authorized_F_G",
     "requestAfterCommit": true
   },
   "gateHistory": [
@@ -583,6 +868,12 @@
       "timestampUTC": "2026-09-07T10:10:00Z",
       "decision": "Prefix ratified; handoff deferred; independent D12 and conditional E8 authorized",
       "prefixValidatedAtCommit": "cd58e8e08746ba1de8a3c7e7db34e3837ce2725c"
+    },
+    {
+      "reviewedCommit": "76ac4418beb45a599dc401ad135faec04cde9225",
+      "timestampUTC": "2026-09-07T10:47:00Z",
+      "decision": "D/E ratified; handoff deferred; F10 and conditional G8 authorized. Follow-up gate redirects F to one-sided supported canonical capital; G visibility-only observation exports authorized.",
+      "prefixValidatedAtCommit": "ccb08a216e6c070ba9b71c4705ec7e9b8b1f3229"
     }
   ],
   "unitD": {
@@ -649,6 +940,85 @@
       "E8": "PASS3/3 after full observation typing and direct rank-computation imports"
     },
     "rootPlacementAttempted": false,
-    "oldSpikeEdited": false
+    "oldSpikeEdited": false,
+    "laterQualification": "G now integrates the exact existing observer; private reached-worklist plumbing and completeness remain open."
+  },
+  "unitF": {
+    "status": "proved_conditional_one_sided_supported_canonical_capital",
+    "microUnits": 10,
+    "cap": 10,
+    "attempts": 13,
+    "module": "research/DGamma/CP5O20SupportedEndpointCapitalSpike.idr",
+    "proved": [
+      "Original support produces actual canonical support via its own located block",
+      "Actual canonical supported lookup Active nonretired and view-domain packet",
+      "Exact Active accumulator/view and stable-provider plus resolvable committed-values domain",
+      "Canonical presence excludes already-certified raw withdrawals; does not produce an O21 withdrawal branch",
+      "Actual ORIGINAL counterpart and full same-name one-sided controls/static projections",
+      "GLOBAL original-to-own-canonical-to-relational-replay ambient and full ordered-table agreement",
+      "Supported full same-name controls through own canonicalization and actual relational replay"
+    ],
+    "inputsNotUsed": "A9 and uniqueness unnecessary for these stronger one-sided consequences; unlike D no bilateral birth claim",
+    "replayOperand": "Conditional consumer of existing RelationalReplayEndpoint, not a newly constructed operational permutation",
+    "notProved": [
+      "Cross-canonical ambient/table/control convergence",
+      "Equality of two resolved views or coeffect value tuples",
+      "Unsupported generated birth bridge",
+      "O20 body"
+    ],
+    "retryAccounting": {
+      "F6": "PASS2 after explicit phantom indices",
+      "F9": "PASS2 after replacing private production helper use with exported-field composition",
+      "F10": "PASS2 after explicit phantom indices"
+    },
+    "synchronizationFrontier": {
+      "name": "SupportedCanonicalEpisodeSynchronization",
+      "isIdrisDeclaration": false,
+      "required": "Under unchanged O20 telescope, induct along actual matched supported-episode prefixes at expectedBridgeBijection; PRODUCE renamed global/table agreement, matched Begin views/resolved inputs, and pointwise accumulated-undo relation through actual Advance/Finish execution. Do not add these conclusions as premises."
+    }
+  },
+  "unitG": {
+    "status": "proved_guarded_positive_same_pair_producer_and_concrete_early_fixture",
+    "microUnits": 8,
+    "cap": 8,
+    "attempts": 8,
+    "allFirstAttemptPass": true,
+    "eligibility": "F finished11:06UTC,84min before12:30 (required45min)",
+    "module": "research/DGamma/CP5RankedEarlyApplicabilitySpike.idr",
+    "producer": "selectCanonicalObservedEarlyPair",
+    "proved": [
+      "Use SAME existing canonicalWorkActionRank on actual checked trace and fixed order",
+      "Use SAME selected pair existing orientation inspector",
+      "Really checked-execute SAME selected right action at before-left cut; destination not supplied",
+      "Reject changed rule tag; retain exact original action/tag in positive early application certificate",
+      "Package SAME choice orientation and actual checked early endpoint",
+      "Concrete count4 fixture under exact canonical observer selects prefix2 actors0/1 and executes early Begin1"
+    ],
+    "fixture": "research-tests/DGamma/R179RankedTraceSelectionPositive.idr:r179CanonicalObservedEarlyChecks",
+    "fixtureObservation": [
+      2,
+      0,
+      1,
+      false,
+      true
+    ],
+    "fixtureLimit": "Does not reduce/claim concrete success of opaque orientation inspector or combined G7 producer",
+    "maybeLimit": "Only positive results certified; Nothing is not canonicality or complete failure; no later-candidate search after the first failing descent",
+    "proofQuantity": "Erased total positive proof-producing computations, not a new unrestricted plugin runtime API",
+    "visibility": {
+      "canonicalWorkActionRank": "public export",
+      "canonicalWorkInspectOrientation": "export"
+    },
+    "visibilityReason": {
+      "canonicalWorkActionRank": "public export required for concrete proof reduction",
+      "canonicalWorkInspectOrientation": "export sufficient for opaque result consumer"
+    },
+    "notProved": [
+      "Private reached-worklist boundary plumbing",
+      "Adequate candidate existence/completeness for noncanonical inputs",
+      "Actual independent/parent/child side conditions and local diamond",
+      "Sealed swap/decrease integration",
+      "O17 body or root placement"
+    ]
   }
 }
