@@ -351,3 +351,30 @@ currentDomainAfterAction name key world error value nameEq keyEq ordinal live ac
       case previous selected observed (trans (sym (registryLocalUpdateForeign nameEq selected (actionOwner action) distinct (registry before)
         (systemRegistryUpdate (applyActionLocalUpdate nameEq keyEq action before afterState tag raw)))) found) of
         (generation ** current) => (generation ** trans (lookupAdvanceGenerationOther nameEq ordinal action selected distinct live) current)
+
+0 currentDomainScanInvariant :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {first, finalState : SystemState name key value world error} ->
+  (trace : Transitions first finalState) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (finalOrdinal : Nat) -> (finalLive : GenerationEnvironment name) ->
+  GenerationTraceScan nameEq ordinal live trace finalOrdinal finalLive ->
+  AlignedTransitions name key world error value nameEq keyEq trace ->
+  ((selected : name) -> (fiber : Fiber name key value world error) ->
+    (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+      @{nameEq} selected (registry first) = Just fiber) ->
+    (generation : RegistrationGeneration name ** lookupCurrentGeneration @{nameEq} selected live = Just generation)) ->
+  (selected : name) -> (observed : Fiber name key value world error) ->
+  (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+    @{nameEq} selected (registry finalState) = Just observed) ->
+  (generation : RegistrationGeneration name ** lookupCurrentGeneration @{nameEq} selected finalLive = Just generation)
+currentDomainScanInvariant name key world error value nameEq keyEq trace ordinal live finalOrdinal finalLive scan aligned previous =
+  case aligned of
+    AlignedEnd => case scan of GenerationTraceScanEnd => previous
+    AlignedStep action tag checked rest alignedTail => case scan of
+      GenerationTraceScanStep _ _ tail =>
+        currentDomainScanInvariant name key world error value nameEq keyEq rest (S ordinal)
+          (advanceGenerationEnvironment @{nameEq} ordinal action live) finalOrdinal finalLive tail alignedTail
+          (currentDomainAfterAction name key world error value nameEq keyEq ordinal live action _ _ tag
+            (checkedActionProjects nameEq keyEq action _ _ tag checked) previous)
