@@ -1,0 +1,12 @@
+{
+  "unit": "P1-1",
+  "path": "research-tests/DGamma/R177RetirementTransportProbe.idr",
+  "command": "idris2 --source-dir src --source-dir research --source-dir research-tests --check research-tests/DGamma/R177RetirementTransportProbe.idr",
+  "start": "2026-09-07T03:53:21.019345+00:00",
+  "end": "2026-09-07T03:54:10.732505+00:00",
+  "exit": 0,
+  "fresh": true,
+  "maxSampleRSSKiB": 2711072,
+  "passed": true,
+  "transcript": "2/4: Building DGamma.R172O17OpenParentRootReuseCandidate (research-tests/DGamma/R172O17OpenParentRootReuseCandidate.idr)\n3/4: Building DGamma.R173UniqueRawNameInsertionsFixtures (research-tests/DGamma/R173UniqueRawNameInsertionsFixtures.idr)\n4/4: Building DGamma.R177RetirementTransportProbe (research-tests/DGamma/R177RetirementTransportProbe.idr)\n"
+}

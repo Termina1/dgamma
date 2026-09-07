@@ -1,0 +1,12 @@
+{
+  "unit": "P2-2",
+  "path": "research-tests/DGamma/R177RetirementTransportProbe.idr",
+  "command": "idris2 --source-dir src --source-dir research --source-dir research-tests --check research-tests/DGamma/R177RetirementTransportProbe.idr",
+  "start": "2026-09-07T03:59:12.136518+00:00",
+  "end": "2026-09-07T03:59:14.224753+00:00",
+  "exit": 1,
+  "fresh": true,
+  "maxSampleRSSKiB": 663504,
+  "passed": false,
+  "transcript": "4/4: Building DGamma.R177RetirementTransportProbe (research-tests/DGamma/R177RetirementTransportProbe.idr)\nError: While processing right hand side of r177QuietTracePair. Can't solve constraint between: Just (OInsertTag, r45SourcePairFinal) and if parentPresent (ChildOf 0) (registry r45AfterBegin) && Delay (provisionsDisjointFrom (componentProvisions r45Child) (registryFibers (registry r45AfterBegin))) then case setFresh 1 (freshFiber r45Child (ChildOf 0)) (registry r45AfterBegin) of { Nothing => Nothing ; Just applied => Just (OInsertTag, MkSystemState (worldState r45AfterBegin) (coeffectAfter applied)) } else Nothing.\n\nDGamma.R177RetirementTransportProbe:65:28--65:32\n 61 |           r45SourcePairFinal (MkSystemState () (replaceBinding @{r45NameEq} 0 (setFiberRuntime r45ParentBegun (restrictOwnedPreservingOrder @{r45KeyEq} r45Spec (ownedValues (fiberTable r45ParentBegun))) (Active (pushLocalUndo @{r45KeyEq} r45Spec id id) EmptyView)) r45SourcePairFinalRegistry)) LFinishTag\n 62 |           (preservationTheoremProof r45NameEq r45KeyEq (OInsert 1 (ChildOf 0) r45Child) r45AfterBegin r45SourcePairFinal OInsertTag\n 63 |           (preservationTheoremProof r45NameEq r45KeyEq (LBegin 0) r45AfterParent r45AfterBegin LBeginTag\n 64 |           (preservationTheoremProof r45NameEq r45KeyEq (OInsert 0 Root r45Parent) r45Initial r45AfterParent OInsertTag\n 65 |           Refl Refl) Refl) Refl) Refl)) (MoreTransitions (Fired r45NameEq r45KeyEq (ORetire 1) ORetireTag\n                                 ^^^^\n\n"
+}

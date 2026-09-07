@@ -1,0 +1,47 @@
+module DGamma.R177RetirementTransportProbe
+
+import DGamma.Calculus
+import DGamma.Coeffects
+import DGamma.CP3
+import DGamma.Metatheory
+import DGamma.CP5ConfluenceLocalDiamondSpike
+import DGamma.CP5ConfluenceCanonicalSortSpike
+import DGamma.CP5UniqueRawNameInsertions
+import DGamma.R45BareDiamondDisciplineCounterexamplePositive
+import DGamma.R173UniqueRawNameInsertionsFixtures
+import Decidable.Equality
+import Data.List.Elem
+
+%default total
+%unbound_implicits off
+
+||| Frozen SkipRightInternal really may skip this actual non-root retirement.
+public export
+0 r177GeneratedRetireInternal : Not (RootOrchestrationStep r45NameEq r45SourceRetire)
+r177GeneratedRetireInternal (RootInsertStep exact) = case exact of Refl impossible
+r177GeneratedRetireInternal (RootRetireStep fiber found parent exact) =
+  case exact of Refl => case found of Refl => case parent of Refl impossible
+r177GeneratedRetireInternal (RootRemoveStep fiber found parent exact) = case exact of Refl impossible
+
+||| Reachable quiet endpoints: the parent finishes in BOTH traces. Only the
+||| left child begins/finishes; only the right child is explicitly retired.
+public export
+r177QuietTracePair :
+  (leftFinal : SystemState Nat R45Key R45Value Unit String **
+   rightFinal : SystemState Nat R45Key R45Value Unit String **
+   (Transitions r45Initial leftFinal, Transitions r45Initial rightFinal))
+r177QuietTracePair =
+  (MkSystemState () (replaceBinding @{r45NameEq} 1
+      (setFiberLifecycle r45ChildFresh (Active id EmptyView))
+      (replaceBinding @{r45NameEq} 0 (setFiberRuntime r45ParentBegun
+        (restrictOwnedPreservingOrder @{r45KeyEq} r45Spec (ownedValues (fiberTable r45ParentBegun)))
+        (Active (pushLocalUndo @{r45KeyEq} r45Spec id id) EmptyView)) r45SourcePairFinalRegistry)) **
+   MkSystemState () (replaceBinding @{r45NameEq} 0 (setFiberRuntime r45ParentBegun
+        (restrictOwnedPreservingOrder @{r45KeyEq} r45Spec (ownedValues (fiberTable r45ParentBegun)))
+        (Active (pushLocalUndo @{r45KeyEq} r45Spec id id) EmptyView)) r45SourceFinalRegistry) **
+   ( MoreTransitions r45ParentInsert (MoreTransitions r45Begin (MoreTransitions r45ChildInsert
+       (MoreTransitions (Fired r45NameEq r45KeyEq (LAdvance 0) LFinishTag Refl)
+         (MoreTransitions (Fired r45NameEq r45KeyEq (LBegin 1) LBeginTag Refl)
+           (MoreTransitions (Fired r45NameEq r45KeyEq (LAdvance 1) LFinishTag Refl) NoTransitions)))))
+   , appendTransitions r45SourceTrace
+       (MoreTransitions (Fired r45NameEq r45KeyEq (LAdvance 0) LFinishTag Refl) NoTransitions)))

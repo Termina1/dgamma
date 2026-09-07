@@ -192,3 +192,13 @@ No full O18 counterexample is claimed. The probe must distinguish (a) accepted
 inputs, (b) both IndependentCanonicalSchedule capitals, (c) different support.
 No premise strengthening/body fill. After the probe, continue independent
 support-metadata capital as ruled. O21 withdrawal work remains forbidden.
+
+### P2 mandatory stop (04:06 UTC)
+
+The bounded retirement probe hit its first 3/3 failure. P1 proves the concrete
+non-root retirement classification. P2's quiet-pair producer failed twice at
+opaque imported reduction equations, then its executable Maybe version failed
+at an over-qualified record projection name. No fourth attempt; disposable source
+removed; exact snapshots/logs retained; see `O6-R177-P2-STOP-AUDIT.md`.
+Both canonical capitals and quiet/support counterexample remain UNCONSTRUCTED.
+Waiting for an explicit supervisor gate before further compiler/proof work.

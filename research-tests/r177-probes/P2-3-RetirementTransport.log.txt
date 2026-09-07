@@ -1,0 +1,11 @@
+4/4: Building DGamma.R177RetirementTransportProbe (research-tests/DGamma/R177RetirementTransportProbe.idr)
+Error: While processing right hand side of r177QuietTracePair. Undefined name DGamma.CP3StatementChecks.namedAfter. 
+
+DGamma.R177RetirementTransportProbe:37:91--37:127
+ 33 |    rightFinal : SystemState Nat R45Key R45Value Unit String **
+ 34 |    (Transitions r45Initial leftFinal, Transitions r45Initial rightFinal))
+ 35 | r177QuietTracePair = do
+ 36 |   parentDone <- DGamma.CP3StatementChecks.checkedNamedFire r45NameEq r45KeyEq (LAdvance 0) r45SourcePairFinal
+ 37 |   childBegun <- DGamma.CP3StatementChecks.checkedNamedFire r45NameEq r45KeyEq (LBegin 1) (DGamma.CP3StatementChecks.namedAfter parentDone)
+                                                                                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Did you mean any of: DGamma.CP3StatementChecks.CheckedNamedTransition.namedAfter, or DGamma.CP3StatementChecks.CheckedNamedTransition.(.namedAfter)?

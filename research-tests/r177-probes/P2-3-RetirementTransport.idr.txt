@@ -1,0 +1,47 @@
+module DGamma.R177RetirementTransportProbe
+
+import DGamma.Calculus
+import DGamma.Coeffects
+import DGamma.CP3
+import DGamma.Metatheory
+import DGamma.CP3StatementChecks
+import DGamma.CP5ConfluenceLocalDiamondSpike
+import DGamma.CP5ConfluenceCanonicalSortSpike
+import DGamma.CP5UniqueRawNameInsertions
+import DGamma.R45BareDiamondDisciplineCounterexamplePositive
+import DGamma.R173UniqueRawNameInsertionsFixtures
+import Decidable.Equality
+import Data.List.Elem
+
+%default total
+%unbound_implicits off
+
+||| Frozen SkipRightInternal really may skip this actual non-root retirement.
+public export
+0 r177GeneratedRetireInternal : Not (RootOrchestrationStep r45NameEq r45SourceRetire)
+r177GeneratedRetireInternal (RootInsertStep exact) = case exact of Refl impossible
+r177GeneratedRetireInternal (RootRetireStep fiber found parent exact) =
+  case exact of Refl => case found of Refl => case parent of Refl impossible
+r177GeneratedRetireInternal (RootRemoveStep fiber found parent exact) = case exact of Refl impossible
+
+||| Executable proof-carrying reachability probe. This intentionally returns
+||| Maybe rather than guessing concrete targets or their reduction equations.
+||| Runtime validation must establish that the producer actually returns Just.
+public export
+r177QuietTracePair :
+  Maybe (leftFinal : SystemState Nat R45Key R45Value Unit String **
+   rightFinal : SystemState Nat R45Key R45Value Unit String **
+   (Transitions r45Initial leftFinal, Transitions r45Initial rightFinal))
+r177QuietTracePair = do
+  parentDone <- DGamma.CP3StatementChecks.checkedNamedFire r45NameEq r45KeyEq (LAdvance 0) r45SourcePairFinal
+  childBegun <- DGamma.CP3StatementChecks.checkedNamedFire r45NameEq r45KeyEq (LBegin 1) (DGamma.CP3StatementChecks.namedAfter parentDone)
+  childDone <- DGamma.CP3StatementChecks.checkedNamedFire r45NameEq r45KeyEq (LAdvance 1) (DGamma.CP3StatementChecks.namedAfter childBegun)
+  childRetired <- DGamma.CP3StatementChecks.checkedNamedFire r45NameEq r45KeyEq (ORetire 1) (DGamma.CP3StatementChecks.namedAfter parentDone)
+  Just (DGamma.CP3StatementChecks.namedAfter childDone ** DGamma.CP3StatementChecks.namedAfter childRetired **
+    ( MoreTransitions r45ParentInsert (MoreTransitions r45Begin (MoreTransitions r45ChildInsert
+        (MoreTransitions (DGamma.CP3StatementChecks.namedTransition parentDone)
+          (MoreTransitions (DGamma.CP3StatementChecks.namedTransition childBegun)
+            (MoreTransitions (DGamma.CP3StatementChecks.namedTransition childDone) NoTransitions)))))
+    , MoreTransitions r45ParentInsert (MoreTransitions r45Begin (MoreTransitions r45ChildInsert
+        (MoreTransitions (DGamma.CP3StatementChecks.namedTransition parentDone)
+          (MoreTransitions (DGamma.CP3StatementChecks.namedTransition childRetired) NoTransitions))))))
