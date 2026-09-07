@@ -105,3 +105,27 @@ retiredLeaveOwner name key world error value nameEq keyEq actor before component
     (MkFiber component parent retiredFlag table (Active accumulator view))
     (setFiberLifecycle (MkFiber component parent retiredFlag table (Active accumulator view)) (Unloading accumulator view Nothing))
     found (worldState before) LLeaveTag Refl
+
+
+0 retiredUnloadOwner :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (actor : name) -> (before : SystemState name key value world error) ->
+  (component : Component key value world error) -> (parent : Parent name) -> (retiredFlag : Bool) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (accumulator : LocalState key value world (componentProvisions component) -> LocalState key value world (componentProvisions component)) ->
+  (view : View name (dependencies (componentDependencies component))) -> (outcome : Maybe error) ->
+  (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} actor (registry before) =
+    Just (MkFiber component parent retiredFlag table (Unloading accumulator view outcome))) ->
+  (condition : Bool) ->
+  (relied {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} actor (registry before) = condition) ->
+  RetiredResultOwner name key world error value nameEq actor retiredFlag (applyAction @{nameEq} @{keyEq} (LUnload actor) before)
+retiredUnloadOwner name key world error value nameEq keyEq actor before component parent retiredFlag table accumulator view outcome found True exact =
+  rewrite found in rewrite exact in ()
+retiredUnloadOwner name key world error value nameEq keyEq actor before component parent retiredFlag table accumulator view outcome found False exact =
+  rewrite found in rewrite exact in retiredResultOwnerReplace name key world error value nameEq actor retiredFlag (registry before)
+    (MkFiber component parent retiredFlag table (Unloading accumulator view outcome))
+    (setFiberRuntime (MkFiber component parent retiredFlag table (Unloading accumulator view outcome))
+      (localTable (accumulator (MkLocalState (worldState before) (restrictOwnedPreservingOrder @{keyEq} (componentProvisions component) (ownedValues table)))))
+      (Inactive outcome)) found
+    (localWorld (accumulator (MkLocalState (worldState before) (restrictOwnedPreservingOrder @{keyEq} (componentProvisions component) (ownedValues table))))) LUnloadTag Refl
