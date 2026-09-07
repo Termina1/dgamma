@@ -236,3 +236,28 @@ r182IndependentBlockOrder _ _ earlierMember laterMember (BeforeThere following) 
   case following of
     BeforeHere absent => case absent of Here impossible; There rest impossible
     BeforeThere absent => case absent of BeforeHere member impossible; BeforeThere rest impossible
+
+||| A13: full source decomposition. The numerical proof uses 2+i<=3<4+j,
+||| so it neither compares membership certificates nor normalizes callbacks.
+public export
+0 r182IndependentDecomposition : ActorBlockDecomposition Nat R45Key Unit String
+  R45Value r45NameEq r45KeyEq [0, 1] (r182IndependentTrace False)
+r182IndependentDecomposition = MkActorBlockDecomposition r182IndependentBlocks
+  r182IndependentBlockOrder
+  (\earlier, later, earlierMember, laterMember, ordered, earlierPosition, laterPosition,
+    earlierBound, laterBound, same => case ordered of
+      BeforeHere following => case following of
+        Here => LTEImpliesNotGT (LTESucc earlierBound)
+          (replace {p = \endpoint => LTE 4 endpoint} (sym same)
+            (lteAddRight {m = laterPosition} 4))
+        There absent => case absent of Here impossible; There rest impossible
+      BeforeThere following => case following of
+        BeforeHere absent => case absent of Here impossible; There rest impossible
+        BeforeThere absent =>
+          case absent of BeforeHere member impossible; BeforeThere rest impossible)
+  (CoveredOrchestrationStep _ _ Refl
+    (CoveredOrchestrationStep _ _ Refl
+      (CoveredLifecycleStep _ _ Refl Here
+        (CoveredLifecycleStep _ _ Refl Here
+          (CoveredLifecycleStep _ _ Refl (There Here)
+            (CoveredLifecycleStep _ _ Refl (There Here) LifecycleActorsCoveredEnd))))))
