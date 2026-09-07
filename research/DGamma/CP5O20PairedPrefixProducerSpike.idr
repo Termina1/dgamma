@@ -542,3 +542,24 @@ pairedNamedTableOwnersUnique name key world error value nameEq keyEq ambient
           (lookupEntryElemOpenAnchor nameEq leftOwner entries leftFiber leftFound)
           (lookupEntryElemOpenAnchor nameEq rightOwner entries rightFiber rightFound)
           wanted leftDeclares rightDeclares
+
+||| Actual committed provider value versus actual effect projection. Observe
+||| the registry lookup once; no availability or equality is assumed.
+export
+0 pairedProviderProjectionObserved :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (ambient : world) -> (fibers : Registry name key value world error) ->
+  (owner : name) -> (wanted : key) ->
+  (observed : Maybe (Fiber name key value world error)) ->
+  (lookupBinding {key = name} {value = FiberAt name key value world error}
+    @{nameEq} owner fibers = observed) ->
+  (valueFromProvider {name = name} {key = key} {value = value} {world = world}
+    {error = error} @{nameEq} @{keyEq} owner wanted fibers =
+   lookupBinding {key = key} {value = value} @{keyEq} wanted
+    (effectTables (projectEffectState {name = name} {key = key} {value = value}
+      {world = world} {error = error} @{nameEq} (MkSystemState ambient fibers)) owner))
+pairedProviderProjectionObserved name key world error value nameEq keyEq ambient fibers
+  owner wanted Nothing found = rewrite found in Refl
+pairedProviderProjectionObserved name key world error value nameEq keyEq ambient fibers
+  owner wanted (Just fiber) found = rewrite found in Refl
