@@ -308,5 +308,183 @@
     "symbol": null,
     "transcript": "",
     "matchingSourceCommits": []
+  },
+  {
+    "unit": "B1-1",
+    "path": "research/DGamma/CP5O20EpisodeSynchronizationSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O20EpisodeSynchronizationSpike.idr"
+    ],
+    "start": "2026-09-07T11:52:46.276130+00:00",
+    "end": "2026-09-07T11:52:52.526280+00:00",
+    "seconds": 6.250019624829292,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 3008688,
+    "sourceSHA256": "7c121775bbf07edfc323dca5f956872c039080088c0ec4863eed9f33a44345d3",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "26/30: Building DGamma.CP5ConfluenceCrossTraceSpike (research/DGamma/CP5ConfluenceCrossTraceSpike.idr)\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  order is shadowing Control.Order.order\n\nDGamma.CP5ConfluenceCrossTraceSpike:42:3--42:68\n 38 | \n 39 | public export\n 40 | data CertifiedActorPermutation :\n 41 |   (name : Type) -> List name -> List name -> Type where\n 42 |   ActorPermutationDone : CertifiedActorPermutation name order order\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  after is shadowing DGamma.Core.Applied.after\n\nDGamma.CP5ConfluenceCrossTraceSpike:43:3--46:48\n 43 |   ActorPermutationStep :\n 44 |     AdjacentActorOrderSwap name before middle ->\n 45 |     CertifiedActorPermutation name middle after ->\n 46 |     CertifiedActorPermutation name before after\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  after is shadowing DGamma.Core.Applied.after\n\nDGamma.CP5ConfluenceCrossTraceSpike:276:1--279:77\n 276 | transitionPrefixLength : (earlierTrace : Transitions initial before) ->\n 277 |   (step : Transition before after) ->\n 278 |   transitionCount (appendTransitions earlierTrace\n 279 |     (MoreTransitions step NoTransitions)) = S (transitionCount earlierTrace)\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  order is shadowing Control.Order.order\n\nDGamma.CP5ConfluenceCrossTraceSpike:738:3--744:55\n 738 |   OperationalActorDone :\n 739 |     (blocks : ActorBlockDecomposition name key world error value nameEq keyEq\n 740 |       order trace) ->\n 741 |     (premises : ReplayInvariantBundle name key world error value protocol nameEq\n 742 |       keyEq trace) ->\n 743 |     OperationalActorPermutation name key world error value protocol nameEq keyEq\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  after is shadowing DGamma.Core.Applied.after\n\nDGamma.CP5ConfluenceCrossTraceSpike:745:3--761:35\n 745 |   OperationalActorStep :\n 746 |     (orderSwap : AdjacentActorOrderSwap name before middle) ->\n 747 |     (restCertificate : CertifiedActorPermutation name middle after) ->\n 748 |     (sourceBlocks : ActorBlockDecomposition name key world error value nameEq keyEq\n 749 |       before sourceTrace) ->\n 750 |     (sourcePremises : ReplayInvariantBundle name key world error value protocol\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  sameInputs is shadowing DGamma.CP3.CanonicalSchedule.sameInputs\n\nDGamma.CP5ConfluenceCrossTraceSpike:1238:3--1246:41\n 1238 | 0 permutationReplayCorrespondence :\n 1239 |   {operational : CertifiedOperationalCanonicalPermutation name key world error\n 1240 |     value protocol nameEq keyEq leftTrace rightTrace sameInputs leftCapital\n 1241 |       rightCapital matching} ->\n 1242 |   PermutedCanonicalExecution name key world error value protocol nameEq keyEq\n 1243 |     leftTrace rightTrace sameInputs leftCapital rightCapital operational ->\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  sameInputs is shadowing DGamma.CP3.CanonicalSchedule.sameInputs\n\nDGamma.CP5ConfluenceCrossTraceSpike:1252:3--1260:41\n 1252 | 0 permutationOccurrenceCorrespondence :\n 1253 |   {operational : CertifiedOperationalCanonicalPermutation name key world error\n 1254 |     value protocol nameEq keyEq leftTrace rightTrace sameInputs leftCapital\n 1255 |       rightCapital matching} ->\n 1256 |   PermutedCanonicalExecution name key world error value protocol nameEq keyEq\n 1257 |     leftTrace rightTrace sameInputs leftCapital rightCapital operational ->\n\n30/30: Building DGamma.CP5O20EpisodeSynchronizationSpike (research/DGamma/CP5O20EpisodeSynchronizationSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "RenamedRuntimeEffects"
+    ],
+    "matchingSourceCommits": [
+      "1c16504d92aafb969c92d5013aa32e8b76883bbf"
+    ]
+  },
+  {
+    "unit": "B2-1",
+    "path": "research/DGamma/CP5O20EpisodeSynchronizationSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O20EpisodeSynchronizationSpike.idr"
+    ],
+    "start": "2026-09-07T11:53:27.340276+00:00",
+    "end": "2026-09-07T11:53:30.480179+00:00",
+    "seconds": 3.139746249653399,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 3008576,
+    "sourceSHA256": "12967eb021edd4a473b912fc7b16ecdfbc8475416c2a385f393385ffabcde2bb",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "30/30: Building DGamma.CP5O20EpisodeSynchronizationSpike (research/DGamma/CP5O20EpisodeSynchronizationSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "synchronizationLookupBindings"
+    ],
+    "matchingSourceCommits": [
+      "ddb0852d55419c5f22cad769de22d3ee3bd43866"
+    ]
+  },
+  {
+    "unit": "B3-1",
+    "path": "research/DGamma/CP5O20EpisodeSynchronizationSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O20EpisodeSynchronizationSpike.idr"
+    ],
+    "start": "2026-09-07T11:54:15.452445+00:00",
+    "end": "2026-09-07T11:54:17.532079+00:00",
+    "seconds": 2.0794330001808703,
+    "exit": 1,
+    "fresh": true,
+    "passed": false,
+    "interrupted": false,
+    "maxSampleRSSKiB": 667296,
+    "sourceSHA256": "288866da9aa3477f41a9130a664bca7a2773026984cc3d6ae2a5d6484f21f228",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "30/30: Building DGamma.CP5O20EpisodeSynchronizationSpike (research/DGamma/CP5O20EpisodeSynchronizationSpike.idr)\nError: While processing right hand side of synchronizedEffectValues. Rewriting by resolveEffectValues rest leftTail left = resolveEffectValues rest rightTail right did not change type (case ?c of\n  { Nothing => Nothing\n  ; Just v => map (OneDepValue v) (resolveEffectValues rest leftTail left)\n  }) = (case lookupBinding wanted (right .effectTables rightOwner) of\n  { Nothing => Nothing\n  ; Just v => map (OneDepValue v) (resolveEffectValues rest rightTail right)\n  }).\n\nDGamma.CP5O20EpisodeSynchronizationSpike:73:9--74:65\n 73 |         rewrite synchronizedEffectValues name key world value keyEq renaming rest\n 74 |           leftTail rightTail left right effects tailSame in Refl\n\n",
+    "newTopLevelDeclarations": [
+      "synchronizedEffectValues"
+    ],
+    "matchingSourceCommits": []
+  },
+  {
+    "unit": "B3-2",
+    "path": "research/DGamma/CP5O20EpisodeSynchronizationSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O20EpisodeSynchronizationSpike.idr"
+    ],
+    "start": "2026-09-07T11:57:43.720193+00:00",
+    "end": "2026-09-07T11:57:45.816052+00:00",
+    "seconds": 2.0943496669642627,
+    "exit": 1,
+    "fresh": true,
+    "passed": false,
+    "interrupted": false,
+    "maxSampleRSSKiB": 222256,
+    "sourceSHA256": "06a3207d3562235d1ba7c747186ebb3e64c1f74538a1a1f13492d883508f71ae",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "30/30: Building DGamma.CP5O20EpisodeSynchronizationSpike (research/DGamma/CP5O20EpisodeSynchronizationSpike.idr)\nError: While processing right hand side of synchronizedEffectValues. Can't solve constraint between: maybe (Delay Nothing) (Delay (\\observed => map (OneDepValue observed) (resolveEffectValues rest leftTail left))) (lookupBinding wanted (effectTables left leftOwner)) and case lookupBinding wanted (left .effectTables leftOwner) of\n  { Nothing => Nothing\n  ; Just v => map (OneDepValue v) (resolveEffectValues rest leftTail left)\n  }.\n\nDGamma.CP5O20EpisodeSynchronizationSpike:68:9--81:60\n 68 |         cong2\n 69 |           (the ((Maybe (value wanted)) -> (Maybe (DepValues key value rest)) ->\n 70 |             (Maybe (DepValues key value (wanted :: rest))))\n 71 |             (\\headValue, tailValues =>\n 72 |               maybe Nothing (\\observed => map (OneDepValue observed) tailValues)\n 73 |                 headValue))\n\n",
+    "newTopLevelDeclarations": [
+      "synchronizedEffectValues"
+    ],
+    "matchingSourceCommits": []
+  },
+  {
+    "unit": "B3-3",
+    "path": "research/DGamma/CP5O20EpisodeSynchronizationSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O20EpisodeSynchronizationSpike.idr"
+    ],
+    "start": "2026-09-07T11:58:37.297312+00:00",
+    "end": "2026-09-07T11:58:39.397767+00:00",
+    "seconds": 2.100270082708448,
+    "exit": 1,
+    "fresh": true,
+    "passed": false,
+    "interrupted": false,
+    "maxSampleRSSKiB": 419696,
+    "sourceSHA256": "585d6694954ec16afeb036868662b1407c3e6f58cead8b93058cd780088a5215",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "30/30: Building DGamma.CP5O20EpisodeSynchronizationSpike (research/DGamma/CP5O20EpisodeSynchronizationSpike.idr)\nError: While processing right hand side of synchronizedEffectValues. Can't solve constraint between: case lookupBinding wanted (effectTables left leftOwner) of\n  { Nothing => Nothing\n  ; Just observed => map (OneDepValue observed) (resolveEffectValues rest leftTail left)\n  } and case lookupBinding wanted (effectTables left leftOwner) of\n  { Nothing => Nothing\n  ; Just v => map (OneDepValue v) (resolveEffectValues rest leftTail left)\n  }.\n\nDGamma.CP5O20EpisodeSynchronizationSpike:66:5--79:75\n 66 |     cong2\n 67 |       (the ((Maybe (value wanted)) -> (Maybe (DepValues key value rest)) ->\n 68 |         (Maybe (DepValues key value (wanted :: rest))))\n 69 |         (\\headValue, tailValues => case headValue of\n 70 |           Nothing => Nothing\n 71 |           Just observed => map (OneDepValue observed) tailValues))\n\n",
+    "newTopLevelDeclarations": [
+      "synchronizedEffectValues"
+    ],
+    "matchingSourceCommits": []
+  },
+  {
+    "unit": "B3-restoration",
+    "path": "research/DGamma/CP5O20EpisodeSynchronizationSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O20EpisodeSynchronizationSpike.idr"
+    ],
+    "start": "2026-09-07T11:59:06.591182+00:00",
+    "end": "2026-09-07T11:59:10.772276+00:00",
+    "seconds": 4.180812958162278,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 3008576,
+    "sourceSHA256": "12967eb021edd4a473b912fc7b16ecdfbc8475416c2a385f393385ffabcde2bb",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "30/30: Building DGamma.CP5O20EpisodeSynchronizationSpike (research/DGamma/CP5O20EpisodeSynchronizationSpike.idr)\n",
+    "newTopLevelDeclarations": [],
+    "matchingSourceCommits": [
+      "ddb0852d55419c5f22cad769de22d3ee3bd43866"
+    ]
   }
 ]
