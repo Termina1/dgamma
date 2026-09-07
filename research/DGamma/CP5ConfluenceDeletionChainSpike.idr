@@ -30784,3 +30784,27 @@ rawClosingMaximumFromInventory name key world error value nameEq keyEq protocol 
       (\other, member => maximumUpperBound (chooseMaximumBy
         (rawClosingOccurrenceRank name key world error value nameEq keyEq protocol global premises) head tail)
         other (replace {p = Elem other} exact member))
+
+||| R176 raw-name premise discharge. O7 supplies the finite authentic inventory;
+||| exact opening identity transfers protocol rank, whose maximum forbids every
+||| raw outgoing closing edge. No maximality, inventory, rank witness, or
+||| generation-to-raw adapter is requested from the caller.
+public export
+0 rawClosingMaximumUnderUniqueInsertions :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (global : Transitions initial finalState) ->
+  (0 premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq global) ->
+  (0 unique : UniqueRawNameInsertions name key world error value nameEq keyEq global) ->
+  (0 hasClosing : (actor : name ** LocatedClosedEpisode name key world error value nameEq keyEq actor global)) ->
+  (selected : name **
+    (episode : LocatedClosedEpisode name key world error value nameEq keyEq selected global **
+      NoDependentClosingEpisode {nameEq = nameEq} {keyEq = keyEq} selected global))
+rawClosingMaximumUnderUniqueInsertions name key world error value nameEq keyEq protocol global premises unique hasClosing =
+  rawClosingMaximumFromInventory name key world error value nameEq keyEq protocol global premises unique
+    (closingEpisodeOccurrenceScanSpike nameEq keyEq initial finalState global (replayAligned premises))
+    (scannedClosingOccurrences
+      (closingEpisodeOccurrenceScanSpike nameEq keyEq initial finalState global (replayAligned premises)))
+    Refl hasClosing
