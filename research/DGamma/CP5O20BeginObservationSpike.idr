@@ -96,3 +96,34 @@ o20ObserveActualBegin nameEq keyEq actor (MkSystemState ambient source) afterSta
     (lifecycleActorPresent nameEq keyEq (LBegin actor) (MkSystemState ambient source)
       afterState LBeginTag (checkedActionProjects nameEq keyEq (LBegin actor)
         (MkSystemState ambient source) afterState LBeginTag (beginEquation opening)) Refl)
+
+||| Produce BOTH actual resolver observations at the authoritative selected
+||| cuts. Each list is its actual component's dependencies; equating those
+||| components and whole-prefix effects is still a separate synchronization debt.
+export
+0 o20ObserveSelectedBegins :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {protocol : RegistrationProtocol key value world error} ->
+  {initial, leftFinal, rightFinal : SystemState name key value world error} ->
+  {leftTrace : Transitions initial leftFinal} -> {rightTrace : Transitions initial rightFinal} ->
+  {sameInputs : SameOrchestrationModuloGenerated nameEq keyEq leftTrace rightTrace} ->
+  {leftCapital : IndependentCanonicalSchedule name key world error value protocol nameEq keyEq leftTrace} ->
+  {rightCapital : IndependentCanonicalSchedule name key world error value protocol nameEq keyEq rightTrace} ->
+  {matching : MappedCanonicalSupportOrders name key world error value protocol nameEq keyEq leftTrace rightTrace
+    (expectedBridgeBijection sameInputs) (canonicalSchedule leftCapital) (canonicalSchedule rightCapital)} ->
+  {operational : CertifiedOperationalCanonicalPermutation name key world error value protocol nameEq keyEq
+    leftTrace rightTrace sameInputs leftCapital rightCapital matching} ->
+  {selected : name} ->
+  (pair : SelectedCanonicalBlockPair name key world error value protocol nameEq keyEq leftTrace rightTrace
+    sameInputs leftCapital rightCapital matching operational selected) ->
+  (O20BeginObservation name key world error value nameEq keyEq selected
+    (blockPreStart (pairLeftBlock pair)) (blockStart (pairLeftBlock pair)),
+   O20BeginObservation name key world error value nameEq keyEq
+    (renameForward (expectedBridgeBijection sameInputs) selected)
+    (blockPreStart (pairRightBlock pair)) (blockStart (pairRightBlock pair)))
+o20ObserveSelectedBegins {sameInputs} {selected} nameEq keyEq pair =
+  (o20ObserveActualBegin nameEq keyEq selected
+    (blockPreStart (pairLeftBlock pair)) (blockStart (pairLeftBlock pair)) (blockOpening (pairLeftBlock pair)),
+   o20ObserveActualBegin nameEq keyEq (renameForward (expectedBridgeBijection sameInputs) selected)
+    (blockPreStart (pairRightBlock pair)) (blockStart (pairRightBlock pair)) (blockOpening (pairRightBlock pair)))
