@@ -61,3 +61,8 @@ r178ChildFinish = Fired r45NameEq r45KeyEq (LAdvance 1) LFinishTag
   (DGamma.CP4ProgressNoDeadlock.checkedFromRaw r45NameEq r45KeyEq
     (LAdvance 1) r178ChildBegunState r178LeftFinal LFinishTag
     (checkedTransitionTargetValid r178ChildBegin) Refl)
+
+public export
+r178RightFinal : SystemState Nat R45Key R45Value Unit String
+r178RightFinal = MkSystemState ()
+  (replaceBinding @{r45NameEq} 1 r45ChildRetired (registry r178ParentDoneState))
