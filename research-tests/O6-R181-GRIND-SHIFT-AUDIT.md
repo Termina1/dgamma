@@ -271,3 +271,24 @@ The protocol is NOT fully clean: failed commit dfc933e (reverted cdaee57) and
 premature B12-1 are a disclosed acceptance-review concern. They are not proof
 capital and do not change the final retained build's correctness. Independent
 review is required; the author does not self-certify that exception away.
+
+## Final fresh validation (15:00–15:01 UTC)
+
+Detached Python `-I`, serialized seeded checks, no cold rebuild/R11:
+
+| Check | Result | Seconds |
+|---|---|---|
+| `CP5ObservedInstalledLifecycleSpike` | PASS, fresh retained source | 1.035 |
+| `CP5O20PairedPrefixProducerSpike` | PASS, fresh retained source | 3.140 |
+| `R181O19SafetyCompletion` | PASS, fresh retained source | 32.188 |
+| `idris2 --build dgamma.ipkg` | PASS,207/207 seeded modules | 16.610 |
+
+Whole-shift compiler evidence:47 serialized invocations,36 passes,11 rejections,
+no interruption,3 seeded package checks; one explicitly flagged premature
+B12-1 invocation contained two unaccepted declarations. Retained source safety
+is checked separately from that workflow violation. No O19/O20/O21 body opened.
+The final read-only frozen/cache/hole/hashes/source-whitelist check and structured
+acceptance report are persisted alongside the ledger. Independent reviewer gate
+remains required; the supervisor's final stand-down gate is requested only after
+these artifacts are committed. Both guard deadlines are comfortably respected;
+there is no authorized proof work left (unused B14/B15 were explicitly blocked).

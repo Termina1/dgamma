@@ -100,7 +100,8 @@ The hard shared work is NOT the final nested Either construction:
 1. Actual present endpoint → accepted current → located ORIGINAL birth, then
    equality to the specified withdrawn birth using the two original uniques.
 2. That exact deleted-parent classification plus surviving endpoint lookup →
-   all eight fields of `VestigialEndpointGeneration`, notably clean lifecycle,
+   all eight proof fields (and both witnessed values) of
+   `VestigialEndpointGeneration`, notably clean lifecycle,
    full empty table, childlessness and unsupportedness.
 3. Exact mapped-current alternative → opposite actual original birth/fiber,
    respecting the accepted generation and name maps.
