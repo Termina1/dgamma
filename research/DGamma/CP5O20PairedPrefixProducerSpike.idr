@@ -80,3 +80,36 @@ pairedForeignTableObserved name key world value nameEq selected actor distinct t
   state (Yes same) observed = void (distinct same)
 pairedForeignTableObserved name key world value nameEq selected actor distinct table
   state (No different) observed = rewrite observed in Refl
+
+||| Simultaneous table-update law at the SAME bijection. Both equality
+||| decisions are generated here; injectivity derives the foreign right case.
+export
+0 pairedSetTableBindings :
+  (name, key, world : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (renaming : NameBijection name) -> (actor : name) ->
+  (leftTable, rightTable : CoeffectContext key value) ->
+  (bindings leftTable = bindings rightTable) ->
+  (left, right : EffectState name key value world) ->
+  RenamedRuntimeEffects name key world value renaming left right ->
+  (selected : name) ->
+  (bindings (effectTables (setEffectTable @{nameEq} actor leftTable left) selected) =
+   bindings (effectTables (setEffectTable @{nameEq} (renameForward renaming actor)
+      rightTable right) (renameForward renaming selected)))
+pairedSetTableBindings name key world value nameEq renaming actor leftTable rightTable
+  tableSame left right paired selected =
+    case decEq @{nameEq} selected actor of
+      Yes same => rewrite same in
+        trans (cong bindings (effectTableAfterSetSelf nameEq actor leftTable left))
+          (trans tableSame (sym (cong bindings (effectTableAfterSetSelf nameEq
+            (renameForward renaming actor) rightTable right))))
+      No different =>
+        trans (pairedForeignTableObserved name key world value nameEq selected actor
+          different leftTable left (decEq @{nameEq} selected actor) Refl)
+          (trans (synchronizedTables paired selected)
+            (sym (pairedForeignTableObserved name key world value nameEq
+              (renameForward renaming selected) (renameForward renaming actor)
+              (\same => different (trans (sym (renameLeftInverse renaming selected))
+                (trans (cong (renameBackward renaming) same)
+                  (renameLeftInverse renaming actor))))
+              rightTable right (decEq @{nameEq} (renameForward renaming selected)
+                (renameForward renaming actor)) Refl)))
