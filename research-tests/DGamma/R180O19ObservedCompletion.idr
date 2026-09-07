@@ -94,3 +94,18 @@ r180ConsumerBeginRawObserved table tableObserved Nothing bindingObserved present
   case present of Refl impossible
 r180ConsumerBeginRawObserved table tableObserved (Just service) bindingObserved present =
   rewrite tableObserved in rewrite bindingObserved in Refl
+
+||| Close ALL observations using the actual normalized provider table and the
+||| producer-owned A2 binding theorem; no provider-availability premise remains.
+export
+0 r180ConsumerBeginRaw :
+  (applyAction {name = Nat} {key = ToyKey} {value = ToyValue}
+    {world = ToyRuntime} {error = String} @{%search} @{%search} (LBegin 1)
+    r179ObservedProviderFinished = Just (LBeginTag, r180ObservedConsumerBegun))
+r180ConsumerBeginRaw = r180ConsumerBeginRawObserved
+  (restrictOwnedPreservingOrder @{%search} DGamma.Section3Example.toySpecA
+    (ownedValues (ownedA True))) Refl
+  (lookupBinding @{%search} ServiceA (ownedValues (restrictOwnedPreservingOrder
+    @{%search} DGamma.Section3Example.toySpecA (ownedValues (ownedA True))))) Refl
+  (r180NormalizedServiceMemberObserved (ownedValues (restrictOwnedPreservingOrder
+    @{%search} DGamma.Section3Example.toySpecA (ownedValues (ownedA True)))) Refl)
