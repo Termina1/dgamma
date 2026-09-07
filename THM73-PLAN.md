@@ -3341,3 +3341,22 @@ remain, **1/3/0/0/1**, with production and frozen LocalDiamond unchanged. A9 is 
 **supervisor decision under delegation, owner override pending**. The R177
 TWO-CAPITAL GAP is preserved. Unit C has not yet changed a source surface; its
 availability-aware A8 design and final regression gate remain pending.
+
+## R178 A8 bounded surface and OWNER integration decision
+
+The supervisor approved a standalone `AvailabilityAwareCanonicalInputPlacement`
+replacement plus R174 shape/R172 exclusion fixtures, NOT a coercion into frozen
+CanonicalSchedule or a canonical-tower fork this shift. Compatible means free
+declared provisions across EVERY actual state of the crossed interval, with no
+crossed root input. Pointwise freedom at one earlier snapshot is rejected: root
+2 hoisted before child 1's later birth would block that birth. Retirement/Active
+flags do not release declarations. Earliest means no strictly earlier compatible
+cut. Root-own lifecycle order and the child clause remain explicit.
+
+OWNER decision still required: (i) research fork/migration of CanonicalSchedule
+and all consumers, or (ii) production unfreeze of CanonicalInputPlacement. Its
+strict clauses are frozen and owned by frozen CanonicalSchedule.inputPlacement,
+so the research-only surface does not yet repair the existing O17 target. There
+are 24 direct research type references across 7 research/test files, plus dependent
+projection and production statement-check ripple. Neither option is chosen here.
+A8 and A9: **supervisor decision under delegation, owner override pending**.

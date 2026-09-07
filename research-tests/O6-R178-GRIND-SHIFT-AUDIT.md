@@ -285,3 +285,66 @@ byte-identical to 6d6ab28; CP3 blob and frozen adversarial-review hash match.
 transcript, source SHA, prior implication commits, census, and boundary checks.
 The final 207 suite has NOT yet been rerun. Immediate supervisor milestone gate
 precedes any Unit-C source attempt.
+
+## Unit C design ratified BEFORE code
+
+Supervisor ratified O18 at 5beebe0, independently checking HEAD, clean tree,
+production/LocalDiamond equality, no compiler, and five-hole census. Unit C is
+explicitly bounded to a standalone replacement research placement surface and
+fixtures; no canonical-tower fork, coercion, producer theorem, or O17 body.
+
+### Clause precision: compatible HOIST INTERVAL, not a snapshot
+
+A source-only availability test is insufficient: in R174, root 2's key is free
+immediately after root 0 and before child 1 is born. Hoisting root 2 to that cut
+would block the LATER child-1 insertion. The supervisor expressly approved the
+interval interpretation: an earlier cut is compatible iff root 2's declared keys
+are unoccupied at EVERY actual state from that cut through its original birth,
+and the crossed segment contains no root orchestration input. A same-key provider
+born inside the crossed segment is therefore a real obstruction. Retirement or
+inactivity never releases the reservation; removal does.
+
+Planned executable/checkable surface, one declaration per check:
+1. Executable declaration-availability and source-root-input observers.
+2. A trace-indexed annotation storing EXPLICIT actual cut states; its constructors
+   are indexed by the real transitions, so arbitrary snapshots cannot substitute.
+3. Executable compatible-cut recursion over that annotation: skipped prefix
+   positions are ignored; the crossed interval checks every source AND final
+   state, plus no crossed root input. Off-end cuts reject.
+4. A located-root-birth packet stores its exact prefix annotation, admissibility
+   at the actual birth, and rejection of EVERY strictly earlier compatible cut.
+5. `AvailabilityAwareCanonicalInputPlacement` stores exact original/canonical
+   external-input order, the per-root earliest packet, actual root freshness,
+   root-before-OWN-lifecycle (not every actor), and the existing child-generation
+   clause copied unchanged in substance. No global key-freshness assumption.
+
+The R174 fixture will annotate its actual five-action prefix before root 2,
+check cuts 0..4 rejected and cut 5 accepted, prove that earliest packet and the
+strict all-root-first rejection, and retain the existing full R172 uniqueness
+exclusion. This is a placement SHAPE result, not full O17 input inhabitation.
+Fixture-only annotation/observation helpers may reconstruct these witnesses;
+there is no general root-placement producer/existence/uniqueness proof.
+
+### OWNER escalation: frozen integration boundary
+
+The strict clauses occur in FROZEN CP3 CanonicalInputPlacement BOTH as
+`allRootInputsFirst` and `rootGenerationBeforeLifecycle`; frozen
+CanonicalSchedule.inputPlacement owns that strict record. Thus A8 cannot be
+fully cured in the currently frozen canonical pipeline by changing a lone
+research field. The supervisor approved a standalone CHECKED replacement and
+requires the following OWNER decision, which this shift does NOT choose:
+
+(i) Fork the canonical schedule tower and consumers research-side. Current grep
+finds 24 direct CanonicalSchedule/CanonicalInputPlacement references in research,
+spread with tests across 7 files, before generated dependent projections. Ripple:
+sorting result, original/reduced placement transport, one-trace schedule/accounting
+assembly, CrossTrace schedule/block/permutation consumers, endpoint composition,
+and their positive/negative regression signatures. This is a multi-surface,
+separately budgeted migration, not a one-field change.
+
+(ii) OWNER-only production unfreeze of CanonicalInputPlacement and its owned
+CanonicalSchedule field. This changes the paper-facing normal form, propagates
+through the same pipeline, and additionally requires production package/statement
+checks and a revised canonical-existence argument. No production unfreeze occurs.
+
+A8 and A9 remain **supervisor decisions under delegation, owner override pending**.
