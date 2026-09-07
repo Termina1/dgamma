@@ -809,3 +809,22 @@ currentFiberScanInvariant name key world error value nameEq keyEq trace ordinal 
           finalOrdinal finalLive tail alignedTail
           (currentFiberAfterAction name key world error value nameEq keyEq ordinal live unique action _ _ tag
             (checkedActionProjects nameEq keyEq action _ _ tag checked) previous)
+
+||| A current generation in the original empty scan denotes an actual endpoint
+||| fiber. This reverse domain direction needs no original raw-name uniqueness.
+export
+0 currentFiberFromEmptyScan :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (trace : Transitions initial finalState) -> (finalOrdinal : Nat) -> (finalLive : GenerationEnvironment name) ->
+  GenerationTraceScan nameEq Z [] trace finalOrdinal finalLive ->
+  AlignedTransitions name key world error value nameEq keyEq trace ->
+  (selected : name) -> (generation : RegistrationGeneration name) ->
+  (lookupCurrentGeneration @{nameEq} selected finalLive = Just generation) ->
+  (fiber : Fiber name key value world error **
+    lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+      @{nameEq} selected (registry finalState) = Just fiber)
+currentFiberFromEmptyScan name key world error value nameEq keyEq trace finalOrdinal finalLive scan aligned =
+  currentFiberScanInvariant name key world error value nameEq keyEq trace Z [] UniqueNil finalOrdinal finalLive scan aligned
+    (\selected, generation, current => case current of Refl impossible)
