@@ -38,18 +38,23 @@ body was reinstated.
 
 ## Unit B — probe-first support matching
 
-Not yet attempted. Requires one exact current birth authenticated against the
-accepted scan before uniqueness may identify an ordinal. No O20 consumption,
-list-enumeration equality, or support-body edit.
+One disposable restricted domain probe PASS (B1 below). Current scanner birth
+authentication is still required before uniqueness may identify an ordinal.
+No O20 consumption, list-enumeration equality, or support-body edit.
 
 ## Unit C — O21 reuse-identity probe
 
-Not yet attempted. Analysis/probe only; withdrawal branches remain parked.
+One disposable authenticated-identity probe PASS (C1 below). Analysis/probe
+only; withdrawal branches remain parked.
 
 ## Status
 
-In progress. Six inherited holes remain, split **1/4/0/0/1**. No full operational
-selector or actual-worklist strict decrease is claimed by the five rank units.
+Twelve checked A micro-units prove exact actual-worklist decrease conditional
+on the same accepted descending checked pair. Pair discovery and orientation
+applicability are still open. B proves restricted supported-current lookup
+directions, not birth authentication or support truth. C proves conditional
+birth identity after explicit authentication, not O21. Six inherited holes
+remain, split **1/4/0/0/1**. Final seeded validation is in progress.
 
 ### A6–A12: bounded bridge milestone
 
@@ -61,7 +66,7 @@ selector or actual-worklist strict decrease is claimed by the five rank units.
 | A9 | rankHeadTargetExact | 3ef0d0a | 1, PASS |
 | A10 | rankSegmentHeadProgress | 7eedd31 | 1, PASS |
 | A11 | canonicalWorkObservedPairDrop | 58e21ed | 1, PASS |
-| A12 | canonicalWorkAcceptedObservedPairDrops | see git log | 1, PASS |
+| A12 | canonicalWorkAcceptedObservedPairDrops | 2beb816 | 1, PASS |
 
 **12/12 micro-units consumed, all 1/1.** The R176 C11 opaque target / computed
 ownership wall is cured: producer equations, explicit observed ranks, and
@@ -121,3 +126,14 @@ subcase's authentication explicitly and is NOT installed as the O21 body.
 No withdrawal branch, omitted endpoint, scanner/canonical deletion equivalence,
 or heterogeneous control/effect composition was attempted. Existing O21
 ambient/table/control combinators remain unchanged. No O21 hole was filled.
+
+## Supervisor redirect at 03:01 UTC — authenticated scanner continuation
+
+The supervisor explicitly authorized continuation after both probes, until the
+06:00 no-new-attempt guard or the first 3/3 stop. The shared current scanner →
+ORIGINAL located birth/stamp obligation is now the active workstream, using
+R175 B10/B11 and producer-owned scanner observations. Afterwards: both support
+truth implications, then and only then the support-order body, immediate fresh
+five-hole census/milestone gate if closed. O17/root placement, O19, and O21
+withdrawals remain prohibited. A's 12-unit cap is not reopened. Final validation
+F1/F2 ran before this redirect was read and passed; later checks are postponed.
