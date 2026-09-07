@@ -2,6 +2,7 @@ module DGamma.R6OldPollutionNegative
 
 import DGamma.Calculus
 import DGamma.CP3
+import DGamma.CP5UniqueRawNameInsertions
 import DGamma.CP5ConfluenceCanonicalSortSpike
 import DGamma.CP5ConfluenceCrossTraceSpike
 import Decidable.Equality
@@ -23,6 +24,8 @@ import Decidable.Equality
     nameEq keyEq leftTrace} ->
   {rightCapital : IndependentCanonicalSchedule name key world error value protocol
     nameEq keyEq rightTrace} ->
+  (0 leftUnique : UniqueRawNameInsertions name key world error value nameEq keyEq leftTrace) ->
+  (0 rightUnique : UniqueRawNameInsertions name key world error value nameEq keyEq rightTrace) ->
   (matching : MappedCanonicalSupportOrders name key world error value protocol
     nameEq keyEq leftTrace rightTrace
     (currentNameBijection (endpointRenaming sameInputs))
@@ -37,6 +40,6 @@ import Decidable.Equality
    CanonicalConvergenceResult name key world error value protocol nameEq keyEq
     leftTrace rightTrace sameInputs leftCapital rightCapital operational)
 oldPollutionReachesO20 {nameEq} {keyEq} {protocol} {leftTrace} {rightTrace}
-  {sameInputs} {leftCapital} {rightCapital} matching polluted =
+  {sameInputs} {leftCapital} {rightCapital} leftUnique rightUnique matching polluted =
     (polluted ** canonicalSchedulesConvergeSpike nameEq keyEq protocol leftTrace
-      rightTrace sameInputs leftCapital rightCapital polluted)
+      rightTrace sameInputs leftCapital rightCapital leftUnique rightUnique polluted)
