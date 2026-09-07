@@ -89,3 +89,21 @@ public export
 r178RightTrace : Transitions r45Initial r178RightFinal
 r178RightTrace = appendTransitions r178CommonTrace
   (MoreTransitions r178ChildRetire NoTransitions)
+
+||| The actual right retirement has source child lookup and the exact current
+||| birth (name 1, insertion ordinal 2), authenticated through the four-step scan.
+export
+0 r178RightGeneratedRetirement :
+  LocatedGeneratedOrchestration Nat R45Key Unit String R45Value r45NameEq r178RightTrace
+r178RightGeneratedRetirement = MkLocatedGeneratedOrchestration 1 False
+  (MkLocatedActionOccurrence r178ParentDoneState r178RightFinal r178CommonTrace
+    r178ChildRetire NoTransitions Refl Refl)
+  r45ChildFresh 0 Refl Refl 4
+  [(0, MkRegistrationGeneration 0 0), (1, MkRegistrationGeneration 1 2)]
+  (GenerationTraceScanStep r45ParentInsert
+    (MoreTransitions r45Begin (MoreTransitions r45ChildInsert (MoreTransitions r178ParentFinish NoTransitions)))
+    (GenerationTraceScanStep r45Begin
+      (MoreTransitions r45ChildInsert (MoreTransitions r178ParentFinish NoTransitions))
+      (GenerationTraceScanStep r45ChildInsert (MoreTransitions r178ParentFinish NoTransitions)
+        (GenerationTraceScanStep r178ParentFinish NoTransitions GenerationTraceScanEnd))))
+  (MkRegistrationGeneration 1 2) Refl
