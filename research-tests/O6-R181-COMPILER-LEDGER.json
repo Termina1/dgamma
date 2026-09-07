@@ -1920,5 +1920,147 @@
     "matchingSourceCommits": [
       "c1667529c5489921f1774b26412a04151b0e5a08"
     ]
+  },
+  {
+    "unit": "DE-final-installed",
+    "path": "research/DGamma/CP5ObservedInstalledLifecycleSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5ObservedInstalledLifecycleSpike.idr"
+    ],
+    "start": "2026-09-07T15:29:00.237886+00:00",
+    "end": "2026-09-07T15:29:01.274932+00:00",
+    "seconds": 1.0369244166649878,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 0,
+    "sourceSHA256": "77eef9aac99afa4e9c2f0dde5d8ae00e1e74e27cde0fc5be6d4211238f2e0c47",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "1/1: Building DGamma.CP5ObservedInstalledLifecycleSpike (research/DGamma/CP5ObservedInstalledLifecycleSpike.idr)\n",
+    "newTopLevelDeclarations": [],
+    "matchingSourceCommits": [
+      "51eb5ef832849277434528ea2f5a7eb332dfe6db"
+    ]
+  },
+  {
+    "unit": "DE-final-paired",
+    "path": "research/DGamma/CP5O20PairedPrefixProducerSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O20PairedPrefixProducerSpike.idr"
+    ],
+    "start": "2026-09-07T15:29:01.340918+00:00",
+    "end": "2026-09-07T15:29:04.485701+00:00",
+    "seconds": 3.144582042004913,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 2058896,
+    "sourceSHA256": "c57be81f7d44b33ab240a0f01b77a78aa2bf00e4adda57d609705d0151f05dd0",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "31/31: Building DGamma.CP5O20PairedPrefixProducerSpike (research/DGamma/CP5O20PairedPrefixProducerSpike.idr)\n",
+    "newTopLevelDeclarations": [],
+    "matchingSourceCommits": [
+      "3d4986623a968d77b1bf9f5c51ed4bf3fea7c5b0"
+    ]
+  },
+  {
+    "unit": "DE-final-negative-capital",
+    "path": "research-tests/DGamma/R181O19SafetyCompletion.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R181O19SafetyCompletion.idr"
+    ],
+    "start": "2026-09-07T15:29:04.552253+00:00",
+    "end": "2026-09-07T15:29:36.712324+00:00",
+    "seconds": 32.1599562917836,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 1546880,
+    "sourceSHA256": "821680d533db389cbaa25af65c8f180fc0224de94c9f6c9d9cfed6260d1ad180",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "3/3: Building DGamma.R181O19SafetyCompletion (research-tests/DGamma/R181O19SafetyCompletion.idr)\n",
+    "newTopLevelDeclarations": [],
+    "matchingSourceCommits": [
+      "95b4ab595c5e86851fb0de8d63cd6ff882367626"
+    ]
+  },
+  {
+    "unit": "DE-final-blocks",
+    "path": "research-tests/DGamma/R181O19LocatedBlocks.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R181O19LocatedBlocks.idr"
+    ],
+    "start": "2026-09-07T15:29:36.775378+00:00",
+    "end": "2026-09-07T15:29:39.913725+00:00",
+    "seconds": 3.1381907081231475,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 550352,
+    "sourceSHA256": "e7bcb0e849d264b6951c053a50dd921fa6c4e22494bdba72484bcfefc0fd6a3f",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "4/4: Building DGamma.R181O19LocatedBlocks (research-tests/DGamma/R181O19LocatedBlocks.idr)\n",
+    "newTopLevelDeclarations": [],
+    "matchingSourceCommits": [
+      "c1667529c5489921f1774b26412a04151b0e5a08"
+    ]
+  },
+  {
+    "unit": "DE-final-package",
+    "path": "package",
+    "command": [
+      "idris2",
+      "--build",
+      "dgamma.ipkg"
+    ],
+    "start": "2026-09-07T15:29:39.975494+00:00",
+    "end": "2026-09-07T15:29:56.588852+00:00",
+    "seconds": 16.613223041873425,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 257344,
+    "sourceSHA256": "aee761a37757cb047ddbf0f846bc23ce830ed755422f96852d08eb435c368727",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "",
+    "matchingSourceCommits": []
   }
 ]

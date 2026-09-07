@@ -378,3 +378,15 @@ O20 now also derives actual successful resolved views; canonical pair selection,
 full Begin/Advance/Finish propagation and unsupported-child/gap/body work remain.
 C stays obligations only. The original workflow exception remains explicitly
 not excused; parent-owned independent review is still required.
+
+### D/E final fresh validation (15:28–15:30UTC)
+
+Fresh serialized retained checks: installed observer PASS1.037s; paired producer
+PASS3.145s; real count7/totality/observations capital PASS32.160s; located blocks
+PASS3.138s; seeded package PASS16.613s207/207. Whole-shift67 invocations55P/12F,
+no interruption; four seeded package checks. D/E added one normal E4 import failure,
+no workflow violation. Post-check frozen gate at5369be2 PASS: holes5=1/3/0/0/1,
+all five original spikes/LocalDiamond/adjacent/review/CP3/production exact, unchanged
+seed cache inventory/LocalDiamond TTC, clean tracked tree/no staged files/orphans.
+Current FINAL-VALIDATION/ACCEPTANCE artifacts supersede prefix92e2daa; the original
+protocol=false exception remains visible and criterion1 is not self-waived.

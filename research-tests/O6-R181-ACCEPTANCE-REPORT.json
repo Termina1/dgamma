@@ -3,18 +3,19 @@
     {
       "id": "criterion-1",
       "status": "not-satisfied",
-      "evidence": "Partial checked milestone under ratified bounded stops, not the full requested old-safety negative or complete O20 producer. One failed commit (reverted) and premature B12 invocation violated the strict workflow; no scope expansion/body attempt."
+      "evidence": "Partial checked milestone under ratified stops/authorized D6/E8, not complete old-safety inhabitant or full O20 producer. Exact located blocks and actual successful resolved-view correspondence now proved. Earlier reverted workflow violation remains unexcused; no scope/body expansion."
     },
     {
       "id": "criterion-2",
       "status": "satisfied",
-      "evidence": "47 exact serialized compiler snapshots/transcripts with hashes and commit correlations; all three final retained modules and seeded 207-module package PASS; read-only frozen gate and explicit exception ledger committed for independent review."
+      "evidence": "67 exact serialized compiler snapshots/transcripts/hashes/commit correlations; all four retained research modules and seeded207-module package freshly PASS; frozen gate and explicit exception ledger available for parent-owned independent review."
     }
   ],
   "changedFiles": [
     "NOTES.md",
     "README.md",
     "THM73-PLAN.md",
+    "research-tests/DGamma/R181O19LocatedBlocks.idr",
     "research-tests/DGamma/R181O19SafetyCompletion.idr",
     "research-tests/O6-R181-ACCEPTANCE-REPORT.json",
     "research-tests/O6-R181-COMPILER-EVIDENCE.tar.gz",
@@ -31,244 +32,345 @@
   "testsAddedOrUpdated": [
     "research-tests/DGamma/R181O19SafetyCompletion.idr \u2014 actual seven-edge/alignment/totality/endpoint/installed-payload proof fixtures",
     "research/DGamma/CP5ObservedInstalledLifecycleSpike.idr \u2014 total executable observer and erased soundness/completeness proofs",
-    "research/DGamma/CP5O20PairedPrefixProducerSpike.idr \u2014 twelve checked paired-prefix/runtime prerequisites",
-    "Disposable R181O21WithdrawalProbe.idr \u2014 type-only record PASS, source removed and archived"
+    "research/DGamma/CP5O20PairedPrefixProducerSpike.idr \u2014 eighteen checked paired-prefix/runtime/actual resolved-view prerequisites (B12 remains removed)",
+    "Disposable R181O21WithdrawalProbe.idr \u2014 type-only record PASS, source removed and archived",
+    "research-tests/DGamma/R181O19LocatedBlocks.idr \u2014 actual provider/consumer full InstalledTraces, both LocatedOpenEpisodeBlocks, exact BlockBefore and lifecycle coverage"
   ],
   "commandsRun": [
     {
       "command": "python3 -I research-tests/run-r181-check.py A1-1 research-tests/DGamma/R181O19SafetyCompletion.idr",
       "result": "passed",
-      "summary": "1.041s; fresh=True; archived A1-1.source/.log; SHA256 f1632e68cfcc3349ad9cbee28259102a2611fb942b8e468c18b252c459941bdb"
+      "summary": "1.041s;fresh=True; archived A1-1.source/.log; SHA256 f1632e68cfcc3349ad9cbee28259102a2611fb942b8e468c18b252c459941bdb"
     },
     {
       "command": "python3 -I research-tests/run-r181-check.py A2-1 research-tests/DGamma/R181O19SafetyCompletion.idr",
       "result": "failed",
-      "summary": "1.042s; fresh=True; archived A2-1.source/.log; SHA256 291bd418097698a184892403fcb29081660b297bb1685df9444ebdb8db7d7b9a"
+      "summary": "1.042s;fresh=True; archived A2-1.source/.log; SHA256 291bd418097698a184892403fcb29081660b297bb1685df9444ebdb8db7d7b9a"
     },
     {
       "command": "python3 -I research-tests/run-r181-check.py A2-2 research-tests/DGamma/R181O19SafetyCompletion.idr",
       "result": "passed",
-      "summary": "2.093s; fresh=True; archived A2-2.source/.log; SHA256 323a7d9888ae45acef4ecb9658ee222330124c0509bcf9bacf879e4bc1dee54f"
+      "summary": "2.093s;fresh=True; archived A2-2.source/.log; SHA256 323a7d9888ae45acef4ecb9658ee222330124c0509bcf9bacf879e4bc1dee54f"
     },
     {
       "command": "python3 -I research-tests/run-r181-check.py A3-1 research-tests/DGamma/R181O19SafetyCompletion.idr",
       "result": "passed",
-      "summary": "2.099s; fresh=True; archived A3-1.source/.log; SHA256 e3d515bed3cc564d06e3c3708aac8d47ffc1279bb3cf7c5e6ea5f122074b7e51"
+      "summary": "2.099s;fresh=True; archived A3-1.source/.log; SHA256 e3d515bed3cc564d06e3c3708aac8d47ffc1279bb3cf7c5e6ea5f122074b7e51"
     },
     {
       "command": "python3 -I research-tests/run-r181-check.py A4-1 research-tests/DGamma/R181O19SafetyCompletion.idr",
       "result": "passed",
-      "summary": "2.105s; fresh=True; archived A4-1.source/.log; SHA256 09cfdd818cb364dadf04110b63c1aafcfe418fcc1d3049908c4fe9e0b6941707"
+      "summary": "2.105s;fresh=True; archived A4-1.source/.log; SHA256 09cfdd818cb364dadf04110b63c1aafcfe418fcc1d3049908c4fe9e0b6941707"
     },
     {
       "command": "python3 -I research-tests/run-r181-check.py A5-1 research-tests/DGamma/R181O19SafetyCompletion.idr",
       "result": "passed",
-      "summary": "2.066s; fresh=True; archived A5-1.source/.log; SHA256 59785db53e9c7b735ab54f73787b687ee80da28cad8cad63471e546bb49ea0da"
+      "summary": "2.066s;fresh=True; archived A5-1.source/.log; SHA256 59785db53e9c7b735ab54f73787b687ee80da28cad8cad63471e546bb49ea0da"
     },
     {
       "command": "python3 -I research-tests/run-r181-check.py A6-1 research-tests/DGamma/R181O19SafetyCompletion.idr",
       "result": "failed",
-      "summary": "2.084s; fresh=True; archived A6-1.source/.log; SHA256 05fd56a9b9cfa9a4e33f58fce69d35f0946eabfce798ebb61bdeb68da8671058"
+      "summary": "2.084s;fresh=True; archived A6-1.source/.log; SHA256 05fd56a9b9cfa9a4e33f58fce69d35f0946eabfce798ebb61bdeb68da8671058"
     },
     {
       "command": "python3 -I research-tests/run-r181-check.py A6-2 research-tests/DGamma/R181O19SafetyCompletion.idr",
       "result": "passed",
-      "summary": "2.070s; fresh=True; archived A6-2.source/.log; SHA256 900949f80c9ba0771d97c3be42d4d05185c4fdf207ec45276855d1780c53cabf"
+      "summary": "2.070s;fresh=True; archived A6-2.source/.log; SHA256 900949f80c9ba0771d97c3be42d4d05185c4fdf207ec45276855d1780c53cabf"
     },
     {
       "command": "python3 -I research-tests/run-r181-check.py A7-1 research-tests/DGamma/R181O19SafetyCompletion.idr",
       "result": "passed",
-      "summary": "2.072s; fresh=True; archived A7-1.source/.log; SHA256 a26f48953ed26889a612a74fb35c9ee173d4cf775e933a367d23113bfdbb9dad"
+      "summary": "2.072s;fresh=True; archived A7-1.source/.log; SHA256 a26f48953ed26889a612a74fb35c9ee173d4cf775e933a367d23113bfdbb9dad"
     },
     {
       "command": "python3 -I research-tests/run-r181-check.py A8-1 research-tests/DGamma/R181O19SafetyCompletion.idr",
       "result": "passed",
-      "summary": "2.079s; fresh=True; archived A8-1.source/.log; SHA256 64b7f8dcf3f310158fb3461ccd0e4175665c3b17a9bddc25a67a8b9f15cd7b0e"
+      "summary": "2.079s;fresh=True; archived A8-1.source/.log; SHA256 64b7f8dcf3f310158fb3461ccd0e4175665c3b17a9bddc25a67a8b9f15cd7b0e"
     },
     {
       "command": "python3 -I research-tests/run-r181-check.py A9-1 research-tests/DGamma/R181O19SafetyCompletion.idr",
       "result": "passed",
-      "summary": "13.525s; fresh=True; archived A9-1.source/.log; SHA256 0efd49eda55b3418c21f6ccdc99ab164fff6f4e0f709ceef67233a8bbcef251e"
+      "summary": "13.525s;fresh=True; archived A9-1.source/.log; SHA256 0efd49eda55b3418c21f6ccdc99ab164fff6f4e0f709ceef67233a8bbcef251e"
     },
     {
       "command": "python3 -I research-tests/run-r181-check.py A10-1 research-tests/DGamma/R181O19SafetyCompletion.idr",
       "result": "passed",
-      "summary": "13.501s; fresh=True; archived A10-1.source/.log; SHA256 447dca4943f54932e0be75bfd10693da95130bdcfbc68b0f268d0231cc2d05fd"
+      "summary": "13.501s;fresh=True; archived A10-1.source/.log; SHA256 447dca4943f54932e0be75bfd10693da95130bdcfbc68b0f268d0231cc2d05fd"
     },
     {
       "command": "python3 -I research-tests/run-r181-check.py A11-1 research-tests/DGamma/R181O19SafetyCompletion.idr",
       "result": "failed",
-      "summary": "11.392s; fresh=True; archived A11-1.source/.log; SHA256 66281f50f27f7b1d41f6722d730ab06cceb42b4177baeba540790012c186cff2"
+      "summary": "11.392s;fresh=True; archived A11-1.source/.log; SHA256 66281f50f27f7b1d41f6722d730ab06cceb42b4177baeba540790012c186cff2"
     },
     {
       "command": "python3 -I research-tests/run-r181-check.py A11-2 research-tests/DGamma/R181O19SafetyCompletion.idr",
       "result": "failed",
-      "summary": "1.055s; fresh=True; archived A11-2.source/.log; SHA256 251ba919fac1b707d3f9149b6065fe8fbf362e3822523e174fc03c38d111adc9"
+      "summary": "1.055s;fresh=True; archived A11-2.source/.log; SHA256 251ba919fac1b707d3f9149b6065fe8fbf362e3822523e174fc03c38d111adc9"
     },
     {
       "command": "python3 -I research-tests/run-r181-check.py A11-3 research-tests/DGamma/R181O19SafetyCompletion.idr",
       "result": "failed",
-      "summary": "12.449s; fresh=True; archived A11-3.source/.log; SHA256 ef929d7e63098f70e37d6c4a9c4c0546c8132332cc3f970eea404e4dcfc9ab8b"
+      "summary": "12.449s;fresh=True; archived A11-3.source/.log; SHA256 ef929d7e63098f70e37d6c4a9c4c0546c8132332cc3f970eea404e4dcfc9ab8b"
     },
     {
       "command": "python3 -I research-tests/run-r181-check.py A11-restored research-tests/DGamma/R181O19SafetyCompletion.idr",
       "result": "passed",
-      "summary": "14.555s; fresh=True; archived A11-restored.source/.log; SHA256 447dca4943f54932e0be75bfd10693da95130bdcfbc68b0f268d0231cc2d05fd"
+      "summary": "14.555s;fresh=True; archived A11-restored.source/.log; SHA256 447dca4943f54932e0be75bfd10693da95130bdcfbc68b0f268d0231cc2d05fd"
     },
     {
       "command": "python3 -I research-tests/run-r181-check.py A-stop-package package",
       "result": "passed",
-      "summary": "16.605s; fresh=True; archived A-stop-package.source/.log; SHA256 aee761a37757cb047ddbf0f846bc23ce830ed755422f96852d08eb435c368727"
+      "summary": "16.605s;fresh=True; archived A-stop-package.source/.log; SHA256 aee761a37757cb047ddbf0f846bc23ce830ed755422f96852d08eb435c368727"
     },
     {
       "command": "python3 -I research-tests/run-r181-check.py B1-1 research/DGamma/CP5O20PairedPrefixProducerSpike.idr",
       "result": "passed",
-      "summary": "3.124s; fresh=True; archived B1-1.source/.log; SHA256 6c46e7dda4aa5fd940a6ff162897a7e7946c21014c49f0178b0c646e06a82334"
+      "summary": "3.124s;fresh=True; archived B1-1.source/.log; SHA256 6c46e7dda4aa5fd940a6ff162897a7e7946c21014c49f0178b0c646e06a82334"
     },
     {
       "command": "python3 -I research-tests/run-r181-check.py B2-1 research/DGamma/CP5O20PairedPrefixProducerSpike.idr",
       "result": "passed",
-      "summary": "2.084s; fresh=True; archived B2-1.source/.log; SHA256 fd948963b1f3dbdd9584b2a3cd4d50288cd287b4cb89c608eccb63afe51f64d4"
+      "summary": "2.084s;fresh=True; archived B2-1.source/.log; SHA256 fd948963b1f3dbdd9584b2a3cd4d50288cd287b4cb89c608eccb63afe51f64d4"
     },
     {
       "command": "python3 -I research-tests/run-r181-check.py B3-1 research/DGamma/CP5O20PairedPrefixProducerSpike.idr",
       "result": "passed",
-      "summary": "2.071s; fresh=True; archived B3-1.source/.log; SHA256 384d2effecb02b48e7205b5968dc1fe33c15cd78db6ea740696cfefff22f9f17"
+      "summary": "2.071s;fresh=True; archived B3-1.source/.log; SHA256 384d2effecb02b48e7205b5968dc1fe33c15cd78db6ea740696cfefff22f9f17"
     },
     {
       "command": "python3 -I research-tests/run-r181-check.py B4-1 research/DGamma/CP5O20PairedPrefixProducerSpike.idr",
       "result": "passed",
-      "summary": "2.078s; fresh=True; archived B4-1.source/.log; SHA256 627fa963a92e3c5ce4a11c047ddb607f21ee432a6bde73315beed73fe39fa523"
+      "summary": "2.078s;fresh=True; archived B4-1.source/.log; SHA256 627fa963a92e3c5ce4a11c047ddb607f21ee432a6bde73315beed73fe39fa523"
     },
     {
       "command": "python3 -I research-tests/run-r181-check.py B5-1 research/DGamma/CP5O20PairedPrefixProducerSpike.idr",
       "result": "passed",
-      "summary": "2.087s; fresh=True; archived B5-1.source/.log; SHA256 d29fe707c75831106c9db068528a3f7359df40e7083ccbd8fcb0efd47fc0e7ba"
+      "summary": "2.087s;fresh=True; archived B5-1.source/.log; SHA256 d29fe707c75831106c9db068528a3f7359df40e7083ccbd8fcb0efd47fc0e7ba"
     },
     {
       "command": "python3 -I research-tests/run-r181-check.py B6-1 research/DGamma/CP5O20PairedPrefixProducerSpike.idr",
       "result": "passed",
-      "summary": "3.130s; fresh=True; archived B6-1.source/.log; SHA256 d0174867a835ad1b88510dd616e39c77aa1f569aab55925c35ea0337a3b432c8"
+      "summary": "3.130s;fresh=True; archived B6-1.source/.log; SHA256 d0174867a835ad1b88510dd616e39c77aa1f569aab55925c35ea0337a3b432c8"
     },
     {
       "command": "python3 -I research-tests/run-r181-check.py B7-1 research/DGamma/CP5O20PairedPrefixProducerSpike.idr",
       "result": "failed",
-      "summary": "2.101s; fresh=True; archived B7-1.source/.log; SHA256 a13141465551fa9decb937e4fb3355df972f71d6531a3433b709266de850cf95"
+      "summary": "2.101s;fresh=True; archived B7-1.source/.log; SHA256 a13141465551fa9decb937e4fb3355df972f71d6531a3433b709266de850cf95"
     },
     {
       "command": "python3 -I research-tests/run-r181-check.py B7-2 research/DGamma/CP5O20PairedPrefixProducerSpike.idr",
       "result": "passed",
-      "summary": "3.142s; fresh=True; archived B7-2.source/.log; SHA256 1b3e2bb0ade3999e1c49dd2abb78fc521cf1149150b7e03e531ceb18415b3eca"
+      "summary": "3.142s;fresh=True; archived B7-2.source/.log; SHA256 1b3e2bb0ade3999e1c49dd2abb78fc521cf1149150b7e03e531ceb18415b3eca"
     },
     {
       "command": "python3 -I research-tests/run-r181-check.py B8-1 research/DGamma/CP5O20PairedPrefixProducerSpike.idr",
       "result": "passed",
-      "summary": "3.138s; fresh=True; archived B8-1.source/.log; SHA256 75c42eb26e9c36ef5134933eaa457736380f279ab2aafe963c186a20fc011f21"
+      "summary": "3.138s;fresh=True; archived B8-1.source/.log; SHA256 75c42eb26e9c36ef5134933eaa457736380f279ab2aafe963c186a20fc011f21"
     },
     {
       "command": "python3 -I research-tests/run-r181-check.py B9-1 research/DGamma/CP5O20PairedPrefixProducerSpike.idr",
       "result": "passed",
-      "summary": "3.140s; fresh=True; archived B9-1.source/.log; SHA256 78bbde3b62f01f76500c6fbe91d61fe32f3d53061558a3b9723edb5d024c3bfe"
+      "summary": "3.140s;fresh=True; archived B9-1.source/.log; SHA256 78bbde3b62f01f76500c6fbe91d61fe32f3d53061558a3b9723edb5d024c3bfe"
     },
     {
       "command": "python3 -I research-tests/run-r181-check.py B10-1 research/DGamma/CP5O20PairedPrefixProducerSpike.idr",
       "result": "passed",
-      "summary": "3.135s; fresh=True; archived B10-1.source/.log; SHA256 3c53d650c0f4300b368bac2663bdc162c5ab3a269b9870f82c243b259b687d2d"
+      "summary": "3.135s;fresh=True; archived B10-1.source/.log; SHA256 3c53d650c0f4300b368bac2663bdc162c5ab3a269b9870f82c243b259b687d2d"
     },
     {
       "command": "python3 -I research-tests/run-r181-check.py B11-1 research/DGamma/CP5O20PairedPrefixProducerSpike.idr",
       "result": "failed",
-      "summary": "2.082s; fresh=True; archived B11-1.source/.log; SHA256 74327cbdc9099c2a1815ba706353319ac283a605eeb0b660b51131babdca58ea"
+      "summary": "2.082s;fresh=True; archived B11-1.source/.log; SHA256 74327cbdc9099c2a1815ba706353319ac283a605eeb0b660b51131babdca58ea"
     },
     {
       "command": "python3 -I research-tests/run-r181-check.py B12-1 research/DGamma/CP5O20PairedPrefixProducerSpike.idr",
       "result": "failed",
-      "summary": "2.100s; fresh=True; archived B12-1.source/.log; SHA256 efa1264daf5fe2856d687e69d506ef6a6e516cbb9e14fc7336936e0d84293c22"
+      "summary": "2.100s;fresh=True; archived B12-1.source/.log; SHA256 efa1264daf5fe2856d687e69d506ef6a6e516cbb9e14fc7336936e0d84293c22"
     },
     {
       "command": "python3 -I research-tests/run-r181-check.py B11-2 research/DGamma/CP5O20PairedPrefixProducerSpike.idr",
       "result": "passed",
-      "summary": "3.120s; fresh=True; archived B11-2.source/.log; SHA256 6b436a75cdbe7e7d8b812f81906630cd3e5f58150e1327a02324243f0c342679"
+      "summary": "3.120s;fresh=True; archived B11-2.source/.log; SHA256 6b436a75cdbe7e7d8b812f81906630cd3e5f58150e1327a02324243f0c342679"
     },
     {
       "command": "python3 -I research-tests/run-r181-check.py B12-2 research/DGamma/CP5O20PairedPrefixProducerSpike.idr",
       "result": "failed",
-      "summary": "2.081s; fresh=True; archived B12-2.source/.log; SHA256 3103605349412863f4c38c9ac81001615e56681c3e7d18c2083ce40ac953b2d9"
+      "summary": "2.081s;fresh=True; archived B12-2.source/.log; SHA256 3103605349412863f4c38c9ac81001615e56681c3e7d18c2083ce40ac953b2d9"
     },
     {
       "command": "python3 -I research-tests/run-r181-check.py B13-1 research/DGamma/CP5O20PairedPrefixProducerSpike.idr",
       "result": "passed",
-      "summary": "3.128s; fresh=True; archived B13-1.source/.log; SHA256 14b0c7ac908bfbb2ce2e7bfc8897c5fa4430425f68d8cae11fed66624d6e29bb"
+      "summary": "3.128s;fresh=True; archived B13-1.source/.log; SHA256 14b0c7ac908bfbb2ce2e7bfc8897c5fa4430425f68d8cae11fed66624d6e29bb"
     },
     {
       "command": "python3 -I research-tests/run-r181-check.py B12-3 research/DGamma/CP5O20PairedPrefixProducerSpike.idr",
       "result": "failed",
-      "summary": "2.095s; fresh=True; archived B12-3.source/.log; SHA256 6ef325dede3a06e70c86ae8eaaf3d2a3729a02f7cb7a1c31e035938a9abc10f4"
+      "summary": "2.095s;fresh=True; archived B12-3.source/.log; SHA256 6ef325dede3a06e70c86ae8eaaf3d2a3729a02f7cb7a1c31e035938a9abc10f4"
     },
     {
       "command": "python3 -I research-tests/run-r181-check.py B12-restored research/DGamma/CP5O20PairedPrefixProducerSpike.idr",
       "result": "passed",
-      "summary": "3.149s; fresh=True; archived B12-restored.source/.log; SHA256 14b0c7ac908bfbb2ce2e7bfc8897c5fa4430425f68d8cae11fed66624d6e29bb"
+      "summary": "3.149s;fresh=True; archived B12-restored.source/.log; SHA256 14b0c7ac908bfbb2ce2e7bfc8897c5fa4430425f68d8cae11fed66624d6e29bb"
     },
     {
       "command": "python3 -I research-tests/run-r181-check.py B-stop-package package",
       "result": "passed",
-      "summary": "16.641s; fresh=True; archived B-stop-package.source/.log; SHA256 aee761a37757cb047ddbf0f846bc23ce830ed755422f96852d08eb435c368727"
+      "summary": "16.641s;fresh=True; archived B-stop-package.source/.log; SHA256 aee761a37757cb047ddbf0f846bc23ce830ed755422f96852d08eb435c368727"
     },
     {
       "command": "python3 -I research-tests/run-r181-check.py A12-1 research/DGamma/CP5ObservedInstalledLifecycleSpike.idr",
       "result": "passed",
-      "summary": "1.042s; fresh=True; archived A12-1.source/.log; SHA256 5765d5b07a07a713bd125ff8bda7f4acc72b554d42661d33bb9047b4c8d93d91"
+      "summary": "1.042s;fresh=True; archived A12-1.source/.log; SHA256 5765d5b07a07a713bd125ff8bda7f4acc72b554d42661d33bb9047b4c8d93d91"
     },
     {
       "command": "python3 -I research-tests/run-r181-check.py A13-1 research/DGamma/CP5ObservedInstalledLifecycleSpike.idr",
       "result": "passed",
-      "summary": "1.032s; fresh=True; archived A13-1.source/.log; SHA256 a865e512f9912dda3599430469a329bf06f65a3fd610b5a265ccacbeea962953"
+      "summary": "1.032s;fresh=True; archived A13-1.source/.log; SHA256 a865e512f9912dda3599430469a329bf06f65a3fd610b5a265ccacbeea962953"
     },
     {
       "command": "python3 -I research-tests/run-r181-check.py A14-1 research/DGamma/CP5ObservedInstalledLifecycleSpike.idr",
       "result": "passed",
-      "summary": "1.068s; fresh=True; archived A14-1.source/.log; SHA256 6f587db92e8b112ff9b632f287da9f1ef512d790b5bd850c7dbee2190d008b7c"
+      "summary": "1.068s;fresh=True; archived A14-1.source/.log; SHA256 6f587db92e8b112ff9b632f287da9f1ef512d790b5bd850c7dbee2190d008b7c"
     },
     {
       "command": "python3 -I research-tests/run-r181-check.py A15-1 research/DGamma/CP5ObservedInstalledLifecycleSpike.idr",
       "result": "passed",
-      "summary": "1.060s; fresh=True; archived A15-1.source/.log; SHA256 77eef9aac99afa4e9c2f0dde5d8ae00e1e74e27cde0fc5be6d4211238f2e0c47"
+      "summary": "1.060s;fresh=True; archived A15-1.source/.log; SHA256 77eef9aac99afa4e9c2f0dde5d8ae00e1e74e27cde0fc5be6d4211238f2e0c47"
     },
     {
       "command": "python3 -I research-tests/run-r181-check.py A16-1 research-tests/DGamma/R181O19SafetyCompletion.idr",
       "result": "failed",
-      "summary": "40.527s; fresh=True; archived A16-1.source/.log; SHA256 f4a707fe1e09201e498c134dde1f6e7e3a9be801d3c372a00fb146f7fe86e0d1"
+      "summary": "40.527s;fresh=True; archived A16-1.source/.log; SHA256 f4a707fe1e09201e498c134dde1f6e7e3a9be801d3c372a00fb146f7fe86e0d1"
     },
     {
       "command": "python3 -I research-tests/run-r181-check.py A16-2 research-tests/DGamma/R181O19SafetyCompletion.idr",
       "result": "passed",
-      "summary": "32.155s; fresh=True; archived A16-2.source/.log; SHA256 821680d533db389cbaa25af65c8f180fc0224de94c9f6c9d9cfed6260d1ad180"
+      "summary": "32.155s;fresh=True; archived A16-2.source/.log; SHA256 821680d533db389cbaa25af65c8f180fc0224de94c9f6c9d9cfed6260d1ad180"
     },
     {
       "command": "python3 -I research-tests/run-r181-check.py C-probe-1 research-tests/DGamma/R181O21WithdrawalProbe.idr",
       "result": "passed",
-      "summary": "2.080s; fresh=True; archived C-probe-1.source/.log; SHA256 11e6c9f08ccc5f10e0dd7c1ee13c46c10bfc10ff89db6a886d9142db84ea166d"
+      "summary": "2.080s;fresh=True; archived C-probe-1.source/.log; SHA256 11e6c9f08ccc5f10e0dd7c1ee13c46c10bfc10ff89db6a886d9142db84ea166d"
     },
     {
       "command": "python3 -I research-tests/run-r181-check.py final-installed research/DGamma/CP5ObservedInstalledLifecycleSpike.idr",
       "result": "passed",
-      "summary": "1.035s; fresh=True; archived final-installed.source/.log; SHA256 77eef9aac99afa4e9c2f0dde5d8ae00e1e74e27cde0fc5be6d4211238f2e0c47"
+      "summary": "1.035s;fresh=True; archived final-installed.source/.log; SHA256 77eef9aac99afa4e9c2f0dde5d8ae00e1e74e27cde0fc5be6d4211238f2e0c47"
     },
     {
       "command": "python3 -I research-tests/run-r181-check.py final-paired research/DGamma/CP5O20PairedPrefixProducerSpike.idr",
       "result": "passed",
-      "summary": "3.140s; fresh=True; archived final-paired.source/.log; SHA256 14b0c7ac908bfbb2ce2e7bfc8897c5fa4430425f68d8cae11fed66624d6e29bb"
+      "summary": "3.140s;fresh=True; archived final-paired.source/.log; SHA256 14b0c7ac908bfbb2ce2e7bfc8897c5fa4430425f68d8cae11fed66624d6e29bb"
     },
     {
       "command": "python3 -I research-tests/run-r181-check.py final-negative-capital research-tests/DGamma/R181O19SafetyCompletion.idr",
       "result": "passed",
-      "summary": "32.188s; fresh=True; archived final-negative-capital.source/.log; SHA256 821680d533db389cbaa25af65c8f180fc0224de94c9f6c9d9cfed6260d1ad180"
+      "summary": "32.188s;fresh=True; archived final-negative-capital.source/.log; SHA256 821680d533db389cbaa25af65c8f180fc0224de94c9f6c9d9cfed6260d1ad180"
     },
     {
       "command": "python3 -I research-tests/run-r181-check.py final-package package",
       "result": "passed",
-      "summary": "16.610s; fresh=True; archived final-package.source/.log; SHA256 aee761a37757cb047ddbf0f846bc23ce830ed755422f96852d08eb435c368727"
+      "summary": "16.610s;fresh=True; archived final-package.source/.log; SHA256 aee761a37757cb047ddbf0f846bc23ce830ed755422f96852d08eb435c368727"
+    },
+    {
+      "command": "python3 -I research-tests/run-r181-check.py D1-1 research/DGamma/CP5O20PairedPrefixProducerSpike.idr",
+      "result": "passed",
+      "summary": "3.129s;fresh=True; archived D1-1.source/.log; SHA256 0f070fb1446f674277021929431128dd9742a37bf4572ac08e148adb2beb07ef"
+    },
+    {
+      "command": "python3 -I research-tests/run-r181-check.py D2-1 research/DGamma/CP5O20PairedPrefixProducerSpike.idr",
+      "result": "passed",
+      "summary": "3.139s;fresh=True; archived D2-1.source/.log; SHA256 6f35730e369ff2d6aa858cf384fff858575d95ea916d3ca7acf7109f8eea5539"
+    },
+    {
+      "command": "python3 -I research-tests/run-r181-check.py D3-1 research/DGamma/CP5O20PairedPrefixProducerSpike.idr",
+      "result": "passed",
+      "summary": "3.123s;fresh=True; archived D3-1.source/.log; SHA256 27ae1c1e5e9b442ea93a08a5280282c0f5c26d7b48a1066c0f9bb38d10a58a82"
+    },
+    {
+      "command": "python3 -I research-tests/run-r181-check.py D4-1 research/DGamma/CP5O20PairedPrefixProducerSpike.idr",
+      "result": "passed",
+      "summary": "3.145s;fresh=True; archived D4-1.source/.log; SHA256 450bf948c6c2ba08701ed97e18d119b03e6ed17810e9589a25ae02436649929a"
+    },
+    {
+      "command": "python3 -I research-tests/run-r181-check.py D5-1 research/DGamma/CP5O20PairedPrefixProducerSpike.idr",
+      "result": "passed",
+      "summary": "3.142s;fresh=True; archived D5-1.source/.log; SHA256 010e87a9924c9475baf8dd25bfe143344aa17df40201ac403f1db83f817d7385"
+    },
+    {
+      "command": "python3 -I research-tests/run-r181-check.py D6-1 research/DGamma/CP5O20PairedPrefixProducerSpike.idr",
+      "result": "passed",
+      "summary": "3.119s;fresh=True; archived D6-1.source/.log; SHA256 c57be81f7d44b33ab240a0f01b77a78aa2bf00e4adda57d609705d0151f05dd0"
+    },
+    {
+      "command": "python3 -I research-tests/run-r181-check.py E1-1 research-tests/DGamma/R181O19LocatedBlocks.idr",
+      "result": "passed",
+      "summary": "1.054s;fresh=True; archived E1-1.source/.log; SHA256 100244100e764dcc6932cc56f544f335952e9263ac78647c1b768bbc7c1aba23"
+    },
+    {
+      "command": "python3 -I research-tests/run-r181-check.py E2-1 research-tests/DGamma/R181O19LocatedBlocks.idr",
+      "result": "passed",
+      "summary": "1.064s;fresh=True; archived E2-1.source/.log; SHA256 899eb07aea1821f1ca7c20e3636484824d1cba686476d9f9f1409164f7285820"
+    },
+    {
+      "command": "python3 -I research-tests/run-r181-check.py E3-1 research-tests/DGamma/R181O19LocatedBlocks.idr",
+      "result": "passed",
+      "summary": "1.044s;fresh=True; archived E3-1.source/.log; SHA256 c91c557ab056155969b8311c7065a353e6c423aaabce9d389078dc5ec9f0a326"
+    },
+    {
+      "command": "python3 -I research-tests/run-r181-check.py E4-1 research-tests/DGamma/R181O19LocatedBlocks.idr",
+      "result": "failed",
+      "summary": "1.060s;fresh=True; archived E4-1.source/.log; SHA256 07aec20e91b9ccfbde6ddec59dc533ccbf98c5cf28991e613101b3876262cd1b"
+    },
+    {
+      "command": "python3 -I research-tests/run-r181-check.py E4-2 research-tests/DGamma/R181O19LocatedBlocks.idr",
+      "result": "passed",
+      "summary": "1.044s;fresh=True; archived E4-2.source/.log; SHA256 6c0351733f57c319d0b207cce6bc77a899c892e752d769e239275b1a23cbedb9"
+    },
+    {
+      "command": "python3 -I research-tests/run-r181-check.py E5-1 research-tests/DGamma/R181O19LocatedBlocks.idr",
+      "result": "passed",
+      "summary": "2.088s;fresh=True; archived E5-1.source/.log; SHA256 1874e034fd45e684396310d38b7ca31e8e022189d146af091c4efd59685e9418"
+    },
+    {
+      "command": "python3 -I research-tests/run-r181-check.py E6-1 research-tests/DGamma/R181O19LocatedBlocks.idr",
+      "result": "passed",
+      "summary": "2.102s;fresh=True; archived E6-1.source/.log; SHA256 9f972a4f4f33f494810d07efbae102291f83289cd6a007362254c5944ad2a0ab"
+    },
+    {
+      "command": "python3 -I research-tests/run-r181-check.py E7-1 research-tests/DGamma/R181O19LocatedBlocks.idr",
+      "result": "passed",
+      "summary": "3.145s;fresh=True; archived E7-1.source/.log; SHA256 3be4e917e2a88ab3682375cbdc3877bcb448786b9adc8b384f3ea9136c090af0"
+    },
+    {
+      "command": "python3 -I research-tests/run-r181-check.py E8-1 research-tests/DGamma/R181O19LocatedBlocks.idr",
+      "result": "passed",
+      "summary": "3.139s;fresh=True; archived E8-1.source/.log; SHA256 e7bcb0e849d264b6951c053a50dd921fa6c4e22494bdba72484bcfefc0fd6a3f"
+    },
+    {
+      "command": "python3 -I research-tests/run-r181-check.py DE-final-installed research/DGamma/CP5ObservedInstalledLifecycleSpike.idr",
+      "result": "passed",
+      "summary": "1.037s;fresh=True; archived DE-final-installed.source/.log; SHA256 77eef9aac99afa4e9c2f0dde5d8ae00e1e74e27cde0fc5be6d4211238f2e0c47"
+    },
+    {
+      "command": "python3 -I research-tests/run-r181-check.py DE-final-paired research/DGamma/CP5O20PairedPrefixProducerSpike.idr",
+      "result": "passed",
+      "summary": "3.145s;fresh=True; archived DE-final-paired.source/.log; SHA256 c57be81f7d44b33ab240a0f01b77a78aa2bf00e4adda57d609705d0151f05dd0"
+    },
+    {
+      "command": "python3 -I research-tests/run-r181-check.py DE-final-negative-capital research-tests/DGamma/R181O19SafetyCompletion.idr",
+      "result": "passed",
+      "summary": "32.160s;fresh=True; archived DE-final-negative-capital.source/.log; SHA256 821680d533db389cbaa25af65c8f180fc0224de94c9f6c9d9cfed6260d1ad180"
+    },
+    {
+      "command": "python3 -I research-tests/run-r181-check.py DE-final-blocks research-tests/DGamma/R181O19LocatedBlocks.idr",
+      "result": "passed",
+      "summary": "3.138s;fresh=True; archived DE-final-blocks.source/.log; SHA256 e7bcb0e849d264b6951c053a50dd921fa6c4e22494bdba72484bcfefc0fd6a3f"
+    },
+    {
+      "command": "python3 -I research-tests/run-r181-check.py DE-final-package package",
+      "result": "passed",
+      "summary": "16.613s;fresh=True; archived DE-final-package.source/.log; SHA256 aee761a37757cb047ddbf0f846bc23ce830ed755422f96852d08eb435c368727"
     },
     {
       "command": "idris2 --version",
@@ -278,10 +380,10 @@
     {
       "command": "python3 -I research-tests/run-r181-evidence.py",
       "result": "passed",
-      "summary": "47 serialized checks;36 PASS;11 failures; exact B12-1 workflow violation flagged, not waived"
+      "summary": "67 serialized checks55PASS/12failures; exact B12-1 workflow violation still flagged"
     },
     {
-      "command": "python3 -I research-tests/run-r181-frozen-audit.py /tmp/dgamma-r181/final-frozen.json",
+      "command": "python3 -I research-tests/run-r181-frozen-audit.py /tmp/dgamma-r181/DE-final-frozen.json",
       "result": "passed",
       "summary": "All five original spikes and production frozen; holes1/3/0/0/1; protected hashes/seeds/cache/review exact; clean tracked tree/no staged files/orphans"
     },
@@ -292,27 +394,27 @@
     }
   ],
   "validationOutput": [
-    "final-installed PASS1.035s",
-    "final-paired PASS3.140s",
-    "final-negative-capital PASS32.188s",
-    "final-package PASS16.610s;207/207 seeded modules",
+    "DE-final-installed PASS1.037s",
+    "DE-final-paired PASS3.145s (includes D1\u2013D6 actual view producer)",
+    "DE-final-negative-capital PASS32.160s; DE-final-blocks PASS3.138s",
+    "DE-final-package PASS16.613s;207/207 seeded modules",
     "Holes unchanged5=CanonicalSort1/CrossTrace3/DeletionChain0/LocalDiamond0/Renaming1",
     "Production src/ and dgamma.ipkg diff vs34b21c9 empty; CP3 blob2c697e532e83989de8591fa6a4378747c6a501c0",
     "No O19 safety revision/body, O20 body, O21 branch proof or new LocalDiamond surface",
     "oneNewDeclarationPerInvocation=false ONLY for disclosed B12-1; failed B11 commitdfc933e revertedcdaee57"
   ],
   "residualRisks": [
-    "Full current-safety inhabitant/negative still absent: InstalledTrace, located blocks/decomposition/coverage/ordering, raw uniqueness, actual component-specific independence and bundle assembly remain. No revision/O19 permission follows.",
-    "O20 has matched-registration prefix successor, not canonical pair selection/Begin-Advance-Finish induction; unsupported children/gaps and selector remain. B12 is exhausted3/3.",
+    "Full current-safety inhabitant still absent: numeric3x2 disjointness/ActorBlockDecomposition assembly, raw uniqueness, actual component-specific independence and full ReplayInvariantBundle remain. Both located blocks, full installed body traces, BlockBefore and lifecycle coverage are now proved. No revision/O19 permission.",
+    "O20 now derives actual successful resolveView correspondence, in addition to registration-prefix successor; canonical pair selection and full Begin/Advance/Finish control propagation/unsupported gaps/selector remain. B12 still exhausted3/3; D uses the separately authorized named-table interface.",
     "O21 withdrawals remain obligations only; retain both actual current-generation alternatives and full vestigial fields.",
     "Strict workflow exception requires independent reviewer assessment. Failed source was reverted, not erased from history or disguised as a proof."
   ],
   "noStagedFiles": true,
-  "diffSummary": "27 retained new research Idris declarations: authentic negative prerequisites and five installed-cut observations; simultaneous registration-prefix successor and runtime/undo prerequisites. Three audit harnesses, full evidence and correspondence/status docs. One disposable obligation record removed. No production/original-spike edits.",
+  "diffSummary": "41 retained new research Idris declarations across four files, including authentic count7 negative prerequisites, five actual installed observations, both fully located blocks and actual matched resolved views. Evidence/status docs/harnesses; disposable C record removed; no production or original-spike edits.",
   "reviewFindings": [
     "review-required: dfc933e temporarily committed failed B11 and B12-1 compiled two unaccepted declarations; cdaee57 reverted the failed commit; all failures remain counted",
     "No failed declaration remains in the freshly checked retained source; A11/B12 wholly removed",
     "Independent reviewer gate required; no child-spawned reviewer or self-certification"
   ],
-  "manualNotes": "Final read-only validation measured at b424fd1a8000b1cd04f6399c2758a5ca8a7bfb74. Subsequent artifact/gate commits change reports only. Supervisor ratified both stops and explicitly blocked unused B14/B15; all other authorized work completed. Final stand-down gate pending when this report was authored."
+  "manualNotes": "D/E continuation explicitly authorized after prefix92e2daa; D6/6 and E8/8 completed within the conditional time guard. Current read-only validation at 5369be2b89576fc67f665521310350c07c222213. Final gate/stand-down not yet authorized; parent owns independent reviewer. The original workflow exception is not excused."
 }

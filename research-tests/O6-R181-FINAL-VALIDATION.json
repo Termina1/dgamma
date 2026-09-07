@@ -1,7 +1,7 @@
 {
   "frozen": {
-    "timestamp": "2026-09-07T15:02:42.345046+00:00",
-    "head": "b424fd1a8000b1cd04f6399c2758a5ca8a7bfb74",
+    "timestamp": "2026-09-07T15:32:17.586279+00:00",
+    "head": "5369be2b89576fc67f665521310350c07c222213",
     "start": "5871236",
     "holes": {
       "CanonicalSort": [
@@ -44,13 +44,15 @@
       "mtimeUTC": "2026-09-07T01:56:14.905763+00:00"
     },
     "changedIdrisFiles": [
+      "research-tests/DGamma/R181O19LocatedBlocks.idr",
       "research-tests/DGamma/R181O19SafetyCompletion.idr",
       "research/DGamma/CP5O20PairedPrefixProducerSpike.idr",
       "research/DGamma/CP5ObservedInstalledLifecycleSpike.idr"
     ],
     "sourceSHA256": {
+      "research-tests/DGamma/R181O19LocatedBlocks.idr": "e7bcb0e849d264b6951c053a50dd921fa6c4e22494bdba72484bcfefc0fd6a3f",
       "research-tests/DGamma/R181O19SafetyCompletion.idr": "821680d533db389cbaa25af65c8f180fc0224de94c9f6c9d9cfed6260d1ad180",
-      "research/DGamma/CP5O20PairedPrefixProducerSpike.idr": "14b0c7ac908bfbb2ce2e7bfc8897c5fa4430425f68d8cae11fed66624d6e29bb",
+      "research/DGamma/CP5O20PairedPrefixProducerSpike.idr": "c57be81f7d44b33ab240a0f01b77a78aa2bf00e4adda57d609705d0151f05dd0",
       "research/DGamma/CP5ObservedInstalledLifecycleSpike.idr": "77eef9aac99afa4e9c2f0dde5d8ae00e1e74e27cde0fc5be6d4211238f2e0c47"
     },
     "protectedDeclarationSHA256": {
@@ -77,10 +79,10 @@
     "allowedUntrackedOnly": true
   },
   "compilerSummary": {
-    "checks": 47,
-    "ordinaryPasses": 36,
+    "checks": 67,
+    "ordinaryPasses": 55,
     "intendedNegativePasses": 0,
-    "rejectedOrInterrupted": 11,
+    "rejectedOrInterrupted": 12,
     "serialized": true,
     "oneNewDeclarationPerInvocation": false,
     "workflowViolations": [
@@ -89,7 +91,7 @@
         "detail": "Two unaccepted declarations: premature B12 invocation; failed B11 commit dfc933e reverted cdaee57."
       }
     ],
-    "seededPackageBuilds": 3,
+    "seededPackageBuilds": 4,
     "units": [
       {
         "unit": "A1-1",
@@ -486,12 +488,188 @@
         "fresh": true,
         "seconds": 16.610327458009124,
         "commits": []
+      },
+      {
+        "unit": "D1-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 3.129285582806915,
+        "commits": [
+          "94c0038cef7a225dc15a046eecb5c1c83726d203"
+        ]
+      },
+      {
+        "unit": "D2-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 3.138774666003883,
+        "commits": [
+          "e7e4db73dfdc1e525dbd94199fa69d6787be5efe"
+        ]
+      },
+      {
+        "unit": "D3-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 3.122922540642321,
+        "commits": [
+          "efa6fb359bf81485b40e2454ba140c5376b4907b"
+        ]
+      },
+      {
+        "unit": "D4-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 3.1446722079999745,
+        "commits": [
+          "c0199a4e2b2696d7bfcf851b7903a3c4f8fb01fc"
+        ]
+      },
+      {
+        "unit": "D5-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 3.141905541997403,
+        "commits": [
+          "522cb8116fb2d27d7401fd2590ea2f78232eaefd"
+        ]
+      },
+      {
+        "unit": "D6-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 3.1191120422445238,
+        "commits": [
+          "3d4986623a968d77b1bf9f5c51ed4bf3fea7c5b0"
+        ]
+      },
+      {
+        "unit": "E1-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 1.0536555419676006,
+        "commits": [
+          "1591cf02d7114cd013b4c4aae4e4beface4eb487"
+        ]
+      },
+      {
+        "unit": "E2-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 1.0639720419421792,
+        "commits": [
+          "3e05d2323f98458f91a35e261b90308f08816b72"
+        ]
+      },
+      {
+        "unit": "E3-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 1.0440358752384782,
+        "commits": [
+          "fadb283f6394e725bee025abb0f4566ba144cdc2"
+        ]
+      },
+      {
+        "unit": "E4-1",
+        "passed": false,
+        "fresh": true,
+        "seconds": 1.0601012082770467,
+        "commits": []
+      },
+      {
+        "unit": "E4-2",
+        "passed": true,
+        "fresh": true,
+        "seconds": 1.0436621666885912,
+        "commits": [
+          "197810db5e3f766674b6b33f963ce648fef98343"
+        ]
+      },
+      {
+        "unit": "E5-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 2.0883564171381295,
+        "commits": [
+          "f815e753e90eff0bd93b2f760ee6213155977cc6"
+        ]
+      },
+      {
+        "unit": "E6-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 2.1019757078029215,
+        "commits": [
+          "f21b1e18568ef8e34ad3cb6e599eee474de5dbcd"
+        ]
+      },
+      {
+        "unit": "E7-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 3.1452062078751624,
+        "commits": [
+          "fdade32a8bc3c70324c54c26ab1565d82ad7203e"
+        ]
+      },
+      {
+        "unit": "E8-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 3.139426166191697,
+        "commits": [
+          "c1667529c5489921f1774b26412a04151b0e5a08"
+        ]
+      },
+      {
+        "unit": "DE-final-installed",
+        "passed": true,
+        "fresh": true,
+        "seconds": 1.0369244166649878,
+        "commits": [
+          "51eb5ef832849277434528ea2f5a7eb332dfe6db"
+        ]
+      },
+      {
+        "unit": "DE-final-paired",
+        "passed": true,
+        "fresh": true,
+        "seconds": 3.144582042004913,
+        "commits": [
+          "3d4986623a968d77b1bf9f5c51ed4bf3fea7c5b0"
+        ]
+      },
+      {
+        "unit": "DE-final-negative-capital",
+        "passed": true,
+        "fresh": true,
+        "seconds": 32.1599562917836,
+        "commits": [
+          "95b4ab595c5e86851fb0de8d63cd6ff882367626"
+        ]
+      },
+      {
+        "unit": "DE-final-blocks",
+        "passed": true,
+        "fresh": true,
+        "seconds": 3.1381907081231475,
+        "commits": [
+          "c1667529c5489921f1774b26412a04151b0e5a08"
+        ]
+      },
+      {
+        "unit": "DE-final-package",
+        "passed": true,
+        "fresh": true,
+        "seconds": 16.613223041873425,
+        "commits": []
       }
     ]
   },
   "finalChecks": [
     {
-      "unit": "final-installed",
+      "unit": "DE-final-installed",
       "path": "research/DGamma/CP5ObservedInstalledLifecycleSpike.idr",
       "command": [
         "idris2",
@@ -502,9 +680,9 @@
         "--check",
         "research/DGamma/CP5ObservedInstalledLifecycleSpike.idr"
       ],
-      "start": "2026-09-07T15:00:02.933119+00:00",
-      "end": "2026-09-07T15:00:03.968285+00:00",
-      "seconds": 1.0349960420280695,
+      "start": "2026-09-07T15:29:00.237886+00:00",
+      "end": "2026-09-07T15:29:01.274932+00:00",
+      "seconds": 1.0369244166649878,
       "exit": 0,
       "fresh": true,
       "passed": true,
@@ -516,7 +694,7 @@
       "transcript": "1/1: Building DGamma.CP5ObservedInstalledLifecycleSpike (research/DGamma/CP5ObservedInstalledLifecycleSpike.idr)\n"
     },
     {
-      "unit": "final-paired",
+      "unit": "DE-final-paired",
       "path": "research/DGamma/CP5O20PairedPrefixProducerSpike.idr",
       "command": [
         "idris2",
@@ -527,21 +705,21 @@
         "--check",
         "research/DGamma/CP5O20PairedPrefixProducerSpike.idr"
       ],
-      "start": "2026-09-07T15:00:04.038334+00:00",
-      "end": "2026-09-07T15:00:07.178167+00:00",
-      "seconds": 3.139593416824937,
+      "start": "2026-09-07T15:29:01.340918+00:00",
+      "end": "2026-09-07T15:29:04.485701+00:00",
+      "seconds": 3.144582042004913,
       "exit": 0,
       "fresh": true,
       "passed": true,
       "interrupted": false,
-      "maxSampleRSSKiB": 3912224,
-      "sourceSHA256": "14b0c7ac908bfbb2ce2e7bfc8897c5fa4430425f68d8cae11fed66624d6e29bb",
+      "maxSampleRSSKiB": 2058896,
+      "sourceSHA256": "c57be81f7d44b33ab240a0f01b77a78aa2bf00e4adda57d609705d0151f05dd0",
       "expectedDiagnostic": null,
       "symbol": null,
       "transcript": "31/31: Building DGamma.CP5O20PairedPrefixProducerSpike (research/DGamma/CP5O20PairedPrefixProducerSpike.idr)\n"
     },
     {
-      "unit": "final-negative-capital",
+      "unit": "DE-final-negative-capital",
       "path": "research-tests/DGamma/R181O19SafetyCompletion.idr",
       "command": [
         "idris2",
@@ -554,30 +732,57 @@
         "--check",
         "research-tests/DGamma/R181O19SafetyCompletion.idr"
       ],
-      "start": "2026-09-07T15:00:07.241375+00:00",
-      "end": "2026-09-07T15:00:39.429418+00:00",
-      "seconds": 32.18751324992627,
+      "start": "2026-09-07T15:29:04.552253+00:00",
+      "end": "2026-09-07T15:29:36.712324+00:00",
+      "seconds": 32.1599562917836,
       "exit": 0,
       "fresh": true,
       "passed": true,
       "interrupted": false,
-      "maxSampleRSSKiB": 1525792,
+      "maxSampleRSSKiB": 1546880,
       "sourceSHA256": "821680d533db389cbaa25af65c8f180fc0224de94c9f6c9d9cfed6260d1ad180",
       "expectedDiagnostic": null,
       "symbol": null,
       "transcript": "3/3: Building DGamma.R181O19SafetyCompletion (research-tests/DGamma/R181O19SafetyCompletion.idr)\n"
     },
     {
-      "unit": "final-package",
+      "unit": "DE-final-blocks",
+      "path": "research-tests/DGamma/R181O19LocatedBlocks.idr",
+      "command": [
+        "idris2",
+        "--source-dir",
+        "src",
+        "--source-dir",
+        "research",
+        "--source-dir",
+        "research-tests",
+        "--check",
+        "research-tests/DGamma/R181O19LocatedBlocks.idr"
+      ],
+      "start": "2026-09-07T15:29:36.775378+00:00",
+      "end": "2026-09-07T15:29:39.913725+00:00",
+      "seconds": 3.1381907081231475,
+      "exit": 0,
+      "fresh": true,
+      "passed": true,
+      "interrupted": false,
+      "maxSampleRSSKiB": 550352,
+      "sourceSHA256": "e7bcb0e849d264b6951c053a50dd921fa6c4e22494bdba72484bcfefc0fd6a3f",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "transcript": "4/4: Building DGamma.R181O19LocatedBlocks (research-tests/DGamma/R181O19LocatedBlocks.idr)\n"
+    },
+    {
+      "unit": "DE-final-package",
       "path": "package",
       "command": [
         "idris2",
         "--build",
         "dgamma.ipkg"
       ],
-      "start": "2026-09-07T15:00:39.492145+00:00",
-      "end": "2026-09-07T15:00:56.102825+00:00",
-      "seconds": 16.610327458009124,
+      "start": "2026-09-07T15:29:39.975494+00:00",
+      "end": "2026-09-07T15:29:56.588852+00:00",
+      "seconds": 16.613223041873425,
       "exit": 0,
       "fresh": true,
       "passed": true,
@@ -597,7 +802,11 @@
   "budget": {
     "A": "16/16 consumed; A11 removed",
     "B": "13/15 consumed; B12 removed; B14/B15 blocked",
-    "C": "1/3 disposable type checks; source removed"
+    "C": "1/3 disposable checks; source removed",
+    "D": "6/6 PASS1, authorized named-table cure;15:13UTC",
+    "E": "8/8 completed; E4 PASS2; time condition met with114min remaining before17:07"
   },
-  "workflowConformance": false
+  "workflowConformance": false,
+  "prefixGate": "92e2daa ratified; stand-down denied; D/E explicitly authorized; independent reviewer owned by parent",
+  "retainedNewDeclarations": 41
 }
