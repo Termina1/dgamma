@@ -212,3 +212,42 @@ canonicalSupportedOriginTriangle name key world error value nameEq keyEq protoco
             selected leftParent leftComponent leftGeneration leftCurrent sourceFiber sourceFound leftBirth)))
           (trans mapped (rightCanonicalOriginCurrentStamp name key world error value nameEq keyEq protocol left right sameInputs rightCapital rightUnique
             (renameForward (expectedBridgeBijection sameInputs) selected) rightParent rightComponent rightGeneration rightCurrent opposite rightFound rightBirth))
+
+||| PRODUCE the opposite canonical occurrence at the fixed child AND parent,
+||| same component. A9 is genuinely used to obtain opposite support.
+export
+0 mappedSupportedCanonicalBirth :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {initial, leftFinal, rightFinal : SystemState name key value world error} ->
+  (left : Transitions initial leftFinal) -> (right : Transitions initial rightFinal) ->
+  (sameInputs : SameOrchestrationModuloGenerated nameEq keyEq left right) ->
+  (leftCapital : IndependentCanonicalSchedule name key world error value protocol nameEq keyEq left) ->
+  (rightCapital : IndependentCanonicalSchedule name key world error value protocol nameEq keyEq right) ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq left ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq right ->
+  GeneratedOrchestrationMatched name key world error value nameEq left right (generatedGenerationBijection sameInputs) ->
+  (selected, parent : name) -> (component : Component key value world error) ->
+  (sourceFiber : Fiber name key value world error) ->
+  (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+    @{nameEq} selected (registry leftFinal) = Just sourceFiber) ->
+  (isSupported {name = name} {key = key} {value = value} {world = world} {error = error}
+    @{nameEq} @{keyEq} selected leftFinal = True) ->
+  (leftBirth : LocatedGeneratedRegistration selected parent component (canonicalTrace (canonicalSchedule leftCapital))) ->
+  LocatedGeneratedRegistration (renameForward (expectedBridgeBijection sameInputs) selected)
+    (renameForward (expectedBridgeBijection sameInputs) parent) component (canonicalTrace (canonicalSchedule rightCapital))
+mappedSupportedCanonicalBirth name key world error value nameEq keyEq protocol left right sameInputs leftCapital rightCapital
+  leftUnique rightUnique matched selected parent component sourceFiber sourceFound supported leftBirth =
+    case bridgeSupportedOriginalTarget name key world error value nameEq keyEq protocol left right sameInputs leftCapital rightCapital
+      leftUnique rightUnique matched selected sourceFiber sourceFound supported of
+      (opposite ** (found, componentExact, parentExact, rightSupported)) =>
+        replace {p = \program => LocatedGeneratedRegistration (renameForward (expectedBridgeBijection sameInputs) selected)
+          (renameForward (expectedBridgeBijection sameInputs) parent) program (canonicalTrace (canonicalSchedule rightCapital))}
+          (trans componentExact (sym (cong snd (canonicalGeneratedOriginMetadata name key world error value nameEq keyEq protocol left leftCapital leftUnique
+            selected parent component leftBirth sourceFiber sourceFound))))
+          (canonicalSupportedChildBirth name key world error value nameEq keyEq protocol right rightCapital rightUnique
+            (renameForward (expectedBridgeBijection sameInputs) selected) (renameForward (expectedBridgeBijection sameInputs) parent) opposite found
+            (trans parentExact (cong (supportMapParent name (renameForward (expectedBridgeBijection sameInputs)))
+              (sym (cong fst (canonicalGeneratedOriginMetadata name key world error value nameEq keyEq protocol left leftCapital leftUnique
+                selected parent component leftBirth sourceFiber sourceFound))))) rightSupported)
