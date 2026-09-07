@@ -255,3 +255,23 @@ acceptedMatchedParentBirths name key world error value nameEq left right renamin
     (leftMatchedActivation matched) (leftActivationPresent matched),
    acceptedRightEventParentBirth name key world error value nameEq left right renaming registrations rightEvent rightMember
     (rightMatchedActivation matched) (rightActivationPresent matched))
+
+||| Generation names are read back only from the authenticated parent births.
+export
+0 acceptedMatchedParentNames :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) ->
+  {leftFirst, leftFinal, rightFirst, rightFinal : SystemState name key value world error} ->
+  (left : Transitions leftFirst leftFinal) -> (right : Transitions rightFirst rightFinal) ->
+  (renaming : RegistrationGenerationBijection name) ->
+  (registrations : RegistrationCorrespondenceByGeneration nameEq renaming left right) ->
+  (leftEvent, rightEvent : RegistrationEvent name key world error value) ->
+  Elem leftEvent (leftScannedEvents (acceptedAuthenticatedRegistrationMatching name key world error value nameEq left right renaming registrations)) ->
+  Elem rightEvent (rightScannedEvents (acceptedAuthenticatedRegistrationMatching name key world error value nameEq left right renaming registrations)) ->
+  (matched : RegistrationEventMatch renaming leftEvent rightEvent) ->
+  (generationName (activationParentGeneration (leftMatchedActivation matched)) = eventParent leftEvent,
+   generationName (activationParentGeneration (rightMatchedActivation matched)) = eventParent rightEvent)
+acceptedMatchedParentNames name key world error value nameEq left right renaming registrations leftEvent rightEvent leftMember rightMember matched =
+  (cong generationName (currentBirthStampExact (fst
+    (acceptedMatchedParentBirths name key world error value nameEq left right renaming registrations leftEvent rightEvent leftMember rightMember matched))),
+   cong generationName (currentBirthStampExact (snd
+    (acceptedMatchedParentBirths name key world error value nameEq left right renaming registrations leftEvent rightEvent leftMember rightMember matched))))
