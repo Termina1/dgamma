@@ -146,3 +146,37 @@ synchronizationLocalSource name key world value keyEq renaming provision selecte
         (effectTables left selected)
         (effectTables right (renameForward renaming selected))
         (synchronizedTables effects selected))
+
+||| Producer of the exact deterministic iterator result (including its undo
+||| callback), once the INTERNAL paired-cut invariant and views are available.
+||| Both capabilities are observed runtime values with evaluator equations.
+export
+0 synchronizationStepOutcome :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (keyEq : DecEq key) -> (renaming : NameBijection name) ->
+  (deps : List key) -> (provision : CoeffectSpec key) -> (selected : name) ->
+  (step : StepEffect key value world error deps provision) ->
+  (leftView, rightView : View name deps) ->
+  (left, right : EffectState name key value world) ->
+  (leftCapability, rightCapability : DepValues key value deps) ->
+  RenamedRuntimeEffects name key world value renaming left right ->
+  ViewRelatedBy renaming leftView rightView ->
+  (resolveEffectValues @{keyEq} deps leftView left = Just leftCapability) ->
+  (resolveEffectValues @{keyEq} deps rightView right = Just rightCapability) ->
+  (runStepEffect step leftCapability
+    (MkLocalState (effectAmbient left)
+      (restrictOwnedPreservingOrder @{keyEq} provision (effectTables left selected))) =
+   runStepEffect step rightCapability
+    (MkLocalState (effectAmbient right)
+      (restrictOwnedPreservingOrder @{keyEq} provision
+        (effectTables right (renameForward renaming selected)))))
+synchronizationStepOutcome name key world error value keyEq renaming deps provision
+  selected step leftView rightView left right leftCapability rightCapability
+  effects views leftResolved rightResolved =
+    cong2 (runStepEffect step)
+      (justInjective (trans (sym leftResolved)
+        (trans (synchronizationResolutionFromObservedHeads name key world value
+          keyEq renaming deps leftView rightView left right effects views)
+          rightResolved)))
+      (synchronizationLocalSource name key world value keyEq renaming provision
+        selected left right effects)
