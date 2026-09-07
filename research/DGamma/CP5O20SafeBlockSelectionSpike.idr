@@ -205,3 +205,23 @@ o20AdjacentCandidates nameEq sourceOrder earlier (left :: right :: rest) exact =
         MkAdjacentActorOrderSwap earlier left right rest exact Refl distinct) ::
       o20AdjacentCandidates nameEq sourceOrder (earlier ++ [left]) (right :: rest)
         (trans exact (appendAssociative earlier [left] (right :: rest)))
+
+||| Finite whole-block POSITIVE selector: unlike R179's first-node probe, a
+||| rejected candidate does not prevent checking later pairs. Every returned
+||| pair carries BOTH revised clauses, both child exclusions and sourceUnique.
+||| Nothing is not a theorem of canonicality; target-extension orientation,
+||| operational replay/reselection and strict descent remain unproved.
+export
+0 o20SelectSafeAdjacentBlocks :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) -> (sourceOrder : List name) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (trace : Transitions initial finalState) ->
+  (blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder trace) ->
+  (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq trace) ->
+  (0 unique : UniqueRawNameInsertions name key world error value nameEq keyEq trace) ->
+  Maybe (O20ChosenSafeSwap name key world error value protocol nameEq keyEq sourceOrder trace blocks premises)
+o20SelectSafeAdjacentBlocks nameEq keyEq protocol sourceOrder trace blocks premises unique =
+  head' (mapMaybe (o20CheckCandidate nameEq keyEq protocol sourceOrder trace blocks premises unique)
+    (o20AdjacentCandidates nameEq sourceOrder [] sourceOrder Refl))
