@@ -51,3 +51,17 @@ locatedRankDescentHead name key world error value observe {before} {middle} {aft
   left right suffix leftRank rightRank leftExact rightExact crossed =
     MkLocatedRankDescent before middle afterState NoTransitions left right suffix
       leftRank rightRank leftExact rightExact crossed Refl
+
+||| Preserve every earlier checked node, including every unowned barrier.
+public export
+0 locatedRankDescentPrepend :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (observe : Action name key value world error -> Maybe Nat) ->
+  {initial, middle, finalState : SystemState name key value world error} ->
+  (head : Transition initial middle) -> (rest : Transitions middle finalState) ->
+  LocatedRankDescent name key world error value observe rest ->
+  LocatedRankDescent name key world error value observe (MoreTransitions head rest)
+locatedRankDescentPrepend name key world error value observe head rest
+  (MkLocatedRankDescent before middle afterState prior left right suffix leftRank rightRank leftExact rightExact crossed decomposition) =
+    MkLocatedRankDescent before middle afterState (MoreTransitions head prior) left right suffix
+      leftRank rightRank leftExact rightExact crossed (cong (MoreTransitions head) decomposition)
