@@ -46,3 +46,12 @@ o20ChosenActorFacts {sourceOrder} swap =
   replace {p = \order => (Elem (actorLeft swap) order, Elem (actorRight swap) order,
     BeforeIn (actorLeft swap) (actorRight swap) order)} (sym (actorBeforeExact swap))
       (o20AdjacentListFacts (actorPrefix swap) (actorLeft swap) (actorRight swap) (actorSuffix swap))
+
+||| Executable single-action observation; root insertions are not children.
+||| Public computation is required by the next certified negative checker.
+public export
+o20GeneratedChildName :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  Action name key value world error -> Maybe name
+o20GeneratedChildName (OInsert child (ChildOf parent) component) = Just child
+o20GeneratedChildName _ = Nothing
