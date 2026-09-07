@@ -437,3 +437,23 @@ pairedTableOwnerObserved name key world error value nameEq keyEq owner wanted fi
     (MkFiber component parent retiredFlag
       (MkOwnedTable (MkCoeffectContext entries unique) confined) lifecycle **
       (found, confined wanted (lookupJustElem @{keyEq} wanted entries provided present)))
+
+||| B13 DISTINCT observed-value prerequisite, authorized while B12 is parked
+||| at2/3. Split the ACTUAL lookup before comparing the projection's suspended
+||| tableFor case with the observed table. No guessed callback or value.
+export
+0 pairedProjectOwnerTableObserved :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (ambient : world) ->
+  (fibers : Registry name key value world error) -> (owner : name) ->
+  (observed : Maybe (Fiber name key value world error)) ->
+  (lookupBinding {key = name} {value = FiberAt name key value world error}
+    @{nameEq} owner fibers = observed) ->
+  (effectTables (projectEffectState {name = name} {key = key} {value = value}
+    {world = world} {error = error} @{nameEq} (MkSystemState ambient fibers)) owner =
+    case observed of Nothing => emptyContext
+                     Just fiber => ownedValues (fiberTable fiber))
+pairedProjectOwnerTableObserved name key world error value nameEq ambient fibers owner
+  Nothing observed = rewrite observed in Refl
+pairedProjectOwnerTableObserved name key world error value nameEq ambient fibers owner
+  (Just fiber) observed = rewrite observed in Refl
