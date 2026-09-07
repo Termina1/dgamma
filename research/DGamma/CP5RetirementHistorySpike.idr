@@ -274,3 +274,28 @@ retiredCutNonretiredEndpointImpossible name key world error value nameEq keyEq p
   (name, key, world, error : Type) -> (value : key -> Type) ->
   (fiber : Fiber name key value world error) -> (retired (retireFiber fiber) = True)
 retirementAppliedTrue name key world error value (MkFiber component parent retiredFlag table lifecycle) = Refl
+
+0 rawRetireTargetObserved :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (before, afterState : SystemState name key value world error) -> (tag : RuleTag) ->
+  (observed : Maybe (Fiber name key value world error)) ->
+  (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+    @{nameEq} selected (registry before) = observed) ->
+  (applyAction @{nameEq} @{keyEq} (ORetire selected) before = Just (tag, afterState)) ->
+  (fiber : Fiber name key value world error **
+    (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+      @{nameEq} selected (registry afterState) = Just fiber, retired fiber = True))
+rawRetireTargetObserved name key world error value nameEq keyEq selected before afterState tag Nothing sourceExact raw =
+  void (nothingIsNotJust (trans (sym (the (applyAction @{nameEq} @{keyEq} (ORetire selected) before = Nothing)
+    (rewrite sourceExact in Refl))) raw))
+rawRetireTargetObserved name key world error value nameEq keyEq selected before afterState tag (Just sourceFiber) sourceExact raw =
+  replace {p = \target => (fiber : Fiber name key value world error **
+    (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+      @{nameEq} selected (registry target) = Just fiber, retired fiber = True))}
+    (cong snd (justInjective (trans (sym (the
+      (applyAction @{nameEq} @{keyEq} (ORetire selected) before =
+        Just (ORetireTag, MkSystemState (worldState before) (replaceBinding @{nameEq} selected (retireFiber sourceFiber) (registry before))))
+      (rewrite sourceExact in Refl))) raw)))
+    (retireFiber sourceFiber ** (lookupReplacedFiber @{nameEq} selected sourceFiber (retireFiber sourceFiber) (registry before) sourceExact,
+      retirementAppliedTrue name key world error value sourceFiber))
