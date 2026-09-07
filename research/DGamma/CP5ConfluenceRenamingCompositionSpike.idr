@@ -2860,3 +2860,28 @@ acceptedRightCurrentBirth name key world error value nameEq left right renaming 
     right (rightFinalIndex registrations) (rightRegistrationSideScan (generationTraceCorrespondence registrations)) of
     (finalOrdinal ** scan) => currentBirthFromGenerationScan name key world error value nameEq right
       finalOrdinal (rightFinalGenerations registrations) scan selected generation current
+
+||| Exact LEFT endpoint component/birth/stamp authentication from sealed scan
+||| and actual endpoint lookup. Both births are producer-obtained before unique.
+export
+0 acceptedLeftEndpointCurrentBirth :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {leftFirst, leftFinal, rightFirst, rightFinal : SystemState name key value world error} ->
+  (left : Transitions leftFirst leftFinal) -> (right : Transitions rightFirst rightFinal) ->
+  (renaming : RegistrationGenerationBijection name) ->
+  (registrations : RegistrationCorrespondenceByGeneration nameEq renaming left right) ->
+  AlignedTransitions name key world error value nameEq keyEq left ->
+  (bindings (registry leftFirst) = []) ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq left ->
+  (selected : name) -> (generation : RegistrationGeneration name) ->
+  (lookupCurrentGeneration @{nameEq} selected (leftFinalGenerations registrations) = Just generation) ->
+  (observed : Fiber name key value world error) ->
+  (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+    @{nameEq} selected (registry leftFinal) = Just observed) ->
+  (parent : Parent name ** birth : LocatedActionOccurrence (OInsert selected parent (fiberComponent observed)) left **
+    generation = MkRegistrationGeneration selected (locatedActionOrdinal birth))
+acceptedLeftEndpointCurrentBirth name key world error value nameEq keyEq left right renaming registrations aligned empty unique selected generation current observed found =
+  currentBirthAtPrefixComponent name key world error value nameEq keyEq left left NoTransitions
+    (currentBirthTraceAppendEmpty name key world error value left) aligned empty unique selected generation
+    (acceptedLeftCurrentBirth name key world error value nameEq left right renaming registrations selected generation current) observed found
