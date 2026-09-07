@@ -35,3 +35,18 @@ r180ProviderResolutionObserved table tableObserved True bindingObserved =
   rewrite tableObserved in rewrite bindingObserved in Refl
 r180ProviderResolutionObserved table tableObserved False bindingObserved =
   rewrite tableObserved in rewrite bindingObserved in Refl
+
+||| Binding truth comes from the checked provider program's actual normalized
+||| output table. The observation only names that value; it cannot choose data.
+export
+0 r180NormalizedServiceMemberObserved :
+  (table : CoeffectContext ToyKey ToyValue) ->
+  (0 observed : (bindings table = bindings (ownedValues
+    (restrictOwnedPreservingOrder @{%search} DGamma.Section3Example.toySpecA
+      (ownedValues (ownedA True)))))) ->
+  (memberKey @{%search} ServiceA table = True)
+r180NormalizedServiceMemberObserved (MkCoeffectContext entries unique) observed =
+  cong (\items => isJust (lookupEntries {key = ToyKey} {value = ToyValue}
+    @{%search} ServiceA items))
+    (trans observed (restrictOwnedPreservingOrderBindings @{%search}
+      DGamma.Section3Example.toySpecA (ownedA True)))
