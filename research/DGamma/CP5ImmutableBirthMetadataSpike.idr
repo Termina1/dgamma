@@ -140,3 +140,33 @@ rawMetadataBirthInvariant name key world error value nameEq keyEq global
           (rawMetadataBirthStep name key world error value nameEq keyEq global action _ _ tag
             (checkedActionProjects nameEq keyEq action _ _ tag checked)
             (embedding action (MkLocatedActionOccurrence _ _ NoTransitions (Fired nameEq keyEq action tag checked) rest Refl Refl)) previous)
+
+||| Any actual prefix lookup identifies a birth of this exact parent and component.
+public export
+0 rawMetadataBirthAtPrefix :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, middle, finalState : SystemState name key value world error} ->
+  (global : Transitions initial finalState) ->
+  (prior : Transitions initial middle) -> (later : Transitions middle finalState) ->
+  appendTransitions prior later = global ->
+  AlignedTransitions name key world error value nameEq keyEq prior ->
+  bindings (registry initial) = [] ->
+  (selected : name) -> (observed : Fiber name key value world error) ->
+  lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+    @{nameEq} selected (registry middle) = Just observed ->
+  LocatedActionOccurrence
+    (OInsert selected (fiberParent observed) (fiberComponent observed)) global
+rawMetadataBirthAtPrefix name key world error value nameEq keyEq {initial}
+  global prior later decomposition aligned empty =
+    rawMetadataBirthInvariant name key world error value nameEq keyEq global prior aligned
+      (\action, occurrence => replace {p = \whole => LocatedActionOccurrence action whole} decomposition
+        (case occurrence of
+          MkLocatedActionOccurrence before afterState pre step post actionExact split =>
+            MkLocatedActionOccurrence before afterState pre step (appendTransitions post later) actionExact
+              (trans (sym (appendTransitionsAssociative pre (MoreTransitions step post) later))
+                (cong (\whole => appendTransitions whole later) split))))
+      (\selected, fiber, found =>
+        case emptyRegistryProtocolRanked (emptyRegistrationProtocol {key = key} {value = value}
+          {world = world} {error = error}) nameEq initial empty selected fiber found of
+          (rank ** ranked) => void (nothingIsNotJust ranked))
