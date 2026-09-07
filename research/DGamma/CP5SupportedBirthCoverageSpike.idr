@@ -8,6 +8,7 @@ import DGamma.CP5ImmutableBirthMetadataSpike
 import DGamma.CP5CurrentGenerationBirthSpike
 import DGamma.CP5RawClosingRankSpike
 import DGamma.CP5RetirementHistorySpike
+import DGamma.CP5UniqueRawNameInsertions
 import DGamma.CP5ConfluenceDeletionChainSpike
 import Data.List.Elem
 import Data.Nat
@@ -109,3 +110,30 @@ locatedClosingBirthHasRetirement name key world error value nameEq keyEq protoco
           (retirementOccurrenceLocated name key world error value later (ORetire child)
             (childRetirementAtGeneratedOccurrence protocol nameEq keyEq trace child parent component
               (MkLocatedGeneratedRegistration before afterState prior step later exact decomposition) aligned discipline closes))))
+
+||| Endpoint support excludes the authentic closing alternative, so coverage
+||| becomes membership in the scanner's actual RETAINED event domain.
+export
+0 supportedClassifiedBirthRetained :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (protocol : RegistrationProtocol key value world error) ->
+  {first, finalState : SystemState name key value world error} ->
+  (trace : Transitions first finalState) -> AlignedTransitions name key world error value nameEq keyEq trace ->
+  RegistrationDiscipline protocol nameEq trace -> (bindings (registry first) = []) ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq trace ->
+  (events : List (RegistrationEvent name key world error value)) -> (selected : name) ->
+  (finalFiber : Fiber name key value world error) ->
+  (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+    @{nameEq} selected (registry finalState) = Just finalFiber) ->
+  (isSupported {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} @{keyEq} selected finalState = True) ->
+  ClassifiedGeneratedBirth name key world error value Z trace events selected ->
+  (event : RegistrationEvent name key world error value ** (Elem event events, eventChild event = selected))
+supportedClassifiedBirthRetained name key world error value nameEq keyEq protocol {finalState} trace aligned discipline empty unique
+  events selected finalFiber found supported (MkClassifiedGeneratedBirth event childExact birth classification) =
+    case classification of
+      Left retained => (event ** (retained, childExact))
+      Right deleted => void (nonretiredEndpointRejectsRetirement name key world error value nameEq keyEq trace aligned empty unique
+        selected finalFiber found (computedSupportNotRetired name key world error value nameEq keyEq finalState selected finalFiber found supported)
+        (replace {p = \action => LocatedActionOccurrence action trace} (cong ORetire childExact)
+          (locatedClosingBirthHasRetirement name key world error value nameEq keyEq protocol trace aligned discipline
+            (eventChild event) (eventParent event) (eventComponent event) (scannedLocatedBirth birth) (deletedParentEpisodeCloses deleted))))
