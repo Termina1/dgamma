@@ -105,3 +105,38 @@ rawMetadataBirthStep name key world error value nameEq keyEq global action
                     (lookupInserted (actionOwner action) next (registry before) absent)))))
               (replace {p = \chosen => LocatedActionOccurrence chosen global} inserted occurrence))
       sourceBirth
+
+||| Forward induction retains actual birth locations and exact immutable metadata.
+public export
+0 rawMetadataBirthInvariant :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, finalState, first, last : SystemState name key value world error} ->
+  (global : Transitions initial finalState) -> (segment : Transitions first last) ->
+  AlignedTransitions name key world error value nameEq keyEq segment ->
+  ((action : Action name key value world error) ->
+    LocatedActionOccurrence action segment -> LocatedActionOccurrence action global) ->
+  ((selected : name) -> (fiber : Fiber name key value world error) ->
+    lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+      @{nameEq} selected (registry first) = Just fiber ->
+    LocatedActionOccurrence
+      (OInsert selected (fiberParent fiber) (fiberComponent fiber)) global) ->
+  (selected : name) -> (observed : Fiber name key value world error) ->
+  lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+    @{nameEq} selected (registry last) = Just observed ->
+  LocatedActionOccurrence
+    (OInsert selected (fiberParent observed) (fiberComponent observed)) global
+rawMetadataBirthInvariant name key world error value nameEq keyEq global
+  NoTransitions AlignedEnd embedding previous = previous
+rawMetadataBirthInvariant name key world error value nameEq keyEq global
+  (MoreTransitions head rest) aligned embedding previous =
+    case aligned of
+      AlignedStep action tag checked _ alignedRest =>
+        rawMetadataBirthInvariant name key world error value nameEq keyEq global rest alignedRest
+          (\wanted, occurrence => embedding wanted (case occurrence of
+            MkLocatedActionOccurrence before afterState prior step later actionExact decomposition =>
+              MkLocatedActionOccurrence before afterState (MoreTransitions (Fired nameEq keyEq action tag checked) prior) step later
+                actionExact (cong (MoreTransitions (Fired nameEq keyEq action tag checked)) decomposition)))
+          (rawMetadataBirthStep name key world error value nameEq keyEq global action _ _ tag
+            (checkedActionProjects nameEq keyEq action _ _ tag checked)
+            (embedding action (MkLocatedActionOccurrence _ _ NoTransitions (Fired nameEq keyEq action tag checked) rest Refl Refl)) previous)
