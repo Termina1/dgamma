@@ -69,3 +69,45 @@ r181ReachedAndProvenance =
     r181WholeTrace r181TraceAligned Refl Refl,
    registrationDisciplineProvenance r181Protocol (the (DecEq Nat) %search)
     r181WholeTrace (Builtin.fst r181TraceStructure))
+
+||| F8: CONDITIONAL bundle assembly. All FOURTEEN other fields are derived
+||| from the actual trace, reachability, protocol and endpoint capital. This is
+||| NOT an inhabited current-safety bundle and adds NO premise to any old spike.
+||| TODO(proof): construct the real component-specific TraceIndependent input;
+||| root insertion clears actor1's table, so the empty-program identity shortcut
+||| and R172's empty-key/all-states-related independence proof do not apply.
+public export
+0 r181ReplayBundleFromIndependence :
+  (0 independent : TraceIndependent Nat ToyKey ToyRuntime String ToyValue
+    (the (DecEq ToyKey) %search) r181WholeTrace) ->
+  ReplayInvariantBundle Nat ToyKey ToyRuntime String ToyValue r181Protocol
+    (the (DecEq Nat) %search) (the (DecEq ToyKey) %search) r181WholeTrace
+r181ReplayBundleFromIndependence independent = MkReplayInvariantBundle
+  r181TraceAligned (Builtin.fst r181TraceStructure) Refl Refl
+  (Builtin.snd r180ObservedLifecycleSuffix) (Builtin.fst r181EndpointReady)
+  (Builtin.fst (Builtin.snd r181EndpointReady)) r181WholeTotal independent
+  (Builtin.snd r181ReachedAndProvenance)
+  (reachedRegistryProtocolRanked r181Protocol (the (DecEq Nat) %search)
+    (the (DecEq ToyKey) %search) (Builtin.fst r181ReachedAndProvenance)
+    (Builtin.snd r181ReachedAndProvenance))
+  (reachedRegistryParentRanksIncrease r181Protocol (the (DecEq Nat) %search)
+    (the (DecEq ToyKey) %search) (Builtin.fst r181ReachedAndProvenance)
+    (Builtin.snd r181ReachedAndProvenance))
+  (disciplinedEndpointPrecedenceAcyclic r181Protocol (the (DecEq Nat) %search)
+    (the (DecEq ToyKey) %search) r180ObservedConsumerFinished
+    (Builtin.fst r181ReachedAndProvenance) (Builtin.fst r181TraceStructure))
+  (supportCombinedWellFounded r181Protocol (the (DecEq Nat) %search)
+    r180ObservedConsumerFinished
+    (reachedRegistryProtocolRanked r181Protocol (the (DecEq Nat) %search)
+      (the (DecEq ToyKey) %search) (Builtin.fst r181ReachedAndProvenance)
+      (Builtin.snd r181ReachedAndProvenance))
+    (reachedRegistryParentRanksIncrease r181Protocol (the (DecEq Nat) %search)
+      (the (DecEq ToyKey) %search) (Builtin.fst r181ReachedAndProvenance)
+      (Builtin.snd r181ReachedAndProvenance)))
+  (deletionPremisesGiveSupportMatchesActive r181Protocol (the (DecEq Nat) %search)
+    (the (DecEq ToyKey) %search)
+    (MkSystemState (MkToyRuntime False False)
+      (emptyContext {key = Nat} {value = \n => Fiber Nat ToyKey ToyValue ToyRuntime String}))
+    r180ObservedConsumerFinished r181WholeTrace r181TraceAligned
+    (Builtin.fst r181TraceStructure) Refl Refl (Builtin.fst r181EndpointReady)
+    (Builtin.fst (Builtin.snd r181EndpointReady)) r181WholeTotal)
