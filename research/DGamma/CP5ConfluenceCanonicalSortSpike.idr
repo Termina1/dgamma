@@ -5163,3 +5163,40 @@ canonicalWorkAdjacentTargetRankFold name key world error value nameEq keyEq prot
                (trans (sealedSuffixActionFoldSame name key world error value nameEq keyEq (List (List Nat))
                  (canonicalWorkRankStep name key world error value nameEq fixedOrder) [[]] (sealedSuffixReplay result))
                  (sym (canonicalWorkRankSegmentsFold name key world error value nameEq fixedOrder suffix))))))
+
+||| Reinspection measures the SAME actual sealed target under the SAME fixed
+||| support order. This is the whole worklist measure, not a selected actor's
+||| resettable debt. Strict decrease still needs an operational descending choice.
+0 canonicalWorkAcceptedResultInversionMeasure :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {initial, originalFinal : SystemState name key value world error} ->
+  (original : Transitions initial originalFinal) ->
+  (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq original) ->
+  (shape : ClosingFreeTraceShape name key world error value nameEq keyEq original) ->
+  (ordering : SupportOrderingCapital name key world error value nameEq keyEq originalFinal) ->
+  (unique : UniqueRawNameInsertions name key world error value nameEq keyEq original) ->
+  (current : CanonicalSortingWorklist name key world error value protocol nameEq keyEq original ordering) ->
+  {pairFirst, pairMiddle, pairFinal : SystemState name key value world error} ->
+  (prefixTrace : Transitions initial pairFirst) ->
+  (left : Transition pairFirst pairMiddle) -> (right : Transition pairMiddle pairFinal) ->
+  (suffix : Transitions pairFinal (sortingCurrentFinal (workReachedReplay current))) ->
+  (orientation : AdjacentSwapOrientationEvidence left right) ->
+  (diamond : LocalRelationalDiamond name key world error value nameEq keyEq left right) ->
+  (result : AdjacentSwapResult name key world error value protocol nameEq keyEq
+    (sortingCurrentTrace (workReachedReplay current)) prefixTrace left right suffix diamond) ->
+  (canonicalWorkGlobalInversionMeasure name key world error value protocol nameEq keyEq ordering
+    (canonicalWorkAcceptAdjacentResult name key world error value nameEq keyEq protocol
+      original premises shape ordering unique current prefixTrace left right suffix orientation diamond result) =
+   foldr (+) Z (map DGamma.CP5ConfluenceWorkMeasureSpike.rankInversions (traceActionFold name key world error value (List (List Nat))
+    (canonicalWorkRankStep name key world error value nameEq (orderedSupportNames ordering))
+    (canonicalWorkRankStep name key world error value nameEq (orderedSupportNames ordering) (transitionAction right)
+      (canonicalWorkRankStep name key world error value nameEq (orderedSupportNames ordering) (transitionAction left)
+        (canonicalWorkRankSegments name key world error value nameEq (orderedSupportNames ordering) suffix))) prefixTrace)))
+canonicalWorkAcceptedResultInversionMeasure name key world error value nameEq keyEq protocol
+  original premises shape ordering unique current prefixTrace left right suffix orientation diamond result =
+    cong (\segments => foldr (+) Z (map DGamma.CP5ConfluenceWorkMeasureSpike.rankInversions segments))
+      (canonicalWorkAdjacentTargetRankFold name key world error value nameEq keyEq protocol
+        (orderedSupportNames ordering) (sortingCurrentTrace (workReachedReplay current))
+        prefixTrace left right suffix diamond result)
