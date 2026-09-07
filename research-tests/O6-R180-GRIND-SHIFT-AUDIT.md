@@ -211,3 +211,79 @@ No synchronization conclusion became an O20 premise; no O20 hole body, O19
 surface edit, new hole or convergence claim. Unit B is now **15/15** and closed.
 Proceeding to the previously supervisor-authorized A raw-edge/per-view-WF
 prerequisites, still respecting A5's exhausted checked-edge surface.
+
+## Unit A authorized prerequisite continuation / 14-unit cap
+
+| Unit | Checked result | Immediate commit |
+|---|---|---|
+| A6 `r180ConsumerBeginRawObserved` | PASS1; distinct raw equation with observed table/Maybe value | `1b7e4ff` |
+| A7 `r180ConsumerBeginRaw` | PASS1; ALL observations closed by actual producers | `e2da823` |
+| A8 `r180ConsumerBeginOutputDomains` | PASS1; actual target WF AND full committed-view-domain conjunct produced | `a1ad95e` |
+| A9 `r180CheckedFromPrerequisites` | PASS1; generic raw+target-WF admission projection | `87e3acc` |
+| A10 `r180ConsumerBeginFromPrerequisites` | PASS1; genuine BeginStep constructor projection of A7/A8 via A9 | `505c848` |
+| A11 `r180ObservedConsumerFinished` | PASS1; endpoint definition, subsequently authenticated | `241facf` |
+| A12 `r180ConsumerFinishRawObserved` | PASS1; raw Finish observed-value prerequisite | `38a0357` |
+| A13 `r180ConsumerFinishRaw` | PASS1; closes ALL Finish observations | `6e2e7c6` |
+| A14 `r180ObservedLifecycleSuffix` | PASS1; actual five checked edges and final WF | `871e73f` |
+
+The former A5 output-domain wall is now crossed honestly. A8 calls the EXISTING
+PROVED raw `preservationTheoremProof` on A7's actual raw edge and R179's actual
+source WF, and projects `wellFormedViewsInvariant` for the entire actual output
+registry. This explicitly produces the provider/value domain of EVERY actual
+committed view; it neither assumes WF nor sidesteps the consumer view guard.
+A9 is a generic projection of raw edge and resulting target domains, A10 its
+BeginStep constructor consumer. Thus no fourth direct A5 statement/body exists.
+Consumer Finish repeats the producer-observed raw/value split and A14 admits
+its actual checked edge using produced raw-preservation WF.
+
+A14's trace has EXACTLY the constructed five edges by its constructor spine:
+provider Begin0/Iter0/Finish0, consumer Begin1/Finish1. A separate count theorem
+was not declared. Its initial index is `r179ObservedRootSource`, with the two
+roots already registered. **This is NOT yet the complete empty-origin trace.**
+R179's early consumer rejection concerns its independently indexed certified
+prefix; no equality identifying that prefix with this explicit-source suffix
+was proved or used. No whole original trace/totality was inferred from fallback
+builders, and no scalar Refl observer over nested certified builders was added.
+
+### Full old-safety negative still missing
+
+- Authenticate the exact two root insertions from the empty origin and join the
+  actual lifecycle suffix; establish complete component totality.
+- Quiet/noFailure at the actual final endpoint, component-specific registration
+  protocol, all fifteen ReplayInvariantBundle fields.
+- Actual provider/consumer LocatedOpenEpisodeBlocks, their full source-coordinate
+  decompositions, order, distinct ranges, structural coverage, and uniqueness.
+- Full current AdjacentActorSwapSafety AND the genuine forbidden-swap conclusion
+  at its exact source/pair. Existing independent early rejection is not enough.
+
+Accordingly, NO full current-safety counterexample or exclusion theorem is
+claimed. No safety clause revision, fixture migration, O19 body request/attempt
+or O20 body. A is now **14/14**, B **15/15**. All bounded units are used; final
+validation/audit proceeds without new proof attempts or additional scope.
+
+## Final status / validation
+
+Latest proof-code commit: **871e73f**; B code is **c579d52**. New code comprises
+27 accepted top-level declarations (13 A,14 B), including two runtime endpoint
+values and two internal invariant records. A5 and B3 are retained ONLY as failed
+snapshots in the evidence archive; their replacements follow explicit gate
+rulings, separate prerequisite statements and producer-owned equations.
+
+Final seeded package `idris2 --build dgamma.ipkg` PASS **17.682s**, preserving
+207/207 production seeds. Final fresh new-module checks: B PASS **4.168s**,
+A PASS (see exact ledger). This is NOT a fresh207-production-module source
+regression. All original spike bytes, old LocalDiamond TTC size/timestamp,
+production/CP3/adjacent/review hashes, five-hole census and absence of forbidden
+additions are checked by the read-only frozen audit. No legacy R11 or cold build,
+no source/seed deletion, and no new LocalDiamond declaration. No staged files
+or orphan compiler remain after final artifact commits.
+
+Ledger43 invocations:33 ordinary passes,9 diagnostic rejections,1 interrupted
+no-verdict (A5-1);0 intended-negative fixture passes. Intervals serialized and
+at most one new top-level declaration per invocation verified mechanically;
+all source snapshots correlate with committed accepted code or explicit failed
+attempts. Final gate occurs before the14:49 attempt cutoff; all NEW proof
+attempts finished by12:31:24UTC, well within the conservative four-hour guard.
+The original requested full negative and nonempty paired synchronization are
+NOT completed. Required independent reviewer gate remains the supervisor's
+responsibility; these artifacts are evidence, not self-acceptance.

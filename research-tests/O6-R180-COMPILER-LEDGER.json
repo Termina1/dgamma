@@ -945,5 +945,384 @@
     "matchingSourceCommits": [
       "c579d522912893945a40f658ee741f5ad1e20a9e"
     ]
+  },
+  {
+    "unit": "A6-1",
+    "path": "research-tests/DGamma/R180O19ObservedCompletion.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R180O19ObservedCompletion.idr"
+    ],
+    "start": "2026-09-07T12:24:24.651901+00:00",
+    "end": "2026-09-07T12:24:26.741354+00:00",
+    "seconds": 2.089236875064671,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 0,
+    "sourceSHA256": "01dbf5c080ec0108210c054077395c401dde5426a8a12ab15dcef58da6836d20",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "2/2: Building DGamma.R180O19ObservedCompletion (research-tests/DGamma/R180O19ObservedCompletion.idr)\n",
+    "newTopLevelDeclarations": [
+      "r180ConsumerBeginRawObserved"
+    ],
+    "matchingSourceCommits": [
+      "1b7e4ff7102e8bc1a7c3140b667afdef04a07b30"
+    ]
+  },
+  {
+    "unit": "A7-1",
+    "path": "research-tests/DGamma/R180O19ObservedCompletion.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R180O19ObservedCompletion.idr"
+    ],
+    "start": "2026-09-07T12:26:10.747614+00:00",
+    "end": "2026-09-07T12:26:11.787865+00:00",
+    "seconds": 1.0400806250981987,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 0,
+    "sourceSHA256": "29c770eacfeb77e5e0029ca42420a8bf7f8dd247e70a3eff0398b0ba293a0b6f",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "2/2: Building DGamma.R180O19ObservedCompletion (research-tests/DGamma/R180O19ObservedCompletion.idr)\n",
+    "newTopLevelDeclarations": [
+      "r180ConsumerBeginRaw"
+    ],
+    "matchingSourceCommits": [
+      "e2da823acd5cbc5370996529fef3e0b5a2d26c2a"
+    ]
+  },
+  {
+    "unit": "A8-1",
+    "path": "research-tests/DGamma/R180O19ObservedCompletion.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R180O19ObservedCompletion.idr"
+    ],
+    "start": "2026-09-07T12:26:45.536538+00:00",
+    "end": "2026-09-07T12:26:47.624018+00:00",
+    "seconds": 2.0872920001856983,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 254656,
+    "sourceSHA256": "56a8590c2aeabbda1e06ddf5b190bee0f0401f6cc5f8a32641b1c9801e4c550a",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "2/2: Building DGamma.R180O19ObservedCompletion (research-tests/DGamma/R180O19ObservedCompletion.idr)\n",
+    "newTopLevelDeclarations": [
+      "r180ConsumerBeginOutputDomains"
+    ],
+    "matchingSourceCommits": [
+      "a1ad95edb59d1e54daa04a27e7852b18d445dbf0"
+    ]
+  },
+  {
+    "unit": "A9-1",
+    "path": "research-tests/DGamma/R180O19ObservedCompletion.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R180O19ObservedCompletion.idr"
+    ],
+    "start": "2026-09-07T12:28:10.765019+00:00",
+    "end": "2026-09-07T12:28:12.848273+00:00",
+    "seconds": 2.083049542270601,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 262816,
+    "sourceSHA256": "289f5f7c4854a7e2f9f277cd75d30a47ffa3a0faf717bc70511dce843420483f",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "2/2: Building DGamma.R180O19ObservedCompletion (research-tests/DGamma/R180O19ObservedCompletion.idr)\n",
+    "newTopLevelDeclarations": [
+      "r180CheckedFromPrerequisites"
+    ],
+    "matchingSourceCommits": [
+      "87e3acc0c51da10722263e57ba785c297b60860f"
+    ]
+  },
+  {
+    "unit": "A10-1",
+    "path": "research-tests/DGamma/R180O19ObservedCompletion.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R180O19ObservedCompletion.idr"
+    ],
+    "start": "2026-09-07T12:28:45.383487+00:00",
+    "end": "2026-09-07T12:28:47.456634+00:00",
+    "seconds": 2.0729812500067055,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 255856,
+    "sourceSHA256": "60ca1e03ec22200916bf4702307d40c5fd264cfceb963c985eb49e02167898ca",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "2/2: Building DGamma.R180O19ObservedCompletion (research-tests/DGamma/R180O19ObservedCompletion.idr)\n",
+    "newTopLevelDeclarations": [
+      "r180ConsumerBeginFromPrerequisites"
+    ],
+    "matchingSourceCommits": [
+      "505c848beaf441139c963d049e454ad7b540b9a6"
+    ]
+  },
+  {
+    "unit": "A11-1",
+    "path": "research-tests/DGamma/R180O19ObservedCompletion.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R180O19ObservedCompletion.idr"
+    ],
+    "start": "2026-09-07T12:29:36.070148+00:00",
+    "end": "2026-09-07T12:29:38.162569+00:00",
+    "seconds": 2.0922281248494983,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 255616,
+    "sourceSHA256": "9818f653e06f39ed5dce11a4e7e178f7cefcdafdc358a622473a52b87804af85",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "2/2: Building DGamma.R180O19ObservedCompletion (research-tests/DGamma/R180O19ObservedCompletion.idr)\n",
+    "newTopLevelDeclarations": [
+      "r180ObservedConsumerFinished"
+    ],
+    "matchingSourceCommits": [
+      "241facf6645a30c85b0d891db60353a081ca9aff"
+    ]
+  },
+  {
+    "unit": "A12-1",
+    "path": "research-tests/DGamma/R180O19ObservedCompletion.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R180O19ObservedCompletion.idr"
+    ],
+    "start": "2026-09-07T12:30:03.952545+00:00",
+    "end": "2026-09-07T12:30:06.035078+00:00",
+    "seconds": 2.082315292209387,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 255664,
+    "sourceSHA256": "806361f5f251d356ae6cd992b7a74ba8a76394a9dd6b0c41c5b0e2ba79b37cbb",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "2/2: Building DGamma.R180O19ObservedCompletion (research-tests/DGamma/R180O19ObservedCompletion.idr)\n",
+    "newTopLevelDeclarations": [
+      "r180ConsumerFinishRawObserved"
+    ],
+    "matchingSourceCommits": [
+      "38a035733d515c16b2e76bcea3fce08a413d5f6b"
+    ]
+  },
+  {
+    "unit": "A13-1",
+    "path": "research-tests/DGamma/R180O19ObservedCompletion.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R180O19ObservedCompletion.idr"
+    ],
+    "start": "2026-09-07T12:30:32.340620+00:00",
+    "end": "2026-09-07T12:30:34.435047+00:00",
+    "seconds": 2.0942384591326118,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 253488,
+    "sourceSHA256": "b084f84129a9fd04c488dd395b54a30dc88d8cb772dc7c8fc5119b72e19806d0",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "2/2: Building DGamma.R180O19ObservedCompletion (research-tests/DGamma/R180O19ObservedCompletion.idr)\n",
+    "newTopLevelDeclarations": [
+      "r180ConsumerFinishRaw"
+    ],
+    "matchingSourceCommits": [
+      "6e2e7c6959a625c5f602d7251d0e5f9ddd9fb8cf"
+    ]
+  },
+  {
+    "unit": "A14-1",
+    "path": "research-tests/DGamma/R180O19ObservedCompletion.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R180O19ObservedCompletion.idr"
+    ],
+    "start": "2026-09-07T12:31:21.559068+00:00",
+    "end": "2026-09-07T12:31:23.649194+00:00",
+    "seconds": 2.0899352496489882,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 262656,
+    "sourceSHA256": "12ce1e43a700566808a7c03eff1507161ed4457d4eba40e3d07bffa9cbe0309e",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "2/2: Building DGamma.R180O19ObservedCompletion (research-tests/DGamma/R180O19ObservedCompletion.idr)\n",
+    "newTopLevelDeclarations": [
+      "r180ObservedLifecycleSuffix"
+    ],
+    "matchingSourceCommits": [
+      "871e73fbe8a92563a4b2941d162d8fc256719947"
+    ]
+  },
+  {
+    "unit": "FINAL-package",
+    "path": "package",
+    "command": [
+      "idris2",
+      "--build",
+      "dgamma.ipkg"
+    ],
+    "start": "2026-09-07T12:31:50.076915+00:00",
+    "end": "2026-09-07T12:32:07.759167+00:00",
+    "seconds": 17.68210845813155,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 308832,
+    "sourceSHA256": "aee761a37757cb047ddbf0f846bc23ce830ed755422f96852d08eb435c368727",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "",
+    "matchingSourceCommits": []
+  },
+  {
+    "unit": "FINAL-B",
+    "path": "research/DGamma/CP5O20EpisodeSynchronizationSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O20EpisodeSynchronizationSpike.idr"
+    ],
+    "start": "2026-09-07T12:33:13.226208+00:00",
+    "end": "2026-09-07T12:33:17.393956+00:00",
+    "seconds": 4.167544750031084,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 2400720,
+    "sourceSHA256": "d93cb240ba8f3c7d6971cbdd5df6d325f784ace3af2943dd3a8a802eae43072d",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "30/30: Building DGamma.CP5O20EpisodeSynchronizationSpike (research/DGamma/CP5O20EpisodeSynchronizationSpike.idr)\n",
+    "newTopLevelDeclarations": [],
+    "matchingSourceCommits": [
+      "c579d522912893945a40f658ee741f5ad1e20a9e"
+    ]
+  },
+  {
+    "unit": "FINAL-A",
+    "path": "research-tests/DGamma/R180O19ObservedCompletion.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R180O19ObservedCompletion.idr"
+    ],
+    "start": "2026-09-07T12:34:24.230816+00:00",
+    "end": "2026-09-07T12:34:26.317881+00:00",
+    "seconds": 2.0868502920493484,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 262672,
+    "sourceSHA256": "12ce1e43a700566808a7c03eff1507161ed4457d4eba40e3d07bffa9cbe0309e",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "2/2: Building DGamma.R180O19ObservedCompletion (research-tests/DGamma/R180O19ObservedCompletion.idr)\n",
+    "newTopLevelDeclarations": [],
+    "matchingSourceCommits": [
+      "871e73fbe8a92563a4b2941d162d8fc256719947"
+    ]
   }
 ]

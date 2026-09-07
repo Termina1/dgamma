@@ -2752,3 +2752,56 @@ restriction. Unsupported generated children separately remain open. O17 still
 needs private reached-worklist plumbing, a completeness/existence argument,
 independence and child/parent side conditions, actual diamond and sealed decrease.
 Thm73 and all five prior holes remain OPEN; A11/A13 remain exhausted and A14 blocked.
+
+## Status — R180 bounded grind shift
+
+Budgets exhausted: A14/14, B15/15. Production and all five original spike files
+are unchanged against the authenticated baselines. Five holes remain, split
+CanonicalSort/CrossTrace/DeletionChain/LocalDiamond/Renaming =1/3/0/0/1.
+
+**Fully proved new capital:** A's actual post-provider-Finish lookup Just0;
+producer-observed raw consumer Begin and Finish with every observation closed;
+exact Begin output WF and its full committed-view-domain conjunct, obtained from
+already-proved raw Preservation and R179 source WF, not assumed; checked Begin
+as a projection of these prerequisites; a genuine five-edge provider/consumer
+lifecycle suffix and final WF. Its start is the already-registered root source,
+not yet a checked empty-origin whole trace. R179's earlier certified-prefix
+rejection is not silently identified with this separately indexed suffix.
+
+B proves actual-Maybe-head resolution from ordered renamed tables, structural
+resolution projection, exact normalized local input equality, deterministic
+iterator outcome identity including the returned callback, and pointwise pushed-
+undo propagation. These are INTERNAL induction consumers; they do not make
+synchronization an O20 input. `SupportedCanonicalEpisodeSynchronization` is now
+an Idris record at ONE pair of actual prefix/suffix cuts, with the accepted
+bijection fixed by `sameInputs`, GLOBAL ambient and ordered tables, and the
+selected supported actor's full renamed Maybe-control. The actual operational-
+left/right-canonical ZERO-prefix instance is produced from their common empty
+origin. R179 view/domain packets are produced at both actual canonical endpoints
+using accepted A9 plus both original uniqueness proofs and matched generations.
+No view or accumulator equality between those endpoint packets is asserted.
+
+**Partial/open:** all nonempty paired episode induction (real matched Begin
+providers/views, committed/effect resolution connection, actual Advance global
+registry preservation, and Finish closure); unsupported-child obligations are
+additional, not the sole remainder. A still lacks authenticated empty-origin
+whole execution/totality, quiet/noFailure, protocol and full fifteen-field replay
+bundle, precise blocks/coverage/order/disjointness/uniqueness and full current
+AdjacentActorSwapSafety. Thus no full O19 negative, no revised safety/fixtures,
+no O19 body permission request, no O20 body, and no confluence proof.
+
+**Stops/escapes:** no new live hole, postulate, believe_me, assert_total, partiality,
+with, local proof lambda or local let. A5's3/3 checked-edge attempt was removed;
+one interrupted compiler was explicitly reconciled. Its supervisor-authorized
+A6/A8 prerequisites now support checked constructor projection, not a fourth
+A5 direct probe. B3's3/3 suspended-case body was removed; separately authorized
+B4/B5 observed-head prerequisites and B6 structural projection cross that wall.
+Exact failed snapshots remain only in evidence, not live source or accepted TTC.
+
+**Next:** authenticate A's two root insertions and total execution, establish
+quiet/noFailure and component protocol, then construct every current safety field
+before requesting any revision/body gate. For B, advance the actual paired cuts
+through registrations and supported Begin/Advance/Finish using the internal
+consumers; only after that isolate the unsupported-child endpoint remainder.
+Compiler/source correlation, every attempt and guard are catalogued in
+`research-tests/O6-R180-GRIND-SHIFT-AUDIT.md` and its compiler ledger/archive.
