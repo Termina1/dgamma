@@ -1,8 +1,12 @@
 module DGamma.CP5RootBirthCoverageSpike
 
 import DGamma.Calculus
+import DGamma.Metatheory
+import DGamma.Coeffects
 import DGamma.CP3
 import DGamma.CP5RawClosingRankSpike
+import DGamma.CP5ImmutableBirthMetadataSpike
+import DGamma.CP5UniqueRawNameInsertions
 import DGamma.CP5CurrentGenerationBirthSpike
 import DGamma.CP5SupportedBirthCoverageSpike
 import Data.Nat
@@ -107,3 +111,17 @@ export
 rootBirthBackwardLocated name key world error value renaming left right correspondence selected component birth =
   rootBirthBackwardObserved name key world error value renaming Z Z left right correspondence selected component (locatedActionOrdinal birth)
     (rawClosingActionAtLocated name key world error value right (OInsert selected Root component) birth)
+
+export
+0 rootBirthFromEndpoint :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {first, finalState : SystemState name key value world error} ->
+  (trace : Transitions first finalState) -> AlignedTransitions name key world error value nameEq keyEq trace ->
+  (bindings (registry first) = []) -> (selected : name) -> (fiber : Fiber name key value world error) ->
+  (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} selected (registry finalState) = Just fiber) ->
+  (fiberParent fiber = Root) -> LocatedActionOccurrence (OInsert selected Root (fiberComponent fiber)) trace
+rootBirthFromEndpoint name key world error value nameEq keyEq trace aligned empty selected fiber found parentExact =
+  replace {p = \owner => LocatedActionOccurrence (OInsert selected owner (fiberComponent fiber)) trace} parentExact
+    (rawMetadataBirthAtPrefix name key world error value nameEq keyEq trace trace NoTransitions
+      (currentBirthTraceAppendEmpty name key world error value trace) aligned empty selected fiber found)
