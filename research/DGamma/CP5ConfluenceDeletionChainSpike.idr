@@ -30665,3 +30665,29 @@ rawClosingOrdinalRankSame name key world error value nameEq keyEq protocol globa
     rawClosingRanksSameActor name key world error value nameEq keyEq protocol global premises unique
       actor consumer found episode
       (rawClosingSameOpeningActor name key world error value nameEq keyEq global actor consumer found episode same)
+
+||| O7 ordinal completeness lifts a finite inventory bound to EVERY closing.
+0 rawClosingMaximumRankBound :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (global : Transitions initial finalState) ->
+  (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq global) ->
+  (UniqueRawNameInsertions name key world error value nameEq keyEq global) ->
+  (scan : ClosingEpisodeScan name key world error value nameEq keyEq global) ->
+  (maximumRank : Nat) ->
+  ((other : ClosingEpisodeOccurrence name key world error value nameEq keyEq global) ->
+    (Elem other (scannedClosingOccurrences scan)) ->
+    (LTE (rawClosingOccurrenceRank name key world error value nameEq keyEq protocol global premises other) maximumRank)) ->
+  (consumer : name) ->
+  (episode : LocatedClosedEpisode name key world error value nameEq keyEq consumer global) ->
+  (LTE (rawClosingOccurrenceRank name key world error value nameEq keyEq protocol global premises
+    (ErasedClosingEpisodeOccurrence consumer episode)) maximumRank)
+rawClosingMaximumRankBound name key world error value nameEq keyEq protocol global premises unique
+  scan maximumRank upper consumer episode =
+    case elemMapPreimage scannedClosingOrdinal (everyClosingOccurrenceScanned scan consumer episode) of
+      (other ** (member, same)) =>
+        replace {p = \rank => LTE rank maximumRank}
+          (rawClosingOrdinalRankSame name key world error value nameEq keyEq protocol global premises unique
+            other consumer episode same) (upper other member)
