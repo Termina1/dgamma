@@ -55,3 +55,12 @@ rootActionFromLocated name key world error value nameEq trace action occurrence 
     (rootActionOccursPrefix name key world error value nameEq (beforeActionOccurrence occurrence)
       (MoreTransitions (locatedTransition occurrence) (afterActionOccurrence occurrence)) action
       (RootActionHere (locatedTransition occurrence) (afterActionOccurrence occurrence) root (locatedAction occurrence)))
+
+0 rootActionHeadView :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (action : Action name key value world error) -> (step : Transition first middle) -> (rest : Transitions middle finalState) ->
+  RootActionOccurs name key world error value nameEq action (MoreTransitions step rest) ->
+  Either (RootOrchestrationStep nameEq step, transitionAction step = action) (RootActionOccurs name key world error value nameEq action rest)
+rootActionHeadView name key world error value nameEq action step rest (RootActionHere _ _ root exact) = Left (root, exact)
+rootActionHeadView name key world error value nameEq action step rest (RootActionLater _ _ later) = Right later
