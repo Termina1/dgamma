@@ -110,3 +110,12 @@ subproblem: infer early right PARTIAL-MAP definedness from original executions
 and genuine partial commutation. This must NOT be confused with checked
 control/tag applicability; the latter still needs source-map rebasing and
 target/view guards, and full Cartesian/other-orientation/block obligations.
+
+A18-A24 all fresh PASS1 (about1.04-1.06s each): generic algebra now
+constructs an actual early RIGHT PARTIAL-MAP result from the two original
+frames, right-map congruence and genuine partial commutation. No early right
+map/check, selected target or output relation is assumed. Explicit observed
+Maybe arguments and source-frame constructors are the only eliminators.
+The next specialization must derive both frames/congruence/commutation from
+the actual LTS pair and same bundle. Effect definedness is not checked
+control/tag applicability (e.g. a Begin effect map cannot establish resolveView).

@@ -91,3 +91,20 @@ o19PartialRunObserved effectMap origin Nothing exact defined =
   case defined of Refl impossible
 o19PartialRunObserved effectMap origin (Just afterState) exact defined =
   MkO19PartialRun afterState exact
+
+||| Construct the actual early right EFFECT result, not merely its Boolean
+||| domain. The original frames and independence supply all required evidence.
+||| Captured-map rebasing and checked control/tag guards remain distinct work.
+export
+0 o19CommutingFramesEarlyRun :
+  (state : Type) -> (eq : Equivalence state) -> (left, right : PartialMap state) ->
+  ((first, second : state) -> relation eq first second ->
+    PartialRelated state (relation eq) (right first) (right second)) ->
+  PartialCommute eq left right -> (origin, middle, final : state) ->
+  PartialRelated state (relation eq) (left origin) (Just middle) ->
+  PartialRelated state (relation eq) (right middle) (Just final) ->
+  O19PartialRun state right origin
+o19CommutingFramesEarlyRun state eq left right rightRespects commute origin middle final leftFrame rightFrame =
+  o19PartialRunObserved right origin (right origin) Refl
+    (o19CommutingFramesEarlyDomain state eq left right rightRespects commute
+      origin middle final leftFrame rightFrame)
