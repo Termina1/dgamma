@@ -66,3 +66,13 @@ r180FinishedProviderResolution =
     (r180NormalizedServiceMemberObserved
       (ownedValues (restrictOwnedPreservingOrder @{%search}
         DGamma.Section3Example.toySpecA (ownedValues (ownedA True)))) Refl)
+
+||| Explicit consumer Begin output, sharing the ACTUAL provider registry.
+||| This definition alone is not a transition or an execution proof.
+public export
+r180ObservedConsumerBegun : SystemState Nat ToyKey ToyValue ToyRuntime String
+r180ObservedConsumerBegun = MkSystemState (worldState r179ObservedProviderFinished)
+  (replaceBinding 1
+    (MkFiber emptyConsumerComponent Root False emptyOwned
+      (Reloading [] id (ProviderView 0 EmptyView)))
+    (registry r179ObservedProviderFinished))
