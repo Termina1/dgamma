@@ -75,3 +75,54 @@ uniqueRawBirthComponents name key world error value nameEq keyEq trace unique
           (rawClosingActionAtLocated name key world error value trace
             (OInsert selected rightParent rightComponent) right))) of
       Refl => Refl
+
+
+||| Only an actual O-Insert can fire at an absent owner.
+public export
+0 rawAbsentOwnerInsertion :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (action : Action name key value world error) ->
+  (before, afterState : SystemState name key value world error) -> (tag : RuleTag) ->
+  applyAction @{nameEq} @{keyEq} action before = Just (tag, afterState) ->
+  lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+    @{nameEq} (actionOwner action) (registry before) = Nothing ->
+  (parent : Parent name ** (component : Component key value world error **
+    action = OInsert (actionOwner action) parent component))
+rawAbsentOwnerInsertion name key world error value nameEq keyEq
+  (OInsert actor parent component) before afterState tag raw absent = (parent ** (component ** Refl))
+rawAbsentOwnerInsertion name key world error value nameEq keyEq
+  (ORetire actor) before afterState tag raw absent =
+    void (nothingIsNotJust (trans (sym (the
+      (applyAction @{nameEq} @{keyEq} (ORetire actor) before = Nothing)
+      (rewrite absent in Refl))) raw))
+rawAbsentOwnerInsertion name key world error value nameEq keyEq
+  (ORemove actor) before afterState tag raw absent =
+    void (nothingIsNotJust (trans (sym (the
+      (applyAction @{nameEq} @{keyEq} (ORemove actor) before = Nothing)
+      (rewrite absent in Refl))) raw))
+rawAbsentOwnerInsertion name key world error value nameEq keyEq
+  (LBegin actor) before afterState tag raw absent =
+    void (nothingIsNotJust (trans (sym (the
+      (applyAction @{nameEq} @{keyEq} (LBegin actor) before = Nothing)
+      (rewrite absent in Refl))) raw))
+rawAbsentOwnerInsertion name key world error value nameEq keyEq
+  (LAdvance actor) before afterState tag raw absent =
+    void (nothingIsNotJust (trans (sym (the
+      (applyAction @{nameEq} @{keyEq} (LAdvance actor) before = Nothing)
+      (rewrite absent in Refl))) raw))
+rawAbsentOwnerInsertion name key world error value nameEq keyEq
+  (LDivert actor) before afterState tag raw absent =
+    void (nothingIsNotJust (trans (sym (the
+      (applyAction @{nameEq} @{keyEq} (LDivert actor) before = Nothing)
+      (rewrite absent in Refl))) raw))
+rawAbsentOwnerInsertion name key world error value nameEq keyEq
+  (LLeave actor) before afterState tag raw absent =
+    void (nothingIsNotJust (trans (sym (the
+      (applyAction @{nameEq} @{keyEq} (LLeave actor) before = Nothing)
+      (rewrite absent in Refl))) raw))
+rawAbsentOwnerInsertion name key world error value nameEq keyEq
+  (LUnload actor) before afterState tag raw absent =
+    void (nothingIsNotJust (trans (sym (the
+      (applyAction @{nameEq} @{keyEq} (LUnload actor) before = Nothing)
+      (rewrite absent in Refl))) raw))
