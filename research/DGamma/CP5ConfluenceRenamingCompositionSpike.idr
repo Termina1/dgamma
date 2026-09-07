@@ -2885,3 +2885,27 @@ acceptedLeftEndpointCurrentBirth name key world error value nameEq keyEq left ri
   currentBirthAtPrefixComponent name key world error value nameEq keyEq left left NoTransitions
     (currentBirthTraceAppendEmpty name key world error value left) aligned empty unique selected generation
     (acceptedLeftCurrentBirth name key world error value nameEq left right renaming registrations selected generation current) observed found
+
+||| Symmetric RIGHT endpoint authentication; uniqueness is original-trace local.
+export
+0 acceptedRightEndpointCurrentBirth :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {leftFirst, leftFinal, rightFirst, rightFinal : SystemState name key value world error} ->
+  (left : Transitions leftFirst leftFinal) -> (right : Transitions rightFirst rightFinal) ->
+  (renaming : RegistrationGenerationBijection name) ->
+  (registrations : RegistrationCorrespondenceByGeneration nameEq renaming left right) ->
+  AlignedTransitions name key world error value nameEq keyEq right ->
+  (bindings (registry rightFirst) = []) ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq right ->
+  (selected : name) -> (generation : RegistrationGeneration name) ->
+  (lookupCurrentGeneration @{nameEq} selected (rightFinalGenerations registrations) = Just generation) ->
+  (observed : Fiber name key value world error) ->
+  (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+    @{nameEq} selected (registry rightFinal) = Just observed) ->
+  (parent : Parent name ** birth : LocatedActionOccurrence (OInsert selected parent (fiberComponent observed)) right **
+    generation = MkRegistrationGeneration selected (locatedActionOrdinal birth))
+acceptedRightEndpointCurrentBirth name key world error value nameEq keyEq left right renaming registrations aligned empty unique selected generation current observed found =
+  currentBirthAtPrefixComponent name key world error value nameEq keyEq right right NoTransitions
+    (currentBirthTraceAppendEmpty name key world error value right) aligned empty unique selected generation
+    (acceptedRightCurrentBirth name key world error value nameEq left right renaming registrations selected generation current) observed found
