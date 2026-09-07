@@ -146,3 +146,40 @@ o19ActivationRowStep nameEq keyEq protocol source earlier left sourceRight cross
         (o19EarlyLabels nameEq keyEq (transitionAction sourceRight) (transitionAction (rowRight previous))
           (transitionTag sourceRight) (transitionTag (rowRight previous))
           (rowAction previous) (rowTag previous) early))
+
+||| Genuine arbitrary-length one-row induction. Recurse into the source tail,
+||| then consume that ACTUAL reached boundary to produce the next crossing.
+||| Guards are indexed by untouched source cuts; the Begin specialization
+||| derives them from its one initial guard rather than asking O19 for them.
+export
+0 o19BubbleActivationRow :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {initial, sourceFinal, before, rightBefore, rightAfter : SystemState name key value world error} ->
+  (source : Transitions initial sourceFinal) -> (earlier : Transitions initial before) ->
+  (spine : Transitions before rightBefore) -> (right : Transition rightBefore rightAfter) ->
+  (later : Transitions rightAfter sourceFinal) ->
+  (appendTransitions earlier (appendTransitions spine (MoreTransitions right later)) = source) ->
+  ReplayInvariantBundle name key world error value protocol nameEq keyEq source ->
+  (0 unique : UniqueRawNameInsertions name key world error value nameEq keyEq source) ->
+  PaperActivationStep right ->
+  (0 classes : {first, last : SystemState name key value world error} ->
+    (step : Transition first last) -> OccursIn step spine ->
+    (PaperActivationStep step, Not (transitionActor right = transitionActor step))) ->
+  (0 guards : O19EarlyAlong name key world error value nameEq keyEq
+    (transitionAction right) (transitionTag right) spine) ->
+  O19ActivationRow name key world error value protocol nameEq keyEq source earlier right (transitionCount spine)
+o19BubbleActivationRow nameEq keyEq protocol source earlier _ right later
+  decomposition premises unique activation classes (EarlyAlongEnd early) =
+    o19ActivationRowZero nameEq keyEq protocol source earlier right later
+      decomposition premises unique activation
+o19BubbleActivationRow nameEq keyEq protocol source earlier _ right later
+  decomposition premises unique activation classes (EarlyAlongStep left rest early remaining) =
+    o19ActivationRowStep nameEq keyEq protocol source earlier left right (transitionCount rest)
+      (o19BubbleActivationRow nameEq keyEq protocol source
+        (appendTransitions earlier (MoreTransitions left NoTransitions)) rest right later
+        (trans (appendTransitionsAssociative earlier (MoreTransitions left NoTransitions)
+          (appendTransitions rest (MoreTransitions right later))) decomposition)
+        premises unique activation (\step, occurs => classes step (OccursLater occurs)) remaining)
+      (Builtin.fst (classes left OccursHere)) (Builtin.snd (classes left OccursHere)) early
