@@ -144,3 +144,17 @@ public export
   (the (DecEq Nat) %search) (the (DecEq ToyKey) %search) r181WholeTrace 0 1
   r181ProviderLocatedBlock r181ConsumerLocatedBlock
 r181ProviderBeforeConsumer = MkBlockBefore NoTransitions Refl
+
+||| E8: complete lifecycle coverage for all seven ACTUAL transitions. The two
+||| root insertions are orchestration; the five lifecycle actors are exactly0/1.
+||| This does not assert the remaining numeric disjoint-range/decomposition law.
+public export
+0 r181BlockLifecycleCoverage : LifecycleActorsCovered [0, 1] r181WholeTrace
+r181BlockLifecycleCoverage =
+  CoveredOrchestrationStep _ _ Refl
+    (CoveredOrchestrationStep _ _ Refl
+      (CoveredLifecycleStep _ _ Refl Here
+        (CoveredLifecycleStep _ _ Refl Here
+          (CoveredLifecycleStep _ _ Refl Here
+            (CoveredLifecycleStep _ _ Refl (There Here)
+              (CoveredLifecycleStep _ _ Refl (There Here) LifecycleActorsCoveredEnd))))))
