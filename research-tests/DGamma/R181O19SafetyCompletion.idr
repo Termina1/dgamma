@@ -72,3 +72,25 @@ r181TraceAligned =
                 (r180CheckedFromPrerequisites (LAdvance 1) r180ObservedConsumerBegun
                   r180ObservedConsumerFinished LFinishTag r180ConsumerFinishRaw
                   (snd r180ObservedLifecycleSuffix)) _ AlignedEnd))))))
+
+||| Observe the ACTUAL provider table at the final endpoint before reducing
+||| its quietness guard. The presence equation is closed by the next producer.
+export
+0 r181EndpointObserved :
+  (table : OwnedTable ToyKey ToyValue DGamma.Section3Example.toySpecA) ->
+  (0 tableObserved : (restrictOwnedPreservingOrder @{%search}
+    DGamma.Section3Example.toySpecA (ownedValues (ownedA True)) = table)) ->
+  (binding : Maybe Bool) ->
+  (0 bindingObserved : (lookupBinding @{%search} ServiceA (ownedValues table) = binding)) ->
+  (0 present : (isJust binding = True)) ->
+  ((quiet {name = Nat} {key = ToyKey} {value = ToyValue} {world = ToyRuntime}
+      {error = String} @{%search} @{%search} r180ObservedConsumerFinished = True),
+   (noFailedFibers r180ObservedConsumerFinished = True),
+   (supportedActiveAt {name = Nat} {key = ToyKey} {value = ToyValue}
+      {world = ToyRuntime} {error = String} @{%search} 0 r180ObservedConsumerFinished = True),
+   (supportedActiveAt {name = Nat} {key = ToyKey} {value = ToyValue}
+      {world = ToyRuntime} {error = String} @{%search} 1 r180ObservedConsumerFinished = True))
+r181EndpointObserved table tableObserved Nothing bindingObserved present =
+  case present of Refl impossible
+r181EndpointObserved table tableObserved (Just service) bindingObserved present =
+  rewrite tableObserved in rewrite bindingObserved in (Refl, Refl, Refl, Refl)
