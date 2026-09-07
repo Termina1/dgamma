@@ -329,3 +329,27 @@ uniqueRawComponentsAcrossPrefixes name key world error value nameEq keyEq global
           (rightParent ** rightBirth) =>
             uniqueRawBirthComponents name key world error value nameEq keyEq global unique selected
               leftParent rightParent (fiberComponent leftFiber) (fiberComponent rightFiber) leftBirth rightBirth
+
+
+||| Restrict actual registration provenance to any reached prefix, carrying
+||| the existing rank invariant forward instead of assuming endpoint ranks.
+public export
+0 rawProtocolRanksAtPrefix :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, middle, finalState : SystemState name key value world error} ->
+  (prior : Transitions initial middle) -> (later : Transitions middle finalState) ->
+  AlignedTransitions name key world error value nameEq keyEq (appendTransitions prior later) ->
+  RegistrationProvenance protocol nameEq (appendTransitions prior later) ->
+  RegistryProtocolRanked protocol nameEq initial -> RegistryProtocolRanked protocol nameEq middle
+rawProtocolRanksAtPrefix name key world error value protocol nameEq keyEq
+  NoTransitions later aligned provenance ranked = ranked
+rawProtocolRanksAtPrefix name key world error value protocol nameEq keyEq
+  (MoreTransitions head tail) later aligned provenance ranked =
+    case aligned of
+      AlignedStep action tag checked _ alignedRest => case provenance of
+        RegistrationProvenanceStep _ _ headProvenance tailProvenance =>
+          rawProtocolRanksAtPrefix name key world error value protocol nameEq keyEq tail later
+            alignedRest tailProvenance
+            (registrationRankStep protocol nameEq keyEq action tag checked headProvenance ranked)
