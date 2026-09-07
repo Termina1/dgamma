@@ -78,3 +78,20 @@ rootCutCompatible name key world error value nameEq keyEq component Z (Availabil
   rootCutCompatible name key world error value nameEq keyEq component Z later
 rootCutCompatible name key world error value nameEq keyEq component (S position) (AvailabilityStep first step rest later) =
   rootCutCompatible name key world error value nameEq keyEq component position later
+
+||| Earliest means admissible HERE and no strictly earlier compatible cut in
+||| this ACTUAL located birth's prefix, not an arbitrary executable schedule.
+public export
+record EarliestAvailableRootBirth
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (keyEq : DecEq key)
+  {0 initial, finalState : SystemState name key value world error}
+  (0 trace : Transitions initial finalState) (0 root : name)
+  (0 component : Component key value world error)
+  (0 birth : LocatedActionOccurrence (OInsert root Root component) trace) where
+  constructor MkEarliestAvailableRootBirth
+  rootAvailabilityTrail : AvailabilityTrace name key world error value (beforeActionOccurrence birth)
+  0 rootCurrentCutAvailable : rootCutCompatible name key world error value nameEq keyEq component
+    (locatedActionOrdinal birth) rootAvailabilityTrail = True
+  0 noEarlierCompatibleRootCut : (earlier : Nat) -> LT earlier (locatedActionOrdinal birth) ->
+    rootCutCompatible name key world error value nameEq keyEq component earlier rootAvailabilityTrail = False
