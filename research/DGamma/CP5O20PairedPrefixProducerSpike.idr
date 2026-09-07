@@ -188,3 +188,54 @@ pairedInsertEffects name key world error value nameEq keyEq renaming actor compo
         (projectEffectState @{nameEq} (MkSystemState rightWorld rightRegistry)) paired)
       (projectInsertEffectFrame nameEq keyEq (renameForward renaming actor) rightWorld
         component rightParent rightRegistry rightAbsent)
+
+||| Actual inserted/foreign lookup split, preserving the selected control cut.
+||| No selected-name opacity: fresh and foreign cases use actual lookup laws.
+export
+0 pairedInsertControls :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (renaming : NameBijection name) -> (actor : name) ->
+  (component : Component key value world error) ->
+  (leftParent, rightParent : Parent name) ->
+  ParentRelatedBy renaming leftParent rightParent ->
+  (leftRegistry, rightRegistry : Registry name key value world error) ->
+  (leftAbsent : (lookupFiber {name = name} {key = key} {value = value}
+    {world = world} {error = error} @{nameEq} actor leftRegistry = Nothing)) ->
+  (rightAbsent : (lookupFiber {name = name} {key = key} {value = value}
+    {world = world} {error = error} @{nameEq} (renameForward renaming actor)
+      rightRegistry = Nothing)) ->
+  (selected : name) ->
+  MaybeFiberRelatedBy {name = name} {key = key} {world = world} {error = error}
+    {value = value} renaming (lookupFiber {name = name} {key = key} {value = value} {world = world}
+      {error = error} @{nameEq} selected leftRegistry)
+    (lookupFiber {name = name} {key = key} {value = value} {world = world}
+      {error = error} @{nameEq} (renameForward renaming selected) rightRegistry) ->
+  MaybeFiberRelatedBy {name = name} {key = key} {world = world} {error = error}
+    {value = value} renaming
+    (lookupFiber {name = name} {key = key} {value = value} {world = world}
+      {error = error} @{nameEq} selected (insertBinding @{nameEq} actor
+      (freshFiber component leftParent) leftRegistry leftAbsent))
+    (lookupFiber {name = name} {key = key} {value = value} {world = world}
+      {error = error} @{nameEq} (renameForward renaming selected) (insertBinding @{nameEq}
+      (renameForward renaming actor) (freshFiber component rightParent)
+        rightRegistry rightAbsent))
+pairedInsertControls name key world error value nameEq renaming actor component
+  leftParent rightParent parents leftRegistry rightRegistry leftAbsent rightAbsent
+  selected controls = case decEq @{nameEq} selected actor of
+    Yes same => rewrite same in
+      rewrite lookupInserted @{nameEq} actor (freshFiber component leftParent)
+        leftRegistry leftAbsent in
+      rewrite lookupInserted @{nameEq} (renameForward renaming actor)
+        (freshFiber component rightParent) rightRegistry rightAbsent in
+      RenamedPresent (RenamedFibers {component = component} leftParent rightParent
+        False False emptyOwned emptyOwned (Inactive Nothing) (Inactive Nothing)
+        parents Refl (RenamedInactive Refl))
+    No different =>
+      rewrite lookupInsertOther @{nameEq} selected actor different
+        (freshFiber component leftParent) leftRegistry leftAbsent in
+      rewrite lookupInsertOther @{nameEq} (renameForward renaming selected)
+        (renameForward renaming actor)
+        (\same => different (trans (sym (renameLeftInverse renaming selected))
+          (trans (cong (renameBackward renaming) same)
+            (renameLeftInverse renaming actor))))
+        (freshFiber component rightParent) rightRegistry rightAbsent in controls
