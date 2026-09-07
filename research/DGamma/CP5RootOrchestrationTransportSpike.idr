@@ -114,3 +114,25 @@ rootActionLocated name key world error value nameEq _ action (RootActionHere ste
   MkLocatedActionOccurrence _ _ NoTransitions step rest exact Refl
 rootActionLocated name key world error value nameEq _ action (RootActionLater step rest later) =
   currentBirthPrependLocation name key world error value step rest action (rootActionLocated name key world error value nameEq rest action later)
+
+||| A retirement of an actual root endpoint was a ROOT input at its original
+||| source step: immutable metadata is recovered from authentic unique births.
+export
+0 rootEndpointRetirementPacket :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {first, finalState : SystemState name key value world error} ->
+  (trace : Transitions first finalState) -> AlignedTransitions name key world error value nameEq keyEq trace ->
+  (bindings (registry first) = []) -> UniqueRawNameInsertions name key world error value nameEq keyEq trace ->
+  (selected : name) -> (finalFiber : Fiber name key value world error) ->
+  (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} selected (registry finalState) = Just finalFiber) ->
+  (fiberParent finalFiber = Root) -> LocatedActionOccurrence (ORetire selected) trace ->
+  RootActionOccurs name key world error value nameEq (ORetire selected) trace
+rootEndpointRetirementPacket name key world error value nameEq keyEq trace aligned empty unique selected finalFiber finalFound parentExact occurrence =
+  case retirementLocatedSource name key world error value nameEq keyEq trace aligned selected occurrence of
+    (sourceFiber ** sourceFound) =>
+      rootActionFromLocated name key world error value nameEq trace (ORetire selected) occurrence
+        (RootRetireStep sourceFiber sourceFound
+          (trans (cong fst (actualPrefixEndpointMetadata name key world error value nameEq keyEq trace (beforeActionOccurrence occurrence)
+            (MoreTransitions (locatedTransition occurrence) (afterActionOccurrence occurrence)) (actionOccurrenceDecomposition occurrence)
+            aligned empty unique selected sourceFiber finalFiber sourceFound finalFound)) parentExact) (locatedAction occurrence))
