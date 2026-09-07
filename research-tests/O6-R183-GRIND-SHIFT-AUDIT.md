@@ -208,3 +208,16 @@ and Adj6 remain the existing concrete guards against dropping these clauses.
 
 Unit C now proceeds only on canonical pair-selection prerequisites (max8),
 continuing R181's actual-view producer. No O20/O17/O21 body is authorized.
+
+## Unit C: actual canonical pair selection
+
+C1 PASS2,3.106s (83a46c6): fixed-bijection right support membership;
+first attempt18.686s refreshed frozen transitive seeds and rejected a missing
+direct CanonicalSort import, then import-only correction passed.
+C2 PASS1,3.112s (ff2e137): exact inverse-mapped target membership.
+C3 PASS1,3.120s (7917d14): selected-block package pinned by equality to
+the actual operational-left/right-canonical authoritative decompositions.
+C4 PASS1,3.115s: PRODUCES those two selected ranges from existing accepted
+operational capital and support truth, not arbitrary replacement traces or
+a caller-selected bijection. No prefix effects/control agreement is inferred.
+The operational capital remains a genuine conditional input; O19 is not closed.
