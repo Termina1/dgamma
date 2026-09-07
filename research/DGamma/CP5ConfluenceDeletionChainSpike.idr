@@ -30591,3 +30591,18 @@ rawClosingSameOpeningActor name key world error value nameEq keyEq global leftAc
     (trans (sym (rawClosingOpeningActionAt name key world error value nameEq keyEq global leftActor left))
       (trans (cong (\ordinal => rawClosingActionAt name key world error value ordinal global) same)
         (rawClosingOpeningActionAt name key world error value nameEq keyEq global rightActor right))))
+
+||| Producer-owned decomposition at the exact reached installed opening state.
+0 rawClosingReachedCutExact :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, finalState : SystemState name key value world error} ->
+  {global : Transitions initial finalState} -> (selected : name) ->
+  (episode : LocatedClosedEpisode name key world error value nameEq keyEq selected global) ->
+  (appendTransitions (prefixThroughOpening episode)
+    (appendTransitions (closedTransitions (locatedEpisode episode)) (traceAfterClosing episode)) = global)
+rawClosingReachedCutExact name key world error value nameEq keyEq selected episode =
+  trans (appendTransitionsAssociative (traceBeforeOpening episode)
+    (MoreTransitions (beginTransition (closedOpening (locatedEpisode episode))) NoTransitions)
+    (appendTransitions (closedTransitions (locatedEpisode episode)) (traceAfterClosing episode)))
+    (locatedDecomposition episode)
