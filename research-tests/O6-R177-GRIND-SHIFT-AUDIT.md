@@ -211,3 +211,19 @@ See the stop-audit appendix for exact output and the --exec Building-marker
 qualification. Both independent capitals remain unconstructed; no full O18
 counterexample claimed. Probe source removed and frozen; only independent
 metadata transport resumes. No premise/body changes authorized.
+
+### B55–B67 — independent immutable birth metadata
+
+Fresh, individually committed PASS 1/1 for all thirteen units. New total research
+companions `CP5ImmutableBirthMetadataSpike` and `CP5MatchedBirthMetadataSpike`
+retain the actual parent AND component of every reached lookup at an original
+located birth. Actual RegistryLocalUpdate preservation is structural; retirement
+is intentionally excluded. B60 reconciles the exact accepted current birth with
+both lookup fields, and B61–B63 return that exact-metadata birth with its exact
+accepted generation stamp on either original trace.
+
+B64–B66 introduce/construct genuine scanned-event births with an explicit ordinal
+offset and structural prepend law. B67 authenticates EVERY member of the actual
+sealed side event fold as a located insertion with its exact generation stamp.
+No caller-supplied origin map. Still no support-truth implication, retirement
+transport, premise strengthening, or O18 body fill.
