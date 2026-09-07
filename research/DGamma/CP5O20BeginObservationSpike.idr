@@ -63,3 +63,19 @@ o20BeginObservationFromPlan nameEq keyEq actor ambient source owner found afterS
   (MkForeignBeginPlanView {component} {parent} {table} view ownerShape targetFound tagShape afterShape) =
     MkO20BeginObservation component parent table view
       (trans found (cong Just ownerShape)) targetFound afterShape
+
+||| Observe the actual owner lookup result explicitly before invoking the
+||| public Begin-plan producer. No computed existential is locally eliminated.
+export
+0 o20BeginObservationAtOwner :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (ambient : world) -> (source : Registry name key value world error) ->
+  (afterState : SystemState name key value world error) ->
+  (applyAction @{nameEq} @{keyEq} (LBegin actor) (MkSystemState ambient source) = Just (LBeginTag, afterState)) ->
+  (observed : (owner : Fiber name key value world error **
+    (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor source = Just owner))) ->
+  O20BeginObservation name key world error value nameEq keyEq actor (MkSystemState ambient source) afterState
+o20BeginObservationAtOwner nameEq keyEq actor ambient source afterState raw (owner ** found) =
+  o20BeginObservationFromPlan nameEq keyEq actor ambient source owner found afterState
+    (foreignBeginPlanView nameEq keyEq actor ambient source owner found LBeginTag afterState raw)
