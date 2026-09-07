@@ -375,3 +375,43 @@ steps, owned rank equations/descent and original decomposition, then alignment.
 No root barrier moves, canonical proof body, or assumption that Nothing means
 canonical. Applying its rank parameter to the frozen private worklist observer
 and proving all orientation applicability remains separate integration work.
+
+## Unit E — actual checked rank-descent location: 8/8 landed
+
+E1 `LocatedRankDescent` (35ec1d2); E2 `locatedRankDescentHead` (16922dc);
+E3 `locatedRankDescentPrepend` (c26299c); E4 `observedRankHeadDescent` (2ff434d);
+E5 `findActualRankDescent` (2631676); E6 `locatedRankDescentAligned` (8c96a5f);
+E7 `r179RankedSelectionTrace` (4229751); E8 `r179RankedSelectionChecks` (see
+immediate source commit). E1–E6 each1/1; E7 PASS2/3; E8 PASS3/3.
+
+The total, erased proof-producing selector traverses the ACTUAL finite checked
+trace under a SINGLE deterministic Maybe-rank observation. It returns real
+adjacent left/right steps with exact rank observations, strict rankCrossing=1,
+actual prefix/suffix/states and whole-trace decomposition. It never selects an
+unowned barrier and never joins nodes separated by one. Prefix lifting retains
+all earlier actions. E6 derives the SAME chosen pair's designated dictionary
+alignment from actual whole-source alignment. No arbitrary target word, pair,
+decrease certificate or independent alignment oracle is accepted by selection.
+
+The concrete fixture really executes two empty-component root insertions then
+Begin0;Begin1. Its count4 excludes the Maybe fallback. Under desired order[1,0]
+(on this fixture's stored action kinds), selection returns prefix-length2,
+left actor0/right actor1, ranks1/0, empty suffix: exact observation
+`Just (2,0,1,1,0,0)`. Both actual root insertion barriers remain before the pair.
+This fixture is neither a root-placement attempt nor a completed canonical trace.
+
+E7-1 rejected missing direct CP4SupportQuiescence producer import (3.13s); repaired
+at E7-2 (1.06s). E8-1 rejected six implicit type metavariables in the anonymous
+observation (2.10s); E8-2 fully typed the observation/result but reduction stopped
+at the imported selector (1.04s). E8-3 added direct WorkMeasure/Nat/Elem imports
+needed to unfold the public rank computation and PASS2.08s. All three charged;
+no fourth attempt and no source/cap reset. This also explains why proof-bearing
+computed observations must not be declared impossible from a stuck Refl alone.
+
+**Still open:** instantiate/consume the adapter at the frozen worklist's exact
+private action-rank observer; derive applicable A/A, O/A, O/O/A-O orientation
+and early execution for the SAME selected pair; connect it to the accepted
+sealed swap/decrease theorem; prove adequate completeness/noncanonical progress.
+Nothing does NOT prove canonicality. No root placement, O17 body, old worklist
+surface, old spike declaration, or LocalDiamond declaration changed. E adds
+selection/alignment capital, not a proved orientation diamond.

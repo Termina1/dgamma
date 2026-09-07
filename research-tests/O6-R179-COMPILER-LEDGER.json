@@ -1521,5 +1521,350 @@
     "matchingSourceCommits": [
       "a8679a0f0a4fd3d9848d109ac3e0052f7bee36fd"
     ]
+  },
+  {
+    "unit": "E1-1",
+    "path": "research/DGamma/CP5RankedTraceSelectionSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5RankedTraceSelectionSpike.idr"
+    ],
+    "start": "2026-09-07T10:31:41.834954+00:00",
+    "end": "2026-09-07T10:31:42.878548+00:00",
+    "seconds": 1.0434071668423712,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 0,
+    "sourceSHA256": "af93141e9fe3ab434dce06410b9e93be9a403ca4bd6a551822c0049175306656",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "2/2: Building DGamma.CP5RankedTraceSelectionSpike (research/DGamma/CP5RankedTraceSelectionSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "LocatedRankDescent"
+    ],
+    "matchingSourceCommits": [
+      "35ec1d20933e2c3d5f87ed34b739f1d67cd0db8c"
+    ]
+  },
+  {
+    "unit": "E2-1",
+    "path": "research/DGamma/CP5RankedTraceSelectionSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5RankedTraceSelectionSpike.idr"
+    ],
+    "start": "2026-09-07T10:32:04.425050+00:00",
+    "end": "2026-09-07T10:32:05.489979+00:00",
+    "seconds": 1.064715167041868,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 0,
+    "sourceSHA256": "35a509dbeb27112a88de0388900e6e3f013dce14fcce0e81774e5c35158a3af6",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "2/2: Building DGamma.CP5RankedTraceSelectionSpike (research/DGamma/CP5RankedTraceSelectionSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "locatedRankDescentHead"
+    ],
+    "matchingSourceCommits": [
+      "16922dceeaf6510070e81730a6acc2f2d4f45d7e"
+    ]
+  },
+  {
+    "unit": "E3-1",
+    "path": "research/DGamma/CP5RankedTraceSelectionSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5RankedTraceSelectionSpike.idr"
+    ],
+    "start": "2026-09-07T10:32:26.259146+00:00",
+    "end": "2026-09-07T10:32:27.295546+00:00",
+    "seconds": 1.0362419169396162,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 0,
+    "sourceSHA256": "23c52cafd37fb97415f16576333335841de3552096a4ef42b95ea1e411e84747",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "2/2: Building DGamma.CP5RankedTraceSelectionSpike (research/DGamma/CP5RankedTraceSelectionSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "locatedRankDescentPrepend"
+    ],
+    "matchingSourceCommits": [
+      "c26299cc0637942ff62c689a7a1aefddc672e4dd"
+    ]
+  },
+  {
+    "unit": "E4-1",
+    "path": "research/DGamma/CP5RankedTraceSelectionSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5RankedTraceSelectionSpike.idr"
+    ],
+    "start": "2026-09-07T10:32:57.129358+00:00",
+    "end": "2026-09-07T10:32:58.171776+00:00",
+    "seconds": 1.0422206670045853,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 0,
+    "sourceSHA256": "5bd273bd59d053bf0cdd1080b7a139a68fdd2bd23f8535ae233b58a19a9e4fa1",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "2/2: Building DGamma.CP5RankedTraceSelectionSpike (research/DGamma/CP5RankedTraceSelectionSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "observedRankHeadDescent"
+    ],
+    "matchingSourceCommits": [
+      "2ff434dd430e8609852e482f69b3ef334b56d3cf"
+    ]
+  },
+  {
+    "unit": "E5-1",
+    "path": "research/DGamma/CP5RankedTraceSelectionSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5RankedTraceSelectionSpike.idr"
+    ],
+    "start": "2026-09-07T10:33:27.947718+00:00",
+    "end": "2026-09-07T10:33:28.990946+00:00",
+    "seconds": 1.0430399999022484,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 0,
+    "sourceSHA256": "516aa7278c19beed19b4fc7aac4c86bae68b3b7bbfbb574255cab909744c1fb2",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "2/2: Building DGamma.CP5RankedTraceSelectionSpike (research/DGamma/CP5RankedTraceSelectionSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "findActualRankDescent"
+    ],
+    "matchingSourceCommits": [
+      "2631676a2936a9fec5f23aba5f5eead8b1a31d37"
+    ]
+  },
+  {
+    "unit": "E6-1",
+    "path": "research/DGamma/CP5RankedTraceSelectionSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5RankedTraceSelectionSpike.idr"
+    ],
+    "start": "2026-09-07T10:33:52.510403+00:00",
+    "end": "2026-09-07T10:33:53.543140+00:00",
+    "seconds": 1.032543291337788,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 0,
+    "sourceSHA256": "6b09d40d6d49287c5cee72a561f95956c1d8e8c4b44d2a00c790e16a729c1015",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "2/2: Building DGamma.CP5RankedTraceSelectionSpike (research/DGamma/CP5RankedTraceSelectionSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "locatedRankDescentAligned"
+    ],
+    "matchingSourceCommits": [
+      "8c96a5f0dcbe91fb9cf7b0256bc46cc9726dab41"
+    ]
+  },
+  {
+    "unit": "E7-1",
+    "path": "research-tests/DGamma/R179RankedTraceSelectionPositive.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R179RankedTraceSelectionPositive.idr"
+    ],
+    "start": "2026-09-07T10:34:42.939105+00:00",
+    "end": "2026-09-07T10:34:46.068303+00:00",
+    "seconds": 3.1290149996057153,
+    "exit": 1,
+    "fresh": true,
+    "passed": false,
+    "interrupted": false,
+    "maxSampleRSSKiB": 259648,
+    "sourceSHA256": "acca8d5b58517d34b2147e5a70c21b4c4aa4dbd793e631e6a54ddfbfa1f04473",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "1/1: Building DGamma.R179RankedTraceSelectionPositive (research-tests/DGamma/R179RankedTraceSelectionPositive.idr)\nError: While processing type of r179RankedSelectionTrace. Undefined name CertifiedActionTrace. \n\nDGamma.R179RankedTraceSelectionPositive:21:30--21:50\n 17 | \n 18 | ||| Two real empty-program actors begin after their root insertion barriers.\n 19 | ||| The next observation must exclude the builder's empty default branch.\n 20 | export\n 21 | 0 r179RankedSelectionTrace : CertifiedActionTrace Nat ToyKey ToyRuntime String ToyValue %search %search\n                                   ^^^^^^^^^^^^^^^^^^^^\n\nError: While processing right hand side of r179RankedSelectionTrace. Undefined name MkCertifiedActionTrace. \n\nDGamma.R179RankedTraceSelectionPositive:24:4--24:26\n 20 | export\n 21 | 0 r179RankedSelectionTrace : CertifiedActionTrace Nat ToyKey ToyRuntime String ToyValue %search %search\n 22 |   (MkSystemState (MkToyRuntime False False) emptyContext)\n 23 | r179RankedSelectionTrace = fromMaybe\n 24 |   (MkCertifiedActionTrace (MkSystemState (MkToyRuntime False False) emptyContext) NoTransitions TraceComponentsTotalEnd)\n         ^^^^^^^^^^^^^^^^^^^^^^\n\n",
+    "newTopLevelDeclarations": [
+      "r179RankedSelectionTrace"
+    ],
+    "matchingSourceCommits": []
+  },
+  {
+    "unit": "E7-2",
+    "path": "research-tests/DGamma/R179RankedTraceSelectionPositive.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R179RankedTraceSelectionPositive.idr"
+    ],
+    "start": "2026-09-07T10:35:10.668223+00:00",
+    "end": "2026-09-07T10:35:11.724536+00:00",
+    "seconds": 1.056123916991055,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 0,
+    "sourceSHA256": "0578fc857c2ba5712b2612d31f20b083fbffc29c4da896260dc2ccef8bbbdabe",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "1/1: Building DGamma.R179RankedTraceSelectionPositive (research-tests/DGamma/R179RankedTraceSelectionPositive.idr)\n",
+    "newTopLevelDeclarations": [
+      "r179RankedSelectionTrace"
+    ],
+    "matchingSourceCommits": [
+      "42297518c8e31acf2c2a9b5f6fa3a27bab64e531"
+    ]
+  },
+  {
+    "unit": "E8-1",
+    "path": "research-tests/DGamma/R179RankedTraceSelectionPositive.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R179RankedTraceSelectionPositive.idr"
+    ],
+    "start": "2026-09-07T10:35:38.028005+00:00",
+    "end": "2026-09-07T10:35:40.127181+00:00",
+    "seconds": 2.09898449992761,
+    "exit": 1,
+    "fresh": true,
+    "passed": false,
+    "interrupted": false,
+    "maxSampleRSSKiB": 272400,
+    "sourceSHA256": "7892cae3a20cfb121db963e2dcda6a890323058bb43a3f051bdc416aab5f0ced",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "1/1: Building DGamma.R179RankedTraceSelectionPositive (research-tests/DGamma/R179RankedTraceSelectionPositive.idr)\nError: While processing type of r179RankedSelectionChecks. Need to bind implicits {_:3274} : Type, {_:3273} : Type, {_:3272} : Type, {a:3271} : Type, {a:3270} : Type, {b:3269} : Type.\n\nDGamma.R179RankedTraceSelectionPositive:39:19--42:21\n 39 |       (\\action => case action of\n 40 |         LBegin Z => Just 1\n 41 |         LBegin (S Z) => Just 0\n 42 |         _ => Nothing)\n\n",
+    "newTopLevelDeclarations": [
+      "r179RankedSelectionChecks"
+    ],
+    "matchingSourceCommits": []
+  },
+  {
+    "unit": "E8-2",
+    "path": "research-tests/DGamma/R179RankedTraceSelectionPositive.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R179RankedTraceSelectionPositive.idr"
+    ],
+    "start": "2026-09-07T10:36:55.007296+00:00",
+    "end": "2026-09-07T10:36:56.042517+00:00",
+    "seconds": 1.0350057077594101,
+    "exit": 1,
+    "fresh": true,
+    "passed": false,
+    "interrupted": false,
+    "maxSampleRSSKiB": 0,
+    "sourceSHA256": "e9ac6a7d973f6f9abedadebde1c7a9d56252720be627217855424624838a052c",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "1/1: Building DGamma.R179RankedTraceSelectionPositive (research-tests/DGamma/R179RankedTraceSelectionPositive.idr)\nError: While processing right hand side of r179RankedSelectionChecks. Can't solve constraint between: Just (2, (0, (1, (1, (0, 0))))) and case findActualRankDescent Nat ToyKey ToyRuntime String ToyValue (the (Action Nat ToyKey ToyValue ToyRuntime String -> Maybe Nat) (\\action => case action of { LBegin 0 => Just 1 ; LBegin 1 => Just 0 ; action => Nothing })) (certifiedTrace r179RankedSelectionTrace) of\n  { Nothing => Nothing\n  ; Just choice => Just (transitionCount (traceDescentPrefix choice), (transitionActor (traceDescentLeft choice), (transitionActor (traceDescentRight choice), (traceDescentLeftRank choice, (traceDescentRightRank choice, transitionCount (traceDescentSuffix choice))))))\n  }.\n\nDGamma.R179RankedTraceSelectionPositive:49:36--49:40\n 45 |       Nothing => Nothing\n 46 |       Just choice => Just (transitionCount (traceDescentPrefix choice),\n 47 |         transitionActor (traceDescentLeft choice), transitionActor (traceDescentRight choice),\n 48 |         traceDescentLeftRank choice, traceDescentRightRank choice, transitionCount (traceDescentSuffix choice)))) = Just (2, 0, 1, 1, 0, 0)))\n 49 | r179RankedSelectionChecks = (Refl, Refl)\n                                         ^^^^\n\n",
+    "newTopLevelDeclarations": [
+      "r179RankedSelectionChecks"
+    ],
+    "matchingSourceCommits": []
+  },
+  {
+    "unit": "E8-3",
+    "path": "research-tests/DGamma/R179RankedTraceSelectionPositive.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R179RankedTraceSelectionPositive.idr"
+    ],
+    "start": "2026-09-07T10:38:25.696111+00:00",
+    "end": "2026-09-07T10:38:27.775942+00:00",
+    "seconds": 2.0796727081760764,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 285312,
+    "sourceSHA256": "92caad432effc99de14a3a6ce3c122373efa90b8aa5f227324661f005ab8fc5c",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "1/1: Building DGamma.R179RankedTraceSelectionPositive (research-tests/DGamma/R179RankedTraceSelectionPositive.idr)\n",
+    "newTopLevelDeclarations": [
+      "r179RankedSelectionChecks"
+    ],
+    "matchingSourceCommits": [
+      "00de19bc1321f09a762ee0aa4cc5cff51532ba83"
+    ]
   }
 ]
