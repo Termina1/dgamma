@@ -486,5 +486,464 @@
     "matchingSourceCommits": [
       "ddb0852d55419c5f22cad769de22d3ee3bd43866"
     ]
+  },
+  {
+    "unit": "B4-1",
+    "path": "research/DGamma/CP5O20EpisodeSynchronizationSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O20EpisodeSynchronizationSpike.idr"
+    ],
+    "start": "2026-09-07T12:06:23.771809+00:00",
+    "end": "2026-09-07T12:06:25.857244+00:00",
+    "seconds": 2.0852819168940187,
+    "exit": 1,
+    "fresh": true,
+    "passed": false,
+    "interrupted": false,
+    "maxSampleRSSKiB": 516512,
+    "sourceSHA256": "af063fade72c85bfd30b5a3468314080e72fac1f2f51ea98b17ac63bb79f710f",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "30/30: Building DGamma.CP5O20EpisodeSynchronizationSpike (research/DGamma/CP5O20EpisodeSynchronizationSpike.idr)\nError: While processing right hand side of synchronizationResolvedHeadObserved. ks is not a valid argument in OneDepValue observed.\n\nDGamma.CP5O20EpisodeSynchronizationSpike:72:16--73:15\n 72 |     cong (map (OneDepValue {key = key} {value = value} {k = wanted} {ks = rest}\n 73 |       observed)) tailSame\n\n",
+    "newTopLevelDeclarations": [
+      "synchronizationResolvedHeadObserved"
+    ],
+    "matchingSourceCommits": []
+  },
+  {
+    "unit": "B4-2",
+    "path": "research/DGamma/CP5O20EpisodeSynchronizationSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O20EpisodeSynchronizationSpike.idr"
+    ],
+    "start": "2026-09-07T12:06:55.238850+00:00",
+    "end": "2026-09-07T12:06:58.374265+00:00",
+    "seconds": 3.135217667091638,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 2884832,
+    "sourceSHA256": "d92d3e980042c114a8a1b9852c92204bd151dbcff429e4f4809ca3237ee38817",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "30/30: Building DGamma.CP5O20EpisodeSynchronizationSpike (research/DGamma/CP5O20EpisodeSynchronizationSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "synchronizationResolvedHeadObserved"
+    ],
+    "matchingSourceCommits": [
+      "d95cb76fb630554c17de0dd6ad381119cf0a3c4d"
+    ]
+  },
+  {
+    "unit": "B5-1",
+    "path": "research/DGamma/CP5O20EpisodeSynchronizationSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O20EpisodeSynchronizationSpike.idr"
+    ],
+    "start": "2026-09-07T12:07:51.226913+00:00",
+    "end": "2026-09-07T12:07:54.360486+00:00",
+    "seconds": 3.133438667282462,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 3006464,
+    "sourceSHA256": "c8fba0b8a2ff721581037381f6649c169e52191f299d89fdb46d77850153433c",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "30/30: Building DGamma.CP5O20EpisodeSynchronizationSpike (research/DGamma/CP5O20EpisodeSynchronizationSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "synchronizationHeadValue"
+    ],
+    "matchingSourceCommits": [
+      "ff611771ce5c80502ab66d86103cd7cfa6449599"
+    ]
+  },
+  {
+    "unit": "B6-1",
+    "path": "research/DGamma/CP5O20EpisodeSynchronizationSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O20EpisodeSynchronizationSpike.idr"
+    ],
+    "start": "2026-09-07T12:09:17.753041+00:00",
+    "end": "2026-09-07T12:09:20.891415+00:00",
+    "seconds": 3.1381807499565184,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 3006464,
+    "sourceSHA256": "c84d059e8dbb33ec225c0173e6bb566d2327491bd4fd59a78ebc0bb48f638773",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "30/30: Building DGamma.CP5O20EpisodeSynchronizationSpike (research/DGamma/CP5O20EpisodeSynchronizationSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "synchronizationResolutionFromObservedHeads"
+    ],
+    "matchingSourceCommits": [
+      "d37b6adab2722ad0e3ebd46ed304ee76c510ee4f"
+    ]
+  },
+  {
+    "unit": "B7-1",
+    "path": "research/DGamma/CP5O20EpisodeSynchronizationSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O20EpisodeSynchronizationSpike.idr"
+    ],
+    "start": "2026-09-07T12:11:25.796305+00:00",
+    "end": "2026-09-07T12:11:28.936495+00:00",
+    "seconds": 3.1397796659730375,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 4127408,
+    "sourceSHA256": "4df0c07d0564ca4b626f6d3b0d58678a668c6882019d2761414f907540f80eff",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "30/30: Building DGamma.CP5O20EpisodeSynchronizationSpike (research/DGamma/CP5O20EpisodeSynchronizationSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "synchronizationLocalSource"
+    ],
+    "matchingSourceCommits": [
+      "014fa5b85e09047c47a1fbbab2315d829a778e85"
+    ]
+  },
+  {
+    "unit": "B8-1",
+    "path": "research/DGamma/CP5O20EpisodeSynchronizationSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O20EpisodeSynchronizationSpike.idr"
+    ],
+    "start": "2026-09-07T12:13:20.992284+00:00",
+    "end": "2026-09-07T12:13:24.134448+00:00",
+    "seconds": 3.141993833705783,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 2882720,
+    "sourceSHA256": "f4fbadf576dfc54e728450adbf695e26877fced3450b3de1a92a6c693421a1ee",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "30/30: Building DGamma.CP5O20EpisodeSynchronizationSpike (research/DGamma/CP5O20EpisodeSynchronizationSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "synchronizationStepOutcome"
+    ],
+    "matchingSourceCommits": [
+      "15d529a1ea243418c58868db87b4b3565d700d4c"
+    ]
+  },
+  {
+    "unit": "B9-1",
+    "path": "research/DGamma/CP5O20EpisodeSynchronizationSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O20EpisodeSynchronizationSpike.idr"
+    ],
+    "start": "2026-09-07T12:14:10.790643+00:00",
+    "end": "2026-09-07T12:14:13.902264+00:00",
+    "seconds": 3.1114673339761794,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 3010608,
+    "sourceSHA256": "46c78b4110b5a5989c53c8f03424cddb3ff65b30e4e1f9fcf0ca1b13f7b250e8",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "30/30: Building DGamma.CP5O20EpisodeSynchronizationSpike (research/DGamma/CP5O20EpisodeSynchronizationSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "synchronizationPushedUndo"
+    ],
+    "matchingSourceCommits": [
+      "026426a1021f56b9f480b08e9041734433417c9a"
+    ]
+  },
+  {
+    "unit": "B10-1",
+    "path": "research/DGamma/CP5O20EpisodeSynchronizationSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O20EpisodeSynchronizationSpike.idr"
+    ],
+    "start": "2026-09-07T12:15:46.507456+00:00",
+    "end": "2026-09-07T12:15:49.625547+00:00",
+    "seconds": 3.1178772086277604,
+    "exit": 1,
+    "fresh": true,
+    "passed": false,
+    "interrupted": false,
+    "maxSampleRSSKiB": 673696,
+    "sourceSHA256": "03b3fdc990691031019c73f4e224bd75f960d3014349217237b8da61b40bd427",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "30/30: Building DGamma.CP5O20EpisodeSynchronizationSpike (research/DGamma/CP5O20EpisodeSynchronizationSpike.idr)\nError: While processing type of synchronizationEmptyObservations. Can't bind implicit DGamma.CP5O20EpisodeSynchronizationSpike.{value:4523} of type ({arg:3699} : ?DGamma.CP5O20EpisodeSynchronizationSpike.{key:4522}_[name[10], key[9], world[8], error[7], value[6], nameEq[5], renaming[4], ambient[3], fibers[2], {arg:4489}[1], selected[0]]) -> Type\n\nDGamma.CP5O20EpisodeSynchronizationSpike:208:1--222:70\n 208 | ||| Executable empty-origin observations at arbitrary queried names. Only the\n 209 | ||| runtime registry bindings are observed; proof certificates remain erased.\n 210 | export\n 211 | 0 synchronizationEmptyObservations :\n 212 |   (name, key, world, error : Type) -> (value : key -> Type) ->\n 213 |   (nameEq : DecEq name) -> (renaming : NameBijection name) ->\n\nError: No type declaration for DGamma.CP5O20EpisodeSynchronizationSpike.synchronizationEmptyObservations.\n\nDGamma.CP5O20EpisodeSynchronizationSpike:223:1--224:79\n 223 | synchronizationEmptyObservations name key world error value nameEq renaming\n 224 |   ambient (MkCoeffectContext [] unique) empty selected = (Refl, RenamedAbsent)\n\n",
+    "newTopLevelDeclarations": [
+      "synchronizationEmptyObservations"
+    ],
+    "matchingSourceCommits": []
+  },
+  {
+    "unit": "B10-2",
+    "path": "research/DGamma/CP5O20EpisodeSynchronizationSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O20EpisodeSynchronizationSpike.idr"
+    ],
+    "start": "2026-09-07T12:17:04.170739+00:00",
+    "end": "2026-09-07T12:17:07.295281+00:00",
+    "seconds": 3.1243783333338797,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 3010608,
+    "sourceSHA256": "0887745620881b8e559e5a0a32634d1ac698a07e5e36df6be60bd9ee6b4f7aad",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "30/30: Building DGamma.CP5O20EpisodeSynchronizationSpike (research/DGamma/CP5O20EpisodeSynchronizationSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "synchronizationEmptyObservations"
+    ],
+    "matchingSourceCommits": [
+      "d6e9040767ffd7ac481e5e71339a29eb156adbb8"
+    ]
+  },
+  {
+    "unit": "B11-1",
+    "path": "research/DGamma/CP5O20EpisodeSynchronizationSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O20EpisodeSynchronizationSpike.idr"
+    ],
+    "start": "2026-09-07T12:17:57.624666+00:00",
+    "end": "2026-09-07T12:18:00.744635+00:00",
+    "seconds": 3.119810082949698,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 3008576,
+    "sourceSHA256": "12231d1fed8e766f5c3009c78f2f94267d2c16d21c136467babaec940e81dd85",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "30/30: Building DGamma.CP5O20EpisodeSynchronizationSpike (research/DGamma/CP5O20EpisodeSynchronizationSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "synchronizationEmptyTables"
+    ],
+    "matchingSourceCommits": [
+      "9bde923b454164cfa22b1c59dbf42a7bdff5224b"
+    ]
+  },
+  {
+    "unit": "B12-1",
+    "path": "research/DGamma/CP5O20EpisodeSynchronizationSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O20EpisodeSynchronizationSpike.idr"
+    ],
+    "start": "2026-09-07T12:18:39.738123+00:00",
+    "end": "2026-09-07T12:18:42.873032+00:00",
+    "seconds": 3.134720917325467,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 4190272,
+    "sourceSHA256": "a0b7f30e7e109c515d61087d0a0a6633f677b435e7483b636cbca55c78648057",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "30/30: Building DGamma.CP5O20EpisodeSynchronizationSpike (research/DGamma/CP5O20EpisodeSynchronizationSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "SupportedCanonicalEpisodeSynchronization"
+    ],
+    "matchingSourceCommits": [
+      "43c17ec2ebd96156318ae4588bc91c86b847e3e0"
+    ]
+  },
+  {
+    "unit": "B13-1",
+    "path": "research/DGamma/CP5O20EpisodeSynchronizationSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O20EpisodeSynchronizationSpike.idr"
+    ],
+    "start": "2026-09-07T12:19:08.855298+00:00",
+    "end": "2026-09-07T12:19:11.980951+00:00",
+    "seconds": 3.12548950035125,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 4179712,
+    "sourceSHA256": "740ad06c3afc5d5843af65debac57e6c7b7eae41db3e05425c2b7053413d748d",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "30/30: Building DGamma.CP5O20EpisodeSynchronizationSpike (research/DGamma/CP5O20EpisodeSynchronizationSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "synchronizationEmptyOrigin"
+    ],
+    "matchingSourceCommits": [
+      "dfce1236b22b0d6565479dca300e207034730ab5"
+    ]
+  },
+  {
+    "unit": "B14-1",
+    "path": "research/DGamma/CP5O20EpisodeSynchronizationSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O20EpisodeSynchronizationSpike.idr"
+    ],
+    "start": "2026-09-07T12:19:50.639950+00:00",
+    "end": "2026-09-07T12:19:53.764302+00:00",
+    "seconds": 3.1241380837745965,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 3676784,
+    "sourceSHA256": "999014731bf4ae634baf568edf1724540eb70c50dc6c860e87afe225e092ba06",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "30/30: Building DGamma.CP5O20EpisodeSynchronizationSpike (research/DGamma/CP5O20EpisodeSynchronizationSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "synchronizationOperationalOrigin"
+    ],
+    "matchingSourceCommits": [
+      "884b0fe6fb48927e03a3d684abdc49570221e508"
+    ]
+  },
+  {
+    "unit": "B15-1",
+    "path": "research/DGamma/CP5O20EpisodeSynchronizationSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O20EpisodeSynchronizationSpike.idr"
+    ],
+    "start": "2026-09-07T12:20:55.211913+00:00",
+    "end": "2026-09-07T12:20:58.343890+00:00",
+    "seconds": 3.1317972079850733,
+    "exit": 1,
+    "fresh": true,
+    "passed": false,
+    "interrupted": false,
+    "maxSampleRSSKiB": 655088,
+    "sourceSHA256": "652fc26bd20a96c82857f113ee85a09bbb4a63557eee163a254d947f64b4effa",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "30/30: Building DGamma.CP5O20EpisodeSynchronizationSpike (research/DGamma/CP5O20EpisodeSynchronizationSpike.idr)\nError: While processing right hand side of synchronizationSupportedCanonicalPackets. Undefined name chainReplayCapital. \n\nDGamma.CP5O20EpisodeSynchronizationSpike:402:25--402:43\n 398 |      canonicalSupportedEndpointView name key world error value nameEq keyEq protocol\n 399 |       rightTrace rightCapital (renameForward (expectedBridgeBijection sameInputs) selected)\n 400 |       (acceptedSupportedTruthForward name key world error value nameEq keyEq protocol\n 401 |         leftTrace rightTrace sameInputs matched\n 402 |         (replayAligned (chainReplayCapital (capitalPremises leftCapital)))\n                               ^^^^^^^^^^^^^^^^^^\n\n",
+    "newTopLevelDeclarations": [
+      "synchronizationSupportedCanonicalPackets"
+    ],
+    "matchingSourceCommits": []
+  },
+  {
+    "unit": "B15-2",
+    "path": "research/DGamma/CP5O20EpisodeSynchronizationSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O20EpisodeSynchronizationSpike.idr"
+    ],
+    "start": "2026-09-07T12:22:00.939077+00:00",
+    "end": "2026-09-07T12:22:04.073027+00:00",
+    "seconds": 3.1337807499803603,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 2400736,
+    "sourceSHA256": "d93cb240ba8f3c7d6971cbdd5df6d325f784ace3af2943dd3a8a802eae43072d",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "30/30: Building DGamma.CP5O20EpisodeSynchronizationSpike (research/DGamma/CP5O20EpisodeSynchronizationSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "synchronizationSupportedCanonicalPackets"
+    ],
+    "matchingSourceCommits": [
+      "c579d522912893945a40f658ee741f5ad1e20a9e"
+    ]
   }
 ]

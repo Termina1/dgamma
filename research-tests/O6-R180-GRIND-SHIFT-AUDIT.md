@@ -145,3 +145,69 @@ The unsupported-child remainder is therefore NOT the sole outstanding issue:
 the supported paired-prefix synchronization itself remains absent. No O20 body
 or final cross-trace convergence claim was attempted. R179 one-sided supported
 capital has been inspected but not relabeled as paired synchronization.
+
+## Unit B completion at the 15-micro-unit cap (12:23 UTC)
+
+Supervisor ratified B3 at9bff772 and explicitly authorized a DISTINCT observed-
+head prerequisite B4, producer-owned equations, then structural recursion as a
+projection of those prerequisites; the direct exhausted B3 body stays removed.
+
+| Unit | Checked declaration / result | Immediate commit |
+|---|---|---|
+| B4 | `synchronizationResolvedHeadObserved`, PASS2/3 (first: wrong constructor implicit `ks`, corrected `rest`) | `d95cb76` |
+| B5 | `synchronizationHeadValue`, PASS1; ACTUAL value and BOTH equations produced | `ff61177` |
+| B6 | `synchronizationResolutionFromObservedHeads`, PASS1; B4+B5 structural projection | `d37b6ad` |
+| B7 | `synchronizationLocalSource`, PASS1; exact evaluator normalization | `014fa5b` |
+| B8 | `synchronizationStepOutcome`, PASS1; full deterministic result incl. undo | `15d529a` |
+| B9 | `synchronizationPushedUndo`, PASS1; pointwise induction, no extensionality | `026426a` |
+| B10 | `synchronizationEmptyObservations`, PASS2; first rejected hidden phantom indices, all instantiated explicitly | `d6e9040` |
+| B11 | `synchronizationEmptyTables`, PASS1; named dependent projection | `9bde923` |
+| B12 | `SupportedCanonicalEpisodeSynchronization`, PASS1; ONE exact paired-cut invariant TYPE | `43c17ec` |
+| B13 | `synchronizationEmptyOrigin`, PASS1; genuine zero-prefix producer | `dfce123` |
+| B14 | `synchronizationOperationalOrigin`, PASS1; actual operational-left/right-canonical ZERO cuts, fixed accepted bijection | `884b0fe` |
+| B15 | `synchronizationSupportedCanonicalPackets`, PASS2; first missing direct import for `chainReplayCapital` | final B15 code commit |
+
+B4 takes an observed Maybe head value and both lookup equations; B5 chooses the
+actual left lookup and derives its right equation from ordered tables/name
+matching. B6 only projects B4/B5 and recurses on dependencies: it does not retry
+B3's conversion-prone direct body. This crosses the specific suspended-case
+wall with producer-owned observations. B7 uses canonical normalization from
+ordered bindings; B8 derives observed capability equality and exact callback
+outcome by determinism, including the undo function without extensionality.
+B9 compares pushed accumulators POINTWISE after actual successful outcome
+identity; no accumulator or undo relation oracle was added.
+
+**Strength boundary:** B4-B9 are internal induction consumers, NOT a producer of
+agreement at arbitrary cuts. B12 indexes actual prefix/suffix decompositions,
+GLOBAL ambient/ordered tables, and the selected supported actor's full renamed
+Maybe-control; the bijection is `expectedBridgeBijection sameInputs`. B13/B14
+construct only ZERO prefixes of the actual O19 operational replay and actual
+right canonical trace. They do not construct any nonempty paired episode.
+B15 uses R179's one-sided supported endpoint capital at both actual canonical
+endpoints, deriving right support from accepted A9 with BOTH uniqueness proofs
+and GeneratedOrchestrationMatched; the packets assert NO equality between
+views or accumulators and are not an operational-left endpoint bridge.
+
+### Exact Unit B remainder (not just unsupported children)
+
+1. Induction choosing actual paired nonempty support-order/block prefixes and
+   carrying precise prefix/suffix occurrences of the fixed operational/right
+   canonical traces.
+2. Renamed global ordered-table preservation across actual external/generated
+   registrations and lifecycle edges. Initial empty agreement alone does not
+   supply this at Begin.
+3. Actual matched Begin source components/provider resolutions and committed
+   views under the fixed accepted bijection; identify evaluator
+   `resolveCommittedValues` with the internal `resolveEffectValues` observations.
+4. Produce corresponding successful Advance observations along those actual
+   prefixes, then apply B8/B9 and propagate the actual rebuilt global registry.
+5. Actual Finish edge/control propagation and endpoint closure. No Finish
+   transition theorem was proved by the generic undo lemma.
+6. The unsupported-child registration/generation/retirement remainder remains
+   outside the selected-supported actor invariant, and is still independent
+   additional work AFTER the supported paired-prefix induction.
+
+No synchronization conclusion became an O20 premise; no O20 hole body, O19
+surface edit, new hole or convergence claim. Unit B is now **15/15** and closed.
+Proceeding to the previously supervisor-authorized A raw-edge/per-view-WF
+prerequisites, still respecting A5's exhausted checked-edge surface.
