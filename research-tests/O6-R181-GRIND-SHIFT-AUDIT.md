@@ -390,3 +390,13 @@ all five original spikes/LocalDiamond/adjacent/review/CP3/production exact, unch
 seed cache inventory/LocalDiamond TTC, clean tracked tree/no staged files/orphans.
 Current FINAL-VALIDATION/ACCEPTANCE artifacts supersede prefix92e2daa; the original
 protocol=false exception remains visible and criterion1 is not self-waived.
+
+## Post-D/E ruling15:33UTC — F≤8 authorized
+
+D/E prefix22ce5af ratified; stand-down NOT authorized. F≤8 fresh micro-units,
+in order: actual3x2 range disjointness/ActorBlockDecomposition; count7 original
+UniqueRawNameInsertions (R173 fixture style); then ReplayInvariantBundle fields
+via the existing R172/R174 approach as far as they land. Real component-specific
+independence only if cheap. No safety revision/O19 body. Fresh3/3, immediate
+verified-PASS commits, serialized seeded checks and all guards unchanged. Parent
+owns review after the shift; this appendix supersedes D/E terminal-gate wording.
