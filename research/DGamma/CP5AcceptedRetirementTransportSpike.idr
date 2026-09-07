@@ -53,3 +53,40 @@ acceptedRetirementBackwardByParent name key world error value nameEq keyEq left 
       (packet ** (actorExact, kind)) => generatedRetirementBackwardAtBirths name key world error value nameEq keyEq left right
         (generatedGenerationBijection sameInputs) matched unique selected (renameForward (currentNameBijection (endpointRenaming sameInputs)) selected)
         leftGeneration rightGeneration leftBirth rightBirth generationMapped packet actorExact kind
+
+0 acceptedRetirementForwardByParent :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, leftFinal, rightFinal : SystemState name key value world error} ->
+  (left : Transitions initial leftFinal) -> (right : Transitions initial rightFinal) ->
+  (sameInputs : SameOrchestrationModuloGenerated nameEq keyEq left right) ->
+  GeneratedOrchestrationMatched name key world error value nameEq left right (generatedGenerationBijection sameInputs) ->
+  AlignedTransitions name key world error value nameEq keyEq left -> (bindings (registry initial) = []) ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq left ->
+  (selected : name) -> (leftGeneration, rightGeneration : RegistrationGeneration name) ->
+  CurrentGenerationBirth name key world error value left (renameBackward (currentNameBijection (endpointRenaming sameInputs)) selected) leftGeneration ->
+  CurrentGenerationBirth name key world error value right selected rightGeneration ->
+  (generationBackward (generatedGenerationBijection sameInputs) rightGeneration = leftGeneration) ->
+  (leftFiber : Fiber name key value world error) ->
+  (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq}
+    (renameBackward (currentNameBijection (endpointRenaming sameInputs)) selected) (registry leftFinal) = Just leftFiber) ->
+  LocatedActionOccurrence (ORetire (renameBackward (currentNameBijection (endpointRenaming sameInputs)) selected)) left ->
+  (observedParent : Parent name) -> (fiberParent leftFiber = observedParent) -> LocatedActionOccurrence (ORetire selected) right
+acceptedRetirementForwardByParent name key world error value nameEq keyEq left right sameInputs matched aligned empty unique selected
+  leftGeneration rightGeneration leftBirth rightBirth generationMapped leftFiber leftFound occurrence Root parentExact =
+    replace {p = \action => LocatedActionOccurrence action right}
+      (cong ORetire (trans (sym (leftLiveRootFixed (endpointRenaming sameInputs)
+        (renameBackward (currentNameBijection (endpointRenaming sameInputs)) selected) leftFiber leftFound parentExact))
+        (renameRightInverse (currentNameBijection (endpointRenaming sameInputs)) selected)))
+      (rootActionLocated name key world error value nameEq right (ORetire (renameBackward (currentNameBijection (endpointRenaming sameInputs)) selected))
+        (rootActionForward name key world error value nameEq left right (sameExternalInputs sameInputs)
+          (ORetire (renameBackward (currentNameBijection (endpointRenaming sameInputs)) selected))
+          (rootEndpointRetirementPacket name key world error value nameEq keyEq left aligned empty unique
+            (renameBackward (currentNameBijection (endpointRenaming sameInputs)) selected) leftFiber leftFound parentExact occurrence)))
+acceptedRetirementForwardByParent name key world error value nameEq keyEq left right sameInputs matched aligned empty unique selected
+  leftGeneration rightGeneration leftBirth rightBirth generationMapped leftFiber leftFound occurrence (ChildOf parent) parentExact =
+    case generatedEndpointRetirementPacket name key world error value nameEq keyEq left aligned empty unique
+      (renameBackward (currentNameBijection (endpointRenaming sameInputs)) selected) parent leftFiber leftFound parentExact occurrence of
+      (packet ** (actorExact, kind)) => generatedRetirementForwardAtBirths name key world error value nameEq keyEq left right
+        (generatedGenerationBijection sameInputs) matched unique (renameBackward (currentNameBijection (endpointRenaming sameInputs)) selected) selected
+        leftGeneration rightGeneration leftBirth rightBirth generationMapped packet actorExact kind
