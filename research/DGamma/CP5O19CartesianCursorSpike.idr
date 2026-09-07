@@ -37,3 +37,18 @@ record O19ReachedCursor
     nameEq keyEq cursorTrace
   0 cursorDerivation : FiniteAdjacentSwapDerivation name key world error value
     protocol nameEq keyEq source cursorTrace
+
+||| R183 A2: initialize from actual source evidence; zero crossings are only
+||| the base of a future induction, never a WholeBlockSwapDerivation.
+public export
+0 o19InitialCursor :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {initial, sourceFinal : SystemState name key value world error} ->
+  (source : Transitions initial sourceFinal) ->
+  ReplayInvariantBundle name key world error value protocol nameEq keyEq source ->
+  (0 sourceUnique : UniqueRawNameInsertions name key world error value nameEq keyEq source) ->
+  O19ReachedCursor name key world error value protocol nameEq keyEq source
+o19InitialCursor {sourceFinal} nameEq keyEq protocol source premises sourceUnique =
+  MkO19ReachedCursor sourceFinal source premises sourceUnique FiniteAdjacentSwapDone
