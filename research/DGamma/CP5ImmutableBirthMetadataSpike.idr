@@ -350,3 +350,25 @@ scannedBirthEndpointMetadata name key world error value nameEq keyEq trace align
     (scannedLocatedBirth birth)
     (rawMetadataBirthAtPrefix name key world error value nameEq keyEq trace trace NoTransitions
       (currentBirthTraceAppendEmpty name key world error value trace) aligned empty (eventChild event) observed found)
+
+||| The exact accepted current stamp equals the authenticated event stamp.
+||| Both births are located before raw-name uniqueness is used.
+public export
+0 currentBirthMatchesScannedEvent :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (trace : Transitions initial finalState) ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq trace ->
+  (event : RegistrationEvent name key world error value) ->
+  ScannedRegistrationBirth name key world error value Z trace event ->
+  (generation : RegistrationGeneration name) ->
+  CurrentGenerationBirth name key world error value trace (eventChild event) generation ->
+  generation = eventChildGeneration event
+currentBirthMatchesScannedEvent name key world error value nameEq keyEq trace unique event scanned generation current =
+  trans (currentBirthStampExact current)
+    (trans (cong (MkRegistrationGeneration (eventChild event))
+      (uniqueInsertionPosition unique (eventChild event) (currentBirthParent current) (ChildOf (eventParent event))
+        (currentBirthComponent current) (eventComponent event)
+        (currentLocatedBirth current) (scannedLocatedBirth scanned)))
+      (sym (scannedBirthStampExact scanned)))
