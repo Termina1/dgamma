@@ -274,3 +274,55 @@ same packet, this is only ranked-word progress capital, NOT the requested
 complete worklist measure or operational progress proof. No existing S17 or
 O17 signature/body is replaced by a weaker theorem. If D12 is reached before
 that integration, audit-park the remaining measure and proceed to B/C.
+
+## Redesign cap gate (D1–D12 consumed; no D13 authorized)
+
+| Unit | Declaration | Immediate commit | Fresh source check |
+|---|---|---|---|
+| D1 | `r175OldGroupingPolicyCycle` | `9bfd15f` | PASS D1-4, 2026-09-07T00:10:35.827678+00:00–2026-09-07T00:10:37.891379+00:00, 0 KiB sampled |
+| D2 | `rankCrossing` | `9a88147` | PASS D2-1, 2026-09-07T00:14:01.973913+00:00–2026-09-07T00:14:04.005368+00:00, 0 KiB sampled |
+| D3 | `rankInversions` | `44a723b` | PASS D3-1, 2026-09-07T00:14:14.975908+00:00–2026-09-07T00:14:17.030331+00:00, 0 KiB sampled |
+| D4 | `rankPlusSwap` | `c823562` | PASS D4-2, 2026-09-07T00:14:42.036729+00:00–2026-09-07T00:14:44.068344+00:00, 0 KiB sampled |
+| D5 | `rankCrossingAsymmetric` | `07f1364` | PASS D5-1, 2026-09-07T00:14:55.690453+00:00–2026-09-07T00:14:57.744481+00:00, 0 KiB sampled |
+| D6 | `rankHeadInversionDrop` | `7497737` | PASS D6-2, 2026-09-07T00:15:29.463366+00:00–2026-09-07T00:15:31.500518+00:00, 0 KiB sampled |
+| D7 | `RankedAdjacentProgress` | `bbc5f97` | PASS D7-1, 2026-09-07T00:15:49.212322+00:00–2026-09-07T00:15:51.252568+00:00, 0 KiB sampled |
+| D8 | `rankHeadProgress` | `f48f604` | PASS D8-1, 2026-09-07T00:16:06.808598+00:00–2026-09-07T00:16:08.857299+00:00, 0 KiB sampled |
+| D9 | `rankLiftProgress` | `ef9099f` | PASS D9-3, 2026-09-07T00:17:13.718750+00:00–2026-09-07T00:17:15.773718+00:00, 0 KiB sampled |
+| D10 | `rankSelectProgress` | `d496401` | PASS D10-1, 2026-09-07T00:17:31.050118+00:00–2026-09-07T00:17:33.112398+00:00, 0 KiB sampled |
+| D11 | `canonicalWorkRankSegments` | `93820ac` | PASS D11-1, 2026-09-07T00:18:32.394507+00:00–2026-09-07T00:19:29.373047+00:00, 20063824 KiB sampled |
+| D12 | `canonicalWorkGlobalInversionMeasure` | `ffb58ef` | PASS D12-1, 2026-09-07T00:20:04.471950+00:00–2026-09-07T00:20:59.440583+00:00, 18092192 KiB sampled |
+
+D4-1 rejected a reserved `total` lambda binder; D4-2 renamed it `combined`.
+D6-1 exposed that Prelude `sum` is a left fold, not a definitionally reducing
+right fold. D6-2 changed the already-new D3 implementation (same signature,
+same intended numerical function, no external consumer yet) to explicit
+`foldr (+) Z` and used that same transparent fold throughout the proofs.
+D9-1 rejected reserved `prefix` in the constructor pattern. The intended BSD
+sed replacement before D9-2 matched nothing, so D9-2 was a repeated parse
+rejection (counted, not hidden). D9-3 used Python's exact word replacement to
+`prior`; PASS. All other D2–D12 declarations passed first invocation. Each
+successful compiler invocation introduced exactly one new top-level declaration.
+No fourth invocation occurred except the explicitly authorized D1-4 repair.
+
+The mathematics is PROVED: runtime first-descent selection constructs a
+concrete adjacent decomposition, invariance of every outside-node contribution,
+and exact WHOLE-WORD inversion drop by one in the same recursive construction.
+The old selector's changing selected actor cannot reset this measure. D11/D12
+also define the barrier-separated rank observation and sum of inversions on
+the ACTUAL whole CanonicalSortingWorklist with its original fixed desired
+order. Non-owned orchestration creates a barrier; no external node is moved.
+The new Data.List import produces one benign shadowing warning at the existing
+`abstractTwoBirthOneWithdrawalAccounting` implicit `sorted` binder; no error.
+
+CAP RESULT: PARTIAL / AUDIT-PARK. The operational bridge is NOT proved: a
+ranked-segment selection must locate the same checked adjacent transitions,
+produce their applicable orientation diamond, and show the ACTUAL sealed
+suffix replay preserves the rank segments. `SealedSuffixReplaySpine` hides its
+constructors from CanonicalSort; such transport needs a producer-local lemma
+or an already sealed ordinal/action fold argument, not a scoped/raw cast.
+No wrapper accepts rank decrease as an output-shaped operational premise.
+No total sorter or canonical-form theorem is claimed when the numerical
+selector returns Nothing. Structural BlockBefore, exact registration fold,
+selected Iter/Finish early applicability and the remaining actual A/A, O/A,
+O/O producers also remain OPEN. Existing A/O capital and S17 are intact.
+Proceed only after the cap gate; next authorized bounded work is Unit B then C.
