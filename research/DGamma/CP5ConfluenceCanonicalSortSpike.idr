@@ -18,6 +18,8 @@ import DGamma.CP5ConfluenceLocalDiamondSpike
 import DGamma.CP5ConfluenceDeletionChainSpike
 import DGamma.CP5UniqueRawNameInsertions
 import DGamma.CP5UniqueRawNameOrdinalCapital
+import DGamma.CP5ConfluenceWorkMeasureSpike
+import Data.List
 import Data.List.Elem
 import Data.Nat
 import Decidable.Equality
@@ -3869,6 +3871,34 @@ canonicalWorkAdvanceActivationOrchestration name key world error value nameEq ke
         original premises shape ordering unique current (workPairPrefix pair) (workPairLeft pair) (workPairRight pair)
         (workPairSuffix pair)
         (AdjacentActivationOrchestration (workPairLeft pair) (workPairRight pair) activation orchestration) diamond result
+
+||| Whole current-trace rank observation. Non-owned orchestration is a barrier:
+||| no rank selector may silently bridge or move an external/unowned node.
+||| This is only the observation, not an operational swap or root placement.
+0 canonicalWorkRankSegments :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (fixedOrder : List name) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (trace : Transitions initial finalState) -> List (List Nat)
+canonicalWorkRankSegments name key world error value nameEq fixedOrder NoTransitions = [[]]
+canonicalWorkRankSegments name key world error value nameEq fixedOrder
+  (MoreTransitions step rest) =
+    case (the (Maybe name) (case transitionAction step of
+      OInsert child (ChildOf parent) component => Just parent
+      LBegin actor => Just actor
+      LAdvance actor => Just actor
+      LDivert actor => Just actor
+      LLeave actor => Just actor
+      LUnload actor => Just actor
+      _ => Nothing)) of
+      Nothing => [] :: canonicalWorkRankSegments name key world error value nameEq fixedOrder rest
+      Just owner => case canonicalWorkRankSegments name key world error value nameEq fixedOrder rest of
+        [] => [[length (Data.List.takeWhile (\candidate => case decEq @{nameEq} candidate owner of
+          Yes same => False
+          No distinct => True) fixedOrder)]]
+        segment :: later => (length (Data.List.takeWhile (\candidate => case decEq @{nameEq} candidate owner of
+          Yes same => False
+          No distinct => True) fixedOrder) :: segment) :: later
 
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
