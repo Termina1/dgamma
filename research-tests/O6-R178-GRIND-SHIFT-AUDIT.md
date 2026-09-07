@@ -223,3 +223,46 @@ Next: combine sealed ALL-generated coverage/root metadata with parent/component
 coherence, then use genuine support-edge rank induction and the Definition-67
 support equation for the two truth implications. O18 remains unattempted until
 both implications have checked and committed. Hole census remains six.
+
+## Both support-truth implications committed BEFORE O18 — 08:01 UTC
+
+B122 `acceptedSupportedTruthForward` (ff65617) and B123
+`acceptedSupportedTruthBackward` (dd0df9f) are fully checked, total, erased proofs.
+Their ONLY semantic premises are the original accepted correspondence, explicit
+A9, original alignment/empty origin/uniqueness, and source discipline. There is
+NO destination-support premise, caller-chosen event coverage, endpoint metadata
+oracle, or fresh signature strengthening of the O18/caller surface.
+
+Dependency/branch map:
+- B89–B92 `CP5SupportEdgeInductionSpike`: actual unique-lookup protocol rank
+  identity, Accessible-LT recursion, and the two actual SupportEdge constructors.
+  Rank and parent-rank invariants are derived from the aligned disciplined empty
+  ORIGINAL trace, not assumed from a scoped/raw conversion.
+- B93–B97 `CP5AllSupportedMetadataSpike`: exhaustive Root/ChildOf cases combine
+  B36/B37 ALL-retained coverage with sealed matched-birth/parent coherence and
+  B44/B45 root metadata. Both directions return the actual image fiber, equal
+  immutable component, and exact mapped parent. Destination support not assumed.
+- B98–B114 `CP5SupportClauseTransportSpike`: executable parent-clause helper,
+  explicit Boolean/list connective facts, actual lookup -> Definition-67 clause,
+  provider witness -> actual unique-registry lookup, and the converse provider
+  truth constructor. Every provider is a real currently looked-up source fiber.
+- B115 is an INTERNAL quantity-0 package for exactly the independently proved
+  image-static and image-nonretired facts; it is NOT an extra O18 premise.
+- B116 authenticates the provider's real PrecedenceEdge; B117 authenticates the
+  real parent edge. B118 reconstructs the destination Definition-67 clause only
+  from smaller, supported ACTUAL edge predecessors. B119 closes the recursion.
+- B120/B121 PRODUCE the entire internal package from the SAME accepted inputs/A9;
+  B122/B123 discharge the two public support-truth directions independently.
+
+Implementation refinement: rather than establish equality of arbitrary global
+fixed-point solutions, the proof uses the actual `supportSetIsSolution` equation
+and decreasing support-edge protocol ranks to prove each true implication. This
+is a direct, stronger-factored constructive route; no new uniqueness assumption.
+
+New successful 2/3 repairs: B103 used a wildcard for the Here-indexed head instead
+of two unifying pattern names; B105 supplied registryFibers' non-injective family
+parameters explicitly; B109 normalized the actual DecEq self-equality branch
+before the existing lookupEntries with-block could reduce. No new `with`, local
+let, nonlinear pattern, postulate, or partiality survives. All other B89–B123
+units passed first attempt. The original O18 body is STILL its sole hole at this
+commit; six-hole split is still 1/4/0/0/1. Its body is the NEXT independent unit.
