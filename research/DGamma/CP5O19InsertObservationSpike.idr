@@ -30,3 +30,23 @@ record O19ResolutionObservation
   resolutionObserved : Maybe (View name deps)
   0 resolutionBefore : resolveView @{nameEq} @{keyEq} {value} {world} {error} deps before = resolutionObserved
   0 resolutionAfter : resolveView @{nameEq} @{keyEq} {value} {world} {error} deps afterState = resolutionObserved
+
+||| The actual insertion plan retains its own absence proof; the shared
+||| resolver value is evaluated at the original registry, never supplied.
+export
+0 o19ResolutionFromInsertPlan :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (deps : List key) ->
+  (child : name) -> (parent : Parent name) ->
+  (component : Component key value world error) ->
+  (ambient : world) -> (source : Registry name key value world error) ->
+  (tag : RuleTag) -> (afterState : SystemState name key value world error) ->
+  ForeignInsertPlanView name key world error value nameEq keyEq child parent
+    component ambient source tag afterState ->
+  O19ResolutionObservation name key world error value nameEq keyEq deps source (registry afterState)
+o19ResolutionFromInsertPlan {name} {key} {world} {error} {value}
+  nameEq keyEq deps child parent component ambient source _ _
+  (MkForeignInsertPlanView absent guards) =
+    MkO19ResolutionObservation (resolveView @{nameEq} @{keyEq} {value} {world} {error} deps source)
+      Refl (resolveViewInactiveInsert {name} {key} {world} {error} {value}
+        nameEq keyEq deps child component parent source absent)
