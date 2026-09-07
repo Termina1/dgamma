@@ -880,3 +880,10 @@ export
   CurrentGenerationBirth name key world error value global selected generation
 currentBirthActionProgress name key world error value nameEq global ordinal live action occurrence exact previous =
   currentBirthAfterAction name key world error value nameEq global ordinal live action occurrence exact previous
+
+||| Pure Boolean projection for single-state support closure, not O18 transport.
+0 supportMiddleConjunctTrue : (left, middle, right : Bool) ->
+  left && middle && right = True -> middle = True
+supportMiddleConjunctTrue False middle right exact = case exact of Refl impossible
+supportMiddleConjunctTrue True False right exact = case exact of Refl impossible
+supportMiddleConjunctTrue True True right exact = Refl
