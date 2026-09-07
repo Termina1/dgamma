@@ -136,3 +136,16 @@ segmentedRankProgressDrops (FirstRankSegment later progress) =
 segmentedRankProgressDrops (LaterRankSegment {target} untouched later) =
   trans (cong (rankInversions untouched +) (segmentedRankProgressDrops later))
     (sym (plusSuccRightSucc (rankInversions untouched) (foldr (+) Z (map rankInversions target))))
+
+||| The lifted target equation is proved where the opaque producer is owned.
+||| Consumers use this equation instead of unfolding a proof-bearing packet.
+export
+0 rankLiftTargetExact :
+  (head : Nat) -> (source : List Nat) -> (progress : RankedAdjacentProgress source) ->
+  ((rankedPrefix (rankLiftProgress head source progress) ++
+      rankedRight (rankLiftProgress head source progress) ::
+      rankedLeft (rankLiftProgress head source progress) ::
+      rankedSuffix (rankLiftProgress head source progress)) =
+   (head :: (rankedPrefix progress ++ rankedRight progress :: rankedLeft progress :: rankedSuffix progress)))
+rankLiftTargetExact head source
+  (MkRankedAdjacentProgress prior left right suffix exact weights decreased) = Refl
