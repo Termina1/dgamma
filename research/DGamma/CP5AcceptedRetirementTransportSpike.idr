@@ -157,3 +157,7 @@ acceptedSupportedBackwardRejectsTargetRetired name key world error value nameEq 
               generationMapped leftFiber leftFound
               (retiredEndpointHasRetirement name key world error value nameEq keyEq left leftAligned empty
                 (renameBackward (currentNameBijection (endpointRenaming sameInputs)) selected) leftFiber leftFound leftRetired) (fiberParent leftFiber) Refl)
+
+0 retirementRejectedFalse : (flag : Bool) -> ((flag = True) -> Void) -> (flag = False)
+retirementRejectedFalse False rejected = Refl
+retirementRejectedFalse True rejected = void (rejected Refl)
