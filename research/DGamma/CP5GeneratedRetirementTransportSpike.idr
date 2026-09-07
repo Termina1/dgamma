@@ -104,3 +104,17 @@ generatedPacketCurrentBirth name key world error value nameEq trace packet =
       (generatedActor packet) (generatedCurrent packet)
       (currentBirthFromGenerationScan name key world error value nameEq (beforeActionOccurrence (generatedOccurrence packet))
         (generatedScanOrdinal packet) (generatedLive packet) (generatedScan packet) (generatedActor packet) (generatedCurrent packet) (generatedCurrentExact packet)))
+
+export
+0 generatedPacketMatchesCurrentBirth :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {first, finalState : SystemState name key value world error} ->
+  (trace : Transitions first finalState) -> UniqueRawNameInsertions name key world error value nameEq keyEq trace ->
+  (packet : LocatedGeneratedOrchestration name key world error value nameEq trace) ->
+  (selected : name) -> (generatedActor packet = selected) -> (generation : RegistrationGeneration name) ->
+  CurrentGenerationBirth name key world error value trace selected generation -> (generatedCurrent packet = generation)
+generatedPacketMatchesCurrentBirth name key world error value nameEq keyEq trace unique packet selected actorExact generation authentication =
+  authenticatedBirthStampsSame name key world error value nameEq keyEq trace unique (generatedActor packet) (generatedCurrent packet) generation
+    (generatedPacketCurrentBirth name key world error value nameEq trace packet)
+    (replace {p = \actor => CurrentGenerationBirth name key world error value trace actor generation} (sym actorExact) authentication)
