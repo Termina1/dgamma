@@ -5270,3 +5270,55 @@ canonicalWorkObservedPairDrop name key world error value nameEq fixedOrder earli
         (rankSegmentStep (Just leftRank) (rankSegmentStep (Just rightRank) segments))
         (rankSegmentStep (Just rightRank) (rankSegmentStep (Just leftRank) segments))
         (rankSegmentHeadProgress leftRank rightRank segments crossed))
+
+||| The accepted operational swap decreases the actual worklist by exactly one.
+||| Orientation and both observed ranks refer to the actual checked pair in the
+||| same sealed result. Discovering an applicable descending pair remains open.
+0 canonicalWorkAcceptedObservedPairDrops :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {initial, originalFinal : SystemState name key value world error} ->
+  (original : Transitions initial originalFinal) ->
+  (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq original) ->
+  (shape : ClosingFreeTraceShape name key world error value nameEq keyEq original) ->
+  (ordering : SupportOrderingCapital name key world error value nameEq keyEq originalFinal) ->
+  (unique : UniqueRawNameInsertions name key world error value nameEq keyEq original) ->
+  (current : CanonicalSortingWorklist name key world error value protocol nameEq keyEq original ordering) ->
+  {pairFirst, pairMiddle, pairFinal : SystemState name key value world error} ->
+  (prefixTrace : Transitions initial pairFirst) ->
+  (left : Transition pairFirst pairMiddle) -> (right : Transition pairMiddle pairFinal) ->
+  (suffix : Transitions pairFinal (sortingCurrentFinal (workReachedReplay current))) ->
+  (orientation : AdjacentSwapOrientationEvidence left right) ->
+  (diamond : LocalRelationalDiamond name key world error value nameEq keyEq left right) ->
+  (result : AdjacentSwapResult name key world error value protocol nameEq keyEq
+    (sortingCurrentTrace (workReachedReplay current)) prefixTrace left right suffix diamond) ->
+  (leftRank, rightRank : Nat) ->
+  (canonicalWorkActionRank name key world error value nameEq (orderedSupportNames ordering) (transitionAction left) = Just leftRank) ->
+  (canonicalWorkActionRank name key world error value nameEq (orderedSupportNames ordering) (transitionAction right) = Just rightRank) ->
+  (rankCrossing leftRank rightRank = 1) ->
+  (canonicalWorkGlobalInversionMeasure name key world error value protocol nameEq keyEq ordering current =
+    S (canonicalWorkGlobalInversionMeasure name key world error value protocol nameEq keyEq ordering
+      (canonicalWorkAcceptAdjacentResult name key world error value nameEq keyEq protocol
+        original premises shape ordering unique current prefixTrace left right suffix orientation diamond result)))
+canonicalWorkAcceptedObservedPairDrops name key world error value nameEq keyEq protocol
+  original premises shape ordering unique current prefixTrace left right suffix orientation diamond result
+  leftRank rightRank leftExact rightExact crossed =
+    trans (cong (\segments => foldr (+) Z (map DGamma.CP5ConfluenceWorkMeasureSpike.rankInversions segments))
+      (trans (cong (canonicalWorkRankSegments name key world error value nameEq (orderedSupportNames ordering))
+        (sym (originalDecomposition result)))
+        (trans (canonicalWorkRankSegmentsFold name key world error value nameEq (orderedSupportNames ordering)
+          (appendTransitions prefixTrace (MoreTransitions left (MoreTransitions right suffix))))
+          (trans (canonicalActionFoldAppend name key world error value (List (List Nat))
+            (canonicalWorkRankStep name key world error value nameEq (orderedSupportNames ordering)) [[]] prefixTrace
+            (MoreTransitions left (MoreTransitions right suffix)))
+            (cong (\segments => traceActionFold name key world error value (List (List Nat))
+              (canonicalWorkRankStep name key world error value nameEq (orderedSupportNames ordering))
+              (canonicalWorkRankStep name key world error value nameEq (orderedSupportNames ordering) (transitionAction left)
+                (canonicalWorkRankStep name key world error value nameEq (orderedSupportNames ordering) (transitionAction right) segments)) prefixTrace)
+              (sym (canonicalWorkRankSegmentsFold name key world error value nameEq (orderedSupportNames ordering) suffix)))))))
+      (trans (canonicalWorkObservedPairDrop name key world error value nameEq (orderedSupportNames ordering) prefixTrace
+        (transitionAction left) (transitionAction right) leftRank rightRank leftExact rightExact crossed
+        (canonicalWorkRankSegments name key world error value nameEq (orderedSupportNames ordering) suffix))
+        (sym (cong S (canonicalWorkAcceptedResultInversionMeasure name key world error value nameEq keyEq protocol
+          original premises shape ordering unique current prefixTrace left right suffix orientation diamond result))))
