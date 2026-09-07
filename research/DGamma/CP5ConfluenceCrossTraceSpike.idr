@@ -708,6 +708,7 @@ public export
     sourceOrder sourceTrace) ->
   (sourcePremises : ReplayInvariantBundle name key world error value protocol
     nameEq keyEq sourceTrace) ->
+  (0 sourceUnique : UniqueRawNameInsertions name key world error value nameEq keyEq sourceTrace) ->
   (safety : AdjacentActorSwapSafety name key world error value protocol nameEq
     keyEq orderSwap sourceTrace sourceBlocks sourcePremises) ->
   OperationalAdjacentBlockSwap name key world error value protocol nameEq keyEq
