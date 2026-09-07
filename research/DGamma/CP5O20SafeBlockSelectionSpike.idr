@@ -55,3 +55,19 @@ o20GeneratedChildName :
   Action name key value world error -> Maybe name
 o20GeneratedChildName (OInsert child (ChildOf parent) component) = Just child
 o20GeneratedChildName _ = Nothing
+
+||| Certify a negative child observation without deciding component equality.
+||| The finite name check is sufficient: an alleged generated insertion must
+||| project to the forbidden name under B3.
+export
+0 o20CheckNoGeneratedAction :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (forbidden : name) ->
+  (action : Action name key value world error) ->
+  Maybe ((parent : name) -> (component : Component key value world error) ->
+    (action = OInsert forbidden (ChildOf parent) component) -> Void)
+o20CheckNoGeneratedAction nameEq forbidden action =
+  case decEq (o20GeneratedChildName action) (Just forbidden) of
+    Yes same => Nothing
+    No different => Just (\parent, component, sameAction =>
+      different (cong o20GeneratedChildName sameAction))
