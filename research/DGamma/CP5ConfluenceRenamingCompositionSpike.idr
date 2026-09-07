@@ -2825,3 +2825,21 @@ registrationSideGenerationScan name key world error value nameEq ordinal index t
                   (trans (registrationSurvivingLiveObserved name key world error value nameEq ordinal child parent component live activations counts deleted
                     (lookupParentActivation @{nameEq} parent activations) Refl)
                     (cong (\chosen => advanceGenerationEnvironment @{nameEq} ordinal chosen live) (sym actionExact))) later))
+
+||| The LEFT accepted scanner itself authenticates its precise current birth.
+||| No caller-chosen occurrence, component, ordinal, or fresh scanner is input.
+export
+0 acceptedLeftCurrentBirth :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) ->
+  {leftFirst, leftFinal, rightFirst, rightFinal : SystemState name key value world error} ->
+  (left : Transitions leftFirst leftFinal) -> (right : Transitions rightFirst rightFinal) ->
+  (renaming : RegistrationGenerationBijection name) ->
+  (registrations : RegistrationCorrespondenceByGeneration nameEq renaming left right) ->
+  (selected : name) -> (generation : RegistrationGeneration name) ->
+  (lookupCurrentGeneration @{nameEq} selected (leftFinalGenerations registrations) = Just generation) ->
+  CurrentGenerationBirth name key world error value left selected generation
+acceptedLeftCurrentBirth name key world error value nameEq left right renaming registrations selected generation current =
+  case registrationSideGenerationScan name key world error value nameEq Z emptyRegistrationIndex
+    left (leftFinalIndex registrations) (leftRegistrationSideScan (generationTraceCorrespondence registrations)) of
+    (finalOrdinal ** scan) => currentBirthFromGenerationScan name key world error value nameEq left
+      finalOrdinal (leftFinalGenerations registrations) scan selected generation current
