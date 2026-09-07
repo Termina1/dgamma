@@ -85,3 +85,14 @@ o20CheckNoGeneratedChild nameEq forbidden (MoreTransitions step rest) =
   (NoGeneratedChildStep step rest) <$>
     (o20CheckNoGeneratedAction nameEq forbidden (transitionAction step)) <*>
     (o20CheckNoGeneratedChild nameEq forbidden rest)
+
+||| Select ONLY the zero constructor of the actual between-block trace.
+||| This rejects intervening roots rather than pretending actor adjacency is
+||| block adjacency. Refl observes the empty spine, not a replay builder.
+export
+0 o20CheckEmptyGap :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, finalState : SystemState name key value world error} ->
+  (gap : Transitions first finalState) -> Maybe (transitionCount gap = 0)
+o20CheckEmptyGap NoTransitions = Just Refl
+o20CheckEmptyGap (MoreTransitions step rest) = Nothing
