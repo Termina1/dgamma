@@ -1,0 +1,83 @@
+{
+  "timestamp": "2026-09-07T18:31:22.600930+00:00",
+  "head": "31ad3fe309596016796a8e03401f0b7a96a0d0e9",
+  "start": "159ef07",
+  "holes": {
+    "CanonicalSort": [
+      "?sortClosingFreeTraceSpike_rhs"
+    ],
+    "CrossTrace": [
+      "?operationalAdjacentBlockSwapSpike_rhs",
+      "?selectOperationalCanonicalPermutationSpike_rhs",
+      "?canonicalSchedulesConvergeSpike_rhs"
+    ],
+    "DeletionChain": [],
+    "LocalDiamond": [],
+    "RenamingComposition": [
+      "?replayedCanonicalToOriginalEndpointSpike_rhs"
+    ]
+  },
+  "split": [
+    1,
+    3,
+    0,
+    0,
+    1
+  ],
+  "productionDiffVs34b21c9": "empty",
+  "CP3Blob": "2c697e532e83989de8591fa6a4378747c6a501c0",
+  "LocalDiamondDiffVsStart": "empty",
+  "CanonicalSortDiffVsStart": "empty",
+  "CanonicalSortAuthorizedVisibility": {},
+  "DeletionChainDiffVsStart": "empty",
+  "CrossTraceDiffVsStart": "owner-sanctioned A1/right-first and B-Adj1/empty-gap strengthening plus A2 binder rename only",
+  "RenamingCompositionDiffVsStart": "empty",
+  "adjacentFullBytes": 1470,
+  "adjacentFullSHA256": "2d01486bf953f11191b758ac3cfb5722d1d02b1a192b6e552adc8a3f58199ecf",
+  "adjacentStatementBytes": 1154,
+  "adjacentStatementSHA256": "3aae5a9fbc5b14e0411b4a91e557a6f3dc68c9a6282b9ec2b3fc658cec337adf",
+  "reviewSHA256": "61fc23ae4cea4565b442c840be39c41746ecbac73b8c2f73d04f1e3b4f4681e8",
+  "seeds": "207/207",
+  "LocalDiamondTTC": {
+    "bytes": 125368223,
+    "mtimeUTC": "2026-09-07T01:56:14.905763+00:00"
+  },
+  "changedIdrisFiles": [
+    "research-tests/DGamma/R182O19ActualCrossingPositive.idr",
+    "research-tests/DGamma/R182O19AdjacencyNegative.idr",
+    "research-tests/DGamma/R182O19RevisedSafetyNegative.idr",
+    "research-tests/DGamma/R182O19RevisedSafetyPositive.idr",
+    "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
+    "research/DGamma/CP5O19AdjacentReplayProducerSpike.idr"
+  ],
+  "sourceSHA256": {
+    "research-tests/DGamma/R182O19ActualCrossingPositive.idr": "a1badb9f57cc94fb5bf26bc4da112a2007856b3fdcdc0fe5e6398bac8f020c1f",
+    "research-tests/DGamma/R182O19AdjacencyNegative.idr": "07641432a6c2d2cf79b2cbf2ea182fb80c769d73ef21550df797110b027879d1",
+    "research-tests/DGamma/R182O19RevisedSafetyNegative.idr": "a78c28f3fe7a1b29900c6b3d0522f9a0c8e1476169867e964818b6a697d22e54",
+    "research-tests/DGamma/R182O19RevisedSafetyPositive.idr": "a49817fc2666c8cef04fbff3c059ecfd421da3424c5ed20be010d9e132ff301f",
+    "research/DGamma/CP5ConfluenceCrossTraceSpike.idr": "3af10eda3d7dd6435b02dd09339c2ac83aa6006cfe5f5063f8bc4106960feb57",
+    "research/DGamma/CP5O19AdjacentReplayProducerSpike.idr": "a66174061d16a9e6c7ca2ecd0b1a4779d1d92fe2a7748bdc5cbdc57365e89276"
+  },
+  "protectedDeclarationSHA256": {
+    "sortClosingFreeTraceSpike": "1df8d174b9a4f119a5a52e2073a72907bdb890413f877d55886e905e1d0279d1",
+    "operationalAdjacentBlockSwapSpike": "e0a085b88ac2c48db4e8a7466db9e289eb9fe8ceec22f30ed6f7082eaa25220d",
+    "selectOperationalCanonicalPermutationSpike": "b00063eacf339b58828eac5829cebc66fc7265f3518be459af0602463b6fbae7",
+    "canonicalSchedulesConvergeSpike": "0e8a177ea7bb4807cb77680cde29e75f7d37224711cc51cf7bf6636426690dd9",
+    "replayedCanonicalToOriginalEndpointSpike": "377b08ff82e1e4212738bb00a45a088b1f0d8fd8bc8b54bf061c96f2f4891681"
+  },
+  "prohibitedAdditions": {
+    "\\bbelieve_me\\b": [],
+    "\\bassert_total\\b": [],
+    "^\\s*partial\\b": [],
+    "\\?\\w+": [],
+    "\\blet\\b": [],
+    "\\bwith\\b": [],
+    "\\bdeletionTheoremProof\\b": [],
+    "\\bpostulate\\b": [],
+    "\\b[A-Za-z_]\\w*@\\s*[\\(\\[]": []
+  },
+  "noCompiler": true,
+  "noStagedFiles": true,
+  "cleanTrackedTree": true,
+  "allowedUntrackedOnly": true
+}
