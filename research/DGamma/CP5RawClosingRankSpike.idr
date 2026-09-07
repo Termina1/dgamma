@@ -353,3 +353,33 @@ rawProtocolRanksAtPrefix name key world error value protocol nameEq keyEq
           rawProtocolRanksAtPrefix name key world error value protocol nameEq keyEq tail later
             alignedRest tailProvenance
             (registrationRankStep protocol nameEq keyEq action tag checked headProvenance ranked)
+
+
+||| One raw-name protocol rank across ALL reached cuts. This is the missing
+||| cross-time premise in the R137 pointwise-acyclicity argument.
+public export
+0 uniqueRawRanksAcrossPrefixes :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, leftState, rightState, finalState : SystemState name key value world error} ->
+  (global : Transitions initial finalState) ->
+  AlignedTransitions name key world error value nameEq keyEq global ->
+  bindings (registry initial) = [] ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq global ->
+  (leftPrior : Transitions initial leftState) -> (leftLater : Transitions leftState finalState) ->
+  appendTransitions leftPrior leftLater = global ->
+  (rightPrior : Transitions initial rightState) -> (rightLater : Transitions rightState finalState) ->
+  appendTransitions rightPrior rightLater = global ->
+  (selected : name) -> (leftRank, rightRank : Nat) ->
+  NameProtocolRank protocol nameEq leftState selected leftRank ->
+  NameProtocolRank protocol nameEq rightState selected rightRank ->
+  leftRank = rightRank
+uniqueRawRanksAcrossPrefixes name key world error value protocol nameEq keyEq global aligned empty unique
+  leftPrior leftLater leftSplit rightPrior rightLater rightSplit selected leftRank rightRank left right =
+    justInjective (trans (sym (componentHasRank left))
+      (trans (cong (registrationRank protocol)
+        (uniqueRawComponentsAcrossPrefixes name key world error value nameEq keyEq global aligned empty unique
+          leftPrior leftLater leftSplit rightPrior rightLater rightSplit selected
+          (rankedFiber left) (rankedFiber right) (rankedFound left) (rankedFound right)))
+        (componentHasRank right)))
