@@ -172,3 +172,14 @@ rankSegmentStep : Maybe Nat -> List (List Nat) -> List (List Nat)
 rankSegmentStep Nothing segments = [] :: segments
 rankSegmentStep (Just head) [] = [[head]]
 rankSegmentStep (Just head) (segment :: later) = (head :: segment) :: later
+
+||| Structural progress supplies the nonempty segment indices itself.
+export
+0 rankSegmentOwnedStepProgress :
+  (head : Nat) -> {source, target : List (List Nat)} ->
+  (SegmentedRankProgress source target) ->
+  (SegmentedRankProgress (rankSegmentStep (Just head) source) (rankSegmentStep (Just head) target))
+rankSegmentOwnedStepProgress head (FirstRankSegment later progress) =
+  segmentedRankOwnedLift head (FirstRankSegment later progress)
+rankSegmentOwnedStepProgress head (LaterRankSegment untouched later) =
+  LaterRankSegment (head :: untouched) later
