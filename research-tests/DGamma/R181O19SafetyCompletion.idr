@@ -55,3 +55,20 @@ r181WholeTrace =
                     r180ObservedConsumerFinished LFinishTag r180ConsumerFinishRaw
                     (snd r180ObservedLifecycleSuffix)))
                 NoTransitions))))))
+
+||| Designated dictionaries for all seven actual checked nodes.
+export
+0 r181TraceAligned : AlignedTransitions Nat ToyKey ToyRuntime String ToyValue
+  (the (DecEq Nat) %search) (the (DecEq ToyKey) %search) r181WholeTrace
+r181TraceAligned =
+  AlignedStep (OInsert 0 Root providerComponent) OInsertTag Refl _
+    (AlignedStep (OInsert 1 Root emptyConsumerComponent) OInsertTag Refl _
+      (AlignedStep (LBegin 0) LBeginTag (fst r179ObservedProviderEdges) _
+        (AlignedStep (LAdvance 0) LIterTag (fst (snd r179ObservedProviderEdges)) _
+          (AlignedStep (LAdvance 0) LFinishTag (fst (snd (snd r179ObservedProviderEdges))) _
+            (AlignedStep (LBegin 1) LBeginTag
+              (beginEquation r180ConsumerBeginFromPrerequisites) _
+              (AlignedStep (LAdvance 1) LFinishTag
+                (r180CheckedFromPrerequisites (LAdvance 1) r180ObservedConsumerBegun
+                  r180ObservedConsumerFinished LFinishTag r180ConsumerFinishRaw
+                  (snd r180ObservedLifecycleSuffix)) _ AlignedEnd))))))
