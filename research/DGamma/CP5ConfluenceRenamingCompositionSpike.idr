@@ -2783,3 +2783,45 @@ registrationSurvivingLiveObserved name key world error value nameEq ordinal chil
   rewrite exact in Refl
 registrationSurvivingLiveObserved name key world error value nameEq ordinal child parent component live activations counts deleted (Just activation) exact =
   rewrite exact in Refl
+
+||| Project the accepted scanner's OWN live environment to its exact generation
+||| scan. Surviving/deleted decisions and asynchronous interleaving are not reset.
+0 registrationSideGenerationScan :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) ->
+  (ordinal : Nat) -> (index : RegistrationIndexState name) ->
+  {first, finalState : SystemState name key value world error} ->
+  (trace : Transitions first finalState) -> (finalIndex : RegistrationIndexState name) ->
+  RegistrationSideScan nameEq ordinal index trace finalIndex ->
+  (finalOrdinal : Nat ** GenerationTraceScan nameEq ordinal (indexedLiveGenerations index)
+    trace finalOrdinal (indexedLiveGenerations finalIndex))
+registrationSideGenerationScan name key world error value nameEq ordinal index trace finalIndex scan =
+  case scan of
+    RegistrationSideScanEnd => (ordinal ** GenerationTraceScanEnd)
+    RegistrationSideScanNonRegistration action transition rest actionExact nonRegistration tail =>
+      case registrationSideGenerationScan name key world error value nameEq (S ordinal)
+        (advanceRegistrationIndex @{nameEq} ordinal action index) rest finalIndex tail of
+        (finalOrdinal ** later) =>
+          (finalOrdinal ** GenerationTraceScanStep transition rest
+            (replace {p = \live => GenerationTraceScan nameEq (S ordinal) live rest finalOrdinal (indexedLiveGenerations finalIndex)}
+              (trans (registrationIndexLiveAdvance name key world error value nameEq ordinal action index)
+                (cong (\chosen => advanceGenerationEnvironment @{nameEq} ordinal chosen (indexedLiveGenerations index)) (sym actionExact))) later))
+    RegistrationSideScanDeleted {child} {parent} {component} transition rest actionExact deleted tail =>
+      case registrationSideGenerationScan name key world error value nameEq (S ordinal)
+        (advanceDeletedRegistrationIndex @{nameEq} ordinal child parent component index) rest finalIndex tail of
+        (finalOrdinal ** later) =>
+          (finalOrdinal ** GenerationTraceScanStep transition rest
+            (replace {p = \live => GenerationTraceScan nameEq (S ordinal) live rest finalOrdinal (indexedLiveGenerations finalIndex)}
+              (trans (registrationIndexLiveAdvance name key world error value nameEq ordinal (OInsert child (ChildOf parent) component) index)
+                (cong (\chosen => advanceGenerationEnvironment @{nameEq} ordinal chosen (indexedLiveGenerations index)) (sym actionExact))) later))
+    RegistrationSideScanSurviving {child} {parent} {component} transition rest actionExact surviving tail =>
+      case index of
+        MkRegistrationIndexState live activations counts deleted =>
+          case registrationSideGenerationScan name key world error value nameEq (S ordinal)
+            (advanceSurvivingRegistrationIndex @{nameEq} ordinal child parent component (MkRegistrationIndexState live activations counts deleted))
+            rest finalIndex tail of
+            (finalOrdinal ** later) =>
+              (finalOrdinal ** GenerationTraceScanStep transition rest
+                (replace {p = \observed => GenerationTraceScan nameEq (S ordinal) observed rest finalOrdinal (indexedLiveGenerations finalIndex)}
+                  (trans (registrationSurvivingLiveObserved name key world error value nameEq ordinal child parent component live activations counts deleted
+                    (lookupParentActivation @{nameEq} parent activations) Refl)
+                    (cong (\chosen => advanceGenerationEnvironment @{nameEq} ordinal chosen live) (sym actionExact))) later))
