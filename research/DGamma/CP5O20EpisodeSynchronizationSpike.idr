@@ -180,3 +180,27 @@ synchronizationStepOutcome name key world error value keyEq renaming deps provis
           rightResolved)))
       (synchronizationLocalSource name key world value keyEq renaming provision
         selected left right effects)
+
+||| Pointwise undo induction step consumes observed successful outcome equality,
+||| rather than an accumulator-equality oracle. No function extensionality.
+export
+0 synchronizationPushedUndo :
+  (key, world, error : Type) -> (value : key -> Type) ->
+  (keyEq : DecEq key) -> (provision : CoeffectSpec key) ->
+  (leftOlder, rightOlder : LocalState key value world provision ->
+    LocalState key value world provision) ->
+  (leftAfter, rightAfter : LocalState key value world provision) ->
+  (leftUndo, rightUndo : LocalState key value world provision ->
+    LocalState key value world provision) ->
+  AccumulatorRelated leftOlder rightOlder ->
+  (the (Either error (LocalState key value world provision,
+    LocalState key value world provision -> LocalState key value world provision))
+      (Right (leftAfter, leftUndo)) = Right (rightAfter, rightUndo)) ->
+  AccumulatorRelated
+    (pushLocalUndo @{keyEq} provision leftOlder leftUndo)
+    (pushLocalUndo @{keyEq} provision rightOlder rightUndo)
+synchronizationPushedUndo key world error value keyEq provision leftOlder
+  rightOlder leftAfter rightAfter leftUndo rightUndo older observedSame input =
+    case observedSame of
+      Refl => older (normalizeLocal @{keyEq} provision
+        (rightUndo (normalizeLocal @{keyEq} provision input)))
