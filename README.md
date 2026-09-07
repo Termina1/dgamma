@@ -630,3 +630,9 @@ The earlier workflow violation remains unexcused.
 
 The owner-authorized change corrects our weaker predicate, not the paper or
 Cordis. The five-hole census is unchanged; Unit B requires a separate gate.
+
+R182's same owner-authorized revision series also requires **actual empty gap**
+(`safetyBlocksAdjacent`), not just BlockBefore. The nine-edge intervening-Insert2
+fixture has an inhabited full bundle and checked early opening; its clause-
+level rejection explicitly takes the selected-gap observation. It is not a
+full old-safety countermodel. The full A14 adjacent positive continues to pass.

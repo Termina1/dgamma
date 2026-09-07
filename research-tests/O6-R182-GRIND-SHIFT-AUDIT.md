@@ -243,3 +243,64 @@ Zero-length of the ALREADY OWNED ordered segment is actual adjacency, not a
 second BlockBefore or swapped-trace premise. A selector must expose that empty
 segment by construction; R177/R179 adjacent-transition selection alone is NOT
 claimed to prove arbitrary whole-block adjacency or O20 completeness.
+
+### B adjacency correction —6/6 retained
+
+| Unit | Declaration / surface | PASS-before-commit |
+|---|---|---|
+| B-Adj1 | erased `safetyBlocksAdjacent`, zero exact owned gap | ca4bc02;1/1,6.238s |
+| B-Adj2 | A14 constructor extended by its actual zero-gap Refl | ffeb554;1/1,85.049s including client ripple |
+| B-Adj3 | `r182GapState`, actual nine-edge cuts | 7c9681f;1/1,3.136s |
+| B-Adj4 | `r182GapTrace`, entire nine-edge spine, actual Insert2 segment/count1, successful early-right guard | 0c32987;1/1,3.113s |
+| B-Adj5 | `r182GapBundle`, FULL fifteen fields | 1f25935;1/1,3.113s |
+| B-Adj6 | `r182GapSafetyRejected`, EVERY exact bundle/decomposition whose selected gap is the observed nonempty gap | a0234ea;3/3 PASS,13.503s |
+
+Adj6-1 rejected the incorrect qualified DPair field name; the actual name is
+Builtin.DPair.DPair.fst/snd. Adj6-2 was INTERRUPTED deliberately at158.820s,
+16,719,392KiB sampled, before48GiB: full concrete bundle captured by the local
+impossible equality case was causing growing elaboration. Wrapper received
+SIGTERM, recorded interruption/NO verdict, compiler group killed, no orphan.
+Adj6-3 generalizes the bundle (a STRONGER universal rejection) and invokes the
+EXISTING Nat Uninhabited instance instead of capturing the whole context in a
+local impossible-case block. PASS before commit; no fourth attempt/escape.
+
+Precise negative boundary: the entire actual nine-edge trace, actual intervening
+Insert2 transition, its simultaneous count1, right-first certificate and FULL
+independent bundle are constructed. `r182GapSafetyRejected` still explicitly
+takes `gapObserved`, equating the SELECTED decomposition's gap count with that
+owned actual segment. It does NOT construct all three located blocks/a full
+old-safety counterexample or silently drop this indexing premise. This is the
+authorized clause-level negative, not an additional completed O19 impossibility
+theorem. A14 remains the fully inhabited adjacent positive with both orders.
+No new sourceUnique assumption/field is introduced or removed in the producer
+surface; O19 continues to thread the original erased sourceUnique separately.
+
+Clause-map addition:
+
+| Earlier revised record | Now | Selector supply / remaining work |
+|---|---|---|
+| BlockBefore only, possibly nonempty betweenBlocks | SAME order plus `safetyBlocksAdjacent : transitionCount (betweenBlocks safetyBlocksOrdered)=0` | expose actual empty segment at a chosen whole-block boundary; no arbitrary rank-pair→block-adjacency completeness claim |
+| Both opening directions at exact pre-left cut | unchanged | A14 supplies both; A4 still rejects ServiceA dependency |
+| Full bundle, child exclusions, original O19 sourceUnique | unchanged | still threaded, not caller-supplied swapped trace |
+| Whole Cartesian derivation/output range/decomposition | unchanged | all are still O19 construction/body obligations |
+
+### B adjacency final fresh checks
+
+| Unit | Verdict | Seconds |
+|---|---|---|
+| B-adj-final-cross | PASS | 5.191 |
+| B-adj-final-negative | PASS | 3.116 |
+| B-adj-final-positive | PASS | 17.631 |
+| B-adj-final-gap | PASS | 13.512 |
+| B-adj-final-thread | PASS | 2.096 |
+| B-adj-final-singleton | PASS | 2.076 |
+| B-adj-final-twoone | PASS | 2.103 |
+| B-adj-final-twotwo | PASS | 2.103 |
+| B-adj-final-coordinate | PASS | 2.087 |
+| B-adj-final-endpoint | PASS | 3.143 |
+| B-adj-final-detachment | exact intended rejection | 1.056 |
+| B-adj-final-zeroderivation | exact intended rejection | 1.063 |
+| B-adj-final-pipeline | PASS | 100.672 |
+| B-adj-final-package | PASS | 16.617 |
+
+All14 fresh targeted checks pass (12ordinary,2exact negatives); seeded207/207 package, R8 full100.672s/36.39GiB. No cache deletion beyond the explicitly authorized single disposable probe. No compiler/body attempt remains active.

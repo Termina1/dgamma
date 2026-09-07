@@ -3000,3 +3000,12 @@ full bundle, installed blocks and decomposition are constructed. No full old-
 safety negative or count7 TraceIndependent is claimed. O19 remains a hole.
 All failures and exact producer corrections are in the R182 audit. No escape
 hatch, new hole, production change or LocalDiamond change was used.
+
+R182 B additionally corrects the distinction between BlockBefore and actual
+adjacency: the owned intervening segment must have count0. The owner authorized
+six checked micro-units; the nine-edge Insert2-gap fixture owns all15 bundle
+fields but its negative explicitly conditions on the selected gap observation,
+not a claimed full old-safety countermodel. A14 still fully inhabits current
+safety. Adj6-2 was proactively interrupted (158.8s/15.95GiB); the final universal
+bundle formulation/existing Nat contradiction passed13.5s. No unsafe primitive,
+new hole or production/LocalDiamond change. See the exact R182 clause addendum.

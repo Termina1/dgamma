@@ -27,7 +27,7 @@ untracked = git('ls-files','--others','--exclude-standard').splitlines()
 assert all(p.startswith('paper/') or p == 'review-o6-body-adversarial.md' for p in untracked)
 processes = subprocess.check_output(['ps','-axo','pid,ppid,command'],text=True)
 assert not re.search(r'/idris2_app/idris2(?:\.so)?(?:\s|$)', processes)
-# All five original spike files remain frozen in this first R182 gate.
+# Only the explicitly sanctioned O19 safety/binder revision series may differ.
 for part in PARTS:
     if part != 'CrossTrace':
         assert not git('diff',START,'--',PATHS[part]), part
@@ -38,6 +38,7 @@ reverted_cross = reverted_cross.replace(
     "||| generated-child licensing exclusions.  These fields are intentionally not\n||| reducible to `actorDistinct`.")
 reverted_cross = reverted_cross.replace(
     "  0 safetyRightOpeningEarly : CheckedEarlyApplication name key world error value\n    nameEq keyEq\n    (blockPreStart (decomposedBlock sourceBlocks (actorLeft orderSwap)\n      safetyLeftInOrder))\n    (LBegin (actorRight orderSwap)) LBeginTag\n", '')
+reverted_cross = reverted_cross.replace('  0 safetyBlocksAdjacent : (transitionCount (betweenBlocks safetyBlocksOrdered) = 0)\n', '')
 reverted_cross = reverted_cross.replace('(applicableSafety :', '(safety :').replace('sourcePremises applicableSafety', 'sourcePremises safety')
 assert reverted_cross == git('show', START+':'+PATHS['CrossTrace']), 'unapproved CrossTrace diff'
 visibility = {}
@@ -79,7 +80,7 @@ assert local_time.startswith('2026-09-07T01:56:14.')
 report = dict(timestamp=datetime.datetime.now(datetime.timezone.utc).isoformat(),head=git('rev-parse','HEAD').strip(),start=START,
     holes=holes,split=[len(holes[p]) for p in PARTS],productionDiffVs34b21c9='empty',CP3Blob=git('hash-object','src/DGamma/CP3.idr').strip(),
     LocalDiamondDiffVsStart='empty',CanonicalSortDiffVsStart='empty',CanonicalSortAuthorizedVisibility=visibility,DeletionChainDiffVsStart='empty',
-    CrossTraceDiffVsStart='owner-sanctioned A1 record strengthening and A2 binder rename only',RenamingCompositionDiffVsStart='empty',
+    CrossTraceDiffVsStart='owner-sanctioned A1/right-first and B-Adj1/empty-gap strengthening plus A2 binder rename only',RenamingCompositionDiffVsStart='empty',
     adjacentFullBytes=1470,adjacentFullSHA256=full,adjacentStatementBytes=1154,adjacentStatementSHA256=statement,reviewSHA256=review,
     seeds='207/207',LocalDiamondTTC=dict(bytes=local_ttc.stat().st_size,mtimeUTC=local_time),changedIdrisFiles=changed,
     sourceSHA256={p:sha((ROOT/p).read_bytes()) for p in changed},protectedDeclarationSHA256=protected,prohibitedAdditions=prohibited,

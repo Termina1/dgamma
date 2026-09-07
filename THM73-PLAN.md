@@ -3561,3 +3561,12 @@ clause map and fourteen checked micro-units. Count7 TraceIndependent remains
 parallel capital, not a revision gate; no complete old-safety negative claimed.
 O19 RHS and the other four holes remain unchanged; B awaits explicit post-A
 permission. No O17 root placement or LocalDiamond change.
+
+R182 post-A owner addendum: exact whole-block adjacency is now explicit via
+count0 of the already owned betweenBlocks. Adjacent actor order alone allowed
+unrelated intervening orchestration, incompatible with the exact Cartesian-only
+first adjacent crossing. Nine-edge checked gap candidate + full bundle and
+observed-gap rejection retained; A14 full adjacent positive retained. No full
+old-safety countermodel claimed. The single disposable B first-step probe passed
+and was removed; construction/body remain authorized, other frozen boundaries
+unchanged. A third specification issue requires another supervisor gate.
