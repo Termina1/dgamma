@@ -327,3 +327,27 @@ currentDomainOwnerAction name key world error value nameEq keyEq ordinal live (L
     (\parent, component, same => case same of Refl impossible)
     (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} actor (registry before)) Refl of
     (fiber ** present) => previous actor fiber present
+
+0 currentDomainAfterAction :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (action : Action name key value world error) ->
+  (before, afterState : SystemState name key value world error) -> (tag : RuleTag) ->
+  (applyAction @{nameEq} @{keyEq} action before = Just (tag, afterState)) ->
+  ((selected : name) -> (fiber : Fiber name key value world error) ->
+    (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+      @{nameEq} selected (registry before) = Just fiber) ->
+    (generation : RegistrationGeneration name ** lookupCurrentGeneration @{nameEq} selected live = Just generation)) ->
+  (selected : name) -> (observed : Fiber name key value world error) ->
+  (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+    @{nameEq} selected (registry afterState) = Just observed) ->
+  (generation : RegistrationGeneration name ** lookupCurrentGeneration @{nameEq} selected
+    (advanceGenerationEnvironment @{nameEq} ordinal action live) = Just generation)
+currentDomainAfterAction name key world error value nameEq keyEq ordinal live action before afterState tag raw previous selected observed found =
+  case decEq @{nameEq} selected (actionOwner action) of
+    Yes same => case same of Refl => currentDomainOwnerAction name key world error value nameEq keyEq ordinal live action before afterState tag raw previous observed found
+    No distinct =>
+      case previous selected observed (trans (sym (registryLocalUpdateForeign nameEq selected (actionOwner action) distinct (registry before)
+        (systemRegistryUpdate (applyActionLocalUpdate nameEq keyEq action before afterState tag raw)))) found) of
+        (generation ** current) => (generation ** trans (lookupAdvanceGenerationOther nameEq ordinal action selected distinct live) current)
