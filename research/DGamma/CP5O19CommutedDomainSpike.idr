@@ -71,3 +71,11 @@ o19CommutingFramesEarlyDomain state eq left right rightRespects commute origin m
       (trans (o19RelatedDefined (commute origin))
         (o19ComposedFramesObserved state (relation eq) right left rightRespects
           origin middle final (left origin) Refl leftFrame rightFrame))
+
+||| Executable actual partial-map output with an erased authentication proof.
+||| This is deliberately not CheckedEarlyApplication: no control/tag claim.
+public export
+record O19PartialRun (state : Type) (effectMap : PartialMap state) (origin : state) where
+  constructor MkO19PartialRun
+  partialRunFinal : state
+  0 partialRunChecked : effectMap origin = Just partialRunFinal
