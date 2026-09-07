@@ -3145,3 +3145,23 @@ registrationPairingDomains
         Right kept => case snd (registrationPairingDomains later) event kept of
           (paired ** (present, exactMatch)) =>
             (paired ** (pairingEmbedRemainingMember leftRemoval present, exactMatch))))
+
+||| Authenticate the sealed accepted scanner's own event domains and matches.
+||| No endpoint support/order equality or O20 capital is consumed.
+export
+0 acceptedAuthenticatedRegistrationMatching :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) ->
+  {leftFirst, leftFinal, rightFirst, rightFinal : SystemState name key value world error} ->
+  (left : Transitions leftFirst leftFinal) -> (right : Transitions rightFirst rightFinal) ->
+  (renaming : RegistrationGenerationBijection name) ->
+  RegistrationCorrespondenceByGeneration nameEq renaming left right ->
+  AuthenticatedRegistrationMatching name key world error value renaming left right
+acceptedAuthenticatedRegistrationMatching name key world error value nameEq left right renaming registrations =
+  case alignFiniteRegistrationProjection (generationTraceCorrespondence registrations) of
+    MkAlignedFiniteRegistrationProjection plan leftScan rightScan leftEvents rightEvents planFold leftFold rightFold =>
+      MkAuthenticatedRegistrationMatching leftEvents rightEvents
+        (registrationSideFoldBirth name key world error value nameEq Z leftFold)
+        (registrationSideFoldBirth name key world error value nameEq Z rightFold)
+        (fst (registrationPairingDomains (matchingPlanPairing planFold)))
+        (snd (registrationPairingDomains (matchingPlanPairing planFold)))
