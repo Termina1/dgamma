@@ -76,3 +76,24 @@ NOT discover such a pair in a general noncanonical worklist and does NOT prove
 its orientation applicable from the inversion witness. Those operational
 selection/applicability obligations remain open; no claim of a total sorting
 loop, canonicalGroupsPermitSpike body, O17 placement, or O18 body closure.
+
+### B1 disposable probe — exact supported-current lookup, not birth identity
+
+One declaration / **one fresh check**, PASS, 02:57:39–02:57:40 UTC. Preserved as
+`r177-probes/B1-ExactCurrentDomain.idr.txt`; disposable `.idr` removed, no package
+or research-module import. The result constructs BOTH directions at an explicit
+current generation of the actual `generatedRegistrationTree sameInputs` scans:
+supported + current lookup implies the mapped generation and the corresponding
+lookup under `currentNameBijection (endpointRenaming sameInputs)`. The vestigial
+case is refuted by its exact `vestigialUnsupported` equation. No environment or
+endpoint bijection supplied independently of the accepted `sameInputs` is used.
+
+**This is only a restricted domain projection PASS, not the full B advancement
+gate.** The probe deliberately does NOT infer support on the destination and
+DOES NOT authenticate either scanner birth as a `LocatedActionOccurrence`.
+`leftUnique`/`rightUnique` are threaded but unused: applying them at this point
+would silently assume precisely that missing authentication. Scanner lookup
+existence must first be connected to registry lookup/support and the exact
+located insertion; then current birth, matching birth, and endpoint raw name
+can be reconciled. Neither support-truth implication has been attempted, the
+O18 body remains untouched, and the expected five-hole gate has NOT fired.
