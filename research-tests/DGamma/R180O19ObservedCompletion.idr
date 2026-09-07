@@ -76,3 +76,21 @@ r180ObservedConsumerBegun = MkSystemState (worldState r179ObservedProviderFinish
     (MkFiber emptyConsumerComponent Root False emptyOwned
       (Reloading [] id (ProviderView 0 EmptyView)))
     (registry r179ObservedProviderFinished))
+
+||| A6, supervisor-authorized DISTINCT raw-edge prerequisite. This is not the
+||| exhausted A5 checked-edge statement: there is no registry-WF guard here.
+export
+0 r180ConsumerBeginRawObserved :
+  (table : OwnedTable ToyKey ToyValue DGamma.Section3Example.toySpecA) ->
+  (0 tableObserved : (restrictOwnedPreservingOrder @{%search}
+    DGamma.Section3Example.toySpecA (ownedValues (ownedA True)) = table)) ->
+  (binding : Maybe Bool) ->
+  (0 bindingObserved : (lookupBinding @{%search} ServiceA (ownedValues table) = binding)) ->
+  (0 present : (isJust binding = True)) ->
+  (applyAction {name = Nat} {key = ToyKey} {value = ToyValue}
+    {world = ToyRuntime} {error = String} @{%search} @{%search} (LBegin 1)
+    r179ObservedProviderFinished = Just (LBeginTag, r180ObservedConsumerBegun))
+r180ConsumerBeginRawObserved table tableObserved Nothing bindingObserved present =
+  case present of Refl impossible
+r180ConsumerBeginRawObserved table tableObserved (Just service) bindingObserved present =
+  rewrite tableObserved in rewrite bindingObserved in Refl
