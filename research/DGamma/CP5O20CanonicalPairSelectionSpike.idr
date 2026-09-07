@@ -200,3 +200,37 @@ canonicalPairViewsAtStates {name} {key} {world} {error} {value}
       leftWorld rightWorld leftRegistry rightRegistry effects
       (registryWellFormedPairwiseOpenAnchor {name = name} {key = key} {value = value} {world = world} {error = error} nameEq keyEq (MkSystemState rightWorld rightRegistry) wellFormed)
       leftView rightView leftResolved rightResolved
+
+||| Instantiate D6 at the SELECTED ACTUAL canonical opening cuts and the
+||| FIXED accepted bijection. WF is derived from C6. Prefix effect agreement
+||| and successful resolver observations are explicit INTERNAL induction
+||| hypotheses; producing that agreement along all prefixes remains open.
+export
+0 canonicalPairSelectedViews :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {protocol : RegistrationProtocol key value world error} ->
+  {initial, leftFinal, rightFinal : SystemState name key value world error} ->
+  {leftTrace : Transitions initial leftFinal} -> {rightTrace : Transitions initial rightFinal} ->
+  {sameInputs : SameOrchestrationModuloGenerated nameEq keyEq leftTrace rightTrace} ->
+  {leftCapital : IndependentCanonicalSchedule name key world error value protocol nameEq keyEq leftTrace} ->
+  {rightCapital : IndependentCanonicalSchedule name key world error value protocol nameEq keyEq rightTrace} ->
+  {matching : MappedCanonicalSupportOrders name key world error value protocol nameEq keyEq leftTrace rightTrace
+    (expectedBridgeBijection sameInputs) (canonicalSchedule leftCapital) (canonicalSchedule rightCapital)} ->
+  {operational : CertifiedOperationalCanonicalPermutation name key world error value protocol nameEq keyEq
+    leftTrace rightTrace sameInputs leftCapital rightCapital matching} ->
+  {selected : name} ->
+  (pair : SelectedCanonicalBlockPair name key world error value protocol nameEq keyEq leftTrace rightTrace
+    sameInputs leftCapital rightCapital matching operational selected) ->
+  (deps : List key) ->
+  RenamedRuntimeEffects name key world value (expectedBridgeBijection sameInputs)
+    (projectEffectState {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} (blockPreStart (pairLeftBlock pair)))
+    (projectEffectState {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} (blockPreStart (pairRightBlock pair))) ->
+  (leftView, rightView : View name deps) ->
+  (resolveView {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} @{keyEq} deps (registry (blockPreStart (pairLeftBlock pair))) = Just leftView) ->
+  (resolveView {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} @{keyEq} deps (registry (blockPreStart (pairRightBlock pair))) = Just rightView) ->
+  ViewRelatedBy (expectedBridgeBijection sameInputs) leftView rightView
+canonicalPairSelectedViews {name} {key} {world} {error} {value} {sameInputs} nameEq keyEq pair deps effects leftView rightView leftResolved rightResolved =
+  canonicalPairViewsAtStates {name = name} {key = key} {value = value} {world = world} {error = error} nameEq keyEq (expectedBridgeBijection sameInputs) deps
+    (blockPreStart (pairLeftBlock pair)) (blockPreStart (pairRightBlock pair)) effects
+    (Builtin.snd (canonicalPairCutsWellFormed nameEq keyEq pair)) leftView rightView leftResolved rightResolved

@@ -221,3 +221,21 @@ C4 PASS1,3.115s: PRODUCES those two selected ranges from existing accepted
 operational capital and support truth, not arbitrary replacement traces or
 a caller-selected bijection. No prefix effects/control agreement is inferred.
 The operational capital remains a genuine conditional input; O19 is not closed.
+
+C5 PASS1,3.119s (23fac02): genuine selected Begin occurrence with actual
+prefix/suffix, usable on either authoritative selected block.
+C6 PASS1,3.111s (8bfd0c0): derives WF at BOTH actual pre-opening cuts from
+their own full replay bundles and exact block decompositions.
+C7 PASS2,3.117s (899258a): observed-system-state adapter for R181 D6;
+first attempt needed explicit dependent value/world/error arguments.
+C8 PASS1,3.117s: applies D6 at the actual selected opening cuts under
+expectedBridgeBijection; right WF/pairwise uniqueness derived from C6.
+Runtime effect agreement and successful resolver observations remain explicit
+INTERNAL induction hypotheses. They are not inserted into an O20 theorem
+surface and are NOT produced from whole canonical executions here.
+
+All8 C prerequisite slots retained after fresh PASS; no bodies. Canonical
+paired block/cut SELECTION is now constructive conditional on existing real
+operational capital. Whole-prefix effect/control synchronization, matched
+program-step advancement and the endpoint bridge remain open. No O19/O20
+closure, no O17 root-placement/O21 withdrawal change. Validation follows.
