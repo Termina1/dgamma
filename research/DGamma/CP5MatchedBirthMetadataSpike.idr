@@ -369,3 +369,34 @@ acceptedSupportedParentBackward name key world error value nameEq keyEq left rig
           (authenticatedBirthStampsSame name key world error value nameEq keyEq right rightUnique (eventParent rightEvent)
             rightGeneration (activationParentGeneration (rightMatchedActivation matched)) (acceptedRightCurrentBirth name key world error value nameEq left right (generatedGenerationBijection sameInputs) (generatedRegistrationTree sameInputs) (eventParent rightEvent) rightGeneration rightCurrent) (acceptedRightEventParentBirth name key world error value nameEq left right (generatedGenerationBijection sameInputs) (generatedRegistrationTree sameInputs) rightEvent rightMember (rightMatchedActivation matched) (rightActivationPresent matched)))
           (acceptedLeftCurrentBirth name key world error value nameEq left right (generatedGenerationBijection sameInputs) (generatedRegistrationTree sameInputs) (renameBackward (currentNameBijection (endpointRenaming sameInputs)) (eventParent rightEvent)) leftGeneration leftCurrent) (acceptedLeftEventParentBirth name key world error value nameEq left right (generatedGenerationBijection sameInputs) (generatedRegistrationTree sameInputs) leftEvent leftMember (leftMatchedActivation matched) (leftActivationPresent matched))
+
+||| Derive the parent premise from actual supported child metadata, without
+||| asking the caller for parent support or any historical/current stamp equation.
+export
+0 acceptedSupportedChildParentForward :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, leftFinal, rightFinal : SystemState name key value world error} ->
+  (left : Transitions initial leftFinal) -> (right : Transitions initial rightFinal) ->
+  (sameInputs : SameOrchestrationModuloGenerated nameEq keyEq left right) ->
+  AlignedTransitions name key world error value nameEq keyEq left ->
+  AlignedTransitions name key world error value nameEq keyEq right ->
+  bindings (registry initial) = [] ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq left ->
+  (leftEvent, rightEvent : RegistrationEvent name key world error value) ->
+  Elem leftEvent (leftScannedEvents (acceptedAuthenticatedRegistrationMatching name key world error value nameEq left right (generatedGenerationBijection sameInputs) (generatedRegistrationTree sameInputs))) -> Elem rightEvent (rightScannedEvents (acceptedAuthenticatedRegistrationMatching name key world error value nameEq left right (generatedGenerationBijection sameInputs) (generatedRegistrationTree sameInputs))) ->
+  (leftFiber, rightFiber : Fiber name key value world error) ->
+  (metadata : MatchedEndpointStaticMetadata name key world error value (generatedGenerationBijection sameInputs) leftEvent rightEvent leftFiber rightFiber) ->
+  lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+    @{nameEq} (eventChild leftEvent) (registry leftFinal) = Just leftFiber ->
+  isSupported {name = name} {key = key} {value = value} {world = world} {error = error}
+    @{nameEq} @{keyEq} (eventChild leftEvent) leftFinal = True ->
+  (lookupCurrentGeneration @{nameEq} (eventParent leftEvent) (leftFinalGenerations (generatedRegistrationTree sameInputs)) = Just (activationParentGeneration (leftMatchedActivation (endpointEventMatch metadata))),
+   lookupCurrentGeneration @{nameEq} (eventParent rightEvent) (rightFinalGenerations (generatedRegistrationTree sameInputs)) = Just (activationParentGeneration (rightMatchedActivation (endpointEventMatch metadata))),
+   (renameForward (currentNameBijection (endpointRenaming sameInputs)) (eventParent leftEvent)) = eventParent rightEvent)
+acceptedSupportedChildParentForward name key world error value nameEq keyEq {leftFinal} left right sameInputs
+  leftAligned rightAligned empty leftUnique leftEvent rightEvent leftMember rightMember leftFiber rightFiber metadata leftFound supported =
+    acceptedSupportedParentForward name key world error value nameEq keyEq left right sameInputs
+      leftAligned rightAligned empty leftUnique leftEvent rightEvent leftMember rightMember (endpointEventMatch metadata)
+      (computedSupportParent name key world error value nameEq keyEq leftFinal (eventChild leftEvent) leftFiber leftFound
+        (eventParent leftEvent) (leftEndpointBirthParent metadata) supported)
