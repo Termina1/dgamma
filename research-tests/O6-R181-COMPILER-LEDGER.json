@@ -1,0 +1,518 @@
+[
+  {
+    "unit": "A1-1",
+    "path": "research-tests/DGamma/R181O19SafetyCompletion.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R181O19SafetyCompletion.idr"
+    ],
+    "start": "2026-09-07T13:52:15.880145+00:00",
+    "end": "2026-09-07T13:52:16.921616+00:00",
+    "seconds": 1.041268290951848,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 0,
+    "sourceSHA256": "f1632e68cfcc3349ad9cbee28259102a2611fb942b8e468c18b252c459941bdb",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "3/3: Building DGamma.R181O19SafetyCompletion (research-tests/DGamma/R181O19SafetyCompletion.idr)\n",
+    "newTopLevelDeclarations": [
+      "r181WholeTrace"
+    ],
+    "matchingSourceCommits": [
+      "ab0f080e26dd2ac2e14d20ea53e7e03ed526c244"
+    ]
+  },
+  {
+    "unit": "A2-1",
+    "path": "research-tests/DGamma/R181O19SafetyCompletion.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R181O19SafetyCompletion.idr"
+    ],
+    "start": "2026-09-07T13:53:27.907901+00:00",
+    "end": "2026-09-07T13:53:28.950187+00:00",
+    "seconds": 1.0420985841192305,
+    "exit": 1,
+    "fresh": true,
+    "passed": false,
+    "interrupted": false,
+    "maxSampleRSSKiB": 0,
+    "sourceSHA256": "291bd418097698a184892403fcb29081660b297bb1685df9444ebdb8db7d7b9a",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "3/3: Building DGamma.R181O19SafetyCompletion (research-tests/DGamma/R181O19SafetyCompletion.idr)\nError: While processing right hand side of r181TraceAligned. Can't solve constraint between: r180CheckedFromPrerequisites (LBegin 1) r179ObservedProviderFinished r180ObservedConsumerBegun LBeginTag r180ConsumerBeginRaw (fst r180ConsumerBeginOutputDomains) and r180ConsumerBeginFromPrerequisites .beginEquation.\n\nDGamma.R181O19SafetyCompletion:64:3--76:72\n 64 |   AlignedStep (OInsert 0 Root providerComponent) OInsertTag Refl _\n 65 |     (AlignedStep (OInsert 1 Root emptyConsumerComponent) OInsertTag Refl _\n 66 |       (AlignedStep (LBegin 0) LBeginTag (fst r179ObservedProviderEdges) _\n 67 |         (AlignedStep (LAdvance 0) LIterTag (fst (snd r179ObservedProviderEdges)) _\n 68 |           (AlignedStep (LAdvance 0) LFinishTag (fst (snd (snd r179ObservedProviderEdges))) _\n 69 |             (AlignedStep (LBegin 1) LBeginTag\n\n",
+    "newTopLevelDeclarations": [
+      "r181TraceAligned"
+    ],
+    "matchingSourceCommits": []
+  },
+  {
+    "unit": "A2-2",
+    "path": "research-tests/DGamma/R181O19SafetyCompletion.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R181O19SafetyCompletion.idr"
+    ],
+    "start": "2026-09-07T13:54:05.294779+00:00",
+    "end": "2026-09-07T13:54:07.387638+00:00",
+    "seconds": 2.0927016669884324,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 302800,
+    "sourceSHA256": "323a7d9888ae45acef4ecb9658ee222330124c0509bcf9bacf879e4bc1dee54f",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "3/3: Building DGamma.R181O19SafetyCompletion (research-tests/DGamma/R181O19SafetyCompletion.idr)\n",
+    "newTopLevelDeclarations": [
+      "r181TraceAligned"
+    ],
+    "matchingSourceCommits": [
+      "f6c87dccc6e85fe3b7b7212748b2f87368c7d10f"
+    ]
+  },
+  {
+    "unit": "A3-1",
+    "path": "research-tests/DGamma/R181O19SafetyCompletion.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R181O19SafetyCompletion.idr"
+    ],
+    "start": "2026-09-07T13:54:47.233383+00:00",
+    "end": "2026-09-07T13:54:49.332540+00:00",
+    "seconds": 2.098959666211158,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 284960,
+    "sourceSHA256": "e3d515bed3cc564d06e3c3708aac8d47ffc1279bb3cf7c5e6ea5f122074b7e51",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "3/3: Building DGamma.R181O19SafetyCompletion (research-tests/DGamma/R181O19SafetyCompletion.idr)\n",
+    "newTopLevelDeclarations": [
+      "r181EndpointObserved"
+    ],
+    "matchingSourceCommits": [
+      "0b6d288d57aea3a52ac240b7df33d995c4c5a079"
+    ]
+  },
+  {
+    "unit": "A4-1",
+    "path": "research-tests/DGamma/R181O19SafetyCompletion.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R181O19SafetyCompletion.idr"
+    ],
+    "start": "2026-09-07T13:55:41.200145+00:00",
+    "end": "2026-09-07T13:55:43.305315+00:00",
+    "seconds": 2.105015916749835,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 301680,
+    "sourceSHA256": "09cfdd818cb364dadf04110b63c1aafcfe418fcc1d3049908c4fe9e0b6941707",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "3/3: Building DGamma.R181O19SafetyCompletion (research-tests/DGamma/R181O19SafetyCompletion.idr)\n",
+    "newTopLevelDeclarations": [
+      "r181EndpointReady"
+    ],
+    "matchingSourceCommits": [
+      "9f73ac995ecf0caafbd3f12713ba340f6d4f0339"
+    ]
+  },
+  {
+    "unit": "A5-1",
+    "path": "research-tests/DGamma/R181O19SafetyCompletion.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R181O19SafetyCompletion.idr"
+    ],
+    "start": "2026-09-07T13:56:46.675753+00:00",
+    "end": "2026-09-07T13:56:48.741930+00:00",
+    "seconds": 2.066029999870807,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 298240,
+    "sourceSHA256": "59785db53e9c7b735ab54f73787b687ee80da28cad8cad63471e546bb49ea0da",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "3/3: Building DGamma.R181O19SafetyCompletion (research-tests/DGamma/R181O19SafetyCompletion.idr)\n",
+    "newTopLevelDeclarations": [
+      "r181ProtocolRank"
+    ],
+    "matchingSourceCommits": [
+      "f0abb880ba87aa9ce37283f223e21baea32963f6"
+    ]
+  },
+  {
+    "unit": "A6-1",
+    "path": "research-tests/DGamma/R181O19SafetyCompletion.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R181O19SafetyCompletion.idr"
+    ],
+    "start": "2026-09-07T13:57:56.893699+00:00",
+    "end": "2026-09-07T13:57:58.978014+00:00",
+    "seconds": 2.084155833348632,
+    "exit": 1,
+    "fresh": true,
+    "passed": false,
+    "interrupted": false,
+    "maxSampleRSSKiB": 308352,
+    "sourceSHA256": "05fd56a9b9cfa9a4e33f58fce69d35f0946eabfce798ebb61bdeb68da8671058",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "3/3: Building DGamma.R181O19SafetyCompletion (research-tests/DGamma/R181O19SafetyCompletion.idr)\nError: r181PrecedenceRanks is not covering.\n\nDGamma.R181O19SafetyCompletion:128:1--139:31\n 128 | ||| Genuine provision/dependency edges increase rank. A rank1 component cannot\n 129 | ||| itself be a provider: its provision list is empty by construction.\n 130 | export\n 131 | 0 r181PrecedenceRanks :\n 132 |   (provider, consumer : Component ToyKey ToyValue ToyRuntime String) ->\n 133 |   (providerRank, consumerRank : Nat) ->\n\nMissing cases:\n    r181PrecedenceRanks (MkComponent (MkCoeffectSpec [] _) _ _) (MkComponent (MkCoeffectSpec (_ :: _) _) _ _) _ _ _ _ _ _ _\n    r181PrecedenceRanks (MkComponent (MkCoeffectSpec [] _) _ _) (MkComponent (MkCoeffectSpec (_ :: _) _) _ _) _ _ _ _ _ _ _\n    r181PrecedenceRanks (MkComponent (MkCoeffectSpec [] _) _ _) (MkComponent (MkCoeffectSpec (_ :: _) _) _ _) _ _ _ _ _ _ _\n    r181PrecedenceRanks (MkComponent (MkCoeffectSpec [] _) _ _) (MkComponent (MkCoeffectSpec (_ :: _) _) _ _) _ _ _ _ _ _ _\n\n",
+    "newTopLevelDeclarations": [
+      "r181PrecedenceRanks"
+    ],
+    "matchingSourceCommits": []
+  },
+  {
+    "unit": "A6-2",
+    "path": "research-tests/DGamma/R181O19SafetyCompletion.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R181O19SafetyCompletion.idr"
+    ],
+    "start": "2026-09-07T13:59:05.990658+00:00",
+    "end": "2026-09-07T13:59:08.060731+00:00",
+    "seconds": 2.0698858750984073,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 294096,
+    "sourceSHA256": "900949f80c9ba0771d97c3be42d4d05185c4fdf207ec45276855d1780c53cabf",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "3/3: Building DGamma.R181O19SafetyCompletion (research-tests/DGamma/R181O19SafetyCompletion.idr)\n",
+    "newTopLevelDeclarations": [
+      "r181PrecedenceRanks"
+    ],
+    "matchingSourceCommits": [
+      "519cb791ca3041e2a5e56469fbe84ade41809574"
+    ]
+  },
+  {
+    "unit": "A7-1",
+    "path": "research-tests/DGamma/R181O19SafetyCompletion.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R181O19SafetyCompletion.idr"
+    ],
+    "start": "2026-09-07T14:00:02.026212+00:00",
+    "end": "2026-09-07T14:00:04.098136+00:00",
+    "seconds": 2.0717432079836726,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 289424,
+    "sourceSHA256": "a26f48953ed26889a612a74fb35c9ee173d4cf775e933a367d23113bfdbb9dad",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "3/3: Building DGamma.R181O19SafetyCompletion (research-tests/DGamma/R181O19SafetyCompletion.idr)\n",
+    "newTopLevelDeclarations": [
+      "r181Protocol"
+    ],
+    "matchingSourceCommits": [
+      "1be77ecc5fc6500dc9738d504736c730255b51e1"
+    ]
+  },
+  {
+    "unit": "A8-1",
+    "path": "research-tests/DGamma/R181O19SafetyCompletion.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R181O19SafetyCompletion.idr"
+    ],
+    "start": "2026-09-07T14:00:28.929251+00:00",
+    "end": "2026-09-07T14:00:31.008529+00:00",
+    "seconds": 2.07909404207021,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 318128,
+    "sourceSHA256": "64b7f8dcf3f310158fb3461ccd0e4175665c3b17a9bddc25a67a8b9f15cd7b0e",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "3/3: Building DGamma.R181O19SafetyCompletion (research-tests/DGamma/R181O19SafetyCompletion.idr)\n",
+    "newTopLevelDeclarations": [
+      "r181TraceStructure"
+    ],
+    "matchingSourceCommits": [
+      "d307a1e9164ef135aee43f5b3fcce0eae9dc03a7"
+    ]
+  },
+  {
+    "unit": "A9-1",
+    "path": "research-tests/DGamma/R181O19SafetyCompletion.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R181O19SafetyCompletion.idr"
+    ],
+    "start": "2026-09-07T14:01:27.387527+00:00",
+    "end": "2026-09-07T14:01:40.912268+00:00",
+    "seconds": 13.524587292224169,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 2114848,
+    "sourceSHA256": "0efd49eda55b3418c21f6ccdc99ab164fff6f4e0f709ceef67233a8bbcef251e",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "3/3: Building DGamma.R181O19SafetyCompletion (research-tests/DGamma/R181O19SafetyCompletion.idr)\n",
+    "newTopLevelDeclarations": [
+      "r181TotalityObserved"
+    ],
+    "matchingSourceCommits": [
+      "5b517624ab4b611fe205dcffff6fd7cdcb9f5b8c"
+    ]
+  },
+  {
+    "unit": "A10-1",
+    "path": "research-tests/DGamma/R181O19SafetyCompletion.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R181O19SafetyCompletion.idr"
+    ],
+    "start": "2026-09-07T14:02:23.949693+00:00",
+    "end": "2026-09-07T14:02:37.450589+00:00",
+    "seconds": 13.500769041944295,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 2114528,
+    "sourceSHA256": "447dca4943f54932e0be75bfd10693da95130bdcfbc68b0f268d0231cc2d05fd",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "3/3: Building DGamma.R181O19SafetyCompletion (research-tests/DGamma/R181O19SafetyCompletion.idr)\n",
+    "newTopLevelDeclarations": [
+      "r181WholeTotal"
+    ],
+    "matchingSourceCommits": [
+      "cd746150d67811f1131eb690c57e34a2a95cf2e5"
+    ]
+  },
+  {
+    "unit": "A11-1",
+    "path": "research-tests/DGamma/R181O19SafetyCompletion.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R181O19SafetyCompletion.idr"
+    ],
+    "start": "2026-09-07T14:04:36.381694+00:00",
+    "end": "2026-09-07T14:04:47.773366+00:00",
+    "seconds": 11.391508999746293,
+    "exit": 1,
+    "fresh": true,
+    "passed": false,
+    "interrupted": false,
+    "maxSampleRSSKiB": 1950144,
+    "sourceSHA256": "66281f50f27f7b1d41f6722d730ab06cceb42b4177baeba540790012c186cff2",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "3/3: Building DGamma.R181O19SafetyCompletion (research-tests/DGamma/R181O19SafetyCompletion.idr)\nError: While processing right hand side of r181InstalledCutsObserved. Rewriting by restrictOwnedPreservingOrder toySpecA (ownedValues (ownedA True)) = table did not change type (installedAt 0 r179ObservedProviderBegin = True, (installedAt 0 r179ObservedProviderCut = True, (installedAt 0 r179ObservedProviderFinished = True, (installedAt 1 r180ObservedConsumerBegun = True, installedAt 1 r180ObservedConsumerFinished = True)))).\n\nDGamma.R181O19SafetyCompletion:268:3--268:58\n 264 |       {error = String} @{%search} 1 r180ObservedConsumerBegun = True),\n 265 |    (installedAt {name = Nat} {key = ToyKey} {value = ToyValue} {world = ToyRuntime}\n 266 |       {error = String} @{%search} 1 r180ObservedConsumerFinished = True))\n 267 | r181InstalledCutsObserved table tableObserved =\n 268 |   rewrite tableObserved in (Refl, Refl, Refl, Refl, Refl)\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\n",
+    "newTopLevelDeclarations": [
+      "r181InstalledCutsObserved"
+    ],
+    "matchingSourceCommits": []
+  },
+  {
+    "unit": "A11-2",
+    "path": "research-tests/DGamma/R181O19SafetyCompletion.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R181O19SafetyCompletion.idr"
+    ],
+    "start": "2026-09-07T14:09:13.875095+00:00",
+    "end": "2026-09-07T14:09:14.930070+00:00",
+    "seconds": 1.0547740831971169,
+    "exit": 1,
+    "fresh": true,
+    "passed": false,
+    "interrupted": false,
+    "maxSampleRSSKiB": 0,
+    "sourceSHA256": "251ba919fac1b707d3f9149b6065fe8fbf362e3822523e174fc03c38d111adc9",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "3/3: Building DGamma.R181O19SafetyCompletion (research-tests/DGamma/R181O19SafetyCompletion.idr)\nError: Expected end of input.\n\nDGamma.R181O19SafetyCompletion:285:36--285:37\n 281 |             MkLocalState (MkToyRuntime (not providerFlag) consumerFlag)\n 282 |               (restrictOwnedPreservingOrder @{%search} DGamma.Section3Example.toySpecA\n 283 |                 (ownedValues (emptyOwned {key = ToyKey} {value = ToyValue}\n 284 |                   {provision = DGamma.Section3Example.toySpecA})))))) id) EmptyView))\n 285 |     (rewrite tableObserved in Refl),\n                                          ^\n\n",
+    "newTopLevelDeclarations": [
+      "r181InstalledCutsObserved"
+    ],
+    "matchingSourceCommits": []
+  },
+  {
+    "unit": "A11-3",
+    "path": "research-tests/DGamma/R181O19SafetyCompletion.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R181O19SafetyCompletion.idr"
+    ],
+    "start": "2026-09-07T14:09:54.793905+00:00",
+    "end": "2026-09-07T14:10:07.243374+00:00",
+    "seconds": 12.449332291726023,
+    "exit": 1,
+    "fresh": true,
+    "passed": false,
+    "interrupted": false,
+    "maxSampleRSSKiB": 2252544,
+    "sourceSHA256": "ef929d7e63098f70e37d6c4a9c4c0546c8132332cc3f970eea404e4dcfc9ab8b",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "3/3: Building DGamma.R181O19SafetyCompletion (research-tests/DGamma/R181O19SafetyCompletion.idr)\nError: While processing right hand side of r181InstalledCutsObserved. Can't solve constraint between: let MkLocalState (MkToyRuntime providerFlag consumerFlag) laterTable = normalizeLocal toySpecA ((.) (normalizeLocal toySpecA) (id . normalizeLocal toySpecA) x) in MkLocalState (MkToyRuntime (not providerFlag) consumerFlag) (restrictOwnedPreservingOrder toySpecA (ownedValues emptyOwned)) and let MkLocalState (MkToyRuntime laterProvider laterConsumer) laterTable = normalizeLocal (MkCoeffectSpec [ServiceA] (UniqueCons notInEmpty UniqueNil)) (normalizeLocal (MkCoeffectSpec [ServiceA] (UniqueCons notInEmpty UniqueNil)) (normalizeLocal (MkCoeffectSpec [ServiceA] (UniqueCons notInEmpty UniqueNil)) x)) in MkLocalState (MkToyRuntime (not laterProvider) laterConsumer) (canonicalOwnedFromFiltered (MkCoeffectSpec [ServiceA] (UniqueCons notInEmpty UniqueNil)) (orderRestrictedBindings (orderRestrictEntries [ServiceA] [] UniqueNil)) (orderRestrictedUnique (orderRestrictEntries [ServiceA] [] UniqueNil)) (orderRestrictedSound (orderRestrictEntries [ServiceA] [] UniqueNil))).\n\nDGamma.R181O19SafetyCompletion:285:31--285:35\n 281 |             MkLocalState (MkToyRuntime (not providerFlag) consumerFlag)\n 282 |               (restrictOwnedPreservingOrder @{%search} DGamma.Section3Example.toySpecA\n 283 |                 (ownedValues (emptyOwned {key = ToyKey} {value = ToyValue}\n 284 |                   {provision = DGamma.Section3Example.toySpecA}))))) id) EmptyView))\n 285 |     (rewrite tableObserved in Refl),\n                                     ^^^^\n\n",
+    "newTopLevelDeclarations": [
+      "r181InstalledCutsObserved"
+    ],
+    "matchingSourceCommits": []
+  },
+  {
+    "unit": "A11-restored",
+    "path": "research-tests/DGamma/R181O19SafetyCompletion.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R181O19SafetyCompletion.idr"
+    ],
+    "start": "2026-09-07T14:10:46.259335+00:00",
+    "end": "2026-09-07T14:11:00.814370+00:00",
+    "seconds": 14.554884542245418,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 2114592,
+    "sourceSHA256": "447dca4943f54932e0be75bfd10693da95130bdcfbc68b0f268d0231cc2d05fd",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "3/3: Building DGamma.R181O19SafetyCompletion (research-tests/DGamma/R181O19SafetyCompletion.idr)\n",
+    "newTopLevelDeclarations": [],
+    "matchingSourceCommits": [
+      "cd746150d67811f1131eb690c57e34a2a95cf2e5"
+    ]
+  }
+]
