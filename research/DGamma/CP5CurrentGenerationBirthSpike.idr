@@ -129,3 +129,14 @@ currentBirthAfterAction name key world error value nameEq global ordinal live (L
 currentBirthAfterAction name key world error value nameEq global ordinal live (LDivert actor) occurrence exact previous = previous
 currentBirthAfterAction name key world error value nameEq global ordinal live (LLeave actor) occurrence exact previous = previous
 currentBirthAfterAction name key world error value nameEq global ordinal live (LUnload actor) occurrence exact previous = previous
+
+0 currentBirthPrependLocation :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (step : Transition first middle) -> (rest : Transitions middle finalState) ->
+  (action : Action name key value world error) ->
+  LocatedActionOccurrence action rest -> LocatedActionOccurrence action (MoreTransitions step rest)
+currentBirthPrependLocation name key world error value step rest action
+  (MkLocatedActionOccurrence before afterState prior located later exact decomposition) =
+    MkLocatedActionOccurrence before afterState (MoreTransitions step prior) located later exact
+      (cong (MoreTransitions step) decomposition)
