@@ -176,3 +176,49 @@ rawImmutableComponentUpdate name key world error value nameEq property actor sou
           (trans (sym (DGamma.CP4DeletionSelectedOwn.lookupDeleteSelf @{nameEq} actor source)) found))
       No distinct => previous selected observed
         (trans (sym (registryLocalUpdateForeign nameEq selected actor distinct source LocalDelete)) found)
+
+
+||| Actual evaluator producer for the explicit-update invariant. The computed
+||| update is only PASSED to the structural helper; never eliminated here.
+public export
+0 rawComponentBirthStep :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (global : Transitions initial finalState) ->
+  (action : Action name key value world error) ->
+  (before, afterState : SystemState name key value world error) -> (tag : RuleTag) ->
+  (raw : applyAction @{nameEq} @{keyEq} action before = Just (tag, afterState)) ->
+  (occurrence : LocatedActionOccurrence action global) ->
+  ((selected : name) -> (fiber : Fiber name key value world error) ->
+    lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+      @{nameEq} selected (registry before) = Just fiber ->
+    (parent : Parent name ** LocatedActionOccurrence
+      (OInsert selected parent (fiberComponent fiber)) global)) ->
+  (selected : name) -> (observed : Fiber name key value world error) ->
+  lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+    @{nameEq} selected (registry afterState) = Just observed ->
+  (parent : Parent name ** LocatedActionOccurrence
+    (OInsert selected parent (fiberComponent observed)) global)
+rawComponentBirthStep name key world error value nameEq keyEq global action
+  before afterState tag raw occurrence sourceBirth =
+    rawImmutableComponentUpdate name key world error value nameEq
+      (\selected, component => (parent : Parent name **
+        LocatedActionOccurrence (OInsert selected parent component) global))
+      (actionOwner action) (registry before) (registry afterState)
+      (systemRegistryUpdate (applyActionLocalUpdate nameEq keyEq action before afterState tag raw))
+      (\next, absent, targetIsInsert =>
+        case rawAbsentOwnerInsertion name key world error value nameEq keyEq action
+          before afterState tag raw absent of
+          (parent ** (component ** inserted)) =>
+            (parent ** replace
+              {p = \chosen => LocatedActionOccurrence (OInsert (actionOwner action) parent chosen) global}
+              (cong fiberComponent (justInjective
+                (trans (sym (oInsertResultLookup nameEq keyEq (actionOwner action) parent component
+                  before afterState tag (replace
+                    {p = \chosen => applyAction @{nameEq} @{keyEq} chosen before = Just (tag, afterState)}
+                    inserted raw)))
+                  (trans (cong (lookupFiber @{nameEq} (actionOwner action)) targetIsInsert)
+                    (lookupInserted (actionOwner action) next (registry before) absent)))))
+              (replace {p = \chosen => LocatedActionOccurrence chosen global} inserted occurrence)))
+      sourceBirth
