@@ -142,3 +142,24 @@ activeFiberViewDomain name key world error value nameEq keyEq
     (accumulator ** view ** (Refl, valid))
 activeFiberViewDomain name key world error value nameEq keyEq
   (MkFiber component parent retiredFlag table (Unloading accumulator view outcome)) fibers Refl valid impossible
+
+||| Consumer of the producer-owned lookup packet: exact Active payload plus
+||| stable-provider and resolvable-coeffect-domain conjunction at THIS endpoint.
+export
+0 supportedCanonicalCommittedView :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (state : SystemState name key value world error) -> (selected : name) ->
+  (packet : SupportedCanonicalEndpointView name key world error value nameEq keyEq selected state) ->
+  (accumulator : (LocalState key value world (componentProvisions (fiberComponent (supportedCanonicalFiber packet))) ->
+    LocalState key value world (componentProvisions (fiberComponent (supportedCanonicalFiber packet)))) **
+   view : View name (dependencies (componentDependencies (fiberComponent (supportedCanonicalFiber packet)))) **
+   (fiberLifecycle (supportedCanonicalFiber packet) = Active {key = key} {value = value} {world = world} {error = error} {name = name} accumulator view,
+    viewBindingsInvariant {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} @{keyEq}
+      (dependencies (componentDependencies (fiberComponent (supportedCanonicalFiber packet)))) view (registry state) = True))
+supportedCanonicalCommittedView name key world error value nameEq keyEq state selected packet =
+  activeFiberViewDomain name key world error value nameEq keyEq (supportedCanonicalFiber packet) (registry state)
+    (trans (sym (the
+      (supportedActiveAt @{nameEq} selected state = isActive (fiberLifecycle (supportedCanonicalFiber packet)))
+      (rewrite supportedCanonicalFound packet in Refl))) (supportedCanonicalActive packet))
+    (supportedCanonicalViewDomain packet)
