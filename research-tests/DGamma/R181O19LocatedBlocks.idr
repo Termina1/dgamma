@@ -113,3 +113,25 @@ r181ProviderLocatedBlock = MkLocatedOpenEpisodeBlock
   (NoLifecycleByStep _ _ (\life, same => case same of Refl impossible)
     (NoLifecycleByStep _ _ (\life, same => case same of Refl impossible) NoLifecycleByEnd))
   (Builtin.fst (Builtin.snd (Builtin.snd r181EndpointReady))) Refl
+
+||| E6: authentic TWO-edge consumer block in the SAME whole trace. Its exact
+||| prefix includes the provider's completed block; only orchestration of actor1
+||| precedes its Begin, and no lifecycle of actor1 occurs earlier or later.
+public export
+0 r181ConsumerLocatedBlock : LocatedOpenEpisodeBlock Nat ToyKey ToyRuntime String
+  ToyValue (the (DecEq Nat) %search) (the (DecEq ToyKey) %search) 1 r181WholeTrace
+r181ConsumerLocatedBlock = MkLocatedOpenEpisodeBlock
+  r179ObservedProviderFinished r180ObservedConsumerBegun r180ObservedConsumerFinished
+  (appendTransitions r181BeforeProviderBlock
+    (MoreTransitions (beginTransition (MkBeginStep (Builtin.fst r179ObservedProviderEdges)))
+      r181ProviderBlockBody))
+  r180ConsumerBeginFromPrerequisites r181ConsumerBlockBody
+  (Builtin.snd r181BlockBodiesInstalled)
+  (ActorLifecycleStep _ _ Refl Refl ActorLifecycleEnd) NoTransitions
+  (NoLifecycleByStep _ _ (\life => case life of Refl impossible)
+    (NoLifecycleByStep _ _ (\life => case life of Refl impossible)
+      (NoLifecycleByStep _ _ (\life, same => case same of Refl impossible)
+        (NoLifecycleByStep _ _ (\life, same => case same of Refl impossible)
+          (NoLifecycleByStep _ _ (\life, same => case same of Refl impossible)
+            NoLifecycleByEnd))))) NoLifecycleByEnd
+  (Builtin.snd (Builtin.snd (Builtin.snd r181EndpointReady))) Refl
