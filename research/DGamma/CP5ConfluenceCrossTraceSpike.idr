@@ -1326,6 +1326,8 @@ public export
     nameEq keyEq rightTrace) ->
   (0 leftUnique : UniqueRawNameInsertions name key world error value nameEq keyEq leftTrace) ->
   (0 rightUnique : UniqueRawNameInsertions name key world error value nameEq keyEq rightTrace) ->
+  (0 leftRightGeneratedMatched : GeneratedOrchestrationMatched name key world error value nameEq
+    leftTrace rightTrace (generatedGenerationBijection sameInputs)) ->
   {matching : MappedCanonicalSupportOrders name key world error value protocol
     nameEq keyEq leftTrace rightTrace
     (currentNameBijection (endpointRenaming sameInputs))
