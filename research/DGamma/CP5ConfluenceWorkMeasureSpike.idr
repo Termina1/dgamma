@@ -51,3 +51,21 @@ rankHeadInversionDrop left right suffix crossed =
   rewrite rankCrossingAsymmetric left right crossed in
     cong S (rankPlusSwap (foldr (+) Z (map (rankCrossing left) suffix))
       (foldr (+) Z (map (rankCrossing right) suffix)) (rankInversions suffix))
+
+||| A concrete adjacent choice and its global measure are constructed together.
+||| No arbitrary smaller word can inhabit this packet: the target is the exact
+||| transposition at the stored source decomposition.
+public export
+record RankedAdjacentProgress (source : List Nat) where
+  constructor MkRankedAdjacentProgress
+  rankedPrefix : List Nat
+  rankedLeft : Nat
+  rankedRight : Nat
+  rankedSuffix : List Nat
+  0 rankedSourceExact : source = rankedPrefix ++ rankedLeft :: rankedRight :: rankedSuffix
+  0 rankedWeightsExact : (pivot : Nat) ->
+    foldr (+) Z (map (rankCrossing pivot) source) =
+    foldr (+) Z (map (rankCrossing pivot)
+      (rankedPrefix ++ rankedRight :: rankedLeft :: rankedSuffix))
+  0 rankedGlobalDecrease : rankInversions source =
+    S (rankInversions (rankedPrefix ++ rankedRight :: rankedLeft :: rankedSuffix))
