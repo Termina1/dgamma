@@ -116,3 +116,29 @@ canonicalSupportedOriginalControl name key world error value nameEq keyEq protoc
       (canonicalPresentOutsideWithdrawals name key world error value nameEq keyEq finalState
         (canonicalFinal (canonicalSchedule capital)) (canonicalEndpoint (canonicalSchedule capital)) selected
         (supportedCanonicalFiber view) (supportedCanonicalFound view))))
+
+||| Reify the actual Active accumulator/view and retain its actual registry
+||| domain proof. No two accumulators or provider names are compared here.
+export
+0 activeFiberViewDomain :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (fiber : Fiber name key value world error) ->
+  (fibers : Registry name key value world error) ->
+  isActive (fiberLifecycle fiber) = True ->
+  fiberViewInvariant @{nameEq} @{keyEq} fiber fibers = True ->
+  (accumulator : (LocalState key value world (componentProvisions (fiberComponent fiber)) ->
+    LocalState key value world (componentProvisions (fiberComponent fiber))) **
+   view : View name (dependencies (componentDependencies (fiberComponent fiber))) **
+   (fiberLifecycle fiber = Active {key = key} {value = value} {world = world} {error = error} {name = name} accumulator view,
+    viewBindingsInvariant {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} @{keyEq}
+      (dependencies (componentDependencies (fiberComponent fiber))) view fibers = True))
+activeFiberViewDomain name key world error value nameEq keyEq
+  (MkFiber component parent retiredFlag table (Inactive outcome)) fibers Refl valid impossible
+activeFiberViewDomain name key world error value nameEq keyEq
+  (MkFiber component parent retiredFlag table (Reloading rest accumulator view)) fibers Refl valid impossible
+activeFiberViewDomain name key world error value nameEq keyEq
+  (MkFiber component parent retiredFlag table (Active accumulator view)) fibers active valid =
+    (accumulator ** view ** (Refl, valid))
+activeFiberViewDomain name key world error value nameEq keyEq
+  (MkFiber component parent retiredFlag table (Unloading accumulator view outcome)) fibers Refl valid impossible
