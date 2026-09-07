@@ -203,3 +203,20 @@ export
       rankedLeft (rankHeadProgress left right suffix crossed) ::
       rankedSuffix (rankHeadProgress left right suffix crossed)) = (right :: left :: suffix))
 rankHeadTargetExact left right suffix crossed = Refl
+
+||| Build the local transposition and its whole-segment decrease simultaneously,
+||| at explicit rank and suffix values, including the empty suffix observation.
+export
+0 rankSegmentHeadProgress :
+  (left, right : Nat) -> (segments : List (List Nat)) ->
+  (rankCrossing left right = 1) ->
+  (SegmentedRankProgress (rankSegmentStep (Just left) (rankSegmentStep (Just right) segments))
+    (rankSegmentStep (Just right) (rankSegmentStep (Just left) segments)))
+rankSegmentHeadProgress left right [] crossed =
+  replace {p = \observed => SegmentedRankProgress [[left, right]] [observed]}
+    (rankHeadTargetExact left right [] crossed)
+    (FirstRankSegment [] (rankHeadProgress left right [] crossed))
+rankSegmentHeadProgress left right (segment :: later) crossed =
+  replace {p = \observed => SegmentedRankProgress ((left :: right :: segment) :: later) (observed :: later)}
+    (rankHeadTargetExact left right segment crossed)
+    (FirstRankSegment later (rankHeadProgress left right segment crossed))
