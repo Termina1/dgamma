@@ -354,3 +354,24 @@ supportedReplayedBirthBridge name key world error value nameEq keyEq protocol le
     case supportedCanonicalBirthBridge name key world error value nameEq keyEq protocol left right sameInputs leftCapital rightCapital
       leftUnique rightUnique matched selected parent component supported (replayGeneratedRegistrationOrigin occurrences replayedBirth) of
       (rightBirth ** triangle) => (replayGeneratedRegistrationOrigin occurrences replayedBirth ** (Refl, (rightBirth ** triangle)))
+
+||| Actual canonical birth stamps are unique at fixed child/parent/component.
+||| This is derived through the capital's authentic original occurrence map.
+export
+0 canonicalGeneratedBirthStampUnique :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (original : Transitions initial finalState) ->
+  (capital : IndependentCanonicalSchedule name key world error value protocol nameEq keyEq original) ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq original ->
+  (child, parent : name) -> (component : Component key value world error) ->
+  (first, second : LocatedGeneratedRegistration child parent component (canonicalTrace (canonicalSchedule capital))) ->
+  registrationGeneration first = registrationGeneration second
+canonicalGeneratedBirthStampUnique name key world error value nameEq keyEq protocol original capital unique child parent component first second =
+  canonicalOccurrenceInjective (canonicalRegistrationTree (canonicalSchedule capital)) first second
+    (cong (MkRegistrationGeneration child)
+      (uniqueInsertionPosition unique child (ChildOf parent) (ChildOf parent) component component
+        (generatedRegistrationActionOccurrence (canonicalToOriginal (canonicalRegistrationTree (canonicalSchedule capital)) first))
+        (generatedRegistrationActionOccurrence (canonicalToOriginal (canonicalRegistrationTree (canonicalSchedule capital)) second))))
