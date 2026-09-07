@@ -457,3 +457,45 @@ pairedProjectOwnerTableObserved name key world error value nameEq ambient fibers
   Nothing observed = rewrite observed in Refl
 pairedProjectOwnerTableObserved name key world error value nameEq ambient fibers owner
   (Just fiber) observed = rewrite observed in Refl
+
+||| D1 supervisor-authorized cure: the eliminator consumes ONE NAMED TABLE,
+||| with its equation to the actual projection. B13 is applied INSIDE the
+||| observed-fiber branches, where its anonymous case has already reduced.
+||| This re-derives B11's provenance; it does not retry B12's statement.
+export
+0 pairedNamedTableOwnerObserved :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (ambient : world) -> (fibers : Registry name key value world error) ->
+  (owner : name) -> (wanted : key) ->
+  (observed : Maybe (Fiber name key value world error)) ->
+  (lookupBinding {key = name} {value = FiberAt name key value world error}
+    @{nameEq} owner fibers = observed) ->
+  (table : CoeffectContext key value) ->
+  (effectTables (projectEffectState {name = name} {key = key} {value = value}
+    {world = world} {error = error} @{nameEq} (MkSystemState ambient fibers)) owner = table) ->
+  (provided : value wanted) ->
+  (lookupBinding {key = key} {value = value} @{keyEq} wanted table = Just provided) ->
+  (fiber : Fiber name key value world error **
+    ((lookupFiber {name = name} {key = key} {value = value} {world = world}
+      {error = error} @{nameEq} owner fibers = Just fiber),
+     Elem wanted (dependencies (componentProvisions (fiberComponent fiber)))))
+pairedNamedTableOwnerObserved name key world error value nameEq keyEq ambient fibers
+  owner wanted Nothing found table tableObserved provided present =
+    void (nothingIsNotJust (trans (sym (cong
+      (lookupBinding {key = key} {value = value} @{keyEq} wanted)
+      (trans (sym tableObserved) (pairedProjectOwnerTableObserved name key world error
+        value nameEq ambient fibers owner Nothing found)))) present))
+pairedNamedTableOwnerObserved name key world error value nameEq keyEq ambient fibers
+  owner wanted (Just (MkFiber component parent retiredFlag
+    (MkOwnedTable (MkCoeffectContext entries unique) confined) lifecycle))
+  found table tableObserved provided present =
+    (MkFiber component parent retiredFlag
+      (MkOwnedTable (MkCoeffectContext entries unique) confined) lifecycle **
+      (found, confined wanted (lookupJustElem @{keyEq} wanted entries provided
+        (trans (sym (cong (lookupBinding {key = key} {value = value} @{keyEq} wanted)
+          (trans (sym tableObserved) (pairedProjectOwnerTableObserved name key world error
+            value nameEq ambient fibers owner
+            (Just (MkFiber component parent retiredFlag
+              (MkOwnedTable (MkCoeffectContext entries unique) confined) lifecycle)) found))))
+          present))))
