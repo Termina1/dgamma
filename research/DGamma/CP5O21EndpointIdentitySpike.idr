@@ -169,3 +169,40 @@ acceptedRightEndpointIdentityCapital name key world error value nameEq keyEq lef
         (\parent, component, birth => exactBirthStampRejectsLater name selected generation (locatedActionOrdinal birth)
           (acceptedRightEndpointBirthIdentity name key world error value nameEq keyEq left right sameInputs aligned empty unique
             selected generation current observed found parent component birth))
+
+||| O21 telescope consumer: both original capitals supply their OWN alignment
+||| and empty origin. The accepted matching is unchanged and A9 is threaded.
+||| A9 is not needed for identity (the stronger one-trace results above prove
+||| that); it cannot supply any of the PARKED withdrawal facts.
+export
+0 o21OriginalEndpointIdentityCapital :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {initial, leftFinal, rightFinal : SystemState name key value world error} ->
+  (left : Transitions initial leftFinal) -> (right : Transitions initial rightFinal) ->
+  (sameInputs : SameOrchestrationModuloGenerated nameEq keyEq left right) ->
+  (leftCapital : IndependentCanonicalSchedule name key world error value protocol nameEq keyEq left) ->
+  (rightCapital : IndependentCanonicalSchedule name key world error value protocol nameEq keyEq right) ->
+  (0 leftUnique : UniqueRawNameInsertions name key world error value nameEq keyEq left) ->
+  (0 rightUnique : UniqueRawNameInsertions name key world error value nameEq keyEq right) ->
+  (0 generatedMatched : GeneratedOrchestrationMatched name key world error value nameEq left right
+    (generatedGenerationBijection sameInputs)) ->
+  (((selected : name) -> (observed : Fiber name key value world error) ->
+    (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+      @{nameEq} selected (registry leftFinal) = Just observed) ->
+    AcceptedEndpointBirthIdentity name key world error value nameEq left
+      (leftFinalGenerations (generatedRegistrationTree sameInputs)) selected),
+   ((selected : name) -> (observed : Fiber name key value world error) ->
+    (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+      @{nameEq} selected (registry rightFinal) = Just observed) ->
+    AcceptedEndpointBirthIdentity name key world error value nameEq right
+      (rightFinalGenerations (generatedRegistrationTree sameInputs)) selected))
+o21OriginalEndpointIdentityCapital name key world error value nameEq keyEq protocol left right sameInputs
+  leftCapital rightCapital leftUnique rightUnique generatedMatched =
+    (acceptedLeftEndpointIdentityCapital name key world error value nameEq keyEq left right sameInputs
+      (replayAligned (chainReplayCapital (capitalPremises leftCapital)))
+      (replayInitialEmpty (chainReplayCapital (capitalPremises leftCapital))) leftUnique,
+     acceptedRightEndpointIdentityCapital name key world error value nameEq keyEq left right sameInputs
+      (replayAligned (chainReplayCapital (capitalPremises rightCapital)))
+      (replayInitialEmpty (chainReplayCapital (capitalPremises rightCapital))) rightUnique)
