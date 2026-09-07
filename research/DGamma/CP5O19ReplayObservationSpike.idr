@@ -4,6 +4,7 @@ import DGamma.Calculus
 import DGamma.Coeffects
 import DGamma.Metatheory
 import DGamma.CP3
+import DGamma.CP5UniqueRawNameInsertions
 import DGamma.CP5ConfluenceLocalDiamondSpike
 import DGamma.CP5ConfluenceRankObservationSpike
 import DGamma.CP5RankedEarlyApplicabilitySpike
@@ -146,3 +147,28 @@ o19AppendNonEmpty {target}
   (NonEmptyAdjacentSwap original earlier left right later orientation diamond result _ rest) next =
     NonEmptyAdjacentSwap original earlier left right later orientation diamond result target
       (o19AppendFinite rest next)
+
+||| B33: an EXPLICIT observed produced package is the elimination boundary.
+||| Build the global derivation alongside that SAME node/result/uniqueness.
+||| Callers pass producer applications as ordinary arguments, never case them.
+public export
+0 o19ComposeProduced :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {protocol : RegistrationProtocol key value world error} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {initial, originalFinal, currentFinal, first, middle, last : SystemState name key value world error} ->
+  {original : Transitions initial originalFinal} -> {current : Transitions initial currentFinal} ->
+  {earlier : Transitions initial first} -> {left : Transition first middle} ->
+  {right : Transition middle last} -> {later : Transitions last currentFinal} ->
+  NonEmptyFiniteAdjacentSwapDerivation name key world error value protocol nameEq keyEq original current ->
+  (diamond : LocalRelationalDiamond name key world error value nameEq keyEq left right **
+   (result : AdjacentSwapResult name key world error value protocol nameEq keyEq current earlier left right later diamond **
+    (NonEmptyFiniteAdjacentSwapDerivation name key world error value protocol nameEq keyEq current (swappedTrace result),
+     UniqueRawNameInsertions name key world error value nameEq keyEq (swappedTrace result)))) ->
+  (diamond : LocalRelationalDiamond name key world error value nameEq keyEq left right **
+   (result : AdjacentSwapResult name key world error value protocol nameEq keyEq current earlier left right later diamond **
+    (NonEmptyFiniteAdjacentSwapDerivation name key world error value protocol nameEq keyEq original (swappedTrace result),
+     UniqueRawNameInsertions name key world error value nameEq keyEq (swappedTrace result))))
+o19ComposeProduced previous (diamond ** (result ** (node, unique))) =
+  (diamond ** (result **
+    (o19AppendNonEmpty previous (nonEmptyToFiniteAdjacentSwapDerivation node), unique)))
