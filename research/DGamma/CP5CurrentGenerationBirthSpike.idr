@@ -504,3 +504,24 @@ currentDivertOwner name key world error value nameEq keyEq actor before componen
     (MkFiber component parent retiredFlag table (Reloading remaining accumulator view))
     (setFiberLifecycle (MkFiber component parent retiredFlag table (Reloading remaining accumulator view)) (Unloading accumulator view Nothing))
     found (worldState before) LDivertTag
+
+0 currentLeaveOwner :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (actor : name) -> (before : SystemState name key value world error) ->
+  (component : Component key value world error) -> (parent : Parent name) -> (retiredFlag : Bool) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (accumulator : LocalState key value world (componentProvisions component) -> LocalState key value world (componentProvisions component)) ->
+  (view : View name (dependencies (componentDependencies component))) ->
+  (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} actor (registry before) =
+    Just (MkFiber component parent retiredFlag table (Active accumulator view))) ->
+  (condition : Bool) ->
+  (targetMatches @{nameEq} (targetFiber @{nameEq} @{keyEq} (MkFiber component parent retiredFlag table (Active accumulator view)) (registry before)) view = condition) ->
+  CurrentResultOwner name key world error value nameEq actor (applyAction @{nameEq} @{keyEq} (LLeave actor) before)
+currentLeaveOwner name key world error value nameEq keyEq actor before component parent retiredFlag table accumulator view found True exact =
+  rewrite found in rewrite exact in ()
+currentLeaveOwner name key world error value nameEq keyEq actor before component parent retiredFlag table accumulator view found False exact =
+  rewrite found in rewrite exact in currentResultOwnerReplace name key world error value nameEq actor (registry before)
+    (MkFiber component parent retiredFlag table (Active accumulator view))
+    (setFiberLifecycle (MkFiber component parent retiredFlag table (Active accumulator view)) (Unloading accumulator view Nothing))
+    found (worldState before) LLeaveTag
