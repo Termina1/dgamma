@@ -124,3 +124,15 @@ data SegmentedRankProgress : List (List Nat) -> List (List Nat) -> Type where
     {source, target : List (List Nat)} ->
     (0 untouched : List Nat) -> (0 later : SegmentedRankProgress source target) ->
     SegmentedRankProgress (untouched :: source) (untouched :: target)
+
+||| A local segment choice strictly decreases the WHOLE segmented sum, even
+||| behind arbitrarily many unchanged barriers and earlier owned segments.
+export
+0 segmentedRankProgressDrops :
+  {source, target : List (List Nat)} -> (SegmentedRankProgress source target) ->
+  (foldr (+) Z (map rankInversions source) = S (foldr (+) Z (map rankInversions target)))
+segmentedRankProgressDrops (FirstRankSegment later progress) =
+  cong (\count => count + foldr (+) Z (map rankInversions later)) (rankedGlobalDecrease progress)
+segmentedRankProgressDrops (LaterRankSegment {target} untouched later) =
+  trans (cong (rankInversions untouched +) (segmentedRankProgressDrops later))
+    (sym (plusSuccRightSucc (rankInversions untouched) (foldr (+) Z (map rankInversions target))))
