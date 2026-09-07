@@ -391,3 +391,38 @@ record MatchedEndpointStaticMetadata
     componentProvisions (fiberComponent rightFiber)
   0 leftEndpointBirthParent : fiberParent leftFiber = ChildOf (eventParent leftEvent)
   0 rightEndpointBirthParent : fiberParent rightFiber = ChildOf (eventParent rightEvent)
+
+||| Exact endpoint metadata from two authenticated ORIGINAL matched births.
+public export
+0 matchedBirthEndpointMetadata :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {leftFirst, leftFinal, rightFirst, rightFinal : SystemState name key value world error} ->
+  (left : Transitions leftFirst leftFinal) -> (right : Transitions rightFirst rightFinal) ->
+  AlignedTransitions name key world error value nameEq keyEq left ->
+  AlignedTransitions name key world error value nameEq keyEq right ->
+  bindings (registry leftFirst) = [] -> bindings (registry rightFirst) = [] ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq left ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq right ->
+  (renaming : RegistrationGenerationBijection name) ->
+  (leftEvent, rightEvent : RegistrationEvent name key world error value) ->
+  ScannedRegistrationBirth name key world error value Z left leftEvent ->
+  ScannedRegistrationBirth name key world error value Z right rightEvent ->
+  RegistrationEventMatch renaming leftEvent rightEvent ->
+  (leftFiber, rightFiber : Fiber name key value world error) ->
+  lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+    @{nameEq} (eventChild leftEvent) (registry leftFinal) = Just leftFiber ->
+  lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+    @{nameEq} (eventChild rightEvent) (registry rightFinal) = Just rightFiber ->
+  MatchedEndpointStaticMetadata name key world error value renaming leftEvent rightEvent leftFiber rightFiber
+matchedBirthEndpointMetadata name key world error value nameEq keyEq left right leftAligned rightAligned leftEmpty rightEmpty
+  leftUnique rightUnique renaming leftEvent rightEvent leftBirth rightBirth matched leftFiber rightFiber leftFound rightFound =
+    MkMatchedEndpointStaticMetadata matched
+      (trans (sym (cong snd (scannedBirthEndpointMetadata name key world error value nameEq keyEq left leftAligned leftEmpty leftUnique leftEvent leftBirth leftFiber leftFound)))
+      (trans (matchedComponent matched) (cong snd (scannedBirthEndpointMetadata name key world error value nameEq keyEq right rightAligned rightEmpty rightUnique rightEvent rightBirth rightFiber rightFound))))
+      (cong componentDependencies (trans (sym (cong snd (scannedBirthEndpointMetadata name key world error value nameEq keyEq left leftAligned leftEmpty leftUnique leftEvent leftBirth leftFiber leftFound)))
+      (trans (matchedComponent matched) (cong snd (scannedBirthEndpointMetadata name key world error value nameEq keyEq right rightAligned rightEmpty rightUnique rightEvent rightBirth rightFiber rightFound)))))
+      (cong componentProvisions (trans (sym (cong snd (scannedBirthEndpointMetadata name key world error value nameEq keyEq left leftAligned leftEmpty leftUnique leftEvent leftBirth leftFiber leftFound)))
+      (trans (matchedComponent matched) (cong snd (scannedBirthEndpointMetadata name key world error value nameEq keyEq right rightAligned rightEmpty rightUnique rightEvent rightBirth rightFiber rightFound)))))
+      (sym (cong fst (scannedBirthEndpointMetadata name key world error value nameEq keyEq left leftAligned leftEmpty leftUnique leftEvent leftBirth leftFiber leftFound)))
+      (sym (cong fst (scannedBirthEndpointMetadata name key world error value nameEq keyEq right rightAligned rightEmpty rightUnique rightEvent rightBirth rightFiber rightFound)))
