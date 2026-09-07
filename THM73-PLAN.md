@@ -3570,3 +3570,11 @@ observed-gap rejection retained; A14 full adjacent positive retained. No full
 old-safety countermodel claimed. The single disposable B first-step probe passed
 and was removed; construction/body remain authorized, other frozen boundaries
 unchanged. A third specification issue requires another supervisor gate.
+
+R182 construction B1–B12: actual A/A node pipeline now producer-owned, including
+frozen suffix invocation, derived external evidence, whole reached bundle and
+original uniqueness transport. No-input first crossing on A14 succeeds. This
+is NOT a full Cartesian block producer: intermediate applicability, other
+orientations, block-range/decomposition and full origin-plan update remain.
+O19 body has zero attempts because its complete-construction prerequisite is
+not yet landed; all frozen surface/body boundaries remain as last authorized.

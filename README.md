@@ -636,3 +636,8 @@ R182's same owner-authorized revision series also requires **actual empty gap**
 fixture has an inhabited full bundle and checked early opening; its clause-
 level rejection explicitly takes the selected-gap observation. It is not a
 full old-safety countermodel. The full A14 adjacent positive continues to pass.
+
+| Thm73 research construction | Correspondence | Status |
+|---|---|---|
+| Exact A/A operational adjacent replay | `CP5O19AdjacentReplayProducerSpike.o19AdvanceActivationPair` | Proved lower-level producer; actual diamond/sealed result/unique transport |
+| Actual first Cartesian crossing of admitted pair | `R182O19ActualCrossingPositive.r182ActualFirstCrossing` | Proved, no inputs; one of four nodes, NOT O19 closure |

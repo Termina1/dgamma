@@ -304,3 +304,67 @@ Clause-map addition:
 | B-adj-final-package | PASS | 16.617 |
 
 All14 fresh targeted checks pass (12ordinary,2exact negatives); seeded207/207 package, R8 full100.672s/36.39GiB. No cache deletion beyond the explicitly authorized single disposable probe. No compiler/body attempt remains active.
+
+## B producer-owned construction — twelve checked retained prerequisites
+
+New lower-level module imports NO CrossTrace: the eventual O19 body can consume
+it without an import cycle. No new LocalDiamond declaration/visibility or old
+canonical helper edit. All twelve first-attempt fresh PASS before commit.
+
+| Unit | Declaration | Commit | Seconds |
+|---|---|---|---|
+| B1 | `o19LifecycleInternal` | 67935e2 | 2.087 |
+| B2 | `o19ActivationInternal` | 96c7565 | 2.079 |
+| B3 | `o19ActivationPairExternal` | c1532cc | 2.066 |
+| B4 | `o19PairOccurrence` | ca42308 | 3.138 |
+| B5 | `o19SourcePairFacts` | d431f58 | 3.126 |
+| B6 | `o19ActivationDiamond` | 099dbfc | 3.146 |
+| B7 | `o19ActivationPairReplay` | f5becf1 | 3.132 |
+| B8 | `o19AdvanceActivationPair` | a547a65 | 3.113 |
+| B9 | `r182FirstCrossingEarly` | 534a6c1 | 3.127 |
+| B10 | `r182IndependentBirthPosition` | 639197c | 3.119 |
+| B11 | `r182IndependentUnique` | a747792 | 3.116 |
+| B12 | `r182ActualFirstCrossing` | f1b47c9 | 3.140 |
+
+B1–B5 derive actual external internality and BOTH moved-node class facts from
+the same diamond, plus pair alignment/source validity/independence from the
+whole bundle and an authentic occurrence embedding. B6 actually constructs the
+A/A diamond from R179's EXACT checked early action/tag; local view/control
+relations are already proved inside the public Lemma71 A/A producer (no caller
+ViewRelatedBy added; R181 paired-view capital remains for the distinct O20
+paired-prefix problem). B7 invokes the FROZEN adjacentSwapSuffixSpike, deriving
+rather than taking the needed external relation. Its real result contains
+all15 reached bundle fields, exact registration/action occurrence correspondence,
+endpoint, sealed suffix and external evidence. B8 wraps a genuine NONEMPTY
+finite node and transports the ORIGINAL erased sourceUnique through the
+existing sealed finite-derivation transport. Neither bundle nor uniqueness
+is replaced by a bare endpoint/assertion.
+
+B9–B12 are not conditional caller fixtures: B9 constructs the first Cartesian
+right-Begin guard at actual cut3 before left Finish0, B10/B11 construct the
+source's global raw insertion uniqueness, and B12 has NO INPUTS. It instantiates
+the complete real pipeline on A14's independently admitted six-edge source and
+produces an actual local diamond, actual sealed result, nonempty derivation and
+transported uniqueness. This proves exactly the FIRST of the required FOUR
+Cartesian nodes (Finish0/Begin1), not the whole two-by-two swap.
+
+### Exact remaining O19 body boundary
+
+Still missing: propagation of the block-opening applicability to EVERY later
+intermediate crossing; all other orientations from owned block-step cases;
+recursive Cartesian iteration; updated block ranges/installation/decomposition
+and complete BlockCrossingOriginPlan/coverage/uniqueness/node count. We must not
+fill O19 by supplying these outputs as premises or substituting the one-node
+record for WholeBlockSwapDerivation. Thus ZERO O19-body attempts have occurred:
+its prerequisite COMPLETE whole-block construction has not yet been committed.
+No third specification obstruction is claimed; these are honest proof-work
+boundaries. The body remains the same existing hole and census5.
+
+### B construction fresh gate checks
+
+- B-construct-final-producer: fresh PASS 3.125s.
+- B-construct-final-actual: fresh PASS 3.124s.
+- B-construct-final-safety: fresh PASS 17.650s.
+- B-construct-final-package: fresh PASS 16.583s.
+
+Current time18:30UTC leaves ~117min to no-new-attempt cutoff. A substantial first-node construction milestone is checked; allocating time to the independent count7 TraceIndependent goal now requires a supervisor decision because the complete O19 Cartesian loop is not finished. No false3/3 body attempt or complete-body claim is manufactured.
