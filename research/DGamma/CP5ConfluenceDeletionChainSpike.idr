@@ -30542,3 +30542,19 @@ rawClosingOccurrenceRank name key world error value nameEq keyEq protocol global
   (ErasedClosingEpisodeOccurrence selected episode) =
     fst (rawClosingEpisodeProtocolRank name key world error value nameEq keyEq protocol
       global premises selected episode)
+
+||| Rank and its witness are projections of the SAME producer result.
+0 rawClosingOccurrenceRankSound :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (global : Transitions initial finalState) ->
+  (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq global) ->
+  (selected : name) ->
+  (episode : LocatedClosedEpisode name key world error value nameEq keyEq selected global) ->
+  (NameProtocolRank protocol nameEq (closedStartState (locatedEpisode episode)) selected
+    (rawClosingOccurrenceRank name key world error value nameEq keyEq protocol global premises
+      (ErasedClosingEpisodeOccurrence selected episode)))
+rawClosingOccurrenceRankSound name key world error value nameEq keyEq protocol global premises selected episode =
+  snd (rawClosingEpisodeProtocolRank name key world error value nameEq keyEq protocol global premises selected episode)
