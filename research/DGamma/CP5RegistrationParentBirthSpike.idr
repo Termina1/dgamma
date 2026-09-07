@@ -283,3 +283,21 @@ registrationSurvivingBirthsObserved name key world error value nameEq global ord
     rewrite observedExact in MkRegistrationIndexBirths
       (indexCurrentBirths (registrationIndexBirthAction name key world error value nameEq global ordinal (OInsert child (ChildOf parent) component) (MkRegistrationIndexState live activations counts deleted) occurrence exact births))
       (indexActivationBirths (registrationIndexBirthAction name key world error value nameEq global ordinal (OInsert child (ChildOf parent) component) (MkRegistrationIndexState live activations counts deleted) occurrence exact births))
+
+||| Counters/discard bookkeeping does not change authenticated birth domains.
+||| Only explicit index-field equalities are transported; global trace is fixed.
+export
+0 registrationIndexBirthsRetarget :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (global : Transitions initial finalState) -> (source, target : RegistrationIndexState name) ->
+  indexedLiveGenerations source = indexedLiveGenerations target ->
+  indexedParentActivations source = indexedParentActivations target ->
+  RegistrationIndexBirths name key world error value global source ->
+  RegistrationIndexBirths name key world error value global target
+registrationIndexBirthsRetarget name key world error value global source target liveSame activationsSame births =
+  MkRegistrationIndexBirths
+    (\selected, generation, member => indexCurrentBirths births selected generation
+      (replace {p = Elem (selected, generation)} (sym liveSame) member))
+    (\selected, activation, member => indexActivationBirths births selected activation
+      (replace {p = Elem (selected, activation)} (sym activationsSame) member))
