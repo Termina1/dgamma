@@ -94,3 +94,23 @@ r181EndpointObserved table tableObserved Nothing bindingObserved present =
   case present of Refl impossible
 r181EndpointObserved table tableObserved (Just service) bindingObserved present =
   rewrite tableObserved in rewrite bindingObserved in (Refl, Refl, Refl, Refl)
+
+||| Producer-owned closure: quiet, failure-free and BOTH Active endpoint facts
+||| now hold without a premise. The actual whole trace, not a Maybe fallback,
+||| already authenticates this named final state.
+export
+0 r181EndpointReady :
+  ((quiet {name = Nat} {key = ToyKey} {value = ToyValue} {world = ToyRuntime}
+      {error = String} @{%search} @{%search} r180ObservedConsumerFinished = True),
+   (noFailedFibers r180ObservedConsumerFinished = True),
+   (supportedActiveAt {name = Nat} {key = ToyKey} {value = ToyValue}
+      {world = ToyRuntime} {error = String} @{%search} 0 r180ObservedConsumerFinished = True),
+   (supportedActiveAt {name = Nat} {key = ToyKey} {value = ToyValue}
+      {world = ToyRuntime} {error = String} @{%search} 1 r180ObservedConsumerFinished = True))
+r181EndpointReady = r181EndpointObserved
+  (restrictOwnedPreservingOrder @{%search} DGamma.Section3Example.toySpecA
+    (ownedValues (ownedA True))) Refl
+  (lookupBinding @{%search} ServiceA (ownedValues (restrictOwnedPreservingOrder
+    @{%search} DGamma.Section3Example.toySpecA (ownedValues (ownedA True))))) Refl
+  (r180NormalizedServiceMemberObserved (ownedValues (restrictOwnedPreservingOrder
+    @{%search} DGamma.Section3Example.toySpecA (ownedValues (ownedA True)))) Refl)
