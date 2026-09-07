@@ -470,3 +470,42 @@ acceptedSupportedGeneratedCoherenceForward name key world error value nameEq key
           leftAligned rightAligned empty leftUnique leftEvent rightEvent leftMember rightMember leftFiber rightFiber metadata leftFound supported of
           (leftParentCurrent, rightParentCurrent, parentName) =>
             (rightEvent ** rightFiber ** metadata ** (rightMember, childName, rightFound, leftParentCurrent, rightParentCurrent, parentName))
+
+||| Fully sealed inverse STATIC coherence; the same explicit event-coverage
+||| boundary remains and no retired-flag/support truth equality is implied.
+export
+0 acceptedSupportedGeneratedCoherenceBackward :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, leftFinal, rightFinal : SystemState name key value world error} ->
+  (left : Transitions initial leftFinal) -> (right : Transitions initial rightFinal) ->
+  (sameInputs : SameOrchestrationModuloGenerated nameEq keyEq left right) ->
+  AlignedTransitions name key world error value nameEq keyEq left ->
+  AlignedTransitions name key world error value nameEq keyEq right ->
+  bindings (registry initial) = [] ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq left ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq right ->
+  (rightEvent : RegistrationEvent name key world error value) -> Elem rightEvent (rightScannedEvents (acceptedAuthenticatedRegistrationMatching name key world error value nameEq left right (generatedGenerationBijection sameInputs) (generatedRegistrationTree sameInputs))) ->
+  (rightFiber : Fiber name key value world error) ->
+  lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+    @{nameEq} (eventChild rightEvent) (registry rightFinal) = Just rightFiber ->
+  isSupported {name = name} {key = key} {value = value} {world = world} {error = error}
+    @{nameEq} @{keyEq} (eventChild rightEvent) rightFinal = True ->
+  (leftEvent : RegistrationEvent name key world error value ** leftFiber : Fiber name key value world error **
+   metadata : MatchedEndpointStaticMetadata name key world error value (generatedGenerationBijection sameInputs) leftEvent rightEvent leftFiber rightFiber **
+    (Elem leftEvent (leftScannedEvents (acceptedAuthenticatedRegistrationMatching name key world error value nameEq left right (generatedGenerationBijection sameInputs) (generatedRegistrationTree sameInputs))),
+     eventChild leftEvent = (renameBackward (currentNameBijection (endpointRenaming sameInputs)) (eventChild rightEvent)),
+     lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+       @{nameEq} (renameBackward (currentNameBijection (endpointRenaming sameInputs)) (eventChild rightEvent)) (registry leftFinal) = Just leftFiber,
+     lookupCurrentGeneration @{nameEq} (eventParent rightEvent) (rightFinalGenerations (generatedRegistrationTree sameInputs)) = Just (activationParentGeneration (rightMatchedActivation (endpointEventMatch metadata))),
+     lookupCurrentGeneration @{nameEq} (eventParent leftEvent) (leftFinalGenerations (generatedRegistrationTree sameInputs)) = Just (activationParentGeneration (leftMatchedActivation (endpointEventMatch metadata))),
+     (renameBackward (currentNameBijection (endpointRenaming sameInputs)) (eventParent rightEvent)) = eventParent leftEvent))
+acceptedSupportedGeneratedCoherenceBackward name key world error value nameEq keyEq left right sameInputs
+  leftAligned rightAligned empty leftUnique rightUnique rightEvent rightMember rightFiber rightFound supported =
+    case acceptedSupportedGeneratedMetadataBackward name key world error value nameEq keyEq left right sameInputs
+      leftAligned rightAligned empty leftUnique rightUnique rightEvent rightMember rightFiber rightFound supported of
+      (leftEvent ** leftFiber ** (leftMember, childName, leftFound, metadata)) =>
+        case acceptedSupportedChildParentBackward name key world error value nameEq keyEq left right sameInputs
+          leftAligned rightAligned empty rightUnique leftEvent rightEvent leftMember rightMember leftFiber rightFiber metadata rightFound supported of
+          (rightParentCurrent, leftParentCurrent, parentName) =>
+            (leftEvent ** leftFiber ** metadata ** (leftMember, childName, leftFound, rightParentCurrent, leftParentCurrent, parentName))
