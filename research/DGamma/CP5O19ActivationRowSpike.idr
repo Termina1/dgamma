@@ -43,3 +43,24 @@ record O19ActivationRow
   0 rowActor : transitionActor rowRight = transitionActor sourceRight
   0 rowActivation : PaperActivationStep rowRight
   0 rowNodeCount : finiteAdjacentSwapNodeCount (cursorDerivation rowCursor) = crossings
+
+||| Construct the zero-row boundary together with its count. Refl here sees
+||| only the finite Done constructor, never a separately evaluated builder.
+export
+0 o19ActivationRowZero :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {initial, sourceFinal, before, rightAfter : SystemState name key value world error} ->
+  (source : Transitions initial sourceFinal) -> (earlier : Transitions initial before) ->
+  (right : Transition before rightAfter) -> (later : Transitions rightAfter sourceFinal) ->
+  (appendTransitions earlier (MoreTransitions right later) = source) ->
+  ReplayInvariantBundle name key world error value protocol nameEq keyEq source ->
+  (0 unique : UniqueRawNameInsertions name key world error value nameEq keyEq source) ->
+  PaperActivationStep right ->
+  O19ActivationRow name key world error value protocol nameEq keyEq source earlier right 0
+o19ActivationRowZero {sourceFinal} {rightAfter} nameEq keyEq protocol source earlier
+  right later decomposition premises unique activation =
+    MkO19ActivationRow
+      (MkO19ReachedCursor sourceFinal source premises unique FiniteAdjacentSwapDone)
+      rightAfter right later decomposition Refl Refl Refl activation Refl
