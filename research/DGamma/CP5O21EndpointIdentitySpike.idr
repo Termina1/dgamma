@@ -111,3 +111,32 @@ record AcceptedEndpointBirthIdentity
     (parent : Parent name) -> (component : Component key value world error) ->
     (birth : LocatedActionOccurrence (OInsert selected parent component) trace) ->
     Not (LT (generationBirthOrdinal endpointIdentityGeneration) (locatedActionOrdinal birth))
+
+||| Derive the precise current LEFT generation from the actual endpoint lookup;
+||| no current generation, historical birth or identity witness is a premise.
+export
+0 acceptedLeftEndpointIdentityCapital :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, leftFinal, rightFinal : SystemState name key value world error} ->
+  (left : Transitions initial leftFinal) -> (right : Transitions initial rightFinal) ->
+  (sameInputs : SameOrchestrationModuloGenerated nameEq keyEq left right) ->
+  AlignedTransitions name key world error value nameEq keyEq left ->
+  (bindings (registry initial) = []) ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq left ->
+  (selected : name) -> (observed : Fiber name key value world error) ->
+  (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+    @{nameEq} selected (registry leftFinal) = Just observed) ->
+  AcceptedEndpointBirthIdentity name key world error value nameEq left
+    (leftFinalGenerations (generatedRegistrationTree sameInputs)) selected
+acceptedLeftEndpointIdentityCapital name key world error value nameEq keyEq left right sameInputs aligned empty unique
+  selected observed found =
+    case acceptedLeftEndpointCurrent name key world error value nameEq keyEq left right
+      (generatedGenerationBijection sameInputs) (generatedRegistrationTree sameInputs)
+      aligned empty selected observed found of
+      (generation ** current) => MkAcceptedEndpointBirthIdentity generation current
+        (acceptedLeftEndpointBirthIdentity name key world error value nameEq keyEq left right sameInputs aligned empty unique
+          selected generation current observed found)
+        (\parent, component, birth => exactBirthStampRejectsLater name selected generation (locatedActionOrdinal birth)
+          (acceptedLeftEndpointBirthIdentity name key world error value nameEq keyEq left right sameInputs aligned empty unique
+            selected generation current observed found parent component birth))
