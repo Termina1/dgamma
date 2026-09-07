@@ -887,3 +887,21 @@ currentBirthActionProgress name key world error value nameEq global ordinal live
 supportMiddleConjunctTrue False middle right exact = case exact of Refl impossible
 supportMiddleConjunctTrue True False right exact = case exact of Refl impossible
 supportMiddleConjunctTrue True True right exact = Refl
+
+||| A supported child has a supported parent in the SAME support solution.
+0 supportSolutionParent :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (state : SystemState name key value world error) -> (candidate : name -> Bool) ->
+  SupportSolution @{nameEq} @{keyEq} {name = name} {key = key} {value = value} {world = world} {error = error} candidate state ->
+  (selected : name) -> (observed : Fiber name key value world error) ->
+  lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+    @{nameEq} selected (registry state) = Just observed ->
+  (parent : name) -> fiberParent observed = ChildOf parent -> candidate selected = True -> candidate parent = True
+supportSolutionParent name key world error value nameEq keyEq state candidate solution selected observed found parent parentExact supported =
+  supportMiddleConjunctTrue (not (retired observed)) (candidate parent) (allList (\wanted => providerFromPredicate {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} @{keyEq} wanted candidate (registryFibers (registry state))) (dependencies (componentDependencies (fiberComponent observed))))
+    (trans (sym (the
+      (supportClause {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} @{keyEq} candidate selected state =
+        (not (retired observed) && candidate parent && (allList (\wanted => providerFromPredicate {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} @{keyEq} wanted candidate (registryFibers (registry state))) (dependencies (componentDependencies (fiberComponent observed))))))
+      (rewrite found in rewrite parentExact in Refl)))
+      (trans (sym (solution selected)) supported))
