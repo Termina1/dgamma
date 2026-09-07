@@ -426,3 +426,28 @@ matchedBirthEndpointMetadata name key world error value nameEq keyEq left right 
       (trans (matchedComponent matched) (cong snd (scannedBirthEndpointMetadata name key world error value nameEq keyEq right rightAligned rightEmpty rightUnique rightEvent rightBirth rightFiber rightFound)))))
       (sym (cong fst (scannedBirthEndpointMetadata name key world error value nameEq keyEq left leftAligned leftEmpty leftUnique leftEvent leftBirth leftFiber leftFound)))
       (sym (cong fst (scannedBirthEndpointMetadata name key world error value nameEq keyEq right rightAligned rightEmpty rightUnique rightEvent rightBirth rightFiber rightFound)))
+
+||| Exact-generation transport identifies the matched event's CURRENT raw name.
+||| Name equality is extracted only after both right births are authenticated.
+public export
+0 matchedScannedCurrentName :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (right : Transitions initial finalState) ->
+  (renaming : RegistrationGenerationBijection name) ->
+  (leftEvent, rightEvent : RegistrationEvent name key world error value) ->
+  RegistrationEventMatch renaming leftEvent rightEvent ->
+  ScannedRegistrationBirth name key world error value Z right rightEvent ->
+  (leftGeneration, rightGeneration : RegistrationGeneration name) ->
+  leftGeneration = eventChildGeneration leftEvent ->
+  generationForward renaming leftGeneration = rightGeneration ->
+  (rightSelected : name) ->
+  CurrentGenerationBirth name key world error value right rightSelected rightGeneration ->
+  eventChild rightEvent = rightSelected
+matchedScannedCurrentName name key world error value right renaming leftEvent rightEvent matched rightBirth
+  leftGeneration rightGeneration currentIsEvent mapped rightSelected rightCurrent =
+    trans (sym (cong generationName (scannedBirthStampExact rightBirth)))
+      (trans (cong generationName
+        (trans (sym (matchedChildGeneration matched))
+          (trans (cong (generationForward renaming) (sym currentIsEvent)) mapped)))
+        (cong generationName (currentBirthStampExact rightCurrent)))
