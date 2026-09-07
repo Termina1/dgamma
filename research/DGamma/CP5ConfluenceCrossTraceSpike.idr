@@ -8,6 +8,7 @@ import DGamma.CP3
 import DGamma.CP5UniqueRawNameInsertions
 import DGamma.CP5GeneratedOrchestrationMatched
 import DGamma.CP5AcceptedSupportTruthSpike
+import DGamma.CP5RankedEarlyApplicabilitySpike
 import DGamma.CP5ConfluenceLocalDiamondSpike
 import DGamma.CP5ConfluenceDeletionChainSpike
 import DGamma.CP5ConfluenceCanonicalSortSpike
@@ -113,8 +114,10 @@ generatedChildAtHeadContradictsSafety transition rest action
 
 ||| Exact safety reconstructed for one adjacent actor pair at its current replay
 ||| state.  It owns the actual two blocks, their order, the full bundle, and both
-||| generated-child licensing exclusions.  These fields are intentionally not
-||| reducible to `actorDistinct`.
+||| generated-child licensing exclusions. R182 additionally certifies right-first
+||| opening at the pre-left cut; left-first is already owned by blockOpening.
+||| This is first-step applicability, NOT an assumed swapped trace or diamond.
+||| These fields are intentionally not reducible to `actorDistinct`.
 public export
 record AdjacentActorSwapSafety
   (name, key, world, error : Type) (value : key -> Type)
@@ -143,6 +146,11 @@ record AdjacentActorSwapSafety
   0 safetyRightDoesNotGenerateLeft : NoGeneratedChild (actorLeft orderSwap)
     (blockBody (decomposedBlock sourceBlocks (actorRight orderSwap)
       safetyRightInOrder))
+  0 safetyRightOpeningEarly : CheckedEarlyApplication name key world error value
+    nameEq keyEq
+    (blockPreStart (decomposedBlock sourceBlocks (actorLeft orderSwap)
+      safetyLeftInOrder))
+    (LBegin (actorRight orderSwap)) LBeginTag
 
 public export
 0 actorBlockTrace :
