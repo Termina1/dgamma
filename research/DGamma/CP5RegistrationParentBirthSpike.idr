@@ -139,3 +139,15 @@ parentDeleteEntryObserved name nameEq removed candidate current rest (No distinc
     (parentDeleteObserved name nameEq removed candidate current rest (No distinct) exact) member of
     Here => Here
     There later => There (recur selected activation later)
+
+0 parentDeleteEntryOrigin :
+  (name : Type) -> (nameEq : DecEq name) -> (removed : name) ->
+  (activations : List (name, RegistrationActivation name)) ->
+  (selected : name) -> (activation : RegistrationActivation name) ->
+  Elem (selected, activation) (deleteParentActivation @{nameEq} removed activations) ->
+  Elem (selected, activation) activations
+parentDeleteEntryOrigin name nameEq removed [] selected activation member = absurd member
+parentDeleteEntryOrigin name nameEq removed ((candidate, current) :: rest) selected activation member =
+  parentDeleteEntryObserved name nameEq removed candidate current rest
+    (decEq @{nameEq} removed candidate) Refl
+    (parentDeleteEntryOrigin name nameEq removed rest) selected activation member
