@@ -1,0 +1,80 @@
+{
+  "timestamp": "2026-09-07T10:09:10.607262+00:00",
+  "head": "cd58e8e08746ba1de8a3c7e7db34e3837ce2725c",
+  "start": "77577c2",
+  "holes": {
+    "CanonicalSort": [
+      "?sortClosingFreeTraceSpike_rhs"
+    ],
+    "CrossTrace": [
+      "?operationalAdjacentBlockSwapSpike_rhs",
+      "?selectOperationalCanonicalPermutationSpike_rhs",
+      "?canonicalSchedulesConvergeSpike_rhs"
+    ],
+    "DeletionChain": [],
+    "LocalDiamond": [],
+    "RenamingComposition": [
+      "?replayedCanonicalToOriginalEndpointSpike_rhs"
+    ]
+  },
+  "split": [
+    1,
+    3,
+    0,
+    0,
+    1
+  ],
+  "productionDiffVs34b21c9": "empty",
+  "CP3Blob": "2c697e532e83989de8591fa6a4378747c6a501c0",
+  "LocalDiamondDiffVsStart": "empty",
+  "CanonicalSortDiffVsStart": "empty",
+  "DeletionChainDiffVsStart": "empty",
+  "CrossTraceDiffVsStart": "empty",
+  "RenamingCompositionDiffVsStart": "empty",
+  "adjacentFullBytes": 1470,
+  "adjacentFullSHA256": "2d01486bf953f11191b758ac3cfb5722d1d02b1a192b6e552adc8a3f58199ecf",
+  "adjacentStatementBytes": 1154,
+  "adjacentStatementSHA256": "3aae5a9fbc5b14e0411b4a91e557a6f3dc68c9a6282b9ec2b3fc658cec337adf",
+  "reviewSHA256": "61fc23ae4cea4565b442c840be39c41746ecbac73b8c2f73d04f1e3b4f4681e8",
+  "seeds": "207/207",
+  "LocalDiamondTTC": {
+    "bytes": 125368223,
+    "mtimeUTC": "2026-09-07T01:56:14.905763+00:00"
+  },
+  "changedIdrisFiles": [
+    "research-tests/DGamma/R179O19DependencyCountershape.idr",
+    "research-tests/DGamma/R179O19ObservedExecution.idr",
+    "research-tests/DGamma/R179O21CurrentBirthIdentityPositive.idr",
+    "research-tests/DGamma/R179O21WrongOriginalBirthNegative.idr",
+    "research/DGamma/CP5O21EndpointIdentitySpike.idr"
+  ],
+  "sourceSHA256": {
+    "research-tests/DGamma/R179O19DependencyCountershape.idr": "9df6b5d76e66682cc1f1390c32347c2d71b6cf4006bcbe1d8661dee7fe120139",
+    "research-tests/DGamma/R179O19ObservedExecution.idr": "71150c8e0a473464f16401cebe07066004a29aed51806caf70548df67745457d",
+    "research-tests/DGamma/R179O21CurrentBirthIdentityPositive.idr": "e8d1f64fdf8dab1b2af4dd76dc69f6138c45ad849cc64c14b1d46a030d34d901",
+    "research-tests/DGamma/R179O21WrongOriginalBirthNegative.idr": "f2d7e6825c7fece1c36787ba1f2d248a59197df7d94b1fece6b651714046055b",
+    "research/DGamma/CP5O21EndpointIdentitySpike.idr": "5a1d3fe32fb110a905ad5d59885637710fc13fcccd81c1d6f9ad67472f515e38"
+  },
+  "protectedDeclarationSHA256": {
+    "sortClosingFreeTraceSpike": "1df8d174b9a4f119a5a52e2073a72907bdb890413f877d55886e905e1d0279d1",
+    "operationalAdjacentBlockSwapSpike": "db3e282d0d0c7b6f40b9ba42b88165ffc6752e27f4d4076dc7e8210496f3d6b8",
+    "selectOperationalCanonicalPermutationSpike": "b00063eacf339b58828eac5829cebc66fc7265f3518be459af0602463b6fbae7",
+    "canonicalSchedulesConvergeSpike": "0e8a177ea7bb4807cb77680cde29e75f7d37224711cc51cf7bf6636426690dd9",
+    "replayedCanonicalToOriginalEndpointSpike": "377b08ff82e1e4212738bb00a45a088b1f0d8fd8bc8b54bf061c96f2f4891681"
+  },
+  "prohibitedAdditions": {
+    "\\bbelieve_me\\b": [],
+    "\\bassert_total\\b": [],
+    "^\\s*partial\\b": [],
+    "\\?\\w+": [],
+    "\\blet\\b": [],
+    "\\bwith\\b": [],
+    "\\bdeletionTheoremProof\\b": [],
+    "\\bpostulate\\b": [],
+    "\\b[A-Za-z_]\\w*@\\s*[\\(\\[]": []
+  },
+  "noCompiler": true,
+  "noStagedFiles": true,
+  "cleanTrackedTree": true,
+  "allowedUntrackedOnly": true
+}

@@ -1,0 +1,362 @@
+{
+  "type": "acceptance-report",
+  "task": "R179 Theorem73 research shift",
+  "status": "partial_milestone_gate_pending",
+  "branch": "cp5-thm73-scoping",
+  "requiredStart": "77577c2",
+  "validatedAtCommit": "cd58e8e08746ba1de8a3c7e7db34e3837ce2725c",
+  "timestampUTC": "2026-09-07T10:10:37.451579+00:00",
+  "toolchain": "Idris 2 0.8.0",
+  "guard": {
+    "startUTC": "2026-09-07T09:10:00Z",
+    "noNewAttemptAfterUTC": "2026-09-07T12:30:00Z",
+    "safeGateByUTC": "2026-09-07T12:55:00Z",
+    "withinGuard": true
+  },
+  "unitA": {
+    "status": "partial_prerequisite_capital_only",
+    "initialMicroUnits": 6,
+    "initialCap": 6,
+    "continuationAttemptedMicroUnits": 7,
+    "continuationCap": 8,
+    "A14": "blocked; zero attempts after A13 exhausted",
+    "proved": [
+      "Certified empty-origin four-step prefix and early raw consumer Begin=Nothing",
+      "Raw provider Finish at the authentic certified cut",
+      "Independent explicit observed provider Begin/Iter/Finish checked edges and cut/finished WF"
+    ],
+    "notProved": [
+      "Complete current AdjacentActorSwapSafety counterexample",
+      "Consumer target/checked Begin and final quiet suffix",
+      "Protocol, fifteen-field replay bundle, located blocks and decomposition",
+      "Any equality identifying the independent observed fixture with the certified trace"
+    ],
+    "conditionalOnly": [
+      "A3 Maybe/fallback suffix builder; no suffix execution claim"
+    ],
+    "safetyRevision": false,
+    "revisedSafetyFixtures": false,
+    "O19BodyAttempts": 0
+  },
+  "unitB": {
+    "status": "proved_narrow_identity_subcase",
+    "microUnits": 9,
+    "cap": 10,
+    "module": "research/DGamma/CP5O21EndpointIdentitySpike.idr",
+    "producer": "o21OriginalEndpointIdentityCapital",
+    "result": "Accepted actual current generation equals the stamp of every same-name birth in its ORIGINAL trace; strict-later birth impossible, on both sides",
+    "authentication": "Accepted scanner and actual endpoint lookup before original insertion uniqueness",
+    "A9": "Threaded in final O21 telescope; not consumed because stronger one-trace identity needs no A9",
+    "fixtures": [
+      "Conditional positive consumer",
+      "Expected other-trace rejection with identical endpoints/raw actor"
+    ],
+    "withdrawalAttempts": 0,
+    "O21Closed": false
+  },
+  "unitC": {
+    "status": "type_only_sizing_complete",
+    "probes": 1,
+    "checks": 1,
+    "checkCap": 3,
+    "proofBody": false,
+    "liveSourceRemoved": true,
+    "sourceSHA256": "2304574371dbb8065dbc4d2a08582104d119bed7867107737276db5dd53fae5c",
+    "clauses": [
+      "replayBridgeAmbient",
+      "replayBridgeTables",
+      "replayBridgeControls",
+      "replayedGeneratedBirthMatched"
+    ],
+    "bijection": "expectedBridgeBijection sameInputs; constructor-owned and unchanged"
+  },
+  "stops": [
+    {
+      "unit": "A4",
+      "attempts": 1,
+      "cap": 3,
+      "reason": "Rejected suffix count/quiet observer; voluntarily parked and removed"
+    },
+    {
+      "unit": "A6",
+      "attempts": 1,
+      "cap": 3,
+      "reason": "Interrupted 323.31s / 54448416KiB sampled RSS; no verdict; restored and supervisor-ratified"
+    },
+    {
+      "unit": "A11",
+      "attempts": 3,
+      "cap": 3,
+      "reason": "Composite cut/target packet exhausted and removed; distinct A12/A13/A14 separately authorized"
+    },
+    {
+      "unit": "A13",
+      "attempts": 3,
+      "cap": 3,
+      "reason": "Actual provider fiber/table projection not identified with normalized table binding witness; exhausted and removed"
+    }
+  ],
+  "changedFiles": [
+    "NOTES.md",
+    "README.md",
+    "THM73-PLAN.md",
+    "research-tests/DGamma/R179O19DependencyCountershape.idr",
+    "research-tests/DGamma/R179O19ObservedExecution.idr",
+    "research-tests/DGamma/R179O21CurrentBirthIdentityPositive.idr",
+    "research-tests/DGamma/R179O21WrongOriginalBirthNegative.idr",
+    "research-tests/O6-R179-A-GATE-VALIDATION.json",
+    "research-tests/O6-R179-ACCEPTANCE-REPORT.json",
+    "research-tests/O6-R179-COMPILER-EVIDENCE.tar.gz",
+    "research-tests/O6-R179-COMPILER-LEDGER.json",
+    "research-tests/O6-R179-FINAL-VALIDATION.json",
+    "research-tests/O6-R179-GRIND-SHIFT-AUDIT.md",
+    "research-tests/run-r179-check.py",
+    "research-tests/run-r179-evidence.py",
+    "research-tests/run-r179-frozen-audit.py",
+    "research/DGamma/CP5O21EndpointIdentitySpike.idr"
+  ],
+  "tests": {
+    "finalTargetChecks": [
+      {
+        "unit": "F2-countershape",
+        "path": "research-tests/DGamma/R179O19DependencyCountershape.idr",
+        "command": [
+          "idris2",
+          "--source-dir",
+          "src",
+          "--source-dir",
+          "research",
+          "--source-dir",
+          "research-tests",
+          "--check",
+          "research-tests/DGamma/R179O19DependencyCountershape.idr"
+        ],
+        "exit": 0,
+        "fresh": true,
+        "passed": true,
+        "seconds": 132.59956795815378,
+        "expectedDiagnostic": null,
+        "symbol": null,
+        "sourceSHA256": "9df6b5d76e66682cc1f1390c32347c2d71b6cf4006bcbe1d8661dee7fe120139"
+      },
+      {
+        "unit": "F3-observed",
+        "path": "research-tests/DGamma/R179O19ObservedExecution.idr",
+        "command": [
+          "idris2",
+          "--source-dir",
+          "src",
+          "--source-dir",
+          "research",
+          "--source-dir",
+          "research-tests",
+          "--check",
+          "research-tests/DGamma/R179O19ObservedExecution.idr"
+        ],
+        "exit": 0,
+        "fresh": true,
+        "passed": true,
+        "seconds": 3.121427208185196,
+        "expectedDiagnostic": null,
+        "symbol": null,
+        "sourceSHA256": "71150c8e0a473464f16401cebe07066004a29aed51806caf70548df67745457d"
+      },
+      {
+        "unit": "F4-identity",
+        "path": "research/DGamma/CP5O21EndpointIdentitySpike.idr",
+        "command": [
+          "idris2",
+          "--source-dir",
+          "src",
+          "--source-dir",
+          "research",
+          "--check",
+          "research/DGamma/CP5O21EndpointIdentitySpike.idr"
+        ],
+        "exit": 0,
+        "fresh": true,
+        "passed": true,
+        "seconds": 3.126042041927576,
+        "expectedDiagnostic": null,
+        "symbol": null,
+        "sourceSHA256": "5a1d3fe32fb110a905ad5d59885637710fc13fcccd81c1d6f9ad67472f515e38"
+      },
+      {
+        "unit": "F5-identity-positive",
+        "path": "research-tests/DGamma/R179O21CurrentBirthIdentityPositive.idr",
+        "command": [
+          "idris2",
+          "--source-dir",
+          "src",
+          "--source-dir",
+          "research",
+          "--source-dir",
+          "research-tests",
+          "--check",
+          "research-tests/DGamma/R179O21CurrentBirthIdentityPositive.idr"
+        ],
+        "exit": 0,
+        "fresh": true,
+        "passed": true,
+        "seconds": 2.0934299998916686,
+        "expectedDiagnostic": null,
+        "symbol": null,
+        "sourceSHA256": "e8d1f64fdf8dab1b2af4dd76dc69f6138c45ad849cc64c14b1d46a030d34d901"
+      },
+      {
+        "unit": "F6-wrong-original-negative",
+        "path": "research-tests/DGamma/R179O21WrongOriginalBirthNegative.idr",
+        "command": [
+          "idris2",
+          "--source-dir",
+          "src",
+          "--source-dir",
+          "research",
+          "--source-dir",
+          "research-tests",
+          "--check",
+          "research-tests/DGamma/R179O21WrongOriginalBirthNegative.idr"
+        ],
+        "exit": 1,
+        "fresh": true,
+        "passed": true,
+        "seconds": 1.0404754998162389,
+        "expectedDiagnostic": "Mismatch between: other and left.",
+        "symbol": "wrongOriginalBirth",
+        "sourceSHA256": "f2d7e6825c7fece1c36787ba1f2d248a59197df7d94b1fece6b651714046055b"
+      },
+      {
+        "unit": "F7-package",
+        "path": "package",
+        "command": [
+          "idris2",
+          "--build",
+          "dgamma.ipkg"
+        ],
+        "exit": 0,
+        "fresh": true,
+        "passed": true,
+        "seconds": 16.570549041964114,
+        "expectedDiagnostic": null,
+        "symbol": null,
+        "sourceSHA256": "aee761a37757cb047ddbf0f846bc23ce830ed755422f96852d08eb435c368727"
+      }
+    ],
+    "completeAttemptSummary": {
+      "checks": 37,
+      "ordinaryPasses": 27,
+      "intendedNegativePasses": 2,
+      "rejectedOrInterrupted": 8,
+      "serialized": true,
+      "oneNewDeclarationPerInvocation": true,
+      "seededPackageBuilds": 2
+    },
+    "ordinarySuccessClarification": "Includes 2 seeded package builds and the single disposable type-only C probe; not 27 theorem proofs",
+    "failedAttemptSplit": {
+      "diagnosticRejections": 7,
+      "noVerdictInterruptions": 1
+    },
+    "productionSeeds": "207/207 present; seeded package PASS, not a fresh 207-file regression run",
+    "legacyR11": "not run",
+    "coldBuild": false,
+    "compilerConcurrency": false,
+    "cacheDeletion": false
+  },
+  "commands": [
+    "python3 -I research-tests/run-r179-check.py UNIT PATH [EXPECTED_DIAGNOSTIC [SYMBOL]]",
+    "idris2 --source-dir src --source-dir research --check research/DGamma/CP5O21EndpointIdentitySpike.idr",
+    "idris2 --source-dir src --source-dir research --source-dir research-tests --check research-tests/DGamma/<fixture>.idr",
+    "idris2 --build dgamma.ipkg",
+    "python3 -I research-tests/run-r179-evidence.py",
+    "python3 -I research-tests/run-r179-frozen-audit.py /tmp/dgamma-r179/final-validation.json"
+  ],
+  "protected": {
+    "holes": {
+      "CanonicalSort": [
+        "?sortClosingFreeTraceSpike_rhs"
+      ],
+      "CrossTrace": [
+        "?operationalAdjacentBlockSwapSpike_rhs",
+        "?selectOperationalCanonicalPermutationSpike_rhs",
+        "?canonicalSchedulesConvergeSpike_rhs"
+      ],
+      "DeletionChain": [],
+      "LocalDiamond": [],
+      "RenamingComposition": [
+        "?replayedCanonicalToOriginalEndpointSpike_rhs"
+      ]
+    },
+    "split": [
+      1,
+      3,
+      0,
+      0,
+      1
+    ],
+    "productionDiffVs34b21c9": "empty",
+    "CP3Blob": "2c697e532e83989de8591fa6a4378747c6a501c0",
+    "LocalDiamondDiffVsStart": "empty",
+    "CanonicalSortDiffVsStart": "empty",
+    "DeletionChainDiffVsStart": "empty",
+    "CrossTraceDiffVsStart": "empty",
+    "RenamingCompositionDiffVsStart": "empty",
+    "adjacentFullBytes": 1470,
+    "adjacentFullSHA256": "2d01486bf953f11191b758ac3cfb5722d1d02b1a192b6e552adc8a3f58199ecf",
+    "adjacentStatementBytes": 1154,
+    "adjacentStatementSHA256": "3aae5a9fbc5b14e0411b4a91e557a6f3dc68c9a6282b9ec2b3fc658cec337adf",
+    "reviewSHA256": "61fc23ae4cea4565b442c840be39c41746ecbac73b8c2f73d04f1e3b4f4681e8",
+    "LocalDiamondTTC": {
+      "bytes": 125368223,
+      "mtimeUTC": "2026-09-07T01:56:14.905763+00:00"
+    },
+    "prohibitedAdditions": {
+      "\\bbelieve_me\\b": [],
+      "\\bassert_total\\b": [],
+      "^\\s*partial\\b": [],
+      "\\?\\w+": [],
+      "\\blet\\b": [],
+      "\\bwith\\b": [],
+      "\\bdeletionTheoremProof\\b": [],
+      "\\bpostulate\\b": [],
+      "\\b[A-Za-z_]\\w*@\\s*[\\(\\[]": []
+    }
+  },
+  "scope": {
+    "newLocalDiamondDeclarations": 0,
+    "newProofHoles": 0,
+    "unsafeProofs": 0,
+    "O17RootA8BodyAttempts": 0,
+    "O20BodyAttempts": 0,
+    "withdrawalBodyAttempts": 0,
+    "newWithOrLocalLet": 0,
+    "oneNewTopLevelDeclarationPerInvocation": true
+  },
+  "residualRisks": [
+    "Theorem73 remains unproved; all five existing holes unchanged",
+    "Partial dependency countershape does not inhabit current O19 safety or authorize a revision",
+    "Observed provider-edge fixture is not an asserted identification of certified trace proof objects",
+    "Post-Finish consumer target needs actual nested fiber/table projection capital before normalized binding transport",
+    "O21 identity does not prove any retired/clean/empty-table/childless/unsupported/discarded/current withdrawal branch",
+    "O20 bridge requires independent cross-canonical producers, not merely replay-to-left preservation",
+    "A8 canonical-tower integration and A9 owner override remain outside this shift",
+    "Archived type-only and intended-negative fixtures must not be counted as theorem proofs or a full countermodel"
+  ],
+  "evidence": {
+    "audit": "research-tests/O6-R179-GRIND-SHIFT-AUDIT.md",
+    "ledger": "research-tests/O6-R179-COMPILER-LEDGER.json",
+    "archive": "research-tests/O6-R179-COMPILER-EVIDENCE.tar.gz",
+    "frozen": "research-tests/O6-R179-FINAL-VALIDATION.json",
+    "ledgerSHA256": "9387b13effec84f82bff71e1731a82766611e2f516ac8f0e88d4bd76dbb95787",
+    "archiveSHA256": "26a8496f7827fdb659f3a97f504054bbd5e46fced6200007ae9e44206897a754"
+  },
+  "repositoryAtValidation": {
+    "noCompiler": true,
+    "noStagedFiles": true,
+    "cleanTrackedTree": true,
+    "allowedUntrackedOnly": true
+  },
+  "supervisorFinalGate": {
+    "status": "pending",
+    "requestAfterCommit": true
+  }
+}
