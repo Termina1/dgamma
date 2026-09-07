@@ -33,3 +33,9 @@ clauseOrCases True right exact = Left Refl
 clauseOrFromEither left right (Left exact) = rewrite exact in Refl
 clauseOrFromEither False right (Right exact) = exact
 clauseOrFromEither True right (Right exact) = Refl
+
+0 clauseAllListAt : (element : Type) -> (predicate : element -> Bool) -> (items : List element) ->
+  (selected : element) -> Elem selected items -> (allList predicate items = True) -> (predicate selected = True)
+clauseAllListAt element predicate (_ :: rest) selected Here exact = fst (clauseAndParts (predicate selected) (allList predicate rest) exact)
+clauseAllListAt element predicate (head :: rest) selected (There later) exact =
+  clauseAllListAt element predicate rest selected later (snd (clauseAndParts (predicate head) (allList predicate rest) exact))
