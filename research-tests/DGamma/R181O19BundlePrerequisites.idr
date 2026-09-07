@@ -35,3 +35,22 @@ r181BlocksByActor (S (S later)) member = case member of
   Here impossible
   There Here impossible
   There (There absent) => case absent of Here impossible; There tail impossible
+
+||| F2: all strict-order witnesses in [0,1] select the actual E7 ordering.
+||| Impossible tails are eliminated structurally, not by an assumed ordering.
+public export
+0 r181BlocksFollowOrder : (earlier, later : Nat) ->
+  (earlierMember : Elem earlier [0, 1]) -> (laterMember : Elem later [0, 1]) ->
+  BeforeIn earlier later [0, 1] ->
+  BlockBefore Nat ToyKey ToyRuntime String ToyValue
+    (the (DecEq Nat) %search) (the (DecEq ToyKey) %search) r181WholeTrace earlier later
+    (r181BlocksByActor earlier earlierMember) (r181BlocksByActor later laterMember)
+r181BlocksFollowOrder _ _ earlierMember laterMember (BeforeHere following) =
+  case following of
+    Here => r181ProviderBeforeConsumer
+    There absent => case absent of Here impossible; There rest impossible
+r181BlocksFollowOrder _ _ earlierMember laterMember (BeforeThere following) =
+  case following of
+    BeforeHere absent => case absent of Here impossible; There rest impossible
+    BeforeThere absent =>
+      case absent of BeforeHere member impossible; BeforeThere rest impossible
