@@ -939,3 +939,17 @@ computedSupportRetiredObserved name key world error value nameEq keyEq state sel
       @{nameEq} @{keyEq}
       (\actor => isSupported {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} @{keyEq} actor state)
       selected state = False) (rewrite found in rewrite flagExact in Refl))) of Refl impossible
+
+||| Single-endpoint support excludes retirement, directly from its fixed point.
+export
+0 computedSupportNotRetired :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (state : SystemState name key value world error) -> (selected : name) ->
+  (fiber : Fiber name key value world error) ->
+  (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+    @{nameEq} selected (registry state) = Just fiber) ->
+  (isSupported {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} @{keyEq} selected state = True) ->
+  (retired fiber = False)
+computedSupportNotRetired name key world error value nameEq keyEq state selected fiber found supported =
+  computedSupportRetiredObserved name key world error value nameEq keyEq state selected fiber found supported (retired fiber) Refl
