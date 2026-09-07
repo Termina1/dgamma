@@ -364,3 +364,46 @@ pairedRuntimeReplacementEffects name key world error value nameEq keyEq renaming
       (projectRuntimeReplace nameEq keyEq (renameForward renaming actor) rightWorld
         rightNextWorld rightOld rightNext rightRegistry rightFound
         (ownedValues (fiberTable rightNext)) Refl)
+
+||| Producer-owned deterministic SUCCESS observation. Both successful callback
+||| results are tied to their actual runStepEffect inputs; the equality of
+||| resulting local states and pointwise pushed undo is DERIVED, not supplied.
+export
+0 pairedSuccessfulOutcome :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (keyEq : DecEq key) -> (renaming : NameBijection name) ->
+  (deps : List key) -> (provision : CoeffectSpec key) -> (actor : name) ->
+  (step : StepEffect key value world error deps provision) ->
+  (leftView, rightView : View name deps) ->
+  (left, right : EffectState name key value world) ->
+  (leftCapability, rightCapability : DepValues key value deps) ->
+  (leftOlder, rightOlder : LocalState key value world provision ->
+    LocalState key value world provision) ->
+  (leftAfter, rightAfter : LocalState key value world provision) ->
+  (leftUndo, rightUndo : LocalState key value world provision ->
+    LocalState key value world provision) ->
+  RenamedRuntimeEffects name key world value renaming left right ->
+  ViewRelatedBy renaming leftView rightView ->
+  AccumulatorRelated leftOlder rightOlder ->
+  (resolveEffectValues @{keyEq} deps leftView left = Just leftCapability) ->
+  (resolveEffectValues @{keyEq} deps rightView right = Just rightCapability) ->
+  (runStepEffect step leftCapability (MkLocalState (effectAmbient left)
+    (restrictOwnedPreservingOrder @{keyEq} provision (effectTables left actor))) =
+      Right (leftAfter, leftUndo)) ->
+  (runStepEffect step rightCapability (MkLocalState (effectAmbient right)
+    (restrictOwnedPreservingOrder @{keyEq} provision
+      (effectTables right (renameForward renaming actor)))) =
+      Right (rightAfter, rightUndo)) ->
+  ((leftAfter = rightAfter), AccumulatorRelated
+    (pushLocalUndo @{keyEq} provision leftOlder leftUndo)
+    (pushLocalUndo @{keyEq} provision rightOlder rightUndo))
+pairedSuccessfulOutcome name key world error value keyEq renaming deps provision actor
+  step leftView rightView left right leftCapability rightCapability leftOlder rightOlder
+  leftAfter rightAfter leftUndo rightUndo effects views older leftResolved rightResolved
+  leftRun rightRun =
+    case trans (sym leftRun) (trans
+      (synchronizationStepOutcome name key world error value keyEq renaming deps provision
+        actor step leftView rightView left right leftCapability rightCapability effects
+        views leftResolved rightResolved) rightRun) of
+      Refl => (Refl, synchronizationPushedUndo key world error value keyEq provision
+        leftOlder rightOlder rightAfter rightAfter rightUndo rightUndo older Refl)
