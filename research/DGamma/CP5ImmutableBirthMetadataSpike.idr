@@ -10,6 +10,7 @@ import DGamma.CP5UniqueRawNameInsertions
 import DGamma.CP5RawClosingRankSpike
 import DGamma.CP5CurrentGenerationBirthSpike
 import Data.Nat
+import Data.List.Elem
 import Decidable.Equality
 
 %default total
@@ -304,3 +305,25 @@ scannedRegistrationBirthHead name key world error value nameEq ordinal
     MkScannedRegistrationBirth
       (MkLocatedActionOccurrence _ _ NoTransitions step rest actionExact Refl)
       (cong (MkRegistrationGeneration child) (sym (plusZeroRightNeutral ordinal)))
+
+||| Public boundary for the sealed scanner's own finite matching. Both event
+||| domains are authenticated in their ORIGINAL traces, not caller-origin maps.
+public export
+record AuthenticatedRegistrationMatching
+  (name, key, world, error : Type) (value : key -> Type)
+  (renaming : RegistrationGenerationBijection name)
+  {leftFirst, leftFinal, rightFirst, rightFinal : SystemState name key value world error}
+  (left : Transitions leftFirst leftFinal) (right : Transitions rightFirst rightFinal) where
+  constructor MkAuthenticatedRegistrationMatching
+  leftScannedEvents : List (RegistrationEvent name key world error value)
+  rightScannedEvents : List (RegistrationEvent name key world error value)
+  0 leftScannedBirths : (event : RegistrationEvent name key world error value) ->
+    Elem event leftScannedEvents -> ScannedRegistrationBirth name key world error value Z left event
+  0 rightScannedBirths : (event : RegistrationEvent name key world error value) ->
+    Elem event rightScannedEvents -> ScannedRegistrationBirth name key world error value Z right event
+  0 matchedEventForward : (event : RegistrationEvent name key world error value) -> Elem event leftScannedEvents ->
+    (paired : RegistrationEvent name key world error value **
+      (Elem paired rightScannedEvents, RegistrationEventMatch renaming event paired))
+  0 matchedEventBackward : (event : RegistrationEvent name key world error value) -> Elem event rightScannedEvents ->
+    (paired : RegistrationEvent name key world error value **
+      (Elem paired leftScannedEvents, RegistrationEventMatch renaming paired event))
