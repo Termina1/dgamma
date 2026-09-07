@@ -4,6 +4,7 @@ Run detached (python3 -I ...) and monitor the log: R8 may exceed 150 seconds.
 Every target is touched to force source checking; only timestamps are changed.
 """
 import datetime
+import hashlib
 import json
 import os
 import signal
@@ -22,10 +23,26 @@ POSITIVE = [
     'research/DGamma/CP5ConfluenceCrossTraceSpike.idr',
     'research/DGamma/CP5UniqueRawNameCanonicalCapital.idr',
     'research/DGamma/CP5GeneratedOrchestrationMatched.idr',
+    'research/DGamma/CP5CurrentGenerationBirthSpike.idr',
+    'research/DGamma/CP5SupportedBirthCoverageSpike.idr',
+    'research/DGamma/CP5RetirementHistorySpike.idr',
+    'research/DGamma/CP5RootBirthCoverageSpike.idr',
+    'research/DGamma/CP5RetiredFlagEvaluationSpike.idr',
+    'research/DGamma/CP5GeneratedRetirementTransportSpike.idr',
+    'research/DGamma/CP5RootOrchestrationTransportSpike.idr',
+    'research/DGamma/CP5AcceptedRetirementTransportSpike.idr',
+    'research/DGamma/CP5SupportEdgeInductionSpike.idr',
+    'research/DGamma/CP5AllSupportedMetadataSpike.idr',
+    'research/DGamma/CP5SupportClauseTransportSpike.idr',
+    'research/DGamma/CP5AcceptedSupportTruthSpike.idr',
+    'research/DGamma/CP5AvailabilityAwarePlacement.idr',
+    'research/DGamma/CP5MatchedBirthMetadataSpike.idr',
     'research-tests/DGamma/R178GeneratedOrchestrationFixtures.idr',
     'research-tests/DGamma/R176CanonicalPermutationUniquePositive.idr',
     'research-tests/DGamma/R173UniqueRawNameInsertionsFixtures.idr',
     'research-tests/DGamma/R174O17ProvisionCollisionUnique.idr',
+    'research-tests/DGamma/R174O17ProvisionCollisionCandidate.idr',
+    'research-tests/DGamma/R174O17SortedProvisionGuard.idr',
     'research-tests/DGamma/R8FullPipeline.idr',
     'research-tests/DGamma/R16ConfluenceTheoremAssemblyPositive.idr',
     'research-tests/DGamma/R4ScannerProducerConsumers.idr',
@@ -82,6 +99,7 @@ def check(path, symbol=None, diagnostic=None):
     else:
         passed = fresh and result.returncode == 0 and not re.search(r'^Error:', result.stdout, re.M)
     record = dict(path=path, command=' '.join(command), exit=result.returncode,
+                  sourceSHA256=hashlib.sha256((ROOT/path).read_bytes()).hexdigest(), boundaryRun='R178-final',
                   seconds=time.time() - started, start=start_utc, end=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                   maxSampleRSSKiB=maximum_rss, fresh=fresh, expectedDiagnostic=diagnostic, passed=passed)
     with pathlib.Path('/tmp/dgamma-r178/final-suite-ledger.jsonl').open('a') as ledger:
