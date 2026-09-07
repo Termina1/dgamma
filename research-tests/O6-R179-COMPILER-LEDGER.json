@@ -226,5 +226,289 @@
     "symbol": null,
     "transcript": "",
     "matchingSourceCommits": []
+  },
+  {
+    "unit": "B1-1",
+    "path": "research/DGamma/CP5O21EndpointIdentitySpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O21EndpointIdentitySpike.idr"
+    ],
+    "start": "2026-09-07T09:38:53.098470+00:00",
+    "end": "2026-09-07T09:38:56.227106+00:00",
+    "seconds": 3.128469541668892,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 3015024,
+    "sourceSHA256": "69e08fc17f48cbca5a3d56b127e67f601293344f44dc9170f26e6c251d4cf29c",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "17/17: Building DGamma.CP5O21EndpointIdentitySpike (research/DGamma/CP5O21EndpointIdentitySpike.idr)\n",
+    "matchingSourceCommits": [
+      "ab4fda4280e16265fc67975a018f156eb2bdba44"
+    ]
+  },
+  {
+    "unit": "B2-1",
+    "path": "research/DGamma/CP5O21EndpointIdentitySpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O21EndpointIdentitySpike.idr"
+    ],
+    "start": "2026-09-07T09:39:17.347729+00:00",
+    "end": "2026-09-07T09:39:20.460740+00:00",
+    "seconds": 3.1128130829893053,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 3010816,
+    "sourceSHA256": "b7b69ff38a4b679e0249b90ce1ee7b782ed2d5fcf9ebb259c37dad15ac0b3768",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "17/17: Building DGamma.CP5O21EndpointIdentitySpike (research/DGamma/CP5O21EndpointIdentitySpike.idr)\n",
+    "matchingSourceCommits": [
+      "feef3d8fa775ce5f0b835ca1bf29b17191d9db1b"
+    ]
+  },
+  {
+    "unit": "B3-1",
+    "path": "research/DGamma/CP5O21EndpointIdentitySpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O21EndpointIdentitySpike.idr"
+    ],
+    "start": "2026-09-07T09:39:55.904007+00:00",
+    "end": "2026-09-07T09:39:59.007500+00:00",
+    "seconds": 3.1033311248756945,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 2935792,
+    "sourceSHA256": "a7e1e9978efc0c4bfd6394f1d68d056c83ea31c977a450da5121a93f494b6e55",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "17/17: Building DGamma.CP5O21EndpointIdentitySpike (research/DGamma/CP5O21EndpointIdentitySpike.idr)\n",
+    "matchingSourceCommits": [
+      "5b2340fbb67446fe8ec8bb40fa81699ae1fff338"
+    ]
+  },
+  {
+    "unit": "B4-1",
+    "path": "research/DGamma/CP5O21EndpointIdentitySpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O21EndpointIdentitySpike.idr"
+    ],
+    "start": "2026-09-07T09:40:23.648127+00:00",
+    "end": "2026-09-07T09:40:26.775133+00:00",
+    "seconds": 3.126774416770786,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 2913712,
+    "sourceSHA256": "fadb6b6fe78cf79f8ac48d7fc1497527fc00d77741ee3f73e398cd4c769e9bc2",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "17/17: Building DGamma.CP5O21EndpointIdentitySpike (research/DGamma/CP5O21EndpointIdentitySpike.idr)\n",
+    "matchingSourceCommits": [
+      "3b0e14f558322ce774b5513a60abb020ec61cf75"
+    ]
+  },
+  {
+    "unit": "B5-1",
+    "path": "research/DGamma/CP5O21EndpointIdentitySpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O21EndpointIdentitySpike.idr"
+    ],
+    "start": "2026-09-07T09:40:59.948092+00:00",
+    "end": "2026-09-07T09:41:03.079957+00:00",
+    "seconds": 3.1316547919996083,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 3008752,
+    "sourceSHA256": "fe6db256c407d5ac3e8944b44d30c20c4f72cdf42e7d4321c7dca3ae0e954d93",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "17/17: Building DGamma.CP5O21EndpointIdentitySpike (research/DGamma/CP5O21EndpointIdentitySpike.idr)\n",
+    "matchingSourceCommits": [
+      "b924e8de47ad2604408ce9b038a99f6462d9e1dc"
+    ]
+  },
+  {
+    "unit": "B6-1",
+    "path": "research/DGamma/CP5O21EndpointIdentitySpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O21EndpointIdentitySpike.idr"
+    ],
+    "start": "2026-09-07T09:41:15.641937+00:00",
+    "end": "2026-09-07T09:41:18.744521+00:00",
+    "seconds": 3.1024177502840757,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 3010768,
+    "sourceSHA256": "68e109c047db67561fd76447d47c9142e5be33e75e24746362242fe90e7b4aa2",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "17/17: Building DGamma.CP5O21EndpointIdentitySpike (research/DGamma/CP5O21EndpointIdentitySpike.idr)\n",
+    "matchingSourceCommits": [
+      "9f05fbc349bc5357df205d214e5bd71785dd3c05"
+    ]
+  },
+  {
+    "unit": "B7-1",
+    "path": "research/DGamma/CP5O21EndpointIdentitySpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O21EndpointIdentitySpike.idr"
+    ],
+    "start": "2026-09-07T09:41:53.315730+00:00",
+    "end": "2026-09-07T09:41:56.421505+00:00",
+    "seconds": 3.105580958072096,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 3201536,
+    "sourceSHA256": "5a1d3fe32fb110a905ad5d59885637710fc13fcccd81c1d6f9ad67472f515e38",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "17/17: Building DGamma.CP5O21EndpointIdentitySpike (research/DGamma/CP5O21EndpointIdentitySpike.idr)\n",
+    "matchingSourceCommits": [
+      "7053914f341be313a34e3e85b599c0dee7b51438"
+    ]
+  },
+  {
+    "unit": "B8-1",
+    "path": "research-tests/DGamma/R179O21WrongOriginalBirthNegative.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R179O21WrongOriginalBirthNegative.idr"
+    ],
+    "start": "2026-09-07T09:42:33.888276+00:00",
+    "end": "2026-09-07T09:42:34.945159+00:00",
+    "seconds": 1.0567225003615022,
+    "exit": 1,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 0,
+    "sourceSHA256": "f2d7e6825c7fece1c36787ba1f2d248a59197df7d94b1fece6b651714046055b",
+    "expectedDiagnostic": "Mismatch between:",
+    "symbol": "wrongOriginalBirth",
+    "transcript": "1/1: Building DGamma.R179O21WrongOriginalBirthNegative (research-tests/DGamma/R179O21WrongOriginalBirthNegative.idr)\nError: While processing right hand side of wrongOriginalBirth. When unifying:\n    LocatedActionOccurrence (OInsert selected otherParent otherComponent) other\nand:\n    LocatedActionOccurrence (OInsert selected otherParent otherComponent) left\nMismatch between: other and left.\n\nDGamma.R179O21WrongOriginalBirthNegative:36:77--36:87\n 32 |   (generation = MkRegistrationGeneration selected (locatedActionOrdinal otherBirth))\n 33 | wrongOriginalBirth name key world error value nameEq keyEq left right other sameInputs aligned empty unique\n 34 |   selected generation current observed found otherParent otherComponent otherBirth =\n 35 |     acceptedLeftEndpointBirthIdentity name key world error value nameEq keyEq left right sameInputs aligned empty unique\n 36 |       selected generation current observed found otherParent otherComponent otherBirth\n                                                                                  ^^^^^^^^^^\n\n",
+    "matchingSourceCommits": [
+      "853cfe812266ca24e5bd7a413f901cda6062b576"
+    ]
+  },
+  {
+    "unit": "B9-1",
+    "path": "research-tests/DGamma/R179O21CurrentBirthIdentityPositive.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R179O21CurrentBirthIdentityPositive.idr"
+    ],
+    "start": "2026-09-07T09:43:04.471320+00:00",
+    "end": "2026-09-07T09:43:06.545095+00:00",
+    "seconds": 2.073596667032689,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 3941664,
+    "sourceSHA256": "e8d1f64fdf8dab1b2af4dd76dc69f6138c45ad849cc64c14b1d46a030d34d901",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "1/1: Building DGamma.R179O21CurrentBirthIdentityPositive (research-tests/DGamma/R179O21CurrentBirthIdentityPositive.idr)\n",
+    "matchingSourceCommits": [
+      "e7bd8ffc18f3a0542a1d075ce593c0616e02740e"
+    ]
+  },
+  {
+    "unit": "C1-1",
+    "path": "research-tests/DGamma/R179O20FourClauseProbe.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R179O20FourClauseProbe.idr"
+    ],
+    "start": "2026-09-07T09:46:15.486891+00:00",
+    "end": "2026-09-07T09:46:18.593505+00:00",
+    "seconds": 3.1064044581726193,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 3011744,
+    "sourceSHA256": "2304574371dbb8065dbc4d2a08582104d119bed7867107737276db5dd53fae5c",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "1/1: Building DGamma.R179O20FourClauseProbe (research-tests/DGamma/R179O20FourClauseProbe.idr)\n",
+    "matchingSourceCommits": []
   }
 ]

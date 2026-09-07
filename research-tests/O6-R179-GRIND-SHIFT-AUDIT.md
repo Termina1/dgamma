@@ -121,3 +121,100 @@ O17/root/A8 integration, O21 withdrawals and LocalDiamond declarations untouched
 
 A6-restored fresh PASS at 09:36:42 UTC (132.67s); exact A5 source SHA retained.
 Initial gate seeded package F1 PASS; all 207 production TTC seeds retained.
+
+## Supervisor ruling after the initial A gate
+
+The 0d7ddc9 cap outcome was ratified. A is PARKED while B/C run. The supervisor
+explicitly permits an observed-equation A-prerequisite continuation of **≤8
+additional micro-units only if ≥75 minutes remain before the guard** after B/C.
+No surface/body revision this shift absent a committed full negative. A6's cost
+stop is ratified; nested scalar normalization must not be repeated.
+
+## Unit B — authenticated-current-birth identity: COMPLETE narrow subcase
+
+Companion: `research/DGamma/CP5O21EndpointIdentitySpike.idr`.
+Nine micro-units, nine invocations, all expected outcomes on attempt1:
+
+| Unit | Committed producer / fixture | Status |
+|---|---|---|
+| B1 | `acceptedLeftEndpointBirthIdentity` | `ab4fda4`, PASS3.13s |
+| B2 | `acceptedRightEndpointBirthIdentity` | `feef3d8`, PASS3.11s |
+| B3 | `exactBirthStampRejectsLater` | `5b2340f`, PASS3.10s |
+| B4 | `AcceptedEndpointBirthIdentity` | `3b0e14f`, PASS3.13s signature |
+| B5 | `acceptedLeftEndpointIdentityCapital` | `b924e8d`, PASS3.13s |
+| B6 | `acceptedRightEndpointIdentityCapital` | `9f05fbc`, PASS3.10s |
+| B7 | `o21OriginalEndpointIdentityCapital` | `7053914`, PASS3.11s |
+| B8 | `R179O21WrongOriginalBirthNegative.wrongOriginalBirth` | `853cfe8`, EXPECTED REJECT1.06s |
+| B9 | `R179O21CurrentBirthIdentityPositive.r179AcceptedCurrentRejectsLaterBirth` | `e7bd8ff`, PASS2.07s |
+
+B1/B2 FIRST consume the accepted scanner, actual endpoint lookup and its exact
+current generation to obtain the producer-authenticated original insertion.
+THEN `uniqueInsertionPosition` compares that occurrence to ANY other actual
+insertion of the selected raw name **in the same ORIGINAL trace**. Thus exact
+birth stamps coincide, and a strict later original birth is impossible (B3).
+No raw-name-only leap, deleted generation, freshness guess, or caller-supplied
+identity/current-birth oracle is substituted.
+
+B5/B6 derive currentness rather than accepting the generation as a premise.
+B7 consumes the unchanged accepted original left/right trace/capital telescope,
+its OWN replay alignment/empty origin and original uniqueness on EACH side.
+It threads the A9 `GeneratedOrchestrationMatched` premise at that boundary.
+**A9 is not consumed by identity**: the stronger one-trace identity facts do not
+need it. A9's actual generated endpoint role remains parked, not falsely proved.
+All returned fields and declarations are erased, `%default total`; no new
+`with`, local let, postulate, hole, partial or unsafe proof was introduced.
+
+B8 proves the negative boundary is enforced even for an unrelated trace with
+identical endpoints, selected raw name, parent and component: exact diagnostic
+`Mismatch between: other and left` at `otherBirth`, not an import/scope failure.
+B9 is explicitly a conditional producer-consumer typecheck, NOT a concrete
+runtime execution or a completed O21 result.
+
+**Still required for O21:** withdrawal-side exact current/deleted membership;
+retired=True, lifecycle=Inactive Nothing, empty installed keys, hasChild=False,
+unsupported=False, actual endpoint fiber and accepted discarded birth;
+left/right/both absent-vs-present branch plumbing under the fixed bijection.
+No such branch was attempted. Identity closes only the same-name later-birth
+escape. `replayedCanonicalToOriginalEndpointSpike` surface/body is unchanged.
+
+## Unit C — one disposable O20 convergence sizing probe: COMPLETE / no body
+
+C1-1 fresh PASS3.106s, source SHA
+`2304574371dbb8065dbc4d2a08582104d119bed7867107737276db5dd53fae5c`.
+ONE type-valued signature declaration, ONE invocation (≤3 checks); source is
+retained exactly in the compiler archive and removed from the live source tree.
+No inhabitant of the proposition was supplied, no O20 body/helper was proved,
+no O20/LocalDiamond file changed, no second probe was opened.
+
+The exact unchanged O20 source telescope (both original traces/capitals,
+uniqueness, A9, mapped support orders, certified operational permutation) was
+followed by its already-producible `PermutedCanonicalExecution`. At those
+indices, the R147 bridge has EXACTLY four obligations:
+
+1. **Ambient:** `worldState (operationalTargetFinal operational)` equals the
+   independently canonical RIGHT endpoint world. The sealed replay endpoint
+   only compares canonical LEFT to its own replay and cannot establish this.
+2. **Tables:** for EVERY selected name and key, replayed lookup equals RIGHT
+   canonical lookup at `renameForward (expectedBridgeBijection sameInputs) n`.
+   Need actual cross-canonical synchronized execution/resolution/effect capital;
+   neither support-order agreement nor original uniqueness supplies this.
+3. **Controls:** for EVERY name (including unsupported entries), exact
+   `MaybeFiberRelatedBy expectedBridgeBijection` between replayed LEFT and RIGHT
+   canonical lookup. Need domain, component, parent, retired/lifecycle and
+   provider/control relations; no bridge-defined replacement bijection. A
+   same-actor trace replay theorem is NOT this cross-canonical relation. Check
+   treatment of canonical vestigial/omitted entries before claiming sufficiency.
+4. **Generated births:** each actual replayed generated occurrence has the EXACT
+   canonical-left origin from `permutationOccurrenceCorrespondence execution`,
+   then the canonical-left original origin from its capital; accepted forward
+   generation must equal the original origin of an actual RIGHT canonical
+   occurrence at the fixed renamed child AND parent, same component. Need
+   retained-right occurrence existence plus order/stamp transport, not just A9
+   on originals or equality of raw names. No existential replacement origin.
+
+Existing `permutedCanonicalExecutionFromOperational` and
+`canonicalConvergenceFromBridge` already package execution/result; the unresolved
+work is those four PRODUCERS. Proposed later budget: first a cross-canonical
+source-correspondence/retention specification audit (2–3 micro-units), then an
+independent proof plan for synchronized execution/resolution and controls,
+then generated-occurrence transport. This shift does NOT authorize that work.
