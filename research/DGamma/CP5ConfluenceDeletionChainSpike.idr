@@ -30756,3 +30756,31 @@ rawClosingMaximumFromOccurrence name key world error value nameEq keyEq protocol
   (ErasedClosingEpisodeOccurrence selected episode) upper =
     (selected ** (episode ** rawClosingRankMaximumHasNoDependent name key world error value nameEq keyEq
       protocol global premises unique scan selected episode upper))
+
+||| Select a finite protocol-rank maximum; nonemptiness is justified by a real close.
+0 rawClosingMaximumFromInventory :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (global : Transitions initial finalState) ->
+  (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq global) ->
+  (UniqueRawNameInsertions name key world error value nameEq keyEq global) ->
+  (scan : ClosingEpisodeScan name key world error value nameEq keyEq global) ->
+  (items : List (ClosingEpisodeOccurrence name key world error value nameEq keyEq global)) ->
+  (scannedClosingOccurrences scan = items) ->
+  (hasClosing : (actor : name ** LocatedClosedEpisode name key world error value nameEq keyEq actor global)) ->
+  (selected : name **
+    (episode : LocatedClosedEpisode name key world error value nameEq keyEq selected global **
+      NoDependentClosingEpisode {nameEq = nameEq} {keyEq = keyEq} selected global))
+rawClosingMaximumFromInventory name key world error value nameEq keyEq protocol global premises unique scan
+  [] exact hasClosing =
+    void (emptyScanIsClosingFree scan exact (fst hasClosing) (snd hasClosing))
+rawClosingMaximumFromInventory name key world error value nameEq keyEq protocol global premises unique scan
+  (head :: tail) exact hasClosing =
+    rawClosingMaximumFromOccurrence name key world error value nameEq keyEq protocol global premises unique scan
+      (maximumItem (chooseMaximumBy
+        (rawClosingOccurrenceRank name key world error value nameEq keyEq protocol global premises) head tail))
+      (\other, member => maximumUpperBound (chooseMaximumBy
+        (rawClosingOccurrenceRank name key world error value nameEq keyEq protocol global premises) head tail)
+        other (replace {p = Elem other} exact member))
