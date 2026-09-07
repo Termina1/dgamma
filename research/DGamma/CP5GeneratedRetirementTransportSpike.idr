@@ -160,3 +160,30 @@ generatedRetirementBackwardAtBirths name key world error value nameEq keyEq left
           (trans (cong (generationBackward renaming)
             (generatedPacketMatchesCurrentBirth name key world error value nameEq keyEq right rightUnique packet rightName actorExact rightGeneration rightBirth))
             (trans (cong (generationBackward renaming) (sym generationMapped)) (generationLeftInverse renaming leftGeneration)))))
+
+export
+0 generatedRetirementForwardAtBirths :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, leftFinal, rightFinal : SystemState name key value world error} ->
+  (left : Transitions initial leftFinal) -> (right : Transitions initial rightFinal) ->
+  (renaming : RegistrationGenerationBijection name) -> GeneratedOrchestrationMatched name key world error value nameEq left right renaming ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq left ->
+  (leftName, rightName : name) -> (leftGeneration, rightGeneration : RegistrationGeneration name) ->
+  CurrentGenerationBirth name key world error value left leftName leftGeneration ->
+  CurrentGenerationBirth name key world error value right rightName rightGeneration ->
+  (generationBackward renaming rightGeneration = leftGeneration) ->
+  (packet : LocatedGeneratedOrchestration name key world error value nameEq left) ->
+  (generatedActor packet = leftName) -> (generatedRemoval packet = False) ->
+  LocatedActionOccurrence (ORetire rightName) right
+generatedRetirementForwardAtBirths name key world error value nameEq keyEq left right renaming matched leftUnique
+  leftName rightName leftGeneration rightGeneration leftBirth rightBirth generationMapped packet actorExact kind =
+    generatedPacketRetirementLocation name key world error value nameEq right (generatedForward matched packet)
+      (trans (generatedForwardKind matched packet) kind) rightName
+      (authenticatedGenerationNamesSame name key world error value right (generatedActor (generatedForward matched packet)) rightName
+        (generatedCurrent (generatedForward matched packet)) rightGeneration
+        (generatedPacketCurrentBirth name key world error value nameEq right (generatedForward matched packet)) rightBirth
+        (trans (sym (generatedForwardGeneration matched packet))
+          (trans (cong (generationForward renaming)
+            (generatedPacketMatchesCurrentBirth name key world error value nameEq keyEq left leftUnique packet leftName actorExact leftGeneration leftBirth))
+            (trans (cong (generationForward renaming) (sym generationMapped)) (generationRightInverse renaming rightGeneration)))))
