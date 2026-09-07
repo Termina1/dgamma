@@ -117,3 +117,55 @@ supportedMatchingMetadataForward name key world error value nameEq keyEq left ri
                       (leftScannedBirths matching leftEvent leftMember) leftGeneration (acceptedLeftCurrentBirth name key world error value nameEq left right (generatedGenerationBijection sameInputs) (generatedRegistrationTree sameInputs) (eventChild leftEvent) leftGeneration leftCurrent))
                     mapped (renameForward (currentNameBijection (endpointRenaming sameInputs)) (eventChild leftEvent)) (acceptedRightCurrentBirth name key world error value nameEq left right (generatedGenerationBijection sameInputs) (generatedRegistrationTree sameInputs) (renameForward (currentNameBijection (endpointRenaming sameInputs)) (eventChild leftEvent)) rightGeneration rightCurrent))
                 leftFound rightFound))
+
+||| Symmetric actual endpoint metadata; backward domain transport does not
+||| silently assert the opposite endpoint is supported.
+export
+0 supportedMatchingMetadataBackward :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, leftFinal, rightFinal : SystemState name key value world error} ->
+  (left : Transitions initial leftFinal) -> (right : Transitions initial rightFinal) ->
+  (sameInputs : SameOrchestrationModuloGenerated nameEq keyEq left right) ->
+  AlignedTransitions name key world error value nameEq keyEq left ->
+  AlignedTransitions name key world error value nameEq keyEq right ->
+  bindings (registry initial) = [] ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq left ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq right ->
+  (matching : AuthenticatedRegistrationMatching name key world error value (generatedGenerationBijection sameInputs) left right) ->
+  (rightEvent : RegistrationEvent name key world error value) -> Elem rightEvent (rightScannedEvents matching) ->
+  (rightFiber : Fiber name key value world error) ->
+  lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+    @{nameEq} (eventChild rightEvent) (registry rightFinal) = Just rightFiber ->
+  isSupported {name = name} {key = key} {value = value} {world = world} {error = error}
+    @{nameEq} @{keyEq} (eventChild rightEvent) rightFinal = True ->
+  (leftEvent : RegistrationEvent name key world error value ** leftFiber : Fiber name key value world error **
+    (Elem leftEvent (leftScannedEvents matching),
+     eventChild leftEvent = (renameBackward (currentNameBijection (endpointRenaming sameInputs)) (eventChild rightEvent)),
+     lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+       @{nameEq} (renameBackward (currentNameBijection (endpointRenaming sameInputs)) (eventChild rightEvent)) (registry leftFinal) = Just leftFiber,
+     MatchedEndpointStaticMetadata name key world error value (generatedGenerationBijection sameInputs) leftEvent rightEvent leftFiber rightFiber))
+supportedMatchingMetadataBackward name key world error value nameEq keyEq left right sameInputs
+  leftAligned rightAligned empty leftUnique rightUnique matching rightEvent rightMember rightFiber rightFound supported =
+    case acceptedSupportedBackwardDomain name key world error value nameEq keyEq left right sameInputs
+      leftAligned rightAligned empty (eventChild rightEvent) supported of
+      (rightGeneration ** leftGeneration ** leftFiber ** (rightCurrent, leftCurrent, mapped, leftFound)) =>
+        case matchedEventBackward matching rightEvent rightMember of
+          (leftEvent ** (leftMember, matched)) =>
+            (leftEvent ** leftFiber ** (leftMember,
+              (matchedScannedCurrentNameBackward name key world error value left (generatedGenerationBijection sameInputs) leftEvent rightEvent matched
+                    (leftScannedBirths matching leftEvent leftMember) leftGeneration rightGeneration
+                    (currentBirthMatchesScannedEvent name key world error value nameEq keyEq right rightUnique rightEvent
+                      (rightScannedBirths matching rightEvent rightMember) rightGeneration (acceptedRightCurrentBirth name key world error value nameEq left right (generatedGenerationBijection sameInputs) (generatedRegistrationTree sameInputs) (eventChild rightEvent) rightGeneration rightCurrent))
+                    mapped (renameBackward (currentNameBijection (endpointRenaming sameInputs)) (eventChild rightEvent)) (acceptedLeftCurrentBirth name key world error value nameEq left right (generatedGenerationBijection sameInputs) (generatedRegistrationTree sameInputs) (renameBackward (currentNameBijection (endpointRenaming sameInputs)) (eventChild rightEvent)) leftGeneration leftCurrent)),
+              leftFound,
+              matchedBirthEndpointMetadataRenamed name key world error value nameEq keyEq left right
+                leftAligned rightAligned empty empty leftUnique rightUnique (generatedGenerationBijection sameInputs) leftEvent rightEvent
+                (leftScannedBirths matching leftEvent leftMember) (rightScannedBirths matching rightEvent rightMember)
+                matched leftFiber rightFiber (renameBackward (currentNameBijection (endpointRenaming sameInputs)) (eventChild rightEvent)) (eventChild rightEvent)
+                (matchedScannedCurrentNameBackward name key world error value left (generatedGenerationBijection sameInputs) leftEvent rightEvent matched
+                    (leftScannedBirths matching leftEvent leftMember) leftGeneration rightGeneration
+                    (currentBirthMatchesScannedEvent name key world error value nameEq keyEq right rightUnique rightEvent
+                      (rightScannedBirths matching rightEvent rightMember) rightGeneration (acceptedRightCurrentBirth name key world error value nameEq left right (generatedGenerationBijection sameInputs) (generatedRegistrationTree sameInputs) (eventChild rightEvent) rightGeneration rightCurrent))
+                    mapped (renameBackward (currentNameBijection (endpointRenaming sameInputs)) (eventChild rightEvent)) (acceptedLeftCurrentBirth name key world error value nameEq left right (generatedGenerationBijection sameInputs) (generatedRegistrationTree sameInputs) (renameBackward (currentNameBijection (endpointRenaming sameInputs)) (eventChild rightEvent)) leftGeneration leftCurrent))
+                Refl leftFound rightFound))
