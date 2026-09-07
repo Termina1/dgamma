@@ -230,3 +230,12 @@ currentBirthAtPrefixComponent name key world error value nameEq keyEq global pri
           (parent ** birth) => (parent ** birth ** trans exact
             (cong (MkRegistrationGeneration selected)
               (uniqueInsertionPosition unique selected scanParent parent scanComponent (fiberComponent observed) scanBirth birth)))
+
+export
+0 currentBirthTraceAppendEmpty :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (trace : Transitions initial finalState) -> (appendTransitions trace NoTransitions = trace)
+currentBirthTraceAppendEmpty name key world error value NoTransitions = Refl
+currentBirthTraceAppendEmpty name key world error value (MoreTransitions step rest) =
+  cong (MoreTransitions step) (currentBirthTraceAppendEmpty name key world error value rest)
