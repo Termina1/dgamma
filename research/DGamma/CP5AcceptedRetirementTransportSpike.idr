@@ -124,3 +124,36 @@ acceptedSupportedForwardRejectsTargetRetired name key world error value nameEq k
               generationMapped rightFiber rightFound
               (retiredEndpointHasRetirement name key world error value nameEq keyEq right rightAligned empty
                 (renameForward (currentNameBijection (endpointRenaming sameInputs)) selected) rightFiber rightFound rightRetired) (fiberParent rightFiber) Refl)
+
+export
+0 acceptedSupportedBackwardRejectsTargetRetired :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, leftFinal, rightFinal : SystemState name key value world error} ->
+  (left : Transitions initial leftFinal) -> (right : Transitions initial rightFinal) ->
+  (sameInputs : SameOrchestrationModuloGenerated nameEq keyEq left right) ->
+  GeneratedOrchestrationMatched name key world error value nameEq left right (generatedGenerationBijection sameInputs) ->
+  AlignedTransitions name key world error value nameEq keyEq left -> AlignedTransitions name key world error value nameEq keyEq right ->
+  (bindings (registry initial) = []) -> UniqueRawNameInsertions name key world error value nameEq keyEq left ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq right -> (selected : name) ->
+  (isSupported {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} @{keyEq} selected rightFinal = True) ->
+  (leftFiber : Fiber name key value world error) ->
+  (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq}
+    (renameBackward (currentNameBijection (endpointRenaming sameInputs)) selected) (registry leftFinal) = Just leftFiber) ->
+  (retired leftFiber = True) -> Void
+acceptedSupportedBackwardRejectsTargetRetired name key world error value nameEq keyEq {rightFinal} left right sameInputs matched
+  leftAligned rightAligned empty leftUnique rightUnique selected supported leftFiber leftFound leftRetired =
+    case computedSupportPresent name key world error value nameEq keyEq rightFinal selected supported of
+      (rightFiber ** rightFound) => case acceptedSupportedBackwardDomain name key world error value nameEq keyEq left right sameInputs leftAligned rightAligned empty selected supported of
+        (rightGeneration ** leftGeneration ** _ ** (rightCurrent, leftCurrent, generationMapped, _)) =>
+          nonretiredEndpointRejectsRetirement name key world error value nameEq keyEq right rightAligned empty rightUnique selected rightFiber rightFound
+            (computedSupportNotRetired name key world error value nameEq keyEq rightFinal selected rightFiber rightFound supported)
+            (acceptedRetirementForwardByParent name key world error value nameEq keyEq left right sameInputs matched leftAligned empty leftUnique selected
+              leftGeneration rightGeneration
+              (acceptedLeftCurrentBirth name key world error value nameEq left right (generatedGenerationBijection sameInputs) (generatedRegistrationTree sameInputs)
+                (renameBackward (currentNameBijection (endpointRenaming sameInputs)) selected) leftGeneration leftCurrent)
+              (acceptedRightCurrentBirth name key world error value nameEq left right (generatedGenerationBijection sameInputs) (generatedRegistrationTree sameInputs)
+                selected rightGeneration rightCurrent)
+              generationMapped leftFiber leftFound
+              (retiredEndpointHasRetirement name key world error value nameEq keyEq left leftAligned empty
+                (renameBackward (currentNameBijection (endpointRenaming sameInputs)) selected) leftFiber leftFound leftRetired) (fiberParent leftFiber) Refl)
