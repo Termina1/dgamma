@@ -88,3 +88,51 @@ r182SecondSuffixView firstDiamond firstResult secondDiamond secondResult =
         (movedLeftAction firstDiamond))
         (cong ((LAdvance 0) ::)
           (o19SealedActionWord r45NameEq r45KeyEq (sealedSuffixReplay firstResult)))))
+
+||| B29: derive BOTH actual Finish classes and right-first applicability at
+||| the REAL second reached cut. All observations are explicit; no assumed
+||| tag, view equality, target state or independent current bundle is added.
+public export
+0 r182ThirdPairFacts :
+  (firstDiamond : LocalRelationalDiamond Nat R45Key Unit String R45Value r45NameEq r45KeyEq (Fired {before = r182IndependentState 3} {afterState = r182IndependentState 4} r45NameEq r45KeyEq (LAdvance 0) LFinishTag Refl) (Fired {before = r182IndependentState 4} {afterState = r182IndependentState 5} r45NameEq r45KeyEq (LBegin 1) LBeginTag Refl)) ->
+  (secondDiamond : LocalRelationalDiamond Nat R45Key Unit String R45Value r45NameEq r45KeyEq (Fired {before = r182IndependentState 2} {afterState = r182IndependentState 3} r45NameEq r45KeyEq (LBegin 0) LBeginTag Refl) (movedRight firstDiamond)) ->
+  {finalState : SystemState Nat R45Key R45Value Unit String} ->
+  {suffix : Transitions (swappedFinal secondDiamond) finalState} ->
+  (observed : ObservedTwoActionTrace Nat R45Key Unit String R45Value r45NameEq r45KeyEq
+    (LAdvance 0) (LAdvance 1) suffix) ->
+  (PaperActivationStep (twoActionFirst observed),
+   PaperActivationStep (twoActionSecond observed),
+   CheckedEarlyApplication Nat R45Key Unit String R45Value r45NameEq r45KeyEq
+     (swappedFinal secondDiamond) (transitionAction (twoActionSecond observed))
+     (transitionTag (twoActionSecond observed)))
+r182ThirdPairFacts firstDiamond secondDiamond observed =
+  (PaperFinishStep (twoActionFirstExact observed) (Builtin.fst (o19AlignedDestination r45NameEq r45KeyEq (twoActionFirst observed)
+    (MoreTransitions (twoActionSecond observed) NoTransitions) (twoActionAligned observed)
+    (LAdvance 0) LFinishTag (twoActionFirstExact observed) (r182IndependentState 5)
+    (trans (cong (\state => checkedApplyAction @{r45NameEq} @{r45KeyEq} (LAdvance 0) state)
+      (r182SecondPairEnd firstDiamond secondDiamond)) (Builtin.fst r182RemainingPrimitiveChecks)))),
+   PaperFinishStep (twoActionSecondExact observed) (Builtin.fst (o19AlignedDestination r45NameEq r45KeyEq (twoActionSecond observed) NoTransitions
+    (Builtin.snd (alignedAppendSplit (MoreTransitions (twoActionFirst observed) NoTransitions)
+      (MoreTransitions (twoActionSecond observed) NoTransitions) (twoActionAligned observed)))
+    (LAdvance 1) LFinishTag (twoActionSecondExact observed) (r182IndependentState 6)
+    (trans (cong (\state => checkedApplyAction @{r45NameEq} @{r45KeyEq} (LAdvance 1) state)
+      (Builtin.snd (o19AlignedDestination r45NameEq r45KeyEq (twoActionFirst observed)
+    (MoreTransitions (twoActionSecond observed) NoTransitions) (twoActionAligned observed)
+    (LAdvance 0) LFinishTag (twoActionFirstExact observed) (r182IndependentState 5)
+    (trans (cong (\state => checkedApplyAction @{r45NameEq} @{r45KeyEq} (LAdvance 0) state)
+      (r182SecondPairEnd firstDiamond secondDiamond)) (Builtin.fst r182RemainingPrimitiveChecks))))) Refl))),
+   o19EarlyLabels r45NameEq r45KeyEq (LAdvance 1) (transitionAction (twoActionSecond observed))
+     LFinishTag (transitionTag (twoActionSecond observed)) (twoActionSecondExact observed)
+     (Builtin.fst (o19AlignedDestination r45NameEq r45KeyEq (twoActionSecond observed) NoTransitions
+    (Builtin.snd (alignedAppendSplit (MoreTransitions (twoActionFirst observed) NoTransitions)
+      (MoreTransitions (twoActionSecond observed) NoTransitions) (twoActionAligned observed)))
+    (LAdvance 1) LFinishTag (twoActionSecondExact observed) (r182IndependentState 6)
+    (trans (cong (\state => checkedApplyAction @{r45NameEq} @{r45KeyEq} (LAdvance 1) state)
+      (Builtin.snd (o19AlignedDestination r45NameEq r45KeyEq (twoActionFirst observed)
+    (MoreTransitions (twoActionSecond observed) NoTransitions) (twoActionAligned observed)
+    (LAdvance 0) LFinishTag (twoActionFirstExact observed) (r182IndependentState 5)
+    (trans (cong (\state => checkedApplyAction @{r45NameEq} @{r45KeyEq} (LAdvance 0) state)
+      (r182SecondPairEnd firstDiamond secondDiamond)) (Builtin.fst r182RemainingPrimitiveChecks))))) Refl)))
+     (MkCheckedEarlyApplication (r182IndependentState 9)
+       (trans (cong (\state => checkedApplyAction @{r45NameEq} @{r45KeyEq} (LAdvance 1) state)
+      (r182SecondPairEnd firstDiamond secondDiamond)) (Builtin.fst (Builtin.snd r182RemainingPrimitiveChecks)))))
