@@ -1,0 +1,227 @@
+{
+  "timestamp": "2026-09-07T09:08:19.168179+00:00",
+  "verifiedImplementationAndAuditHead": "1a856c976dffd797a90244cb8d4a614aea2a4238",
+  "startHead": "6d6ab285ba0c173101d49e3aa7c8492122635b9e",
+  "branch": "cp5-thm73-scoping",
+  "idrisVersion": "Idris 2, version 0.8.0",
+  "holes": {
+    "CanonicalSort": [
+      "?sortClosingFreeTraceSpike_rhs"
+    ],
+    "CrossTrace": [
+      "?operationalAdjacentBlockSwapSpike_rhs",
+      "?selectOperationalCanonicalPermutationSpike_rhs",
+      "?canonicalSchedulesConvergeSpike_rhs"
+    ],
+    "LocalDiamond": [],
+    "DeletionChain": [],
+    "RenamingComposition": [
+      "?replayedCanonicalToOriginalEndpointSpike_rhs"
+    ]
+  },
+  "holeCounts": [
+    1,
+    3,
+    0,
+    0,
+    1
+  ],
+  "noNewHoles": {
+    "research-tests/DGamma/R16ConfluenceTheoremAssemblyPositive.idr": [],
+    "research-tests/DGamma/R174O17ProvisionCollisionCandidate.idr": [],
+    "research-tests/DGamma/R176WrongOriginalTraceUniqueNegative.idr": [],
+    "research-tests/DGamma/R178GeneratedOrchestrationFixtures.idr": [],
+    "research-tests/DGamma/R178WrongGenerationMatchingNegative.idr": [],
+    "research-tests/DGamma/R6MixedScheduleNegative.idr": [],
+    "research-tests/DGamma/R6OldPollutionNegative.idr": [],
+    "research-tests/DGamma/R8FullPipeline.idr": [],
+    "research/DGamma/CP5AcceptedRetirementTransportSpike.idr": [],
+    "research/DGamma/CP5AcceptedSupportTruthSpike.idr": [],
+    "research/DGamma/CP5AllSupportedMetadataSpike.idr": [],
+    "research/DGamma/CP5AvailabilityAwarePlacement.idr": [],
+    "research/DGamma/CP5CurrentGenerationBirthSpike.idr": [],
+    "research/DGamma/CP5GeneratedOrchestrationMatched.idr": [],
+    "research/DGamma/CP5GeneratedRetirementTransportSpike.idr": [],
+    "research/DGamma/CP5RetiredFlagEvaluationSpike.idr": [],
+    "research/DGamma/CP5RetirementHistorySpike.idr": [],
+    "research/DGamma/CP5RootBirthCoverageSpike.idr": [],
+    "research/DGamma/CP5RootOrchestrationTransportSpike.idr": [],
+    "research/DGamma/CP5SupportClauseTransportSpike.idr": [],
+    "research/DGamma/CP5SupportEdgeInductionSpike.idr": [],
+    "research/DGamma/CP5SupportedBirthCoverageSpike.idr": []
+  },
+  "productionDiffVs34b21c9": "empty",
+  "CP3Blob": "2c697e532e83989de8591fa6a4378747c6a501c0",
+  "LocalDiamondDiffVsStart": "empty",
+  "CanonicalSortDiffVsStart": "empty",
+  "protectedDeclarations": {
+    "sortClosingFreeTraceSpike": {
+      "bodyUnchanged": true,
+      "signatureChange": "none",
+      "bodySHA256": "66ebfa52f439b08177a533ecb0742b6348526ab238ad1822b6b727b8a88ec850"
+    },
+    "operationalAdjacentBlockSwapSpike": {
+      "bodyUnchanged": true,
+      "signatureChange": "none",
+      "bodySHA256": "964788f61b7ff6231d29a08aaf6a08d706bc681da194d8537a9ce394f0735a7f"
+    },
+    "selectOperationalCanonicalPermutationSpike": {
+      "bodyUnchanged": true,
+      "signatureChange": "explicit A9 only",
+      "bodySHA256": "d02d52fbb173b3ead44c924eb5299dffa1091c753d9f95c0d89ec5f601015c7f"
+    },
+    "canonicalSchedulesConvergeSpike": {
+      "bodyUnchanged": true,
+      "signatureChange": "explicit A9 only",
+      "bodySHA256": "6654004ed1d6371923ce6ffd9b5d4c4747568990bbab5fe52545d6ad980a3a09"
+    },
+    "replayedCanonicalToOriginalEndpointSpike": {
+      "bodyUnchanged": true,
+      "signatureChange": "explicit A9 only",
+      "bodySHA256": "bca53a2a7641667c4b973f92b7caea251489a5c8301bb870757a8b61d5114fcc"
+    }
+  },
+  "DeletionChainOnlyChange": "two comments + export of existing provenance lemma; original type/body identical",
+  "adjacentFullSHA256": "2d01486bf953f11191b758ac3cfb5722d1d02b1a192b6e552adc8a3f58199ecf",
+  "adjacentStatementSHA256": "3aae5a9fbc5b14e0411b4a91e557a6f3dc68c9a6282b9ec2b3fc658cec337adf",
+  "reviewSHA256": "61fc23ae4cea4565b442c840be39c41746ecbac73b8c2f73d04f1e3b4f4681e8",
+  "productionTTCSeeds": "207/207",
+  "LocalDiamondTTC": {
+    "bytes": 125368223,
+    "mtimeUTC": "2026-09-07T01:56:14.905763+00:00",
+    "deleted": false
+  },
+  "changedIdrisFiles": [
+    "research-tests/DGamma/R16ConfluenceTheoremAssemblyPositive.idr",
+    "research-tests/DGamma/R174O17ProvisionCollisionCandidate.idr",
+    "research-tests/DGamma/R176WrongOriginalTraceUniqueNegative.idr",
+    "research-tests/DGamma/R178GeneratedOrchestrationFixtures.idr",
+    "research-tests/DGamma/R178WrongGenerationMatchingNegative.idr",
+    "research-tests/DGamma/R6MixedScheduleNegative.idr",
+    "research-tests/DGamma/R6OldPollutionNegative.idr",
+    "research-tests/DGamma/R8FullPipeline.idr",
+    "research/DGamma/CP5AcceptedRetirementTransportSpike.idr",
+    "research/DGamma/CP5AcceptedSupportTruthSpike.idr",
+    "research/DGamma/CP5AllSupportedMetadataSpike.idr",
+    "research/DGamma/CP5AvailabilityAwarePlacement.idr",
+    "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
+    "research/DGamma/CP5ConfluenceDeletionChainSpike.idr",
+    "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr",
+    "research/DGamma/CP5CurrentGenerationBirthSpike.idr",
+    "research/DGamma/CP5GeneratedOrchestrationMatched.idr",
+    "research/DGamma/CP5GeneratedRetirementTransportSpike.idr",
+    "research/DGamma/CP5RetiredFlagEvaluationSpike.idr",
+    "research/DGamma/CP5RetirementHistorySpike.idr",
+    "research/DGamma/CP5RootBirthCoverageSpike.idr",
+    "research/DGamma/CP5RootOrchestrationTransportSpike.idr",
+    "research/DGamma/CP5SupportClauseTransportSpike.idr",
+    "research/DGamma/CP5SupportEdgeInductionSpike.idr",
+    "research/DGamma/CP5SupportedBirthCoverageSpike.idr"
+  ],
+  "sourceSHA256": {
+    "research-tests/DGamma/R16ConfluenceTheoremAssemblyPositive.idr": "a023cef7449b651b5fbf8a488403a7c025f270e68baefd68275c25c65ea4bfa0",
+    "research-tests/DGamma/R174O17ProvisionCollisionCandidate.idr": "85b616df762a4e210a9846ca2f91487082ac39d9eec648bdcd3fd6ac56c1fc4e",
+    "research-tests/DGamma/R176WrongOriginalTraceUniqueNegative.idr": "40e0645532d72950b6310efeb7764886f2fc0cf3413bb6c3a15a1409477c9731",
+    "research-tests/DGamma/R178GeneratedOrchestrationFixtures.idr": "78487d0aa60f41e1a09dccb85c38d1b89c99c68be2b14de4b6b8540cdef9a4f1",
+    "research-tests/DGamma/R178WrongGenerationMatchingNegative.idr": "279dcbdf318c96e4db87e55e6a7386062e83c644adb50454fd20c45de9da2c76",
+    "research-tests/DGamma/R6MixedScheduleNegative.idr": "a60281516ef822e049902ad41a5d592fdbe987394a510a470548d58d881cae9a",
+    "research-tests/DGamma/R6OldPollutionNegative.idr": "5011c53835d8586d9fa91cf8ec251e28f0c6b36cae642ca0bf77db8ec424fbc6",
+    "research-tests/DGamma/R8FullPipeline.idr": "7583af47a1b91494f1b08858f0951792cf987ea3456146c25b0dc06800a28519",
+    "research/DGamma/CP5AcceptedRetirementTransportSpike.idr": "61425c3baa0d88cda8d907fed3131a8915a4e636788843e07b2efc58150686f4",
+    "research/DGamma/CP5AcceptedSupportTruthSpike.idr": "fb8f77b4bcb57375ce80c70c6462c0642765eb45d217d40d8ab71ad51941f60d",
+    "research/DGamma/CP5AllSupportedMetadataSpike.idr": "b954d17f1e34052475d68abdeee9eb620f648ca2e02266485a1a865bf7ca54cc",
+    "research/DGamma/CP5AvailabilityAwarePlacement.idr": "0e62fa35c396e9f26465c07dd24aab2e14d25c7d5c5980c28d5d313c63869c26",
+    "research/DGamma/CP5ConfluenceCrossTraceSpike.idr": "7d904a48a926e70ce6ff86739a61d96f97088f19f716b35ebe00b035471d4b31",
+    "research/DGamma/CP5ConfluenceDeletionChainSpike.idr": "5ca243616ce40e65aaeed35318d96156e98370c4319859e63f18f7b178ffec88",
+    "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr": "91cd8a72fb114fd5e1b7d7ae1c7d48bfa10fc50295eab2e76e223a10ccf1548b",
+    "research/DGamma/CP5CurrentGenerationBirthSpike.idr": "3652f95acb66cab4d918d0dcdde70fc67c4eccec1b02f1745b03b28f7e54a579",
+    "research/DGamma/CP5GeneratedOrchestrationMatched.idr": "6d97f38c38ba791e27c1f79ee4dbe5318a126b7342e208acc50c33866fe32b4e",
+    "research/DGamma/CP5GeneratedRetirementTransportSpike.idr": "d1d420782e031a54ec571fc538c517fe2af76b47f4038580202e5c3d456b35e9",
+    "research/DGamma/CP5RetiredFlagEvaluationSpike.idr": "0c3c0758edba5d0338fb705c22bf767cc0e52e5438c99ee533de61e6f5fff86c",
+    "research/DGamma/CP5RetirementHistorySpike.idr": "6367561c38577a8d6fdce4ee9039b6e258b2c63df424b8b8abffa7e7e62d108b",
+    "research/DGamma/CP5RootBirthCoverageSpike.idr": "5a1c5367e25d51199623e9d4fb488995060db6a2bd447a04dfe0c2609f381592",
+    "research/DGamma/CP5RootOrchestrationTransportSpike.idr": "e9e2cff0d7f99506fc36f73a11820bbd8297ffd5373505d27d0cfb865de61da4",
+    "research/DGamma/CP5SupportClauseTransportSpike.idr": "0819aed5a885a9645f84a7b6ccccd9e1f1e15576b901b6c96a699bd8dbc3141e",
+    "research/DGamma/CP5SupportEdgeInductionSpike.idr": "f40e8565ecbe04758337292a0956b23556ac3a75adfbe4ae99968990bc4a914d",
+    "research/DGamma/CP5SupportedBirthCoverageSpike.idr": "f97d76d8e94cdf529995779becefec69bc19694217f732a5ef27bf0198473e6a"
+  },
+  "prohibitedAdditions": {
+    "\\bbelieve_me\\b": [],
+    "\\bassert_total\\b": [],
+    "^\\s*partial\\b": [],
+    "\\?\\w+": [],
+    "\\blet\\b": [],
+    "\\bwith\\b": [],
+    "\\bdeletionTheoremProof\\b": [],
+    "\\bpostulate\\b": [],
+    "\\b[A-Za-z_]\\w*@\\s*[\\(\\[]": []
+  },
+  "allChangedIdrisDefaultTotal": true,
+  "noCompiler": true,
+  "cleanTrackedTree": true,
+  "allowedUntrackedOnly": true,
+  "tree": "?? paper/\n?? review-o6-body-adversarial.md",
+  "validationPhases": [
+    {
+      "phase": "package",
+      "command": [
+        "python3",
+        "-I",
+        "research-tests/run-r178-check.py",
+        "F-package",
+        "package"
+      ],
+      "start": "2026-09-07T08:39:41.353350+00:00",
+      "end": "2026-09-07T08:39:58.453965+00:00",
+      "exit": 0,
+      "interrupted": false,
+      "passed": true
+    },
+    {
+      "phase": "boundaries",
+      "command": [
+        "python3",
+        "-I",
+        "research-tests/run-r178-boundaries.py"
+      ],
+      "start": "2026-09-07T08:39:58.454166+00:00",
+      "end": "2026-09-07T08:46:03.865799+00:00",
+      "exit": 0,
+      "interrupted": false,
+      "passed": true
+    },
+    {
+      "phase": "legacy-seeded",
+      "command": [
+        "bash",
+        "research-tests/run-r11-suite.sh"
+      ],
+      "start": "2026-09-07T08:46:03.867038+00:00",
+      "end": "2026-09-07T09:00:27.340579+00:00",
+      "exit": -15,
+      "interrupted": true,
+      "passed": false,
+      "optional": true,
+      "compilerVerdict": null,
+      "stopReason": "Supervisor-approved optional legacy R11 cost stop; R23 no verdict after approximately 12 minutes; primary 207/207 and 30+10 fresh boundaries already passed"
+    }
+  ],
+  "freshFinalBoundaries": {
+    "positives": 30,
+    "diagnosticNegatives": 10,
+    "allPassed": true
+  },
+  "requiredValidationPassed": true,
+  "aggregateR11SuiteRun": "OPTIONAL / INCOMPLETE / supervisor-approved legacy R23 no-verdict cost stop; no broad-suite claim",
+  "O18Closed": true,
+  "O18BodyCommit": "108846b",
+  "implicationsCommittedBeforeBody": [
+    "ff65617",
+    "dd0df9f"
+  ],
+  "A8": "checked standalone replacement and proved scalar R174 shape; owner migration decision open",
+  "A9": "explicit authentic ordered matching, supervisor decision under delegation, owner override pending",
+  "parkedC9": "2/3 no-verdict cost interruptions; fully reverted/restoration checked; no packet claim",
+  "twoCapitalGapPreserved": true,
+  "fullPaperProofClaimed": false
+}
