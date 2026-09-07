@@ -564,3 +564,202 @@ until this exact existential has a compiler verdict. The mechanism that the
 R174 recon needed is now real capital, but is not the selection theorem.
 
 The next work is Unit C analysis-only, bounded to 40 minutes; no B16 attempt.
+
+## Unit C — exact uniqueness-threading plan (ANALYSIS ONLY)
+
+Window began **2026-09-07 00:43:47 UTC**, hard stop 01:23:47 UTC. References
+below are to source at `22799e9` (B15 source already committed in `44faf76`).
+No signature, body, record, fixture, or suite entry is revised by this plan.
+No O19 or O21 withdrawal proof is attempted. All 4+1 holes stay inherited.
+
+### C1. Where the currently available evidence stops
+
+- `research-tests/DGamma/R8FullPipeline.idr:67–153` already accepts quantity-0
+  `leftUnique/rightUnique` for the TWO ORIGINAL traces (83–84). At 103/130 it
+  sends their ACTUAL reduction transports to O17. At 115–117 and 142–144 it
+  assembles left/right capitals but drops freshness. Calls to O19/O20/O21 at
+  145–152 cannot recover that fact from their arguments.
+- `R16ConfluenceTheoremAssemblyPositive.idr:78–119` already accepts both original
+  uniqueness inputs and passes them to R8. It is explicitly a CONDITIONAL
+  research assembly, not the unchanged production CP3 theorem.
+- `CanonicalSort:4809–4840` IndependentCanonicalSchedule stores the exact
+  premises/reduction/ordering/sorted/accounting/schedule/classification chain,
+  but NO freshness. `assembleIndependentCanonicalSchedule:4935–4966` and
+  `independentCanonicalScheduleSpike:4972–4995` accept arbitrary already-supplied
+  sorted capital. An inhabitant is NOT necessarily the output of O17.
+- `SortedClosingFreeTrace:117–166` owns `sortingAdjacentDerivation:130`, but
+  neither it nor its ReplayInvariantBundle contains original freshness.
+  `ReplayInvariantBundle` (LocalDiamond:2415–2445) likewise has no such field.
+- `RenamingComposition:1869–1911` AcceptedDeletionScannerCapital owns the EXACT
+  accepted scanner and the actual left/right withdrawal membership and original
+  closing classifications. Its producer at 1918–1960 does NOT use uniqueness.
+  Neither the scanner nor generation-name bijections manufacture global raw
+  insertion freshness. Keep this general scanner result general.
+
+### C2. Recommended minimal future surface change (requires owner approval)
+
+Thread the TWO ORIGINAL quantity-0 hypotheses explicitly beside the SAME
+left/right capitals at consumers that need them. Do NOT strengthen all
+IndependentCanonicalSchedule inhabitants, silently infer freshness from a
+sorting call, or store freely chosen target-uniqueness/registration maps.
+The intended added telescope fragments (documentation, not declarations) are:
+
+- `0 leftUnique : UniqueRawNameInsertions ... nameEq keyEq leftTrace`
+- `0 rightUnique : UniqueRawNameInsertions ... nameEq keyEq rightTrace`
+
+Place them immediately after the two capital arguments. Their trace indices
+already provide the required authentication; they need not be over-indexed by
+proof identity or by an arbitrary ordering/accounting constructor. A proof of
+original freshness is legitimately reusable for two capitals of THAT SAME
+original trace, but never for another trace merely sharing an endpoint.
+All pre-existing output types, exact schedule/occurrence indices, and sealed
+constructors remain unchanged. Do not add a parallel legacy theorem solely to
+preserve the old stronger statement; replace only the owner-approved research
+consumer signatures, leaving genuinely more general scanner/assembly lemmas
+untouched for their separate purpose.
+
+| Exact surface | Planned evidence / actual consumer | What it does NOT fix |
+|---|---|---|
+| CrossTrace:970–986 `canonicalSupportOrdersMatchSpike` | Both original uniques, next to its two capitals; use original/canonical current-birth coherence when proving the two support-TRUTH directions. R8:145 calls it. | Support fixed-point/path transfer through withdrawn intermediates is still a separate theorem. |
+| CrossTrace:1048–1067 `selectOperationalCanonicalPermutationSpike` | Both original uniques; derive the canonical-left initial unique and then the unique of each ACTUAL reached operational target. R8:147 calls it. | Membership is not list equality; finite linear-extension selection and safe enabled swaps remain open. |
+| CrossTrace:699–714 `operationalAdjacentBlockSwapSpike` | If its future proof uses freshness, add ONE quantity-0 UniqueRawNameInsertions for its exact `sourceTrace`; propagate through each authenticated local crossing. No concrete call site exists outside its currently-holed declaration; the future selector will be its consumer. | Current AdjacentActorSwapSafety:114–139 lacks consumer early applicability/support incomparability. Unique names do not repair O19's provider/consumer guard. O19 body remains forbidden until its separate owner gate. |
+| CrossTrace:1304–1325 `canonicalSchedulesConvergeSpike` | Both original uniques if needed to construct the exact four-clause replay→right bridge; R8:149 calls it. Canonical/replayed uniques are derived, not new arbitrary output inputs. | No automatic ambient/table/control/birth agreement. The operational permutation is already an input and cannot be fabricated from freshness. |
+| RenamingComposition:2693–2723 `replayedCanonicalToOriginalEndpointSpike` | Both original uniques alongside EXACT capitals and existing accepted scanner; consume only at authenticated current-birth identity branches. Sole code caller is CrossTrace:1354. | No withdrawal branch is discharged merely by raw-name membership; actual absent/present and full vestigial evidence remain required. |
+| CrossTrace:1328–1362 `originalEndpointsConvergeSpike` | Both original uniques; forward them to O21. R8:151 is the genuine caller; R6MixedScheduleNegative exercises its capital index. | Freshness must not detach convergence from the actual left/right capitals, replayed trace or occurrence relation. |
+
+The purely sufficient assemblers need NO new assumptions:
+`canonicalSupportOrdersFromTruth:939–967`, `canonicalConvergenceFromBridge:1270–1299`,
+`confluenceResultFromCanonicalCapital:1367+`, `canonicalActorBlockDecomposition:990–1002`,
+`acceptedDeletionScannerCapitalSpike`, and the fixed-bijection
+ReplayedCanonicalEndpointBridge:1753–1810 / CanonicalConvergenceResult:1241–1268.
+Do not change their records just to thread a fact an outer producer can carry.
+The general SameRawNameScannerRegression:2054–2145 and concrete discard-word
+fixtures:2188+ intentionally test scanner generation identity under reuse;
+they are not asserted to inhabit the freshness-restricted O21 telescope.
+
+### C3. Exact derivation chain and missing semantic bridge
+
+A small research-only companion MODULE (not a stronger capital record) should
+provide these erased projections from existing sealed data:
+
+1. **Original → actual reduced:** existing
+   `CP5UniqueRawNameDeletion.uniqueInsertionsAfterReduction:217–227`, using
+   `capitalReduction capital` and originalUnique. This is an injective
+   all-action deletion-source-position argument, not a generation cast.
+2. **Reduced → actual canonical:** existing
+   `CanonicalSort.uniqueInsertionsAfterFiniteDerivation:2338–2350` with
+   `sortingAdjacentDerivation (capitalSorted capital)`. Reindex through the
+   existing `capitalCanonicalScheduleExact`/producer equation to reach
+   `canonicalTrace (canonicalSchedule capital)`. One explicit observed-capital
+   eliminator can mirror canonicalReplayPremises (4900–4905); never copy a
+   caller-selected correspondence. Import CP5UniqueRawNameDeletion in the new
+   module rather than creating a CanonicalSort↔deletion import cycle.
+3. **One operational block result:** CrossTrace
+   `wholeBlockFiniteDerivation:632–638 (blockSwapWholeDerivation step)` feeds
+   the SAME finite-derivation uniqueness transport. Its output is indexed by
+   `blockSwapTrace step`, not an asserted renamed/canonical endpoint.
+4. **Whole operational permutation:** structural induction on
+   `OperationalActorPermutation:721–757`: Done preserves sourceUnique; Step
+   derives the actual block target unique as in (3), then passes it to the
+   exact stored `rest`. No data/signature change to OperationalActorPermutation
+   or OperationalAdjacentBlockSwap:645–672 is necessary for this projection.
+   A bare RAR or ActionRegistrationReplayCorrespondence is INSUFFICIENT:
+   the authenticated injective occurrence fold is essential.
+5. **O21's actual identity need:** correlate the accepted scanner's precise
+   current generation and each original endpoint lookup with an ORIGINAL
+   located birth. B10 now gives a real birth of the present component, and
+   B11/B13 prove immutable component/rank coherence, but they do NOT identify
+   an arbitrary scanner's current birth ordinal. That scanner/lookup
+   authentication is still a proof obligation. Only AFTER both births are
+   authenticated may `uniqueInsertionPosition` identify their ordinal and
+   exclude the specific later-birth/same-name escape. Preserve the accepted
+   generation bijection and both original action-origin maps throughout.
+
+Original uniques are independent side assumptions. SameOrchestrationModuloGenerated
+is not a freshness transfer theorem (discarded births differ between sides).
+A rename likewise needs an actual injective action/name transport theorem;
+no name-bijection slogan or effect equivalence licenses a trace cast.
+
+### C4. Withdrawal branch boundaries and non-goals
+
+- **Outside both withdrawn sets:** existing
+  `replayedCanonicalOuterControlOutsideSpike:2578–2620`, ambient:2622–2639,
+  tables:2641–2683 remain the available composition capital. R147's
+  constructor-owned `expectedBridgeBijection:1735–1744` already removed the
+  free-bijection obstruction; no freshness theorem is needed merely to rename
+  that fixed value.
+- **Left-only / right-only / both withdrawn:** first split the ACTUAL endpoint
+  lookup. Absence needs its actual equation. Presence needs the accepted
+  scanner's exact current generation, classified original birth, retirement,
+  clean inactive lifecycle, empty installed keys, no children, and unsupportedness
+  required by frozen VestigialEndpointGeneration (CP3:2851–2878).
+  CurrentEndpointRenaming (CP3:2977–3004) still offers either that full vestigial
+  package or exact mapped current birth; exclude a mapped case only by a
+  contradiction at THAT authenticated birth. Do not introduce a global
+  withdrawal-name negation/G31 substitute or infer absence from withdrawal.
+- R175 B11–B14 make the immutable raw-name/component/rank argument available,
+  not the endpoint table/retirement/no-children facts. They do not establish
+  support correspondence, canonical existence, or O21 by themselves.
+- A8's different names/same declared key remains independent. No global key
+  freshness or “retired therefore no longer reserves provisions” assumption.
+  No root-placement, guard, production CP3, O19 body or O21 branch revision.
+
+### C5. Ripple estimate (source-counted, not a proof-time promise)
+
+**Recommended explicit-parameter route:** six research producer/forwarder
+signatures (five CrossTrace, one RenamingComposition), one R8 pipeline body
+already holding both assumptions, and about three new structural uniqueness
+projections (canonical, block, permutation; the block can be inlined if useful).
+R16's existing public inputs and call to R8 need NO new parameters. All output
+record constructors, seven existing capital eliminators, schedule/accounting
+assemblers, accepted scanner producer, and general same-name scanner fixtures
+stay unchanged. Expected mechanical work: roughly **10–14 declarations in
+4–7 existing/new research/test modules**, plus **6–8 focused fixture units**;
+semantic O19/O21 proofs are explicitly NOT included in that estimate.
+
+Repository direct negative caller updates are precisely:
+`R6OldPollutionNegative:41` and `R6MixedScheduleNegative:33`. Give these fixtures
+legitimate hypothetical left/right original uniques so they still reach their
+ORIGINAL intended mismatch (pure certificate vs operational package; wrong
+capital) rather than passing via missing-argument/arity errors. R8's four calls
+at 145–152 and CrossTrace's one O21 call at 1354 are the direct threading sites.
+No matching producer call occurs in src/ or dgamma.ipkg. Import-based
+rechecks ripple through CanonicalSort/Renaming/CrossTrace and their downstream
+fixtures, but not into production source changes.
+
+**Alternative not recommended without explicit scope decision:** adding an
+original-unique field to IndependentCanonicalSchedule would strengthen every
+capital, require both assembly signatures plus the constructor and all six
+CanonicalSort constructor-pattern eliminators (4867/4880/4894/4905/4915/4929),
+CrossTrace's block projection (998), the direct R11TreeOnlyCapitalCloneNegative
+constructor and the R11 assembly positive/negative and R4VestigialSimultaneous
+wrappers. It also changes the meaning of the general reuse/scanner interfaces.
+That wider ripple buys no theorem that cannot be stated with actual original
+uniqueness beside an existing exact capital. This is a semantic surface change,
+not a harmless field fill or backward-compatibility patch.
+
+### C6. Negative/positive fixture plan (NOT implemented this shift)
+
+Each compiler-negative fixture must fail at its named target boundary and
+required diagnostic, not an unrelated missing argument, import or parse error.
+
+| Planned check | Required evidence boundary |
+|---|---|
+| Bare-capital freshness projection negative | An arbitrary IndependentCanonicalSchedule / public CanonicalSchedule / ReplayInvariantBundle alone cannot produce original UniqueRawNameInsertions. Do not fill it with a new hole or assume the desired unique. |
+| Wrong-original trace negative | Feed an actual uniqueness witness for another trace (even same endpoints) at the revised consumer; expected trace-index mismatch. |
+| Reduced-to-original negative | Do not reverse the proved reduction transport: deletion may erase one birth of a reused raw name. Use a statement-boundary mismatch unless a full concrete reduction is actually constructed; no fake full countermodel claim. |
+| Unsealed-origin negative | Attempt to derive replay-target freshness from a bare RAR/all-action map without authenticated ordinal injectivity; must be rejected at the missing sealed source-position boundary. |
+| Reused-name exclusion positive | Reuse R173UniqueRawNameInsertionsFixtures.r173ReuseRejectsUniqueInsertions (actual births at 2 and 5); derive contradiction from authentic distinct births, not generation-name equality alone. |
+| Different-names/same-key survival positive | Retain R174O17ProvisionCollisionUnique's actual original freshness. It must NOT be excluded by the new input. No Q9 retry or full-input A8 restatement. |
+| Existing purity/capital attacks | Update R6OldPollutionNegative and R6MixedScheduleNegative as above; retain exact old intended diagnostic. R8WrongTraceBridgeNegative / R8WrongOccurrenceBridgeNegative / R11BridgeWrongGenerationNegative must still reject their actual trace/occurrence/generation mismatch. |
+| Successful threading positive | R8/R16 conditional assembly passes with its existing explicit original uniques; canonical and operational transports consume the actual sealed derivation, not copied outputs. Keep R4ScannerProducerConsumers and the general scanner-reuse fixtures valid WITHOUT global freshness. |
+
+Validation for any later approved change: one new declaration per compiler
+invocation, each ≤3 attempts; seeded source checks only; existing protected
+LocalDiamond/O6 hashes; the source-counted 5 research / 57 positive / 50 diagnostic-negative
+suite in run-r11-suite.sh if the owner requests the full historical suite,
+plus all new freshness-specific fixtures; seeded production cache 207/207;
+CP3/production hashes and holes audited. This plan does not preauthorize those
+future edits, a legacy stronger theorem, or any blocked semantic proof body.
+
+Unit C finished **2026-09-07 00:49:38 UTC**, under 40 minutes. Analysis/documentation only; ZERO compiler attempts or signature edits. The script's stale 5+54 comment was not trusted: its actual arrays contain 5 spikes, 57 positives, 50 negatives (62 successful research markers in fresh mode). No aggregate suite was run or claimed.
