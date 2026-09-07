@@ -291,3 +291,31 @@ record SupportedCanonicalEpisodeSynchronization
     (lookupFiber {name = name} {key = key} {value = value} {world = world}
       {error = error} @{nameEq} (renameForward (expectedBridgeBijection sameInputs)
         selected) (registry rightCut))
+
+||| Genuine ZERO-prefix producer. All runtime agreement is derived from the
+||| actual common empty registry. No paired agreement is accepted as a premise.
+export
+0 synchronizationEmptyOrigin :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, leftOriginalFinal, rightOriginalFinal,
+   leftExecutionFinal, rightExecutionFinal : SystemState name key value world error} ->
+  (leftOriginal : Transitions initial leftOriginalFinal) ->
+  (rightOriginal : Transitions initial rightOriginalFinal) ->
+  (sameInputs : SameOrchestrationModuloGenerated nameEq keyEq leftOriginal rightOriginal) ->
+  (leftExecution : Transitions initial leftExecutionFinal) ->
+  (rightExecution : Transitions initial rightExecutionFinal) ->
+  (bindings (registry initial) = []) -> (selected : name) ->
+  (isSupported {name = name} {key = key} {value = value} {world = world}
+    {error = error} @{nameEq} @{keyEq} selected leftOriginalFinal = True) ->
+  SupportedCanonicalEpisodeSynchronization name key world error value nameEq keyEq
+    leftOriginal rightOriginal sameInputs leftExecution rightExecution selected
+    initial initial NoTransitions leftExecution NoTransitions rightExecution
+synchronizationEmptyOrigin name key world error value nameEq keyEq
+  {initial = MkSystemState ambient fibers} leftOriginal rightOriginal sameInputs
+  leftExecution rightExecution empty selected supported =
+    MkSupportedCanonicalEpisodeSynchronization supported Refl Refl
+      (MkRenamedRuntimeEffects Refl (synchronizationEmptyTables name key world
+        error value nameEq (expectedBridgeBijection sameInputs) ambient fibers empty))
+      (snd (synchronizationEmptyObservations name key world error value nameEq
+        (expectedBridgeBijection sameInputs) ambient fibers empty selected))
