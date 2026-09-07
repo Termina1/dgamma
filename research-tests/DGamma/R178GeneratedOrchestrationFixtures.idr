@@ -24,3 +24,12 @@ r178ParentDoneState = MkSystemState ()
       (restrictOwnedPreservingOrder @{r45KeyEq} r45Spec (ownedValues (fiberTable r45ParentBegun)))
       (Active (pushLocalUndo @{r45KeyEq} r45Spec id id) EmptyView))
     r45SourcePairFinalRegistry)
+
+||| Use the PREVIOUS CHECKED transition's target-validity theorem, not an
+||| independently recomputed raw child insertion equation (R177 P2-2 wall).
+public export
+r178ParentFinish : Transition r45SourcePairFinal r178ParentDoneState
+r178ParentFinish = Fired r45NameEq r45KeyEq (LAdvance 0) LFinishTag
+  (DGamma.CP4ProgressNoDeadlock.checkedFromRaw r45NameEq r45KeyEq
+    (LAdvance 0) r45SourcePairFinal r178ParentDoneState LFinishTag
+    (checkedTransitionTargetValid r45ChildInsert) Refl)
