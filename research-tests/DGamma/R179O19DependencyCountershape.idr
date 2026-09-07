@@ -37,3 +37,15 @@ export
   ((transitionCount (certifiedTrace r179BeforeProviderFinish) = 4),
    (applyAction (LBegin 1) (certifiedFinal r179BeforeProviderFinish) = Nothing))
 r179EarlyConsumerBeginUnavailable = (Refl, Refl)
+
+||| Complete the same checked prefix: Finish(provider); Begin(consumer);
+||| Finish(consumer). Again a separate observation excludes the fallback.
+export
+0 r179AfterProviderFinish : CertifiedActionTrace Nat ToyKey ToyRuntime String ToyValue %search %search
+  (certifiedFinal r179BeforeProviderFinish)
+r179AfterProviderFinish = fromMaybe
+  (MkCertifiedActionTrace (certifiedFinal r179BeforeProviderFinish)
+    NoTransitions TraceComponentsTotalEnd)
+  (buildCertifiedActionTrace %search %search
+    [LAdvance 0, LBegin 1, LAdvance 1]
+    (certifiedFinal r179BeforeProviderFinish))
