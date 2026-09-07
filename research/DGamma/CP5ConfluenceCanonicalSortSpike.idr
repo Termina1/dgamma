@@ -19,6 +19,7 @@ import DGamma.CP5ConfluenceDeletionChainSpike
 import DGamma.CP5UniqueRawNameInsertions
 import DGamma.CP5UniqueRawNameOrdinalCapital
 import DGamma.CP5ConfluenceWorkMeasureSpike
+import DGamma.CP5ConfluenceRankObservationSpike
 import Data.List
 import Data.List.Elem
 import Data.Nat
@@ -4993,3 +4994,29 @@ independentCanonicalScheduleSpike nameEq keyEq protocol original premises
     assembleIndependentCanonicalSchedule nameEq keyEq protocol original premises
       reduction ordering sorted supportTransport accounting
       (canonicalAccountedGenerationClassified accounting)
+
+
+||| One action's exact R175 ownership-rank observation. External/unowned actions
+||| introduce a barrier; their ordinal is never erased into an owned segment.
+0 canonicalWorkRankStep :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (fixedOrder : List name) ->
+  (action : Action name key value world error) ->
+  (segments : List (List Nat)) -> List (List Nat)
+canonicalWorkRankStep name key world error value nameEq fixedOrder action segments =
+  case (the (Maybe name) (case action of
+    OInsert child (ChildOf parent) component => Just parent
+    LBegin actor => Just actor
+    LAdvance actor => Just actor
+    LDivert actor => Just actor
+    LLeave actor => Just actor
+    LUnload actor => Just actor
+    _ => Nothing)) of
+    Nothing => [] :: segments
+    Just owner => case segments of
+      [] => [[length (Data.List.takeWhile (\candidate => case decEq @{nameEq} candidate owner of
+        Yes same => False
+        No distinct => True) fixedOrder)]]
+      segment :: later => (length (Data.List.takeWhile (\candidate => case decEq @{nameEq} candidate owner of
+        Yes same => False
+        No distinct => True) fixedOrder) :: segment) :: later
