@@ -44,3 +44,30 @@ parentPutObserved name nameEq inserted fresh candidate current rest (Yes same) e
 parentPutObserved name nameEq inserted fresh candidate current rest (No distinct) exact =
   rewrite exact in Refl
 
+
+||| Typed observed entry transport for parent activations.
+0 parentPutEntryObserved :
+  (name : Type) -> (nameEq : DecEq name) ->
+  (inserted : name) -> (fresh : RegistrationActivation name) ->
+  (candidate : name) -> (current : RegistrationActivation name) ->
+  (rest : List (name, RegistrationActivation name)) -> (observed : Dec (inserted = candidate)) ->
+  (decEq @{nameEq} inserted candidate = observed) ->
+  ((selected : name) -> (generation : RegistrationActivation name) ->
+    Elem (selected, generation) (putParentActivation @{nameEq} inserted fresh rest) ->
+    Either ((selected, generation) = (inserted, fresh)) (Elem (selected, generation) rest)) ->
+  (selected : name) -> (generation : RegistrationActivation name) ->
+  Elem (selected, generation) (putParentActivation @{nameEq} inserted fresh ((candidate, current) :: rest)) ->
+  Either ((selected, generation) = (inserted, fresh)) (Elem (selected, generation) ((candidate, current) :: rest))
+parentPutEntryObserved name nameEq inserted fresh candidate current rest (Yes same) exact recur selected generation member =
+  case replace {p = Elem (selected, generation)}
+    (parentPutObserved name nameEq inserted fresh candidate current rest (Yes same) exact) member of
+    Here => Left Refl
+    There later => Right (There later)
+parentPutEntryObserved name nameEq inserted fresh candidate current rest (No distinct) exact recur selected generation member =
+  case replace {p = Elem (selected, generation)}
+    (parentPutObserved name nameEq inserted fresh candidate current rest (No distinct) exact) member of
+    Here => Right Here
+    There later => case recur selected generation later of
+      Left same => Left same
+      Right old => Right (There old)
+
