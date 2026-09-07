@@ -5,6 +5,9 @@ import DGamma.Coeffects
 import DGamma.Metatheory
 import DGamma.CP3
 import DGamma.CP4DeletionBoundaryPlan
+import DGamma.CP4DeletionBoundaryDeleted
+import DGamma.CP4DeletionInactiveInvariant
+import DGamma.CP4DeletionSelectedOwn
 import DGamma.CP5RawClosingRankSpike
 import DGamma.CP5UniqueRawNameInsertions
 import Data.List.Elem
@@ -239,3 +242,15 @@ export
 currentBirthTraceAppendEmpty name key world error value NoTransitions = Refl
 currentBirthTraceAppendEmpty name key world error value (MoreTransitions step rest) =
   cong (MoreTransitions step) (currentBirthTraceAppendEmpty name key world error value rest)
+
+||| Explicit observed remove view, not an inferred local evaluator view.
+0 currentRemoveViewAbsent :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) ->
+  (actor : name) -> (ambient : world) -> (source : Registry name key value world error) ->
+  (tag : RuleTag) -> (afterState : SystemState name key value world error) ->
+  RemoveSuccessView name key world error value nameEq actor ambient source tag afterState ->
+  (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+    @{nameEq} actor (registry afterState) = Nothing)
+currentRemoveViewAbsent name key world error value nameEq actor ambient source _ _
+  (MkRemoveSuccessView oldFiber found guards noChild) =
+    DGamma.CP4DeletionSelectedOwn.lookupDeleteSelf @{nameEq} actor source
