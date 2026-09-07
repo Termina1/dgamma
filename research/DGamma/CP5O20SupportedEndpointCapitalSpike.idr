@@ -76,3 +76,21 @@ canonicalSupportedEndpointView name key world error value nameEq keyEq protocol 
         (canonicalSupportedTruthFromOriginal name key world error value nameEq keyEq protocol original capital selected supported))
       (wellFormedFiberView nameEq keyEq selected (canonicalFinal (canonicalSchedule capital)) fiber found
         (replayFinalWellFormed (canonicalReplayPremises capital)))
+
+||| Eliminate a raw withdrawal already PROVIDED by the canonical endpoint;
+||| do not manufacture an O21 absent/present generation-withdrawal branch.
+export
+0 canonicalPresentOutsideWithdrawals :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (originalFinal, canonicalFinal : SystemState name key value world error) ->
+  (endpoint : CanonicalEndpointRelation name key world error value nameEq keyEq originalFinal canonicalFinal) ->
+  (selected : name) -> (fiber : Fiber name key value world error) ->
+  lookupFiber @{nameEq} selected (registry canonicalFinal) = Just fiber ->
+  Not (Elem selected (endpointWithdrawnNames endpoint))
+canonicalPresentOutsideWithdrawals name key world error value nameEq keyEq originalFinal canonicalFinal endpoint selected fiber found member =
+  case endpointNamesWithdrawn endpoint selected member of
+    VestigialNameWithdrawn _ _ _ _ _ absent =>
+      case trans (sym absent) found of Refl impossible
+    NameAlreadyAbsent _ absent =>
+      case trans (sym absent) found of Refl impossible
