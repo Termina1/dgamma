@@ -190,3 +190,32 @@ r182IndependentBundle = MkReplayInvariantBundle
   (deletionPremisesGiveSupportMatchesActive r45Protocol r45NameEq r45KeyEq
     (r182IndependentState 0) (r182IndependentState 6) (r182IndependentTrace False)
     (reachAligned (Builtin.fst r182IndependentStructure)) (Builtin.fst (Builtin.snd r182IndependentStructure)) Refl Refl Refl Refl (Builtin.snd (Builtin.snd r182IndependentStructure)))
+
+||| A11: actual TWO-edge located blocks in the exact six-edge source, selected
+||| by actor values rather than equality of erased membership witnesses.
+public export
+0 r182IndependentBlocks : (actor : Nat) -> Elem actor [0, 1] ->
+  LocatedOpenEpisodeBlock Nat R45Key Unit String R45Value r45NameEq r45KeyEq
+    actor (r182IndependentTrace False)
+r182IndependentBlocks Z member = MkLocatedOpenEpisodeBlock
+  (r182IndependentState 2) (r182IndependentState 3) (r182IndependentState 4)
+  (MoreTransitions (Fired {before = r182IndependentState 0} {afterState = r182IndependentState 1} r45NameEq r45KeyEq (OInsert 0 Root r45Child) OInsertTag Refl) (MoreTransitions (Fired {before = r182IndependentState 1} {afterState = r182IndependentState 2} r45NameEq r45KeyEq (OInsert 1 Root r45Child) OInsertTag Refl) NoTransitions))
+  (MkBeginStep Refl) (MoreTransitions (Fired {before = r182IndependentState 3} {afterState = r182IndependentState 4} r45NameEq r45KeyEq (LAdvance 0) LFinishTag Refl) NoTransitions)
+  (InstalledStep (LAdvance 0) LFinishTag Refl _ Refl (InstalledEnd Refl))
+  (ActorLifecycleStep _ _ Refl Refl ActorLifecycleEnd)
+  (MoreTransitions (Fired {before = r182IndependentState 4} {afterState = r182IndependentState 5} r45NameEq r45KeyEq (LBegin 1) LBeginTag Refl) (MoreTransitions (Fired {before = r182IndependentState 5} {afterState = r182IndependentState 6} r45NameEq r45KeyEq (LAdvance 1) LFinishTag Refl) NoTransitions))
+  (NoLifecycleByStep _ _ (\life => case life of Refl impossible) (NoLifecycleByStep _ _ (\life => case life of Refl impossible) NoLifecycleByEnd))
+  (NoLifecycleByStep _ _ (\life, same => case same of Refl impossible) (NoLifecycleByStep _ _ (\life, same => case same of Refl impossible) NoLifecycleByEnd)) Refl Refl
+r182IndependentBlocks (S Z) member = MkLocatedOpenEpisodeBlock
+  (r182IndependentState 4) (r182IndependentState 5) (r182IndependentState 6)
+  (MoreTransitions (Fired {before = r182IndependentState 0} {afterState = r182IndependentState 1} r45NameEq r45KeyEq (OInsert 0 Root r45Child) OInsertTag Refl) (MoreTransitions (Fired {before = r182IndependentState 1} {afterState = r182IndependentState 2} r45NameEq r45KeyEq (OInsert 1 Root r45Child) OInsertTag Refl) (MoreTransitions (Fired {before = r182IndependentState 2} {afterState = r182IndependentState 3} r45NameEq r45KeyEq (LBegin 0) LBeginTag Refl) (MoreTransitions (Fired {before = r182IndependentState 3} {afterState = r182IndependentState 4} r45NameEq r45KeyEq (LAdvance 0) LFinishTag Refl) NoTransitions))))
+  (MkBeginStep Refl) (MoreTransitions (Fired {before = r182IndependentState 5} {afterState = r182IndependentState 6} r45NameEq r45KeyEq (LAdvance 1) LFinishTag Refl) NoTransitions)
+  (InstalledStep (LAdvance 1) LFinishTag Refl _ Refl (InstalledEnd Refl))
+  (ActorLifecycleStep _ _ Refl Refl ActorLifecycleEnd)
+  NoTransitions
+  (NoLifecycleByStep _ _ (\life => case life of Refl impossible) (NoLifecycleByStep _ _ (\life => case life of Refl impossible) (NoLifecycleByStep _ _ (\life, same => case same of Refl impossible) (NoLifecycleByStep _ _ (\life, same => case same of Refl impossible) NoLifecycleByEnd))))
+  NoLifecycleByEnd Refl Refl
+r182IndependentBlocks (S (S later)) member = case member of
+  Here impossible
+  There Here impossible
+  There (There absent) => case absent of Here impossible; There rest impossible
