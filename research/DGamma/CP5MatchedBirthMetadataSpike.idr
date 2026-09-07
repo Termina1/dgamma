@@ -38,3 +38,28 @@ acceptedLeftEndpointMetadataBirth name key world error value nameEq keyEq left r
     (currentBirthTraceAppendEmpty name key world error value left) aligned empty unique selected generation
     (acceptedLeftCurrentBirth name key world error value nameEq left right renaming registrations selected generation current) observed found
 
+
+||| The symmetric accepted right scanner authenticates exact static fields.
+export
+0 acceptedRightEndpointMetadataBirth :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {leftFirst, leftFinal, rightFirst, rightFinal : SystemState name key value world error} ->
+  (left : Transitions leftFirst leftFinal) -> (right : Transitions rightFirst rightFinal) ->
+  (renaming : RegistrationGenerationBijection name) ->
+  (registrations : RegistrationCorrespondenceByGeneration nameEq renaming left right) ->
+  AlignedTransitions name key world error value nameEq keyEq right ->
+  (bindings (registry rightFirst) = []) ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq right ->
+  (selected : name) -> (generation : RegistrationGeneration name) ->
+  (lookupCurrentGeneration @{nameEq} selected (rightFinalGenerations registrations) = Just generation) ->
+  (observed : Fiber name key value world error) ->
+  (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+    @{nameEq} selected (registry rightFinal) = Just observed) ->
+  (birth : LocatedActionOccurrence (OInsert selected (fiberParent observed) (fiberComponent observed)) right **
+    generation = MkRegistrationGeneration selected (locatedActionOrdinal birth))
+acceptedRightEndpointMetadataBirth name key world error value nameEq keyEq left right renaming registrations aligned empty unique selected generation current observed found =
+  currentBirthAtPrefixMetadata name key world error value nameEq keyEq right right NoTransitions
+    (currentBirthTraceAppendEmpty name key world error value right) aligned empty unique selected generation
+    (acceptedRightCurrentBirth name key world error value nameEq left right renaming registrations selected generation current) observed found
+
