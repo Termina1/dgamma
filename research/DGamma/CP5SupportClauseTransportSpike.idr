@@ -130,3 +130,17 @@ clauseProviderEntryWitness name key world error value nameEq keyEq wanted predic
       (supported, declares) => (current ** observed ** (Here, supported, declares))
     Right tailTrue => case clauseProviderEntryWitness name key world error value nameEq keyEq wanted predicate rest tailTrue of
       (selected ** fiber ** (member, supported, declares)) => (selected ** fiber ** (There member, supported, declares))
+
+export
+0 actualProviderWitness :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (state : SystemState name key value world error) -> (wanted : key) -> (predicate : name -> Bool) ->
+  (providerFromPredicate {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} @{keyEq} wanted predicate
+    (registryFibers {name = name} {key = key} {value = value} {world = world} {error = error} (registry state)) = True) ->
+  (selected : name ** fiber : Fiber name key value world error **
+    (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} selected (registry state) = Just fiber,
+     predicate selected = True, listMember @{keyEq} wanted (dependencies (componentProvisions (fiberComponent fiber))) = True))
+actualProviderWitness name key world error value nameEq keyEq (MkSystemState ambient (MkCoeffectContext entries unique)) wanted predicate exact =
+  case clauseProviderEntryWitness name key world error value nameEq keyEq wanted predicate entries exact of
+    (selected ** fiber ** (member, supported, declares)) =>
+      (selected ** fiber ** (clauseLookupFromEntry name key world error value nameEq entries unique selected fiber member, supported, declares))
