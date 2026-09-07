@@ -282,3 +282,30 @@ all-supported generated-event coverage, root static coverage (NO root-placement
 or O17 edit), and retirement/support truth. The CurrentGenerationBirth container
 is reused here solely as genuine birth/stamp data; it does not by itself claim
 that a historical parent generation is current. Six inherited body holes remain.
+
+### B111–B122 — parent currentness and phi frontier CLOSED under matched births
+
+All twelve units PASS 1/1. The earlier historical/current parent gap was resolved
+WITHOUT withdrawal or NoParentUnload work: exact original insertion uniqueness
+identifies two independently authenticated stamps of the SAME parent name.
+B111–B113 prove only SINGLE-STATE support-parent closure from the actual computed
+fixed point. B114/B115 reconcile genuine birth stamps/names. B116 packages exact
+current lookups by explicit generation equalities. B117/B118 combine this with
+B53/B54's actual accepted current-domain coupling and B106/B107's real parent
+births: both matched parent stamps are endpoint-current and parent names agree
+under phi / phi^-1. B119/B120 derive the parent-support premise from the actual
+supported child and its verified metadata, rather than asking the caller for it.
+
+B121/B122 (`acceptedSupportedGeneratedCoherenceForward/Backward`) are the fully
+sealed static-coherence boundaries for a covered supported generated event:
+actual opposite registry fiber, exact component/dependency/provision metadata,
+both exact current parent stamps, and current parent phi coherence. All are for
+the same accepted event/current-generation matching. The sole generated-source
+coverage premise remains membership in the accepted retained-event domain.
+
+This supersedes ONLY the historical/current parent limitation in B85–B110.
+Still OPEN: all-supported event coverage (and root static coverage), retired-flag
+transport, both O18 cross-endpoint support-truth implications, and the body.
+The P2-4 quiet countershape continues to block any unqualified retirement claim;
+no full two-capital counterexample has been asserted. No O20 consumption/list
+order equality, no O21 withdrawal, no O17/root-placement/O19/body changes.
