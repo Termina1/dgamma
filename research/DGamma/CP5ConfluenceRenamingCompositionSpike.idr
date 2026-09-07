@@ -3241,3 +3241,26 @@ registrationSideFoldParentBirth name key world error value nameEq global segment
                 live activations counts discarded (embedding (OInsert child (ChildOf parent) component) (MkLocatedActionOccurrence _ _ NoTransitions step rest actionExact Refl)) (trans (embeddingExact (OInsert child (ChildOf parent) component) (MkLocatedActionOccurrence _ _ NoTransitions step rest actionExact Refl)) (plusZeroRightNeutral ordinal)) births
                 (lookupParentActivation @{nameEq} parent activations) Refl)
               event after activation present
+
+0 projectionLeftParentBirth :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) ->
+  {leftFirst, leftFinal, rightFirst, rightFinal : SystemState name key value world error} ->
+  (left : Transitions leftFirst leftFinal) -> (right : Transitions rightFirst rightFinal) ->
+  (renaming : RegistrationGenerationBijection name) ->
+  {leftResultIndex, rightResultIndex : RegistrationIndexState name} ->
+  (projection : AlignedFiniteRegistrationProjection nameEq renaming Z
+    (the (RegistrationIndexState name) DGamma.CP3.emptyRegistrationIndex) left leftResultIndex Z
+    (the (RegistrationIndexState name) DGamma.CP3.emptyRegistrationIndex) right rightResultIndex [] []) ->
+  (event : RegistrationEvent name key world error value) ->
+  Elem event (leftScannedEvents (authenticatedMatchingFromProjection name key world error value nameEq left right renaming projection)) ->
+  (activation : RegistrationActivation name) -> eventParentActivation event = Just activation ->
+  CurrentGenerationBirth name key world error value left (eventParent event) (activationParentGeneration activation)
+projectionLeftParentBirth name key world error value nameEq left right renaming projection event member activation present =
+  case projection of
+    MkAlignedFiniteRegistrationProjection plan leftScan rightScan leftEvents rightEvents planFold leftFold rightFold =>
+      registrationSideFoldParentBirth name key world error value nameEq left left Z
+        (the (RegistrationIndexState name) DGamma.CP3.emptyRegistrationIndex) leftFold
+        (\action, occurrence => occurrence) (\action, occurrence => Refl)
+        (MkRegistrationIndexBirths (\selected, generation, impossibleMember => absurd impossibleMember)
+          (\selected, parentActivation, impossibleMember => absurd impossibleMember))
+        event member activation present
