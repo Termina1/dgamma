@@ -324,3 +324,19 @@ export
   (applyAction @{nameEq} @{keyEq} (transitionAction step) first = Just (transitionTag step, middle))
 retirementAlignedHeadRaw name key world error value nameEq keyEq _ _
   (AlignedStep action tag checked rest alignedRest) = checkedActionProjects nameEq keyEq action _ _ tag checked
+
+export
+0 retirementAlignedLocatedRaw :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {first, finalState : SystemState name key value world error} ->
+  (trace : Transitions first finalState) -> AlignedTransitions name key world error value nameEq keyEq trace ->
+  (action : Action name key value world error) -> (occurrence : LocatedActionOccurrence action trace) ->
+  (applyAction @{nameEq} @{keyEq} action (actionBeforeState occurrence) =
+    Just (transitionTag (locatedTransition occurrence), actionAfterState occurrence))
+retirementAlignedLocatedRaw name key world error value nameEq keyEq trace aligned action occurrence =
+  replace {p = \wanted => (applyAction @{nameEq} @{keyEq} wanted (actionBeforeState occurrence) =
+    Just (transitionTag (locatedTransition occurrence), actionAfterState occurrence))} (locatedAction occurrence)
+    (retirementAlignedHeadRaw name key world error value nameEq keyEq (locatedTransition occurrence) (afterActionOccurrence occurrence)
+      (snd (alignedAppendSplit (beforeActionOccurrence occurrence) (MoreTransitions (locatedTransition occurrence) (afterActionOccurrence occurrence))
+        (replace {p = AlignedTransitions name key world error value nameEq keyEq} (sym (actionOccurrenceDecomposition occurrence)) aligned))))
