@@ -2,6 +2,7 @@ module DGamma.CP5AvailabilityAwarePlacement
 
 import DGamma.Calculus
 import DGamma.Coeffects
+import DGamma.Metatheory
 import DGamma.CP3
 import Data.List.Elem
 import Data.Nat
@@ -95,3 +96,46 @@ record EarliestAvailableRootBirth
     (locatedActionOrdinal birth) rootAvailabilityTrail = True
   0 noEarlierCompatibleRootCut : (earlier : Nat) -> LT earlier (locatedActionOrdinal birth) ->
     rootCutCompatible name key world error value nameEq keyEq component earlier rootAvailabilityTrail = False
+
+||| R178 A8 REPLACEMENT specification, not an adapter to frozen CP3.
+||| Integration needs an OWNER choice of research-tower fork or production
+||| unfreeze. No conversion to the old strict CanonicalInputPlacement exists.
+public export
+record AvailabilityAwareCanonicalInputPlacement
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (keyEq : DecEq key)
+  (supportState : SystemState name key value world error) (order : List name)
+  {0 initial, originalFinal, finalState : SystemState name key value world error}
+  (0 original : Transitions initial originalFinal) (0 trace : Transitions initial finalState) where
+  constructor MkAvailabilityAwareCanonicalInputPlacement
+  0 placementExternalInputsSame : SameExternalOrchestration nameEq original trace
+  0 rootGenerationEarliestAvailable :
+    {root : name} -> {component : Component key value world error} ->
+    (birth : LocatedActionOccurrence (OInsert root Root component) trace) ->
+    EarliestAvailableRootBirth name key world error value nameEq keyEq trace root component birth
+  0 availableRootGenerationFresh :
+    {root : name} -> {component : Component key value world error} ->
+    (birth : LocatedActionOccurrence (OInsert root Root component) trace) ->
+    lookupFiber @{nameEq} {key = key} {value = value} {world = world}
+      {error = error} root (registry (actionBeforeState birth)) = Nothing
+  0 rootGenerationBeforeOwnLifecycle :
+    {root : name} -> {component : Component key value world error} ->
+    (birth : LocatedActionOccurrence (OInsert root Root component) trace) ->
+    {action : Action name key value world error} ->
+    (lifecycle : LocatedActionOccurrence action trace) ->
+    isLifecycleAction action = True -> actionOwner action = root ->
+    LT (locatedActionOrdinal birth) (locatedActionOrdinal lifecycle)
+  ||| The frozen child-generation clause is retained without strengthening.
+  0 availableChildGenerationBeforeOwnLifecycle :
+    (n, parent : name) -> Elem n order ->
+    (fiber : Fiber name key value world error) ->
+    lookupFiber @{nameEq} n (registry supportState) = Just fiber ->
+    fiberParent fiber = ChildOf parent ->
+    (component : Component key value world error **
+     birth : LocatedGeneratedRegistration n parent component trace **
+     (lookupFiber @{nameEq} {key = key} {value = value} {world = world}
+       {error = error} n (registry (registrationBefore birth)) = Nothing,
+      (action : Action name key value world error) ->
+      (lifecycle : LocatedActionOccurrence action trace) ->
+      isLifecycleAction action = True -> actionOwner action = n ->
+      LT (registrationOrdinal birth) (locatedActionOrdinal lifecycle)))
