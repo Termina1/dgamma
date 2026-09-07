@@ -29,3 +29,11 @@ r179BeforeProviderFinish = fromMaybe
     [OInsert 0 Root providerComponent, OInsert 1 Root emptyConsumerComponent,
      LBegin 0, LAdvance 0]
     (MkSystemState (MkToyRuntime False False) emptyContext))
+
+||| The prefix REALLY executes four steps, yet its consumer cannot begin:
+||| provider installation without Active visibility is insufficient.
+export
+0 r179EarlyConsumerBeginUnavailable :
+  ((transitionCount (certifiedTrace r179BeforeProviderFinish) = 4),
+   (applyAction (LBegin 1) (certifiedFinal r179BeforeProviderFinish) = Nothing))
+r179EarlyConsumerBeginUnavailable = (Refl, Refl)
