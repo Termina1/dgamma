@@ -1,6 +1,8 @@
 module DGamma.CP5CurrentGenerationBirthSpike
 
 import DGamma.Calculus
+import DGamma.Coeffects
+import DGamma.Metatheory
 import DGamma.CP3
 import DGamma.CP4DeletionBoundaryPlan
 import DGamma.CP5RawClosingRankSpike
@@ -198,3 +200,33 @@ currentBirthFromGenerationScan name key world error value nameEq trace finalOrdi
     (\action, occurrence => occurrence) (\action, occurrence => Refl)
     (\actor, birth, member => absurd member) selected generation
     (currentGenerationEntryFromLookup nameEq selected generation finalLive current)
+
+||| Reconcile the authenticated scan birth with R175 B10's actual component
+||| birth at a reached prefix. Uniqueness is used only AFTER both are located.
+export
+0 currentBirthAtPrefixComponent :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, middle, finalState : SystemState name key value world error} ->
+  (global : Transitions initial finalState) ->
+  (prior : Transitions initial middle) -> (later : Transitions middle finalState) ->
+  (appendTransitions prior later = global) ->
+  AlignedTransitions name key world error value nameEq keyEq prior ->
+  (bindings (registry initial) = []) ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq global ->
+  (selected : name) -> (generation : RegistrationGeneration name) ->
+  CurrentGenerationBirth name key world error value global selected generation ->
+  (observed : Fiber name key value world error) ->
+  (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+    @{nameEq} selected (registry middle) = Just observed) ->
+  (parent : Parent name **
+    birth : LocatedActionOccurrence (OInsert selected parent (fiberComponent observed)) global **
+    generation = MkRegistrationGeneration selected (locatedActionOrdinal birth))
+currentBirthAtPrefixComponent name key world error value nameEq keyEq global prior later decomposition aligned empty unique
+  selected generation authentication observed found =
+    case authentication of
+      MkCurrentGenerationBirth scanParent scanComponent scanBirth exact =>
+        case rawComponentBirthAtPrefix name key world error value nameEq keyEq global prior later decomposition aligned empty selected observed found of
+          (parent ** birth) => (parent ** birth ** trans exact
+            (cong (MkRegistrationGeneration selected)
+              (uniqueInsertionPosition unique selected scanParent parent scanComponent (fiberComponent observed) scanBirth birth)))
