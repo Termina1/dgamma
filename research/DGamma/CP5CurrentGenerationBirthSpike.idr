@@ -43,3 +43,30 @@ currentPutObserved name nameEq inserted fresh candidate current rest (Yes same) 
   rewrite exact in case same of Refl => Refl
 currentPutObserved name nameEq inserted fresh candidate current rest (No distinct) exact =
   rewrite exact in Refl
+
+||| A put entry is either the exact inserted pair or an actual old entry.
+||| The recursive view is typed explicitly, never inferred through a local let.
+0 currentPutEntryObserved :
+  (name : Type) -> (nameEq : DecEq name) ->
+  (inserted : name) -> (fresh : RegistrationGeneration name) ->
+  (candidate : name) -> (current : RegistrationGeneration name) ->
+  (rest : GenerationEnvironment name) -> (observed : Dec (inserted = candidate)) ->
+  (decEq @{nameEq} inserted candidate = observed) ->
+  ((selected : name) -> (generation : RegistrationGeneration name) ->
+    Elem (selected, generation) (putCurrentGeneration @{nameEq} inserted fresh rest) ->
+    Either ((selected, generation) = (inserted, fresh)) (Elem (selected, generation) rest)) ->
+  (selected : name) -> (generation : RegistrationGeneration name) ->
+  Elem (selected, generation) (putCurrentGeneration @{nameEq} inserted fresh ((candidate, current) :: rest)) ->
+  Either ((selected, generation) = (inserted, fresh)) (Elem (selected, generation) ((candidate, current) :: rest))
+currentPutEntryObserved name nameEq inserted fresh candidate current rest (Yes same) exact recur selected generation member =
+  case replace {p = Elem (selected, generation)}
+    (currentPutObserved name nameEq inserted fresh candidate current rest (Yes same) exact) member of
+    Here => Left Refl
+    There later => Right (There later)
+currentPutEntryObserved name nameEq inserted fresh candidate current rest (No distinct) exact recur selected generation member =
+  case replace {p = Elem (selected, generation)}
+    (currentPutObserved name nameEq inserted fresh candidate current rest (No distinct) exact) member of
+    Here => Right Here
+    There later => case recur selected generation later of
+      Left same => Left same
+      Right old => Right (There old)
