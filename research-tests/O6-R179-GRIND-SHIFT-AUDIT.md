@@ -218,3 +218,32 @@ work is those four PRODUCERS. Proposed later budget: first a cross-canonical
 source-correspondence/retention specification audit (2–3 micro-units), then an
 independent proof plan for synchronized execution/resolution and controls,
 then generated-occurrence transport. This shift does NOT authorize that work.
+
+## A observed-equation continuation: first five units
+
+A7/A8/A9/A10 each fresh PASS on attempt1 (~1.04s), immediately committed as
+`9aeff79` / `aaeaa08` / `9eadccb` / `39040ba`. New fixture
+`R179O19ObservedExecution` names an explicit two-root registry, explicit provider
+Begin output, then actual raw one-step Iter and Finish outputs (preserving the
+real table/accumulator). These output definitions alone are not execution proofs;
+no conditional observer fallback has yet been excluded in this fixture.
+
+A11 attempted ONE exact critical-cut packet: checked Iter/Finish edges, both WF
+facts, post-Finish `ProviderView 0 EmptyView`, and checked early consumer Nothing.
+It exhausted **3/3** and was FULLY removed; fresh restoration PASS:
+
+1. 2.07s: packet stopped at targetFiber/resolveView's `providerOf ServiceA` case;
+   no full packet verdict. Earlier tuple components were not separately proved.
+2. 1.05s: typed providerOf rewrite exposed a missing direct Data.List.Elem import.
+   Compiler exit0 nevertheless printed Error; wrapper correctly marked FAIL.
+3. 3.10s: after direct import, rewrite did not change target; displayed
+   `providerOf ServiceA ?postpone`, indicating unresolved implicit/projection
+   elaboration rather than a runtime provider absence or normalization runaway.
+
+No cost explosion, no new hole/unsafe proof, no changed existing surface/body.
+A11's composite packet is parked at 3/3 and will not be reattempted this shift.
+Potential distinct remaining prerequisites are (i) checked provider edges/WF
+without the failed consumer target, (ii) a separately typed exact provider/target
+resolution lemma using explicit name/key/world/value parameters and the existing
+`targetFiberExplicit`, then (iii) the checked consumer Begin edge. This is NOT
+permission to relabel another full A11 attempt.
