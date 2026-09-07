@@ -1087,5 +1087,246 @@
     "matchingSourceCommits": [
       "364924d8e0fa6b68e832ecb3b37cc7e9f11614a8"
     ]
+  },
+  {
+    "unit": "B-stop-package",
+    "path": "package",
+    "command": [
+      "idris2",
+      "--build",
+      "dgamma.ipkg"
+    ],
+    "start": "2026-09-07T14:42:25.355184+00:00",
+    "end": "2026-09-07T14:42:41.996163+00:00",
+    "seconds": 16.640639916993678,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 286672,
+    "sourceSHA256": "aee761a37757cb047ddbf0f846bc23ce830ed755422f96852d08eb435c368727",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "",
+    "matchingSourceCommits": []
+  },
+  {
+    "unit": "A12-1",
+    "path": "research/DGamma/CP5ObservedInstalledLifecycleSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5ObservedInstalledLifecycleSpike.idr"
+    ],
+    "start": "2026-09-07T14:47:06.189824+00:00",
+    "end": "2026-09-07T14:47:07.232114+00:00",
+    "seconds": 1.0420882920734584,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 0,
+    "sourceSHA256": "5765d5b07a07a713bd125ff8bda7f4acc72b554d42661d33bb9047b4c8d93d91",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "1/1: Building DGamma.CP5ObservedInstalledLifecycleSpike (research/DGamma/CP5ObservedInstalledLifecycleSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "InstalledCutObservation"
+    ],
+    "matchingSourceCommits": [
+      "5f835ac01e99337e6f3cad04802d739d9f897355"
+    ]
+  },
+  {
+    "unit": "A13-1",
+    "path": "research/DGamma/CP5ObservedInstalledLifecycleSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5ObservedInstalledLifecycleSpike.idr"
+    ],
+    "start": "2026-09-07T14:47:44.497101+00:00",
+    "end": "2026-09-07T14:47:45.529301+00:00",
+    "seconds": 1.0320139159448445,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 0,
+    "sourceSHA256": "a865e512f9912dda3599430469a329bf06f65a3fd610b5a265ccacbeea962953",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "1/1: Building DGamma.CP5ObservedInstalledLifecycleSpike (research/DGamma/CP5ObservedInstalledLifecycleSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "inspectInstalledCutObserved"
+    ],
+    "matchingSourceCommits": [
+      "43386eaf7db95f10c7dedfc516d122fad1a6ff6d"
+    ]
+  },
+  {
+    "unit": "A14-1",
+    "path": "research/DGamma/CP5ObservedInstalledLifecycleSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5ObservedInstalledLifecycleSpike.idr"
+    ],
+    "start": "2026-09-07T14:48:07.399549+00:00",
+    "end": "2026-09-07T14:48:08.467856+00:00",
+    "seconds": 1.0680926661007106,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 0,
+    "sourceSHA256": "6f587db92e8b112ff9b632f287da9f1ef512d790b5bd850c7dbee2190d008b7c",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "1/1: Building DGamma.CP5ObservedInstalledLifecycleSpike (research/DGamma/CP5ObservedInstalledLifecycleSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "installedFromCutObservation"
+    ],
+    "matchingSourceCommits": [
+      "1e87c3b0f24ff5707b9339ac75bcc0c8c50fe7c3"
+    ]
+  },
+  {
+    "unit": "A15-1",
+    "path": "research/DGamma/CP5ObservedInstalledLifecycleSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5ObservedInstalledLifecycleSpike.idr"
+    ],
+    "start": "2026-09-07T14:48:37.109690+00:00",
+    "end": "2026-09-07T14:48:38.170103+00:00",
+    "seconds": 1.0602269158698618,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 0,
+    "sourceSHA256": "77eef9aac99afa4e9c2f0dde5d8ae00e1e74e27cde0fc5be6d4211238f2e0c47",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "1/1: Building DGamma.CP5ObservedInstalledLifecycleSpike (research/DGamma/CP5ObservedInstalledLifecycleSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "inspectInstalledCutCorrect"
+    ],
+    "matchingSourceCommits": [
+      "51eb5ef832849277434528ea2f5a7eb332dfe6db"
+    ]
+  },
+  {
+    "unit": "A16-1",
+    "path": "research-tests/DGamma/R181O19SafetyCompletion.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R181O19SafetyCompletion.idr"
+    ],
+    "start": "2026-09-07T14:50:12.002008+00:00",
+    "end": "2026-09-07T14:50:52.529368+00:00",
+    "seconds": 40.52677175030112,
+    "exit": 1,
+    "fresh": true,
+    "passed": false,
+    "interrupted": false,
+    "maxSampleRSSKiB": 2132224,
+    "sourceSHA256": "f4a707fe1e09201e498c134dde1f6e7e3a9be801d3c372a00fb146f7fe86e0d1",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "3/3: Building DGamma.R181O19SafetyCompletion (research-tests/DGamma/R181O19SafetyCompletion.idr)\nError: While processing right hand side of r181LifecycleCutObservations. Ambiguous elaboration. Possible results:\n    Builtin.fst ?delayed\n    Builtin.DPair.DPair.fst ?delayed\n\nDGamma.R181O19SafetyCompletion:311:8--311:11\n 307 |             {world = ToyRuntime} {error = String} @{%search} 0 (registry r179ObservedProviderCut)) Refl)\n 308 |           (lAdvanceStartsInstalled (the (DecEq Nat) %search) (the (DecEq ToyKey) %search) 0\n 309 |       r179ObservedProviderCut r179ObservedProviderFinished LFinishTag (checkedActionProjects (the (DecEq Nat) %search) (the (DecEq ToyKey) %search) (LAdvance 0)\n 310 |       r179ObservedProviderCut r179ObservedProviderFinished LFinishTag\n 311 |       (fst (snd (snd r179ObservedProviderEdges)))))),\n              ^^^\n\n",
+    "newTopLevelDeclarations": [
+      "r181LifecycleCutObservations"
+    ],
+    "matchingSourceCommits": []
+  },
+  {
+    "unit": "A16-2",
+    "path": "research-tests/DGamma/R181O19SafetyCompletion.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R181O19SafetyCompletion.idr"
+    ],
+    "start": "2026-09-07T14:51:19.296634+00:00",
+    "end": "2026-09-07T14:51:51.452485+00:00",
+    "seconds": 32.15531049994752,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 2157056,
+    "sourceSHA256": "821680d533db389cbaa25af65c8f180fc0224de94c9f6c9d9cfed6260d1ad180",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "3/3: Building DGamma.R181O19SafetyCompletion (research-tests/DGamma/R181O19SafetyCompletion.idr)\n",
+    "newTopLevelDeclarations": [
+      "r181LifecycleCutObservations"
+    ],
+    "matchingSourceCommits": [
+      "95b4ab595c5e86851fb0de8d63cd6ff882367626"
+    ]
+  },
+  {
+    "unit": "C-probe-1",
+    "path": "research-tests/DGamma/R181O21WithdrawalProbe.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R181O21WithdrawalProbe.idr"
+    ],
+    "start": "2026-09-07T14:54:08.150670+00:00",
+    "end": "2026-09-07T14:54:10.230702+00:00",
+    "seconds": 2.0798156247474253,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 1868400,
+    "sourceSHA256": "11e6c9f08ccc5f10e0dd7c1ee13c46c10bfc10ff89db6a886d9142db84ea166d",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "1/1: Building DGamma.R181O21WithdrawalProbe (research-tests/DGamma/R181O21WithdrawalProbe.idr)\n",
+    "newTopLevelDeclarations": [
+      "R181LeftWithdrawalPresentDebts"
+    ],
+    "matchingSourceCommits": []
   }
 ]
