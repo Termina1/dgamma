@@ -33,3 +33,16 @@ o20AdjacentListFacts (head :: rest) left right later =
   (There (Builtin.fst (o20AdjacentListFacts rest left right later)),
    There (Builtin.fst (Builtin.snd (o20AdjacentListFacts rest left right later))),
    BeforeThere (Builtin.snd (Builtin.snd (o20AdjacentListFacts rest left right later))))
+
+||| Reindex B1 by the exact source-word equation owned by a chosen pure swap.
+||| Only list facts are produced here; B6/B8 check the actual block gap/cut.
+export
+0 o20ChosenActorFacts :
+  {name : Type} -> {sourceOrder, targetOrder : List name} ->
+  (swap : AdjacentActorOrderSwap name sourceOrder targetOrder) ->
+  (Elem (actorLeft swap) sourceOrder, Elem (actorRight swap) sourceOrder,
+   BeforeIn (actorLeft swap) (actorRight swap) sourceOrder)
+o20ChosenActorFacts {sourceOrder} swap =
+  replace {p = \order => (Elem (actorLeft swap) order, Elem (actorRight swap) order,
+    BeforeIn (actorLeft swap) (actorRight swap) order)} (sym (actorBeforeExact swap))
+      (o20AdjacentListFacts (actorPrefix swap) (actorLeft swap) (actorRight swap) (actorSuffix swap))
