@@ -1,6 +1,7 @@
 module DGamma.R181O19BundlePrerequisites
 
 import DGamma.Calculus
+import DGamma.CalculusChecks
 import DGamma.Coeffects
 import DGamma.CP3
 import DGamma.CP3Support
@@ -8,10 +9,12 @@ import DGamma.CP4Support
 import DGamma.CP4SupportQuiescence
 import DGamma.CP4DeletionSelectedForeignLifecycleAnchorEndpoint
 import DGamma.CP5UniqueRawNameInsertions
+import DGamma.CP5ObservedInstalledLifecycleSpike
 import DGamma.CP5ConfluenceLocalDiamondSpike
 import DGamma.CP5ConfluenceCrossTraceSpike
 import DGamma.Metatheory
 import DGamma.Section3Example
+import DGamma.R179O19ObservedExecution
 import DGamma.R180O19ObservedCompletion
 import DGamma.R181O19SafetyCompletion
 import DGamma.R181O19LocatedBlocks
@@ -51,6 +54,44 @@ r181BlocksFollowOrder _ _ earlierMember laterMember (BeforeHere following) =
     There absent => case absent of Here impossible; There rest impossible
 r181BlocksFollowOrder _ _ earlierMember laterMember (BeforeThere following) =
   case following of
+    BeforeHere absent => case absent of Here impossible; There rest impossible
+    BeforeThere absent =>
+      case absent of BeforeHere member impossible; BeforeThere rest impossible
+
+||| F3: exact 3x2 half-open block ranges: left global positions2/3/4,
+||| right positions5/6. Consume the ACTUAL selected block fields structurally;
+||| no scalar observation of an opaque certified execution builder is assumed.
+public export
+0 r181BlockRangesApart : (earlier, later : Nat) ->
+  (earlierMember : Elem earlier [0, 1]) -> (laterMember : Elem later [0, 1]) ->
+  BeforeIn earlier later [0, 1] ->
+  (earlierPosition, laterPosition : Nat) ->
+  LTE (S earlierPosition)
+    (S (transitionCount (blockBody (r181BlocksByActor earlier earlierMember)))) ->
+  LTE (S laterPosition)
+    (S (transitionCount (blockBody (r181BlocksByActor later laterMember)))) ->
+  Not (transitionCount (traceBeforeBlock (r181BlocksByActor earlier earlierMember)) +
+      earlierPosition =
+    transitionCount (traceBeforeBlock (r181BlocksByActor later laterMember)) + laterPosition)
+r181BlockRangesApart _ _ earlierMember laterMember (BeforeHere following)
+  Z laterPosition earlierBound laterBound same = case following of
+    Here => case same of Refl impossible
+    There absent => case absent of Here impossible; There rest impossible
+r181BlockRangesApart _ _ earlierMember laterMember (BeforeHere following)
+  (S Z) laterPosition earlierBound laterBound same = case following of
+    Here => case same of Refl impossible
+    There absent => case absent of Here impossible; There rest impossible
+r181BlockRangesApart _ _ earlierMember laterMember (BeforeHere following)
+  (S (S Z)) laterPosition earlierBound laterBound same = case following of
+    Here => case same of Refl impossible
+    There absent => case absent of Here impossible; There rest impossible
+r181BlockRangesApart _ _ earlierMember laterMember (BeforeHere following)
+  (S (S (S tailPosition))) laterPosition earlierBound laterBound same =
+    case earlierBound of
+      LTESucc (LTESucc (LTESucc impossibleBound)) =>
+        case impossibleBound of LTEZero impossible; LTESucc rest impossible
+r181BlockRangesApart _ _ earlierMember laterMember (BeforeThere following)
+  earlierPosition laterPosition earlierBound laterBound same = case following of
     BeforeHere absent => case absent of Here impossible; There rest impossible
     BeforeThere absent =>
       case absent of BeforeHere member impossible; BeforeThere rest impossible
