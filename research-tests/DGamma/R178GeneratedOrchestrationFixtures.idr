@@ -79,3 +79,8 @@ r178CommonTrace : Transitions r45Initial r178ParentDoneState
 r178CommonTrace = MoreTransitions r45ParentInsert
   (MoreTransitions r45Begin (MoreTransitions r45ChildInsert
     (MoreTransitions r178ParentFinish NoTransitions)))
+
+public export
+r178LeftTrace : Transitions r45Initial r178LeftFinal
+r178LeftTrace = appendTransitions r178CommonTrace
+  (MoreTransitions r178ChildBegin (MoreTransitions r178ChildFinish NoTransitions))
