@@ -94,3 +94,22 @@ r181BeforeProviderBlock =
         {afterState = r179ObservedRootSource}
         %search %search (OInsert 1 Root DGamma.CalculusChecks.emptyConsumerComponent) OInsertTag Refl)
       NoTransitions)
+
+||| E5: authentic THREE-edge provider block located in the SAME count7 trace.
+||| All installed, actor-only, exclusion, final Active and decomposition fields
+||| are constructed; no block is received as an input or guessed from an endpoint.
+public export
+0 r181ProviderLocatedBlock : LocatedOpenEpisodeBlock Nat ToyKey ToyRuntime String
+  ToyValue (the (DecEq Nat) %search) (the (DecEq ToyKey) %search) 0 r181WholeTrace
+r181ProviderLocatedBlock = MkLocatedOpenEpisodeBlock
+  r179ObservedRootSource r179ObservedProviderBegin r179ObservedProviderFinished
+  r181BeforeProviderBlock (MkBeginStep (Builtin.fst r179ObservedProviderEdges))
+  r181ProviderBlockBody (Builtin.fst r181BlockBodiesInstalled)
+  (ActorLifecycleStep _ _ Refl Refl
+    (ActorLifecycleStep _ _ Refl Refl ActorLifecycleEnd))
+  (MoreTransitions (beginTransition r180ConsumerBeginFromPrerequisites) r181ConsumerBlockBody)
+  (NoLifecycleByStep _ _ (\life => case life of Refl impossible)
+    (NoLifecycleByStep _ _ (\life => case life of Refl impossible) NoLifecycleByEnd))
+  (NoLifecycleByStep _ _ (\life, same => case same of Refl impossible)
+    (NoLifecycleByStep _ _ (\life, same => case same of Refl impossible) NoLifecycleByEnd))
+  (Builtin.fst (Builtin.snd (Builtin.snd r181EndpointReady))) Refl
