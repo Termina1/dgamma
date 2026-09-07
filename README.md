@@ -484,3 +484,14 @@ counterexample**. A research-side `GeneratedOrchestrationMatched` hypothesis is
 pending owner override, not implemented or assumed. See the
 [R177 audit](research-tests/O6-R177-GRIND-SHIFT-AUDIT.md) and
 [P2 stop/repair evidence](research-tests/O6-R177-P2-STOP-AUDIT.md).
+
+### R178 research milestone
+
+| Paper / research obligation | Idris correspondence | Status |
+|---|---|---|
+| Thm73 support comparison, explicit A9 + original uniqueness | `CP5AcceptedSupportTruthSpike.acceptedSupportedTruthForward/Backward` | proved, conditional |
+| O18 canonical support-order matching | `CP5ConfluenceCrossTraceSpike.canonicalSupportOrdersMatchSpike` | proved, conditional |
+| Revised root placement (A8) | `CP5AvailabilityAwarePlacement.AvailabilityAwareCanonicalInputPlacement` | checked replacement type; R174 scalar shape proved; integration open |
+
+Five research holes remain. A8/A9 are delegated supervisor decisions pending
+owner override; production stays frozen. See the [R178 audit](research-tests/O6-R178-GRIND-SHIFT-AUDIT.md) for exact scope and remaining owner decisions.

@@ -374,3 +374,32 @@ fresh restoration check passed in 2.10s. Both exact attempts are permanently in
 `research-tests/r178-stops/C9-*`. This is a voluntary cost stop at 2/3, not a
 claimed exhausted three-attempt budget. Gate before deciding a final retry or
 independent scalar interval fixture. O18 remains closed; five holes unchanged.
+
+### Independent scalar C fixture complete — 08:35 UTC
+
+The supervisor ratified C1–C8/f8bb437 and expressly PARKED C9 at **2/3** for the
+remainder of this shift. It authorized at most THREE checks for an independent
+scalar interval fixture, to finish by 08:55, then final validation/gate by 09:15.
+Those three checks are complete: C10-1 PASS, C11-1 parser rejection, C11-2 PASS
+(6.23s). The parser repair keeps the case arm on one line; the same C11 surface
+was made directly an equality theorem, avoiding a fourth separate check.
+
+`r178R174AnnotatedPrefix` owns the actual prefix/suffix decomposition and its
+trace-indexed explicit-state annotation. `r178R174ScalarIntervalShape` proves
+this exact eleven-bit observation:
+- root at position5 is a root OInsert named2; authentic prefix length5;
+- an actual lifecycle step occurs at1 and ORemove1 occurs at4;
+- a pointwise snapshot at1 is free (the rejected naive interpretation);
+- interval-compatible cuts **0,1,2,3,4 = False** and **cut5 = True**.
+Thus the scalar placement SHAPE puts root2 immediately after remove1, while
+strict all-root-before-lifecycle conflicts with the actual lifecycle/root order.
+The availability test uses the component from the ACTUAL root action, not a
+substituted fixture component. Existing runtime checking already excludes the
+empty builder fallback. R172 remains rejected by the existing proved original
+insertion-uniqueness negation, to be freshly rerun in final boundaries.
+
+This DOES NOT construct C9's LocatedActionOccurrence, an
+EarliestAvailableRootBirth packet, the full replacement placement record, or
+O17 inputs/producer. No fourth scalar check and no third C9 attempt were taken.
+The complete replacement surface is checked; canonical-tower migration remains
+an explicit OWNER decision, not silently solved by the scalar regression.

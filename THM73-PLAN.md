@@ -3360,3 +3360,14 @@ so the research-only surface does not yet repair the existing O17 target. There
 are 24 direct research type references across 7 research/test files, plus dependent
 projection and production statement-check ripple. Neither option is chosen here.
 A8 and A9: **supervisor decision under delegation, owner override pending**.
+
+The bounded R178 A8 surface is now CHECKED in CP5AvailabilityAwarePlacement:
+executable per-state availability/root-input detection, actual trace-indexed
+runtime-state annotations, compatible-cut recursion, earliest located-birth
+specification, and the standalone replacement placement record. The R174 scalar
+fixture proves actual prefix length5, root2 at5, earlier lifecycle at1, remove1
+at4, snapshot freedom at1, and compatible cuts [False,False,False,False,False,True].
+C9's stronger concrete located-root packet is PARKED at 2/3 no-verdict cost
+interruptions; only the independently authorized scalar shape is claimed.
+No root-placement producer or O17 body was attempted. Frozen integration still
+requires the OWNER choice above; the existing canonical tower is unchanged.

@@ -2585,3 +2585,43 @@ PASS with 207/207 TTC seeds preserved. Final clean frozen audit/census PASS,
 six holes unchanged, production/LocalDiamond/O17/O21 boundaries preserved. The
 broad R11 diagnostic suite was not rerun. Complete 156-invocation evidence and
 qualified P2-4 result are committed; no extra post-validation coverage unit ran.
+
+## Status — R178 (2026-09-07)
+
+**Fully proved, research only:** explicit authentic ordered generated
+retirement/removal matching (A9), its structural negative and nonempty identity
+fixtures; complete supported generated retained-event and root coverage; actual
+current-birth/static parent/component coherence; both support-relative retirement
+transport directions; both support-truth implications by actual support-edge rank
+induction; **O18 `canonicalSupportOrdersMatchSpike` closed**. Five holes remain,
+CanonicalSort/CrossTrace/LocalDiamond/DeletionChain/RenamingComposition = 1/3/0/0/1.
+The R177 TWO-CAPITAL GAP remains: its negative pair is not two complete canonical
+capitals, and no unconditional Theorem73 result is claimed.
+
+**Checked replacement specification / partial integration:** A8's
+AvailabilityAwareCanonicalInputPlacement uses earliest interval-compatible root
+cuts, actual source-state declaration occupancy, exact external-input order,
+root-own lifecycle order, and the retained child-generation clause. Its executable
+cut test rejects crossing a future same-key reservation in the crossed interval;
+retirement/inactivity do not release declarations. The R174 scalar shape proves
+cuts0..4 rejected and cut5 accepted after removal1, with the earlier lifecycle
+and later root actually observed. It is NOT a full placement-record/earliest-root
+packet producer. C9's direct located-root fixture remains parked at2/3 after two
+no-verdict cost interruptions; exact failed sources and restoration are audited.
+
+**Owner decisions outstanding:** A8 and A9 are supervisor decisions under
+delegation, owner override pending. The strict clauses are in frozen CP3's
+CanonicalInputPlacement, owned by frozen CanonicalSchedule. Integration requires
+an owner choice: fork/migrate the research canonical tower (24 direct research
+type references across7 research/test files, plus dependent projections), or
+unfreeze production placement and revisit production statement/proof consumers.
+Neither was chosen, and no coercion into the old strict record was added.
+
+**Escapes and debt:** no believe_me, assert_total, postulate, partiality or new
+hole. A16's three rejected quiet-normalization attempts were fully reverted and
+ratified; a genuinely independent structural A9 exclusion was proved instead.
+C9's interrupted declaration was fully reverted and restoration checked. No
+O17/O19/O21 withdrawal/body or LocalDiamond change is hidden by this milestone.
+Next is owner-directed integration/permutation/convergence work, not a fourth
+A16 or third C9 retry. Full ledger, clause map and validation evidence are in the
+R178 research audit and evidence directory.
