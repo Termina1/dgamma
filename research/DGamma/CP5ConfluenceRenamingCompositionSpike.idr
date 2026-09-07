@@ -3287,3 +3287,20 @@ projectionRightParentBirth name key world error value nameEq left right renaming
         (MkRegistrationIndexBirths (\selected, generation, impossibleMember => absurd impossibleMember)
           (\selected, parentActivation, impossibleMember => absurd impossibleMember))
         event member activation present
+
+||| The accepted LEFT event's parent generation has its own genuine ORIGINAL
+||| insertion birth. An activation record is not accepted as a name-only stamp.
+export
+0 acceptedLeftEventParentBirth :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) ->
+  {leftFirst, leftFinal, rightFirst, rightFinal : SystemState name key value world error} ->
+  (left : Transitions leftFirst leftFinal) -> (right : Transitions rightFirst rightFinal) ->
+  (renaming : RegistrationGenerationBijection name) ->
+  (registrations : RegistrationCorrespondenceByGeneration nameEq renaming left right) ->
+  (event : RegistrationEvent name key world error value) ->
+  Elem event (leftScannedEvents (acceptedAuthenticatedRegistrationMatching name key world error value nameEq left right renaming registrations)) ->
+  (activation : RegistrationActivation name) -> eventParentActivation event = Just activation ->
+  CurrentGenerationBirth name key world error value left (eventParent event) (activationParentGeneration activation)
+acceptedLeftEventParentBirth name key world error value nameEq left right renaming registrations event member activation present =
+  projectionLeftParentBirth name key world error value nameEq left right renaming
+    (alignFiniteRegistrationProjection (generationTraceCorrespondence registrations)) event member activation present
