@@ -1060,6 +1060,8 @@ public export
     nameEq keyEq leftTrace) ->
   (rightCapital : IndependentCanonicalSchedule name key world error value protocol
     nameEq keyEq rightTrace) ->
+  (0 leftUnique : UniqueRawNameInsertions name key world error value nameEq keyEq leftTrace) ->
+  (0 rightUnique : UniqueRawNameInsertions name key world error value nameEq keyEq rightTrace) ->
   (matching : MappedCanonicalSupportOrders name key world error value protocol
     nameEq keyEq leftTrace rightTrace
     (currentNameBijection (endpointRenaming sameInputs))
