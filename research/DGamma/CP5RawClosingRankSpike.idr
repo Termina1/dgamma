@@ -383,3 +383,42 @@ uniqueRawRanksAcrossPrefixes name key world error value protocol nameEq keyEq gl
           leftPrior leftLater leftSplit rightPrior rightLater rightSplit selected
           (rankedFiber left) (rankedFiber right) (rankedFound left) (rankedFound right)))
         (componentHasRank right)))
+
+
+||| A raw precedence edge at ONE reached cut strictly increases ranks even
+||| when the provider's chosen rank was obtained at ANOTHER reached cut.
+public export
+0 rawPrecedenceRankAcrossPrefixes :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, providerState, consumerState, finalState : SystemState name key value world error} ->
+  (global : Transitions initial finalState) ->
+  AlignedTransitions name key world error value nameEq keyEq global ->
+  bindings (registry initial) = [] ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq global ->
+  (providerPrior : Transitions initial providerState) ->
+  (providerLater : Transitions providerState finalState) ->
+  appendTransitions providerPrior providerLater = global ->
+  (consumerPrior : Transitions initial consumerState) ->
+  (consumerLater : Transitions consumerState finalState) ->
+  appendTransitions consumerPrior consumerLater = global ->
+  (provider, consumer : name) -> (providerRank, consumerRank : Nat) ->
+  NameProtocolRank protocol nameEq providerState provider providerRank ->
+  NameProtocolRank protocol nameEq consumerState consumer consumerRank ->
+  PrecedenceEdge nameEq provider consumer consumerState -> LT providerRank consumerRank
+rawPrecedenceRankAcrossPrefixes name key world error value protocol nameEq keyEq global aligned empty unique
+  providerPrior providerLater providerSplit consumerPrior consumerLater consumerSplit
+  provider consumer providerRank consumerRank providerRanked consumerRanked
+  (MkPrecedenceEdge wanted providerFiber consumerFiber providerFound consumerFound providerDeclares consumerDeclares) =
+    precedenceRankIncreases protocol (fiberComponent providerFiber) (fiberComponent consumerFiber)
+      providerRank consumerRank
+      (trans (cong (registrationRank protocol)
+        (uniqueRawComponentsAcrossPrefixes name key world error value nameEq keyEq global aligned empty unique
+          consumerPrior consumerLater consumerSplit providerPrior providerLater providerSplit provider
+          providerFiber (rankedFiber providerRanked) providerFound (rankedFound providerRanked)))
+        (componentHasRank providerRanked))
+      (trans (cong (registrationRank protocol) (cong fiberComponent
+        (justInjective (trans (sym consumerFound) (rankedFound consumerRanked)))))
+        (componentHasRank consumerRanked))
+      wanted providerDeclares consumerDeclares
