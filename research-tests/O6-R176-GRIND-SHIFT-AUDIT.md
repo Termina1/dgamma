@@ -178,9 +178,69 @@ Its TTC was NOT deleted. It was refreshed by the mandatory fresh source check
 and remains preserved thereafter. C3's 429.5-second dependency refresh included
 the pre-existing large ordinal-capital TTC; checks stayed serialized.
 
+## Final validation after the ratified stop
+
+No proof declaration was attempted after C11 3/3. Only final validation,
+read-only frozen checks and audit artifacts followed the supervisor's ruling.
+
+- Final serialized suite **12 fresh positives / 9 exact diagnostic negatives PASS**,
+  02:27:39–02:33:02 UTC. Each target's exact Building marker is checked. The
+  additional final positives are WorkMeasure and DeletionChain; the original
+  ten A positives and all nine intended negatives remain present.
+- DeletionChain fresh PASS **02:27:40–02:28:59**, 4,981,616 KiB sampled; this
+  checks the completed B12 declaration after all retained dependency updates.
+- CanonicalSort fresh PASS **02:28:59–02:29:55**, 20,150,224 KiB sampled; failed
+  C11 source is absent and only the retained C1–C8 prefix is compiled.
+- R8 fresh PASS **02:31:08–02:32:48**, 40,010,688 KiB sampled. R16 fresh PASS
+  **02:32:48–02:32:50**, 944,512 KiB sampled. These are conditional assemblies,
+  not closed proofs through the six inherited holes.
+- Both R6 baseline and migrated diagnostic paragraphs are byte-identical
+  after excluding source-position context. Final wrong-trace, occurrence and
+  generation bridges reject at their intended existing boundaries.
+- R173 reuse exclusion and R174 distinct-name/same-key fixture freshly PASS.
+  Provision-key collisions are not silently forbidden by raw-name uniqueness.
+- Final **`idris2 --build dgamma.ipkg` PASS**, **02:33:13–02:33:29 UTC**,
+  219,936 KiB sampled. Seeded build, not a cold rebuild; **207/207 TTC seeds**.
+- Complete ledger/transcripts committed as `O6-R176-COMPILER-LEDGER.json` and
+  `O6-R176-COMPILER-TRANSCRIPTS.md`: **93 invocations = 61 positive passes +
+  26 expected diagnostic negatives + 6 charged proof rejections**. Zero
+  engineering interrupts or overlapping compilers. Sampled maximum was C2,
+  **48,736,704 KiB**, not an exact OS peak. The initial 19-call A batch did
+  not record per-call absolute UTC or RSS; its ordered per-call durations and
+  enclosing timestamp bounds are explicitly retained, not reconstructed.
+- Census **6 = 1/4/0/0/1** (CanonicalSort/CrossTrace/DeletionChain/LocalDiamond/
+  RenamingComposition). Both NEW research modules, UniqueRawNameCanonicalCapital
+  and RankObservationSpike, have **0 holes**; existing WorkMeasure/RawClosingRank
+  also have 0. Hole RHSs and all prior output types remain unchanged.
+- Production `src/` and `dgamma.ipkg` byte-identical to **34b21c9**. CP3 blob
+  **2c697e532e83989de8591fa6a4378747c6a501c0**. The entire old CanonicalSort and
+  DeletionChain source prefixes are intact after removing their sole new import;
+  no O17 body or root-phase change is hidden in an additive delta.
+- Frozen `adjacentSwapSuffixSpike`: **1470 bytes**, SHA256
+  `2d01486bf953f11191b758ac3cfb5722d1d02b1a192b6e552adc8a3f58199ecf`;
+  statement **1154 bytes**, SHA256
+  `3aae5a9fbc5b14e0411b4a91e557a6f3dc68c9a6282b9ec2b3fc658cec337adf`.
+  LocalDiamond old body intact; the retroactively authorized delta is exactly
+  **27 added / 0 removed**. TTC preserved, **125,368,223 bytes**, last refreshed
+  at C2 on **01:56:14 UTC**, not deleted or refreshed again by final validation.
+- Frozen adversarial-review SHA256 remains
+  `61fc23ae4cea4565b442c840be39c41746ecbac73b8c2f73d04f1e3b4f4681e8`.
+- All retained edited Idris files use `%default total`. No added with, let
+  alias, as-pattern, hole, partiality, postulate, believe_me/assert_total or
+  frozen deletion proof call. No full R11 aggregate suite or external reviewer
+  pass is claimed. `run-r176-frozen-audit.py` reproducibly asserts these frozen
+  boundaries, new-module census and allowed-untracked-only tree.
+
 ## Status
 
-Unit A structural projections and six explicit-input surfaces retained.
-A validation complete; B raw maximum complete; C1–C10 retained with C11 3/3
-ratified stop; final validation only is authorized.
-No full confluence claim; six inherited holes remain open.
+| Assignment | Status | Exact remainder |
+|---|---|---|
+| A structural transports / six surfaces / callers / fixtures | COMPLETE | Existing O19/O20/O21 holes remain; uniqueness is explicit, not a capital field. |
+| B raw closing maximum | COMPLETE, 12 units | Satisfiability under the stated unique/bundle/genuine-close hypotheses; frozen deletion theorem untouched and uncalled. |
+| C actual operational measure bridge | PARTIAL, ratified stop | C1–C10 real capital; C11 3/3 removed, C12 unspent. Pair selection, orientation/early applicability, simultaneous local descent, prefix lift and actual strict worklist decrease remain open. |
+
+No full confluence claim. Root placement, O17/O19 bodies and O21 withdrawal
+proofs remain parked. The single LocalDiamond prior-gate process deviation is
+explicitly recorded above, retroactively authorized only for that exact lemma;
+the standing prior-gate rule remains in force. Final acceptance gate follows
+this committed audit and machine-readable frozen snapshot; no staged files.
