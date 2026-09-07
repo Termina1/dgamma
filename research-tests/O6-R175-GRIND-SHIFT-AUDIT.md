@@ -501,3 +501,66 @@ DGamma.CP5RawClosingRankSpike:160:79--160:82
                                                                                      ^^^
 
 ```
+
+## Unit B cap result — immutable cross-time rank seam PROVED, raw maximum OPEN
+
+Supervisor ratified B6, then explicitly authorized the materially different
+observed-update design B7–B15, with hard stop at another 3/3, the 15-unit cap,
+or 01:50 UTC. That cure succeeded: B7 inducts on an EXPLICIT
+RegistryLocalUpdate with explicit source/target registries and a generic
+immutable-component predicate; B8 only passes the ACTUAL evaluator update to
+it. No computed update is eliminated against a rigid state projection. B8
+reuses the intended `rawComponentBirthStep` statement via this structural
+producer, NOT a fourth B6 invocation. No second exhausted seam occurred.
+
+| Unit | Declaration | Immediate commit | Fresh source check |
+|---|---|---|---|
+| B7 | `rawImmutableComponentUpdate` | `c5dcd9e` | PASS B7-1, 2026-09-07T00:32:16.209592+00:00–2026-09-07T00:32:18.257682+00:00, 0 KiB sampled |
+| B8 | `rawComponentBirthStep` | `a291b86` | PASS B8-1, 2026-09-07T00:32:55.569461+00:00–2026-09-07T00:32:57.623284+00:00, 0 KiB sampled |
+| B9 | `rawComponentBirthInvariant` | `c24f43d` | PASS B9-2, 2026-09-07T00:33:58.699108+00:00–2026-09-07T00:34:00.739899+00:00, 0 KiB sampled |
+| B10 | `rawComponentBirthAtPrefix` | `1a46382` | PASS B10-1, 2026-09-07T00:34:56.775104+00:00–2026-09-07T00:34:58.808814+00:00, 0 KiB sampled |
+| B11 | `uniqueRawComponentsAcrossPrefixes` | `f0a98d5` | PASS B11-1, 2026-09-07T00:35:43.412025+00:00–2026-09-07T00:35:45.470668+00:00, 0 KiB sampled |
+| B12 | `rawProtocolRanksAtPrefix` | `7ec13b6` | PASS B12-1, 2026-09-07T00:37:38.114068+00:00–2026-09-07T00:37:40.146609+00:00, 0 KiB sampled |
+| B13 | `uniqueRawRanksAcrossPrefixes` | `bba2819` | PASS B13-1, 2026-09-07T00:38:21.061512+00:00–2026-09-07T00:38:23.091695+00:00, 0 KiB sampled |
+| B14 | `rawPrecedenceRankAcrossPrefixes` | `0dab1fc` | PASS B14-1, 2026-09-07T00:39:36.696713+00:00–2026-09-07T00:39:38.736110+00:00, 0 KiB sampled |
+| B15 | `rawClosingEpisodeProtocolRank` | `44faf76` | PASS B15-1, 2026-09-07T00:40:42.796171+00:00–2026-09-07T00:42:02.149985+00:00, 4789184 KiB sampled |
+
+B9-1 rejected use of the pre-case `head` alias after AlignedStep exposed the
+actual Fired constructor. B9-2 uses that same explicit checked Fired value in
+the structural occurrence embedding and passes. Every other B7–B15 first
+attempt passed. B15's full DeletionChain check was detached/monitored (~79s);
+its surviving-binder warning is inherited, not an error. No overlapping Idris
+process or hidden signature change occurred. All retained additions have
+explicit signatures and no with/let/as-pattern/escape. The rejected B6
+as-pattern source appears ONLY in this audit, not retained code.
+
+What is now PROVED, independently of the missing maximum:
+
+1. Every present fiber at ANY aligned prefix from the empty initial registry
+   has an authentic global O-Insert of its EXACT immutable component.
+2. Uniqueness identifies those births; therefore the same raw name has the
+   same COMPONENT and protocol RANK at ANY two reached prefix lookups. This
+   allows multiple activations of that one birth; it does not assume one
+   activation, key freshness, no removal, or final presence.
+3. A raw precedence edge at a consumer's reached cut strictly increases the
+   provider rank even when that provider rank was chosen at ANOTHER reached
+   cut. This is genuine cross-time raw coherence, not a scoped negative cast.
+4. Every actual located closing episode has a protocol-ranked actor at its
+   OWN closedStartState, derived from the full replay bundle's actual
+   provenance, alignment and emptiness, not only its final ranked registry.
+
+CAP RESULT: PARTIAL / PARK at B15. `rawClosingMaximumUnderUniqueInsertions`
+has NOT been stated as an unproved code declaration or proved. Remaining:
+(a) give O7's finite erased occurrence list the rank projection from B15;
+(b) use its ordinal-completeness field plus authenticated opening action
+identity (B3) and cross-time rank coherence (B13) to transfer a finite maximum
+bound to EVERY located closing episode; (c) choose a nonempty-list maximum
+and contradict any raw outgoing precedence using B14, returning the selected
+actor, that same genuine episode, and frozen NoDependentClosingEpisode.
+No calling frozen deletionTheoremProof, no unsupported scoped-to-raw cast,
+no strengthener supplied as the main theorem's output-shaped hypothesis.
+THM73-PLAN.md is UNCHANGED: CP3 raw-premise satisfiability remains UNVERIFIED
+until this exact existential has a compiler verdict. The mechanism that the
+R174 recon needed is now real capital, but is not the selection theorem.
+
+The next work is Unit C analysis-only, bounded to 40 minutes; no B16 attempt.
