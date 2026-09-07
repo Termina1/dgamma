@@ -180,3 +180,21 @@ currentBirthScanInvariant name key world error value nameEq global segment ordin
           (embedding (transitionAction step) (MkLocatedActionOccurrence _ _ NoTransitions step rest Refl Refl))
           (trans (exact (transitionAction step) (MkLocatedActionOccurrence _ _ NoTransitions step rest Refl Refl))
             (plusZeroRightNeutral ordinal)) previous)
+
+||| A scan from the actual empty initial environment supplies its OWN located
+||| original birth and exact current stamp. No uniqueness or chosen birth input.
+export
+0 currentBirthFromGenerationScan :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (trace : Transitions initial finalState) ->
+  (finalOrdinal : Nat) -> (finalLive : GenerationEnvironment name) ->
+  GenerationTraceScan nameEq Z [] trace finalOrdinal finalLive ->
+  (selected : name) -> (generation : RegistrationGeneration name) ->
+  (lookupCurrentGeneration @{nameEq} selected finalLive = Just generation) ->
+  CurrentGenerationBirth name key world error value trace selected generation
+currentBirthFromGenerationScan name key world error value nameEq trace finalOrdinal finalLive scan selected generation current =
+  currentBirthScanInvariant name key world error value nameEq trace trace Z [] finalOrdinal finalLive scan
+    (\action, occurrence => occurrence) (\action, occurrence => Refl)
+    (\actor, birth, member => absurd member) selected generation
+    (currentGenerationEntryFromLookup nameEq selected generation finalLive current)
