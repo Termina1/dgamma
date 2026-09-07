@@ -118,3 +118,16 @@ generatedPacketMatchesCurrentBirth name key world error value nameEq keyEq trace
   authenticatedBirthStampsSame name key world error value nameEq keyEq trace unique (generatedActor packet) (generatedCurrent packet) generation
     (generatedPacketCurrentBirth name key world error value nameEq trace packet)
     (replace {p = \actor => CurrentGenerationBirth name key world error value trace actor generation} (sym actorExact) authentication)
+
+export
+0 generatedPacketRetirementLocation :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) ->
+  {first, finalState : SystemState name key value world error} ->
+  (trace : Transitions first finalState) ->
+  (packet : LocatedGeneratedOrchestration name key world error value nameEq trace) ->
+  (generatedRemoval packet = False) -> (selected : name) -> (generatedActor packet = selected) ->
+  LocatedActionOccurrence (ORetire selected) trace
+generatedPacketRetirementLocation name key world error value nameEq trace packet kind selected actorExact =
+  replace {p = \action => LocatedActionOccurrence action trace} (cong ORetire actorExact)
+    (replace {p = \removal => LocatedActionOccurrence (generatedOrchestrationAction name key world error value removal (generatedActor packet)) trace}
+      kind (generatedOccurrence packet))
