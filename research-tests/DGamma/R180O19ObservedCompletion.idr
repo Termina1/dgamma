@@ -160,3 +160,13 @@ r180ConsumerBeginFromPrerequisites = MkBeginStep
   (r180CheckedFromPrerequisites (LBegin 1) r179ObservedProviderFinished
     r180ObservedConsumerBegun LBeginTag r180ConsumerBeginRaw
     (fst r180ConsumerBeginOutputDomains))
+
+||| Exact intended consumer Finish payload; the next raw observation must
+||| authenticate this definition before it may be used as a checked endpoint.
+public export
+r180ObservedConsumerFinished : SystemState Nat ToyKey ToyValue ToyRuntime String
+r180ObservedConsumerFinished = MkSystemState (worldState r180ObservedConsumerBegun)
+  (replaceBinding 1
+    (MkFiber emptyConsumerComponent Root False emptyOwned
+      (Active id (ProviderView 0 EmptyView)))
+    (registry r180ObservedConsumerBegun))
