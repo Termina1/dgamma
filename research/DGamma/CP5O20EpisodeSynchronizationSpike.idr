@@ -123,3 +123,26 @@ synchronizationResolutionFromObservedHeads name key world value keyEq renaming
           (synchronizationResolutionFromObservedHeads name key world value keyEq
             renaming rest leftTail rightTail left right effects
               (snd (consInjective views)))
+
+||| Exact evaluator-facing local source: global ambient plus the actor's
+||| canonically restricted complete ordered table. No erased-proof equality.
+export
+0 synchronizationLocalSource :
+  (name, key, world : Type) -> (value : key -> Type) ->
+  (keyEq : DecEq key) -> (renaming : NameBijection name) ->
+  (provision : CoeffectSpec key) -> (selected : name) ->
+  (left, right : EffectState name key value world) ->
+  RenamedRuntimeEffects name key world value renaming left right ->
+  (MkLocalState (effectAmbient left)
+    (restrictOwnedPreservingOrder @{keyEq} provision (effectTables left selected)) =
+   MkLocalState (effectAmbient right)
+    (restrictOwnedPreservingOrder @{keyEq} provision
+      (effectTables right (renameForward renaming selected))))
+synchronizationLocalSource name key world value keyEq renaming provision selected
+  left right effects =
+    cong2 (MkLocalState {key = key} {value = value} {world = world}
+      {provision = provision}) (synchronizedAmbient effects)
+      (canonicalNormalizationFromEqualBindings @{keyEq} provision
+        (effectTables left selected)
+        (effectTables right (renameForward renaming selected))
+        (synchronizedTables effects selected))
