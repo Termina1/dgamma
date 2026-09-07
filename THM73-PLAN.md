@@ -3543,3 +3543,21 @@ bundle fields); stated reason: "missing field unrelated to the mechanism".
 TraceIndependent stays parallel capital, not the revision gate. No full-negative
 proof or O19 body permission follows. Documentation only in this shift; finish
 existing final validation/gate, no restart. Earlier workflow violation not excused.
+
+## R182 Unit A — owner exception executed, O19 body still gated
+
+Research safety now owns a checked right-first LBegin at the actual pre-left
+block cut; existing blockOpening supplies left-first there. This is the
+R146(iii) both-direction FIRST-STEP formulation, not an assumed swapped trace.
+R179's positive observed-result guard can supply this exact certificate; no
+claim that arbitrary rank descents pass the guard or that O20 selection is
+complete follows. R181 D's actual successful views remain separate capital.
+
+Actual count7 provider/consumer revised-safety rejection is proved for ANY
+bundle, using the certified consumer raw Nothing. Full independent empty-key
+positive safety is inhabited with both actual six-edge orders, complete bundle,
+located blocks and numerical decomposition. See R182 audit for design/old→new
+clause map and fourteen checked micro-units. Count7 TraceIndependent remains
+parallel capital, not a revision gate; no complete old-safety negative claimed.
+O19 RHS and the other four holes remain unchanged; B awaits explicit post-A
+permission. No O17 root placement or LocalDiamond change.

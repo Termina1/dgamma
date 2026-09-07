@@ -619,3 +619,14 @@ reason: "failure mechanism fully certified; missing field unrelated to the
 mechanism". Independence remains unproved capital, not a revision gate. No
 current-shift surface change, full-negative claim or O19 body permission follows.
 The earlier workflow violation remains unexcused.
+
+### R182 O19 surface boundary
+
+| Paper / research obligation | Idris correspondence | Status |
+|---|---|---|
+| Thm73 adjacent independent episodes, first-step boundary | `CP5ConfluenceCrossTraceSpike.AdjacentActorSwapSafety.safetyRightOpeningEarly` | Strengthened research predicate; O19 body still stated |
+| Provider-before-dependent pair must not transpose | `R182O19RevisedSafetyNegative.r182DependentPairRejected` | Proved on actual R181 count7 trace; no independence assumption needed for rejection |
+| Independent adjacent pair admitted in both orders | `R182O19RevisedSafetyPositive.r182IndependentSafety` / `r182IndependentTrace` | Proved concrete full safety and both actual six-edge orders; empty-key/Unit positive |
+
+The owner-authorized change corrects our weaker predicate, not the paper or
+Cordis. The five-hole census is unchanged; Unit B requires a separate gate.

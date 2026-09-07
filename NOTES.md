@@ -2985,3 +2985,18 @@ performed now. The next shift may implement the authorized safety revision and
 continue the abstract-index stage-certificate route independently. This approved
 methodology exception does NOT waive the earlier unexcused B11/B12-1 workflow
 violation or the parent-owned reviewer gate.
+
+## R182 — O19 owner-authorized surface correction
+
+The owner accepted the certified R181 failure mechanism despite the unrelated
+missing TraceIndependent field. Research `AdjacentActorSwapSafety` now requires
+actual checked right-first LBegin at the exact pre-left cut; left-first already
+comes from its located blockOpening. No swapped trace/diamond is assumed.
+`R182O19RevisedSafetyNegative.r182DependentPairRejected` refutes this strengthened
+safety on the real count7 provider/ServiceA-consumer pair for any exact bundle.
+`R182O19RevisedSafetyPositive.r182IndependentSafety` inhabits the entire revised
+predicate on actual independent empty-key components; both six-edge orders,
+full bundle, installed blocks and decomposition are constructed. No full old-
+safety negative or count7 TraceIndependent is claimed. O19 remains a hole.
+All failures and exact producer corrections are in the R182 audit. No escape
+hatch, new hole, production change or LocalDiamond change was used.

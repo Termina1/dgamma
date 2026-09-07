@@ -94,3 +94,99 @@ and archived in this directory before each substantive gate.
 A design only. No body permission inferred. Unit B waits for the explicit
 post-A reply; C is pre-authorized capital while that reply is late; D no O20 body.
 Census starts **5=1/3/0/0/1**, unchanged.
+
+## Unit A —14/14 proof micro-units complete
+
+Entire extracted paper read (3883 read-tool lines; wc3882 newline count), plus
+R181 report/audit, R180/R179 audits, R146(iii), R144 stop and current THM73 plan.
+No O17 root-placement inference is drawn from this independent O19 correction.
+
+| Unit | Accepted source | Immediate PASS commit |
+|---|---|---|
+| A1 | strengthened `AdjacentActorSwapSafety` record | 8a06b5e, PASS1/5.193s |
+| A2 | O19 telescope binder `applicableSafety`, RHS untouched | 3b8a875, PASS1 |
+| A3 | `r182SwapZeroOne` | de23e6f, PASS1/68.463s including seeded dependency ripple |
+| A4 | `r182DependentPairRejected` | bc7ec89, PASS2/3.133s |
+| A5 | `r182IndependentState` explicit runtime cuts | e5a42d5, PASS1/48.734s including R172 dependency refresh |
+| A6 | `r182IndependentTrace` BOTH full six-edge orders | 0617a20, PASS3/3.122s, includes producer-owned uniqueness correction |
+| A7 | `r182IndependentTransformationRespects` | b0776ed, PASS3/3.129s |
+| A8 | `r182IndependentIteratorObserved` | d618f8d, PASS1/3.114s |
+| A9 | `r182IndependentStructure` | 2551fd9, PASS2/3.113s |
+| A10 | `r182IndependentBundle` FULL fifteen fields | 8cd9886, PASS1/3.113s |
+| A11 | `r182IndependentBlocks` BOTH actual located blocks | c83490d, PASS1/3.112s |
+| A12 | `r182IndependentBlockOrder` | 4f9cb5a, PASS1/5.208s |
+| A13 | `r182IndependentDecomposition` | 6319670, PASS2/17.615s |
+| A14 | `r182IndependentSafety` FULL new safety, no input | bfeb7db, PASS1/17.663s |
+
+A4 proves `(premises : exactBundle) -> exactRevisedSafety premises -> Void` for
+EVERY possible bundle of the actual R181 trace/decomposition. Its proof ONLY
+projects the new first-step checked certificate and contradicts the existing
+certified raw Nothing. Quantifying over the bundle is how the full indexed
+safety is refuted; it is NOT constructing or postulating that bundle or the
+still-missing TraceIndependent. ServiceA is still the real consumer dependency.
+The older complete old-safety negative is not claimed.
+
+A5/A6 use small explicit registry values and per-edge checked equations, NEVER
+scalar Refl observers over nested builders. False and True select two genuine
+six-edge constructor spines from the SAME empty origin to the SAME explicit
+final state (both Active), keeping the two root insertions in their source order.
+A7/A8 generalize actual generator respect / iterator observations only in R45's
+honestly empty-key, Unit-world positive universe. They are NOT the ToyKey count7
+independence theorem of Unit C. A9 owns all discipline/totality boundaries; A10
+actually inhabits all fifteen bundle fields (including generated-monoid
+commutation AND all iterator outcomes). A11–A13 construct both full located
+blocks, installation, no-earlier/no-later facts, exact order, numeric separation
+and whole lifecycle coverage. A14 constructs every revised safety field with
+no caller assumptions. Both provision/dependency sets are genuinely empty and
+therefore disjoint; no nonempty-provision generic result is advertised.
+
+### Exact failures / fixes (all charged; none committed)
+
+* A4-1: missing direct Coeffects import under an unfolded indexed type; Idris
+  exit0 nevertheless emitted Error. Harness correctly rejected it. A4-2 adds
+  direct source imports and passes. No scope failure counts as a negative test.
+* A6-1: rebuilding later registries by fresh insertBinding calls produced a
+  DIFFERENT erased uniqueness function (its suspended lookup had the changed
+  fiber argument). A6-2 removes the unaccepted trace and checks the corrected
+  producer alone, but lacks an explicit Registry phantom type and is rejected.
+  A6-3 explicitly types that original registry and reuses ITS uniqueness token
+  in every later concrete value; the original state declaration plus ONE new
+  trace declaration pass together. No equality of unrelated proof tokens or
+  unsafe cast is assumed. There is no fourth invocation/hidden helper.
+* A7-1: imported observed-bind anonymous case expression is not convertible to
+  the evaluator's suspended partialCompose case. A7-2 cannot eliminate a
+  computed indexed PartialRelated result without observed equations. A7-3
+  consumes the EXISTING public R39 exact partialCompose congruence instead,
+  passing on the last attempt. No LocalDiamond visibility/body change and no
+  new `with` or helper declaration were introduced.
+* A9-1: the generic totality consumer could not infer the actual transition
+  from an underscore. A9-2 supplies each exact Fired source/destination/action/
+  tag/equation, passing without a strengthened totality premise.
+* A13-1: compact nested BeforeIn patterns were not covering. A13-2 uses the
+  established R181 head dispatcher; numeric proof is ordinary 2+i<=3<4+j,
+  not callback normalization. Full record then passes17.615s.
+
+All successful source revisions were committed only after a fresh recorded
+PASS. No attempted proof died3/3; A6/A7 pass on their last invocation. All
+failed snapshots are archived, not retained as declarations. No orphan or
+resource interruption so far. Unit B has ZERO attempts and remains gated.
+
+### A final fresh validation / gate boundary
+
+| Fresh check | Result | Seconds |
+|---|---|---|
+| A-final-cross | PASS | 5.185 |
+| A-final-negative | PASS | 3.135 |
+| A-final-positive | PASS | 17.633 |
+| A-final-thread | PASS | 2.101 |
+| A-final-singleton | PASS | 2.068 |
+| A-final-twoone | PASS | 2.077 |
+| A-final-twotwo | PASS | 2.072 |
+| A-final-coordinate | PASS | 2.076 |
+| A-final-endpoint | PASS | 3.122 |
+| A-final-detachment | exact intended rejection | 1.060 |
+| A-final-zeroderivation | exact intended rejection | 1.064 |
+| A-final-pipeline | PASS | 100.717 |
+| A-final-package | PASS | 16.595 |
+
+34 serialized invocations: 25 ordinary passes, 2 exact intended negatives, 7 charged compiler rejections, zero interruptions. Every retained declaration and both sanctioned surfaces passed before commit. Seeded package PASS207/207; not a cold207-source regression. No broad R11/build deletion. All parameterized R6/R7/R8/R9/R16 safety clients checked; no fixture migration was necessary. The guarded right-first type is unchanged R179 capital, and O20 producer completeness remains open.
