@@ -125,3 +125,19 @@ rootBirthFromEndpoint name key world error value nameEq keyEq trace aligned empt
   replace {p = \owner => LocatedActionOccurrence (OInsert selected owner (fiberComponent fiber)) trace} parentExact
     (rawMetadataBirthAtPrefix name key world error value nameEq keyEq trace trace NoTransitions
       (currentBirthTraceAppendEmpty name key world error value trace) aligned empty selected fiber found)
+
+export
+0 rootEndpointMetadataFromBirth :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {first, finalState : SystemState name key value world error} ->
+  (trace : Transitions first finalState) -> AlignedTransitions name key world error value nameEq keyEq trace ->
+  (bindings (registry first) = []) -> UniqueRawNameInsertions name key world error value nameEq keyEq trace ->
+  (selected : name) -> (component : Component key value world error) ->
+  LocatedActionOccurrence (OInsert selected Root component) trace -> (fiber : Fiber name key value world error) ->
+  (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} selected (registry finalState) = Just fiber) ->
+  ((fiberParent fiber, fiberComponent fiber) = (Root, component))
+rootEndpointMetadataFromBirth name key world error value nameEq keyEq trace aligned empty unique selected component birth fiber found =
+  uniqueRawBirthMetadata name key world error value nameEq keyEq trace unique selected (fiberParent fiber) Root (fiberComponent fiber) component
+    (rawMetadataBirthAtPrefix name key world error value nameEq keyEq trace trace NoTransitions
+      (currentBirthTraceAppendEmpty name key world error value trace) aligned empty selected fiber found) birth
