@@ -94,3 +94,18 @@ record GeneratedOrchestrationMatched
     (LT (locatedActionOrdinal (generatedOccurrence earlier)) (locatedActionOrdinal (generatedOccurrence later))) ->
     (LT (locatedActionOrdinal (generatedOccurrence (generatedBackward earlier)))
       (locatedActionOrdinal (generatedOccurrence (generatedBackward later))))
+
+||| A real matching producer for identical traces (including nonempty domains).
+export
+0 generatedOrchestrationReflexive :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (trace : Transitions initial finalState) ->
+  GeneratedOrchestrationMatched name key world error value nameEq trace trace
+    identityRegistrationGenerationBijection
+generatedOrchestrationReflexive name key world error value nameEq trace =
+  MkGeneratedOrchestrationMatched (\occurrence => occurrence) (\occurrence => occurrence)
+    (\occurrence => Refl) (\occurrence => Refl) (\occurrence => Refl) (\occurrence => Refl)
+    (\occurrence => Refl) (\occurrence => Refl)
+    (\earlier, later, ordered => ordered) (\earlier, later, ordered => ordered)
