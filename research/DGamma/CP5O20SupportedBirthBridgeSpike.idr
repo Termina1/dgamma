@@ -287,3 +287,34 @@ supportedCanonicalBirthBridgeObserved name key world error value nameEq keyEq pr
       selected parent (renameForward (expectedBridgeBijection sameInputs) parent) component component sourceFiber sourceFound supported leftBirth
       (mappedSupportedCanonicalBirth name key world error value nameEq keyEq protocol left right sameInputs leftCapital rightCapital
         leftUnique rightUnique matched selected parent component sourceFiber sourceFound supported leftBirth))
+
+||| Seal the supported-subdomain producer: actual source endpoint lookup comes
+||| from computed support, not a caller-supplied endpoint witness.
+export
+0 supportedCanonicalBirthBridge :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {initial, leftFinal, rightFinal : SystemState name key value world error} ->
+  (left : Transitions initial leftFinal) -> (right : Transitions initial rightFinal) ->
+  (sameInputs : SameOrchestrationModuloGenerated nameEq keyEq left right) ->
+  (leftCapital : IndependentCanonicalSchedule name key world error value protocol nameEq keyEq left) ->
+  (rightCapital : IndependentCanonicalSchedule name key world error value protocol nameEq keyEq right) ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq left ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq right ->
+  GeneratedOrchestrationMatched name key world error value nameEq left right (generatedGenerationBijection sameInputs) ->
+  (selected, parent : name) -> (component : Component key value world error) ->
+  (isSupported {name = name} {key = key} {value = value} {world = world} {error = error}
+    @{nameEq} @{keyEq} selected leftFinal = True) ->
+  (leftBirth : LocatedGeneratedRegistration selected parent component (canonicalTrace (canonicalSchedule leftCapital))) ->
+  (rightBirth : LocatedGeneratedRegistration (renameForward (expectedBridgeBijection sameInputs) selected)
+    (renameForward (expectedBridgeBijection sameInputs) parent) component (canonicalTrace (canonicalSchedule rightCapital)) **
+    generationForward (generatedGenerationBijection sameInputs)
+      (registrationGeneration (replayGeneratedRegistrationOrigin (canonicalOccurrenceCorrespondence leftCapital) leftBirth)) =
+    registrationGeneration (replayGeneratedRegistrationOrigin (canonicalOccurrenceCorrespondence rightCapital) rightBirth))
+supportedCanonicalBirthBridge name key world error value nameEq keyEq protocol {leftFinal} left right sameInputs leftCapital rightCapital
+  leftUnique rightUnique matched selected parent component supported leftBirth =
+    case computedSupportPresent name key world error value nameEq keyEq leftFinal selected supported of
+      (sourceFiber ** sourceFound) =>
+        supportedCanonicalBirthBridgeObserved name key world error value nameEq keyEq protocol left right sameInputs leftCapital rightCapital
+          leftUnique rightUnique matched selected parent component sourceFiber sourceFound supported leftBirth
