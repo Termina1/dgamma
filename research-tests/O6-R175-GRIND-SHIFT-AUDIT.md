@@ -238,3 +238,39 @@ DGamma.R175OldGroupingPolicyCycle:28:16--28:33
                      ^^^^^^^^^^^^^^^^^
 Did you mean any of: Prelude.Types.List.reverse, Prelude.Types.SnocList.reverse, Prelude.Types.reverse, Reverse, or traverse?
 ```
+
+### D1 authorized repair and redesign note (BEFORE D2 code)
+
+Supervisor explicitly authorized EXACTLY one further invocation, D1-4, changing
+ONLY `Data.List.reverse` to the compiler-suggested
+`Prelude.Types.List.reverse`. It passed fresh (00:10:35–00:10:37 UTC), committed
+`9bfd15f`. The stopped D1 ledger above is retained, not silently reset. The
+fixture is an abstract ownership-policy regression, never a checked operational
+O17 countermodel. D1 counts as one of the 12 authorized redesign micro-units.
+
+The redesign measure is the inversion count of the WHOLE reached ownership
+word under the SAME fixed desired support order, not distance to the currently
+selected actor. An owned registration has its parent block's rank, not its
+child's actor rank. Equal-ranked nodes do not contribute inversions. Sorting
+by this rank simultaneously orders and groups all covered owned nodes; a
+separate grouping debt is unnecessary for the fully covered internal word.
+External/unowned nodes MUST be treated as barriers by a future operational
+bridge; this shift does not attempt to move them or build any root placement.
+A selector may only return a strictly descending adjacent rank pair. In the
+old cycle, [1,0,0,1] selects the FIRST 1/0 ordering inversion, never the last
+0/1 pair; the inverse move is then forbidden. This is ordering-first in a
+single measure rather than an independently reset per-actor grouping phase.
+
+Implementation order D2–D12: simple executable natural-number crossing count
+and whole-word inversion function; explicit arithmetic lemmas; a dependent
+progress packet tying an ACTUAL adjacent decomposition, its exact swapped
+word, preservation of every outside-node contribution and strict whole-word
+decrease; head/lift producers; a structurally recursive selector constructing
+that packet SIMULTANEOUSLY with its choice. No candidate result is computed
+and subsequently assumed to decrease. The final bounded slots attempt the
+trace/worklist observation bridge. Until the ACTUAL sealed suffix replay is
+shown to preserve this observation and the operational selector consumes the
+same packet, this is only ranked-word progress capital, NOT the requested
+complete worklist measure or operational progress proof. No existing S17 or
+O17 signature/body is replaced by a weaker theorem. If D12 is reached before
+that integration, audit-park the remaining measure and proceed to B/C.
