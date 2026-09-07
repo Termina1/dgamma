@@ -255,3 +255,30 @@ accepted retained-event domain. No arbitrary birth/match producer is accepted at
 these final sealed boundaries. Root-birth coverage and current-parent/retirement
 transport remain separate. Both O18 support-truth implications and body unchanged;
 no O20 consumption/order-list equality used. Probe remains frozen after P2-4.
+
+### B85–B110 — genuine parent-generation authentication
+
+Independent parent metadata now includes ACTUAL original insertion births for
+both parent generations stored by the accepted event match. RegistrationIndexBirths
+tracks genuine current and historical activation-generation births across every
+scanner action. Activation-index put/lookup/delete are explicit observed algebra,
+not endpoint withdrawal/O21 claims. B95 needed a second check to import the owner
+of justInjective; B102 likewise needed Data.Nat. All other units PASS 1/1.
+B99 removed an accidentally duplicated, unused B98 occurrence parameter; no such
+redundant premise remains in the final function.
+
+B102 inducts through the actual sealed side fold with genuine global occurrence
+embeddings and exact ordinals. B103 factors the accepted matching producer at an
+explicit owned projection, curing the opaque-projection problem without aliases.
+B106/B107 authenticate the precise parent generation at any retained event's
+stamped activation. B108–B110 authenticate both matched parent births, read back
+both parent generation names, and identify each actual endpoint parent field with
+that authenticated generation name. The parent generations are related by the
+same accepted RegistrationEventMatch generation bijection.
+
+Still separate and UNPROVED: those historical activation parent generations are
+endpoint-current; therefore raw-parent phi coherence is not claimed. Also open:
+all-supported generated-event coverage, root static coverage (NO root-placement
+or O17 edit), and retirement/support truth. The CurrentGenerationBirth container
+is reused here solely as genuine birth/stamp data; it does not by itself claim
+that a historical parent generation is current. Six inherited body holes remain.
