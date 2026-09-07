@@ -232,3 +232,26 @@ acceptedSupportedGeneratedMetadataBackward name key world error value nameEq key
     supportedMatchingMetadataBackward name key world error value nameEq keyEq left right sameInputs
       leftAligned rightAligned empty leftUnique rightUnique (acceptedAuthenticatedRegistrationMatching name key world error value nameEq left right (generatedGenerationBijection sameInputs) (generatedRegistrationTree sameInputs))
       rightEvent rightMember rightFiber rightFound supported
+
+||| BOTH matched parent generations are actual ORIGINAL insertion births.
+||| These are historical activation stamps, not an endpoint-currentness claim.
+export
+0 acceptedMatchedParentBirths :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) ->
+  {leftFirst, leftFinal, rightFirst, rightFinal : SystemState name key value world error} ->
+  (left : Transitions leftFirst leftFinal) -> (right : Transitions rightFirst rightFinal) ->
+  (renaming : RegistrationGenerationBijection name) ->
+  (registrations : RegistrationCorrespondenceByGeneration nameEq renaming left right) ->
+  (leftEvent, rightEvent : RegistrationEvent name key world error value) ->
+  Elem leftEvent (leftScannedEvents (acceptedAuthenticatedRegistrationMatching name key world error value nameEq left right renaming registrations)) ->
+  Elem rightEvent (rightScannedEvents (acceptedAuthenticatedRegistrationMatching name key world error value nameEq left right renaming registrations)) ->
+  (matched : RegistrationEventMatch renaming leftEvent rightEvent) ->
+  (CurrentGenerationBirth name key world error value left (eventParent leftEvent)
+      (activationParentGeneration (leftMatchedActivation matched)),
+   CurrentGenerationBirth name key world error value right (eventParent rightEvent)
+      (activationParentGeneration (rightMatchedActivation matched)))
+acceptedMatchedParentBirths name key world error value nameEq left right renaming registrations leftEvent rightEvent leftMember rightMember matched =
+  (acceptedLeftEventParentBirth name key world error value nameEq left right renaming registrations leftEvent leftMember
+    (leftMatchedActivation matched) (leftActivationPresent matched),
+   acceptedRightEventParentBirth name key world error value nameEq left right renaming registrations rightEvent rightMember
+    (rightMatchedActivation matched) (rightActivationPresent matched))
