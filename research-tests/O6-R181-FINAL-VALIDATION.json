@@ -1168,7 +1168,7 @@
       "matchingSourceCommits": []
     }
   ],
-  "reviewGate": "required; parent-owned independent reviewer not run by child; terminal supervisor stand-down gate requested after committed report",
+  "reviewGate": "Parent-owned independent read-only review being launched; supervisor checked-prefix/stand-down gate approved at732a125",
   "supervisorStopGates": [
     "A11 STOP ratified; five distinct A units after B authorized",
     "B12 STOP ratified; B14/B15 explicitly unused; no fourth attempt",
@@ -1194,5 +1194,22 @@
     "acceptedEvidence": "Certified count7 trace, same-source swapped consumer Begin=None, both located blocks, decomposition, strong original uniqueness,14/15 bundle fields",
     "independenceStatus": "Uninhabited; continues as parallel proof capital, NOT a revision gate",
     "notWaived": "The original B11/B12-1 workflow violation remains unexcused; full mathematical negative remains unproved"
+  },
+  "supervisorTerminalGate": {
+    "approvedHead": "732a125de169df9f4d174d42bcf0d5f11a360d3c",
+    "recordedAtUTC": "2026-09-07T17:02:51.319237+00:00",
+    "status": "checked prefix ratified; stand-down APPROVED",
+    "supervisorVerified": [
+      "71 commits over5871236 at approved head",
+      "clean tracked tree",
+      "production diff vs34b21c9 empty",
+      "LocalDiamond untouched",
+      "independent hole census5=1/3/0/0/1",
+      "no stray compiler",
+      "parent reports pushed"
+    ],
+    "review": "Independent read-only review being launched by parent; not yet a completed review gate",
+    "workflowException": "dfc933e reverted and flagged, NOT excused",
+    "ownerException": "16:50 next-shift R146 doctrine exception recorded; no current source revision/body permission inferred"
   }
 }

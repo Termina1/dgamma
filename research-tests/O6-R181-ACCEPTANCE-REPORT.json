@@ -584,5 +584,5 @@
     "F8 is explicitly conditional on the original real TraceIndependent obligation; no full bundle or safety/negative is claimed",
     "G2 STOP2/3 follows an explicit supervisor resource override; no third attempt or restart. Owner next-shift R146 doctrine exception is documented separately from the unexcused earlier workflow violation."
   ],
-  "manualNotes": "Read-only frozen gate at 09f68d59266de0e44f953c663e610cd0c96f8815. Final stand-down pending; parent owns independent review. Owner16:50UTC next-shift safety-revision exception is documented ONLY, without full-negative/body claims or excusing the workflow violation."
+  "manualNotes": "Supervisor TERMINAL gate accepted/stand-down approved at732a125. Parent independently checked clean tree, production/spike/hole/cache constraints and no compiler; parent reports push and is launching read-only independent review. This final metadata records that ruling only; proof source unchanged. Criterion1 stays not-satisfied and the original workflow violation remains unexcused. Owner next-shift safety-revision exception does not imply a full negative or O19 body permission."
 }

@@ -570,3 +570,14 @@ source hashes; no staged files/compiler orphan, clean tracked tree. Final report
 supersede all prior prefixes, preserve criterion1 not-satisfied/protocol=false,
 and record the owner16:50 next-shift doctrine exception separately. No proof
 work followed the G2 stop; final supervisor stand-down/reviewer gate still needed.
+
+## SUPERVISOR TERMINAL GATE — ACCEPTED, STAND-DOWN APPROVED
+
+At732a125 the supervisor ratified the checked prefix and approved stand-down.
+Parent independently verified71 commits over5871236, clean tracked tree, empty
+production diff vs34b21c9, untouched LocalDiamond, census5=1/3/0/0/1 and no stray
+compiler; parent reports the branch pushed. G2 resource STOP2/3 and all retained
+capital ratified. dfc933e remains correctly reverted/flagged, NOT excused. Owner's
+16:50 next-shift doctrine exception is recorded. Parent is launching read-only
+independent review now; it is not represented as already completed. This appendix
+and final JSON metadata record the ruling ONLY; no proof/source work follows it.
