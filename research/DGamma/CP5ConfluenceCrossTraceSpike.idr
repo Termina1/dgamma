@@ -1362,7 +1362,7 @@ public export
 originalEndpointsConvergeSpike nameEq keyEq protocol leftTrace rightTrace
   sameInputs leftCapital rightCapital leftUnique rightUnique convergence =
     replayedCanonicalToOriginalEndpointSpike nameEq keyEq protocol leftTrace
-      rightTrace sameInputs leftCapital rightCapital
+      rightTrace sameInputs leftCapital rightCapital leftUnique rightUnique
       (acceptedDeletionScannerCapitalSpike nameEq keyEq protocol leftTrace
         rightTrace sameInputs leftCapital rightCapital)
       (operationalTargetTrace operational)
