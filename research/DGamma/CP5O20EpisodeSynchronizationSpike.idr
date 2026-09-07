@@ -45,3 +45,29 @@ synchronizationLookupBindings key value keyEq wanted
   (MkCoeffectContext leftEntries leftUnique)
   (MkCoeffectContext rightEntries rightUnique) same =
     cong (lookupEntries {key = key} {value = value} @{keyEq} wanted) same
+
+||| R180 B4: observed-head prerequisite, NOT the exhausted general B3 lemma.
+||| The producer must supply both equations for this exact Maybe VALUE.
+export
+0 synchronizationResolvedHeadObserved :
+  (name, key, world : Type) -> (value : key -> Type) ->
+  (keyEq : DecEq key) -> (wanted : key) -> (rest : List key) ->
+  (leftOwner, rightOwner : name) -> (leftTail, rightTail : View name rest) ->
+  (left, right : EffectState name key value world) ->
+  (headValue : Maybe (value wanted)) ->
+  (lookupBinding @{keyEq} wanted (effectTables left leftOwner) = headValue) ->
+  (lookupBinding @{keyEq} wanted (effectTables right rightOwner) = headValue) ->
+  (resolveEffectValues @{keyEq} rest leftTail left =
+    resolveEffectValues @{keyEq} rest rightTail right) ->
+  (resolveEffectValues @{keyEq} (wanted :: rest)
+    (ProviderView leftOwner leftTail) left =
+      resolveEffectValues @{keyEq} (wanted :: rest)
+        (ProviderView rightOwner rightTail) right)
+synchronizationResolvedHeadObserved name key world value keyEq wanted rest
+  leftOwner rightOwner leftTail rightTail left right Nothing leftHead rightHead
+  tailSame = rewrite leftHead in rewrite rightHead in Refl
+synchronizationResolvedHeadObserved name key world value keyEq wanted rest
+  leftOwner rightOwner leftTail rightTail left right (Just observed) leftHead
+  rightHead tailSame = rewrite leftHead in rewrite rightHead in
+    cong (map (OneDepValue {key = key} {value = value} {k = wanted} {rest = rest}
+      observed)) tailSame
