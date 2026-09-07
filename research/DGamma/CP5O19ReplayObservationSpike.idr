@@ -172,3 +172,22 @@ public export
 o19ComposeProduced previous (diamond ** (result ** (node, unique))) =
   (diamond ** (result **
     (o19AppendNonEmpty previous (nonEmptyToFiniteAdjacentSwapDerivation node), unique)))
+
+||| B40: exact node-count addition for STRUCTURAL observed derivation append.
+||| Induction on actual finite data, never scalar Refl over a replay builder.
+public export
+0 o19AppendFiniteCount :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {protocol : RegistrationProtocol key value world error} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {initial, sourceFinal, middleFinal, targetFinal : SystemState name key value world error} ->
+  {source : Transitions initial sourceFinal} -> {middleTrace : Transitions initial middleFinal} ->
+  {target : Transitions initial targetFinal} ->
+  (previous : FiniteAdjacentSwapDerivation name key world error value protocol nameEq keyEq source middleTrace) ->
+  (next : FiniteAdjacentSwapDerivation name key world error value protocol nameEq keyEq middleTrace target) ->
+  (finiteAdjacentSwapNodeCount (o19AppendFinite previous next) =
+    finiteAdjacentSwapNodeCount previous + finiteAdjacentSwapNodeCount next)
+o19AppendFiniteCount FiniteAdjacentSwapDone next = Refl
+o19AppendFiniteCount
+  (FiniteAdjacentSwapStep original earlier left right later orientation diamond result _ rest) next =
+    cong S (o19AppendFiniteCount rest next)
