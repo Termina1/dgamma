@@ -30643,3 +30643,25 @@ rawClosingRanksSameActor name key world error value nameEq keyEq protocol global
         (ErasedClosingEpisodeOccurrence leftActor right))
       (rawClosingOccurrenceRankSound name key world error value nameEq keyEq protocol global premises leftActor left)
       (rawClosingOccurrenceRankSound name key world error value nameEq keyEq protocol global premises leftActor right)
+
+||| Transfer an O7 ordinal match to rank equality by exact opening identity.
+0 rawClosingOrdinalRankSame :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (global : Transitions initial finalState) ->
+  (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq global) ->
+  (UniqueRawNameInsertions name key world error value nameEq keyEq global) ->
+  (other : ClosingEpisodeOccurrence name key world error value nameEq keyEq global) ->
+  (consumer : name) ->
+  (episode : LocatedClosedEpisode name key world error value nameEq keyEq consumer global) ->
+  (scannedClosingOrdinal other = transitionCount (traceBeforeOpening episode)) ->
+  (rawClosingOccurrenceRank name key world error value nameEq keyEq protocol global premises other =
+   rawClosingOccurrenceRank name key world error value nameEq keyEq protocol global premises
+    (ErasedClosingEpisodeOccurrence consumer episode))
+rawClosingOrdinalRankSame name key world error value nameEq keyEq protocol global premises unique
+  (ErasedClosingEpisodeOccurrence actor found) consumer episode same =
+    rawClosingRanksSameActor name key world error value nameEq keyEq protocol global premises unique
+      actor consumer found episode
+      (rawClosingSameOpeningActor name key world error value nameEq keyEq global actor consumer found episode same)
