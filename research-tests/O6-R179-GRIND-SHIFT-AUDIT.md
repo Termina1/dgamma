@@ -564,3 +564,34 @@ noncanonical state, derive actual independent/parent/child side conditions and
 a local diamond, integrate its sealed swap/decrease, and establish completeness.
 No private worklist mutation, root placement or O17 body attempted. A's full
 counterexample and exhausted prerequisites remain unchanged.
+
+
+## Post-F/G final validation (11:25 UTC)
+
+Fresh checks of all11 retained new Idris files (10 positives +exact intended
+negative), plus the visibility-only CanonicalSort and seeded package ALL PASS.
+
+| Final invocation | Seconds | Result |
+|---|---:|---|
+| F18-canonical-visibility | 54.934 | PASS |
+| F19-countershape | 131.616 | PASS |
+| F20-observed | 3.099 | PASS |
+| F21-identity | 10.348 | PASS |
+| F22-current-positive | 2.093 | PASS |
+| F23-original-negative | 1.063 | intended negative |
+| F24-supported-bridge | 3.125 | PASS |
+| F25-supported-positive | 2.074 | PASS |
+| F26-actual-selection | 1.034 | PASS |
+| F27-actual-selection-positive | 12.428 | PASS |
+| F28-supported-endpoint | 4.164 | PASS |
+| F29-early-applicability | 2.069 | PASS |
+| F30-seeded-package | 16.592 | PASS |
+
+Complete ledger: **104 invocations =86 ordinary successes,4 intended negatives,
+13 diagnostic rejections,1 interrupted/no-verdict attempt**. Ordinary successes
+include4 seeded package builds, C type-only and visibility/final-source checks;
+these are not86 new theorem proofs. All207 production TTC seeds retained, not
+a fresh207-source regression suite. All intervals serialized; ≤1 new top-level
+declaration per invocation checked against last accepted source/baseline.
+No cold build/cache deletion/R11. Final whitelist/frozen gate follows at the
+committed source/docs/evidence checkpoint. Earlier validations remain history.

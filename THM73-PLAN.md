@@ -3434,3 +3434,24 @@ actors0/1 and ranks1/0. Integrating the generic observer argument at the SAME
 private worklist rank function, orientation/early applicability and sealed
 result/progress completeness remain open. No old spike or body changed.
 D consumed12/12 (all first attempt); E8/8 (E7 second/E8 third attempt passed).
+
+### R179 F/G: canonical one-sided endpoint capital and guarded actual early execution
+
+The separately authorized F10/G8 continuation is complete. F derives actual
+canonical supported endpoint/Active/nonretired/view-domain payloads and full
+one-sided transport, not the cross-canonical ambient/table/control clauses. The
+missing synchronized-episode invariant is detailed in the R179 audit: actual
+paired prefixes, fixed accepted bijection, renamed global/table values, matched
+resolved inputs and accumulated-undo relation through Begin/Advance/Finish.
+Do not turn those required conclusions into new premises. Unsupported child
+births remain D's separate fourth-clause remainder.
+
+G integrates E with exact `canonicalWorkActionRank`, existing same-pair orientation
+inspection and real `checkedApplyAction` at the before-left cut with exact tag.
+Its Maybe output certifies successful checks only; no later-candidate search,
+progress completeness, diamond or O17 body is claimed. The real E count4 fixture
+now certifies early Begin1 under the exact worklist observer. Private reached
+worklist plumbing and side-condition/diamond/decrease/existence work remain open.
+Exactly two visibility keywords were authorized in CanonicalSort; bodies and all
+five protected hole declarations remain unchanged. See the machine-checked exact
+whitelist, not the earlier whole-file-byte-equality checkpoints, for current scope.

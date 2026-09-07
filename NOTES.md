@@ -2714,3 +2714,41 @@ eight positives plus exact intended negative PASS; seeded package207/207 PASS.
 Seventy total invocations accounted:56 ordinary successes (including3 package
 calls and C's type-only probe),3 intended negatives,10 rejected diagnostics,
 1 no-verdict interruption. Old five spikes/five holes and production stay exact.
+
+## Status — R179 post-F/G checkpoint
+
+F's10 units prove actual canonical supported endpoint lookup/Active/nonretired
+and view-domain capital, reify its committed accumulator/view, recover the actual
+original counterpart/full one-sided controls/static fields, and compose exact
+original→own canonical→actual replay effects plus supported controls. These are
+conditional producers/consumers of existing capitals, not concrete whole-schedule
+executions. The stronger one-sided facts need neither A9 nor original uniqueness;
+D's bilateral supported birth producer genuinely consumes A9. F4 only eliminates
+already-provided raw withdrawal evidence; no O21 withdrawal packet is produced.
+
+G's8 units expose exactly two existing observers, integrate E's actual selector
+with the SAME fixed-order rank observation, inspect the same pair's orientation,
+and EXECUTE its chosen right action at the before-left cut. The positive result
+contains a real checked endpoint with exact original action AND tag. A different
+tag or failure is rejected. `Nothing` proves neither canonicality nor absence of
+some later applicable pair; G7 does not scan further after the first failed
+candidate. The existing concrete E fixture now checks exact canonical observation
+and actual early Begin1, count4 and `Just (2,0,1,False,True)`; it does not reduce or
+claim success of the opaque combined orientation consumer.
+
+G visibility deviation is expressly authorized: only `public export` before
+`canonicalWorkActionRank` (needed by concrete proof reduction), and only `export`
+before `canonicalWorkInspectOrientation` (opaque result consumer). No old helper
+body/signature, protected hole, production module or LocalDiamond surface changed.
+No new escape hatch/partiality/local let/with. F had three charged diagnostic
+repairs (all PASS2); G all first pass, with monitored56s CanonicalSort checks.
+
+Next: the precise O20 missing lemma is **SupportedCanonicalEpisodeSynchronization**
+(frontier name only, not an Idris declaration): paired actual supported-episode
+prefixes under `expectedBridgeBijection sameInputs` must produce renamed GLOBAL
+effects and resolved-input/committed-view/pointwise undo relations, propagating
+through checked Begin/Advance/Finish. Ambient has no name-wise supported-domain
+restriction. Unsupported generated children separately remain open. O17 still
+needs private reached-worklist plumbing, a completeness/existence argument,
+independence and child/parent side conditions, actual diamond and sealed decrease.
+Thm73 and all five prior holes remain OPEN; A11/A13 remain exhausted and A14 blocked.

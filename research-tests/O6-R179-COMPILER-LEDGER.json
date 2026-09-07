@@ -2805,5 +2805,387 @@
     "matchingSourceCommits": [
       "db5bd48c3bb1a139ccc81fe61613e0e842362b97"
     ]
+  },
+  {
+    "unit": "F18-canonical-visibility",
+    "path": "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr"
+    ],
+    "start": "2026-09-07T11:21:14.731697+00:00",
+    "end": "2026-09-07T11:22:09.665984+00:00",
+    "seconds": 54.93387733306736,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 20117520,
+    "sourceSHA256": "3b62ba1c3bc88503116ed22d82c667043f7f41dd483fb093cc25b677a55245cc",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "8/8: Building DGamma.CP5ConfluenceCanonicalSortSpike (research/DGamma/CP5ConfluenceCanonicalSortSpike.idr)\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  sorted is shadowing Data.List.sorted\n\nDGamma.CP5ConfluenceCanonicalSortSpike:4659:3--4663:39\n 4659 | 0 abstractTwoBirthOneWithdrawalAccounting :\n 4660 |   (fixture : AbstractTwoBirthOneWithdrawalAssembly name key world error value protocol\n 4661 |     nameEq keyEq original reduction ordering sorted) ->\n 4662 |   OneTraceOrchestrationAccounting name key world error value protocol nameEq keyEq\n 4663 |     original reduction ordering sorted\n\n",
+    "newTopLevelDeclarations": [],
+    "matchingSourceCommits": [
+      "a322f1d4cb55190514e857be18450daa015aade2"
+    ]
+  },
+  {
+    "unit": "F19-countershape",
+    "path": "research-tests/DGamma/R179O19DependencyCountershape.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R179O19DependencyCountershape.idr"
+    ],
+    "start": "2026-09-07T11:22:09.730634+00:00",
+    "end": "2026-09-07T11:24:21.347561+00:00",
+    "seconds": 131.61634829221293,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 3098080,
+    "sourceSHA256": "9df6b5d76e66682cc1f1390c32347c2d71b6cf4006bcbe1d8661dee7fe120139",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "1/1: Building DGamma.R179O19DependencyCountershape (research-tests/DGamma/R179O19DependencyCountershape.idr)\n",
+    "newTopLevelDeclarations": [],
+    "matchingSourceCommits": [
+      "b25d2db0ace72366a0dadbf264014b178577b2bc"
+    ]
+  },
+  {
+    "unit": "F20-observed",
+    "path": "research-tests/DGamma/R179O19ObservedExecution.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R179O19ObservedExecution.idr"
+    ],
+    "start": "2026-09-07T11:24:21.407168+00:00",
+    "end": "2026-09-07T11:24:24.506011+00:00",
+    "seconds": 3.098675874993205,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 270192,
+    "sourceSHA256": "71150c8e0a473464f16401cebe07066004a29aed51806caf70548df67745457d",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "1/1: Building DGamma.R179O19ObservedExecution (research-tests/DGamma/R179O19ObservedExecution.idr)\n",
+    "newTopLevelDeclarations": [],
+    "matchingSourceCommits": [
+      "bf24a4433b65084c4fa57158f549962c85de2b39"
+    ]
+  },
+  {
+    "unit": "F21-identity",
+    "path": "research/DGamma/CP5O21EndpointIdentitySpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O21EndpointIdentitySpike.idr"
+    ],
+    "start": "2026-09-07T11:24:24.571004+00:00",
+    "end": "2026-09-07T11:24:34.919101+00:00",
+    "seconds": 10.34789791610092,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 2885008,
+    "sourceSHA256": "5a1d3fe32fb110a905ad5d59885637710fc13fcccd81c1d6f9ad67472f515e38",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "16/17: Building DGamma.CP5ConfluenceRenamingCompositionSpike (research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr)\n17/17: Building DGamma.CP5O21EndpointIdentitySpike (research/DGamma/CP5O21EndpointIdentitySpike.idr)\n",
+    "newTopLevelDeclarations": [],
+    "matchingSourceCommits": [
+      "7053914f341be313a34e3e85b599c0dee7b51438"
+    ]
+  },
+  {
+    "unit": "F22-current-positive",
+    "path": "research-tests/DGamma/R179O21CurrentBirthIdentityPositive.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R179O21CurrentBirthIdentityPositive.idr"
+    ],
+    "start": "2026-09-07T11:24:34.983789+00:00",
+    "end": "2026-09-07T11:24:37.077122+00:00",
+    "seconds": 2.0931487502530217,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 2941184,
+    "sourceSHA256": "e8d1f64fdf8dab1b2af4dd76dc69f6138c45ad849cc64c14b1d46a030d34d901",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "1/1: Building DGamma.R179O21CurrentBirthIdentityPositive (research-tests/DGamma/R179O21CurrentBirthIdentityPositive.idr)\n",
+    "newTopLevelDeclarations": [],
+    "matchingSourceCommits": [
+      "e7bd8ffc18f3a0542a1d075ce593c0616e02740e"
+    ]
+  },
+  {
+    "unit": "F23-original-negative",
+    "path": "research-tests/DGamma/R179O21WrongOriginalBirthNegative.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R179O21WrongOriginalBirthNegative.idr"
+    ],
+    "start": "2026-09-07T11:24:37.138605+00:00",
+    "end": "2026-09-07T11:24:38.201506+00:00",
+    "seconds": 1.0627230838872492,
+    "exit": 1,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 0,
+    "sourceSHA256": "f2d7e6825c7fece1c36787ba1f2d248a59197df7d94b1fece6b651714046055b",
+    "expectedDiagnostic": "Mismatch between: other and left.",
+    "symbol": "wrongOriginalBirth",
+    "transcript": "1/1: Building DGamma.R179O21WrongOriginalBirthNegative (research-tests/DGamma/R179O21WrongOriginalBirthNegative.idr)\nError: While processing right hand side of wrongOriginalBirth. When unifying:\n    LocatedActionOccurrence (OInsert selected otherParent otherComponent) other\nand:\n    LocatedActionOccurrence (OInsert selected otherParent otherComponent) left\nMismatch between: other and left.\n\nDGamma.R179O21WrongOriginalBirthNegative:36:77--36:87\n 32 |   (generation = MkRegistrationGeneration selected (locatedActionOrdinal otherBirth))\n 33 | wrongOriginalBirth name key world error value nameEq keyEq left right other sameInputs aligned empty unique\n 34 |   selected generation current observed found otherParent otherComponent otherBirth =\n 35 |     acceptedLeftEndpointBirthIdentity name key world error value nameEq keyEq left right sameInputs aligned empty unique\n 36 |       selected generation current observed found otherParent otherComponent otherBirth\n                                                                                  ^^^^^^^^^^\n\n",
+    "newTopLevelDeclarations": [],
+    "matchingSourceCommits": [
+      "853cfe812266ca24e5bd7a413f901cda6062b576"
+    ]
+  },
+  {
+    "unit": "F24-supported-bridge",
+    "path": "research/DGamma/CP5O20SupportedBirthBridgeSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O20SupportedBirthBridgeSpike.idr"
+    ],
+    "start": "2026-09-07T11:24:38.262565+00:00",
+    "end": "2026-09-07T11:24:41.387583+00:00",
+    "seconds": 3.1248447080142796,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 849152,
+    "sourceSHA256": "fb7bf6b4750d729da2794ff38bc1ec8d51cffbb838a24db8f7db822914b4e93a",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "27/27: Building DGamma.CP5O20SupportedBirthBridgeSpike (research/DGamma/CP5O20SupportedBirthBridgeSpike.idr)\n",
+    "newTopLevelDeclarations": [],
+    "matchingSourceCommits": [
+      "149d10f517cac26c960ca43a0baea9907e3274f9"
+    ]
+  },
+  {
+    "unit": "F25-supported-positive",
+    "path": "research-tests/DGamma/R179O20SupportedBirthPositive.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R179O20SupportedBirthPositive.idr"
+    ],
+    "start": "2026-09-07T11:24:41.447446+00:00",
+    "end": "2026-09-07T11:24:43.521343+00:00",
+    "seconds": 2.073729042429477,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 1923920,
+    "sourceSHA256": "010bf6fcfa480156240a4365ab8f7378fc6edf0cc253f6bf9066bbaeb8ce2f4c",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "1/1: Building DGamma.R179O20SupportedBirthPositive (research-tests/DGamma/R179O20SupportedBirthPositive.idr)\n",
+    "newTopLevelDeclarations": [],
+    "matchingSourceCommits": [
+      "a8679a0f0a4fd3d9848d109ac3e0052f7bee36fd"
+    ]
+  },
+  {
+    "unit": "F26-actual-selection",
+    "path": "research/DGamma/CP5RankedTraceSelectionSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5RankedTraceSelectionSpike.idr"
+    ],
+    "start": "2026-09-07T11:24:43.581411+00:00",
+    "end": "2026-09-07T11:24:44.615403+00:00",
+    "seconds": 1.0338047076947987,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 0,
+    "sourceSHA256": "6b09d40d6d49287c5cee72a561f95956c1d8e8c4b44d2a00c790e16a729c1015",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "2/2: Building DGamma.CP5RankedTraceSelectionSpike (research/DGamma/CP5RankedTraceSelectionSpike.idr)\n",
+    "newTopLevelDeclarations": [],
+    "matchingSourceCommits": [
+      "8c96a5f0dcbe91fb9cf7b0256bc46cc9726dab41"
+    ]
+  },
+  {
+    "unit": "F27-actual-selection-positive",
+    "path": "research-tests/DGamma/R179RankedTraceSelectionPositive.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R179RankedTraceSelectionPositive.idr"
+    ],
+    "start": "2026-09-07T11:24:44.681999+00:00",
+    "end": "2026-09-07T11:24:57.110038+00:00",
+    "seconds": 12.427819416858256,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 3014224,
+    "sourceSHA256": "625f5492e1fc2df3d1f995e2d33d7ffd83495140b79ca41d627260e8c65ee873",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "1/1: Building DGamma.R179RankedTraceSelectionPositive (research-tests/DGamma/R179RankedTraceSelectionPositive.idr)\n",
+    "newTopLevelDeclarations": [],
+    "matchingSourceCommits": [
+      "db5bd48c3bb1a139ccc81fe61613e0e842362b97"
+    ]
+  },
+  {
+    "unit": "F28-supported-endpoint",
+    "path": "research/DGamma/CP5O20SupportedEndpointCapitalSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O20SupportedEndpointCapitalSpike.idr"
+    ],
+    "start": "2026-09-07T11:24:57.171512+00:00",
+    "end": "2026-09-07T11:25:01.335532+00:00",
+    "seconds": 4.163829875178635,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 2880768,
+    "sourceSHA256": "de506cd1e996c95c10c26e9bb21fc1f18d0210504bd614933e10caa0a8032aa6",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "28/28: Building DGamma.CP5O20SupportedEndpointCapitalSpike (research/DGamma/CP5O20SupportedEndpointCapitalSpike.idr)\n",
+    "newTopLevelDeclarations": [],
+    "matchingSourceCommits": [
+      "5d433e4bece5d42cecb121678daa0d6e9f8d0102"
+    ]
+  },
+  {
+    "unit": "F29-early-applicability",
+    "path": "research/DGamma/CP5RankedEarlyApplicabilitySpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5RankedEarlyApplicabilitySpike.idr"
+    ],
+    "start": "2026-09-07T11:25:01.395467+00:00",
+    "end": "2026-09-07T11:25:03.464722+00:00",
+    "seconds": 2.0690694167278707,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 911792,
+    "sourceSHA256": "d54aefae02a4a03b1ea710cb79aaa224887eaec6bae7921203995238aa8e5e87",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "10/10: Building DGamma.CP5RankedEarlyApplicabilitySpike (research/DGamma/CP5RankedEarlyApplicabilitySpike.idr)\n",
+    "newTopLevelDeclarations": [],
+    "matchingSourceCommits": [
+      "b5c548267db0090944902071cbcf248c4558797e"
+    ]
+  },
+  {
+    "unit": "F30-seeded-package",
+    "path": "package",
+    "command": [
+      "idris2",
+      "--build",
+      "dgamma.ipkg"
+    ],
+    "start": "2026-09-07T11:25:03.529174+00:00",
+    "end": "2026-09-07T11:25:20.120962+00:00",
+    "seconds": 16.59155537514016,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 283040,
+    "sourceSHA256": "aee761a37757cb047ddbf0f846bc23ce830ed755422f96852d08eb435c368727",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "",
+    "matchingSourceCommits": []
   }
 ]

@@ -524,3 +524,21 @@ R179 continuation (D/E, after the first handoff gate was deferred):
 D does not cover unsupported children or ambient/table/control convergence. E
 is an erased proof-producing actual-trace selector, not an operational diamond
 or complete sorting loop. The same five theorem holes remain untouched.
+
+### R179 F/G continuation (after separately ratified D/E)
+
+| Paper obligation | Idris correspondence | Status |
+|---|---|---|
+| Thm73/O20 canonical endpoint support | `CP5O20SupportedEndpointCapitalSpike.canonicalSupportedEndpointView` | Proved conditional producer: actual canonical lookup/support/Active/nonretired/view-domain, from own capital and original support |
+| Thm73/O20 committed view | `supportedCanonicalCommittedView` | Proved exact Active payload and stable-provider/resolvable-coeffect domain at its own endpoint; not cross-view equality |
+| Thm73/O20 one-sided effects/controls | `originalThroughCanonicalReplayEffects`, `originalSupportedThroughCanonicalReplayControls` | Proved original→own canonical→actual replay transport; **not** replay→right canonical convergence |
+| Thm73/O17 positive early applicability | `CP5RankedEarlyApplicabilitySpike.selectCanonicalObservedEarlyPair` | Proved guarded producer using exact existing rank observer, same-pair orientation and actual checked early right execution with exact tag; no existence/completeness/diamond theorem |
+| Thm73/O17 concrete early execution | `R179RankedTraceSelectionPositive.r179CanonicalObservedEarlyChecks` | Proved real count4 selection and early Begin1; no concrete claim about the opaque combined orientation consumer |
+
+The only old-spike changes are two authorized **visibility keywords** in
+CanonicalSort: `canonicalWorkActionRank` becomes `public export` for proof
+reduction; `canonicalWorkInspectOrientation` becomes `export`. Bodies/signatures,
+all other old-spike bytes, production and the five protected holes remain exact.
+O20 needs a cross-canonical matched-episode execution invariant producing actual
+renamed ambient/table equality, resolved-input agreement and accumulated-undo
+relation. F does not obtain these from metadata or assume them as new inputs.
