@@ -7,6 +7,8 @@ import DGamma.CP3
 import DGamma.CP5ImmutableBirthMetadataSpike
 import DGamma.CP5CurrentGenerationBirthSpike
 import DGamma.CP5RawClosingRankSpike
+import DGamma.CP5RetirementHistorySpike
+import DGamma.CP5ConfluenceDeletionChainSpike
 import Data.List.Elem
 import Data.Nat
 import Decidable.Equality
@@ -86,3 +88,24 @@ export
   transitionAction step = wanted
 coveredHeadActionObserved name key world error value step rest wanted observed =
   justInjective (trans (sym (rawClosingActionAtSplit name key world error value NoTransitions step rest)) observed)
+
+||| Closing the parent after THIS generated birth forces an actual child
+||| retirement by the existing checked registration discipline. No deletion
+||| theorem, withdrawal branch, or raw/scoped conversion is used.
+export
+0 locatedClosingBirthHasRetirement :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (protocol : RegistrationProtocol key value world error) ->
+  {first, finalState : SystemState name key value world error} ->
+  (trace : Transitions first finalState) -> AlignedTransitions name key world error value nameEq keyEq trace ->
+  RegistrationDiscipline protocol nameEq trace -> (child, parent : name) -> (component : Component key value world error) ->
+  (birth : LocatedActionOccurrence (OInsert child (ChildOf parent) component) trace) ->
+  ActionOccurs (LUnload parent) (afterActionOccurrence birth) -> LocatedActionOccurrence (ORetire child) trace
+locatedClosingBirthHasRetirement name key world error value nameEq keyEq protocol trace aligned discipline child parent component
+  (MkLocatedActionOccurrence before afterState prior step later exact decomposition) closes =
+    replace {p = LocatedActionOccurrence (ORetire child)} decomposition
+      (afterCutOccurrence name key world error value prior (MoreTransitions step later) (ORetire child)
+        (currentBirthPrependLocation name key world error value step later (ORetire child)
+          (retirementOccurrenceLocated name key world error value later (ORetire child)
+            (childRetirementAtGeneratedOccurrence protocol nameEq keyEq trace child parent component
+              (MkLocatedGeneratedRegistration before afterState prior step later exact decomposition) aligned discipline closes))))
