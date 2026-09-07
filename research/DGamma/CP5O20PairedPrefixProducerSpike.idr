@@ -563,3 +563,56 @@ pairedProviderProjectionObserved name key world error value nameEq keyEq ambient
   owner wanted Nothing found = rewrite found in Refl
 pairedProviderProjectionObserved name key world error value nameEq keyEq ambient fibers
   owner wanted (Just fiber) found = rewrite found in Refl
+
+||| Actual successful providerOf heads MUST be mapped at a paired runtime cut.
+||| The right pairwise provision invariant and both owned-table witnesses are
+||| enough; no all-actors Active/control-equivalence oracle is introduced.
+export
+0 pairedActualProviderHeads :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (renaming : NameBijection name) -> (wanted : key) ->
+  (leftWorld, rightWorld : world) ->
+  (leftRegistry, rightRegistry : Registry name key value world error) ->
+  RenamedRuntimeEffects name key world value renaming
+    (projectEffectState {name = name} {key = key} {value = value} {world = world}
+      {error = error} @{nameEq} (MkSystemState leftWorld leftRegistry))
+    (projectEffectState {name = name} {key = key} {value = value} {world = world}
+      {error = error} @{nameEq} (MkSystemState rightWorld rightRegistry)) ->
+  (pairwiseProvisionInvariant {name = name} {key = key} {value = value}
+    {world = world} {error = error} @{keyEq} (bindings rightRegistry) = True) ->
+  (leftOwner, rightOwner : name) ->
+  (providerOf {name = name} {key = key} {value = value} {world = world} {error = error}
+    @{nameEq} @{keyEq} wanted leftRegistry = Just leftOwner) ->
+  (providerOf {name = name} {key = key} {value = value} {world = world} {error = error}
+    @{nameEq} @{keyEq} wanted rightRegistry = Just rightOwner) ->
+  renameForward renaming leftOwner = rightOwner
+pairedActualProviderHeads name key world error value nameEq keyEq renaming wanted
+  leftWorld rightWorld leftRegistry rightRegistry effects rightPairwise leftOwner
+  rightOwner leftProvider rightProvider =
+    case (isJustTrueWitness (valueFromProvider @{nameEq} @{keyEq} leftOwner wanted
+            leftRegistry) (providerOfValue (providerOfSound nameEq keyEq wanted
+              leftOwner leftRegistry leftProvider)),
+          isJustTrueWitness (valueFromProvider @{nameEq} @{keyEq} rightOwner wanted
+            rightRegistry) (providerOfValue (providerOfSound nameEq keyEq wanted
+              rightOwner rightRegistry rightProvider))) of
+      ((leftValue ** leftPresent), (rightValue ** rightPresent)) =>
+        pairedNamedTableOwnersUnique name key world error value nameEq keyEq rightWorld
+          rightRegistry rightPairwise (renameForward renaming leftOwner) rightOwner wanted
+          (lookupBinding @{nameEq} (renameForward renaming leftOwner) rightRegistry)
+          (lookupBinding @{nameEq} rightOwner rightRegistry) Refl Refl
+          (effectTables (projectEffectState @{nameEq} (MkSystemState rightWorld rightRegistry))
+            (renameForward renaming leftOwner))
+          (effectTables (projectEffectState @{nameEq} (MkSystemState rightWorld rightRegistry))
+            rightOwner) Refl Refl leftValue rightValue
+          (trans (sym (synchronizationLookupBindings key value keyEq wanted
+            (effectTables (projectEffectState @{nameEq} (MkSystemState leftWorld leftRegistry))
+              leftOwner)
+            (effectTables (projectEffectState @{nameEq} (MkSystemState rightWorld rightRegistry))
+              (renameForward renaming leftOwner)) (synchronizedTables effects leftOwner)))
+            (trans (sym (pairedProviderProjectionObserved name key world error value nameEq
+              keyEq leftWorld leftRegistry leftOwner wanted
+              (lookupBinding @{nameEq} leftOwner leftRegistry) Refl)) leftPresent))
+          (trans (sym (pairedProviderProjectionObserved name key world error value nameEq
+            keyEq rightWorld rightRegistry rightOwner wanted
+            (lookupBinding @{nameEq} rightOwner rightRegistry) Refl)) rightPresent)
