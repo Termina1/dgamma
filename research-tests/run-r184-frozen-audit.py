@@ -61,9 +61,9 @@ modules = re.findall(r'DGamma\.[A-Za-z0-9_.]+',text('dgamma.ipkg'))
 seed = ROOT/'build/ttc/2025081600'
 assert len(modules) == 207 and all((seed/(m.replace('.','/')+'.ttc')).exists() for m in modules)
 local_ttc = seed/'DGamma/CP5ConfluenceLocalDiamondSpike.ttc'
-assert local_ttc.stat().st_size > 125000000 # seeded file retained/refreshed by gated visibility checks
+assert local_ttc.stat().st_size > 125000000 # seeded TTC retained/refreshed by serialized frozen regression
 local_time = datetime.datetime.fromtimestamp(local_ttc.stat().st_mtime,datetime.timezone.utc).isoformat()
-# Its source was freshly checked after the approved visibility edit; no deletion.
+# The LocalDiamond source is byte-unchanged throughout R184; no TTC deletion.
 report = dict(timestamp=datetime.datetime.now(datetime.timezone.utc).isoformat(),head=git('rev-parse','HEAD').strip(),start=START,
     holes=holes,split=[len(holes[p]) for p in PARTS],productionDiffVs34b21c9='empty',CP3Blob=git('hash-object','src/DGamma/CP3.idr').strip(),
     LocalDiamondDiffVsStart='empty',LocalDiamondAuthorizedVisibility=visibility,CanonicalSortDiffVsStart='empty',CanonicalSortAuthorizedVisibility={},DeletionChainDiffVsStart='empty',

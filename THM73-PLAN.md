@@ -3600,3 +3600,27 @@ block coordinates through composed occurrence maps; coverage/bounds/UniqueKeys/
 product count; actual target block openings/bodies/locations/order/ranges and
 lifecycle coverage. The R182 audit enumerates all seven dependency nodes.
 O19 body ZERO attempts/census5; O17/A8, O20/O21 frozen; count7 independence absent.
+
+## R184 boundary — ratified insertion-target stop; positive selector / actual Begins
+
+24 declarations retained (A4/B12/C8), every one immediately committed after
+fresh Idris0.8.0 PASS. A2/A6 each exhausted3/3 in SAME insertion-target seam and
+were entirely removed; supervisor ratified stopping A after distinct A3–A5
+resolver observation prerequisites had landed. O19 body0. The next cure is a
+NEW O/A ROW signature taking the resolved target EXPLICITLY and the A3 observed
+resolver equations, keeping targetFiber OUT of the goal, not another conversion
+lemma or retry of exhausted A2/A6. Other orientations, generic Cartesian
+construction and prerequisites(i)–(vi) still incomplete.
+
+B now enumerates all neighboring distinct actor candidates and checks later
+ones after failure. Each positive candidate owns authoritative blocks/order,
+BOTH derived child exclusions, actual empty gap, checked right Begin at the
+EXACT pre-left-block cut, and original uniqueness. It is NOT target-directed
+inversion selection, completeness, strict descent, replay or an O20 body.
+C produces BOTH actual Begin component/resolver/destination observations and
+propagates the fixed-bijection effect relation through those ACTUAL Begins.
+Each side still uses its OWN component dependency list; common component/list
+transport, pre-cut whole-prefix agreement and matched Advance/Finish remain.
+No new success-observation premise was added to O20. No O17/root or O21 work;
+all frozen bodies/LocalDiamond/production/CP3 unchanged. Audit/evidence:
+`research-tests/O6-R184-GRIND-SHIFT-AUDIT.md`.

@@ -688,3 +688,21 @@ changes are the separately approved visibility of `RawActivationMove` and
 See the [R183 audit](research-tests/O6-R183-GRIND-SHIFT-AUDIT.md),
 [exact compiler ledger](research-tests/O6-R183-COMPILER-LEDGER.json), and
 [archived source/diagnostic evidence](research-tests/O6-R183-COMPILER-EVIDENCE.tar.gz).
+
+### Latest R184 status — guarded candidate selection; O19 remains open
+
+| Paper / research obligation | Idris correspondence | Status |
+|---|---|---|
+| Thm73/O19: actual early partial-effect result | `CP5O19ActualCommutedDomainSpike.o19ActualPairEarlyPartialRun` | Proved by composing R183 kernel/commutation/frame projections; not checked control/tag applicability or captured-map rebasing |
+| Thm73/O19: insertion resolver observation | `CP5O19InsertObservationSpike.o19ResolutionAfterCheckedInsert` | Proved: actual value and exact before/after resolver equations; insertion-target/Begin transport stopped after two exhausted units |
+| Thm73/O20: fully guarded candidate search | `CP5O20SafeBlockSelectionSpike.o20SelectSafeAdjacentBlocks` | Total positive finite selector: actual empty gap, exact pre-left-cut right Begin, both derived child exclusions and original uniqueness; not target-directed canonical descent |
+| Thm73/O20: actual paired Begin observations | `CP5O20BeginObservationSpike.o20ObserveSelectedBegins` | Proved: both authoritative actual components and successful resolver observations; common dependency-list transport remains open |
+| Thm73/O20: paired Begin effect successor | `CP5O20BeginObservationSpike.o20SelectedBeginEffects` | Proved internal successor from pre-cut effects through actual Begins; whole-prefix effect/control synchronization remains open |
+
+R184 retained24 declarations (A4, B12, C8). A stopped after ratified A2/A6
+3/3 exhaustion in the insertion-target seam; both attempts were fully reverted.
+O19 prerequisite groups(i)–(vi) remain incomplete and its body was not attempted.
+Census stays **5 = 1/3/0/0/1**; all five hole declarations, LocalDiamond,
+production and CP3 are byte-unchanged from their frozen baselines.
+See the [R184 audit](research-tests/O6-R184-GRIND-SHIFT-AUDIT.md) for exact
+remaining obligations, per-commit checks and bounded failure evidence.

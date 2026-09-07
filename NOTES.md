@@ -3148,3 +3148,55 @@ and the seeded production package build);207/207 seeds remain. Every37 retained
 source-changing commit has an earlier exact-hash fresh PASS. The final evidence
 report records frozen/production/CP3/census/cache authentication. No unproved
 body is recast as proved, and independent reviewer acceptance remains pending.
+
+## Status — R184: actual effect/resolver capital and guarded candidate search
+
+**Fully proved capital:** actual captured-right partial-effect result by DIRECT
+composition of R183 A24/A29/A30 and public frame/respect producers (`50e764e`);
+actual checked OInsert shared resolver observation with exact before/after
+equations (`f4d691a`, `3de39dd`, `63c173f`); finite neighboring-actor candidate
+search whose EVERY positive result owns both sanctioned O19 safety clauses,
+both actual-body child exclusions and original insertion uniqueness (`59cf3a21`);
+actual Begin component/resolver/destination observations at both authoritative
+paired cuts and genuine effect-agreement propagation through those two Begins
+(`5cb19b96`).24 new declarations total; all source commits follow exact fresh PASS.
+
+**Partial/open:** O19 orientation rows, Cartesian induction, exact source-origin
+plan/product count/coverage, reached installed blocks/origin update and full
+same-chain endpoint/external assembly. O19 body0; five holes unchanged. The
+selector is a safe-candidate producer, NOT an inversion selector for a common
+accepted support/ancestor extension, no decreasing canonicalization measure or
+O19 replay/reselection; Nothing proves neither no legal swap nor canonicality.
+The actual Begin observations use each component's OWN dependencies. Equality
+of those components/lists, full paired-prefix effects/controls, matched program
+steps and the O20 bridge remain open. No existing theorem body was restated or
+filled with an assumed output. O17/root placement and O21 withdrawal untouched.
+
+**Ratified stops:** A2 insertion-target equation failed3/3 and its new module
+was removed; supervisor ordered distinct observation prerequisites A3–A5.
+A6 generic target transport from that named observation also failed3/3 and was
+reverted. Rewriting/replace could not expose or convert the resolver under the
+neutral targetFiber conditional. This is an elaboration wall, NOT a semantic
+impossibility or third O19 specification gap. The supervisor ratified the
+unit-level stop. Next-shift cure: make the resolved target an EXPLICIT parameter
+of the O/A ROW and pass the A3 observation record, keeping targetFiber OUT of
+its goal; do not retry A2/A6 as another transport lemma.
+
+**Quantities and boundaries:** new proof/specification functions are quantity0;
+actual components, states, traces, views and candidate words remain indexed
+ordinary data. B3's simple generated-child-name observer is executable runtime
+code. These research checkers are not advertised as a deployed runtime API.
+No unsafe primitive, postulate, partiality, new hole, with, local alias, computed
+existential case, scoped/raw cast or frozen deletion call. No LocalDiamond edit
+or visibility change; frozen suffix and production/CP3 unchanged. Original
+uniqueness is explicitly retained in the chosen safety package; one-trace
+checks make no claim to generate cross-trace GeneratedOrchestrationMatched.
+Existing paired acceptance interfaces remain unchanged. Exact source snapshots,
+all rejected checks and fresh validation are archived under research-tests/.
+
+**Next:** resume the explicitly parameterized O/A row, then remaining orientation
+rows and Cartesian construction before any O19 body. Direct the safe-candidate
+search toward the fixed accepted finite extension and prove existence/descent;
+connect actual common components/dependency lists and matched program execution
+to the paired-prefix invariant. No new attempt beyond the ratified/capped units.
+Independent reviewer acceptance remains pending.
