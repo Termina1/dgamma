@@ -66,3 +66,9 @@ A5 begins: second explicitly gated keyword, plain export on existing proof.
 A5 fresh PASS1,500.381s; peak50,237,136KiB<48GiB. Both allowed
 keywords now present; stripping reconstructs973a81a byte-for-byte. Frozen
 full/statement hashes verified again. No LocalDiamond declaration or body edit.
+
+A6 fresh PASS1,430.469s, peak43,663,856KiB: o19CheckObservedRawMove
+consumes both gated rawActivationAfter/rawActivationRuns and derives the
+checked-domain condition by preservation. The long check freshly regenerated
+transitive consumers of the changed LocalDiamond interface (including
+CanonicalSort/DeletionChain), not a new edit to those frozen source files.
