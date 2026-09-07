@@ -1,0 +1,98 @@
+{
+  "criteriaSatisfied": [
+    {
+      "id": "criterion-1",
+      "status": "not-satisfied",
+      "evidence": "Authorized bounded R180 capital implemented at A14/14 and B15/15, but the requested full current-safety negative and nonempty paired episode synchronization are not completed. No scope or protected theorem change."
+    },
+    {
+      "id": "criterion-2",
+      "status": "satisfied",
+      "evidence": "43 serialized compiler invocations with exact snapshots/transcripts and commit correlation; fresh final checks of both retained modules; seeded package PASS; frozen-source/seed/census/clean-state validation and explicit residual list committed."
+    }
+  ],
+  "changedFiles": [
+    "NOTES.md",
+    "README.md",
+    "research-tests/DGamma/R180O19ObservedCompletion.idr",
+    "research-tests/O6-R180-A-STOP-VALIDATION.json",
+    "research-tests/O6-R180-COMPILER-EVIDENCE.tar.gz",
+    "research-tests/O6-R180-COMPILER-LEDGER.json",
+    "research-tests/O6-R180-FINAL-VALIDATION.json",
+    "research-tests/O6-R180-GRIND-SHIFT-AUDIT.md",
+    "research-tests/run-r180-check.py",
+    "research-tests/run-r180-evidence.py",
+    "research-tests/run-r180-frozen-audit.py",
+    "research/DGamma/CP5O20EpisodeSynchronizationSpike.idr",
+    "research-tests/O6-R180-ACCEPTANCE-REPORT.json"
+  ],
+  "testsAddedOrUpdated": [
+    "research-tests/DGamma/R180O19ObservedCompletion.idr: actual provider resolution, observed raw Begin/Finish, target domains, five checked lifecycle edges and final WF",
+    "research/DGamma/CP5O20EpisodeSynchronizationSpike.idr: observed-head producer/recursion, exact normalized source/outcome, pointwise undo, fixed-bijection actual zero-cut producer and both supported canonical packets",
+    "research-tests/run-r180-check.py",
+    "research-tests/run-r180-evidence.py",
+    "research-tests/run-r180-frozen-audit.py"
+  ],
+  "commandsRun": [
+    {
+      "command": "idris2 --version",
+      "result": "passed",
+      "summary": "Idris 2, version 0.8.0"
+    },
+    {
+      "command": "idris2 --source-dir src --source-dir research --source-dir research-tests --check research-tests/DGamma/R180O19ObservedCompletion.idr",
+      "result": "passed",
+      "summary": "FINAL-A fresh source check PASS 2.087s; latest actual code commit 871e73f."
+    },
+    {
+      "command": "idris2 --source-dir src --source-dir research --check research/DGamma/CP5O20EpisodeSynchronizationSpike.idr",
+      "result": "passed",
+      "summary": "FINAL-B fresh source check PASS 4.168s; latest actual code commit c579d52."
+    },
+    {
+      "command": "idris2 --build dgamma.ipkg",
+      "result": "passed",
+      "summary": "Final seeded package build PASS 17.682s, 207/207 TTC seeds retained. Not a fresh 207-source regression."
+    },
+    {
+      "command": "python3 -I research-tests/run-r180-evidence.py",
+      "result": "passed",
+      "summary": "43 invocations: 33 passes, 9 diagnostic rejections, 1 reconciled interrupted/no-verdict. All snapshots/transcripts verified; serialized and at most one new top-level declaration per check."
+    },
+    {
+      "command": "R180 exploratory checks A5-1..3 and B3-1..3",
+      "result": "failed",
+      "summary": "Both 3/3 stops ratified; entire attempted declarations removed, restored sources freshly checked. A5-1 orphan compiler explicitly terminated; no fourth direct probe. Separate approved prerequisites subsequently landed."
+    },
+    {
+      "command": "python3 -I research-tests/run-r180-frozen-audit.py /tmp/dgamma-r180/FINAL-frozen.json",
+      "result": "passed",
+      "summary": "Production vs34b21c9 and all original spike files unchanged; CP3 blob, frozen adjacent/review hashes, LocalDiamond TTC, census and no-staged/no-orphan checks pass."
+    },
+    {
+      "command": "git diff --check && git status --short",
+      "result": "passed",
+      "summary": "Whitespace clean; tracked changes committed; only permitted paper/ and frozen adversarial review untracked."
+    }
+  ],
+  "validationOutput": [
+    "27 accepted new top-level declarations: 13 A and 14 B; A5 and B3 remain absent from live source.",
+    "Hole census unchanged: 5 = CanonicalSort 1 / CrossTrace 3 / DeletionChain 0 / LocalDiamond 0 / Renaming 1.",
+    "No new hole, proof escape, partiality, with, local let, LocalDiamond declaration or protected theorem edit.",
+    "Final frozen audit persisted in research-tests/O6-R180-FINAL-VALIDATION.json at documentation/evidence commit cadfc37; subsequent changes are report/validation artifacts only."
+  ],
+  "residualRisks": [
+    "Full AdjacentActorSwapSafety is neither inhabited for the provider/consumer pair nor shown to exclude it. Empty-origin full trace/totality, quiet/noFailure, protocol, replay bundle, exact blocks/order/coverage/disjointness/uniqueness remain. No old-safety revision or O19 body authorized/attempted.",
+    "SupportedCanonicalEpisodeSynchronization is a ONE-cut invariant with a proven zero-prefix instance conditional on supplied actual O19 capital. Actual nonempty registration/Begin/Advance/Finish induction and committed/effect resolution connection remain open.",
+    "Internal resolution, deterministic outcome and pointwise undo consumers do not produce the invariant at nonempty cuts. The unsupported-child remainder is additional, not the only O20 gap.",
+    "No O20 body, new confluence result or new positive/negative full-safety fixture. Existing early consumer rejection is not silently identified with the separately indexed five-edge suffix.",
+    "Required independent reviewer gate remains pending; this report does not self-accept the work."
+  ],
+  "noStagedFiles": true,
+  "diffSummary": "Research-only observed-value proof capital and exact zero-prefix synchronization, reproducible compiler/guard evidence, and correspondence/status documentation. Both bounded goals remain partial; frozen production and all five original spikes untouched.",
+  "reviewFindings": [
+    "review-required: independent reviewer has not yet evaluated R180.",
+    "scope blocker to full goal: actual empty-origin/current-safety negative and nonempty paired synchronization are still missing; explicitly catalogued, not replaced by new assumptions."
+  ],
+  "manualNotes": "Supervisor ratified A5 at6db02f0 and B3 at9bff772 and authorized distinct observed raw/domain and observed-head prerequisites. Both caps exhausted. Last new proof attempt ended 12:31:24 UTC, well before14:49/15:14/15:29 guards. Parent owns required review and any further authorization."
+}
