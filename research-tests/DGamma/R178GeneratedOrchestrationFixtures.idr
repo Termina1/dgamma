@@ -139,3 +139,16 @@ r178LeftGeneratedRetirementImpossible occurrence kind =
         (generatedOrchestrationAction Nat R45Key Unit String R45Value
           (generatedRemoval occurrence) (generatedActor occurrence))
         (generatedOccurrence occurrence)))
+
+||| NEGATIVE: the exact R177 P2-4 action pair fails A9 for EVERY bijection,
+||| hence in particular for any accepted generation bijection. This does not
+||| construct a frozen accepted correspondence or either canonical capital.
+export
+0 r178QuietPairRejectsGeneratedMatching :
+  (renaming : RegistrationGenerationBijection Nat) ->
+  Not (GeneratedOrchestrationMatched Nat R45Key Unit String R45Value r45NameEq
+    r178LeftTrace r178RightTrace renaming)
+r178QuietPairRejectsGeneratedMatching renaming matched =
+  r178LeftGeneratedRetirementImpossible
+    (generatedBackward matched r178RightGeneratedRetirement)
+    (trans (generatedBackwardKind matched r178RightGeneratedRetirement) r178RightRetirementKind)
