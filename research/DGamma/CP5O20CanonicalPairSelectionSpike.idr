@@ -41,3 +41,17 @@ canonicalPairRightMember nameEq keyEq protocol leftTrace rightTrace sameInputs
   leftCapital rightCapital matching selected supported =
     leftSupportMapped matching selected
       (orderComplete (supportLinearization (canonicalSchedule leftCapital)) selected supported)
+
+||| Membership in the inverse-mapped operational target order, with the
+||| selected name recovered using the same bijection's left inverse.
+export
+0 canonicalPairInverseMember :
+  {name : Type} -> (renaming : NameBijection name) -> (selected : name) -> (order : List name) ->
+  Elem (renameForward renaming selected) order ->
+  Elem selected (map (renameBackward renaming) order)
+canonicalPairInverseMember renaming selected (_ :: rest) Here =
+  replace {p = \actor => Elem actor
+    (map (renameBackward renaming) (renameForward renaming selected :: rest))}
+    (renameLeftInverse renaming selected) Here
+canonicalPairInverseMember renaming selected (head :: rest) (There later) =
+  There (canonicalPairInverseMember renaming selected rest later)
