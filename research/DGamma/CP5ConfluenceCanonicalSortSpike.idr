@@ -3342,6 +3342,7 @@ canonicalWorkInspectPaperStep name key world error value
 
 ||| Inspect both ACTUAL adjacent transitions and construct the matching one of
 ||| four orientation witnesses. No diamond or early applicability is asserted.
+export
 0 canonicalWorkInspectOrientation :
   (name, key, world, error : Type) -> (value : key -> Type) ->
   {first, middle, finalState : SystemState name key value world error} ->
