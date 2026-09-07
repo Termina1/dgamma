@@ -65,3 +65,24 @@ rawUnretiredPropertyUpdate name key world error value nameEq property actor sour
         Refl => void (nothingIsNotJust (trans (sym (DGamma.CP4DeletionSelectedOwn.lookupDeleteSelf @{nameEq} actor source)) found))
       No distinct => previous selected observed
         (trans (sym (registryLocalUpdateForeign nameEq selected actor distinct source LocalDelete)) found) finalFalse
+
+export
+0 rawUnretiredPropertyStep :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (property : name -> Type) ->
+  (action : Action name key value world error) ->
+  (before, afterState : SystemState name key value world error) -> (tag : RuleTag) ->
+  (raw : applyAction @{nameEq} @{keyEq} action before = Just (tag, afterState)) ->
+  ((parent : Parent name) -> (component : Component key value world error) ->
+    (action = OInsert (actionOwner action) parent component) -> property (actionOwner action)) ->
+  ((selected : name) -> (fiber : Fiber name key value world error) ->
+    (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+      @{nameEq} selected (registry before) = Just fiber) -> (retired fiber = False) -> property selected) ->
+  (selected : name) -> (observed : Fiber name key value world error) ->
+  (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+    @{nameEq} selected (registry afterState) = Just observed) -> (retired observed = False) -> property selected
+rawUnretiredPropertyStep name key world error value nameEq keyEq property action before afterState tag raw inserted previous =
+  rawUnretiredPropertyUpdate name key world error value nameEq property (actionOwner action)
+    (registry before) (registry afterState) (systemRegistryUpdate (applyActionLocalUpdate nameEq keyEq action before afterState tag raw))
+    (\absent => case rawAbsentOwnerInsertion name key world error value nameEq keyEq action before afterState tag raw absent of
+      (parent ** component ** exact) => inserted parent component exact) previous
