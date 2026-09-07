@@ -10679,6 +10679,7 @@ targetMatchesExact nameEq Nothing view matches = case matches of Refl impossible
 targetMatchesExact nameEq (Just target) view matches =
   cong Just (localViewEqTrueEqual nameEq target view matches)
 
+public export
 record RawActivationMove
   (nameEq : DecEq name) (keyEq : DecEq key)
   (action : Action name key value world error) (tag : RuleTag)

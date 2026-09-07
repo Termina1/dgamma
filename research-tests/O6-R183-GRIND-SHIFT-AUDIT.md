@@ -27,3 +27,32 @@ authorized unit; third O19 specification gap gates BEFORE surface modification.
 
 Start census5=1/3/0/0/1. No new proof or body yet. R182 audit and R179-R181
 audits read; actual four-node construction is not generic Cartesian induction.
+
+## A1-A3: generic observed reached boundary
+
+| Unit | Declaration | Fresh PASS | Commit |
+|---|---|---|---|
+| A1 | O19ReachedCursor | 1/1,2.077s | 52523ad |
+| A2 | o19InitialCursor | 1/1,2.087s | cb1bfb4 |
+| A3 | o19CursorFromProduced | 1/1,2.079s | 3b5e4aa |
+
+The cursor owns the actual trace, same full bundle, original transported
+uniqueness and source-to-current finite derivation. A3 consumes an EXPLICIT
+produced-node argument (R182 B33 method), never locally cases a computed
+existential, and composes the same derivation structurally. These are honest
+iteration boundary/base/successor consumers, NOT arbitrary Cartesian iteration
+or propagation of later applicability; the exact original source map can be
+projected from the cursor derivation. No O19 RHS or other protected file edited.
+Full extracted paper read, all3883 read-tool lines including references; R182
+fixtures/A4/A14/Adj6 and all-four assembly inspected.
+
+## Prior visibility gate: explicit supervisor approval
+
+APPROVED exactly TWO LocalDiamond keywords: public export RawActivationMove
+(actual rawActivationAfter/rawActivationRuns projections needed in companion);
+plain export beginRawAfterForeignActivation (actual Begin-after-foreign-activation
+producer; no reduction through its proof body). Each its own micro-unit/fresh
+seeded LocalDiamond check/commit, no new declaration/body/signature/order edits.
+Stripping these two keywords must reconstruct973a81a byte-for-byte. Never delete
+the LocalDiamond TTC. Consumer planned in CP5O19OpeningPropagationSpike.
+A4 check currently running; A5 not begun. No assumed arbitrary early cut added.
