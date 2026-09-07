@@ -144,3 +144,25 @@ actualProviderWitness name key world error value nameEq keyEq (MkSystemState amb
   case clauseProviderEntryWitness name key world error value nameEq keyEq wanted predicate entries exact of
     (selected ** fiber ** (member, supported, declares)) =>
       (selected ** fiber ** (clauseLookupFromEntry name key world error value nameEq entries unique selected fiber member, supported, declares))
+
+0 clauseProviderFromLookup :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (entries : List (Binding name (FiberAt name key value world error))) -> (wanted : key) -> (predicate : name -> Bool) ->
+  (selected : name) -> (fiber : Fiber name key value world error) ->
+  (lookupEntries {key = name} {value = FiberAt name key value world error} @{nameEq} selected entries = Just fiber) ->
+  (predicate selected = True) -> (listMember @{keyEq} wanted (dependencies (componentProvisions (fiberComponent fiber))) = True) ->
+  (providerFromPredicate {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} @{keyEq} wanted predicate entries = True)
+clauseProviderFromLookup name key world error value nameEq keyEq [] wanted predicate selected fiber found supported declares = case found of Refl impossible
+clauseProviderFromLookup name key world error value nameEq keyEq (Bind current observedFiber :: rest) wanted predicate selected fiber found supported declares =
+  case the (choice : Dec (selected = current) ** (decEq @{nameEq} selected current = choice)) (decEq @{nameEq} selected current ** Refl) of
+    (Yes same ** observed) => case same of
+      Refl => case justInjective (trans (sym (the
+        (lookupEntries {key = name} {value = FiberAt name key value world error} @{nameEq} selected (Bind selected observedFiber :: rest) = Just observedFiber)
+        (rewrite observed in Refl))) found) of
+        Refl => clauseOrFromEither _ _ (Left (clauseAndTrue _ _ supported declares))
+    (No different ** observed) => clauseOrFromEither _ _ (Right
+      (clauseProviderFromLookup name key world error value nameEq keyEq rest wanted predicate selected fiber
+        (trans (sym (the
+          (lookupEntries {key = name} {value = FiberAt name key value world error} @{nameEq} selected (Bind current observedFiber :: rest) =
+           lookupEntries {key = name} {value = FiberAt name key value world error} @{nameEq} selected rest)
+          (rewrite observed in Refl))) found) supported declares))
