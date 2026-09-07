@@ -544,3 +544,21 @@ retiredEndpointHasRetirement name key world error value nameEq keyEq {first} tra
     (\action, occurrence => occurrence) (\selected, occurrence => occurrence)
     (\selected, fiber, found, retiredTrue => void
       (nothingIsNotJust (trans (sym (lookupFiberEmptyRegistry nameEq selected first empty)) found)))
+
+export
+0 retirementLocatedSource :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {first, finalState : SystemState name key value world error} ->
+  (trace : Transitions first finalState) -> AlignedTransitions name key world error value nameEq keyEq trace ->
+  (selected : name) -> (occurrence : LocatedActionOccurrence (ORetire selected) trace) ->
+  (fiber : Fiber name key value world error **
+    lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+      @{nameEq} selected (registry (actionBeforeState occurrence)) = Just fiber)
+retirementLocatedSource name key world error value nameEq keyEq trace aligned selected occurrence =
+  nonInsertionSourceObserved name key world error value nameEq keyEq (ORetire selected)
+    (actionBeforeState occurrence) (actionAfterState occurrence) (transitionTag (locatedTransition occurrence))
+    (retirementAlignedLocatedRaw name key world error value nameEq keyEq trace aligned (ORetire selected) occurrence)
+    (\parent, component, inserted => case inserted of Refl impossible)
+    (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+      @{nameEq} selected (registry (actionBeforeState occurrence))) Refl
