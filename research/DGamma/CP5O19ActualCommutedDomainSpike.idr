@@ -63,3 +63,18 @@ o19ActualPairMapCommutes {name} {key} {world} {error} {value} {first} {middle} {
       (generatedMonoidsCommute independent (actionOwner leftAction) (actionOwner rightAction) distinct
         (TraceGenerator (ActualForwardGenerator {trace = (MoreTransitions (Fired {before = first} {afterState = middle} nameEq keyEq leftAction leftTag leftChecked) (MoreTransitions (Fired {before = middle} {afterState = finalState} nameEq keyEq rightAction rightTag rightChecked) NoTransitions))} first middle nameEq keyEq leftAction leftTag leftChecked OccursHere Refl))
         (TraceGenerator (ActualForwardGenerator {trace = (MoreTransitions (Fired {before = first} {afterState = middle} nameEq keyEq leftAction leftTag leftChecked) (MoreTransitions (Fired {before = middle} {afterState = finalState} nameEq keyEq rightAction rightTag rightChecked) NoTransitions))} middle finalState nameEq keyEq rightAction rightTag rightChecked (OccursLater OccursHere) Refl)))
+
+||| Explicit-argument elimination for an actual frame producer's result.
+||| This exposes no new semantic assumption and does not instantiate the
+||| exhausted A25 early-run theorem. Run rebasing remains future work.
+export
+0 o19ActualFrameRelated :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (action : Action name key value world error) -> (tag : RuleTag) ->
+  (before, afterState : SystemState name key value world error) ->
+  ActualEffectFrame nameEq keyEq action tag before afterState ->
+  PartialRelated (EffectState name key value world) (EffectStateRelated keyEq)
+    (partialEffectMapFor nameEq keyEq action tag before (projectEffectState @{nameEq} before))
+    (Just (projectEffectState @{nameEq} afterState))
+o19ActualFrameRelated nameEq keyEq action tag before afterState (MkActualEffectFrame related) = related

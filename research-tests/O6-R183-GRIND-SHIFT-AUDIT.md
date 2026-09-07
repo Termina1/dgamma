@@ -137,3 +137,32 @@ equation, actual-pair commutation, actual-frame projection, and run rebasing.
 These are not the failed whole actual-pair effect-run producer, not full
 Cartesian iteration, and not an O19 body. After the30-slot cap: O19 stop gate,
 one disposable O20 probe, then the authorized C prerequisites.
+
+## Unit A30 cap / O19 STOP gate
+
+A26 PASS1,1.056s (73618c4): observed composition pointwise congruence.
+A27 PASS1,1.040s (1a78311): public pointwise partial-commutation transport.
+A28 PASS1,1.039s (de1aad1): primitive actual-forward constructor projection.
+A29 PASS2,1.057s (977bcfd): actual captured-map pair commutation. Attempt1
+left erased occurrence-source metas; all occurrences were explicitly scoped
+to the same actual two-node trace at2 (not a scoped-to-raw cast).
+A30 PASS1,1.035s: explicit actual-frame result projection.
+
+The final five slots required TWO transport lemmas, so run rebasing was NOT
+implemented. The new ActualCommutedDomain module contains only A28-A30
+small lemmas; the exhausted A25 whole early-run consumer is absent.
+A28 Refl is a primitive constructor/map projection, not a scalar observation
+of any computed replay/diamond/row builder.
+
+All30 prerequisite slots consumed:29 retained fresh-PASS surfaces, one
+fully reverted3-attempt unit (A25). No prerequisite group(i)-(v) is complete:
+(i) arbitrary A/A Begin FIRST ROW with all intermediate guards/evidence/count
+is proved, generic effect-domain kernel proved; later Cartesian rows, complete
+actual-pair integration/rebasing and checked controls remain open;
+(ii) all-four orientation construction/classification from blocks remains open;
+(iii) row structural node count proved, exact whole source-origin plan open;
+(iv) whole Cartesian coverage open;
+(v) actual target installed ranges/decomposition/origin update open.
+Therefore operationalAdjacentBlockSwapSpike body NOT ATTEMPTED. O19 remains
+open; no milestone-closure claim. Fresh frozen/census gate follows this commit,
+then exactly one disposable O20 selector probe (max3 checks), then Unit C.
