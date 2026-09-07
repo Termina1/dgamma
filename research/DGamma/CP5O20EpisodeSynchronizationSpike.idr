@@ -71,3 +71,27 @@ synchronizationResolvedHeadObserved name key world value keyEq wanted rest
   rightHead tailSame = rewrite leftHead in rewrite rightHead in
     cong (map (OneDepValue {key = key} {value = value} {k = wanted} {rest = rest}
       observed)) tailSame
+
+||| Producer-owned observation: choose the ACTUAL left lookup value and derive
+||| its equation at the renamed right provider, rather than assume availability.
+export
+0 synchronizationHeadValue :
+  (name, key, world : Type) -> (value : key -> Type) ->
+  (keyEq : DecEq key) -> (renaming : NameBijection name) ->
+  (wanted : key) -> (leftOwner, rightOwner : name) ->
+  (left, right : EffectState name key value world) ->
+  RenamedRuntimeEffects name key world value renaming left right ->
+  (renameForward renaming leftOwner = rightOwner) ->
+  (headValue : Maybe (value wanted) **
+    (lookupBinding @{keyEq} wanted (effectTables left leftOwner) = headValue,
+     lookupBinding @{keyEq} wanted (effectTables right rightOwner) = headValue))
+synchronizationHeadValue name key world value keyEq renaming wanted leftOwner
+  rightOwner left right effects ownerSame =
+    (lookupBinding {key = key} {value = value} @{keyEq} wanted
+      (effectTables left leftOwner) **
+      (Refl, sym (trans (synchronizationLookupBindings key value keyEq wanted
+        (effectTables left leftOwner)
+        (effectTables right (renameForward renaming leftOwner))
+        (synchronizedTables effects leftOwner))
+        (cong (\owner => lookupBinding {key = key} {value = value} @{keyEq}
+          wanted (effectTables right owner)) ownerSame))))
