@@ -5124,3 +5124,42 @@ canonicalWorkSealedSuffixRankSegments name key world error value nameEq keyEq fi
       (trans (sealedSuffixActionFoldSame name key world error value nameEq keyEq (List (List Nat))
         (canonicalWorkRankStep name key world error value nameEq fixedOrder) [[]] seal)
         (sym (canonicalWorkRankSegmentsFold name key world error value nameEq fixedOrder source)))
+
+||| The ACTUAL checked result has the exact transposed rank observation under
+||| the untouched actual prefix. No caller-selected suffix word is substituted.
+0 canonicalWorkAdjacentTargetRankFold :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) -> (fixedOrder : List name) ->
+  {initial, pairFirst, pairMiddle, pairFinal, originalFinal : SystemState name key value world error} ->
+  (original : Transitions initial originalFinal) -> (prefixTrace : Transitions initial pairFirst) ->
+  (left : Transition pairFirst pairMiddle) -> (right : Transition pairMiddle pairFinal) ->
+  (suffix : Transitions pairFinal originalFinal) ->
+  (diamond : LocalRelationalDiamond name key world error value nameEq keyEq left right) ->
+  (result : AdjacentSwapResult name key world error value protocol nameEq keyEq
+    original prefixTrace left right suffix diamond) ->
+  (canonicalWorkRankSegments name key world error value nameEq fixedOrder (swappedTrace result) =
+   traceActionFold name key world error value (List (List Nat))
+    (canonicalWorkRankStep name key world error value nameEq fixedOrder)
+    (canonicalWorkRankStep name key world error value nameEq fixedOrder (transitionAction right)
+      (canonicalWorkRankStep name key world error value nameEq fixedOrder (transitionAction left)
+        (canonicalWorkRankSegments name key world error value nameEq fixedOrder suffix))) prefixTrace)
+canonicalWorkAdjacentTargetRankFold name key world error value nameEq keyEq protocol fixedOrder
+  original prefixTrace left right suffix diamond result =
+    trans (cong (canonicalWorkRankSegments name key world error value nameEq fixedOrder)
+      (swappedDecomposition result))
+      (trans (canonicalWorkRankSegmentsFold name key world error value nameEq fixedOrder
+        (appendTransitions prefixTrace (MoreTransitions (movedRight diamond)
+          (MoreTransitions (movedLeft diamond) (replayedSuffix result)))))
+        (trans (canonicalActionFoldAppend name key world error value (List (List Nat))
+          (canonicalWorkRankStep name key world error value nameEq fixedOrder) [[]] prefixTrace
+          (MoreTransitions (movedRight diamond) (MoreTransitions (movedLeft diamond) (replayedSuffix result))))
+          (rewrite movedRightAction diamond in
+           rewrite movedLeftAction diamond in
+             cong (\segments => traceActionFold name key world error value (List (List Nat))
+               (canonicalWorkRankStep name key world error value nameEq fixedOrder)
+               (canonicalWorkRankStep name key world error value nameEq fixedOrder (transitionAction right)
+                 (canonicalWorkRankStep name key world error value nameEq fixedOrder (transitionAction left) segments)) prefixTrace)
+               (trans (sealedSuffixActionFoldSame name key world error value nameEq keyEq (List (List Nat))
+                 (canonicalWorkRankStep name key world error value nameEq fixedOrder) [[]] (sealedSuffixReplay result))
+                 (sym (canonicalWorkRankSegmentsFold name key world error value nameEq fixedOrder suffix))))))
