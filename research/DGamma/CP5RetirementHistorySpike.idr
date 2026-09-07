@@ -340,3 +340,33 @@ retirementAlignedLocatedRaw name key world error value nameEq keyEq trace aligne
     (retirementAlignedHeadRaw name key world error value nameEq keyEq (locatedTransition occurrence) (afterActionOccurrence occurrence)
       (snd (alignedAppendSplit (beforeActionOccurrence occurrence) (MoreTransitions (locatedTransition occurrence) (afterActionOccurrence occurrence))
         (replace {p = AlignedTransitions name key world error value nameEq keyEq} (sym (actionOccurrenceDecomposition occurrence)) aligned))))
+
+0 retirementCutCannotEndUnretired :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {first, before, afterState, finalState : SystemState name key value world error} ->
+  (prior : Transitions first before) -> (step : Transition before afterState) -> (later : Transitions afterState finalState) ->
+  AlignedTransitions name key world error value nameEq keyEq (appendTransitions prior (MoreTransitions step later)) ->
+  (bindings (registry first) = []) ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq (appendTransitions prior (MoreTransitions step later)) ->
+  (selected : name) -> (transitionAction step = ORetire selected) -> (finalFiber : Fiber name key value world error) ->
+  (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+    @{nameEq} selected (registry finalState) = Just finalFiber) -> (retired finalFiber = False) -> Void
+retirementCutCannotEndUnretired name key world error value nameEq keyEq {before} {afterState} prior step later aligned empty unique selected exact
+  finalFiber finalFound finalFalse =
+    case rawRetireTarget name key world error value nameEq keyEq selected before afterState (transitionTag step)
+      (replace {p = \action => (applyAction @{nameEq} @{keyEq} action before = Just (transitionTag step, afterState))} exact
+        (retirementAlignedHeadRaw name key world error value nameEq keyEq step later
+          (snd (alignedAppendSplit prior (MoreTransitions step later) aligned)))) of
+      (retiredFiber ** (retiredFound, retiredTrue)) =>
+        retiredCutNonretiredEndpointImpossible name key world error value nameEq keyEq
+          (appendTransitions prior (MoreTransitions step NoTransitions)) later
+          (fst (alignedAppendSplit (appendTransitions prior (MoreTransitions step NoTransitions)) later
+            (replace {p = AlignedTransitions name key world error value nameEq keyEq}
+              (sym (appendTransitionsAssociative prior (MoreTransitions step NoTransitions) later)) aligned)))
+          (snd (alignedAppendSplit (appendTransitions prior (MoreTransitions step NoTransitions)) later
+            (replace {p = AlignedTransitions name key world error value nameEq keyEq}
+              (sym (appendTransitionsAssociative prior (MoreTransitions step NoTransitions) later)) aligned))) empty
+          (replace {p = UniqueRawNameInsertions name key world error value nameEq keyEq}
+            (sym (appendTransitionsAssociative prior (MoreTransitions step NoTransitions) later)) unique)
+          selected retiredFiber finalFiber retiredFound retiredTrue finalFound finalFalse
