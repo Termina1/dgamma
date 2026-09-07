@@ -48,3 +48,30 @@ generatedRetirementFromScan name key world error value nameEq keyEq trace select
     selected sourceFiber sourceFound of
     (generation ** current) =>
       (MkLocatedGeneratedOrchestration selected False occurrence sourceFiber parent sourceFound parentExact finalOrdinal live scan generation current ** (Refl, Refl))
+
+||| Any actual retirement of a present generated endpoint name inhabits A9's
+||| domain. Its source parent and current generation are DERIVED, not supplied.
+export
+0 generatedEndpointRetirementPacket :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {first, finalState : SystemState name key value world error} ->
+  (trace : Transitions first finalState) -> AlignedTransitions name key world error value nameEq keyEq trace ->
+  (bindings (registry first) = []) -> UniqueRawNameInsertions name key world error value nameEq keyEq trace ->
+  (selected, parent : name) -> (finalFiber : Fiber name key value world error) ->
+  (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} selected (registry finalState) = Just finalFiber) ->
+  (fiberParent finalFiber = ChildOf parent) -> LocatedActionOccurrence (ORetire selected) trace ->
+  (packet : LocatedGeneratedOrchestration name key world error value nameEq trace **
+    (generatedActor packet = selected, generatedRemoval packet = False))
+generatedEndpointRetirementPacket name key world error value nameEq keyEq trace aligned empty unique selected parent finalFiber finalFound parentExact occurrence =
+  case retirementLocatedSource name key world error value nameEq keyEq trace aligned selected occurrence of
+    (sourceFiber ** sourceFound) =>
+      case generatedCompletePrefixScan name key world error value nameEq Z [] (beforeActionOccurrence occurrence) of
+        (ordinal ** live ** scan) =>
+          generatedRetirementFromScan name key world error value nameEq keyEq trace selected parent occurrence sourceFiber sourceFound
+            (trans (cong fst (actualPrefixEndpointMetadata name key world error value nameEq keyEq trace (beforeActionOccurrence occurrence)
+              (MoreTransitions (locatedTransition occurrence) (afterActionOccurrence occurrence)) (actionOccurrenceDecomposition occurrence)
+              aligned empty unique selected sourceFiber finalFiber sourceFound finalFound)) parentExact)
+            (fst (alignedAppendSplit (beforeActionOccurrence occurrence) (MoreTransitions (locatedTransition occurrence) (afterActionOccurrence occurrence))
+              (replace {p = AlignedTransitions name key world error value nameEq keyEq} (sym (actionOccurrenceDecomposition occurrence)) aligned)))
+            empty ordinal live scan
