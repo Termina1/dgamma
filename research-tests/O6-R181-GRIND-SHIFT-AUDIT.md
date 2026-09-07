@@ -117,3 +117,13 @@ finals; exact pre-provider early consumer rejection. Remaining:
 No safety clause revision/map migration/positive or rejected revised fixture;
 no O19 body request or attempt. The original producer path at CrossTrace699–714
 still consumes safety, not constructs it; its selector is holed. O19 body banned.
+
+### Supervisor ruling at the A stop
+
+A11 stop ratified; A1–A10 substantive negative capital retained. Unit B proceeds
+first. AFTER B, A's remaining5 units are explicitly authorized for a DISTINCT
+generic observed-lifecycle→installed prerequisite (R163 Wall-2): actual observed
+value and lifecycle equation produced on the checked Begin/Finish transitions,
+then installation cuts as projections. Never another A11 installation-cut
+statement or guessed accumulator. Unit C follows. No surface/body permission.
+A-stop package PASS16.605s,207/207 seeds. Frozen audit passed at7ecf289.
