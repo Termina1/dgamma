@@ -310,3 +310,20 @@ o19EarlyLabels {before} nameEq keyEq originalAction movedAction originalTag move
     (trans (cong (\action => checkedApplyAction @{nameEq} @{keyEq} action before) sameAction)
       (trans (earlyApplicationChecked early)
         (cong (\tag => Just (tag, earlyApplicationFinal early)) (sym sameTag))))
+
+||| B18: expose the action owner of one observed transition, so opaque moved
+||| nodes inherit their source actor from action equality rather than guessing.
+public export
+0 o19TransitionActorOwner :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {before, afterState : SystemState name key value world error} ->
+  (step : Transition before afterState) ->
+  (transitionActor step = actionOwner (transitionAction step))
+o19TransitionActorOwner (Fired nameEq keyEq (OInsert actor parent component) tag checked) = Refl
+o19TransitionActorOwner (Fired nameEq keyEq (ORetire actor) tag checked) = Refl
+o19TransitionActorOwner (Fired nameEq keyEq (ORemove actor) tag checked) = Refl
+o19TransitionActorOwner (Fired nameEq keyEq (LBegin actor) tag checked) = Refl
+o19TransitionActorOwner (Fired nameEq keyEq (LAdvance actor) tag checked) = Refl
+o19TransitionActorOwner (Fired nameEq keyEq (LDivert actor) tag checked) = Refl
+o19TransitionActorOwner (Fired nameEq keyEq (LLeave actor) tag checked) = Refl
+o19TransitionActorOwner (Fired nameEq keyEq (LUnload actor) tag checked) = Refl
