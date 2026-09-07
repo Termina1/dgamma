@@ -85,3 +85,22 @@ observedRankHeadDescent name key world error value observe left right suffix (Ju
   case decEq (rankCrossing leftRank rightRank) 1 of
     Yes crossed => Just (locatedRankDescentHead name key world error value observe left right suffix leftRank rightRank leftExact rightExact crossed)
     No notDescending => Nothing
+
+||| Select an ACTUAL checked adjacent descent, retaining its original prefix.
+||| Structural recursion scans all actions and never joins across a barrier.
+||| Nothing is no candidate found, NOT a canonical-form or applicability proof.
+public export
+0 findActualRankDescent :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (observe : Action name key value world error -> Maybe Nat) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (trace : Transitions initial finalState) ->
+  Maybe (LocatedRankDescent name key world error value observe trace)
+findActualRankDescent name key world error value observe NoTransitions = Nothing
+findActualRankDescent name key world error value observe (MoreTransitions left NoTransitions) = Nothing
+findActualRankDescent name key world error value observe (MoreTransitions left (MoreTransitions right suffix)) =
+  case observedRankHeadDescent name key world error value observe left right suffix
+    (observe (transitionAction left)) (observe (transitionAction right)) Refl Refl of
+    Just choice => Just choice
+    Nothing => map (locatedRankDescentPrepend name key world error value observe left (MoreTransitions right suffix))
+      (findActualRankDescent name key world error value observe (MoreTransitions right suffix))
