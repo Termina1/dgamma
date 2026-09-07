@@ -128,3 +128,21 @@ o19AppendFinite {target}
   (FiniteAdjacentSwapStep original earlier left right later orientation diamond result _ rest) next =
     FiniteAdjacentSwapStep original earlier left right later orientation diamond result target
       (o19AppendFinite rest next)
+
+||| B31: retain the authentic first node while extending with a freshly
+||| produced reached suffix. Nonemptiness cannot be supplied by a zero trace.
+public export
+0 o19AppendNonEmpty :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {protocol : RegistrationProtocol key value world error} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {initial, sourceFinal, middleFinal, targetFinal : SystemState name key value world error} ->
+  {source : Transitions initial sourceFinal} -> {middleTrace : Transitions initial middleFinal} ->
+  {target : Transitions initial targetFinal} ->
+  NonEmptyFiniteAdjacentSwapDerivation name key world error value protocol nameEq keyEq source middleTrace ->
+  FiniteAdjacentSwapDerivation name key world error value protocol nameEq keyEq middleTrace target ->
+  NonEmptyFiniteAdjacentSwapDerivation name key world error value protocol nameEq keyEq source target
+o19AppendNonEmpty {target}
+  (NonEmptyAdjacentSwap original earlier left right later orientation diamond result _ rest) next =
+    NonEmptyAdjacentSwap original earlier left right later orientation diamond result target
+      (o19AppendFinite rest next)
