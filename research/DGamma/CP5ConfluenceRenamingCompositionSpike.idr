@@ -7,11 +7,13 @@ import DGamma.CP3
 import DGamma.CP5UniqueRawNameInsertions
 import DGamma.CP5CurrentGenerationBirthSpike
 import DGamma.CP5ImmutableBirthMetadataSpike
+import DGamma.CP5RegistrationParentBirthSpike
 import DGamma.CP5ConfluenceDeletionChainSpike
 import DGamma.CP5ConfluenceLocalDiamondSpike
 import DGamma.CP5ConfluenceCanonicalSortSpike
 import Data.List
 import Data.List.Elem
+import Data.Nat
 import Decidable.Equality
 
 %hide Data.List.index
@@ -3165,3 +3167,61 @@ acceptedAuthenticatedRegistrationMatching name key world error value nameEq left
         (registrationSideFoldBirth name key world error value nameEq Z rightFold)
         (fst (registrationPairingDomains (matchingPlanPairing planFold)))
         (snd (registrationPairingDomains (matchingPlanPairing planFold)))
+
+||| Authenticate the parent generation AT each real retained event's birth.
+||| No assertion that the historical parent stamp is endpoint-current is made.
+0 registrationSideFoldParentBirth :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) ->
+  {initial, finalState, first, last : SystemState name key value world error} ->
+  (global : Transitions initial finalState) -> (segment : Transitions first last) ->
+  (ordinal : Nat) -> (index : RegistrationIndexState name) ->
+  {finalIndex : RegistrationIndexState name} ->
+  {scan : RegistrationSideScan nameEq ordinal index segment finalIndex} ->
+  {events : List (RegistrationEvent name key world error value)} ->
+  RegistrationSideEventFold scan events ->
+  (embedding : (action : Action name key value world error) -> LocatedActionOccurrence action segment -> LocatedActionOccurrence action global) ->
+  ((action : Action name key value world error) -> (occurrence : LocatedActionOccurrence action segment) ->
+    locatedActionOrdinal (embedding action occurrence) = ordinal + locatedActionOrdinal occurrence) ->
+  RegistrationIndexBirths name key world error value global index ->
+  (event : RegistrationEvent name key world error value) -> Elem event events ->
+  (activation : RegistrationActivation name) -> eventParentActivation event = Just activation ->
+  CurrentGenerationBirth name key world error value global (eventParent event) (activationParentGeneration activation)
+registrationSideFoldParentBirth name key world error value nameEq global segment ordinal index fold embedding embeddingExact births event member activation present =
+  case fold of
+    RegistrationSideEventFoldEnd => absurd member
+    RegistrationSideEventFoldNonRegistration action step rest actionExact notRegistration later =>
+      registrationSideFoldParentBirth name key world error value nameEq global rest (S ordinal)
+        (advanceRegistrationIndex @{nameEq} ordinal action index) later
+        (\wanted, occurrence => embedding wanted (currentBirthPrependLocation name key world error value step rest wanted occurrence))
+        (\wanted, occurrence => trans (embeddingExact wanted (currentBirthPrependLocation name key world error value step rest wanted occurrence))
+              (trans (cong (ordinal +) (currentBirthPrependOrdinal name key world error value step rest wanted occurrence))
+                (sym (plusSuccRightSucc ordinal (locatedActionOrdinal occurrence)))))
+        (registrationIndexBirthAction name key world error value nameEq global ordinal action index (embedding action (MkLocatedActionOccurrence _ _ NoTransitions step rest actionExact Refl)) (trans (embeddingExact action (MkLocatedActionOccurrence _ _ NoTransitions step rest actionExact Refl)) (plusZeroRightNeutral ordinal)) births)
+        event member activation present
+    RegistrationSideEventFoldDeleted {child} {parent} {component} step rest actionExact deleted later =>
+      registrationSideFoldParentBirth name key world error value nameEq global rest (S ordinal)
+        (advanceDeletedRegistrationIndex @{nameEq} ordinal child parent component index) later
+        (\wanted, occurrence => embedding wanted (currentBirthPrependLocation name key world error value step rest wanted occurrence))
+        (\wanted, occurrence => trans (embeddingExact wanted (currentBirthPrependLocation name key world error value step rest wanted occurrence))
+              (trans (cong (ordinal +) (currentBirthPrependOrdinal name key world error value step rest wanted occurrence))
+                (sym (plusSuccRightSucc ordinal (locatedActionOrdinal occurrence)))))
+        (registrationIndexBirthsRetarget name key world error value global
+          (advanceRegistrationIndex @{nameEq} ordinal (OInsert child (ChildOf parent) component) index)
+          (advanceDeletedRegistrationIndex @{nameEq} ordinal child parent component index) Refl Refl
+          (registrationIndexBirthAction name key world error value nameEq global ordinal (OInsert child (ChildOf parent) component) index (embedding (OInsert child (ChildOf parent) component) (MkLocatedActionOccurrence _ _ NoTransitions step rest actionExact Refl)) (trans (embeddingExact (OInsert child (ChildOf parent) component) (MkLocatedActionOccurrence _ _ NoTransitions step rest actionExact Refl)) (plusZeroRightNeutral ordinal)) births))
+        event member activation present
+    RegistrationSideEventFoldSurviving {child} {parent} {component} step rest actionExact surviving later =>
+      case member of
+        Here => registrationEventParentBirthHead name key world error value nameEq global ordinal index child parent component births activation present
+        There after => case index of
+          MkRegistrationIndexState live activations counts discarded =>
+            registrationSideFoldParentBirth name key world error value nameEq global rest (S ordinal)
+              (advanceSurvivingRegistrationIndex @{nameEq} ordinal child parent component (MkRegistrationIndexState live activations counts discarded)) later
+              (\wanted, occurrence => embedding wanted (currentBirthPrependLocation name key world error value step rest wanted occurrence))
+              (\wanted, occurrence => trans (embeddingExact wanted (currentBirthPrependLocation name key world error value step rest wanted occurrence))
+              (trans (cong (ordinal +) (currentBirthPrependOrdinal name key world error value step rest wanted occurrence))
+                (sym (plusSuccRightSucc ordinal (locatedActionOrdinal occurrence)))))
+              (registrationSurvivingBirthsObserved name key world error value nameEq global ordinal child parent component
+                live activations counts discarded (embedding (OInsert child (ChildOf parent) component) (MkLocatedActionOccurrence _ _ NoTransitions step rest actionExact Refl)) (trans (embeddingExact (OInsert child (ChildOf parent) component) (MkLocatedActionOccurrence _ _ NoTransitions step rest actionExact Refl)) (plusZeroRightNeutral ordinal)) births
+                (lookupParentActivation @{nameEq} parent activations) Refl)
+              event after activation present
