@@ -6,11 +6,13 @@ import DGamma.Coeffects
 import DGamma.Metatheory
 import DGamma.CP3
 import DGamma.CP5UniqueRawNameInsertions
+import DGamma.CP5ConfluenceCrossTraceSpike
 import DGamma.CP5ConfluenceLocalDiamondSpike
 import DGamma.CP5RankedEarlyApplicabilitySpike
 import DGamma.CP5O19AdjacentReplayProducerSpike
 import DGamma.R45BareDiamondDisciplineCounterexamplePositive
 import DGamma.R182O19RevisedSafetyPositive
+import DGamma.R182O19RevisedSafetyNegative
 import Data.Maybe
 import Data.Nat
 import Decidable.Equality
@@ -88,3 +90,65 @@ r182ActualFirstCrossing = o19AdvanceActivationPair r45NameEq r45KeyEq r45Protoco
   Refl r182IndependentBundle r182IndependentUnique
   (PaperFinishStep Refl Refl) (PaperBeginStep Refl Refl)
   uninhabited r182FirstCrossingEarly
+
+||| B19: consume an EXPLICIT observed first sealed package, not a computed
+||| descriptor captured in a local case. Produce node2 Begin0/Begin1 at cut2,
+||| deriving its guard from the SAME revised safety and moved labels. Source
+||| bundle, original uniqueness and nonempty derivation are threaded together.
+public export
+0 r182SecondCrossingObserved :
+  ((diamond : LocalRelationalDiamond Nat R45Key Unit String R45Value r45NameEq r45KeyEq
+    (Fired {before = r182IndependentState 3} {afterState = r182IndependentState 4} r45NameEq r45KeyEq (LAdvance 0) LFinishTag Refl)
+    (Fired {before = r182IndependentState 4} {afterState = r182IndependentState 5} r45NameEq r45KeyEq (LBegin 1) LBeginTag Refl) **
+   (result : AdjacentSwapResult Nat R45Key Unit String R45Value r45Protocol r45NameEq r45KeyEq
+      (r182IndependentTrace False)
+      (MoreTransitions (Fired {before = r182IndependentState 0} {afterState = r182IndependentState 1} r45NameEq r45KeyEq (OInsert 0 Root r45Child) OInsertTag Refl) (MoreTransitions (Fired {before = r182IndependentState 1} {afterState = r182IndependentState 2} r45NameEq r45KeyEq (OInsert 1 Root r45Child) OInsertTag Refl) (MoreTransitions (Fired {before = r182IndependentState 2} {afterState = r182IndependentState 3} r45NameEq r45KeyEq (LBegin 0) LBeginTag Refl) NoTransitions)))
+      (Fired {before = r182IndependentState 3} {afterState = r182IndependentState 4} r45NameEq r45KeyEq (LAdvance 0) LFinishTag Refl)
+      (Fired {before = r182IndependentState 4} {afterState = r182IndependentState 5} r45NameEq r45KeyEq (LBegin 1) LBeginTag Refl)
+      (MoreTransitions (Fired {before = r182IndependentState 5} {afterState = r182IndependentState 6} r45NameEq r45KeyEq (LAdvance 1) LFinishTag Refl) NoTransitions) diamond **
+     (NonEmptyFiniteAdjacentSwapDerivation Nat R45Key Unit String R45Value r45Protocol r45NameEq r45KeyEq
+       (r182IndependentTrace False) (swappedTrace result),
+      UniqueRawNameInsertions Nat R45Key Unit String R45Value r45NameEq r45KeyEq (swappedTrace result))))) ->
+  (firstDiamond : LocalRelationalDiamond Nat R45Key Unit String R45Value r45NameEq r45KeyEq
+    (Fired {before = r182IndependentState 3} {afterState = r182IndependentState 4} r45NameEq r45KeyEq (LAdvance 0) LFinishTag Refl)
+    (Fired {before = r182IndependentState 4} {afterState = r182IndependentState 5} r45NameEq r45KeyEq (LBegin 1) LBeginTag Refl) **
+   (firstResult : AdjacentSwapResult Nat R45Key Unit String R45Value r45Protocol r45NameEq r45KeyEq (r182IndependentTrace False)
+      (MoreTransitions (Fired {before = r182IndependentState 0} {afterState = r182IndependentState 1} r45NameEq r45KeyEq (OInsert 0 Root r45Child) OInsertTag Refl) (MoreTransitions (Fired {before = r182IndependentState 1} {afterState = r182IndependentState 2} r45NameEq r45KeyEq (OInsert 1 Root r45Child) OInsertTag Refl) (MoreTransitions (Fired {before = r182IndependentState 2} {afterState = r182IndependentState 3} r45NameEq r45KeyEq (LBegin 0) LBeginTag Refl) NoTransitions)))
+      (Fired {before = r182IndependentState 3} {afterState = r182IndependentState 4} r45NameEq r45KeyEq (LAdvance 0) LFinishTag Refl)
+      (Fired {before = r182IndependentState 4} {afterState = r182IndependentState 5} r45NameEq r45KeyEq (LBegin 1) LBeginTag Refl)
+      (MoreTransitions (Fired {before = r182IndependentState 5} {afterState = r182IndependentState 6} r45NameEq r45KeyEq (LAdvance 1) LFinishTag Refl) NoTransitions) firstDiamond **
+    (secondDiamond : LocalRelationalDiamond Nat R45Key Unit String R45Value r45NameEq r45KeyEq
+       (Fired {before = r182IndependentState 2} {afterState = r182IndependentState 3} r45NameEq r45KeyEq (LBegin 0) LBeginTag Refl) (movedRight firstDiamond) **
+     (secondResult : AdjacentSwapResult Nat R45Key Unit String R45Value r45Protocol r45NameEq r45KeyEq (swappedTrace firstResult)
+        (MoreTransitions (Fired {before = r182IndependentState 0} {afterState = r182IndependentState 1} r45NameEq r45KeyEq (OInsert 0 Root r45Child) OInsertTag Refl) (MoreTransitions (Fired {before = r182IndependentState 1} {afterState = r182IndependentState 2} r45NameEq r45KeyEq (OInsert 1 Root r45Child) OInsertTag Refl) NoTransitions))
+        (Fired {before = r182IndependentState 2} {afterState = r182IndependentState 3} r45NameEq r45KeyEq (LBegin 0) LBeginTag Refl) (movedRight firstDiamond)
+        (MoreTransitions (movedLeft firstDiamond) (replayedSuffix firstResult)) secondDiamond **
+      (NonEmptyFiniteAdjacentSwapDerivation Nat R45Key Unit String R45Value r45Protocol r45NameEq r45KeyEq (r182IndependentTrace False) (swappedTrace secondResult),
+       UniqueRawNameInsertions Nat R45Key Unit String R45Value r45NameEq r45KeyEq (swappedTrace secondResult))))))
+r182SecondCrossingObserved (firstDiamond ** (firstResult ** (firstDerivation, firstUnique))) =
+  case o19AdvanceActivationPair r45NameEq r45KeyEq r45Protocol
+    (swappedTrace firstResult)
+    (MoreTransitions (Fired {before = r182IndependentState 0} {afterState = r182IndependentState 1} r45NameEq r45KeyEq (OInsert 0 Root r45Child) OInsertTag Refl) (MoreTransitions (Fired {before = r182IndependentState 1} {afterState = r182IndependentState 2} r45NameEq r45KeyEq (OInsert 1 Root r45Child) OInsertTag Refl) NoTransitions))
+    (Fired {before = r182IndependentState 2} {afterState = r182IndependentState 3} r45NameEq r45KeyEq (LBegin 0) LBeginTag Refl) (movedRight firstDiamond)
+    (MoreTransitions (movedLeft firstDiamond) (replayedSuffix firstResult))
+    (sym (swappedDecomposition firstResult)) (swappedPremises firstResult) firstUnique
+    (PaperBeginStep Refl Refl)
+    (movedRightActivationBranch firstDiamond (PaperBeginStep Refl Refl))
+    (\same => uninhabited (trans same
+      (trans (o19TransitionActorOwner (movedRight firstDiamond))
+        (cong actionOwner (movedRightAction firstDiamond)))))
+    (o19EarlyLabels r45NameEq r45KeyEq (LBegin 1) (transitionAction (movedRight firstDiamond))
+      LBeginTag (transitionTag (movedRight firstDiamond))
+      (movedRightAction firstDiamond) (movedRightTag firstDiamond)
+      (safetyRightOpeningEarly r182IndependentSafety)) of
+      (secondDiamond ** (secondResult ** (secondDerivation, secondUnique))) =>
+        (firstDiamond ** (firstResult ** (secondDiamond ** (secondResult **
+          (NonEmptyAdjacentSwap (r182IndependentTrace False)
+            (MoreTransitions (Fired {before = r182IndependentState 0} {afterState = r182IndependentState 1} r45NameEq r45KeyEq (OInsert 0 Root r45Child) OInsertTag Refl) (MoreTransitions (Fired {before = r182IndependentState 1} {afterState = r182IndependentState 2} r45NameEq r45KeyEq (OInsert 1 Root r45Child) OInsertTag Refl) (MoreTransitions (Fired {before = r182IndependentState 2} {afterState = r182IndependentState 3} r45NameEq r45KeyEq (LBegin 0) LBeginTag Refl) NoTransitions)))
+            (Fired {before = r182IndependentState 3} {afterState = r182IndependentState 4} r45NameEq r45KeyEq (LAdvance 0) LFinishTag Refl)
+            (Fired {before = r182IndependentState 4} {afterState = r182IndependentState 5} r45NameEq r45KeyEq (LBegin 1) LBeginTag Refl)
+            (MoreTransitions (Fired {before = r182IndependentState 5} {afterState = r182IndependentState 6} r45NameEq r45KeyEq (LAdvance 1) LFinishTag Refl) NoTransitions)
+            (AdjacentActivationActivation (Fired {before = r182IndependentState 3} {afterState = r182IndependentState 4} r45NameEq r45KeyEq (LAdvance 0) LFinishTag Refl) (Fired {before = r182IndependentState 4} {afterState = r182IndependentState 5} r45NameEq r45KeyEq (LBegin 1) LBeginTag Refl)
+              (PaperFinishStep Refl Refl) (PaperBeginStep Refl Refl))
+            firstDiamond firstResult (swappedTrace secondResult)
+            (nonEmptyToFiniteAdjacentSwapDerivation secondDerivation), secondUnique)))))
