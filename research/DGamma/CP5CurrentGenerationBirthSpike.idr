@@ -431,3 +431,15 @@ currentResultOwnerIf name key world error value nameEq actor False yesResult noR
     (case observed of Nothing => Nothing; Just item => next item)
 currentResultOwnerMaybe name key world error value nameEq actor argument Nothing next valid = ()
 currentResultOwnerMaybe name key world error value nameEq actor argument (Just item) next valid = valid item
+
+0 currentResultOwnerEither :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) ->
+  (actor : name) -> (failure, success : Type) -> (observed : Either failure success) ->
+  (onFailure : failure -> Maybe (RuleTag, SystemState name key value world error)) ->
+  (onSuccess : success -> Maybe (RuleTag, SystemState name key value world error)) ->
+  ((item : failure) -> CurrentResultOwner name key world error value nameEq actor (onFailure item)) ->
+  ((item : success) -> CurrentResultOwner name key world error value nameEq actor (onSuccess item)) ->
+  CurrentResultOwner name key world error value nameEq actor
+    (case observed of Left item => onFailure item; Right item => onSuccess item)
+currentResultOwnerEither name key world error value nameEq actor failure success (Left item) onFailure onSuccess leftValid rightValid = leftValid item
+currentResultOwnerEither name key world error value nameEq actor failure success (Right item) onFailure onSuccess leftValid rightValid = rightValid item
