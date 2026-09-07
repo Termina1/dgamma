@@ -121,3 +121,21 @@ parentDeleteObserved name nameEq removed candidate current rest (Yes same) exact
   rewrite exact in case same of Refl => Refl
 parentDeleteObserved name nameEq removed candidate current rest (No distinct) exact =
   rewrite exact in Refl
+
+0 parentDeleteEntryObserved :
+  (name : Type) -> (nameEq : DecEq name) -> (removed, candidate : name) ->
+  (current : RegistrationActivation name) -> (rest : List (name, RegistrationActivation name)) ->
+  (observed : Dec (removed = candidate)) -> decEq @{nameEq} removed candidate = observed ->
+  ((selected : name) -> (activation : RegistrationActivation name) ->
+    Elem (selected, activation) (deleteParentActivation @{nameEq} removed rest) -> Elem (selected, activation) rest) ->
+  (selected : name) -> (activation : RegistrationActivation name) ->
+  Elem (selected, activation) (deleteParentActivation @{nameEq} removed ((candidate, current) :: rest)) ->
+  Elem (selected, activation) ((candidate, current) :: rest)
+parentDeleteEntryObserved name nameEq removed candidate current rest (Yes same) exact recur selected activation member =
+  There (replace {p = Elem (selected, activation)}
+    (parentDeleteObserved name nameEq removed candidate current rest (Yes same) exact) member)
+parentDeleteEntryObserved name nameEq removed candidate current rest (No distinct) exact recur selected activation member =
+  case replace {p = Elem (selected, activation)}
+    (parentDeleteObserved name nameEq removed candidate current rest (No distinct) exact) member of
+    Here => Here
+    There later => There (recur selected activation later)
