@@ -168,3 +168,16 @@ observedActionPositionBound name key world error value NoTransitions position ac
 observedActionPositionBound name key world error value (MoreTransitions step rest) Z action observed = LTESucc LTEZero
 observedActionPositionBound name key world error value (MoreTransitions step rest) (S position) action observed =
   LTESucc (observedActionPositionBound name key world error value rest position action observed)
+
+export
+0 beforeCutOccurrence :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (prior : Transitions first middle) -> (later : Transitions middle finalState) ->
+  (action : Action name key value world error) -> LocatedActionOccurrence action prior ->
+  LocatedActionOccurrence action (appendTransitions prior later)
+beforeCutOccurrence name key world error value prior later action
+  (MkLocatedActionOccurrence before afterState earlier step remaining exact decomposition) =
+    MkLocatedActionOccurrence before afterState earlier step (appendTransitions remaining later) exact
+      (trans (sym (appendTransitionsAssociative earlier (MoreTransitions step remaining) later))
+        (cong (\whole => appendTransitions whole later) decomposition))
