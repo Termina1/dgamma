@@ -28,3 +28,13 @@ rankPlusSwap a b c =
   trans (plusAssociative a b c)
     (trans (cong (\combined => combined + c) (plusCommutative a b))
       (sym (plusAssociative b a c)))
+
+||| An inversion cannot also be an inversion in the opposite orientation.
+export
+0 rankCrossingAsymmetric :
+  (left, right : Nat) -> rankCrossing left right = 1 ->
+  rankCrossing right left = Z
+rankCrossingAsymmetric Z right crossed = absurd crossed
+rankCrossingAsymmetric (S left) Z crossed = Refl
+rankCrossingAsymmetric (S left) (S right) crossed =
+  rankCrossingAsymmetric left right crossed
