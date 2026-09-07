@@ -152,3 +152,12 @@ r178QuietPairRejectsGeneratedMatching renaming matched =
   r178LeftGeneratedRetirementImpossible
     (generatedBackward matched r178RightGeneratedRetirement)
     (trans (generatedBackwardKind matched r178RightGeneratedRetirement) r178RightRetirementKind)
+
+||| POSITIVE: a nonempty generated-retirement domain, not vacuous empty traces.
+||| The same real right trace on both sides matches its generation identically.
+export
+0 r178MatchedPairAcceptsGeneratedMatching :
+  GeneratedOrchestrationMatched Nat R45Key Unit String R45Value r45NameEq
+    r178RightTrace r178RightTrace identityRegistrationGenerationBijection
+r178MatchedPairAcceptsGeneratedMatching =
+  generatedOrchestrationReflexive Nat R45Key Unit String R45Value r45NameEq r178RightTrace
