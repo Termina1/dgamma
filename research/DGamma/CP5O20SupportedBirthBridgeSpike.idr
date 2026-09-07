@@ -116,3 +116,31 @@ bridgeSupportedOriginalTarget name key world error value nameEq keyEq protocol l
           (replayAligned (chainReplayCapital (capitalPremises rightCapital)))
           (replayDiscipline (chainReplayCapital (capitalPremises leftCapital)))
           (replayInitialEmpty (chainReplayCapital (capitalPremises leftCapital))) leftUnique rightUnique selected supported))
+
+||| The LEFT canonical birth's exact original origin has the accepted CURRENT
+||| generation, independent of any prospective operational permutation.
+export
+0 leftCanonicalOriginCurrentStamp :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {initial, leftFinal, rightFinal : SystemState name key value world error} ->
+  (left : Transitions initial leftFinal) -> (right : Transitions initial rightFinal) ->
+  (sameInputs : SameOrchestrationModuloGenerated nameEq keyEq left right) ->
+  (capital : IndependentCanonicalSchedule name key world error value protocol nameEq keyEq left) ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq left ->
+  (selected, parent : name) -> (component : Component key value world error) ->
+  (generation : RegistrationGeneration name) ->
+  (lookupCurrentGeneration @{nameEq} selected (leftFinalGenerations (generatedRegistrationTree sameInputs)) = Just generation) ->
+  (observed : Fiber name key value world error) ->
+  (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+    @{nameEq} selected (registry leftFinal) = Just observed) ->
+  (birth : LocatedGeneratedRegistration selected parent component (canonicalTrace (canonicalSchedule capital))) ->
+  generation = registrationGeneration (replayGeneratedRegistrationOrigin (canonicalOccurrenceCorrespondence capital) birth)
+leftCanonicalOriginCurrentStamp name key world error value nameEq keyEq protocol left right sameInputs capital unique
+  selected parent component generation current observed found birth =
+    acceptedLeftEndpointBirthIdentity name key world error value nameEq keyEq left right sameInputs
+      (replayAligned (chainReplayCapital (capitalPremises capital)))
+      (replayInitialEmpty (chainReplayCapital (capitalPremises capital))) unique
+      selected generation current observed found (ChildOf parent) component
+      (generatedRegistrationActionOccurrence (replayGeneratedRegistrationOrigin (canonicalOccurrenceCorrespondence capital) birth))
