@@ -473,3 +473,15 @@ F's three normal failures are fully archived; the sole flagged multi-declaration
 invocation remains the original B12-1 violation. No new declaration follows F8.
 The current final/acceptance artifacts now supersede both earlier prefix gates;
 stand-down still requires the supervisor and independent review belongs to parent.
+
+## Post-F ruling16:16UTC — G≤6 authorized, then terminal validation/gate
+
+Supervisor ratified41f949b but required ONE MORE bounded unit G≤6 micro-units,
+hard cutoff17:07: real count7 TraceIndependent, both generated-monoid commutation
+and iterator-outcome stability, using R172's concrete-trace approach, producer
+owned and fresh3/3. If it lands, one conditional additional bundle-projection
+unit is authorized. NoGeneratedChild/final negative assembly is NEXT SHIFT,
+not G; no revision/O19 body. On3/3 stop or cutoff, preserve the exact wall then
+fresh retained checks/seeded package/frozen gate and final supervisor gate by17:32;
+parent will run independent reviewer. Prior F final artifacts become prefix
+history. No G source declaration/check has yet been added at this ruling record.
