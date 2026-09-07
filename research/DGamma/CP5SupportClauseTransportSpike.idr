@@ -46,3 +46,15 @@ clauseAllListBuild element predicate [] each = Refl
 clauseAllListBuild element predicate (head :: rest) each =
   clauseAndTrue (predicate head) (allList predicate rest) (each head Here)
     (clauseAllListBuild element predicate rest (\selected, member => each selected (There member)))
+
+export
+0 actualSupportClauseAtFiber :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (state : SystemState name key value world error) -> (predicate : name -> Bool) -> (selected : name) -> (fiber : Fiber name key value world error) ->
+  (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} selected (registry state) = Just fiber) ->
+  (supportClause {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} @{keyEq} predicate selected state =
+    (not (retired fiber) && supportClauseParent name predicate (fiberParent fiber) &&
+     allList (\wanted => providerFromPredicate {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} @{keyEq}
+       wanted predicate (registryFibers {name = name} {key = key} {value = value} {world = world} {error = error} (registry state))) (dependencies (componentDependencies (fiberComponent fiber)))))
+actualSupportClauseAtFiber name key world error value nameEq keyEq state predicate selected (MkFiber component Root flag table lifecycle) found = rewrite found in Refl
+actualSupportClauseAtFiber name key world error value nameEq keyEq state predicate selected (MkFiber component (ChildOf parent) flag table lifecycle) found = rewrite found in Refl
