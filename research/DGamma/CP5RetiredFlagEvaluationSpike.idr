@@ -196,3 +196,27 @@ retiredAdvanceOutcomeOwner name key world error value nameEq keyEq actor before 
     (MkFiber component parent retiredFlag table (Reloading (step :: rest) accumulator view))
     (setFiberRuntime (MkFiber component parent retiredFlag table (Reloading (step :: rest) accumulator view)) (localTable localAfter)
       (Unloading (pushLocalUndo @{keyEq} (componentProvisions component) accumulator undo) view Nothing)) found (localWorld localAfter) LDivertTag Refl
+
+
+0 retiredAdvanceResolvedOwner :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (actor : name) -> (before : SystemState name key value world error) ->
+  (component : Component key value world error) -> (parent : Parent name) -> (retiredFlag : Bool) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (step : StepEffect key value world error (dependencies (componentDependencies component)) (componentProvisions component)) ->
+  (rest : List (StepEffect key value world error (dependencies (componentDependencies component)) (componentProvisions component))) ->
+  (accumulator : LocalState key value world (componentProvisions component) -> LocalState key value world (componentProvisions component)) ->
+  (view : View name (dependencies (componentDependencies component))) ->
+  (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} actor (registry before) =
+    Just (MkFiber component parent retiredFlag table (Reloading (step :: rest) accumulator view))) ->
+  (observed : Maybe (DepValues key value (dependencies (componentDependencies component)))) ->
+  (resolveCommittedValues {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} @{keyEq}
+    (dependencies (componentDependencies component)) view (registry before) = observed) ->
+  RetiredResultOwner name key world error value nameEq actor retiredFlag (applyAction @{nameEq} @{keyEq} (LAdvance actor) before)
+retiredAdvanceResolvedOwner name key world error value nameEq keyEq actor before component parent retiredFlag table step rest accumulator view found Nothing exact =
+  rewrite found in rewrite exact in ()
+retiredAdvanceResolvedOwner name key world error value nameEq keyEq actor before component parent retiredFlag table step rest accumulator view found (Just capability) exact =
+  retiredAdvanceOutcomeOwner name key world error value nameEq keyEq actor before component parent retiredFlag table step rest accumulator view found capability exact
+    (runStepEffect step capability (MkLocalState (worldState before) (restrictOwnedPreservingOrder @{keyEq} (componentProvisions component) (ownedValues table)))) Refl
+    (targetMatches @{nameEq} (targetFiber @{nameEq} @{keyEq} (MkFiber component parent retiredFlag table (Reloading (step :: rest) accumulator view)) (registry before)) view) Refl
