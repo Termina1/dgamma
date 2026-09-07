@@ -281,3 +281,23 @@ retiredLifecycleResultOwner name key world error value nameEq keyEq (LUnload act
   (MkFiber component parent retiredFlag table (Unloading accumulator view outcome)) found =
     retiredUnloadOwner name key world error value nameEq keyEq actor before component parent retiredFlag table accumulator view outcome found
       (relied {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} actor (registry before)) Refl
+
+||| Actual successful lifecycle target, with its flag equated to the actual
+||| source fiber's. This is not inferred from the weaker RetirementUpdate type.
+export
+0 rawLifecycleRetiredFlags :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (action : Action name key value world error) -> (isLifecycleAction action = True) ->
+  (before, afterState : SystemState name key value world error) -> (tag : RuleTag) ->
+  (sourceFiber : Fiber name key value world error) ->
+  (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+    @{nameEq} (actionOwner action) (registry before) = Just sourceFiber) ->
+  (applyAction @{nameEq} @{keyEq} action before = Just (tag, afterState)) ->
+  (targetFiber : Fiber name key value world error **
+    (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+      @{nameEq} (actionOwner action) (registry afterState) = Just targetFiber,
+     retired targetFiber = retired sourceFiber))
+rawLifecycleRetiredFlags name key world error value nameEq keyEq action lifecycle before afterState tag sourceFiber sourceFound raw =
+  replace {p = RetiredResultOwner name key world error value nameEq (actionOwner action) (retired sourceFiber)} raw
+    (retiredLifecycleResultOwner name key world error value nameEq keyEq action lifecycle before sourceFiber sourceFound)
