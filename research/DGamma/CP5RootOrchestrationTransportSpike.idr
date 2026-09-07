@@ -83,3 +83,22 @@ rootActionForward name key world error value nameEq _ _ (MatchExternalInput matc
   case rootActionHeadView name key world error value nameEq action leftStep leftRest occurrence of
     Left (root, exact) => RootActionHere rightStep rightRest rightRoot (trans rightExact (trans (sym leftExact) exact))
     Right remaining => RootActionLater rightStep rightRest (rootActionForward name key world error value nameEq leftRest rightRest later action remaining)
+
+export
+0 rootActionBackward :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) ->
+  {leftFirst, leftFinal, rightFirst, rightFinal : SystemState name key value world error} ->
+  (left : Transitions leftFirst leftFinal) -> (right : Transitions rightFirst rightFinal) ->
+  SameExternalOrchestration nameEq left right -> (action : Action name key value world error) ->
+  RootActionOccurs name key world error value nameEq action right -> RootActionOccurs name key world error value nameEq action left
+rootActionBackward name key world error value nameEq _ _ SameExternalOrchestrationEnd action occurrence = case occurrence of {}
+rootActionBackward name key world error value nameEq left _ (SkipRightInternal step rest notRoot later) action occurrence =
+  case rootActionHeadView name key world error value nameEq action step rest occurrence of
+    Left (root, exact) => void (notRoot root)
+    Right remaining => rootActionBackward name key world error value nameEq left rest later action remaining
+rootActionBackward name key world error value nameEq _ right (SkipLeftInternal step rest notRoot later) action occurrence =
+  RootActionLater step rest (rootActionBackward name key world error value nameEq rest right later action occurrence)
+rootActionBackward name key world error value nameEq _ _ (MatchExternalInput matched leftStep leftRest leftRoot rightStep rightRest rightRoot leftExact rightExact later) action occurrence =
+  case rootActionHeadView name key world error value nameEq action rightStep rightRest occurrence of
+    Left (root, exact) => RootActionHere leftStep leftRest leftRoot (trans leftExact (trans (sym rightExact) exact))
+    Right remaining => RootActionLater leftStep leftRest (rootActionBackward name key world error value nameEq leftRest rightRest later action remaining)
