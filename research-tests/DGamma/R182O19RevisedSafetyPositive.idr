@@ -276,4 +276,4 @@ r182IndependentSafety = MkAdjacentActorSwapSafety Here (There Here) (BeforeHere 
     NoGeneratedChildEnd)
   (NoGeneratedChildStep _ _ (\parent, component, same => case same of Refl impossible)
     NoGeneratedChildEnd)
-  (MkCheckedEarlyApplication (r182IndependentState 7) Refl)
+  (MkCheckedEarlyApplication (r182IndependentState 7) Refl) Refl
