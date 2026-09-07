@@ -41,3 +41,21 @@ rootInputAtSource name key world error value nameEq (LAdvance actor) state = Fal
 rootInputAtSource name key world error value nameEq (LDivert actor) state = False
 rootInputAtSource name key world error value nameEq (LLeave actor) state = False
 rootInputAtSource name key world error value nameEq (LUnload actor) state = False
+
+||| Executable, proof-indexed snapshots. States/actions are runtime data; the
+||| exact trace index and duplicate tail token are erased. A false snapshot
+||| cannot be attached to a transition whose source has a different state.
+public export
+data AvailabilityTrace :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  {0 first, finalState : SystemState name key value world error} -> (0 trace : Transitions first finalState) -> Type where
+  AvailabilityEnd :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    (state : SystemState name key value world error) ->
+    AvailabilityTrace name key world error value (NoTransitions {state = state})
+  AvailabilityStep :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {0 middle, finalState : SystemState name key value world error} ->
+    (first : SystemState name key value world error) -> (step : Transition first middle) ->
+    (0 rest : Transitions middle finalState) -> AvailabilityTrace name key world error value rest ->
+    AvailabilityTrace name key world error value (MoreTransitions step rest)
