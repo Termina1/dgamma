@@ -10,6 +10,7 @@ import DGamma.CP5GeneratedOrchestrationMatched
 import DGamma.CP5GeneratedRetirementTransportSpike
 import DGamma.CP5RootOrchestrationTransportSpike
 import DGamma.CP5RetirementHistorySpike
+import DGamma.CP5ConfluenceRenamingCompositionSpike
 import Decidable.Equality
 
 %default total
@@ -90,3 +91,36 @@ acceptedRetirementForwardByParent name key world error value nameEq keyEq left r
       (packet ** (actorExact, kind)) => generatedRetirementForwardAtBirths name key world error value nameEq keyEq left right
         (generatedGenerationBijection sameInputs) matched unique (renameBackward (currentNameBijection (endpointRenaming sameInputs)) selected) selected
         leftGeneration rightGeneration leftBirth rightBirth generationMapped packet actorExact kind
+
+export
+0 acceptedSupportedForwardRejectsTargetRetired :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, leftFinal, rightFinal : SystemState name key value world error} ->
+  (left : Transitions initial leftFinal) -> (right : Transitions initial rightFinal) ->
+  (sameInputs : SameOrchestrationModuloGenerated nameEq keyEq left right) ->
+  GeneratedOrchestrationMatched name key world error value nameEq left right (generatedGenerationBijection sameInputs) ->
+  AlignedTransitions name key world error value nameEq keyEq left -> AlignedTransitions name key world error value nameEq keyEq right ->
+  (bindings (registry initial) = []) -> UniqueRawNameInsertions name key world error value nameEq keyEq left ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq right -> (selected : name) ->
+  (isSupported {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} @{keyEq} selected leftFinal = True) ->
+  (rightFiber : Fiber name key value world error) ->
+  (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq}
+    (renameForward (currentNameBijection (endpointRenaming sameInputs)) selected) (registry rightFinal) = Just rightFiber) ->
+  (retired rightFiber = True) -> Void
+acceptedSupportedForwardRejectsTargetRetired name key world error value nameEq keyEq {leftFinal} left right sameInputs matched
+  leftAligned rightAligned empty leftUnique rightUnique selected supported rightFiber rightFound rightRetired =
+    case computedSupportPresent name key world error value nameEq keyEq leftFinal selected supported of
+      (leftFiber ** leftFound) => case acceptedSupportedForwardDomain name key world error value nameEq keyEq left right sameInputs leftAligned rightAligned empty selected supported of
+        (leftGeneration ** rightGeneration ** _ ** (leftCurrent, rightCurrent, generationMapped, _)) =>
+          nonretiredEndpointRejectsRetirement name key world error value nameEq keyEq left leftAligned empty leftUnique selected leftFiber leftFound
+            (computedSupportNotRetired name key world error value nameEq keyEq leftFinal selected leftFiber leftFound supported)
+            (acceptedRetirementBackwardByParent name key world error value nameEq keyEq left right sameInputs matched rightAligned empty rightUnique selected
+              leftGeneration rightGeneration
+              (acceptedLeftCurrentBirth name key world error value nameEq left right (generatedGenerationBijection sameInputs) (generatedRegistrationTree sameInputs)
+                selected leftGeneration leftCurrent)
+              (acceptedRightCurrentBirth name key world error value nameEq left right (generatedGenerationBijection sameInputs) (generatedRegistrationTree sameInputs)
+                (renameForward (currentNameBijection (endpointRenaming sameInputs)) selected) rightGeneration rightCurrent)
+              generationMapped rightFiber rightFound
+              (retiredEndpointHasRetirement name key world error value nameEq keyEq right rightAligned empty
+                (renameForward (currentNameBijection (endpointRenaming sameInputs)) selected) rightFiber rightFound rightRetired) (fiberParent rightFiber) Refl)
