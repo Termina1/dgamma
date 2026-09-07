@@ -41,3 +41,35 @@ r181ConsumerBlockBody = MoreTransitions
     (r180CheckedFromPrerequisites (LAdvance 1) r180ObservedConsumerBegun
       r180ObservedConsumerFinished LFinishTag r180ConsumerFinishRaw
       (Builtin.snd r180ObservedLifecycleSuffix))) NoTransitions
+
+||| E3: full installed traces, including BOTH body endpoints, obtained by
+||| projecting the five ACTUAL lifecycle observations from A16. No callback
+||| conversion, endpoint-only substitution or assumed InstalledTrace remains.
+public export
+0 r181BlockBodiesInstalled :
+  (InstalledTrace Nat ToyKey ToyRuntime String ToyValue (the (DecEq Nat) %search)
+    (the (DecEq ToyKey) %search) 0 r181ProviderBlockBody,
+   InstalledTrace Nat ToyKey ToyRuntime String ToyValue (the (DecEq Nat) %search)
+    (the (DecEq ToyKey) %search) 1 r181ConsumerBlockBody)
+r181BlockBodiesInstalled =
+  (InstalledStep (LAdvance 0) LIterTag
+    (Builtin.fst (Builtin.snd r179ObservedProviderEdges)) _
+    (installedFromCutObservation Nat ToyKey ToyRuntime String ToyValue %search 0
+      r179ObservedProviderBegin (Builtin.fst r181LifecycleCutObservations))
+    (InstalledStep (LAdvance 0) LFinishTag
+      (Builtin.fst (Builtin.snd (Builtin.snd r179ObservedProviderEdges))) _
+      (installedFromCutObservation Nat ToyKey ToyRuntime String ToyValue %search 0
+        r179ObservedProviderCut (Builtin.fst (Builtin.snd r181LifecycleCutObservations)))
+      (InstalledEnd (installedFromCutObservation Nat ToyKey ToyRuntime String ToyValue %search 0
+        r179ObservedProviderFinished
+        (Builtin.fst (Builtin.snd (Builtin.snd r181LifecycleCutObservations)))))),
+   InstalledStep (LAdvance 1) LFinishTag
+    (r180CheckedFromPrerequisites (LAdvance 1) r180ObservedConsumerBegun
+      r180ObservedConsumerFinished LFinishTag r180ConsumerFinishRaw
+      (Builtin.snd r180ObservedLifecycleSuffix)) _
+    (installedFromCutObservation Nat ToyKey ToyRuntime String ToyValue %search 1
+      r180ObservedConsumerBegun
+      (Builtin.fst (Builtin.snd (Builtin.snd (Builtin.snd r181LifecycleCutObservations)))))
+    (InstalledEnd (installedFromCutObservation Nat ToyKey ToyRuntime String ToyValue %search 1
+      r180ObservedConsumerFinished
+      (Builtin.snd (Builtin.snd (Builtin.snd (Builtin.snd r181LifecycleCutObservations)))))))
