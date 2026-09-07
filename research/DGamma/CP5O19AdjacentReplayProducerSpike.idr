@@ -292,3 +292,21 @@ o19MovedPairDestination nameEq keyEq left right diamond earlyRight earlyLeft =
     (trans (cong (\state => checkedApplyAction @{nameEq} @{keyEq} (transitionAction left) state)
       (o19MovedRightDestination nameEq keyEq left right diamond earlyRight))
       (earlyApplicationChecked earlyLeft)))
+
+||| B17: retarget the exact R179 guard along producer-owned action/tag labels.
+||| The checked output state is retained, not invented by the next crossing.
+public export
+0 o19EarlyLabels :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {before : SystemState name key value world error} ->
+  (originalAction, movedAction : Action name key value world error) ->
+  (originalTag, movedTag : RuleTag) ->
+  (movedAction = originalAction) -> (movedTag = originalTag) ->
+  CheckedEarlyApplication name key world error value nameEq keyEq before originalAction originalTag ->
+  CheckedEarlyApplication name key world error value nameEq keyEq before movedAction movedTag
+o19EarlyLabels {before} nameEq keyEq originalAction movedAction originalTag movedTag sameAction sameTag early =
+  MkCheckedEarlyApplication (earlyApplicationFinal early)
+    (trans (cong (\action => checkedApplyAction @{nameEq} @{keyEq} action before) sameAction)
+      (trans (earlyApplicationChecked early)
+        (cong (\tag => Just (tag, earlyApplicationFinal early)) (sym sameTag))))
