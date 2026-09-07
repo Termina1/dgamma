@@ -1,0 +1,83 @@
+[
+  {
+    "unit": "A16-1",
+    "path": "research-tests/DGamma/R178GeneratedOrchestrationFixtures.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R178GeneratedOrchestrationFixtures.idr"
+    ],
+    "start": "2026-09-07T06:12:10.051257+00:00",
+    "end": "2026-09-07T06:12:12.113161+00:00",
+    "seconds": 2.0617312090471387,
+    "exit": 1,
+    "fresh": true,
+    "passed": false,
+    "interrupted": false,
+    "maxSampleRSSKiB": 276400,
+    "sourceSHA256": "7ff664955c922797a2f0ecc166339517afc2dbe64622ae6bdd88d1022f45a736",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "2/2: Building DGamma.R178GeneratedOrchestrationFixtures (research-tests/DGamma/R178GeneratedOrchestrationFixtures.idr)\nError: While processing type of r178QuietPairChecks. Maximum ambiguity depth exceeded in DGamma.R178GeneratedOrchestrationFixtures.r178QuietPairChecks:\nBuiltin.MkPair --> Builtin.MkPair --> Builtin.MkPair --> === \n\nDGamma.R178GeneratedOrchestrationFixtures:105:48--105:49\n 101 |       @{r45NameEq} @{r45KeyEq} r178RightFinal,\n 102 |     supported {name = Nat} {key = R45Key} {value = R45Value} {world = Unit} {error = String}\n 103 |       @{r45NameEq} @{r45KeyEq} 1 r178LeftFinal,\n 104 |     supported {name = Nat} {key = R45Key} {value = R45Value} {world = Unit} {error = String}\n 105 |       @{r45NameEq} @{r45KeyEq} 1 r178RightFinal,\n                                                      ^\n\nSuggestion: the default ambiguity depth limit is 3, the %ambiguity_depth pragma can be used to extend this limit, but beware compilation times can be severely impacted.\n"
+  },
+  {
+    "unit": "A16-2",
+    "path": "research-tests/DGamma/R178GeneratedOrchestrationFixtures.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R178GeneratedOrchestrationFixtures.idr"
+    ],
+    "start": "2026-09-07T06:12:29.268304+00:00",
+    "end": "2026-09-07T06:12:32.370476+00:00",
+    "seconds": 3.101981917396188,
+    "exit": 1,
+    "fresh": true,
+    "passed": false,
+    "interrupted": false,
+    "maxSampleRSSKiB": 289648,
+    "sourceSHA256": "1945a2e47af20c5df026522cdeadc03cb3b1fcd28f8acb8fbd98466156fbdcd4",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "2/2: Building DGamma.R178GeneratedOrchestrationFixtures (research-tests/DGamma/R178GeneratedOrchestrationFixtures.idr)\nError: While processing type of r178QuietPairChecks. Undefined name supported. \n\nDGamma.R178GeneratedOrchestrationFixtures:106:5--106:14\n 102 |     quiet {name = Nat} {key = R45Key} {value = R45Value} {world = Unit} {error = String}\n 103 |       @{r45NameEq} @{r45KeyEq} r178RightFinal,\n 104 |     supported {name = Nat} {key = R45Key} {value = R45Value} {world = Unit} {error = String}\n 105 |       @{r45NameEq} @{r45KeyEq} 1 r178LeftFinal,\n 106 |     supported {name = Nat} {key = R45Key} {value = R45Value} {world = Unit} {error = String}\n           ^^^^^^^^^\nDid you mean any of: isSupported, supportSet, or supportFuel?\n"
+  },
+  {
+    "unit": "A16-3",
+    "path": "research-tests/DGamma/R178GeneratedOrchestrationFixtures.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R178GeneratedOrchestrationFixtures.idr"
+    ],
+    "start": "2026-09-07T06:12:50.360862+00:00",
+    "end": "2026-09-07T06:12:51.412446+00:00",
+    "seconds": 1.0514169582165778,
+    "exit": 1,
+    "fresh": true,
+    "passed": false,
+    "interrupted": false,
+    "maxSampleRSSKiB": 0,
+    "sourceSHA256": "ceb36d35a7b4977e2c6d6b68375b573f1fe575cf9001a740d5c69fbf4966a262",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "2/2: Building DGamma.R178GeneratedOrchestrationFixtures (research-tests/DGamma/R178GeneratedOrchestrationFixtures.idr)\nError: While processing right hand side of r178QuietPairChecks. Can't solve constraint between: True and quietEntryFor (registry r178RightFinal) (Bind 1 r45ChildRetired) && Delay (allRecursive (quietEntryFor (registry r178RightFinal)) (replaceEntries 0 (setFiberRuntime r45ParentBegun (restrictOwnedPreservingOrder r45Spec (ownedValues (fiberTable r45ParentBegun))) (Active (pushLocalUndo r45Spec id id) EmptyView)) (replaceEntries 0 r45ParentBegun [Bind 0 r45ParentFresh]))).\n\nDGamma.R178GeneratedOrchestrationFixtures:112:23--112:27\n 108 |     activeAt {name = Nat} {key = R45Key} {value = R45Value} {world = Unit} {error = String}\n 109 |       @{r45NameEq} 0 r178LeftFinal,\n 110 |     activeAt {name = Nat} {key = R45Key} {value = R45Value} {world = Unit} {error = String}\n 111 |       @{r45NameEq} 0 r178RightFinal) (6, 5, True, True, True, False, True, True))\n 112 | r178QuietPairChecks = Refl\n                             ^^^^\n\n"
+  }
+]

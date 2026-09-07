@@ -82,3 +82,38 @@ To be populated with exact checked commits, attempts and transcripts.
 
 A/B/C not yet implemented. Six inherited holes unchanged. All closure and fixture
 claims require fresh compiler evidence recorded below.
+
+## A16 mandatory 3/3 stop — 06:13 UTC
+
+A1–A15 and A3b retained, each fresh PASS 1/1 and immediately committed.
+A1–A4 define operation code, genuine non-root occurrence/current scan, ordered
+bidirectional A9 hypothesis, and generic reflexive matching. A3b adds BACKWARD
+strict-order preservation: this prevents proof-representation multiplicity at
+one ordinal from masquerading as different occurrences. A5–A15 reconstruct the
+EXACT R177 P2-4 checked traces with separately named concrete states and four
+checked actions; A6 uses checkedTransitionTargetValid r45ChildInsert, curing
+P2-2's independently recomputed opaque raw-birth equation. No new raw equation
+for that imported insertion is asserted. These traces now have concrete indices,
+not a Maybe fallback, but no endpoint observation or A9 Not fixture is yet proved.
+
+A16's combined quiet/length/support observation exhausted 3/3 and is REMOVED.
+1. A16-1 rejected eight-tuple/equality ambiguity depth (06:12:10–06:12:12).
+2. A16-2 fixed explicit Equal tuple types, rejected misspelled `supported`
+   rather than actual `isSupported` (06:12:29–06:12:32).
+3. A16-3 fixed only that spelling, then Refl could not normalize the imported
+   `quietEntryFor`/`allRecursive` observation at the right endpoint
+   (06:12:50–06:12:51). This is not a false-quietness proof; the R177 runtime
+   evidence remains valid, but this new type-level observation has no verdict.
+
+Exact source snapshots and full diagnostic JSON: `r178-stops/A16-*`.
+No fourth invocation, no new fixture/proof attempt. Restored file to A15's
+committed source. No Idris orphan. All six inherited holes unchanged; no O18
+body/truth, no A8 surface edit, no O17/O19/O21 body, no new LocalDiamond change.
+Frozen O6 full/statement hashes and CP3 blob rechecked, production diff empty.
+STOP/gate is mandatory here; no implicit attempt reset from remaining time.
+
+Suggested materially smaller continuation ONLY after supervisor ruling: omit
+redundant type-level quiet tuple (retain the historical executed evidence), and
+prove the actual A9 negative from a located right child-retirement and the left
+trace's absence of any retirement/removal. Then finish A's explicit threading
+and regressions. Do not retry A16's imported quiet fixed-point Refl expression.

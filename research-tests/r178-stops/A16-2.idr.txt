@@ -1,0 +1,112 @@
+module DGamma.R178GeneratedOrchestrationFixtures
+
+import DGamma.Calculus
+import DGamma.Coeffects
+import DGamma.CP3
+import DGamma.Metatheory
+import DGamma.CP4ProgressNoDeadlock
+import DGamma.CP5GeneratedOrchestrationMatched
+import DGamma.CP5RawClosingRankSpike
+import DGamma.R45BareDiamondDisciplineCounterexamplePositive
+import Decidable.Equality
+import Data.Nat
+
+%default total
+%unbound_implicits off
+
+||| Exact state selected by R177 P2-4 after the common parent's LFinish.
+||| State expressions retain the evaluator's actual table/accumulator structure.
+public export
+r178ParentDoneState : SystemState Nat R45Key R45Value Unit String
+r178ParentDoneState = MkSystemState ()
+  (replaceBinding @{r45NameEq} 0
+    (setFiberRuntime r45ParentBegun
+      (restrictOwnedPreservingOrder @{r45KeyEq} r45Spec (ownedValues (fiberTable r45ParentBegun)))
+      (Active (pushLocalUndo @{r45KeyEq} r45Spec id id) EmptyView))
+    r45SourcePairFinalRegistry)
+
+||| Use the PREVIOUS CHECKED transition's target-validity theorem, not an
+||| independently recomputed raw child insertion equation (R177 P2-2 wall).
+public export
+r178ParentFinish : Transition r45SourcePairFinal r178ParentDoneState
+r178ParentFinish = Fired r45NameEq r45KeyEq (LAdvance 0) LFinishTag
+  (DGamma.CP4ProgressNoDeadlock.checkedFromRaw r45NameEq r45KeyEq
+    (LAdvance 0) r45SourcePairFinal r178ParentDoneState LFinishTag
+    (checkedTransitionTargetValid r45ChildInsert) Refl)
+
+public export
+r178ChildBegunState : SystemState Nat R45Key R45Value Unit String
+r178ChildBegunState = MkSystemState ()
+  (replaceBinding @{r45NameEq} 1
+    (setFiberLifecycle r45ChildFresh (Reloading [] id EmptyView))
+    (registry r178ParentDoneState))
+
+public export
+r178ChildBegin : Transition r178ParentDoneState r178ChildBegunState
+r178ChildBegin = Fired r45NameEq r45KeyEq (LBegin 1) LBeginTag
+  (DGamma.CP4ProgressNoDeadlock.checkedFromRaw r45NameEq r45KeyEq
+    (LBegin 1) r178ParentDoneState r178ChildBegunState LBeginTag
+    (checkedTransitionTargetValid r178ParentFinish) Refl)
+
+public export
+r178LeftFinal : SystemState Nat R45Key R45Value Unit String
+r178LeftFinal = MkSystemState ()
+  (replaceBinding @{r45NameEq} 1
+    (setFiberLifecycle r45ChildFresh (Active id EmptyView))
+    (registry r178ParentDoneState))
+
+public export
+r178ChildFinish : Transition r178ChildBegunState r178LeftFinal
+r178ChildFinish = Fired r45NameEq r45KeyEq (LAdvance 1) LFinishTag
+  (DGamma.CP4ProgressNoDeadlock.checkedFromRaw r45NameEq r45KeyEq
+    (LAdvance 1) r178ChildBegunState r178LeftFinal LFinishTag
+    (checkedTransitionTargetValid r178ChildBegin) Refl)
+
+public export
+r178RightFinal : SystemState Nat R45Key R45Value Unit String
+r178RightFinal = MkSystemState ()
+  (replaceBinding @{r45NameEq} 1 r45ChildRetired (registry r178ParentDoneState))
+
+public export
+r178ChildRetire : Transition r178ParentDoneState r178RightFinal
+r178ChildRetire = Fired r45NameEq r45KeyEq (ORetire 1) ORetireTag
+  (DGamma.CP4ProgressNoDeadlock.checkedFromRaw r45NameEq r45KeyEq
+    (ORetire 1) r178ParentDoneState r178RightFinal ORetireTag
+    (checkedTransitionTargetValid r178ParentFinish) Refl)
+
+public export
+r178CommonTrace : Transitions r45Initial r178ParentDoneState
+r178CommonTrace = MoreTransitions r45ParentInsert
+  (MoreTransitions r45Begin (MoreTransitions r45ChildInsert
+    (MoreTransitions r178ParentFinish NoTransitions)))
+
+public export
+r178LeftTrace : Transitions r45Initial r178LeftFinal
+r178LeftTrace = appendTransitions r178CommonTrace
+  (MoreTransitions r178ChildBegin (MoreTransitions r178ChildFinish NoTransitions))
+
+public export
+r178RightTrace : Transitions r45Initial r178RightFinal
+r178RightTrace = appendTransitions r178CommonTrace
+  (MoreTransitions r178ChildRetire NoTransitions)
+
+||| The actual pair, not an empty fallback: both quiet, parent Active on both,
+||| child supported on the left only. Still NOT the two canonical capitals.
+export
+0 r178QuietPairChecks :
+  (Equal {a = (Nat, Nat, Bool, Bool, Bool, Bool, Bool, Bool)}
+    {b = (Nat, Nat, Bool, Bool, Bool, Bool, Bool, Bool)}
+    (transitionCount r178LeftTrace, transitionCount r178RightTrace,
+    quiet {name = Nat} {key = R45Key} {value = R45Value} {world = Unit} {error = String}
+      @{r45NameEq} @{r45KeyEq} r178LeftFinal,
+    quiet {name = Nat} {key = R45Key} {value = R45Value} {world = Unit} {error = String}
+      @{r45NameEq} @{r45KeyEq} r178RightFinal,
+    supported {name = Nat} {key = R45Key} {value = R45Value} {world = Unit} {error = String}
+      @{r45NameEq} @{r45KeyEq} 1 r178LeftFinal,
+    supported {name = Nat} {key = R45Key} {value = R45Value} {world = Unit} {error = String}
+      @{r45NameEq} @{r45KeyEq} 1 r178RightFinal,
+    activeAt {name = Nat} {key = R45Key} {value = R45Value} {world = Unit} {error = String}
+      @{r45NameEq} 0 r178LeftFinal,
+    activeAt {name = Nat} {key = R45Key} {value = R45Value} {world = Unit} {error = String}
+      @{r45NameEq} 0 r178RightFinal) (6, 5, True, True, True, False, True, True))
+r178QuietPairChecks = Refl
