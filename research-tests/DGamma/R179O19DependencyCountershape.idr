@@ -49,3 +49,12 @@ r179AfterProviderFinish = fromMaybe
   (buildCertifiedActionTrace %search %search
     [LAdvance 0, LBegin 1, LAdvance 1]
     (certifiedFinal r179BeforeProviderFinish))
+
+||| Smaller observed boundary after the suffix count normalization stop:
+||| the actual provider's next raw action does finish, without post-hoc WF.
+export
+0 r179ProviderFinishRawAvailable :
+  ((case applyAction (LAdvance 0) (certifiedFinal r179BeforeProviderFinish) of
+      Nothing => False
+      Just (tag, afterState) => tagEq tag LFinishTag) = True)
+r179ProviderFinishRawAvailable = Refl
