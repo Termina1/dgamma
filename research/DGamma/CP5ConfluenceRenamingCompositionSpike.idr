@@ -3444,3 +3444,19 @@ export
 acceptedLeftBirthCoverage name key world error value nameEq left right renaming registrations selected parent component birth =
   projectionLeftBirthCoverage name key world error value nameEq left right renaming
     (alignFiniteRegistrationProjection (generationTraceCorrespondence registrations)) selected parent component birth
+
+||| Symmetric coverage, retaining the same owned right event list.
+export
+0 acceptedRightBirthCoverage :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) ->
+  {leftFirst, leftFinal, rightFirst, rightFinal : SystemState name key value world error} ->
+  (left : Transitions leftFirst leftFinal) -> (right : Transitions rightFirst rightFinal) ->
+  (renaming : RegistrationGenerationBijection name) ->
+  (registrations : RegistrationCorrespondenceByGeneration nameEq renaming left right) ->
+  (selected, parent : name) -> (component : Component key value world error) ->
+  (birth : LocatedActionOccurrence (OInsert selected (ChildOf parent) component) right) ->
+  ClassifiedGeneratedBirth name key world error value Z right
+    (rightScannedEvents (acceptedAuthenticatedRegistrationMatching name key world error value nameEq left right renaming registrations)) selected
+acceptedRightBirthCoverage name key world error value nameEq left right renaming registrations selected parent component birth =
+  projectionRightBirthCoverage name key world error value nameEq left right renaming
+    (alignFiniteRegistrationProjection (generationTraceCorrespondence registrations)) selected parent component birth
