@@ -2625,3 +2625,12 @@ O17/O19/O21 withdrawal/body or LocalDiamond change is hidden by this milestone.
 Next is owner-directed integration/permutation/convergence work, not a fourth
 A16 or third C9 retry. Full ledger, clause map and validation evidence are in the
 R178 research audit and evidence directory.
+
+Final R178 validation: seeded production package **207/207** and **30 fresh
+positives +10 exact-diagnostic negatives** passed. The optional aggregate legacy
+R11 suite is **incomplete**, not failed as a proof: after5 spikes and39 positives,
+unchanged R23 ran12m52s without a verdict; the supervisor authorized termination
+at09:00:27. Its partial log and explicit cost-stop reconciliation are committed.
+No broad-suite success is claimed. The protected-source/five-hole audit passed;
+LocalDiamond's125,368,223-byte seed is unchanged. Exact evidence is in the R178
+ledger/archive; Markdown diagnostic presentation alone is right-trimmed.

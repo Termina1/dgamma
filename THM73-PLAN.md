@@ -3339,8 +3339,8 @@ No destination-support/coverage/metadata oracle is an added O18 premise.
 The separately budgeted O18 body passed its first fresh invocation. Five holes
 remain, **1/3/0/0/1**, with production and frozen LocalDiamond unchanged. A9 is a
 **supervisor decision under delegation, owner override pending**. The R177
-TWO-CAPITAL GAP is preserved. Unit C has not yet changed a source surface; its
-availability-aware A8 design and final regression gate remain pending.
+TWO-CAPITAL GAP is preserved. At that milestone Unit C had not yet changed a
+source surface; its subsequent checked surface and final results are below.
 
 ## R178 A8 bounded surface and OWNER integration decision
 
@@ -3371,3 +3371,21 @@ C9's stronger concrete located-root packet is PARKED at 2/3 no-verdict cost
 interruptions; only the independently authorized scalar shape is claimed.
 No root-placement producer or O17 body was attempted. Frozen integration still
 requires the OWNER choice above; the existing canonical tower is unchanged.
+
+### R178 final validation and protected boundary
+
+Required validation PASSED: seeded **207/207 production package**, **30 fresh
+positive + 10 exact-diagnostic negative** research boundaries. The OPTIONAL
+legacy broad R11 run is INCOMPLETE:5 spike +39 positive checks returned, then
+unchanged R23 ran12m52s without verdict. Its owned group was terminated09:00:27
+under supervisor approval. No broad-suite completion claim is made.
+
+The final read-only audit verifies five holes1/3/0/0/1, production/ipkg unchanged
+vs34b21c9, CanonicalSort/LocalDiamond unchanged vs6d6ab28, both exact
+adjacentSwapSuffixSpike hashes, CP3/review hashes, protected remaining bodies,
+and the untouched125,368,223-byte LocalDiamond TTC seed (01:56:14.905763 UTC).
+No new holes, escapes, with/let aliases, partiality or hidden signature changes.
+The complete per-attempt evidence and declaration map are committed as
+O6-R178-COMPILER-{LEDGER.json,TRANSCRIPTS.md,EVIDENCE.tar.gz} and
+O6-R178-CLAUSE-MAP.md. C9 stays parked2/3; the two owner A8 integration choices
+and A9 owner-override status remain exactly as stated above.

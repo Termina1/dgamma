@@ -426,3 +426,35 @@ No legacy source or TTC seed was deleted; LocalDiamond's original seed remains.
 Do not conflate the completed seeded **207/207 production package** and required
 **30+10 fresh research boundaries** with this incomplete optional aggregate.
 C9 remains separately parked at2/3; its budget was not spent by this legacy run.
+
+## Final status / gate evidence
+
+**MILESTONE: O18 closed.** Fully proved: all retained/root coverage, authentic
+metadata and retirement transport, actual support-edge induction, BOTH committed
+truth implications, and their O18 consumer. A9 is explicit and its genuine
+negative/nonempty-positive fixtures are checked. A8's complete standalone
+replacement specification and R174 scalar shape are checked; C9's stronger
+packet remains PARKED2/3 and the canonical tower is NOT migrated. R172 reuse is
+still excluded by freshly checked original-insertion uniqueness. The TWO-CAPITAL
+GAP and both OWNER integration options remain explicit.
+
+Permanent evidence:186 primary invocations (165 ordinary passes,6 intended
+negative passes,13 repaired/parked diagnostic failures,2 C9 cost interruptions),
+24 Unit-A boundary records,40 final boundary records; all compiler intervals are
+verified nonoverlapping. Complete exact sources, logs and JSON are archived.
+The optional legacy run separately completed5 spike +39 positive checks before
+R23's12m52s no-verdict cost stop. It does NOT contribute a broad-suite pass.
+
+Final read-only frozen audit passed at18a144e: five holes1/3/0/0/1; production/ipkg
+vs34b21c9 and CanonicalSort/LocalDiamond vs6d6ab28 unchanged; original CP3/review
+and adjacent full/statement hashes exact; all remaining protected bodies intact;
+DeletionChain differs ONLY by two comments and export on the existing provenance
+lemma, whose full type/body are unchanged. LocalDiamond's seed is unchanged at
+125,368,223 bytes,01:56:14.905763 UTC. No compiler survives and tracked tree is
+clean after evidence commits. A final snapshot after this status update follows.
+The first documentary diff check caught trailing whitespace in rendered compiler
+output; presentation was right-trimmed, leaving exact raw JSON/archive untouched.
+
+Next: owner-directed A8 research-tower fork OR production unfreeze decision,
+then authorized O17/permutation/convergence work. No O17/O19/O21 withdrawal/body,
+G31, LocalDiamond declaration, scoped-to-raw cast, or silent escape was added.
