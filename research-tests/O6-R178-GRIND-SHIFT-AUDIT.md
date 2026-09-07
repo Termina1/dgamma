@@ -145,3 +145,50 @@ negative: `otherRenaming and sameInputs .generatedGenerationBijection` at
 none is a missing-argument/implicit-auto regression. Each changed declaration
 had its own compiler invocation, PASS and immediate commit. The R8 check ran
 DETACHED for 102.58 seconds, sampled peak 40,996,592 KiB, and exited cleanly.
+
+## Unit B checked frontier through B62 — 07:15 UTC
+
+All-supported generated retained-event coverage is now PROVED in both
+`acceptedSupportedGeneratedLeftCoverage` (2af291b) and
+`acceptedSupportedGeneratedRightCoverage` (8def765). B1–B9 exhaust the actual
+accepted side folds into an authenticated retained-or-closing packet; B34/B35
+exclude the closing alternative using discipline and real retirement history.
+The output event belongs to the EXACT list produced by
+`acceptedAuthenticatedRegistrationMatching`, not an alternative finite domain.
+B30 (f594c4c) exposes the existing `childRetirementAtGeneratedOccurrence` with
+**export**, adding ONLY a two-line comment and visibility line in DeletionChain.
+Its type/body is byte-identical to the start. This is a checked provenance lemma,
+not a frozen deletion theorem call, scoped/raw cast, or O21 withdrawal proof.
+
+Root birth coverage and endpoint static metadata are also proved both ways:
+`acceptedSupportedRootMetadataForward` (2ae7cb1),
+`acceptedSupportedRootMetadataBackward` (fdef935). They consume the accepted
+historical root correspondence and accepted current-domain coupling/root fixing;
+no free endpoint bijection or destination support premise is introduced.
+
+Same-trace semantic foundation, genuinely proved:
+- `nonretiredEndpointRejectsRetirement` (bd7a7bd): under authentic original
+  uniqueness and empty initial registry, EVERY actual ORetire occurrence is
+  incompatible with an actual nonretired endpoint fiber. After a retired prefix,
+  resurrection would require an actual later birth; separately authenticated
+  before/after-cut ordinals contradict uniqueness.
+- `rawLifecycleRetiredFlags` (6fedf35): exhaustive executable lifecycle branch
+  analysis gives the ACTUAL source/target retirement equality. It is NOT inferred
+  from the weaker RetirementUpdate relation. B46–B56 follow R177's checked
+  evaluator branch shapes, strengthening successful results by the explicit flag
+  equation; every copied/adapted declaration compiled separately.
+- `retiredEndpointHasRetirement` (78dc8cb): every actual retired endpoint from
+  empty has an actual original ORetire. Legal raw-name reuse remains allowed in
+  this lemma; uniqueness is needed only in the exclusion direction above.
+
+No cross-trace retired agreement/truth implication/O18 body yet. The new A9
+transport must correlate each actual occurrence's PREFIX current generation
+with the accepted endpoint scan, then transport retirement and refute the
+opposite nonretired endpoint. Six holes unchanged; no O17/O19/O21 body attempt.
+
+B4 needed its missing Metatheory import (2/3). B17 renamed the reserved parser
+identifier `prefix`/its paired `suffix` (2/3). B42 needed its Metatheory import
+(2/3). B48 fixed the generated helper-reference name and explicit flag argument
+(2/3). Every other B1–B62 unit passed on attempt 1. B30 and B36 ran detached
+(83.97s and 62.16s); no overlap, no seed deletion, no orphan. Complete per-attempt
+sources/diagnostics remain in the R178 ledger, to be committed at the final gate.
