@@ -47,3 +47,30 @@ canonicalGeneratedOriginMetadata name key world error value nameEq keyEq protoco
         (currentBirthTraceAppendEmpty name key world error value original)
         (replayAligned (chainReplayCapital (capitalPremises capital)))
         (replayInitialEmpty (chainReplayCapital (capitalPremises capital))) selected observed found)
+
+||| The actual canonical placement produces the child occurrence; original
+||| uniqueness identifies its component, rather than asking for that equality.
+export
+0 canonicalSupportedChildBirth :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (original : Transitions initial finalState) ->
+  (capital : IndependentCanonicalSchedule name key world error value protocol nameEq keyEq original) ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq original ->
+  (selected, parent : name) -> (observed : Fiber name key value world error) ->
+  (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+    @{nameEq} selected (registry finalState) = Just observed) ->
+  (fiberParent observed = ChildOf parent) ->
+  (isSupported {name = name} {key = key} {value = value} {world = world} {error = error}
+    @{nameEq} @{keyEq} selected finalState = True) ->
+  LocatedGeneratedRegistration selected parent (fiberComponent observed) (canonicalTrace (canonicalSchedule capital))
+canonicalSupportedChildBirth name key world error value nameEq keyEq protocol original capital unique
+  selected parent observed found parentExact supported =
+    case childGenerationBeforeOwnLifecycle (inputPlacement (canonicalSchedule capital)) selected parent
+      (orderComplete (supportLinearization (canonicalSchedule capital)) selected supported) observed found parentExact of
+      (component ** occurrence ** _) =>
+        replace {p = \program => LocatedGeneratedRegistration selected parent program (canonicalTrace (canonicalSchedule capital))}
+          (cong snd (canonicalGeneratedOriginMetadata name key world error value nameEq keyEq protocol original capital unique
+            selected parent component occurrence observed found)) occurrence
