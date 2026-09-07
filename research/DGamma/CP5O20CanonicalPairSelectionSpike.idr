@@ -123,3 +123,19 @@ selectSupportedCanonicalBlockPair nameEq keyEq protocol leftTrace rightTrace sam
         (renameForward (expectedBridgeBijection sameInputs) selected) (canonicalPairRightMember nameEq keyEq protocol leftTrace rightTrace sameInputs
         leftCapital rightCapital matching selected supported))
       Refl Refl
+
+||| Locate the actual opening action owned by a selected block, retaining
+||| its genuine prefix and suffix. Applicable separately to either chosen
+||| execution; no cross-execution equality is inferred.
+export
+0 canonicalPairOpeningOccurrence :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} -> {selected : name} ->
+  {initial, finalState : SystemState name key value world error} ->
+  {trace : Transitions initial finalState} ->
+  (block : LocatedOpenEpisodeBlock name key world error value nameEq keyEq selected trace) ->
+  LocatedActionOccurrence (LBegin selected) trace
+canonicalPairOpeningOccurrence block =
+  MkLocatedActionOccurrence (blockPreStart block) (blockStart block) (traceBeforeBlock block)
+    (beginTransition (blockOpening block)) (appendTransitions (blockBody block) (traceAfterBlock block))
+    Refl (blockDecomposition block)
