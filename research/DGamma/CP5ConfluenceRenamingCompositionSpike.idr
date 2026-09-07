@@ -3304,3 +3304,19 @@ export
 acceptedLeftEventParentBirth name key world error value nameEq left right renaming registrations event member activation present =
   projectionLeftParentBirth name key world error value nameEq left right renaming
     (alignFiniteRegistrationProjection (generationTraceCorrespondence registrations)) event member activation present
+
+||| Symmetric genuine original parent-birth authentication for accepted right events.
+export
+0 acceptedRightEventParentBirth :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) ->
+  {leftFirst, leftFinal, rightFirst, rightFinal : SystemState name key value world error} ->
+  (left : Transitions leftFirst leftFinal) -> (right : Transitions rightFirst rightFinal) ->
+  (renaming : RegistrationGenerationBijection name) ->
+  (registrations : RegistrationCorrespondenceByGeneration nameEq renaming left right) ->
+  (event : RegistrationEvent name key world error value) ->
+  Elem event (rightScannedEvents (acceptedAuthenticatedRegistrationMatching name key world error value nameEq left right renaming registrations)) ->
+  (activation : RegistrationActivation name) -> eventParentActivation event = Just activation ->
+  CurrentGenerationBirth name key world error value right (eventParent event) (activationParentGeneration activation)
+acceptedRightEventParentBirth name key world error value nameEq left right renaming registrations event member activation present =
+  projectionRightParentBirth name key world error value nameEq left right renaming
+    (alignFiniteRegistrationProjection (generationTraceCorrespondence registrations)) event member activation present
