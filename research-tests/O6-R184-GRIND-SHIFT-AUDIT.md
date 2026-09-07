@@ -55,3 +55,27 @@ O/A, A/O and O/O rows. Consequently(ii)-(vi) remain open, unchanged from R183.
 Micro-unit ledger A2/30:1 retained fresh-PASS declaration,1 wholly reverted
 3-attempt unit. Baseline1 + A1/1 + A2/3 =5 serialized checks,2 ordinary PASS,
 3 rejected, no interruptions. Audit/stop gate precedes Unit B as authorized.
+
+## Supervisor continuation ruling and second same-seam stop
+
+Supervisor ratified A2 but explicitly ordered continuation of A (28 slots
+remained), by DISTINCT observed-value/equation prerequisites; Unit B deferred
+until cap or TWO exhausted units in the same seam. No A2 restatement authorized.
+
+A3 `O19ResolutionObservation` PASS1,3.116s (`f4d691a`); A4
+`o19ResolutionFromInsertPlan` PASS1,3.107s (`3de39dd`); A5
+`o19ResolutionAfterCheckedInsert` PASS1,3.103s (`63c173f`). These own an
+actual Maybe View and exact BEFORE/AFTER resolveView equations, produced from
+the actual checked OInsert and its original absence witness. They do NOT
+claim targetFiber or Begin preservation. Data.List.Elem now directly imported.
+
+A6 `o19TargetFromResolution` FAILED3/3, entire declaration reverted to
+committed A5 source. A6-1/2 rewrite could not see resolver under targetFiber
+(2.067s/2.075s); A6-3 explicit replace under conditional failed conversion
+between identically printed conditional resolver expressions (2.070s).
+All are native rejections, no interruptions, no fourth retry. This is the
+SECOND 3/3 in the insertion-target transport seam, so the supervisor's genuine
+unit-level stop rule applies. No mathematical impossibility or new O19
+specification defect claimed. Observed resolver capital survives; target/Begin
+and the orientation rows remain open. No O19 body attempt. Six A slots used:
+four retained declarations (A1,A3,A4,A5), two exhausted/reverted (A2,A6).
