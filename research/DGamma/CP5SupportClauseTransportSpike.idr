@@ -24,3 +24,7 @@ clauseAndTrue True True Refl Refl = Refl
 0 clauseAndParts : (left, right : Bool) -> (left && right = True) -> (left = True, right = True)
 clauseAndParts False right exact = case exact of Refl impossible
 clauseAndParts True right exact = (Refl, exact)
+
+0 clauseOrCases : (left, right : Bool) -> (left || right = True) -> Either (left = True) (right = True)
+clauseOrCases False right exact = Right exact
+clauseOrCases True right exact = Left Refl
