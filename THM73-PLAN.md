@@ -12,8 +12,11 @@ drawn fresh and never reused", satisfying the hypothesis by construction.
 R137 and R172 reuse countermodels are necessity evidence for that hypothesis,
 not defects in the implementation. DGamma adopted `UniqueRawNameInsertions` in
 R173; it is implemented, not future work. The CP3 raw premise is a **missing
-hypothesis at the frozen surface; satisfiability under uniqueness is to be
-re-verified**. No production change, frozen theorem call or generation-to-raw
+hypothesis at the frozen surface; R176 proves satisfiability under uniqueness
+for every trace with a genuine closing episode**.
+`CP5ConfluenceDeletionChainSpike.rawClosingMaximumUnderUniqueInsertions`
+constructs the raw maximum from the actual finite O7 inventory and authentic
+protocol ranks; this does not alter or call the frozen deletion theorem. No production change, frozen theorem call or generation-to-raw
 cast follows from this reclassification. Historical audits and the R146 memo
 are preserved; read their reuse/defect terminology subject to this dated note.
 
@@ -3072,7 +3075,9 @@ clause mapping and necessity witnesses are recorded in
 R137 reuses names allowed by the LOCAL operational rule, outside the missing
 GLOBAL-freshness hypothesis. This is a missing hypothesis at the frozen
 surface, not a production defect. Satisfiability of its raw premise under
-`UniqueRawNameInsertions` must be re-verified. `CP4DeletionTheorem.deletionTheoremProof`
+`UniqueRawNameInsertions` is now PROVED by R176
+`rawClosingMaximumUnderUniqueInsertions` (genuine closing required).
+`CP4DeletionTheorem.deletionTheoremProof`
 remains frozen and must not be called; no scoped-to-raw coercion is authorized.
 The research chain instead uses the generation-scoped Lemma-72 analogue.
 

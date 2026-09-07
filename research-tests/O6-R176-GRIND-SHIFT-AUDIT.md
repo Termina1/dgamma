@@ -68,10 +68,58 @@ Both R6 diagnostics were checked BEFORE migration and AFTER migration; the
 full diagnostic paragraphs agree (only source positions/context lines differ).
 These are intended negatives, not failed implementation micro-units.
 
+### Unit A fixtures and fresh regression evidence
+
+The committed serialized `run-r176-checks.py` touches each target and requires
+its exact Building marker. `/tmp/dgamma-r176/A-boundary-suite.log` concludes:
+**10 positive fresh checks / 9 exact diagnostic-negative fresh checks PASS**.
+The negative diagnostics are not arity/import failures.
+
+- New bare-capital rejection: TraceIndependent cannot satisfy original unique.
+- New wrong-original rejection: `otherTrace` cannot satisfy `leftTrace` unique.
+- New bare-origin rejection: action/registration origin is not a finite sealed derivation.
+- New wrong-direction rejection: reduced unique cannot satisfy original unique;
+  this tests the indexed boundary, not a concrete reverse-implication countermodel.
+- New positive: exact certified canonical operational target inherits left-original unique;
+  this consumes a real certified package, not a new permutation producer.
+- R173 reused-name exclusion and R174 distinct-name/same-provision-key success PASS.
+- Fresh R8, R16 and R4 consumers PASS; both R6 baselines unchanged; wrong-trace,
+  wrong-occurrence and wrong-generation diagnostics remain intentional.
+
 ## Unit B — raw existential maximum
 
-Not started. Raw cross-time coherence remains checked prior capital, not yet
-a finite maximum or a discharge of the frozen raw premise.
+**COMPLETED** in exactly 12 units / 13 compiler attempts. All units fresh PASS;
+B6 attempt 1 rejected only the missing direct UniqueRawNameInsertions import,
+fixed in attempt 2. Every success immediately committed. B1/B2 use the SAME
+rawClosingEpisodeProtocolRank producer pair; B3/B4 authenticate actor identity
+through rawClosingActionAt at exact opening ordinal; B5/B6 retain distinct
+reached states and use uniqueRawRanksAcrossPrefixes; B7/B8 lift O7 ordinal
+completeness to a bound on every closing; B9 uses rawPrecedenceRankAcrossPrefixes
+to contradict the bound; B10 retains the chosen genuine occurrence; B11 selects
+a finite maximum; B12 invokes the authentic O7 scanner, not a supplied inventory.
+No output-shaped maximum premise, scope relabelling, or frozen deletion call.
+
+| Unit | Declaration | Commit | Attempts |
+|---|---|---|---|
+| B1 | rawClosingOccurrenceRank | 4bfd0dd | 1 |
+| B2 | rawClosingOccurrenceRankSound | 33a66df | 1 |
+| B3 | rawClosingOpeningActionAt | ecc7e82 | 1 |
+| B4 | rawClosingSameOpeningActor | d54ae39 | 1 |
+| B5 | rawClosingReachedCutExact | 5153dd5 | 1 |
+| B6 | rawClosingRanksSameActor | cb34d82 | 2 |
+| B7 | rawClosingOrdinalRankSame | 683f6a7 | 1 |
+| B8 | rawClosingMaximumRankBound | a464774 | 1 |
+| B9 | rawClosingRankMaximumHasNoDependent | 04250bb | 1 |
+| B10 | rawClosingMaximumFromOccurrence | c75b61d | 1 |
+| B11 | rawClosingMaximumFromInventory | 8ebef3d | 1 |
+| B12 | rawClosingMaximumUnderUniqueInsertions | 2594c80 | 1 |
+
+The public conclusion is the raw existential `(selected ** (episode **
+NoDependentClosingEpisode selected global))`. Explicit premises are only the
+exact global trace, its ReplayInvariantBundle, original uniqueness and a genuine
+closing. This discharges SATISFIABILITY of the raw premise under uniqueness;
+it is not a proof/call of the frozen CP3 deletion theorem. THM73-PLAN's raw-premise
+status is updated, without changing any O17/O19/O21 status.
 
 ## Unit C — actual operational measure bridge
 
@@ -80,5 +128,5 @@ Not started. Root placement excluded; no O17 body authorized.
 ## Status
 
 Unit A structural projections and six explicit-input surfaces retained.
-Fresh threading/fixture validation is in progress. B/C not started.
+A validation complete; B raw maximum complete; C not yet started.
 No full confluence claim; six inherited holes remain open.
