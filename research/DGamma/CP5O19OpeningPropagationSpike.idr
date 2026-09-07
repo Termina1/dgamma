@@ -30,3 +30,28 @@ o19CheckObservedRawMove nameEq keyEq action tag before wellFormed raw =
     (rewrite rawActivationRuns raw in
      rewrite preservationTheoremProof nameEq keyEq action before
        (rawActivationAfter raw) tag wellFormed (rawActivationRuns raw) in Refl)
+
+||| Propagate the EXISTING source Begin guard over one actual foreign
+||| activation. Alignment supplies the dictionaries; ordinary preservation
+||| supplies both checked-domain facts. No new guard oracle is introduced.
+public export
+0 o19BeginAfterActivation :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  {before, afterState : SystemState name key value world error} ->
+  (action : Action name key value world error) -> (tag : RuleTag) ->
+  (checked : checkedApplyAction @{nameEq} @{keyEq} action before = Just (tag, afterState)) ->
+  PaperActivationStep (Fired {before} {afterState} nameEq keyEq action tag checked) ->
+  Not (actor = actionOwner action) ->
+  (registryWellFormed @{nameEq} @{keyEq} before = True) ->
+  CheckedEarlyApplication name key world error value nameEq keyEq before (LBegin actor) LBeginTag ->
+  CheckedEarlyApplication name key world error value nameEq keyEq afterState (LBegin actor) LBeginTag
+o19BeginAfterActivation {before} {afterState} nameEq keyEq actor action tag
+  checked activation distinct wellFormed early =
+    o19CheckObservedRawMove nameEq keyEq (LBegin actor) LBeginTag afterState
+      (preservationTheoremProof nameEq keyEq action before afterState tag wellFormed
+        (checkedActionProjects nameEq keyEq action before afterState tag checked))
+      (beginRawAfterForeignActivation nameEq keyEq actor action tag
+        (earlyApplicationChecked early) checked activation distinct
+        (preservationTheoremProof nameEq keyEq action before afterState tag wellFormed
+          (checkedActionProjects nameEq keyEq action before afterState tag checked)))
