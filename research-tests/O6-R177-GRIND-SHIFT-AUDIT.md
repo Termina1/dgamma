@@ -50,3 +50,29 @@ Not yet attempted. Analysis/probe only; withdrawal branches remain parked.
 
 In progress. Six inherited holes remain, split **1/4/0/0/1**. No full operational
 selector or actual-worklist strict decrease is claimed by the five rank units.
+
+### A6–A12: bounded bridge milestone
+
+| Unit | Declaration | Commit | Attempts |
+|---|---|---|---|
+| A6 | canonicalWorkActionRank, factor existing canonicalWorkRankStep | 225605e | 1, PASS |
+| A7 | canonicalWorkObservedActionLift | e54afaf | 1, PASS |
+| A8 | canonicalWorkObservedSequenceLift | f438310 | 1, PASS |
+| A9 | rankHeadTargetExact | 3ef0d0a | 1, PASS |
+| A10 | rankSegmentHeadProgress | 7eedd31 | 1, PASS |
+| A11 | canonicalWorkObservedPairDrop | 58e21ed | 1, PASS |
+| A12 | canonicalWorkAcceptedObservedPairDrops | see git log | 1, PASS |
+
+**12/12 micro-units consumed, all 1/1.** The R176 C11 opaque target / computed
+ownership wall is cured: producer equations, explicit observed ranks, and
+simultaneous transposition-plus-progress build the exact one-inversion drop.
+A12 connects that drop to the actual original and sealed returned trace, the
+unchanged support order, unchanged actual prefix and suffix, and the actual
+reinspected worklist. It takes no arbitrary target word or decrease certificate.
+
+**Important conditional frontier:** A12 takes exact rank observations and the
+orientation/diamond/accepted result for the SAME checked adjacent pair. It does
+NOT discover such a pair in a general noncanonical worklist and does NOT prove
+its orientation applicable from the inversion witness. Those operational
+selection/applicability obligations remain open; no claim of a total sorting
+loop, canonicalGroupsPermitSpike body, O17 placement, or O18 body closure.
