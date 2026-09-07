@@ -202,3 +202,12 @@ at an over-qualified record projection name. No fourth attempt; disposable sourc
 removed; exact snapshots/logs retained; see `O6-R177-P2-STOP-AUDIT.md`.
 Both canonical capitals and quiet/support counterexample remain UNCONSTRUCTED.
 Waiting for an explicit supervisor gate before further compiler/proof work.
+
+The supervisor RATIFIED the P2 stop and authorized exactly ONE mechanical P2-4
+repair (both record projection namespaces only). The same invocation typechecked
+and executed the repaired total proof-carrying Maybe producer: actual Just pair,
+both endpoints quiet, both parents Active, child support True left / False right.
+See the stop-audit appendix for exact output and the --exec Building-marker
+qualification. Both independent capitals remain unconstructed; no full O18
+counterexample claimed. Probe source removed and frozen; only independent
+metadata transport resumes. No premise/body changes authorized.

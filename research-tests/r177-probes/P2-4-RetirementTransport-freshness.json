@@ -1,0 +1,20 @@
+{
+  "sourceMatchesExactlyAuthorizedSubstitutions": true,
+  "namedAfterSubstitutions": 5,
+  "namedTransitionSubstitutions": 5,
+  "files": [
+    {
+      "path": "research-tests/DGamma/R177RetirementTransportProbe.idr",
+      "mtime_ns": 1788754194214436000,
+      "mtimeUTC": "2026-09-07T04:09:54.214436+00:00",
+      "sha256": "6657e8dd6fcdb8d42b28a6b107681950fd1614a2d1912766b21851c02f912a0c"
+    },
+    {
+      "path": "build/ttc/2025081600/DGamma/R177RetirementTransportProbe.ttc",
+      "mtime_ns": 1788754194974581424,
+      "mtimeUTC": "2026-09-07T04:09:54.974581+00:00",
+      "sha256": "707fed7c1da08d610b5c0b9153946fdc4d4f1678c700cdeb0dd73f7aef6acfdc"
+    }
+  ],
+  "ttcWrittenAfterSource": true
+}

@@ -1,0 +1,1 @@
+R177_P2_PAIR=Just; leftQuiet=True; rightQuiet=True; leftChildSupported=True; rightChildSupported=False; leftParentActive=True; rightParentActive=True; leftLength=6; rightLength=5
