@@ -178,3 +178,12 @@ export
     (registryFibers {name = name} {key = key} {value = value} {world = world} {error = error} (registry state)) = True)
 actualProviderFromFacts name key world error value nameEq keyEq (MkSystemState ambient (MkCoeffectContext entries unique)) =
   clauseProviderFromLookup name key world error value nameEq keyEq entries
+
+0 clauseListMemberTrueElem : (element : Type) -> (equal : DecEq element) -> (selected : element) -> (items : List element) ->
+  (listMember @{equal} selected items = True) -> Elem selected items
+clauseListMemberTrueElem element equal selected [] exact = case exact of Refl impossible
+clauseListMemberTrueElem element equal selected (current :: rest) exact =
+  case the (choice : Dec (selected = current) ** (decEq @{equal} selected current = choice)) (decEq @{equal} selected current ** Refl) of
+    (Yes same ** observed) => case same of Refl => Here
+    (No different ** observed) => There (clauseListMemberTrueElem element equal selected rest
+      (trans (sym (the (listMember @{equal} selected (current :: rest) = listMember @{equal} selected rest) (rewrite observed in Refl))) exact))
