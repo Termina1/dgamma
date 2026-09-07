@@ -5220,3 +5220,23 @@ canonicalWorkAcceptedResultInversionMeasure name key world error value nameEq ke
 canonicalWorkObservedActionLift name key world error value nameEq fixedOrder action observed exact progress =
   replace {p = \chosen => SegmentedRankProgress (rankSegmentStep chosen source) (rankSegmentStep observed target)}
     (sym exact) (rankSegmentObservedStepProgress observed progress)
+
+||| Lift the actual untouched action sequence and its decrease simultaneously.
+||| The fixed order cannot reset during recursion; barriers are retained.
+0 canonicalWorkObservedSequenceLift :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (fixedOrder : List name) ->
+  {first, finalState : SystemState name key value world error} ->
+  (earlier : Transitions first finalState) ->
+  (source, target : List (List Nat)) -> (SegmentedRankProgress source target) ->
+  (SegmentedRankProgress
+    (traceActionFold name key world error value (List (List Nat))
+      (canonicalWorkRankStep name key world error value nameEq fixedOrder) source earlier)
+    (traceActionFold name key world error value (List (List Nat))
+      (canonicalWorkRankStep name key world error value nameEq fixedOrder) target earlier))
+canonicalWorkObservedSequenceLift name key world error value nameEq fixedOrder NoTransitions source target progress = progress
+canonicalWorkObservedSequenceLift name key world error value nameEq fixedOrder
+  (MoreTransitions (Fired stepNameEq stepKeyEq action tag checked) rest) source target progress =
+    canonicalWorkObservedActionLift name key world error value nameEq fixedOrder action
+      (canonicalWorkActionRank name key world error value nameEq fixedOrder action) Refl
+      (canonicalWorkObservedSequenceLift name key world error value nameEq fixedOrder rest source target progress)
