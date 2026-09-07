@@ -29,3 +29,23 @@ export
 capitalReducedUniqueInsertions name key world error value protocol nameEq keyEq capital =
   uniqueInsertionsAfterReduction name key world error value nameEq keyEq protocol
     (capitalReduction capital)
+
+||| Open the producer-owned schedule equation once. No arbitrary target trace,
+||| occurrence map, or freshness field is accepted in place of the sealed chain.
+export
+0 capitalCanonicalUniqueInsertions :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, originalFinal : SystemState name key value world error} ->
+  {original : Transitions initial originalFinal} ->
+  (capital : IndependentCanonicalSchedule name key world error value protocol nameEq keyEq original) ->
+  (UniqueRawNameInsertions name key world error value nameEq keyEq original) ->
+  (UniqueRawNameInsertions name key world error value nameEq keyEq
+    (canonicalTrace (canonicalSchedule capital)))
+capitalCanonicalUniqueInsertions name key world error value protocol nameEq keyEq
+  (MkIndependentCanonicalSchedule premises reduction ordering sorted
+    supportTransport accounting _ Refl classified) unique =
+      uniqueInsertionsAfterFiniteDerivation name key world error value protocol nameEq keyEq
+        (sortingAdjacentDerivation sorted)
+        (uniqueInsertionsAfterReduction name key world error value nameEq keyEq protocol reduction unique)
