@@ -151,6 +151,7 @@ record AdjacentActorSwapSafety
     (blockPreStart (decomposedBlock sourceBlocks (actorLeft orderSwap)
       safetyLeftInOrder))
     (LBegin (actorRight orderSwap)) LBeginTag
+  0 safetyBlocksAdjacent : (transitionCount (betweenBlocks safetyBlocksOrdered) = 0)
 
 public export
 0 actorBlockTrace :
