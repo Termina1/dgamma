@@ -454,3 +454,31 @@ currentResultOwnerEither name key world error value nameEq actor failure success
     (Just (tag, MkSystemState ambient (replaceBinding @{nameEq} actor next source)))
 currentResultOwnerReplace name key world error value nameEq actor source old next found ambient tag =
   (next ** lookupReplacedFiber @{nameEq} actor old next source found)
+
+0 currentBeginOwner :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (actor : name) -> (before : SystemState name key value world error) ->
+  (fiber : Fiber name key value world error) ->
+  (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+    @{nameEq} actor (registry before) = Just fiber) ->
+  (observed : Maybe (View name (dependencies (componentDependencies (fiberComponent fiber))))) ->
+  (targetFiber @{nameEq} @{keyEq} fiber (registry before) = observed) ->
+  CurrentResultOwner name key world error value nameEq actor (applyAction @{nameEq} @{keyEq} (LBegin actor) before)
+currentBeginOwner name key world error value nameEq keyEq actor before
+  (MkFiber component parent retiredFlag table (Inactive Nothing)) found Nothing exact =
+    rewrite found in rewrite exact in ()
+currentBeginOwner name key world error value nameEq keyEq actor before
+  (MkFiber component parent retiredFlag table (Inactive Nothing)) found (Just view) exact =
+    rewrite found in rewrite exact in currentResultOwnerReplace name key world error value nameEq actor (registry before)
+      (MkFiber component parent retiredFlag table (Inactive Nothing))
+      (setFiberLifecycle (MkFiber component parent retiredFlag table (Inactive Nothing)) (Reloading (componentProgram component) id view))
+      found (worldState before) LBeginTag
+currentBeginOwner name key world error value nameEq keyEq actor before
+  (MkFiber component parent retiredFlag table (Inactive (Just failure))) found observed exact = rewrite found in ()
+currentBeginOwner name key world error value nameEq keyEq actor before
+  (MkFiber component parent retiredFlag table (Reloading remaining accumulator view)) found observed exact = rewrite found in ()
+currentBeginOwner name key world error value nameEq keyEq actor before
+  (MkFiber component parent retiredFlag table (Active accumulator view)) found observed exact = rewrite found in ()
+currentBeginOwner name key world error value nameEq keyEq actor before
+  (MkFiber component parent retiredFlag table (Unloading accumulator view outcome)) found observed exact = rewrite found in ()
