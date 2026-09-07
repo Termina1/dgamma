@@ -3455,3 +3455,38 @@ worklist plumbing and side-condition/diamond/decrease/existence work remain open
 Exactly two visibility keywords were authorized in CanonicalSort; bodies and all
 five protected hole declarations remain unchanged. See the machine-checked exact
 whitelist, not the earlier whole-file-byte-equality checkpoints, for current scope.
+
+## R181 checkpoint — actual installed observations, paired registration successor
+
+A16/16 consumed; A11's 3/3 failed statement is removed. Distinct A12–A16 now
+produce all five actual installed lifecycle payloads with their lookup/lifecycle
+equations; installation is a projection, not conversion of a guessed callback.
+The seven-edge genuine empty-origin trace, exact early rejection, whole totality,
+protocol/alignment/endpoint capital stand. Next O19 prerequisites are actual
+InstalledTrace/located blocks, block decomposition/ordering/coverage, original
+raw uniqueness, component-specific independence and full bundle/current safety.
+No completed negative means NO safety revision or O19 body permission.
+
+B8's `synchronizationRegistrationSuccessor` constructs the existing invariant
+at BOTH actual successor prefix occurrences under `expectedBridgeBijection`.
+B1/B9/B10 connect actual committed inputs, actual runtime projections and
+producer-owned deterministic successful-state/pointwise undo equality. This is
+not yet the full canonical paired episode producer: matching/pair selection,
+Begin view agreement, Advance/Finish control propagation, unsupported gaps and
+selector/body remain. B12 stopped3/3 and was removed; B13 retains a distinct
+actual lookup→projected table observation. Future remedy: make B11 itself consume
+ONE explicit observed TABLE value on top of B13, rather than trying to identify
+two independently elaborated anonymous case tables. No fourth attempt this shift.
+B13/15 consumed; B14/B15 unused under the ratified stop.
+
+O21 C is analysis plus ONE removed type-only probe (1/3 checks), not a body or
+branch proof. The obligations document distinguishes actual absence, one-sided
+full vestigial packets, and both-present exact controls OR two full vestigial
+packets. Preserve the accepted scanner's exact current birth / mapped-current
+alternative and actual original lookup; raw withdrawal membership is insufficient.
+
+Census remains5=1/3/0/0/1; all original spikes and production frozen. Audit records
+one workflow violation: failed B11 commitdfc933e was revertedcdaee57, and premature
+B12-1 ran with two unaccepted declarations. Both failures count; no failed
+source survives. Evidence explicitly flags the exception; independent review
+must assess it rather than treating the shift as protocol-clean.

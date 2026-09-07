@@ -32,10 +32,14 @@ R181 harness files against its no-untracked gate; no compiler was started.
 
 ## Status
 
-Initial census **5 = 1/3/0/0/1** (CanonicalSort/CrossTrace/DeletionChain/
-LocalDiamond/Renaming). Full old-safety negative, revision and O19 body remain
-unproved; nonempty O20 paired-prefix producer absent; O21 identity is closed
-but withdrawal branches only authorized for sizing.
+Final retained census **5 = 1/3/0/0/1** (CanonicalSort/CrossTrace/DeletionChain/
+LocalDiamond/Renaming), unchanged. A16/16 consumed; B13/15 stopped by ratified
+B12 3/3, leaving B14/B15 unused; C one disposable check passed/removed.
+Full old-safety negative/revision/O19 body remain absent. All five actual
+installed lifecycle observations now exist; O20 has a matched-registration
+paired-prefix successor, NOT the complete canonical episode producer. O21
+withdrawal work is obligations only. One reverted workflow violation is
+explicitly recorded below; final retained proof code is total and checked.
 
 ## Unit A — 11-unit mandatory stop (14:10 UTC)
 
@@ -102,9 +106,10 @@ empty-origin count7 trace; real provider/consumer edges; alignment; complete
 component totality; genuine protocol/discipline; quiet/noFailure/both Active
 finals; exact pre-provider early consumer rejection. Remaining:
 
-- InstalledTrace witnesses at the exact provider/consumer body cuts, without
-  rebuilding/equating their function-valued accumulator. A generic observed
-  lifecycle projection is the next DISTINCT prerequisite, not another A11 body.
+- At A11 stop: InstalledTrace witnesses at the exact provider/consumer body
+  cuts without rebuilding function-valued accumulators. **Later A12–A16 close
+  the distinct observed-lifecycle prerequisite and all five actual cut values**;
+  InstalledTrace/located-block assembly itself remains future work.
 - Both full LocatedOpenEpisodeBlocks, source-coordinate decompositions,
   no-earlier/no-later fields, BlockBefore, 3x2 disjoint ranges, coverage and
   ActorBlockDecomposition; raw insertion uniqueness.
@@ -205,3 +210,64 @@ to owner uniqueness or the claimed synchronization theorem. A later genuinely
 distinct route needs ONE shared exported runtime observation value type (rather
 than two separately elaborated anonymous case expressions) at the producer
 boundary; it is not authorized here as a fourth B12 attempt.
+
+### B stop ruling
+
+B12 STOP ratified at441d0b2; B13 retained; B14/B15 unused. Supervisor diagnosis
+for a FUTURE shift: re-derive the B11 eliminator taking the observed TABLE as
+an explicit argument on top of B13, so ONE named case value crosses the
+boundary, instead of bridging two separately elaborated anonymous cases.
+This is not authorized as another B12 attempt this shift.
+
+## Unit A continuation — DISTINCT five units, cap16/16
+
+| Unit | Accepted declaration | Commit/result |
+|---|---|---|
+| A12 | `InstalledCutObservation` | 5f835ac PASS1 |
+| A13 | `inspectInstalledCutObserved` | 43386ea PASS1 |
+| A14 | `installedFromCutObservation` | 1e87c3b PASS1 |
+| A15 | `inspectInstalledCutCorrect` | 51eb5ef PASS1 |
+| A16 | `r181LifecycleCutObservations` | 95b4ab5 PASS2,32.155s |
+
+A12 carries actual Fiber/lifecycle VALUES with erased lookup/lifecycle equations
+and installed truth. A13 is executable/total, observes all lifecycle cases,
+and carries the ACTUAL callbacks from the registry payload. A14 derives
+installation solely by equation composition, never by guessing an accumulator.
+A15 proves full observer completeness at its named lookup; no scalar Refl over
+nested concrete execution builders. A16's two checked Finish evolution packets
+and the three actual following-Advance sources supply the five predicates;
+`isJustTrueWitness` extracts five actual observer-owned payloads. Both Finish
+checked equations are the SAME authenticated endpoints used in the whole trace.
+The Begin cuts are authenticated as actual sources of their following Advance;
+no new generic theorem about arbitrary Begin targets is claimed.
+
+A16-1 rejected ambiguous fst/DPair.fst in a delayed large term,40.527s. A16-2
+qualifies only the new tuple projections as Builtin.fst/snd and PASSes. Every
+A12–A16 source was committed immediately after its verified PASS. The original
+A11 statement remains removed and is not retried under a new name. Installed
+facts now follow through A14, but no full safety/bundle/independence/block
+assembly is supplied and the safety/body authorization prerequisites remain unmet.
+
+## Unit C — obligations only, complete
+
+Read/analyzed R175 C4 against the exact current O21/CP3 records and accepted
+scanner. `O6-R181-O21-WITHDRAWAL-OBLIGATIONS.md` lists left-only/right-only/both
+withdrawn with the four ACTUAL lookup dispositions. It preserves BOTH
+CurrentEndpointRenaming alternatives and rejects raw-name/absence shortcuts.
+One disposable record-of-debts type probe PASSed2.080s and was deleted; its
+complete source is in evidence. No constructor was applied, branch proved,
+new O21 premise introduced or original hole body touched. C used1/3 checks.
+
+## Retained scope at the final gate
+
+27 retained new Idris declarations across the three new/updated research files:
+15 in A (A11 removed),12 in B (B12 removed); plus one discarded C type probe.
+No new holes/unsafe/partial/nonlinear/as-pattern/with/let additions. O17/root/A8,
+LocalDiamond, all five old spike files, frozen deletion theorem and production
+remain untouched. No O19 revision/body request: the complete negative is still
+missing. Full paired canonical synchronization/O20 is still missing.
+
+The protocol is NOT fully clean: failed commit dfc933e (reverted cdaee57) and
+premature B12-1 are a disclosed acceptance-review concern. They are not proof
+capital and do not change the final retained build's correctness. Independent
+review is required; the author does not self-certify that exception away.

@@ -2805,3 +2805,60 @@ through registrations and supported Begin/Advance/Finish using the internal
 consumers; only after that isolate the unsupported-child endpoint remainder.
 Compiler/source correlation, every attempt and guard are catalogued in
 `research-tests/O6-R180-GRIND-SHIFT-AUDIT.md` and its compiler ledger/archive.
+
+## Status — R181 bounded shift (2026-09-07)
+
+**Fully checked retained capital:** actual seven-edge empty-origin provider /
+dependency-bearing empty-consumer trace, exact designated alignment, genuine
+protocol/discipline, quiet/noFailure/both Active final state, every-boundary
+TraceComponentsTotal and exact early consumer Begin rejection at the SAME
+pre-provider block source. `InstalledCutObservation`/its executable observer
+retain actual Fiber/lifecycle/callback VALUES and erased lookup/lifecycle
+identity proofs. Soundness/completeness and all five actual installed-cut
+observations are proved. This explicitly avoids A11's guessed accumulator wall.
+
+O20 now has a nonzero matched-registration `SupportedCanonicalEpisodeSynchronization`
+successor preserving BOTH actual prefix occurrences, supplied whole executions
+and FIXED accepted bijection. Global ambient/all ordered-table updates, selected
+control insertion and actual replacement projections are proved. Actual committed
+resolution connects to R180; deterministic successful callback observations
+produce local-state equality and pointwise pushed undo. B11/B13 observed-table
+prerequisites are separately checked; their attempted B12 composition is absent.
+
+**Partial/not proved:** complete old-safety negative (InstalledTrace and located
+blocks, ordering/disjointness/coverage/decomposition, raw uniqueness,
+component-specific independence and bundle assembly); no research safety revision
+or O19 body. The consumer's root insertion clears its table and is NOT universally
+identity despite its empty program. O20 still lacks actual canonical matching/
+pair selection, complete Begin views and Advance/Finish propagation/induction,
+unsupported-child/gap handling and selector/body. O21 withdrawals are ONLY the
+precise obligations document plus one removed record-type probe, not branch proofs.
+Five inherited holes remain1/3/0/0/1; no new proof escape, postulate or partiality.
+
+**Stop discipline:** A11 3/3 removed; supervisor reopened only five DISTINCT
+observed-lifecycle prerequisites after B. B12 3/3 removed; B13 authorized out of
+order while it was parked2/3, retained. A16/16 consumed, B13/15 with B14/B15 not
+recycled, C one of3 checks. No unauthorized original-spike/production edits.
+
+**Explicit workflow violation:** an unconditional shell command mistakenly
+committed failed B11-1 asdfc933e and launched B12-1 with two unaccepted declarations.
+Both failed checks count; B12 was removed and dfc933e git-reverted ascdaee57.
+B11-2 subsequently PASSed and was correctly committed19a798c. The supervisor was
+notified. The evidence checker records the exact bad snapshot and reports
+`oneNewDeclarationPerInvocation=false`, not a false clean-protocol certificate.
+No failed declaration is retained. This is a required independent-review concern,
+not an escape hatch in any theorem or an accepted waiver. Subsequent commit
+commands verify the passed JSON under `set -e`.
+
+**Next, separately authorized work:** assemble current safety from the real A16
+observations before any revision/body gate. For O20, supervisor's precise B12
+wall diagnosis is that separately elaborated anonymous case tables remain
+nonconvertible even when printed identically: re-derive the B11 eliminator over
+ONE explicit observed TABLE value supplied by B13, not another bridge between
+two anonymous cases. Then finish actual matched Begin/Advance/Finish construction.
+For O21, authenticate the exact current withdrawn original birth and produce the
+full one-sided Lemma57 endpoint packet before branch assembly; never infer
+absence from a raw withdrawn name or discard the mapped-current alternative.
+
+All scope/attempts/evidence are in `O6-R181-GRIND-SHIFT-AUDIT.md`, the compiler
+ledger/archive, and `O6-R181-O21-WITHDRAWAL-OBLIGATIONS.md` under research-tests.
