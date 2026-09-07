@@ -554,3 +554,19 @@ old-safety negative is NOT thereby proved. No O19 body authorization is inferred
 This owner-approved doctrine exception does NOT excuse the independent earlier
 B11/B12-1 workflow violation. Finish this shift's existing validation/final gate;
 no restart, third G2 attempt or other proof work is authorized now.
+
+## Terminal fresh gate after G stop and owner documentation
+
+SEVEN retained sources freshly PASS: installed observer1.038s, paired/actual
+views3.115s, count7/observations32.186s, located blocks3.135s, decomposition68.580s,
+uniqueness/conditional bundle2.082s, restored G1 lookup2.069s. Seeded package
+PASS16.608s207/207.97 serialized invocations =80P +15 compiler rejections +2
+RESOURCE INTERRUPTIONS/no verdict; six seeded package checks. The evidence
+script now separates interruption counts and archives the exact G2 watchdog.
+
+Frozen gate at09f68d5 PASS: all five original spikes/holes1/3/0/0/1, production/
+CP3/adjacent/review/seed/LocalDiamond cache hashes unchanged; seven retained
+source hashes; no staged files/compiler orphan, clean tracked tree. Final reports
+supersede all prior prefixes, preserve criterion1 not-satisfied/protocol=false,
+and record the owner16:50 next-shift doctrine exception separately. No proof
+work followed the G2 stop; final supervisor stand-down/reviewer gate still needed.
