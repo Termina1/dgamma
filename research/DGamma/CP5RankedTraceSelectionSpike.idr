@@ -65,3 +65,23 @@ locatedRankDescentPrepend name key world error value observe head rest
   (MkLocatedRankDescent before middle afterState prior left right suffix leftRank rightRank leftExact rightExact crossed decomposition) =
     MkLocatedRankDescent before middle afterState (MoreTransitions head prior) left right suffix
       leftRank rightRank leftExact rightExact crossed (cong (MoreTransitions head) decomposition)
+
+||| Inspect EXPLICIT rank observations once, avoiding dependent elimination of
+||| a computed packet. Either unowned head is a barrier, never a swap candidate.
+public export
+0 observedRankHeadDescent :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (observe : Action name key value world error -> Maybe Nat) ->
+  {before, middle, afterState, finalState : SystemState name key value world error} ->
+  (left : Transition before middle) -> (right : Transition middle afterState) ->
+  (suffix : Transitions afterState finalState) ->
+  (seenLeft, seenRight : Maybe Nat) ->
+  (observe (transitionAction left) = seenLeft) ->
+  (observe (transitionAction right) = seenRight) ->
+  Maybe (LocatedRankDescent name key world error value observe (MoreTransitions left (MoreTransitions right suffix)))
+observedRankHeadDescent name key world error value observe left right suffix Nothing seenRight leftExact rightExact = Nothing
+observedRankHeadDescent name key world error value observe left right suffix (Just leftRank) Nothing leftExact rightExact = Nothing
+observedRankHeadDescent name key world error value observe left right suffix (Just leftRank) (Just rightRank) leftExact rightExact =
+  case decEq (rankCrossing leftRank rightRank) 1 of
+    Yes crossed => Just (locatedRankDescentHead name key world error value observe left right suffix leftRank rightRank leftExact rightExact crossed)
+    No notDescending => Nothing
