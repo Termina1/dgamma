@@ -75,3 +75,15 @@ generatedEndpointRetirementPacket name key world error value nameEq keyEq trace 
             (fst (alignedAppendSplit (beforeActionOccurrence occurrence) (MoreTransitions (locatedTransition occurrence) (afterActionOccurrence occurrence))
               (replace {p = AlignedTransitions name key world error value nameEq keyEq} (sym (actionOccurrenceDecomposition occurrence)) aligned)))
             empty ordinal live scan
+
+0 currentBirthBeforeCut :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (prior : Transitions first middle) -> (later : Transitions middle finalState) ->
+  (selected : name) -> (generation : RegistrationGeneration name) ->
+  CurrentGenerationBirth name key world error value prior selected generation ->
+  CurrentGenerationBirth name key world error value (appendTransitions prior later) selected generation
+currentBirthBeforeCut name key world error value prior later selected generation (MkCurrentGenerationBirth parent component birth stamp) =
+  MkCurrentGenerationBirth parent component (beforeCutOccurrence name key world error value prior later (OInsert selected parent component) birth)
+    (trans stamp (cong (MkRegistrationGeneration selected)
+      (sym (beforeCutOccurrenceOrdinal name key world error value prior later (OInsert selected parent component) birth))))
