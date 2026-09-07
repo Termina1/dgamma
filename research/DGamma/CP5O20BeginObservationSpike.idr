@@ -171,3 +171,37 @@ o20PairedBeginEffects {name} {key} {world} {error} {value} nameEq keyEq renaming
       (o20BeginFrameProjection nameEq keyEq rightActor rightBefore rightAfter
         (actualTransitionEffectFrame nameEq keyEq (LBegin rightActor) LBeginTag rightBefore rightAfter
           (beginEquation rightOpening)))
+
+||| Actual authoritative paired-opening effect successor under the FIXED
+||| accepted bijection. This consumes only the internal pre-cut effect invariant
+||| and derives the post-cut invariant from the two actual Begin equations.
+||| It does NOT derive that pre-cut invariant from entire canonical executions.
+export
+0 o20SelectedBeginEffects :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {protocol : RegistrationProtocol key value world error} ->
+  {initial, leftFinal, rightFinal : SystemState name key value world error} ->
+  {leftTrace : Transitions initial leftFinal} -> {rightTrace : Transitions initial rightFinal} ->
+  {sameInputs : SameOrchestrationModuloGenerated nameEq keyEq leftTrace rightTrace} ->
+  {leftCapital : IndependentCanonicalSchedule name key world error value protocol nameEq keyEq leftTrace} ->
+  {rightCapital : IndependentCanonicalSchedule name key world error value protocol nameEq keyEq rightTrace} ->
+  {matching : MappedCanonicalSupportOrders name key world error value protocol nameEq keyEq leftTrace rightTrace
+    (expectedBridgeBijection sameInputs) (canonicalSchedule leftCapital) (canonicalSchedule rightCapital)} ->
+  {operational : CertifiedOperationalCanonicalPermutation name key world error value protocol nameEq keyEq
+    leftTrace rightTrace sameInputs leftCapital rightCapital matching} ->
+  {selected : name} ->
+  (pair : SelectedCanonicalBlockPair name key world error value protocol nameEq keyEq leftTrace rightTrace
+    sameInputs leftCapital rightCapital matching operational selected) ->
+  RenamedRuntimeEffects name key world value (expectedBridgeBijection sameInputs)
+    (projectEffectState {name} {key} {value} {world} {error} @{nameEq} (blockPreStart (pairLeftBlock pair)))
+    (projectEffectState {name} {key} {value} {world} {error} @{nameEq} (blockPreStart (pairRightBlock pair))) ->
+  RenamedRuntimeEffects name key world value (expectedBridgeBijection sameInputs)
+    (projectEffectState {name} {key} {value} {world} {error} @{nameEq} (blockStart (pairLeftBlock pair)))
+    (projectEffectState {name} {key} {value} {world} {error} @{nameEq} (blockStart (pairRightBlock pair)))
+o20SelectedBeginEffects {sameInputs} {selected} nameEq keyEq pair effects =
+  o20PairedBeginEffects nameEq keyEq (expectedBridgeBijection sameInputs) selected
+    (renameForward (expectedBridgeBijection sameInputs) selected)
+    (blockPreStart (pairLeftBlock pair)) (blockStart (pairLeftBlock pair))
+    (blockPreStart (pairRightBlock pair)) (blockStart (pairRightBlock pair))
+    (blockOpening (pairLeftBlock pair)) (blockOpening (pairRightBlock pair)) effects
