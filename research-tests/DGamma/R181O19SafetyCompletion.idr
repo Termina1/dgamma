@@ -5,6 +5,7 @@ import DGamma.Calculus
 import DGamma.CalculusChecks
 import DGamma.Coeffects
 import DGamma.CP3
+import DGamma.CP5ObservedInstalledLifecycleSpike
 import DGamma.CP4SupportQuiescence
 import DGamma.Metatheory
 import DGamma.Section3Example
@@ -246,3 +247,97 @@ r181WholeTotal =
       (r180NormalizedServiceMemberObserved (ownedValues (restrictOwnedPreservingOrder
         @{%search} DGamma.Section3Example.toySpecA (ownedValues (ownedA True)))) Refl)) of
     (totality ** observed) => totality
+
+||| Actual five-cut payload producer. Checked Finish evolution authenticates the
+||| two final Active cuts; actual following Advance equations authenticate the
+||| three open sources. Every Fiber/lifecycle/undo VALUE is chosen by the runtime
+||| observer, not guessed. A11's exhausted installed-cut statement is NOT retried.
+||| Installation follows solely via installedFromCutObservation (A14).
+export
+0 r181LifecycleCutObservations :
+  (InstalledCutObservation Nat ToyKey ToyRuntime String ToyValue
+     (the (DecEq Nat) %search) 0 r179ObservedProviderBegin,
+   InstalledCutObservation Nat ToyKey ToyRuntime String ToyValue
+     (the (DecEq Nat) %search) 0 r179ObservedProviderCut,
+   InstalledCutObservation Nat ToyKey ToyRuntime String ToyValue
+     (the (DecEq Nat) %search) 0 r179ObservedProviderFinished,
+   InstalledCutObservation Nat ToyKey ToyRuntime String ToyValue
+     (the (DecEq Nat) %search) 1 r180ObservedConsumerBegun,
+   InstalledCutObservation Nat ToyKey ToyRuntime String ToyValue
+     (the (DecEq Nat) %search) 1 r180ObservedConsumerFinished)
+r181LifecycleCutObservations =
+  case (installationEvolutionStep (the (DecEq Nat) %search) (the (DecEq ToyKey) %search) 0
+          (LAdvance 0) LFinishTag r179ObservedProviderCut r179ObservedProviderFinished
+          (Builtin.fst (Builtin.snd (Builtin.snd r179ObservedProviderEdges))),
+        installationEvolutionStep (the (DecEq Nat) %search) (the (DecEq ToyKey) %search) 1
+          (LAdvance 1) LFinishTag r180ObservedConsumerBegun r180ObservedConsumerFinished
+          (r180CheckedFromPrerequisites (LAdvance 1) r180ObservedConsumerBegun
+            r180ObservedConsumerFinished LFinishTag r180ConsumerFinishRaw
+            (Builtin.snd r180ObservedLifecycleSuffix))) of
+    (RemainedUninstalled providerOff targetOff, consumerEvolution) =>
+      case trans (sym providerOff) (lAdvanceStartsInstalled (the (DecEq Nat) %search) (the (DecEq ToyKey) %search) 0
+      r179ObservedProviderCut r179ObservedProviderFinished LFinishTag (checkedActionProjects (the (DecEq Nat) %search) (the (DecEq ToyKey) %search) (LAdvance 0)
+      r179ObservedProviderCut r179ObservedProviderFinished LFinishTag
+      (Builtin.fst (Builtin.snd (Builtin.snd r179ObservedProviderEdges))))) of Refl impossible
+    (RemainedInstalled providerBefore providerInstalled,
+      RemainedUninstalled consumerOff targetOff) =>
+      case trans (sym consumerOff) (lAdvanceStartsInstalled (the (DecEq Nat) %search) (the (DecEq ToyKey) %search) 1
+      r180ObservedConsumerBegun r180ObservedConsumerFinished LFinishTag r180ConsumerFinishRaw) of Refl impossible
+    (RemainedInstalled providerBefore providerInstalled,
+      RemainedInstalled consumerBefore consumerInstalled) =>
+      case (isJustTrueWitness (inspectInstalledCutObserved Nat ToyKey ToyRuntime String ToyValue
+          (the (DecEq Nat) %search) 0 r179ObservedProviderBegin
+          (lookupFiber {name = Nat} {key = ToyKey} {value = ToyValue}
+            {world = ToyRuntime} {error = String} @{%search} 0 (registry r179ObservedProviderBegin)) Refl)
+        (trans (inspectInstalledCutCorrect Nat ToyKey ToyRuntime String ToyValue
+          (the (DecEq Nat) %search) 0 r179ObservedProviderBegin
+          (lookupFiber {name = Nat} {key = ToyKey} {value = ToyValue}
+            {world = ToyRuntime} {error = String} @{%search} 0 (registry r179ObservedProviderBegin)) Refl)
+          (lAdvanceStartsInstalled (the (DecEq Nat) %search) (the (DecEq ToyKey) %search) 0
+      r179ObservedProviderBegin r179ObservedProviderCut LIterTag (checkedActionProjects (the (DecEq Nat) %search) (the (DecEq ToyKey) %search) (LAdvance 0)
+      r179ObservedProviderBegin r179ObservedProviderCut LIterTag
+      (Builtin.fst (Builtin.snd r179ObservedProviderEdges))))),
+        isJustTrueWitness (inspectInstalledCutObserved Nat ToyKey ToyRuntime String ToyValue
+          (the (DecEq Nat) %search) 0 r179ObservedProviderCut
+          (lookupFiber {name = Nat} {key = ToyKey} {value = ToyValue}
+            {world = ToyRuntime} {error = String} @{%search} 0 (registry r179ObservedProviderCut)) Refl)
+        (trans (inspectInstalledCutCorrect Nat ToyKey ToyRuntime String ToyValue
+          (the (DecEq Nat) %search) 0 r179ObservedProviderCut
+          (lookupFiber {name = Nat} {key = ToyKey} {value = ToyValue}
+            {world = ToyRuntime} {error = String} @{%search} 0 (registry r179ObservedProviderCut)) Refl)
+          (lAdvanceStartsInstalled (the (DecEq Nat) %search) (the (DecEq ToyKey) %search) 0
+      r179ObservedProviderCut r179ObservedProviderFinished LFinishTag (checkedActionProjects (the (DecEq Nat) %search) (the (DecEq ToyKey) %search) (LAdvance 0)
+      r179ObservedProviderCut r179ObservedProviderFinished LFinishTag
+      (Builtin.fst (Builtin.snd (Builtin.snd r179ObservedProviderEdges)))))),
+        isJustTrueWitness (inspectInstalledCutObserved Nat ToyKey ToyRuntime String ToyValue
+          (the (DecEq Nat) %search) 0 r179ObservedProviderFinished
+          (lookupFiber {name = Nat} {key = ToyKey} {value = ToyValue}
+            {world = ToyRuntime} {error = String} @{%search} 0 (registry r179ObservedProviderFinished)) Refl)
+        (trans (inspectInstalledCutCorrect Nat ToyKey ToyRuntime String ToyValue
+          (the (DecEq Nat) %search) 0 r179ObservedProviderFinished
+          (lookupFiber {name = Nat} {key = ToyKey} {value = ToyValue}
+            {world = ToyRuntime} {error = String} @{%search} 0 (registry r179ObservedProviderFinished)) Refl)
+          providerInstalled),
+        isJustTrueWitness (inspectInstalledCutObserved Nat ToyKey ToyRuntime String ToyValue
+          (the (DecEq Nat) %search) 1 r180ObservedConsumerBegun
+          (lookupFiber {name = Nat} {key = ToyKey} {value = ToyValue}
+            {world = ToyRuntime} {error = String} @{%search} 1 (registry r180ObservedConsumerBegun)) Refl)
+        (trans (inspectInstalledCutCorrect Nat ToyKey ToyRuntime String ToyValue
+          (the (DecEq Nat) %search) 1 r180ObservedConsumerBegun
+          (lookupFiber {name = Nat} {key = ToyKey} {value = ToyValue}
+            {world = ToyRuntime} {error = String} @{%search} 1 (registry r180ObservedConsumerBegun)) Refl)
+          (lAdvanceStartsInstalled (the (DecEq Nat) %search) (the (DecEq ToyKey) %search) 1
+      r180ObservedConsumerBegun r180ObservedConsumerFinished LFinishTag r180ConsumerFinishRaw)),
+        isJustTrueWitness (inspectInstalledCutObserved Nat ToyKey ToyRuntime String ToyValue
+          (the (DecEq Nat) %search) 1 r180ObservedConsumerFinished
+          (lookupFiber {name = Nat} {key = ToyKey} {value = ToyValue}
+            {world = ToyRuntime} {error = String} @{%search} 1 (registry r180ObservedConsumerFinished)) Refl)
+        (trans (inspectInstalledCutCorrect Nat ToyKey ToyRuntime String ToyValue
+          (the (DecEq Nat) %search) 1 r180ObservedConsumerFinished
+          (lookupFiber {name = Nat} {key = ToyKey} {value = ToyValue}
+            {world = ToyRuntime} {error = String} @{%search} 1 (registry r180ObservedConsumerFinished)) Refl)
+          consumerInstalled)) of
+        ((providerBegun ** observedProviderBegin), (providerCut ** observedProviderCut),
+         (providerFinished ** observedProviderFinish), (consumerBegun ** observedConsumerBegin),
+         (consumerFinished ** observedConsumerFinish)) =>
+          (providerBegun, providerCut, providerFinished, consumerBegun, consumerFinished)
