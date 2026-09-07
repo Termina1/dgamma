@@ -55,3 +55,29 @@ o19BeginAfterActivation {before} {afterState} nameEq keyEq actor action tag
         (earlyApplicationChecked early) checked activation distinct
         (preservationTheoremProof nameEq keyEq action before afterState tag wellFormed
           (checkedActionProjects nameEq keyEq action before afterState tag checked)))
+
+||| The actual cuts of one observed trace, including its final cut. This is
+||| internal iteration evidence: the producer below derives it from ONE guard.
+public export
+data O19EarlyAlong :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (action : Action name key value world error) -> (tag : RuleTag) ->
+  {before, finalState : SystemState name key value world error} ->
+  Transitions before finalState -> Type where
+  EarlyAlongEnd :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+    {action : Action name key value world error} -> {tag : RuleTag} ->
+    {before : SystemState name key value world error} ->
+    (0 early : CheckedEarlyApplication name key world error value nameEq keyEq before action tag) ->
+    O19EarlyAlong name key world error value nameEq keyEq action tag (NoTransitions {state = before})
+  EarlyAlongStep :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+    {action : Action name key value world error} -> {tag : RuleTag} ->
+    {before, middle, finalState : SystemState name key value world error} ->
+    (step : Transition before middle) -> (rest : Transitions middle finalState) ->
+    (0 early : CheckedEarlyApplication name key world error value nameEq keyEq before action tag) ->
+    (0 remaining : O19EarlyAlong name key world error value nameEq keyEq action tag rest) ->
+    O19EarlyAlong name key world error value nameEq keyEq action tag (MoreTransitions step rest)
