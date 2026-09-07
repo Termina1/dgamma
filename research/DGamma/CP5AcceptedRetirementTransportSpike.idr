@@ -161,3 +161,26 @@ acceptedSupportedBackwardRejectsTargetRetired name key world error value nameEq 
 0 retirementRejectedFalse : (flag : Bool) -> ((flag = True) -> Void) -> (flag = False)
 retirementRejectedFalse False rejected = Refl
 retirementRejectedFalse True rejected = void (rejected Refl)
+
+||| All-supported forward retirement agreement, with no destination support hypothesis.
+export
+0 acceptedSupportedForwardNotRetired :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, leftFinal, rightFinal : SystemState name key value world error} ->
+  (left : Transitions initial leftFinal) -> (right : Transitions initial rightFinal) ->
+  (sameInputs : SameOrchestrationModuloGenerated nameEq keyEq left right) ->
+  GeneratedOrchestrationMatched name key world error value nameEq left right (generatedGenerationBijection sameInputs) ->
+  AlignedTransitions name key world error value nameEq keyEq left -> AlignedTransitions name key world error value nameEq keyEq right ->
+  (bindings (registry initial) = []) -> UniqueRawNameInsertions name key world error value nameEq keyEq left ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq right -> (selected : name) ->
+  (isSupported {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} @{keyEq} selected leftFinal = True) ->
+  (rightFiber : Fiber name key value world error) ->
+  (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq}
+    (renameForward (currentNameBijection (endpointRenaming sameInputs)) selected) (registry rightFinal) = Just rightFiber) ->
+  (retired rightFiber = False)
+acceptedSupportedForwardNotRetired name key world error value nameEq keyEq left right sameInputs matched
+  leftAligned rightAligned empty leftUnique rightUnique selected supported rightFiber rightFound =
+    retirementRejectedFalse (retired rightFiber)
+      (acceptedSupportedForwardRejectsTargetRetired name key world error value nameEq keyEq left right sameInputs matched
+        leftAligned rightAligned empty leftUnique rightUnique selected supported rightFiber rightFound)
