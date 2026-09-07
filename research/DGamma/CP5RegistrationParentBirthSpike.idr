@@ -71,3 +71,20 @@ parentPutEntryObserved name nameEq inserted fresh candidate current rest (No dis
       Left same => Left same
       Right old => Right (There old)
 
+
+||| A stored parent activation is the inserted one or a genuine prior entry.
+0 parentPutEntryOrigin :
+  (name : Type) -> (nameEq : DecEq name) ->
+  (inserted : name) -> (fresh : RegistrationActivation name) ->
+  (live : List (name, RegistrationActivation name)) ->
+  (selected : name) -> (generation : RegistrationActivation name) ->
+  Elem (selected, generation) (putParentActivation @{nameEq} inserted fresh live) ->
+  Either ((selected, generation) = (inserted, fresh)) (Elem (selected, generation) live)
+parentPutEntryOrigin name nameEq inserted fresh [] selected generation member = case member of
+  Here => Left Refl
+  There later => absurd later
+parentPutEntryOrigin name nameEq inserted fresh ((candidate, current) :: rest) selected generation member =
+  parentPutEntryObserved name nameEq inserted fresh candidate current rest
+    (decEq @{nameEq} inserted candidate) Refl
+    (parentPutEntryOrigin name nameEq inserted fresh rest) selected generation member
+
