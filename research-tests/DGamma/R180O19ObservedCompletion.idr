@@ -50,3 +50,19 @@ r180NormalizedServiceMemberObserved (MkCoeffectContext entries unique) observed 
     @{%search} ServiceA items))
     (trans observed (restrictOwnedPreservingOrderBindings @{%search}
       DGamma.Section3Example.toySpecA (ownedA True)))
+
+||| Close the observation using its producer-owned normalization witness.
+||| The state is the ACTUAL output authenticated by r179ObservedProviderEdges.
+export
+0 r180FinishedProviderResolution :
+  (providerOf {name = Nat} {key = ToyKey} {value = ToyValue}
+    {world = ToyRuntime} {error = String} @{%search} @{%search} ServiceA
+    (registry {name = Nat} {key = ToyKey} {value = ToyValue}
+      {world = ToyRuntime} {error = String} r179ObservedProviderFinished) = Just 0)
+r180FinishedProviderResolution =
+  r180ProviderResolutionObserved
+    (restrictOwnedPreservingOrder @{%search} DGamma.Section3Example.toySpecA
+      (ownedValues (ownedA True))) Refl True
+    (r180NormalizedServiceMemberObserved
+      (ownedValues (restrictOwnedPreservingOrder @{%search}
+        DGamma.Section3Example.toySpecA (ownedValues (ownedA True)))) Refl)
