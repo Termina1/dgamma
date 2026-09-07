@@ -1,10 +1,12 @@
 module DGamma.CP5SupportedBirthCoverageSpike
 
 import DGamma.Calculus
+import DGamma.Metatheory
 import DGamma.Coeffects
 import DGamma.CP3
 import DGamma.CP5ImmutableBirthMetadataSpike
 import DGamma.CP5CurrentGenerationBirthSpike
+import DGamma.CP5RawClosingRankSpike
 import Data.List.Elem
 import Data.Nat
 import Decidable.Equality
@@ -72,3 +74,15 @@ classifiedBirthHead name key world error value nameEq ordinal
       (registrationEventAt @{nameEq} ordinal (MkRegistrationIndexState live activations counts deleted) child parent component) Refl
       (MkScannedRegistrationBirth (MkLocatedActionOccurrence _ _ NoTransitions step rest actionExact Refl)
         (cong (MkRegistrationGeneration child) (sym (plusZeroRightNeutral ordinal)))) classification
+
+||| Observe an opaque checked head without destructing its proof-token shape.
+export
+0 coveredHeadActionObserved :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (step : Transition first middle) -> (rest : Transitions middle finalState) ->
+  (wanted : Action name key value world error) ->
+  (rawClosingActionAt name key world error value Z (MoreTransitions step rest) = Just wanted) ->
+  transitionAction step = wanted
+coveredHeadActionObserved name key world error value step rest wanted observed =
+  justInjective (trans (sym (rawClosingActionAtSplit name key world error value NoTransitions step rest)) observed)
