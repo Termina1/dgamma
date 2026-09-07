@@ -136,3 +136,16 @@ r180ConsumerBeginOutputDomains =
       {world = ToyRuntime} {error = String} %search %search (LBegin 1)
       r179ObservedProviderFinished r180ObservedConsumerBegun LBeginTag
       (snd (snd (snd (snd r179ObservedProviderEdges)))) r180ConsumerBeginRaw))
+
+||| Named generic projection of an observed raw edge AND its produced target
+||| domains. No particular consumer checked equation is retried here.
+export
+0 r180CheckedFromPrerequisites :
+  (action : Action Nat ToyKey ToyValue ToyRuntime String) ->
+  (before, afterState : SystemState Nat ToyKey ToyValue ToyRuntime String) ->
+  (tag : RuleTag) ->
+  (applyAction @{%search} @{%search} action before = Just (tag, afterState)) ->
+  (registryWellFormed @{%search} @{%search} afterState = True) ->
+  (checkedApplyAction @{%search} @{%search} action before = Just (tag, afterState))
+r180CheckedFromPrerequisites action before afterState tag raw domains =
+  rewrite raw in rewrite domains in Refl
