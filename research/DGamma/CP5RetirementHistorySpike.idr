@@ -86,3 +86,35 @@ rawUnretiredPropertyStep name key world error value nameEq keyEq property action
     (registry before) (registry afterState) (systemRegistryUpdate (applyActionLocalUpdate nameEq keyEq action before afterState tag raw))
     (\absent => case rawAbsentOwnerInsertion name key world error value nameEq keyEq action before afterState tag raw absent of
       (parent ** component ** exact) => inserted parent component exact) previous
+
+||| Forward induction permits arbitrary property targets while authenticating
+||| each possible reset as an actual insertion in the supplied global segment.
+export
+0 rawUnretiredPropertyTrace :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (property : name -> Type) ->
+  {initial, finalState, first, last : SystemState name key value world error} ->
+  (global : Transitions initial finalState) -> (segment : Transitions first last) ->
+  AlignedTransitions name key world error value nameEq keyEq segment ->
+  ((action : Action name key value world error) -> LocatedActionOccurrence action segment -> LocatedActionOccurrence action global) ->
+  ((selected : name) -> (parent : Parent name) -> (component : Component key value world error) ->
+    LocatedActionOccurrence (OInsert selected parent component) global -> property selected) ->
+  ((selected : name) -> (fiber : Fiber name key value world error) ->
+    (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+      @{nameEq} selected (registry first) = Just fiber) -> (retired fiber = False) -> property selected) ->
+  (selected : name) -> (observed : Fiber name key value world error) ->
+  (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+    @{nameEq} selected (registry last) = Just observed) -> (retired observed = False) -> property selected
+rawUnretiredPropertyTrace name key world error value nameEq keyEq property global NoTransitions AlignedEnd embedding inserted previous = previous
+rawUnretiredPropertyTrace name key world error value nameEq keyEq property global
+  (MoreTransitions head rest) aligned embedding inserted previous =
+    case aligned of
+      AlignedStep action tag checked _ alignedRest =>
+        rawUnretiredPropertyTrace name key world error value nameEq keyEq property global rest alignedRest
+          (\wanted, occurrence => embedding wanted
+            (currentBirthPrependLocation name key world error value (Fired nameEq keyEq action tag checked) rest wanted occurrence)) inserted
+          (rawUnretiredPropertyStep name key world error value nameEq keyEq property action _ _ tag
+            (checkedActionProjects nameEq keyEq action _ _ tag checked)
+            (\parent, component, exact => inserted (actionOwner action) parent component
+              (replace {p = \wanted => LocatedActionOccurrence wanted global} exact
+                (embedding action (MkLocatedActionOccurrence _ _ NoTransitions (Fired nameEq keyEq action tag checked) rest Refl Refl)))) previous)
