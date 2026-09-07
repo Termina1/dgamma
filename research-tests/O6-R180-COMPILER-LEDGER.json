@@ -1,0 +1,312 @@
+[
+  {
+    "unit": "A1-1",
+    "path": "research-tests/DGamma/R180O19ObservedCompletion.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R180O19ObservedCompletion.idr"
+    ],
+    "start": "2026-09-07T11:34:19.075036+00:00",
+    "end": "2026-09-07T11:34:20.114957+00:00",
+    "seconds": 1.0397627078928053,
+    "exit": 1,
+    "fresh": true,
+    "passed": false,
+    "interrupted": false,
+    "maxSampleRSSKiB": 0,
+    "sourceSHA256": "72a644d9cf0ec92f950b462f4ed63f54f452e6f35090415bc508a4d338849bd0",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "2/2: Building DGamma.R180O19ObservedCompletion (research-tests/DGamma/R180O19ObservedCompletion.idr)\nError: While processing right hand side of r180ProviderResolutionObserved. Can't solve constraint between: if present then Just 0 else Nothing and if present then Just 0 else providerIn ServiceA [].\n\nDGamma.R180O19ObservedCompletion:35:55--35:59\n 31 |     (registry {name = Nat} {key = ToyKey} {value = ToyValue}\n 32 |       {world = ToyRuntime} {error = String} r179ObservedProviderFinished) =\n 33 |     (if present then Just 0 else Nothing))\n 34 | r180ProviderResolutionObserved table tableObserved present bindingObserved =\n 35 |   rewrite tableObserved in rewrite bindingObserved in Refl\n                                                            ^^^^\n\n",
+    "newTopLevelDeclarations": [
+      "r180ProviderResolutionObserved"
+    ],
+    "matchingSourceCommits": []
+  },
+  {
+    "unit": "A1-2",
+    "path": "research-tests/DGamma/R180O19ObservedCompletion.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R180O19ObservedCompletion.idr"
+    ],
+    "start": "2026-09-07T11:34:58.832491+00:00",
+    "end": "2026-09-07T11:34:59.872048+00:00",
+    "seconds": 1.0394170409999788,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 0,
+    "sourceSHA256": "4f23f996128fff89ed51bbde629f28d6d32d89cf055c14d9080d32d9e4a87aa9",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "2/2: Building DGamma.R180O19ObservedCompletion (research-tests/DGamma/R180O19ObservedCompletion.idr)\n",
+    "newTopLevelDeclarations": [
+      "r180ProviderResolutionObserved"
+    ],
+    "matchingSourceCommits": [
+      "7f1725604cc8cd134391e339520d7e8b96cbb357"
+    ]
+  },
+  {
+    "unit": "A2-1",
+    "path": "research-tests/DGamma/R180O19ObservedCompletion.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R180O19ObservedCompletion.idr"
+    ],
+    "start": "2026-09-07T11:35:50.173612+00:00",
+    "end": "2026-09-07T11:35:51.230055+00:00",
+    "seconds": 1.0562648330815136,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 0,
+    "sourceSHA256": "da97ee681c77f416ec938563521d17645b8784c3e16596c87e918f7f7ca46a08",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "2/2: Building DGamma.R180O19ObservedCompletion (research-tests/DGamma/R180O19ObservedCompletion.idr)\n",
+    "newTopLevelDeclarations": [
+      "r180NormalizedServiceMemberObserved"
+    ],
+    "matchingSourceCommits": [
+      "4f7d69fe787a5f3de566b9fe1dd45e040e14353b"
+    ]
+  },
+  {
+    "unit": "A3-1",
+    "path": "research-tests/DGamma/R180O19ObservedCompletion.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R180O19ObservedCompletion.idr"
+    ],
+    "start": "2026-09-07T11:36:22.662649+00:00",
+    "end": "2026-09-07T11:36:23.725687+00:00",
+    "seconds": 1.0628474997356534,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 0,
+    "sourceSHA256": "5487266586da998a4b3ec57e8a4d098f4abd018a203e37e1c0261fd2fb3c1139",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "2/2: Building DGamma.R180O19ObservedCompletion (research-tests/DGamma/R180O19ObservedCompletion.idr)\n",
+    "newTopLevelDeclarations": [
+      "r180FinishedProviderResolution"
+    ],
+    "matchingSourceCommits": [
+      "0d7918b28f2d35ae14d1f5100158f64eb8d9983e"
+    ]
+  },
+  {
+    "unit": "A4-1",
+    "path": "research-tests/DGamma/R180O19ObservedCompletion.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R180O19ObservedCompletion.idr"
+    ],
+    "start": "2026-09-07T11:37:00.108482+00:00",
+    "end": "2026-09-07T11:37:01.167578+00:00",
+    "seconds": 1.0588838746771216,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 0,
+    "sourceSHA256": "bd66eaf70f581646a19745d6b0615d3853cf0abbae861effec689b19b35108e3",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "2/2: Building DGamma.R180O19ObservedCompletion (research-tests/DGamma/R180O19ObservedCompletion.idr)\n",
+    "newTopLevelDeclarations": [
+      "r180ObservedConsumerBegun"
+    ],
+    "matchingSourceCommits": [
+      "89307e2c02f5b05471272a7df6ef68ff4704068e"
+    ]
+  },
+  {
+    "unit": "A5-1",
+    "path": "research-tests/DGamma/R180O19ObservedCompletion.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R180O19ObservedCompletion.idr"
+    ],
+    "start": "2026-09-07T11:37:29.424385+00:00",
+    "end": "2026-09-07T11:40:59.464193+00:00",
+    "seconds": 210.039808,
+    "exit": null,
+    "fresh": false,
+    "passed": false,
+    "interrupted": true,
+    "maxSampleRSSKiB": 6224912,
+    "sourceSHA256": "bff6e5b127baacc128ebc9c43e4fdeefb797d275c7f3fedf2264a75ba5c397fb",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "",
+    "reconciliation": "180s foreground tool timeout killed Python wrapper; owned compiler group64807 killed explicitly; NO VERDICT; charged attempt1",
+    "newTopLevelDeclarations": [
+      "r180ConsumerBeginChecked"
+    ],
+    "matchingSourceCommits": []
+  },
+  {
+    "unit": "A5-2",
+    "path": "research-tests/DGamma/R180O19ObservedCompletion.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R180O19ObservedCompletion.idr"
+    ],
+    "start": "2026-09-07T11:41:47.779043+00:00",
+    "end": "2026-09-07T11:41:48.836069+00:00",
+    "seconds": 1.0568622914142907,
+    "exit": 1,
+    "fresh": true,
+    "passed": false,
+    "interrupted": false,
+    "maxSampleRSSKiB": 0,
+    "sourceSHA256": "65720ac4ff429ba461482bdbd9240c158ba0e25025af9519c680c4507e750ad9",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "2/2: Building DGamma.R180O19ObservedCompletion (research-tests/DGamma/R180O19ObservedCompletion.idr)\nError: While processing right hand side of r180ConsumerBeginChecked. Can't solve constraint between: Just (LBeginTag, MkSystemState (MkToyRuntime True False) (MkCoeffectContext [Bind 1 (MkFiber (MkComponent (MkCoeffectSpec [ServiceA] (UniqueCons notInEmpty UniqueNil)) (MkCoeffectSpec [] UniqueNil) []) Root False (MkOwnedTable (MkCoeffectContext [] UniqueNil) (\\k, present => void (uninhabited present))) (Reloading [] id (ProviderView 0 EmptyView))), Bind 0 (MkFiber (MkComponent (MkCoeffectSpec [] UniqueNil) (MkCoeffectSpec [ServiceA] (UniqueCons notInEmpty UniqueNil)) [MkStepEffect Nothing run (\\keyEq => witnessed), MkStepEffect Nothing run (\\keyEq => witnessed)]) Root False table (Active (\\x => normalizeLocal (MkCoeffectSpec [ServiceA] (UniqueCons notInEmpty UniqueNil)) (let MkLocalState (MkToyRuntime laterProvider laterConsumer) laterTable = normalizeLocal (MkCoeffectSpec [ServiceA] (UniqueCons notInEmpty UniqueNil)) (normalizeLocal (MkCoeffectSpec [ServiceA] (UniqueCons notInEmpty UniqueNil)) (normalizeLocal (MkCoeffectSpec [ServiceA] (UniqueCons notInEmpty UniqueNil)) x)) in MkLocalState (MkToyRuntime (not laterProvider) laterConsumer) (canonicalOwnedFromFiltered (MkCoeffectSpec [ServiceA] (UniqueCons notInEmpty UniqueNil)) (orderRestrictedBindings (orderRestrictEntries [ServiceA] [] UniqueNil)) (orderRestrictedUnique (orderRestrictEntries [ServiceA] [] UniqueNil)) (orderRestrictedSound (orderRestrictEntries [ServiceA] [] UniqueNil))))) EmptyView))] (UniqueCons (lookupNothingNotElem 1 [Bind 0 (MkFiber (MkComponent (MkCoeffectSpec [] UniqueNil) (MkCoeffectSpec [ServiceA] (UniqueCons notInEmpty UniqueNil)) [MkStepEffect Nothing run (\\keyEq => witnessed), MkStepEffect Nothing run (\\keyEq => witnessed)]) Root False (MkOwnedTable (MkCoeffectContext [] UniqueNil) (\\k, present => void (uninhabited present))) (Inactive Nothing))] Refl) (UniqueCons (lookupNothingNotElem 0 [] Refl) UniqueNil)))) and if registryWellFormed (MkSystemState (worldState (MkSystemState (MkToyRuntime True False) (MkCoeffectContext [Bind 1 (MkFiber (MkComponent (MkCoeffectSpec [ServiceA] (UniqueCons notInEmpty UniqueNil)) (MkCoeffectSpec [] UniqueNil) []) Root False (MkOwnedTable (MkCoeffectContext [] UniqueNil) (\\k, present => void (uninhabited present))) (Inactive Nothing)), Bind 0 (MkFiber (MkComponent (MkCoeffectSpec [] UniqueNil) (MkCoeffectSpec [ServiceA] (UniqueCons notInEmpty UniqueNil)) [MkStepEffect Nothing run (\\keyEq => witnessed), MkStepEffect Nothing run (\\keyEq => witnessed)]) Root False table (Active (\\x => normalizeLocal (MkCoeffectSpec [ServiceA] (UniqueCons notInEmpty UniqueNil)) (let MkLocalState (MkToyRuntime laterProvider laterConsumer) laterTable = normalizeLocal (MkCoeffectSpec [ServiceA] (UniqueCons notInEmpty UniqueNil)) (normalizeLocal (MkCoeffectSpec [ServiceA] (UniqueCons notInEmpty UniqueNil)) (normalizeLocal (MkCoeffectSpec [ServiceA] (UniqueCons notInEmpty UniqueNil)) x)) in MkLocalState (MkToyRuntime (not laterProvider) laterConsumer) (canonicalOwnedFromFiltered (MkCoeffectSpec [ServiceA] (UniqueCons notInEmpty UniqueNil)) (orderRestrictedBindings (orderRestrictEntries [ServiceA] [] UniqueNil)) (orderRestrictedUnique (orderRestrictEntries [ServiceA] [] UniqueNil)) (orderRestrictedSound (orderRestrictEntries [ServiceA] [] UniqueNil))))) EmptyView))] (UniqueCons (lookupNothingNotElem 1 [Bind 0 (MkFiber (MkComponent (MkCoeffectSpec [] UniqueNil) (MkCoeffectSpec [ServiceA] (UniqueCons notInEmpty UniqueNil)) [MkStepEffect Nothing run (\\keyEq => witnessed), MkStepEffect Nothing run (\\keyEq => witnessed)]) Root False (MkOwnedTable (MkCoeffectContext [] UniqueNil) (\\k, present => void (uninhabited present))) (Inactive Nothing))] Refl) (UniqueCons (lookupNothingNotElem 0 [] Refl) UniqueNil))))) (replaceBinding 1 (setFiberLifecycle (MkFiber (MkComponent (MkCoeffectSpec [ServiceA] (UniqueCons notInEmpty UniqueNil)) (MkCoeffectSpec [] UniqueNil) []) Root False (MkOwnedTable (MkCoeffectContext [] UniqueNil) (\\k, present => void (uninhabited present))) (Inactive Nothing)) (Reloading (componentProgram (fiberComponent (MkFiber (MkComponent (MkCoeffectSpec [ServiceA] (UniqueCons notInEmpty UniqueNil)) (MkCoeffectSpec [] UniqueNil) []) Root False (MkOwnedTable (MkCoeffectContext [] UniqueNil) (\\k, present => void (uninhabited present))) (Inactive Nothing)))) id (ProviderView 0 EmptyView))) (registry (MkSystemState (MkToyRuntime True False) (MkCoeffectContext [Bind 1 (MkFiber (MkComponent (MkCoeffectSpec [ServiceA] (UniqueCons notInEmpty UniqueNil)) (MkCoeffectSpec [] UniqueNil) []) Root False (MkOwnedTable (MkCoeffectContext [] UniqueNil) (\\k, present => void (uninhabited present))) (Inactive Nothing)), Bind 0 (MkFiber (MkComponent (MkCoeffectSpec [] UniqueNil) (MkCoeffectSpec [ServiceA] (UniqueCons notInEmpty UniqueNil)) [MkStepEffect Nothing run (\\keyEq => witnessed), MkStepEffect Nothing run (\\keyEq => witnessed)]) Root False table (Active (\\x => normalizeLocal (MkCoeffectSpec [ServiceA] (UniqueCons notInEmpty UniqueNil)) (let MkLocalState (MkToyRuntime laterProvider laterConsumer) laterTable = normalizeLocal (MkCoeffectSpec [ServiceA] (UniqueCons notInEmpty UniqueNil)) (normalizeLocal (MkCoeffectSpec [ServiceA] (UniqueCons notInEmpty UniqueNil)) (normalizeLocal (MkCoeffectSpec [ServiceA] (UniqueCons notInEmpty UniqueNil)) x)) in MkLocalState (MkToyRuntime (not laterProvider) laterConsumer) (canonicalOwnedFromFiltered (MkCoeffectSpec [ServiceA] (UniqueCons notInEmpty UniqueNil)) (orderRestrictedBindings (orderRestrictEntries [ServiceA] [] UniqueNil)) (orderRestrictedUnique (orderRestrictEntries [ServiceA] [] UniqueNil)) (orderRestrictedSound (orderRestrictEntries [ServiceA] [] UniqueNil))))) EmptyView))] (UniqueCons (lookupNothingNotElem 1 [Bind 0 (MkFiber (MkComponent (MkCoeffectSpec [] UniqueNil) (MkCoeffectSpec [ServiceA] (UniqueCons notInEmpty UniqueNil)) [MkStepEffect Nothing run (\\keyEq => witnessed), MkStepEffect Nothing run (\\keyEq => witnessed)]) Root False (MkOwnedTable (MkCoeffectContext [] UniqueNil) (\\k, present => void (uninhabited present))) (Inactive Nothing))] Refl) (UniqueCons (lookupNothingNotElem 0 [] Refl) UniqueNil))))))) then Just (LBeginTag, MkSystemState (worldState (MkSystemState (MkToyRuntime True False) (MkCoeffectContext [Bind 1 (MkFiber (MkComponent (MkCoeffectSpec [ServiceA] (UniqueCons notInEmpty UniqueNil)) (MkCoeffectSpec [] UniqueNil) []) Root False (MkOwnedTable (MkCoeffectContext [] UniqueNil) (\\k, present => void (uninhabited present))) (Inactive Nothing)), Bind 0 (MkFiber (MkComponent (MkCoeffectSpec [] UniqueNil) (MkCoeffectSpec [ServiceA] (UniqueCons notInEmpty UniqueNil)) [MkStepEffect Nothing run (\\keyEq => witnessed), MkStepEffect Nothing run (\\keyEq => witnessed)]) Root False table (Active (\\x => normalizeLocal (MkCoeffectSpec [ServiceA] (UniqueCons notInEmpty UniqueNil)) (let MkLocalState (MkToyRuntime laterProvider laterConsumer) laterTable = normalizeLocal (MkCoeffectSpec [ServiceA] (UniqueCons notInEmpty UniqueNil)) (normalizeLocal (MkCoeffectSpec [ServiceA] (UniqueCons notInEmpty UniqueNil)) (normalizeLocal (MkCoeffectSpec [ServiceA] (UniqueCons notInEmpty UniqueNil)) x)) in MkLocalState (MkToyRuntime (not laterProvider) laterConsumer) (canonicalOwnedFromFiltered (MkCoeffectSpec [ServiceA] (UniqueCons notInEmpty UniqueNil)) (orderRestrictedBindings (orderRestrictEntries [ServiceA] [] UniqueNil)) (orderRestrictedUnique (orderRestrictEntries [ServiceA] [] UniqueNil)) (orderRestrictedSound (orderRestrictEntries [ServiceA] [] UniqueNil))))) EmptyView))] (UniqueCons (lookupNothingNotElem 1 [Bind 0 (MkFiber (MkComponent (MkCoeffectSpec [] UniqueNil) (MkCoeffectSpec [ServiceA] (UniqueCons notInEmpty UniqueNil)) [MkStepEffect Nothing run (\\keyEq => witnessed), MkStepEffect Nothing run (\\keyEq => witnessed)]) Root False (MkOwnedTable (MkCoeffectContext [] UniqueNil) (\\k, present => void (uninhabited present))) (Inactive Nothing))] Refl) (UniqueCons (lookupNothingNotElem 0 [] Refl) UniqueNil))))) (replaceBinding 1 (setFiberLifecycle (MkFiber (MkComponent (MkCoeffectSpec [ServiceA] (UniqueCons notInEmpty UniqueNil)) (MkCoeffectSpec [] UniqueNil) []) Root False (MkOwnedTable (MkCoeffectContext [] UniqueNil) (\\k, present => void (uninhabited present))) (Inactive Nothing)) (Reloading (componentProgram (fiberComponent (MkFiber (MkComponent (MkCoeffectSpec [ServiceA] (UniqueCons notInEmpty UniqueNil)) (MkCoeffectSpec [] UniqueNil) []) Root False (MkOwnedTable (MkCoeffectContext [] UniqueNil) (\\k, present => void (uninhabited present))) (Inactive Nothing)))) id (ProviderView 0 EmptyView))) (registry (MkSystemState (MkToyRuntime True False) (MkCoeffectContext [Bind 1 (MkFiber (MkComponent (MkCoeffectSpec [ServiceA] (UniqueCons notInEmpty UniqueNil)) (MkCoeffectSpec [] UniqueNil) []) Root False (MkOwnedTable (MkCoeffectContext [] UniqueNil) (\\k, present => void (uninhabited present))) (Inactive Nothing)), Bind 0 (MkFiber (MkComponent (MkCoeffectSpec [] UniqueNil) (MkCoeffectSpec [ServiceA] (UniqueCons notInEmpty UniqueNil)) [MkStepEffect Nothing run (\\keyEq => witnessed), MkStepEffect Nothing run (\\keyEq => witnessed)]) Root False table (Active (\\x => normalizeLocal (MkCoeffectSpec [ServiceA] (UniqueCons notInEmpty UniqueNil)) (let MkLocalState (MkToyRuntime laterProvider laterConsumer) laterTable = normalizeLocal (MkCoeffectSpec [ServiceA] (UniqueCons notInEmpty UniqueNil)) (normalizeLocal (MkCoeffectSpec [ServiceA] (UniqueCons notInEmpty UniqueNil)) (normalizeLocal (MkCoeffectSpec [ServiceA] (UniqueCons notInEmpty UniqueNil)) x)) in MkLocalState (MkToyRuntime (not laterProvider) laterConsumer) (canonicalOwnedFromFiltered (MkCoeffectSpec [ServiceA] (UniqueCons notInEmpty UniqueNil)) (orderRestrictedBindings (orderRestrictEntries [ServiceA] [] UniqueNil)) (orderRestrictedUnique (orderRestrictEntries [ServiceA] [] UniqueNil)) (orderRestrictedSound (orderRestrictEntries [ServiceA] [] UniqueNil))))) EmptyView))] (UniqueCons (lookupNothingNotElem 1 [Bind 0 (MkFiber (MkComponent (MkCoeffectSpec [] UniqueNil) (MkCoeffectSpec [ServiceA] (UniqueCons notInEmpty UniqueNil)) [MkStepEffect Nothing run (\\keyEq => witnessed), MkStepEffect Nothing run (\\keyEq => witnessed)]) Root False (MkOwnedTable (MkCoeffectContext [] UniqueNil) (\\k, present => void (uninhabited present))) (Inactive Nothing))] Refl) (UniqueCons (lookupNothingNotElem 0 [] Refl) UniqueNil))))))) else Nothing.\n\nDGamma.R180O19ObservedCompletion:91:47--91:51\n 87 |   (0 present : (memberKey @{%search} ServiceA (ownedValues table) = True)) ->\n 88 |   (checkedApplyAction @{%search} @{%search} (LBegin 1)\n 89 |     r179ObservedProviderFinished = Just (LBeginTag, r180ObservedConsumerBegun))\n 90 | r180ConsumerBeginChecked table tableObserved present =\n 91 |   rewrite tableObserved in rewrite present in Refl\n                                                    ^^^^\n\n",
+    "newTopLevelDeclarations": [
+      "r180ConsumerBeginChecked"
+    ],
+    "matchingSourceCommits": []
+  },
+  {
+    "unit": "A5-3",
+    "path": "research-tests/DGamma/R180O19ObservedCompletion.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R180O19ObservedCompletion.idr"
+    ],
+    "start": "2026-09-07T11:43:08.445940+00:00",
+    "end": "2026-09-07T11:43:09.485851+00:00",
+    "seconds": 1.0397107503376901,
+    "exit": 1,
+    "fresh": true,
+    "passed": false,
+    "interrupted": false,
+    "maxSampleRSSKiB": 0,
+    "sourceSHA256": "cdb8a6caa3db1066001ec5358976fd7ea98f95f9bfcb095c8e3051b8226c21c9",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "2/2: Building DGamma.R180O19ObservedCompletion (research-tests/DGamma/R180O19ObservedCompletion.idr)\nError: While processing right hand side of r180ConsumerBeginChecked. Can't solve constraint between: Just (LBeginTag, MkSystemState (MkToyRuntime True False) (MkCoeffectContext [Bind 1 (MkFiber (MkComponent (MkCoeffectSpec [ServiceA] (UniqueCons notInEmpty UniqueNil)) (MkCoeffectSpec [] UniqueNil) []) Root False (MkOwnedTable (MkCoeffectContext [] UniqueNil) (\\k, present => void (uninhabited present))) (Reloading [] id (ProviderView 0 EmptyView))), Bind 0 (MkFiber (MkComponent (MkCoeffectSpec [] UniqueNil) (MkCoeffectSpec [ServiceA] (UniqueCons notInEmpty UniqueNil)) [MkStepEffect Nothing run (\\keyEq => witnessed), MkStepEffect Nothing run (\\keyEq => witnessed)]) Root False table (Active (\\x => normalizeLocal (MkCoeffectSpec [ServiceA] (UniqueCons notInEmpty UniqueNil)) (let MkLocalState (MkToyRuntime laterProvider laterConsumer) laterTable = normalizeLocal (MkCoeffectSpec [ServiceA] (UniqueCons notInEmpty UniqueNil)) (normalizeLocal (MkCoeffectSpec [ServiceA] (UniqueCons notInEmpty UniqueNil)) (normalizeLocal (MkCoeffectSpec [ServiceA] (UniqueCons notInEmpty UniqueNil)) x)) in MkLocalState (MkToyRuntime (not laterProvider) laterConsumer) (canonicalOwnedFromFiltered (MkCoeffectSpec [ServiceA] (UniqueCons notInEmpty UniqueNil)) (orderRestrictedBindings (orderRestrictEntries [ServiceA] [] UniqueNil)) (orderRestrictedUnique (orderRestrictEntries [ServiceA] [] UniqueNil)) (orderRestrictedSound (orderRestrictEntries [ServiceA] [] UniqueNil))))) EmptyView))] (UniqueCons (lookupNothingNotElem 1 [Bind 0 (MkFiber (MkComponent (MkCoeffectSpec [] UniqueNil) (MkCoeffectSpec [ServiceA] (UniqueCons notInEmpty UniqueNil)) [MkStepEffect Nothing run (\\keyEq => witnessed), MkStepEffect Nothing run (\\keyEq => witnessed)]) Root False (MkOwnedTable (MkCoeffectContext [] UniqueNil) (\\k, present => void (uninhabited present))) (Inactive Nothing))] Refl) (UniqueCons (lookupNothingNotElem 0 [] Refl) UniqueNil)))) and if registryWellFormed (MkSystemState (worldState (MkSystemState (MkToyRuntime True False) (MkCoeffectContext [Bind 1 (MkFiber (MkComponent (MkCoeffectSpec [ServiceA] (UniqueCons notInEmpty UniqueNil)) (MkCoeffectSpec [] UniqueNil) []) Root False (MkOwnedTable (MkCoeffectContext [] UniqueNil) (\\k, present => void (uninhabited present))) (Inactive Nothing)), Bind 0 (MkFiber (MkComponent (MkCoeffectSpec [] UniqueNil) (MkCoeffectSpec [ServiceA] (UniqueCons notInEmpty UniqueNil)) [MkStepEffect Nothing run (\\keyEq => witnessed), MkStepEffect Nothing run (\\keyEq => witnessed)]) Root False table (Active (\\x => normalizeLocal (MkCoeffectSpec [ServiceA] (UniqueCons notInEmpty UniqueNil)) (let MkLocalState (MkToyRuntime laterProvider laterConsumer) laterTable = normalizeLocal (MkCoeffectSpec [ServiceA] (UniqueCons notInEmpty UniqueNil)) (normalizeLocal (MkCoeffectSpec [ServiceA] (UniqueCons notInEmpty UniqueNil)) (normalizeLocal (MkCoeffectSpec [ServiceA] (UniqueCons notInEmpty UniqueNil)) x)) in MkLocalState (MkToyRuntime (not laterProvider) laterConsumer) (canonicalOwnedFromFiltered (MkCoeffectSpec [ServiceA] (UniqueCons notInEmpty UniqueNil)) (orderRestrictedBindings (orderRestrictEntries [ServiceA] [] UniqueNil)) (orderRestrictedUnique (orderRestrictEntries [ServiceA] [] UniqueNil)) (orderRestrictedSound (orderRestrictEntries [ServiceA] [] UniqueNil))))) EmptyView))] (UniqueCons (lookupNothingNotElem 1 [Bind 0 (MkFiber (MkComponent (MkCoeffectSpec [] UniqueNil) (MkCoeffectSpec [ServiceA] (UniqueCons notInEmpty UniqueNil)) [MkStepEffect Nothing run (\\keyEq => witnessed), MkStepEffect Nothing run (\\keyEq => witnessed)]) Root False (MkOwnedTable (MkCoeffectContext [] UniqueNil) (\\k, present => void (uninhabited present))) (Inactive Nothing))] Refl) (UniqueCons (lookupNothingNotElem 0 [] Refl) UniqueNil))))) (replaceBinding 1 (setFiberLifecycle (MkFiber (MkComponent (MkCoeffectSpec [ServiceA] (UniqueCons notInEmpty UniqueNil)) (MkCoeffectSpec [] UniqueNil) []) Root False (MkOwnedTable (MkCoeffectContext [] UniqueNil) (\\k, present => void (uninhabited present))) (Inactive Nothing)) (Reloading (componentProgram (fiberComponent (MkFiber (MkComponent (MkCoeffectSpec [ServiceA] (UniqueCons notInEmpty UniqueNil)) (MkCoeffectSpec [] UniqueNil) []) Root False (MkOwnedTable (MkCoeffectContext [] UniqueNil) (\\k, present => void (uninhabited present))) (Inactive Nothing)))) id (ProviderView 0 EmptyView))) (registry (MkSystemState (MkToyRuntime True False) (MkCoeffectContext [Bind 1 (MkFiber (MkComponent (MkCoeffectSpec [ServiceA] (UniqueCons notInEmpty UniqueNil)) (MkCoeffectSpec [] UniqueNil) []) Root False (MkOwnedTable (MkCoeffectContext [] UniqueNil) (\\k, present => void (uninhabited present))) (Inactive Nothing)), Bind 0 (MkFiber (MkComponent (MkCoeffectSpec [] UniqueNil) (MkCoeffectSpec [ServiceA] (UniqueCons notInEmpty UniqueNil)) [MkStepEffect Nothing run (\\keyEq => witnessed), MkStepEffect Nothing run (\\keyEq => witnessed)]) Root False table (Active (\\x => normalizeLocal (MkCoeffectSpec [ServiceA] (UniqueCons notInEmpty UniqueNil)) (let MkLocalState (MkToyRuntime laterProvider laterConsumer) laterTable = normalizeLocal (MkCoeffectSpec [ServiceA] (UniqueCons notInEmpty UniqueNil)) (normalizeLocal (MkCoeffectSpec [ServiceA] (UniqueCons notInEmpty UniqueNil)) (normalizeLocal (MkCoeffectSpec [ServiceA] (UniqueCons notInEmpty UniqueNil)) x)) in MkLocalState (MkToyRuntime (not laterProvider) laterConsumer) (canonicalOwnedFromFiltered (MkCoeffectSpec [ServiceA] (UniqueCons notInEmpty UniqueNil)) (orderRestrictedBindings (orderRestrictEntries [ServiceA] [] UniqueNil)) (orderRestrictedUnique (orderRestrictEntries [ServiceA] [] UniqueNil)) (orderRestrictedSound (orderRestrictEntries [ServiceA] [] UniqueNil))))) EmptyView))] (UniqueCons (lookupNothingNotElem 1 [Bind 0 (MkFiber (MkComponent (MkCoeffectSpec [] UniqueNil) (MkCoeffectSpec [ServiceA] (UniqueCons notInEmpty UniqueNil)) [MkStepEffect Nothing run (\\keyEq => witnessed), MkStepEffect Nothing run (\\keyEq => witnessed)]) Root False (MkOwnedTable (MkCoeffectContext [] UniqueNil) (\\k, present => void (uninhabited present))) (Inactive Nothing))] Refl) (UniqueCons (lookupNothingNotElem 0 [] Refl) UniqueNil))))))) then Just (LBeginTag, MkSystemState (worldState (MkSystemState (MkToyRuntime True False) (MkCoeffectContext [Bind 1 (MkFiber (MkComponent (MkCoeffectSpec [ServiceA] (UniqueCons notInEmpty UniqueNil)) (MkCoeffectSpec [] UniqueNil) []) Root False (MkOwnedTable (MkCoeffectContext [] UniqueNil) (\\k, present => void (uninhabited present))) (Inactive Nothing)), Bind 0 (MkFiber (MkComponent (MkCoeffectSpec [] UniqueNil) (MkCoeffectSpec [ServiceA] (UniqueCons notInEmpty UniqueNil)) [MkStepEffect Nothing run (\\keyEq => witnessed), MkStepEffect Nothing run (\\keyEq => witnessed)]) Root False table (Active (\\x => normalizeLocal (MkCoeffectSpec [ServiceA] (UniqueCons notInEmpty UniqueNil)) (let MkLocalState (MkToyRuntime laterProvider laterConsumer) laterTable = normalizeLocal (MkCoeffectSpec [ServiceA] (UniqueCons notInEmpty UniqueNil)) (normalizeLocal (MkCoeffectSpec [ServiceA] (UniqueCons notInEmpty UniqueNil)) (normalizeLocal (MkCoeffectSpec [ServiceA] (UniqueCons notInEmpty UniqueNil)) x)) in MkLocalState (MkToyRuntime (not laterProvider) laterConsumer) (canonicalOwnedFromFiltered (MkCoeffectSpec [ServiceA] (UniqueCons notInEmpty UniqueNil)) (orderRestrictedBindings (orderRestrictEntries [ServiceA] [] UniqueNil)) (orderRestrictedUnique (orderRestrictEntries [ServiceA] [] UniqueNil)) (orderRestrictedSound (orderRestrictEntries [ServiceA] [] UniqueNil))))) EmptyView))] (UniqueCons (lookupNothingNotElem 1 [Bind 0 (MkFiber (MkComponent (MkCoeffectSpec [] UniqueNil) (MkCoeffectSpec [ServiceA] (UniqueCons notInEmpty UniqueNil)) [MkStepEffect Nothing run (\\keyEq => witnessed), MkStepEffect Nothing run (\\keyEq => witnessed)]) Root False (MkOwnedTable (MkCoeffectContext [] UniqueNil) (\\k, present => void (uninhabited present))) (Inactive Nothing))] Refl) (UniqueCons (lookupNothingNotElem 0 [] Refl) UniqueNil))))) (replaceBinding 1 (setFiberLifecycle (MkFiber (MkComponent (MkCoeffectSpec [ServiceA] (UniqueCons notInEmpty UniqueNil)) (MkCoeffectSpec [] UniqueNil) []) Root False (MkOwnedTable (MkCoeffectContext [] UniqueNil) (\\k, present => void (uninhabited present))) (Inactive Nothing)) (Reloading (componentProgram (fiberComponent (MkFiber (MkComponent (MkCoeffectSpec [ServiceA] (UniqueCons notInEmpty UniqueNil)) (MkCoeffectSpec [] UniqueNil) []) Root False (MkOwnedTable (MkCoeffectContext [] UniqueNil) (\\k, present => void (uninhabited present))) (Inactive Nothing)))) id (ProviderView 0 EmptyView))) (registry (MkSystemState (MkToyRuntime True False) (MkCoeffectContext [Bind 1 (MkFiber (MkComponent (MkCoeffectSpec [ServiceA] (UniqueCons notInEmpty UniqueNil)) (MkCoeffectSpec [] UniqueNil) []) Root False (MkOwnedTable (MkCoeffectContext [] UniqueNil) (\\k, present => void (uninhabited present))) (Inactive Nothing)), Bind 0 (MkFiber (MkComponent (MkCoeffectSpec [] UniqueNil) (MkCoeffectSpec [ServiceA] (UniqueCons notInEmpty UniqueNil)) [MkStepEffect Nothing run (\\keyEq => witnessed), MkStepEffect Nothing run (\\keyEq => witnessed)]) Root False table (Active (\\x => normalizeLocal (MkCoeffectSpec [ServiceA] (UniqueCons notInEmpty UniqueNil)) (let MkLocalState (MkToyRuntime laterProvider laterConsumer) laterTable = normalizeLocal (MkCoeffectSpec [ServiceA] (UniqueCons notInEmpty UniqueNil)) (normalizeLocal (MkCoeffectSpec [ServiceA] (UniqueCons notInEmpty UniqueNil)) (normalizeLocal (MkCoeffectSpec [ServiceA] (UniqueCons notInEmpty UniqueNil)) x)) in MkLocalState (MkToyRuntime (not laterProvider) laterConsumer) (canonicalOwnedFromFiltered (MkCoeffectSpec [ServiceA] (UniqueCons notInEmpty UniqueNil)) (orderRestrictedBindings (orderRestrictEntries [ServiceA] [] UniqueNil)) (orderRestrictedUnique (orderRestrictEntries [ServiceA] [] UniqueNil)) (orderRestrictedSound (orderRestrictEntries [ServiceA] [] UniqueNil))))) EmptyView))] (UniqueCons (lookupNothingNotElem 1 [Bind 0 (MkFiber (MkComponent (MkCoeffectSpec [] UniqueNil) (MkCoeffectSpec [ServiceA] (UniqueCons notInEmpty UniqueNil)) [MkStepEffect Nothing run (\\keyEq => witnessed), MkStepEffect Nothing run (\\keyEq => witnessed)]) Root False (MkOwnedTable (MkCoeffectContext [] UniqueNil) (\\k, present => void (uninhabited present))) (Inactive Nothing))] Refl) (UniqueCons (lookupNothingNotElem 0 [] Refl) UniqueNil))))))) else Nothing.\n\nDGamma.R180O19ObservedCompletion:95:55--95:59\n 91 |     r179ObservedProviderFinished = Just (LBeginTag, r180ObservedConsumerBegun))\n 92 | r180ConsumerBeginChecked table tableObserved Nothing bindingObserved present =\n 93 |   case present of Refl impossible\n 94 | r180ConsumerBeginChecked table tableObserved (Just service) bindingObserved present =\n 95 |   rewrite tableObserved in rewrite bindingObserved in Refl\n                                                            ^^^^\n\n",
+    "newTopLevelDeclarations": [
+      "r180ConsumerBeginChecked"
+    ],
+    "matchingSourceCommits": []
+  },
+  {
+    "unit": "A5-restored",
+    "path": "research-tests/DGamma/R180O19ObservedCompletion.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R180O19ObservedCompletion.idr"
+    ],
+    "start": "2026-09-07T11:43:45.408960+00:00",
+    "end": "2026-09-07T11:43:46.466888+00:00",
+    "seconds": 1.0577719998545945,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 0,
+    "sourceSHA256": "bd66eaf70f581646a19745d6b0615d3853cf0abbae861effec689b19b35108e3",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "2/2: Building DGamma.R180O19ObservedCompletion (research-tests/DGamma/R180O19ObservedCompletion.idr)\n",
+    "newTopLevelDeclarations": [],
+    "matchingSourceCommits": [
+      "89307e2c02f5b05471272a7df6ef68ff4704068e"
+    ]
+  },
+  {
+    "unit": "F1-package",
+    "path": "package",
+    "command": [
+      "idris2",
+      "--build",
+      "dgamma.ipkg"
+    ],
+    "start": "2026-09-07T11:43:46.535194+00:00",
+    "end": "2026-09-07T11:44:03.147505+00:00",
+    "seconds": 16.612131416331977,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 231648,
+    "sourceSHA256": "aee761a37757cb047ddbf0f846bc23ce830ed755422f96852d08eb435c368727",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "",
+    "matchingSourceCommits": []
+  }
+]
