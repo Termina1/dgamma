@@ -369,7 +369,7 @@ You may be unintentionally shadowing the associated global definitions:
   order is shadowing Control.Order.order
 
 DGamma.CP5ConfluenceCrossTraceSpike:40:3--40:68
- 36 | 
+ 36 |
  37 | public export
  38 | data CertifiedActorPermutation :
  39 |   (name : Type) -> List name -> List name -> Type where
@@ -601,7 +601,7 @@ END 2026-09-07T03:16:02.945802+00:00 exit=0 fresh=True sampledRSSKiB=2940048
 ```text
 START 2026-09-07T03:16:52.913149+00:00 idris2 --source-dir src --source-dir research --check research/DGamma/CP5CurrentGenerationBirthSpike.idr
 3/3: Building DGamma.CP5CurrentGenerationBirthSpike (research/DGamma/CP5CurrentGenerationBirthSpike.idr)
-Error: While processing type of currentBirthAtPrefixComponent. Undefined name AlignedTransitions. 
+Error: While processing type of currentBirthAtPrefixComponent. Undefined name AlignedTransitions.
 
 DGamma.CP5CurrentGenerationBirthSpike:212:3--212:21
  208 |   {initial, middle, finalState : SystemState name key value world error} ->
@@ -1053,7 +1053,7 @@ END 2026-09-07T03:59:14.224753+00:00 exit=1 fresh=True sampledRSSKiB=663504
 ```text
 START 2026-09-07T04:02:02.121262+00:00 idris2 --source-dir src --source-dir research --source-dir research-tests --check research-tests/DGamma/R177RetirementTransportProbe.idr
 4/4: Building DGamma.R177RetirementTransportProbe (research-tests/DGamma/R177RetirementTransportProbe.idr)
-Error: While processing right hand side of r177QuietTracePair. Undefined name DGamma.CP3StatementChecks.namedAfter. 
+Error: While processing right hand side of r177QuietTracePair. Undefined name DGamma.CP3StatementChecks.namedAfter.
 
 DGamma.R177RetirementTransportProbe:37:91--37:127
  33 |    rightFinal : SystemState Nat R45Key R45Value Unit String **
@@ -1418,7 +1418,7 @@ END 2026-09-07T04:57:51.960193+00:00 exit=0 fresh=True sampledRSSKiB=0
 ```text
 START 2026-09-07T04:58:16.767127+00:00 idris2 --source-dir src --source-dir research --check research/DGamma/CP5RegistrationParentBirthSpike.idr
 5/5: Building DGamma.CP5RegistrationParentBirthSpike (research/DGamma/CP5RegistrationParentBirthSpike.idr)
-Error: While processing right hand side of parentLookupEntryObserved. Undefined name justInjective. 
+Error: While processing right hand side of parentLookupEntryObserved. Undefined name justInjective.
 
 DGamma.CP5RegistrationParentBirthSpike:180:8--180:21
  176 |   Elem (selected, activation) ((candidate, current) :: rest)
@@ -1494,7 +1494,7 @@ END 2026-09-07T05:06:59.558791+00:00 exit=0 fresh=True sampledRSSKiB=374256
 ```text
 START 2026-09-07T05:08:51.395988+00:00 idris2 --source-dir src --source-dir research --check research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr
 12/12: Building DGamma.CP5ConfluenceRenamingCompositionSpike (research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr)
-Error: While processing right hand side of registrationSideFoldParentBirth. Undefined name plusZeroRightNeutral. 
+Error: While processing right hand side of registrationSideFoldParentBirth. Undefined name plusZeroRightNeutral.
 
 DGamma.CP5ConfluenceRenamingCompositionSpike:3198:298--3198:318
  3194 |         (\wanted, occurrence => embedding wanted (currentBirthPrependLocation name key world error value step rest wanted occurrence))
@@ -1704,7 +1704,7 @@ You may be unintentionally shadowing the associated global definitions:
   order is shadowing Control.Order.order
 
 DGamma.CP5ConfluenceCrossTraceSpike:40:3--40:68
- 36 | 
+ 36 |
  37 | public export
  38 | data CertifiedActorPermutation :
  39 |   (name : Type) -> List name -> List name -> Type where

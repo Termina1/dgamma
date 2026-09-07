@@ -385,3 +385,8 @@ fewer than 15 minutes remained before 06:00. The conditional extra coverage
 micro-unit was therefore NOT launched (zero attempts). Retained-event coverage
 stays the first recorded proof frontier. No research/proof code changed after
 B122; the remaining work is only read-only validation and documentation.
+
+The first frozen audit attempt caught six trailing-whitespace presentation lines
+in the newly tracked compiler Markdown (not previously included by untracked-file
+git diff --check). These presentation lines were trimmed and the read-only audit
+rerun. Raw JSON/archive evidence and every Idris source remained unchanged.
