@@ -860,3 +860,21 @@ computedSupportPresent name key world error value nameEq keyEq state selected su
     (\actor => isSupported {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} @{keyEq} actor state)
     (supportSetIsSolution nameEq keyEq state) selected supported
     (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} selected (registry state)) Refl
+
+||| Producer API for authentic births through one actual observed index action.
+export
+0 currentBirthActionProgress :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (global : Transitions initial finalState) -> (ordinal : Nat) ->
+  (live : GenerationEnvironment name) -> (action : Action name key value world error) ->
+  (occurrence : LocatedActionOccurrence action global) ->
+  (locatedActionOrdinal occurrence = ordinal) ->
+  ((selected : name) -> (generation : RegistrationGeneration name) ->
+    Elem (selected, generation) live -> CurrentGenerationBirth name key world error value global selected generation) ->
+  (selected : name) -> (generation : RegistrationGeneration name) ->
+  Elem (selected, generation) (advanceGenerationEnvironment @{nameEq} ordinal action live) ->
+  CurrentGenerationBirth name key world error value global selected generation
+currentBirthActionProgress name key world error value nameEq global ordinal live action occurrence exact previous =
+  currentBirthAfterAction name key world error value nameEq global ordinal live action occurrence exact previous
