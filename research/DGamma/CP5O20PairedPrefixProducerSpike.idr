@@ -659,3 +659,49 @@ pairedResolveConsObserved name key world error value nameEq keyEq wanted rest fi
         (resolveView {name = name} {key = key} {value = value} {world = world} {error = error}
           @{nameEq} @{keyEq} (wanted :: rest) fibers = Just (ProviderView owner tailView))
         (rewrite headObserved in rewrite tailObserved in Refl)))))
+
+||| Genuine matched BEGIN VIEW producer by structural dependency recursion.
+||| Both views are actual successful resolveView outputs; mapped heads come
+||| from D4 and the recursive tails from D5's observed successful decomposition.
+||| No view equality is assumed. This is still an INTERNAL paired-cut step,
+||| not a producer of all canonical pairs or the full O20 endpoint bridge.
+export
+0 pairedActualResolvedViews :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (renaming : NameBijection name) -> (deps : List key) ->
+  (leftWorld, rightWorld : world) ->
+  (leftRegistry, rightRegistry : Registry name key value world error) ->
+  RenamedRuntimeEffects name key world value renaming
+    (projectEffectState {name = name} {key = key} {value = value} {world = world}
+      {error = error} @{nameEq} (MkSystemState leftWorld leftRegistry))
+    (projectEffectState {name = name} {key = key} {value = value} {world = world}
+      {error = error} @{nameEq} (MkSystemState rightWorld rightRegistry)) ->
+  (pairwiseProvisionInvariant {name = name} {key = key} {value = value}
+    {world = world} {error = error} @{keyEq} (bindings rightRegistry) = True) ->
+  (leftView, rightView : View name deps) ->
+  (resolveView {name = name} {key = key} {value = value} {world = world} {error = error}
+    @{nameEq} @{keyEq} deps leftRegistry = Just leftView) ->
+  (resolveView {name = name} {key = key} {value = value} {world = world} {error = error}
+    @{nameEq} @{keyEq} deps rightRegistry = Just rightView) ->
+  ViewRelatedBy renaming leftView rightView
+pairedActualResolvedViews name key world error value nameEq keyEq renaming []
+  leftWorld rightWorld leftRegistry rightRegistry effects pairwise EmptyView EmptyView
+  leftResolved rightResolved = Refl
+pairedActualResolvedViews name key world error value nameEq keyEq renaming (wanted :: rest)
+  leftWorld rightWorld leftRegistry rightRegistry effects pairwise leftView rightView
+  leftResolved rightResolved =
+    case (pairedResolveConsObserved name key world error value nameEq keyEq wanted rest
+            leftRegistry (providerOf @{nameEq} @{keyEq} wanted leftRegistry) Refl
+            (resolveView @{nameEq} @{keyEq} rest leftRegistry) Refl leftView leftResolved,
+          pairedResolveConsObserved name key world error value nameEq keyEq wanted rest
+            rightRegistry (providerOf @{nameEq} @{keyEq} wanted rightRegistry) Refl
+            (resolveView @{nameEq} @{keyEq} rest rightRegistry) Refl rightView rightResolved) of
+      ((leftOwner ** leftTail ** (leftHead, leftTailResolved, Refl)),
+       (rightOwner ** rightTail ** (rightHead, rightTailResolved, Refl))) =>
+        cong2 (::) (pairedActualProviderHeads name key world error value nameEq keyEq
+          renaming wanted leftWorld rightWorld leftRegistry rightRegistry effects pairwise
+          leftOwner rightOwner leftHead rightHead)
+          (pairedActualResolvedViews name key world error value nameEq keyEq renaming rest
+            leftWorld rightWorld leftRegistry rightRegistry effects pairwise
+            leftTail rightTail leftTailResolved rightTailResolved)
