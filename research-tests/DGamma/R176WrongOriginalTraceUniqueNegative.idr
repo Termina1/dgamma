@@ -5,6 +5,7 @@ import DGamma.CP3
 import DGamma.CP5ConfluenceCanonicalSortSpike
 import DGamma.CP5ConfluenceCrossTraceSpike
 import DGamma.CP5UniqueRawNameInsertions
+import DGamma.CP5GeneratedOrchestrationMatched
 import Decidable.Equality
 
 %default total
@@ -27,11 +28,13 @@ import Decidable.Equality
     nameEq keyEq rightTrace) ->
   (0 otherUnique : UniqueRawNameInsertions name key world error value nameEq keyEq otherTrace) ->
   (0 rightUnique : UniqueRawNameInsertions name key world error value nameEq keyEq rightTrace) ->
+  (0 leftRightGeneratedMatched : GeneratedOrchestrationMatched name key world error value nameEq
+    leftTrace rightTrace (generatedGenerationBijection sameInputs)) ->
   MappedCanonicalSupportOrders name key world error value protocol nameEq keyEq
     leftTrace rightTrace
     (currentNameBijection (endpointRenaming sameInputs))
     (canonicalSchedule leftCapital) (canonicalSchedule rightCapital)
 wrongOriginalTraceFreshness name key world error value nameEq keyEq protocol leftTrace rightTrace
-  otherTrace sameInputs leftCapital rightCapital otherUnique rightUnique =
+  otherTrace sameInputs leftCapital rightCapital otherUnique rightUnique leftRightGeneratedMatched =
     canonicalSupportOrdersMatchSpike nameEq keyEq protocol leftTrace rightTrace
-      sameInputs leftCapital rightCapital otherUnique rightUnique
+      sameInputs leftCapital rightCapital otherUnique rightUnique leftRightGeneratedMatched
