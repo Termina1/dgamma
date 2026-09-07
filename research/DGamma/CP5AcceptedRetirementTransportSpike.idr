@@ -184,3 +184,26 @@ acceptedSupportedForwardNotRetired name key world error value nameEq keyEq left 
     retirementRejectedFalse (retired rightFiber)
       (acceptedSupportedForwardRejectsTargetRetired name key world error value nameEq keyEq left right sameInputs matched
         leftAligned rightAligned empty leftUnique rightUnique selected supported rightFiber rightFound)
+
+||| All-supported backward retirement agreement from the SAME accepted A9 matching.
+export
+0 acceptedSupportedBackwardNotRetired :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, leftFinal, rightFinal : SystemState name key value world error} ->
+  (left : Transitions initial leftFinal) -> (right : Transitions initial rightFinal) ->
+  (sameInputs : SameOrchestrationModuloGenerated nameEq keyEq left right) ->
+  GeneratedOrchestrationMatched name key world error value nameEq left right (generatedGenerationBijection sameInputs) ->
+  AlignedTransitions name key world error value nameEq keyEq left -> AlignedTransitions name key world error value nameEq keyEq right ->
+  (bindings (registry initial) = []) -> UniqueRawNameInsertions name key world error value nameEq keyEq left ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq right -> (selected : name) ->
+  (isSupported {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} @{keyEq} selected rightFinal = True) ->
+  (leftFiber : Fiber name key value world error) ->
+  (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq}
+    (renameBackward (currentNameBijection (endpointRenaming sameInputs)) selected) (registry leftFinal) = Just leftFiber) ->
+  (retired leftFiber = False)
+acceptedSupportedBackwardNotRetired name key world error value nameEq keyEq left right sameInputs matched
+  leftAligned rightAligned empty leftUnique rightUnique selected supported leftFiber leftFound =
+    retirementRejectedFalse (retired leftFiber)
+      (acceptedSupportedBackwardRejectsTargetRetired name key world error value nameEq keyEq left right sameInputs matched
+        leftAligned rightAligned empty leftUnique rightUnique selected supported leftFiber leftFound)
