@@ -298,3 +298,38 @@ acceptedEndpointParentGenerations name key world error value nameEq left right r
     (acceptedMatchedParentNames name key world error value nameEq left right renaming registrations leftEvent rightEvent leftMember rightMember (endpointEventMatch metadata))))),
    trans (rightEndpointBirthParent metadata) (cong ChildOf (sym (snd
     (acceptedMatchedParentNames name key world error value nameEq left right renaming registrations leftEvent rightEvent leftMember rightMember (endpointEventMatch metadata))))))
+
+||| Source parent support plus genuine matched births proves exact parent
+||| CURRENT stamps and phi coherence, not opposite support/retirement truth.
+export
+0 acceptedSupportedParentForward :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, leftFinal, rightFinal : SystemState name key value world error} ->
+  (left : Transitions initial leftFinal) -> (right : Transitions initial rightFinal) ->
+  (sameInputs : SameOrchestrationModuloGenerated nameEq keyEq left right) ->
+  AlignedTransitions name key world error value nameEq keyEq left ->
+  AlignedTransitions name key world error value nameEq keyEq right ->
+  bindings (registry initial) = [] ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq left ->
+  (leftEvent, rightEvent : RegistrationEvent name key world error value) ->
+  Elem leftEvent (leftScannedEvents (acceptedAuthenticatedRegistrationMatching name key world error value nameEq left right (generatedGenerationBijection sameInputs) (generatedRegistrationTree sameInputs))) -> Elem rightEvent (rightScannedEvents (acceptedAuthenticatedRegistrationMatching name key world error value nameEq left right (generatedGenerationBijection sameInputs) (generatedRegistrationTree sameInputs))) ->
+  (matched : RegistrationEventMatch (generatedGenerationBijection sameInputs) leftEvent rightEvent) ->
+  isSupported {name = name} {key = key} {value = value} {world = world} {error = error}
+    @{nameEq} @{keyEq} (eventParent leftEvent) leftFinal = True ->
+  (lookupCurrentGeneration @{nameEq} (eventParent leftEvent) (leftFinalGenerations (generatedRegistrationTree sameInputs)) = Just (activationParentGeneration (leftMatchedActivation matched)),
+   lookupCurrentGeneration @{nameEq} (eventParent rightEvent) (rightFinalGenerations (generatedRegistrationTree sameInputs)) = Just (activationParentGeneration (rightMatchedActivation matched)),
+   (renameForward (currentNameBijection (endpointRenaming sameInputs)) (eventParent leftEvent)) = eventParent rightEvent)
+acceptedSupportedParentForward name key world error value nameEq keyEq left right sameInputs leftAligned rightAligned empty leftUnique
+  leftEvent rightEvent leftMember rightMember matched parentSupported =
+    case acceptedSupportedForwardDomain name key world error value nameEq keyEq left right sameInputs
+      leftAligned rightAligned empty (eventParent leftEvent) parentSupported of
+      (leftGeneration ** rightGeneration ** rightParentFiber ** (leftCurrent, rightCurrent, mapped, rightFound)) =>
+        parentGenerationCurrentPacket name key world error value nameEq right (generationForward (generatedGenerationBijection sameInputs))
+          (leftFinalGenerations (generatedRegistrationTree sameInputs)) (rightFinalGenerations (generatedRegistrationTree sameInputs))
+          (eventParent leftEvent) (renameForward (currentNameBijection (endpointRenaming sameInputs)) (eventParent leftEvent)) (eventParent rightEvent)
+          leftGeneration rightGeneration (activationParentGeneration (leftMatchedActivation matched)) (activationParentGeneration (rightMatchedActivation matched))
+          leftCurrent rightCurrent mapped (matchedParentGeneration matched)
+          (authenticatedBirthStampsSame name key world error value nameEq keyEq left leftUnique (eventParent leftEvent)
+            leftGeneration (activationParentGeneration (leftMatchedActivation matched)) (acceptedLeftCurrentBirth name key world error value nameEq left right (generatedGenerationBijection sameInputs) (generatedRegistrationTree sameInputs) (eventParent leftEvent) leftGeneration leftCurrent) (acceptedLeftEventParentBirth name key world error value nameEq left right (generatedGenerationBijection sameInputs) (generatedRegistrationTree sameInputs) leftEvent leftMember (leftMatchedActivation matched) (leftActivationPresent matched)))
+          (acceptedRightCurrentBirth name key world error value nameEq left right (generatedGenerationBijection sameInputs) (generatedRegistrationTree sameInputs) (renameForward (currentNameBijection (endpointRenaming sameInputs)) (eventParent leftEvent)) rightGeneration rightCurrent) (acceptedRightEventParentBirth name key world error value nameEq left right (generatedGenerationBijection sameInputs) (generatedRegistrationTree sameInputs) rightEvent rightMember (rightMatchedActivation matched) (rightActivationPresent matched))
