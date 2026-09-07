@@ -118,3 +118,14 @@ rawUnretiredPropertyTrace name key world error value nameEq keyEq property globa
             (\parent, component, exact => inserted (actionOwner action) parent component
               (replace {p = \wanted => LocatedActionOccurrence wanted global} exact
                 (embedding action (MkLocatedActionOccurrence _ _ NoTransitions (Fired nameEq keyEq action tag checked) rest Refl Refl)))) previous)
+
+0 retiredLookupCannotBeUnretired :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) ->
+  (selected : name) -> (state : SystemState name key value world error) ->
+  (retiredFiber, otherFiber : Fiber name key value world error) ->
+  (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+    @{nameEq} selected (registry state) = Just retiredFiber) -> (retired retiredFiber = True) ->
+  (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+    @{nameEq} selected (registry state) = Just otherFiber) -> (retired otherFiber = False) -> Void
+retiredLookupCannotBeUnretired name key world error value nameEq selected state retiredFiber otherFiber found retiredTrue otherFound otherFalse =
+  case trans (sym retiredTrue) (trans (cong retired (justInjective (trans (sym found) otherFound))) otherFalse) of Refl impossible
