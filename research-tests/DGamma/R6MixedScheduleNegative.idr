@@ -2,6 +2,7 @@ module DGamma.R6MixedScheduleNegative
 
 import DGamma.Calculus
 import DGamma.CP3
+import DGamma.CP5UniqueRawNameInsertions
 import DGamma.CP5ConfluenceCanonicalSortSpike
 import DGamma.CP5ConfluenceCrossTraceSpike
 import Decidable.Equality
@@ -18,6 +19,8 @@ import Decidable.Equality
   {sameInputs : SameOrchestrationModuloGenerated nameEq keyEq leftTrace rightTrace} ->
   (leftCapital, otherLeft : IndependentCanonicalSchedule name key world error value protocol nameEq keyEq leftTrace) ->
   (rightCapital : IndependentCanonicalSchedule name key world error value protocol nameEq keyEq rightTrace) ->
+  (0 leftUnique : UniqueRawNameInsertions name key world error value nameEq keyEq leftTrace) ->
+  (0 rightUnique : UniqueRawNameInsertions name key world error value nameEq keyEq rightTrace) ->
   {matching : MappedCanonicalSupportOrders name key world error value protocol nameEq keyEq leftTrace rightTrace
     (currentNameBijection (endpointRenaming sameInputs))
     (canonicalSchedule leftCapital) (canonicalSchedule rightCapital)} ->
@@ -29,6 +32,6 @@ import Decidable.Equality
     (generatedRegistrationTree sameInputs)
     (currentNameBijection (endpointRenaming sameInputs))
 mixedLeftSchedule {nameEq} {keyEq} {protocol} {leftTrace} {rightTrace} {sameInputs}
-  leftCapital otherLeft rightCapital convergence =
+  leftCapital otherLeft rightCapital leftUnique rightUnique convergence =
     originalEndpointsConvergeSpike nameEq keyEq protocol leftTrace rightTrace
-      sameInputs otherLeft rightCapital convergence
+      sameInputs otherLeft rightCapital leftUnique rightUnique convergence
