@@ -443,3 +443,34 @@ retiredLifecycleSource name key world error value nameEq keyEq action lifecycle 
         (targetFiber ** (targetFound, flagsSame)) =>
           (sourceFiber ** (sourceFound, trans (sym flagsSame)
             (trans (cong retired (justInjective (trans (sym targetFound) found))) retiredTrue)))
+
+||| Exact operational cause: a retired target either was already retired or
+||| THIS action was its ORetire. Insert/remove cases are authentically excluded.
+export
+0 retiredOwnerStepCause :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (action : Action name key value world error) ->
+  (before, afterState : SystemState name key value world error) -> (tag : RuleTag) ->
+  (applyAction @{nameEq} @{keyEq} action before = Just (tag, afterState)) ->
+  (observed : Fiber name key value world error) ->
+  (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+    @{nameEq} (actionOwner action) (registry afterState) = Just observed) -> (retired observed = True) ->
+  Either (action = ORetire (actionOwner action))
+    (sourceFiber : Fiber name key value world error **
+      (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+        @{nameEq} (actionOwner action) (registry before) = Just sourceFiber, retired sourceFiber = True))
+retiredOwnerStepCause name key world error value nameEq keyEq (OInsert actor parent component) before afterState tag raw observed found retiredTrue =
+  case trans (cong retired (justInjective (trans (sym (oInsertResultLookup nameEq keyEq actor parent component before afterState tag raw)) found))) retiredTrue of Refl impossible
+retiredOwnerStepCause name key world error value nameEq keyEq (ORetire actor) before afterState tag raw observed found retiredTrue = Left Refl
+retiredOwnerStepCause name key world error value nameEq keyEq (ORemove actor) before afterState tag raw observed found retiredTrue =
+  void (nothingIsNotJust (trans (sym (removeTargetIsAbsent nameEq keyEq actor before afterState tag raw)) found))
+retiredOwnerStepCause name key world error value nameEq keyEq (LBegin actor) before afterState tag raw observed found retiredTrue =
+  Right (retiredLifecycleSource name key world error value nameEq keyEq (LBegin actor) Refl before afterState tag raw observed found retiredTrue)
+retiredOwnerStepCause name key world error value nameEq keyEq (LAdvance actor) before afterState tag raw observed found retiredTrue =
+  Right (retiredLifecycleSource name key world error value nameEq keyEq (LAdvance actor) Refl before afterState tag raw observed found retiredTrue)
+retiredOwnerStepCause name key world error value nameEq keyEq (LDivert actor) before afterState tag raw observed found retiredTrue =
+  Right (retiredLifecycleSource name key world error value nameEq keyEq (LDivert actor) Refl before afterState tag raw observed found retiredTrue)
+retiredOwnerStepCause name key world error value nameEq keyEq (LLeave actor) before afterState tag raw observed found retiredTrue =
+  Right (retiredLifecycleSource name key world error value nameEq keyEq (LLeave actor) Refl before afterState tag raw observed found retiredTrue)
+retiredOwnerStepCause name key world error value nameEq keyEq (LUnload actor) before afterState tag raw observed found retiredTrue =
+  Right (retiredLifecycleSource name key world error value nameEq keyEq (LUnload actor) Refl before afterState tag raw observed found retiredTrue)
