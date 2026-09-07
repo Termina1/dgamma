@@ -6203,6 +6203,9 @@ childRetirementAtGeneratedParts protocol nameEq keyEq global child parent
         discipline)
       unload
 
+||| R178 coverage API: existing discipline/provenance lemma only.
+||| This does not call the frozen deletion theorem or prove O21 withdrawals.
+export
 0 childRetirementAtGeneratedOccurrence :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   (protocol : RegistrationProtocol key value world error) ->
