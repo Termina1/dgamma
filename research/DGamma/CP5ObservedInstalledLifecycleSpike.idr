@@ -61,3 +61,19 @@ inspectInstalledCutObserved name key world error value nameEq actor state
   found = Just (MkInstalledCutObservation
     (MkFiber component parent retiredFlag table (Unloading accumulator view outcome))
     found (Unloading accumulator view outcome) Refl Refl)
+
+||| Installation is now ONLY a projection of the observed value and its two
+||| equations; it never asks Idris to convert a guessed accumulator to a stored one.
+public export
+0 installedFromCutObservation :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (actor : name) ->
+  (state : SystemState name key value world error) ->
+  InstalledCutObservation name key world error value nameEq actor state ->
+  installedAt {name = name} {key = key} {value = value} {world = world}
+    {error = error} @{nameEq} actor state = True
+installedFromCutObservation name key world error value nameEq actor state observed =
+  trans (installedAtFound nameEq actor state (observedInstalledFiber observed)
+    (observedInstalledLookup observed))
+    (trans (cong installed (observedInstalledLifecycleEquation observed))
+      (observedLifecycleInstalled observed))
