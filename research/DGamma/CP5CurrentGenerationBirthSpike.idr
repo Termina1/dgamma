@@ -443,3 +443,14 @@ currentResultOwnerMaybe name key world error value nameEq actor argument (Just i
     (case observed of Left item => onFailure item; Right item => onSuccess item)
 currentResultOwnerEither name key world error value nameEq actor failure success (Left item) onFailure onSuccess leftValid rightValid = leftValid item
 currentResultOwnerEither name key world error value nameEq actor failure success (Right item) onFailure onSuccess leftValid rightValid = rightValid item
+
+0 currentResultOwnerReplace :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) ->
+  (actor : name) -> (source : Registry name key value world error) ->
+  (old, next : Fiber name key value world error) ->
+  (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+    @{nameEq} actor source = Just old) -> (ambient : world) -> (tag : RuleTag) ->
+  CurrentResultOwner name key world error value nameEq actor
+    (Just (tag, MkSystemState ambient (replaceBinding @{nameEq} actor next source)))
+currentResultOwnerReplace name key world error value nameEq actor source old next found ambient tag =
+  (next ** lookupReplacedFiber @{nameEq} actor old next source found)
