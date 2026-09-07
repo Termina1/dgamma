@@ -215,3 +215,11 @@ same pre-left cut. This is a first-step probe, not an assumed ViewRelatedBy or
 local diamond. R181 pairedActualResolvedViews remains the separately derived
 successful-resolution relation for the later diamond construction; neither its
 premises nor arbitrary-candidate success are assumed by this probe.
+
+B-probe-1 PASS3.116s (17:47:16UTC), single top-level declaration, zero retries.
+It derives actual BeginStep pair at the common cut from the exact R179 witness
+and intrinsic left opening. Source and its two TTC/TTM files removed; cleanup
+manifest committed. Exact source/log/metadata remain ONLY in evidence archive.
+No disposable declaration retained and no O19 body edit yet. This establishes
+only the new first-step boundary; remaining crossings/bundle/ranges still need
+producer-owned construction, not an oracle premise.

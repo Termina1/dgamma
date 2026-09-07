@@ -1,0 +1,9 @@
+{
+  "removed": [
+    "research/DGamma/R182O19EarlyApplicationProbe.idr",
+    "build/ttc/2025081600/DGamma/R182O19EarlyApplicationProbe.ttc",
+    "build/ttc/2025081600/DGamma/R182O19EarlyApplicationProbe.ttm"
+  ],
+  "onlyOneInvocation": true,
+  "passed": true
+}

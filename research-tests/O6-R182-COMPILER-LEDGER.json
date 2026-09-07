@@ -1051,5 +1051,34 @@
     "symbol": null,
     "transcript": "",
     "matchingSourceCommits": []
+  },
+  {
+    "unit": "B-probe-1",
+    "path": "research/DGamma/R182O19EarlyApplicationProbe.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/R182O19EarlyApplicationProbe.idr"
+    ],
+    "start": "2026-09-07T17:47:13.349684+00:00",
+    "end": "2026-09-07T17:47:16.466298+00:00",
+    "seconds": 3.1164323328994215,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 3009440,
+    "sourceSHA256": "b65c95f71b79c704307bc37b3523b47c3c711666aa0b7089cf1852fd29800531",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "29/29: Building DGamma.R182O19EarlyApplicationProbe (research/DGamma/R182O19EarlyApplicationProbe.idr)\n",
+    "newTopLevelDeclarations": [
+      "r182BothOpeningsAtCommonCut"
+    ],
+    "matchingSourceCommits": []
   }
 ]
