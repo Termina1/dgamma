@@ -89,3 +89,8 @@ record GeneratedOrchestrationMatched
     (LT (locatedActionOrdinal (generatedOccurrence earlier)) (locatedActionOrdinal (generatedOccurrence later))) ->
     (LT (locatedActionOrdinal (generatedOccurrence (generatedForward earlier)))
       (locatedActionOrdinal (generatedOccurrence (generatedForward later))))
+  0 generatedOrderReflected :
+    (earlier, later : LocatedGeneratedOrchestration name key world error value nameEq rightTrace) ->
+    (LT (locatedActionOrdinal (generatedOccurrence earlier)) (locatedActionOrdinal (generatedOccurrence later))) ->
+    (LT (locatedActionOrdinal (generatedOccurrence (generatedBackward earlier)))
+      (locatedActionOrdinal (generatedOccurrence (generatedBackward later))))
