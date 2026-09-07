@@ -129,3 +129,31 @@ rawUnretiredPropertyTrace name key world error value nameEq keyEq property globa
     @{nameEq} selected (registry state) = Just otherFiber) -> (retired otherFiber = False) -> Void
 retiredLookupCannotBeUnretired name key world error value nameEq selected state retiredFiber otherFiber found retiredTrue otherFound otherFalse =
   case trans (sym retiredTrue) (trans (cong retired (justInjective (trans (sym found) otherFound))) otherFalse) of Refl impossible
+
+||| Resurrection of a retired name requires an ACTUAL later insertion.
+||| No uniqueness is assumed here, so legal remove/reinsert traces are allowed.
+export
+0 unretiredAfterRetiredHasBirth :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {first, finalState : SystemState name key value world error} ->
+  (trace : Transitions first finalState) -> AlignedTransitions name key world error value nameEq keyEq trace ->
+  (selected : name) -> (retiredFiber, finalFiber : Fiber name key value world error) ->
+  (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+    @{nameEq} selected (registry first) = Just retiredFiber) -> (retired retiredFiber = True) ->
+  (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+    @{nameEq} selected (registry finalState) = Just finalFiber) -> (retired finalFiber = False) ->
+  (parent : Parent name ** component : Component key value world error **
+    LocatedActionOccurrence (OInsert selected parent component) trace)
+unretiredAfterRetiredHasBirth name key world error value nameEq keyEq {first} trace aligned selected
+  retiredFiber finalFiber retiredFound retiredTrue finalFound finalFalse =
+    rawUnretiredPropertyTrace name key world error value nameEq keyEq
+      (\wanted => (wanted = selected) -> (parent : Parent name ** component : Component key value world error **
+        LocatedActionOccurrence (OInsert wanted parent component) trace)) trace trace aligned
+      (\action, occurrence => occurrence)
+      (\wanted, parent, component, birth, same => (parent ** component ** birth))
+      (\wanted, fiber, found, unretired, same => void
+        (retiredLookupCannotBeUnretired name key world error value nameEq selected first retiredFiber fiber retiredFound retiredTrue
+          (replace {p = \actor => (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+            @{nameEq} actor (registry first) = Just fiber)} same found) unretired))
+      selected finalFiber finalFound finalFalse Refl
