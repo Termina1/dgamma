@@ -97,3 +97,15 @@ rankLiftProgress head source
          sym (plusSuccRightSucc
            (foldr (+) Z (map (rankCrossing head) (prior ++ right :: left :: suffix)))
            (rankInversions (prior ++ right :: left :: suffix))))
+
+||| Select the first rank descent while building its global decrease packet.
+||| Nothing is a blocked/no-descent observation, not a canonical-form proof.
+export
+rankSelectProgress : (source : List Nat) -> Maybe (RankedAdjacentProgress source)
+rankSelectProgress [] = Nothing
+rankSelectProgress [single] = Nothing
+rankSelectProgress (left :: right :: suffix) =
+  case decEq (rankCrossing left right) 1 of
+    Yes crossed => Just (rankHeadProgress left right suffix crossed)
+    No notDescending => map (rankLiftProgress left (right :: suffix))
+      (rankSelectProgress (right :: suffix))
