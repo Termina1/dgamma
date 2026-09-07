@@ -7,6 +7,7 @@ import DGamma.Metatheory
 import DGamma.CP3
 import DGamma.CP4DeletionFrameCore
 import DGamma.CP4RecoveryAccumulator
+import DGamma.CP4DeletionSelectedForeignLifecycleAnchorOpen
 import DGamma.CP5ConfluenceRenamingCompositionSpike
 import DGamma.CP5O20EpisodeSynchronizationSpike
 import Data.List.Elem
@@ -407,3 +408,30 @@ pairedSuccessfulOutcome name key world error value keyEq renaming deps provision
         views leftResolved rightResolved) rightRun) of
       Refl => (Refl, synchronizationPushedUndo key world error value keyEq provision
         leftOlder rightOlder rightAfter rightAfter rightUndo rightUndo older Refl)
+
+||| Observed lookup provenance for a nonempty projected provider table.
+||| The actual Maybe lookup is supplied by the producer; Nothing contradicts
+||| the observed value. No Active/installed flag is guessed from table data.
+export
+0 pairedTableOwnerObserved :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (owner : name) -> (wanted : key) ->
+  (fibers : Registry name key value world error) ->
+  (observed : Maybe (Fiber name key value world error)) ->
+  (lookupFiber {name = name} {key = key} {value = value} {world = world}
+    {error = error} @{nameEq} owner fibers = observed) ->
+  (provided : value wanted) ->
+  (lookupBinding {key = key} {value = value} @{keyEq} wanted
+    (case observed of Nothing => emptyContext
+                      Just fiber => ownedValues (fiberTable fiber)) = Just provided) ->
+  (fiber : Fiber name key value world error **
+    ((lookupFiber {name = name} {key = key} {value = value} {world = world}
+      {error = error} @{nameEq} owner fibers = Just fiber),
+     Elem wanted (dependencies (componentProvisions (fiberComponent fiber)))))
+pairedTableOwnerObserved name key world error value nameEq keyEq owner wanted fibers
+  Nothing found provided present = void (nothingIsNotJust present)
+pairedTableOwnerObserved name key world error value nameEq keyEq owner wanted fibers
+  (Just fiber) found provided present =
+    (fiber ** (found, ownedSound (fiberTable fiber) wanted
+      (lookupJustElem @{keyEq} wanted (bindings (ownedValues (fiberTable fiber)))
+        provided present)))
