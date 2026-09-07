@@ -109,3 +109,22 @@ o19ReplayedSuffixAligned {name} {key} {world} {error} {value}
         (MoreTransitions (movedRight diamond) (MoreTransitions (movedLeft diamond) (replayedSuffix result)))
         (replace {p = AlignedTransitions name key world error value nameEq keyEq}
           (swappedDecomposition result) (replayAligned (swappedPremises result))))))
+
+||| B30: structural composition of ACTUAL sealed-node derivations. The
+||| intermediate trace is shared by the indices; no endpoint-only shortcut.
+public export
+0 o19AppendFinite :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {protocol : RegistrationProtocol key value world error} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {initial, sourceFinal, middleFinal, targetFinal : SystemState name key value world error} ->
+  {source : Transitions initial sourceFinal} -> {middleTrace : Transitions initial middleFinal} ->
+  {target : Transitions initial targetFinal} ->
+  FiniteAdjacentSwapDerivation name key world error value protocol nameEq keyEq source middleTrace ->
+  FiniteAdjacentSwapDerivation name key world error value protocol nameEq keyEq middleTrace target ->
+  FiniteAdjacentSwapDerivation name key world error value protocol nameEq keyEq source target
+o19AppendFinite FiniteAdjacentSwapDone next = next
+o19AppendFinite {target}
+  (FiniteAdjacentSwapStep original earlier left right later orientation diamond result _ rest) next =
+    FiniteAdjacentSwapStep original earlier left right later orientation diamond result target
+      (o19AppendFinite rest next)
