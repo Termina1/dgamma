@@ -121,3 +121,26 @@ r178R174AnnotatedPrefix {first} (S count) (MoreTransitions step rest) =
     (middle ** prior ** later ** (decomposition, annotations)) =>
       (middle ** MoreTransitions step prior ** later **
         (cong (MoreTransitions step) decomposition, AvailabilityStep first step prior annotations))
+
+||| Scalar observations over the ACTUAL root action and authenticated prefix:
+||| root=2; prefix length=5; lifecycle at1; removal of1 at4; snapshot free at1;
+||| then compatible cuts0..5. No EarliestAvailableRootBirth is claimed here.
+export
+0 r178R174ScalarIntervalShape :
+  ((case rawClosingActionAt Nat ToyKey ToyRuntime String ToyValue 5 (certifiedTrace r174ProvisionExecution) of
+    Just (OInsert root Root component) =>
+      case r178R174AnnotatedPrefix 5 (certifiedTrace r174ProvisionExecution) of
+        (middle ** prior ** later ** (decomposition, annotations)) =>
+          [root == 2, transitionCount prior == 5,
+           (case rawClosingActionAt Nat ToyKey ToyRuntime String ToyValue 1 prior of Just action => isLifecycleAction action; Nothing => False),
+           (case rawClosingActionAt Nat ToyKey ToyRuntime String ToyValue 4 prior of Just (ORemove 1) => True; _ => False),
+           (case annotations of AvailabilityStep _ _ _ (AvailabilityStep early _ _ _) => rootDeclaredProvisionsFree Nat ToyKey ToyRuntime String ToyValue %search component early; _ => False),
+           rootCutCompatible Nat ToyKey ToyRuntime String ToyValue %search %search component 0 annotations,
+           rootCutCompatible Nat ToyKey ToyRuntime String ToyValue %search %search component 1 annotations,
+           rootCutCompatible Nat ToyKey ToyRuntime String ToyValue %search %search component 2 annotations,
+           rootCutCompatible Nat ToyKey ToyRuntime String ToyValue %search %search component 3 annotations,
+           rootCutCompatible Nat ToyKey ToyRuntime String ToyValue %search %search component 4 annotations,
+           rootCutCompatible Nat ToyKey ToyRuntime String ToyValue %search %search component 5 annotations]
+    _ => []) =
+    [True, True, True, True, True, False, False, False, False, False, True])
+r178R174ScalarIntervalShape = Refl
