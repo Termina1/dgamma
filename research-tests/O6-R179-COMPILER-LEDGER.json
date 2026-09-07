@@ -2161,5 +2161,402 @@
     "symbol": null,
     "transcript": "",
     "matchingSourceCommits": []
+  },
+  {
+    "unit": "F1-1",
+    "path": "research/DGamma/CP5O20SupportedEndpointCapitalSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O20SupportedEndpointCapitalSpike.idr"
+    ],
+    "start": "2026-09-07T10:58:50.261518+00:00",
+    "end": "2026-09-07T10:58:53.415036+00:00",
+    "seconds": 3.1533235828392208,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 4179856,
+    "sourceSHA256": "1f7d5c065d4bfec6665e5544aff59eb37af18508074093502447facbe16abbcc",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "28/28: Building DGamma.CP5O20SupportedEndpointCapitalSpike (research/DGamma/CP5O20SupportedEndpointCapitalSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "canonicalSupportedTruthFromOriginal"
+    ],
+    "matchingSourceCommits": [
+      "6bedece12b38a46b2aa8b5116721cdc4fcfa786a"
+    ]
+  },
+  {
+    "unit": "F2-1",
+    "path": "research/DGamma/CP5O20SupportedEndpointCapitalSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O20SupportedEndpointCapitalSpike.idr"
+    ],
+    "start": "2026-09-07T10:59:17.867471+00:00",
+    "end": "2026-09-07T10:59:21.004124+00:00",
+    "seconds": 3.1364560411311686,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 3006656,
+    "sourceSHA256": "6fb3df93115bd1568deb3bf51948ec291e46faa5bee6e950ef567a6f221a8b0d",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "28/28: Building DGamma.CP5O20SupportedEndpointCapitalSpike (research/DGamma/CP5O20SupportedEndpointCapitalSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "SupportedCanonicalEndpointView"
+    ],
+    "matchingSourceCommits": [
+      "9225bc39700244530f6ff73a76693b4bc9f777e9"
+    ]
+  },
+  {
+    "unit": "F3-1",
+    "path": "research/DGamma/CP5O20SupportedEndpointCapitalSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O20SupportedEndpointCapitalSpike.idr"
+    ],
+    "start": "2026-09-07T11:00:03.665734+00:00",
+    "end": "2026-09-07T11:00:06.788018+00:00",
+    "seconds": 3.122082917019725,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 2880816,
+    "sourceSHA256": "44237e0701787af2f57dd2846e786cd63355642436f669dd5f809f16f883658b",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "28/28: Building DGamma.CP5O20SupportedEndpointCapitalSpike (research/DGamma/CP5O20SupportedEndpointCapitalSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "canonicalSupportedEndpointView"
+    ],
+    "matchingSourceCommits": [
+      "8e0836eac9d8dca31ba4d117468a2da03657d513"
+    ]
+  },
+  {
+    "unit": "F4-1",
+    "path": "research/DGamma/CP5O20SupportedEndpointCapitalSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O20SupportedEndpointCapitalSpike.idr"
+    ],
+    "start": "2026-09-07T11:00:28.813478+00:00",
+    "end": "2026-09-07T11:00:31.933456+00:00",
+    "seconds": 3.1197792501188815,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 3006624,
+    "sourceSHA256": "5eb06c50e37551e011ac95c1f627a61ffaec764c4817281d00e45e294fef32aa",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "28/28: Building DGamma.CP5O20SupportedEndpointCapitalSpike (research/DGamma/CP5O20SupportedEndpointCapitalSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "canonicalPresentOutsideWithdrawals"
+    ],
+    "matchingSourceCommits": [
+      "59d120d2e4dd21bb4c68650ed678ab337503666c"
+    ]
+  },
+  {
+    "unit": "F5-1",
+    "path": "research/DGamma/CP5O20SupportedEndpointCapitalSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O20SupportedEndpointCapitalSpike.idr"
+    ],
+    "start": "2026-09-07T11:00:58.979745+00:00",
+    "end": "2026-09-07T11:01:02.115465+00:00",
+    "seconds": 3.135514125227928,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 3002448,
+    "sourceSHA256": "dc9d2f19f51865fcecfd193bd5d3bb8089bd7d2d7e0f3bc3bfa2c78c65d5c941",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "28/28: Building DGamma.CP5O20SupportedEndpointCapitalSpike (research/DGamma/CP5O20SupportedEndpointCapitalSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "canonicalSupportedOriginalControl"
+    ],
+    "matchingSourceCommits": [
+      "d3aceb6e1201c7274ad75002bbc76cf552e50b21"
+    ]
+  },
+  {
+    "unit": "F6-1",
+    "path": "research/DGamma/CP5O20SupportedEndpointCapitalSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O20SupportedEndpointCapitalSpike.idr"
+    ],
+    "start": "2026-09-07T11:01:37.120384+00:00",
+    "end": "2026-09-07T11:01:40.255502+00:00",
+    "seconds": 3.1349512501619756,
+    "exit": 1,
+    "fresh": true,
+    "passed": false,
+    "interrupted": false,
+    "maxSampleRSSKiB": 766544,
+    "sourceSHA256": "230f6f10ec5b210916e84c29c992a7fe2fd2f57f80d2e867ec0b460449b0f14e",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "28/28: Building DGamma.CP5O20SupportedEndpointCapitalSpike (research/DGamma/CP5O20SupportedEndpointCapitalSpike.idr)\nError: While processing type of activeFiberViewDomain. Can't bind implicit DGamma.CP5O20SupportedEndpointCapitalSpike.{value:5387} of type ({arg:11068} : key[11]) -> Type\n\nDGamma.CP5O20SupportedEndpointCapitalSpike:120:1--134:128\n 120 | ||| Reify the actual Active accumulator/view and retain its actual registry\n 121 | ||| domain proof. No two accumulators or provider names are compared here.\n 122 | export\n 123 | 0 activeFiberViewDomain :\n 124 |   (name, key, world, error : Type) -> (value : key -> Type) ->\n 125 |   (nameEq : DecEq name) -> (keyEq : DecEq key) ->\n\nError: No type declaration for DGamma.CP5O20SupportedEndpointCapitalSpike.activeFiberViewDomain.\n\nDGamma.CP5O20SupportedEndpointCapitalSpike:135:1--136:95\n 135 | activeFiberViewDomain name key world error value nameEq keyEq\n 136 |   (MkFiber component parent retiredFlag table (Inactive outcome)) fibers Refl valid impossible\n\n",
+    "newTopLevelDeclarations": [
+      "activeFiberViewDomain"
+    ],
+    "matchingSourceCommits": []
+  },
+  {
+    "unit": "F6-2",
+    "path": "research/DGamma/CP5O20SupportedEndpointCapitalSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O20SupportedEndpointCapitalSpike.idr"
+    ],
+    "start": "2026-09-07T11:02:10.375175+00:00",
+    "end": "2026-09-07T11:02:14.535141+00:00",
+    "seconds": 4.159743917174637,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 3002432,
+    "sourceSHA256": "b7724b9b11d351b01647283f05f4bb1b8d1dbd50422032697bf96c18acdfdad1",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "28/28: Building DGamma.CP5O20SupportedEndpointCapitalSpike (research/DGamma/CP5O20SupportedEndpointCapitalSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "activeFiberViewDomain"
+    ],
+    "matchingSourceCommits": [
+      "8b37255c9d011b84a6833fe6b3b95d35e3d537ee"
+    ]
+  },
+  {
+    "unit": "F7-1",
+    "path": "research/DGamma/CP5O20SupportedEndpointCapitalSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O20SupportedEndpointCapitalSpike.idr"
+    ],
+    "start": "2026-09-07T11:02:49.798903+00:00",
+    "end": "2026-09-07T11:02:53.984188+00:00",
+    "seconds": 4.185081833973527,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 3002432,
+    "sourceSHA256": "88c0ebe49a1319591364dfd76dfbbadf40f0dbfef32dc0cd235081f275353a72",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "28/28: Building DGamma.CP5O20SupportedEndpointCapitalSpike (research/DGamma/CP5O20SupportedEndpointCapitalSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "supportedCanonicalCommittedView"
+    ],
+    "matchingSourceCommits": [
+      "75758e9e9ee0b51065f423f0d1037b4a475ff53e"
+    ]
+  },
+  {
+    "unit": "F8-1",
+    "path": "research/DGamma/CP5O20SupportedEndpointCapitalSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O20SupportedEndpointCapitalSpike.idr"
+    ],
+    "start": "2026-09-07T11:04:17.958221+00:00",
+    "end": "2026-09-07T11:04:22.132581+00:00",
+    "seconds": 4.17419366678223,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 3002352,
+    "sourceSHA256": "19e4641f4c613caecb419e3de3a435a88f42adb2e2ac754ca478aa2a648e7b26",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "28/28: Building DGamma.CP5O20SupportedEndpointCapitalSpike (research/DGamma/CP5O20SupportedEndpointCapitalSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "canonicalControlStaticFields"
+    ],
+    "matchingSourceCommits": [
+      "5159e0f9c450a7379b6b1b86afaa69760447460a"
+    ]
+  },
+  {
+    "unit": "F9-1",
+    "path": "research/DGamma/CP5O20SupportedEndpointCapitalSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O20SupportedEndpointCapitalSpike.idr"
+    ],
+    "start": "2026-09-07T11:04:56.083123+00:00",
+    "end": "2026-09-07T11:04:59.199404+00:00",
+    "seconds": 3.116062708199024,
+    "exit": 1,
+    "fresh": true,
+    "passed": false,
+    "interrupted": false,
+    "maxSampleRSSKiB": 766496,
+    "sourceSHA256": "5c832da22332fde9686fd855cb0b0196e7c38e67acf0a73ad31c0a7c07d43db4",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "28/28: Building DGamma.CP5O20SupportedEndpointCapitalSpike (research/DGamma/CP5O20SupportedEndpointCapitalSpike.idr)\nError: While processing right hand side of originalThroughCanonicalReplayEffects. Name DGamma.Metatheory.effectStateTransitive is private.\n\nDGamma.CP5O20SupportedEndpointCapitalSpike:196:3--196:24\n 192 |   RelationalReplayEndpoint name key world error value nameEq keyEq\n 193 |     (canonicalFinal (canonicalSchedule capital)) replayedFinal ->\n 194 |   EffectStateRelated keyEq (projectEffectState @{nameEq} finalState) (projectEffectState @{nameEq} replayedFinal)\n 195 | originalThroughCanonicalReplayEffects name key world error value nameEq keyEq protocol original capital replay =\n 196 |   effectStateTransitive keyEq (endpointEffectsEquivalent (canonicalEndpoint (canonicalSchedule capital)))\n         ^^^^^^^^^^^^^^^^^^^^^\n\nSuggestion: add an explicit export or public export modifier. By default, all names are private in namespace blocks.\n",
+    "newTopLevelDeclarations": [
+      "originalThroughCanonicalReplayEffects"
+    ],
+    "matchingSourceCommits": []
+  },
+  {
+    "unit": "F9-2",
+    "path": "research/DGamma/CP5O20SupportedEndpointCapitalSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O20SupportedEndpointCapitalSpike.idr"
+    ],
+    "start": "2026-09-07T11:05:16.830726+00:00",
+    "end": "2026-09-07T11:05:21.007038+00:00",
+    "seconds": 4.176132332999259,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 3004448,
+    "sourceSHA256": "afe548edeceacce53809633c972d6b8391dfed0607aa24831062893c0dfd717e",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "28/28: Building DGamma.CP5O20SupportedEndpointCapitalSpike (research/DGamma/CP5O20SupportedEndpointCapitalSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "originalThroughCanonicalReplayEffects"
+    ],
+    "matchingSourceCommits": [
+      "5f2aeff73d9ae0cf9f8c9c27d3f9c4cd95438eee"
+    ]
+  },
+  {
+    "unit": "F10-1",
+    "path": "research/DGamma/CP5O20SupportedEndpointCapitalSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O20SupportedEndpointCapitalSpike.idr"
+    ],
+    "start": "2026-09-07T11:05:44.528064+00:00",
+    "end": "2026-09-07T11:05:49.712540+00:00",
+    "seconds": 5.184220958966762,
+    "exit": 1,
+    "fresh": true,
+    "passed": false,
+    "interrupted": false,
+    "maxSampleRSSKiB": 719888,
+    "sourceSHA256": "2649150060d18719584057bf670b8a72fe1c77536f474439b3f391699b5fc532",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "28/28: Building DGamma.CP5O20SupportedEndpointCapitalSpike (research/DGamma/CP5O20SupportedEndpointCapitalSpike.idr)\nError: While processing type of originalSupportedThroughCanonicalReplayControls. Can't bind implicit DGamma.CP5O20SupportedEndpointCapitalSpike.{value:6206} of type ({arg:22545} : ?DGamma.CP5O20SupportedEndpointCapitalSpike.{key:6203}_[name[15], key[14], world[13], error[12], value[11], nameEq[10], keyEq[9], protocol[8], initial[7], finalState[6], replayedFinal[5], original[4], capital[3], {arg:6163}[2], selected[1], {arg:6191}[0]]) -> Type\n\nDGamma.CP5O20SupportedEndpointCapitalSpike:202:1--216:62\n 202 | ||| Full supported same-name controls through the SAME canonicalization and\n 203 | ||| its actual replay relation. This is not cross-canonical control convergence.\n 204 | export\n 205 | 0 originalSupportedThroughCanonicalReplayControls :\n 206 |   (name, key, world, error : Type) -> (value : key -> Type) ->\n 207 |   (nameEq : DecEq name) -> (keyEq : DecEq key) ->\n\nError: No type declaration for DGamma.CP5O20SupportedEndpointCapitalSpike.originalSupportedThroughCanonicalReplayControls.\n\nDGamma.CP5O20SupportedEndpointCapitalSpike:217:1--224:62\n 217 | originalSupportedThroughCanonicalReplayControls name key world error value nameEq keyEq protocol original capital replay selected supported =\n 218 |   case canonicalSupportedEndpointView name key world error value nameEq keyEq protocol original capital selected supported of\n 219 |     MkSupportedCanonicalEndpointView fiber found truth active notRetired domain =>\n 220 |       fiberControlMaybeTransitive\n 221 |         (endpointControlsOutside (canonicalEndpoint (canonicalSchedule capital)) selected\n 222 |           (canonicalPresentOutsideWithdrawals name key world error value nameEq keyEq finalState\n\n",
+    "newTopLevelDeclarations": [
+      "originalSupportedThroughCanonicalReplayControls"
+    ],
+    "matchingSourceCommits": []
+  },
+  {
+    "unit": "F10-2",
+    "path": "research/DGamma/CP5O20SupportedEndpointCapitalSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O20SupportedEndpointCapitalSpike.idr"
+    ],
+    "start": "2026-09-07T11:06:06.438724+00:00",
+    "end": "2026-09-07T11:06:10.596130+00:00",
+    "seconds": 4.157232291996479,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 3004480,
+    "sourceSHA256": "de506cd1e996c95c10c26e9bb21fc1f18d0210504bd614933e10caa0a8032aa6",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "28/28: Building DGamma.CP5O20SupportedEndpointCapitalSpike (research/DGamma/CP5O20SupportedEndpointCapitalSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "originalSupportedThroughCanonicalReplayControls"
+    ],
+    "matchingSourceCommits": [
+      "5d433e4bece5d42cecb121678daa0d6e9f8d0102"
+    ]
   }
 ]

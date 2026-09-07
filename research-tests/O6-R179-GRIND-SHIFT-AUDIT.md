@@ -432,3 +432,85 @@ All intervals are serialized and the one-new-top-level-declaration rule is
 machine-checked for every invocation. No extra proof unit beyond D12/E8, no
 resurrection of A11/A13 or O17/root body. The first 10:07 validation remains a
 ratified historical prefix, not mislabeled as this later final validation.
+
+## 10:47–10:50 supervisor redirect F/G (D/E ratified; handoff deferred)
+
+Supervisor ratified D/E at76ac441, then authorized F≤10 and conditional G≤8
+(≥45min before12:30 remains after F). On an explicit semantic gate, F was
+redirected to supported CANONICAL endpoint static/Active/nonretired/view-domain
+capital and exact one-sided canonical/replay transport. Ambient equality has
+NO name-wise supported subdomain. Full cross-canonical Active control requires
+AccumulatorRelated and ViewRelatedBy; accepted metadata does NOT supply them.
+No such output-shaped premises may be added. The missing synchronized-execution
+frontier must be recorded precisely, rather than claiming these three clauses.
+
+G may expose a private CanonicalSort observation helper with a visibility-only
+change and a fresh CanonicalSort check. Computational reduction consumers require
+justifying `public export`; otherwise `export`. This is an explicit exception to
+this shift's prior whole-file byte freeze, NOT permission to modify hole bodies,
+protected declarations or LocalDiamond. No further A attempts were authorized.
+
+## F completed at11:06 UTC: canonical endpoint and one-sided transport capital
+
+Companion `research/DGamma/CP5O20SupportedEndpointCapitalSpike.idr`:
+
+| Unit | Declaration | Verdict / commit |
+|---|---|---|
+| F1 | `canonicalSupportedTruthFromOriginal` | PASS1 / 6bedece |
+| F2 | `SupportedCanonicalEndpointView` | PASS1 / 9225bc3 |
+| F3 | `canonicalSupportedEndpointView` | PASS1 / 8e0836e |
+| F4 | `canonicalPresentOutsideWithdrawals` | PASS1 / 59d120d |
+| F5 | `canonicalSupportedOriginalControl` | PASS1 / d3aceb6 |
+| F6 | `activeFiberViewDomain` | PASS2 / 8b37255 |
+| F7 | `supportedCanonicalCommittedView` | PASS1 / 75758e9 |
+| F8 | `canonicalControlStaticFields` | PASS1 / 5159e0f |
+| F9 | `originalThroughCanonicalReplayEffects` | PASS2 / 5f2aeff |
+| F10 | `originalSupportedThroughCanonicalReplayControls` | PASS2 / 5d433e4 |
+
+F3 derives actual canonical support, lookup, Active and nonretired facts and its
+actual registry's view-domain invariant. F7 exposes the exact Active accumulator
+and committed view with `viewBindingsInvariant=True`: stable providers AND a
+resolvable committed-coeffect value tuple. It does not equate two views/values.
+F4 ELIMINATES a withdrawal already certified by `CanonicalEndpointRelation` using
+its canonical-absence equation and actual canonical presence. It does not
+construct an O21 absent/present generation withdrawal branch. F5 recovers the
+actual ORIGINAL counterpart and full same-name control relation; F8 projects its
+component/parent/retirement equalities. These are stronger one-trace consequences
+and require neither original insertion uniqueness nor A9, unlike D's bilateral
+supported birth triangle. No claim that F consumes A9 is made.
+
+F9 composes GLOBAL original→own-canonical→actual-relational-replay effect
+agreement (ambient plus every ordered binding list). F10 composes full same-name
+controls on ORIGINAL-SUPPORTED names, deriving withdrawal exclusion from F3's
+actual lookup. The `RelationalReplayEndpoint` operand is a conditional consumer
+of existing replay output, not a constructed operational permutation, and no
+right canonical schedule appears. Neither is the replay→RIGHT R147 clause.
+
+All10 units completed in13 attempts. F6-1 and F10-1 rejected unconstrained
+phantom value/type implicits; explicit dictionaries/type indices repaired their
+second attempts. F9-1 rejected private `Metatheory.effectStateTransitive`; F9-2
+composes exported record fields directly, leaving production visibility exact.
+Every successful source immediately committed. No exhaustions or interruptions.
+
+### Exact O20 synchronization frontier after F
+
+Missing proposed lemma **SupportedCanonicalEpisodeSynchronization** (a research
+frontier name, NOT a new Idris declaration): from the unchanged O20 telescope
+(accepted `sameInputs`, each original's unique insertions, A9, actual canonical
+capitals and selected operational replay), induct over the MATCHED supported
+actor episodes of that actual replay and the right canonical trace, using the
+constructor-owned `expectedBridgeBijection sameInputs`. At each pair of actual
+prefix cuts it must PRODUCE renamed runtime-effect agreement (global ambient and
+ordered table bindings), matched actual dependency views/resolved values, and
+pointwise accumulated-undo relation. Matching Begin requires equality of the
+resolved inputs; matching Advance/Finish must propagate the relation through the
+same component program and its actual effect/inverse generators. D supplies
+supported child/parent/component/generation origins, F supplies well-formed,
+Active, nonretired actual endpoints and ONE-sided transport; neither provides
+this cross-prefix synchronized execution invariant. Taking these paired-cut or
+final semantic conclusions as premises would only relocate the O20 hole.
+Ambient is global, NOT name-wise restricted; supported table/control agreement
+still needs that synchronization. Unsupported generated children remain a
+separate fourth-clause remainder. Full three R147 clauses and O20 body remain0.
+
+F finished11:06, leaving84min before12:30: G's ≥45min eligibility condition holds.
