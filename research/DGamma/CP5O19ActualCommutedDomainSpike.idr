@@ -6,6 +6,8 @@ import DGamma.Coeffects
 import DGamma.Metatheory
 import DGamma.Unified
 import DGamma.CP4DeletionFrameCore
+import DGamma.CP4DeletionFrames
+import DGamma.CP4RecoveryEffectRespect
 import DGamma.CP5O19CommutedDomainSpike
 import Data.Maybe
 import Decidable.Equality
@@ -78,3 +80,37 @@ export
     (partialEffectMapFor nameEq keyEq action tag before (projectEffectState @{nameEq} before))
     (Just (projectEffectState @{nameEq} afterState))
 o19ActualFrameRelated nameEq keyEq action tag before afterState (MkActualEffectFrame related) = related
+
+||| R184 A1: compose the existing A24 kernel and A29/A30 projections.
+||| No generator-map eta conversion or independently reproved A25 body.
+||| The output is the captured RIGHT EFFECT map, not a checked LTS guard.
+export
+0 o19ActualPairEarlyPartialRun :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (leftAction, rightAction : Action name key value world error) ->
+  (leftTag, rightTag : RuleTag) ->
+  (leftChecked : checkedApplyAction @{nameEq} @{keyEq} leftAction first = Just (leftTag, middle)) ->
+  (rightChecked : checkedApplyAction @{nameEq} @{keyEq} rightAction middle = Just (rightTag, finalState)) ->
+  Not (actionOwner leftAction = actionOwner rightAction) ->
+  TraceIndependent name key world error value keyEq
+    (MoreTransitions (Fired {before = first} {afterState = middle} nameEq keyEq leftAction leftTag leftChecked)
+      (MoreTransitions (Fired {before = middle} {afterState = finalState} nameEq keyEq rightAction rightTag rightChecked) NoTransitions)) ->
+  O19PartialRun (EffectState name key value world)
+    (partialEffectMapFor nameEq keyEq rightAction rightTag middle)
+    (projectEffectState @{nameEq} first)
+o19ActualPairEarlyPartialRun {name} {key} {world} {error} {value} {first} {middle} {finalState}
+  nameEq keyEq leftAction rightAction leftTag rightTag leftChecked rightChecked distinct independent =
+    o19CommutingFramesEarlyRun (EffectState name key value world) (EffectStateEquivalence keyEq)
+      (partialEffectMapFor nameEq keyEq leftAction leftTag first)
+      (partialEffectMapFor nameEq keyEq rightAction rightTag middle)
+      (partialEffectMapForRespects nameEq keyEq rightAction rightTag middle)
+      (o19ActualPairMapCommutes nameEq keyEq leftAction rightAction leftTag rightTag
+        leftChecked rightChecked distinct independent)
+      (projectEffectState @{nameEq} first) (projectEffectState @{nameEq} middle)
+      (projectEffectState @{nameEq} finalState)
+      (o19ActualFrameRelated nameEq keyEq leftAction leftTag first middle
+        (actualTransitionEffectFrame nameEq keyEq leftAction leftTag first middle leftChecked))
+      (o19ActualFrameRelated nameEq keyEq rightAction rightTag middle finalState
+        (actualTransitionEffectFrame nameEq keyEq rightAction rightTag middle finalState rightChecked))
