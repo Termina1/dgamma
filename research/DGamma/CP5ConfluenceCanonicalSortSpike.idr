@@ -3816,6 +3816,34 @@ canonicalWorkGroupingActivationOrchestrationExternal name key world error value 
                   (canonicalPaperActivationLifecycle name key world error value (movedLeft diamond)
                     (movedLeftActivationBranch diamond activation))) SameExternalOrchestrationEnd)))
 
+||| Genuine sealed grouping result, not a caller-supplied diamond/early target.
+||| O6 transports registration discipline and the full replay bundle; the exact
+||| source decomposition and external order are derived at this same pair.
+0 canonicalWorkGroupingActivationOrchestrationResult :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) -> (selected : name) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (trace : Transitions initial finalState) ->
+  (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq trace) ->
+  (pair : CanonicalWorkGroupingPair name key world error value selected trace) ->
+  (PaperActivationStep (workPairLeft pair)) -> (PaperOrchestrationStep (workPairRight pair)) ->
+  (diamond : LocalRelationalDiamond name key world error value nameEq keyEq (workPairLeft pair) (workPairRight pair) **
+    (AdjacentSwapResult name key world error value protocol nameEq keyEq trace
+      (workPairPrefix pair) (workPairLeft pair) (workPairRight pair) (workPairSuffix pair) diamond))
+canonicalWorkGroupingActivationOrchestrationResult name key world error value nameEq keyEq protocol selected
+  trace premises pair activation orchestration =
+    (canonicalWorkGroupingActivationOrchestrationDiamond name key world error value nameEq keyEq protocol selected
+      trace premises pair activation orchestration **
+     adjacentSwapSuffixSpike nameEq keyEq protocol trace (workPairPrefix pair) (workPairLeft pair) (workPairRight pair)
+       (workPairSuffix pair) (workPairDecomposition pair) premises
+       (canonicalWorkGroupingActivationOrchestrationDiamond name key world error value nameEq keyEq protocol selected
+         trace premises pair activation orchestration)
+       (canonicalWorkGroupingActivationOrchestrationExternal name key world error value nameEq keyEq selected
+         trace pair activation orchestration
+         (canonicalWorkGroupingActivationOrchestrationDiamond name key world error value nameEq keyEq protocol selected
+           trace premises pair activation orchestration)))
+
 ||| Bubble actor blocks by repeated `AdjacentSwapResult`s.  The output itself is
 ||| the sorting-specific recursive transport package, rather than only final
 ||| schedule-shaped data.
