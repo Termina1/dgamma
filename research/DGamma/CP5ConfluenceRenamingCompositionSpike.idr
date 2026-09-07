@@ -3116,3 +3116,32 @@ pairingEmbedRemainingMember RemoveListHere member = There member
 pairingEmbedRemainingMember (RemoveListThere removal) Here = Here
 pairingEmbedRemainingMember (RemoveListThere removal) (There member) =
   There (pairingEmbedRemainingMember removal member)
+
+||| Both domain directions of the ACTUAL finite event pairing, with its match.
+0 registrationPairingDomains :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {renaming : RegistrationGenerationBijection name} ->
+  {leftEvents, rightEvents : List (RegistrationEvent name key world error value)} ->
+  RegistrationPairing renaming leftEvents rightEvents ->
+  ( (event : RegistrationEvent name key world error value) -> Elem event leftEvents ->
+      (paired : RegistrationEvent name key world error value **
+        (Elem paired rightEvents, RegistrationEventMatch renaming event paired))
+  , (event : RegistrationEvent name key world error value) -> Elem event rightEvents ->
+      (paired : RegistrationEvent name key world error value **
+        (Elem paired leftEvents, RegistrationEventMatch renaming paired event)))
+registrationPairingDomains RegistrationPairingEnd =
+  (\event, member => absurd member, \event, member => absurd member)
+registrationPairingDomains
+  (RegistrationPairingStep {leftEvent} {rightEvent} matched leftRemoval rightRemoval later) =
+    ( (\event, member => case pairingClassifyMember leftRemoval member of
+        Left same => case same of
+          Refl => (rightEvent ** (pairingRemovedMember rightRemoval, matched))
+        Right kept => case fst (registrationPairingDomains later) event kept of
+          (paired ** (present, exactMatch)) =>
+            (paired ** (pairingEmbedRemainingMember rightRemoval present, exactMatch)))
+    , (\event, member => case pairingClassifyMember rightRemoval member of
+        Left same => case same of
+          Refl => (leftEvent ** (pairingRemovedMember leftRemoval, matched))
+        Right kept => case snd (registrationPairingDomains later) event kept of
+          (paired ** (present, exactMatch)) =>
+            (paired ** (pairingEmbedRemainingMember leftRemoval present, exactMatch))))
