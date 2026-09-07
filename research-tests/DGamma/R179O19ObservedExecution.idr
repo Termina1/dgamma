@@ -30,3 +30,10 @@ r179ObservedProviderBegin = MkSystemState (MkToyRuntime False False)
     (MkFiber providerComponent Root False emptyOwned
       (Reloading [providerInstall, providerFinish] id EmptyView))
     (registry r179ObservedRootSource))
+
+||| Observe the actual iterator output, including its real accumulator/table.
+||| A later exact equation excludes this one-step observer's default branch.
+public export
+r179ObservedProviderCut : SystemState Nat ToyKey ToyValue ToyRuntime String
+r179ObservedProviderCut = maybe r179ObservedProviderBegin snd
+  (applyAction (LAdvance 0) r179ObservedProviderBegin)
