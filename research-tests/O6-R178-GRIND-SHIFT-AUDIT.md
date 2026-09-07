@@ -192,3 +192,34 @@ identifier `prefix`/its paired `suffix` (2/3). B42 needed its Metatheory import
 (2/3). Every other B1–B62 unit passed on attempt 1. B30 and B36 ran detached
 (83.97s and 62.16s); no overlap, no seed deletion, no orphan. Complete per-attempt
 sources/diagnostics remain in the R178 ledger, to be committed at the final gate.
+
+## B63–B88 retirement transport capital — 07:37 UTC
+
+`CP5GeneratedRetirementTransportSpike` now derives actual source lookups,
+source-parent metadata, an empty-origin PREFIX current-generation scan, and a
+real A9 packet for every historical retirement of a generated endpoint name.
+`generatedPacketCurrentBirth` authenticates that prefix stamp inside the whole
+original trace; `generatedPacketMatchesCurrentBirth` reconciles it with the
+accepted endpoint scan through original uniqueness. B72/B73 use A9 and BOTH
+actual current-birth authentications to identify the mapped raw actor and return
+its actual retirement occurrence. No historical/raw-name coincidence is used.
+
+`CP5RootOrchestrationTransportSpike` defines structural root occurrence paths
+whose root proofs are indexed by the actual head transition. It proves both
+maps through `SameExternalOrchestration` and derives source-root status from the
+actual endpoint root/unique original births. No proof-irrelevance or equal-ordinal
+state cast is used.
+
+`CP5AcceptedRetirementTransportSpike` combines the two cases and the ACCEPTED
+current-name/generation coupling. B87 `acceptedSupportedForwardNotRetired`
+(8bf64b5) and B88 `acceptedSupportedBackwardNotRetired` (99cc6e5) prove that every
+actual image fiber of a supported source name is nonretired, in both directions.
+This is the support-relative retirement agreement needed by O18; it does NOT
+claim full flag agreement for arbitrary unsupported/vestigial entries. Neither
+direction assumes destination support, invents a free bijection, or uses a
+frozen deletion theorem. B63–B88 ALL passed on their first fresh invocation.
+
+Next: combine sealed ALL-generated coverage/root metadata with parent/component
+coherence, then use genuine support-edge rank induction and the Definition-67
+support equation for the two truth implications. O18 remains unattempted until
+both implications have checked and committed. Hole census remains six.
