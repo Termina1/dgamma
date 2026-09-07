@@ -3389,3 +3389,29 @@ The complete per-attempt evidence and declaration map are committed as
 O6-R178-COMPILER-{LEDGER.json,TRANSCRIPTS.md,EVIDENCE.tar.gz} and
 O6-R178-CLAUSE-MAP.md. C9 stays parked2/3; the two owner A8 integration choices
 and A9 owner-override status remain exactly as stated above.
+
+## R179 checkpoint — O21 identity completed narrowly; O19 prerequisite stop
+
+The five existing holes remain **1/3/0/0/1**, all surfaces/bodies byte-unchanged.
+`CP5O21EndpointIdentitySpike` proves accepted original left/right endpoint identity
+and strict-later-birth exclusion, plus bilateral O21-telescope consumption.
+Actual scanner/current endpoint evidence precedes original uniqueness; A9 is
+threaded but not needed for identity. No withdrawal branch is discharged.
+
+O19's certified length4 prefix proves early consumer Begin=Nothing; independent
+explicit observed-state capital proves actual checked provider Begin/Iter/Finish
+and cut/finished WF. No full AdjacentActorSwapSafety/bundle/blocks. A11 composite
+packet3/3 and A13 isolated actual target projection3/3 are parked/removed; A12 is
+separately authorized checked provider-edge capital, A14 blocked0 attempts.
+Next prerequisite: actual provider output fiber/table projection equations,
+normalized ordered bindings, exact ProviderView0, checked consumer suffix;
+then protocol/bundle/3x2 blocks/current-safety negative. Do not re-label another
+A11/A13 attempt or strengthen safety before that negative.
+
+O20 received exactly one disposable type-only sizing invocation: ambient world,
+all renamed table lookups, all renamed controls, and the exact generated-origin
+triangle at the accepted fixed bijection. No implementation and no assertion
+that the first three follow from O19 replay-to-left evidence.
+
+O17/root/A8 integration remains owner-paused. See the R179 audit, compiler
+ledger/archive and acceptance report for exact scope, stops and final gate.

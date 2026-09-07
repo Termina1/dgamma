@@ -27,7 +27,7 @@ untracked = git('ls-files','--others','--exclude-standard').splitlines()
 assert all(p.startswith('paper/') or p == 'review-o6-body-adversarial.md' for p in untracked)
 processes = subprocess.check_output(['ps','-axo','pid,ppid,command'],text=True)
 assert not re.search(r'/idris2_app/idris2(?:\.so)?(?:\s|$)', processes)
-for part in ['CanonicalSort','LocalDiamond','DeletionChain']:
+for part in PARTS:
     assert not git('diff',START,'--',PATHS[part]), part
 local = (ROOT/PATHS['LocalDiamond']).read_bytes()
 start = local.index(b'0 adjacentSwapSuffixSpike :')
@@ -64,6 +64,7 @@ assert local_time.startswith('2026-09-07T01:56:14.')
 report = dict(timestamp=datetime.datetime.now(datetime.timezone.utc).isoformat(),head=git('rev-parse','HEAD').strip(),start=START,
     holes=holes,split=[len(holes[p]) for p in PARTS],productionDiffVs34b21c9='empty',CP3Blob=git('hash-object','src/DGamma/CP3.idr').strip(),
     LocalDiamondDiffVsStart='empty',CanonicalSortDiffVsStart='empty',DeletionChainDiffVsStart='empty',
+    CrossTraceDiffVsStart='empty',RenamingCompositionDiffVsStart='empty',
     adjacentFullBytes=1470,adjacentFullSHA256=full,adjacentStatementBytes=1154,adjacentStatementSHA256=statement,reviewSHA256=review,
     seeds='207/207',LocalDiamondTTC=dict(bytes=local_ttc.stat().st_size,mtimeUTC=local_time),changedIdrisFiles=changed,
     sourceSHA256={p:sha((ROOT/p).read_bytes()) for p in changed},protectedDeclarationSHA256=protected,prohibitedAdditions=prohibited,

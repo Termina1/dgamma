@@ -25,6 +25,9 @@
     "expectedDiagnostic": null,
     "symbol": null,
     "transcript": "1/1: Building DGamma.R179O19DependencyCountershape (research-tests/DGamma/R179O19DependencyCountershape.idr)\n",
+    "newTopLevelDeclarations": [
+      "r179BeforeProviderFinish"
+    ],
     "matchingSourceCommits": [
       "767f2d0e4c6cb518ffa00f35c3c8a9fec4d4a167"
     ]
@@ -55,6 +58,9 @@
     "expectedDiagnostic": null,
     "symbol": null,
     "transcript": "1/1: Building DGamma.R179O19DependencyCountershape (research-tests/DGamma/R179O19DependencyCountershape.idr)\n",
+    "newTopLevelDeclarations": [
+      "r179EarlyConsumerBeginUnavailable"
+    ],
     "matchingSourceCommits": [
       "f31a49abff4df5a9cf014d8266f78c3cc2788198"
     ]
@@ -85,6 +91,9 @@
     "expectedDiagnostic": null,
     "symbol": null,
     "transcript": "1/1: Building DGamma.R179O19DependencyCountershape (research-tests/DGamma/R179O19DependencyCountershape.idr)\n",
+    "newTopLevelDeclarations": [
+      "r179AfterProviderFinish"
+    ],
     "matchingSourceCommits": [
       "a5fcb7f6bc5b1f168f6b3c04697e3257b8223b02"
     ]
@@ -115,6 +124,9 @@
     "expectedDiagnostic": null,
     "symbol": null,
     "transcript": "1/1: Building DGamma.R179O19DependencyCountershape (research-tests/DGamma/R179O19DependencyCountershape.idr)\nError: While processing right hand side of r179DependencySuffixChecks. Can't solve constraint between: S (assert_total (integerToNat 2)) and transitionCount (certifiedTrace r179AfterProviderFinish).\n\nDGamma.R179O19DependencyCountershape:64:30--64:34\n 60 |     noFailedFibers (certifiedFinal r179AfterProviderFinish),\n 61 |     supportedActiveAt 0 (certifiedFinal r179AfterProviderFinish),\n 62 |     supportedActiveAt 1 (certifiedFinal r179AfterProviderFinish)) =\n 63 |    (3, True, True, True, True))\n 64 | r179DependencySuffixChecks = Refl\n                                   ^^^^\n\n",
+    "newTopLevelDeclarations": [
+      "r179DependencySuffixChecks"
+    ],
     "matchingSourceCommits": []
   },
   {
@@ -143,6 +155,9 @@
     "expectedDiagnostic": null,
     "symbol": null,
     "transcript": "1/1: Building DGamma.R179O19DependencyCountershape (research-tests/DGamma/R179O19DependencyCountershape.idr)\n",
+    "newTopLevelDeclarations": [
+      "r179ProviderFinishRawAvailable"
+    ],
     "matchingSourceCommits": [
       "b25d2db0ace72366a0dadbf264014b178577b2bc"
     ]
@@ -173,6 +188,9 @@
     "expectedDiagnostic": null,
     "symbol": null,
     "transcript": "",
+    "newTopLevelDeclarations": [
+      "r179ProviderFinishEnablesConsumer"
+    ],
     "matchingSourceCommits": []
   },
   {
@@ -201,6 +219,7 @@
     "expectedDiagnostic": null,
     "symbol": null,
     "transcript": "1/1: Building DGamma.R179O19DependencyCountershape (research-tests/DGamma/R179O19DependencyCountershape.idr)\n",
+    "newTopLevelDeclarations": [],
     "matchingSourceCommits": [
       "b25d2db0ace72366a0dadbf264014b178577b2bc"
     ]
@@ -251,6 +270,9 @@
     "expectedDiagnostic": null,
     "symbol": null,
     "transcript": "17/17: Building DGamma.CP5O21EndpointIdentitySpike (research/DGamma/CP5O21EndpointIdentitySpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "acceptedLeftEndpointBirthIdentity"
+    ],
     "matchingSourceCommits": [
       "ab4fda4280e16265fc67975a018f156eb2bdba44"
     ]
@@ -279,6 +301,9 @@
     "expectedDiagnostic": null,
     "symbol": null,
     "transcript": "17/17: Building DGamma.CP5O21EndpointIdentitySpike (research/DGamma/CP5O21EndpointIdentitySpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "acceptedRightEndpointBirthIdentity"
+    ],
     "matchingSourceCommits": [
       "feef3d8fa775ce5f0b835ca1bf29b17191d9db1b"
     ]
@@ -307,6 +332,9 @@
     "expectedDiagnostic": null,
     "symbol": null,
     "transcript": "17/17: Building DGamma.CP5O21EndpointIdentitySpike (research/DGamma/CP5O21EndpointIdentitySpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "exactBirthStampRejectsLater"
+    ],
     "matchingSourceCommits": [
       "5b2340fbb67446fe8ec8bb40fa81699ae1fff338"
     ]
@@ -335,6 +363,9 @@
     "expectedDiagnostic": null,
     "symbol": null,
     "transcript": "17/17: Building DGamma.CP5O21EndpointIdentitySpike (research/DGamma/CP5O21EndpointIdentitySpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "AcceptedEndpointBirthIdentity"
+    ],
     "matchingSourceCommits": [
       "3b0e14f558322ce774b5513a60abb020ec61cf75"
     ]
@@ -363,6 +394,9 @@
     "expectedDiagnostic": null,
     "symbol": null,
     "transcript": "17/17: Building DGamma.CP5O21EndpointIdentitySpike (research/DGamma/CP5O21EndpointIdentitySpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "acceptedLeftEndpointIdentityCapital"
+    ],
     "matchingSourceCommits": [
       "b924e8de47ad2604408ce9b038a99f6462d9e1dc"
     ]
@@ -391,6 +425,9 @@
     "expectedDiagnostic": null,
     "symbol": null,
     "transcript": "17/17: Building DGamma.CP5O21EndpointIdentitySpike (research/DGamma/CP5O21EndpointIdentitySpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "acceptedRightEndpointIdentityCapital"
+    ],
     "matchingSourceCommits": [
       "9f05fbc349bc5357df205d214e5bd71785dd3c05"
     ]
@@ -419,6 +456,9 @@
     "expectedDiagnostic": null,
     "symbol": null,
     "transcript": "17/17: Building DGamma.CP5O21EndpointIdentitySpike (research/DGamma/CP5O21EndpointIdentitySpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "o21OriginalEndpointIdentityCapital"
+    ],
     "matchingSourceCommits": [
       "7053914f341be313a34e3e85b599c0dee7b51438"
     ]
@@ -449,6 +489,9 @@
     "expectedDiagnostic": "Mismatch between:",
     "symbol": "wrongOriginalBirth",
     "transcript": "1/1: Building DGamma.R179O21WrongOriginalBirthNegative (research-tests/DGamma/R179O21WrongOriginalBirthNegative.idr)\nError: While processing right hand side of wrongOriginalBirth. When unifying:\n    LocatedActionOccurrence (OInsert selected otherParent otherComponent) other\nand:\n    LocatedActionOccurrence (OInsert selected otherParent otherComponent) left\nMismatch between: other and left.\n\nDGamma.R179O21WrongOriginalBirthNegative:36:77--36:87\n 32 |   (generation = MkRegistrationGeneration selected (locatedActionOrdinal otherBirth))\n 33 | wrongOriginalBirth name key world error value nameEq keyEq left right other sameInputs aligned empty unique\n 34 |   selected generation current observed found otherParent otherComponent otherBirth =\n 35 |     acceptedLeftEndpointBirthIdentity name key world error value nameEq keyEq left right sameInputs aligned empty unique\n 36 |       selected generation current observed found otherParent otherComponent otherBirth\n                                                                                  ^^^^^^^^^^\n\n",
+    "newTopLevelDeclarations": [
+      "wrongOriginalBirth"
+    ],
     "matchingSourceCommits": [
       "853cfe812266ca24e5bd7a413f901cda6062b576"
     ]
@@ -479,6 +522,9 @@
     "expectedDiagnostic": null,
     "symbol": null,
     "transcript": "1/1: Building DGamma.R179O21CurrentBirthIdentityPositive (research-tests/DGamma/R179O21CurrentBirthIdentityPositive.idr)\n",
+    "newTopLevelDeclarations": [
+      "r179AcceptedCurrentRejectsLaterBirth"
+    ],
     "matchingSourceCommits": [
       "e7bd8ffc18f3a0542a1d075ce593c0616e02740e"
     ]
@@ -509,6 +555,9 @@
     "expectedDiagnostic": null,
     "symbol": null,
     "transcript": "1/1: Building DGamma.R179O20FourClauseProbe (research-tests/DGamma/R179O20FourClauseProbe.idr)\n",
+    "newTopLevelDeclarations": [
+      "R179O20FourClauseProbe"
+    ],
     "matchingSourceCommits": []
   },
   {
@@ -537,6 +586,9 @@
     "expectedDiagnostic": null,
     "symbol": null,
     "transcript": "1/1: Building DGamma.R179O19ObservedExecution (research-tests/DGamma/R179O19ObservedExecution.idr)\n",
+    "newTopLevelDeclarations": [
+      "r179ObservedRootSource"
+    ],
     "matchingSourceCommits": [
       "9aeff797497b304be10047c97ca47aff65c33612"
     ]
@@ -567,6 +619,9 @@
     "expectedDiagnostic": null,
     "symbol": null,
     "transcript": "1/1: Building DGamma.R179O19ObservedExecution (research-tests/DGamma/R179O19ObservedExecution.idr)\n",
+    "newTopLevelDeclarations": [
+      "r179ObservedProviderBegin"
+    ],
     "matchingSourceCommits": [
       "aaeaa08652272f461e3c56610096ec7e7b1a0a00"
     ]
@@ -597,6 +652,9 @@
     "expectedDiagnostic": null,
     "symbol": null,
     "transcript": "1/1: Building DGamma.R179O19ObservedExecution (research-tests/DGamma/R179O19ObservedExecution.idr)\n",
+    "newTopLevelDeclarations": [
+      "r179ObservedProviderCut"
+    ],
     "matchingSourceCommits": [
       "9eadccb35dda18b8877a84e97b3d80fc4899c38d"
     ]
@@ -627,6 +685,9 @@
     "expectedDiagnostic": null,
     "symbol": null,
     "transcript": "1/1: Building DGamma.R179O19ObservedExecution (research-tests/DGamma/R179O19ObservedExecution.idr)\n",
+    "newTopLevelDeclarations": [
+      "r179ObservedProviderFinished"
+    ],
     "matchingSourceCommits": [
       "39040bac3ba74fd51fa54f7c54a69422703812a2"
     ]
@@ -657,6 +718,9 @@
     "expectedDiagnostic": null,
     "symbol": null,
     "transcript": "1/1: Building DGamma.R179O19ObservedExecution (research-tests/DGamma/R179O19ObservedExecution.idr)\nError: While processing right hand side of r179ObservedFinishPacket. Can't solve constraint between: Just (ProviderView 0 EmptyView) and case providerOf ServiceA (registry r179ObservedProviderFinished) of\n  { Nothing => Nothing\n  ; Just provider => map (ProviderView provider) (resolveView [] (registry r179ObservedProviderFinished))\n  }.\n\nDGamma.R179O19ObservedExecution:59:53--59:57\n 55 |    (registryWellFormed r179ObservedProviderCut = True),\n 56 |    (registryWellFormed r179ObservedProviderFinished = True),\n 57 |    (targetFiber (freshFiber emptyConsumerComponent Root) (registry r179ObservedProviderFinished) = Just (ProviderView 0 EmptyView)),\n 58 |    (checkedApplyAction (LBegin 1) r179ObservedProviderCut = Nothing))\n 59 | r179ObservedFinishPacket = (Refl, Refl, Refl, Refl, Refl, Refl)\n                                                          ^^^^\n\n",
+    "newTopLevelDeclarations": [
+      "r179ObservedFinishPacket"
+    ],
     "matchingSourceCommits": []
   },
   {
@@ -685,6 +749,9 @@
     "expectedDiagnostic": null,
     "symbol": null,
     "transcript": "1/1: Building DGamma.R179O19ObservedExecution (research-tests/DGamma/R179O19ObservedExecution.idr)\nError: While processing right hand side of r179ObservedFinishPacket. Undefined name Data.List.Elem.Elem. \nDid you mean: elem?\n",
+    "newTopLevelDeclarations": [
+      "r179ObservedFinishPacket"
+    ],
     "matchingSourceCommits": []
   },
   {
@@ -713,6 +780,9 @@
     "expectedDiagnostic": null,
     "symbol": null,
     "transcript": "1/1: Building DGamma.R179O19ObservedExecution (research-tests/DGamma/R179O19ObservedExecution.idr)\nError: While processing right hand side of r179ObservedFinishPacket. Rewriting by providerOf ServiceA ?postpone = Just 0 did not change type targetFiber (freshFiber emptyConsumerComponent Root) (registry r179ObservedProviderFinished) = Just (ProviderView 0 EmptyView).\n\nDGamma.R179O19ObservedExecution:61:4--61:101\n 57 |    (registryWellFormed r179ObservedProviderFinished = True),\n 58 |    (targetFiber (freshFiber emptyConsumerComponent Root) (registry r179ObservedProviderFinished) = Just (ProviderView 0 EmptyView)),\n 59 |    (checkedApplyAction (LBegin 1) r179ObservedProviderCut = Nothing))\n 60 | r179ObservedFinishPacket = (Refl, Refl, Refl, Refl,\n 61 |   (rewrite (the (providerOf ServiceA (registry r179ObservedProviderFinished) = Just 0) Refl) in Refl), Refl)\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\n",
+    "newTopLevelDeclarations": [
+      "r179ObservedFinishPacket"
+    ],
     "matchingSourceCommits": []
   },
   {
@@ -741,6 +811,7 @@
     "expectedDiagnostic": null,
     "symbol": null,
     "transcript": "1/1: Building DGamma.R179O19ObservedExecution (research-tests/DGamma/R179O19ObservedExecution.idr)\n",
+    "newTopLevelDeclarations": [],
     "matchingSourceCommits": [
       "39040bac3ba74fd51fa54f7c54a69422703812a2"
     ]
@@ -771,6 +842,9 @@
     "expectedDiagnostic": null,
     "symbol": null,
     "transcript": "1/1: Building DGamma.R179O19ObservedExecution (research-tests/DGamma/R179O19ObservedExecution.idr)\n",
+    "newTopLevelDeclarations": [
+      "r179ObservedProviderEdges"
+    ],
     "matchingSourceCommits": [
       "bf24a4433b65084c4fa57158f549962c85de2b39"
     ]
@@ -801,6 +875,9 @@
     "expectedDiagnostic": null,
     "symbol": null,
     "transcript": "1/1: Building DGamma.R179O19ObservedExecution (research-tests/DGamma/R179O19ObservedExecution.idr)\nError: While processing right hand side of r179ObservedConsumerTarget. Can't solve constraint between: case providerOf ServiceA (registry r179ObservedProviderFinished) of\n  { Nothing => Nothing\n  ; Just provider => map (ProviderView provider) (resolveView [] (registry r179ObservedProviderFinished))\n  } and Just (ProviderView 0 EmptyView).\n\nDGamma.R179O19ObservedExecution:71:3--77:9\n 71 |   trans\n 72 |     (targetFiberExplicit {name = Nat} {key = ToyKey} {value = ToyValue}\n 73 |       {world = ToyRuntime} {error = String} %search %search emptyConsumerComponent\n 74 |       Root False emptyOwned (Inactive Nothing)\n 75 |       (registry {name = Nat} {key = ToyKey} {value = ToyValue}\n 76 |         {world = ToyRuntime} {error = String} r179ObservedProviderFinished))\n\n",
+    "newTopLevelDeclarations": [
+      "r179ObservedConsumerTarget"
+    ],
     "matchingSourceCommits": []
   },
   {
@@ -829,6 +906,9 @@
     "expectedDiagnostic": null,
     "symbol": null,
     "transcript": "1/1: Building DGamma.R179O19ObservedExecution (research-tests/DGamma/R179O19ObservedExecution.idr)\nError: While processing right hand side of r179ObservedConsumerTarget. Can't solve constraint between: Just 0 and if isActive (fiberLifecycle (setFiberRuntime (setFiberRuntime (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)) (localTable (MkLocalState (MkToyRuntime (not False) False) (ownedA True))) (Reloading [providerFinish] (pushLocalUndo (componentProvisions (fiberComponent (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))) id (the (LocalState ToyKey ToyValue ToyRuntime toySpecA -> LocalState ToyKey ToyValue ToyRuntime toySpecA) (\\lamc => let MkLocalState (MkToyRuntime laterProvider laterConsumer) laterTable = lamc in MkLocalState (MkToyRuntime (not laterProvider) laterConsumer) (restrictOwnedPreservingOrder (componentProvisions (fiberComponent (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))) (ownedValues (fiberTable (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))))))) EmptyView)) (localTable (MkLocalState (worldState r179ObservedProviderCut) (restrictOwnedPreservingOrder (componentProvisions (fiberComponent (setFiberRuntime (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)) (localTable (MkLocalState (MkToyRuntime (not False) False) (ownedA True))) (Reloading [providerFinish] (pushLocalUndo (componentProvisions (fiberComponent (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))) id (the (LocalState ToyKey ToyValue ToyRuntime toySpecA -> LocalState ToyKey ToyValue ToyRuntime toySpecA) (\\lamc => let MkLocalState (MkToyRuntime laterProvider laterConsumer) laterTable = lamc in MkLocalState (MkToyRuntime (not laterProvider) laterConsumer) (restrictOwnedPreservingOrder (componentProvisions (fiberComponent (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))) (ownedValues (fiberTable (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))))))) EmptyView)))) (ownedValues (fiberTable (setFiberRuntime (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)) (localTable (MkLocalState (MkToyRuntime (not False) False) (ownedA True))) (Reloading [providerFinish] (pushLocalUndo (componentProvisions (fiberComponent (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))) id (the (LocalState ToyKey ToyValue ToyRuntime toySpecA -> LocalState ToyKey ToyValue ToyRuntime toySpecA) (\\lamc => let MkLocalState (MkToyRuntime laterProvider laterConsumer) laterTable = lamc in MkLocalState (MkToyRuntime (not laterProvider) laterConsumer) (restrictOwnedPreservingOrder (componentProvisions (fiberComponent (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))) (ownedValues (fiberTable (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))))))) EmptyView))))))) (Active (pushLocalUndo (componentProvisions (fiberComponent (setFiberRuntime (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)) (localTable (MkLocalState (MkToyRuntime (not False) False) (ownedA True))) (Reloading [providerFinish] (pushLocalUndo (componentProvisions (fiberComponent (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))) id (the (LocalState ToyKey ToyValue ToyRuntime toySpecA -> LocalState ToyKey ToyValue ToyRuntime toySpecA) (\\lamc => let MkLocalState (MkToyRuntime laterProvider laterConsumer) laterTable = lamc in MkLocalState (MkToyRuntime (not laterProvider) laterConsumer) (restrictOwnedPreservingOrder (componentProvisions (fiberComponent (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))) (ownedValues (fiberTable (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))))))) EmptyView)))) (pushLocalUndo (componentProvisions (fiberComponent (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))) id (the (LocalState ToyKey ToyValue ToyRuntime toySpecA -> LocalState ToyKey ToyValue ToyRuntime toySpecA) (\\lamc => let MkLocalState (MkToyRuntime laterProvider laterConsumer) laterTable = lamc in MkLocalState (MkToyRuntime (not laterProvider) laterConsumer) (restrictOwnedPreservingOrder (componentProvisions (fiberComponent (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))) (ownedValues (fiberTable (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))))))) id) EmptyView))) && Delay (memberKey ServiceA (ownedValues (fiberTable (setFiberRuntime (setFiberRuntime (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)) (localTable (MkLocalState (MkToyRuntime (not False) False) (ownedA True))) (Reloading [providerFinish] (pushLocalUndo (componentProvisions (fiberComponent (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))) id (the (LocalState ToyKey ToyValue ToyRuntime toySpecA -> LocalState ToyKey ToyValue ToyRuntime toySpecA) (\\lamc => let MkLocalState (MkToyRuntime laterProvider laterConsumer) laterTable = lamc in MkLocalState (MkToyRuntime (not laterProvider) laterConsumer) (restrictOwnedPreservingOrder (componentProvisions (fiberComponent (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))) (ownedValues (fiberTable (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))))))) EmptyView)) (localTable (MkLocalState (worldState r179ObservedProviderCut) (restrictOwnedPreservingOrder (componentProvisions (fiberComponent (setFiberRuntime (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)) (localTable (MkLocalState (MkToyRuntime (not False) False) (ownedA True))) (Reloading [providerFinish] (pushLocalUndo (componentProvisions (fiberComponent (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))) id (the (LocalState ToyKey ToyValue ToyRuntime toySpecA -> LocalState ToyKey ToyValue ToyRuntime toySpecA) (\\lamc => let MkLocalState (MkToyRuntime laterProvider laterConsumer) laterTable = lamc in MkLocalState (MkToyRuntime (not laterProvider) laterConsumer) (restrictOwnedPreservingOrder (componentProvisions (fiberComponent (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))) (ownedValues (fiberTable (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))))))) EmptyView)))) (ownedValues (fiberTable (setFiberRuntime (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)) (localTable (MkLocalState (MkToyRuntime (not False) False) (ownedA True))) (Reloading [providerFinish] (pushLocalUndo (componentProvisions (fiberComponent (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))) id (the (LocalState ToyKey ToyValue ToyRuntime toySpecA -> LocalState ToyKey ToyValue ToyRuntime toySpecA) (\\lamc => let MkLocalState (MkToyRuntime laterProvider laterConsumer) laterTable = lamc in MkLocalState (MkToyRuntime (not laterProvider) laterConsumer) (restrictOwnedPreservingOrder (componentProvisions (fiberComponent (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))) (ownedValues (fiberTable (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))))))) EmptyView))))))) (Active (pushLocalUndo (componentProvisions (fiberComponent (setFiberRuntime (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)) (localTable (MkLocalState (MkToyRuntime (not False) False) (ownedA True))) (Reloading [providerFinish] (pushLocalUndo (componentProvisions (fiberComponent (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))) id (the (LocalState ToyKey ToyValue ToyRuntime toySpecA -> LocalState ToyKey ToyValue ToyRuntime toySpecA) (\\lamc => let MkLocalState (MkToyRuntime laterProvider laterConsumer) laterTable = lamc in MkLocalState (MkToyRuntime (not laterProvider) laterConsumer) (restrictOwnedPreservingOrder (componentProvisions (fiberComponent (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))) (ownedValues (fiberTable (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))))))) EmptyView)))) (pushLocalUndo (componentProvisions (fiberComponent (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))) id (the (LocalState ToyKey ToyValue ToyRuntime toySpecA -> LocalState ToyKey ToyValue ToyRuntime toySpecA) (\\lamc => let MkLocalState (MkToyRuntime laterProvider laterConsumer) laterTable = lamc in MkLocalState (MkToyRuntime (not laterProvider) laterConsumer) (restrictOwnedPreservingOrder (componentProvisions (fiberComponent (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))) (ownedValues (fiberTable (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))))))) id) EmptyView))))) then Just 0 else providerIn ServiceA [].\n\nDGamma.R179O19ObservedExecution:83:89--83:93\n 79 |         Just owner => Just (ProviderView owner EmptyView))\n 80 |       (the (providerOf {name = Nat} {key = ToyKey} {value = ToyValue}\n 81 |         {world = ToyRuntime} {error = String} @{%search} @{%search} ServiceA\n 82 |         (registry {name = Nat} {key = ToyKey} {value = ToyValue}\n 83 |           {world = ToyRuntime} {error = String} r179ObservedProviderFinished) = Just 0) Refl))\n                                                                                              ^^^^\n\n",
+    "newTopLevelDeclarations": [
+      "r179ObservedConsumerTarget"
+    ],
     "matchingSourceCommits": []
   },
   {
@@ -857,6 +937,9 @@
     "expectedDiagnostic": null,
     "symbol": null,
     "transcript": "1/1: Building DGamma.R179O19ObservedExecution (research-tests/DGamma/R179O19ObservedExecution.idr)\nError: While processing right hand side of r179ObservedConsumerTarget. Can't solve constraint between: if memberKey ServiceA (ownedValues (restrictOwnedPreservingOrder toySpecA (contextA True))) then Just 0 else Nothing and if isActive (fiberLifecycle (setFiberRuntime (setFiberRuntime (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)) (localTable (MkLocalState (MkToyRuntime (not False) False) (ownedA True))) (Reloading [providerFinish] (pushLocalUndo (componentProvisions (fiberComponent (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))) id (the (LocalState ToyKey ToyValue ToyRuntime toySpecA -> LocalState ToyKey ToyValue ToyRuntime toySpecA) (\\lamc => let MkLocalState (MkToyRuntime laterProvider laterConsumer) laterTable = lamc in MkLocalState (MkToyRuntime (not laterProvider) laterConsumer) (restrictOwnedPreservingOrder (componentProvisions (fiberComponent (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))) (ownedValues (fiberTable (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))))))) EmptyView)) (localTable (MkLocalState (worldState r179ObservedProviderCut) (restrictOwnedPreservingOrder (componentProvisions (fiberComponent (setFiberRuntime (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)) (localTable (MkLocalState (MkToyRuntime (not False) False) (ownedA True))) (Reloading [providerFinish] (pushLocalUndo (componentProvisions (fiberComponent (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))) id (the (LocalState ToyKey ToyValue ToyRuntime toySpecA -> LocalState ToyKey ToyValue ToyRuntime toySpecA) (\\lamc => let MkLocalState (MkToyRuntime laterProvider laterConsumer) laterTable = lamc in MkLocalState (MkToyRuntime (not laterProvider) laterConsumer) (restrictOwnedPreservingOrder (componentProvisions (fiberComponent (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))) (ownedValues (fiberTable (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))))))) EmptyView)))) (ownedValues (fiberTable (setFiberRuntime (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)) (localTable (MkLocalState (MkToyRuntime (not False) False) (ownedA True))) (Reloading [providerFinish] (pushLocalUndo (componentProvisions (fiberComponent (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))) id (the (LocalState ToyKey ToyValue ToyRuntime toySpecA -> LocalState ToyKey ToyValue ToyRuntime toySpecA) (\\lamc => let MkLocalState (MkToyRuntime laterProvider laterConsumer) laterTable = lamc in MkLocalState (MkToyRuntime (not laterProvider) laterConsumer) (restrictOwnedPreservingOrder (componentProvisions (fiberComponent (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))) (ownedValues (fiberTable (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))))))) EmptyView))))))) (Active (pushLocalUndo (componentProvisions (fiberComponent (setFiberRuntime (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)) (localTable (MkLocalState (MkToyRuntime (not False) False) (ownedA True))) (Reloading [providerFinish] (pushLocalUndo (componentProvisions (fiberComponent (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))) id (the (LocalState ToyKey ToyValue ToyRuntime toySpecA -> LocalState ToyKey ToyValue ToyRuntime toySpecA) (\\lamc => let MkLocalState (MkToyRuntime laterProvider laterConsumer) laterTable = lamc in MkLocalState (MkToyRuntime (not laterProvider) laterConsumer) (restrictOwnedPreservingOrder (componentProvisions (fiberComponent (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))) (ownedValues (fiberTable (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))))))) EmptyView)))) (pushLocalUndo (componentProvisions (fiberComponent (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))) id (the (LocalState ToyKey ToyValue ToyRuntime toySpecA -> LocalState ToyKey ToyValue ToyRuntime toySpecA) (\\lamc => let MkLocalState (MkToyRuntime laterProvider laterConsumer) laterTable = lamc in MkLocalState (MkToyRuntime (not laterProvider) laterConsumer) (restrictOwnedPreservingOrder (componentProvisions (fiberComponent (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))) (ownedValues (fiberTable (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))))))) id) EmptyView))) && Delay (memberKey ServiceA (ownedValues (fiberTable (setFiberRuntime (setFiberRuntime (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)) (localTable (MkLocalState (MkToyRuntime (not False) False) (ownedA True))) (Reloading [providerFinish] (pushLocalUndo (componentProvisions (fiberComponent (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))) id (the (LocalState ToyKey ToyValue ToyRuntime toySpecA -> LocalState ToyKey ToyValue ToyRuntime toySpecA) (\\lamc => let MkLocalState (MkToyRuntime laterProvider laterConsumer) laterTable = lamc in MkLocalState (MkToyRuntime (not laterProvider) laterConsumer) (restrictOwnedPreservingOrder (componentProvisions (fiberComponent (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))) (ownedValues (fiberTable (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))))))) EmptyView)) (localTable (MkLocalState (worldState r179ObservedProviderCut) (restrictOwnedPreservingOrder (componentProvisions (fiberComponent (setFiberRuntime (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)) (localTable (MkLocalState (MkToyRuntime (not False) False) (ownedA True))) (Reloading [providerFinish] (pushLocalUndo (componentProvisions (fiberComponent (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))) id (the (LocalState ToyKey ToyValue ToyRuntime toySpecA -> LocalState ToyKey ToyValue ToyRuntime toySpecA) (\\lamc => let MkLocalState (MkToyRuntime laterProvider laterConsumer) laterTable = lamc in MkLocalState (MkToyRuntime (not laterProvider) laterConsumer) (restrictOwnedPreservingOrder (componentProvisions (fiberComponent (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))) (ownedValues (fiberTable (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))))))) EmptyView)))) (ownedValues (fiberTable (setFiberRuntime (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)) (localTable (MkLocalState (MkToyRuntime (not False) False) (ownedA True))) (Reloading [providerFinish] (pushLocalUndo (componentProvisions (fiberComponent (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))) id (the (LocalState ToyKey ToyValue ToyRuntime toySpecA -> LocalState ToyKey ToyValue ToyRuntime toySpecA) (\\lamc => let MkLocalState (MkToyRuntime laterProvider laterConsumer) laterTable = lamc in MkLocalState (MkToyRuntime (not laterProvider) laterConsumer) (restrictOwnedPreservingOrder (componentProvisions (fiberComponent (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))) (ownedValues (fiberTable (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))))))) EmptyView))))))) (Active (pushLocalUndo (componentProvisions (fiberComponent (setFiberRuntime (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)) (localTable (MkLocalState (MkToyRuntime (not False) False) (ownedA True))) (Reloading [providerFinish] (pushLocalUndo (componentProvisions (fiberComponent (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))) id (the (LocalState ToyKey ToyValue ToyRuntime toySpecA -> LocalState ToyKey ToyValue ToyRuntime toySpecA) (\\lamc => let MkLocalState (MkToyRuntime laterProvider laterConsumer) laterTable = lamc in MkLocalState (MkToyRuntime (not laterProvider) laterConsumer) (restrictOwnedPreservingOrder (componentProvisions (fiberComponent (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))) (ownedValues (fiberTable (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))))))) EmptyView)))) (pushLocalUndo (componentProvisions (fiberComponent (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))) id (the (LocalState ToyKey ToyValue ToyRuntime toySpecA -> LocalState ToyKey ToyValue ToyRuntime toySpecA) (\\lamc => let MkLocalState (MkToyRuntime laterProvider laterConsumer) laterTable = lamc in MkLocalState (MkToyRuntime (not laterProvider) laterConsumer) (restrictOwnedPreservingOrder (componentProvisions (fiberComponent (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))) (ownedValues (fiberTable (MkFiber providerComponent Root False emptyOwned (Reloading [providerInstall, providerFinish] id EmptyView)))))))) id) EmptyView))))) then Just 0 else providerIn ServiceA [].\n\nDGamma.R179O19ObservedExecution:84:10--94:62\n 84 |         (cong (\\present => the (Maybe Nat) (if present then Just 0 else Nothing))\n 85 |           ((the ((table : CoeffectContext ToyKey ToyValue) ->\n 86 |               bindings table = bindings (contextA True) ->\n 87 |               memberKey @{%search} ServiceA table = True)\n 88 |             (\\(MkCoeffectContext entries unique), exact =>\n 89 |               cong (\\items => isJust (lookupEntries {key = ToyKey} {value = ToyValue}\n\n",
+    "newTopLevelDeclarations": [
+      "r179ObservedConsumerTarget"
+    ],
     "matchingSourceCommits": []
   },
   {
@@ -885,8 +968,184 @@
     "expectedDiagnostic": null,
     "symbol": null,
     "transcript": "1/1: Building DGamma.R179O19ObservedExecution (research-tests/DGamma/R179O19ObservedExecution.idr)\n",
+    "newTopLevelDeclarations": [],
     "matchingSourceCommits": [
       "bf24a4433b65084c4fa57158f549962c85de2b39"
     ]
+  },
+  {
+    "unit": "F2-countershape",
+    "path": "research-tests/DGamma/R179O19DependencyCountershape.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R179O19DependencyCountershape.idr"
+    ],
+    "start": "2026-09-07T10:04:20.325833+00:00",
+    "end": "2026-09-07T10:06:32.926352+00:00",
+    "seconds": 132.59956795815378,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 2528016,
+    "sourceSHA256": "9df6b5d76e66682cc1f1390c32347c2d71b6cf4006bcbe1d8661dee7fe120139",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "1/1: Building DGamma.R179O19DependencyCountershape (research-tests/DGamma/R179O19DependencyCountershape.idr)\n",
+    "newTopLevelDeclarations": [],
+    "matchingSourceCommits": [
+      "b25d2db0ace72366a0dadbf264014b178577b2bc"
+    ]
+  },
+  {
+    "unit": "F3-observed",
+    "path": "research-tests/DGamma/R179O19ObservedExecution.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R179O19ObservedExecution.idr"
+    ],
+    "start": "2026-09-07T10:06:58.016588+00:00",
+    "end": "2026-09-07T10:07:01.138219+00:00",
+    "seconds": 3.121427208185196,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 270160,
+    "sourceSHA256": "71150c8e0a473464f16401cebe07066004a29aed51806caf70548df67745457d",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "1/1: Building DGamma.R179O19ObservedExecution (research-tests/DGamma/R179O19ObservedExecution.idr)\n",
+    "newTopLevelDeclarations": [],
+    "matchingSourceCommits": [
+      "bf24a4433b65084c4fa57158f549962c85de2b39"
+    ]
+  },
+  {
+    "unit": "F4-identity",
+    "path": "research/DGamma/CP5O21EndpointIdentitySpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O21EndpointIdentitySpike.idr"
+    ],
+    "start": "2026-09-07T10:07:01.201629+00:00",
+    "end": "2026-09-07T10:07:04.327876+00:00",
+    "seconds": 3.126042041927576,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 4253440,
+    "sourceSHA256": "5a1d3fe32fb110a905ad5d59885637710fc13fcccd81c1d6f9ad67472f515e38",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "17/17: Building DGamma.CP5O21EndpointIdentitySpike (research/DGamma/CP5O21EndpointIdentitySpike.idr)\n",
+    "newTopLevelDeclarations": [],
+    "matchingSourceCommits": [
+      "7053914f341be313a34e3e85b599c0dee7b51438"
+    ]
+  },
+  {
+    "unit": "F5-identity-positive",
+    "path": "research-tests/DGamma/R179O21CurrentBirthIdentityPositive.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R179O21CurrentBirthIdentityPositive.idr"
+    ],
+    "start": "2026-09-07T10:07:04.394631+00:00",
+    "end": "2026-09-07T10:07:06.488269+00:00",
+    "seconds": 2.0934299998916686,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 3939296,
+    "sourceSHA256": "e8d1f64fdf8dab1b2af4dd76dc69f6138c45ad849cc64c14b1d46a030d34d901",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "1/1: Building DGamma.R179O21CurrentBirthIdentityPositive (research-tests/DGamma/R179O21CurrentBirthIdentityPositive.idr)\n",
+    "newTopLevelDeclarations": [],
+    "matchingSourceCommits": [
+      "e7bd8ffc18f3a0542a1d075ce593c0616e02740e"
+    ]
+  },
+  {
+    "unit": "F6-wrong-original-negative",
+    "path": "research-tests/DGamma/R179O21WrongOriginalBirthNegative.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R179O21WrongOriginalBirthNegative.idr"
+    ],
+    "start": "2026-09-07T10:07:06.551882+00:00",
+    "end": "2026-09-07T10:07:07.592562+00:00",
+    "seconds": 1.0404754998162389,
+    "exit": 1,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 0,
+    "sourceSHA256": "f2d7e6825c7fece1c36787ba1f2d248a59197df7d94b1fece6b651714046055b",
+    "expectedDiagnostic": "Mismatch between: other and left.",
+    "symbol": "wrongOriginalBirth",
+    "transcript": "1/1: Building DGamma.R179O21WrongOriginalBirthNegative (research-tests/DGamma/R179O21WrongOriginalBirthNegative.idr)\nError: While processing right hand side of wrongOriginalBirth. When unifying:\n    LocatedActionOccurrence (OInsert selected otherParent otherComponent) other\nand:\n    LocatedActionOccurrence (OInsert selected otherParent otherComponent) left\nMismatch between: other and left.\n\nDGamma.R179O21WrongOriginalBirthNegative:36:77--36:87\n 32 |   (generation = MkRegistrationGeneration selected (locatedActionOrdinal otherBirth))\n 33 | wrongOriginalBirth name key world error value nameEq keyEq left right other sameInputs aligned empty unique\n 34 |   selected generation current observed found otherParent otherComponent otherBirth =\n 35 |     acceptedLeftEndpointBirthIdentity name key world error value nameEq keyEq left right sameInputs aligned empty unique\n 36 |       selected generation current observed found otherParent otherComponent otherBirth\n                                                                                  ^^^^^^^^^^\n\n",
+    "newTopLevelDeclarations": [],
+    "matchingSourceCommits": [
+      "853cfe812266ca24e5bd7a413f901cda6062b576"
+    ]
+  },
+  {
+    "unit": "F7-package",
+    "path": "package",
+    "command": [
+      "idris2",
+      "--build",
+      "dgamma.ipkg"
+    ],
+    "start": "2026-09-07T10:07:07.652541+00:00",
+    "end": "2026-09-07T10:07:24.223397+00:00",
+    "seconds": 16.570549041964114,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 224096,
+    "sourceSHA256": "aee761a37757cb047ddbf0f846bc23ce830ed755422f96852d08eb435c368727",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "",
+    "matchingSourceCommits": []
   }
 ]

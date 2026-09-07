@@ -2634,3 +2634,49 @@ at09:00:27. Its partial log and explicit cost-stop reconciliation are committed.
 No broad-suite success is claimed. The protected-source/five-hole audit passed;
 LocalDiamond's125,368,223-byte seed is unchanged. Exact evidence is in the R178
 ledger/archive; Markdown diagnostic presentation alone is right-trimmed.
+
+## Status — R179 (2026-09-07)
+
+**Fully proved, research only:** both accepted original endpoint current-birth
+identity producers in `CP5O21EndpointIdentitySpike`, strict-later-birth exclusion,
+and an erased bilateral producer consuming the unchanged O21 original-capital
+and uniqueness telescope. Currentness/authentic original birth comes FIRST,
+then uniqueness; no raw-name-only identity inference. A9 is threaded but is not
+needed for this stronger one-trace subcase. Positive conditional consumption and
+an exact wrong-original-trace rejection were checked.
+
+**Partial:** O19 now has a certified empty-origin four-step provider/dependent-
+consumer prefix proving early consumer Begin=Nothing; an independent explicit
+observed-state fixture proves checked provider Begin/Iter/Finish and cut/finished
+WF. The current AdjacentActorSwapSafety, fifteen-field bundle and real blocks
+are NOT inhabited. A3's suffix builder is conditional, not executed evidence;
+A13's concrete consumer target projection remains unproved. No revised safety
+surface, full counterexample, positive revised-safety fixture or O19 body exists.
+
+**Merely sized/stated:** one disposable type-only O20 probe checked the exact four
+fixed-bijection bridge clauses; no bridge producer or O20 body. General Theorem73
+and all five inherited body holes remain open (1/3/0/0/1). O17/root/A8 integration
+and O21 withdrawal branches stayed outside scope.
+
+**Stops/escapes:** no new hole, postulate, unsafe proof, partiality, with block or
+local let in retained additions. A4 stopped1/3 on a rejected observation; A6
+was cost-interrupted1/3 without verdict (~52GiB) and ratified. A11 and A13 each
+exhausted3/3, fully reverted and freshly restored; A14 blocked0 attempts. The
+supervisor separately authorized A12/A13/A14 as distinct prerequisites, not a
+reset of A11. Detailed exact transcripts and snapshots are committed in the R179
+compiler archive. No production source/package, old theorem signature/body or
+LocalDiamond declaration changed.
+
+**Next:** expose the ACTUAL provider Finish fiber/table projections before
+transporting `restrictOwnedPreservingOrderBindings` into providerOf/targetFiber;
+then checked consumer Begin/Finish, protocol, full bundle and actual 3x2 blocks.
+Only a committed full old-safety negative can unlock surface revision. O21's
+retired/clean/empty-table/childless/unsupported/discarded/current withdrawal
+clauses still need independent proofs; identity is not their replacement.
+
+R179 final validation: four fresh positive target checks, the exact intended
+wrong-original-trace rejection, and seeded package build207/207 PASS. All37
+invocations are accounted (27 ordinary successes including2 package builds and
+the type-only probe, 2 intended-negative successes, 7 rejected proof attempts,
+1 interrupted/no-verdict attempt). Existing five spike files/production and
+LocalDiamond seed remain exact; no legacy R11 rerun, cold build or cache deletion.

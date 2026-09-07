@@ -288,3 +288,33 @@ blocks/decomposition and full current-safety negative list still applies.
 
 No surface/body revision this shift, O19 body0 attempts, O21 withdrawal0,
 O17/root/A8 body0, O20 body0. Frozen five-hole census remains 1/3/0/0/1.
+
+## Final validation (10:07 UTC, before both time guards)
+
+| Invocation | Outcome |
+|---|---|
+| F2-countershape | fresh PASS132.600s; exact retained A5 source |
+| F3-observed | fresh PASS3.121s; exact restored A12 source |
+| F4-identity | fresh PASS3.126s; all retained O21 identity declarations |
+| F5-identity-positive | fresh PASS2.093s |
+| F6-wrong-original-negative | expected exact rejection1.040s: `Mismatch between: other and left.` at `wrongOriginalBirth` |
+| F7-package | seeded `idris2 --build dgamma.ipkg` PASS16.571s; 207/207 seeds |
+
+No broad legacy R11 suite, cold build, proof-source compile concurrency, compiler
+cache deletion or extra micro-unit after these checks. The evidence script
+verifies source hashes, nonoverlapping compiler intervals and **at most one new
+top-level declaration per invocation** against the last accepted source for
+that path. All 37 invocations are preserved: 27 ordinary successes (including
+2 seeded package calls and the single TYPE-only C probe), 2 intended negative
+successes, 7 diagnostic rejected attempts, 1 interrupted/no-verdict attempt.
+Failures/stops are not relabelled as expected-negative successes.
+
+The frozen audit now checks ALL FIVE old spike files byte-unchanged vs77577c2,
+not merely their hole bodies; original sources/package remain unchanged
+vs34b21c9. All five new Idris files have `%default total`; no prohibited new
+proof patterns. CP3, adjacentSwapSuffix full/statement and untracked review
+hashes are exact; LocalDiamond TTC125,368,223 bytes /01:56:14.905763UTC retained.
+The 207/207 count attests seeded package availability/build, NOT a fresh run of
+207 source files or the historical regression suite. Final structured report
+and frozen JSON record the inspected commit explicitly; later gate-only commits
+must not be represented as extra compiler checks.

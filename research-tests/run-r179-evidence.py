@@ -3,6 +3,7 @@
 import hashlib
 import json
 import pathlib
+import re
 import subprocess
 import tarfile
 ROOT = pathlib.Path(__file__).resolve().parents[1]
@@ -10,8 +11,20 @@ OUT = pathlib.Path('/tmp/dgamma-r179')
 records = [json.loads(line) for line in (OUT/'ledger.jsonl').read_text().splitlines()]
 records.sort(key=lambda r:r['start'])
 assert all(a['end'] <= b['start'] for a,b in zip(records,records[1:]))
+accepted_names = {}
 for r in records:
-    assert hashlib.sha256((OUT/(r['unit']+'.source')).read_bytes()).hexdigest() == r['sourceSHA256']
+    snapshot = (OUT/(r['unit']+'.source')).read_bytes()
+    assert hashlib.sha256(snapshot).hexdigest() == r['sourceSHA256']
+    if r['path'] != 'package':
+        names = set(re.findall(r'^(?:0 )?([A-Za-z_]\w*)\s*:',snapshot.decode(),re.M))
+        names.update(re.findall(r'^record ([A-Za-z_]\w*)',snapshot.decode(),re.M))
+        prior = accepted_names.get(r['path'],set())
+        assert not prior - names, (r['unit'],'removed accepted declaration')
+        added = sorted(names - prior)
+        assert len(added) <= 1, (r['unit'],added)
+        r['newTopLevelDeclarations'] = added
+        if r['passed']:
+            accepted_names[r['path']] = names
     assert (OUT/(r['unit']+'.log')).read_text() == r['transcript']
     history = subprocess.check_output(['git','log','--reverse','--format=%H','77577c2..HEAD','--',r['path']],cwd=ROOT,text=True).splitlines()
     r['matchingSourceCommits'] = []
@@ -28,7 +41,8 @@ with tarfile.open(ROOT/'research-tests/O6-R179-COMPILER-EVIDENCE.tar.gz','w:gz')
                 archive.add(path,arcname=path.name)
 summary = dict(checks=len(records),ordinaryPasses=sum(r['passed'] and not r['expectedDiagnostic'] for r in records),
     intendedNegativePasses=sum(r['passed'] and bool(r['expectedDiagnostic']) for r in records),
-    rejectedOrInterrupted=sum(not r['passed'] for r in records),serialized=True,
+    rejectedOrInterrupted=sum(not r['passed'] for r in records),serialized=True,oneNewDeclarationPerInvocation=True,
+    seededPackageBuilds=sum(r['path']=='package' for r in records),
     units=[dict(unit=r['unit'],passed=r['passed'],fresh=r['fresh'],seconds=r['seconds'],commits=r['matchingSourceCommits']) for r in records])
 (OUT/'evidence-summary.json').write_text(json.dumps(summary,indent=2)+'\n')
 print(json.dumps(summary,indent=2))
