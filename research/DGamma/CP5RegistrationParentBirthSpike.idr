@@ -107,3 +107,17 @@ parentBirthAfterPut name key world error value nameEq global live inserted fresh
     Left exact => case exact of Refl => birth
     Right old => previous selected generation old
 
+
+||| Observe only activation-index deletion; this is not a trace withdrawal proof.
+0 parentDeleteObserved :
+  (name : Type) -> (nameEq : DecEq name) -> (removed, candidate : name) ->
+  (current : RegistrationActivation name) -> (rest : List (name, RegistrationActivation name)) ->
+  (observed : Dec (removed = candidate)) -> decEq @{nameEq} removed candidate = observed ->
+  deleteParentActivation @{nameEq} removed ((candidate, current) :: rest) =
+    (case observed of
+      Yes same => rest
+      No distinct => (candidate, current) :: deleteParentActivation @{nameEq} removed rest)
+parentDeleteObserved name nameEq removed candidate current rest (Yes same) exact =
+  rewrite exact in case same of Refl => Refl
+parentDeleteObserved name nameEq removed candidate current rest (No distinct) exact =
+  rewrite exact in Refl
