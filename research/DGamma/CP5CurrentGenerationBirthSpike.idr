@@ -411,3 +411,13 @@ CurrentResultOwner name key world error value nameEq actor (Just (tag, state)) =
   (fiber : Fiber name key value world error **
     lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
       @{nameEq} actor (registry state) = Just fiber)
+
+0 currentResultOwnerIf :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) ->
+  (actor : name) -> (condition : Bool) ->
+  (yesResult, noResult : Maybe (RuleTag, SystemState name key value world error)) ->
+  CurrentResultOwner name key world error value nameEq actor yesResult ->
+  CurrentResultOwner name key world error value nameEq actor noResult ->
+  CurrentResultOwner name key world error value nameEq actor (if condition then yesResult else noResult)
+currentResultOwnerIf name key world error value nameEq actor True yesResult noResult yes no = yes
+currentResultOwnerIf name key world error value nameEq actor False yesResult noResult yes no = no
