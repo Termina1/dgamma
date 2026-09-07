@@ -108,3 +108,19 @@ o19CommutingFramesEarlyRun state eq left right rightRespects commute origin midd
   o19PartialRunObserved right origin (right origin) Refl
     (o19CommutingFramesEarlyDomain state eq left right rightRespects commute
       origin middle final leftFrame rightFrame)
+
+||| Structural congruence of composition under POINTWISE map equality.
+||| Observe the first map explicitly; no function-extensionality postulate.
+export
+0 o19ComposeMapsSameObserved :
+  (state : Type) -> (afterOld, afterNew, beforeOld, beforeNew : PartialMap state) ->
+  ((input : state) -> afterOld input = afterNew input) ->
+  ((input : state) -> beforeOld input = beforeNew input) ->
+  (origin : state) -> (observed : Maybe state) -> (beforeOld origin = observed) ->
+  (partialCompose afterOld beforeOld origin = partialCompose afterNew beforeNew origin)
+o19ComposeMapsSameObserved state afterOld afterNew beforeOld beforeNew afterSame beforeSame
+  origin Nothing exact =
+    rewrite exact in rewrite trans (sym (beforeSame origin)) exact in Refl
+o19ComposeMapsSameObserved state afterOld afterNew beforeOld beforeNew afterSame beforeSame
+  origin (Just actual) exact =
+    rewrite exact in rewrite trans (sym (beforeSame origin)) exact in afterSame actual
