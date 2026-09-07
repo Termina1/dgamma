@@ -61,3 +61,23 @@ supportEdgeInduction name key world error value protocol nameEq keyEq state rank
     (fiber ** found) => case ranked selected fiber found of
       (rank ** rankedFiber) => supportEdgeInductionAtRank name key world error value protocol nameEq keyEq state ranked parentOrdered property step
         rank (wellFounded {rel = LT} rank) selected (MkNameProtocolRank fiber found rankedFiber) supported
+
+export
+0 originalSupportedEdgeInduction :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (trace : Transitions initial finalState) -> AlignedTransitions name key world error value nameEq keyEq trace ->
+  RegistrationDiscipline protocol nameEq trace -> (bindings (registry initial) = []) ->
+  (property : name -> Type) ->
+  ((selected : name) -> (isSupported {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} @{keyEq} selected finalState = True) ->
+    ((lower : name) -> SupportEdge nameEq finalState lower selected ->
+      (isSupported {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} @{keyEq} lower finalState = True) -> property lower) -> property selected) ->
+  (selected : name) ->
+  (isSupported {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} @{keyEq} selected finalState = True) -> property selected
+originalSupportedEdgeInduction name key world error value protocol nameEq keyEq {initial} {finalState} trace aligned discipline empty =
+  supportEdgeInduction name key world error value protocol nameEq keyEq finalState
+    (registrationRankInvariant protocol nameEq keyEq trace aligned (registrationDisciplineProvenance protocol nameEq trace discipline)
+      (emptyRegistryProtocolRanked protocol nameEq initial empty))
+    (registrationParentRankInvariant protocol nameEq keyEq trace aligned (registrationDisciplineProvenance protocol nameEq trace discipline)
+      (emptyRegistryParentRanksIncrease protocol nameEq initial empty))
