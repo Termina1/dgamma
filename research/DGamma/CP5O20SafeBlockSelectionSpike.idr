@@ -164,3 +164,24 @@ record O20ChosenSafeSwap
   chosenSafety : AdjacentActorSwapSafety name key world error value protocol nameEq keyEq
     chosenOrderSwap trace blocks premises
   0 chosenSourceUnique : UniqueRawNameInsertions name key world error value nameEq keyEq trace
+
+||| Explicit candidate elimination followed by actual certification; only the
+||| original input uniqueness is retained, never reconstructed for a substitute.
+export
+0 o20CheckCandidate :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) -> (sourceOrder : List name) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (trace : Transitions initial finalState) ->
+  (blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder trace) ->
+  (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq trace) ->
+  (0 unique : UniqueRawNameInsertions name key world error value nameEq keyEq trace) ->
+  (candidate : (targetOrder : List name ** AdjacentActorOrderSwap name sourceOrder targetOrder)) ->
+  Maybe (O20ChosenSafeSwap name key world error value protocol nameEq keyEq sourceOrder trace blocks premises)
+o20CheckCandidate nameEq keyEq protocol sourceOrder trace blocks premises unique (targetOrder ** swap) =
+  map (\safety => MkO20ChosenSafeSwap targetOrder swap safety unique)
+    (o20CheckSafetyAtMembers nameEq keyEq protocol swap trace blocks premises
+      (Builtin.fst (o20ChosenActorFacts swap))
+      (Builtin.fst (Builtin.snd (o20ChosenActorFacts swap)))
+      (Builtin.snd (Builtin.snd (o20ChosenActorFacts swap))))
