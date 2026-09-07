@@ -292,3 +292,15 @@ acceptance report are persisted alongside the ledger. Independent reviewer gate
 remains required; the supervisor's final stand-down gate is requested only after
 these artifacts are committed. Both guard deadlines are comfortably respected;
 there is no authorized proof work left (unused B14/B15 were explicitly blocked).
+
+## Post-prefix gate continuation — supervisor ruling15:04UTC
+
+Prefix92e2daa ratified, including the explicit protocol=false exception; stand-down
+NOT authorized. The earlier final/acceptance artifacts are now PREFIX evidence,
+not this shift's terminal gate. Supervisor authorized D≤6 fresh micro-units:
+re-derive B11 on B13 over ONE explicit observed table, then DISTINCT observed-table
+owner uniqueness (not B12's exhausted statement). E≤8 only if at least60min remain
+before17:07 AFTER D: actual located blocks on the certified count7 trace using
+existing R172/R174 builders. No safety revision/O19 body. All original stop rules,
+serialized seeded checks, immediate PASS commits and guards unchanged. Parent
+will own independent reviewer gate after the shift. Final audit remains append-only.
