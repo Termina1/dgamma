@@ -9,6 +9,7 @@ import DGamma.Metatheory
 import DGamma.Section3Example
 import DGamma.Unified
 import Data.Maybe
+import Data.List.Elem
 import Decidable.Equality
 
 %default total
@@ -44,3 +45,14 @@ public export
 r179ObservedProviderFinished : SystemState Nat ToyKey ToyValue ToyRuntime String
 r179ObservedProviderFinished = maybe r179ObservedProviderCut snd
   (applyAction (LAdvance 0) r179ObservedProviderCut)
+
+||| Single-purpose provider edges/WF capital after A11's composite stop.
+||| This excludes every consumer target or consumer-transition claim.
+export
+0 r179ObservedProviderEdges :
+  ((checkedApplyAction (LBegin 0) r179ObservedRootSource = Just (LBeginTag, r179ObservedProviderBegin)),
+   (checkedApplyAction (LAdvance 0) r179ObservedProviderBegin = Just (LIterTag, r179ObservedProviderCut)),
+   (checkedApplyAction (LAdvance 0) r179ObservedProviderCut = Just (LFinishTag, r179ObservedProviderFinished)),
+   (registryWellFormed r179ObservedProviderCut = True),
+   (registryWellFormed r179ObservedProviderFinished = True))
+r179ObservedProviderEdges = (Refl, Refl, Refl, Refl, Refl)
