@@ -1147,5 +1147,379 @@
     "symbol": null,
     "transcript": "",
     "matchingSourceCommits": []
+  },
+  {
+    "unit": "D1-1",
+    "path": "research/DGamma/CP5O20SupportedBirthBridgeSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O20SupportedBirthBridgeSpike.idr"
+    ],
+    "start": "2026-09-07T10:18:24.648626+00:00",
+    "end": "2026-09-07T10:18:27.774615+00:00",
+    "seconds": 3.1257710410282016,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 2891120,
+    "sourceSHA256": "fb8692682add42ce76f617612a5da7fb80ec83e52f94d6579c8813e3715d7201",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "27/27: Building DGamma.CP5O20SupportedBirthBridgeSpike (research/DGamma/CP5O20SupportedBirthBridgeSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "canonicalGeneratedOriginMetadata"
+    ],
+    "matchingSourceCommits": [
+      "81ce4326fd9dc4e47bf3c2d786d85f3bae4e63a9"
+    ]
+  },
+  {
+    "unit": "D2-1",
+    "path": "research/DGamma/CP5O20SupportedBirthBridgeSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O20SupportedBirthBridgeSpike.idr"
+    ],
+    "start": "2026-09-07T10:19:02.095659+00:00",
+    "end": "2026-09-07T10:19:05.211133+00:00",
+    "seconds": 3.115245792083442,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 3014848,
+    "sourceSHA256": "5a5fc7ddf9157bd2dafa4ba77adc72bab2a19c2ac65ff5a462b9703df99bd0e5",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "27/27: Building DGamma.CP5O20SupportedBirthBridgeSpike (research/DGamma/CP5O20SupportedBirthBridgeSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "canonicalSupportedChildBirth"
+    ],
+    "matchingSourceCommits": [
+      "a15b1c35f339dc0f9a5ea36dbcd7b1bcbe56a3c5"
+    ]
+  },
+  {
+    "unit": "D3-1",
+    "path": "research/DGamma/CP5O20SupportedBirthBridgeSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O20SupportedBirthBridgeSpike.idr"
+    ],
+    "start": "2026-09-07T10:19:49.157497+00:00",
+    "end": "2026-09-07T10:19:52.266157+00:00",
+    "seconds": 3.108476834371686,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 4089872,
+    "sourceSHA256": "af1cc8da160af4cd46616b1d783504b1ae4a6e9b35c0a5784317b9db052985e6",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "27/27: Building DGamma.CP5O20SupportedBirthBridgeSpike (research/DGamma/CP5O20SupportedBirthBridgeSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "bridgeSupportedOriginalTarget"
+    ],
+    "matchingSourceCommits": [
+      "3656621331a9b6b2b9a3f3af01acb70e34f262c9"
+    ]
+  },
+  {
+    "unit": "D4-1",
+    "path": "research/DGamma/CP5O20SupportedBirthBridgeSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O20SupportedBirthBridgeSpike.idr"
+    ],
+    "start": "2026-09-07T10:20:25.878528+00:00",
+    "end": "2026-09-07T10:20:28.988834+00:00",
+    "seconds": 3.1100927917286754,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 4098240,
+    "sourceSHA256": "3472885c639aa31f81eea9203b78b9998f16dcca90da3d1628cc27e5497477ee",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "27/27: Building DGamma.CP5O20SupportedBirthBridgeSpike (research/DGamma/CP5O20SupportedBirthBridgeSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "leftCanonicalOriginCurrentStamp"
+    ],
+    "matchingSourceCommits": [
+      "605e070a2e87c913dd3ccbd7d30cc123ffc6c5c0"
+    ]
+  },
+  {
+    "unit": "D5-1",
+    "path": "research/DGamma/CP5O20SupportedBirthBridgeSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O20SupportedBirthBridgeSpike.idr"
+    ],
+    "start": "2026-09-07T10:20:44.117356+00:00",
+    "end": "2026-09-07T10:20:47.237467+00:00",
+    "seconds": 3.119908125139773,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 4140064,
+    "sourceSHA256": "974a9dc0acc2c551aa014c4abbae884a785c39739eb2966a719c19564f5a17a2",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "27/27: Building DGamma.CP5O20SupportedBirthBridgeSpike (research/DGamma/CP5O20SupportedBirthBridgeSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "rightCanonicalOriginCurrentStamp"
+    ],
+    "matchingSourceCommits": [
+      "637c6e841c666a4846881e0ba5a55a30e7ca374c"
+    ]
+  },
+  {
+    "unit": "D6-1",
+    "path": "research/DGamma/CP5O20SupportedBirthBridgeSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O20SupportedBirthBridgeSpike.idr"
+    ],
+    "start": "2026-09-07T10:21:29.229747+00:00",
+    "end": "2026-09-07T10:21:32.346223+00:00",
+    "seconds": 3.1162639167159796,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 2967712,
+    "sourceSHA256": "6e6132170a040affb02fa91e7354f340dcdd527926c449a56e6504225bae43f3",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "27/27: Building DGamma.CP5O20SupportedBirthBridgeSpike (research/DGamma/CP5O20SupportedBirthBridgeSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "canonicalSupportedOriginTriangle"
+    ],
+    "matchingSourceCommits": [
+      "5216fa4328a47da7a27946865b85a8a264846bec"
+    ]
+  },
+  {
+    "unit": "D7-1",
+    "path": "research/DGamma/CP5O20SupportedBirthBridgeSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O20SupportedBirthBridgeSpike.idr"
+    ],
+    "start": "2026-09-07T10:22:09.243349+00:00",
+    "end": "2026-09-07T10:22:12.370444+00:00",
+    "seconds": 3.1269343332387507,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 2321984,
+    "sourceSHA256": "339b8165ae920f1301da573881256ae3063278d98a3cbd4820293441d4dccc4a",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "27/27: Building DGamma.CP5O20SupportedBirthBridgeSpike (research/DGamma/CP5O20SupportedBirthBridgeSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "mappedSupportedCanonicalBirth"
+    ],
+    "matchingSourceCommits": [
+      "af1600b78a4c8f50fe70e72a19407208a7fcc41c"
+    ]
+  },
+  {
+    "unit": "D8-1",
+    "path": "research/DGamma/CP5O20SupportedBirthBridgeSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O20SupportedBirthBridgeSpike.idr"
+    ],
+    "start": "2026-09-07T10:22:48.363270+00:00",
+    "end": "2026-09-07T10:22:51.488697+00:00",
+    "seconds": 3.125202165916562,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 2489344,
+    "sourceSHA256": "95537916a2260d728c9887ce353425f9ca7ac83b6d4acfd0be5e92f355875a92",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "27/27: Building DGamma.CP5O20SupportedBirthBridgeSpike (research/DGamma/CP5O20SupportedBirthBridgeSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "supportedCanonicalBirthBridgeObserved"
+    ],
+    "matchingSourceCommits": [
+      "14a9e71351d642a236dc2b3f9243c956eee4e6cf"
+    ]
+  },
+  {
+    "unit": "D9-1",
+    "path": "research/DGamma/CP5O20SupportedBirthBridgeSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O20SupportedBirthBridgeSpike.idr"
+    ],
+    "start": "2026-09-07T10:23:15.136991+00:00",
+    "end": "2026-09-07T10:23:18.246712+00:00",
+    "seconds": 3.1094862082973123,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 2380736,
+    "sourceSHA256": "bd88788d10310727301b0dccb19254d9a1d88056d245f09ac32aef7836e6b1d9",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "27/27: Building DGamma.CP5O20SupportedBirthBridgeSpike (research/DGamma/CP5O20SupportedBirthBridgeSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "supportedCanonicalBirthBridge"
+    ],
+    "matchingSourceCommits": [
+      "eea021121392deec4bbca2d8aa74e36ef65c9945"
+    ]
+  },
+  {
+    "unit": "D10-1",
+    "path": "research/DGamma/CP5O20SupportedBirthBridgeSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O20SupportedBirthBridgeSpike.idr"
+    ],
+    "start": "2026-09-07T10:23:58.465062+00:00",
+    "end": "2026-09-07T10:24:02.620523+00:00",
+    "seconds": 4.155241957865655,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 2937696,
+    "sourceSHA256": "fdedc5d8bb6889ef900ba8c537f264fc0785733029ef30b51ac815a4cf4924b3",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "27/27: Building DGamma.CP5O20SupportedBirthBridgeSpike (research/DGamma/CP5O20SupportedBirthBridgeSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "supportedReplayedBirthBridge"
+    ],
+    "matchingSourceCommits": [
+      "23b6c9890a0285b45746ee20ad60164ed5a01d25"
+    ]
+  },
+  {
+    "unit": "D11-1",
+    "path": "research/DGamma/CP5O20SupportedBirthBridgeSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O20SupportedBirthBridgeSpike.idr"
+    ],
+    "start": "2026-09-07T10:24:35.613304+00:00",
+    "end": "2026-09-07T10:24:39.771475+00:00",
+    "seconds": 4.157962792087346,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 2926768,
+    "sourceSHA256": "fb7bf6b4750d729da2794ff38bc1ec8d51cffbb838a24db8f7db822914b4e93a",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "27/27: Building DGamma.CP5O20SupportedBirthBridgeSpike (research/DGamma/CP5O20SupportedBirthBridgeSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "canonicalGeneratedBirthStampUnique"
+    ],
+    "matchingSourceCommits": [
+      "149d10f517cac26c960ca43a0baea9907e3274f9"
+    ]
+  },
+  {
+    "unit": "D12-1",
+    "path": "research-tests/DGamma/R179O20SupportedBirthPositive.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--source-dir",
+      "research-tests",
+      "--check",
+      "research-tests/DGamma/R179O20SupportedBirthPositive.idr"
+    ],
+    "start": "2026-09-07T10:25:34.375415+00:00",
+    "end": "2026-09-07T10:25:36.465494+00:00",
+    "seconds": 2.0899088750593364,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 1428304,
+    "sourceSHA256": "010bf6fcfa480156240a4365ab8f7378fc6edf0cc253f6bf9066bbaeb8ce2f4c",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "1/1: Building DGamma.R179O20SupportedBirthPositive (research-tests/DGamma/R179O20SupportedBirthPositive.idr)\n",
+    "newTopLevelDeclarations": [
+      "r179SupportedReplayedBirthUnique"
+    ],
+    "matchingSourceCommits": [
+      "a8679a0f0a4fd3d9848d109ac3e0052f7bee36fd"
+    ]
   }
 ]

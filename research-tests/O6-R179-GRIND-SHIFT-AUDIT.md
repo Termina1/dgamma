@@ -318,3 +318,60 @@ The 207/207 count attests seeded package availability/build, NOT a fresh run of
 207 source files or the historical regression suite. Final structured report
 and frozen JSON record the inspected commit explicitly; later gate-only commits
 must not be represented as extra compiler checks.
+
+## 10:10 UTC supervisor redirect — handoff deferred, independent D/E authorized
+
+The bd5db99 prefix was ratified (A12 real, A13 stopped, A14 blocked; B genuine,
+C sized), but handoff was NOT approved. The supervisor authorized **D ≤12
+micro-units** of O20 bridge producer capital independent of the operational
+permutation, using accepted capital/original uniqueness/A9, no O20 body.
+**E ≤8** surface-independent O17 ranked-segment pair-location/orientation units
+are authorized only if ≥60min remain before12:30 after D, NOT root placement.
+All prior caps/stops remain; append-only audit and another final gate required.
+
+D will target the generated-birth clause on its constructible **originally
+supported child subdomain**: derive exact canonical-origin metadata, producer-
+owned opposite canonical child birth and the fixed accepted-generation triangle.
+This does not assume ambient/table/control convergence or cover unsupported
+canonical children. Those are not consequences merely of replay-to-left data.
+
+## Unit D — supported generated-birth bridge producer capital: 12/12 PASS
+
+All12 micro-units passed their FIRST invocation, each immediately committed:
+D1 `canonicalGeneratedOriginMetadata` (81ce432), D2
+`canonicalSupportedChildBirth` (a15b1c3), D3 `bridgeSupportedOriginalTarget`
+(3656621), D4/D5 left/right `CanonicalOriginCurrentStamp` (605e070/637c6e8), D6
+`canonicalSupportedOriginTriangle` (5216fa4), D7
+`mappedSupportedCanonicalBirth` (af1600b), D8
+`supportedCanonicalBirthBridgeObserved` (14a9e71), D9
+`supportedCanonicalBirthBridge` (eea0211), D10 `supportedReplayedBirthBridge`
+(23b6c98), D11 `canonicalGeneratedBirthStampUnique` (149d10f), D12 positive
+`r179SupportedReplayedBirthUnique` (a8679a0). Each check2–4.2s.
+
+The retained companion `CP5O20SupportedBirthBridgeSpike` proves the EXACT fourth
+R147 bridge clause for a generated child that is supported in the ORIGINAL
+left endpoint. Its actual source lookup is produced from computed support;
+actual canonical origins come from each capital's deletion/sorting map.
+Original uniqueness proves immutable metadata and exact current stamps. A9 is
+GENUINELY consumed by D3/D7 to transport support and hence produce the opposite
+canonical occurrence through its OWN canonical child placement. The child's
+name AND parent use the accepted fixed bijection, component is exact, and
+accepted forward generation equals the original origin of that actual right
+occurrence. D10 extends this to any genuine ActionRegistrationReplayCorrespondence,
+without an operational permutation object. D11/D12 also prove uniqueness of
+that actual right canonical birth stamp.
+
+**Not proved:** unsupported-child cases; ambient/table/control convergence; an
+unconditional fourth clause for all canonical/replayed generated occurrences;
+O20's body. Neither opposite support/lookup/birth/metadata nor the generation
+triangle was added as an output-shaped assumption. The original support proof
+is an explicit SUBDOMAIN restriction, not a claim that every canonical child
+has it. No O21 withdrawal proof or any of the five old spike files was changed.
+
+D completed at10:25UTC, leaving >120min before12:30, so the supervisor's condition
+for E (≥60min) holds. E will build a surface-independent ACTUAL trace selector
+parameterized by the exact action-rank observation: selected adjacent checked
+steps, owned rank equations/descent and original decomposition, then alignment.
+No root barrier moves, canonical proof body, or assumption that Nothing means
+canonical. Applying its rank parameter to the frozen private worklist observer
+and proving all orientation applicability remains separate integration work.
