@@ -92,3 +92,38 @@ o19PairOccurrence NoTransitions left right later _ (OccursLater OccursHere) =
 o19PairOccurrence NoTransitions left right later _ (OccursLater (OccursLater absent)) impossible
 o19PairOccurrence (MoreTransitions head rest) left right later selected occurs =
   OccursLater (o19PairOccurrence rest left right later selected occurs)
+
+||| B5: derive the three local diamond premises from the SAME whole bundle
+||| and source decomposition. No extra pair-independent or well-formed oracle.
+public export
+0 o19SourcePairFacts :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {initial, first, middle, last, finalState : SystemState name key value world error} ->
+  (original : Transitions initial finalState) -> (earlier : Transitions initial first) ->
+  (left : Transition first middle) -> (right : Transition middle last) ->
+  (later : Transitions last finalState) ->
+  (appendTransitions earlier (MoreTransitions left (MoreTransitions right later)) = original) ->
+  ReplayInvariantBundle name key world error value protocol nameEq keyEq original ->
+  (AlignedTransitions name key world error value nameEq keyEq
+     (MoreTransitions left (MoreTransitions right NoTransitions)),
+   (registryWellFormed {name = name} {key = key} {value = value} {world = world}
+     {error = error} @{nameEq} @{keyEq} first = True),
+   TraceIndependent name key world error value keyEq
+     (MoreTransitions left (MoreTransitions right NoTransitions)))
+o19SourcePairFacts {name} {key} {world} {error} {value}
+  nameEq keyEq protocol original earlier left right later decomposition premises =
+  (Builtin.fst (alignedAppendSplit (MoreTransitions left (MoreTransitions right NoTransitions)) later
+    (Builtin.snd (alignedAppendSplit earlier (MoreTransitions left (MoreTransitions right later))
+      (replace {p = AlignedTransitions name key world error value nameEq keyEq}
+        (sym decomposition) (replayAligned premises))))),
+   alignedTraceWellFormedEnd nameEq keyEq earlier
+     (Builtin.fst (alignedAppendSplit earlier (MoreTransitions left (MoreTransitions right later))
+       (replace {p = AlignedTransitions name key world error value nameEq keyEq}
+         (sym decomposition) (replayAligned premises))))
+     (replayInitialWellFormed premises),
+   traceIndependentUnderEmbedding
+     (\selected, occurs => replace {p = OccursIn selected} decomposition
+       (o19PairOccurrence earlier left right later selected occurs))
+     (replayIndependent premises))
