@@ -2741,3 +2741,29 @@ registrationBeginLiveObserved name key world error value nameEq ordinal actor li
   rewrite exact in Refl
 registrationBeginLiveObserved name key world error value nameEq ordinal actor live activations counts deleted (Just generation) exact =
   rewrite exact in Refl
+
+0 registrationIndexLiveAdvance :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) ->
+  (ordinal : Nat) -> (action : Action name key value world error) -> (index : RegistrationIndexState name) ->
+  (indexedLiveGenerations (advanceRegistrationIndex @{nameEq} ordinal action index) =
+    advanceGenerationEnvironment @{nameEq} ordinal action (indexedLiveGenerations index))
+registrationIndexLiveAdvance name key world error value nameEq ordinal (OInsert child Root component)
+  (MkRegistrationIndexState live activations counts deleted) = Refl
+registrationIndexLiveAdvance name key world error value nameEq ordinal (OInsert child (ChildOf parent) component)
+  (MkRegistrationIndexState live activations counts deleted) = Refl
+registrationIndexLiveAdvance name key world error value nameEq ordinal (ORetire actor)
+  (MkRegistrationIndexState live activations counts deleted) = Refl
+registrationIndexLiveAdvance name key world error value nameEq ordinal (ORemove actor)
+  (MkRegistrationIndexState live activations counts deleted) = Refl
+registrationIndexLiveAdvance name key world error value nameEq ordinal (LBegin actor)
+  (MkRegistrationIndexState live activations counts deleted) =
+    registrationBeginLiveObserved name key world error value nameEq ordinal actor live activations counts deleted
+      (lookupCurrentGeneration @{nameEq} actor live) Refl
+registrationIndexLiveAdvance name key world error value nameEq ordinal (LAdvance actor)
+  (MkRegistrationIndexState live activations counts deleted) = Refl
+registrationIndexLiveAdvance name key world error value nameEq ordinal (LDivert actor)
+  (MkRegistrationIndexState live activations counts deleted) = Refl
+registrationIndexLiveAdvance name key world error value nameEq ordinal (LLeave actor)
+  (MkRegistrationIndexState live activations counts deleted) = Refl
+registrationIndexLiveAdvance name key world error value nameEq ordinal (LUnload actor)
+  (MkRegistrationIndexState live activations counts deleted) = Refl
