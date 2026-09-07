@@ -145,3 +145,22 @@ o20CheckSafetyAtMembers nameEq keyEq protocol swap trace blocks premises leftIn 
     (decomposedBlock blocks (actorLeft swap) leftIn)) <*>
   (o20CheckEmptyGap (betweenBlocks
     (decomposedBlocksFollowOrder blocks (actorLeft swap) (actorRight swap) leftIn rightIn ordered)))
+
+||| A selected candidate owns its target actor word, pure transposition,
+||| complete positive safety and ORIGINAL source insertion uniqueness. It is
+||| NOT an operational permutation: no O19 replay is fabricated or assumed.
+public export
+record O20ChosenSafeSwap
+  (name, key, world, error : Type) (value : key -> Type)
+  (protocol : RegistrationProtocol key value world error)
+  (nameEq : DecEq name) (keyEq : DecEq key) (sourceOrder : List name)
+  {initial, finalState : SystemState name key value world error}
+  (trace : Transitions initial finalState)
+  (blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder trace)
+  (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq trace) where
+  constructor MkO20ChosenSafeSwap
+  chosenTargetOrder : List name
+  chosenOrderSwap : AdjacentActorOrderSwap name sourceOrder chosenTargetOrder
+  chosenSafety : AdjacentActorSwapSafety name key world error value protocol nameEq keyEq
+    chosenOrderSwap trace blocks premises
+  0 chosenSourceUnique : UniqueRawNameInsertions name key world error value nameEq keyEq trace
