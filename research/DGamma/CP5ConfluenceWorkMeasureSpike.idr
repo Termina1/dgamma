@@ -183,3 +183,12 @@ rankSegmentOwnedStepProgress head (FirstRankSegment later progress) =
   segmentedRankOwnedLift head (FirstRankSegment later progress)
 rankSegmentOwnedStepProgress head (LaterRankSegment untouched later) =
   LaterRankSegment (head :: untouched) later
+
+||| Rank and barrier cases each retain the chosen swap and its decrease.
+export
+0 rankSegmentObservedStepProgress :
+  (observed : Maybe Nat) -> {source, target : List (List Nat)} ->
+  (SegmentedRankProgress source target) ->
+  (SegmentedRankProgress (rankSegmentStep observed source) (rankSegmentStep observed target))
+rankSegmentObservedStepProgress Nothing progress = LaterRankSegment [] progress
+rankSegmentObservedStepProgress (Just head) progress = rankSegmentOwnedStepProgress head progress
