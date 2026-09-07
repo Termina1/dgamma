@@ -30558,3 +30558,19 @@ rawClosingOccurrenceRank name key world error value nameEq keyEq protocol global
       (ErasedClosingEpisodeOccurrence selected episode)))
 rawClosingOccurrenceRankSound name key world error value nameEq keyEq protocol global premises selected episode =
   snd (rawClosingEpisodeProtocolRank name key world error value nameEq keyEq protocol global premises selected episode)
+
+||| Authenticate a closing's exact opening action at its O7 ordinal.
+0 rawClosingOpeningActionAt :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (global : Transitions initial finalState) -> (selected : name) ->
+  (episode : LocatedClosedEpisode name key world error value nameEq keyEq selected global) ->
+  (rawClosingActionAt name key world error value (transitionCount (traceBeforeOpening episode)) global =
+    Just (LBegin selected))
+rawClosingOpeningActionAt name key world error value nameEq keyEq global selected episode =
+  trans (cong (rawClosingActionAt name key world error value (transitionCount (traceBeforeOpening episode)))
+    (sym (locatedDecomposition episode)))
+    (rawClosingActionAtSplit name key world error value (traceBeforeOpening episode)
+      (beginTransition (closedOpening (locatedEpisode episode)))
+      (appendTransitions (closedTransitions (locatedEpisode episode)) (traceAfterClosing episode)))
