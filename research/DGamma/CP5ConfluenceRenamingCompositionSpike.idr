@@ -9,6 +9,8 @@ import DGamma.CP5GeneratedOrchestrationMatched
 import DGamma.CP5CurrentGenerationBirthSpike
 import DGamma.CP5ImmutableBirthMetadataSpike
 import DGamma.CP5RegistrationParentBirthSpike
+import DGamma.CP5SupportedBirthCoverageSpike
+import DGamma.CP5RawClosingRankSpike
 import DGamma.CP5ConfluenceDeletionChainSpike
 import DGamma.CP5ConfluenceLocalDiamondSpike
 import DGamma.CP5ConfluenceCanonicalSortSpike
@@ -3323,3 +3325,65 @@ export
 acceptedRightEventParentBirth name key world error value nameEq left right renaming registrations event member activation present =
   projectionRightParentBirth name key world error value nameEq left right renaming
     (alignFiniteRegistrationProjection (generationTraceCorrespondence registrations)) event member activation present
+
+||| Exhaustive original-birth coverage by the OWNED side fold, including its
+||| explicit closing alternative. No destination support is assumed or claimed.
+0 registrationSideFoldCoverage :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) ->
+  (ordinal : Nat) -> (index : RegistrationIndexState name) ->
+  {first, finalState : SystemState name key value world error} ->
+  (segment : Transitions first finalState) ->
+  {finalIndex : RegistrationIndexState name} ->
+  {scan : RegistrationSideScan nameEq ordinal index segment finalIndex} ->
+  {events : List (RegistrationEvent name key world error value)} ->
+  RegistrationSideEventFold scan events ->
+  (selected, parent : name) -> (component : Component key value world error) -> (position : Nat) ->
+  (rawClosingActionAt name key world error value position segment = Just (OInsert selected (ChildOf parent) component)) ->
+  ClassifiedGeneratedBirth name key world error value ordinal segment events selected
+registrationSideFoldCoverage name key world error value nameEq ordinal index _
+  RegistrationSideEventFoldEnd selected parent component position observed = case observed of Refl impossible
+registrationSideFoldCoverage name key world error value nameEq ordinal index _
+  (RegistrationSideEventFoldNonRegistration action step rest exact notRegistration later)
+  selected parent component Z observed =
+    case trans (sym (cong isGeneratedRegistrationAction
+      (trans (sym exact) (coveredHeadActionObserved name key world error value step rest
+        (OInsert selected (ChildOf parent) component) observed)))) notRegistration of Refl impossible
+registrationSideFoldCoverage name key world error value nameEq ordinal index _
+  (RegistrationSideEventFoldNonRegistration {events} action step rest exact notRegistration later)
+  selected parent component (S position) observed =
+    classifiedBirthPrepend name key world error value ordinal step rest events events (\event, member => member) selected
+      (registrationSideFoldCoverage name key world error value nameEq (S ordinal)
+        (advanceRegistrationIndex @{nameEq} ordinal action index) rest later selected parent component position observed)
+registrationSideFoldCoverage name key world error value nameEq ordinal index _
+  (RegistrationSideEventFoldDeleted {child = actualChild} {parent = actualParent} {component = actualComponent} {events}
+    step rest exact deleted later) selected parent component Z observed =
+    replace {p = ClassifiedGeneratedBirth name key world error value ordinal (MoreTransitions step rest) events}
+      (cong actionOwner (trans (sym exact) (coveredHeadActionObserved name key world error value step rest
+        (OInsert selected (ChildOf parent) component) observed)))
+      (classifiedBirthHead name key world error value nameEq ordinal index actualChild actualParent actualComponent
+        step rest exact events (Right deleted))
+registrationSideFoldCoverage name key world error value nameEq ordinal index _
+  (RegistrationSideEventFoldDeleted {child = actualChild} {parent = actualParent} {component = actualComponent} {events}
+    step rest exact deleted later) selected parent component (S position) observed =
+    classifiedBirthPrepend name key world error value ordinal step rest events events (\event, member => member) selected
+      (registrationSideFoldCoverage name key world error value nameEq (S ordinal)
+        (advanceDeletedRegistrationIndex @{nameEq} ordinal actualChild actualParent actualComponent index)
+        rest later selected parent component position observed)
+registrationSideFoldCoverage name key world error value nameEq ordinal index _
+  (RegistrationSideEventFoldSurviving {child = actualChild} {parent = actualParent} {component = actualComponent} {events}
+    step rest exact surviving later) selected parent component Z observed =
+    replace {p = ClassifiedGeneratedBirth name key world error value ordinal (MoreTransitions step rest)
+      (registrationEventAt @{nameEq} ordinal index actualChild actualParent actualComponent :: events)}
+      (cong actionOwner (trans (sym exact) (coveredHeadActionObserved name key world error value step rest
+        (OInsert selected (ChildOf parent) component) observed)))
+      (classifiedBirthHead name key world error value nameEq ordinal index actualChild actualParent actualComponent
+        step rest exact (registrationEventAt @{nameEq} ordinal index actualChild actualParent actualComponent :: events) (Left Here))
+registrationSideFoldCoverage name key world error value nameEq ordinal index _
+  (RegistrationSideEventFoldSurviving {child = actualChild} {parent = actualParent} {component = actualComponent} {events}
+    step rest exact surviving later) selected parent component (S position) observed =
+    classifiedBirthPrepend name key world error value ordinal step rest events
+      (registrationEventAt @{nameEq} ordinal index actualChild actualParent actualComponent :: events)
+      (\event, member => There member) selected
+      (registrationSideFoldCoverage name key world error value nameEq (S ordinal)
+        (advanceSurvivingRegistrationIndex @{nameEq} ordinal actualChild actualParent actualComponent index)
+        rest later selected parent component position observed)
