@@ -1,7 +1,7 @@
 {
   "frozen": {
-    "timestamp": "2026-09-07T15:32:17.586279+00:00",
-    "head": "5369be2b89576fc67f665521310350c07c222213",
+    "timestamp": "2026-09-07T16:14:08.910195+00:00",
+    "head": "13b84205225e0165f55034a5ff9ada5dc6a81766",
     "start": "5871236",
     "holes": {
       "CanonicalSort": [
@@ -44,14 +44,18 @@
       "mtimeUTC": "2026-09-07T01:56:14.905763+00:00"
     },
     "changedIdrisFiles": [
+      "research-tests/DGamma/R181O19BundlePrerequisites.idr",
       "research-tests/DGamma/R181O19LocatedBlocks.idr",
       "research-tests/DGamma/R181O19SafetyCompletion.idr",
+      "research-tests/DGamma/R181O19UniquenessAndBundle.idr",
       "research/DGamma/CP5O20PairedPrefixProducerSpike.idr",
       "research/DGamma/CP5ObservedInstalledLifecycleSpike.idr"
     ],
     "sourceSHA256": {
+      "research-tests/DGamma/R181O19BundlePrerequisites.idr": "f50b7a6b2fb8d89e5b1f5ce7fcb3d6661510f8c57aa3c886ffcaa9570bdda8ee",
       "research-tests/DGamma/R181O19LocatedBlocks.idr": "e7bcb0e849d264b6951c053a50dd921fa6c4e22494bdba72484bcfefc0fd6a3f",
       "research-tests/DGamma/R181O19SafetyCompletion.idr": "821680d533db389cbaa25af65c8f180fc0224de94c9f6c9d9cfed6260d1ad180",
+      "research-tests/DGamma/R181O19UniquenessAndBundle.idr": "341f797d187cea3c1b83c4b1c5d7e41c38cca69067090b11930c5d8b53559d9e",
       "research/DGamma/CP5O20PairedPrefixProducerSpike.idr": "c57be81f7d44b33ab240a0f01b77a78aa2bf00e4adda57d609705d0151f05dd0",
       "research/DGamma/CP5ObservedInstalledLifecycleSpike.idr": "77eef9aac99afa4e9c2f0dde5d8ae00e1e74e27cde0fc5be6d4211238f2e0c47"
     },
@@ -79,10 +83,10 @@
     "allowedUntrackedOnly": true
   },
   "compilerSummary": {
-    "checks": 67,
-    "ordinaryPasses": 55,
+    "checks": 85,
+    "ordinaryPasses": 70,
     "intendedNegativePasses": 0,
-    "rejectedOrInterrupted": 12,
+    "rejectedOrInterrupted": 15,
     "serialized": true,
     "oneNewDeclarationPerInvocation": false,
     "workflowViolations": [
@@ -91,7 +95,7 @@
         "detail": "Two unaccepted declarations: premature B12 invocation; failed B11 commit dfc933e reverted cdaee57."
       }
     ],
-    "seededPackageBuilds": 4,
+    "seededPackageBuilds": 5,
     "units": [
       {
         "unit": "A1-1",
@@ -664,12 +668,166 @@
         "fresh": true,
         "seconds": 16.613223041873425,
         "commits": []
+      },
+      {
+        "unit": "F1-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 3.121476082596928,
+        "commits": [
+          "95d6e036da2287910fdcc291e7dd655e7bbaaf64"
+        ]
+      },
+      {
+        "unit": "F2-1",
+        "passed": false,
+        "fresh": true,
+        "seconds": 1.047103582881391,
+        "commits": []
+      },
+      {
+        "unit": "F2-2",
+        "passed": false,
+        "fresh": true,
+        "seconds": 2.0755657497793436,
+        "commits": []
+      },
+      {
+        "unit": "F2-3",
+        "passed": true,
+        "fresh": true,
+        "seconds": 3.106521791778505,
+        "commits": [
+          "5aaaab7cfd8ad8f656f689a6c680131331714764"
+        ]
+      },
+      {
+        "unit": "F3-1",
+        "passed": false,
+        "fresh": true,
+        "seconds": 6.254562417045236,
+        "commits": []
+      },
+      {
+        "unit": "F3-2",
+        "passed": true,
+        "fresh": true,
+        "seconds": 68.5558508746326,
+        "commits": [
+          "b0664ae2cf7cb88af28312044549325a8fe00e08"
+        ]
+      },
+      {
+        "unit": "F4-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 68.56775804236531,
+        "commits": [
+          "af9cc1edbf760454ccadc97b268f0830f35c6536"
+        ]
+      },
+      {
+        "unit": "F5-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 2.108104833867401,
+        "commits": [
+          "0e21a8920b885ac1439e4b93925c40a3c119451d"
+        ]
+      },
+      {
+        "unit": "F6-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 2.09267674991861,
+        "commits": [
+          "73528e4b08892e1a07088583ec40378c18f94bf3"
+        ]
+      },
+      {
+        "unit": "F7-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 2.09653858281672,
+        "commits": [
+          "7dbad1801de252b0239b38fa93ecd7217b7e0de5"
+        ]
+      },
+      {
+        "unit": "F8-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 2.099042708054185,
+        "commits": [
+          "52ea2605616c181cf3cb73d85bca906b32d000e7"
+        ]
+      },
+      {
+        "unit": "F-final-installed",
+        "passed": true,
+        "fresh": true,
+        "seconds": 1.0350247090682387,
+        "commits": [
+          "51eb5ef832849277434528ea2f5a7eb332dfe6db"
+        ]
+      },
+      {
+        "unit": "F-final-paired",
+        "passed": true,
+        "fresh": true,
+        "seconds": 3.1515807500109076,
+        "commits": [
+          "3d4986623a968d77b1bf9f5c51ed4bf3fea7c5b0"
+        ]
+      },
+      {
+        "unit": "F-final-negative-capital",
+        "passed": true,
+        "fresh": true,
+        "seconds": 32.188781125005335,
+        "commits": [
+          "95b4ab595c5e86851fb0de8d63cd6ff882367626"
+        ]
+      },
+      {
+        "unit": "F-final-blocks",
+        "passed": true,
+        "fresh": true,
+        "seconds": 3.1298457919619977,
+        "commits": [
+          "c1667529c5489921f1774b26412a04151b0e5a08"
+        ]
+      },
+      {
+        "unit": "F-final-decomposition",
+        "passed": true,
+        "fresh": true,
+        "seconds": 67.38985995808616,
+        "commits": [
+          "af9cc1edbf760454ccadc97b268f0830f35c6536"
+        ]
+      },
+      {
+        "unit": "F-final-bundle",
+        "passed": true,
+        "fresh": true,
+        "seconds": 2.0715118749067187,
+        "commits": [
+          "52ea2605616c181cf3cb73d85bca906b32d000e7"
+        ]
+      },
+      {
+        "unit": "F-final-package",
+        "passed": true,
+        "fresh": true,
+        "seconds": 16.596104791853577,
+        "commits": []
       }
     ]
   },
   "finalChecks": [
     {
-      "unit": "DE-final-installed",
+      "unit": "F-final-installed",
       "path": "research/DGamma/CP5ObservedInstalledLifecycleSpike.idr",
       "command": [
         "idris2",
@@ -680,9 +838,9 @@
         "--check",
         "research/DGamma/CP5ObservedInstalledLifecycleSpike.idr"
       ],
-      "start": "2026-09-07T15:29:00.237886+00:00",
-      "end": "2026-09-07T15:29:01.274932+00:00",
-      "seconds": 1.0369244166649878,
+      "start": "2026-09-07T16:08:28.197826+00:00",
+      "end": "2026-09-07T16:08:29.233004+00:00",
+      "seconds": 1.0350247090682387,
       "exit": 0,
       "fresh": true,
       "passed": true,
@@ -691,10 +849,14 @@
       "sourceSHA256": "77eef9aac99afa4e9c2f0dde5d8ae00e1e74e27cde0fc5be6d4211238f2e0c47",
       "expectedDiagnostic": null,
       "symbol": null,
-      "transcript": "1/1: Building DGamma.CP5ObservedInstalledLifecycleSpike (research/DGamma/CP5ObservedInstalledLifecycleSpike.idr)\n"
+      "transcript": "1/1: Building DGamma.CP5ObservedInstalledLifecycleSpike (research/DGamma/CP5ObservedInstalledLifecycleSpike.idr)\n",
+      "newTopLevelDeclarations": [],
+      "matchingSourceCommits": [
+        "51eb5ef832849277434528ea2f5a7eb332dfe6db"
+      ]
     },
     {
-      "unit": "DE-final-paired",
+      "unit": "F-final-paired",
       "path": "research/DGamma/CP5O20PairedPrefixProducerSpike.idr",
       "command": [
         "idris2",
@@ -705,21 +867,25 @@
         "--check",
         "research/DGamma/CP5O20PairedPrefixProducerSpike.idr"
       ],
-      "start": "2026-09-07T15:29:01.340918+00:00",
-      "end": "2026-09-07T15:29:04.485701+00:00",
-      "seconds": 3.144582042004913,
+      "start": "2026-09-07T16:08:29.298181+00:00",
+      "end": "2026-09-07T16:08:32.449986+00:00",
+      "seconds": 3.1515807500109076,
       "exit": 0,
       "fresh": true,
       "passed": true,
       "interrupted": false,
-      "maxSampleRSSKiB": 2058896,
+      "maxSampleRSSKiB": 2607664,
       "sourceSHA256": "c57be81f7d44b33ab240a0f01b77a78aa2bf00e4adda57d609705d0151f05dd0",
       "expectedDiagnostic": null,
       "symbol": null,
-      "transcript": "31/31: Building DGamma.CP5O20PairedPrefixProducerSpike (research/DGamma/CP5O20PairedPrefixProducerSpike.idr)\n"
+      "transcript": "31/31: Building DGamma.CP5O20PairedPrefixProducerSpike (research/DGamma/CP5O20PairedPrefixProducerSpike.idr)\n",
+      "newTopLevelDeclarations": [],
+      "matchingSourceCommits": [
+        "3d4986623a968d77b1bf9f5c51ed4bf3fea7c5b0"
+      ]
     },
     {
-      "unit": "DE-final-negative-capital",
+      "unit": "F-final-negative-capital",
       "path": "research-tests/DGamma/R181O19SafetyCompletion.idr",
       "command": [
         "idris2",
@@ -732,21 +898,25 @@
         "--check",
         "research-tests/DGamma/R181O19SafetyCompletion.idr"
       ],
-      "start": "2026-09-07T15:29:04.552253+00:00",
-      "end": "2026-09-07T15:29:36.712324+00:00",
-      "seconds": 32.1599562917836,
+      "start": "2026-09-07T16:08:32.512916+00:00",
+      "end": "2026-09-07T16:09:04.701830+00:00",
+      "seconds": 32.188781125005335,
       "exit": 0,
       "fresh": true,
       "passed": true,
       "interrupted": false,
-      "maxSampleRSSKiB": 1546880,
+      "maxSampleRSSKiB": 1790880,
       "sourceSHA256": "821680d533db389cbaa25af65c8f180fc0224de94c9f6c9d9cfed6260d1ad180",
       "expectedDiagnostic": null,
       "symbol": null,
-      "transcript": "3/3: Building DGamma.R181O19SafetyCompletion (research-tests/DGamma/R181O19SafetyCompletion.idr)\n"
+      "transcript": "3/3: Building DGamma.R181O19SafetyCompletion (research-tests/DGamma/R181O19SafetyCompletion.idr)\n",
+      "newTopLevelDeclarations": [],
+      "matchingSourceCommits": [
+        "95b4ab595c5e86851fb0de8d63cd6ff882367626"
+      ]
     },
     {
-      "unit": "DE-final-blocks",
+      "unit": "F-final-blocks",
       "path": "research-tests/DGamma/R181O19LocatedBlocks.idr",
       "command": [
         "idris2",
@@ -759,42 +929,109 @@
         "--check",
         "research-tests/DGamma/R181O19LocatedBlocks.idr"
       ],
-      "start": "2026-09-07T15:29:36.775378+00:00",
-      "end": "2026-09-07T15:29:39.913725+00:00",
-      "seconds": 3.1381907081231475,
+      "start": "2026-09-07T16:09:04.765013+00:00",
+      "end": "2026-09-07T16:09:07.895030+00:00",
+      "seconds": 3.1298457919619977,
       "exit": 0,
       "fresh": true,
       "passed": true,
       "interrupted": false,
-      "maxSampleRSSKiB": 550352,
+      "maxSampleRSSKiB": 550368,
       "sourceSHA256": "e7bcb0e849d264b6951c053a50dd921fa6c4e22494bdba72484bcfefc0fd6a3f",
       "expectedDiagnostic": null,
       "symbol": null,
-      "transcript": "4/4: Building DGamma.R181O19LocatedBlocks (research-tests/DGamma/R181O19LocatedBlocks.idr)\n"
+      "transcript": "4/4: Building DGamma.R181O19LocatedBlocks (research-tests/DGamma/R181O19LocatedBlocks.idr)\n",
+      "newTopLevelDeclarations": [],
+      "matchingSourceCommits": [
+        "c1667529c5489921f1774b26412a04151b0e5a08"
+      ]
     },
     {
-      "unit": "DE-final-package",
+      "unit": "F-final-decomposition",
+      "path": "research-tests/DGamma/R181O19BundlePrerequisites.idr",
+      "command": [
+        "idris2",
+        "--source-dir",
+        "src",
+        "--source-dir",
+        "research",
+        "--source-dir",
+        "research-tests",
+        "--check",
+        "research-tests/DGamma/R181O19BundlePrerequisites.idr"
+      ],
+      "start": "2026-09-07T16:09:07.956112+00:00",
+      "end": "2026-09-07T16:10:15.346136+00:00",
+      "seconds": 67.38985995808616,
+      "exit": 0,
+      "fresh": true,
+      "passed": true,
+      "interrupted": false,
+      "maxSampleRSSKiB": 4308752,
+      "sourceSHA256": "f50b7a6b2fb8d89e5b1f5ce7fcb3d6661510f8c57aa3c886ffcaa9570bdda8ee",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "transcript": "5/5: Building DGamma.R181O19BundlePrerequisites (research-tests/DGamma/R181O19BundlePrerequisites.idr)\n",
+      "newTopLevelDeclarations": [],
+      "matchingSourceCommits": [
+        "af9cc1edbf760454ccadc97b268f0830f35c6536"
+      ]
+    },
+    {
+      "unit": "F-final-bundle",
+      "path": "research-tests/DGamma/R181O19UniquenessAndBundle.idr",
+      "command": [
+        "idris2",
+        "--source-dir",
+        "src",
+        "--source-dir",
+        "research",
+        "--source-dir",
+        "research-tests",
+        "--check",
+        "research-tests/DGamma/R181O19UniquenessAndBundle.idr"
+      ],
+      "start": "2026-09-07T16:10:15.412355+00:00",
+      "end": "2026-09-07T16:10:17.484053+00:00",
+      "seconds": 2.0715118749067187,
+      "exit": 0,
+      "fresh": true,
+      "passed": true,
+      "interrupted": false,
+      "maxSampleRSSKiB": 602432,
+      "sourceSHA256": "341f797d187cea3c1b83c4b1c5d7e41c38cca69067090b11930c5d8b53559d9e",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "transcript": "4/4: Building DGamma.R181O19UniquenessAndBundle (research-tests/DGamma/R181O19UniquenessAndBundle.idr)\n",
+      "newTopLevelDeclarations": [],
+      "matchingSourceCommits": [
+        "52ea2605616c181cf3cb73d85bca906b32d000e7"
+      ]
+    },
+    {
+      "unit": "F-final-package",
       "path": "package",
       "command": [
         "idris2",
         "--build",
         "dgamma.ipkg"
       ],
-      "start": "2026-09-07T15:29:39.975494+00:00",
-      "end": "2026-09-07T15:29:56.588852+00:00",
-      "seconds": 16.613223041873425,
+      "start": "2026-09-07T16:10:17.547943+00:00",
+      "end": "2026-09-07T16:10:34.144233+00:00",
+      "seconds": 16.596104791853577,
       "exit": 0,
       "fresh": true,
       "passed": true,
       "interrupted": false,
-      "maxSampleRSSKiB": 257344,
+      "maxSampleRSSKiB": 316048,
       "sourceSHA256": "aee761a37757cb047ddbf0f846bc23ce830ed755422f96852d08eb435c368727",
       "expectedDiagnostic": null,
       "symbol": null,
-      "transcript": ""
+      "transcript": "",
+      "matchingSourceCommits": []
     }
   ],
-  "reviewGate": "required; independent reviewer not run by child",
+  "reviewGate": "required; parent-owned independent reviewer not run by child; final supervisor stand-down pending",
   "supervisorStopGates": [
     "A11 STOP ratified; five distinct A units after B authorized",
     "B12 STOP ratified; B14/B15 explicitly unused; no fourth attempt"
@@ -804,9 +1041,10 @@
     "B": "13/15 consumed; B12 removed; B14/B15 blocked",
     "C": "1/3 disposable checks; source removed",
     "D": "6/6 PASS1, authorized named-table cure;15:13UTC",
-    "E": "8/8 completed; E4 PASS2; time condition met with114min remaining before17:07"
+    "E": "8/8 completed; E4 PASS2; time condition met with114min remaining before17:07",
+    "F": "8/8 consumed; F2 PASS3, F3 PASS2, others PASS1; complete decomposition/raw uniqueness and conditional bundle, real independence still uninhabited"
   },
   "workflowConformance": false,
-  "prefixGate": "92e2daa ratified; stand-down denied; D/E explicitly authorized; independent reviewer owned by parent",
-  "retainedNewDeclarations": 41
+  "prefixGate": "92e2daa and22ce5af ratified as prefixes; stand-down denied; D/E then F8 separately authorized. Parent owns independent review.",
+  "retainedNewDeclarations": 49
 }
