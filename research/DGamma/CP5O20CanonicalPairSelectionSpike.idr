@@ -5,6 +5,7 @@ import DGamma.Calculus
 import DGamma.Coeffects
 import DGamma.Metatheory
 import DGamma.CP3
+import DGamma.CP4DeletionSelectedForeignLifecycleAnchorOpen
 import DGamma.CP5ConfluenceLocalDiamondSpike
 import DGamma.CP5ConfluenceCanonicalSortSpike
 import DGamma.CP5ConfluenceCrossTraceSpike
@@ -175,3 +176,27 @@ canonicalPairCutsWellFormed {name} {key} {world} {error} {value} {operational} {
         (replace {p = AlignedTransitions name key world error value nameEq keyEq}
           (sym (blockDecomposition (pairRightBlock pair))) (replayAligned (canonicalReplayPremises rightCapital)))))
       (replayInitialWellFormed (canonicalReplayPremises rightCapital)))
+
+||| Adapt R181 D6 to two EXPLICIT observed system states. Effect agreement
+||| remains an induction hypothesis; successful views are actual resolver
+||| observations. Right pairwise provision uniqueness is derived from WF.
+export
+0 canonicalPairViewsAtStates :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (renaming : NameBijection name) -> (deps : List key) ->
+  (left, right : SystemState name key value world error) ->
+  RenamedRuntimeEffects name key world value renaming
+    (projectEffectState {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} left) (projectEffectState {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} right) ->
+  (registryWellFormed {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} @{keyEq} right = True) ->
+  (leftView, rightView : View name deps) ->
+  (resolveView {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} @{keyEq} deps (registry left) = Just leftView) ->
+  (resolveView {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} @{keyEq} deps (registry right) = Just rightView) ->
+  ViewRelatedBy renaming leftView rightView
+canonicalPairViewsAtStates {name} {key} {world} {error} {value}
+  nameEq keyEq renaming deps (MkSystemState leftWorld leftRegistry) (MkSystemState rightWorld rightRegistry)
+  effects wellFormed leftView rightView leftResolved rightResolved =
+    pairedActualResolvedViews name key world error value nameEq keyEq renaming deps
+      leftWorld rightWorld leftRegistry rightRegistry effects
+      (registryWellFormedPairwiseOpenAnchor {name = name} {key = key} {value = value} {world = world} {error = error} nameEq keyEq (MkSystemState rightWorld rightRegistry) wellFormed)
+      leftView rightView leftResolved rightResolved
