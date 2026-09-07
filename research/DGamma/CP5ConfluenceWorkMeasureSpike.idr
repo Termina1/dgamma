@@ -69,3 +69,15 @@ record RankedAdjacentProgress (source : List Nat) where
       (rankedPrefix ++ rankedRight :: rankedLeft :: rankedSuffix))
   0 rankedGlobalDecrease : rankInversions source =
     S (rankInversions (rankedPrefix ++ rankedRight :: rankedLeft :: rankedSuffix))
+
+||| Primitive ordering-first choice; the only input is the local rank descent.
+export
+rankHeadProgress :
+  (left, right : Nat) -> (suffix : List Nat) ->
+  (0 crossed : rankCrossing left right = 1) ->
+  RankedAdjacentProgress (left :: right :: suffix)
+rankHeadProgress left right suffix crossed =
+  MkRankedAdjacentProgress [] left right suffix Refl
+    (\pivot => rankPlusSwap (rankCrossing pivot left) (rankCrossing pivot right)
+      (foldr (+) Z (map (rankCrossing pivot) suffix)))
+    (rankHeadInversionDrop left right suffix crossed)
