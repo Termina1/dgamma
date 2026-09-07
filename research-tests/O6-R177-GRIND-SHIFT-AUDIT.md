@@ -38,9 +38,10 @@ body was reinstated.
 
 ## Unit B — probe-first support matching
 
-One disposable restricted domain probe PASS (B1 below). Current scanner birth
-authentication is still required before uniqueness may identify an ordinal.
-No O20 consumption, list-enumeration equality, or support-body edit.
+B1 was followed by the explicitly authorized B2–B122 continuation. Current
+and parent scanner births are now authenticated, with sealed bidirectional
+static coherence for covered generated births. Global retained-event/root
+coverage and retired/support truth remain open. No O20 or support-body edit.
 
 ## Unit C — O21 reuse-identity probe
 
@@ -51,10 +52,11 @@ only; withdrawal branches remain parked.
 
 Twelve checked A micro-units prove exact actual-worklist decrease conditional
 on the same accepted descending checked pair. Pair discovery and orientation
-applicability are still open. B proves restricted supported-current lookup
-directions, not birth authentication or support truth. C proves conditional
-birth identity after explicit authentication, not O21. Six inherited holes
-remain, split **1/4/0/0/1**. Final seeded validation is in progress.
+applicability are still open. B2–B122 authenticate exact original current/parent births and prove sealed
+bidirectional static coherence for covered generated events, including current
+parent phi coherence. Coverage and retired/support truth remain open under the
+A9 owner finding. C is conditional identity sizing, not O21. Six inherited holes
+remain, split **1/4/0/0/1**. Fresh downstream and seeded package validation passed; final committed census/frozen audit follows below.
 
 ### A6–A12: bounded bridge milestone
 
@@ -117,8 +119,8 @@ same local algebraic obligation for either side (not a proof of the full
 bilateral O21 premise).
 
 **Sizing result:** the reuse-identity algebra AFTER authentication is one tiny
-checked declaration. Authentication itself remains the larger shared B/O21
-prerequisite: obtain the located birth plus exact generation stamp from the
+checked declaration. At the C1 probe boundary, authentication was the larger shared B/O21
+prerequisite (subsequently addressed by B2–B122): obtain the located birth plus exact generation stamp from the
 accepted current scanner lookup. A final deleted-generation membership or a
 raw-name equality is not such evidence. This probe assumes that restricted
 subcase's authentication explicitly and is NOT installed as the O21 body.
@@ -309,3 +311,77 @@ transport, both O18 cross-endpoint support-truth implications, and the body.
 The P2-4 quiet countershape continues to block any unqualified retirement claim;
 no full two-capital counterexample has been asserted. No O20 consumption/list
 order equality, no O21 withdrawal, no O17/root-placement/O19/body changes.
+
+## A9 owner finding — generated-orchestration fidelity (not rank micro-unit A9)
+
+The independent read-only review reported through the supervisor identified:
+
+* `src/DGamma/CP3.idr:1986–2018`: RootOrchestrationStep uses actual fiberParent = Root.
+* `:2056–2092`: SameExternalOrchestration matches only those root steps; non-root
+  retirement/removal may be skipped by SkipLeftInternal/SkipRightInternal.
+* `:2217–2252`: ExternalRootBirthCorrespondence matches only external root births.
+* `:2336–2338`, `:2441–2458`: only generated O-Insert is a generated registration;
+  ORetire does not change the current-generation index (ORemove does).
+* `:2851–3050` (VestigialEndpointGeneration; CurrentEndpointRenaming starts at :2958):
+  current-name correspondence is generation-based, not retired-flag equality.
+* `:379`: RegistrationStepDiscipline's ORetire case is unit.
+* `paper/cordis-paper.txt:2328–2331`: orchestration at activation-registered
+  fibers is explicitly discussed by the paper; these are extracted TEXT lines,
+  not PDF page numbers.
+
+Checked/executable evidence is P1 plus the single expressly authorized P2-4
+repair. Both generated traces are actually produced by the checked evaluator,
+both endpoints are quiet, both parents Active, but child support is True left /
+False right. See `O6-R177-P2-STOP-AUDIT.md`, exact probe transcripts and freshness
+JSON. **Both IndependentCanonicalSchedule capitals and a complete typed accepted
+correspondence for this full quiet pair are still unconstructed.** This is an
+OPEN fidelity finding, not a claimed full counterexample to the six-premise O18.
+
+**Supervisor cure decision, pending owner override:** add a RESEARCH-side explicit
+`GeneratedOrchestrationMatched` hypothesis modulo the accepted generation
+bijection and thread it like uniqueness. Production stays frozen. No such premise
+was changed/added to any O18/O21 capital or body during R177. This is recorded as
+pending owner work, not implemented or silently assumed by the retained lemmas.
+
+## Final gate frontiers
+
+* **O17:** actual descending-pair location/discovery, orientation applicability
+  for that same pair; root placement and O17 body remain owner-paused.
+* **O18:** (1) all-supported source generated birth membership in the accepted
+  retained-event domain (and root static coverage); (2) retired-flag transport
+  and both cross-endpoint support-truth implications under A9. The support-order
+  body is unchanged. No five-hole closure/census gate fired.
+* **O21:** full original/replayed endpoint/scanner-deletion capital remains open;
+  only conditional authenticated identity was sized. No withdrawal proof.
+
+At 05:34 the supervisor RATIFIED B121/B122 and authorized final fresh downstream,
+seeded 207/207 package, census and frozen-hash validation. Only after ALL checks,
+and only with at least 15 minutes before 06:00, at most one further coverage
+micro-unit would be permitted. No such extra proof attempt has been launched.
+
+## Final compiler validation and evidence
+
+All final checks PASS: F3 CanonicalSort (05:36:11–05:37:07), F4 UniqueCapital /
+CrossTrace (05:37:34–05:37:40), F5 R8FullPipeline (05:39:31–05:41:12), F6 generated
+static-coherence companion (05:44:16–05:44:21), and F7 seeded package build
+(05:44:29–05:44:45). Package validation retains the **207/207** production TTC
+seeds and is NOT a cold rebuild. The broad R11 positive/negative suite was not
+rerun and is not claimed. Existing shadowing warnings are recorded verbatim.
+
+The complete ledger contains **156** serialized check/exec invocations:
+**143 ordinary positives, 12 charged rejections, one specially authorized P2-4
+check+exec success**. No engineering interrupt. Informational --version/help are
+not counted as proof checks. Maximum sampled RSS is **38,703,008 KiB** (not an OS
+exact peak). UTC intervals are mechanically checked non-overlapping.
+
+`O6-R177-COMPILER-LEDGER.json`, `O6-R177-COMPILER-TRANSCRIPTS.md`, and the 1.2 MB
+`O6-R177-COMPILER-EVIDENCE.tar.gz` retain every exact checked source snapshot,
+compiler log and original wrapper JSON. Standalone Markdown/.log.txt presentation
+trims trailing whitespace; exact raw bytes remain in the archive and JSON. P2-4's
+fresh:false/passed:false marker qualification is preserved, not hidden.
+
+At 05:47 final frozen/census checks were still pending documentation commit, so
+fewer than 15 minutes remained before 06:00. The conditional extra coverage
+micro-unit was therefore NOT launched (zero attempts). Retained-event coverage
+stays the first recorded proof frontier. No research/proof code changed after
+B122; the remaining work is only read-only validation and documentation.

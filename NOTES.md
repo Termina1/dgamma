@@ -2526,3 +2526,55 @@ per-unit sources, diagnostics, decisions and remaining obligations are in
 `research-tests/O6-R174-GRIND-SHIFT-AUDIT.md`, the permanent compiler ledger and
 `research-tests/O6-R174-A8-CAUSE-SHARING-RECON.md`. No unconditional Theorem 73 or
 independent reviewer approval is claimed by this milestone.
+
+## Status — R177 (2026-09-07)
+
+**Proved, research only:** all twelve bounded rank micro-units cure the opaque
+computed-rank wall and prove actual accepted-worklist decrease for the SAME
+provided descending checked pair. B2–B122 authenticate accepted current scanner
+entries and parent-activation generations as genuine ORIGINAL located births
+with exact stamps. Registry/current lookup domains are connected in both
+directions. For an accepted retained generated event, the sealed static-coherence
+boundaries construct the actual opposite endpoint fiber, exact component,
+dependency and provision specifications, both exact CURRENT parent stamps, and
+parent phi/phi^-1 coherence. Original insertion uniqueness is used only after
+both births have been authenticated. Single-state computed parent closure and
+exact birth identity avoid any need for a withdrawal/NoParentUnload theorem.
+
+**Partial/open:** generated-source retained-event coverage (and root static
+coverage), retirement agreement, both O18 cross-endpoint support-truth
+implications and the support-order body. All six inherited research body holes
+remain. O17 still needs pair location/discovery and orientation applicability;
+root placement and the O17 body remain owner-paused. O19 and O21 bodies remain
+unchanged, with no O21 withdrawal or heterogeneous endpoint composition proof.
+No O20 consumption/enumeration equality was used as support truth.
+
+**A9 finding and scope:** frozen CP3 skips non-root ORetire in external
+orchestration matching and matches generated births, not their retired flags.
+The P1 proof plus P2-4 executable checked pair establish actual quiescent states
+with an Active parent on both sides and differing child support. The exact full
+accepted correspondence and BOTH IndependentCanonicalSchedule capitals for that
+quiet pair are not constructed; do not call it a complete O18 counterexample.
+The supervisor's proposed cure is a research-side explicit
+GeneratedOrchestrationMatched hypothesis modulo the accepted generation
+bijection, threaded like uniqueness, pending owner override. Production and
+existing theorem premises remain frozen; no such hypothesis was silently added.
+
+**Proof/engineering exceptions:** no new proof hole, postulate, believe_me,
+assert_total, partial function, with block, inferred local view or let alias was
+introduced in retained R177 Idris additions. The disposable P2 unit reached 3/3,
+was rolled back and stop-audited at b1735d2. The supervisor explicitly authorized
+ONE P2-4 mechanical namespace repair, both record projections only. That single
+--exec invocation exited 0 and executed the actual proof-carrying producer; it
+suppressed the usual Building marker. Its unchanged conservative wrapper JSON
+therefore retains fresh:false/passed:false, separately qualified by exact source
+substitution and source/TTC timestamp evidence. It is not relabelled as an
+ordinary fresh --check PASS. All probe .idr sources were removed, snapshots
+preserved, and no build seed was deleted. B99 removed an accidental duplicated
+unused B98 argument, rather than preserving that unnecessary premise.
+
+**Next:** resolve source event/root coverage and the A9 owner decision; then
+prove both genuine support-truth implications, fill O18 only if valid, immediately
+re-census (expected five = 1/3/0/0/1), and gate. Neither that closure nor the
+five-hole gate occurred during this shift. Detailed per-invocation compiler,
+stop, frozen-hash and final validation evidence is in the R177 research audits.

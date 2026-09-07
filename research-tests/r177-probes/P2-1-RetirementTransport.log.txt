@@ -8,4 +8,3 @@ DGamma.R177RetirementTransportProbe:47:75--47:79
  46 |    , appendTransitions r45SourceTrace
  47 |        (MoreTransitions (Fired r45NameEq r45KeyEq (LAdvance 0) LFinishTag Refl) NoTransitions)))
                                                                                 ^^^^
-

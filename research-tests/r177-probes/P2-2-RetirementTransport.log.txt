@@ -8,4 +8,3 @@ DGamma.R177RetirementTransportProbe:65:28--65:32
  64 |           (preservationTheoremProof r45NameEq r45KeyEq (OInsert 0 Root r45Parent) r45Initial r45AfterParent OInsertTag
  65 |           Refl Refl) Refl) Refl) Refl)) (MoreTransitions (Fired r45NameEq r45KeyEq (ORetire 1) ORetireTag
                                  ^^^^
-

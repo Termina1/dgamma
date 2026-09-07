@@ -3276,3 +3276,31 @@ withdrawal proof attempt; (2) O9 route-B decomposition, scanner-discard and
 operational-occurrence prerequisites, then the enriched step.  O14/O17 remain
 parked and no unchanged O19 body attempt is authorized.  Production remained
 unchanged and no proof or compiler attempt was made in R146.
+
+## R177 checkpoint — sealed generated static coherence, not O18 truth
+
+`CP5MatchedBirthMetadataSpike.acceptedSupportedGeneratedCoherenceForward` and
+`acceptedSupportedGeneratedCoherenceBackward` now derive actual opposite fibers,
+exact component/dependency/provision metadata, both CURRENT matched parent stamps
+and parent phi/phi^-1 coherence from the same accepted correspondence. Every
+current/child/parent generation used by uniqueness is an actual original located
+birth. Source same-state parent closure plus exact birth uniqueness eliminated
+the previously suspected need for a withdrawal/NoParentUnload proof.
+
+Next frontier, in order:
+1. Source supported generated birth membership in the accepted retained-event
+   domain; root static coverage remains separate, with root placement owner-paused.
+2. A9 owner override: generated retirement is invisible at the frozen orchestration
+   surface. P1 and P2-4 show the actual quiet unequal-support shape; BOTH independent
+   canonical capitals remain unconstructed. Pending cure: RESEARCH-side
+   GeneratedOrchestrationMatched modulo the accepted generation bijection,
+   threaded like uniqueness. No production/premise change was made this shift.
+3. Only under justified retirement agreement, both O18 support-TRUTH implications
+   (not list-order equality / O20); then body fill and immediate expected-five
+   census/milestone gate. Currently six holes remain, 1/4/0/0/1.
+4. O17 operational pair location/discovery and same-pair orientation applicability;
+   root placement/O17 body owner-paused. O19 and O21 withdrawal/body work stay parked.
+
+Rank A consumed exactly 12 micro-units; its accepted actual-worklist decrease is
+conditional on the same supplied checked descending pair, not a total sorter.
+See `research-tests/O6-R177-GRIND-SHIFT-AUDIT.md` and the P2 stop/repair audit.

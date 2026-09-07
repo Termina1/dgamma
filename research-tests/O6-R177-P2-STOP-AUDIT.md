@@ -11,7 +11,7 @@ Only two micro-units attempted; P1 PASS, P2 FAIL 3/3. No fourth attempt.
 * The supervisor's independent read-only review confirms that the frozen
   SameOrchestrationModuloGenerated only couples external root orchestration and
   generated insertion births; generated retirement is skipped. This may be a
-  fidelity gap against paper pp.2328–2331, NOT an O18 body theorem.
+  fidelity gap against paper/cordis-paper.txt:2328–2331 (extracted-text lines), NOT an O18 body theorem.
 * Neither quiet endpoint reachability nor both IndependentCanonicalSchedule
   capitals has yet been constructed. No complete counterexample is claimed.
 
@@ -88,3 +88,8 @@ A9 remains an OPEN owner finding. Candidate cure: a research-side explicit
 GeneratedOrchestrationMatched hypothesis modulo the accepted generation
 bijection, threaded like uniqueness; **no premise change this shift**.
 Probe now frozen. Resume only independent dependency/provision/parent metadata.
+
+Final evidence packaging: standalone `.log.txt` and Markdown presentation trims
+trailing whitespace only to satisfy git diff --check. Exact original compiler
+bytes remain in each probe JSON transcript and the complete R177 compiler-evidence
+archive; no compiler outcome or attempted source was changed by presentation.
