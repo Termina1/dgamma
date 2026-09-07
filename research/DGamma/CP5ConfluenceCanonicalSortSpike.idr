@@ -5205,3 +5205,18 @@ canonicalWorkAcceptedResultInversionMeasure name key world error value nameEq ke
       (canonicalWorkAdjacentTargetRankFold name key world error value nameEq keyEq protocol
         (orderedSupportNames ordering) (sortingCurrentTrace (workReachedReplay current))
         prefixTrace left right suffix diamond result)
+
+||| Eliminate only an equation to an EXPLICIT observed value. The action is not
+||| reopened while transporting the opaque packet's target/decrease fields.
+0 canonicalWorkObservedActionLift :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (fixedOrder : List name) ->
+  (action : Action name key value world error) -> (observed : Maybe Nat) ->
+  (canonicalWorkActionRank name key world error value nameEq fixedOrder action = observed) ->
+  {source, target : List (List Nat)} -> (SegmentedRankProgress source target) ->
+  (SegmentedRankProgress
+    (canonicalWorkRankStep name key world error value nameEq fixedOrder action source)
+    (rankSegmentStep observed target))
+canonicalWorkObservedActionLift name key world error value nameEq fixedOrder action observed exact progress =
+  replace {p = \chosen => SegmentedRankProgress (rankSegmentStep chosen source) (rankSegmentStep observed target)}
+    (sym exact) (rankSegmentObservedStepProgress observed progress)
