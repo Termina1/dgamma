@@ -111,3 +111,16 @@ r178RightGeneratedRetirement = MkLocatedGeneratedOrchestration 1 False
 export
 0 r178RightRetirementKind : (generatedRemoval r178RightGeneratedRetirement = False)
 r178RightRetirementKind = Refl
+
+||| Structural action observation only; no quiet/fixed-point observer unfolds.
+export
+0 r178LeftNoRetirementAt :
+  (actor, ordinal : Nat) ->
+  (rawClosingActionAt Nat R45Key Unit String R45Value ordinal r178LeftTrace = Just (ORetire actor)) -> Void
+r178LeftNoRetirementAt actor Z observed = case observed of Refl impossible
+r178LeftNoRetirementAt actor (S Z) observed = case observed of Refl impossible
+r178LeftNoRetirementAt actor (S (S Z)) observed = case observed of Refl impossible
+r178LeftNoRetirementAt actor (S (S (S Z))) observed = case observed of Refl impossible
+r178LeftNoRetirementAt actor (S (S (S (S Z)))) observed = case observed of Refl impossible
+r178LeftNoRetirementAt actor (S (S (S (S (S Z))))) observed = case observed of Refl impossible
+r178LeftNoRetirementAt actor (S (S (S (S (S (S later)))))) observed = case observed of Refl impossible
