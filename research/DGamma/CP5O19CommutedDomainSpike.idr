@@ -37,3 +37,18 @@ o19ComposedFramesObserved state rel after before respects origin middle final
   (Just actual) exact (PartialDefined related) finalFrame =
     rewrite exact in trans (o19RelatedDefined (respects actual middle related))
       (o19RelatedDefined finalFrame)
+
+||| A defined composition necessarily has a defined first-applied map.
+||| The observed Maybe is passed by the producer, not a supplied witness.
+export
+0 o19FirstDomainObserved :
+  {state : Type} -> (after, before : PartialMap state) -> (origin : state) ->
+  (observed : Maybe state) -> (before origin = observed) ->
+  (isJust (partialCompose after before origin) = True) ->
+  (isJust (before origin) = True)
+o19FirstDomainObserved after before origin Nothing exact defined =
+  case trans (sym (cong isJust
+    (the (partialCompose after before origin = Nothing) (rewrite exact in Refl)))) defined of
+      Refl impossible
+o19FirstDomainObserved after before origin (Just actual) exact defined =
+  cong isJust exact
