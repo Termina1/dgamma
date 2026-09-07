@@ -45,3 +45,37 @@ rootBirthForwardObserved name key world error value renaming leftOrdinal rightOr
   (MatchExternalRootBirth leftStep leftRest rightStep rightRest leftExact rightExact mapped later) selected component (S position) observed =
     currentBirthPrependLocation name key world error value rightStep rightRest (OInsert selected Root component)
       (rootBirthForwardObserved name key world error value renaming (S leftOrdinal) (S rightOrdinal) leftRest rightRest later selected component position observed)
+
+||| Symmetric coverage from the SAME accepted correspondence (no free inverse).
+export
+0 rootBirthBackwardObserved :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (renaming : RegistrationGenerationBijection name) -> (leftOrdinal, rightOrdinal : Nat) ->
+  {leftFirst, leftFinal, rightFirst, rightFinal : SystemState name key value world error} ->
+  (left : Transitions leftFirst leftFinal) -> (right : Transitions rightFirst rightFinal) ->
+  ExternalRootBirthCorrespondence renaming leftOrdinal left rightOrdinal right ->
+  (selected : name) -> (component : Component key value world error) -> (position : Nat) ->
+  (rawClosingActionAt name key world error value position right = Just (OInsert selected Root component)) ->
+  LocatedActionOccurrence (OInsert selected Root component) left
+rootBirthBackwardObserved name key world error value renaming leftOrdinal rightOrdinal _ _
+  ExternalRootBirthCorrespondenceEnd selected component position observed = case observed of Refl impossible
+rootBirthBackwardObserved name key world error value renaming leftOrdinal rightOrdinal left _
+  (SkipRightNonExternalRootBirth action step rest exact notRoot later) selected component Z observed =
+    case trans (sym (cong isExternalRootBirthAction (trans (sym exact)
+      (coveredHeadActionObserved name key world error value step rest (OInsert selected Root component) observed)))) notRoot of Refl impossible
+rootBirthBackwardObserved name key world error value renaming leftOrdinal rightOrdinal left _
+  (SkipRightNonExternalRootBirth action step rest exact notRoot later) selected component (S position) observed =
+    rootBirthBackwardObserved name key world error value renaming leftOrdinal (S rightOrdinal) left rest later selected component position observed
+rootBirthBackwardObserved name key world error value renaming leftOrdinal rightOrdinal _ right
+  (SkipLeftNonExternalRootBirth action step rest exact notRoot later) selected component position observed =
+    currentBirthPrependLocation name key world error value step rest (OInsert selected Root component)
+      (rootBirthBackwardObserved name key world error value renaming (S leftOrdinal) rightOrdinal rest right later selected component position observed)
+rootBirthBackwardObserved name key world error value renaming leftOrdinal rightOrdinal _ _
+  (MatchExternalRootBirth leftStep leftRest rightStep rightRest leftExact rightExact mapped later) selected component Z observed =
+    MkLocatedActionOccurrence _ _ NoTransitions leftStep leftRest
+      (trans leftExact (trans (sym rightExact)
+        (coveredHeadActionObserved name key world error value rightStep rightRest (OInsert selected Root component) observed))) Refl
+rootBirthBackwardObserved name key world error value renaming leftOrdinal rightOrdinal _ _
+  (MatchExternalRootBirth leftStep leftRest rightStep rightRest leftExact rightExact mapped later) selected component (S position) observed =
+    currentBirthPrependLocation name key world error value leftStep leftRest (OInsert selected Root component)
+      (rootBirthBackwardObserved name key world error value renaming (S leftOrdinal) (S rightOrdinal) leftRest rightRest later selected component position observed)
