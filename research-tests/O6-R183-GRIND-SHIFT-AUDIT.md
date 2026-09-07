@@ -119,3 +119,21 @@ Maybe arguments and source-frame constructors are the only eliminators.
 The next specialization must derive both frames/congruence/commutation from
 the actual LTS pair and same bundle. Effect definedness is not checked
 control/tag applicability (e.g. a Begin effect map cannot establish resolveView).
+
+## A25 exhausted: full rollback, no retained actual-pair producer
+
+A25-1 rejected generator-runtime-map/function eta conversion (1.035s).
+A25-2 rejected private Metatheory.partialCommuteMapsTransport (1.034s).
+A25-3 rejected the same conversion even after pointwise specialization
+(1.039s). All were fresh checks; NONE passed. Entire new
+CP5O19ActualCommutedDomainSpike.idr REMOVED, its three exact source snapshots
+and diagnostics retained in the check evidence. No seed/TTC deletion.
+No production/private visibility changed. No fourth retry or repackaged
+early-effect-run consumer is authorized/retained in this shift.
+
+A26-A30 will instead prove distinct SMALL prerequisites for the exposed gap:
+public pointwise map-commutation transport, actual forward-generator map
+equation, actual-pair commutation, actual-frame projection, and run rebasing.
+These are not the failed whole actual-pair effect-run producer, not full
+Cartesian iteration, and not an O19 body. After the30-slot cap: O19 stop gate,
+one disposable O20 probe, then the authorized C prerequisites.
