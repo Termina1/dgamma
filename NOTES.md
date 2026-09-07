@@ -2680,3 +2680,37 @@ invocations are accounted (27 ordinary successes including2 package builds and
 the type-only probe, 2 intended-negative successes, 7 rejected proof attempts,
 1 interrupted/no-verdict attempt). Existing five spike files/production and
 LocalDiamond seed remain exact; no legacy R11 rerun, cold build or cache deletion.
+
+### R179 D/E continuation after the 10:10 gate
+
+The supervisor ratified the first prefix but deferred handoff and explicitly
+budgeted D12/E8 additional units. **D fully proves the fourth fixed-bijection
+bridge clause on originally supported generated children**: exact left origin,
+actual opposite canonical birth at renamed child AND parent, same component,
+accepted generation triangle, and right canonical birth-stamp uniqueness.
+The companion is `CP5O20SupportedBirthBridgeSpike`; A9 is actually used to derive
+opposite support and its own canonical child placement. No opposite birth,
+lookup, support or triangle oracle was added. Unsupported-child cases and all
+ambient/table/control convergence remain open; no O20 body.
+
+**E fully proves actual rank-descent selection output and alignment**, in
+`CP5RankedTraceSelectionSpike`, parameterized by one deterministic action-rank
+observation. Exact adjacent checked steps/prefix/suffix/ranks are preserved;
+barriers are not moved or crossed. The concrete four-action certified trace
+selects the Begin0/Begin1 pair at2/3, ranks1/0; the default branch is excluded.
+These total selectors are erased proof producers, not new runtime plugin APIs.
+The existing private worklist rank observer/body remains unchanged; orientation
+applicability, sealed result integration and adequate progress completeness
+remain unproved. Nothing is not evidence of canonicality.
+
+D12/12 passed first attempt. E1–E6 passed first attempt; E7 passed2/3 after a
+direct producer import; E8 passed3/3 after explicit observation/result typing
+and direct rank-computation imports. All attempts are charged in the ledger.
+No new hole, unsafe proof, local let/with, partiality, old spike change, root
+placement or withdrawal proof. Prior A11/A13 exhaustion remains unchanged.
+
+Post-D/E validation (10:45UTC): all nine retained Idris files freshly checked,
+eight positives plus exact intended negative PASS; seeded package207/207 PASS.
+Seventy total invocations accounted:56 ordinary successes (including3 package
+calls and C's type-only probe),3 intended negatives,10 rejected diagnostics,
+1 no-verdict interruption. Old five spikes/five holes and production stay exact.

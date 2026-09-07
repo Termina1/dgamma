@@ -415,3 +415,20 @@ sealed swap/decrease theorem; prove adequate completeness/noncanonical progress.
 Nothing does NOT prove canonicality. No root placement, O17 body, old worklist
 surface, old spike declaration, or LocalDiamond declaration changed. E adds
 selection/alignment capital, not a proved orientation diamond.
+
+## Post-D/E final validation (10:45 UTC)
+
+Fresh F8–F16 checked ALL nine retained Idris files: **eight positives and one
+exact intended wrong-original-trace negative** passed. F8 (unchanged large
+countershape) was detached/monitored131.67s; all other checks1–4.15s. F17 seeded
+package PASS16.606s, all207 production TTC seeds retained. No broad R11, cold
+build, parallel compiler or cache deletion. Full old-spike/production/source
+hash audit follows at the committed report snapshot.
+
+Complete ledger now **70 invocations**: 56 ordinary successes (including three
+seeded package builds and C's type-only probe), three intended-negative
+successes, ten rejected diagnostic attempts, one interrupted/no-verdict attempt.
+All intervals are serialized and the one-new-top-level-declaration rule is
+machine-checked for every invocation. No extra proof unit beyond D12/E8, no
+resurrection of A11/A13 or O17/root body. The first 10:07 validation remains a
+ratified historical prefix, not mislabeled as this later final validation.

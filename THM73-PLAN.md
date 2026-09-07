@@ -3415,3 +3415,22 @@ that the first three follow from O19 replay-to-left evidence.
 
 O17/root/A8 integration remains owner-paused. See the R179 audit, compiler
 ledger/archive and acceptance report for exact scope, stops and final gate.
+
+### R179 D/E post-gate continuation
+
+`CP5O20SupportedBirthBridgeSpike.supportedReplayedBirthBridge` now PRODUCES the
+exact fourth R147 bridge clause for children supported in the ORIGINAL left
+endpoint, including actual right canonical occurrence, fixed child/parent,
+component and accepted original generation triangle; A9 drives opposite support.
+Canonical right birth-stamp uniqueness is also proved. No operational permutation
+object is needed; an actual occurrence correspondence suffices for replay.
+Unsupported children and the ambient/table/control bridge remain open.
+
+`CP5RankedTraceSelectionSpike.findActualRankDescent` now constructs an actual
+checked adjacent choice with both exact owned ranks, strict descent and genuine
+whole-trace decomposition, preserving prior barriers. Its pair alignment is
+produced from whole-source alignment. A count4 concrete fixture selects2/3,
+actors0/1 and ranks1/0. Integrating the generic observer argument at the SAME
+private worklist rank function, orientation/early applicability and sealed
+result/progress completeness remain open. No old spike or body changed.
+D consumed12/12 (all first attempt); E8/8 (E7 second/E8 third attempt passed).

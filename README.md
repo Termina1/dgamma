@@ -512,3 +512,15 @@ All five existing holes and theorem surfaces are unchanged. O21 withdrawal is
 unproved; A9 is threaded but not needed by the narrower identity proof. O19
 safety revision remains gated on a full negative, not inferred from its partial
 operational core. See the [R179 audit](research-tests/O6-R179-GRIND-SHIFT-AUDIT.md).
+
+R179 continuation (D/E, after the first handoff gate was deferred):
+
+| Paper / research obligation | Idris correspondence | Status |
+|---|---|---|
+| Thm73 / O20 generated birth clause | `CP5O20SupportedBirthBridgeSpike.supportedReplayedBirthBridge` | proved on originally supported children: actual fixed-name/parent/component right canonical occurrence and exact accepted generation triangle; A9 genuinely used |
+| Thm73 / canonical birth-stamp coherence | `CP5O20SupportedBirthBridgeSpike.canonicalGeneratedBirthStampUnique` | proved from original uniqueness and authentic canonical accounting |
+| Thm73 / O17 actual pair location | `CP5RankedTraceSelectionSpike.findActualRankDescent`, `locatedRankDescentAligned` | proved checked-pair/decomposition/rank/alignment output; concrete barrier fixture checked; worklist integration and orientation applicability open |
+
+D does not cover unsupported children or ambient/table/control convergence. E
+is an erased proof-producing actual-trace selector, not an operational diamond
+or complete sorting loop. The same five theorem holes remain untouched.
