@@ -194,3 +194,31 @@ uniqueRawBirthMetadata name key world error value nameEq keyEq trace unique
           (rawClosingActionAtLocated name key world error value trace
             (OInsert selected rightParent rightComponent) right))) of
       Refl => Refl
+
+||| The accepted scanner birth and an actual lookup agree in BOTH static fields.
+public export
+0 currentBirthMetadataAtPrefix :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, middle, finalState : SystemState name key value world error} ->
+  (global : Transitions initial finalState) ->
+  (prior : Transitions initial middle) -> (later : Transitions middle finalState) ->
+  (appendTransitions prior later = global) ->
+  AlignedTransitions name key world error value nameEq keyEq prior ->
+  (bindings (registry initial) = []) ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq global ->
+  (selected : name) -> (generation : RegistrationGeneration name) ->
+  (authentication : CurrentGenerationBirth name key world error value global selected generation) ->
+  (observed : Fiber name key value world error) ->
+  (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+    @{nameEq} selected (registry middle) = Just observed) ->
+  (currentBirthParent authentication, currentBirthComponent authentication) =
+    (fiberParent observed, fiberComponent observed)
+currentBirthMetadataAtPrefix name key world error value nameEq keyEq global prior later decomposition aligned empty unique
+  selected generation authentication observed found =
+    uniqueRawBirthMetadata name key world error value nameEq keyEq global unique selected
+      (currentBirthParent authentication) (fiberParent observed)
+      (currentBirthComponent authentication) (fiberComponent observed)
+      (currentLocatedBirth authentication)
+      (rawMetadataBirthAtPrefix name key world error value nameEq keyEq global prior later
+        decomposition aligned empty selected observed found)
