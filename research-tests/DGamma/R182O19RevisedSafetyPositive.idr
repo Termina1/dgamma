@@ -16,6 +16,7 @@ import DGamma.CP5RankedEarlyApplicabilitySpike
 import DGamma.Metatheory
 import DGamma.Unified
 import DGamma.R45BareDiamondDisciplineCounterexamplePositive
+import DGamma.R39RelationalMapAlgebraPositive
 import DGamma.R172O17OpenParentRootReuseCandidate
 import DGamma.R182O19RevisedSafetyNegative
 import Data.List.Elem
@@ -111,3 +112,21 @@ r182IndependentTrace True =
         (Fired {before = r182IndependentState 9} {afterState = r182IndependentState 6}
           r45NameEq r45KeyEq (LAdvance 0) LFinishTag Refl)
         NoTransitions)))))
+
+||| A7: respect for the actual generated monoid, at arbitrary R45 traces.
+||| Reuse R39's existing exact partialCompose congruence; composition does not
+||| inspect any captured concrete iterator descriptor or assume map equality.
+public export
+0 r182IndependentTransformationRespects :
+  {first, last : SystemState Nat R45Key R45Value Unit String} ->
+  {trace : Transitions first last} -> (actor : Nat) ->
+  (transformation : TraceEffectTransformation Nat R45Key Unit String R45Value actor trace) ->
+  PartialMapsRelated (EffectStateEquivalence r45KeyEq)
+    (runTraceEffectTransformation transformation) (runTraceEffectTransformation transformation)
+r182IndependentTransformationRespects actor TraceIdentity related = PartialDefined related
+r182IndependentTransformationRespects actor (TraceGenerator generator) related =
+  replayTraceGeneratorMapRespects r45KeyEq generator related
+r182IndependentTransformationRespects actor (TraceCompose after before) {x} {y} related =
+  r39PartialMapsRelatedCompose {keyEq = r45KeyEq}
+    (r182IndependentTransformationRespects actor after)
+    (r182IndependentTransformationRespects actor before) related
