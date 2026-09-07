@@ -92,3 +92,10 @@ actualSupportFromFacts name key world error value nameEq keyEq state selected fi
     (trans (actualSupportClauseAtFiber name key world error value nameEq keyEq state
       (\actor => isSupported {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} @{keyEq} actor state) selected fiber found)
       (clauseAndTrue _ _ (cong not notRetired) (clauseAndTrue _ _ parentTrue dependenciesTrue)))
+
+0 clauseEntryKeyMember :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (selected : name) -> (fiber : Fiber name key value world error) ->
+  (entries : List (Binding name (FiberAt name key value world error))) -> Elem (Bind selected fiber) entries -> Elem selected (bindingKeys entries)
+clauseEntryKeyMember name key world error value selected fiber (_ :: rest) Here = Here
+clauseEntryKeyMember name key world error value selected fiber (head :: rest) (There later) =
+  There (clauseEntryKeyMember name key world error value selected fiber rest later)
