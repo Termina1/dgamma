@@ -266,3 +266,22 @@ before the existing lookupEntries with-block could reduce. No new `with`, local
 let, nonlinear pattern, postulate, or partiality survives. All other B89–B123
 units passed first attempt. The original O18 body is STILL its sole hole at this
 commit; six-hole split is still 1/4/0/0/1. Its body is the NEXT independent unit.
+
+## MILESTONE: O18 closed. — 08:03 UTC
+
+B124-1 fresh PASS (6.22s, sampled peak 3,016,208 KiB); the body of
+`canonicalSupportOrdersMatchSpike` now calls the two ALREADY-COMMITTED support
+truth implications and the existing exact canonical-order membership assembler.
+The explicit A9/uniqueness signature is UNCHANGED by this body unit. All original
+alignment/discipline/empty-origin facts come from the actual left/right capital
+premises, not a fresh hypothesis or a different trace.
+
+Fresh census: **5 holes, 1/3/0/0/1**. O18's hole is absent; remaining holes are
+sorting O17, operational adjacent swap, operational permutation selection,
+canonical convergence, and replayed-canonical-to-original endpoint transfer.
+Production/src and dgamma.ipkg remain byte-identical to 34b21c9; LocalDiamond is
+byte-identical to 6d6ab28; CP3 blob and frozen adversarial-review hash match.
+`research-tests/r178-evidence/O18-milestone.json` records the exact fresh compiler
+transcript, source SHA, prior implication commits, census, and boundary checks.
+The final 207 suite has NOT yet been rerun. Immediate supervisor milestone gate
+precedes any Unit-C source attempt.

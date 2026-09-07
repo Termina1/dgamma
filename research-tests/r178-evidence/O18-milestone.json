@@ -1,0 +1,55 @@
+{
+  "timeUTC": "2026-09-07T08:04:44.580419+00:00",
+  "head": "108846b85b6b7e34df4c45b58f90661d5e1138c5",
+  "milestone": "MILESTONE: O18 closed.",
+  "check": {
+    "unit": "B124-1",
+    "path": "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5ConfluenceCrossTraceSpike.idr"
+    ],
+    "start": "2026-09-07T08:03:27.767889+00:00",
+    "end": "2026-09-07T08:03:33.990858+00:00",
+    "seconds": 6.222802833188325,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 3016208,
+    "sourceSHA256": "7d904a48a926e70ce6ff86739a61d96f97088f19f716b35ebe00b035471d4b31",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "26/26: Building DGamma.CP5ConfluenceCrossTraceSpike (research/DGamma/CP5ConfluenceCrossTraceSpike.idr)\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  order is shadowing Control.Order.order\n\nDGamma.CP5ConfluenceCrossTraceSpike:42:3--42:68\n 38 | \n 39 | public export\n 40 | data CertifiedActorPermutation :\n 41 |   (name : Type) -> List name -> List name -> Type where\n 42 |   ActorPermutationDone : CertifiedActorPermutation name order order\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  after is shadowing DGamma.Core.Applied.after\n\nDGamma.CP5ConfluenceCrossTraceSpike:43:3--46:48\n 43 |   ActorPermutationStep :\n 44 |     AdjacentActorOrderSwap name before middle ->\n 45 |     CertifiedActorPermutation name middle after ->\n 46 |     CertifiedActorPermutation name before after\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  after is shadowing DGamma.Core.Applied.after\n\nDGamma.CP5ConfluenceCrossTraceSpike:276:1--279:77\n 276 | transitionPrefixLength : (earlierTrace : Transitions initial before) ->\n 277 |   (step : Transition before after) ->\n 278 |   transitionCount (appendTransitions earlierTrace\n 279 |     (MoreTransitions step NoTransitions)) = S (transitionCount earlierTrace)\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  order is shadowing Control.Order.order\n\nDGamma.CP5ConfluenceCrossTraceSpike:738:3--744:55\n 738 |   OperationalActorDone :\n 739 |     (blocks : ActorBlockDecomposition name key world error value nameEq keyEq\n 740 |       order trace) ->\n 741 |     (premises : ReplayInvariantBundle name key world error value protocol nameEq\n 742 |       keyEq trace) ->\n 743 |     OperationalActorPermutation name key world error value protocol nameEq keyEq\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  after is shadowing DGamma.Core.Applied.after\n\nDGamma.CP5ConfluenceCrossTraceSpike:745:3--761:35\n 745 |   OperationalActorStep :\n 746 |     (orderSwap : AdjacentActorOrderSwap name before middle) ->\n 747 |     (restCertificate : CertifiedActorPermutation name middle after) ->\n 748 |     (sourceBlocks : ActorBlockDecomposition name key world error value nameEq keyEq\n 749 |       before sourceTrace) ->\n 750 |     (sourcePremises : ReplayInvariantBundle name key world error value protocol\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  sameInputs is shadowing DGamma.CP3.CanonicalSchedule.sameInputs\n\nDGamma.CP5ConfluenceCrossTraceSpike:1238:3--1246:41\n 1238 | 0 permutationReplayCorrespondence :\n 1239 |   {operational : CertifiedOperationalCanonicalPermutation name key world error\n 1240 |     value protocol nameEq keyEq leftTrace rightTrace sameInputs leftCapital\n 1241 |       rightCapital matching} ->\n 1242 |   PermutedCanonicalExecution name key world error value protocol nameEq keyEq\n 1243 |     leftTrace rightTrace sameInputs leftCapital rightCapital operational ->\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  sameInputs is shadowing DGamma.CP3.CanonicalSchedule.sameInputs\n\nDGamma.CP5ConfluenceCrossTraceSpike:1252:3--1260:41\n 1252 | 0 permutationOccurrenceCorrespondence :\n 1253 |   {operational : CertifiedOperationalCanonicalPermutation name key world error\n 1254 |     value protocol nameEq keyEq leftTrace rightTrace sameInputs leftCapital\n 1255 |       rightCapital matching} ->\n 1256 |   PermutedCanonicalExecution name key world error value protocol nameEq keyEq\n 1257 |     leftTrace rightTrace sameInputs leftCapital rightCapital operational ->\n\n"
+  },
+  "holes": {
+    "CanonicalSort": [
+      "sortClosingFreeTraceSpike_rhs"
+    ],
+    "CrossTrace": [
+      "operationalAdjacentBlockSwapSpike_rhs",
+      "selectOperationalCanonicalPermutationSpike_rhs",
+      "canonicalSchedulesConvergeSpike_rhs"
+    ],
+    "LocalDiamond": [],
+    "DeletionChain": [],
+    "RenamingComposition": [
+      "replayedCanonicalToOriginalEndpointSpike_rhs"
+    ]
+  },
+  "count": 5,
+  "productionUnchanged": true,
+  "localDiamondUnchanged": true,
+  "cp3GitBlob": "2c697e532e83989de8591fa6a4378747c6a501c0",
+  "reviewSHA256": "61fc23ae4cea4565b442c840be39c41746ecbac73b8c2f73d04f1e3b4f4681e8",
+  "newProofsCommittedBeforeBody": [
+    "ff65617",
+    "dd0df9f"
+  ],
+  "final207SuiteStatus": "not yet rerun at this milestone"
+}

@@ -3325,3 +3325,19 @@ candidate is a placement-shape fixture target, not a full O17 proof. R172 reuse
 remains excluded by uniqueness. Frozen adjacentSwapSuffixSpike stays untouched;
 any genuine need to revise it triggers STOP/gate. Detailed clause designs and
 implementation ledger: research-tests/O6-R178-GRIND-SHIFT-AUDIT.md.
+
+## R178 milestone — O18 support-order matching closed
+
+**MILESTONE: O18 closed.** This refers to the current task's
+`canonicalSupportOrdersMatchSpike` obligation (not the older R143 numbering for
+sealed canonical capital). Both accepted support-truth directions were separately
+proved/committed first (ff65617, dd0df9f). Their proof combines genuine complete
+retained/root coverage, static parent/component coherence, explicit A9-derived
+retirement agreement, and total induction on actual support-edge protocol ranks.
+No destination-support/coverage/metadata oracle is an added O18 premise.
+
+The separately budgeted O18 body passed its first fresh invocation. Five holes
+remain, **1/3/0/0/1**, with production and frozen LocalDiamond unchanged. A9 is a
+**supervisor decision under delegation, owner override pending**. The R177
+TWO-CAPITAL GAP is preserved. Unit C has not yet changed a source surface; its
+availability-aware A8 design and final regression gate remain pending.
