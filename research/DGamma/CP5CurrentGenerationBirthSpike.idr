@@ -779,3 +779,33 @@ currentFiberAfterAction name key world error value nameEq keyEq ordinal live uni
     No distinct => case previous selected generation (trans (sym (lookupAdvanceGenerationOther nameEq ordinal action selected distinct live)) current) of
       (fiber ** found) => (fiber ** trans (registryLocalUpdateForeign nameEq selected (actionOwner action) distinct (registry before)
         (systemRegistryUpdate (applyActionLocalUpdate nameEq keyEq action before afterState tag raw))) found)
+
+0 currentFiberScanInvariant :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {first, finalState : SystemState name key value world error} ->
+  (trace : Transitions first finalState) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) -> GenerationEnvironmentNamesUnique live ->
+  (finalOrdinal : Nat) -> (finalLive : GenerationEnvironment name) ->
+  GenerationTraceScan nameEq ordinal live trace finalOrdinal finalLive ->
+  AlignedTransitions name key world error value nameEq keyEq trace ->
+  ((selected : name) -> (generation : RegistrationGeneration name) ->
+    (lookupCurrentGeneration @{nameEq} selected live = Just generation) ->
+    (fiber : Fiber name key value world error **
+      lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+        @{nameEq} selected (registry first) = Just fiber)) ->
+  (selected : name) -> (generation : RegistrationGeneration name) ->
+  (lookupCurrentGeneration @{nameEq} selected finalLive = Just generation) ->
+  (fiber : Fiber name key value world error **
+    lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+      @{nameEq} selected (registry finalState) = Just fiber)
+currentFiberScanInvariant name key world error value nameEq keyEq trace ordinal live unique finalOrdinal finalLive scan aligned previous =
+  case aligned of
+    AlignedEnd => case scan of GenerationTraceScanEnd => previous
+    AlignedStep action tag checked rest alignedTail => case scan of
+      GenerationTraceScanStep _ _ tail =>
+        currentFiberScanInvariant name key world error value nameEq keyEq rest (S ordinal)
+          (advanceGenerationEnvironment @{nameEq} ordinal action live) (advanceGenerationEnvironmentPreservesUnique nameEq ordinal action live unique)
+          finalOrdinal finalLive tail alignedTail
+          (currentFiberAfterAction name key world error value nameEq keyEq ordinal live unique action _ _ tag
+            (checkedActionProjects nameEq keyEq action _ _ tag checked) previous)
