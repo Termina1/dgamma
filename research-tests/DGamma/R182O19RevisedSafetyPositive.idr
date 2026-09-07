@@ -147,3 +147,17 @@ r182IndependentIteratorObserved actor stage foreign origin Nothing exact = rewri
 r182IndependentIteratorObserved actor stage foreign origin (Just moved) exact =
   rewrite exact in iteratorStageOutcomeRelated r45KeyEq stage moved origin
     (r172ReuseAllEffectStatesRelated moved origin)
+
+||| A9: authentic empty-origin reachability, ALL six discipline nodes and ALL
+||| component-totality boundaries. Constructor spines are simultaneous with
+||| the exact already checked trace; no success/fallback or bundle premise.
+public export
+0 r182IndependentStructure :
+  (ReachedFromEmpty Nat R45Key Unit String R45Value r45NameEq r45KeyEq (r182IndependentState 6),
+   RegistrationDiscipline r45Protocol r45NameEq (r182IndependentTrace False),
+   TraceComponentsTotal r45NameEq r45KeyEq (r182IndependentTrace False))
+r182IndependentStructure =
+  (MkReachedFromEmpty (r182IndependentState 0) (r182IndependentTrace False)
+    (AlignedStep (OInsert 0 Root r45Child) OInsertTag Refl _ (AlignedStep (OInsert 1 Root r45Child) OInsertTag Refl _ (AlignedStep (LBegin 0) LBeginTag Refl _ (AlignedStep (LAdvance 0) LFinishTag Refl _ (AlignedStep (LBegin 1) LBeginTag Refl _ (AlignedStep (LAdvance 1) LFinishTag Refl _ AlignedEnd)))))) Refl Refl,
+   (RegistrationDisciplineStep _ _ (1 ** Refl) (RegistrationDisciplineStep _ _ (1 ** Refl) (RegistrationDisciplineStep _ _ () (RegistrationDisciplineStep _ _ () (RegistrationDisciplineStep _ _ () (RegistrationDisciplineStep _ _ () RegistrationDisciplineEnd)))))),
+   (TraceComponentsTotalStep _ _ (r172ReuseAnyTransitionTotal (Fired {before = r182IndependentState 0} {afterState = r182IndependentState 1} r45NameEq r45KeyEq (OInsert 0 Root r45Child) OInsertTag Refl)) (TraceComponentsTotalStep _ _ (r172ReuseAnyTransitionTotal (Fired {before = r182IndependentState 1} {afterState = r182IndependentState 2} r45NameEq r45KeyEq (OInsert 1 Root r45Child) OInsertTag Refl)) (TraceComponentsTotalStep _ _ (r172ReuseAnyTransitionTotal (Fired {before = r182IndependentState 2} {afterState = r182IndependentState 3} r45NameEq r45KeyEq (LBegin 0) LBeginTag Refl)) (TraceComponentsTotalStep _ _ (r172ReuseAnyTransitionTotal (Fired {before = r182IndependentState 3} {afterState = r182IndependentState 4} r45NameEq r45KeyEq (LAdvance 0) LFinishTag Refl)) (TraceComponentsTotalStep _ _ (r172ReuseAnyTransitionTotal (Fired {before = r182IndependentState 4} {afterState = r182IndependentState 5} r45NameEq r45KeyEq (LBegin 1) LBeginTag Refl)) (TraceComponentsTotalStep _ _ (r172ReuseAnyTransitionTotal (Fired {before = r182IndependentState 5} {afterState = r182IndependentState 6} r45NameEq r45KeyEq (LAdvance 1) LFinishTag Refl)) TraceComponentsTotalEnd)))))))
