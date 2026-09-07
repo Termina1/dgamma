@@ -30574,3 +30574,20 @@ rawClosingOpeningActionAt name key world error value nameEq keyEq global selecte
     (rawClosingActionAtSplit name key world error value (traceBeforeOpening episode)
       (beginTransition (closedOpening (locatedEpisode episode)))
       (appendTransitions (closedTransitions (locatedEpisode episode)) (traceAfterClosing episode)))
+
+||| O7's ordinal completeness identifies the actor via the authentic opening.
+||| It does not identify proof-bearing episodes or cast their reached states.
+0 rawClosingSameOpeningActor :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (global : Transitions initial finalState) -> (leftActor, rightActor : name) ->
+  (left : LocatedClosedEpisode name key world error value nameEq keyEq leftActor global) ->
+  (right : LocatedClosedEpisode name key world error value nameEq keyEq rightActor global) ->
+  (transitionCount (traceBeforeOpening left) = transitionCount (traceBeforeOpening right)) ->
+  (leftActor = rightActor)
+rawClosingSameOpeningActor name key world error value nameEq keyEq global leftActor rightActor left right same =
+  cong actionOwner (justInjective
+    (trans (sym (rawClosingOpeningActionAt name key world error value nameEq keyEq global leftActor left))
+      (trans (cong (\ordinal => rawClosingActionAt name key world error value ordinal global) same)
+        (rawClosingOpeningActionAt name key world error value nameEq keyEq global rightActor right))))
