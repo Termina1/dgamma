@@ -96,3 +96,17 @@ actual crossings/replays/bundles/uniqueness/finite derivation/exact row count.
 This closes an arbitrary-length A/A FIRST ROW subproblem only. It does NOT
 close arbitrary Cartesian iteration, all orientations, full source-origin
 plan/Cartesian coverage, installed target blocks, or O19. No body attempted.
+
+A16 PASS1,3.117s (e3e0b9d): exact two-source activation occurrence classifier.
+A17 PASS2,3.114s: NO-INPUT generic-row fixture on the fully admitted R182
+two-by-two source. Both first-row crossings and count2 are produced from
+safetyRightOpeningEarly, with no intermediate guard input or scalar observer
+over a builder. Attempt1 spent309.850s warming transitive fixture seeds, then
+rejected missing direct imports (Data.Maybe/Nat and lower proof modules);
+adding the original fixture dependency set resolved both diagnostics at2.
+
+Remaining A18-A30 budget is directed to the actual missing effect-domain
+subproblem: infer early right PARTIAL-MAP definedness from original executions
+and genuine partial commutation. This must NOT be confused with checked
+control/tag applicability; the latter still needs source-map rebasing and
+target/view guards, and full Cartesian/other-orientation/block obligations.
