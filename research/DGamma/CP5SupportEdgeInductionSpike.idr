@@ -42,3 +42,22 @@ supportEdgeInductionAtRank name key world error value protocol nameEq keyEq stat
           (smaller lowerRank (replace {p = LT lowerRank}
             (supportNameRanksEqual name key world error value protocol nameEq state selected upperRank rank upperRanked selectedRanked) increases))
           lower lowerRanked lowerSupported)
+
+||| Honest induction on actual supported names: dependencies/parents can only
+||| recurse through a real SupportEdge and a separately proved support fact.
+export
+0 supportEdgeInduction :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (state : SystemState name key value world error) -> RegistryProtocolRanked protocol nameEq state -> RegistryParentRanksIncrease protocol nameEq state ->
+  (property : name -> Type) ->
+  ((selected : name) -> (isSupported {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} @{keyEq} selected state = True) ->
+    ((lower : name) -> SupportEdge nameEq state lower selected ->
+      (isSupported {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} @{keyEq} lower state = True) -> property lower) -> property selected) ->
+  (selected : name) ->
+  (isSupported {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} @{keyEq} selected state = True) -> property selected
+supportEdgeInduction name key world error value protocol nameEq keyEq state ranked parentOrdered property step selected supported =
+  case computedSupportPresent name key world error value nameEq keyEq state selected supported of
+    (fiber ** found) => case ranked selected fiber found of
+      (rank ** rankedFiber) => supportEdgeInductionAtRank name key world error value protocol nameEq keyEq state ranked parentOrdered property step
+        rank (wellFounded {rel = LT} rank) selected (MkNameProtocolRank fiber found rankedFiber) supported
