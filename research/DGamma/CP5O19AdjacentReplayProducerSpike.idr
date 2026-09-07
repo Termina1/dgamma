@@ -12,6 +12,7 @@ import DGamma.CP5ConfluenceLocalDiamondSpike
 import DGamma.CP5ConfluenceCanonicalSortSpike
 import Data.List
 import Data.List.Elem
+import Data.Maybe
 import Data.Nat
 import Decidable.Equality
 
@@ -227,3 +228,24 @@ o19AdvanceActivationPair {name} {key} {world} {error} {value}
            (FiniteAdjacentSwapStep original earlier left right later
              (AdjacentActivationActivation left right leftActivation rightActivation)
              diamond result (swappedTrace result) FiniteAdjacentSwapDone) sourceUnique)))
+
+||| B13: identify a reached destination from its ACTUAL aligned equation and
+||| another exact checked result. This avoids ANY observer over a replay builder.
+public export
+0 o19AlignedDestination :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {before, actualAfter, finalState : SystemState name key value world error} ->
+  (step : Transition before actualAfter) -> (rest : Transitions actualAfter finalState) ->
+  AlignedTransitions name key world error value nameEq keyEq (MoreTransitions step rest) ->
+  (action : Action name key value world error) -> (tag : RuleTag) ->
+  (transitionAction step = action) -> (transitionTag step = tag) ->
+  (expectedAfter : SystemState name key value world error) ->
+  (checkedApplyAction @{nameEq} @{keyEq} action before = Just (tag, expectedAfter)) ->
+  (actualAfter = expectedAfter)
+o19AlignedDestination {before} nameEq keyEq _ _
+  (AlignedStep actualAction actualTag checked _ _) action tag sameAction sameTag expectedAfter expected =
+    cong Builtin.snd (justInjective
+      (trans (sym checked)
+        (trans (cong (\observedAction => checkedApplyAction @{nameEq} @{keyEq} observedAction before) sameAction)
+          (trans expected (cong (\observedTag => Just (observedTag, expectedAfter)) (sym sameTag))))))
