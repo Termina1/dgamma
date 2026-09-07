@@ -44,3 +44,29 @@ record ObservedTwoActionTrace
   0 twoActionTraceExact : (MoreTransitions twoActionFirst (MoreTransitions twoActionSecond NoTransitions) = trace)
   0 twoActionAligned : AlignedTransitions name key world error value nameEq keyEq
     (MoreTransitions twoActionFirst (MoreTransitions twoActionSecond NoTransitions))
+
+||| B23: inspect an EXPLICIT actual trace; its observed two-action word rules
+||| out every other length. No constructor of the sealed replay is exposed.
+public export
+0 o19TwoActionTraceObserved :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (wantedFirst, wantedSecond : Action name key value world error) ->
+  (trace : Transitions initial finalState) ->
+  AlignedTransitions name key world error value nameEq keyEq trace ->
+  (o19ActionWord trace = [wantedFirst, wantedSecond]) ->
+  ObservedTwoActionTrace name key world error value nameEq keyEq wantedFirst wantedSecond trace
+o19TwoActionTraceObserved nameEq keyEq wantedFirst wantedSecond NoTransitions aligned observed =
+  void (uninhabited (cong length observed))
+o19TwoActionTraceObserved nameEq keyEq wantedFirst wantedSecond
+  (MoreTransitions first NoTransitions) aligned observed =
+    void (uninhabited (cong length observed))
+o19TwoActionTraceObserved nameEq keyEq wantedFirst wantedSecond
+  (MoreTransitions {middle = between} first (MoreTransitions second NoTransitions)) aligned observed =
+    MkObservedTwoActionTrace between first second
+      (Builtin.fst (consInjective observed))
+      (Builtin.fst (consInjective (Builtin.snd (consInjective observed)))) Refl aligned
+o19TwoActionTraceObserved nameEq keyEq wantedFirst wantedSecond
+  (MoreTransitions first (MoreTransitions second (MoreTransitions third rest))) aligned observed =
+    void (uninhabited (cong length observed))
