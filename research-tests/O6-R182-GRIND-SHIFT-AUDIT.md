@@ -198,3 +198,20 @@ Census5=1/3/0/0/1, production diff vs34b21c9 empty, CP3 exact,207/207 seeds,
 adjacent/review hashes exact, no staged files/orphans or stray research files.
 Mid-shift need_decision gate follows the committed validation artifact. Unit B
 has not begun. C remains the pre-authorized next branch if the reply is late.
+
+## Unit B — explicit post-A authorization received
+
+Supervisor ratified91ee784: exact strengthened surface, actual negative/full
+positive, clean/frozen boundaries. Authorized ONE disposable applicability
+probe≤3; then producer-owned Cartesian adjacent-swap construction consuming
+FROZEN adjacentSwapSuffixSpike, R175/R177 registration/external transport and
+range update. O19 body only AFTER construction capital is committed, fresh3/3;
+closure immediate census/milestone gate;3/3 body failure stop-audit/gate then C.
+No permission to edit other holes, LocalDiamond or O17 root placement.
+
+B-probe planned: eliminate the new R179 checked certificate into an actual
+right BeginStep and pair it with the existing left blockOpening at exactly the
+same pre-left cut. This is a first-step probe, not an assumed ViewRelatedBy or
+local diamond. R181 pairedActualResolvedViews remains the separately derived
+successful-resolution relation for the later diamond construction; neither its
+premises nor arbitrary-candidate success are assumed by this probe.
