@@ -187,3 +187,25 @@ clauseListMemberTrueElem element equal selected (current :: rest) exact =
     (Yes same ** observed) => case same of Refl => Here
     (No different ** observed) => There (clauseListMemberTrueElem element equal selected rest
       (trans (sym (the (listMember @{equal} selected (current :: rest) = listMember @{equal} selected rest) (rewrite observed in Refl))) exact))
+
+||| INTERNAL proof package for precisely the separately established static and
+||| retirement facts. Accepted producers build it; O18 gains NO such premise.
+public export
+record SupportedClauseTransport
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (keyEq : DecEq key)
+  (0 source, target : SystemState name key value world error)
+  (0 renaming : name -> name) where
+  constructor MkSupportedClauseTransport
+  0 clauseImage : (selected : name) -> (sourceFiber : Fiber name key value world error) ->
+    (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} selected (registry source) = Just sourceFiber) ->
+    (isSupported {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} @{keyEq} selected source = True) ->
+    (targetFiber : Fiber name key value world error **
+      (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} (renaming selected) (registry target) = Just targetFiber,
+       fiberComponent targetFiber = fiberComponent sourceFiber,
+       fiberParent targetFiber = supportMapParent name renaming (fiberParent sourceFiber)))
+  0 clauseImageNotRetired : (selected : name) ->
+    (isSupported {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} @{keyEq} selected source = True) ->
+    (targetFiber : Fiber name key value world error) ->
+    (lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} (renaming selected) (registry target) = Just targetFiber) ->
+    (retired targetFiber = False)
