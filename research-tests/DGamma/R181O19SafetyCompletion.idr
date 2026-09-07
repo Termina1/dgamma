@@ -211,3 +211,20 @@ r181TraceStructure =
             (RegistrationDisciplineStep _ _ ()
               (RegistrationDisciplineStep _ _ () RegistrationDisciplineEnd)))))),
    Refl, Refl)
+
+||| Observe the real normalized provider table before the totality validator.
+||| The validator checks EVERY actual actor boundary, not just the endpoint.
+export
+0 r181TotalityObserved :
+  (table : OwnedTable ToyKey ToyValue DGamma.Section3Example.toySpecA) ->
+  (0 tableObserved : (restrictOwnedPreservingOrder @{%search}
+    DGamma.Section3Example.toySpecA (ownedValues (ownedA True)) = table)) ->
+  (binding : Maybe Bool) ->
+  (0 bindingObserved : (lookupBinding @{%search} ServiceA (ownedValues table) = binding)) ->
+  (0 present : (isJust binding = True)) ->
+  (isJust (checkTraceComponentsTotal (the (DecEq Nat) %search)
+    (the (DecEq ToyKey) %search) r181WholeTrace) = True)
+r181TotalityObserved table tableObserved Nothing bindingObserved present =
+  case present of Refl impossible
+r181TotalityObserved table tableObserved (Just service) bindingObserved present =
+  rewrite tableObserved in rewrite bindingObserved in Refl
