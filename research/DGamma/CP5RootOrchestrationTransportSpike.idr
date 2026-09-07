@@ -6,6 +6,7 @@ import DGamma.Metatheory
 import DGamma.CP3
 import DGamma.CP5UniqueRawNameInsertions
 import DGamma.CP5RetirementHistorySpike
+import DGamma.CP5CurrentGenerationBirthSpike
 import Decidable.Equality
 
 %default total
@@ -102,3 +103,14 @@ rootActionBackward name key world error value nameEq _ _ (MatchExternalInput mat
   case rootActionHeadView name key world error value nameEq action rightStep rightRest occurrence of
     Left (root, exact) => RootActionHere leftStep leftRest leftRoot (trans leftExact (trans (sym rightExact) exact))
     Right remaining => RootActionLater leftStep leftRest (rootActionBackward name key world error value nameEq leftRest rightRest later action remaining)
+
+export
+0 rootActionLocated :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) ->
+  {first, finalState : SystemState name key value world error} ->
+  (trace : Transitions first finalState) -> (action : Action name key value world error) ->
+  RootActionOccurs name key world error value nameEq action trace -> LocatedActionOccurrence action trace
+rootActionLocated name key world error value nameEq _ action (RootActionHere step rest root exact) =
+  MkLocatedActionOccurrence _ _ NoTransitions step rest exact Refl
+rootActionLocated name key world error value nameEq _ action (RootActionLater step rest later) =
+  currentBirthPrependLocation name key world error value step rest action (rootActionLocated name key world error value nameEq rest action later)
