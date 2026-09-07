@@ -2767,3 +2767,19 @@ registrationIndexLiveAdvance name key world error value nameEq ordinal (LLeave a
   (MkRegistrationIndexState live activations counts deleted) = Refl
 registrationIndexLiveAdvance name key world error value nameEq ordinal (LUnload actor)
   (MkRegistrationIndexState live activations counts deleted) = Refl
+
+0 registrationSurvivingLiveObserved :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) ->
+  (ordinal : Nat) -> (child, parent : name) -> (component : Component key value world error) ->
+  (live : GenerationEnvironment name) ->
+  (activations : List (name, RegistrationActivation name)) ->
+  (counts : List (RegistrationActivation name, Nat)) -> (deleted : List (RegistrationGeneration name)) ->
+  (observed : Maybe (RegistrationActivation name)) ->
+  (lookupParentActivation @{nameEq} parent activations = observed) ->
+  (indexedLiveGenerations (advanceSurvivingRegistrationIndex @{nameEq} ordinal child parent component
+    (MkRegistrationIndexState live activations counts deleted)) =
+    advanceGenerationEnvironment @{nameEq} ordinal (OInsert child (ChildOf parent) component) live)
+registrationSurvivingLiveObserved name key world error value nameEq ordinal child parent component live activations counts deleted Nothing exact =
+  rewrite exact in Refl
+registrationSurvivingLiveObserved name key world error value nameEq ordinal child parent component live activations counts deleted (Just activation) exact =
+  rewrite exact in Refl
