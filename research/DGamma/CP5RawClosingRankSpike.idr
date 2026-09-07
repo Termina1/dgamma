@@ -291,3 +291,41 @@ rawComponentBirthAtPrefix name key world error value nameEq keyEq {initial}
         case emptyRegistryProtocolRanked (emptyRegistrationProtocol {key = key} {value = value}
           {world = world} {error = error}) nameEq initial empty selected fiber found of
           (rank ** ranked) => void (nothingIsNotJust ranked))
+
+
+||| Immutable cross-time coherence: the same raw name at ANY two reached cuts
+||| has the SAME component, even across inactivity, removal and other actors.
+||| Freshness identifies two authenticated births, never two arbitrary states.
+public export
+0 uniqueRawComponentsAcrossPrefixes :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, leftState, rightState, finalState : SystemState name key value world error} ->
+  (global : Transitions initial finalState) ->
+  AlignedTransitions name key world error value nameEq keyEq global ->
+  bindings (registry initial) = [] ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq global ->
+  (leftPrior : Transitions initial leftState) -> (leftLater : Transitions leftState finalState) ->
+  appendTransitions leftPrior leftLater = global ->
+  (rightPrior : Transitions initial rightState) -> (rightLater : Transitions rightState finalState) ->
+  appendTransitions rightPrior rightLater = global ->
+  (selected : name) -> (leftFiber, rightFiber : Fiber name key value world error) ->
+  lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+    @{nameEq} selected (registry leftState) = Just leftFiber ->
+  lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error}
+    @{nameEq} selected (registry rightState) = Just rightFiber ->
+  fiberComponent leftFiber = fiberComponent rightFiber
+uniqueRawComponentsAcrossPrefixes name key world error value nameEq keyEq global aligned empty unique
+  leftPrior leftLater leftSplit rightPrior rightLater rightSplit selected leftFiber rightFiber leftFound rightFound =
+    case rawComponentBirthAtPrefix name key world error value nameEq keyEq global leftPrior leftLater leftSplit
+      (fst (alignedAppendSplit leftPrior leftLater
+        (replace {p = AlignedTransitions name key world error value nameEq keyEq} (sym leftSplit) aligned)))
+      empty selected leftFiber leftFound of
+      (leftParent ** leftBirth) =>
+        case rawComponentBirthAtPrefix name key world error value nameEq keyEq global rightPrior rightLater rightSplit
+          (fst (alignedAppendSplit rightPrior rightLater
+            (replace {p = AlignedTransitions name key world error value nameEq keyEq} (sym rightSplit) aligned)))
+          empty selected rightFiber rightFound of
+          (rightParent ** rightBirth) =>
+            uniqueRawBirthComponents name key world error value nameEq keyEq global unique selected
+              leftParent rightParent (fiberComponent leftFiber) (fiberComponent rightFiber) leftBirth rightBirth
