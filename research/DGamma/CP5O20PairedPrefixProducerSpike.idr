@@ -136,3 +136,55 @@ pairedSetRuntimeEffects name key world value nameEq renaming actor leftWorld rig
         rightTable tableSame (setEffectAmbient leftWorld left)
         (setEffectAmbient rightWorld right)
         (MkRenamedRuntimeEffects worldSame (synchronizedTables paired)))
+
+||| Simultaneous registration EFFECT producer at the two actual insertBinding
+||| outputs. The surrounding paired trace must authenticate the OInsert guards;
+||| this lemma neither assumes nor produces the missing canonical prefix choice.
+export
+0 pairedInsertEffects :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (renaming : NameBijection name) -> (actor : name) ->
+  (component : Component key value world error) ->
+  (leftParent, rightParent : Parent name) ->
+  (leftWorld, rightWorld : world) ->
+  (leftRegistry, rightRegistry : Registry name key value world error) ->
+  (leftAbsent : (lookupFiber {name = name} {key = key} {value = value}
+    {world = world} {error = error} @{nameEq} actor leftRegistry = Nothing)) ->
+  (rightAbsent : (lookupFiber {name = name} {key = key} {value = value}
+    {world = world} {error = error} @{nameEq} (renameForward renaming actor)
+      rightRegistry = Nothing)) ->
+  RenamedRuntimeEffects name key world value renaming
+    (projectEffectState {name = name} {key = key} {value = value} {world = world}
+      {error = error} @{nameEq} (MkSystemState leftWorld leftRegistry))
+    (projectEffectState {name = name} {key = key} {value = value} {world = world}
+      {error = error} @{nameEq} (MkSystemState rightWorld rightRegistry)) ->
+  RenamedRuntimeEffects name key world value renaming
+    (projectEffectState {name = name} {key = key} {value = value} {world = world}
+      {error = error} @{nameEq} (MkSystemState leftWorld (insertBinding @{nameEq}
+        actor (freshFiber component leftParent) leftRegistry leftAbsent)))
+    (projectEffectState {name = name} {key = key} {value = value} {world = world}
+      {error = error} @{nameEq} (MkSystemState rightWorld (insertBinding @{nameEq}
+        (renameForward renaming actor) (freshFiber component rightParent)
+          rightRegistry rightAbsent)))
+pairedInsertEffects name key world error value nameEq keyEq renaming actor component
+  leftParent rightParent leftWorld rightWorld leftRegistry rightRegistry leftAbsent
+  rightAbsent paired =
+    pairedEffectsAcrossFrames name key world value keyEq renaming
+      (setEffectTable @{nameEq} actor emptyContext
+        (projectEffectState @{nameEq} (MkSystemState leftWorld leftRegistry)))
+      (projectEffectState @{nameEq} (MkSystemState leftWorld (insertBinding @{nameEq}
+        actor (freshFiber component leftParent) leftRegistry leftAbsent)))
+      (setEffectTable @{nameEq} (renameForward renaming actor) emptyContext
+        (projectEffectState @{nameEq} (MkSystemState rightWorld rightRegistry)))
+      (projectEffectState @{nameEq} (MkSystemState rightWorld (insertBinding @{nameEq}
+        (renameForward renaming actor) (freshFiber component rightParent)
+          rightRegistry rightAbsent)))
+      (projectInsertEffectFrame nameEq keyEq actor leftWorld component leftParent
+        leftRegistry leftAbsent)
+      (pairedSetRuntimeEffects name key world value nameEq renaming actor leftWorld
+        rightWorld (synchronizedAmbient paired) emptyContext emptyContext Refl
+        (projectEffectState @{nameEq} (MkSystemState leftWorld leftRegistry))
+        (projectEffectState @{nameEq} (MkSystemState rightWorld rightRegistry)) paired)
+      (projectInsertEffectFrame nameEq keyEq (renameForward renaming actor) rightWorld
+        component rightParent rightRegistry rightAbsent)
