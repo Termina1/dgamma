@@ -190,3 +190,14 @@ o20PairedObservedEmptyFinishCut {error} nameEq keyEq renaming actor component le
           (o20ObservedOwnerTablesAgree nameEq renaming actor leftWorld rightWorld leftRegistry rightRegistry (MkFiber component leftParent leftRetired leftTable (Reloading [] leftOlder leftView)) (MkFiber component rightParent rightRetired rightTable (Reloading [] rightOlder rightView)) leftFound rightFound paired)
           (RenamedFibers leftParent rightParent leftRetired rightRetired leftTable rightTable
             (Active leftOlder leftView) (Active rightOlder rightView) parents retiredSame (RenamedActive {error} older views)) paired
+
+||| Retirement changes only its explicit Boolean; undo, views, program and
+||| component metadata are preserved for arbitrary related source controls.
+export
+0 o20RetireRelated :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {renaming : NameBijection name} -> {left, right : Fiber name key value world error} ->
+  FiberRelatedBy renaming left right -> FiberRelatedBy renaming (retireFiber left) (retireFiber right)
+o20RetireRelated (RenamedFibers leftParent rightParent leftRetired rightRetired leftTable rightTable leftLifecycle rightLifecycle
+  parents retiredSame lifecycle) =
+    RenamedFibers leftParent rightParent True True leftTable rightTable leftLifecycle rightLifecycle parents Refl lifecycle
