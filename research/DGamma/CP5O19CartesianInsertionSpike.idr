@@ -262,3 +262,36 @@ o19GeneratedInsertionReplayObserved nameEq keyEq protocol leftChild rightChild l
         (\same => distinct (trans (sym (cong actionOwner rightInsert))
           (trans (sym (o19TransitionActorOwner right))
             (trans (sym same) (trans (o19TransitionActorOwner left) (cong actionOwner leftInsert)))))) safety earlyAligned)))
+
+
+||| Complete source-derived O/O node producer; no safety, early guard,
+||| generation scan, local diamond or replay is accepted from the caller.
+export
+0 o19GeneratedInsertionReplay :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (protocol : RegistrationProtocol key value world error) ->
+  (leftChild, rightChild, leftParent, rightParent : name) ->
+  (leftComponent, rightComponent : Component key value world error) ->
+  {initial, first, middle, last, finalState : SystemState name key value world error} ->
+  (source : Transitions initial finalState) -> (earlier : Transitions initial first) ->
+  (left : Transition first middle) -> (right : Transition middle last) -> (later : Transitions last finalState) ->
+  (appendTransitions earlier (MoreTransitions left (MoreTransitions right later)) = source) ->
+  ReplayInvariantBundle name key world error value protocol nameEq keyEq source ->
+  (transitionAction left = OInsert leftChild (ChildOf leftParent) leftComponent) ->
+  (transitionAction right = OInsert rightChild (ChildOf rightParent) rightComponent) ->
+  Not (rightChild = leftChild) ->
+  ((licensor : name) -> (ChildOf leftParent = ChildOf licensor) -> Not (rightChild = licensor)) ->
+  ((licensor : name) -> (ChildOf rightParent = ChildOf licensor) -> Not (leftChild = licensor)) ->
+  (transitionTag right = OInsertTag) ->
+  (diamond : LocalRelationalDiamond name key world error value nameEq keyEq left right **
+    AdjacentSwapResult name key world error value protocol nameEq keyEq source earlier left right later diamond)
+o19GeneratedInsertionReplay nameEq keyEq protocol leftChild rightChild leftParent rightParent leftComponent rightComponent
+  source earlier left right later decomposition premises leftInsert rightInsert distinct leftLicense rightLicense rightTag =
+    o19GeneratedInsertionReplayObserved nameEq keyEq protocol leftChild rightChild leftParent rightParent leftComponent rightComponent
+      source earlier left right later decomposition premises leftInsert rightInsert distinct
+      (o19InsertionPairSafetyObserved nameEq keyEq protocol leftChild rightChild (ChildOf leftParent) (ChildOf rightParent)
+        leftComponent rightComponent source earlier left right later decomposition premises leftInsert rightInsert distinct
+        leftLicense rightLicense
+        (o19InsertionPairEarly nameEq keyEq protocol leftChild rightChild (ChildOf leftParent) (ChildOf rightParent)
+          leftComponent rightComponent source earlier left right later decomposition premises leftInsert rightInsert distinct
+          rightLicense rightTag))
