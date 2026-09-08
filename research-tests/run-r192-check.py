@@ -25,12 +25,21 @@ assert not (OUT/(unit+'.json')).exists(), 'Invocation names are append-only'
 # start until final25min. Start18:26:48Z, timeout22:26:48Z.
 planned_validation = False
 if re.fullmatch(r'V\d+', unit):
-    plan_bytes = (OUT/'final-validation-plan.json').read_bytes()
-    assert hashlib.sha256(plan_bytes).hexdigest() == (OUT/'final-validation-plan.sha256').read_text().strip(), 'Frozen validation plan changed'
+    plan_stem = 'final-source-recheck-plan' if unit == 'V38' else 'final-validation-plan'
+    plan_bytes = (OUT/(plan_stem+'.json')).read_bytes()
+    assert hashlib.sha256(plan_bytes).hexdigest() == (OUT/(plan_stem+'.sha256')).read_text().strip(), 'Frozen validation plan changed'
     items = [item for item in json.loads(plan_bytes) if item['unit'] == unit]
     assert len(items) == 1 and items[0]['path'] == path and items[0]['expectedDiagnostic'] == diagnostic and items[0].get('symbol') == symbol, 'Unplanned validation invocation'
     planned_source = ROOT/('dgamma.ipkg' if path == 'package' else path)
     assert hashlib.sha256(planned_source.read_bytes()).hexdigest() == items[0]['sourceHash'], 'Validation source is not frozen bytes'
+    planned_validation = True
+if unit == 'Y1COMMENT':
+    comment_bytes = (ROOT/'research-tests/O6-R192-COMMENT-CORRECTION-MANIFEST.json').read_bytes()
+    assert hashlib.sha256(comment_bytes).hexdigest() == '26ac9d9dedbb129786a2b66a3bc650635641b7a7789bd524bf996024e0397878'
+    comment = json.loads(comment_bytes)
+    assert path == comment['path'] and diagnostic is None and symbol is None
+    assert hashlib.sha256((ROOT/path).read_bytes()).hexdigest() == comment['newSourceSHA256']
+    assert (OUT/'final-validation-complete.json').exists(), 'Original37 checks must finish first'
     planned_validation = True
 cutoff = datetime.datetime(2026,9,8,22,1,48,tzinfo=datetime.timezone.utc) if planned_validation else datetime.datetime(2026,9,8,21,46,48,tzinfo=datetime.timezone.utc)
 assert datetime.datetime.now(datetime.timezone.utc) < cutoff, 'R192 attempt21:46:48 / frozen-validation22:01:48 start guard'

@@ -1,0 +1,13 @@
+{
+  "approval": "supervisor exact comment-only gate; await all37 planned checks before application; no C4 retry",
+  "sourceHEAD": "93bda9363285ce45d3d319a2536dbe359635d040",
+  "path": "research-tests/DGamma/R192ExtendedChildBlockProbe.idr",
+  "unit": "Y1COMMENT",
+  "oldSourceSHA256": "677f90fcee71163893ca2a0ac95b1939debbf44ced06643acb46128b0d80fead",
+  "newSourceSHA256": "4b0ff1f9ad16b3031440e57f683eb3e7e5095b4a4191b6db97a0a1067dde4a6b",
+  "oldText": "||| Same eleven actions and final state as R191, except actual child Retire3\n||| is moved before actor1's two lifecycle edges. NEW checked trace, not an\n||| assertion that merely extending the grammar moves an old physical action.",
+  "newText": "||| Candidate states for relocating child Retire3 before actor1's lifecycle.\n||| C4's checked eleven-edge trace was exhausted/reverted; this declaration\n||| contains NO trace or operational-reordering proof.",
+  "unchangedNonDocstringBytesSHA256": "f39a6354284ee97d06bd754ba16e538f1d236748d87ff4d404f122d0a856b7cf",
+  "supersedesInvocation": "V16",
+  "finalRecheck": "V38"
+}

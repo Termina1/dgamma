@@ -14,8 +14,9 @@ import sys
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 OUT = pathlib.Path('/tmp/dgamma-r192')
 phase=sys.argv[1]
-assert phase == 'final'
-plan = json.loads((OUT/(phase+'-validation-plan.json')).read_text())
+assert phase in ['final','final-source-recheck']
+plan_stem = 'final-validation' if phase == 'final' else 'final-source-recheck'
+plan = json.loads((OUT/(plan_stem+'-plan.json')).read_text())
 assert len({p['unit'] for p in plan}) == len(plan)
 assert not subprocess.check_output(['git', 'diff', '--cached', '--name-only'], cwd=ROOT).strip()
 assert not subprocess.check_output(['git', 'diff', '--name-only', '--', 'research/', 'src/', 'research-tests/DGamma/'], cwd=ROOT).strip()
@@ -41,5 +42,5 @@ for item in plan:
     if result.returncode or not record['passed'] or not record['fresh']:
         print('STOP: first final validation failure, no later compiler launched', flush=True)
         sys.exit(1)
-(OUT/(phase+'-validation-complete.json')).write_text(json.dumps(dict(completedUTC=datetime.datetime.now(datetime.timezone.utc).isoformat(), invocations=[p['unit'] for p in plan], serial=True), indent=2)+'\n')
+(OUT/(plan_stem+'-complete.json')).write_text(json.dumps(dict(completedUTC=datetime.datetime.now(datetime.timezone.utc).isoformat(), invocations=[p['unit'] for p in plan], serial=True), indent=2)+'\n')
 print('ALL FINAL VALIDATIONS PASSED', len(plan), flush=True)
