@@ -138,3 +138,18 @@ o20BeforeMatchedMemberObserved nameEq left right rest same (Yes member) exact pr
   rewrite same in rewrite exact in Refl
 o20BeforeMatchedMemberObserved nameEq left right rest same (No absent) exact present =
   void (absent present)
+
+||| Producer-owned name-decision boundary for target-order completeness.
+||| The caller supplies structural membership/induction facts, not a success
+||| assertion for this head. No visibility change to the native checker.
+export
+0 o20BeforeOwnerDecisionObserved :
+  {name : Type} -> (nameEq : DecEq name) -> (left, right, head : name) -> (rest : List name) ->
+  (observed : Dec (left = head)) -> (decEq @{nameEq} left head = observed) ->
+  Elem right rest ->
+  (Not (left = head) -> (isJust (map (BeforeThere {other = head}) (o20CheckBefore nameEq left right rest)) = True)) ->
+  (isJust (o20CheckBefore nameEq left right (head :: rest)) = True)
+o20BeforeOwnerDecisionObserved nameEq left right _ rest (Yes Refl) exact member smaller =
+  o20BeforeMatchedMemberObserved nameEq left right rest exact (isElem @{nameEq} right rest) Refl member
+o20BeforeOwnerDecisionObserved nameEq left right head rest (No different) exact member smaller =
+  rewrite exact in smaller different
