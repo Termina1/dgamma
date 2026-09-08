@@ -259,3 +259,47 @@ o19WordRowStepSites nameEq keyEq protocol swap original blocks premises safety u
   o19WordRowAtObservedPairSites nameEq keyEq protocol swap original blocks premises safety unique source prior earlier left rest right later previous
     (o19SourcePairAtReachedRight (actorLeft swap) (actorRight swap) left right (mixedRowRight (wordRow previous))
       (mixedRowAction (wordRow previous)) (mixedRowTag (wordRow previous)) (mixedRowActor (wordRow previous)) observed)
+
+||| ACTUAL arbitrary mixed row sites, not just its count: rightmost first.
+||| Structural row induction consumes D10 at each produced actual node.
+export
+0 o19BubbleWordRowSites :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (protocol : RegistrationProtocol key value world error) ->
+  {sourceOrder, targetOrder : List name} -> (swap : AdjacentActorOrderSwap name sourceOrder targetOrder) ->
+  {initial, originalFinal, sourceFinal, before, rightBefore, rightAfter : SystemState name key value world error} ->
+  (original : Transitions initial originalFinal) ->
+  (blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder original) ->
+  (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq original) ->
+  (safety : AdjacentActorSwapSafety name key world error value protocol nameEq keyEq swap original blocks premises) ->
+  (unique : UniqueRawNameInsertions name key world error value nameEq keyEq original) ->
+  (source : Transitions initial sourceFinal) ->
+  (prior : FiniteAdjacentSwapDerivation name key world error value protocol nameEq keyEq original source) ->
+  (earlier : Transitions initial before) -> (spine : Transitions before rightBefore) ->
+  (right : Transition rightBefore rightAfter) -> (later : Transitions rightAfter sourceFinal) ->
+  (decomposition : appendTransitions earlier (appendTransitions spine (MoreTransitions right later)) = source) ->
+  (currentPremises : ReplayInvariantBundle name key world error value protocol nameEq keyEq source) ->
+  (currentUnique : UniqueRawNameInsertions name key world error value nameEq keyEq source) ->
+  (kind : Either (PaperActivationStep right) (PaperOrchestrationStep right)) ->
+  (0 classes : {first, last : SystemState name key value world error} ->
+    (step : Transition first last) -> OccursIn step spine ->
+    O19SourcePairObservation name key world error value (actorLeft swap) (actorRight swap) step right) ->
+  (o19CrossingSites (cursorDerivation (mixedRowCursor (wordRow (o19BubbleWordRow nameEq keyEq protocol swap original blocks premises safety unique source prior earlier spine right later decomposition currentPremises currentUnique kind classes)))) =
+    o19RowSites (transitionCount earlier) (transitionCount spine))
+o19BubbleWordRowSites nameEq keyEq protocol swap original blocks premises safety unique source prior earlier
+  NoTransitions right later decomposition currentPremises currentUnique kind classes = Refl
+o19BubbleWordRowSites nameEq keyEq protocol swap original blocks premises safety unique source prior earlier
+  (MoreTransitions left rest) right later decomposition currentPremises currentUnique kind classes =
+    trans (o19WordRowStepSites nameEq keyEq protocol swap original blocks premises safety unique source prior earlier left rest right later
+      (o19BubbleWordRow nameEq keyEq protocol swap original blocks premises safety unique source prior
+        (appendTransitions earlier (MoreTransitions left NoTransitions)) rest right later
+        (trans (appendTransitionsAssociative earlier (MoreTransitions left NoTransitions)
+          (appendTransitions rest (MoreTransitions right later))) decomposition)
+        currentPremises currentUnique kind (\step, occurs => classes step (OccursLater occurs))) (classes left OccursHere))
+      (cong (\sites => sites ++ [transitionCount earlier])
+        (trans (o19BubbleWordRowSites nameEq keyEq protocol swap original blocks premises safety unique source prior
+        (appendTransitions earlier (MoreTransitions left NoTransitions)) rest right later
+        (trans (appendTransitionsAssociative earlier (MoreTransitions left NoTransitions)
+          (appendTransitions rest (MoreTransitions right later))) decomposition)
+        currentPremises currentUnique kind (\step, occurs => classes step (OccursLater occurs)))
+          (cong (\start => o19RowSites start (transitionCount rest)) (transitionPrefixLength earlier left))))
