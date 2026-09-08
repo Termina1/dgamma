@@ -110,3 +110,27 @@ Final/archive/independent tooling is being adapted from R192 rather than
 trusted with inherited fixed counts/exceptions. All known all-four fixtures
 now explicitly acquire the shared heavy lock in addition to the large spikes
 and every R8 target. All recorded own runs remain light so far.
+
+## A deepening E1--E22: genuine present-vestigial boundary
+
+All22 PASS1/guarded committed. E1--E3 split the accepted current-generation
+scanner into authentic vestigial evidence OR exact historical/current-name
+agreement. Non-vestigial current entries agree, including unsupported present
+ones; mere presence does not suffice. E4--E22 are a new HISTORY fixture, not
+lane2's placement/extended-grammar work. The actual8-edge original history is
+InsertRoot0/Begin0/InsertChild1/Finish0/Retire1/Retire0/Leave0/Unload0.
+Both scans genuinely retain current generation(1,2) AND record it discarded
+through the authenticated parent closing episode. All vestigial fields are
+inhabited; child1 is physically present, while the accepted current bijection
+swaps1/2 and sends it to absent2. Full SameOrchestrationModuloGenerated fields
+are built, including actual root generation correspondence and all four
+CurrentEndpointRenaming fields. Both actual historical births still select1,
+so E21 proves history/current disagreement. This differs from R192's REMOVED
+child and from its unsupported-but-NOT-discarded negative. No independent
+canonical schedule capital is supplied: this is NOT a counterexample to the
+protected convergence theorem. It confirms the need to handle the genuine
+vestigial branch separately rather than silently forcing all-name rebasing.
+Body remains untouched/ineligible; arbitrary paired alignment and missing
+history successor cases remain open. No exhausted3/3 unit. Lane2 compilers
+were recorded on E19 and an artifact/source guard; none was killed or counted
+against main concurrency. Root docs/closing audit remain main responsibility.
