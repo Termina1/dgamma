@@ -225,3 +225,30 @@ o19CartesianAdjacentObservedSites nameEq keyEq protocol swap source blocks premi
           (replace {p = Elem _} leftWord leftMember) (replace {p = Elem _} rightWord rightMember))
 o19CartesianAdjacentObservedSites nameEq keyEq protocol swap source blocks premises safety unique earlier firstLeft leftRest
   (MoreTransitions step rest) rightSpine later decomposition adjacent leftWord rightWord = void (uninhabited adjacent)
+
+||| B3 ACTUAL O19 site closed form: no internal class/cut/site premise.
+export
+0 o19CartesianActualBlocksSites :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (protocol : RegistrationProtocol key value world error) ->
+  {sourceOrder, targetOrder : List name} -> (swap : AdjacentActorOrderSwap name sourceOrder targetOrder) ->
+  {initial, sourceFinal : SystemState name key value world error} -> (source : Transitions initial sourceFinal) ->
+  (blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder source) ->
+  (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq source) ->
+  (safety : AdjacentActorSwapSafety name key world error value protocol nameEq keyEq swap source blocks premises) ->
+  (unique : UniqueRawNameInsertions name key world error value nameEq keyEq source) ->
+  (o19CrossingSites (cursorDerivation (columnCursor (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique))) =
+    o19ColumnSites (transitionCount (traceBeforeBlock (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety))))
+      (actorBlockTransitionCount (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)))
+      (actorBlockTransitionCount (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety))))
+o19CartesianActualBlocksSites nameEq keyEq protocol swap source blocks premises safety unique =
+  o19CartesianAdjacentObservedSites nameEq keyEq protocol swap source blocks premises safety unique
+    (traceBeforeBlock (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)))
+    (beginTransition (blockOpening (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety))))
+    (blockBody (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)))
+    (betweenBlocks (safetyBlocksOrdered safety))
+    (actorBlockTrace (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety)))
+    (traceAfterBlock (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety)))
+    (o19ActualBlockSpines (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety))
+      (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety)) (safetyBlocksOrdered safety))
+    (safetyBlocksAdjacent safety) Refl Refl
