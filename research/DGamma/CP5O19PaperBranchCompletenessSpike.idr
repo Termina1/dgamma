@@ -8,7 +8,7 @@ import DGamma.CP3
 import DGamma.CP4DeletionSelectedForeignLifecycleDivert
 import DGamma.CP4DeletionSelectedForeignLifecycleLeave
 import DGamma.CP4DeletionSelectedForeignOrchestration
-import DGamma.CP5ConfluenceCrossTraceSpike
+import DGamma.CP5O19SurfaceSpike
 import DGamma.CP5ConfluenceRankObservationSpike
 import DGamma.CP5UniqueRawNameInsertions
 import DGamma.CP5O19ReplayObservationSpike
