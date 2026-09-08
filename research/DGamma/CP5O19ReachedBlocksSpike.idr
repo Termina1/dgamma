@@ -413,6 +413,19 @@ o19NoLifecycleFromWord selected (MoreTransitions step rest) excluded =
     (\lifecycle, owner => excluded (transitionAction step) Here lifecycle (trans (sym (o19TransitionActorOwner step)) owner))
     (o19NoLifecycleFromWord selected rest (\action, member => excluded action (There member)))
 
+||| Isolate the single lifecycle-control elimination. The lookup observer
+||| consumes this top-level law instead of nesting lifecycle case analysis.
+export
+0 o19LifecycleControlActiveSame :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {deps : List key} -> {provision : CoeffectSpec key} ->
+  {left, right : Lifecycle key value world error name deps provision} ->
+  LifecycleControlRelated left right -> (isActive left = isActive right)
+o19LifecycleControlActiveSame (InactiveControls outcomes) = Refl
+o19LifecycleControlActiveSame (ReloadingControls remaining accumulator view) = Refl
+o19LifecycleControlActiveSame (ActiveControls accumulator view) = Refl
+o19LifecycleControlActiveSame (UnloadingControls accumulator view outcome) = Refl
+
 ||| Explicit observed lookups plus the actual pointwise control relation
 ||| preserve active truth. No lookup case is taken on a computed existential.
 export
@@ -430,9 +443,4 @@ o19SupportedActiveObserved nameEq selected source target _ _ sourceFound targetF
   rewrite sourceFound in rewrite targetFound in Refl
 o19SupportedActiveObserved nameEq selected source target _ _ sourceFound targetFound
   (SomeControlFibers (FibersControlRelated lp rp lr rr lt rt leftLifecycle rightLifecycle parents retired lifecycle)) =
-    rewrite sourceFound in rewrite targetFound in
-      case lifecycle of
-        InactiveControls outcomes => Refl
-        ReloadingControls remaining accumulator view => Refl
-        ActiveControls accumulator view => Refl
-        UnloadingControls accumulator view outcome => Refl
+    rewrite sourceFound in rewrite targetFound in o19LifecycleControlActiveSame lifecycle
