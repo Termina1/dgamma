@@ -168,3 +168,25 @@ o19NoLifecyclePrependNoUnload selected _ later (NoLifecycleByStep step rest excl
     (\same => excluded (trans (cong isLifecycleAction same) Refl)
       (trans (o19TransitionActorOwner step) (cong actionOwner same)))
     (o19NoLifecyclePrependNoUnload selected rest later tail noUnload)
+
+||| Every installed boundary is real: L-Unload would make its target false,
+||| contradicting the actual next InstalledTrace constructor. Prepend the
+||| whole body while retaining an arbitrary already-certified later segment.
+export
+0 o19InstalledPrependNoUnload :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (earlier : Transitions first middle) -> (later : Transitions middle finalState) ->
+  InstalledTrace name key world error value nameEq keyEq selected earlier -> NoParentUnload selected later ->
+  NoParentUnload selected (appendTransitions earlier later)
+o19InstalledPrependNoUnload nameEq keyEq selected _ later (InstalledEnd installed) noUnload = noUnload
+o19InstalledPrependNoUnload nameEq keyEq selected _ later
+  (InstalledStep {first = before} {middle = afterState} action tag checked rest installed tail) noUnload =
+    NoParentUnloadStep (Fired nameEq keyEq action tag checked) (appendTransitions rest later)
+      (\same => case same of
+        Refl => uninhabited (trans
+          (sym (snd (snd (lUnloadBoundary nameEq keyEq selected before afterState tag
+            (checkedActionProjects nameEq keyEq (LUnload selected) before afterState tag checked)))))
+          (installedTraceStart tail)))
+      (o19InstalledPrependNoUnload nameEq keyEq selected rest later tail noUnload)
