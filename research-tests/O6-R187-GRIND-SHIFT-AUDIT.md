@@ -154,3 +154,46 @@ failed guard invocation refused to commit, as designed; no mis-commit or
 history change. All six declarations immediately guarded-committed, live
 receipts retained. C allocation now8/8 including R186's first two; no C9.
 Proceeding newly authorized D<=16. No body attempt, no surface/frozen change.
+
+## Unit D cap — 16/16 retained; actual site pattern proved, offset still open
+
+D1/D2 extract the actual finite-chain site list and prove exact append.
+D3 numerically executes a site list by the authentic adjacent ordinal map.
+D4 proves an explicit tail-constructor equation in the owning OrdinalPlan
+module; D5 structurally proves B12's actual GLOBAL list equals numeric
+execution of that SAME actual site list. D6 (`c2c6da24`) instantiates this
+on B13's SAME actual O19 chain, using the actual identity producer's map.
+This is a real equality, not an inference from product cardinality/injectivity.
+
+D7 defines descending row sites; D8–D11 prove the ACTUAL arbitrary mixed
+row has exactly those sites, through explicit produced-node boundaries and
+structural source-spine induction. D11 `a005328b`. D12 defines advancing
+Cartesian column sites. D13–D16 prove the ACTUAL existing column loop's
+exact site pattern via actual row/column splices, explicit residual word
+cuts, and structural right-word induction. D16 is generic at the existing
+approved static-class interface; A12/B3 already produce those classes and
+actual blocks. Its E14/B3 direct site adapters are not yet written.
+
+The B14 offset-list equation is STILL NOT proved: next instantiate the
+site theorem through E14/B3, then calculate numerical origins of the exact
+Cartesian site pattern as the shifted complete/unique local Cartesian list,
+with bounds/nonempty. Only afterwards reached installed target blocks,
+origin-plan updates and same-chain endpoint/external assembly. No O19 body
+attempt, no coverage assumption smuggled into O19, no whole-block claim.
+
+D4 passed2/3 after imported export opacity: moved the single explicit
+constructor observation into its owning producer; only this new research
+module's o19OrdinalMapAfterNode/o19BuildGlobalOriginPlan changed to public
+export. No LocalDiamond visibility or protected surface changed. D5 passed2
+because dependency cleanup omitted direct ReplayObservation; restored it.
+The site core now avoids row/column imports, enabling proof ownership without
+cycles; o19CrossingSites is public export for its executable structural fold.
+D9 compiler passed1 but diff-check guard correctly refused the trailing blank
+line; trimmed EOF, freshly passed2, then committed. D10 passed2 after a
+mechanical helper-name replacement missed the original two-space indent.
+All other D units passed1. No exhausted unit or history change. Each accepted
+source commit has its actual receipt; the D9 first PASS has no fabricated
+commit receipt. 20 compiler invocations, 17 PASS (including D9-1), 3 non-PASS.
+
+D16 cap consumed at 06:45 UTC; no D17 inferred. No O19/O20/O21 body attempt,
+hole delta0. Authorized validation may proceed while awaiting next scope.
