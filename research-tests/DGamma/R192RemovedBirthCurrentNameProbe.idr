@@ -196,3 +196,16 @@ r192ExistingParentBodyRemoveExtended =
     (ExtendedLifecycleStep _ _ Refl Refl
       (ExtendedChildRetireStep _ _ 1 r45ChildFresh Refl Refl Refl
         (ExtendedChildRemoveStep _ _ 1 r45ChildRetired Refl Refl Refl ExtendedLifecycleEnd)))
+
+||| Negative side of the A10 probe. The real one-edge child-retirement trace
+||| is neither an old actor-only body nor a ZERO physical gap. The new grammar
+||| cannot be silently coerced back to either old safety condition.
+export
+0 r192RetirementHasNoLegacyOrZeroGapCoercion :
+  (Not (ActorLifecycleOnly 0 (MoreTransitions r178ChildRetire NoTransitions)),
+   Not (ZeroGapPending (MoreTransitions r178ChildRetire NoTransitions)))
+r192RetirementHasNoLegacyOrZeroGapCoercion =
+  (\only => case only of
+    ActorLifecycleStep _ _ lifecycle _ _ => case lifecycle of Refl impossible
+    ActorYieldedRegistrationStep _ _ yielded _ => case yielded of Refl impossible,
+   \empty => case empty of Refl impossible)
