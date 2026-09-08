@@ -1796,6 +1796,8 @@ record ReplayedCanonicalEndpointBridge
     {component : Component key value world error} ->
     (replayedOccurrence : LocatedGeneratedRegistration child parent component
       replayedLeftTrace) ->
+    (isSupported {name = name} {key = key} {value = value} {world = world}
+      {error = error} @{nameEq} @{keyEq} child leftFinal = True) ->
     (sourceOccurrence : LocatedGeneratedRegistration child parent component
       (canonicalTrace (canonicalSchedule leftCapital)) **
       (sourceOccurrence = replayGeneratedRegistrationOrigin replayedOccurrences
