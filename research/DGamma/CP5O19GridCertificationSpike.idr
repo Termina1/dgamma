@@ -166,3 +166,15 @@ record O19GridCertificate (width, height : Nat) where
     Elem (leftPosition, rightPosition) (o19GridPairs Z Z width height) ->
     (LTE (S leftPosition) width, LTE (S rightPosition) height)
   0 gridPairsUnique : UniqueKeys (o19GridPairs Z Z width height)
+
+||| Complete certification of the zero-based local grid: all bounded pairs,
+||| only bounded pairs, and pair uniqueness, on the SAME explicit list.
+export
+0 o19CertifyGrid : (width, height : Nat) -> O19GridCertificate width height
+o19CertifyGrid width height =
+  MkO19GridCertificate
+    (o19GridComplete Z Z width height)
+    (\leftPosition, rightPosition, member =>
+      (snd (fst (o19GridBounds Z Z width height leftPosition rightPosition member)),
+       snd (snd (o19GridBounds Z Z width height leftPosition rightPosition member))))
+    (o19GridUnique Z Z width height)
