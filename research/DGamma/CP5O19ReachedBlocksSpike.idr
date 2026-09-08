@@ -1673,3 +1673,17 @@ o19BeforeAsymmetric (UniqueCons absent unique) (BeforeHere later) (BeforeHere ea
 o19BeforeAsymmetric (UniqueCons absent unique) (BeforeHere later) (BeforeThere earlier) = absent (snd (o19BeforeMembers earlier))
 o19BeforeAsymmetric (UniqueCons absent unique) (BeforeThere later) (BeforeHere earlier) = absent (snd (o19BeforeMembers later))
 o19BeforeAsymmetric (UniqueCons absent unique) (BeforeThere later) (BeforeThere earlier) = o19BeforeAsymmetric unique later earlier
+
+||| If the later actor is in the actual leading segment, changing only
+||| the suffix preserves its order. Uniqueness excludes duplicate-head cases.
+export
+0 o19BeforeChangeSuffix : {name : Type} -> {left, right : name} ->
+  (leading, oldTrailing, newTrailing : List name) -> UniqueKeys (leading ++ oldTrailing) ->
+  Elem right leading -> BeforeIn left right (leading ++ oldTrailing) -> BeforeIn left right (leading ++ newTrailing)
+o19BeforeChangeSuffix [] oldTrailing newTrailing unique member ordered = void (uninhabited member)
+o19BeforeChangeSuffix (head :: rest) oldTrailing newTrailing (UniqueCons absent unique) Here (BeforeHere later) = void (absent later)
+o19BeforeChangeSuffix (head :: rest) oldTrailing newTrailing (UniqueCons absent unique) Here (BeforeThere ordered) = void (absent (snd (o19BeforeMembers ordered)))
+o19BeforeChangeSuffix (head :: rest) oldTrailing newTrailing (UniqueCons absent unique) (There member) (BeforeHere later) =
+  BeforeHere (fst (o19ElemAppendInjections rest newTrailing) member)
+o19BeforeChangeSuffix (head :: rest) oldTrailing newTrailing (UniqueCons absent unique) (There member) (BeforeThere ordered) =
+  BeforeThere (o19BeforeChangeSuffix rest oldTrailing newTrailing unique member ordered)
