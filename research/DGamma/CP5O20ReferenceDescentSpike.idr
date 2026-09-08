@@ -100,3 +100,24 @@ o20ReferenceDescent nameEq keyEq protocol sourceOrder goalOrder reference goalSt
         (blockSwapBlocks (progressStep progress)) (blockSwapPremises (progressStep progress)) (progressUnique progress)
         (o20SwapSupportedReference (chosenOrderSwap (orientedChoice (progressChoice progress))) capital
           (orientedGoalReverse (progressChoice progress))) rest)
+
+||| Initialize the genuine total search and carry the fixed supported
+||| reference through its whole actual reached chain. The goal-state witness
+||| and safe-check completeness are still separate, explicit obligations.
+export
+0 o20RunReferenceSearch :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) -> (sourceOrder, goalOrder : List name) ->
+  (reference, goalState : SystemState name key value world error) ->
+  (goalLinearization : LinearizesSupport name key world error value nameEq keyEq goalState goalOrder) ->
+  {initial, finalState : SystemState name key value world error} -> (trace : Transitions initial finalState) ->
+  (blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder trace) ->
+  (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq trace) ->
+  (0 unique : UniqueRawNameInsertions name key world error value nameEq keyEq trace) ->
+  O20SupportedReferenceOrders name key world error value nameEq keyEq reference sourceOrder goalOrder ->
+  O20ReferenceStoppedPermutation name key world error value protocol nameEq keyEq
+    sourceOrder goalOrder reference goalState goalLinearization trace blocks premises
+o20RunReferenceSearch nameEq keyEq protocol sourceOrder goalOrder reference goalState goalLinearization trace blocks premises unique capital =
+  o20ReferenceDescent nameEq keyEq protocol sourceOrder goalOrder reference goalState goalLinearization trace blocks premises unique capital
+    (o20OperationalDescent nameEq keyEq protocol sourceOrder goalOrder goalState goalLinearization trace blocks premises unique)
