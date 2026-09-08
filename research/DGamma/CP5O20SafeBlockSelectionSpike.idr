@@ -282,3 +282,13 @@ o20CheckNoGeneratedActionComplete nameEq forbidden action notChild =
   o20CheckNoGeneratedActionCompleteObserved nameEq forbidden action
     (decEq (o20GeneratedChildName action) (Just forbidden)) Refl
     (o20NoGeneratedObservation forbidden action notChild)
+
+||| Two finite positive observations compose through the SAME applicative
+||| expression used by the recursive actual trace checker.
+export
+0 o20MapApplyPresent :
+  {a, b, c : Type} -> (combine : a -> b -> c) -> (left : Maybe a) -> (right : Maybe b) ->
+  isJust left = True -> isJust right = True -> isJust (combine <$> left <*> right) = True
+o20MapApplyPresent combine Nothing right Refl rightPresent impossible
+o20MapApplyPresent combine (Just left) Nothing leftPresent Refl impossible
+o20MapApplyPresent combine (Just left) (Just right) leftPresent rightPresent = Refl
