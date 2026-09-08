@@ -129,3 +129,26 @@ o19UnloadingTrace {first = MkSystemState ambient fibers} nameEq keyEq selected _
       (o19UnloadingStepObserved nameEq keyEq selected action tag ambient fibers _
         (checkedActionProjects nameEq keyEq action (MkSystemState ambient fibers) _ tag checked)
         (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected fibers) Refl unloading excluded)
+
+||| An actual final-active observation excludes Unloading at that same cut.
+||| Together with A3 this rules out recovery branches anywhere in a no-unload
+||| suffix, rather than mistaking installation for paper-rule completeness.
+export
+0 o19ActiveNotUnloadingObserved :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (selected : name) -> (state : SystemState name key value world error) ->
+  (observed : Maybe (Fiber name key value world error)) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected (registry state) = observed) ->
+  (supportedActiveAt {name} {key} {value} {world} {error} @{nameEq} selected state = True) ->
+  (unloadingEndpoint {name} {key} {value} {world} {error} @{nameEq} selected state = False)
+o19ActiveNotUnloadingObserved nameEq selected state Nothing found active = rewrite found in Refl
+o19ActiveNotUnloadingObserved nameEq selected state
+  (Just (MkFiber component parent retiredFlag table (Inactive outcome))) found active = rewrite found in Refl
+o19ActiveNotUnloadingObserved nameEq selected state
+  (Just (MkFiber component parent retiredFlag table (Reloading remaining accumulator view))) found active = rewrite found in Refl
+o19ActiveNotUnloadingObserved nameEq selected state
+  (Just (MkFiber component parent retiredFlag table (Active accumulator view))) found active = rewrite found in Refl
+o19ActiveNotUnloadingObserved nameEq selected state
+  (Just (MkFiber component parent retiredFlag table (Unloading accumulator view outcome))) found active =
+    void (uninhabited (trans (sym (the (supportedActiveAt {name} {key} {value} {world} {error} @{nameEq} selected state = False)
+      (rewrite found in Refl))) active))
