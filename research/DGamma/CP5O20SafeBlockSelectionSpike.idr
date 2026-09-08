@@ -384,3 +384,18 @@ export
 o20HeadMapMaybeObserved check head rest Nothing checked (Left Refl) impossible
 o20HeadMapMaybeObserved check head rest Nothing checked (Right laterPresent) = rewrite checked in laterPresent
 o20HeadMapMaybeObserved check head rest (Just selected) checked positive = rewrite checked in Refl
+
+||| Exhaustive finite selection cannot return Nothing when ANY enumerated
+||| candidate actually succeeds. Structural induction follows its membership;
+||| earlier rejections never terminate the search prematurely.
+export
+0 o20MapMaybeSelectionComplete :
+  {a, b : Type} -> (check : a -> Maybe b) -> (candidates : List a) -> (selected : a) ->
+  Elem selected candidates -> isJust (check selected) = True ->
+  isJust (head' (mapMaybe check candidates)) = True
+o20MapMaybeSelectionComplete check [] selected found selectedPresent impossible
+o20MapMaybeSelectionComplete check (head :: rest) head Here selectedPresent =
+  o20HeadMapMaybeObserved check head rest (check head) Refl (Left selectedPresent)
+o20MapMaybeSelectionComplete check (head :: rest) selected (There later) selectedPresent =
+  o20HeadMapMaybeObserved check head rest (check head) Refl
+    (Right (o20MapMaybeSelectionComplete check rest selected later selectedPresent))
