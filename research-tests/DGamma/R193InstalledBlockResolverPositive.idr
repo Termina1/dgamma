@@ -73,3 +73,8 @@ r193FrameInstalled =
     (MoreTransitions (Fired {before = r193FrameChild} {afterState = r193FrameEnd} %search %search
       (LAdvance 2) LFinishTag Refl) NoTransitions) Refl
     (InstalledStep (LAdvance 2) LFinishTag Refl NoTransitions Refl (InstalledEnd Refl))
+
+public export
+0 r193FrameActorOnly : ActorLifecycleOnly 2 r193FrameBody
+r193FrameActorOnly = ActorYieldedRegistrationStep _ _ Refl
+  (ActorLifecycleStep _ _ Refl Refl ActorLifecycleEnd)
