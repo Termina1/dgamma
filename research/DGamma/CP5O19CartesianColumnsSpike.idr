@@ -216,3 +216,26 @@ o19SourcePairRightKind (SourceOA child component inserted rightActivation rightO
 o19SourcePairRightKind (SourceAO child component inserted leftActivation distinct licensing) = Right (PaperInsertStep inserted)
 o19SourcePairRightKind (SourceOO leftChild rightChild leftComponent rightComponent leftInsert rightInsert distinct leftLicense rightLicense tag) =
   Right (PaperInsertStep rightInsert)
+
+||| Simultaneous column outcome: the ACTUAL moved right spine, remaining
+||| left/suffix word, current full bundle/uniqueness, complete RELATIVE finite
+||| derivation and product node count all refer to this same reached trace.
+||| Source ordinal plan/unique pair coverage are separate obligations; this
+||| record cannot be substituted for WholeBlockSwapDerivation.
+public export
+record O19ColumnRun
+  (name, key, world, error : Type) (value : key -> Type)
+  (protocol : RegistrationProtocol key value world error)
+  (nameEq : DecEq name) (keyEq : DecEq key)
+  {initial, sourceFinal, before : SystemState name key value world error}
+  (source : Transitions initial sourceFinal) (earlier : Transitions initial before)
+  (leftWord, rightWord, suffixWord : List (Action name key value world error)) where
+  constructor MkO19ColumnRun
+  columnCursor : O19ReachedCursor name key world error value protocol nameEq keyEq source
+  columnMiddle : SystemState name key value world error
+  columnRight : Transitions before columnMiddle
+  columnRest : Transitions columnMiddle (cursorFinal columnCursor)
+  0 columnDecomposition : appendTransitions earlier (appendTransitions columnRight columnRest) = cursorTrace columnCursor
+  0 columnRightWord : o19ActionWord columnRight = rightWord
+  0 columnRestWord : o19ActionWord columnRest = leftWord ++ suffixWord
+  0 columnNodeCount : finiteAdjacentSwapNodeCount (cursorDerivation columnCursor) = length leftWord * length rightWord
