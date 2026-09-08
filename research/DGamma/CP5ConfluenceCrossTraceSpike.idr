@@ -30,57 +30,6 @@ data CertifiedActorPermutation :
     CertifiedActorPermutation name middle after ->
     CertifiedActorPermutation name before after
 
-||| Complete coordinate-injectivity package for the two exact blocks selected by
-||| one safety witness.  Cross-block disjointness is producer capital of the
-||| authoritative `ActorBlockDecomposition`; same-block injectivity is proved by
-||| cancellation.  Together these cover all `(block,position)` combinations.
-public export
-record SelectedBlockCoordinateInjectivity
-  (name, key, world, error : Type) (value : key -> Type)
-  (protocol : RegistrationProtocol key value world error)
-  (nameEq : DecEq name) (keyEq : DecEq key)
-  {sourceOrder, targetOrder : List name}
-  (orderSwap : AdjacentActorOrderSwap name sourceOrder targetOrder)
-  {initial, sourceFinal : SystemState name key value world error}
-  (sourceTrace : Transitions initial sourceFinal)
-  (sourceBlocks : ActorBlockDecomposition name key world error value nameEq keyEq
-    sourceOrder sourceTrace)
-  (sourcePremises : ReplayInvariantBundle name key world error value protocol
-    nameEq keyEq sourceTrace)
-  (safety : AdjacentActorSwapSafety name key world error value protocol nameEq
-    keyEq orderSwap sourceTrace sourceBlocks sourcePremises) where
-  constructor MkSelectedBlockCoordinateInjectivity
-  0 selectedLeftPositionsInjective : (first, second : Nat) ->
-    transitionCount (traceBeforeBlock (decomposedBlock sourceBlocks
-      (actorLeft orderSwap) (safetyLeftInOrder safety))) + first =
-    transitionCount (traceBeforeBlock (decomposedBlock sourceBlocks
-      (actorLeft orderSwap) (safetyLeftInOrder safety))) + second ->
-    first = second
-  0 selectedRightPositionsInjective : (first, second : Nat) ->
-    transitionCount (traceBeforeBlock (decomposedBlock sourceBlocks
-      (actorRight orderSwap) (safetyRightInOrder safety))) + first =
-    transitionCount (traceBeforeBlock (decomposedBlock sourceBlocks
-      (actorRight orderSwap) (safetyRightInOrder safety))) + second ->
-    first = second
-  0 selectedLeftRightRangesDisjoint : (leftPosition, rightPosition : Nat) ->
-    LTE (S leftPosition) (actorBlockTransitionCount (decomposedBlock sourceBlocks
-      (actorLeft orderSwap) (safetyLeftInOrder safety))) ->
-    LTE (S rightPosition) (actorBlockTransitionCount (decomposedBlock sourceBlocks
-      (actorRight orderSwap) (safetyRightInOrder safety))) ->
-    Not (transitionCount (traceBeforeBlock (decomposedBlock sourceBlocks
-      (actorLeft orderSwap) (safetyLeftInOrder safety))) + leftPosition =
-      transitionCount (traceBeforeBlock (decomposedBlock sourceBlocks
-        (actorRight orderSwap) (safetyRightInOrder safety))) + rightPosition)
-  0 selectedRightLeftRangesDisjoint : (rightPosition, leftPosition : Nat) ->
-    LTE (S rightPosition) (actorBlockTransitionCount (decomposedBlock sourceBlocks
-      (actorRight orderSwap) (safetyRightInOrder safety))) ->
-    LTE (S leftPosition) (actorBlockTransitionCount (decomposedBlock sourceBlocks
-      (actorLeft orderSwap) (safetyLeftInOrder safety))) ->
-    Not (transitionCount (traceBeforeBlock (decomposedBlock sourceBlocks
-      (actorRight orderSwap) (safetyRightInOrder safety))) + rightPosition =
-      transitionCount (traceBeforeBlock (decomposedBlock sourceBlocks
-        (actorLeft orderSwap) (safetyLeftInOrder safety))) + leftPosition)
-
 public export
 0 selectedBlockCoordinateInjectivity :
   (safety : AdjacentActorSwapSafety name key world error value protocol nameEq
