@@ -70,3 +70,11 @@ r193HistoricalClosed = MkSystemState
       (localTable ((pushLocalUndo @{r45KeyEq} r45Spec id id)
         (MkLocalState () (restrictOwnedPreservingOrder @{r45KeyEq} r45Spec (ownedValues (fiberTable r193HistoricalParentActive))))))
       (Inactive Nothing)) (registry r193HistoricalLeaving))
+
+||| Actual parent episode closure; the inert child stays physically present.
+public export
+r193HistoricalUnload : Transition r193HistoricalLeaving r193HistoricalClosed
+r193HistoricalUnload = Fired r45NameEq r45KeyEq (LUnload 0) LUnloadTag
+  (DGamma.CP4ProgressNoDeadlock.checkedFromRaw r45NameEq r45KeyEq
+    (LUnload 0) r193HistoricalLeaving r193HistoricalClosed LUnloadTag
+    (checkedTransitionTargetValid r193HistoricalLeave) Refl)
