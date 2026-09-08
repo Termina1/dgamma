@@ -371,3 +371,39 @@ o19OrchestrationRowStepObserved {name} {key} {world} {error} {value}
           diamond result (swappedTrace result) FiniteAdjacentSwapDone))
         (trans (cong (\count => count + 1) (rowNodeCount previous))
           (plusCommutative crossings 1)))
+
+
+||| Produce the next actual insertion crossing at the observed row cut.
+export
+0 o19InsertionRowStep :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (child : name) -> (parent : Parent name) -> (component : Component key value world error) ->
+  {initial, sourceFinal, before, middle, rightBefore, rightAfter : SystemState name key value world error} ->
+  (source : Transitions initial sourceFinal) -> (earlier : Transitions initial before) ->
+  (left : Transition before middle) -> (sourceRight : Transition rightBefore rightAfter) ->
+  (crossings : Nat) ->
+  (previous : O19ActivationRow name key world error value protocol nameEq keyEq source
+    (appendTransitions earlier (MoreTransitions left NoTransitions)) sourceRight crossings) ->
+  (transitionAction left = OInsert child parent component) ->
+  Not (transitionActor sourceRight = child) ->
+  ((licensor : name) -> (parent = ChildOf licensor) -> Not (transitionActor sourceRight = licensor)) ->
+  CheckedEarlyApplication name key world error value nameEq keyEq before
+    (transitionAction sourceRight) (transitionTag sourceRight) ->
+  O19ActivationRow name key world error value protocol nameEq keyEq source earlier sourceRight (S crossings)
+o19InsertionRowStep nameEq keyEq protocol child parent component source earlier left sourceRight
+  crossings previous inserted childSafe parentSafe early =
+    o19OrchestrationRowStepObserved nameEq keyEq protocol source earlier left sourceRight
+      crossings previous (PaperInsertStep inserted)
+      (o19InsertActivationReplay nameEq keyEq protocol child parent component
+        (cursorTrace (rowCursor previous)) earlier left (rowRight previous) (rowRest previous)
+        (trans (sym (appendTransitionsAssociative earlier (MoreTransitions left NoTransitions)
+          (MoreTransitions (rowRight previous) (rowRest previous)))) (rowDecomposition previous))
+        (cursorBundle (rowCursor previous)) inserted (rowActivation previous)
+        (\same => childSafe (trans (sym (rowActor previous)) same))
+        (\licensor, sameParent, sameActor => parentSafe licensor sameParent
+          (trans (sym (rowActor previous)) sameActor))
+        (o19EarlyLabels nameEq keyEq (transitionAction sourceRight) (transitionAction (rowRight previous))
+          (transitionTag sourceRight) (transitionTag (rowRight previous))
+          (rowAction previous) (rowTag previous) early))
