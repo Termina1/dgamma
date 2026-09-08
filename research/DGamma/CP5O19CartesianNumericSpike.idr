@@ -120,3 +120,22 @@ export
 o19RowPullAtStart Z Z = Refl
 o19RowPullAtStart Z (S width) = Refl
 o19RowPullAtStart (S start) width = cong S (o19RowPullAtStart start width)
+
+||| Exact source-coordinate list of the descending row sites, under ANY
+||| original coordinate map. This derives the pair list from actual numeric
+||| execution, not from cardinality or an assumed offset equation.
+export
+0 o19RowOriginPairs : (originalMap : Nat -> Nat) -> (start, width : Nat) ->
+  (o19OriginsAtSites originalMap (o19RowSites start width) =
+    map (\pair => (originalMap (fst pair), originalMap (snd pair))) (o19RowPairs start width))
+o19RowOriginPairs originalMap start Z = Refl
+o19RowOriginPairs originalMap start (S width) =
+  trans (o19OriginsAtSitesAppend originalMap (o19RowSites (S start) width) [start])
+    (trans (cong2 (++) (o19RowOriginPairs originalMap (S start) width)
+      (cong (\pair => [pair])
+        (cong2 MkPair
+          (cong originalMap (trans (o19RowSitesPull (S start) width start) (o19RowPullBeforeEdge start width)))
+          (cong originalMap (trans (o19RowSitesPull (S start) width (S start))
+            (trans (o19RowPullAtStart (S start) width) (plusSuccRightSucc start width)))))))
+      (sym (mapAppend (\pair => (originalMap (fst pair), originalMap (snd pair)))
+        (o19RowPairs (S start) width) [(start, start + S width)])))
