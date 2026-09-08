@@ -233,3 +233,41 @@ arguments in the bodies. No mathematical escape, new hole, with, postulate,
 LocalDiamond change or protected surface change. E12's owning-module check
 cost49s/~20GiB; other numeric checks ~3s. No E17 inferred. Final validation
 and mandatory append-only ledger/archive/gate remain due by09:08.
+
+## Supervisor F authorization and F14 cap — offset equation discharged
+
+Supervisor RATIFIED E16/985a51c9 and authorized FINAL F<=14: numeric columns,
+actual right start, then local certification; reached blocks only if slots
+remain. Supervisor explicitly acknowledged that O19 body will NOT land this
+shift. No F15/new proof allocation inferred. Final validation/audit/archive
+and exact R188 residual list follow this cap. V2 R8 full pipeline fresh PASS
+100.7s/~37.3GiB before F; no overlap.
+
+F1 `6e32413e` proves row pull inside the bounded shifted left interval;
+F2 `3787e27a` proves every remaining-right coordinate is fixed. F3–F7 define
+the fixed-right descending rows/grid, identify the actual row, and derive
+coordinate mapping from actual bounded laws. F8 `09b97823` produces BOTH
+next current-map bands through the actual whole-row rotation. F9 `fe9b5c05`
+proves origin-list pointwise congruence (no extensionality axiom).
+F10 `355ae8c1` proves the FULL numeric Cartesian grid equality by height
+induction using those two bands, actual row pulls and exact row pairs.
+F11 `5ded37b2` authenticates actual right-block start=left start+left count
+from BlockBefore's actual source prefix and safetyBlocksAdjacent's zero gap.
+F12 `dcaf5b25` derives SAME B13 actual global positions=the explicit grid at
+BOTH actual source starts, discharging both bands from the owning identity
+map and F11. F13 `c29153ab` proves independent coordinate shifting of that
+grid. F14 derives B14's EXACT offset-list equation inside its owning actual
+entry and USES it to produce `o19ActualLocalOriginPlan`: the actual original
+source-local grid origin plan on the SAME B3 finite derivation. There is NO
+caller offset equation, classifier, source cut, row guard or plan oracle.
+
+F14/14 retained;15 checks14 PASS1 non-PASS. F11-1 lacked one closing
+parenthesis; F11-2 PASS after exactly that parser repair. No exhausted unit,
+no new hole/escape/with, no LocalDiamond/protected/source production change.
+
+IMPORTANT: source-local grid certification is NOT complete. Explicit grid
+enumeration + actual origin plan do not count as proved coverage, sound
+bounds, UniqueKeys or nonempty WholeBlockSwapDerivation. Those obligations
+remain for R188, BEFORE reached installed blocks/decomposition/origin-plan
+update, same-chain endpoint/full-bundle/external assembly, and O19 BODY.
+O19/O20/O21 body attempts remain0/0/0; census remains5=1/3/0/0/1, not4.
