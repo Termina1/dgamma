@@ -82,3 +82,11 @@ o19GlobalPlanSites correspondence currentMap
         (o19GlobalPlanSites
           (composeActionRegistrationReplayCorrespondence correspondence (swappedOccurrenceCorrespondence result))
           (o19OrdinalMapAfterNode correspondence currentMap earlier left right later diamond result) rest))
+
+||| Expected sites for bubbling the last right transition across an explicit
+||| left spine. The rightmost left node crosses first, so the sites descend.
+||| The actual row connection is proved in the row producer's owning module.
+public export
+o19RowSites : Nat -> Nat -> List Nat
+o19RowSites start Z = []
+o19RowSites start (S width) = o19RowSites (S start) width ++ [start]
