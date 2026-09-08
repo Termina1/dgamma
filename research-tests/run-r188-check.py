@@ -22,6 +22,8 @@ diagnostic = sys.argv[3] if len(sys.argv) > 3 else None
 symbol = sys.argv[4] if len(sys.argv) > 4 else None
 assert not (OUT/(unit+'.json')).exists(), 'Invocation names are append-only'
 assert datetime.datetime.now(datetime.timezone.utc) < datetime.datetime(2026,9,8,11,30,25,tzinfo=datetime.timezone.utc), 'R188 new-attempt time guard'
+if re.fullmatch(r'[A-E]\d+-\d+', unit):
+    assert datetime.datetime.now(datetime.timezone.utc) < datetime.datetime(2026,9,8,11,10,0,tzinfo=datetime.timezone.utc), 'Supervisor C6 proof-attempt stop; reserve final validation'
 procs = subprocess.check_output(['ps', '-axo', 'pid,ppid,command'], text=True)
 if re.search(r'/idris2_app/idris2(?:\.so)?(?:\s|$)', procs):
     raise SystemExit('Existing compiler: reconcile orphan before fresh attempt')

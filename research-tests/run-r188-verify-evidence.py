@@ -101,7 +101,7 @@ grouped = collections.defaultdict(list)
 for r in proof_runs:
     n = normalized[r['unit']]
     grouped[n['effectiveUnit']].append(n['effectiveAttempt'])
-    assert utc(r['start']) < datetime.datetime(2026, 9, 8, 11, 30, 25, tzinfo=datetime.timezone.utc)
+    assert utc(r['start']) < datetime.datetime(2026, 9, 8, 11, 10, 0, tzinfo=datetime.timezone.utc)
     assert b'%default total' in sources[r['unit']] and b'%unbound_implicits off' in sources[r['unit']]
     prior = [q for q in source_receipts if raw[q['invocation']]['path'] == r['path'] and utc(q['timestampUTC']) <= utc(r['start'])]
     commit = max(prior, key=lambda q: q['timestampUTC'])['resultingCommitHash'] if prior else ledger['startCommit']

@@ -268,3 +268,13 @@ ALL raw records, authenticate own exact Building lines/nonempty snapshots and
 commit-time receipts, and separately apply effective C6/C7 invocation labels.
 The compiler-free verifier takes explicit expected source/validation counts.
 This C5 checkpoint archive is proof evidence only, NOT final validation evidence.
+
+## Supervisor C6 final proof allocation / time gate
+
+Supervisor RATIFIED C5/checkpoint5a3daf9e and authorized C77–C92, ≤16, on the
+same residuals. NEW hard proof-attempt stop11:10:00 UTC reserves ~20 minutes
+for final validation starts before the existing ALL-invocation11:30:25 guard.
+The source runner and independent verifier now enforce that tighter proof stop.
+No C93 or D2 inferred. Final sequence: all changed/frozen modules, R8/R16,
+R182/R181 fixtures, seeded package; consolidate receipts/ledger/archive; exact
+R189 residual list and supervisor gate by11:55. No body work this shift.
