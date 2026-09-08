@@ -325,3 +325,17 @@ export
   isJust (o20CheckRightAtLeftOpening nameEq keyEq left right trace block) = True
 o20CheckRightAtLeftOpeningComplete nameEq keyEq left right trace block early =
   rewrite earlyApplicationChecked early in Refl
+
+||| The four actual safety observations compose without changing which
+||| candidate, block cuts or logical certificates the checker selected.
+export
+0 o20FourChecksPresent :
+  {a, b, c, d, result : Type} -> (combine : a -> b -> c -> d -> result) ->
+  (first : Maybe a) -> (second : Maybe b) -> (third : Maybe c) -> (fourth : Maybe d) ->
+  isJust first = True -> isJust second = True -> isJust third = True -> isJust fourth = True ->
+  isJust (combine <$> first <*> second <*> third <*> fourth) = True
+o20FourChecksPresent combine Nothing second third fourth Refl secondYes thirdYes fourthYes impossible
+o20FourChecksPresent combine (Just first) Nothing third fourth firstYes Refl thirdYes fourthYes impossible
+o20FourChecksPresent combine (Just first) (Just second) Nothing fourth firstYes secondYes Refl fourthYes impossible
+o20FourChecksPresent combine (Just first) (Just second) (Just third) Nothing firstYes secondYes thirdYes Refl impossible
+o20FourChecksPresent combine (Just first) (Just second) (Just third) (Just fourth) firstYes secondYes thirdYes fourthYes = Refl
