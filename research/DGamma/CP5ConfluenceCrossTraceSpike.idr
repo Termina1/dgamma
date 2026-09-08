@@ -31,12 +31,6 @@ data CertifiedActorPermutation :
     CertifiedActorPermutation name before after
 
 public export
-actorBlockTransitionCount :
-  LocatedOpenEpisodeBlock name key world error value nameEq keyEq actor global ->
-  Nat
-actorBlockTransitionCount block = S (transitionCount (blockBody block))
-
-public export
 0 successorEqualityInjective : S left = S right -> left = right
 successorEqualityInjective Refl = Refl
 

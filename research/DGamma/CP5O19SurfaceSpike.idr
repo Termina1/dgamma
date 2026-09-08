@@ -152,3 +152,9 @@ public export
 actorBlockTrace block =
   MoreTransitions (beginTransition (blockOpening block)) (blockBody block)
 
+public export
+actorBlockTransitionCount :
+  LocatedOpenEpisodeBlock name key world error value nameEq keyEq actor global ->
+  Nat
+actorBlockTransitionCount block = S (transitionCount (blockBody block))
+
