@@ -47,3 +47,10 @@ o19RowPull Z (S width) (S Z) = Z
 o19RowPull Z (S width) (S (S position)) = S (o19RowPull Z width (S position))
 o19RowPull (S start) width Z = Z
 o19RowPull (S start) width (S position) = S (o19RowPull start width position)
+
+||| A zero-width row is pointwise identity, including every outside ordinal.
+export
+0 o19RowPullZero : (start, position : Nat) -> (o19RowPull start Z position = position)
+o19RowPullZero Z position = Refl
+o19RowPullZero (S start) Z = Refl
+o19RowPullZero (S start) (S position) = cong S (o19RowPullZero start position)
