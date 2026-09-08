@@ -103,3 +103,20 @@ o19ColumnRangeCounts earlier leftWord rightWord suffixWord run cut =
    (cutLeftCount cut,
     (trans (sym (o19ActionWordLength (cutSuffix cut))) (cong length (cutRightWord cut)),
      o19FiniteTraceCount (cursorDerivation (columnCursor run)))))
+
+||| Actual Begin/body range. The canonical Begin transition equals the
+||| reached head in the owned decomposition; installedness is proved later.
+public export
+record O19BeginRange
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (keyEq : DecEq key) (selected : name)
+  {first, last : SystemState name key value world error}
+  (trace : Transitions first last)
+  (bodyWord : List (Action name key value world error)) where
+  constructor MkO19BeginRange
+  rangeStart : SystemState name key value world error
+  rangeOpening : BeginStep nameEq keyEq selected first rangeStart
+  rangeBody : Transitions rangeStart last
+  0 rangeBodyWord : (o19ActionWord rangeBody = bodyWord)
+  0 rangeBodyAligned : AlignedTransitions name key world error value nameEq keyEq rangeBody
+  0 rangeDecomposition : (MoreTransitions (beginTransition rangeOpening) rangeBody = trace)
