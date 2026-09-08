@@ -111,3 +111,30 @@ o19WordRowAtObservedPair nameEq keyEq protocol swap original blocks premises saf
     o19WordRowStepObserved nameEq keyEq protocol source earlier left rest right later previous orientation
       (o19ObservedPairReplay nameEq keyEq protocol swap original blocks premises safety unique (MkO19ReachedCursor (cursorFinal (mixedRowCursor (wordRow previous))) (cursorTrace (mixedRowCursor (wordRow previous))) (cursorBundle (mixedRowCursor (wordRow previous))) (cursorUnique (mixedRowCursor (wordRow previous))) (o19AppendFinite prior (cursorDerivation (mixedRowCursor (wordRow previous)))))
         earlier left (mixedRowRight (wordRow previous)) (mixedRowRest (wordRow previous)) (trans (sym (appendTransitionsAssociative earlier (MoreTransitions left NoTransitions) (MoreTransitions (mixedRowRight (wordRow previous)) (mixedRowRest (wordRow previous))))) (mixedRowDecomposition (wordRow previous))) observed)
+
+||| Derive the ACTUAL pair observation from the flat separated-source values
+||| and the SAME previous row's labels, then produce its actual crossing,
+||| suffix replay, reached bundle, uniqueness, derivation, count and word.
+export
+0 o19WordRowStep :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (protocol : RegistrationProtocol key value world error) ->
+  {sourceOrder, targetOrder : List name} -> (swap : AdjacentActorOrderSwap name sourceOrder targetOrder) ->
+  {initial, originalFinal, sourceFinal, before, middle, rightBefore, rightAfter : SystemState name key value world error} ->
+  (original : Transitions initial originalFinal) ->
+  (blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder original) ->
+  (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq original) ->
+  (safety : AdjacentActorSwapSafety name key world error value protocol nameEq keyEq swap original blocks premises) ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq original ->
+  (source : Transitions initial sourceFinal) ->
+  FiniteAdjacentSwapDerivation name key world error value protocol nameEq keyEq original source ->
+  (earlier : Transitions initial before) -> (left : Transition before middle) -> (rest : Transitions middle rightBefore) ->
+  (right : Transition rightBefore rightAfter) -> (later : Transitions rightAfter sourceFinal) ->
+  (previous : O19WordRow name key world error value protocol nameEq keyEq source
+    (appendTransitions earlier (MoreTransitions left NoTransitions)) rest right later) ->
+  O19SourcePairObservation name key world error value (actorLeft swap) (actorRight swap) left right ->
+  O19WordRow name key world error value protocol nameEq keyEq source earlier (MoreTransitions left rest) right later
+o19WordRowStep nameEq keyEq protocol swap original blocks premises safety unique source prior earlier left rest right later previous observed =
+  o19WordRowAtObservedPair nameEq keyEq protocol swap original blocks premises safety unique source prior earlier left rest right later previous
+    (o19SourcePairAtReachedRight (actorLeft swap) (actorRight swap) left right (mixedRowRight (wordRow previous))
+      (mixedRowAction (wordRow previous)) (mixedRowTag (wordRow previous)) (mixedRowActor (wordRow previous)) observed)
