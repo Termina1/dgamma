@@ -61,3 +61,7 @@ r193FrameBody =
     (OInsert 3 (ChildOf 2) emptyConsumerComponent) OInsertTag Refl)
     (MoreTransitions (Fired {before = r193FrameChild} {afterState = r193FrameEnd} %search %search
       (LAdvance 2) LFinishTag Refl) NoTransitions)
+
+public export
+0 r193FrameRightOpening : BeginStep %search %search 1 r193FrameEnd r193FrameRightStart
+r193FrameRightOpening = MkBeginStep Refl
