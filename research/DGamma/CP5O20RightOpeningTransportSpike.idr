@@ -38,3 +38,27 @@ o20RightBeginAtEarlierObservation nameEq keyEq actor earlier later laterAfter
         (MkSystemState (worldState earlier) (replaceBinding @{nameEq} actor
           (MkFiber component parent False table (Reloading (componentProgram component) id view)) (registry earlier)))
         (rewrite trans ownerFrame found in rewrite trans resolverFrame resolved in Refl))
+
+||| Backward owner-lookup equality through an arbitrary ACTUAL aligned foreign
+||| segment. Each step uses its native registry-local update theorem.
+export
+0 o20ForeignTraceOwnerFrame :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  {first, finalState : SystemState name key value world error} ->
+  (trace : Transitions first finalState) ->
+  AlignedTransitions name key world error value nameEq keyEq trace ->
+  ({before, afterState : SystemState name key value world error} ->
+    (step : Transition before afterState) -> OccursIn step trace ->
+    Not (actor = actionOwner (transitionAction step))) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor (registry first) =
+   lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor (registry finalState))
+o20ForeignTraceOwnerFrame nameEq keyEq actor NoTransitions AlignedEnd foreign = Refl
+o20ForeignTraceOwnerFrame {first} nameEq keyEq actor _
+  (AlignedStep {middle} action tag checked rest alignedRest) foreign =
+    trans (sym (systemLocalUpdateForeign nameEq actor (actionOwner action)
+      (foreign (Fired {before = first} {afterState = middle} nameEq keyEq action tag checked) OccursHere)
+      first middle (applyActionLocalUpdate nameEq keyEq action first middle tag
+        (checkedActionProjects nameEq keyEq action first middle tag checked))))
+      (o20ForeignTraceOwnerFrame nameEq keyEq actor rest alignedRest
+        (\step, occurs => foreign step (OccursLater occurs)))
