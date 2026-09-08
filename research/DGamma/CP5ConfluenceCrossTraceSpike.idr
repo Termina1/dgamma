@@ -30,38 +30,6 @@ data CertifiedActorPermutation :
     CertifiedActorPermutation name middle after ->
     CertifiedActorPermutation name before after
 
-||| Exact contiguous-block structure carried at every operational replay state.
-public export
-record ActorBlockDecomposition
-  (name, key, world, error : Type) (value : key -> Type)
-  (nameEq : DecEq name) (keyEq : DecEq key)
-  (order : List name)
-  {initial, finalState : SystemState name key value world error}
-  (trace : Transitions initial finalState) where
-  constructor MkActorBlockDecomposition
-  decomposedBlock : (n : name) -> Elem n order ->
-    LocatedOpenEpisodeBlock name key world error value nameEq keyEq n trace
-  decomposedBlocksFollowOrder : (earlier, later : name) ->
-    (earlierIn : Elem earlier order) ->
-    (laterIn : Elem later order) ->
-    BeforeIn earlier later order ->
-    BlockBefore name key world error value nameEq keyEq trace earlier later
-      (decomposedBlock earlier earlierIn) (decomposedBlock later laterIn)
-  0 decomposedOrderedBlockRangesDisjoint : (earlier, later : name) ->
-    (earlierIn : Elem earlier order) ->
-    (laterIn : Elem later order) ->
-    BeforeIn earlier later order ->
-    (earlierPosition, laterPosition : Nat) ->
-    LTE (S earlierPosition)
-      (S (transitionCount (blockBody (decomposedBlock earlier earlierIn)))) ->
-    LTE (S laterPosition)
-      (S (transitionCount (blockBody (decomposedBlock later laterIn)))) ->
-    Not (transitionCount (traceBeforeBlock (decomposedBlock earlier earlierIn)) +
-      earlierPosition =
-      transitionCount (traceBeforeBlock (decomposedBlock later laterIn)) +
-      laterPosition)
-  decomposedLifecycleCoverage : LifecycleActorsCovered order trace
-
 ||| Executable negative evidence used at a whole-block boundary.  In particular,
 ||| if the left actor yields a registration of the right actor, O/A cannot move
 ||| that right lifecycle block before its own licensing O-Insert.
