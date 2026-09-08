@@ -284,3 +284,20 @@ o19NumericColumnGrid originalMap start width (S height) leftSource rightSource l
         (o19NumericColumnGrid (\position => originalMap (o19RowPull start width position)) (S start) width height leftSource (S rightSource)
           (fst (o19RowBandsAfter originalMap start width height leftSource rightSource leftExact rightExact))
           (snd (o19RowBandsAfter originalMap start width height leftSource rightSource leftExact rightExact)))))
+
+||| Shift both Cartesian coordinate axes independently. This supplies the
+||| exact offset-list equation needed by the actual local-origin plan.
+export
+0 o19GridPairsShift : (leftOffset, rightOffset, leftBase, rightBase, width, height : Nat) ->
+  (map (\pair => (leftOffset + fst pair, rightOffset + snd pair)) (o19GridPairs leftBase rightBase width height) =
+    o19GridPairs (leftOffset + leftBase) (rightOffset + rightBase) width height)
+o19GridPairsShift leftOffset rightOffset leftBase rightBase width Z = Refl
+o19GridPairsShift leftOffset rightOffset leftBase rightBase width (S height) =
+  trans (mapAppend (\pair => (leftOffset + fst pair, rightOffset + snd pair))
+    (o19FixedRowPairs leftBase rightBase width) (o19GridPairs leftBase (S rightBase) width height))
+    (cong2 (++)
+      (o19FixedRowPairsMap (leftOffset +) (rightOffset +) leftBase rightBase (leftOffset + leftBase) (rightOffset + rightBase) width
+        (\index, bound => plusAssociative leftOffset leftBase index) Refl)
+      (trans (o19GridPairsShift leftOffset rightOffset leftBase (S rightBase) width height)
+        (cong (\rightSource => o19GridPairs (leftOffset + leftBase) rightSource width height)
+          (sym (plusSuccRightSucc rightOffset rightBase)))))
