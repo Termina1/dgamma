@@ -172,3 +172,23 @@ o20BeginObservedAfterLookup {name} {key} {world} {error} {value} nameEq keyEq ac
     trans (sym (cong (\state => lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor (registry state)) afterExact))
       (lookupReplacedFiber actor (MkFiber component parent False table (Inactive Nothing))
         (MkFiber component parent False table (Reloading (componentProgram component) id view)) (registry before) found)
+
+||| Carry the actual opening's component across the entire installed body.
+||| This discharges the internal immutable-component frame, not a relation
+||| to a separately chosen original fixed reference endpoint.
+export
+0 o20BeginObservedEndpointComponent :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (before, start, finalState : SystemState name key value world error) ->
+  (observed : O20BeginObservation name key world error value nameEq keyEq actor before start) ->
+  (body : Transitions start finalState) ->
+  InstalledTrace name key world error value nameEq keyEq actor body ->
+  (lastFiber : Fiber name key value world error) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor (registry finalState) = Just lastFiber) ->
+  (fiberComponent lastFiber = beginObservedComponent observed)
+o20BeginObservedEndpointComponent nameEq keyEq actor before start finalState observed body installed lastFiber lastFound =
+  installedTracePreservesComponent nameEq keyEq actor body installed
+    (MkFiber (beginObservedComponent observed) (beginObservedParent observed) False (beginObservedTable observed)
+      (Reloading (componentProgram (beginObservedComponent observed)) id (beginObservedView observed)))
+    lastFiber (o20BeginObservedAfterLookup nameEq keyEq actor before start observed) lastFound
