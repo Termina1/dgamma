@@ -139,3 +139,25 @@ export
 o20ParentImage {name} {renaming} edge upperImage =
   MkParentSupportEdge (imageFiber upperImage) (imageFound upperImage)
     (trans (imageParent upperImage) (cong (supportMapParent name renaming) (childParent edge)))
+
+||| Restricted Equation62 edge transport. Supportedness is required at BOTH
+||| endpoints; no assertion is made about a deleted unsupported intermediate.
+export
+0 o20SupportedEdgeImage :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} -> {renaming : name -> name} ->
+  {source, target : SystemState name key value world error} ->
+  ((selected : name) -> (fiber : Fiber name key value world error) ->
+    (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected (registry source) = Just fiber) ->
+    (isSupported {name} {key} {value} {world} {error} @{nameEq} @{keyEq} selected source = True) ->
+    O20SupportedFiberImage name key world error value nameEq renaming selected fiber target) ->
+  {lower, upper : name} ->
+  (isSupported {name} {key} {value} {world} {error} @{nameEq} @{keyEq} lower source = True) ->
+  (isSupported {name} {key} {value} {world} {error} @{nameEq} @{keyEq} upper source = True) ->
+  SupportEdge nameEq source lower upper -> SupportEdge nameEq target (renaming lower) (renaming upper)
+o20SupportedEdgeImage images {lower} {upper} lowerSupported upperSupported (SupportPrecedence edge) =
+  SupportPrecedence (o20PrecedenceImage edge
+    (images lower (providerFiber edge) (providerFound edge) lowerSupported)
+    (images upper (consumerFiber edge) (consumerFound edge) upperSupported))
+o20SupportedEdgeImage images {upper} lowerSupported upperSupported (SupportParent edge) =
+  SupportParent (o20ParentImage edge (images upper (childFiber edge) (childFound edge) upperSupported))
