@@ -107,3 +107,16 @@ r192RemovedOriginalBirth = MkLocatedGeneratedRegistration r45AfterBegin r45Sourc
       (DGamma.CP4ProgressNoDeadlock.checkedFromRaw r45NameEq r45KeyEq
         (ORemove 1) r178RightFinal r192RemovedBirthFinal ORemoveTag
         (checkedTransitionTargetValid r178ChildRetire) Refl)) NoTransitions))) Refl Refl
+
+||| Structural observation, NOT normalization of support or canonical builders.
+||| No insertion of raw name2 occurs at any position in the actual trace.
+export
+0 r192NoMappedInsertionAt : (ordinal : Nat) ->
+  (rawInsertionNameAt Nat R45Key Unit String R45Value ordinal r192RemovedBirthTrace = Just 2) -> Void
+r192NoMappedInsertionAt Z observed = case observed of Refl impossible
+r192NoMappedInsertionAt (S Z) observed = case observed of Refl impossible
+r192NoMappedInsertionAt (S (S Z)) observed = case observed of Refl impossible
+r192NoMappedInsertionAt (S (S (S Z))) observed = case observed of Refl impossible
+r192NoMappedInsertionAt (S (S (S (S Z)))) observed = case observed of Refl impossible
+r192NoMappedInsertionAt (S (S (S (S (S Z))))) observed = case observed of Refl impossible
+r192NoMappedInsertionAt (S (S (S (S (S (S later)))))) observed = case observed of Refl impossible
