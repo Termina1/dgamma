@@ -38,3 +38,11 @@ export
   O20FiniteInversion name sourceOrder goalOrder -> O20FiniteInversion name sourceOrder (head :: goalOrder)
 o20InversionUnderGoalHead head (MkO20FiniteInversion target swap reverseOrder) =
   MkO20FiniteInversion target swap (BeforeThere reverseOrder)
+
+||| Remove a provably different head from membership, constructively.
+export
+0 o20DifferentHeadMember :
+  {name : Type} -> {selected, head : name} -> {rest : List name} ->
+  Not (selected = head) -> Elem selected (head :: rest) -> Elem selected rest
+o20DifferentHeadMember different Here = absurd (different Refl)
+o20DifferentHeadMember different (There inside) = inside
