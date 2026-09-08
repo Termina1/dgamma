@@ -254,3 +254,23 @@ o20DescentStoppedPermutation nameEq keyEq protocol sourceOrder goalOrder goalSta
   o20StoppedAfterProgress nameEq keyEq protocol sourceOrder goalOrder goalState goalLinearization trace blocks premises progress
     (o20DescentStoppedPermutation nameEq keyEq protocol (chosenTargetOrder (orientedChoice (progressChoice progress))) goalOrder goalState goalLinearization
       (blockSwapTrace (progressStep progress)) (blockSwapBlocks (progressStep progress)) (blockSwapPremises (progressStep progress)) (progressUnique progress) rest)
+
+||| Full no-oracle operational SEARCH result. Selection, actual O19 replay,
+||| reached reselection, measure termination and final certificate are proved.
+||| The missing theorem is that this blocked order equals the fixed goal under
+||| the accepted canonical hypotheses; this function does NOT assert that.
+export
+0 o20RunOperationalSearch :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) -> (sourceOrder, goalOrder : List name) ->
+  (goalState : SystemState name key value world error) ->
+  (goalLinearization : LinearizesSupport name key world error value nameEq keyEq goalState goalOrder) ->
+  {initial, finalState : SystemState name key value world error} -> (trace : Transitions initial finalState) ->
+  (blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder trace) ->
+  (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq trace) ->
+  (0 unique : UniqueRawNameInsertions name key world error value nameEq keyEq trace) ->
+  (O20StoppedOperationalPermutation name key world error value protocol nameEq keyEq sourceOrder goalOrder goalState goalLinearization trace blocks premises)
+o20RunOperationalSearch nameEq keyEq protocol sourceOrder goalOrder goalState goalLinearization trace blocks premises unique =
+  o20DescentStoppedPermutation nameEq keyEq protocol sourceOrder goalOrder goalState goalLinearization trace blocks premises unique
+    (o20OperationalDescent nameEq keyEq protocol sourceOrder goalOrder goalState goalLinearization trace blocks premises unique)
