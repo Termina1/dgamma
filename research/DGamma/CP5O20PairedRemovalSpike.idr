@@ -40,3 +40,28 @@ o20DeletedLookupAbsent keyEq removed (MkCoeffectContext entries unique) =
   o20AbsentLookupObserved keyEq removed (deleteBinding @{keyEq} removed (MkCoeffectContext entries unique))
     (deletedKeyNotElem @{keyEq} removed entries unique)
     (lookupBinding @{keyEq} removed (deleteBinding @{keyEq} removed (MkCoeffectContext entries unique))) Refl
+
+||| ALL-name deletion control frame. The removed name is absent on both
+||| sides; every other name retains the actual pre-cut relation.
+export
+0 o20PairedDeleteControls :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (renaming : NameBijection name) -> (actor : name) ->
+  (leftRegistry, rightRegistry : Registry name key value world error) ->
+  ((selected : name) -> MaybeFiberRelatedBy renaming
+    (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected leftRegistry)
+    (lookupFiber {name} {key} {value} {world} {error} @{nameEq} (renameForward renaming selected) rightRegistry)) ->
+  (selected : name) -> MaybeFiberRelatedBy renaming
+    (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected (deleteBinding @{nameEq} actor leftRegistry))
+    (lookupFiber {name} {key} {value} {world} {error} @{nameEq} (renameForward renaming selected)
+      (deleteBinding @{nameEq} (renameForward renaming actor) rightRegistry))
+o20PairedDeleteControls nameEq renaming actor leftRegistry rightRegistry previous selected =
+  case decEq @{nameEq} selected actor of
+    Yes same => rewrite same in
+      rewrite o20DeletedLookupAbsent nameEq actor leftRegistry in
+      rewrite o20DeletedLookupAbsent nameEq (renameForward renaming actor) rightRegistry in RenamedAbsent
+    No different =>
+      rewrite lookupDeleteOther @{nameEq} selected actor different leftRegistry in
+      rewrite lookupDeleteOther @{nameEq} (renameForward renaming selected) (renameForward renaming actor)
+        (\same => different (trans (sym (renameLeftInverse renaming selected))
+          (trans (cong (renameBackward renaming) same) (renameLeftInverse renaming actor)))) rightRegistry in previous selected
