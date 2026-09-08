@@ -13,6 +13,7 @@ import DGamma.CP5O19CartesianCursorSpike
 import DGamma.CP4DeletionSelectedForeignOrchestration
 import DGamma.CP5O19ResolvedOpeningRowSpike
 import DGamma.CP5O20BeginObservationSpike
+import DGamma.CP5O19AdvanceObservationSpike
 import DGamma.CP5O19BodyMetadataSpike
 import DGamma.CP5O19ReplayObservationSpike
 import DGamma.CP5O19AdjacentReplayProducerSpike
@@ -126,3 +127,38 @@ o19BeginBeforeInsertPlan {name} {key} {world} {error} {value} nameEq keyEq actor
       (trans (sym (resolveViewInactiveInsert {name} {key} {world} {error} {value} nameEq keyEq
         (dependencies (componentDependencies (beginObservedComponent opening))) child component parent fibers absent))
         (beginObservedResolved opening)) wellFormed
+
+||| TOTAL checked O/A guard dispatcher: Begin uses the actual insertion plan
+||| and later opening; Iter/Finish use actual pair independence/domain proof.
+||| No early edge, target/resolver observation or callback is requested.
+export
+0 o19InsertionActivationChecked :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (child : name) ->
+  (parent : Parent name) -> (component : Component key value world error) ->
+  (first, middle, last : SystemState name key value world error) ->
+  (rightAction : Action name key value world error) -> (leftTag, rightTag : RuleTag) ->
+  (leftChecked : checkedApplyAction @{nameEq} @{keyEq} (OInsert child parent component) first = Just (leftTag, middle)) ->
+  (rightChecked : checkedApplyAction @{nameEq} @{keyEq} rightAction middle = Just (rightTag, last)) ->
+  Not (child = actionOwner rightAction) ->
+  TraceIndependent name key world error value keyEq
+    (MoreTransitions (Fired {before = first} {afterState = middle} nameEq keyEq (OInsert child parent component) leftTag leftChecked)
+      (MoreTransitions (Fired {before = middle} {afterState = last} nameEq keyEq rightAction rightTag rightChecked) NoTransitions)) ->
+  (registryWellFormed {name} {key} {value} {world} {error} @{nameEq} @{keyEq} first = True) ->
+  PaperActivationStep (Fired {before = middle} {afterState = last} nameEq keyEq rightAction rightTag rightChecked) ->
+  CheckedEarlyApplication name key world error value nameEq keyEq first rightAction rightTag
+o19InsertionActivationChecked nameEq keyEq child parent component (MkSystemState ambient fibers) middle last rightAction
+  leftTag rightTag leftChecked rightChecked distinct independent wellFormed activation = case activation of
+    PaperBeginStep {actor} sameAction sameTag => case sameAction of
+      Refl => case sameTag of
+        Refl => o19BeginBeforeInsertPlan nameEq keyEq actor child parent component ambient fibers middle last leftTag
+          (\same => distinct (sym same))
+          (foreignInsertPlanView nameEq keyEq child parent component ambient fibers leftTag middle
+            (checkedActionProjects nameEq keyEq (OInsert child parent component) (MkSystemState ambient fibers) middle leftTag leftChecked))
+          (o20ObserveActualBegin nameEq keyEq actor middle last (MkBeginStep rightChecked)) wellFormed
+    PaperIterStep {actor} sameAction sameTag => case sameAction of
+      Refl => o19AdvanceBeforeCheckedInsertion nameEq keyEq actor child parent component (MkSystemState ambient fibers) middle last
+        leftTag rightTag leftChecked rightChecked (Left sameTag) distinct independent wellFormed
+    PaperFinishStep {actor} sameAction sameTag => case sameAction of
+      Refl => o19AdvanceBeforeCheckedInsertion nameEq keyEq actor child parent component (MkSystemState ambient fibers) middle last
+        leftTag rightTag leftChecked rightChecked (Right sameTag) distinct independent wellFormed
