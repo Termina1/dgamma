@@ -51,3 +51,24 @@ export
 o20HistoryTargetOwned paired =
   trans (cong generationName (historyStampsMatched paired))
     (cong generationName (currentBirthStampExact (historyRightBirth paired)))
+
+||| Current lookup observations yield both actual historical births through
+||| the accepted scanners. Only the observed generation match is used here.
+export
+0 o20HistoryCurrentPair :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) ->
+  {leftFirst, leftFinal, rightFirst, rightFinal : SystemState name key value world error} ->
+  (left : Transitions leftFirst leftFinal) -> (right : Transitions rightFirst rightFinal) ->
+  (mapping : RegistrationGenerationBijection name) ->
+  (registrations : RegistrationCorrespondenceByGeneration nameEq mapping left right) ->
+  (leftName, rightName : name) -> (leftStamp, rightStamp : RegistrationGeneration name) ->
+  (lookupCurrentGeneration @{nameEq} leftName (leftFinalGenerations registrations) = Just leftStamp) ->
+  (lookupCurrentGeneration @{nameEq} rightName (rightFinalGenerations registrations) = Just rightStamp) ->
+  (generationForward mapping leftStamp = rightStamp) ->
+  O20HistoryBirthPair name key world error value mapping left right leftName rightName
+o20HistoryCurrentPair {name} {key} {world} {error} {value} nameEq left right mapping registrations
+  leftName rightName leftStamp rightStamp leftCurrent rightCurrent matched =
+    MkO20HistoryBirthPair leftStamp rightStamp
+      (acceptedLeftCurrentBirth name key world error value nameEq left right mapping registrations leftName leftStamp leftCurrent)
+      (acceptedRightCurrentBirth name key world error value nameEq left right mapping registrations rightName rightStamp rightCurrent) matched
