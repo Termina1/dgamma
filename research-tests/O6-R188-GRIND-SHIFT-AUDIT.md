@@ -192,3 +192,41 @@ choose/reassemble all blocks for the target order; target BlockBefore/range
 disjointness/lifecycle coverage and reached origin updates. Full target
 ActorBlockDecomposition still not claimed. Cap44 consumed; no C45 inferred.
 D1 only; no D2, rehome, O19/O20/O21 body. Hole delta0/split5=1/3/0/0/1.
+
+## Supervisor C4 extension and C4 cap16
+
+Supervisor RATIFIED C3/9d2538dc and authorized C45–C60 before D2. C45/739800d7
+finishes the symmetric AFTER-pair untouched producer with every located-block
+field derived. C46–C50 retain actual target positions rather than deciding by
+actor-name equality, and derive the ORIGINAL before/after order from exact
+prefix/suffix membership. C51/0c37d4ef combines all four block classes; C52/
+5c15fdde is the COMPLETE actual target-order block selector:
+`(selected : name) -> Elem selected targetOrder -> LocatedOpenEpisodeBlock ...`
+on the SAME Cartesian reached trace. Every individual block is fully proved.
+This is the `decomposedBlock` field, NOT the remaining global decomposition.
+
+C53–C60 address the physical BlockBefore seam. `O19TracePrefix` retains exact
+transitions/states in ONE actual trace, with erased specification arguments.
+C57/7c6b0b71 derives an actual dependent prefix gap and exact append equation
+from two such structural prefix witnesses and their count order. C58 supplies
+both actual prefix witnesses for any located block from its OWN decomposition.
+C59/C60 culminate in `o19BlockBeforeByCount`: the explicit inequality
+`count(prefixThrough left) <= count(before right)` yields FULL BlockBefore,
+including a real dependent gap and exact prefix-to-opening equation. This is
+a CONDITIONAL generic lemma: actual target-order inequalities are still to be
+derived. No count-to-word/prefix injectivity assumption or arbitrary replay;
+exact same-trace structural witnesses are the essential additional evidence.
+
+C4:16 declarations/17 fresh invocations. C53-1 rejected reserved Idris keyword
+`prefix` in a binder, not a theorem/type failure; guard refused commit and
+`set -e` prevented a spurious C54 invocation. C53-2 renamed that binder `front`,
+PASS2/3/guarded committed a8e4addf. Every other C4 unit PASS1/3. No exhausted
+unit, extra hole, unsafe proof or frozen-surface change. Cumulative source:
+A12+B8+C60+D1=81 declarations,89 compiler invocations (effective C6/C7 mapping
+unchanged). All81 successful source boundaries have commit-time receipts.
+
+Remaining C: actual target-order quantitative boundary laws and BlockBefore;
+range disjointness, lifecycle coverage, reached origin updates; then construct
+the COMPLETE ActorBlockDecomposition. No C61 inferred at cap60. D1 only; no
+D2/rehome/body. Rehome/body deferred to R189 unless all prerequisites land
+before11:30; no rehome list/changes yet. Holes remain5=1/3/0/0/1, delta0.
