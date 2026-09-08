@@ -19,6 +19,7 @@ import Data.Nat
 import Decidable.Equality
 
 import DGamma.CP5O20CanonicalPairSelectionSpike
+import DGamma.CP5O20AllNameSynchronizationSpike
 import DGamma.CP5O20PairedExecutionSpike
 
 %default total
@@ -154,3 +155,25 @@ export
 o20ReloadingSourcesFromObservation component remaining leftParent leftRetired leftTable leftOlder leftView (Just rightFiber)
   (RenamedPresent related) leftFound rightFound =
     o20ReloadingSourcesFromFibers component remaining leftParent leftRetired leftTable leftOlder leftView rightFiber related leftFound rightFound
+
+||| Producer of both actual same-program sources from ONE native source
+||| observation and the owned pre-cut. No right observation is a premise.
+export
+0 o20ShareActualReloadingSource :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {renaming : NameBijection name} -> {actor : name} ->
+  {left, right : SystemState name key value world error} ->
+  (component : Component key value world error) ->
+  (remaining : List (StepEffect key value world error (dependencies (componentDependencies component)) (componentProvisions component))) ->
+  (leftParent : Parent name) -> (leftRetired : Bool) ->
+  (leftTable : OwnedTable key value (componentProvisions component)) ->
+  (leftOlder : LocalState key value world (componentProvisions component) -> LocalState key value world (componentProvisions component)) ->
+  (leftView : View name (dependencies (componentDependencies component))) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor (registry left) = Just (MkFiber component leftParent leftRetired leftTable (Reloading remaining leftOlder leftView))) ->
+  O20AllNameCut name key world error value nameEq renaming left right ->
+  O20SharedReloadingSources name key world error value nameEq renaming actor left right
+o20ShareActualReloadingSource {name} {key} {world} {error} {value} {nameEq} {renaming} {actor} {right}
+  component remaining leftParent leftRetired leftTable leftOlder leftView leftFound paired =
+    o20ReloadingSourcesFromObservation component remaining leftParent leftRetired leftTable leftOlder leftView
+      (lookupFiber {name} {key} {value} {world} {error} @{nameEq} (renameForward renaming actor) (registry right))
+      (rewrite sym leftFound in allNameControls paired actor) leftFound Refl
