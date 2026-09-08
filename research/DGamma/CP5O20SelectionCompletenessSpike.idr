@@ -107,3 +107,13 @@ o20CandidateCompleteAtOwnSlots nameEq keyEq protocol sourceOrder targetOrder swa
       (o20CheckSafetyAtMembers nameEq keyEq protocol swap trace blocks premises (Builtin.fst (o20ChosenActorFacts swap)) (Builtin.fst (Builtin.snd (o20ChosenActorFacts swap))) (Builtin.snd (Builtin.snd (o20ChosenActorFacts swap))))
       (o20CheckSafetyAtMembersComplete nameEq keyEq protocol swap trace blocks premises
         (Builtin.fst (o20ChosenActorFacts swap)) (Builtin.fst (Builtin.snd (o20ChosenActorFacts swap))) (Builtin.snd (Builtin.snd (o20ChosenActorFacts swap))) leftSafe rightSafe early adjacent)
+
+||| Single Maybe elimination retains the actual constructed payload across
+||| the selector's map/bind seam. No computed existential payload is equated.
+export
+0 o20MappedBindPresent : {a, b, c : Type} -> (make : a -> b) -> (next : b -> Maybe c) ->
+  (source : Maybe a) -> (isJust (map make source) = True) ->
+  ((payload : a) -> (isJust (next (make payload)) = True)) ->
+  (isJust (map make source >>= next) = True)
+o20MappedBindPresent make next Nothing Refl each impossible
+o20MappedBindPresent make next (Just payload) present each = each payload
