@@ -199,3 +199,23 @@ o20SharePaperAdvanceSources
 o20SharePaperAdvanceSources
   (AdvanceSourceFinishOne {component} {parent} {retiredFlag} {table} {step} {accumulator} {view} Refl found target) paired =
     o20ShareActualReloadingSource component [step] parent retiredFlag table accumulator view found paired
+
+||| Actual checked successful Advance supplies its own paper source. The
+||| shared component/program/right fiber are all extracted from that source
+||| and the pre-cut; only the native rule-tag role remains to be established
+||| by canonical completeness, not a shared-program observation premise.
+export
+0 o20CheckedAdvanceSharedSources :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (renaming : NameBijection name) -> (actor : name) ->
+  {left, right, afterState : SystemState name key value world error} ->
+  (tag : RuleTag) ->
+  (checkedApplyAction {name} {key} {value} {world} {error} @{nameEq} @{keyEq} (LAdvance actor) left = Just (tag, afterState)) ->
+  Either (tag = LIterTag) (tag = LFinishTag) ->
+  O20AllNameCut name key world error value nameEq renaming left right ->
+  O20SharedReloadingSources name key world error value nameEq renaming actor left right
+o20CheckedAdvanceSharedSources nameEq keyEq renaming actor tag checked role paired =
+  o20SharePaperAdvanceSources
+    (paperAdvanceSource nameEq keyEq actor tag
+      (checkedActionProjects nameEq keyEq (LAdvance actor) _ _ _ checked) role) paired
