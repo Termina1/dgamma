@@ -1,0 +1,431 @@
+{
+  "R186": {
+    "records": 99,
+    "rawPassed": 89,
+    "nonPassed": 10,
+    "archiveSHA256": "6d37142ff60fda1b8a99af9f520ae2d5cdd72016a627d037e6215e73e3146075",
+    "historicalCommitReceipts": "not recorded; source byte matches are not immediate-commit chronology"
+  },
+  "R187": {
+    "records": 120,
+    "rawPassed": 112,
+    "nonPassed": 8,
+    "archiveSHA256": "827d57bc48dacc2847a49d9f85c579003bb68e9b211667c3d6f085494a96513b",
+    "qualifiedPassed": 111,
+    "invalidValidationCount": 1,
+    "validValidations": 30,
+    "expectedNegativeValidations": 2,
+    "sourceReceipts": 80,
+    "proofInvocations": 89,
+    "oneNewDeclarationPerProofInvocation": true,
+    "attemptCapsPassed": true,
+    "oneNewDeclarationPerSourceCommit": true,
+    "sourceDeclarations": [
+      {
+        "unit": "A1",
+        "declaration": "o19UnloadingOwnAction",
+        "commit": "d81fb3d1acd276d6067a05ab558801c5a5f2d13e"
+      },
+      {
+        "unit": "A2",
+        "declaration": "o19UnloadingStepObserved",
+        "commit": "5596d4c7ad760a515c1575690520b206ce579332"
+      },
+      {
+        "unit": "A3",
+        "declaration": "o19UnloadingTrace",
+        "commit": "0548f9e01c9fb09867e1776f8bf7aebed7a208a1"
+      },
+      {
+        "unit": "A4",
+        "declaration": "o19ActiveNotUnloadingObserved",
+        "commit": "04194868c4d770924d1e0450d17c2e5773678ef2"
+      },
+      {
+        "unit": "A5",
+        "declaration": "o19NoLifecyclePrependNoUnload",
+        "commit": "2c6ea62820c010d2dc36c5a6bedd056eaa72fae2"
+      },
+      {
+        "unit": "A6",
+        "declaration": "o19InstalledPrependNoUnload",
+        "commit": "1afce739e369d9f61ace6171b91bf4ed9001dece"
+      },
+      {
+        "unit": "A7",
+        "declaration": "o19OriginalBlockNoUnload",
+        "commit": "9849dd2bfbe3a4b69038e19ca632b666bffa5f33"
+      },
+      {
+        "unit": "A8",
+        "declaration": "o19PaperAdvanceNoUnloading",
+        "commit": "a7b357c396f34c9ffd7d6397c2db688fb22e855a"
+      },
+      {
+        "unit": "A9",
+        "declaration": "o19LifecyclePaperChecked",
+        "commit": "543f3feb571b0cf69daa0686c72b1eb7f2a91073"
+      },
+      {
+        "unit": "A10",
+        "declaration": "o19NoUnloadAtCut",
+        "commit": "c5e7016d40dfa64ef20601b91ac716324ff75a7d"
+      },
+      {
+        "unit": "A11",
+        "declaration": "o19OriginalPaperBranch",
+        "commit": "ce0e1e37417034547958d3c643fa669f15b5ed16"
+      },
+      {
+        "unit": "A12",
+        "declaration": "o19OriginalClasses",
+        "commit": "f881faff79c056d5e937424d49b62873f5587971"
+      },
+      {
+        "unit": "B1",
+        "declaration": "o19CartesianAdjacentObserved",
+        "commit": "79a53f928371e49f252403d6a8777f0e4b35efc1"
+      },
+      {
+        "unit": "B2",
+        "declaration": "o19ActualBlockSpines",
+        "commit": "2781910211096fae6cfce2eb3694f3732c23513f"
+      },
+      {
+        "unit": "B3",
+        "declaration": "o19CartesianActualBlocks",
+        "commit": "1554c476df828f725cad0a1b2693b3987b52be7b"
+      },
+      {
+        "unit": "B4",
+        "declaration": "o19AdjacentOrdinalSymmetric",
+        "commit": "339450ed51bc46da248ecc40ba0a8178426c0682"
+      },
+      {
+        "unit": "B5",
+        "declaration": "o19AdjacentSourceOrdinalExact",
+        "commit": "c3d1d078c92bd7d910cd3f512b07d4755dfd9c51"
+      },
+      {
+        "unit": "B6",
+        "declaration": "O19OrdinalActionMap",
+        "commit": "aceb22760cc059ac1156f2f8efa34efd46ffeef4"
+      },
+      {
+        "unit": "B7",
+        "declaration": "o19OrdinalMapAfterNode",
+        "commit": "c562e90cba52f86eee984cc832f13ec753cd6476"
+      },
+      {
+        "unit": "B8",
+        "declaration": "o19IdentityOrdinalMap",
+        "commit": "34de1e1ae931f7dd89ce6562e6a9c9a154450366"
+      },
+      {
+        "unit": "B9",
+        "declaration": "O19GlobalCrossingPlan",
+        "commit": "fe69ebee3afdd594a38dd4fd36eb77eb46e0b036"
+      },
+      {
+        "unit": "B10",
+        "declaration": "O19GlobalPlanResult",
+        "commit": "3b57b0b44384d3abd06fe0f441b9503d5adb1da5"
+      },
+      {
+        "unit": "B11",
+        "declaration": "o19GlobalPlanPrepend",
+        "commit": "bdca958ab476dacf8fd01df38109a3af8b867046"
+      },
+      {
+        "unit": "B12",
+        "declaration": "o19BuildGlobalOriginPlan",
+        "commit": "58978c8216d2935da92dbcb24c0aa7c77f738b8c"
+      },
+      {
+        "unit": "B13",
+        "declaration": "o19ActualGlobalOriginPlan",
+        "commit": "bc1929200f7f402729bd3368cee47dfa80c48987"
+      },
+      {
+        "unit": "B14",
+        "declaration": "o19LocalizeGlobalPlan",
+        "commit": "0e32ad1f60ae2c73a33cf2330a894f8c220be6d5"
+      },
+      {
+        "unit": "B15",
+        "declaration": "o19ActualGlobalOriginProductCount",
+        "commit": "d284c8441230a90e08f074efcc65401cf5f99696"
+      },
+      {
+        "unit": "B16",
+        "declaration": "o19FiniteOrdinalInjective",
+        "commit": "b42a2fc697f72c4f7972eab64a4f195940509ab0"
+      },
+      {
+        "unit": "C3",
+        "declaration": "o20CheckBefore",
+        "commit": "a20af8bb71e84409fed4395b5bef976f2bf91a8d"
+      },
+      {
+        "unit": "C4",
+        "declaration": "O20OrientedSafeSwap",
+        "commit": "19e30d94870ccdfbb61ec395f0235028ba9539fe"
+      },
+      {
+        "unit": "C5",
+        "declaration": "o20OrientChosenSafeSwap",
+        "commit": "e58956c02f9ef1e848759e9ee26fe179800db7c3"
+      },
+      {
+        "unit": "C6",
+        "declaration": "o20SelectOrientedSafeBlocks",
+        "commit": "80b744aa8c0036982f5a859b2bf181aa2497bca0"
+      },
+      {
+        "unit": "C7",
+        "declaration": "o20OrientedCannotReverse",
+        "commit": "d343b59a175be48e0fce4b9a9ede232c80cd9ac2"
+      },
+      {
+        "unit": "C8",
+        "declaration": "o20OrientedSupportIncomparable",
+        "commit": "733b70680452e9715c89c63210669ae3589e0d6f"
+      },
+      {
+        "unit": "D1",
+        "declaration": "o19CrossingSites",
+        "commit": "7b2bc5fc9c8cb4a61092c5d5dce2f277d04d89d9"
+      },
+      {
+        "unit": "D2",
+        "declaration": "o19AppendFiniteSites",
+        "commit": "ec2b9d8b610d040620f9df4b8ef5914170c92024"
+      },
+      {
+        "unit": "D3",
+        "declaration": "o19OriginsAtSites",
+        "commit": "783bc4811149c49feb7b138de1f59c4a175a1dbf"
+      },
+      {
+        "unit": "D4",
+        "declaration": "o19GlobalPlanPrependPositions",
+        "commit": "8acda158bf10a19a7a01f394181a166f5fccc77b"
+      },
+      {
+        "unit": "D5",
+        "declaration": "o19GlobalPlanSites",
+        "commit": "46ffaaeda04d2c0b6f12ecc63622b017a77069a9"
+      },
+      {
+        "unit": "D6",
+        "declaration": "o19ActualGlobalOriginSites",
+        "commit": "c2c6da245a7cf82727b4a2576ffe65b21aae0110"
+      },
+      {
+        "unit": "D7",
+        "declaration": "o19RowSites",
+        "commit": "6ae2bb4c890be1b7f5df4d3eb769291e02668f0b"
+      },
+      {
+        "unit": "D8",
+        "declaration": "o19WordRowStepObservedSites",
+        "commit": "8dab731d36ee5f878bda9841d783de6114a24775"
+      },
+      {
+        "unit": "D9",
+        "declaration": "o19WordRowAtObservedPairSites",
+        "commit": "b7eb9252016ef0ac3d03de5c896b4ed977086715"
+      },
+      {
+        "unit": "D10",
+        "declaration": "o19WordRowStepSites",
+        "commit": "52b1b7bb4ec6d50a178389721a9730c763d0930a"
+      },
+      {
+        "unit": "D11",
+        "declaration": "o19BubbleWordRowSites",
+        "commit": "a005328bc9900cb77e7902b69ea2b4723a4a8204"
+      },
+      {
+        "unit": "D12",
+        "declaration": "o19ColumnSites",
+        "commit": "f287960ca3ef92d23084463b00a76fcb398be0c0"
+      },
+      {
+        "unit": "D13",
+        "declaration": "o19ColumnPrependSites",
+        "commit": "57ca44cff31e6b0bbeea653225497b1e723bac1d"
+      },
+      {
+        "unit": "D14",
+        "declaration": "o19ColumnAfterRowSites",
+        "commit": "8736478ccfdb8b5a64b20c6ebb0efd0700f01ed4"
+      },
+      {
+        "unit": "D15",
+        "declaration": "o19ColumnAtWordCutSites",
+        "commit": "80d44c968bb35a8d273771d0a8b6fa946b780b97"
+      },
+      {
+        "unit": "D16",
+        "declaration": "o19CartesianColumnsSites",
+        "commit": "c5573fb359e91cfe3a872933359d5a27e6e63d50"
+      },
+      {
+        "unit": "E1",
+        "declaration": "o19CartesianSourceSpinesSites",
+        "commit": "beda808f7a6ff9ed623d33b21b964b8ea3700efe"
+      },
+      {
+        "unit": "E2",
+        "declaration": "o19CartesianAdjacentObservedSites",
+        "commit": "02b11909cf5d2ec9cc25110d545bb5b79aee4080"
+      },
+      {
+        "unit": "E3",
+        "declaration": "o19CartesianActualBlocksSites",
+        "commit": "72c34d0c97b54b6d3d78a9be309e3e471e9f3483"
+      },
+      {
+        "unit": "E4",
+        "declaration": "o19ActualGlobalCartesianSites",
+        "commit": "66532e71bafdb44d3c5910f271956862ed0d4fb8"
+      },
+      {
+        "unit": "E5",
+        "declaration": "o19SitesPull",
+        "commit": "19814539db0318f312d22b6fd13ac6e6792a9290"
+      },
+      {
+        "unit": "E6",
+        "declaration": "o19SitesPullAppend",
+        "commit": "17c7369b4b3cf815ce8a0bdb18648fade515cbd1"
+      },
+      {
+        "unit": "E7",
+        "declaration": "o19OriginsAtSitesAppend",
+        "commit": "c395a524dd79a0fcef733e9220e72c444ddbae67"
+      },
+      {
+        "unit": "E8",
+        "declaration": "o19RowPull",
+        "commit": "976768bbfbf5bada6d54df684685d4b159e3f085"
+      },
+      {
+        "unit": "E9",
+        "declaration": "o19RowPullZero",
+        "commit": "ed2d702e4bb4c44356e440a7667a4d11396c1dd6"
+      },
+      {
+        "unit": "E10",
+        "declaration": "o19RowPullStep",
+        "commit": "b1214379e6fd3067479307f31291e55ee8e3047b"
+      },
+      {
+        "unit": "E11",
+        "declaration": "o19RowSitesPull",
+        "commit": "8406835d98f1023526ba260ba459c7591507d0ef"
+      },
+      {
+        "unit": "E12",
+        "declaration": "o19IdentityOrdinalMapPoint",
+        "commit": "1847eb2cbbe041f756901eccc1d7283c0740756f"
+      },
+      {
+        "unit": "E13",
+        "declaration": "o19RowPairs",
+        "commit": "810fb1c6ad939540fac467c08dca9f4763baa4cc"
+      },
+      {
+        "unit": "E14",
+        "declaration": "o19RowPullBeforeEdge",
+        "commit": "6e3b86665208b23c08f3ff23c4851b0b7b5463f2"
+      },
+      {
+        "unit": "E15",
+        "declaration": "o19RowPullAtStart",
+        "commit": "9b8849812c9015c4709572ef2063d7ca1f2b6856"
+      },
+      {
+        "unit": "E16",
+        "declaration": "o19RowOriginPairs",
+        "commit": "56812c358d957e248007637dc3cf8e4386301f0b"
+      },
+      {
+        "unit": "F1",
+        "declaration": "o19RowPullInside",
+        "commit": "6e32413e7d2f9af7f2a7af5a4aeb26ac6ac69bfa"
+      },
+      {
+        "unit": "F2",
+        "declaration": "o19RowPullBeyond",
+        "commit": "3787e27a150523fc1c10af2ca5453ddce1959612"
+      },
+      {
+        "unit": "F3",
+        "declaration": "o19FixedRowPairs",
+        "commit": "d24b5ccbd59b6ed846d65755a4ab76b41b752870"
+      },
+      {
+        "unit": "F4",
+        "declaration": "o19RowPairsFixed",
+        "commit": "ae069b59e66d2c1403156f3ce7e12e60a28b58e8"
+      },
+      {
+        "unit": "F5",
+        "declaration": "o19GridPairs",
+        "commit": "71ab3bbe45d2e305dd4c1b404ebbc339d2f1a44c"
+      },
+      {
+        "unit": "F6",
+        "declaration": "o19FixedRowPairsMap",
+        "commit": "650ac6f60d1853e5948039c3f0531565f8138cc9"
+      },
+      {
+        "unit": "F7",
+        "declaration": "o19RowOriginFixed",
+        "commit": "0b70817ed13f3ed4c4b3de23406eb3f086f05066"
+      },
+      {
+        "unit": "F8",
+        "declaration": "o19RowBandsAfter",
+        "commit": "09b978236ca245b1947f2e967c0c6ae3f097c82d"
+      },
+      {
+        "unit": "F9",
+        "declaration": "o19OriginsAtSitesPointwise",
+        "commit": "fe9b5c05ecc6a90b469d8aeb778a52f28f0022ee"
+      },
+      {
+        "unit": "F10",
+        "declaration": "o19NumericColumnGrid",
+        "commit": "355ae8c10ad6f3e6c35e85d2799b2d894d01ebaa"
+      },
+      {
+        "unit": "F11",
+        "declaration": "o19AdjacentBlockStartCount",
+        "commit": "5ded37b2e44228211a450b008086324788efb032"
+      },
+      {
+        "unit": "F12",
+        "declaration": "o19ActualGlobalGrid",
+        "commit": "dcaf5b25c9150a21047534fc41b7889c84f09856"
+      },
+      {
+        "unit": "F13",
+        "declaration": "o19GridPairsShift",
+        "commit": "c29153ab3f7d9b37f581d1da0e52059fac589f30"
+      },
+      {
+        "unit": "F14",
+        "declaration": "o19ActualLocalOriginPlan",
+        "commit": "af7255ecf55de51794dc1484b68af559f8f786f6"
+      }
+    ],
+    "serialized": true,
+    "interrupted": 0,
+    "maximumRSSKiB": 49771216,
+    "historicalSchemaQualification": "one retained compiler-free Unit0 artifact receipt lacks separately named unit/attempt/sourceInvocation; not rewritten",
+    "finalArtifactReceiptQualification": "archive cannot contain its own commit-time receipt; final live receipt must be reported separately"
+  }
+}

@@ -385,3 +385,46 @@ all80 real source receipts, one new declaration for all89 proof invocations,
 attempt caps, serialization/RSS, V3 exclusion and authorized probe backups,
 production freeze and no staging. Its Python syntax and live source-protocol
 preflight passed; the complete archive verification follows archive creation.
+
+## Durable evidence verification and final status
+
+Validated end HEAD `0e5207bc423451b9135742540bd5b59949c789ca`; last proof af7255ec.
+Compiler-free independent archive verification PASSED for BOTH shifts:
+R18699 exact records and the honest historical-receipt qualification;
+R187120 exact records,80 real source receipts, all89 proof-invocation
+one-declaration checks, all attempt caps, no intervening compiler before a
+source commit, serialized intervals,48GiB guard, V3 exclusion and probe
+cleanup backups. Full verification output is committed separately as
+O6-R187-EVIDENCE-VERIFICATION.json (not inserted into its own authenticated
+archive). R187 archive SHA256:
+`827d57bc48dacc2847a49d9f85c579003bb68e9b211667c3d6f085494a96513b`.
+
+Fresh frozen audit:5=1/3/0/0/1, all protected statements/hash fingerprints,
+production diff and CP3 blob unchanged, real LocalDiamond bytes unchanged,
+207/207 seeds retained, tracked-clean/no staged/compiler and only permitted
+untracked paper/review. The real LocalDiamond TTC remains125,368,223 bytes,
+refreshed07:49:32 UTC; no protected cache reset. Final evidence commits no
+Idris source or theorem-statement changes.
+
+## Status
+
+Fully PROVED R187 capital: genuine original paper-branch completeness,
+unconditional actual Cartesian replay entry, exact actual global and local
+source-origin plans on the SAME chain, exact actual row/column site patterns,
+pointwise row rotation, two-band full numeric grid equality, actual right
+source start and offset-list equation. Positive O20 safe goal-oriented
+selection and common-reference support incomparability are proved.
+
+PARTIAL: local-grid coverage/bounds/uniqueness/nonempty WholeBlockSwapDerivation;
+actually reached installed target blocks/decomposition/origin updates;
+same-chain endpoint/full bundle/external assembly; O20 completeness/descent/
+reselection/common-state reached linearization. STILL STATED/HOLED at frozen
+boundaries: O19/O20/O21 bodies, owner-paused O17 and parked withdrawals. No
+new hole/escape and no body attempt. Next work is the exact ordered list in
+O6-R187-R188-HANDOFF.md, subject to a new R188 allocation/gates.
+
+The final archive was generated after every validation and authenticated
+source/artifact receipt through the validated end HEAD. Its own later
+artifact-commit receipt cannot be inside that archive; it remains in the
+live receipt ledger and must be reported at the final gate. Permanent
+historical/V3/package qualifications above are not erased by these PASSes.
