@@ -207,3 +207,28 @@ export
 o20StoppedAtSource {finalState} nameEq keyEq protocol sourceOrder goalOrder goalState goalLinearization trace blocks premises unique blocked =
   MkO20StoppedOperationalPermutation sourceOrder finalState trace blocks premises unique
     ActorPermutationDone (OperationalActorDone blocks premises) blocked
+
+||| Compose the actual progress node and its ACTUAL recursively reached
+||| stopped result; pure certificate and full operational fold stay identical.
+export
+0 o20StoppedAfterProgress :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) -> (sourceOrder, goalOrder : List name) ->
+  (goalState : SystemState name key value world error) ->
+  (goalLinearization : LinearizesSupport name key world error value nameEq keyEq goalState goalOrder) ->
+  {initial, finalState : SystemState name key value world error} -> (trace : Transitions initial finalState) ->
+  (blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder trace) ->
+  (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq trace) ->
+  (progress : O20OperationalProgress name key world error value protocol nameEq keyEq sourceOrder goalOrder goalState trace blocks premises) ->
+  (rest : O20StoppedOperationalPermutation name key world error value protocol nameEq keyEq
+    (chosenTargetOrder (orientedChoice (progressChoice progress))) goalOrder goalState goalLinearization
+    (blockSwapTrace (progressStep progress)) (blockSwapBlocks (progressStep progress)) (blockSwapPremises (progressStep progress))) ->
+  (O20StoppedOperationalPermutation name key world error value protocol nameEq keyEq sourceOrder goalOrder goalState goalLinearization trace blocks premises)
+o20StoppedAfterProgress nameEq keyEq protocol sourceOrder goalOrder goalState goalLinearization trace blocks premises progress rest =
+  MkO20StoppedOperationalPermutation (stoppedOrder rest) (stoppedFinal rest) (stoppedTrace rest)
+    (stoppedBlocks rest) (stoppedPremises rest) (stoppedUnique rest)
+    (ActorPermutationStep (chosenOrderSwap (orientedChoice (progressChoice progress))) (stoppedCertificate rest))
+    (OperationalActorStep (chosenOrderSwap (orientedChoice (progressChoice progress))) (stoppedCertificate rest)
+      blocks premises (chosenSafety (orientedChoice (progressChoice progress))) (progressStep progress) (stoppedRealized rest))
+    (stoppedChoiceAbsent rest)
