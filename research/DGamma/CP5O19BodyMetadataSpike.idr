@@ -10,6 +10,8 @@ import DGamma.CP5RankedEarlyApplicabilitySpike
 import DGamma.CP5ConfluenceLocalDiamondSpike
 import DGamma.CP5ImmutableBirthMetadataSpike
 import DGamma.CP5O20BeginObservationSpike
+import DGamma.CP5O19ActivationResolutionSpike
+import DGamma.CP5O19AdjacentReplayProducerSpike
 import DGamma.CP5O19SourceShapeSpike
 import DGamma.CP5UniqueRawNameInsertions
 import Data.List.Elem
@@ -180,3 +182,54 @@ o19SanctionedCutNondependency nameEq keyEq protocol swap source blocks premises 
         (earlyApplicationFinal (safetyRightOpeningEarly safety))
         (MkBeginStep (earlyApplicationChecked (safetyRightOpeningEarly safety))))
       leftNow rightNow leftFound rightFound
+
+||| Consume the EXPLICIT owner-survival package once and discharge E11's
+||| static dependency premise at the ACTUAL checked pair. The next producer
+||| supplies this package from the source bundle, not from a caller oracle.
+export
+0 o19SanctionedAdvanceObservedOwner :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {sourceOrder, targetOrder : List name} ->
+  (swap : AdjacentActorOrderSwap name sourceOrder targetOrder) ->
+  {initial, first, middle, last, finalState : SystemState name key value world error} ->
+  (source : Transitions initial finalState) ->
+  (blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder source) ->
+  (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq source) ->
+  (safety : AdjacentActorSwapSafety name key world error value protocol nameEq keyEq swap source blocks premises) ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq source ->
+  (earlier : Transitions initial first) -> (later : Transitions last finalState) ->
+  (leftAction : Action name key value world error) -> (leftTag, rightTag : RuleTag) ->
+  (leftChecked : checkedApplyAction @{nameEq} @{keyEq} leftAction first = Just (leftTag, middle)) ->
+  (rightChecked : checkedApplyAction @{nameEq} @{keyEq} (LAdvance (actorRight swap)) middle = Just (rightTag, last)) ->
+  (appendTransitions earlier
+    (MoreTransitions (Fired {before = first} {afterState = middle} nameEq keyEq leftAction leftTag leftChecked)
+      (MoreTransitions (Fired {before = middle} {afterState = last} nameEq keyEq (LAdvance (actorRight swap)) rightTag rightChecked) later)) = source) ->
+  (actionOwner leftAction = actorLeft swap) ->
+  Either (rightTag = LIterTag) (rightTag = LFinishTag) ->
+  ((fiber : Fiber name key value world error **
+    (lookupFiber {name} {key} {value} {world} {error} @{nameEq} (actionOwner leftAction) (registry first) = Just fiber)),
+   (isJust (lookupFiber {name} {key} {value} {world} {error} @{nameEq} (actionOwner leftAction) (registry middle)) = True)) ->
+  CheckedEarlyApplication name key world error value nameEq keyEq first (LAdvance (actorRight swap)) rightTag
+o19SanctionedAdvanceObservedOwner {name} {key} {value} {world} {error} {first} {middle} {last}
+  nameEq keyEq protocol swap source blocks premises safety unique earlier later leftAction leftTag rightTag leftChecked rightChecked
+  decomposition leftOwner rightPaper ((leftFiber ** leftFound), leftSurvives) =
+    o19AdvanceBeforeNondependentPair nameEq keyEq (actorRight swap) first middle last leftAction leftTag rightTag leftChecked rightChecked
+      rightPaper (\same => actorDistinct swap (trans (sym leftOwner) same))
+      (snd (snd (o19SourcePairFacts nameEq keyEq protocol source earlier
+        (Fired nameEq keyEq leftAction leftTag leftChecked) (Fired nameEq keyEq (LAdvance (actorRight swap)) rightTag rightChecked)
+        later decomposition premises))) leftFiber leftFound leftSurvives
+      (\rightFiber, rightFound => o19SanctionedCutNondependency nameEq keyEq protocol swap source blocks premises safety unique
+        earlier (MoreTransitions (Fired nameEq keyEq leftAction leftTag leftChecked)
+          (MoreTransitions (Fired nameEq keyEq (LAdvance (actorRight swap)) rightTag rightChecked) later)) decomposition
+        (appendTransitions earlier (MoreTransitions (Fired nameEq keyEq leftAction leftTag leftChecked) NoTransitions))
+        (MoreTransitions (Fired nameEq keyEq (LAdvance (actorRight swap)) rightTag rightChecked) later)
+        (trans (appendTransitionsAssociative earlier (MoreTransitions (Fired nameEq keyEq leftAction leftTag leftChecked) NoTransitions)
+          (MoreTransitions (Fired nameEq keyEq (LAdvance (actorRight swap)) rightTag rightChecked) later)) decomposition)
+        leftFiber rightFiber
+        (trans (cong (\actor => lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor (registry first)) (sym leftOwner)) leftFound)
+        rightFound)
+      (fst (snd (o19SourcePairFacts nameEq keyEq protocol source earlier
+        (Fired nameEq keyEq leftAction leftTag leftChecked) (Fired nameEq keyEq (LAdvance (actorRight swap)) rightTag rightChecked)
+        later decomposition premises)))
