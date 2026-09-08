@@ -1,0 +1,103 @@
+{
+  "status": "PASS",
+  "immutablePlanPublishedBeforeValidation": true,
+  "finalPlanLeafBeforeDependent": true,
+  "head": "76122d73c5a3af0c997690962a9ccbb2d940cbf4",
+  "timestampUTC": "2026-09-08T23:58:20.151013+00:00",
+  "invocationCount": 67,
+  "passedCount": 54,
+  "failedCount": 13,
+  "interruptedCount": 0,
+  "finalCheckCount": 12,
+  "newDeclarationCount": 42,
+  "newDeclarations": {
+    "research-tests/O6-L2R2-Sources/DGamma/L2R2CheckedSnapshot.idr": [
+      "CheckedSnapshotStep",
+      "checkedAcrossSnapshot",
+      "checkedSnapshotObserved"
+    ],
+    "research-tests/O6-L2R2-Sources/DGamma/L2R2ConditionalGap.idr": [
+      "RemainingGapHeadIsRoot",
+      "extendedZeroGapWithoutRoot"
+    ],
+    "research-tests/O6-L2R2-Sources/DGamma/L2R2ForeignReplay.idr": [
+      "RetirementReplay",
+      "foreignRetireReplayCPS",
+      "replayRetirementBeforeForeignRun"
+    ],
+    "research-tests/O6-L2R2-Sources/DGamma/L2R2RemoveSquare.idr": [
+      "ChildRemoveSnapshotExchange",
+      "commuteAdvanceChildRemove",
+      "commuteBeginChildRemove",
+      "deletedBindingAbsent",
+      "removeSquareFromLifecycleReplay",
+      "removeSquareFromObservations"
+    ],
+    "research-tests/O6-L2R2-Sources/DGamma/L2R2RetireInsert.idr": [
+      "checkedRootInsert",
+      "commuteRootInsertChildRetire",
+      "replaceOtherHeadObserved",
+      "retireInsertedSnapshot",
+      "rootInsertAtAbsence",
+      "rootRetireSquareAtInsert",
+      "rootRetireSquareFromPlan"
+    ],
+    "research-tests/O6-L2R2-Sources/DGamma/L2R2RetireSquare.idr": [
+      "ChildRetireSnapshotExchange"
+    ],
+    "research-tests/O6-L2R2-Sources/DGamma/L2R2RootPhase.idr": [
+      "SmallRootPhaseEvidence",
+      "SnapshotRootPhaseStep",
+      "beginSnapshotRootDecreases",
+      "rootPhaseFromSnapshot",
+      "smallRootPhaseEvidence",
+      "supportSetAcrossSnapshot"
+    ],
+    "research-tests/O6-L2R2-Sources/DGamma/L2R2RootSnapshot.idr": [
+      "AvailabilityRootSnapshotExchange",
+      "smallRootSnapshotSquare"
+    ],
+    "research-tests/O6-L2R2-Sources/DGamma/L2R2SmallBlocks.idr": [
+      "SmallExtendedBlocks",
+      "smallExtendedBlocks"
+    ],
+    "research-tests/O6-L2R2-Sources/DGamma/L2R2SmallExecution.idr": [
+      "SmallNativeExecution",
+      "smallNativeExecution",
+      "smallTrace"
+    ],
+    "research-tests/O6-L2R2-Sources/DGamma/L2R2SmallPlacement.idr": [
+      "smallAvailabilityTrail",
+      "smallEarlierUnavailable",
+      "smallRootBirth",
+      "smallRootEarliest",
+      "smallStrictPlacementRejected"
+    ],
+    "research-tests/O6-L2R2-Sources/DGamma/L2R2SmallStates.idr": [
+      "smallComponent",
+      "smallState"
+    ]
+  },
+  "sourceCommitCount": 42,
+  "allShiftCommitsReceiptAuthenticated": true,
+  "approvedC4BundleAuthenticated": true,
+  "approvedPredecessorCommentRepairsAuthenticated": true,
+  "allInvocationsSerialized": true,
+  "allRecordedSnapshotsAndLogsAuthenticated": true,
+  "protocolIncidents": [],
+  "allFinalCurrentSourcesAuthenticated": true,
+  "committedArchiveAndManifestAuthenticated": true,
+  "evidenceArchiveSHA256": "959cb458548ea728868416cdfe9c10ce8f616ae309f73d732048a0775530e523",
+  "productionAndFrozenResearchUntouched": true,
+  "maxSampleRSSKiB": 821456,
+  "RSSQualification": "250ms sampled RSS, not continuous peak; chez classified from the first L2R2 invocation",
+  "noUnsafeNewProofs": true,
+  "noOwnCompiler": true,
+  "noOwnHeavyLock": true,
+  "observedNonOwnedHeavyLock": null,
+  "noStagedFiles": true,
+  "cleanTrackedTree": true,
+  "noUntrackedDeliverables": true,
+  "manualProofReviewStillRequired": true,
+  "paperTextReauditNotPerformed": true
+}
