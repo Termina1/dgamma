@@ -1533,3 +1533,26 @@ o19ListSwapLength first second third last =
           (cong (\count => count + length last) (plusCommutative (length second) (length third)))))
         (trans (plusAssociative (length first) (length third + length second) (length last))
           (cong (\count => count + length last) (plusAssociative (length first) (length third) (length second))))))
+
+||| Typed count observation for one source/target block pair. Once the OWN
+||| reached before-word length is the original start, all three absolute
+||| boundaries are preserved. No builder is inspected inside this consumer.
+export
+0 o19PreserveAbsoluteCounts : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} -> {selected : name} ->
+  {sourceFirst, sourceLast, targetFirst, targetLast : SystemState name key value world error} ->
+  {source : Transitions sourceFirst sourceLast} -> {target : Transitions targetFirst targetLast} ->
+  (original : LocatedOpenEpisodeBlock name key world error value nameEq keyEq selected source) ->
+  (reached : LocatedOpenEpisodeBlock name key world error value nameEq keyEq selected target) ->
+  (beforeWord : List (Action name key value world error)) ->
+  (transitionCount (traceBeforeBlock reached) = length beforeWord,
+   (transitionCount (actorBlockTrace reached) = transitionCount (actorBlockTrace original),
+    transitionCount (prefixThroughBlock reached) = length beforeWord + transitionCount (actorBlockTrace original))) ->
+  (length beforeWord = transitionCount (traceBeforeBlock original)) ->
+  (transitionCount (traceBeforeBlock reached) = transitionCount (traceBeforeBlock original),
+   (transitionCount (actorBlockTrace reached) = transitionCount (actorBlockTrace original),
+    transitionCount (prefixThroughBlock reached) = transitionCount (prefixThroughBlock original)))
+o19PreserveAbsoluteCounts original reached beforeWord counts preserved =
+  (trans (fst counts) preserved,
+   (fst (snd counts), trans (o19PrefixThroughCount reached)
+      (trans (cong2 (+) (trans (fst counts) preserved) (fst (snd counts))) (sym (o19PrefixThroughCount original)))))
