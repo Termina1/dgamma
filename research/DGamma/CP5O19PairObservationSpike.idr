@@ -192,3 +192,38 @@ o19ObservedOOReplay nameEq keyEq protocol swap original blocks premises safety u
   (ObservedOO leftChild rightChild leftComponent rightComponent leftInsert rightInsert distinct leftLicense rightLicense tag) =
     o19GeneratedInsertionReplay nameEq keyEq protocol leftChild rightChild (actorLeft swap) (actorRight swap) leftComponent rightComponent
       (cursorTrace cursor) earlier left right later decomposition (cursorBundle cursor) leftInsert rightInsert distinct leftLicense rightLicense tag
+
+||| TOTAL producer is a projection over the typed actual observation. Each
+||| branch delegates to its single-constructor producer; no nested Either/
+||| DPair case, speculative classification or separately chosen node remains.
+export
+0 o19ObservedPairReplay :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (protocol : RegistrationProtocol key value world error) ->
+  {sourceOrder, targetOrder : List name} -> (swap : AdjacentActorOrderSwap name sourceOrder targetOrder) ->
+  {initial, originalFinal, first, middle, last : SystemState name key value world error} ->
+  (original : Transitions initial originalFinal) ->
+  (blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder original) ->
+  (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq original) ->
+  (safety : AdjacentActorSwapSafety name key world error value protocol nameEq keyEq swap original blocks premises) ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq original ->
+  (cursor : O19ReachedCursor name key world error value protocol nameEq keyEq original) ->
+  (earlier : Transitions initial first) -> (left : Transition first middle) -> (right : Transition middle last) ->
+  (later : Transitions last (cursorFinal cursor)) ->
+  (appendTransitions earlier (MoreTransitions left (MoreTransitions right later)) = cursorTrace cursor) ->
+  {orientation : AdjacentSwapOrientationEvidence left right} ->
+  O19PairObservation name key world error value (actorLeft swap) (actorRight swap) left right orientation ->
+  (diamond : LocalRelationalDiamond name key world error value nameEq keyEq left right **
+    AdjacentSwapResult name key world error value protocol nameEq keyEq (cursorTrace cursor) earlier left right later diamond)
+o19ObservedPairReplay nameEq keyEq protocol swap original blocks premises safety unique cursor earlier left right later decomposition
+  (ObservedAA leftActivation rightActivation leftOwner rightOwner) =
+    o19ObservedAAReplay nameEq keyEq protocol swap original blocks premises safety unique cursor earlier left right later decomposition (ObservedAA leftActivation rightActivation leftOwner rightOwner)
+o19ObservedPairReplay nameEq keyEq protocol swap original blocks premises safety unique cursor earlier left right later decomposition
+  (ObservedOA child component inserted rightActivation rightOwner childSafe) =
+    o19ObservedOAReplay nameEq keyEq protocol swap original blocks premises safety unique cursor earlier left right later decomposition (ObservedOA child component inserted rightActivation rightOwner childSafe)
+o19ObservedPairReplay nameEq keyEq protocol swap original blocks premises safety unique cursor earlier left right later decomposition
+  (ObservedAO child component inserted leftActivation distinct licensing) =
+    o19ObservedAOReplay nameEq keyEq protocol swap original blocks premises safety unique cursor earlier left right later decomposition (ObservedAO child component inserted leftActivation distinct licensing)
+o19ObservedPairReplay nameEq keyEq protocol swap original blocks premises safety unique cursor earlier left right later decomposition
+  (ObservedOO leftChild rightChild leftComponent rightComponent leftInsert rightInsert distinct leftLicense rightLicense tag) =
+    o19ObservedOOReplay nameEq keyEq protocol swap original blocks premises safety unique cursor earlier left right later decomposition (ObservedOO leftChild rightChild leftComponent rightComponent leftInsert rightInsert distinct leftLicense rightLicense tag)
