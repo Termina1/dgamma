@@ -30,36 +30,6 @@ data CertifiedActorPermutation :
     CertifiedActorPermutation name middle after ->
     CertifiedActorPermutation name before after
 
-||| Build an authenticated label using only the exact intermediate replay fold
-||| output plus the remaining source-block ordinal equation.
-public export
-0 leftNodeSourceBlockLabel :
-  {initial, pairFirst, pairMiddle, pairFinal, originalFinal, sourceInitial,
-    sourceFinal : SystemState name key value world error} ->
-  {sourceTrace : Transitions sourceInitial sourceFinal} ->
-  {original : Transitions initial originalFinal} ->
-  {prefixTrace : Transitions initial pairFirst} ->
-  {left : Transition pairFirst pairMiddle} ->
-  {right : Transition pairMiddle pairFinal} ->
-  {suffix : Transitions pairFinal originalFinal} ->
-  {diamond : LocalRelationalDiamond name key world error value nameEq keyEq
-    left right} ->
-  (prefixOccurrences : ActionRegistrationReplayCorrespondence name key world
-    error value sourceTrace original) ->
-  (sourceBlock : LocatedOpenEpisodeBlock name key world error value nameEq keyEq
-    actor sourceTrace) ->
-  (position : Nat) ->
-  (result : AdjacentSwapResult name key world error value protocol nameEq keyEq
-    original prefixTrace left right suffix diamond) ->
-  locatedActionOrdinal (replayActionOrigin prefixOccurrences
-    (adjacentLeftNodeOccurrence result)) =
-      transitionCount (traceBeforeBlock sourceBlock) + position ->
-  NodeCrossesSourceBlockPosition name key world error value nameEq keyEq
-    sourceTrace original prefixOccurrences sourceBlock position
-    (transitionAction left) (transitionCount prefixTrace)
-leftNodeSourceBlockLabel prefixOccurrences sourceBlock position result origin =
-  MkNodeCrossesSourceBlockPosition (adjacentLeftNodeOccurrence result) Refl origin
-
 public export
 0 rightNodeSourceBlockLabel :
   {initial, pairFirst, pairMiddle, pairFinal, originalFinal, sourceInitial,
