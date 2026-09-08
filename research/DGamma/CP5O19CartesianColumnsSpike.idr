@@ -75,3 +75,14 @@ o19CutByWord (wanted :: restWord) rightWord NoTransitions exact =
 o19CutByWord (wanted :: restWord) rightWord (MoreTransitions step rest) exact =
   o19WordCutPrepend step rest wanted restWord rightWord (fst (consInjective exact))
     (o19CutByWord restWord rightWord rest (snd (consInjective exact)))
+
+||| Structural exact action word of dependent trace concatenation.
+export
+0 o19ActionWordAppend :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, middle, last : SystemState name key value world error} ->
+  (left : Transitions first middle) -> (right : Transitions middle last) ->
+  o19ActionWord (appendTransitions left right) = o19ActionWord left ++ o19ActionWord right
+o19ActionWordAppend NoTransitions right = Refl
+o19ActionWordAppend (MoreTransitions step rest) right =
+  cong ((transitionAction step) ::) (o19ActionWordAppend rest right)
