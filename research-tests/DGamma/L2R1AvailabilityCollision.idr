@@ -4,6 +4,7 @@ import DGamma.Calculus
 import DGamma.CalculusChecks
 import DGamma.Coeffects
 import DGamma.CP3
+import DGamma.CP4SupportQuiescence
 import DGamma.CP5AvailabilityAwarePlacement
 import DGamma.CP5CurrentGenerationBirthSpike
 import DGamma.CP5RawClosingRankSpike
@@ -41,3 +42,18 @@ public export
 l2r1Annotate {first} NoTransitions = AvailabilityEnd first
 l2r1Annotate {first} (MoreTransitions step rest) = AvailabilityStep first step rest (l2r1Annotate rest)
 
+||| Executable research fixture copy of R174's eight actions. The inherited
+||| exported r174ProvisionExecution does not unfold externally, so that exact
+||| original occurrence claim is parked (C6), NOT assumed. This independently
+||| checked fixture retains the actual provision collision and all guards.
+public export
+0 l2r1CollisionExecution : CertifiedActionTrace Nat ToyKey ToyRuntime String ToyValue %search %search
+  (MkSystemState (MkToyRuntime False False) emptyContext)
+l2r1CollisionExecution = fromMaybe
+  (MkCertifiedActionTrace (MkSystemState (MkToyRuntime False False) emptyContext)
+    NoTransitions TraceComponentsTotalEnd)
+  (buildCertifiedActionTrace %search %search
+    [OInsert 0 Root r174ProvisionParent, LBegin 0,
+     OInsert 1 (ChildOf 0) providerComponent, ORetire 1, ORemove 1,
+     OInsert 2 Root providerComponent, ORetire 2, LAdvance 0]
+    (MkSystemState (MkToyRuntime False False) emptyContext))
