@@ -150,3 +150,27 @@ export
 o19ActualGlobalOriginPlan nameEq keyEq protocol swap source blocks premises safety unique =
   o19BuildGlobalOriginPlan (identityActionRegistrationReplayCorrespondence source) (o19IdentityOrdinalMap source)
     (cursorDerivation (columnCursor (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique)))
+
+||| The AUTHENTIC global-origin list has the actual selected-block product
+||| cardinality. This consumes the SAME plan's count and SAME run's product
+||| equation; it is not a Refl observer of an independently rebuilt replay.
+||| Cardinality alone still does not prove Cartesian coverage or uniqueness.
+export
+0 o19ActualGlobalOriginProductCount :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (protocol : RegistrationProtocol key value world error) ->
+  {sourceOrder, targetOrder : List name} -> (swap : AdjacentActorOrderSwap name sourceOrder targetOrder) ->
+  {initial, sourceFinal : SystemState name key value world error} -> (source : Transitions initial sourceFinal) ->
+  (blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder source) ->
+  (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq source) ->
+  (safety : AdjacentActorSwapSafety name key world error value protocol nameEq keyEq swap source blocks premises) ->
+  (unique : UniqueRawNameInsertions name key world error value nameEq keyEq source) ->
+  (length (globalCrossingPositions (o19ActualGlobalOriginPlan nameEq keyEq protocol swap source blocks premises safety unique)) =
+    actorBlockTransitionCount (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)) *
+    actorBlockTransitionCount (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety)))
+o19ActualGlobalOriginProductCount nameEq keyEq protocol swap source blocks premises safety unique =
+  trans (globalCrossingCount (o19ActualGlobalOriginPlan nameEq keyEq protocol swap source blocks premises safety unique))
+    (trans (columnNodeCount (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique))
+      (cong2 (*)
+        (o19ActionWordLength (actorBlockTrace (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety))))
+        (o19ActionWordLength (actorBlockTrace (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety))))))
