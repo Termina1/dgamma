@@ -24,7 +24,7 @@ parser.add_argument('--expected-bodies', type=int, required=True)
 parser.add_argument('--expected-validations', type=int, required=True)
 args = parser.parse_args()
 assert 0 <= args.expected_a <= 16 and 0 <= args.expected_b <= 9
-assert 0 <= args.expected_mechanical <= 44 and 0 <= args.expected_bodies <= 1
+assert 0 <= args.expected_mechanical <= 52 and 0 <= args.expected_bodies <= 1
 
 def sha(data):
     return hashlib.sha256(data).hexdigest()
@@ -150,6 +150,7 @@ positions=list(re.finditer(rb'(?m)^(?:\|\|\|[^\n]*\n)*public export\n(?:[01] )?(
 spans={m[1].decode():(m.start(),positions[i+1].start() if i+1<len(positions) else len(original)) for i,m in enumerate(positions)}
 names=[m[1].decode() for m in positions[:28] if m[1] != b'CertifiedActorPermutation']
 assert len(names)==27 and names[0]=='AdjacentActorOrderSwap' and names[-1]=='blockSwapOccurrenceCorrespondence'
+names+=['CertifiedActorPermutation','OperationalActorPermutation','MappedCanonicalSupportOrders','canonicalActorBlockDecomposition','CertifiedOperationalCanonicalPermutation']
 chunks={name:original[slice(*spans[name])] for name in names}
 header=original[:positions[0].start()].replace(b'module DGamma.CP5ConfluenceCrossTraceSpike',b'module DGamma.CP5O19SurfaceSpike')
 mechanical=[r for r in receipts if r['event']=='GUARDED MECHANICAL COMMIT']
@@ -177,7 +178,9 @@ with tarfile.open(archive,'r:gz') as tar:
             for prior in names[:index]: expected_cross=expected_cross.replace(chunks[prior],b'',1)
             expected_cross=expected_cross.replace(b'\n\nimport DGamma.Core',b'\n\nimport public DGamma.CP5O19SurfaceSpike\nimport DGamma.Core',1)
             assert git('show',commit+':'+CROSS)==expected_cross
-            assert git('show',commit+':'+SURFACE)==header+b''.join(chunks[n] for n in names[:index])
+            expected_lower=header+b''.join(chunks[n] for n in (names[:index] if index<=27 else names[:26]+names[27:index]+[names[26]]))
+            if index>27: expected_lower=expected_lower[:-1]
+            assert git('show',commit+':'+SURFACE)==expected_lower
             assert metadata['declaration']==name and metadata['declarationSHA256']==sha(chunks[name])
             assert re.search(r'^\d+/\d+: Building DGamma\.CP5O19SurfaceSpike \(research/DGamma/CP5O19SurfaceSpike.idr\)$',r['transcript'],re.M)
         elif receipt['unit'].startswith('I'):

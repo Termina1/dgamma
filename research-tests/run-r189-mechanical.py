@@ -2,7 +2,9 @@
 """ONE ratified byte-identical declaration move/import switch per fresh check.
 Launch detached with python3 -I; owns edit -> serial guarded check -> guarded
 commit in one exception-stopping process. No proof text is ever repaired here.
-Usage: run-r189-mechanical.py M1-1 (through M27-1), or I1-1 (through I16-1).
+Usage: M1-1..M32-1; I1-1..I19-1; approved EOF normalization W1-1.
+Amended transitive rehome adds five declarations and three O20 helper imports.
+Extra declarations insert before the stable final projection; no extra EOF edit.
 """
 import datetime
 import hashlib
@@ -26,11 +28,14 @@ NAMES = ['AdjacentActorOrderSwap', 'ActorBlockDecomposition', 'NoGeneratedChild'
  'DerivationCrossesBlockPositions', 'BlockCrossingOriginPlan', 'foldBlockCrossingOriginPlan',
  'WholeBlockSwapDerivation', 'blockCrossingLabels', 'wholeSelectedCoordinateAliasImpossible',
  'wholeBlockFiniteDerivation', 'OperationalAdjacentBlockSwap', 'blockSwapReplayCorrespondence',
- 'blockSwapOccurrenceCorrespondence']
+ 'blockSwapOccurrenceCorrespondence',
+ 'CertifiedActorPermutation', 'OperationalActorPermutation', 'MappedCanonicalSupportOrders',
+ 'canonicalActorBlockDecomposition', 'CertifiedOperationalCanonicalPermutation']
 HELPERS = ['BodyMetadata', 'OrdinalPlan', 'CartesianSitePlan', 'PairObservation',
  'MixedActivationRow', 'MixedRowDispatcher', 'CartesianWordRow', 'CartesianColumns',
  'OriginalBlockClass', 'PaperBranchCompleteness', 'ActualCartesian', 'WholeBlock',
- 'SameChainAssembly', 'ReachedBlocks', 'ReachedDecomposition', 'OperationalAssembly']
+ 'SameChainAssembly', 'ReachedBlocks', 'ReachedDecomposition', 'OperationalAssembly',
+ 'CP5O20EpisodeSynchronizationSpike', 'CP5O20CanonicalPairSelectionSpike', 'CP5O20BeginObservationSpike']
 LOWER_IMPORT = b'import public DGamma.CP5O19SurfaceSpike\n'
 OLD_IMPORT = b'import DGamma.CP5ConfluenceCrossTraceSpike\n'
 NEW_IMPORT = b'import DGamma.CP5O19SurfaceSpike\n'
@@ -57,7 +62,8 @@ def expected_move(count):
         cross = cross.replace(selected[name], b'', 1)
     if count:
         cross = cross.replace(b'\n\nimport DGamma.Core', b'\n\n'+LOWER_IMPORT+b'import DGamma.Core', 1)
-    return cross, header+b''.join(selected[n] for n in NAMES[:count])
+    lower_names=NAMES[:count] if count<=27 else NAMES[:26]+NAMES[27:count]+[NAMES[26]]
+    return cross, header+b''.join(selected[n] for n in lower_names)
 
 unit = sys.argv[1]
 match = re.fullmatch(r'([MIW])(\d+)-(\d+)', unit)
@@ -73,9 +79,11 @@ original, spans, selected, header = chunks()
 if kind == 'M':
     assert 1 <= number <= len(NAMES)
     before_cross, before_surface = expected_move(number-1)
+    if number>27: before_surface=before_surface[:-1]
     assert (ROOT/CROSS).read_bytes() == before_cross
     assert (ROOT/SURFACE).read_bytes() == before_surface if number>1 else not (ROOT/SURFACE).exists()
     after_cross, after_surface = expected_move(number)
+    if number>27: after_surface=after_surface[:-1]
     expected = {CROSS:after_cross, SURFACE:after_surface}
     target = CROSS
     name = NAMES[number-1]
@@ -84,7 +92,7 @@ elif kind == 'I':
     assert 1 <= number <= len(HELPERS)
     assert (ROOT/CROSS).read_bytes() == expected_move(len(NAMES))[0]
     assert (ROOT/SURFACE).read_bytes() == expected_move(len(NAMES))[1][:-1]
-    target = 'research/DGamma/CP5O19'+HELPERS[number-1]+'Spike.idr'
+    target = 'research/DGamma/'+('CP5O19'+HELPERS[number-1]+'Spike' if number<=16 else HELPERS[number-1])+'.idr'
     old = (ROOT/target).read_bytes()
     assert old.count(OLD_IMPORT) == 1 and NEW_IMPORT not in old
     expected = {target:old.replace(OLD_IMPORT, NEW_IMPORT, 1)}

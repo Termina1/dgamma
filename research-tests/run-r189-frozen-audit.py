@@ -61,11 +61,12 @@ positions=list(re.finditer(r'(?m)^(?:\|\|\|[^\n]*\n)*public export\n(?:[01] )?(?
 spans={m[1]:(m.start(),positions[i+1].start() if i+1<len(positions) else len(original)) for i,m in enumerate(positions)}
 names=[m[1] for m in positions[:28] if m[1]!='CertifiedActorPermutation']
 assert len(names)==27
+names+=['CertifiedActorPermutation','OperationalActorPermutation','MappedCanonicalSupportOrders','canonicalActorBlockDecomposition','CertifiedOperationalCanonicalPermutation']
 chunks={name:original[slice(*spans[name])] for name in names}
 expected_cross=original
 for name in names: expected_cross=expected_cross.replace(chunks[name],'',1)
 expected_cross=expected_cross.replace('\n\nimport DGamma.Core','\n\nimport public DGamma.CP5O19SurfaceSpike\nimport DGamma.Core',1)
-expected_surface=original[:positions[0].start()].replace('module DGamma.CP5ConfluenceCrossTraceSpike','module DGamma.CP5O19SurfaceSpike')+''.join(chunks[name] for name in names)
+expected_surface=original[:positions[0].start()].replace('module DGamma.CP5ConfluenceCrossTraceSpike','module DGamma.CP5O19SurfaceSpike')+''.join(chunks[name] for name in names[:26]+names[27:]+[names[26]])
 assert text('research/DGamma/CP5O19SurfaceSpike.idr')==expected_surface[:-1], 'Only final separating LF normalized by explicit gate'
 if closed:
     expected_cross=expected_cross.replace('import public DGamma.CP5O19SurfaceSpike\n','import public DGamma.CP5O19SurfaceSpike\nimport DGamma.CP5O19OperationalAssemblySpike\n',1)
@@ -90,7 +91,7 @@ local_time = datetime.datetime.fromtimestamp(local_ttc.stat().st_mtime,datetime.
 report = dict(timestamp=datetime.datetime.now(datetime.timezone.utc).isoformat(),head=git('rev-parse','HEAD').strip(),start=START,
     O19Closed=closed,ratifiedMovedDeclarations=names,holes=holes,split=[len(holes[p]) for p in PARTS],productionDiffVs34b21c9='empty',CP3Blob=git('hash-object','src/DGamma/CP3.idr').strip(),
     LocalDiamondDiffVsStart='empty',LocalDiamondUnchanged=True,LocalDiamondAuthorizedVisibility=visibility,CanonicalSortDiffVsStart='empty',CanonicalSortAuthorizedVisibility={},DeletionChainDiffVsStart='empty',
-    CrossTraceDiffVsStart='27 ratified byte-identical declaration moves/public import'+(' + exact authorized O19 body/assembler import' if closed else ''),RenamingCompositionDiffVsStart='empty',
+    CrossTraceDiffVsStart='32 ratified byte-identical declaration moves/public import'+(' + exact authorized O19 body/assembler import' if closed else ''),RenamingCompositionDiffVsStart='empty',
     adjacentFullBytes=1470,adjacentFullSHA256=full,adjacentStatementBytes=1154,adjacentStatementSHA256=statement,reviewSHA256=review,
     seeds='207/207',LocalDiamondTTC=dict(bytes=local_ttc.stat().st_size,mtimeUTC=local_time),changedIdrisFiles=changed,
     sourceSHA256={p:sha((ROOT/p).read_bytes()) for p in changed},protectedDeclarationSHA256=protected,prohibitedAdditions=prohibited,

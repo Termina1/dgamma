@@ -86,3 +86,35 @@ exact baseline-subtraction/concatenation and no other source changes. Any
 non-import compiler failure requires a gate; moved proof text is never fixed.
 After rehome: fresh CrossTrace, every helper, R8/R16/fixtures/package, exact
 clause map and unchanged O19 statement/body before D. No LocalDiamond change.
+
+## C initial rehome, separator gate and transitive amendment
+
+ALL27 first-list moves PASS1/3 with own Building lines for BOTH CrossTrace
+and Surface, immediate multi-file hash-guarded commits through M27/b2d7e962.
+A prior progress message's tentative f3035aae was WRONG; the actual receipt
+is b2d7e962, corrected immediately after checking git/receipt. Likewise the
+source-derived post27 O19 signature is38–53/body54, not the unverified39–59
+range sent in a progress note. Final clause locations are computed, not guessed.
+
+Baseline diff--check found one container-only surplus final newline because
+the last moved chunk retained its old inter-declaration separator. Supervisor
+explicitly approved ONLY two trailing LF→one: W1 fresh Surface PASS/guarded
+commit86069715, exact one-byte deletion, no proof text change. Per-step checks
+were clean; baseline new-file EOF checking caught this separate issue.
+
+All16 initial O19 import switches PASS1/3 with guarded receipts. I14's actual
+ReachedBlocks own check took231.60s; its TTC was NEVER removed.
+Transitive dependency census then identified THREE additional CrossTrace
+importers reached through O19's existing Begin observations: O20Episode-
+Synchronization, O20CanonicalPairSelection, O20BeginObservation. The original
+27+16 plan alone leaves a module cycle through these checked helpers. This
+is an integration omission, NOT a third O19 specification gap.
+
+Supervisor AMENDED the exact move list BEFORE any extra edits: FIVE additional
+byte-identical declarations (CertifiedActorPermutation, OperationalActor-
+Permutation, MappedCanonicalSupportOrders, canonicalActorBlockDecomposition,
+CertifiedOperationalCanonicalPermutation) and ONLY the above THREE import
+switches. CertifiedActorPermutation now moves, superseding 'stays'. No hole
+is moved/called; no O20 proof/body/signature edit. Extra declarations insert
+before the stable final projection; the normalized final separator stays fixed.
+Full transitive own-source check sweep is required before D; still no body attempt.
