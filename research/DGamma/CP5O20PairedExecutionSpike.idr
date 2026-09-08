@@ -145,3 +145,24 @@ o20PairedStageCut {name} {key} {world} {error} {value} nameEq keyEq renaming
 o20PairedStageCut {name} {key} {world} {error} {value} nameEq keyEq renaming
   (PairedInsertStage nameEq keyEq renaming actor component leftParent rightParent parents leftWorld rightWorld leftRegistry rightRegistry leftAbsent rightAbsent leftChecked rightChecked) paired =
     o20PairedObservedInsertCut {name} {key} {world} {error} {value} nameEq keyEq renaming actor component leftParent rightParent parents leftWorld rightWorld leftRegistry rightRegistry leftAbsent rightAbsent leftChecked rightChecked paired
+
+||| State-indexed sequences of the ACTUAL paired stages above. This records
+||| physical intermediate cuts, not just equal actor orders or desired outputs.
+||| It does not assert that arbitrary accepted canonical traces have this form.
+public export
+data O20PairedExecution :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (renaming : NameBijection name) ->
+  (leftBefore, rightBefore, leftAfter, rightAfter : SystemState name key value world error) -> Type where
+  PairedExecutionDone :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {nameEq : DecEq name} -> {keyEq : DecEq key} -> {renaming : NameBijection name} ->
+    {left, right : SystemState name key value world error} ->
+    O20PairedExecution name key world error value nameEq keyEq renaming left right left right
+  PairedExecutionMore :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {nameEq : DecEq name} -> {keyEq : DecEq key} -> {renaming : NameBijection name} ->
+    {leftBefore, rightBefore, leftMiddle, rightMiddle, leftAfter, rightAfter : SystemState name key value world error} ->
+    O20PairedStage name key world error value nameEq keyEq renaming leftBefore rightBefore leftMiddle rightMiddle ->
+    O20PairedExecution name key world error value nameEq keyEq renaming leftMiddle rightMiddle leftAfter rightAfter ->
+    O20PairedExecution name key world error value nameEq keyEq renaming leftBefore rightBefore leftAfter rightAfter
