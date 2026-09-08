@@ -6,6 +6,7 @@ import DGamma.Metatheory
 import DGamma.CP3
 import DGamma.CP5ConfluenceLocalDiamondSpike
 import DGamma.CP5ConfluenceCanonicalSortSpike
+import DGamma.CP5ConfluenceDeletionChainSpike
 import DGamma.CP5ConfluenceRenamingCompositionSpike
 import DGamma.CP5UniqueRawNameInsertions
 import DGamma.CP5AllSupportedMetadataSpike
@@ -48,3 +49,32 @@ export
   O20SupportedFiberImage name key world error value nameEq renaming selected sourceFiber target
 o20SupportedImageObserved (targetFiber ** (found, component, parent)) =
   MkO20SupportedFiberImage targetFiber found component parent
+
+||| Forward image of EVERY supported original actor, from accepted scanner
+||| capital and both original uniqueness arguments, not an endpoint oracle.
+export
+0 o20OriginalSupportedImageForward :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {initial, leftFinal, rightFinal : SystemState name key value world error} ->
+  (leftTrace : Transitions initial leftFinal) -> (rightTrace : Transitions initial rightFinal) ->
+  (inputs : SameOrchestrationModuloGenerated nameEq keyEq leftTrace rightTrace) ->
+  (leftCapital : IndependentCanonicalSchedule name key world error value protocol nameEq keyEq leftTrace) ->
+  (rightCapital : IndependentCanonicalSchedule name key world error value protocol nameEq keyEq rightTrace) ->
+  (0 leftUnique : UniqueRawNameInsertions name key world error value nameEq keyEq leftTrace) ->
+  (0 rightUnique : UniqueRawNameInsertions name key world error value nameEq keyEq rightTrace) ->
+  (selected : name) -> (sourceFiber : Fiber name key value world error) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected (registry leftFinal) = Just sourceFiber) ->
+  (isSupported {name} {key} {value} {world} {error} @{nameEq} @{keyEq} selected leftFinal = True) ->
+  O20SupportedFiberImage name key world error value nameEq
+    (renameForward (currentNameBijection (endpointRenaming inputs))) selected sourceFiber rightFinal
+o20OriginalSupportedImageForward {name} {key} {world} {error} {value} nameEq keyEq protocol
+  leftTrace rightTrace inputs leftCapital rightCapital leftUnique rightUnique selected sourceFiber found supported =
+    o20SupportedImageObserved
+      (acceptedAllSupportedMetadataForward name key world error value nameEq keyEq protocol leftTrace rightTrace inputs
+        (replayAligned (chainReplayCapital (capitalPremises leftCapital)))
+        (replayAligned (chainReplayCapital (capitalPremises rightCapital)))
+        (replayDiscipline (chainReplayCapital (capitalPremises leftCapital)))
+        (replayInitialEmpty (chainReplayCapital (capitalPremises leftCapital)))
+        leftUnique rightUnique selected sourceFiber found supported)
