@@ -30,26 +30,6 @@ data CertifiedActorPermutation :
     CertifiedActorPermutation name middle after ->
     CertifiedActorPermutation name before after
 
-||| The current left node is located constructively from the exact decomposition
-||| already stored by its `AdjacentSwapResult`.
-public export
-0 adjacentLeftNodeOccurrence :
-  {initial, pairFirst, pairMiddle, pairFinal, originalFinal :
-    SystemState name key value world error} ->
-  {original : Transitions initial originalFinal} ->
-  {prefixTrace : Transitions initial pairFirst} ->
-  {left : Transition pairFirst pairMiddle} ->
-  {right : Transition pairMiddle pairFinal} ->
-  {suffix : Transitions pairFinal originalFinal} ->
-  {diamond : LocalRelationalDiamond name key world error value nameEq keyEq
-    left right} ->
-  (result : AdjacentSwapResult name key world error value protocol nameEq keyEq
-    original prefixTrace left right suffix diamond) ->
-  LocatedActionOccurrence (transitionAction left) original
-adjacentLeftNodeOccurrence {prefixTrace} {left} {right} {suffix} result =
-  MkLocatedActionOccurrence _ _ prefixTrace left
-    (MoreTransitions right suffix) Refl (originalDecomposition result)
-
 ||| The current right node is likewise located with no caller-supplied
 ||| occurrence.  Associativity and the checked source decomposition determine
 ||| its exact prefix.
