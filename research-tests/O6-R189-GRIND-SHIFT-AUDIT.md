@@ -149,3 +149,23 @@ M30-1, its full rollback and the dry-run. Exact one-declaration assertion is
 now present at the actual move-preflight site (initial text replacement
 missed the shorter assertion in this runner; compiler-free inspection caught it).
 All retry caps remain3/3, no invocation relabeling.
+
+## C full rehome committed / validation sweep begins
+
+M30-2 PASS2/3 after the explicit extractor gate; M31/M32/I17–I19
+all PASS1/3. Final rehome HEAD `892631c6c52397f2f2c60862da327554ba30ecba`. Total authorized mechanical
+commits:32 single-declaration moves +19 exact import switches +1 gated
+final separator =52. ONE rejected compiler invocation M30-1 is retained,
+rolled back and not counted as a pass. No exhausted seam.
+
+Compiler-free transitive graph from the actual assembler has ZERO paths
+to CrossTrace after the exact nineteen substitutions. Source-derived32-
+declaration byte-identity/clause map and full frozen audit PASS.
+Current protected locations: `[{"declaration": "operationalAdjacentBlockSwapSpike", "oldSignatureLine": 711, "newSignatureLine": 29, "oldBodyLine": 727, "newBodyLine": 45, "signatureSHA256": "e81d83c165b65ae6d4f6e29347b53fa6b7db83d6f5f29d6c6b07c0f9d09c11e8", "signatureUnchanged": true}, {"declaration": "selectOperationalCanonicalPermutationSpike", "oldSignatureLine": 1078, "newSignatureLine": 275, "oldBodyLine": 1100, "newBodyLine": 297, "signatureSHA256": "8db1b940921a3c0eb877b2112c25d5325f9058444f7d0a901a66965ffece0540", "signatureUnchanged": true}, {"declaration": "canonicalSchedulesConvergeSpike", "oldSignatureLine": 1338, "newSignatureLine": 535, "oldBodyLine": 1363, "newBodyLine": 560, "signatureSHA256": "4ed416287b6b068a2cf78208f4718c98f0e1084d4520a74dc8c67097af345f59", "signatureUnchanged": true}]`.
+All three private support-truth helpers remain byte-identical in CrossTrace.
+
+Starting62 serialized prebody validations: frozen confluence surfaces,
+all35 O19 modules (including Surface and both new proof modules), the
+three amended O20 helper importers, existing R8/R16/R181-count7/R182
+safety/adjacency/R188 whole-chain regressions, and SEEDED package build.
+This plan is NOT a completed build claim. O19 body still unattempted.

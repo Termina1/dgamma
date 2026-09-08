@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Archive a completed shift's exact invocation records without invoking Idris.
-Usage: python3 -I research-tests/run-r189-archive.py R189 7ce28f69 FINAL_HEAD
+Usage: python3 -I research-tests/run-r189-archive.py R189 8e133ed5 FINAL_HEAD
 matchingSourceCommits lists baseline/change commits whose target bytes match;
 it is not a claim that every matching commit was made immediately after this run.
 """
@@ -14,7 +14,7 @@ import sys
 import tarfile
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 shift, start, end = sys.argv[1:4]
-assert re.fullmatch(r'R\d+', shift)
+assert shift=='R189' and start=='8e133ed5'
 OUT = pathlib.Path('/tmp/dgamma-'+shift.lower())
 def git(*args):
     return subprocess.check_output(['git', *args], cwd=ROOT)

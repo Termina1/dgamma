@@ -78,7 +78,7 @@ assert all('%default total' in text(p) for p in changed)
 assert not any(re.findall(r'\?\w+',text(p)) for p in changed if p not in PATHS.values())
 added = [l[1:] for l in git('diff',START,'--','research/','research-tests/DGamma/').splitlines() if l.startswith('+') and not l.startswith('+++')]
 code = '\n'.join(l for l in added if not l.lstrip().startswith(('--','|||')))
-patterns = [r'\bbelieve_me\b',r'\bassert_total\b',r'^\s*partial\b',r'\?\w+',r'\blet\b',r'\bwith\b',r'\bdeletionTheoremProof\b',r'\bpostulate\b',r'\b[A-Za-z_]\w*@\s*[\(\[]']
+patterns = [r'\bbelieve_me\b',r'\bassert_total\b',r'^\s*partial\b',r'\?\w+',r'\blet\b',r'\bwith\b',r'\bprefix\b',r'\bdeletionTheoremProof\b',r'\bpostulate\b',r'\b[A-Za-z_]\w*@\s*[\(\[]']
 prohibited = {p:re.findall(p,code,re.M) for p in patterns}
 assert not any(prohibited.values()), prohibited
 modules = re.findall(r'DGamma\.[A-Za-z0-9_.]+',text('dgamma.ipkg'))
