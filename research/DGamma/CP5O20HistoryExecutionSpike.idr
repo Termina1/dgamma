@@ -102,3 +102,50 @@ o20HistoryPutCompatibility nameEq rawTarget stampTarget actor newStamp live matc
             (putCurrentGeneration @{nameEq} actor newStamp live)) (sym same)) found)))))
     No different => previous selected stamp
       (trans (sym (lookupPutCurrentOther nameEq selected actor different newStamp live)) found)
+
+||| Matched actual root/generated Insert preserves the whole history cut.
+||| The one local birth-stamp equation remains explicit: extracting it and
+||| aligning fresh runtime names from arbitrary paired traces is NOT claimed.
+export
+0 o20HistoryMatchedInsertCut :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (mapping : RegistrationGenerationBijection name) -> (actor : name) ->
+  (leftOrdinal, rightOrdinal : Nat) -> (leftLive, rightLive : GenerationEnvironment name) ->
+  (component : Component key value world error) -> (leftParent, rightParent : Parent name) ->
+  (leftWorld, rightWorld : world) -> (leftRegistry, rightRegistry : Registry name key value world error) ->
+  (paired : O20HistoryCut name key world error value nameEq mapping leftLive rightLive
+    (MkSystemState leftWorld leftRegistry) (MkSystemState rightWorld rightRegistry)) ->
+  ParentRelatedBy (historyCutBijection paired) leftParent rightParent ->
+  (leftAbsent : (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor leftRegistry = Nothing)) ->
+  (rightAbsent : (lookupFiber {name} {key} {value} {world} {error} @{nameEq}
+    (renameForward (historyCutBijection paired) actor) rightRegistry = Nothing)) ->
+  (checkedApplyAction {name} {key} {value} {world} {error} @{nameEq} @{keyEq}
+    (OInsert actor leftParent component) (MkSystemState leftWorld leftRegistry) =
+    Just (OInsertTag, MkSystemState leftWorld (insertBinding @{nameEq} actor (freshFiber component leftParent) leftRegistry leftAbsent))) ->
+  (checkedApplyAction {name} {key} {value} {world} {error} @{nameEq} @{keyEq}
+    (OInsert (renameForward (historyCutBijection paired) actor) rightParent component) (MkSystemState rightWorld rightRegistry) =
+    Just (OInsertTag, MkSystemState rightWorld (insertBinding @{nameEq}
+      (renameForward (historyCutBijection paired) actor) (freshFiber component rightParent) rightRegistry rightAbsent))) ->
+  (generationForward mapping (MkRegistrationGeneration actor leftOrdinal) =
+    MkRegistrationGeneration (renameForward (historyCutBijection paired) actor) rightOrdinal) ->
+  O20HistoryCut name key world error value nameEq mapping
+    (advanceGenerationEnvironment {name} {key} {value} {world} {error} @{nameEq} leftOrdinal (OInsert actor leftParent component) leftLive)
+    (advanceGenerationEnvironment {name} {key} {value} {world} {error} @{nameEq} rightOrdinal
+      (OInsert (renameForward (historyCutBijection paired) actor) rightParent component) rightLive)
+    (MkSystemState leftWorld (insertBinding @{nameEq} actor (freshFiber component leftParent) leftRegistry leftAbsent))
+    (MkSystemState rightWorld (insertBinding @{nameEq}
+      (renameForward (historyCutBijection paired) actor) (freshFiber component rightParent) rightRegistry rightAbsent))
+o20HistoryMatchedInsertCut {name} {key} {world} {error} {value} nameEq keyEq mapping actor leftOrdinal rightOrdinal leftLive rightLive
+  component leftParent rightParent leftWorld rightWorld leftRegistry rightRegistry
+  (MkO20HistoryCut renaming runtime forward backward) parents leftAbsent rightAbsent leftChecked rightChecked matched =
+    MkO20HistoryCut renaming
+      (o20PairedObservedInsertCut {name} {key} {world} {error} {value} nameEq keyEq renaming actor component leftParent rightParent parents
+        leftWorld rightWorld leftRegistry rightRegistry leftAbsent rightAbsent leftChecked rightChecked runtime)
+      (o20HistoryPutCompatibility nameEq (renameForward renaming) (o20HistoricalTarget mapping)
+        actor (MkRegistrationGeneration actor leftOrdinal) leftLive (sym (cong generationName matched)) forward)
+      (o20HistoryPutCompatibility nameEq (renameBackward renaming) (\stamp => generationName (generationBackward mapping stamp))
+        (renameForward renaming actor) (MkRegistrationGeneration (renameForward renaming actor) rightOrdinal) rightLive
+        (trans (renameLeftInverse renaming actor)
+          (sym (cong generationName (trans (cong (generationBackward mapping) (sym matched))
+            (generationLeftInverse mapping (MkRegistrationGeneration actor leftOrdinal)))))) backward)
