@@ -36,3 +36,18 @@ o20BeforeAsymmetric (UniqueCons absent unique) (BeforeThere later) (BeforeHere e
   absent (snd (o20BeforeMembers later))
 o20BeforeAsymmetric (UniqueCons absent unique) (BeforeThere later) (BeforeThere earlier) =
   o20BeforeAsymmetric unique later earlier
+
+||| Finite positive order checker against the fixed target extension. It
+||| returns an actual BeforeIn constructor proof, not Boolean orientation.
+export
+0 o20CheckBefore :
+  {name : Type} -> (nameEq : DecEq name) -> (left, right : name) -> (order : List name) ->
+  Maybe (BeforeIn left right order)
+o20CheckBefore nameEq left right [] = Nothing
+o20CheckBefore nameEq left right (head :: rest) =
+  case decEq @{nameEq} left head of
+    Yes same => case same of
+      Refl => case isElem @{nameEq} right rest of
+        Yes member => Just (BeforeHere member)
+        No absent => Nothing
+    No different => map BeforeThere (o20CheckBefore nameEq left right rest)
