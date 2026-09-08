@@ -1,0 +1,45 @@
+module DGamma.CP5O20SingleRoleAdvanceExtractionSpike
+
+import DGamma.Core
+import DGamma.Calculus
+import DGamma.Coeffects
+import DGamma.Metatheory
+import DGamma.CP3
+import DGamma.CP4DeletionFrameCore
+import DGamma.CP4DeletionFrames
+import DGamma.CP5O19ActualCommutedDomainSpike
+import DGamma.CP5O19CommutedDomainSpike
+import DGamma.CP5O19AdvanceObservationSpike
+import Data.List
+import Data.Maybe
+import Decidable.Equality
+
+%default total
+%unbound_implicits off
+
+||| Single-role native Iter source producer, not an Either Iter/Finish adapter.
+||| Its ACTUAL checked step supplies the captured-domain proof. No successful
+||| callback, paired cut or assumed partial-map domain is a caller premise.
+export
+0 o20IterCapturedDomain :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (before, afterState : SystemState name key value world error) ->
+  (component : Component key value world error) -> (parent : Parent name) -> (retiredFlag : Bool) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (step, next : StepEffect key value world error (dependencies (componentDependencies component)) (componentProvisions component)) ->
+  (more : List (StepEffect key value world error (dependencies (componentDependencies component)) (componentProvisions component))) ->
+  (older : LocalState key value world (componentProvisions component) -> LocalState key value world (componentProvisions component)) ->
+  (view : View name (dependencies (componentDependencies component))) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor (registry before) = Just (MkFiber component parent retiredFlag table (Reloading (step :: next :: more) older view))) ->
+  (checkedApplyAction {name} {key} {value} {world} {error} @{nameEq} @{keyEq} (LAdvance actor) before = Just (LIterTag, afterState)) ->
+  (isJust (fiberAdvanceRuntimeEffectMap nameEq keyEq actor
+    (MkFiber component parent retiredFlag table (Reloading (step :: next :: more) older view))
+    (projectEffectState {name} {key} {value} {world} {error} @{nameEq} before)) = True)
+o20IterCapturedDomain nameEq keyEq actor before afterState component parent retiredFlag table step next more older view found checked =
+  trans (sym (cong isJust
+    (the (partialEffectMapFor nameEq keyEq (LAdvance actor) LIterTag before (projectEffectState @{nameEq} before) =
+      fiberAdvanceRuntimeEffectMap nameEq keyEq actor (MkFiber component parent retiredFlag table (Reloading (step :: next :: more) older view)) (projectEffectState @{nameEq} before))
+      (rewrite found in Refl))))
+    (o19RelatedDefined (o19ActualFrameRelated nameEq keyEq (LAdvance actor) LIterTag before afterState
+      (actualTransitionEffectFrame nameEq keyEq (LAdvance actor) LIterTag before afterState checked)))
