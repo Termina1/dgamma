@@ -7,6 +7,7 @@ import DGamma.CP3
 import DGamma.CP5ActorLifecycleOnlyExtended
 import DGamma.CP5L2R1ChildRelocation
 import DGamma.CP5L2R1RetireExchange
+import DGamma.CP5L2R1ExtendedZeroGap
 import DGamma.R45BareDiamondDisciplineCounterexamplePositive
 import DGamma.R191CanonicalChildRetirementGap
 import Data.List.Elem
@@ -166,3 +167,15 @@ r191RelocatedBlocks (S (S (S later))) member = case member of
   There Here impossible
   There (There Here) impossible
   There (There (There absent)) => absurd absent
+
+||| Both physical adjacent orders for the relocated THREE-block trace.
+||| These are actual decompositions; the next lemmas exclude every alternative
+||| nonempty between-blocks witness, rather than only inspecting NoTransitions.
+public export
+0 r191RelocatedBlockOrders :
+  (BlockBeforeExtended Nat R45Key Unit String R45Value r45NameEq r45KeyEq
+    r191RelocatedTrace 0 1 (r191RelocatedBlocks 0 Here) (r191RelocatedBlocks 1 (There Here)),
+   BlockBeforeExtended Nat R45Key Unit String R45Value r45NameEq r45KeyEq
+    r191RelocatedTrace 1 2 (r191RelocatedBlocks 1 (There Here)) (r191RelocatedBlocks 2 (There (There Here))))
+r191RelocatedBlockOrders =
+  (MkBlockBeforeExtended NoTransitions Refl, MkBlockBeforeExtended NoTransitions Refl)
