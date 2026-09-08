@@ -13,6 +13,7 @@ import DGamma.CP5O19ActivationRowSpike
 import DGamma.CP5O19ActivationInsertionRowSpike
 import DGamma.CP5O19CartesianInsertionSpike
 import DGamma.CP5O19MixedActivationRowSpike
+import Data.List.Elem
 import Data.Nat
 import Decidable.Equality
 
@@ -72,3 +73,58 @@ export
   O19MixedRow name key world error value protocol nameEq keyEq source earlier right crossings
 o19MixedRowFromInsertion (MkO19OrchestrationRow cursor middle right rest decomposition action tag actor activation count) =
   MkO19MixedRow cursor middle right rest decomposition action tag actor (Right activation) count
+
+||| TOTAL four-orientation row dispatcher, including arbitrary mixed
+||| right Begin/Iter/Finish rows and generated-insertion rows. The observed
+||| classification contains only source actions/owners/licensing, never guards,
+||| diamonds, suffix replays, rows or target traces. Each branch constructs its
+||| actual simultaneous bundle/uniqueness/derivation/decomposition/node count.
+export
+0 o19BubbleMixedRow :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {sourceOrder, targetOrder : List name} ->
+  (swap : AdjacentActorOrderSwap name sourceOrder targetOrder) ->
+  {initial, originalFinal, sourceFinal, before, rightBefore, rightAfter : SystemState name key value world error} ->
+  (original : Transitions initial originalFinal) ->
+  (blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder original) ->
+  (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq original) ->
+  (safety : AdjacentActorSwapSafety name key world error value protocol nameEq keyEq swap original blocks premises) ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq original ->
+  (source : Transitions initial sourceFinal) ->
+  FiniteAdjacentSwapDerivation name key world error value protocol nameEq keyEq original source ->
+  (earlier : Transitions initial before) -> (spine : Transitions before rightBefore) ->
+  (right : Transition rightBefore rightAfter) -> (later : Transitions rightAfter sourceFinal) ->
+  (appendTransitions earlier (appendTransitions spine (MoreTransitions right later)) = source) ->
+  ReplayInvariantBundle name key world error value protocol nameEq keyEq source ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq source ->
+  (observed : Either
+    (PaperActivationStep right, (transitionActor right = actorRight swap),
+      ({first, last : SystemState name key value world error} ->
+       (step : Transition first last) -> OccursIn step spine ->
+       Either (PaperActivationStep step, transitionActor step = actorLeft swap)
+         (child : name ** (component : Component key value world error **
+           ((transitionAction step = OInsert child (ChildOf (actorLeft swap)) component), Not (actorRight swap = child))))))
+    (rightChild : name ** (rightComponent : Component key value world error **
+      ((transitionAction right = OInsert rightChild (ChildOf (actorRight swap)) rightComponent), (transitionTag right = OInsertTag),
+       ({first, last : SystemState name key value world error} ->
+        (step : Transition first last) -> OccursIn step spine ->
+        Either
+          (PaperActivationStep step, Not (rightChild = transitionActor step),
+            ((licensor : name) -> (ChildOf (actorRight swap) = ChildOf licensor) -> Not (transitionActor step = licensor)))
+          (leftChild : name ** (leftComponent : Component key value world error **
+            ((transitionAction step = OInsert leftChild (ChildOf (actorLeft swap)) leftComponent), Not (rightChild = leftChild),
+             ((licensor : name) -> (ChildOf (actorLeft swap) = ChildOf licensor) -> Not (rightChild = licensor)),
+             ((licensor : name) -> (ChildOf (actorRight swap) = ChildOf licensor) -> Not (leftChild = licensor)))))))))) ->
+  O19MixedRow name key world error value protocol nameEq keyEq source earlier right (transitionCount spine)
+o19BubbleMixedRow nameEq keyEq protocol swap original blocks premises safety unique source prior earlier spine right later
+  decomposition currentPremises currentUnique (Left (activation, rightOwner, classes)) =
+    o19MixedRowFromActivation
+      (o19BubbleMixedActivationRow nameEq keyEq protocol swap original blocks premises safety unique source prior earlier spine right later
+        decomposition currentPremises currentUnique activation rightOwner classes)
+o19BubbleMixedRow nameEq keyEq protocol swap original blocks premises safety unique source prior earlier spine right later
+  decomposition currentPremises currentUnique (Right (rightChild ** (rightComponent ** (inserted, tag, classes)))) =
+    o19MixedRowFromInsertion
+      (o19BubbleMixedInsertionRow nameEq keyEq protocol rightChild (actorLeft swap) (actorRight swap) rightComponent source earlier spine right later
+        decomposition currentPremises currentUnique inserted tag classes)
