@@ -33,3 +33,16 @@ r189IndependentOperationalSwap =
   o19ActualOperationalBlockSwap r45NameEq r45KeyEq r45Protocol r182SwapZeroOne
     (r182IndependentTrace False) r182IndependentDecomposition r182IndependentBundle
     r182IndependentSafety r182IndependentUnique
+
+||| Same genuine six-transition trace through the now-CLOSED public O19
+||| producer. This checks its original signature and the unique/safety
+||| argument order, independently of the direct assembler regression above.
+export
+0 r189IndependentPublicSwap :
+  OperationalAdjacentBlockSwap Nat R45Key Unit String R45Value
+    r45Protocol r45NameEq r45KeyEq r182SwapZeroOne (r182IndependentTrace False)
+    r182IndependentDecomposition r182IndependentBundle r182IndependentSafety
+r189IndependentPublicSwap =
+  operationalAdjacentBlockSwapSpike r45NameEq r45KeyEq r45Protocol r182SwapZeroOne
+    (r182IndependentTrace False) r182IndependentDecomposition r182IndependentBundle
+    r182IndependentUnique r182IndependentSafety
