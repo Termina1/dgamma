@@ -570,3 +570,15 @@ o19OrderedOuterNoLifecycle {leftActor} {rightActor} leftBlock rightBlock ordered
       (replace {p = Elem action} (sym (o19OrderedAfterWord leftBlock rightBlock ordered))
       (snd (o19ElemAppendInjections (o19ActionWord (betweenBlocks ordered)) ((o19ActionWord (actorBlockTrace rightBlock)) ++ (o19ActionWord (traceAfterBlock rightBlock))))
         (snd (o19ElemAppendInjections (o19ActionWord (actorBlockTrace rightBlock)) (o19ActionWord (traceAfterBlock rightBlock))) member)))))
+
+||| A genuine original block-word observation excludes lifecycle ownership
+||| by a distinct actor. Yielded registrations are not lifecycle actions.
+export
+0 o19ForeignBlockWordNoLifecycle :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {actor, forbidden, selected : name} -> {action : Action name key value world error} ->
+  Not (actor = selected) -> O19BlockWordObservation name key world error value actor forbidden action ->
+  (isLifecycleAction action = True) -> Not (actionOwner action = selected)
+o19ForeignBlockWordNoLifecycle distinct (BlockOwnLifecycle lifecycle owner) active same = distinct (trans (sym owner) same)
+o19ForeignBlockWordNoLifecycle distinct (BlockGenerated child component inserted safe) active same =
+  uninhabited (trans (sym (trans (cong isLifecycleAction inserted) Refl)) active)
