@@ -406,3 +406,23 @@ o20SwapBefore {lower} {upper} swap ordered excluded =
   replace {p = BeforeIn lower upper} (sym (actorAfterExact swap))
     (o20SwapLeadingBefore (actorPrefix swap) (actorLeft swap) (actorRight swap) (actorSuffix swap)
       (replace {p = BeforeIn lower upper} (actorBeforeExact swap) ordered) excluded)
+
+||| The SAME selected transposition preserves uniqueness and exact actor set
+||| in both directions; no reached-order set/uniqueness hypothesis is added.
+export
+0 o20SwapEnumeration :
+  {name : Type} -> {sourceOrder, targetOrder : List name} ->
+  (swap : AdjacentActorOrderSwap name sourceOrder targetOrder) -> UniqueKeys sourceOrder ->
+  (UniqueKeys targetOrder,
+   ((selected : name) -> Elem selected sourceOrder -> Elem selected targetOrder),
+   ((selected : name) -> Elem selected targetOrder -> Elem selected sourceOrder))
+o20SwapEnumeration swap unique =
+  (replace {p = UniqueKeys} (sym (actorAfterExact swap))
+    (o19SwapLeadingUnique (actorPrefix swap) (actorLeft swap) (actorRight swap) (actorSuffix swap)
+      (replace {p = UniqueKeys} (actorBeforeExact swap) unique)),
+   (\selected, member => replace {p = Elem selected} (sym (actorAfterExact swap))
+    (o20SwapLeadingMember (actorPrefix swap) (actorLeft swap) (actorRight swap) (actorSuffix swap)
+      (replace {p = Elem selected} (actorBeforeExact swap) member))),
+   (\selected, member => replace {p = Elem selected} (sym (actorBeforeExact swap))
+    (o20SwapLeadingMember (actorPrefix swap) (actorRight swap) (actorLeft swap) (actorSuffix swap)
+      (replace {p = Elem selected} (actorAfterExact swap) member))))
