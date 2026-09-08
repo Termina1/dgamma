@@ -258,3 +258,23 @@ same-inputs generation map cannot silently be used at reordered canonical
 ordinals; replay/occurrence-owned stamp transport belongs to the remaining
 whole-paired/insertion-alignment obligation. No current local lemma claims
 that missing original-to-canonical ordinal attachment is already produced.
+
+
+## FINAL VALIDATION STOP — V2 resource guard
+
+V1 seeded package PASS. V2 LocalDiamond was automatically interrupted by the
+UNCHANGED48GiB own-worktree RSS guard at 50,461,760KiB
+(48.12408GiB),192.536s; exit-15, freshfalse, passedfalse.
+No target Building line completed and no V3-or-later compiler launched.
+Original frozen52-entry plan/source/log/JSON retained; no retry or relaxed
+threshold is authorized. Heavy lock released. Fresh post-stop frozen audit
+PASS: production/LocalDiamond bytes unchanged, census4,207/207 seeds, no
+compiler or staged files. This is NOT an all-final-PASS result. Owner gate
+is required for any append-only retry/continuation validation manifest.
+
+The paper was now visibly reread in20 individual200-line calls, offsets1,201,
+...,3801 through reference124/page88, with no truncated response. The archived
+paper-reread manifest authenticates3882 content lines and SHA256
+9b40364ab67f944406c6f40980cdc78dbba044d6eb3125aa1087f2ffdfc9a78b.
+This resolves the previous reading-evidence qualification; no new tested
+paper erratum or production change is claimed.
