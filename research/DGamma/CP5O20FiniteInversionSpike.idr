@@ -6,6 +6,9 @@ import DGamma.CP3
 import DGamma.CP5O19SurfaceSpike
 import DGamma.CP5O20LinearExtensionSpike
 import DGamma.CP5O20SupportedReferenceSpike
+import DGamma.CP5O20ReferenceDescentSpike
+import DGamma.CP5O20OperationalDescentSpike
+import DGamma.CP5ConfluenceLocalDiamondSpike
 import Data.List
 import Data.List.Elem
 import Decidable.Equality
@@ -117,3 +120,22 @@ o20ReferenceInversionAvailable nameEq sourceOrder goalOrder capital =
   o20FiniteInversionAvailable nameEq sourceOrder goalOrder
     (referenceSourceUnique capital) (referenceGoalUnique capital)
     (referenceMembersForward capital) (referenceMembersBackward capital)
+
+||| The ACTUAL stopped search is either at its goal or still owns a finite
+||| adjacent inversion. This prevents confusing blocked/rejected with sorted.
+export
+0 o20StoppedInversionAvailable :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {protocol : RegistrationProtocol key value world error} ->
+  (nameEq : DecEq name) -> {keyEq : DecEq key} ->
+  {sourceOrder, goalOrder : List name} -> {reference : SystemState name key value world error} ->
+  {goalUnique : UniqueKeys goalOrder} ->
+  {initial, finalState : SystemState name key value world error} -> {trace : Transitions initial finalState} ->
+  {blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder trace} ->
+  {premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq trace} ->
+  (result : O20ReferenceStoppedPermutation name key world error value protocol nameEq keyEq
+    sourceOrder goalOrder reference goalUnique trace blocks premises) ->
+  Either (stoppedOrder (referenceStopped result) = goalOrder)
+    (O20FiniteInversion name (stoppedOrder (referenceStopped result)) goalOrder)
+o20StoppedInversionAvailable {goalOrder} nameEq result =
+  o20ReferenceInversionAvailable nameEq (stoppedOrder (referenceStopped result)) goalOrder (referenceStoppedOrders result)
