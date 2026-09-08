@@ -76,3 +76,26 @@ o20IncomparableBirthObserved nameEq keyEq protocol original capital unique repla
   parentSupported childSupported noPath (Just fiber) found =
     noPath (o20ReplayedBirthSupportPath nameEq keyEq protocol original capital unique replayed occurrences
       parent child component birth fiber found parentSupported childSupported)
+
+||| Supported-reference incomparability excludes EVERY actual replayed birth
+||| of this child by this parent. Original lookup is observed here, not supplied.
+export
+0 o20IncomparableReplayedBirth :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {initial, originalFinal, replayedFinal : SystemState name key value world error} ->
+  (original : Transitions initial originalFinal) ->
+  (capital : IndependentCanonicalSchedule name key world error value protocol nameEq keyEq original) ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq original ->
+  (replayed : Transitions initial replayedFinal) ->
+  ActionRegistrationReplayCorrespondence name key world error value (canonicalTrace (canonicalSchedule capital)) replayed ->
+  (parent, child : name) ->
+  (isSupported {name} {key} {value} {world} {error} @{nameEq} @{keyEq} parent originalFinal = True) ->
+  (isSupported {name} {key} {value} {world} {error} @{nameEq} @{keyEq} child originalFinal = True) ->
+  Not (O20SupportedPath name key world error value nameEq keyEq originalFinal parent child) ->
+  (component : Component key value world error) -> LocatedGeneratedRegistration child parent component replayed -> Void
+o20IncomparableReplayedBirth {name} {key} {world} {error} {value} {originalFinal} nameEq keyEq protocol
+  original capital unique replayed occurrences parent child parentSupported childSupported noPath component birth =
+    o20IncomparableBirthObserved nameEq keyEq protocol original capital unique replayed occurrences parent child component birth
+      parentSupported childSupported noPath (lookupFiber {name} {key} {value} {world} {error} @{nameEq} child (registry originalFinal)) Refl
