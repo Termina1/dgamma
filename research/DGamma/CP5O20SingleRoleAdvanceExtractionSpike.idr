@@ -69,3 +69,23 @@ o20FinishOneCapturedDomain nameEq keyEq actor before afterState component parent
       (rewrite found in Refl))))
     (o19RelatedDefined (o19ActualFrameRelated nameEq keyEq (LAdvance actor) LFinishTag before afterState
       (actualTransitionEffectFrame nameEq keyEq (LAdvance actor) LFinishTag before afterState checked)))
+
+||| Runtime capability/callback packet at the actual raw source table. The
+||| resolver and callback equations belong to these exact observed values.
+public export
+record O20NativeStepValues
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (keyEq : DecEq key)
+  (before : SystemState name key value world error)
+  (component : Component key value world error)
+  (table : OwnedTable key value (componentProvisions component))
+  (step : StepEffect key value world error (dependencies (componentDependencies component)) (componentProvisions component))
+  (view : View name (dependencies (componentDependencies component))) where
+  constructor MkO20NativeStepValues
+  nativeCapability : DepValues key value (dependencies (componentDependencies component))
+  0 nativeResolution :
+    (resolveCommittedValues {name} {key} {value} {world} {error} @{nameEq} @{keyEq}
+      (dependencies (componentDependencies component)) view (registry before) = Just nativeCapability)
+  nativeCallback : O19StepObservation key world error value (dependencies (componentDependencies component))
+    (componentProvisions component) step nativeCapability
+    (MkLocalState (worldState before) (restrictOwnedPreservingOrder @{keyEq} (componentProvisions component) (ownedValues table)))
