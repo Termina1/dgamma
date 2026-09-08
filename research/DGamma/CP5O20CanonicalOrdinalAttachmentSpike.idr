@@ -49,3 +49,30 @@ o20ReplayOrdinalMatched leftReplay original rightReplay leftOrigin rightOrigin l
     (cong (\stamp => generationForward rightReplay (generationForward original stamp))
       (trans (cong (generationBackward leftReplay) (sym leftExact)) (generationLeftInverse leftReplay leftOrigin)))
     (trans (cong (generationForward rightReplay) matched) rightExact)
+
+||| Actual generated occurrences own both replay equations. Only their
+||| original generation matching is input; canonical birth ordinals are the
+||| exact counts of the occurrences' physical preceding traces.
+export
+0 o20GeneratedOrdinalsAttached :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {leftFirst, leftFinal, rightFirst, rightFinal, leftNowFirst, leftNowFinal, rightNowFirst, rightNowFinal : SystemState name key value world error} ->
+  {left : Transitions leftFirst leftFinal} -> {right : Transitions rightFirst rightFinal} ->
+  {leftNow : Transitions leftNowFirst leftNowFinal} -> {rightNow : Transitions rightNowFirst rightNowFinal} ->
+  (leftReplay : ActionRegistrationReplayCorrespondence name key world error value left leftNow) ->
+  (rightReplay : ActionRegistrationReplayCorrespondence name key world error value right rightNow) ->
+  (original : RegistrationGenerationBijection name) ->
+  {leftChild, leftParent, rightChild, rightParent : name} ->
+  {leftComponent, rightComponent : Component key value world error} ->
+  (leftBirth : LocatedGeneratedRegistration leftChild leftParent leftComponent leftNow) ->
+  (rightBirth : LocatedGeneratedRegistration rightChild rightParent rightComponent rightNow) ->
+  (generationForward original (registrationGeneration (replayGeneratedRegistrationOrigin leftReplay leftBirth)) =
+    registrationGeneration (replayGeneratedRegistrationOrigin rightReplay rightBirth)) ->
+  (generationForward (o20ReplayOrdinalBijection (replayGenerationRenaming leftReplay) original (replayGenerationRenaming rightReplay))
+    (registrationGeneration leftBirth) = registrationGeneration rightBirth)
+o20GeneratedOrdinalsAttached leftReplay rightReplay original leftBirth rightBirth matched =
+  o20ReplayOrdinalMatched (replayGenerationRenaming leftReplay) original (replayGenerationRenaming rightReplay)
+    (registrationGeneration (replayGeneratedRegistrationOrigin leftReplay leftBirth))
+    (registrationGeneration (replayGeneratedRegistrationOrigin rightReplay rightBirth))
+    (registrationGeneration leftBirth) (registrationGeneration rightBirth)
+    (replayGeneratedOrdinalPreserved leftReplay leftBirth) (replayGeneratedOrdinalPreserved rightReplay rightBirth) matched
