@@ -1429,3 +1429,17 @@ export
 o19LocatedByWordWords nameEq keyEq selected source block target aligned origins active beforeWord afterWord noEarlier noLater placement =
   o19LocatedAfterFirstCutWords nameEq keyEq selected source block target aligned origins active beforeWord afterWord noEarlier noLater
     (o19CutByWord beforeWord (o19ActionWord (actorBlockTrace block) ++ afterWord) target placement)
+
+||| Actual prefix-through count is prefix count plus the whole block count.
+||| This is dependent append arithmetic on explicit record fields.
+export
+0 o19PrefixThroughCount : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} -> {selected : name} ->
+  {initial, finalState : SystemState name key value world error} -> {source : Transitions initial finalState} ->
+  (block : LocatedOpenEpisodeBlock name key world error value nameEq keyEq selected source) ->
+  (transitionCount (prefixThroughBlock block) = transitionCount (traceBeforeBlock block) + transitionCount (actorBlockTrace block))
+o19PrefixThroughCount block =
+  trans (o19TransitionCountAppend (prefixToBlockOpening block) (blockBody block))
+    (trans (cong (\count => count + transitionCount (blockBody block))
+      (o19TransitionCountAppend (traceBeforeBlock block) (MoreTransitions (beginTransition (blockOpening block)) NoTransitions)))
+      (sym (plusAssociative (transitionCount (traceBeforeBlock block)) 1 (transitionCount (blockBody block)))))
