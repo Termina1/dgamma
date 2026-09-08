@@ -386,3 +386,67 @@ rightNodeSourceBlockLabel {prefixTrace} {left} prefixOccurrences sourceBlock
     MkNodeCrossesSourceBlockPosition (adjacentRightNodeOccurrence result)
       (transitionPrefixLength prefixTrace left) origin
 
+||| Labels every concrete adjacent node by occurrence origins in the original
+||| source blocks.  The prefix correspondence is not caller-selected at each
+||| node: it starts at identity and is definitionally extended by each actual
+||| `AdjacentSwapResult` before the recursive tail.
+public export
+data DerivationCrossesBlockPositions :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {sourceInitial, sourceFinal : SystemState name key value world error} ->
+  (sourceTrace : Transitions sourceInitial sourceFinal) ->
+  {leftActor, rightActor : name} ->
+  (leftBlock : LocatedOpenEpisodeBlock name key world error value nameEq keyEq
+    leftActor sourceTrace) ->
+  (rightBlock : LocatedOpenEpisodeBlock name key world error value nameEq keyEq
+    rightActor sourceTrace) ->
+  {currentInitial, currentFinal, targetFinal :
+    SystemState name key value world error} ->
+  {current : Transitions currentInitial currentFinal} ->
+  (prefixOccurrences : ActionRegistrationReplayCorrespondence name key world
+    error value sourceTrace current) ->
+  {target : Transitions currentInitial targetFinal} ->
+  FiniteAdjacentSwapDerivation name key world error value protocol nameEq keyEq
+    current target -> List (Nat, Nat) -> Type where
+  BlockCrossingsDone :
+    DerivationCrossesBlockPositions name key world error value protocol nameEq
+      keyEq sourceTrace leftBlock rightBlock prefixOccurrences
+      FiniteAdjacentSwapDone []
+  BlockCrossingsStep :
+    {initial, pairFirst, pairMiddle, pairFinal, originalFinal, targetFinal :
+      SystemState name key value world error} ->
+    {leftPosition, rightPosition : Nat} ->
+    (original : Transitions initial originalFinal) ->
+    (prefixTrace : Transitions initial pairFirst) ->
+    (left : Transition pairFirst pairMiddle) ->
+    (right : Transition pairMiddle pairFinal) ->
+    (suffix : Transitions pairFinal originalFinal) ->
+    (orientation : AdjacentSwapOrientationEvidence left right) ->
+    (diamond : LocalRelationalDiamond name key world error value nameEq keyEq
+      left right) ->
+    (result : AdjacentSwapResult name key world error value protocol nameEq keyEq
+      original prefixTrace left right suffix diamond) ->
+    (target : Transitions initial targetFinal) ->
+    (rest : FiniteAdjacentSwapDerivation name key world error value protocol
+      nameEq keyEq (swappedTrace result) target) ->
+    (prefixOccurrences : ActionRegistrationReplayCorrespondence name key world
+      error value sourceTrace original) ->
+    NodeCrossesSourceBlockPosition name key world error value nameEq keyEq
+      sourceTrace original prefixOccurrences leftBlock leftPosition (transitionAction left)
+      (transitionCount prefixTrace) ->
+    NodeCrossesSourceBlockPosition name key world error value nameEq keyEq
+      sourceTrace original prefixOccurrences rightBlock rightPosition (transitionAction right)
+      (S (transitionCount prefixTrace)) ->
+    (restPositions : List (Nat, Nat)) ->
+    DerivationCrossesBlockPositions name key world error value protocol nameEq
+      keyEq sourceTrace leftBlock rightBlock
+      (composeActionRegistrationReplayCorrespondence prefixOccurrences
+        (swappedOccurrenceCorrespondence result)) rest restPositions ->
+    DerivationCrossesBlockPositions name key world error value protocol nameEq
+      keyEq sourceTrace leftBlock rightBlock prefixOccurrences
+      (FiniteAdjacentSwapStep original prefixTrace left right suffix orientation
+        diamond result target rest)
+      ((leftPosition, rightPosition) :: restPositions)
+
