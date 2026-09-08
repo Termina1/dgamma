@@ -1173,3 +1173,20 @@ o19LocatedBlockPrefixes block =
    replace {p = O19TracePrefix (traceBeforeBlock block)} (blockDecomposition block)
     (o19PrefixAppended (traceBeforeBlock block)
       (MoreTransitions (beginTransition (blockOpening block)) (appendTransitions (blockBody block) (traceAfterBlock block)))))
+
+||| A typed ACTUAL prefix-gap observation constructs full BlockBefore,
+||| retaining its dependent gap and exact opening-prefix equation.
+export
+0 o19BlockBeforeFromGap :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} -> {leftActor, rightActor : name} ->
+  {initial, finalState : SystemState name key value world error} -> (source : Transitions initial finalState) ->
+  (leftBlock : LocatedOpenEpisodeBlock name key world error value nameEq keyEq leftActor source) ->
+  (rightBlock : LocatedOpenEpisodeBlock name key world error value nameEq keyEq rightActor source) ->
+  O19PrefixGap name key world error value (prefixThroughBlock leftBlock) (traceBeforeBlock rightBlock) ->
+  BlockBefore name key world error value nameEq keyEq source leftActor rightActor leftBlock rightBlock
+o19BlockBeforeFromGap source leftBlock rightBlock gap =
+  MkBlockBefore (prefixGapTrace gap)
+    (trans (cong (\leading => appendTransitions leading (MoreTransitions (beginTransition (blockOpening rightBlock)) NoTransitions)) (sym (prefixGapExact gap)))
+      (appendTransitionsAssociative (prefixThroughBlock leftBlock) (prefixGapTrace gap)
+        (MoreTransitions (beginTransition (blockOpening rightBlock)) NoTransitions)))
