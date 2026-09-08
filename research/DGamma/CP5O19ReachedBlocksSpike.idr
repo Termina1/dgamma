@@ -1041,3 +1041,11 @@ o19BeforeAppendedSelected (head :: rest) left trailing Here =
   BeforeHere (snd (o19ElemAppendInjections rest (left :: trailing)) Here)
 o19BeforeAppendedSelected (head :: rest) left trailing (There member) =
   BeforeThere (o19BeforeAppendedSelected rest left trailing member)
+
+||| Preserve a concrete finite order under a leading list.
+export
+0 o19BeforeInPrepend : {name : Type} -> (leading : List name) ->
+  {left, right : name} -> {trailing : List name} -> BeforeIn left right trailing ->
+  BeforeIn left right (leading ++ trailing)
+o19BeforeInPrepend [] ordered = ordered
+o19BeforeInPrepend (head :: rest) ordered = BeforeThere (o19BeforeInPrepend rest ordered)
