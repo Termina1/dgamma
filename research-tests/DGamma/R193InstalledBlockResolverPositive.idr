@@ -38,3 +38,7 @@ r193FrameStart = fromMaybe r193FrameBefore (applyTagged LBeginTag (LBegin 2) r19
 public export
 r193FrameChild : SystemState Nat ToyKey ToyValue ToyRuntime String
 r193FrameChild = fromMaybe r193FrameStart (applyTagged OInsertTag (OInsert 3 (ChildOf 2) emptyConsumerComponent) r193FrameStart)
+
+public export
+r193FrameEnd : SystemState Nat ToyKey ToyValue ToyRuntime String
+r193FrameEnd = fromMaybe r193FrameChild (applyTagged LFinishTag (LAdvance 2) r193FrameChild)
