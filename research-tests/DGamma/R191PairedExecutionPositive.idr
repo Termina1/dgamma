@@ -51,3 +51,18 @@ r191PairedChildRetirementRun =
     (PairedExecutionMore {leftMiddle = r191ChildGapState 11} {rightMiddle = r191ChildGapState 11}
     (PairedEmptyFinishStage r45NameEq r45KeyEq identityNameBijection 2 r45Child Root Root False False emptyOwned emptyOwned id id EmptyView EmptyView () () (registry (r191ChildGapState 10)) (registry (r191ChildGapState 10)) Refl Refl Refl Refl)
     PairedExecutionDone)))))))))))
+
+||| End-to-end producer packet: BOTH full physical traces and the ALL-NAME
+||| endpoint cut come from this run and its genuine empty origin. No endpoint
+||| relation, callback equality or table/control oracle is a fixture premise.
+export
+0 r191PairedRunProducesEndpoint :
+  (Transitions (r191ChildGapState 0) (r191ChildGapState 11),
+   Transitions (r191ChildGapState 0) (r191ChildGapState 11),
+   O20AllNameCut Nat R45Key Unit String R45Value r45NameEq identityNameBijection
+     (r191ChildGapState 11) (r191ChildGapState 11))
+r191PairedRunProducesEndpoint =
+  case o20PairedExecutionTraces r191PairedChildRetirementRun of
+    (leftTrace, rightTrace) => (leftTrace, rightTrace,
+      o20PairedExecutionCut r45NameEq r45KeyEq identityNameBijection r191PairedChildRetirementRun
+        (o20AllNameEmptyOrigin r45NameEq identityNameBijection (r191ChildGapState 0) Refl))
