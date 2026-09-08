@@ -139,3 +139,17 @@ o19RowOriginPairs originalMap start (S width) =
             (trans (o19RowPullAtStart (S start) width) (plusSuccRightSucc start width)))))))
       (sym (mapAppend (\pair => (originalMap (fst pair), originalMap (snd pair)))
         (o19RowPairs (S start) width) [(start, start + S width)])))
+
+||| Inside the shifted left interval, the row pull recovers the original
+||| left coordinate. The actual bound is consumed, not inferred from labels.
+export
+0 o19RowPullInside : (start, width, index : Nat) -> LTE (S index) width ->
+  (o19RowPull start width (start + S index) = start + index)
+o19RowPullInside start width index bound =
+  case start of
+    Z => case width of
+      Z => void (uninhabited bound)
+      S remaining => case index of
+        Z => Refl
+        S later => cong S (o19RowPullInside Z remaining later (fromLteSucc bound))
+    S earlier => cong S (o19RowPullInside earlier width index bound)
