@@ -268,46 +268,6 @@ canonicalSupportOrdersMatchSpike {name} {key} {world} {error} {value} nameEq key
         (replayDiscipline (chainReplayCapital (capitalPremises rightCapital)))
         (replayInitialEmpty (chainReplayCapital (capitalPremises leftCapital))) leftUnique rightUnique)
 
-||| Sealed-by-evidence O19 output.  The pure certificate and every exact
-||| intermediate trace are existential fields of the same package as the
-||| operational realization; there is no function from a public pure
-||| certificate to O20.
-public export
-record CertifiedOperationalCanonicalPermutation
-  (name, key, world, error : Type) (value : key -> Type)
-  (protocol : RegistrationProtocol key value world error)
-  (nameEq : DecEq name) (keyEq : DecEq key)
-  {initial, leftFinal, rightFinal : SystemState name key value world error}
-  (leftTrace : Transitions initial leftFinal)
-  (rightTrace : Transitions initial rightFinal)
-  (sameInputs : SameOrchestrationModuloGenerated nameEq keyEq leftTrace rightTrace)
-  (leftCapital : IndependentCanonicalSchedule name key world error value protocol
-    nameEq keyEq leftTrace)
-  (rightCapital : IndependentCanonicalSchedule name key world error value protocol
-    nameEq keyEq rightTrace)
-  (matching : MappedCanonicalSupportOrders name key world error value protocol
-    nameEq keyEq leftTrace rightTrace
-    (currentNameBijection (endpointRenaming sameInputs))
-    (canonicalSchedule leftCapital) (canonicalSchedule rightCapital)) where
-  constructor MkCertifiedOperationalCanonicalPermutation
-  selectedActorPermutation : CertifiedActorPermutation name
-    (supportOrder (canonicalSchedule leftCapital))
-    (map (renameBackward (currentNameBijection (endpointRenaming sameInputs)))
-      (supportOrder (canonicalSchedule rightCapital)))
-  operationalTargetFinal : SystemState name key value world error
-  operationalTargetTrace : Transitions initial operationalTargetFinal
-  operationalTargetBlocks : ActorBlockDecomposition name key world error value
-    nameEq keyEq
-    (map (renameBackward (currentNameBijection (endpointRenaming sameInputs)))
-      (supportOrder (canonicalSchedule rightCapital))) operationalTargetTrace
-  operationalTargetPremises : ReplayInvariantBundle name key world error value
-    protocol nameEq keyEq operationalTargetTrace
-  selectedPermutationRealized : OperationalActorPermutation name key world error
-    value protocol nameEq keyEq selectedActorPermutation
-    (canonicalTrace (canonicalSchedule leftCapital))
-    (canonicalActorBlockDecomposition leftCapital)
-    (canonicalReplayPremises leftCapital) operationalTargetTrace
-
 ||| O19 must choose a permutation and realize it simultaneously.  This is the
 ||| remaining existence risk when accepted support relations differ through
 ||| withdrawn intermediates; the type no longer hides that risk in O20.
