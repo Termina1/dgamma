@@ -51,3 +51,17 @@ o19ActivationEvolutionInstalled nameEq keyEq first afterState (LUnload actor) LU
     PaperBeginStep sameAction sameTag => case sameAction of Refl impossible
     PaperIterStep sameAction sameTag => case sameAction of Refl impossible
     PaperFinishStep sameAction sameTag => case sameAction of Refl impossible
+
+||| Convert installation to presence through the actual owner lookup result.
+export
+0 o19InstalledOwnerObserved :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (actor : name) -> (state : SystemState name key value world error) ->
+  (observed : Maybe (Fiber name key value world error)) ->
+  (lookupFiber @{nameEq} actor (registry state) = observed) ->
+  (installedAt {name} {key} {value} {world} {error} @{nameEq} actor state = True) ->
+  (isJust (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor (registry state)) = True)
+o19InstalledOwnerObserved nameEq actor state Nothing exact installed =
+  case trans (sym (the (installedAt {name} {key} {value} {world} {error} @{nameEq} actor state = False)
+    (rewrite exact in Refl))) installed of Refl impossible
+o19InstalledOwnerObserved nameEq actor state (Just fiber) exact installed = cong isJust exact
