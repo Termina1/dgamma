@@ -114,3 +114,16 @@ public export
       [ServiceA] (registry r193FrameEnd)) =
    (Just (ProviderView 0 EmptyView), Just (ProviderView 0 EmptyView)))
 r193FrameNonemptyResolution = Refl
+
+||| The same concrete nonempty query is related by the generic whole-block
+||| theorem, rather than accepting the desired resolver equality as an input.
+public export
+0 r193FrameWholeResolverEquality :
+  (resolveView {name = Nat} {key = ToyKey} {value = ToyValue} {world = ToyRuntime} {error = String}
+      [ServiceA] (registry r193FrameEnd) =
+   resolveView {name = Nat} {key = ToyKey} {value = ToyValue} {world = ToyRuntime} {error = String}
+      [ServiceA] (registry r193FrameBefore))
+r193FrameWholeResolverEquality =
+  o20WholeInstalledBlockResolver %search %search 2 [ServiceA] r193FrameBefore r193FrameStart r193FrameEnd
+    r193FrameLeftOpening r193FrameBody r193FrameInstalled r193FrameActorOnly r193FrameLastFiber Refl
+    (\wanted, needed, provided => absurd provided)
