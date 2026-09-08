@@ -504,3 +504,11 @@ o19OrderedBeforeWord {rightActor} leftBlock rightBlock ordered =
           (trans (cong (o19ActionWord (prefixThroughBlock leftBlock) ++)
             (o19ActionWordAppend (betweenBlocks ordered) (MoreTransitions (beginTransition (blockOpening rightBlock)) NoTransitions)))
             (appendAssociative (o19ActionWord (prefixThroughBlock leftBlock)) (o19ActionWord (betweenBlocks ordered)) [LBegin rightActor])))))
+
+||| Cancel a common explicit leading word, without deciding any action label.
+export
+0 o19AppendLeftInjective : {item : Type} -> (leading, first, second : List item) ->
+  (leading ++ first = leading ++ second) -> (first = second)
+o19AppendLeftInjective [] first second exact = exact
+o19AppendLeftInjective (head :: rest) first second exact =
+  o19AppendLeftInjective rest first second (snd (consInjective exact))
