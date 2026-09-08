@@ -40,7 +40,7 @@ def compiler_processes():
  return result
 initial_procs=compiler_processes()
 assert not any(p['classification']=='lane2' for p in initial_procs),'Own compiler already running'
-heavy=any(k in path for k in ['CanonicalSort','R8FullPipeline','ReachedBlocks','AllFour','LocalDiamond'])
+heavy=any(k in path for k in ['CanonicalSort','R8FullPipeline','ReachedBlocks','AllFour','LocalDiamond','L2R1AvailabilityCollision'])
 assert 'LocalDiamond' not in path,'LocalDiamond needs prior supervisor gate'
 lock_events=[];locked=False
 if heavy:
@@ -69,7 +69,7 @@ target.touch()  # Supervisor-approved TARGET-only fresh validation exception.
 touch_record=dict(path=str(target),oldMtimeNs=old_mtime,newMtimeNs=target.stat().st_mtime_ns,authority='L2R1 supervisor protocol gate; target only, dependency rebuilds acknowledged')
 (OUT/(unit+'.source')).write_bytes(snapshot)
 started=datetime.datetime.now(datetime.timezone.utc).isoformat();clock=time.monotonic()
-maximum=0;interrupted=False;foreign={p['pid']:p for p in initial_procs if p['classification']!='lane2'}
+maximum=0;interrupted=False;source_mutation=False;foreign={p['pid']:p for p in initial_procs if p['classification']!='lane2'}
 print('START',unit,started,' '.join(command),flush=True)
 try:
  with (OUT/(unit+'.log')).open('w') as log:
@@ -83,6 +83,9 @@ try:
   signal.signal(signal.SIGTERM,stop);signal.signal(signal.SIGINT,stop)
   while process.poll() is None:
    time.sleep(0.25)
+   if target.read_bytes()!=snapshot and not interrupted:
+    source_mutation=True
+    stop(signal.SIGTERM,None)
    for p in compiler_processes():
     if p['classification']=='lane2':maximum=max(maximum,p['rssKiB'])
     else:foreign[p['pid']]=p
@@ -90,7 +93,7 @@ try:
  text=(OUT/(unit+'.log')).read_text()
  fresh=bool(re.search(r'^\d+/\d+: Building DGamma\.'+re.escape(target.stem)+r' \((?:'+re.escape(str(ROOT))+r'/)?'+re.escape(path)+r'\)$',text,re.M))
  passed=fresh and not interrupted and (process.returncode==0 and 'Error:' not in text if not diagnostic else process.returncode!=0 and diagnostic in text and bool(symbol) and symbol in text)
- record=dict(unit=unit,path=path,command=command,start=started,end=datetime.datetime.now(datetime.timezone.utc).isoformat(),seconds=time.monotonic()-clock,exit=process.returncode,fresh=fresh,passed=passed,interrupted=interrupted,maxSampleRSSKiB=maximum,sourceSHA256=hashlib.sha256(snapshot).hexdigest(),expectedDiagnostic=diagnostic,symbol=symbol,transcript=text,separateCompilerObservations=list(foreign.values()),heavyLockAcquired=heavy,heavyLockEvents=lock_events,targetMtimeTouch=touch_record)
+ record=dict(unit=unit,path=path,command=command,start=started,end=datetime.datetime.now(datetime.timezone.utc).isoformat(),seconds=time.monotonic()-clock,exit=process.returncode,fresh=fresh,passed=passed,interrupted=interrupted,maxSampleRSSKiB=maximum,sourceSHA256=hashlib.sha256(snapshot).hexdigest(),expectedDiagnostic=diagnostic,symbol=symbol,transcript=text,separateCompilerObservations=list(foreign.values()),heavyLockAcquired=heavy,heavyLockEvents=lock_events,targetMtimeTouch=touch_record,sourceMutationObserved=source_mutation)
  (OUT/(unit+'.json')).write_text(json.dumps(record,indent=2)+'\n')
  with (OUT/'ledger.jsonl').open('a') as ledger:ledger.write(json.dumps(record)+'\n')
  print(text,flush=True);print('RESULT',json.dumps({k:v for k,v in record.items() if k!='transcript'}),flush=True)
