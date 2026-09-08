@@ -211,6 +211,36 @@ No second B exhaustion, no widened/public theorem claim.
 | ALL controls | all-name invariant and actual insert/shared-Begin successor, including foreign/unsupported/absent/retired | general shared-observation adapter (B7), every Advance/Finish/gap, actual endpoint coverage |
 | ALL births/origins | actual support classification; full exact supported-child triangle from existing producer | unsupported child's mapped canonical birth and exact original-origin triangle; False explicitly unresolved |
 
+## Final seeded validation and evidence
+
+All74 final invocations passed the qualified guard:71 positive source checks,
+2 fresh expected native-negative checks,1 seeded production package build.
+Every73 source invocation has its OWN exact Building line and current SHA256.
+V1 LocalDiamond PASS492.369s, peak49,831,232KiB (<48GiB); new modules/test
+V67--V72 all freshly pass, the R143 witness V73 passes, package V74 passes
+16.608s. Final completion14:45:48.775779Z, well before16:41:47Z cutoff.
+No interruptions, parallel compilers, missing-target successes or TTC deletion.
+
+Consolidated129 invocations:114 native exit0,15 native exit1; raw runner
+118 passed/11 failed. The11 failures are10 rejected producer attempts plus
+AP1-1's diagnostic-wording mismatch. Four expected negatives count as raw
+passes (AP1-2, BP1-1, V60, V61). Nothing is retroactively reclassified.
+All129 exact source/log/JSON triples are byte-verified in the archive. All38
+source commit receipts independently authenticate latest-invocation freshPASS,
+exact hash, one-new-declaration and no-staged/no-compiler guards.
+
+Final frozen audit:4holes unchanged1/2/0/0/1; production/package diff vs34b21c9
+empty, CP3 exact, all5 entry modules/O19 Surface/LocalDiamond unchanged;
+adjacent full/statement and immutable review hashes exact;207/207 production
+seeds retained, no forbidden additions, compiler, staged files or tracked drift.
+Author read-only producer review and provenance/final-authentication JSON are
+included in the compiler archive. Independent reviewer gate remains required.
+
+Evidence: O6-R190-COMPILER-LEDGER.json, O6-R190-COMPILER-EVIDENCE.tar.gz,
+O6-R190-VERIFICATION.md. Archive source/audit cutoff is8b513696; the following
+consolidated artifact commit has no Idris delta and cannot self-archive its own
+receipt. No compiler was invoked after the final verification chain.
+
 ## Status
 
 38 retained new declarations total: A23/24 + B15/16. Exactly40 producer units
@@ -221,4 +251,4 @@ NOT canonical completeness. Real all-name internal synchronization successors
 and exact supported-birth classification are proved, NOT endpoint convergence.
 Next: R191 supported common-reference/completeness/stopped-order equality;
 convergence whole paired episode induction and unsupported births. No O21 work.
-Final serialized seeded regression plan/ledger/archive/verification now due.
+All74 final checks passed; all129 invocation records archived. Final supervisor/reviewer gate follows the consolidated evidence commit.
