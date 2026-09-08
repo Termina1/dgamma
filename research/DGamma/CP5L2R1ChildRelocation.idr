@@ -77,3 +77,14 @@ NativeCheckedAt position NoTransitions = Unit
 NativeCheckedAt Z (MoreTransitions (Fired {before} {afterState} nameEq keyEq action tag checked) rest) =
   checkedApplyAction @{nameEq} @{keyEq} action before = Just (tag, afterState)
 NativeCheckedAt (S position) (MoreTransitions step rest) = NativeCheckedAt position rest
+
+||| Extract the exact native proof at the requested ordinal. No evaluator
+||| normalization is repeated, and an absent ordinal yields only Unit.
+public export
+0 nativeCheckedAt :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {0 first, finalState : SystemState name key value world error} ->
+  (position : Nat) -> (trace : Transitions first finalState) -> NativeCheckedAt position trace
+nativeCheckedAt position NoTransitions = ()
+nativeCheckedAt Z (MoreTransitions (Fired nameEq keyEq action tag checked) rest) = checked
+nativeCheckedAt (S position) (MoreTransitions step rest) = nativeCheckedAt position rest
