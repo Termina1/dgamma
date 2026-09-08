@@ -83,3 +83,17 @@ o19FixedRowBounds leftSource rightSource (S width) leftPosition rightPosition me
         (replace {p = LTE (S leftSource)} (plusSuccRightSucc leftSource width)
           (LTESucc (lteAddRight leftSource)), Refl))
       There absent => void (uninhabited absent)) member
+
+||| Every fixed-right row has unique PAIRS: its final left coordinate is
+||| strictly below every coordinate in the recursive row.
+export
+0 o19FixedRowUnique : (leftSource, rightSource, width : Nat) ->
+  UniqueKeys (o19FixedRowPairs leftSource rightSource width)
+o19FixedRowUnique leftSource rightSource Z = UniqueNil
+o19FixedRowUnique leftSource rightSource (S width) =
+  o19UniqueAppend (o19FixedRowPairs (S leftSource) rightSource width) [(leftSource, rightSource)]
+    (o19FixedRowUnique (S leftSource) rightSource width)
+    (UniqueCons (\member => uninhabited member) UniqueNil)
+    (\pair, earlier, last => case last of
+      Here => succNotLTEpred (fst (o19FixedRowBounds (S leftSource) rightSource width leftSource rightSource earlier))
+      There absent => void (uninhabited absent))
