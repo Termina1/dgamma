@@ -53,3 +53,23 @@ checkedSnapshotObserved {name} {key} {world} {error} {value}
     (MkCheckedSnapshotStep afterState
       (checkedFromRaw nameEq keyEq action source afterState tag valid raw)
       (cong snd (justInjective exact)))
+
+||| Transport one existing checked native edge to a well-formed source with
+||| exactly the same runtime snapshot. The source may own different erased
+||| uniqueness proofs. Both the successful target and its checked equation are
+||| produced by observation coherence, not supplied by a replay callback.
+export
+0 checkedAcrossSnapshot :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (action : Action name key value world error) -> (tag : RuleTag) ->
+  (originalSource, originalAfter, current : SystemState name key value world error) ->
+  (0 checked : checkedApplyAction @{nameEq} @{keyEq} action originalSource = Just (tag, originalAfter)) ->
+  (0 same : runtimeSnapshot originalSource = runtimeSnapshot current) ->
+  (0 valid : registryWellFormed @{nameEq} @{keyEq} current = True) ->
+  CheckedSnapshotStep name key world error value nameEq keyEq action current tag (runtimeSnapshot originalAfter)
+checkedAcrossSnapshot nameEq keyEq action tag originalSource originalAfter current checked same valid =
+  checkedSnapshotObserved nameEq keyEq action current tag (runtimeSnapshot originalAfter)
+    (applyAction @{nameEq} @{keyEq} action current) Refl
+    (trans (sym (applyActionObservationCoherent nameEq keyEq action originalSource current same))
+      (cong observeActionResult (checkedActionProjects nameEq keyEq action originalSource originalAfter tag checked))) valid
