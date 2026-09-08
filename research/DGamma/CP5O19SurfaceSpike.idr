@@ -69,3 +69,22 @@ record ActorBlockDecomposition
       laterPosition)
   decomposedLifecycleCoverage : LifecycleActorsCovered order trace
 
+||| Executable negative evidence used at a whole-block boundary.  In particular,
+||| if the left actor yields a registration of the right actor, O/A cannot move
+||| that right lifecycle block before its own licensing O-Insert.
+public export
+data NoGeneratedChild :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (forbidden : name) ->
+  {first, finalState : SystemState name key value world error} ->
+  Transitions first finalState -> Type where
+  NoGeneratedChildEnd : NoGeneratedChild forbidden NoTransitions
+  NoGeneratedChildStep :
+    (transition : Transition first middle) ->
+    (rest : Transitions middle finalState) ->
+    ((parent : name) -> (component : Component key value world error) ->
+      transitionAction transition =
+        OInsert forbidden (ChildOf parent) component -> Void) ->
+    NoGeneratedChild forbidden rest ->
+    NoGeneratedChild forbidden (MoreTransitions transition rest)
+
