@@ -121,3 +121,26 @@ o19CoveredHeadObserved head tail covered True observed membership =
   CoveredLifecycleStep head tail observed
     (replace {p = \actor => Elem actor order} (sym (o19TransitionActorOwner head)) (membership observed)) covered
 o19CoveredHeadObserved head tail covered False observed membership = CoveredOrchestrationStep head tail observed covered
+
+||| Structural target coverage through genuine located-action origins.
+||| The enumeration transport is separate from occurrence correspondence.
+export
+0 o19LifecycleCoverageFromOrigins :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {sourceOrder, targetOrder : List name} ->
+  {sourceFirst, sourceLast, targetFirst, targetLast : SystemState name key value world error} ->
+  (source : Transitions sourceFirst sourceLast) -> (target : Transitions targetFirst targetLast) ->
+  ({action : Action name key value world error} -> LocatedActionOccurrence action target -> LocatedActionOccurrence action source) ->
+  ((selected : name) -> Elem selected sourceOrder -> Elem selected targetOrder) ->
+  LifecycleActorsCovered sourceOrder source -> LifecycleActorsCovered targetOrder target
+o19LifecycleCoverageFromOrigins source NoTransitions origins membership covered = LifecycleActorsCoveredEnd
+o19LifecycleCoverageFromOrigins {targetFirst} source (MoreTransitions {middle} head tail) origins membership covered =
+  o19CoveredHeadObserved head tail
+    (o19LifecycleCoverageFromOrigins source tail
+      (\occurrence => origins (MkLocatedActionOccurrence (actionBeforeState occurrence) (actionAfterState occurrence)
+        (MoreTransitions head (beforeActionOccurrence occurrence)) (locatedTransition occurrence) (afterActionOccurrence occurrence)
+        (locatedAction occurrence) (cong (MoreTransitions head) (actionOccurrenceDecomposition occurrence)))) membership covered)
+    (isLifecycleAction (transitionAction head)) Refl
+    (\lifecycle => membership (actionOwner (transitionAction head))
+      (o19LocatedLifecycleCovered source covered (transitionAction head)
+        (origins (MkLocatedActionOccurrence targetFirst middle NoTransitions head tail Refl Refl)) lifecycle))
