@@ -14,6 +14,8 @@ import DGamma.CP4DeletionSelectedForeignOrchestration
 import DGamma.CP5O19ResolvedOpeningRowSpike
 import DGamma.CP5O20BeginObservationSpike
 import DGamma.CP5O19AdvanceObservationSpike
+import DGamma.CP5O19ActivationRowSpike
+import Data.Nat
 import DGamma.CP5O19BodyMetadataSpike
 import DGamma.CP5O19ReplayObservationSpike
 import DGamma.CP5O19AdjacentReplayProducerSpike
@@ -185,3 +187,49 @@ o19InsertionActivationAligned {first} {middle} {last} nameEq keyEq child parent 
       leftChecked rightChecked
       (\same => distinct (trans (o19TransitionActorOwner (Fired nameEq keyEq rightAction rightTag rightChecked)) (sym same)))
       independent wellFormed activation
+
+||| One MIXED right-activation row step. The same explicit previous row
+||| supplies its actual next pair, bundle, uniqueness and derivation. Combine
+||| its origins with the original sanctioned source ONLY for metadata; build
+||| the next local crossing/replay/count through the real row producers.
+export
+0 o19MixedActivationRowStep :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {sourceOrder, targetOrder : List name} ->
+  (swap : AdjacentActorOrderSwap name sourceOrder targetOrder) ->
+  {initial, originalFinal, sourceFinal, before, middle, rightBefore, rightAfter : SystemState name key value world error} ->
+  (original : Transitions initial originalFinal) ->
+  (blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder original) ->
+  (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq original) ->
+  (safety : AdjacentActorSwapSafety name key world error value protocol nameEq keyEq swap original blocks premises) ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq original ->
+  (source : Transitions initial sourceFinal) ->
+  FiniteAdjacentSwapDerivation name key world error value protocol nameEq keyEq original source ->
+  (earlier : Transitions initial before) -> (left : Transition before middle) ->
+  (sourceRight : Transition rightBefore rightAfter) -> (crossings : Nat) ->
+  (previous : O19ActivationRow name key world error value protocol nameEq keyEq source
+    (appendTransitions earlier (MoreTransitions left NoTransitions)) sourceRight crossings) ->
+  (transitionActor sourceRight = actorRight swap) ->
+  (observed : Either (PaperActivationStep left, transitionActor left = actorLeft swap)
+    (child : name ** (component : Component key value world error **
+      ((transitionAction left = OInsert child (ChildOf (actorLeft swap)) component), Not (actorRight swap = child))))) ->
+  O19ActivationRow name key world error value protocol nameEq keyEq source earlier sourceRight (S crossings)
+o19MixedActivationRowStep nameEq keyEq protocol swap original blocks premises safety unique source prior earlier left sourceRight crossings previous rightOwner (Left (activation, leftOwner)) =
+    o19ActivationRowStep nameEq keyEq protocol source earlier left sourceRight crossings previous activation
+      (\same => actorDistinct swap (trans (sym leftOwner) (trans (sym same) rightOwner)))
+      (o19EarlyLabels nameEq keyEq (transitionAction (rowRight previous)) (transitionAction sourceRight)
+        (transitionTag (rowRight previous)) (transitionTag sourceRight) (sym (rowAction previous)) (sym (rowTag previous))
+        (o19ReplayedActivationAligned nameEq keyEq protocol swap original blocks premises safety unique (MkO19ReachedCursor (cursorFinal (rowCursor previous)) (cursorTrace (rowCursor previous)) (cursorBundle (rowCursor previous)) (cursorUnique (rowCursor previous)) (o19AppendFinite prior (cursorDerivation (rowCursor previous))))
+          earlier (rowRest previous) left (rowRight previous) (trans (sym (appendTransitionsAssociative earlier (MoreTransitions left NoTransitions) (MoreTransitions (rowRight previous) (rowRest previous)))) (rowDecomposition previous))
+          leftOwner (trans (rowActor previous) rightOwner) activation (rowActivation previous) (fst (o19SourcePairFacts nameEq keyEq protocol (cursorTrace (rowCursor previous)) earlier left (rowRight previous) (rowRest previous) (trans (sym (appendTransitionsAssociative earlier (MoreTransitions left NoTransitions) (MoreTransitions (rowRight previous) (rowRest previous)))) (rowDecomposition previous)) (cursorBundle (rowCursor previous))))))
+o19MixedActivationRowStep nameEq keyEq protocol swap original blocks premises safety unique source prior earlier left sourceRight crossings previous rightOwner (Right (child ** (component ** (inserted, childSafe)))) =
+    o19InsertionRowStep nameEq keyEq protocol child (ChildOf (actorLeft swap)) component source earlier left sourceRight crossings previous inserted
+      (\same => childSafe (trans (sym rightOwner) same))
+      (\licensor, sameParent, sameActor => case sameParent of Refl => actorDistinct swap (trans (sym sameActor) rightOwner))
+      (o19EarlyLabels nameEq keyEq (transitionAction (rowRight previous)) (transitionAction sourceRight)
+        (transitionTag (rowRight previous)) (transitionTag sourceRight) (sym (rowAction previous)) (sym (rowTag previous))
+        (o19InsertionActivationAligned nameEq keyEq child (ChildOf (actorLeft swap)) component left (rowRight previous) inserted
+          (\same => childSafe (trans (sym (trans (rowActor previous) rightOwner)) same))
+          (fst (snd (o19SourcePairFacts nameEq keyEq protocol (cursorTrace (rowCursor previous)) earlier left (rowRight previous) (rowRest previous) (trans (sym (appendTransitionsAssociative earlier (MoreTransitions left NoTransitions) (MoreTransitions (rowRight previous) (rowRest previous)))) (rowDecomposition previous)) (cursorBundle (rowCursor previous))))) (snd (snd (o19SourcePairFacts nameEq keyEq protocol (cursorTrace (rowCursor previous)) earlier left (rowRight previous) (rowRest previous) (trans (sym (appendTransitionsAssociative earlier (MoreTransitions left NoTransitions) (MoreTransitions (rowRight previous) (rowRest previous)))) (rowDecomposition previous)) (cursorBundle (rowCursor previous))))) (rowActivation previous) (fst (o19SourcePairFacts nameEq keyEq protocol (cursorTrace (rowCursor previous)) earlier left (rowRight previous) (rowRest previous) (trans (sym (appendTransitionsAssociative earlier (MoreTransitions left NoTransitions) (MoreTransitions (rowRight previous) (rowRest previous)))) (rowDecomposition previous)) (cursorBundle (rowCursor previous))))))
