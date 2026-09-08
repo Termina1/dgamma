@@ -295,3 +295,54 @@ o19GeneratedInsertionReplay nameEq keyEq protocol leftChild rightChild leftParen
         (o19InsertionPairEarly nameEq keyEq protocol leftChild rightChild (ChildOf leftParent) (ChildOf rightParent)
           leftComponent rightComponent source earlier left right later decomposition premises leftInsert rightInsert distinct
           rightLicense rightTag))
+
+
+||| O/O observed row successor builds cursor, full bundle, original
+||| uniqueness, same-chain derivation and exact count simultaneously.
+export
+0 o19InsertionInsertionStepObserved :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {initial, sourceFinal, before, middle, rightBefore, rightAfter : SystemState name key value world error} ->
+  (source : Transitions initial sourceFinal) -> (earlier : Transitions initial before) ->
+  (left : Transition before middle) -> (sourceRight : Transition rightBefore rightAfter) ->
+  (crossings : Nat) ->
+  (previous : O19OrchestrationRow name key world error value protocol nameEq keyEq source
+    (appendTransitions earlier (MoreTransitions left NoTransitions)) sourceRight crossings) ->
+  (leftOrchestration : PaperOrchestrationStep left) ->
+  (diamond : LocalRelationalDiamond name key world error value nameEq keyEq left (orchestrationRowRight previous) **
+    AdjacentSwapResult name key world error value protocol nameEq keyEq
+      (cursorTrace (orchestrationRowCursor previous)) earlier left (orchestrationRowRight previous) (orchestrationRowRest previous) diamond) ->
+  O19OrchestrationRow name key world error value protocol nameEq keyEq source earlier sourceRight (S crossings)
+o19InsertionInsertionStepObserved {name} {key} {world} {error} {value}
+  nameEq keyEq protocol source earlier left sourceRight crossings previous
+  leftOrchestration (diamond ** result) =
+    MkO19OrchestrationRow
+      (MkO19ReachedCursor (replayedFinal result) (swappedTrace result) (swappedPremises result)
+        (uniqueInsertionsAfterFiniteDerivation name key world error value protocol nameEq keyEq
+          (FiniteAdjacentSwapStep (cursorTrace (orchestrationRowCursor previous)) earlier left
+          (orchestrationRowRight previous) (orchestrationRowRest previous)
+          (AdjacentOrchestrationOrchestration left (orchestrationRowRight previous) leftOrchestration (orchestrationRowClass previous))
+          diamond result (swappedTrace result) FiniteAdjacentSwapDone) (cursorUnique (orchestrationRowCursor previous)))
+        (o19AppendFinite (cursorDerivation (orchestrationRowCursor previous)) (FiniteAdjacentSwapStep (cursorTrace (orchestrationRowCursor previous)) earlier left
+          (orchestrationRowRight previous) (orchestrationRowRest previous)
+          (AdjacentOrchestrationOrchestration left (orchestrationRowRight previous) leftOrchestration (orchestrationRowClass previous))
+          diamond result (swappedTrace result) FiniteAdjacentSwapDone)))
+      (swappedMiddle diamond) (movedRight diamond)
+      (MoreTransitions (movedLeft diamond) (replayedSuffix result))
+      (sym (swappedDecomposition result))
+      (trans (movedRightAction diamond) (orchestrationRowAction previous))
+      (trans (movedRightTag diamond) (orchestrationRowTag previous))
+      (trans (o19TransitionActorOwner (movedRight diamond))
+        (trans (cong actionOwner (trans (movedRightAction diamond) (orchestrationRowAction previous)))
+          (sym (o19TransitionActorOwner sourceRight))))
+      (movedRightOrchestrationBranch diamond (orchestrationRowClass previous))
+      (trans (o19AppendFiniteCount (cursorDerivation (orchestrationRowCursor previous)) (FiniteAdjacentSwapStep (cursorTrace (orchestrationRowCursor previous)) earlier left
+          (orchestrationRowRight previous) (orchestrationRowRest previous)
+          (AdjacentOrchestrationOrchestration left (orchestrationRowRight previous) leftOrchestration (orchestrationRowClass previous))
+          diamond result (swappedTrace result) FiniteAdjacentSwapDone))
+        (trans (cong (\count => count + 1) (orchestrationRowNodeCount previous))
+          (plusCommutative crossings 1)))
+
+
