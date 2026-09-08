@@ -517,3 +517,22 @@ data BlockCrossingOriginPlan :
         diamond result target rest)
       ((leftPosition, rightPosition) :: restPositions)
 
+||| The actual recursive label fold.  Current node occurrences are constructed
+||| from each `AdjacentSwapResult`; the prefix map is threaded definitionally.
+public export
+0 foldBlockCrossingOriginPlan :
+  BlockCrossingOriginPlan name key world error value protocol nameEq keyEq
+    sourceTrace leftBlock rightBlock prefixOccurrences derivation positions ->
+  DerivationCrossesBlockPositions name key world error value protocol nameEq keyEq
+    sourceTrace leftBlock rightBlock prefixOccurrences derivation positions
+foldBlockCrossingOriginPlan CrossingOriginPlanDone = BlockCrossingsDone
+foldBlockCrossingOriginPlan
+  (CrossingOriginPlanStep original prefixTrace left right suffix orientation
+    diamond result target rest prefixOccurrences leftBlock rightBlock leftOrigin
+    rightOrigin restPositions restPlan) =
+      BlockCrossingsStep original prefixTrace left right suffix orientation diamond
+        result target rest prefixOccurrences
+        (leftNodeSourceBlockLabel prefixOccurrences leftBlock _ result leftOrigin)
+        (rightNodeSourceBlockLabel prefixOccurrences rightBlock _ result rightOrigin)
+        restPositions (foldBlockCrossingOriginPlan restPlan)
+
