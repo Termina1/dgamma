@@ -1155,3 +1155,21 @@ o19PrefixGapByCount _ _ _ (O19PrefixMore step firstRest rest firstProof) (O19Pre
 o19PrefixGapByCount _ _ _ (O19PrefixMore step firstRest rest firstProof)
   (O19PrefixMore _ secondRest _ secondProof) (LTESucc smaller) =
   o19PrefixGapCons step firstRest secondRest (o19PrefixGapByCount firstRest secondRest rest firstProof secondProof smaller)
+
+||| BOTH actual located-block prefixes structurally belong to its original
+||| whole trace, via its OWN exact decomposition and dependent append laws.
+export
+0 o19LocatedBlockPrefixes : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} -> {selected : name} ->
+  {initial, finalState : SystemState name key value world error} -> {source : Transitions initial finalState} ->
+  (block : LocatedOpenEpisodeBlock name key world error value nameEq keyEq selected source) ->
+  (O19TracePrefix (prefixThroughBlock block) source, O19TracePrefix (traceBeforeBlock block) source)
+o19LocatedBlockPrefixes block =
+  (replace {p = O19TracePrefix (prefixThroughBlock block)}
+    (trans (appendTransitionsAssociative (prefixToBlockOpening block) (blockBody block) (traceAfterBlock block))
+      (trans (appendTransitionsAssociative (traceBeforeBlock block) (MoreTransitions (beginTransition (blockOpening block)) NoTransitions)
+        (appendTransitions (blockBody block) (traceAfterBlock block))) (blockDecomposition block)))
+    (o19PrefixAppended (prefixThroughBlock block) (traceAfterBlock block)),
+   replace {p = O19TracePrefix (traceBeforeBlock block)} (blockDecomposition block)
+    (o19PrefixAppended (traceBeforeBlock block)
+      (MoreTransitions (beginTransition (blockOpening block)) (appendTransitions (blockBody block) (traceAfterBlock block)))))
