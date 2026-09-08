@@ -122,3 +122,43 @@ o20ObservedBeginsMetadata nameEq keyEq renaming actor leftBefore leftAfter right
     {right = MkFiber (beginObservedComponent right) (beginObservedParent right) False (beginObservedTable right) (Inactive Nothing)}
     (o20PresentControl (rewrite sym (beginObservedFound left) in
       rewrite sym (beginObservedFound right) in allNameControls paired actor))
+
+||| B7 stop gate authorized DISTINCT shared-COMPONENT boundary. The common
+||| runtime component is explicit and authenticated at BOTH actual source
+||| lookups, with both actual resolver equations. No projected-record equality
+||| is eliminated, and this is NOT a reattempt/claim of the general B7 theorem.
+export
+0 o20SharedComponentBeginControl :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (renaming : NameBijection name) -> (actor : name) ->
+  (component : Component key value world error) -> (leftParent, rightParent : Parent name) ->
+  (leftTable, rightTable : OwnedTable key value (componentProvisions component)) ->
+  (leftView, rightView : View name (dependencies (componentDependencies component))) ->
+  (left, right : SystemState name key value world error) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor (registry left) =
+    Just (MkFiber component leftParent False leftTable (Inactive Nothing))) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} (renameForward renaming actor) (registry right) =
+    Just (MkFiber component rightParent False rightTable (Inactive Nothing))) ->
+  (resolveView {name} {key} {value} {world} {error} @{nameEq} @{keyEq}
+    (dependencies (componentDependencies component)) (registry left) = Just leftView) ->
+  (resolveView {name} {key} {value} {world} {error} @{nameEq} @{keyEq}
+    (dependencies (componentDependencies component)) (registry right) = Just rightView) ->
+  O20AllNameCut name key world error value nameEq renaming left right ->
+  (pairwiseProvisionInvariant {name} {key} {value} {world} {error} @{keyEq} (bindings (registry right)) = True) ->
+  FiberRelatedBy renaming
+    (MkFiber component leftParent False leftTable (Reloading (componentProgram component) id leftView))
+    (MkFiber component rightParent False rightTable (Reloading (componentProgram component) id rightView))
+o20SharedComponentBeginControl {name} {key} {world} {error} {value} nameEq keyEq renaming actor
+  component leftParent rightParent leftTable rightTable leftView rightView
+  (MkSystemState leftWorld leftRegistry) (MkSystemState rightWorld rightRegistry)
+  leftFound rightFound leftResolved rightResolved paired pairwise =
+    RenamedFibers leftParent rightParent False False leftTable rightTable
+      (Reloading (componentProgram component) id leftView) (Reloading (componentProgram component) id rightView)
+      (snd (o20RelatedFiberMetadata
+        {left = MkFiber component leftParent False leftTable (Inactive Nothing)}
+        {right = MkFiber component rightParent False rightTable (Inactive Nothing)}
+        (o20PresentControl (rewrite sym leftFound in rewrite sym rightFound in allNameControls paired actor))))
+      Refl (RenamedReloading Refl localStateRuntimeReflexive
+        (pairedActualResolvedViews name key world error value nameEq keyEq renaming
+          (dependencies (componentDependencies component)) leftWorld rightWorld leftRegistry rightRegistry
+          (allNameEffects paired) pairwise leftView rightView leftResolved rightResolved))
