@@ -501,3 +501,25 @@ o19BubbleObservedBeginRow {name} {key} {world} {error} {value}
           (replace {p = AlignedTransitions name key world error value nameEq keyEq}
             (sym decomposition) (replayAligned premises))))
         (replayInitialWellFormed premises))
+
+||| Producer-owned observation constructor: obtain the exact resolver record
+||| from the ACTUAL checked OInsert. Callers provide no resolver equations.
+export
+0 o19ObserveInsertionCons :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) -> (deps : List key) ->
+  {before, middle, finalState : SystemState name key value world error} ->
+  (child : name) -> (parent : Parent name) -> (component : Component key value world error) ->
+  (tag : RuleTag) ->
+  (checked : checkedApplyAction @{nameEq} @{keyEq} (OInsert child parent component) before = Just (tag, middle)) ->
+  (rest : Transitions middle finalState) ->
+  Not (actor = child) ->
+  ((licensor : name) -> (parent = ChildOf licensor) -> Not (actor = licensor)) ->
+  O19ObservedInsertions name key world error value nameEq keyEq actor deps rest ->
+  O19ObservedInsertions name key world error value nameEq keyEq actor deps
+    (MoreTransitions (Fired {before} {afterState = middle} nameEq keyEq
+      (OInsert child parent component) tag checked) rest)
+o19ObserveInsertionCons {before} {middle} nameEq keyEq actor deps child parent component tag checked
+  rest childSafe parentSafe remaining =
+    ObservedInsertionsStep child parent component tag checked rest childSafe parentSafe
+      (o19ResolutionAfterCheckedInsert nameEq keyEq deps child parent component before middle tag checked) remaining
