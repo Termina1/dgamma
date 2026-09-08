@@ -71,3 +71,26 @@ o20InstalledHeadResolverObserved {name} {key} {world} {error} {value} nameEq key
         (replace {p = \component => Elem wanted (dependencies (componentProvisions component))}
           (sym (installedTracePreservesComponent nameEq keyEq actor (MoreTransitions (Fired nameEq keyEq action tag checked) rest)
             (InstalledStep action tag checked rest installed tailInstalled) old lastFiber found lastFound)) provided))
+
+||| Observe the actual installed source exactly once at the native boundary.
+export
+0 o20InstalledHeadResolver :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) -> (deps : List key) ->
+  (before, middle, finalState : SystemState name key value world error) ->
+  (action : Action name key value world error) -> (tag : RuleTag) ->
+  (checked : checkedApplyAction {name} {key} {value} {world} {error} @{nameEq} @{keyEq} action before = Just (tag, middle)) ->
+  (actionOwner action = actor) ->
+  (rest : Transitions middle finalState) ->
+  (installedAt {name} {key} {value} {world} {error} @{nameEq} actor before = True) ->
+  InstalledTrace name key world error value nameEq keyEq actor rest ->
+  (lastFiber : Fiber name key value world error) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor (registry finalState) = Just lastFiber) ->
+  ((wanted : key) -> Elem wanted deps -> Not (Elem wanted (dependencies (componentProvisions (fiberComponent lastFiber))))) ->
+  (resolveView {name} {key} {value} {world} {error} @{nameEq} @{keyEq} deps (registry middle) =
+   resolveView {name} {key} {value} {world} {error} @{nameEq} @{keyEq} deps (registry before))
+o20InstalledHeadResolver {name} {key} {world} {error} {value} nameEq keyEq actor deps before middle finalState
+  action tag checked owned rest installed tailInstalled lastFiber lastFound excluded =
+    o20InstalledHeadResolverObserved nameEq keyEq actor deps before middle finalState action tag checked owned rest
+      installed tailInstalled lastFiber lastFound excluded
+      (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor (registry before)) Refl
