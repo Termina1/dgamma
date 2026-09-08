@@ -165,3 +165,30 @@ o19ObservedAOReplay nameEq keyEq protocol swap original blocks premises safety u
   (ObservedAO child component inserted leftActivation distinct licensing) =
     o19ActivationInsertReplay nameEq keyEq protocol child (ChildOf (actorRight swap)) component (cursorTrace cursor)
       earlier left right later decomposition (cursorBundle cursor) leftActivation inserted distinct licensing
+
+||| Single-observation generated O/O producer: actual children/components,
+||| action equations, cross-licensing and right tag feed the proven real node.
+export
+0 o19ObservedOOReplay :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (protocol : RegistrationProtocol key value world error) ->
+  {sourceOrder, targetOrder : List name} -> (swap : AdjacentActorOrderSwap name sourceOrder targetOrder) ->
+  {initial, originalFinal, first, middle, last : SystemState name key value world error} ->
+  (original : Transitions initial originalFinal) ->
+  (blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder original) ->
+  (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq original) ->
+  (safety : AdjacentActorSwapSafety name key world error value protocol nameEq keyEq swap original blocks premises) ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq original ->
+  (cursor : O19ReachedCursor name key world error value protocol nameEq keyEq original) ->
+  (earlier : Transitions initial first) -> (left : Transition first middle) -> (right : Transition middle last) ->
+  (later : Transitions last (cursorFinal cursor)) ->
+  (appendTransitions earlier (MoreTransitions left (MoreTransitions right later)) = cursorTrace cursor) ->
+  {leftOrchestration : PaperOrchestrationStep left} -> {rightOrchestration : PaperOrchestrationStep right} ->
+  O19PairObservation name key world error value (actorLeft swap) (actorRight swap) left right
+    (AdjacentOrchestrationOrchestration left right leftOrchestration rightOrchestration) ->
+  (diamond : LocalRelationalDiamond name key world error value nameEq keyEq left right **
+    AdjacentSwapResult name key world error value protocol nameEq keyEq (cursorTrace cursor) earlier left right later diamond)
+o19ObservedOOReplay nameEq keyEq protocol swap original blocks premises safety unique cursor earlier left right later decomposition
+  (ObservedOO leftChild rightChild leftComponent rightComponent leftInsert rightInsert distinct leftLicense rightLicense tag) =
+    o19GeneratedInsertionReplay nameEq keyEq protocol leftChild rightChild (actorLeft swap) (actorRight swap) leftComponent rightComponent
+      (cursorTrace cursor) earlier left right later decomposition (cursorBundle cursor) leftInsert rightInsert distinct leftLicense rightLicense tag
