@@ -42,3 +42,7 @@ r193FrameChild = fromMaybe r193FrameStart (applyTagged OInsertTag (OInsert 3 (Ch
 public export
 r193FrameEnd : SystemState Nat ToyKey ToyValue ToyRuntime String
 r193FrameEnd = fromMaybe r193FrameChild (applyTagged LFinishTag (LAdvance 2) r193FrameChild)
+
+public export
+r193FrameRightStart : SystemState Nat ToyKey ToyValue ToyRuntime String
+r193FrameRightStart = fromMaybe r193FrameEnd (applyTagged LBeginTag (LBegin 1) r193FrameEnd)
