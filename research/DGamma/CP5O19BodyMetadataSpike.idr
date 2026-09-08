@@ -391,3 +391,50 @@ o19ReplayedCutMetadata {name} {key} {world} {error} {value} nameEq keyEq protoco
           (fst (alignedAppendSplit currentEarlier currentLater
             (replace {p = AlignedTransitions name key world error value nameEq keyEq} (sym currentExact) (replayAligned reachedPremises))))
           (replayInitialEmpty reachedPremises) actor currentFiber currentFound))
+
+||| Consume the ACTUAL F8 package once; its exact component exclusion is
+||| transported to arbitrary reached body cuts through real replay origins.
+||| No target dependency list, reached safety or metadata equation is assumed.
+export
+0 o19ReplayedExclusionObservedOpenings :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {initial, base, leftOpened, rightOpened, leftCut, rightCut, originalFinal, reachedFinal : SystemState name key value world error} ->
+  (original : Transitions initial originalFinal) -> (reached : Transitions initial reachedFinal) ->
+  (baseEarlier : Transitions initial base) -> (baseLater : Transitions base originalFinal) ->
+  (appendTransitions baseEarlier baseLater = original) ->
+  (leftEarlier : Transitions initial leftCut) -> (leftLater : Transitions leftCut reachedFinal) ->
+  (appendTransitions leftEarlier leftLater = reached) ->
+  (rightEarlier : Transitions initial rightCut) -> (rightLater : Transitions rightCut reachedFinal) ->
+  (appendTransitions rightEarlier rightLater = reached) ->
+  ReplayInvariantBundle name key world error value protocol nameEq keyEq original ->
+  ReplayInvariantBundle name key world error value protocol nameEq keyEq reached ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq original ->
+  ActionRegistrationReplayCorrespondence name key world error value original reached ->
+  (leftActor, rightActor : name) ->
+  (openingFacts : (leftSeen : O20BeginObservation name key world error value nameEq keyEq leftActor base leftOpened **
+    rightSeen : O20BeginObservation name key world error value nameEq keyEq rightActor base rightOpened **
+    (wanted : key) -> Elem wanted (dependencies (componentDependencies (beginObservedComponent rightSeen))) ->
+    Not (Elem wanted (dependencies (componentProvisions (beginObservedComponent leftSeen)))))) ->
+  (leftNow, rightNow : Fiber name key value world error) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} leftActor (registry leftCut) = Just leftNow) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} rightActor (registry rightCut) = Just rightNow) ->
+  ((wanted : key) -> Elem wanted (dependencies (componentDependencies (fiberComponent rightNow))) ->
+    Not (Elem wanted (dependencies (componentProvisions (fiberComponent leftNow)))))
+o19ReplayedExclusionObservedOpenings nameEq keyEq protocol original reached
+  baseEarlier baseLater baseExact leftEarlier leftLater leftExact rightEarlier rightLater rightExact
+  originalPremises reachedPremises unique correspondence leftActor rightActor (leftSeen ** (rightSeen ** excluded))
+  leftNow rightNow leftFound rightFound =
+    replace {p = \component => (wanted : key) -> Elem wanted (dependencies (componentDependencies component)) ->
+      Not (Elem wanted (dependencies (componentProvisions (fiberComponent leftNow))))}
+      (cong snd (o19ReplayedCutMetadata nameEq keyEq protocol original reached baseEarlier baseLater baseExact
+        rightEarlier rightLater rightExact originalPremises reachedPremises unique correspondence rightActor
+        (MkFiber (beginObservedComponent rightSeen) (beginObservedParent rightSeen) False (beginObservedTable rightSeen) (Inactive Nothing))
+        rightNow (beginObservedFound rightSeen) rightFound))
+      (replace {p = \component => (wanted : key) -> Elem wanted (dependencies (componentDependencies (beginObservedComponent rightSeen))) ->
+        Not (Elem wanted (dependencies (componentProvisions component)))}
+        (cong snd (o19ReplayedCutMetadata nameEq keyEq protocol original reached baseEarlier baseLater baseExact
+          leftEarlier leftLater leftExact originalPremises reachedPremises unique correspondence leftActor
+          (MkFiber (beginObservedComponent leftSeen) (beginObservedParent leftSeen) False (beginObservedTable leftSeen) (Inactive Nothing))
+          leftNow (beginObservedFound leftSeen) leftFound)) excluded)
