@@ -55,3 +55,10 @@ A17/A18 exclude failed/diverted lifecycle branches from full actual blocks and
 accepted canonical capital via existing no-unload absorption. They do not
 exclude orchestration Remove. Complete unilateral roles and paired extraction
 follow; no protected convergence-body attempt yet.
+
+A20-1 was a runner-path integration failure (absolute source dirs + relative
+--check rejected before any Building, exit1/fresh=false). Counted as attempt1,
+not a proof PASS. A20-2 uses both absolute dirs and absolute target; own-target
+Building authenticated against either spelling. PASS2, exact-source committed.
+No compiler orphaned; lane2 compiler recorded separately. Runner changed only
+path spellings; seeded TTC retained. Main's callback/roles path stays research-only.

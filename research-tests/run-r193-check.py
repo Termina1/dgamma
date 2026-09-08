@@ -74,7 +74,7 @@ else:
     target.touch()
     if path.startswith('research-tests/'):
         command += ['--source-dir', str(ROOT/'research-tests')]
-    command += ['--check', path]
+    command += ['--check', str(target)]
 (OUT/(unit+'.source')).write_bytes(snapshot)
 # Supervisor-approved worktree-scoped concurrency and shared heavy lock.
 heavy_paths = set(json.loads((ROOT/'research-tests/O6-R193-HEAVY-PATHS.json').read_text()))
@@ -146,7 +146,7 @@ with (OUT/(unit+'.log')).open('w') as log:
         if maximum > 48*1024*1024 and not interrupted:
             stop(signal.SIGTERM, None)
 text = (OUT/(unit+'.log')).read_text()
-fresh = path == 'package' or bool(re.search(r'^\d+/\d+: Building DGamma\.'+re.escape(pathlib.Path(path).stem)+r' \('+re.escape(path)+r'\)$', text, re.M))
+fresh = path == 'package' or bool(re.search(r'^\d+/\d+: Building DGamma\.'+re.escape(pathlib.Path(path).stem)+r' \('+r'(?:'+re.escape(path)+'|'+re.escape(str(ROOT/path))+r')\)$', text, re.M))
 passed = fresh and not interrupted and (process.returncode == 0 and 'Error:' not in text if not diagnostic
           else process.returncode != 0 and diagnostic in text and (not symbol or symbol in text))
 record = dict(unit=unit,path=path,command=command,start=started,
