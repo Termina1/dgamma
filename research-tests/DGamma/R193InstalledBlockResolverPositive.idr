@@ -30,3 +30,7 @@ r193FrameBefore = fromMaybe initialSystem (do
   active <- applyTagged LFinishTag (LAdvance 0) iterated
   leftAdded <- applyTagged OInsertTag (OInsert 2 Root emptyConsumerComponent) active
   applyTagged OInsertTag (OInsert 1 Root emptyConsumerComponent) leftAdded)
+
+public export
+r193FrameStart : SystemState Nat ToyKey ToyValue ToyRuntime String
+r193FrameStart = fromMaybe r193FrameBefore (applyTagged LBeginTag (LBegin 2) r193FrameBefore)
