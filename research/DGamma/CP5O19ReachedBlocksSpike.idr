@@ -24,6 +24,7 @@ import DGamma.CP5O19AdjacentReplayProducerSpike
 import DGamma.CP5O19SameChainAssemblySpike
 import Data.List
 import Data.List.Elem
+import Data.List.HasLength as HL
 import Data.Nat
 import Decidable.Equality
 
@@ -465,3 +466,18 @@ o19ActualFinalActive {sourceFinal} nameEq keyEq protocol swap source blocks prem
     (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected (registry sourceFinal))
     (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected (registry (cursorFinal (columnCursor (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique))))) Refl Refl
     (controlPointwise (replayedControls (o19FiniteEndpoint nameEq keyEq (cursorDerivation (columnCursor (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique))) (replayFinalWellFormed premises))) selected))) active
+
+||| Cancel one common final action from explicit words. Impossible unequal
+||| empty/nonempty cases use exact append lengths, not action decidability.
+export
+0 o19SnocInjective : {item : Type} -> (first, second : List item) -> (last : item) ->
+  (first ++ [last] = second ++ [last]) -> (first = second)
+o19SnocInjective [] [] last exact = Refl
+o19SnocInjective [] (head :: rest) last exact =
+  void (uninhabited (trans (cong length exact)
+    (cong S (trans (HL.hasLengthUnique (HL.hasLength (rest ++ [last])) (HL.hasLengthAppend (HL.hasLength rest) (HL.hasLength [last]))) (plusCommutative (length rest) 1)))))
+o19SnocInjective (head :: rest) [] last exact =
+  void (uninhabited (trans (cong length (sym exact))
+    (cong S (trans (HL.hasLengthUnique (HL.hasLength (rest ++ [last])) (HL.hasLengthAppend (HL.hasLength rest) (HL.hasLength [last]))) (plusCommutative (length rest) 1)))))
+o19SnocInjective (first :: firstRest) (second :: secondRest) last exact =
+  cong2 (::) (fst (consInjective exact)) (o19SnocInjective firstRest secondRest last (snd (consInjective exact)))
