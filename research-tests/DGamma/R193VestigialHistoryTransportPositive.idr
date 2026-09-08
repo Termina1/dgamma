@@ -100,3 +100,30 @@ public export
 r193HistoricalBirth = MkLocatedGeneratedRegistration r45AfterBegin r45SourcePairFinal
   (MoreTransitions r45ParentInsert (MoreTransitions r45Begin NoTransitions))
   r45ChildInsert r193HistoricalContinuation Refl Refl
+
+||| BOTH actual scanners discard the child's generation because its original
+||| parent episode really closes. Discard membership is trace-derived, never
+||| inserted by an endpoint predicate or inferred merely from inactivity.
+public export
+0 r193HistoricalTree : RegistrationCorrespondenceByGeneration r45NameEq
+  identityRegistrationGenerationBijection r193HistoricalClosedTrace r193HistoricalClosedTrace
+r193HistoricalTree = MkRegistrationCorrespondenceByGeneration
+  (MkRegistrationIndexState [(0, MkRegistrationGeneration 0 0), (1, MkRegistrationGeneration 1 2)] [] [] [MkRegistrationGeneration 1 2])
+  (MkRegistrationIndexState [(0, MkRegistrationGeneration 0 0), (1, MkRegistrationGeneration 1 2)] [] [] [MkRegistrationGeneration 1 2])
+  (SkipLeftNonRegistration (OInsert 0 Root r45Parent) r45ParentInsert (MoreTransitions r45Begin (MoreTransitions r45ChildInsert r193HistoricalContinuation)) Refl Refl
+    (SkipRightNonRegistration (OInsert 0 Root r45Parent) r45ParentInsert (MoreTransitions r45Begin (MoreTransitions r45ChildInsert r193HistoricalContinuation)) Refl Refl
+    (SkipLeftNonRegistration (LBegin 0) r45Begin (MoreTransitions r45ChildInsert r193HistoricalContinuation) Refl Refl
+    (SkipRightNonRegistration (LBegin 0) r45Begin (MoreTransitions r45ChildInsert r193HistoricalContinuation) Refl Refl
+    (DiscardLeftDeletedRegistration r45ChildInsert r193HistoricalContinuation Refl (MkDeletedClosingRegistration (MkRegistrationActivation (MkRegistrationGeneration 0 0) 1) Refl (ActionOccursLater r178ParentFinish (MoreTransitions r178ChildRetire (MoreTransitions r193HistoricalRetire (MoreTransitions r193HistoricalLeave (MoreTransitions r193HistoricalUnload NoTransitions)))) (ActionOccursLater r178ChildRetire (MoreTransitions r193HistoricalRetire (MoreTransitions r193HistoricalLeave (MoreTransitions r193HistoricalUnload NoTransitions))) (ActionOccursLater r193HistoricalRetire (MoreTransitions r193HistoricalLeave (MoreTransitions r193HistoricalUnload NoTransitions)) (ActionOccursLater r193HistoricalLeave (MoreTransitions r193HistoricalUnload NoTransitions) (ActionOccursHere r193HistoricalUnload NoTransitions Refl))))))
+    (DiscardRightDeletedRegistration r45ChildInsert r193HistoricalContinuation Refl (MkDeletedClosingRegistration (MkRegistrationActivation (MkRegistrationGeneration 0 0) 1) Refl (ActionOccursLater r178ParentFinish (MoreTransitions r178ChildRetire (MoreTransitions r193HistoricalRetire (MoreTransitions r193HistoricalLeave (MoreTransitions r193HistoricalUnload NoTransitions)))) (ActionOccursLater r178ChildRetire (MoreTransitions r193HistoricalRetire (MoreTransitions r193HistoricalLeave (MoreTransitions r193HistoricalUnload NoTransitions))) (ActionOccursLater r193HistoricalRetire (MoreTransitions r193HistoricalLeave (MoreTransitions r193HistoricalUnload NoTransitions)) (ActionOccursLater r193HistoricalLeave (MoreTransitions r193HistoricalUnload NoTransitions) (ActionOccursHere r193HistoricalUnload NoTransitions Refl))))))
+    (SkipLeftNonRegistration (LAdvance 0) r178ParentFinish (MoreTransitions r178ChildRetire (MoreTransitions r193HistoricalRetire (MoreTransitions r193HistoricalLeave (MoreTransitions r193HistoricalUnload NoTransitions)))) Refl Refl
+    (SkipRightNonRegistration (LAdvance 0) r178ParentFinish (MoreTransitions r178ChildRetire (MoreTransitions r193HistoricalRetire (MoreTransitions r193HistoricalLeave (MoreTransitions r193HistoricalUnload NoTransitions)))) Refl Refl
+    (SkipLeftNonRegistration (ORetire 1) r178ChildRetire (MoreTransitions r193HistoricalRetire (MoreTransitions r193HistoricalLeave (MoreTransitions r193HistoricalUnload NoTransitions))) Refl Refl
+    (SkipRightNonRegistration (ORetire 1) r178ChildRetire (MoreTransitions r193HistoricalRetire (MoreTransitions r193HistoricalLeave (MoreTransitions r193HistoricalUnload NoTransitions))) Refl Refl
+    (SkipLeftNonRegistration (ORetire 0) r193HistoricalRetire (MoreTransitions r193HistoricalLeave (MoreTransitions r193HistoricalUnload NoTransitions)) Refl Refl
+    (SkipRightNonRegistration (ORetire 0) r193HistoricalRetire (MoreTransitions r193HistoricalLeave (MoreTransitions r193HistoricalUnload NoTransitions)) Refl Refl
+    (SkipLeftNonRegistration (LLeave 0) r193HistoricalLeave (MoreTransitions r193HistoricalUnload NoTransitions) Refl Refl
+    (SkipRightNonRegistration (LLeave 0) r193HistoricalLeave (MoreTransitions r193HistoricalUnload NoTransitions) Refl Refl
+    (SkipLeftNonRegistration (LUnload 0) r193HistoricalUnload NoTransitions Refl Refl
+    (SkipRightNonRegistration (LUnload 0) r193HistoricalUnload NoTransitions Refl Refl
+    (RegistrationCorrespondenceEnd)))))))))))))))))
