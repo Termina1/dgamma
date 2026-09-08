@@ -35,3 +35,15 @@ o19OriginsAtSitesAppend originalMap [] second = Refl
 o19OriginsAtSitesAppend originalMap (point :: rest) second =
   cong ((originalMap point, originalMap (S point)) ::)
     (o19OriginsAtSitesAppend (\position => originalMap (fst (adjacentSwapOrdinalExhaustive point position))) rest second)
+
+||| Closed-form ordinal pull for one right node rotated before width left
+||| nodes at start. Prefix positions are fixed; the interval rotates right.
+||| This simple executable form is proved equal to actual row sites below.
+public export
+o19RowPull : Nat -> Nat -> Nat -> Nat
+o19RowPull Z Z position = position
+o19RowPull Z (S width) Z = S width
+o19RowPull Z (S width) (S Z) = Z
+o19RowPull Z (S width) (S (S position)) = S (o19RowPull Z width (S position))
+o19RowPull (S start) width Z = Z
+o19RowPull (S start) width (S position) = S (o19RowPull start width position)
