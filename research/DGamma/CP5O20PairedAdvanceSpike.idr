@@ -159,3 +159,34 @@ o20ObservedOwnerTablesAgree {name} {key} {world} {error} {value} nameEq renaming
       (trans (synchronizedTables (allNameEffects paired) actor)
         (cong bindings (pairedProjectOwnerTableObserved name key world error value nameEq rightWorld
           rightRegistry (renameForward renaming actor) (Just rightFiber) rightFound)))
+
+||| ACTUAL zero-program Finish: both checked guards/outputs are authenticated.
+||| Complete ordered tables, ambient and all-name control are derived from
+||| the pre-cut, including the old pointwise undo relation and captured views.
+export
+0 o20PairedObservedEmptyFinishCut :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (renaming : NameBijection name) -> (actor : name) ->
+  (component : Component key value world error) ->
+  (leftParent, rightParent : Parent name) -> (leftRetired, rightRetired : Bool) ->
+  (leftTable, rightTable : OwnedTable key value (componentProvisions component)) ->
+  (leftOlder, rightOlder : LocalState key value world (componentProvisions component) -> LocalState key value world (componentProvisions component)) ->
+  (leftView, rightView : View name (dependencies (componentDependencies component))) ->
+  (leftWorld, rightWorld : world) -> (leftRegistry, rightRegistry : Registry name key value world error) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor leftRegistry = Just (MkFiber component leftParent leftRetired leftTable (Reloading [] leftOlder leftView))) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} (renameForward renaming actor) rightRegistry = Just (MkFiber component rightParent rightRetired rightTable (Reloading [] rightOlder rightView))) ->
+  (checkedApplyAction {name} {key} {value} {world} {error} @{nameEq} @{keyEq} (LAdvance actor) (MkSystemState leftWorld leftRegistry) = Just (LFinishTag, (MkSystemState leftWorld (replaceBinding @{nameEq} actor (MkFiber component leftParent leftRetired leftTable (Active leftOlder leftView)) leftRegistry)))) ->
+  (checkedApplyAction {name} {key} {value} {world} {error} @{nameEq} @{keyEq} (LAdvance (renameForward renaming actor)) (MkSystemState rightWorld rightRegistry) = Just (LFinishTag, (MkSystemState rightWorld (replaceBinding @{nameEq} (renameForward renaming actor) (MkFiber component rightParent rightRetired rightTable (Active rightOlder rightView)) rightRegistry)))) ->
+  O20AllNameCut name key world error value nameEq renaming (MkSystemState leftWorld leftRegistry) (MkSystemState rightWorld rightRegistry) ->
+  O20AllNameCut name key world error value nameEq renaming (MkSystemState leftWorld (replaceBinding @{nameEq} actor (MkFiber component leftParent leftRetired leftTable (Active leftOlder leftView)) leftRegistry)) (MkSystemState rightWorld (replaceBinding @{nameEq} (renameForward renaming actor) (MkFiber component rightParent rightRetired rightTable (Active rightOlder rightView)) rightRegistry))
+o20PairedObservedEmptyFinishCut {error} nameEq keyEq renaming actor component leftParent rightParent leftRetired rightRetired
+  leftTable rightTable leftOlder rightOlder leftView rightView leftWorld rightWorld leftRegistry rightRegistry
+  leftFound rightFound leftChecked rightChecked paired =
+    case o20ReloadingControlParts (o20PresentControl {left = (MkFiber component leftParent leftRetired leftTable (Reloading [] leftOlder leftView))} {right = (MkFiber component rightParent rightRetired rightTable (Reloading [] rightOlder rightView))}
+      (rewrite sym leftFound in rewrite sym rightFound in allNameControls paired actor)) of
+      (parents, retiredSame, older, views) =>
+        o20PairedRuntimeReplacementCut nameEq keyEq renaming actor leftWorld rightWorld leftWorld rightWorld
+          (MkFiber component leftParent leftRetired leftTable (Reloading [] leftOlder leftView)) (MkFiber component rightParent rightRetired rightTable (Reloading [] rightOlder rightView)) (MkFiber component leftParent leftRetired leftTable (Active leftOlder leftView)) (MkFiber component rightParent rightRetired rightTable (Active rightOlder rightView)) leftRegistry rightRegistry leftFound rightFound (synchronizedAmbient (allNameEffects paired))
+          (o20ObservedOwnerTablesAgree nameEq renaming actor leftWorld rightWorld leftRegistry rightRegistry (MkFiber component leftParent leftRetired leftTable (Reloading [] leftOlder leftView)) (MkFiber component rightParent rightRetired rightTable (Reloading [] rightOlder rightView)) leftFound rightFound paired)
+          (RenamedFibers leftParent rightParent leftRetired rightRetired leftTable rightTable
+            (Active leftOlder leftView) (Active rightOlder rightView) parents retiredSame (RenamedActive {error} older views)) paired
