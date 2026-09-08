@@ -4,6 +4,7 @@ import DGamma.Calculus
 import DGamma.Coeffects
 import DGamma.Metatheory
 import DGamma.CP3
+import DGamma.CP5ActorLifecycleOnlyExtended
 import Decidable.Equality
 
 %default total
@@ -48,3 +49,28 @@ retireExchangeInContext {nameEq} {keyEq} {child} earlier left right later
   appendTransitions earlier
     (MoreTransitions (Fired nameEq keyEq (ORetire child) ORetireTag earlyChecked)
       (MoreTransitions (Fired nameEq keyEq (transitionAction left) (transitionTag left) laterChecked) later))
+
+||| Concatenate two actual extended actor bodies, preserving the source
+||| lookup and child-parent evidence carried by each retirement/removal edge.
+export
+0 appendActorLifecycleOnlyExtended :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {selected : name} ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (left : Transitions first middle) -> (right : Transitions middle finalState) ->
+  ActorLifecycleOnlyExtended nameEq selected left ->
+  ActorLifecycleOnlyExtended nameEq selected right ->
+  ActorLifecycleOnlyExtended nameEq selected (appendTransitions left right)
+appendActorLifecycleOnlyExtended _ right ExtendedLifecycleEnd rightOnly = rightOnly
+appendActorLifecycleOnlyExtended _ right (ExtendedLifecycleStep step rest life owned only) rightOnly =
+  ExtendedLifecycleStep step (appendTransitions rest right) life owned
+    (appendActorLifecycleOnlyExtended rest right only rightOnly)
+appendActorLifecycleOnlyExtended _ right (ExtendedYieldedRegistrationStep step rest yielded only) rightOnly =
+  ExtendedYieldedRegistrationStep step (appendTransitions rest right) yielded
+    (appendActorLifecycleOnlyExtended rest right only rightOnly)
+appendActorLifecycleOnlyExtended _ right (ExtendedChildRetireStep step rest child fiber found parentExact action only) rightOnly =
+  ExtendedChildRetireStep step (appendTransitions rest right) child fiber found parentExact action
+    (appendActorLifecycleOnlyExtended rest right only rightOnly)
+appendActorLifecycleOnlyExtended _ right (ExtendedChildRemoveStep step rest child fiber found parentExact action only) rightOnly =
+  ExtendedChildRemoveStep step (appendTransitions rest right) child fiber found parentExact action
+    (appendActorLifecycleOnlyExtended rest right only rightOnly)
