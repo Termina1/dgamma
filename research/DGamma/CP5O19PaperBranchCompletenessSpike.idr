@@ -5,6 +5,8 @@ import DGamma.Calculus
 import DGamma.Coeffects
 import DGamma.Metatheory
 import DGamma.CP3
+import DGamma.CP4DeletionSelectedForeignLifecycleDivert
+import DGamma.CP4DeletionSelectedForeignLifecycleLeave
 import DGamma.CP4DeletionSelectedForeignOrchestration
 import DGamma.CP5CurrentGenerationBirthSpike
 import DGamma.CP5O19AdjacentReplayProducerSpike
@@ -235,3 +237,40 @@ o19PaperAdvanceNoUnloading nameEq keyEq selected before afterState _ checked exc
   (DivertAdvance unloading) = void (excluded unloading)
 o19PaperAdvanceNoUnloading nameEq keyEq selected before afterState _ checked excluded
   (RaiseAdvance unloading) = void (excluded unloading)
+
+||| Classify the real checked lifecycle action when it neither unloads nor
+||| reaches Unloading. Begin's actual tag and Advance's actual branch are
+||| produced; Divert/Leave are contradicted by their exact producer-owned
+||| endpoint equations. These two exclusions are discharged from a block below.
+export
+0 o19LifecyclePaperChecked :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (action : Action name key value world error) -> (tag : RuleTag) ->
+  (before, afterState : SystemState name key value world error) ->
+  (checked : checkedApplyAction @{nameEq} @{keyEq} action before = Just (tag, afterState)) ->
+  (isLifecycleAction action = True) -> Not (action = LUnload (actionOwner action)) ->
+  Not (unloadingEndpoint {name} {key} {value} {world} {error} @{nameEq} (actionOwner action) afterState = True) ->
+  PaperActivationStep (Fired {before} {afterState} nameEq keyEq action tag checked)
+o19LifecyclePaperChecked nameEq keyEq (OInsert actor parent component) tag before afterState checked lifecycle excluded notUnloading = void (uninhabited lifecycle)
+o19LifecyclePaperChecked nameEq keyEq (ORetire actor) tag before afterState checked lifecycle excluded notUnloading = void (uninhabited lifecycle)
+o19LifecyclePaperChecked nameEq keyEq (ORemove actor) tag before afterState checked lifecycle excluded notUnloading = void (uninhabited lifecycle)
+o19LifecyclePaperChecked nameEq keyEq (LBegin actor) tag before afterState checked lifecycle excluded notUnloading =
+  PaperBeginStep Refl (fst (lBeginBoundary nameEq keyEq actor before afterState tag checked))
+o19LifecyclePaperChecked nameEq keyEq (LAdvance actor) tag before afterState checked lifecycle excluded notUnloading =
+  o19PaperAdvanceNoUnloading nameEq keyEq actor before afterState tag checked notUnloading
+    (advanceStructureTheorem nameEq keyEq actor before afterState tag
+      (checkedActionProjects nameEq keyEq (LAdvance actor) before afterState tag checked))
+o19LifecyclePaperChecked nameEq keyEq (LDivert actor) tag (MkSystemState ambient fibers) afterState checked lifecycle excluded notUnloading =
+  void (notUnloading (divertUnloading (abortDivertStructureTheorem nameEq keyEq actor (MkSystemState ambient fibers) afterState
+    (replace {p = \observedTag => applyAction @{nameEq} @{keyEq} (LDivert actor) (MkSystemState ambient fibers) = Just (observedTag, afterState)}
+      (foreignDivertPlanViewTag (divertPlanView (foreignDivertPlanView nameEq keyEq actor ambient fibers tag afterState (checkedActionProjects nameEq keyEq (LDivert actor) (MkSystemState ambient fibers) afterState tag checked)))) (checkedActionProjects nameEq keyEq (LDivert actor) (MkSystemState ambient fibers) afterState tag checked)))))
+o19LifecyclePaperChecked nameEq keyEq (LLeave actor) tag (MkSystemState ambient fibers) afterState checked lifecycle excluded notUnloading =
+  void (notUnloading
+    (replace {p = \state => unloadingEndpoint {name} {key} {value} {world} {error} @{nameEq} actor state = True}
+      (leaveReplayAfterShape (foreignLeaveReplayData (leavePlanView (foreignLeavePlanView nameEq keyEq actor ambient fibers tag afterState (checkedActionProjects nameEq keyEq (LLeave actor) (MkSystemState ambient fibers) afterState tag checked)))))
+      (rewrite lookupReplacedFiber @{nameEq} actor
+        (MkFiber (leaveReplayComponent (foreignLeaveReplayData (leavePlanView (foreignLeavePlanView nameEq keyEq actor ambient fibers tag afterState (checkedActionProjects nameEq keyEq (LLeave actor) (MkSystemState ambient fibers) afterState tag checked))))) (leaveReplayParent (foreignLeaveReplayData (leavePlanView (foreignLeavePlanView nameEq keyEq actor ambient fibers tag afterState (checkedActionProjects nameEq keyEq (LLeave actor) (MkSystemState ambient fibers) afterState tag checked))))) (leaveReplayRetired (foreignLeaveReplayData (leavePlanView (foreignLeavePlanView nameEq keyEq actor ambient fibers tag afterState (checkedActionProjects nameEq keyEq (LLeave actor) (MkSystemState ambient fibers) afterState tag checked))))) (leaveReplayTable (foreignLeaveReplayData (leavePlanView (foreignLeavePlanView nameEq keyEq actor ambient fibers tag afterState (checkedActionProjects nameEq keyEq (LLeave actor) (MkSystemState ambient fibers) afterState tag checked))))) (Active (leaveReplayAccumulator (foreignLeaveReplayData (leavePlanView (foreignLeavePlanView nameEq keyEq actor ambient fibers tag afterState (checkedActionProjects nameEq keyEq (LLeave actor) (MkSystemState ambient fibers) afterState tag checked))))) (leaveReplayView (foreignLeaveReplayData (leavePlanView (foreignLeavePlanView nameEq keyEq actor ambient fibers tag afterState (checkedActionProjects nameEq keyEq (LLeave actor) (MkSystemState ambient fibers) afterState tag checked)))))))
+        (MkFiber (leaveReplayComponent (foreignLeaveReplayData (leavePlanView (foreignLeavePlanView nameEq keyEq actor ambient fibers tag afterState (checkedActionProjects nameEq keyEq (LLeave actor) (MkSystemState ambient fibers) afterState tag checked))))) (leaveReplayParent (foreignLeaveReplayData (leavePlanView (foreignLeavePlanView nameEq keyEq actor ambient fibers tag afterState (checkedActionProjects nameEq keyEq (LLeave actor) (MkSystemState ambient fibers) afterState tag checked))))) (leaveReplayRetired (foreignLeaveReplayData (leavePlanView (foreignLeavePlanView nameEq keyEq actor ambient fibers tag afterState (checkedActionProjects nameEq keyEq (LLeave actor) (MkSystemState ambient fibers) afterState tag checked))))) (leaveReplayTable (foreignLeaveReplayData (leavePlanView (foreignLeavePlanView nameEq keyEq actor ambient fibers tag afterState (checkedActionProjects nameEq keyEq (LLeave actor) (MkSystemState ambient fibers) afterState tag checked))))) (Unloading (leaveReplayAccumulator (foreignLeaveReplayData (leavePlanView (foreignLeavePlanView nameEq keyEq actor ambient fibers tag afterState (checkedActionProjects nameEq keyEq (LLeave actor) (MkSystemState ambient fibers) afterState tag checked))))) (leaveReplayView (foreignLeaveReplayData (leavePlanView (foreignLeavePlanView nameEq keyEq actor ambient fibers tag afterState (checkedActionProjects nameEq keyEq (LLeave actor) (MkSystemState ambient fibers) afterState tag checked))))) Nothing))
+        fibers (trans (leavePlanOwnerFound (foreignLeavePlanView nameEq keyEq actor ambient fibers tag afterState (checkedActionProjects nameEq keyEq (LLeave actor) (MkSystemState ambient fibers) afterState tag checked))) (cong Just (leaveReplayOwnerShape (foreignLeaveReplayData (leavePlanView (foreignLeavePlanView nameEq keyEq actor ambient fibers tag afterState (checkedActionProjects nameEq keyEq (LLeave actor) (MkSystemState ambient fibers) afterState tag checked))))))) in Refl)))
+o19LifecyclePaperChecked nameEq keyEq (LUnload actor) tag before afterState checked lifecycle excluded notUnloading = void (excluded Refl)
