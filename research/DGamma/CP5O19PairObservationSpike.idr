@@ -296,3 +296,35 @@ o19PaperActivationRelabel source reached action tag (PaperIterStep sameAction sa
   PaperIterStep (trans action sameAction) (trans tag sameTag)
 o19PaperActivationRelabel source reached action tag (PaperFinishStep sameAction sameTag) =
   PaperFinishStep (trans action sameAction) (trans tag sameTag)
+
+||| Project one flat SOURCE observation onto the ACTUAL adjacent right node,
+||| using ONLY its producer-owned action/tag/actor equations. No nested Either
+||| or computed existential is eliminated. No applicability/replay is assumed.
+export
+0 o19SourcePairAtReachedRight :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (leftParent, rightParent : name) ->
+  {leftBefore, leftAfter, rightBefore, rightAfter, reachedAfter : SystemState name key value world error} ->
+  (left : Transition leftBefore leftAfter) -> (right : Transition rightBefore rightAfter) ->
+  (reached : Transition leftAfter reachedAfter) ->
+  (transitionAction reached = transitionAction right) -> (transitionTag reached = transitionTag right) ->
+  (transitionActor reached = transitionActor right) ->
+  O19SourcePairObservation name key world error value leftParent rightParent left right ->
+  (orientation : AdjacentSwapOrientationEvidence left reached **
+    O19PairObservation name key world error value leftParent rightParent left reached orientation)
+o19SourcePairAtReachedRight leftParent rightParent left right reached action tag actor
+  (SourceAA leftActivation rightActivation leftOwner rightOwner) =
+    (AdjacentActivationActivation left reached leftActivation (o19PaperActivationRelabel right reached action tag rightActivation) **
+      ObservedAA leftActivation (o19PaperActivationRelabel right reached action tag rightActivation) leftOwner (trans actor rightOwner))
+o19SourcePairAtReachedRight leftParent rightParent left right reached action tag actor
+  (SourceOA child component inserted rightActivation rightOwner childSafe) =
+    (AdjacentOrchestrationActivation left reached (PaperInsertStep inserted) (o19PaperActivationRelabel right reached action tag rightActivation) **
+      ObservedOA child component inserted (o19PaperActivationRelabel right reached action tag rightActivation) (trans actor rightOwner) childSafe)
+o19SourcePairAtReachedRight leftParent rightParent left right reached action tag actor
+  (SourceAO child component inserted leftActivation distinct licensing) =
+    (AdjacentActivationOrchestration left reached leftActivation (PaperInsertStep (trans action inserted)) **
+      ObservedAO child component (trans action inserted) leftActivation distinct licensing)
+o19SourcePairAtReachedRight leftParent rightParent left right reached action tag actor
+  (SourceOO leftChild rightChild leftComponent rightComponent leftInsert rightInsert distinct leftLicense rightLicense rightTag) =
+    (AdjacentOrchestrationOrchestration left reached (PaperInsertStep leftInsert) (PaperInsertStep (trans action rightInsert)) **
+      ObservedOO leftChild rightChild leftComponent rightComponent leftInsert (trans action rightInsert) distinct leftLicense rightLicense (trans tag rightTag))
