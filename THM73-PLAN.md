@@ -3650,3 +3650,19 @@ consumer binder plumbing and serialized guard receipts are specified in
 research-tests/O6-R192-A11-SURFACE-MANIFEST.json and the A8/A10 decision memo.
 A11 is a research-surface correction toward frozen production fidelity,
 NOT a weakening of paper Theorem73 or closure of either protected proof.
+
+### R192 A11 implemented result and retained proof debts
+
+Exact two-line fourth-field scope correction committed `ebaa750e`; supported
+constructor consumers retained with fresh expected PASS. New total erased
+`o20SupportedBridgeFromOwnedCut` derives the ENTIRE scoped fourth clause from
+accepted supported-birth capital, not a opposite-birth callback. Its ALL-name
+cut argument is still input: arbitrary canonical paired execution extraction,
+failure/diversion and convergence remain open. Actual supported-child positive
+and removed-child old-negative/new-vacuous-positive compile. Missing discarded
+generation cannot fake PRESENT vestigial status. Full independent-canonical
+removed fixture, concrete one-/two-sided full vestigial packet and active-fake
+negative are still open. O21's exact declaration/body bytes and proof hole
+are unchanged. Unit C's precise deferred CP3/unfreeze sequence, affected
+clause map and 48-GiB serialized seeded rebuild protocol are in the owner memo.
+No production edits/build-seed deletion or O17 construction occurred in R192.

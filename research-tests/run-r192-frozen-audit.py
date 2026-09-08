@@ -97,7 +97,7 @@ local_time = datetime.datetime.fromtimestamp(local_ttc.stat().st_mtime,datetime.
 report = dict(timestamp=datetime.datetime.now(datetime.timezone.utc).isoformat(),head=git('rev-parse','HEAD').strip(),start=START,
     O19Closed=closed,ratifiedMovedDeclarations=names,holes=holes,split=[len(holes[p]) for p in PARTS],productionDiffVs34b21c9='empty',CP3Blob=git('hash-object','src/DGamma/CP3.idr').strip(),
     LocalDiamondDiffVsStart='empty',LocalDiamondUnchanged=True,LocalDiamondAuthorizedVisibility=visibility,CanonicalSortDiffVsStart='empty',CanonicalSortAuthorizedVisibility={},DeletionChainDiffVsStart='empty',
-    CrossTraceDiffVsStart='empty',RenamingCompositionDiffVsStart='empty',
+    CrossTraceDiffVsStart='empty',RenamingCompositionDiffVsStart='exact owner-gated two-line A11 fourth-field support premise',
     adjacentFullBytes=1470,adjacentFullSHA256=full,adjacentStatementBytes=1154,adjacentStatementSHA256=statement,reviewSHA256=review,
     seeds='207/207',LocalDiamondTTC=dict(bytes=local_ttc.stat().st_size,mtimeUTC=local_time),changedIdrisFiles=changed,A11SurfaceRevision={k:v for k,v in a11.items() if k != 'items'},
     sourceSHA256={p:sha((ROOT/p).read_bytes()) for p in changed},protectedDeclarationSHA256=protected,prohibitedAdditions=prohibited,

@@ -213,3 +213,76 @@ consumer binder plumbing and serialized guard receipts are specified in
 research-tests/O6-R192-A11-SURFACE-MANIFEST.json and the A8/A10 decision memo.
 A11 is a research-surface correction toward frozen production fidelity,
 NOT a weakening of paper Theorem73 or closure of either protected proof.
+
+## A11 approved revision — retained and bounded side-analysis completed
+
+Exact manifest X1/X2/X3 each passed on attempt1 and was immediately committed
+through the new manifest-authenticated existing-declaration guard. X1
+`ebaa750e` adds ONLY the two supported-premise lines to the fourth field. X2
+`6526bc5d` plumbs the same proof through R8's positive reconstruction. X3
+`4e3273dd` plumbs it through R8's deliberate wrong-generation negative,
+which still rejects the exact declaration with `Mismatch between` (exit1).
+Baseline old negative `A11BASE` rejects at the same generation-equality seam.
+First three fields/constructor/record header and O21 bytes are unchanged;
+production and all other five-module protected declaration bodies remain frozen.
+
+| Bounded side unit | New declaration | Fresh result / commit |
+| --- | --- | --- |
+| D1 | compiler-free premise/conclusion clause audit (pre-approval) | memo `b4fa7bbf` |
+| D2 | `r192RemovedBirthAcceptedBySupportedScope` | PASS1, `52fce9e3` |
+| D3 | `r192ActualSupportedBirth` | PASS1, `638bb89e` |
+| D4 | `r192SupportedBirthScopePositive` | PASS1, `a4922355` |
+| D5 | `o20SupportedBridgeFromOwnedCut` | PASS1, `baece469` |
+| D6 | `r192UnsupportedIsNotVestigialWithoutDiscard` | PASS1, guarded receipt |
+
+D2 accepts precisely the old removed-child countershape only in the new
+unsupported/vacuous branch, not by constructing any right birth. D3/D4 use
+R178's real child Insert/Begin/Finish; actual support is proved from two
+`supportSetIsSolution` clauses on an abstract state and actual primitive
+fiber-lookup observations. No scalar support `Refl` over a nested builder.
+Both occurrence and generation equality are authentic identity for that trace.
+D5 seals the EXACT revised bridge constructor from an owned ALL-name cut and
+accepted independent canonical capital, raw uniqueness, E9 and replay
+correspondence. The fourth clause is entirely derived by the existing
+`supportedReplayedBirthBridge`; no opposite-birth/preservation oracle is input.
+The first-three cut is STILL INPUT: extracting it from arbitrary actual
+canonical paired executions, callbacks/results, failure/diversion is OPEN.
+D6 proves that a present child cannot be labelled vestigial without exact
+membership in the discarded-generation list, even if unsupported/retired.
+
+**D cap6 respected (one analysis + five new declarations); no further proof
+units planned.** X1–X3 were the separately approved surface/consumer edits,
+not renamed fourth attempts on any exhausted A9/B10/C4 seam.
+
+### A11 fixture matrix — exact coverage and honest gaps
+
+1. Removed historical child / old fixed-current field: constructive NEGATIVE
+   `r192E8CurrentDoesNotGiveHistoricalBirth`, six native edges, E8 + Current +
+   nonvacuous E9 Retire/Remove. New scope: D2 PASS (unsupported branch vacuous).
+2. Supported child: D3/D4 nonvacuous actual supported POSITIVE plus D5 generic
+   EXACT revised record constructor from accepted canonical capital.
+3. Generation/origin integrity: R8 positive rebuilt; R8 wrong-generation
+   remains diagnostic-authenticated negative. Wrong-independent-occurrence
+   and independent-parent scheduling regressions included in final serial plan.
+4. Full one-/two-sided PRESENT vestigial package: production fields unchanged;
+   existing R4 conditional canonical-assembly positive scheduled. A concrete
+   full CP3 packet on BOTH sides is NOT newly constructed here. OPEN fixture,
+   not substituted by unsupportedness or shallow retire/inactive facts.
+5. Fake present vestigial: D6 rejects missing discarded-generation membership.
+   A concrete active-fiber fake-vestigial negative is NOT newly constructed.
+6. Removed countershape's full raw-unique + independent canonical/replay
+   triangle and production final-equivalence instance: STILL OPEN. E8/Current/
+   E9 and no raw-name reuse operationally are not claimed as full capital.
+
+Thus A11 corrects research fidelity and solves its supported fourth-clause
+producer; it is NOT an O20/O21/production-confluence proof or counterexample.
+
+## Final validation plan qualification
+
+The immutable serial runner now forwards BOTH expected diagnostic and symbol
+for negative regressions; a nonzero exit alone is never accepted. Report text
+explicitly names the approved two-line RenamingComposition delta instead of
+incorrectly saying that whole module is unchanged. Rebuild inventory is a
+407-module read-only plan (163 production,90 research,154 fixtures), generated
+before D5 and subject to regeneration against an eventual owner-signed CP3 diff.
+No production build/cache action was performed by the inventory generator.

@@ -30,6 +30,8 @@ for item in plan:
     args = ['python3', '-I', str(ROOT/'research-tests/run-r192-check.py'), item['unit'], item['path']]
     if item['expectedDiagnostic']:
         args.append(item['expectedDiagnostic'])
+        assert item.get('symbol'), 'Expected negative requires its authenticated declaration symbol'
+        args.append(item['symbol'])
     print('FINAL START', item['unit'], item['path'], datetime.datetime.now(datetime.timezone.utc).isoformat(), flush=True)
     with (OUT/(item['unit']+'.monitor')).open('w') as monitor:
         result = subprocess.run(args, cwd=ROOT, stdout=monitor, stderr=subprocess.STDOUT)

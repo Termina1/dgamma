@@ -28,7 +28,7 @@ if re.fullmatch(r'V\d+', unit):
     plan_bytes = (OUT/'final-validation-plan.json').read_bytes()
     assert hashlib.sha256(plan_bytes).hexdigest() == (OUT/'final-validation-plan.sha256').read_text().strip(), 'Frozen validation plan changed'
     items = [item for item in json.loads(plan_bytes) if item['unit'] == unit]
-    assert len(items) == 1 and items[0]['path'] == path and items[0]['expectedDiagnostic'] == diagnostic and symbol is None, 'Unplanned validation invocation'
+    assert len(items) == 1 and items[0]['path'] == path and items[0]['expectedDiagnostic'] == diagnostic and items[0].get('symbol') == symbol, 'Unplanned validation invocation'
     planned_source = ROOT/('dgamma.ipkg' if path == 'package' else path)
     assert hashlib.sha256(planned_source.read_bytes()).hexdigest() == items[0]['sourceHash'], 'Validation source is not frozen bytes'
     planned_validation = True

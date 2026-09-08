@@ -296,3 +296,24 @@ Two constructor fixtures (not endpoint theorem consumers) need only the same
 supported binder plumbing: R8 authenticated-direction positive and R8
 wrong-birth negative. Baseline old wrong-birth rejection is fresh/diagnostic-
 authenticated. New matrix/recheck results will be recorded before final freeze.
+
+### A11 realized boundary (D cap6; no further proof units this shift)
+
+The exact two-line field change is committed `ebaa750e`. Constructor consumers
+are revised `6526bc5d`/`4e3273dd`, both exact manifest checks pass including the
+old wrong-generation negative's authenticated rejection. New helper
+`CP5O20SupportedBridgeAssemblySpike.o20SupportedBridgeFromOwnedCut` assembles the
+EXACT revised record from an owned all-name cut and the already accepted
+supported-birth capital. Therefore the revised **fourth** clause now has a
+native producer; actual arbitrary canonical execution→cut extraction remains
+open. O21 statement/body stays byte-identical and its hole stays a hole.
+
+R192 removed historical countershape: old clause logically refuted; new scoped
+instance passes vacuously for the unsupported child. R178 real Active child:
+`r192SupportedBirthScopePositive` proves support and a real birth/generation
+triangle, no caller support premise. `r192UnsupportedIsNotVestigialWithoutDiscard`
+rejects the missing-discarded-generation shortcut for a PRESENT remainder.
+Full independent canonical/replay countershape capital, full one-/two-sided
+present CP3 vestigial instances and a concrete active-fake negative remain OPEN
+fixtures. This is not hidden behind the E8/Current/E9 success or R4's conditional
+assembly test. See the audit's six-row exact fixture matrix and final ledger.
