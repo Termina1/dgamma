@@ -31,17 +31,27 @@ def compiler_scopes():
     return owned, lane2, unknown
 
 phase=sys.argv[1]
-assert phase == 'final'
+assert phase in ['final', 'continue']
 plan_stem = 'final-validation'
 plan = json.loads((OUT/(plan_stem+'-plan.json')).read_text())
+original_units = [p['unit'] for p in plan]
+substitutions = {}
+effective_plan = plan
+if phase == 'continue':
+    import runpy
+    authenticate = runpy.run_path(str(ROOT/'research-tests/r193_validation_continuation.py'))['authenticate']
+    continuation, effective_plan = authenticate(ROOT, OUT)
+    substitutions = continuation['substitutions']
+    plan = effective_plan[1:]
 assert len({p['unit'] for p in plan}) == len(plan)
+assert not (OUT/(plan_stem+'-complete.json')).exists(), 'Completion records are append-only'
 assert not subprocess.check_output(['git', 'diff', '--cached', '--name-only'], cwd=ROOT).strip()
 assert not subprocess.check_output(['git', 'diff', '--name-only', '--', 'research/', 'src/', 'research-tests/DGamma/'], cwd=ROOT).strip()
 owned_compilers,lane2_compilers,unknown_compilers=compiler_scopes()
 assert not owned_compilers and not unknown_compilers
 if lane2_compilers:print('lane-2 compiler (separate worktree)',lane2_compilers,flush=True)
 for item in plan:
-    assert re.fullmatch(r'V\d+', item['unit'])
+    assert re.fullmatch(r'V\d+', item['unit']) or (phase == 'continue' and item['unit'] == 'V2R1')
     import hashlib
     source = ROOT/('dgamma.ipkg' if item['path']=='package' else item['path'])
     assert hashlib.sha256(source.read_bytes()).hexdigest() == item['sourceHash'], 'Immutable final source changed'
@@ -60,5 +70,5 @@ for item in plan:
     if result.returncode or not record['passed'] or not record['fresh']:
         print('STOP: first final validation failure, no later compiler launched', flush=True)
         sys.exit(1)
-(OUT/(plan_stem+'-complete.json')).write_text(json.dumps(dict(completedUTC=datetime.datetime.now(datetime.timezone.utc).isoformat(), invocations=[p['unit'] for p in plan], serial=True), indent=2)+'\n')
-print('ALL FINAL VALIDATIONS PASSED', len(plan), flush=True)
+(OUT/(plan_stem+'-complete.json')).write_text(json.dumps(dict(completedUTC=datetime.datetime.now(datetime.timezone.utc).isoformat(), invocations=[p['unit'] for p in effective_plan], originalPlanInvocations=original_units, substitutions=substitutions, serial=True), indent=2)+'\n')
+print('ALL EFFECTIVE FINAL VALIDATIONS PASSED', len(effective_plan), 'substitutions', substitutions, flush=True)

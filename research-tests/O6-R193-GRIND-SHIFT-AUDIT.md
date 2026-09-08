@@ -278,3 +278,15 @@ paper-reread manifest authenticates3882 content lines and SHA256
 9b40364ab67f944406c6f40980cdc78dbba044d6eb3125aa1087f2ffdfc9a78b.
 This resolves the previous reading-evidence qualification; no new tested
 paper erratum or production change is claimed.
+
+
+### Supervisor-approved append-only V2R1 continuation
+
+Verbatim ruling:
+
+> R193 VALIDATION GATE RULING: APPROVED — ONE hash-pinned, append-only, identical-source LocalDiamond retry with a separately authenticated continuation manifest (original plan + V2 record never rewritten), then V3–V52 only after a fresh retry PASS. GUARD REVISION (supervisor resource ruling, record verbatim): for THIS unchanged-source LocalDiamond validation the RSS kill threshold is raised from 48 GiB to 52 GiB (54,525,952 KiB). Rationale: the source is byte-identical to the R192 PASS (sampled 47.52 GiB); 48.12 GiB is Chez GC variance, not a type or cost regression; the machine has 256 GiB and lane 2's heavy checks are serialized by the heavy lock, so 52 GiB is safe. The 48 GiB guard remains for every other check and for any CHANGED LocalDiamond source. Hold the heavy lock for the whole retry. If the retry exceeds 52 GiB, stop and gate with the honest partial final validation (no third attempt). Record the 48.12 GiB stop, the ruling, and the retry's sampled peak in the ledger/audit.
+
+The separate continuation manifest retains original V2 and maps only its final
+acceptance slot to V2R1, conditional on fresh PASS. The retry source hash is
+checked against both the frozen plan and git77a9efe1. Every other check retains
+48GiB. V3–V52 may run only after retry PASS; no third retry is authorized.

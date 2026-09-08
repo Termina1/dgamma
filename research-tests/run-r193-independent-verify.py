@@ -88,18 +88,35 @@ for path in paths:
     newdecls[path] = sorted(declarations((ROOT/path).read_bytes())-declarations(old))
 assert sum(map(len,newdecls.values())) == len(sourcecommits)
 plans = []
+substitutions = {}
+continuation_hash = None
 if not INTERIM:
     plan_bytes = (OUT/'final-validation-plan.json').read_bytes()
     assert plan_bytes == (ROOT/'research-tests/O6-R193-FINAL-VALIDATION-PLAN.json').read_bytes()
     assert sha(plan_bytes) == (OUT/'final-validation-plan.sha256').read_text().strip()
     plans = json.loads(plan_bytes)
     assert len({item['unit'] for item in plans}) == len(plans)
+    original_units = [item['unit'] for item in plans]
+    if (OUT/'final-validation-continuation.json').exists():
+        import runpy
+        authenticate = runpy.run_path(str(ROOT/'research-tests/r193_validation_continuation.py'))['authenticate']
+        continuation, plans = authenticate(ROOT, OUT)
+        substitutions = continuation['substitutions']
+        continuation_hash = sha((OUT/'final-validation-continuation.json').read_bytes())
+        retry = byunit['V2R1']
+        assert retry['rssLimitKiB'] == 52*1024*1024
+        assert retry['validationContinuationSHA256'] == continuation_hash
+        assert retry['heavyLock'] and retry['heavyLock'][-1]['event'] == 'acquired'
+        assert 'HEAVY LOCK RELEASE V2R1' in (OUT/'V2R1.monitor').read_text()
     completion = json.loads((OUT/'final-validation-complete.json').read_text())
     assert completion['invocations'] == [item['unit'] for item in plans]
+    assert completion['originalPlanInvocations'] == original_units and completion['substitutions'] == substitutions
     assert completion['serial'] is True
     for item in plans:
         record = byunit[item['unit']]
-        assert record['passed'] and record['fresh'] and record['sourceSHA256'] == item['sourceHash']
+        assert record['passed'] and record['fresh'] and record['sourceSHA256'] == item['sourceHash'] and record['path'] == item['path']
+        assert record.get('rssLimitKiB',48*1024*1024) == (52 if record['unit'] == 'V2R1' else 48)*1024*1024
+        assert record['maxSampleRSSKiB'] <= record.get('rssLimitKiB',48*1024*1024)
         assert record['expectedDiagnostic'] == item['expectedDiagnostic'] and record.get('symbol') == item.get('symbol')
         path = 'dgamma.ipkg' if record['path'] == 'package' else record['path']
         assert sha((ROOT/path).read_bytes()) == record['sourceSHA256']
@@ -117,6 +134,9 @@ report = dict(status='PASS',phase='interim' if INTERIM else 'final',head=git('re
     passedCount=sum(r['passed'] for r in records),failedCount=sum(not r['passed'] for r in records),
     expectedNegativeCount=sum(r['passed'] and bool(r['expectedDiagnostic']) for r in records),
     finalCheckCount=len(plans),allFinalCurrentSourcesAuthenticated=not INTERIM,
+    finalValidationSubstitutions=substitutions,validationContinuationSHA256=continuation_hash,
+    originalResourceStopRetained=('V2' in byunit and byunit['V2']['interrupted']),
+    interruptedCount=sum(r['interrupted'] for r in records),
     newDeclarationCount=sum(map(len,newdecls.values())),newDeclarations=newdecls,sourceCommitCount=len(sourcecommits),
     allSourceCommitsReceiptAuthenticated=True,allInvocationsSerializedWithinMainWorktree=True,
     allLogsAndSnapshotsAuthenticated=True,attemptCounts={unit:len(runs) for unit,runs in attempts.items()},

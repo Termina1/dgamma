@@ -42,7 +42,18 @@ assert not (OUT/(unit+'.json')).exists(), 'Invocation names are append-only'
 # R193: no proof/new attempt in final40min; hash-frozen validation may
 # start until final25min. Start20:25:44Z, timeout00:25:44Z.
 planned_validation = False
-if re.fullmatch(r'V\d+', unit):
+rss_limit_kib = 48*1024*1024
+continuation_sha = None
+if unit == 'V2R1':
+    import runpy
+    authenticate = runpy.run_path(str(ROOT/'research-tests/r193_validation_continuation.py'))['authenticate']
+    continuation, effective_plan = authenticate(ROOT, OUT)
+    retry = continuation['retry']
+    assert path == retry['path'] and diagnostic is None and symbol is None
+    rss_limit_kib = continuation['retryRSSLimitKiB']
+    continuation_sha = hashlib.sha256((OUT/'final-validation-continuation.json').read_bytes()).hexdigest()
+    planned_validation = True
+elif re.fullmatch(r'V\d+', unit):
     plan_bytes = (OUT/'final-validation-plan.json').read_bytes()
     assert hashlib.sha256(plan_bytes).hexdigest() == (OUT/'final-validation-plan.sha256').read_text().strip(), 'Frozen validation plan changed'
     items = [item for item in json.loads(plan_bytes) if item['unit'] == unit]
@@ -79,6 +90,8 @@ else:
 # Supervisor-approved worktree-scoped concurrency and shared heavy lock.
 heavy_paths = set(json.loads((ROOT/'research-tests/O6-R193-HEAVY-PATHS.json').read_text()))
 heavy = path in heavy_paths or pathlib.Path(path).stem.startswith('R8')
+if unit == 'V2R1':
+    assert heavy, 'The exceptional52GiB retry must hold the heavy lock'
 lock = pathlib.Path('/tmp/dgamma-heavy.lock')
 lock_owner = dict(lane='R193-main',pid=os.getpid(),timestampUTC=datetime.datetime.now(datetime.timezone.utc).isoformat(),unit=unit,path=path)
 lock_acquired = False
@@ -143,7 +156,7 @@ with (OUT/(unit+'.log')).open('w') as log:
             cells = row.strip().split(None, 3)
             if len(cells) == 4 and cells[0].isdigit() and '/idris2_app/idris2' in cells[3] and str(ROOT)+'/' in cells[3]:
                 maximum = max(maximum, int(cells[2]))
-        if maximum > 48*1024*1024 and not interrupted:
+        if maximum > rss_limit_kib and not interrupted:
             stop(signal.SIGTERM, None)
 text = (OUT/(unit+'.log')).read_text()
 fresh = path == 'package' or bool(re.search(r'^\d+/\d+: Building DGamma\.'+re.escape(pathlib.Path(path).stem)+r' \('+r'(?:'+re.escape(path)+'|'+re.escape(str(ROOT/path))+r')\)$', text, re.M))
@@ -152,7 +165,8 @@ passed = fresh and not interrupted and (process.returncode == 0 and 'Error:' not
 record = dict(unit=unit,path=path,command=command,start=started,
               end=datetime.datetime.now(datetime.timezone.utc).isoformat(),seconds=time.monotonic()-clock,
               exit=process.returncode,fresh=fresh,passed=passed,interrupted=interrupted,
-              maxSampleRSSKiB=maximum,sourceSHA256=hashlib.sha256(snapshot).hexdigest(),
+              maxSampleRSSKiB=maximum,rssLimitKiB=rss_limit_kib,validationContinuationSHA256=continuation_sha,
+              sourceSHA256=hashlib.sha256(snapshot).hexdigest(),
               expectedDiagnostic=diagnostic,symbol=symbol,transcript=text,
               compilerScope='main worktree only', lane2Compilers=lane2_compilers, heavyLock=lock_events)
 (OUT/(unit+'.json')).write_text(json.dumps(record,indent=2)+'\n')

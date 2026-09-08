@@ -50,7 +50,7 @@ for r in records:
     normalized.append(dict(effectiveUnit=qualified.get('effectiveUnit', match[1] if match else r['unit']), effectiveAttempt=qualified.get('effectiveAttempt', int(match[2]) if match else None), invocation=r['unit'],unit=match[1] if match else r['unit'],attempt=int(match[2]) if match else None,
         target=r['path'],startUTC=r['start'],endUTC=r['end'],exit=r['exit'],fresh=r['fresh'],passed=r['passed'],
         interrupted=r['interrupted'],sourceHash=r['sourceSHA256'],matchingSourceCommits=[c for c,h in commits[target] if h==r['sourceSHA256']],
-        command=r['command'],seconds=r['seconds'],maxSampleRSSKiB=r['maxSampleRSSKiB'],expectedDiagnostic=r['expectedDiagnostic'],symbol=r.get('symbol'),
+        command=r['command'],seconds=r['seconds'],maxSampleRSSKiB=r['maxSampleRSSKiB'],rssLimitKiB=r.get('rssLimitKiB',48*1024*1024),validationContinuationSHA256=r.get('validationContinuationSHA256'),expectedDiagnostic=r['expectedDiagnostic'],symbol=r.get('symbol'),
         record=r['unit']+'.json',log=r['unit']+'.log',source=r['unit']+'.source',
         compilerScope=r.get('compilerScope','serialized pre-parallel main lane'),lane2Compilers=r.get('lane2Compilers',[]),heavyLock=r.get('heavyLock',[])))
 archive = ROOT/('research-tests/O6-'+shift+'-COMPILER-EVIDENCE.tar.gz')
@@ -69,7 +69,8 @@ assert set(qualifications).issubset({r['unit'] for r in records})
 dual_roles = json.loads((OUT/'final-validation-dual-roles.json').read_text()) if (OUT/'final-validation-dual-roles.json').exists() else {}
 for unit, role in dual_roles.items():
     assert individual[unit]['passed'] and individual[unit]['fresh'] and individual[unit]['sourceSHA256'] == role['sourceHash']
-ledger = dict(finalValidationDualRoles=dual_roles, invocationQualifications=invocation_qualifications, validationQualifications=qualifications,
+continuation = json.loads((OUT/'final-validation-continuation.json').read_text()) if (OUT/'final-validation-continuation.json').exists() else None
+ledger = dict(finalValidationContinuation=continuation, finalValidationDualRoles=dual_roles, invocationQualifications=invocation_qualifications, validationQualifications=qualifications,
     qualifiedPassedCount=sum(r['passed'] and qualifications.get(r['unit'], {}).get('validValidation', True) for r in records),
     invalidValidationCount=sum(not q.get('validValidation', True) for q in qualifications.values()),
     supersededHistoricalValidationCount=sum(q.get('superseded',False) for q in qualifications.values()),
