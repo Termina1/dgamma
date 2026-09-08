@@ -38,3 +38,27 @@ o19AdvanceCapturedMapAt nameEq keyEq actor earlier later fiber LDivertTag foundE
 o19AdvanceCapturedMapAt nameEq keyEq actor earlier later fiber LRaiseTag foundEarly foundLate state = Refl
 o19AdvanceCapturedMapAt nameEq keyEq actor earlier later fiber LLeaveTag foundEarly foundLate state = Refl
 o19AdvanceCapturedMapAt nameEq keyEq actor earlier later fiber LUnloadTag foundEarly foundLate state = Refl
+
+||| Transport only the EXPLICIT resolver observation of a concrete fiber.
+||| Retirement is eliminated as an actual Boolean argument; no opaque target
+||| or early applicability certificate is supplied by a caller.
+export
+0 o19ObservedTargetRebase :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (component : Component key value world error) -> (parent : Parent name) ->
+  (retiredFlag : Bool) -> (table : OwnedTable key value (componentProvisions component)) ->
+  (lifecycle : Lifecycle key value world error name
+    (dependencies (componentDependencies component)) (componentProvisions component)) ->
+  (earlier, later : Registry name key value world error) ->
+  (observed : Maybe (View name (dependencies (componentDependencies component)))) ->
+  (view : View name (dependencies (componentDependencies component))) ->
+  (resolveView {name} {key} {value} {world} {error} @{nameEq} @{keyEq} (dependencies (componentDependencies component)) earlier = observed) ->
+  (resolveView {name} {key} {value} {world} {error} @{nameEq} @{keyEq} (dependencies (componentDependencies component)) later = observed) ->
+  (targetFiber @{nameEq} @{keyEq} (MkFiber component parent retiredFlag table lifecycle) later = Just view) ->
+  (targetFiber @{nameEq} @{keyEq} (MkFiber component parent retiredFlag table lifecycle) earlier = Just view)
+o19ObservedTargetRebase nameEq keyEq component parent False table lifecycle earlier later
+  observed view earlyResolution lateResolution target =
+    trans earlyResolution (trans (sym lateResolution) target)
+o19ObservedTargetRebase nameEq keyEq component parent True table lifecycle earlier later
+  observed view earlyResolution lateResolution target = void (nothingIsNotJust target)
