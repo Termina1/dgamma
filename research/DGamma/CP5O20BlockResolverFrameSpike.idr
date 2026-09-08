@@ -240,3 +240,17 @@ o20WholeInstalledBlockResolver nameEq keyEq actor deps before start finalState o
   trans (o20InstalledActorBodyResolver nameEq keyEq actor deps body installed only lastFiber lastFound excluded)
     (o20InstalledOpeningResolver nameEq keyEq actor deps before start finalState opening
       (o20ObserveActualBegin nameEq keyEq actor before start opening) body installed lastFiber lastFound excluded)
+
+||| Native InstalledTrace already owns the exact aligned evaluator dictionaries.
+||| Expose this structural consequence rather than requesting it separately.
+export
+0 o20InstalledBodyAligned :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  {first, finalState : SystemState name key value world error} ->
+  (body : Transitions first finalState) ->
+  InstalledTrace name key world error value nameEq keyEq actor body ->
+  AlignedTransitions name key world error value nameEq keyEq body
+o20InstalledBodyAligned nameEq keyEq actor NoTransitions installed = AlignedEnd
+o20InstalledBodyAligned nameEq keyEq actor _ (InstalledStep action tag checked rest installed tailInstalled) =
+  AlignedStep action tag checked rest (o20InstalledBodyAligned nameEq keyEq actor rest tailInstalled)
