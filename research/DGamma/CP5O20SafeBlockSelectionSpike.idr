@@ -457,3 +457,20 @@ export
 o20EnumeratedPairThere packet = MkO20EnumeratedPair
   (enumeratedTarget packet) (enumeratedSwap packet) (There (enumeratedMember packet))
   (enumeratedLeftExact packet) (enumeratedRightExact packet)
+
+||| Native head decision owns the candidate's exact constructor and proof
+||| fields. A distinct neighboring pair cannot be discarded by enumeration.
+export
+0 o20EnumeratedHeadObserved :
+  {name : Type} -> (nameEq : DecEq name) -> (sourceOrder, earlier : List name) ->
+  (left, right : name) -> (later : List name) ->
+  (exact : (sourceOrder = earlier ++ (left :: right :: later))) ->
+  (observed : Dec (left = right)) -> (decEq @{nameEq} left right = observed) ->
+  Not (left = right) ->
+  O20EnumeratedPair name sourceOrder
+    (o20AdjacentCandidates nameEq sourceOrder earlier (left :: right :: later) exact) left right
+o20EnumeratedHeadObserved nameEq sourceOrder earlier left right later exact (Yes same) checked distinct =
+  void (distinct same)
+o20EnumeratedHeadObserved nameEq sourceOrder earlier left right later exact (No different) checked distinct =
+  rewrite checked in MkO20EnumeratedPair (earlier ++ (right :: left :: later))
+    (MkAdjacentActorOrderSwap earlier left right later exact Refl different) Here Refl Refl
