@@ -275,3 +275,22 @@ o19BeginRangeInstalled {first} nameEq keyEq selected trace bodyWord range noUnlo
     (snd (o19NoUnloadAtCut selected NoTransitions (beginTransition (rangeOpening range)) (rangeBody range)
       (replace {p = NoParentUnload selected} (sym (rangeDecomposition range)) noUnload)))
     (snd (snd (lBeginBoundary nameEq keyEq selected first (rangeStart range) LBeginTag (beginEquation (rangeOpening range)))))
+
+||| ACTUAL reached right Begin/body range, from original O19 inputs only.
+||| Its trace, word and alignment all come from the SAME column run.
+export
+0 o19ActualRightBeginRange :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (protocol : RegistrationProtocol key value world error) ->
+  {sourceOrder, targetOrder : List name} -> (swap : AdjacentActorOrderSwap name sourceOrder targetOrder) ->
+  {initial, sourceFinal : SystemState name key value world error} -> (source : Transitions initial sourceFinal) ->
+  (blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder source) ->
+  (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq source) ->
+  (safety : AdjacentActorSwapSafety name key world error value protocol nameEq keyEq swap source blocks premises) ->
+  (unique : UniqueRawNameInsertions name key world error value nameEq keyEq source) ->
+  O19BeginRange name key world error value nameEq keyEq (actorRight swap)
+    (columnRight (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique)) (o19ActionWord (blockBody (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety))))
+o19ActualRightBeginRange nameEq keyEq protocol swap source blocks premises safety unique =
+  o19BeginRangeObserved nameEq keyEq (actorRight swap)
+    (columnRight (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique)) (o19ActionWord (blockBody (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety))))
+    (fst (o19ColumnCutAligned (traceBeforeBlock (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety))) (o19ActionWord (actorBlockTrace (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)))) (o19ActionWord (actorBlockTrace (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety)))) (o19ActionWord (traceAfterBlock (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety)))) (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique) (o19ColumnLeftCut (traceBeforeBlock (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety))) (o19ActionWord (actorBlockTrace (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)))) (o19ActionWord (actorBlockTrace (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety)))) (o19ActionWord (traceAfterBlock (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety)))) (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique)))) (columnRightWord (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique))
