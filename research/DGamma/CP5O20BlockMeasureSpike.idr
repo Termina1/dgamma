@@ -44,3 +44,21 @@ export
   (UniqueKeys (head :: rest)) -> (Elem selected rest) -> (Not (selected = head))
 o20UniqueTailDifferent {rest} (UniqueCons absent unique) member same =
   absent (replace {p = \chosen => Elem chosen rest} same member)
+
+||| Genuine BeforeIn in the fixed unique goal DERIVES numeric descent.
+||| No rank equation or arbitrary rank function is an input.
+export
+0 o20BeforeRankCrossing :
+  {name : Type} -> {left, right : name} -> (nameEq : DecEq name) -> (goal : List name) ->
+  (UniqueKeys goal) -> (BeforeIn left right goal) ->
+  (rankCrossing (o20GoalRank nameEq goal right) (o20GoalRank nameEq goal left) = 1)
+o20BeforeRankCrossing {left} {right} nameEq (_ :: rest) (UniqueCons absent unique) (BeforeHere member) =
+  rewrite Builtin.fst (o20GoalRankObserved nameEq left left rest (decEq @{nameEq} left left) Refl) Refl in
+  rewrite Builtin.snd (o20GoalRankObserved nameEq right left rest (decEq @{nameEq} right left) Refl)
+    (o20UniqueTailDifferent (UniqueCons absent unique) member) in Refl
+o20BeforeRankCrossing {left} {right} nameEq (head :: rest) (UniqueCons absent unique) (BeforeThere ordered) =
+  rewrite Builtin.snd (o20GoalRankObserved nameEq left head rest (decEq @{nameEq} left head) Refl)
+    (o20UniqueTailDifferent (UniqueCons absent unique) (Builtin.fst (o20BeforeMembers ordered))) in
+  rewrite Builtin.snd (o20GoalRankObserved nameEq right head rest (decEq @{nameEq} right head) Refl)
+    (o20UniqueTailDifferent (UniqueCons absent unique) (Builtin.snd (o20BeforeMembers ordered))) in
+      o20BeforeRankCrossing nameEq rest unique ordered
