@@ -30,13 +30,6 @@ data CertifiedActorPermutation :
     CertifiedActorPermutation name middle after ->
     CertifiedActorPermutation name before after
 
-public export
-0 addLeftInjective : (start, left, right : Nat) ->
-  start + left = start + right -> left = right
-addLeftInjective Z left right exact = exact
-addLeftInjective (S start) left right exact =
-  addLeftInjective start left right (successorEqualityInjective exact)
-
 ||| Complete coordinate-injectivity package for the two exact blocks selected by
 ||| one safety witness.  Cross-block disjointness is producer capital of the
 ||| authoritative `ActorBlockDecomposition`; same-block injectivity is proved by
