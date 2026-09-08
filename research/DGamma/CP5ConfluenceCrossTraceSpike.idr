@@ -30,36 +30,6 @@ data CertifiedActorPermutation :
     CertifiedActorPermutation name middle after ->
     CertifiedActorPermutation name before after
 
-public export
-0 rightNodeSourceBlockLabel :
-  {initial, pairFirst, pairMiddle, pairFinal, originalFinal, sourceInitial,
-    sourceFinal : SystemState name key value world error} ->
-  {sourceTrace : Transitions sourceInitial sourceFinal} ->
-  {original : Transitions initial originalFinal} ->
-  {prefixTrace : Transitions initial pairFirst} ->
-  {left : Transition pairFirst pairMiddle} ->
-  {right : Transition pairMiddle pairFinal} ->
-  {suffix : Transitions pairFinal originalFinal} ->
-  {diamond : LocalRelationalDiamond name key world error value nameEq keyEq
-    left right} ->
-  (prefixOccurrences : ActionRegistrationReplayCorrespondence name key world
-    error value sourceTrace original) ->
-  (sourceBlock : LocatedOpenEpisodeBlock name key world error value nameEq keyEq
-    actor sourceTrace) ->
-  (position : Nat) ->
-  (result : AdjacentSwapResult name key world error value protocol nameEq keyEq
-    original prefixTrace left right suffix diamond) ->
-  locatedActionOrdinal (replayActionOrigin prefixOccurrences
-    (adjacentRightNodeOccurrence result)) =
-      transitionCount (traceBeforeBlock sourceBlock) + position ->
-  NodeCrossesSourceBlockPosition name key world error value nameEq keyEq
-    sourceTrace original prefixOccurrences sourceBlock position
-    (transitionAction right) (S (transitionCount prefixTrace))
-rightNodeSourceBlockLabel {prefixTrace} {left} prefixOccurrences sourceBlock
-  position result origin =
-    MkNodeCrossesSourceBlockPosition (adjacentRightNodeOccurrence result)
-      (transitionPrefixLength prefixTrace left) origin
-
 ||| Labels every concrete adjacent node by occurrence origins in the original
 ||| source blocks.  The prefix correspondence is not caller-selected at each
 ||| node: it starts at identity and is definitionally extended by each actual
