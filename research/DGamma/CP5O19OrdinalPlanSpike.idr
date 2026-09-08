@@ -288,3 +288,12 @@ export
     (ordinalOrigin currentMap (transitionCount earlier), ordinalOrigin currentMap (S (transitionCount earlier))) :: globalCrossingPositions tailPlan)
 o19GlobalPlanPrependPositions current earlier left right later orientation diamond result target rest correspondence currentMap
   (MkO19GlobalPlanResult positions plan count) = Refl
+
+||| Pointwise observation of B8's SINGLE identity-map constructor in its
+||| owning producer module. No function extensionality or rebuilt replay.
+export
+0 o19IdentityOrdinalMapPoint :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, last : SystemState name key value world error} -> (source : Transitions first last) -> (position : Nat) ->
+  (ordinalOrigin (o19IdentityOrdinalMap source) position = position)
+o19IdentityOrdinalMapPoint source position = Refl
