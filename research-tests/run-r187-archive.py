@@ -59,7 +59,13 @@ with tarfile.open(archive,'r:gz') as tar:
             name=r['unit']+suffix
             assert tar.extractfile(OUT.name+'/'+name).read() == (OUT/name).read_bytes()
 receipts = [json.loads(s) for s in (OUT/'commit-receipts.jsonl').read_text().splitlines()] if (OUT/'commit-receipts.jsonl').exists() else []
-ledger = dict(commitReceipts=receipts, commitReceiptStatus='recorded at commit' if receipts else 'not recorded; historical guarded commits are audit-asserted, not receipt-authenticated', shift=shift,generatedUTC=datetime.datetime.now(datetime.timezone.utc).isoformat(),startCommit=git('rev-parse',start).decode().strip(),
+qualifications = json.loads((OUT/'validation-qualifications.json').read_text()) if (OUT/'validation-qualifications.json').exists() else {}
+assert set(qualifications).issubset({r['unit'] for r in records})
+ledger = dict(validationQualifications=qualifications,
+    qualifiedPassedCount=sum(r['passed'] and qualifications.get(r['unit'], {}).get('validValidation', True) for r in records),
+    invalidValidationCount=sum(not q.get('validValidation', True) for q in qualifications.values()),
+    rawPassMeaning='passedCount preserves the runner outcome; qualifiedPassedCount excludes explicitly invalidated validation invocations without rewriting their exact records.',
+    commitReceipts=receipts, commitReceiptStatus='recorded at commit' if receipts else 'not recorded; historical guarded commits are audit-asserted, not receipt-authenticated', shift=shift,generatedUTC=datetime.datetime.now(datetime.timezone.utc).isoformat(),startCommit=git('rev-parse',start).decode().strip(),
     endCommit=git('rev-parse',end).decode().strip(),recordCount=len(normalized),passedCount=sum(r['passed'] for r in records),
     failedCount=sum(not r['passed'] for r in records),interruptedCount=sum(r['interrupted'] for r in records),
     evidenceArchive=archive.name,evidenceArchiveSHA256=sha(archive.read_bytes()),

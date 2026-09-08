@@ -29,6 +29,8 @@ if path == 'package':
     snapshot = (ROOT/'dgamma.ipkg').read_bytes()
 else:
     target = ROOT/path
+    if not target.is_file() or target.stat().st_size == 0:
+        raise SystemExit('Missing/empty source target: refusing touch or compiler launch')
     target.touch()
     snapshot = target.read_bytes()
     if path.startswith('research-tests/'):

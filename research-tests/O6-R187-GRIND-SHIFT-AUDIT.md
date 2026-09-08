@@ -271,3 +271,22 @@ bounds, UniqueKeys or nonempty WholeBlockSwapDerivation. Those obligations
 remain for R188, BEFORE reached installed blocks/decomposition/origin-plan
 update, same-chain endpoint/full-bundle/external assembly, and O19 BODY.
 O19/O20/O21 body attempts remain0/0/0; census remains5=1/3/0/0/1, not4.
+
+## Validation V3 invalidated honestly; missing-target guard repaired
+
+V3 mistyped `CP5LocalDiamondSpike.idr` instead of the protected
+`CP5ConfluenceLocalDiamondSpike.idr`. The inherited checker used touch
+without existence validation: it created an empty untracked source and
+Idris returned0/Building in1.1s. The raw V3 record says PASS/fresh but its
+EMPTY SHA256 e3b0c442... proves it checked NO LocalDiamond. It is explicitly
+INVALID validation evidence, retained without rewriting its record/log or
+snapshot. The empty untracked source was removed only after zero-byte and
+untracked assertions; no TTC was deleted. V4 checks the correct path next.
+
+The runner now refuses missing/empty source files before touch/launch;
+a compiler-free missing-target self-test passed (no file/snapshot created).
+Archive generator preserves raw passedCount and adds validationQualifications,
+invalidValidationCount and qualifiedPassedCount, so V3 cannot silently count
+as evidence. Both Python scripts compile syntactically. Proof checks/commits
+and F14 are unaffected. This audit is an append-only correction, not an
+invented receipt or hidden historical rewrite.
