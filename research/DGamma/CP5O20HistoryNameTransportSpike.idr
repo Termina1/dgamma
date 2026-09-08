@@ -291,3 +291,32 @@ o20GeneratedHistoryBirth {parent} {component}
   (MkLocatedGeneratedRegistration before afterState earlier step later actionExact decomposition) =
     MkCurrentGenerationBirth (ChildOf parent) component
       (MkLocatedActionOccurrence before afterState earlier step later actionExact decomposition) Refl
+
+||| Full current-generation partition: either an AUTHENTIC present vestigial
+||| remainder, or exact history/current-name agreement. Unlike support-only
+||| A7, this does not discard the valid unsupported-but-present branch.
+export
+0 o20HistoryEndpointChoice :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {leftFirst, leftFinal, rightFirst, rightFinal : SystemState name key value world error} ->
+  (left : Transitions leftFirst leftFinal) -> (right : Transitions rightFirst rightFinal) ->
+  (mapping : RegistrationGenerationBijection name) ->
+  (registrations : RegistrationCorrespondenceByGeneration nameEq mapping left right) ->
+  (current : CurrentEndpointRenaming nameEq keyEq mapping left right registrations) ->
+  (selected : name) -> (stamp : RegistrationGeneration name) ->
+  Either
+    (VestigialEndpointGeneration name key world error value nameEq keyEq
+      (leftFinalGenerations registrations) (leftDeletedGenerations registrations) selected leftFinal)
+    (rightStamp : RegistrationGeneration name **
+      ((generationForward mapping stamp = rightStamp),
+       (lookupCurrentGeneration @{nameEq} (renameForward (currentNameBijection current) selected)
+         (rightFinalGenerations registrations) = Just rightStamp))) ->
+  Either
+    (VestigialEndpointGeneration name key world error value nameEq keyEq
+      (leftFinalGenerations registrations) (leftDeletedGenerations registrations) selected leftFinal)
+    (o20HistoricalTarget mapping stamp = renameForward (currentNameBijection current) selected)
+o20HistoryEndpointChoice nameEq keyEq left right mapping registrations current selected stamp (Left vestigial) = Left vestigial
+o20HistoryEndpointChoice nameEq keyEq left right mapping registrations current selected stamp (Right matched) =
+  Right (o20HistoryEndpointPacketAgrees nameEq left right mapping registrations
+    (renameForward (currentNameBijection current) selected) stamp matched)
