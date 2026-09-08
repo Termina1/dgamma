@@ -16,6 +16,7 @@ import DGamma.CP5O19ReplayObservationSpike
 import DGamma.CP5O19CartesianCursorSpike
 import DGamma.CP5O19MixedRowDispatcherSpike
 import DGamma.CP5O19MixedActivationRowSpike
+import DGamma.CP5O19PairObservationSpike
 import DGamma.CP5O19CartesianLengthSpike
 import Data.List
 import Data.List.Elem
@@ -81,3 +82,32 @@ o19WordRowStepObserved {name} {key} {world} {error} {value} nameEq keyEq protoco
           (trans (cong (\count => count + 1) (mixedRowNodeCount (wordRow previous))) (plusCommutative (transitionCount rest) 1))))
       (trans (cong (\action => action :: o19ActionWord (replayedSuffix result)) (movedLeftAction diamond))
         (cong ((transitionAction left) ::) (trans (o19SealedActionWord nameEq keyEq (sealedSuffixReplay result)) (wordRowRest previous))))
+
+||| Consume the EXPLICIT reached pair observation, then pass the real produced
+||| node ordinarily to D2's simultaneous row/word constructor. The composed
+||| original origin map uses the same current cursor; no reached safety input.
+export
+0 o19WordRowAtObservedPair :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (protocol : RegistrationProtocol key value world error) ->
+  {sourceOrder, targetOrder : List name} -> (swap : AdjacentActorOrderSwap name sourceOrder targetOrder) ->
+  {initial, originalFinal, sourceFinal, before, middle, rightBefore, rightAfter : SystemState name key value world error} ->
+  (original : Transitions initial originalFinal) ->
+  (blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder original) ->
+  (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq original) ->
+  (safety : AdjacentActorSwapSafety name key world error value protocol nameEq keyEq swap original blocks premises) ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq original ->
+  (source : Transitions initial sourceFinal) ->
+  FiniteAdjacentSwapDerivation name key world error value protocol nameEq keyEq original source ->
+  (earlier : Transitions initial before) -> (left : Transition before middle) -> (rest : Transitions middle rightBefore) ->
+  (right : Transition rightBefore rightAfter) -> (later : Transitions rightAfter sourceFinal) ->
+  (previous : O19WordRow name key world error value protocol nameEq keyEq source
+    (appendTransitions earlier (MoreTransitions left NoTransitions)) rest right later) ->
+  (orientation : AdjacentSwapOrientationEvidence left (mixedRowRight (wordRow previous)) **
+    O19PairObservation name key world error value (actorLeft swap) (actorRight swap) left (mixedRowRight (wordRow previous)) orientation) ->
+  O19WordRow name key world error value protocol nameEq keyEq source earlier (MoreTransitions left rest) right later
+o19WordRowAtObservedPair nameEq keyEq protocol swap original blocks premises safety unique source prior earlier left rest right later previous
+  (orientation ** observed) =
+    o19WordRowStepObserved nameEq keyEq protocol source earlier left rest right later previous orientation
+      (o19ObservedPairReplay nameEq keyEq protocol swap original blocks premises safety unique (MkO19ReachedCursor (cursorFinal (mixedRowCursor (wordRow previous))) (cursorTrace (mixedRowCursor (wordRow previous))) (cursorBundle (mixedRowCursor (wordRow previous))) (cursorUnique (mixedRowCursor (wordRow previous))) (o19AppendFinite prior (cursorDerivation (mixedRowCursor (wordRow previous)))))
+        earlier left (mixedRowRight (wordRow previous)) (mixedRowRest (wordRow previous)) (trans (sym (appendTransitionsAssociative earlier (MoreTransitions left NoTransitions) (MoreTransitions (mixedRowRight (wordRow previous)) (mixedRowRest (wordRow previous))))) (mixedRowDecomposition (wordRow previous))) observed)
