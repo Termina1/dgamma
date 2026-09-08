@@ -1687,3 +1687,15 @@ o19BeforeChangeSuffix (head :: rest) oldTrailing newTrailing (UniqueCons absent 
   BeforeHere (fst (o19ElemAppendInjections rest newTrailing) member)
 o19BeforeChangeSuffix (head :: rest) oldTrailing newTrailing (UniqueCons absent unique) (There member) (BeforeThere ordered) =
   BeforeThere (o19BeforeChangeSuffix rest oldTrailing newTrailing unique member ordered)
+
+||| If the earlier actor belongs to the actual trailing segment, replacing
+||| the leading list preserves its order. Exact uniqueness rejects head aliases.
+export
+0 o19BeforeChangePrefix : {name : Type} -> {left, right : name} ->
+  (oldLeading, newLeading, trailing : List name) -> UniqueKeys (oldLeading ++ trailing) ->
+  Elem left trailing -> BeforeIn left right (oldLeading ++ trailing) -> BeforeIn left right (newLeading ++ trailing)
+o19BeforeChangePrefix [] newLeading trailing unique member ordered = o19BeforeInPrepend newLeading ordered
+o19BeforeChangePrefix (head :: rest) newLeading trailing (UniqueCons absent unique) member (BeforeHere later) =
+  void (absent (snd (o19ElemAppendInjections rest trailing) member))
+o19BeforeChangePrefix (head :: rest) newLeading trailing (UniqueCons absent unique) member (BeforeThere ordered) =
+  o19BeforeChangePrefix rest newLeading trailing unique member ordered
