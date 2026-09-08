@@ -289,3 +289,30 @@ record O20SupportedReferenceOrders
   0 referenceGoalOrdered : (lower, upper : name) ->
     O20SupportedPath name key world error value nameEq keyEq reference lower upper ->
     Elem lower goalOrder -> Elem upper goalOrder -> BeforeIn lower upper goalOrder
+
+||| The actual right enumeration, inverse-renamed, respects the restricted
+||| left reference: transport each supported edge, then use its real order.
+export
+0 o20GoalReferenceOrdered :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {source, target : SystemState name key value world error} ->
+  (renaming : NameBijection name) -> (rightOrder : List name) ->
+  LinearizesSupport name key world error value nameEq keyEq target rightOrder ->
+  ((selected : name) -> (fiber : Fiber name key value world error) ->
+    (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected (registry source) = Just fiber) ->
+    (isSupported {name} {key} {value} {world} {error} @{nameEq} @{keyEq} selected source = True) ->
+    O20SupportedFiberImage name key world error value nameEq (renameForward renaming) selected fiber target) ->
+  (lower, upper : name) ->
+  O20SupportedPath name key world error value nameEq keyEq source lower upper ->
+  Elem lower (map (renameBackward renaming) rightOrder) ->
+  Elem upper (map (renameBackward renaming) rightOrder) ->
+  BeforeIn lower upper (map (renameBackward renaming) rightOrder)
+o20GoalReferenceOrdered renaming rightOrder linearization images lower upper path lowerIn upperIn =
+  rewrite sym (renameLeftInverse renaming lower) in
+  rewrite sym (renameLeftInverse renaming upper) in
+    o20BeforeMap (renameBackward renaming)
+      (supportPathsOrdered linearization (renameForward renaming lower) (renameForward renaming upper)
+        (o20SupportedPathImage images path)
+        (o20InverseMapMember (renameForward renaming) (renameBackward renaming) (renameRightInverse renaming) lowerIn)
+        (o20InverseMapMember (renameForward renaming) (renameBackward renaming) (renameRightInverse renaming) upperIn))
