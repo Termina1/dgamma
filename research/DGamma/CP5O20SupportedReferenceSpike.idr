@@ -240,3 +240,16 @@ o20InverseMapMember forward backward inverse {order = head :: rest} Here =
   rewrite inverse head in Here
 o20InverseMapMember forward backward inverse {order = head :: rest} (There later) =
   There (o20InverseMapMember forward backward inverse later)
+
+||| The inverse-renamed target is unique because it is a bijective image of
+||| the actual right schedule's unique support enumeration.
+export
+0 o20InverseMapUnique :
+  {name : Type} -> (forward, backward : name -> name) ->
+  ((selected : name) -> (forward (backward selected) = selected)) ->
+  {order : List name} -> UniqueKeys order -> UniqueKeys (map backward order)
+o20InverseMapUnique forward backward inverse UniqueNil = UniqueNil
+o20InverseMapUnique forward backward inverse {order = head :: rest} (UniqueCons absent unique) =
+  UniqueCons (\member => absent (rewrite sym (inverse head) in
+    o20InverseMapMember forward backward inverse member))
+    (o20InverseMapUnique forward backward inverse unique)
