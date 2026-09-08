@@ -110,3 +110,36 @@ r191ChildGapAligned =
                   AlignedStep (ORetire 3) ORetireTag Refl _ (
                     AlignedStep (LBegin 2) LBeginTag Refl _ (
                       AlignedStep (LAdvance 2) LFinishTag Refl _ (AlignedEnd)))))))))))
+
+||| Full original registration discipline: child3 is genuinely licensed by
+||| parent0's iterator and explicitly retired before any parent recovery.
+public export
+0 r191ChildGapDiscipline : RegistrationDiscipline r45Protocol r45NameEq r191ChildGapTrace
+r191ChildGapDiscipline =
+  RegistrationDisciplineStep _ _ (0 ** Refl) (
+    RegistrationDisciplineStep _ _ (1 ** Refl) (
+      RegistrationDisciplineStep _ _ (1 ** Refl) (
+        RegistrationDisciplineStep _ _ () (
+          RegistrationDisciplineStep _ _ (MkParentRegistrationYield r45ParentBegun Refl r45YieldingStep [] id EmptyView Refl Here 0 1 Refl Refl 0 Refl Refl,
+      ChildRetiredBeforeParent (ChildRetiresLater _ _ (\recovery => case recovery of
+          ParentLeaves Refl impossible
+          ParentDivertsBefore Refl impossible
+          ParentDivertsAfter Refl Refl impossible
+          ParentRaises Refl Refl impossible)
+        (ChildRetiresLater _ _ (\recovery => case recovery of
+          ParentLeaves Refl impossible
+          ParentDivertsBefore Refl impossible
+          ParentDivertsAfter Refl tag impossible
+          ParentRaises Refl tag impossible)
+          (ChildRetiresLater _ _ (\recovery => case recovery of
+          ParentLeaves Refl impossible
+          ParentDivertsBefore Refl impossible
+          ParentDivertsAfter Refl tag impossible
+          ParentRaises Refl tag impossible)
+            (ChildRetiresNow _ _ Refl))))) (
+            RegistrationDisciplineStep _ _ () (
+              RegistrationDisciplineStep _ _ () (
+                RegistrationDisciplineStep _ _ () (
+                  RegistrationDisciplineStep _ _ () (
+                    RegistrationDisciplineStep _ _ () (
+                      RegistrationDisciplineStep _ _ () (RegistrationDisciplineEnd)))))))))))
