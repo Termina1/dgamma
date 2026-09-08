@@ -234,3 +234,33 @@ o19LocalizeGlobalPlan leftBlock rightBlock
       (trans leftExact (cong fst (fst (consInjective exact))))
       (trans rightExact (cong snd (fst (consInjective exact)))) positions
       (o19LocalizeGlobalPlan leftBlock rightBlock tail positions (snd (consInjective exact)))
+
+||| Every ACTUAL finite sealed replay is ordinal-injective for ALL actions,
+||| not merely O-Insert births. Repeated identical Iter labels therefore
+||| remain distinct. This does not itself make the algorithm's crossing-pair
+||| list unique: an arbitrary finite derivation may still revisit a pair.
+export
+0 o19FiniteOrdinalInjective :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {protocol : RegistrationProtocol key value world error} -> {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {initial, sourceFinal, targetFinal : SystemState name key value world error} ->
+  {source : Transitions initial sourceFinal} -> {target : Transitions initial targetFinal} ->
+  (derivation : FiniteAdjacentSwapDerivation name key world error value protocol nameEq keyEq source target) ->
+  {firstAction, secondAction : Action name key value world error} ->
+  (first : LocatedActionOccurrence firstAction target) -> (second : LocatedActionOccurrence secondAction target) ->
+  (locatedActionOrdinal (replayActionOrigin (finiteDerivationOccurrenceCorrespondence derivation) first) =
+    locatedActionOrdinal (replayActionOrigin (finiteDerivationOccurrenceCorrespondence derivation) second)) ->
+  (locatedActionOrdinal first = locatedActionOrdinal second)
+o19FiniteOrdinalInjective FiniteAdjacentSwapDone first second exact = exact
+o19FiniteOrdinalInjective
+  (FiniteAdjacentSwapStep source earlier left right later orientation diamond result target rest) first second exact =
+    o19FiniteOrdinalInjective rest first second
+      (uniqueAdjacentOrdinalInjective (transitionCount earlier)
+        (locatedActionOrdinal (replayActionOrigin (finiteDerivationOccurrenceCorrespondence rest) first))
+        (locatedActionOrdinal (replayActionOrigin (finiteDerivationOccurrenceCorrespondence rest) second))
+        (locatedActionOrdinal (replayActionOrigin (swappedOccurrenceCorrespondence result)
+          (replayActionOrigin (finiteDerivationOccurrenceCorrespondence rest) first)))
+        (locatedActionOrdinal (replayActionOrigin (swappedOccurrenceCorrespondence result)
+          (replayActionOrigin (finiteDerivationOccurrenceCorrespondence rest) second)))
+        (operationalOrdinalRelation (swappedOccurrenceFold result) (replayActionOrigin (finiteDerivationOccurrenceCorrespondence rest) first))
+        (operationalOrdinalRelation (swappedOccurrenceFold result) (replayActionOrigin (finiteDerivationOccurrenceCorrespondence rest) second)) exact)
