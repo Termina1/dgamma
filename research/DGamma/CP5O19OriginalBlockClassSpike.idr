@@ -156,3 +156,67 @@ o19AlignedOriginalInsertTag nameEq keyEq child parent component (MkSystemState a
     Refl => o19ObservedOriginalInsertTag nameEq keyEq child parent component ambient fibers tag afterState
       (foreignInsertPlanView nameEq keyEq child parent component ambient fibers tag afterState
         (checkedActionProjects nameEq keyEq (OInsert child parent component) (MkSystemState ambient fibers) afterState tag checked))
+
+||| CONDITIONAL assembler, NOT the original classifier. The two VISIBLE
+||| PaperActivationStep completeness arguments remain hard open: they must
+||| be produced from actual block final-active/no-unload evolution excluding
+||| absorbing Unloading. Installed-at-cuts is NOT a paper-rule cast. These
+||| are NOT new public O19 premises and this conditional result does NOT
+||| authorize an input-free column instantiation or any O19 body.
+|||
+||| All four static constructor/licensing branches are assembled from the
+||| explicit producer-owned F5 observations and actual ORIGINAL locations.
+||| O/O derives collision exclusion from original unique births and its
+||| actual original right tag from original aligned checked application;
+||| that branch does not invoke either missing paper-branch argument.
+export
+0 o19OriginalClassesConditional :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (protocol : RegistrationProtocol key value world error) ->
+  {sourceOrder, targetOrder : List name} -> (swap : AdjacentActorOrderSwap name sourceOrder targetOrder) ->
+  {initial, sourceFinal : SystemState name key value world error} -> (source : Transitions initial sourceFinal) ->
+  (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq source) ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq source ->
+  {leftAction, rightAction : Action name key value world error} ->
+  (leftOrigin : LocatedActionOccurrence leftAction source) -> (rightOrigin : LocatedActionOccurrence rightAction source) ->
+  (observed : (O19BlockWordObservation name key world error value (actorLeft swap) (actorRight swap) leftAction,
+               O19BlockWordObservation name key world error value (actorRight swap) (actorLeft swap) rightAction)) ->
+  (0 leftPaperBranch : isLifecycleAction leftAction = True -> PaperActivationStep (locatedTransition leftOrigin)) ->
+  (0 rightPaperBranch : isLifecycleAction rightAction = True -> PaperActivationStep (locatedTransition rightOrigin)) ->
+  O19SourcePairObservation name key world error value (actorLeft swap) (actorRight swap)
+    (locatedTransition leftOrigin) (locatedTransition rightOrigin)
+o19OriginalClassesConditional nameEq keyEq protocol swap source premises unique leftOrigin rightOrigin
+  (BlockOwnLifecycle leftLife leftOwner, BlockOwnLifecycle rightLife rightOwner) leftPaperBranch rightPaperBranch =
+    SourceAA (leftPaperBranch leftLife) (rightPaperBranch rightLife)
+      (trans (o19TransitionActorOwner (locatedTransition leftOrigin)) (trans (cong actionOwner (locatedAction leftOrigin)) leftOwner))
+      (trans (o19TransitionActorOwner (locatedTransition rightOrigin)) (trans (cong actionOwner (locatedAction rightOrigin)) rightOwner))
+o19OriginalClassesConditional nameEq keyEq protocol swap source premises unique leftOrigin rightOrigin
+  (BlockGenerated child component inserted childSafe, BlockOwnLifecycle rightLife rightOwner) leftPaperBranch rightPaperBranch =
+    SourceOA child component (trans (locatedAction leftOrigin) inserted) (rightPaperBranch rightLife)
+      (trans (o19TransitionActorOwner (locatedTransition rightOrigin)) (trans (cong actionOwner (locatedAction rightOrigin)) rightOwner))
+      (\same => childSafe (sym same))
+o19OriginalClassesConditional nameEq keyEq protocol swap source premises unique leftOrigin rightOrigin
+  (BlockOwnLifecycle leftLife leftOwner, BlockGenerated child component inserted childSafe) leftPaperBranch rightPaperBranch =
+    SourceAO child component (trans (locatedAction rightOrigin) inserted) (leftPaperBranch leftLife)
+      (\same => childSafe (trans same
+        (trans (o19TransitionActorOwner (locatedTransition leftOrigin)) (trans (cong actionOwner (locatedAction leftOrigin)) leftOwner))))
+      (\licensor, parentSame, ownerSame => case parentSame of
+        Refl => actorDistinct swap (trans
+          (sym (trans (o19TransitionActorOwner (locatedTransition leftOrigin)) (trans (cong actionOwner (locatedAction leftOrigin)) leftOwner))) ownerSame))
+o19OriginalClassesConditional {name} {key} {world} {error} {value} nameEq keyEq protocol swap source premises unique leftOrigin rightOrigin
+  (BlockGenerated leftChild leftComponent leftInsert leftSafe, BlockGenerated rightChild rightComponent rightInsert rightSafe)
+  leftPaperBranch rightPaperBranch =
+    SourceOO leftChild rightChild leftComponent rightComponent (trans (locatedAction leftOrigin) leftInsert) (trans (locatedAction rightOrigin) rightInsert)
+      (o19OriginalChildrenDistinct nameEq keyEq source unique (actorLeft swap) (actorRight swap) leftChild rightChild leftComponent rightComponent (actorDistinct swap)
+        (MkLocatedActionOccurrence (actionBeforeState leftOrigin) (actionAfterState leftOrigin) (beforeActionOccurrence leftOrigin)
+          (locatedTransition leftOrigin) (afterActionOccurrence leftOrigin) (trans (locatedAction leftOrigin) leftInsert) (actionOccurrenceDecomposition leftOrigin))
+        (MkLocatedActionOccurrence (actionBeforeState rightOrigin) (actionAfterState rightOrigin) (beforeActionOccurrence rightOrigin)
+          (locatedTransition rightOrigin) (afterActionOccurrence rightOrigin) (trans (locatedAction rightOrigin) rightInsert) (actionOccurrenceDecomposition rightOrigin)))
+      (\licensor, parentSame, childSame => case parentSame of Refl => rightSafe childSame)
+      (\licensor, parentSame, childSame => case parentSame of Refl => leftSafe childSame)
+      (o19AlignedOriginalInsertTag nameEq keyEq rightChild (ChildOf (actorRight swap)) rightComponent
+        (actionBeforeState rightOrigin) (actionAfterState rightOrigin) (locatedTransition rightOrigin)
+        (fst (alignedAppendSplit (MoreTransitions (locatedTransition rightOrigin) NoTransitions) (afterActionOccurrence rightOrigin)
+          (snd (alignedAppendSplit (beforeActionOccurrence rightOrigin) (MoreTransitions (locatedTransition rightOrigin) (afterActionOccurrence rightOrigin))
+            (replace {p = AlignedTransitions name key world error value nameEq keyEq} (sym (actionOccurrenceDecomposition rightOrigin)) (replayAligned premises))))))
+        (trans (locatedAction rightOrigin) rightInsert))
