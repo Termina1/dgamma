@@ -154,6 +154,39 @@ capital. No physical zero-gap construction or lane2 surface was imported.
 D resolver frames remain the proven one-edge native result; block-wide
 immutable/reference extraction and physical applicability remain separate.
 All E1--E40 passed first attempt; total retained declarations now80 (A30/D10/E40).
-Paper was subsequently read in bounded, untruncated sequential sections through
-all3882 lines, revisiting the initially truncated early portions. No new paper
-erratum or production correction is claimed from that rereading.
+Paper revisit requested sequential intervals through all3882 lines, including
+the early portions again. Some aggregate tool displays contain truncation
+markers; this audit does NOT independently certify a completely visible
+untruncated rereading. No new paper erratum or production correction is claimed.
+
+
+## A deepening E41--E46: native history-cut successors
+
+All6 PASS1 and immediately guarded committed. HistoryExecution now preserves
+an INPUT cut through actual paired Begin, Retire, matched Insert, empty-program
+Finish, and observed nonempty native Advance (Iter or last-step Finish).
+Remove preservation was already proved in HistoryNameTransport. E43 proves
+pointwise bidirectional generation compatibility after an actual put; E44
+uses it with the checked insert runtime producer. The actual birth-stamp
+correspondence, chosen matched fresh names, absence and related parents are
+still EXPLICIT for insertion. E46 consumes exact native resolver and callback
+success observations; it does NOT yet wire the separate single-role native
+extractors into arbitrary whole paired canonical traces. These are real local
+successors, not a producer of the arbitrary initial-to-final paired history.
+Runtime cuts are produced by native checked-action lemmas, not assumed at
+the successors. All-name endpoint rebasing, vestigial remainder treatment,
+whole paired alignment and the producer-owned final bridge remain OPEN.
+canonicalSchedulesConvergeSpike remains untouched/ineligible.
+
+## D block resolver continuation E47--E48
+
+E47-1 rejected a nonexistent import despite Idris exit0: fresh-target checking
+correctly refused acceptance; the full source/log remain preserved. E47-2
+PASS and E48-1 PASS, guarded committed. E47 exposes installed physical presence
+via an explicit primitive lookup observation. E48 transports the native
+owned head's component through the ACTUAL entire remaining InstalledTrace
+to its endpoint, deriving resolver preservation from endpoint declaration
+disjointness. No per-cut immutable-component or successor-resolver oracle is
+accepted. Whole actor-body recursion and reference-endpoint component
+attachment remain to be wired; these two units alone do not close D safety.
+Total retained declarations88 = A30/D10/E48; no3/3 exhaustion or body attempt.
