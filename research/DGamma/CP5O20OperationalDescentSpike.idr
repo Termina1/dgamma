@@ -118,3 +118,29 @@ o20DescentSuccessorObserved nameEq keyEq protocol sourceOrder goalOrder goalStat
       (blockSwapTrace (progressStep progress)) (blockSwapBlocks (progressStep progress))
       (blockSwapPremises (progressStep progress)) (progressUnique progress)
       (successorEqualityInjective (trans (sym (progressDecrease progress)) measured)))
+
+||| TOTAL measure induction, not a bounded search that silently runs out.
+||| Every step reselects against the ACTUAL reached decomposition and derives
+||| the recursive equality from that SAME O19 step's strict global decrease.
+export
+0 o20DescendFuel :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (fuel : Nat) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) -> (sourceOrder, goalOrder : List name) ->
+  (goalState : SystemState name key value world error) ->
+  (goalLinearization : LinearizesSupport name key world error value nameEq keyEq goalState goalOrder) ->
+  {initial, finalState : SystemState name key value world error} -> (trace : Transitions initial finalState) ->
+  (blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder trace) ->
+  (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq trace) ->
+  (unique : UniqueRawNameInsertions name key world error value nameEq keyEq trace) ->
+  (rankInversions (map (o20GoalRank nameEq goalOrder) sourceOrder) = fuel) ->
+  (O20OperationalDescent name key world error value protocol nameEq keyEq sourceOrder goalOrder goalState goalLinearization trace blocks premises unique)
+o20DescendFuel Z nameEq keyEq protocol sourceOrder goalOrder goalState goalLinearization trace blocks premises unique measured =
+  o20DescentZeroObserved nameEq keyEq protocol sourceOrder goalOrder goalState goalLinearization trace blocks premises unique measured
+    (o20SelectOperationalProgress nameEq keyEq protocol sourceOrder goalOrder goalState goalLinearization trace blocks premises unique) Refl
+o20DescendFuel (S fuel) nameEq keyEq protocol sourceOrder goalOrder goalState goalLinearization trace blocks premises unique measured =
+  o20DescentSuccessorObserved nameEq keyEq protocol sourceOrder goalOrder goalState goalLinearization trace blocks premises unique fuel
+    (\nextOrder, nextTrace, nextBlocks, nextPremises, nextUnique, nextMeasured =>
+      o20DescendFuel fuel nameEq keyEq protocol nextOrder goalOrder goalState goalLinearization
+        nextTrace nextBlocks nextPremises nextUnique nextMeasured)
+    measured (o20SelectOperationalProgress nameEq keyEq protocol sourceOrder goalOrder goalState goalLinearization trace blocks premises unique) Refl
