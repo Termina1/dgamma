@@ -241,3 +241,34 @@ selectedBlockCoordinateInjectivity {sourceBlocks} {orderSwap} safety =
         (safetyLeftBeforeRight safety) leftPosition rightPosition leftBound
         rightBound (sym exact))
 
+||| Occurrence-authenticated label for one current adjacent node.  The current
+||| occurrence is pinned to the node's exact ordinal, then mapped through the
+||| composed prefix replay correspondence to the original source trace.  Its
+||| source ordinal must equal the selected block's global start plus the claimed
+||| block-local position.  Repeated transitions with identical actions/tags
+||| therefore remain distinct.
+public export
+record NodeCrossesSourceBlockPosition
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (keyEq : DecEq key)
+  {sourceInitial, sourceFinal, currentInitial, currentFinal :
+    SystemState name key value world error}
+  (sourceTrace : Transitions sourceInitial sourceFinal)
+  (currentTrace : Transitions currentInitial currentFinal)
+  (prefixOccurrences : ActionRegistrationReplayCorrespondence name key world
+    error value sourceTrace currentTrace)
+  {actor : name}
+  (sourceBlock : LocatedOpenEpisodeBlock name key world error value nameEq keyEq
+    actor sourceTrace)
+  (position : Nat)
+  (action : Action name key value world error)
+  (currentNodeOrdinal : Nat) where
+  constructor MkNodeCrossesSourceBlockPosition
+  currentNodeOccurrence : LocatedActionOccurrence action currentTrace
+  0 currentNodeIsExactOccurrence :
+    locatedActionOrdinal currentNodeOccurrence = currentNodeOrdinal
+  0 sourceNodeIsExactBlockPosition :
+    locatedActionOrdinal
+      (replayActionOrigin prefixOccurrences currentNodeOccurrence) =
+    transitionCount (traceBeforeBlock sourceBlock) + position
+
