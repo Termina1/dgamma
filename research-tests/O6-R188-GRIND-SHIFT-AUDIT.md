@@ -230,3 +230,41 @@ range disjointness, lifecycle coverage, reached origin updates; then construct
 the COMPLETE ActorBlockDecomposition. No C61 inferred at cap60. D1 only; no
 D2/rehome/body. Rehome/body deferred to R189 unless all prerequisites land
 before11:30; no rehome list/changes yet. Holes remain5=1/3/0/0/1, delta0.
+
+## Supervisor C5 extension and C5 cap16
+
+Supervisor RATIFIED C4/f16794e0 and authorized C61–C76 before D2. C61 proves
+same-actor BlockBefore impossible using the earlier actual Begin and the later
+no-earlier law. C62–C64 DERIVE source-order uniqueness from the original block
+decomposition; no uniqueness premise added. C65–C69 preserve that enumeration
+under the exact adjacent actor transposition; C69/98336b50 supplies ACTUAL
+target-order UniqueKeys. These are actor-list membership proofs, not replay or
+external correspondence. C61 also clarifies C60's comment: its explicit boundary
+inequality is a premise; no count-to-prefix injectivity premise is smuggled in.
+
+C70–C73 retain OWN prefix/whole-block words of the existing full reconstruction
+through typed segment/word-cut observations. C74 is actual dependent append
+arithmetic. C75/999272f3 derives its actual start, block-size and end counts
+from that owned word metadata and the structural word/count law, never scalar
+Refl over nested replay/cut builders. C76 retains BOTH moved block boundary
+words plus the right block's full before-trace equation from its explicit
+single-constructor argument; no target/source count substitution is asserted.
+
+C5:16 declarations/16 fresh invocations, ALL PASS1/3/immediately guarded
+committed. Total A12+B8+C76+D1=97 source declarations,105 fresh proof invocations;
+all source receipts retained, effective C6/C7 qualification unchanged. No new
+holes, unsafe proofs, exhausted units, safety premises or frozen changes.
+
+Remaining C: instantiate absolute quantitative boundaries for untouched/moved
+blocks (after-pair starts are expected unchanged, to be PROVED using the original
+adjacent empty gap and count commutation); finite-order prefix/suffix comparison;
+derive actual target BlockBefore via C60; disjoint ranges/lifecycle coverage/
+origin updates and COMPLETE ActorBlockDecomposition. No C77 inferred at cap76.
+D1 only, body0, rehome0; D2+/exact type-rehome gate/body remain the R189 list
+unless C closes in time. Final fresh R8/R16/fixtures/package are still pending.
+
+Archive/verification runners are committed at a12b58d0/d6a3e135. They preserve
+ALL raw records, authenticate own exact Building lines/nonempty snapshots and
+commit-time receipts, and separately apply effective C6/C7 invocation labels.
+The compiler-free verifier takes explicit expected source/validation counts.
+This C5 checkpoint archive is proof evidence only, NOT final validation evidence.
