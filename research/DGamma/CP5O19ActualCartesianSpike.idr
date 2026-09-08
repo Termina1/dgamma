@@ -340,3 +340,32 @@ o19ActualGlobalGrid nameEq keyEq protocol swap source blocks premises safety uni
         (cong (\start => start + index)
           (sym (o19AdjacentBlockStartCount (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety))
             (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety)) (safetyBlocksOrdered safety) (safetyBlocksAdjacent safety))))))
+
+||| ACTUAL source-local Cartesian origin plan on the SAME B3 finite chain.
+||| B14's offset-list equation is now DERIVED from actual numeric grid
+||| equality and coordinate shifting; NO offset/plan oracle is supplied.
+||| Complete/sound membership, UniqueKeys and nonempty whole-block assembly
+||| remain separate certification obligations; no O19 body is claimed.
+export
+0 o19ActualLocalOriginPlan :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (protocol : RegistrationProtocol key value world error) ->
+  {sourceOrder, targetOrder : List name} -> (swap : AdjacentActorOrderSwap name sourceOrder targetOrder) ->
+  {initial, sourceFinal : SystemState name key value world error} -> (source : Transitions initial sourceFinal) ->
+  (blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder source) ->
+  (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq source) ->
+  (safety : AdjacentActorSwapSafety name key world error value protocol nameEq keyEq swap source blocks premises) ->
+  (unique : UniqueRawNameInsertions name key world error value nameEq keyEq source) ->
+  BlockCrossingOriginPlan name key world error value protocol nameEq keyEq source
+    (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety))
+    (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety))
+    (identityActionRegistrationReplayCorrespondence source)
+    (cursorDerivation (columnCursor (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique)))
+    (o19GridPairs Z Z (actorBlockTransitionCount (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety))) (actorBlockTransitionCount (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety))))
+o19ActualLocalOriginPlan nameEq keyEq protocol swap source blocks premises safety unique =
+  o19LocalizeGlobalPlan (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)) (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety))
+    (globalCrossingPlan (o19ActualGlobalOriginPlan nameEq keyEq protocol swap source blocks premises safety unique)) (o19GridPairs Z Z (actorBlockTransitionCount (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety))) (actorBlockTransitionCount (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety))))
+    (trans (o19ActualGlobalGrid nameEq keyEq protocol swap source blocks premises safety unique)
+      (sym (trans (o19GridPairsShift (transitionCount (traceBeforeBlock (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)))) (transitionCount (traceBeforeBlock (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety)))) Z Z (actorBlockTransitionCount (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety))) (actorBlockTransitionCount (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety))))
+        (cong2 (\leftSource, rightSource => o19GridPairs leftSource rightSource (actorBlockTransitionCount (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety))) (actorBlockTransitionCount (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety))))
+          (plusZeroRightNeutral (transitionCount (traceBeforeBlock (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety))))) (plusZeroRightNeutral (transitionCount (traceBeforeBlock (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety)))))))))
