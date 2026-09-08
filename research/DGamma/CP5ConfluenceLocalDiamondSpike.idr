@@ -12304,6 +12304,7 @@ beginRawAfterForeignActivation {name} {key} {world} {error} {value}
                         rewrite targetAtEarly in Refl
                   in MkRawActivationMove movedAfter movedRaw
 
+public export
 data PaperAdvanceSource :
   (name, key, world, error : Type) -> (value : key -> Type) ->
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
