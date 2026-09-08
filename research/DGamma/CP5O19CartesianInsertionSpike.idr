@@ -218,3 +218,47 @@ o19GeneratedInsertionPairExternal nameEq keyEq leftChild rightChild leftParent r
           (SkipRightInternal (movedLeft diamond) NoTransitions
             (childInsertCannotBeRoot (movedLeft diamond) (trans (movedLeftAction diamond) leftInsert))
             SameExternalOrchestrationEnd)))
+
+||| Consume the EXPLICIT produced safety+alignment once and construct the
+||| actual O/O diamond, external evidence and FROZEN sealed suffix replay.
+export
+0 o19GeneratedInsertionReplayObserved :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (protocol : RegistrationProtocol key value world error) ->
+  (leftChild, rightChild, leftParent, rightParent : name) ->
+  (leftComponent, rightComponent : Component key value world error) ->
+  {initial, first, middle, last, finalState : SystemState name key value world error} ->
+  (source : Transitions initial finalState) -> (earlier : Transitions initial first) ->
+  (left : Transition first middle) -> (right : Transition middle last) -> (later : Transitions last finalState) ->
+  (appendTransitions earlier (MoreTransitions left (MoreTransitions right later)) = source) ->
+  ReplayInvariantBundle name key world error value protocol nameEq keyEq source ->
+  (transitionAction left = OInsert leftChild (ChildOf leftParent) leftComponent) ->
+  (transitionAction right = OInsert rightChild (ChildOf rightParent) rightComponent) ->
+  Not (rightChild = leftChild) ->
+  (observed : (safety : OrchestrationSwapSafety name key world error value protocol nameEq keyEq left right **
+    AlignedTransitions name key world error value nameEq keyEq (MoreTransitions (earlyRight safety) NoTransitions))) ->
+  (diamond : LocalRelationalDiamond name key world error value nameEq keyEq left right **
+    AdjacentSwapResult name key world error value protocol nameEq keyEq source earlier left right later diamond)
+o19GeneratedInsertionReplayObserved nameEq keyEq protocol leftChild rightChild leftParent rightParent leftComponent rightComponent
+  source earlier left right later decomposition premises leftInsert rightInsert distinct (safety ** earlyAligned) =
+    ((orchestrationOrchestrationDiamondSpike nameEq keyEq protocol left right
+        (Builtin.fst (o19SourcePairFacts nameEq keyEq protocol source earlier left right later decomposition premises))
+        (PaperInsertStep leftInsert) (PaperInsertStep rightInsert)
+        (\same => distinct (trans (sym (cong actionOwner rightInsert))
+          (trans (sym (o19TransitionActorOwner right))
+            (trans (sym same) (trans (o19TransitionActorOwner left) (cong actionOwner leftInsert)))))) safety earlyAligned) **
+     adjacentSwapSuffixSpike nameEq keyEq protocol source earlier left right later decomposition premises
+       (orchestrationOrchestrationDiamondSpike nameEq keyEq protocol left right
+        (Builtin.fst (o19SourcePairFacts nameEq keyEq protocol source earlier left right later decomposition premises))
+        (PaperInsertStep leftInsert) (PaperInsertStep rightInsert)
+        (\same => distinct (trans (sym (cong actionOwner rightInsert))
+          (trans (sym (o19TransitionActorOwner right))
+            (trans (sym same) (trans (o19TransitionActorOwner left) (cong actionOwner leftInsert)))))) safety earlyAligned)
+       (o19GeneratedInsertionPairExternal nameEq keyEq leftChild rightChild leftParent rightParent leftComponent rightComponent
+         left right leftInsert rightInsert
+         (orchestrationOrchestrationDiamondSpike nameEq keyEq protocol left right
+        (Builtin.fst (o19SourcePairFacts nameEq keyEq protocol source earlier left right later decomposition premises))
+        (PaperInsertStep leftInsert) (PaperInsertStep rightInsert)
+        (\same => distinct (trans (sym (cong actionOwner rightInsert))
+          (trans (sym (o19TransitionActorOwner right))
+            (trans (sym same) (trans (o19TransitionActorOwner left) (cong actionOwner leftInsert)))))) safety earlyAligned)))
