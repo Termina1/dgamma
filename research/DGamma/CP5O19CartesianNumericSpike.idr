@@ -54,3 +54,36 @@ export
 o19RowPullZero Z position = Refl
 o19RowPullZero (S start) Z = Refl
 o19RowPullZero (S start) (S position) = cong S (o19RowPullZero start position)
+
+||| One genuine adjacent ordinal transposition extends the smaller rotated
+||| row. The proof consumes the exhaustive sealed relation, not a guessed
+||| scalar evaluator equation, and inspects natural/region constructors.
+export
+0 o19RowPullStep : (start, width, position, source : Nat) ->
+  AdjacentSwapOrdinalRelation start position source ->
+  (o19RowPull (S start) width source = o19RowPull start (S width) position)
+o19RowPullStep start width position _ (AdjacentPrefixOrdinal earlier) =
+  case start of
+    Z => void (uninhabited earlier)
+    S previous => case position of
+      Z => Refl
+      S after => cong S (o19RowPullStep previous width after after (AdjacentPrefixOrdinal (fromLteSucc earlier)))
+o19RowPullStep start width _ _ AdjacentMovedRightOrdinal =
+  case start of
+    Z => case width of
+      Z => Refl
+      S remaining => Refl
+    S previous => cong S (o19RowPullStep previous width previous (S previous) AdjacentMovedRightOrdinal)
+o19RowPullStep start width _ _ AdjacentMovedLeftOrdinal =
+  case start of
+    Z => Refl
+    S previous => cong S (o19RowPullStep previous width (S previous) previous AdjacentMovedLeftOrdinal)
+o19RowPullStep start width position _ (AdjacentSuffixOrdinal later) =
+  case start of
+    Z => case position of
+      Z => void (uninhabited later)
+      S Z => void (uninhabited (fromLteSucc later))
+      S (S after) => Refl
+    S previous => case position of
+      Z => void (uninhabited later)
+      S after => cong S (o19RowPullStep previous width after after (AdjacentSuffixOrdinal (fromLteSucc later)))
