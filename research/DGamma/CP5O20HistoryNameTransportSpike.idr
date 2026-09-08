@@ -242,3 +242,37 @@ o20HistoryLookupBeforeRemove nameEq removed selected live unique stamp found =
     No different => trans
       (sym (lookupAdvanceGenerationOther {key = Unit} {value = \_ => Unit} {world = Unit} {error = Unit}
         nameEq 0 (ORemove removed) selected different live)) found
+
+||| Actual paired Remove preserves the history-indexed internal cut. The
+||| removed generation leaves the live domain, so no endpoint raw-name match
+||| is imposed on its historical birth. Both native checks remain explicit.
+export
+0 o20HistoryRemoveCut :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (mapping : RegistrationGenerationBijection name) -> (actor : name) ->
+  (leftLive, rightLive : GenerationEnvironment name) ->
+  GenerationEnvironmentNamesUnique leftLive -> GenerationEnvironmentNamesUnique rightLive ->
+  (leftWorld, rightWorld : world) -> (leftRegistry, rightRegistry : Registry name key value world error) ->
+  (paired : O20HistoryCut name key world error value nameEq mapping leftLive rightLive
+    (MkSystemState leftWorld leftRegistry) (MkSystemState rightWorld rightRegistry)) ->
+  (checkedApplyAction {name} {key} {value} {world} {error} @{nameEq} @{keyEq}
+    (ORemove actor) (MkSystemState leftWorld leftRegistry) =
+    Just (ORemoveTag, MkSystemState leftWorld (deleteBinding @{nameEq} actor leftRegistry))) ->
+  (checkedApplyAction {name} {key} {value} {world} {error} @{nameEq} @{keyEq}
+    (ORemove (renameForward (historyCutBijection paired) actor)) (MkSystemState rightWorld rightRegistry) =
+    Just (ORemoveTag, MkSystemState rightWorld
+      (deleteBinding @{nameEq} (renameForward (historyCutBijection paired) actor) rightRegistry))) ->
+  O20HistoryCut name key world error value nameEq mapping
+    (deleteCurrentGeneration @{nameEq} actor leftLive)
+    (deleteCurrentGeneration @{nameEq} (renameForward (historyCutBijection paired) actor) rightLive)
+    (MkSystemState leftWorld (deleteBinding @{nameEq} actor leftRegistry))
+    (MkSystemState rightWorld (deleteBinding @{nameEq} (renameForward (historyCutBijection paired) actor) rightRegistry))
+o20HistoryRemoveCut nameEq keyEq mapping actor leftLive rightLive leftUnique rightUnique
+  leftWorld rightWorld leftRegistry rightRegistry (MkO20HistoryCut renaming runtime forward backward) leftChecked rightChecked =
+    MkO20HistoryCut renaming
+      (o20PairedObservedRemoveCut nameEq keyEq renaming actor leftWorld rightWorld leftRegistry rightRegistry leftChecked rightChecked runtime)
+      (\selected, stamp, found => forward selected stamp
+        (o20HistoryLookupBeforeRemove nameEq actor selected leftLive leftUnique stamp found))
+      (\selected, stamp, found => backward selected stamp
+        (o20HistoryLookupBeforeRemove nameEq (renameForward renaming actor) selected rightLive rightUnique stamp found))
