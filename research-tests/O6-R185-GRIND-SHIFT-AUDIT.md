@@ -231,3 +231,24 @@ product count/coverage, installed range/decomposition/origin updates and
 same-chain endpoint/full-bundle/external correspondence. Five holes unchanged;
 O19 body0 attempts; O20 selector continuation C not started; no O20/O21 body.
 Next authorized work must be gated at this unit stop; no implicit extra D slots.
+
+## Unit E authorization / first exhausted seam
+
+Supervisor authorized E<=12 (continue O19, not C): A/A backwards guards,
+then mixed right-activation rows/one total row dispatcher, then simultaneous
+Cartesian columns with remaining slots. Guard03:11 and all prerequisites before
+any O19 body unchanged. E1/33fddb38 derives an ACTUAL provider-candidate False
+observation from declared-key exclusion, independently of lifecycle/table.
+
+E2 EXHAUSTED3/3, wholly restored to E1; all3 rejected snapshots/logs retained.
+Goal: providerIn framing through one observed replaceEntries head decision,
+with excluded selected candidates and a tail induction equality. E2-1 missed
+providerIn phantom implicits; E2-2 failed using the quantity0 providerCandidate
+inside congruence; E2-3 inlined the real isActive/memberKey conditional but
+Idris still could not unify the rendered-identical lazy-conditional terms in
+the No branch. No unsafe primitive or unchecked helper added, no failed source
+committed (guarded path rejected each). This is a compiler/representation seam,
+not a semantic counterexample. Exactly ONE same-seam exhaustion so far in E.
+No fourth E2 attempt. A potential separate prerequisite is an explicit Boolean
+candidate observation carried through the head, avoiding higher-order/lazy-if
+congruence altogether; supervisor gate required before pursuing it.

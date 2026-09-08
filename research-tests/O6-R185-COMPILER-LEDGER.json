@@ -2459,5 +2459,123 @@
     "matchingSourceCommits": [
       "8a007f767bbbbd922e134ac42739bee231fbc8fb"
     ]
+  },
+  {
+    "unit": "E1-1",
+    "path": "research/DGamma/CP5O19ActivationResolutionSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O19ActivationResolutionSpike.idr"
+    ],
+    "start": "2026-09-08T01:41:55.862655+00:00",
+    "end": "2026-09-08T01:41:56.925000+00:00",
+    "seconds": 1.0621380000375211,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 0,
+    "sourceSHA256": "946d1431790f7bfde356dd9ec686f9f1afb9bfdc4dadeb766ba7595d5c03806e",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "1/1: Building DGamma.CP5O19ActivationResolutionSpike (research/DGamma/CP5O19ActivationResolutionSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "o19NonProviderObserved"
+    ],
+    "matchingSourceCommits": [
+      "33fddb38fa4323bf0b9c5fac6805c50f04718bbf"
+    ]
+  },
+  {
+    "unit": "E2-1",
+    "path": "research/DGamma/CP5O19ActivationResolutionSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O19ActivationResolutionSpike.idr"
+    ],
+    "start": "2026-09-08T01:42:48.418514+00:00",
+    "end": "2026-09-08T01:42:49.461262+00:00",
+    "seconds": 1.0425862921401858,
+    "exit": 1,
+    "fresh": true,
+    "passed": false,
+    "interrupted": false,
+    "maxSampleRSSKiB": 0,
+    "sourceSHA256": "25d074d351b73d4aa8217e7e4a234bae3dd7545f7da505cda738ec2416f61a28",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "1/1: Building DGamma.CP5O19ActivationResolutionSpike (research/DGamma/CP5O19ActivationResolutionSpike.idr)\nError: While processing type of o19ProviderReplaceObserved. Can't bind implicit DGamma.CP5O19ActivationResolutionSpike.{value:3283} of type ({arg:11033} : key[16]) -> Type\n\nDGamma.CP5O19ActivationResolutionSpike:30:1--43:68\n 30 | ||| One observed replacement decision; the unchanged prefix candidate is\n 31 | ||| carried by congruence rather than another evaluator case split.\n 32 | export\n 33 | 0 o19ProviderReplaceObserved :\n 34 |   {name, key, world, error : Type} -> {value : key -> Type} ->\n 35 |   (nameEq : DecEq name) -> (keyEq : DecEq key) -> (wanted : key) ->\n\nError: No type declaration for DGamma.CP5O19ActivationResolutionSpike.o19ProviderReplaceObserved.\n\nDGamma.CP5O19ActivationResolutionSpike:44:1--45:70\n 44 | o19ProviderReplaceObserved nameEq keyEq wanted actor _ old next rest (Yes Refl) exact nextFalse oldFalse tailSame =\n 45 |   rewrite exact in rewrite nextFalse in rewrite oldFalse Refl in Refl\n\n",
+    "newTopLevelDeclarations": [
+      "o19ProviderReplaceObserved"
+    ],
+    "matchingSourceCommits": []
+  },
+  {
+    "unit": "E2-2",
+    "path": "research/DGamma/CP5O19ActivationResolutionSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O19ActivationResolutionSpike.idr"
+    ],
+    "start": "2026-09-08T01:43:13.239385+00:00",
+    "end": "2026-09-08T01:43:14.272614+00:00",
+    "seconds": 1.0330718751065433,
+    "exit": 1,
+    "fresh": true,
+    "passed": false,
+    "interrupted": false,
+    "maxSampleRSSKiB": 0,
+    "sourceSHA256": "a026f9e886028284c626d3bf92b5d8c8c559cf6068e9801da3a3a30827ace2f4",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "1/1: Building DGamma.CP5O19ActivationResolutionSpike (research/DGamma/CP5O19ActivationResolutionSpike.idr)\nError: While processing right hand side of o19ProviderReplaceObserved. Can't solve constraint between: if providerCandidate wanted old then Just current else providerIn wanted (replaceEntries actor next rest) and if isActive (fiberLifecycle old) && Delay (memberKey wanted (ownedValues (fiberTable old))) then Just current else providerIn wanted (replaceEntries actor next rest).\n\nDGamma.CP5O19ActivationResolutionSpike:47:20--47:123\n 43 |    providerIn {name} {key} {value} {world} {error} @{nameEq} @{keyEq} wanted (Bind current old :: rest))\n 44 | o19ProviderReplaceObserved nameEq keyEq wanted actor _ old next rest (Yes Refl) exact nextFalse oldFalse tailSame =\n 45 |   rewrite exact in rewrite nextFalse in rewrite oldFalse Refl in Refl\n 46 | o19ProviderReplaceObserved nameEq keyEq wanted actor current old next rest (No distinct) exact nextFalse oldFalse tailSame =\n 47 |   rewrite exact in cong (\\following => if providerCandidate @{keyEq} wanted old then Just current else following) tailSame\n                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\n",
+    "newTopLevelDeclarations": [
+      "o19ProviderReplaceObserved"
+    ],
+    "matchingSourceCommits": []
+  },
+  {
+    "unit": "E2-3",
+    "path": "research/DGamma/CP5O19ActivationResolutionSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O19ActivationResolutionSpike.idr"
+    ],
+    "start": "2026-09-08T01:43:49.283052+00:00",
+    "end": "2026-09-08T01:43:50.345490+00:00",
+    "seconds": 1.0622525843791664,
+    "exit": 1,
+    "fresh": true,
+    "passed": false,
+    "interrupted": false,
+    "maxSampleRSSKiB": 0,
+    "sourceSHA256": "f6bce3bf5f29c5d90a4fd5e9568bafe8719c0ba6f9e09b0e83907efacac3d061",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "1/1: Building DGamma.CP5O19ActivationResolutionSpike (research/DGamma/CP5O19ActivationResolutionSpike.idr)\nError: While processing right hand side of o19ProviderReplaceObserved. Can't solve constraint between: if isActive (fiberLifecycle old) && Delay (memberKey wanted (ownedValues (fiberTable old))) then Just current else providerIn wanted (replaceEntries actor next rest) and if isActive (fiberLifecycle old) && Delay (memberKey wanted (ownedValues (fiberTable old))) then Just current else providerIn wanted (replaceEntries actor next rest).\n\nDGamma.CP5O19ActivationResolutionSpike:47:20--47:175\n 43 |    providerIn {name} {key} {value} {world} {error} @{nameEq} @{keyEq} wanted (Bind current old :: rest))\n 44 | o19ProviderReplaceObserved nameEq keyEq wanted actor _ old next rest (Yes Refl) exact nextFalse oldFalse tailSame =\n 45 |   rewrite exact in rewrite nextFalse in rewrite oldFalse Refl in Refl\n 46 | o19ProviderReplaceObserved nameEq keyEq wanted actor current old next rest (No distinct) exact nextFalse oldFalse tailSame =\n 47 |   rewrite exact in cong (\\following => if isActive (fiberLifecycle old) && memberKey @{keyEq} wanted (ownedValues (fiberTable old)) then Just current else following) tailSame\n                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\n",
+    "newTopLevelDeclarations": [
+      "o19ProviderReplaceObserved"
+    ],
+    "matchingSourceCommits": []
   }
 ]

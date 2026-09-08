@@ -70,11 +70,11 @@ for commit in commits:
 assert all(not r['matchingSourceCommits'] for r in records if not r['passed']), 'rejected source committed'
 attempts = {}
 for r in records:
-    match = re.fullmatch(r'((?:A|AO|OO|B|C|D)\d+)-(\d+)',r['unit'])
+    match = re.fullmatch(r'((?:A|AO|OO|B|C|D|E)\d+)-(\d+)',r['unit'])
     if match:
         attempts.setdefault(match[1],[]).append(int(match[2]))
 assert all(len(v)<=3 and v==list(range(1,len(v)+1)) for v in attempts.values()), attempts
-for prefix, limit in [('A',16),('AO',10),('OO',10),('B',14),('D',16),('C',8)]:
+for prefix, limit in [('A',16),('AO',10),('OO',10),('B',14),('D',16),('E',12),('C',8)]:
     assert sum(bool(re.fullmatch(prefix+r'\d+',k)) for k in attempts) <= limit
 (ROOT/'research-tests/O6-R185-COMPILER-LEDGER.json').write_text(json.dumps(records,indent=2)+'\n')
 with tarfile.open(ROOT/'research-tests/O6-R185-COMPILER-EVIDENCE.tar.gz','w:gz') as archive:
