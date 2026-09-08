@@ -5,6 +5,8 @@ import DGamma.Calculus
 import DGamma.Coeffects
 import DGamma.Metatheory
 import DGamma.CP3
+import DGamma.CP5ConfluenceCrossTraceSpike
+import DGamma.CP5RankedEarlyApplicabilitySpike
 import DGamma.CP5ConfluenceLocalDiamondSpike
 import DGamma.CP5ImmutableBirthMetadataSpike
 import DGamma.CP5O20BeginObservationSpike
@@ -134,3 +136,47 @@ o19ObservedOpeningExclusionAtCuts {name} {key} {value} {world} {error} nameEq ke
           (replace {p = AlignedTransitions name key world error value nameEq keyEq} (sym baseExact) (replayAligned premises))))
         (replayInitialWellFormed premises))
       (beginObservedView rightSeen) (beginObservedResolved rightSeen)
+
+||| SANCTIONED-INPUT source exclusion at arbitrary actual cuts, including
+||| every cut inside either block. Both Begin observations and every static
+||| component equation are produced here; no footprint premise remains.
+export
+0 o19SanctionedCutNondependency :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {sourceOrder, targetOrder : List name} ->
+  (swap : AdjacentActorOrderSwap name sourceOrder targetOrder) ->
+  {initial, leftCut, rightCut, finalState : SystemState name key value world error} ->
+  (source : Transitions initial finalState) ->
+  (blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder source) ->
+  (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq source) ->
+  (safety : AdjacentActorSwapSafety name key world error value protocol nameEq keyEq swap source blocks premises) ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq source ->
+  (leftEarlier : Transitions initial leftCut) -> (leftLater : Transitions leftCut finalState) ->
+  (appendTransitions leftEarlier leftLater = source) ->
+  (rightEarlier : Transitions initial rightCut) -> (rightLater : Transitions rightCut finalState) ->
+  (appendTransitions rightEarlier rightLater = source) ->
+  (leftNow, rightNow : Fiber name key value world error) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} (actorLeft swap) (registry leftCut) = Just leftNow) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} (actorRight swap) (registry rightCut) = Just rightNow) ->
+  ((wanted : key) -> Elem wanted (dependencies (componentDependencies (fiberComponent rightNow))) ->
+    Not (Elem wanted (dependencies (componentProvisions (fiberComponent leftNow)))))
+o19SanctionedCutNondependency nameEq keyEq protocol swap source blocks premises safety unique
+  leftEarlier leftLater leftExact rightEarlier rightLater rightExact leftNow rightNow leftFound rightFound =
+    o19ObservedOpeningExclusionAtCuts nameEq keyEq protocol source
+      (traceBeforeBlock (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)))
+      (MoreTransitions (beginTransition (blockOpening (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety))))
+        (appendTransitions (blockBody (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)))
+          (traceAfterBlock (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)))))
+      (blockDecomposition (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)))
+      leftEarlier leftLater leftExact rightEarlier rightLater rightExact premises unique (actorLeft swap) (actorRight swap)
+      (o20ObserveActualBegin nameEq keyEq (actorLeft swap)
+        (blockPreStart (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)))
+        (blockStart (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)))
+        (blockOpening (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety))))
+      (o20ObserveActualBegin nameEq keyEq (actorRight swap)
+        (blockPreStart (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)))
+        (earlyApplicationFinal (safetyRightOpeningEarly safety))
+        (MkBeginStep (earlyApplicationChecked (safetyRightOpeningEarly safety))))
+      leftNow rightNow leftFound rightFound
