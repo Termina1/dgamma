@@ -42,3 +42,23 @@ o20PairedRuntimeReplacementCut {name} {key} {world} {error} {value} nameEq keyEq
         leftFound rightFound worlds tables (allNameEffects paired))
       (o20PairedReplaceControls nameEq renaming actor leftOld rightOld leftNext rightNext leftRegistry rightRegistry
         leftFound rightFound nextRelated (allNameControls paired))
+
+||| Derive the precise pre-Advance metadata, accumulator and view relation
+||| from the already owned fiber control relation. No successor facts assumed.
+export
+0 o20ReloadingControlParts :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {renaming : NameBijection name} -> {component : Component key value world error} ->
+  {leftParent, rightParent : Parent name} -> {leftRetired, rightRetired : Bool} ->
+  {leftTable, rightTable : OwnedTable key value (componentProvisions component)} ->
+  {remaining : List (StepEffect key value world error (dependencies (componentDependencies component)) (componentProvisions component))} ->
+  {leftAccumulator, rightAccumulator : LocalState key value world (componentProvisions component) -> LocalState key value world (componentProvisions component)} ->
+  {leftView, rightView : View name (dependencies (componentDependencies component))} ->
+  FiberRelatedBy renaming
+    (MkFiber component leftParent leftRetired leftTable (Reloading remaining leftAccumulator leftView))
+    (MkFiber component rightParent rightRetired rightTable (Reloading remaining rightAccumulator rightView)) ->
+  (ParentRelatedBy renaming leftParent rightParent, leftRetired = rightRetired,
+    AccumulatorRelated leftAccumulator rightAccumulator, ViewRelatedBy renaming leftView rightView)
+o20ReloadingControlParts (RenamedFibers leftParent rightParent leftRetired rightRetired leftTable rightTable
+  (Reloading remaining leftAccumulator leftView) (Reloading remaining rightAccumulator rightView)
+  parents retiredSame (RenamedReloading remainingSame accumulators views)) = (parents, retiredSame, accumulators, views)
