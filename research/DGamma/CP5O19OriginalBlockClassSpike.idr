@@ -140,3 +140,19 @@ export
   ForeignInsertPlanView name key world error value nameEq keyEq child parent component ambient source tag afterState ->
   tag = OInsertTag
 o19ObservedOriginalInsertTag nameEq keyEq child parent component ambient source _ _ (MkForeignInsertPlanView absent guards) = Refl
+
+||| Original aligned actual insertion discharges its tag through the actual
+||| checked application and explicit F6 plan observation. No tag premise.
+export
+0 o19AlignedOriginalInsertTag :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (child : name) -> (parent : Parent name) ->
+  (component : Component key value world error) -> (before, afterState : SystemState name key value world error) ->
+  (step : Transition before afterState) ->
+  AlignedTransitions name key world error value nameEq keyEq (MoreTransitions step NoTransitions) ->
+  transitionAction step = OInsert child parent component -> transitionTag step = OInsertTag
+o19AlignedOriginalInsertTag nameEq keyEq child parent component (MkSystemState ambient fibers) afterState _
+  (AlignedStep action tag checked _ AlignedEnd) inserted = case inserted of
+    Refl => o19ObservedOriginalInsertTag nameEq keyEq child parent component ambient fibers tag afterState
+      (foreignInsertPlanView nameEq keyEq child parent component ambient fibers tag afterState
+        (checkedActionProjects nameEq keyEq (OInsert child parent component) (MkSystemState ambient fibers) afterState tag checked))
