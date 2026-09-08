@@ -239,3 +239,34 @@ record O19ColumnRun
   0 columnRightWord : o19ActionWord columnRight = rightWord
   0 columnRestWord : o19ActionWord columnRest = leftWord ++ suffixWord
   0 columnNodeCount : finiteAdjacentSwapNodeCount (cursorDerivation columnCursor) = length leftWord * length rightWord
+
+||| Simultaneously prepend ONE actual produced row to the EXPLICIT smaller
+||| column run rooted at that SAME row result. Finite append and structural
+||| row/column counts produce the product count; no scalar builder observer.
+export
+0 o19ColumnPrepend :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {protocol : RegistrationProtocol key value world error} ->
+  {initial, sourceFinal, before, rightBefore, rightAfter : SystemState name key value world error} ->
+  (source : Transitions initial sourceFinal) -> (earlier : Transitions initial before) ->
+  (spine : Transitions before rightBefore) -> (right : Transition rightBefore rightAfter) -> (later : Transitions rightAfter sourceFinal) ->
+  (leftWord : List (Action name key value world error)) -> (rightHead : Action name key value world error) ->
+  (remainingRight, suffixWord : List (Action name key value world error)) ->
+  (row : O19WordRow name key world error value protocol nameEq keyEq source earlier spine right later) ->
+  (transitionCount spine = length leftWord) -> (transitionAction right = rightHead) ->
+  (smaller : O19ColumnRun name key world error value protocol nameEq keyEq
+    (cursorTrace (mixedRowCursor (wordRow row)))
+    (appendTransitions earlier (MoreTransitions (mixedRowRight (wordRow row)) NoTransitions)) leftWord remainingRight suffixWord) ->
+  O19ColumnRun name key world error value protocol nameEq keyEq source earlier leftWord (rightHead :: remainingRight) suffixWord
+o19ColumnPrepend source earlier spine right later leftWord rightHead remainingRight suffixWord row count rightExact smaller =
+  MkO19ColumnRun
+    (MkO19ReachedCursor (cursorFinal (columnCursor smaller)) (cursorTrace (columnCursor smaller)) (cursorBundle (columnCursor smaller)) (cursorUnique (columnCursor smaller)) (o19AppendFinite (cursorDerivation (mixedRowCursor (wordRow row))) (cursorDerivation (columnCursor smaller))))
+    (columnMiddle smaller) (MoreTransitions (mixedRowRight (wordRow row)) (columnRight smaller)) (columnRest smaller)
+    (trans (sym (appendTransitionsAssociative earlier (MoreTransitions (mixedRowRight (wordRow row)) NoTransitions)
+      (appendTransitions (columnRight smaller) (columnRest smaller)))) (columnDecomposition smaller))
+    (trans (cong (\action => action :: o19ActionWord (columnRight smaller)) (trans (mixedRowAction (wordRow row)) rightExact))
+      (cong (rightHead ::) (columnRightWord smaller))) (columnRestWord smaller)
+    (trans (o19AppendFiniteCount (cursorDerivation (mixedRowCursor (wordRow row))) (cursorDerivation (columnCursor smaller)))
+      (trans (cong (\nodes => nodes + finiteAdjacentSwapNodeCount (cursorDerivation (columnCursor smaller))) (trans (mixedRowNodeCount (wordRow row)) count))
+        (trans (cong ((length leftWord) +) (columnNodeCount smaller)) (sym (multRightSuccPlus (length leftWord) (length remainingRight))))))
