@@ -84,3 +84,11 @@ o20PairedReplaceControls nameEq renaming actor leftOld rightOld leftNext rightNe
           (\same => different (trans (sym (renameLeftInverse renaming selected))
             (trans (cong (renameBackward renaming) same) (renameLeftInverse renaming actor)))) rightNext rightRegistry in
           previous selected
+
+||| One constructor elimination at two explicitly observed present fibers.
+export
+0 o20PresentControl :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {renaming : NameBijection name} -> {left, right : Fiber name key value world error} ->
+  MaybeFiberRelatedBy renaming (Just left) (Just right) -> FiberRelatedBy renaming left right
+o20PresentControl (RenamedPresent related) = related
