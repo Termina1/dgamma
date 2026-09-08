@@ -161,3 +161,20 @@ o20PairedRemovalExecutionCut {nameEq} {keyEq} {renaming} (RemovalExecutionStage 
 o20PairedRemovalExecutionCut (RemovalExecutionRemove nameEq keyEq renaming actor leftWorld rightWorld leftRegistry rightRegistry leftChecked rightChecked later) paired =
   o20PairedRemovalExecutionCut later
     (o20PairedObservedRemoveCut nameEq keyEq renaming actor leftWorld rightWorld leftRegistry rightRegistry leftChecked rightChecked paired)
+
+||| Erased native-LTS projection of the extended execution: Remove is an
+||| indexed Fired edge at each exact destination, never a stuttering shortcut.
+export
+0 o20PairedRemovalExecutionTraces :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} -> {renaming : NameBijection name} ->
+  {leftBefore, rightBefore, leftAfter, rightAfter : SystemState name key value world error} ->
+  O20PairedExecutionWithRemoval name key world error value nameEq keyEq renaming leftBefore rightBefore leftAfter rightAfter ->
+  (Transitions leftBefore leftAfter, Transitions rightBefore rightAfter)
+o20PairedRemovalExecutionTraces (RemovalExecutionTail tail) = o20PairedExecutionTraces tail
+o20PairedRemovalExecutionTraces (RemovalExecutionStage stage later) =
+  (MoreTransitions (fst (o20PairedStageTransitions stage)) (fst (o20PairedRemovalExecutionTraces later)),
+   MoreTransitions (snd (o20PairedStageTransitions stage)) (snd (o20PairedRemovalExecutionTraces later)))
+o20PairedRemovalExecutionTraces (RemovalExecutionRemove nameEq keyEq renaming actor leftWorld rightWorld leftRegistry rightRegistry leftChecked rightChecked later) =
+  (MoreTransitions (Fired nameEq keyEq (ORemove actor) ORemoveTag leftChecked) (fst (o20PairedRemovalExecutionTraces later)),
+   MoreTransitions (Fired nameEq keyEq (ORemove (renameForward renaming actor)) ORemoveTag rightChecked) (snd (o20PairedRemovalExecutionTraces later)))
