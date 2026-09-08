@@ -65,3 +65,24 @@ o20PairedDeleteControls nameEq renaming actor leftRegistry rightRegistry previou
       rewrite lookupDeleteOther @{nameEq} (renameForward renaming selected) (renameForward renaming actor)
         (\same => different (trans (sym (renameLeftInverse renaming selected))
           (trans (cong (renameBackward renaming) same) (renameLeftInverse renaming actor)))) rightRegistry in previous selected
+
+||| Removal synchronizes the complete ordered table projection, including the
+||| removed table becoming empty. No assumption that removal never occurs.
+export
+0 o20PairedDeleteEffects :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (renaming : NameBijection name) -> (actor : name) ->
+  (leftWorld, rightWorld : world) -> (leftRegistry, rightRegistry : Registry name key value world error) ->
+  RenamedRuntimeEffects name key world value renaming
+    (projectEffectState {name} {key} {value} {world} {error} @{nameEq} (MkSystemState leftWorld leftRegistry))
+    (projectEffectState {name} {key} {value} {world} {error} @{nameEq} (MkSystemState rightWorld rightRegistry)) ->
+  RenamedRuntimeEffects name key world value renaming
+    (projectEffectState {name} {key} {value} {world} {error} @{nameEq} (MkSystemState leftWorld (deleteBinding @{nameEq} actor leftRegistry)))
+    (projectEffectState {name} {key} {value} {world} {error} @{nameEq} (MkSystemState rightWorld (deleteBinding @{nameEq} (renameForward renaming actor) rightRegistry)))
+o20PairedDeleteEffects {name} {key} {world} {error} {value} nameEq keyEq renaming actor leftWorld rightWorld leftRegistry rightRegistry paired =
+  MkRenamedRuntimeEffects (synchronizedAmbient paired)
+    (\selected => trans (sym (tablesExact (projectDeleteEffectFrame nameEq keyEq actor leftWorld leftRegistry) selected))
+      (trans (pairedSetTableBindings name key world value nameEq renaming actor emptyContext emptyContext Refl
+        (projectEffectState {name} {key} {value} {world} {error} @{nameEq} (MkSystemState leftWorld leftRegistry))
+        (projectEffectState {name} {key} {value} {world} {error} @{nameEq} (MkSystemState rightWorld rightRegistry)) paired selected)
+        (tablesExact (projectDeleteEffectFrame nameEq keyEq (renameForward renaming actor) rightWorld rightRegistry) (renameForward renaming selected))))
