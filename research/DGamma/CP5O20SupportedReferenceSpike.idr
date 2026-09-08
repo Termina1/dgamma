@@ -186,3 +186,15 @@ data O20SupportedPath :
     (0 edge : SupportEdge nameEq state lower middle) ->
     (0 rest : O20SupportedPath name key world error value nameEq keyEq state middle upper) ->
     O20SupportedPath name key world error value nameEq keyEq state lower upper
+
+||| Forget only the support annotations, retaining every exact Equation62 edge.
+export
+0 o20SupportedPathRaw :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {state : SystemState name key value world error} -> {lower, upper : name} ->
+  O20SupportedPath name key world error value nameEq keyEq state lower upper ->
+  SupportPath nameEq state lower upper
+o20SupportedPathRaw (O20SupportedOne lowerSupported upperSupported edge) = SupportPathOne edge
+o20SupportedPathRaw (O20SupportedMore lowerSupported middleSupported edge rest) =
+  SupportPathMore edge (o20SupportedPathRaw rest)
