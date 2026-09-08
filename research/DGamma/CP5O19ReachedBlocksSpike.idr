@@ -396,3 +396,19 @@ o19NoLifecycleWordMember selected _ (NoLifecycleByStep step rest excluded tail) 
   excluded lifecycle (trans (o19TransitionActorOwner step) owner)
 o19NoLifecycleWordMember selected _ (NoLifecycleByStep step rest excluded tail) action (There member) lifecycle owner =
   o19NoLifecycleWordMember selected rest tail action member lifecycle owner
+
+||| Build NoLifecycleBy on the ACTUAL target segment from its word-member
+||| exclusions. This does not assert state/occurrence correspondence.
+export
+0 o19NoLifecycleFromWord :
+  {name, key, world, error : Type} -> {value : key -> Type} -> (selected : name) ->
+  {first, last : SystemState name key value world error} ->
+  (trace : Transitions first last) ->
+  ((action : Action name key value world error) -> Elem action (o19ActionWord trace) ->
+    (isLifecycleAction action = True) -> Not (actionOwner action = selected)) ->
+  NoLifecycleBy selected trace
+o19NoLifecycleFromWord selected NoTransitions excluded = NoLifecycleByEnd
+o19NoLifecycleFromWord selected (MoreTransitions step rest) excluded =
+  NoLifecycleByStep step rest
+    (\lifecycle, owner => excluded (transitionAction step) Here lifecycle (trans (sym (o19TransitionActorOwner step)) owner))
+    (o19NoLifecycleFromWord selected rest (\action, member => excluded action (There member)))
