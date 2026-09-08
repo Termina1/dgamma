@@ -112,3 +112,20 @@ data O20CanonicalTraceRoles :
     (0 role : Either (PaperActivationStep step) (PaperOrchestrationStep step)) ->
     (0 roles : O20CanonicalTraceRoles rest) ->
     O20CanonicalTraceRoles (MoreTransitions step rest)
+
+||| A constructor-owned occurrence embedding keeps the exact native step.
+||| This avoids observing a computed dependent location merely by Refl.
+export
+0 o20RolesInTail :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {before, middle, afterState : SystemState name key value world error} ->
+  (step : Transition before middle) -> (rest : Transitions middle afterState) ->
+  ((action : Action name key value world error) ->
+   (location : LocatedActionOccurrence action (MoreTransitions step rest)) ->
+   Either (PaperActivationStep (locatedTransition location)) (PaperOrchestrationStep (locatedTransition location))) ->
+  (action : Action name key value world error) -> (location : LocatedActionOccurrence action rest) ->
+  Either (PaperActivationStep (locatedTransition location)) (PaperOrchestrationStep (locatedTransition location))
+o20RolesInTail step rest classified action
+  (MkLocatedActionOccurrence before afterState prior located later exact decomposition) =
+    classified action (MkLocatedActionOccurrence before afterState (MoreTransitions step prior)
+      located later exact (cong (MoreTransitions step) decomposition))
