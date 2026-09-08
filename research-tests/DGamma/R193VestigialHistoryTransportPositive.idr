@@ -50,3 +50,10 @@ r193HistoricalLeaving = MkSystemState ()
     (setFiberLifecycle (retireFiber r193HistoricalParentActive)
       (Unloading (pushLocalUndo @{r45KeyEq} r45Spec id id) EmptyView Nothing))
     (registry r193HistoricalParentRetired))
+
+public export
+r193HistoricalLeave : Transition r193HistoricalParentRetired r193HistoricalLeaving
+r193HistoricalLeave = Fired r45NameEq r45KeyEq (LLeave 0) LLeaveTag
+  (DGamma.CP4ProgressNoDeadlock.checkedFromRaw r45NameEq r45KeyEq
+    (LLeave 0) r193HistoricalParentRetired r193HistoricalLeaving LLeaveTag
+    (checkedTransitionTargetValid r193HistoricalRetire) Refl)
