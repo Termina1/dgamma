@@ -108,3 +108,24 @@ o19UnloadingStepObserved nameEq keyEq selected action tag ambient fibers afterSt
     No distinct => rewrite systemLocalUpdateForeign nameEq selected (actionOwner action) distinct
       (MkSystemState ambient fibers) afterState (applyActionLocalUpdate nameEq keyEq action (MkSystemState ambient fibers) afterState tag raw) in
         rewrite found in Refl
+
+||| Actual aligned no-unload evolution: once Unloading, every remaining cut
+||| including the endpoint is Unloading. No assumption about installed being
+||| a paper activation is made anywhere in this induction.
+export
+0 o19UnloadingTrace :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  {first, finalState : SystemState name key value world error} ->
+  (trace : Transitions first finalState) ->
+  AlignedTransitions name key world error value nameEq keyEq trace ->
+  NoParentUnload selected trace ->
+  (unloadingEndpoint {name} {key} {value} {world} {error} @{nameEq} selected first = True) ->
+  (unloadingEndpoint {name} {key} {value} {world} {error} @{nameEq} selected finalState = True)
+o19UnloadingTrace nameEq keyEq selected _ AlignedEnd NoParentUnloadEnd unloading = unloading
+o19UnloadingTrace {first = MkSystemState ambient fibers} nameEq keyEq selected _
+  (AlignedStep action tag checked rest alignedTail) (NoParentUnloadStep _ _ excluded tail) unloading =
+    o19UnloadingTrace nameEq keyEq selected rest alignedTail tail
+      (o19UnloadingStepObserved nameEq keyEq selected action tag ambient fibers _
+        (checkedActionProjects nameEq keyEq action (MkSystemState ambient fibers) _ tag checked)
+        (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected fibers) Refl unloading excluded)
