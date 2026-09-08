@@ -72,3 +72,35 @@ o19OrchestrationRowZero {sourceFinal} {rightAfter} nameEq keyEq protocol source 
       (MkO19ReachedCursor sourceFinal source premises unique FiniteAdjacentSwapDone)
       rightAfter right later decomposition Refl Refl Refl activation Refl
 
+
+||| A/O pair external evidence: actual moved labels authenticate both root
+||| matching and generated internality. The activation remains internal.
+export
+0 o19ActivationInsertExternal :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (child : name) -> (parent : Parent name) -> (component : Component key value world error) ->
+  {first, middle, last : SystemState name key value world error} ->
+  (left : Transition first middle) -> (right : Transition middle last) ->
+  PaperActivationStep left -> (transitionAction right = OInsert child parent component) ->
+  (diamond : LocalRelationalDiamond name key world error value nameEq keyEq left right) ->
+  SameExternalOrchestration nameEq
+    (MoreTransitions left (MoreTransitions right NoTransitions))
+    (MoreTransitions (movedRight diamond) (MoreTransitions (movedLeft diamond) NoTransitions))
+o19ActivationInsertExternal nameEq keyEq child Root component left right activation inserted diamond =
+  SkipLeftInternal left (MoreTransitions right NoTransitions) (o19ActivationInternal nameEq left activation)
+    (MatchExternalInput (OInsert child Root component) right NoTransitions
+      (RootInsertStep inserted) (movedRight diamond) (MoreTransitions (movedLeft diamond) NoTransitions)
+      (RootInsertStep (trans (movedRightAction diamond) inserted))
+      inserted (trans (movedRightAction diamond) inserted)
+      (SkipRightInternal (movedLeft diamond) NoTransitions
+        (o19ActivationInternal nameEq (movedLeft diamond) (movedLeftActivationBranch diamond activation))
+        SameExternalOrchestrationEnd))
+o19ActivationInsertExternal nameEq keyEq child (ChildOf parent) component left right activation inserted diamond =
+  SkipLeftInternal left (MoreTransitions right NoTransitions) (o19ActivationInternal nameEq left activation)
+    (SkipLeftInternal right NoTransitions (childInsertCannotBeRoot right inserted)
+      (SkipRightInternal (movedRight diamond) (MoreTransitions (movedLeft diamond) NoTransitions)
+        (childInsertCannotBeRoot (movedRight diamond) (trans (movedRightAction diamond) inserted))
+        (SkipRightInternal (movedLeft diamond) NoTransitions
+          (o19ActivationInternal nameEq (movedLeft diamond) (movedLeftActivationBranch diamond activation))
+          SameExternalOrchestrationEnd)))
