@@ -139,3 +139,23 @@ o20PairedObservedAdvanceCut {name} {key} {world} {error} {value} nameEq keyEq re
               (cong (\local => bindings (ownedValues (localTable local))) afterSame)
               (RenamedFibers leftParent rightParent leftRetired rightRetired (localTable leftAfter) (localTable rightAfter)
                 (o20SuccessfulAdvanceLifecycle {name} {key} {value} {world} {error} rest (pushLocalUndo {key} {value} {world} @{keyEq} (componentProvisions component) leftOlder leftUndo) leftView) (o20SuccessfulAdvanceLifecycle {name} {key} {value} {world} {error} rest (pushLocalUndo {key} {value} {world} @{keyEq} (componentProvisions component) rightOlder rightUndo) rightView) parents retiredSame (o20SuccessfulAdvanceControls rest (pushLocalUndo {key} {value} {world} @{keyEq} (componentProvisions component) leftOlder leftUndo) (pushLocalUndo {key} {value} {world} @{keyEq} (componentProvisions component) rightOlder rightUndo) leftView rightView pushed views)) paired
+
+||| Full ordered table agreement at two observed actual owner fibers.
+||| This bridges the all-name projected invariant back to physical tables.
+export
+0 o20ObservedOwnerTablesAgree :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (renaming : NameBijection name) -> (actor : name) ->
+  (leftWorld, rightWorld : world) -> (leftRegistry, rightRegistry : Registry name key value world error) ->
+  (leftFiber, rightFiber : Fiber name key value world error) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor leftRegistry = Just leftFiber) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} (renameForward renaming actor) rightRegistry = Just rightFiber) ->
+  O20AllNameCut name key world error value nameEq renaming (MkSystemState leftWorld leftRegistry) (MkSystemState rightWorld rightRegistry) ->
+  bindings (ownedValues (fiberTable leftFiber)) = bindings (ownedValues (fiberTable rightFiber))
+o20ObservedOwnerTablesAgree {name} {key} {world} {error} {value} nameEq renaming actor leftWorld rightWorld
+  leftRegistry rightRegistry leftFiber rightFiber leftFound rightFound paired =
+    trans (sym (cong bindings (pairedProjectOwnerTableObserved name key world error value nameEq leftWorld
+      leftRegistry actor (Just leftFiber) leftFound)))
+      (trans (synchronizedTables (allNameEffects paired) actor)
+        (cong bindings (pairedProjectOwnerTableObserved name key world error value nameEq rightWorld
+          rightRegistry (renameForward renaming actor) (Just rightFiber) rightFound)))
