@@ -105,3 +105,30 @@ export
 o19ActualTargetSameExternalInputs nameEq keyEq protocol swap source blocks premises safety unique =
   o19FiniteSameExternalInputs nameEq
     (cursorDerivation (columnCursor (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique)))
+
+||| COMPLETE same-chain operational whole-block swap. All fields belong to
+||| the SAME actual Cartesian cursor: whole derivation, full reached block
+||| decomposition, endpoint, full invariant bundle, and external inputs.
+||| The source/raw uniqueness is consumed by the actual cursor derivation;
+||| B4 retains reached uniqueness as accompanying erased capital.
+export
+0 o19ActualOperationalBlockSwap :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (protocol : RegistrationProtocol key value world error) ->
+  {sourceOrder, targetOrder : List name} -> (swap : AdjacentActorOrderSwap name sourceOrder targetOrder) ->
+  {initial, sourceFinal : SystemState name key value world error} -> (source : Transitions initial sourceFinal) ->
+  (blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder source) ->
+  (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq source) ->
+  (safety : AdjacentActorSwapSafety name key world error value protocol nameEq keyEq swap source blocks premises) ->
+  (unique : UniqueRawNameInsertions name key world error value nameEq keyEq source) ->
+  OperationalAdjacentBlockSwap name key world error value protocol nameEq keyEq
+    swap source blocks premises safety
+o19ActualOperationalBlockSwap nameEq keyEq protocol swap source blocks premises safety unique =
+  MkOperationalAdjacentBlockSwap
+    (cursorFinal (columnCursor (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique)))
+    (cursorTrace (columnCursor (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique)))
+    (certifiedWholeBlock (o19ActualWholeBlock nameEq keyEq protocol swap source blocks premises safety unique))
+    (o19ActualTargetDecomposition nameEq keyEq protocol swap source blocks premises safety unique)
+    (o19ActualTargetEndpoint nameEq keyEq protocol swap source blocks premises safety unique)
+    (fst (o19ActualTargetPremises nameEq keyEq protocol swap source blocks premises safety unique))
+    (o19ActualTargetSameExternalInputs nameEq keyEq protocol swap source blocks premises safety unique)
