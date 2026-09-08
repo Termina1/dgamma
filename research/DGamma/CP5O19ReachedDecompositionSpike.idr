@@ -48,3 +48,26 @@ o19OrderedRangeSeparation earlyStart earlySize lateStart earlyPosition latePosit
           (sym (plusSuccRightSucc earlyStart earlyPosition))
           (plusLteMonotoneLeft earlyStart (S earlyPosition) earlySize bounded))
         (transitive ordered (lteAddRight lateStart))))
+
+||| Genuine same-trace BlockBefore entails disjoint selected transition
+||| ranges. No caller-supplied numeric boundary or injectivity assumption.
+export
+0 o19OrderedBlockRangesDisjoint :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} -> {early, late : name} ->
+  {initial, finalState : SystemState name key value world error} ->
+  (trace : Transitions initial finalState) ->
+  (earlyBlock : LocatedOpenEpisodeBlock name key world error value nameEq keyEq early trace) ->
+  (lateBlock : LocatedOpenEpisodeBlock name key world error value nameEq keyEq late trace) ->
+  BlockBefore name key world error value nameEq keyEq trace early late earlyBlock lateBlock ->
+  (earlyPosition, latePosition : Nat) ->
+  LTE (S earlyPosition) (S (transitionCount (blockBody earlyBlock))) ->
+  LTE (S latePosition) (S (transitionCount (blockBody lateBlock))) ->
+  Not ((transitionCount (traceBeforeBlock earlyBlock) + earlyPosition) =
+    (transitionCount (traceBeforeBlock lateBlock) + latePosition))
+o19OrderedBlockRangesDisjoint trace earlyBlock lateBlock ordered earlyPosition latePosition earlyBound lateBound =
+  o19OrderedRangeSeparation (transitionCount (traceBeforeBlock earlyBlock))
+    (S (transitionCount (blockBody earlyBlock))) (transitionCount (traceBeforeBlock lateBlock))
+    earlyPosition latePosition
+    (replace {p = \count => LTE count (transitionCount (traceBeforeBlock lateBlock))}
+      (o19PrefixThroughCount earlyBlock) (o19OrderedBoundaryLTE trace earlyBlock lateBlock ordered)) earlyBound
