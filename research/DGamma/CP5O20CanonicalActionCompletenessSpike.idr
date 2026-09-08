@@ -146,3 +146,22 @@ o20RolesFromLocations {before} (MoreTransitions {middle} step rest) classified =
   O20RolesStep
     (classified (transitionAction step) (MkLocatedActionOccurrence before middle NoTransitions step rest Refl Refl))
     (o20RolesFromLocations rest (o20RolesInTail step rest classified))
+
+||| Whole accepted canonical trace has only Begin/Iter/Finish and native
+||| Insert/Retire/Remove. This removes the failure/diversion completeness debt
+||| for each unilateral canonical word, but does NOT pair the two words.
+export
+0 o20WholeCanonicalRoles :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (trace : Transitions initial finalState) ->
+  (capital : IndependentCanonicalSchedule name key world error value protocol nameEq keyEq trace) ->
+  O20CanonicalTraceRoles (canonicalTrace (canonicalSchedule capital))
+o20WholeCanonicalRoles nameEq keyEq protocol trace capital =
+  o20RolesFromLocations (canonicalTrace (canonicalSchedule capital))
+    (\action, location => o20DecomposedActionObserved nameEq keyEq protocol
+      (canonicalTrace (canonicalSchedule capital)) (supportOrder (canonicalSchedule capital))
+      (canonicalActorBlockDecomposition capital) (canonicalReplayPremises capital)
+      action location (isLifecycleAction action) Refl)
