@@ -1108,3 +1108,14 @@ data O19TracePrefix : {name, key, world, error : Type} -> {value : key -> Type} 
     (0 step : Transition initial next) -> (0 front : Transitions next middle) -> (0 whole : Transitions next finalState) ->
     (0 smaller : O19TracePrefix front whole) ->
     O19TracePrefix (MoreTransitions step front) (MoreTransitions step whole)
+
+||| The actual left dependent append is structurally a prefix, retaining
+||| exact states/transitions. No determinism or label injectivity is assumed.
+export
+0 o19PrefixAppended : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {initial, middle, finalState : SystemState name key value world error} ->
+  (front : Transitions initial middle) -> (rest : Transitions middle finalState) ->
+  O19TracePrefix front (appendTransitions front rest)
+o19PrefixAppended NoTransitions rest = O19PrefixEmpty rest
+o19PrefixAppended (MoreTransitions step smaller) rest =
+  O19PrefixMore step smaller (appendTransitions smaller rest) (o19PrefixAppended smaller rest)
