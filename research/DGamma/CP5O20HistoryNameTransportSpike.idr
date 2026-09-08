@@ -36,3 +36,18 @@ record O20HistoryBirthPair
   0 historyLeftBirth : CurrentGenerationBirth name key world error value left leftName historyLeftStamp
   0 historyRightBirth : CurrentGenerationBirth name key world error value right rightName historyRightStamp
   0 historyStampsMatched : (generationForward mapping historyLeftStamp = historyRightStamp)
+
+||| The history-indexed computation selects the actual opposite birth name.
+||| This equation uses authentic insertion stamps, not current presence.
+export
+0 o20HistoryTargetOwned :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {mapping : RegistrationGenerationBijection name} ->
+  {leftFirst, leftFinal, rightFirst, rightFinal : SystemState name key value world error} ->
+  {left : Transitions leftFirst leftFinal} -> {right : Transitions rightFirst rightFinal} ->
+  {leftName, rightName : name} ->
+  (paired : O20HistoryBirthPair name key world error value mapping left right leftName rightName) ->
+  (o20HistoricalTarget mapping (historyLeftStamp paired) = rightName)
+o20HistoryTargetOwned paired =
+  trans (cong generationName (historyStampsMatched paired))
+    (cong generationName (currentBirthStampExact (historyRightBirth paired)))
