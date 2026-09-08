@@ -693,4 +693,3 @@ public export
 blockSwapOccurrenceCorrespondence step =
   finiteDerivationOccurrenceCorrespondence
     (wholeBlockFiniteDerivation (blockSwapWholeDerivation step))
-
