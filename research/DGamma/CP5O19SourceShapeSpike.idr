@@ -9,6 +9,8 @@ import DGamma.CP4DeletionSelectedForeignLifecycleAnchorOpen
 import DGamma.CP4ProgressProgramBound
 import DGamma.CP5ConfluenceLocalDiamondSpike
 import DGamma.CP5O19AdjacentReplayProducerSpike
+import DGamma.CP5O20BeginObservationSpike
+import DGamma.CP5RankedEarlyApplicabilitySpike
 import Data.List
 import Data.List.Elem
 import Data.Maybe
@@ -205,3 +207,38 @@ o19ResolvedDependenciesExcluded nameEq keyEq state actor owner found inactive we
     (resolveView {name} {key} {value} {world} {error} @{nameEq} @{keyEq} rest (registry state)) Refl
     (\tail, tailExact => o19ResolvedDependenciesExcluded nameEq keyEq state actor owner found inactive wellFormed rest tail tailExact)
     wanted member
+
+||| Actual left opening + safety's actual right-first Begin check PRODUCE both
+||| component observations and static nondependency at the pre-left cut. No
+||| resolver success, footprint or observer is requested as a new input.
+||| Transporting these exact component declarations to arbitrary body cuts is
+||| still a separate source-metadata synchronization obligation.
+export
+0 o19OpeningSourceNondependency :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (leftActor, rightActor : name) ->
+  (before, leftAfter : SystemState name key value world error) ->
+  (leftOpening : BeginStep nameEq keyEq leftActor before leftAfter) ->
+  (rightOpening : CheckedEarlyApplication name key world error value nameEq keyEq before (LBegin rightActor) LBeginTag) ->
+  (registryWellFormed {name} {key} {value} {world} {error} @{nameEq} @{keyEq} before = True) ->
+  (leftSeen : O20BeginObservation name key world error value nameEq keyEq leftActor before leftAfter **
+   rightSeen : O20BeginObservation name key world error value nameEq keyEq rightActor before (earlyApplicationFinal rightOpening) **
+   (wanted : key) -> Elem wanted (dependencies (componentDependencies (beginObservedComponent rightSeen))) ->
+   Not (Elem wanted (dependencies (componentProvisions (beginObservedComponent leftSeen)))))
+o19OpeningSourceNondependency nameEq keyEq leftActor rightActor before leftAfter leftOpening rightOpening wellFormed =
+  (o20ObserveActualBegin nameEq keyEq leftActor before leftAfter leftOpening **
+   o20ObserveActualBegin nameEq keyEq rightActor before (earlyApplicationFinal rightOpening)
+     (MkBeginStep (earlyApplicationChecked rightOpening)) **
+   o19ResolvedDependenciesExcluded nameEq keyEq before leftActor
+     (MkFiber
+       (beginObservedComponent (o20ObserveActualBegin nameEq keyEq leftActor before leftAfter leftOpening))
+       (beginObservedParent (o20ObserveActualBegin nameEq keyEq leftActor before leftAfter leftOpening)) False
+       (beginObservedTable (o20ObserveActualBegin nameEq keyEq leftActor before leftAfter leftOpening)) (Inactive Nothing))
+     (beginObservedFound (o20ObserveActualBegin nameEq keyEq leftActor before leftAfter leftOpening)) Refl wellFormed
+     (dependencies (componentDependencies (beginObservedComponent
+       (o20ObserveActualBegin nameEq keyEq rightActor before (earlyApplicationFinal rightOpening)
+         (MkBeginStep (earlyApplicationChecked rightOpening))))))
+     (beginObservedView (o20ObserveActualBegin nameEq keyEq rightActor before (earlyApplicationFinal rightOpening)
+       (MkBeginStep (earlyApplicationChecked rightOpening))))
+     (beginObservedResolved (o20ObserveActualBegin nameEq keyEq rightActor before (earlyApplicationFinal rightOpening)
+       (MkBeginStep (earlyApplicationChecked rightOpening)))))
