@@ -12386,6 +12386,7 @@ data PaperAdvanceSource :
     PaperAdvanceSource name key world error value nameEq keyEq actor LFinishTag
       before
 
+export
 0 paperAdvanceSource :
   (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
   {before, afterState : SystemState name key value world error} ->
