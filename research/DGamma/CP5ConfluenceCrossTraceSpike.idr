@@ -44,49 +44,6 @@ public export
     orderSwap sourceTrace sourceBlocks sourcePremises applicableSafety
 operationalAdjacentBlockSwapSpike = ?operationalAdjacentBlockSwapSpike_rhs
 
-||| Every selected list step is now indexed by exact operational safety and its
-||| realized block replay.  A caller cannot prepend a pure swap/inverse loop
-||| without also constructing both intermediate safety proofs and finite local
-||| diamond derivations.
-public export
-data OperationalActorPermutation :
-  (name, key, world, error : Type) -> (value : key -> Type) ->
-  (protocol : RegistrationProtocol key value world error) ->
-  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
-  {sourceOrder, targetOrder : List name} ->
-  (certificate : CertifiedActorPermutation name sourceOrder targetOrder) ->
-  {initial, sourceFinal, targetFinal : SystemState name key value world error} ->
-  (sourceTrace : Transitions initial sourceFinal) ->
-  (sourceBlocks : ActorBlockDecomposition name key world error value nameEq keyEq
-    sourceOrder sourceTrace) ->
-  (sourcePremises : ReplayInvariantBundle name key world error value protocol
-    nameEq keyEq sourceTrace) ->
-  (targetTrace : Transitions initial targetFinal) -> Type where
-  OperationalActorDone :
-    (blocks : ActorBlockDecomposition name key world error value nameEq keyEq
-      order trace) ->
-    (premises : ReplayInvariantBundle name key world error value protocol nameEq
-      keyEq trace) ->
-    OperationalActorPermutation name key world error value protocol nameEq keyEq
-      ActorPermutationDone trace blocks premises trace
-  OperationalActorStep :
-    (orderSwap : AdjacentActorOrderSwap name before middle) ->
-    (restCertificate : CertifiedActorPermutation name middle after) ->
-    (sourceBlocks : ActorBlockDecomposition name key world error value nameEq keyEq
-      before sourceTrace) ->
-    (sourcePremises : ReplayInvariantBundle name key world error value protocol
-      nameEq keyEq sourceTrace) ->
-    (safety : AdjacentActorSwapSafety name key world error value protocol nameEq
-      keyEq orderSwap sourceTrace sourceBlocks sourcePremises) ->
-    (step : OperationalAdjacentBlockSwap name key world error value protocol
-      nameEq keyEq orderSwap sourceTrace sourceBlocks sourcePremises safety) ->
-    (rest : OperationalActorPermutation name key world error value protocol
-      nameEq keyEq restCertificate (blockSwapTrace step) (blockSwapBlocks step)
-        (blockSwapPremises step) targetTrace) ->
-    OperationalActorPermutation name key world error value protocol nameEq keyEq
-      (ActorPermutationStep orderSwap restCertificate) sourceTrace sourceBlocks
-        sourcePremises targetTrace
-
 public export
 0 operationalPermutationReplayCorrespondence :
   OperationalActorPermutation name key world error value protocol nameEq keyEq
