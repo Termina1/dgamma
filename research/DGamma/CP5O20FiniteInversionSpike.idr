@@ -46,3 +46,12 @@ export
   Not (selected = head) -> Elem selected (head :: rest) -> Elem selected rest
 o20DifferentHeadMember different Here = absurd (different Refl)
 o20DifferentHeadMember different (There inside) = inside
+
+||| Common-head cancellation for a finite enumeration map. The source head
+||| absence prevents incorrectly mapping a tail element to the target head.
+export
+0 o20CancelHeadMembership :
+  {name : Type} -> {head, selected : name} -> {sourceTail, goalTail : List name} ->
+  Not (Elem head sourceTail) -> Elem selected sourceTail -> Elem selected (head :: goalTail) -> Elem selected goalTail
+o20CancelHeadMembership absent selectedIn Here = absurd (absent selectedIn)
+o20CancelHeadMembership absent selectedIn (There targetIn) = targetIn
