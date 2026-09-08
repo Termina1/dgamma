@@ -113,3 +113,30 @@ o20HistoryEndpointPacketAgrees {name} {key} {world} {error} {value} nameEq left 
     trans (cong generationName matched)
       (cong generationName (currentBirthStampExact
         (acceptedRightCurrentBirth name key world error value nameEq left right mapping registrations rightName rightStamp rightCurrent)))
+
+||| Eliminate the observed endpoint choice. Supported names cannot take the
+||| full vestigial branch; the success branch authenticates its current image.
+export
+0 o20HistorySupportedChoice :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {leftFirst, leftFinal, rightFirst, rightFinal : SystemState name key value world error} ->
+  (left : Transitions leftFirst leftFinal) -> (right : Transitions rightFirst rightFinal) ->
+  (mapping : RegistrationGenerationBijection name) ->
+  (registrations : RegistrationCorrespondenceByGeneration nameEq mapping left right) ->
+  (current : CurrentEndpointRenaming nameEq keyEq mapping left right registrations) ->
+  (selected : name) -> (leftStamp : RegistrationGeneration name) ->
+  (isSupported {name} {key} {value} {world} {error} @{nameEq} @{keyEq} selected leftFinal = True) ->
+  Either
+    (VestigialEndpointGeneration name key world error value nameEq keyEq
+      (leftFinalGenerations registrations) (leftDeletedGenerations registrations) selected leftFinal)
+    (rightStamp : RegistrationGeneration name **
+      ((generationForward mapping leftStamp = rightStamp),
+       (lookupCurrentGeneration @{nameEq} (renameForward (currentNameBijection current) selected)
+         (rightFinalGenerations registrations) = Just rightStamp))) ->
+  (o20HistoricalTarget mapping leftStamp = renameForward (currentNameBijection current) selected)
+o20HistorySupportedChoice nameEq keyEq left right mapping registrations current selected leftStamp supported (Left vestigial) =
+  absurd (trans (sym supported) (vestigialUnsupported vestigial))
+o20HistorySupportedChoice nameEq keyEq left right mapping registrations current selected leftStamp supported (Right matched) =
+  o20HistoryEndpointPacketAgrees nameEq left right mapping registrations
+    (renameForward (currentNameBijection current) selected) leftStamp matched
