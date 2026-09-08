@@ -499,3 +499,58 @@ o19SanctionedReplayedAdvance {name} {key} {value} {world} {error} {first} {middl
         rightFound)
       (fst (snd (o19SourcePairFacts nameEq keyEq protocol (cursorTrace cursor) earlier (Fired nameEq keyEq leftAction leftTag leftChecked) (Fired nameEq keyEq (LAdvance (actorRight swap)) rightTag rightChecked)
         later decomposition (cursorBundle cursor))))
+
+||| Complete A/A backwards Begin guard at arbitrary reached cuts, retaining
+||| ORIGINAL safety and using only the same cursor's actual trace/bundle/origins.
+||| All owner, current Begin and static exclusion observations are produced.
+export
+0 o19SanctionedReplayedBegin :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {sourceOrder, targetOrder : List name} ->
+  (swap : AdjacentActorOrderSwap name sourceOrder targetOrder) ->
+  {initial, first, middle, last, finalState : SystemState name key value world error} ->
+  (source : Transitions initial finalState) ->
+  (blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder source) ->
+  (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq source) ->
+  (safety : AdjacentActorSwapSafety name key world error value protocol nameEq keyEq swap source blocks premises) ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq source ->
+  (cursor : O19ReachedCursor name key world error value protocol nameEq keyEq source) ->
+  (earlier : Transitions initial first) -> (later : Transitions last (cursorFinal cursor)) ->
+  (leftAction : Action name key value world error) -> (leftTag : RuleTag) ->
+  (leftChecked : checkedApplyAction @{nameEq} @{keyEq} leftAction first = Just (leftTag, middle)) ->
+  (rightChecked : checkedApplyAction @{nameEq} @{keyEq} (LBegin (actorRight swap)) middle = Just (LBeginTag, last)) ->
+  (appendTransitions earlier
+    (MoreTransitions (Fired {before = first} {afterState = middle} nameEq keyEq leftAction leftTag leftChecked)
+      (MoreTransitions (Fired {before = middle} {afterState = last} nameEq keyEq (LBegin (actorRight swap)) LBeginTag rightChecked) later)) = cursorTrace cursor) ->
+  (actionOwner leftAction = actorLeft swap) ->
+  PaperActivationStep (Fired {before = first} {afterState = middle} nameEq keyEq leftAction leftTag leftChecked) ->
+  CheckedEarlyApplication name key world error value nameEq keyEq first (LBegin (actorRight swap)) LBeginTag
+o19SanctionedReplayedBegin {name} {key} {value} {world} {error} {first} {middle} {last}
+  nameEq keyEq protocol swap source blocks premises safety unique cursor earlier later leftAction leftTag
+  leftChecked rightChecked decomposition leftOwner leftActivation =
+    o19BeginBeforeNondependentPair nameEq keyEq (actorRight swap) first middle last leftAction leftTag leftChecked
+      (Builtin.DPair.DPair.fst (Builtin.fst (o19SourcePairOwner nameEq keyEq protocol (cursorTrace cursor) earlier (Fired nameEq keyEq leftAction leftTag leftChecked) (Fired nameEq keyEq (LBegin (actorRight swap)) LBeginTag rightChecked) later decomposition (cursorBundle cursor) leftActivation)))
+      (Builtin.DPair.DPair.snd (Builtin.fst (o19SourcePairOwner nameEq keyEq protocol (cursorTrace cursor) earlier (Fired nameEq keyEq leftAction leftTag leftChecked) (Fired nameEq keyEq (LBegin (actorRight swap)) LBeginTag rightChecked) later decomposition (cursorBundle cursor) leftActivation)))
+      (Builtin.snd (o19SourcePairOwner nameEq keyEq protocol (cursorTrace cursor) earlier (Fired nameEq keyEq leftAction leftTag leftChecked) (Fired nameEq keyEq (LBegin (actorRight swap)) LBeginTag rightChecked) later decomposition (cursorBundle cursor) leftActivation))
+      (\same => actorDistinct swap (trans (sym leftOwner) (sym same))) (o20ObserveActualBegin nameEq keyEq (actorRight swap) middle last (MkBeginStep rightChecked))
+      (o19ReplayedExclusionObservedOpenings nameEq keyEq protocol source (cursorTrace cursor)
+        (traceBeforeBlock (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)))
+        (MoreTransitions (beginTransition (blockOpening (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)))) (appendTransitions (blockBody (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety))) (traceAfterBlock (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)))))
+        (blockDecomposition (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)))
+        earlier (MoreTransitions (Fired nameEq keyEq leftAction leftTag leftChecked) (MoreTransitions (Fired nameEq keyEq (LBegin (actorRight swap)) LBeginTag rightChecked) later)) decomposition
+        (appendTransitions earlier (MoreTransitions (Fired nameEq keyEq leftAction leftTag leftChecked) NoTransitions)) (MoreTransitions (Fired nameEq keyEq (LBegin (actorRight swap)) LBeginTag rightChecked) later)
+        (trans (appendTransitionsAssociative earlier (MoreTransitions (Fired nameEq keyEq leftAction leftTag leftChecked) NoTransitions) (MoreTransitions (Fired nameEq keyEq (LBegin (actorRight swap)) LBeginTag rightChecked) later)) decomposition)
+        premises (cursorBundle cursor) unique (finiteDerivationOccurrenceCorrespondence (cursorDerivation cursor))
+        (actorLeft swap) (actorRight swap)
+        (o19OpeningSourceNondependency nameEq keyEq (actorLeft swap) (actorRight swap)
+        (blockPreStart (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety))) (blockStart (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety))) (blockOpening (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety))) (safetyRightOpeningEarly safety) (alignedTraceWellFormedEnd nameEq keyEq (traceBeforeBlock (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)))
+        (fst (alignedAppendSplit (traceBeforeBlock (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety))) (MoreTransitions (beginTransition (blockOpening (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)))) (appendTransitions (blockBody (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety))) (traceAfterBlock (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)))))
+          (replace {p = AlignedTransitions name key world error value nameEq keyEq} (sym (blockDecomposition (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)))) (replayAligned premises))))
+        (replayInitialWellFormed premises)))
+        (Builtin.DPair.DPair.fst (Builtin.fst (o19SourcePairOwner nameEq keyEq protocol (cursorTrace cursor) earlier (Fired nameEq keyEq leftAction leftTag leftChecked) (Fired nameEq keyEq (LBegin (actorRight swap)) LBeginTag rightChecked) later decomposition (cursorBundle cursor) leftActivation))) (MkFiber (beginObservedComponent (o20ObserveActualBegin nameEq keyEq (actorRight swap) middle last (MkBeginStep rightChecked))) (beginObservedParent (o20ObserveActualBegin nameEq keyEq (actorRight swap) middle last (MkBeginStep rightChecked))) False (beginObservedTable (o20ObserveActualBegin nameEq keyEq (actorRight swap) middle last (MkBeginStep rightChecked))) (Inactive Nothing))
+        (trans (cong (\actor => lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor (registry first)) (sym leftOwner)) (Builtin.DPair.DPair.snd (Builtin.fst (o19SourcePairOwner nameEq keyEq protocol (cursorTrace cursor) earlier (Fired nameEq keyEq leftAction leftTag leftChecked) (Fired nameEq keyEq (LBegin (actorRight swap)) LBeginTag rightChecked) later decomposition (cursorBundle cursor) leftActivation))))
+        (beginObservedFound (o20ObserveActualBegin nameEq keyEq (actorRight swap) middle last (MkBeginStep rightChecked))))
+      (fst (snd (o19SourcePairFacts nameEq keyEq protocol (cursorTrace cursor) earlier (Fired nameEq keyEq leftAction leftTag leftChecked) (Fired nameEq keyEq (LBegin (actorRight swap)) LBeginTag rightChecked)
+        later decomposition (cursorBundle cursor))))
