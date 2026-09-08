@@ -206,3 +206,16 @@ export
 o20HistoryCutSupportedAgreement nameEq keyEq left right mapping registrations current paired selected stamp found supported =
   trans (historyCutForward paired selected stamp found)
     (o20HistorySupportedEndpoint nameEq keyEq left right mapping registrations current selected stamp found supported)
+
+||| The actual empty origin inhabits the history cut for ANY internal
+||| bijection. The generation clauses are empty-domain eliminations.
+export
+0 o20HistoryEmptyOrigin :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (mapping : RegistrationGenerationBijection name) ->
+  (renaming : NameBijection name) -> (initial : SystemState name key value world error) ->
+  (bindings (registry initial) = []) ->
+  O20HistoryCut name key world error value nameEq mapping [] [] initial initial
+o20HistoryEmptyOrigin nameEq mapping renaming initial empty =
+  MkO20HistoryCut renaming (o20AllNameEmptyOrigin nameEq renaming initial empty)
+    (\selected, stamp, found => absurd found) (\selected, stamp, found => absurd found)
