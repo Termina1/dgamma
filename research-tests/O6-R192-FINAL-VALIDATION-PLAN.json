@@ -1,0 +1,261 @@
+[
+  {
+    "unit": "V1",
+    "path": "package",
+    "sourceHash": "aee761a37757cb047ddbf0f846bc23ce830ed755422f96852d08eb435c368727",
+    "expectedDiagnostic": null,
+    "symbol": null
+  },
+  {
+    "unit": "V2",
+    "path": "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+    "sourceHash": "f77f66a3e3a62f2ff757709f08d1488a25d54d425af74dcec4c2c0f0ed28c6fd",
+    "expectedDiagnostic": null,
+    "symbol": null
+  },
+  {
+    "unit": "V3",
+    "path": "research/DGamma/CP5ConfluenceDeletionChainSpike.idr",
+    "sourceHash": "5ca243616ce40e65aaeed35318d96156e98370c4319859e63f18f7b178ffec88",
+    "expectedDiagnostic": null,
+    "symbol": null
+  },
+  {
+    "unit": "V4",
+    "path": "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+    "sourceHash": "3b62ba1c3bc88503116ed22d82c667043f7f41dd483fb093cc25b677a55245cc",
+    "expectedDiagnostic": null,
+    "symbol": null
+  },
+  {
+    "unit": "V5",
+    "path": "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr",
+    "sourceHash": "833bd3450bc8a4214e0334fd2ad95d7f837bc636f40f2e33c408333395602713",
+    "expectedDiagnostic": null,
+    "symbol": null
+  },
+  {
+    "unit": "V6",
+    "path": "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
+    "sourceHash": "666d18626e49cbb0d6ac2f7624fe9f6b3519d539dbb574670f420bacd9fc69bb",
+    "expectedDiagnostic": null,
+    "symbol": null
+  },
+  {
+    "unit": "V7",
+    "path": "research/DGamma/CP5O20AllNameSynchronizationSpike.idr",
+    "sourceHash": "eb34b80def8d87fb099c8a06d9836d33f27f6faa3bc47ca198c5b79275fdf2dd",
+    "expectedDiagnostic": null,
+    "symbol": null
+  },
+  {
+    "unit": "V8",
+    "path": "research/DGamma/CP5O20PairedExecutionSpike.idr",
+    "sourceHash": "d4170671fe9677cb6e44fda33b56a447c3c69f9f897ccea85757f18ed11fe02b",
+    "expectedDiagnostic": null,
+    "symbol": null
+  },
+  {
+    "unit": "V9",
+    "path": "research/DGamma/CP5O20CanonicalPairedExtractionSpike.idr",
+    "sourceHash": "947c8fb7c2aba9cd88966051812042bb976d0003b6f1e97a35dc62e81c474c04",
+    "expectedDiagnostic": null,
+    "symbol": null
+  },
+  {
+    "unit": "V10",
+    "path": "research/DGamma/CP5O20PairedRemovalSpike.idr",
+    "sourceHash": "dd56deb5581b70101d86a698f0c1daecd6e071a9339a3b58150410378ff1734c",
+    "expectedDiagnostic": null,
+    "symbol": null
+  },
+  {
+    "unit": "V11",
+    "path": "research/DGamma/CP5O20RightOpeningTransportSpike.idr",
+    "sourceHash": "f2da10325655665842f58cd43dd7b918aa1b3e888aa07a552a086ae79fdde8dd",
+    "expectedDiagnostic": null,
+    "symbol": null
+  },
+  {
+    "unit": "V12",
+    "path": "research/DGamma/CP5O20LinearExtensionSpike.idr",
+    "sourceHash": "8f4f0ccb7d4a8e5a7c94031530f0f48dcb5b87cc4e9c2c9c3df7684b03a73832",
+    "expectedDiagnostic": null,
+    "symbol": null
+  },
+  {
+    "unit": "V13",
+    "path": "research/DGamma/CP5O20SelectionCompletenessSpike.idr",
+    "sourceHash": "93ab2a8ddfb2b92d8473b2189466b423ce22793b7fdcb56f71201972b828c9ae",
+    "expectedDiagnostic": null,
+    "symbol": null
+  },
+  {
+    "unit": "V14",
+    "path": "research/DGamma/CP5O20SafeBlockSelectionSpike.idr",
+    "sourceHash": "a6b320f9941f78f3e1c65dafe6cd4e0d13ae2822314d5d08a6da04e86617ed62",
+    "expectedDiagnostic": null,
+    "symbol": null
+  },
+  {
+    "unit": "V15",
+    "path": "research/DGamma/CP5ActorLifecycleOnlyExtended.idr",
+    "sourceHash": "259bbb336aab6a3babcec41ccba9fc2eca5299422a3a8e5443715f004365b380",
+    "expectedDiagnostic": null,
+    "symbol": null
+  },
+  {
+    "unit": "V16",
+    "path": "research-tests/DGamma/R192ExtendedChildBlockProbe.idr",
+    "sourceHash": "677f90fcee71163893ca2a0ac95b1939debbf44ced06643acb46128b0d80fead",
+    "expectedDiagnostic": null,
+    "symbol": null
+  },
+  {
+    "unit": "V17",
+    "path": "research/DGamma/CP5O20SupportedBirthBridgeSpike.idr",
+    "sourceHash": "fb7bf6b4750d729da2794ff38bc1ec8d51cffbb838a24db8f7db822914b4e93a",
+    "expectedDiagnostic": null,
+    "symbol": null
+  },
+  {
+    "unit": "V18",
+    "path": "research/DGamma/CP5O20SupportedBridgeAssemblySpike.idr",
+    "sourceHash": "7beda3aac1fa38d338e588fda5dd42c0a561d0018974a74920d2c3cef3eaf64a",
+    "expectedDiagnostic": null,
+    "symbol": null
+  },
+  {
+    "unit": "V19",
+    "path": "research/DGamma/CP5O20BirthBridgeRemainderSpike.idr",
+    "sourceHash": "8a759194ca994ed430352eaafb738d03c99e0801d73744e0fd6c63c8974d123d",
+    "expectedDiagnostic": null,
+    "symbol": null
+  },
+  {
+    "unit": "V20",
+    "path": "research-tests/DGamma/R192RemovedBirthCurrentNameProbe.idr",
+    "sourceHash": "bf604f6695e9eda4f450dc05be35fbc2de7c53a8c04e0357b088c1f6888883f6",
+    "expectedDiagnostic": null,
+    "symbol": null
+  },
+  {
+    "unit": "V21",
+    "path": "research-tests/DGamma/R191CanonicalChildRetirementGap.idr",
+    "sourceHash": "316518f801b9e1067e483b2bc59717c4ce9a2acd35087d194220b64fbf5f5b06",
+    "expectedDiagnostic": null,
+    "symbol": null
+  },
+  {
+    "unit": "V22",
+    "path": "research-tests/DGamma/R174O17ProvisionCollisionCandidate.idr",
+    "sourceHash": "85b616df762a4e210a9846ca2f91487082ac39d9eec648bdcd3fd6ac56c1fc4e",
+    "expectedDiagnostic": null,
+    "symbol": null
+  },
+  {
+    "unit": "V23",
+    "path": "research/DGamma/CP5AvailabilityAwarePlacement.idr",
+    "sourceHash": "0e62fa35c396e9f26465c07dd24aab2e14d25c7d5c5980c28d5d313c63869c26",
+    "expectedDiagnostic": null,
+    "symbol": null
+  },
+  {
+    "unit": "V24",
+    "path": "research-tests/DGamma/R178GeneratedOrchestrationFixtures.idr",
+    "sourceHash": "78487d0aa60f41e1a09dccb85c38d1b89c99c68be2b14de4b6b8540cdef9a4f1",
+    "expectedDiagnostic": null,
+    "symbol": null
+  },
+  {
+    "unit": "V25",
+    "path": "research-tests/DGamma/R8BridgeAuthenticatedDirectionPositive.idr",
+    "sourceHash": "03c095c04ba02a43ccb1383c293e06834d93a4a1a6e0efe178430daa9b791196",
+    "expectedDiagnostic": null,
+    "symbol": null
+  },
+  {
+    "unit": "V26",
+    "path": "research-tests/DGamma/R8BridgeWrongBirthNegative.idr",
+    "sourceHash": "8f1c1b789f927956a2f8f19c9d0e3f2961d5c94737d9a80a3e522d64b05894be",
+    "expectedDiagnostic": "Mismatch between",
+    "symbol": "replaceBridgeRightOccurrenceWithoutGenerationEquation"
+  },
+  {
+    "unit": "V27",
+    "path": "research-tests/DGamma/R8WrongOccurrenceBridgeNegative.idr",
+    "sourceHash": "da7ed3cf2b884f39b4148c19cad4d759a9cd249c144cf6f608f1a7a84dd6f8cc",
+    "expectedDiagnostic": "first and second",
+    "symbol": "detachBridgeOccurrenceRelation"
+  },
+  {
+    "unit": "V28",
+    "path": "research-tests/DGamma/R8WrongTraceBridgeNegative.idr",
+    "sourceHash": "b8b535d2b83971994e36d29f70eee7b38a37242b8b651e421023cb8d2df8a2a0",
+    "expectedDiagnostic": "operationalTargetFinal and otherFinal",
+    "symbol": "wrongTraceBridge"
+  },
+  {
+    "unit": "V29",
+    "path": "research-tests/DGamma/R8PublicScheduleCannotReachBridgeNegative.idr",
+    "sourceHash": "8ed4fd143d7839258695ca6562f037a6f13fb50ad7a73c8d180068e9825545c3",
+    "expectedDiagnostic": "Mismatch between",
+    "symbol": "publicScheduleCannotEnterAuthenticatedBridge"
+  },
+  {
+    "unit": "V30",
+    "path": "research-tests/DGamma/R4VestigialSimultaneous.idr",
+    "sourceHash": "04a1fee5b70d6a555b7d20bac2e88c9a10df85c4a9b9d1c53a7664fc01af5347",
+    "expectedDiagnostic": null,
+    "symbol": null
+  },
+  {
+    "unit": "V31",
+    "path": "research-tests/DGamma/R6OuterSchedulesPositive.idr",
+    "sourceHash": "4249828c58bf3f69f9aabd36761481b916e01bdf69bf25dcdaa993599f11dffc",
+    "expectedDiagnostic": null,
+    "symbol": null
+  },
+  {
+    "unit": "V32",
+    "path": "research-tests/DGamma/R6MixedScheduleNegative.idr",
+    "sourceHash": "a60281516ef822e049902ad41a5d592fdbe987394a510a470548d58d881cae9a",
+    "expectedDiagnostic": "Mismatch between: leftCapital and otherLeft.",
+    "symbol": "mixedLeftSchedule"
+  },
+  {
+    "unit": "V33",
+    "path": "research-tests/DGamma/R8FullPipeline.idr",
+    "sourceHash": "7583af47a1b91494f1b08858f0951792cf987ea3456146c25b0dc06800a28519",
+    "expectedDiagnostic": null,
+    "symbol": null
+  },
+  {
+    "unit": "V34",
+    "path": "research-tests/DGamma/R178WrongGenerationMatchingNegative.idr",
+    "sourceHash": "279dcbdf318c96e4db87e55e6a7386062e83c644adb50454fd20c45de9da2c76",
+    "expectedDiagnostic": "otherRenaming and sameInputs .generatedGenerationBijection",
+    "symbol": "wrongGenerationMatching"
+  },
+  {
+    "unit": "V35",
+    "path": "research-tests/DGamma/R179O21CurrentBirthIdentityPositive.idr",
+    "sourceHash": "e8d1f64fdf8dab1b2af4dd76dc69f6138c45ad849cc64c14b1d46a030d34d901",
+    "expectedDiagnostic": null,
+    "symbol": null
+  },
+  {
+    "unit": "V36",
+    "path": "research-tests/DGamma/R179O21WrongOriginalBirthNegative.idr",
+    "sourceHash": "f2d7e6825c7fece1c36787ba1f2d248a59197df7d94b1fece6b651714046055b",
+    "expectedDiagnostic": "Mismatch between: other and left.",
+    "symbol": "wrongOriginalBirth"
+  },
+  {
+    "unit": "V37",
+    "path": "research/DGamma/CP5O19SurfaceSpike.idr",
+    "sourceHash": "da358a498847ed06b666c1e1d42fffed10afc7d6f699c94e4681d7b302ff5561",
+    "expectedDiagnostic": null,
+    "symbol": null
+  }
+]
