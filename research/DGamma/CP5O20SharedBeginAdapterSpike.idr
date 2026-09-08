@@ -130,3 +130,21 @@ o20BeginCutFromSharedObservations nameEq keyEq renaming actor leftBefore leftAft
       o20SharedObservedBeginCut nameEq keyEq renaming actor leftBefore leftAfter rightBefore rightAfter
         leftOpening rightOpening component leftParent rightParent leftTable rightTable leftView rightView
         leftFound rightFound leftResolved rightResolved leftExact rightExact paired pairwise
+
+||| GENERAL paired actual Begin successor, including ALL names. Shared
+||| component, both actual views, both exact updates and control correspondence
+||| are now produced internally from the real steps and the pre-cut invariant.
+export
+0 o20PairedActualBeginCut :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (renaming : NameBijection name) -> (actor : name) ->
+  (leftBefore, leftAfter, rightBefore, rightAfter : SystemState name key value world error) ->
+  BeginStep nameEq keyEq actor leftBefore leftAfter ->
+  BeginStep nameEq keyEq (renameForward renaming actor) rightBefore rightAfter ->
+  O20AllNameCut name key world error value nameEq renaming leftBefore rightBefore ->
+  (pairwiseProvisionInvariant {name} {key} {value} {world} {error} @{keyEq} (bindings (registry rightBefore)) = True) ->
+  O20AllNameCut name key world error value nameEq renaming leftAfter rightAfter
+o20PairedActualBeginCut nameEq keyEq renaming actor leftBefore leftAfter rightBefore rightAfter leftOpening rightOpening paired pairwise =
+  o20BeginCutFromSharedObservations nameEq keyEq renaming actor leftBefore leftAfter rightBefore rightAfter leftOpening rightOpening
+    (o20ObserveSharedActualBegins nameEq keyEq renaming actor leftBefore leftAfter rightBefore rightAfter leftOpening rightOpening paired)
+    paired pairwise
