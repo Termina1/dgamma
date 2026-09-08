@@ -65,3 +65,25 @@ o19ActualTargetEndpoint nameEq keyEq protocol swap source blocks premises safety
   o19FiniteEndpoint nameEq keyEq
     (cursorDerivation (columnCursor (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique)))
     (replayFinalWellFormed premises)
+
+||| Retain the ENTIRE reached invariant bundle together with raw-insertion
+||| uniqueness from the SAME cursor, never reconstructing a weakened bundle.
+||| GeneratedOrchestrationMatched remains at its original cross-trace inputs;
+||| the sanctioned O19 surface contains no such field (R189 supervisor ruling).
+export
+0 o19ActualTargetPremises :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (protocol : RegistrationProtocol key value world error) ->
+  {sourceOrder, targetOrder : List name} -> (swap : AdjacentActorOrderSwap name sourceOrder targetOrder) ->
+  {initial, sourceFinal : SystemState name key value world error} -> (source : Transitions initial sourceFinal) ->
+  (blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder source) ->
+  (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq source) ->
+  (safety : AdjacentActorSwapSafety name key world error value protocol nameEq keyEq swap source blocks premises) ->
+  (unique : UniqueRawNameInsertions name key world error value nameEq keyEq source) ->
+  (ReplayInvariantBundle name key world error value protocol nameEq keyEq
+      (cursorTrace (columnCursor (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique))),
+   UniqueRawNameInsertions name key world error value nameEq keyEq
+      (cursorTrace (columnCursor (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique))))
+o19ActualTargetPremises nameEq keyEq protocol swap source blocks premises safety unique =
+  (cursorBundle (columnCursor (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique)),
+   cursorUnique (columnCursor (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique)))
