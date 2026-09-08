@@ -107,3 +107,9 @@ public export
 o19RowPairs : Nat -> Nat -> List (Nat, Nat)
 o19RowPairs start Z = []
 o19RowPairs start (S width) = o19RowPairs (S start) width ++ [(start, start + S width)]
+
+||| The ordinal immediately before a rotated row is unchanged.
+export
+0 o19RowPullBeforeEdge : (start, width : Nat) -> (o19RowPull (S start) width start = start)
+o19RowPullBeforeEdge Z width = Refl
+o19RowPullBeforeEdge (S start) width = cong S (o19RowPullBeforeEdge start width)
