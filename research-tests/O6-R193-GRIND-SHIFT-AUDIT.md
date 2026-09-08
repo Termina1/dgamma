@@ -31,3 +31,27 @@ confluenceTheorem3785. D5 still takes its ALL-name cut as an input.
 ## Micro-unit ledger
 
 Entries follow. No proof/source change at baseline.
+
+## Supervisor parallel-lane rescope (20:42Z)
+
+Owner-approved lane2 in separate worktree dgamma-lane2 now owns ALL Units B/C:
+A10 extended-grammar relocation/zero-gap and A8 placement/root phase/fixtures.
+Main R193 retains A/D and may deepen those seams. No main edits to the variant
+or fixture surfaces have occurred. Compiler guards now identify cwd/absolute
+source-directory worktree markers; lane2 compilers are recorded, never killed
+or counted as an own-lane violation. Future invocations use absolute source-dir
+arguments to make own process membership observable. All previous checks used
+relative source dirs with no overlapping own compiler. No process was killed.
+Shared /tmp/dgamma-heavy.lock uses atomic mkdir, JSON owner(lane,pid,timestamp),
+<=20min polling, dead-pid+age>25min stale cleanup logged, identity-checked release.
+Historical >=19GiB targets, all R8 targets and known large spikes acquire it.
+48GiB sampling now tracks ONLY own-worktree compiler processes, not lane2.
+
+A1--A19 retained, all PASS1 except A12-1 query-rewrite mismatch/A12-2 PASS.
+History-indexed targets, actual paired birth locations, supported endpoint
+agreement, internal cut/empty/actual Remove successor and removed history-only
+fixture are owned. Arbitrary canonical extraction/rebasing remains OPEN.
+A17/A18 exclude failed/diverted lifecycle branches from full actual blocks and
+accepted canonical capital via existing no-unload absorption. They do not
+exclude orchestration Remove. Complete unilateral roles and paired extraction
+follow; no protected convergence-body attempt yet.

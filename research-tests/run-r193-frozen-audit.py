@@ -8,6 +8,22 @@ import re
 import subprocess
 import sys
 ROOT = pathlib.Path(__file__).resolve().parents[1]
+def compiler_scopes():
+    owned, lane2, unknown = [], [], []
+    for row in subprocess.check_output(['ps','-axo','pid,ppid,command'], text=True).splitlines():
+        cells = row.strip().split(None, 2)
+        if len(cells) != 3 or not re.search(r'/idris2_app/idris2(?:\.so)?(?:\s|$)', cells[2]):
+            continue
+        cwd_probe = subprocess.run(['lsof','-a','-p',cells[0],'-d','cwd','-Fn'],capture_output=True,text=True)
+        directories = [line[1:] for line in cwd_probe.stdout.splitlines() if line.startswith('n')]
+        if str(ROOT)+'/' in cells[2] or str(ROOT) in directories:
+            owned.append(row)
+        elif '/Users/vyacheslavshebanov/Work/dgamma-lane2/' in cells[2] or '/Users/vyacheslavshebanov/Work/dgamma-lane2' in directories:
+            lane2.append(row)
+        else:
+            unknown.append(row)
+    return owned, lane2, unknown
+
 START = '77a9efe1'
 PARTS = ['CanonicalSort', 'CrossTrace', 'DeletionChain', 'LocalDiamond', 'RenamingComposition']
 PATHS = {p: 'research/DGamma/CP5Confluence'+p+'Spike.idr' for p in PARTS}
@@ -25,8 +41,8 @@ assert not git('diff','--name-only')
 assert not git('diff','--check',START)
 untracked = git('ls-files','--others','--exclude-standard').splitlines()
 assert all(p.startswith('paper/') or p == 'review-o6-body-adversarial.md' for p in untracked)
-processes = subprocess.check_output(['ps','-axo','pid,ppid,command'],text=True)
-assert not re.search(r'/idris2_app/idris2(?:\.so)?(?:\s|$)', processes)
+owned_compilers, lane2_compilers, unknown_compilers = compiler_scopes()
+assert not owned_compilers and not unknown_compilers
 for part in PARTS:
     if part not in ['LocalDiamond','CrossTrace','RenamingComposition']:
         assert not git('diff',START,'--',PATHS[part]), part
@@ -98,7 +114,7 @@ report = dict(timestamp=datetime.datetime.now(datetime.timezone.utc).isoformat()
     adjacentFullBytes=1470,adjacentFullSHA256=full,adjacentStatementBytes=1154,adjacentStatementSHA256=statement,reviewSHA256=review,
     seeds='207/207',LocalDiamondTTC=dict(bytes=local_ttc.stat().st_size,mtimeUTC=local_time),changedIdrisFiles=changed,A11SurfaceRevision={k:v for k,v in a11.items() if k != 'items'},
     sourceSHA256={p:sha((ROOT/p).read_bytes()) for p in changed},protectedDeclarationSHA256=protected,prohibitedAdditions=prohibited,
-    noCompiler=True,noStagedFiles=True,cleanTrackedTree=True,allowedUntrackedOnly=True)
+    noCompiler=True,lane2Compilers=lane2_compilers,compilerScope="main worktree only",noStagedFiles=True,cleanTrackedTree=True,allowedUntrackedOnly=True)
 out = pathlib.Path(sys.argv[1] if len(sys.argv)>1 else '/tmp/dgamma-r193/frozen.json')
 assert str(out).startswith('/tmp/')
 out.write_text(json.dumps(report,indent=2)+'\n')
