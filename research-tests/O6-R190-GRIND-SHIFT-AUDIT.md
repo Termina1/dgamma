@@ -121,13 +121,36 @@ is executable. This is proof-level capital, NOT an executable plugin runtime.
 No full selection-loop capital -> no `selectOperationalCanonicalPermutationSpike`
 body attempt. Stopped is explicitly weaker than canonical throughout the types.
 
+## Unit B probe and first exhausted seam
+
+A partial stop at17f50fee RATIFIED. Supervisor assigns the remaining selector
+common-reference/completeness work to R191; no O20 body is allowed in R190.
+B disposable probe1/3: BP1-1 own-Building native exit1/expected PASS1.047s.
+Direct reuse of supportedReplayedBirthBridge for ALL generated births fails:
+LocatedGeneratedRegistration is not isSupported selected leftFinal=True.
+This is the known domain-sizing gap, NOT a countermodel; no specification
+change is proposed. Exact snapshot/log/JSON retained; disposable source removed.
+
+B1--B6 retained, all passed1: all-name paired runtime cut record; genuine
+all-name empty-origin producer; actual replacement control law for owner AND
+EVERY foreign/unsupported/absent/retired name; explicit present-control boundary;
+full fiber relation -> immutable component/parent metadata; actual paired Begin
+observations + internal pre-cut all-name relation -> component equality and
+renamed parents. These are internal cut proofs, not whole-execution sync.
+
+B7 o20MatchedBeginControl exhausted3/3. Attempts1/2 hit projected component
+pattern unification; attempt3, eliminating the projected equality while keeping
+both observations neutral, incorrectly forces their actor indices together
+(actor vs renameForward actor). All three native errors/snapshots retained.
+No fourth retry, no renamed or weakened reattempt of this goal. Exact
+uncommitted B7 declaration restored to HEAD, preserving B1--B6. One exhausted
+unit in this B seam (A24 was the independent concrete measure-test seam).
+S3-1 freshly checks the reverted retained module before this stop/gate.
+
 ## Status
 
 O19 closed; selector/convergence open; holes4=1/2/0/0/1, delta0.
-A stop:24/24 micro-units consumed,23 retained; A24 exhausted, no other exhausted
-unit. The real total operational search/certificate fold is proved, but canonical
-completeness/common-reference capital is still open. No unsafe addition/hole,
-no public surface change, no LocalDiamond/O17/O19/O21 change. Unit B next after
-A gate/stop; its16-unit budget remains untouched. Exact invocation records,
-failed sources, and commit receipts are append-only under/tmp/dgamma-r190.
-Consolidated ledger/archive/final validation remain due at shift end.
+A stopped24/24,23 retained. B currently7/16 consumed,6 retained; B7 exhausted,
+9 authorized units remain pending exhaustion gate. No unsafe/hole/production/
+public-surface/LocalDiamond/O17/O19/O21 changes. Final ledger/archive/verification
+remain due. All exact invocation and guarded-commit evidence append-only in/tmp.
