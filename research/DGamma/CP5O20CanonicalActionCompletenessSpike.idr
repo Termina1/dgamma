@@ -58,3 +58,21 @@ o20CanonicalLifecyclePaper nameEq keyEq protocol trace capital action occurrence
   o20DecomposedLifecyclePaper nameEq keyEq protocol (canonicalTrace (canonicalSchedule capital))
     (supportOrder (canonicalSchedule capital)) (canonicalActorBlockDecomposition capital)
     (canonicalReplayPremises capital) action occurrence lifecycle
+
+||| A false lifecycle observation selects exactly Insert/Retire/Remove from
+||| the actual action. Remove remains a genuine orchestration role.
+export
+0 o20OrchestrationFromAction :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {before, afterState : SystemState name key value world error} ->
+  (step : Transition before afterState) -> (action : Action name key value world error) ->
+  (transitionAction step = action) -> (isLifecycleAction action = False) ->
+  PaperOrchestrationStep step
+o20OrchestrationFromAction step (OInsert actor parent component) exact nonLifecycle = PaperInsertStep exact
+o20OrchestrationFromAction step (ORetire actor) exact nonLifecycle = PaperRetireStep exact
+o20OrchestrationFromAction step (ORemove actor) exact nonLifecycle = PaperRemoveStep exact
+o20OrchestrationFromAction step (LBegin actor) exact nonLifecycle = absurd nonLifecycle
+o20OrchestrationFromAction step (LAdvance actor) exact nonLifecycle = absurd nonLifecycle
+o20OrchestrationFromAction step (LDivert actor) exact nonLifecycle = absurd nonLifecycle
+o20OrchestrationFromAction step (LLeave actor) exact nonLifecycle = absurd nonLifecycle
+o20OrchestrationFromAction step (LUnload actor) exact nonLifecycle = absurd nonLifecycle
