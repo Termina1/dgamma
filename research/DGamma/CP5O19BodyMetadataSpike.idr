@@ -353,3 +353,41 @@ o19SanctionedBeginBeforePair {middle} {last} nameEq keyEq protocol swap source b
         (Fired nameEq keyEq (LBegin (actorRight swap)) LBeginTag rightChecked)
         later decomposition premises leftActivation)
       (o20ObserveActualBegin nameEq keyEq (actorRight swap) middle last (MkBeginStep rightChecked))
+
+||| Original-to-reached metadata synchronization follows the ACTUAL replay
+||| action-origin map. Authenticate the current birth first, map that real
+||| occurrence back, then apply ORIGINAL raw-name uniqueness. No new safety
+||| or block decomposition of the reached trace is assumed.
+export
+0 o19ReplayedCutMetadata :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {initial, base, current, originalFinal, reachedFinal : SystemState name key value world error} ->
+  (original : Transitions initial originalFinal) -> (reached : Transitions initial reachedFinal) ->
+  (baseEarlier : Transitions initial base) -> (baseLater : Transitions base originalFinal) ->
+  (appendTransitions baseEarlier baseLater = original) ->
+  (currentEarlier : Transitions initial current) -> (currentLater : Transitions current reachedFinal) ->
+  (appendTransitions currentEarlier currentLater = reached) ->
+  ReplayInvariantBundle name key world error value protocol nameEq keyEq original ->
+  ReplayInvariantBundle name key world error value protocol nameEq keyEq reached ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq original ->
+  ActionRegistrationReplayCorrespondence name key world error value original reached ->
+  (actor : name) -> (baseFiber, currentFiber : Fiber name key value world error) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor (registry base) = Just baseFiber) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor (registry current) = Just currentFiber) ->
+  ((fiberParent baseFiber, fiberComponent baseFiber) = (fiberParent currentFiber, fiberComponent currentFiber))
+o19ReplayedCutMetadata {name} {key} {world} {error} {value} nameEq keyEq protocol original reached
+  baseEarlier baseLater baseExact currentEarlier currentLater currentExact originalPremises reachedPremises unique correspondence
+  actor baseFiber currentFiber baseFound currentFound =
+    uniqueRawBirthMetadata name key world error value nameEq keyEq original unique actor
+      (fiberParent baseFiber) (fiberParent currentFiber) (fiberComponent baseFiber) (fiberComponent currentFiber)
+      (rawMetadataBirthAtPrefix name key world error value nameEq keyEq original baseEarlier baseLater baseExact
+        (fst (alignedAppendSplit baseEarlier baseLater
+          (replace {p = AlignedTransitions name key world error value nameEq keyEq} (sym baseExact) (replayAligned originalPremises))))
+        (replayInitialEmpty originalPremises) actor baseFiber baseFound)
+      (replayActionOrigin correspondence
+        (rawMetadataBirthAtPrefix name key world error value nameEq keyEq reached currentEarlier currentLater currentExact
+          (fst (alignedAppendSplit currentEarlier currentLater
+            (replace {p = AlignedTransitions name key world error value nameEq keyEq} (sym currentExact) (replayAligned reachedPremises))))
+          (replayInitialEmpty reachedPremises) actor currentFiber currentFound))
