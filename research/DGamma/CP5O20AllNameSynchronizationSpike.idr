@@ -92,3 +92,14 @@ export
   {renaming : NameBijection name} -> {left, right : Fiber name key value world error} ->
   MaybeFiberRelatedBy renaming (Just left) (Just right) -> FiberRelatedBy renaming left right
 o20PresentControl (RenamedPresent related) = related
+
+||| Component equality and parent renaming are DERIVED from full fiber
+||| control relation, not supplied as new assumptions for actual Begin plans.
+export
+0 o20RelatedFiberMetadata :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {renaming : NameBijection name} -> {left, right : Fiber name key value world error} ->
+  FiberRelatedBy renaming left right ->
+  ((fiberComponent left = fiberComponent right), ParentRelatedBy renaming (fiberParent left) (fiberParent right))
+o20RelatedFiberMetadata (RenamedFibers leftParent rightParent leftRetired rightRetired
+  leftTable rightTable leftLifecycle rightLifecycle parents retired lifecycle) = (Refl, parents)
