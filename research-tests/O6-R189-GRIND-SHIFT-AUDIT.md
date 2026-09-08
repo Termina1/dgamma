@@ -72,3 +72,17 @@ D1 was already R188/1a42566c. Unused D7–D10 slots are not spent on unrelated
 claims. B COMPLETE; no O19 body attempted before the cycle-safe type move.
 The first read-only frozen-audit call preceded B6's commit and correctly
 rejected its dirty source; no compiler or commit guard was affected.
+
+## Supervisor exact type-move ruling
+
+B/edd10201 RATIFIED. Exactly27 declarations in run-r189-mechanical.py:NAMES
+are approved for byte-identical rehome to CP5O19SurfaceSpike, in dependency
+order. CertifiedActorPermutation stays in CrossTrace. CrossTrace publicly
+reexports the lower module. Exactly16 helpers in HELPERS switch one import.
+One move/switch per fresh detached compiler invocation and guarded receipt;
+the checked CrossTrace and lower module must BOTH have their own Building
+lines on each move. The mechanical runner authenticates both source hashes,
+exact baseline-subtraction/concatenation and no other source changes. Any
+non-import compiler failure requires a gate; moved proof text is never fixed.
+After rehome: fresh CrossTrace, every helper, R8/R16/fixtures/package, exact
+clause map and unchanged O19 statement/body before D. No LocalDiamond change.
