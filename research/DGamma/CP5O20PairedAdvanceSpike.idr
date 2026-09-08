@@ -201,3 +201,37 @@ export
 o20RetireRelated (RenamedFibers leftParent rightParent leftRetired rightRetired leftTable rightTable leftLifecycle rightLifecycle
   parents retiredSame lifecycle) =
     RenamedFibers leftParent rightParent True True leftTable rightTable leftLifecycle rightLifecycle parents Refl lifecycle
+
+||| An ACTUAL paired retirement gap (root OR generated child) preserves the
+||| full cut. Both native checked edges are required; no block ownership or
+||| root-first assumption is imposed on this external paired-execution step.
+export
+0 o20PairedObservedRetireCut :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (renaming : NameBijection name) -> (actor : name) ->
+  (leftWorld, rightWorld : world) -> (leftRegistry, rightRegistry : Registry name key value world error) ->
+  (leftOld, rightOld : Fiber name key value world error) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor leftRegistry = Just leftOld) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} (renameForward renaming actor) rightRegistry = Just rightOld) ->
+  (checkedApplyAction {name} {key} {value} {world} {error} @{nameEq} @{keyEq} (ORetire actor) (MkSystemState leftWorld leftRegistry) =
+    Just (ORetireTag, MkSystemState leftWorld (replaceBinding @{nameEq} actor (retireFiber leftOld) leftRegistry))) ->
+  (checkedApplyAction {name} {key} {value} {world} {error} @{nameEq} @{keyEq} (ORetire (renameForward renaming actor)) (MkSystemState rightWorld rightRegistry) =
+    Just (ORetireTag, MkSystemState rightWorld (replaceBinding @{nameEq} (renameForward renaming actor) (retireFiber rightOld) rightRegistry))) ->
+  O20AllNameCut name key world error value nameEq renaming (MkSystemState leftWorld leftRegistry) (MkSystemState rightWorld rightRegistry) ->
+  O20AllNameCut name key world error value nameEq renaming
+    (MkSystemState leftWorld (replaceBinding @{nameEq} actor (retireFiber leftOld) leftRegistry))
+    (MkSystemState rightWorld (replaceBinding @{nameEq} (renameForward renaming actor) (retireFiber rightOld) rightRegistry))
+o20PairedObservedRetireCut nameEq keyEq renaming actor leftWorld rightWorld leftRegistry rightRegistry
+  (MkFiber leftComponent leftParent leftRetired leftTable leftLifecycle)
+  (MkFiber rightComponent rightParent rightRetired rightTable rightLifecycle) leftFound rightFound leftChecked rightChecked paired =
+    o20PairedRuntimeReplacementCut nameEq keyEq renaming actor leftWorld rightWorld leftWorld rightWorld
+      (MkFiber leftComponent leftParent leftRetired leftTable leftLifecycle) (MkFiber rightComponent rightParent rightRetired rightTable rightLifecycle)
+      (MkFiber leftComponent leftParent True leftTable leftLifecycle) (MkFiber rightComponent rightParent True rightTable rightLifecycle)
+      leftRegistry rightRegistry leftFound rightFound (synchronizedAmbient (allNameEffects paired))
+      (o20ObservedOwnerTablesAgree nameEq renaming actor leftWorld rightWorld leftRegistry rightRegistry
+        (MkFiber leftComponent leftParent leftRetired leftTable leftLifecycle) (MkFiber rightComponent rightParent rightRetired rightTable rightLifecycle)
+        leftFound rightFound paired)
+      (o20RetireRelated (o20PresentControl
+        {left = MkFiber leftComponent leftParent leftRetired leftTable leftLifecycle}
+        {right = MkFiber rightComponent rightParent rightRetired rightTable rightLifecycle}
+        (rewrite sym leftFound in rewrite sym rightFound in allNameControls paired actor))) paired
