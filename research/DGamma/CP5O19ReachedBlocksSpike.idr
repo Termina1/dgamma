@@ -412,3 +412,27 @@ o19NoLifecycleFromWord selected (MoreTransitions step rest) excluded =
   NoLifecycleByStep step rest
     (\lifecycle, owner => excluded (transitionAction step) Here lifecycle (trans (sym (o19TransitionActorOwner step)) owner))
     (o19NoLifecycleFromWord selected rest (\action, member => excluded action (There member)))
+
+||| Explicit observed lookups plus the actual pointwise control relation
+||| preserve active truth. No lookup case is taken on a computed existential.
+export
+0 o19SupportedActiveObserved :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (selected : name) ->
+  (source, target : SystemState name key value world error) ->
+  (sourceFiber, targetFiber : Maybe (Fiber name key value world error)) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected (registry source) = sourceFiber) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected (registry target) = targetFiber) ->
+  FiberControlMaybeRelated sourceFiber targetFiber ->
+  (supportedActiveAt {name} {key} {value} {world} {error} @{nameEq} selected source =
+    supportedActiveAt {name} {key} {value} {world} {error} @{nameEq} selected target)
+o19SupportedActiveObserved nameEq selected source target _ _ sourceFound targetFound NoControlFibers =
+  rewrite sourceFound in rewrite targetFound in Refl
+o19SupportedActiveObserved nameEq selected source target _ _ sourceFound targetFound
+  (SomeControlFibers (FibersControlRelated lp rp lr rr lt rt leftLifecycle rightLifecycle parents retired lifecycle)) =
+    rewrite sourceFound in rewrite targetFound in
+      case lifecycle of
+        InactiveControls outcomes => Refl
+        ReloadingControls remaining accumulator view => Refl
+        ActiveControls accumulator view => Refl
+        UnloadingControls accumulator view outcome => Refl
