@@ -153,3 +153,20 @@ r193HistoricalRootFixed Z fiber found root = Refl
 r193HistoricalRootFixed (S Z) fiber found root =
   void (r193ChildNotRoot (trans (cong fiberParent (justInjective found)) root))
 r193HistoricalRootFixed (S (S later)) fiber found root = void (nothingIsNotJust found)
+
+||| ALL FOUR current endpoint fields admit swapping name1 (PRESENT vestigial)
+||| and name2 (absent), using the genuine discarded-birth branch on both sides.
+||| This is not the removed-child fixture and not absence called vestigial.
+public export
+0 r193HistoricalCurrent : CurrentEndpointRenaming r45NameEq r45KeyEq
+  identityRegistrationGenerationBijection r193HistoricalClosedTrace r193HistoricalClosedTrace r193HistoricalTree
+r193HistoricalCurrent = MkCurrentEndpointRenaming r192AbsentBijection
+  r193HistoricalRootFixed r193HistoricalRootFixed
+  (\n, generation, found => case n of
+    Z => Right (generation ** (Refl, found))
+    S Z => Left r193HistoricalVestigial
+    S (S later) => void (nothingIsNotJust found))
+  (\n, generation, found => case n of
+    Z => Right (generation ** (Refl, found))
+    S Z => Left r193HistoricalVestigial
+    S (S later) => void (nothingIsNotJust found))
