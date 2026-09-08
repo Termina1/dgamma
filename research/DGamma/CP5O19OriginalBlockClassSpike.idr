@@ -102,3 +102,26 @@ o19OriginalChildrenDistinct {name} {key} {world} {error} {value} nameEq keyEq so
       (uniqueRawBirthMetadata name key world error value nameEq keyEq source unique leftChild
         (ChildOf leftParent) (ChildOf rightParent) leftComponent rightComponent leftBirth rightBirth) of
       Refl => parentsDifferent Refl
+
+||| BOTH ORIGINAL selected block observations are now projections of the
+||| exact sanctioned decomposition/safety, including BOTH NoGeneratedChild
+||| fields. No source-word ownership or licensing callback is requested.
+export
+0 o19SanctionedOriginalWords :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (protocol : RegistrationProtocol key value world error) ->
+  {sourceOrder, targetOrder : List name} -> (swap : AdjacentActorOrderSwap name sourceOrder targetOrder) ->
+  {initial, sourceFinal : SystemState name key value world error} -> (source : Transitions initial sourceFinal) ->
+  (blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder source) ->
+  (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq source) ->
+  (safety : AdjacentActorSwapSafety name key world error value protocol nameEq keyEq swap source blocks premises) ->
+  (leftAction, rightAction : Action name key value world error) ->
+  Elem leftAction (o19ActionWord (actorBlockTrace (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)))) ->
+  Elem rightAction (o19ActionWord (actorBlockTrace (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety)))) ->
+  (O19BlockWordObservation name key world error value (actorLeft swap) (actorRight swap) leftAction,
+   O19BlockWordObservation name key world error value (actorRight swap) (actorLeft swap) rightAction)
+o19SanctionedOriginalWords nameEq keyEq protocol swap source blocks premises safety leftAction rightAction leftMember rightMember =
+  (o19OriginalBlockWord (actorLeft swap) (actorRight swap) (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety))
+     (safetyLeftDoesNotGenerateRight safety) leftAction leftMember,
+   o19OriginalBlockWord (actorRight swap) (actorLeft swap) (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety))
+     (safetyRightDoesNotGenerateLeft safety) rightAction rightMember)
