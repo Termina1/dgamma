@@ -453,3 +453,46 @@ o19MixedInsertionRowStep nameEq keyEq protocol rightChild leftParent rightParent
   source earlier left sourceRight crossings previous rightInsert rightTag (Right generated) =
     o19GeneratedInsertionRowStep nameEq keyEq protocol rightChild leftParent rightParent rightComponent
       source earlier left sourceRight crossings previous rightInsert rightTag generated
+
+
+||| Arbitrary MIXED activation/generated-insertion row through one dispatcher.
+||| Original source classes are restricted inductively; all crossings, replay,
+||| bundle, uniqueness, finite derivation and exact source-row count are built.
+export
+0 o19BubbleMixedInsertionRow :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (protocol : RegistrationProtocol key value world error) ->
+  (rightChild, leftParent, rightParent : name) -> (rightComponent : Component key value world error) ->
+  {initial, sourceFinal, before, rightBefore, rightAfter : SystemState name key value world error} ->
+  (source : Transitions initial sourceFinal) -> (earlier : Transitions initial before) ->
+  (spine : Transitions before rightBefore) -> (right : Transition rightBefore rightAfter) ->
+  (later : Transitions rightAfter sourceFinal) ->
+  (appendTransitions earlier (appendTransitions spine (MoreTransitions right later)) = source) ->
+  ReplayInvariantBundle name key world error value protocol nameEq keyEq source ->
+  (0 unique : UniqueRawNameInsertions name key world error value nameEq keyEq source) ->
+  (transitionAction right = OInsert rightChild (ChildOf rightParent) rightComponent) ->
+  (transitionTag right = OInsertTag) ->
+  (0 classes : {first, last : SystemState name key value world error} ->
+    (step : Transition first last) -> OccursIn step spine ->
+    Either
+      (PaperActivationStep step, Not (rightChild = transitionActor step),
+       ((licensor : name) -> (ChildOf rightParent = ChildOf licensor) -> Not (transitionActor step = licensor)))
+      (leftChild : name ** (leftComponent : Component key value world error **
+        ((transitionAction step = OInsert leftChild (ChildOf leftParent) leftComponent),
+         Not (rightChild = leftChild),
+         ((licensor : name) -> (ChildOf leftParent = ChildOf licensor) -> Not (rightChild = licensor)),
+         ((licensor : name) -> (ChildOf rightParent = ChildOf licensor) -> Not (leftChild = licensor)))))) ->
+  O19OrchestrationRow name key world error value protocol nameEq keyEq source earlier right (transitionCount spine)
+o19BubbleMixedInsertionRow nameEq keyEq protocol rightChild leftParent rightParent rightComponent source earlier
+  NoTransitions right later decomposition premises unique rightInsert rightTag classes =
+    o19OrchestrationRowZero nameEq keyEq protocol source earlier right later decomposition premises unique (PaperInsertStep rightInsert)
+o19BubbleMixedInsertionRow nameEq keyEq protocol rightChild leftParent rightParent rightComponent source earlier
+  (MoreTransitions left rest) right later decomposition premises unique rightInsert rightTag classes =
+    o19MixedInsertionRowStep nameEq keyEq protocol rightChild leftParent rightParent rightComponent source earlier left right
+      (transitionCount rest)
+      (o19BubbleMixedInsertionRow nameEq keyEq protocol rightChild leftParent rightParent rightComponent source
+        (appendTransitions earlier (MoreTransitions left NoTransitions)) rest right later
+        (trans (appendTransitionsAssociative earlier (MoreTransitions left NoTransitions)
+          (appendTransitions rest (MoreTransitions right later))) decomposition)
+        premises unique rightInsert rightTag (\step, occurs => classes step (OccursLater occurs)))
+      rightInsert rightTag (classes left OccursHere)
