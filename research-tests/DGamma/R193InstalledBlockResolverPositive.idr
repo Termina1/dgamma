@@ -17,19 +17,20 @@ import Decidable.Equality
 %default total
 %unbound_implicits off
 
-||| Executable setup: install the real two-step ServiceA provider and insert
-||| two dependent, provision-empty siblings. Fallback is total only; the
-||| subsequent native Begin and live-resolver checks must exclude it.
-||| This is a native physical-frame regression, not canonical schedule capital
-||| or a tagged-child RegistrationDiscipline/placement fixture.
+||| Concrete provider-backed host cut: a live ServiceA provider and two
+||| dependent, provision-empty siblings. This is an executable well-formed
+||| INITIAL CUT for a native physical-frame regression, not an asserted
+||| original/canonical history or tagged-child registration discipline.
+||| The prior callback-driven setup remains in the rejected E66-1 snapshot;
+||| it did not normalize across the imported callback boundary. No claim that
+||| its runtime computation fails follows from that elaboration rejection.
 public export
 r193FrameBefore : SystemState Nat ToyKey ToyValue ToyRuntime String
-r193FrameBefore = fromMaybe initialSystem (do
-  begun <- providerBeginRun
-  iterated <- applyTagged LIterTag (LAdvance 0) begun
-  active <- applyTagged LFinishTag (LAdvance 0) iterated
-  leftAdded <- applyTagged OInsertTag (OInsert 2 Root emptyConsumerComponent) active
-  applyTagged OInsertTag (OInsert 1 Root emptyConsumerComponent) leftAdded)
+r193FrameBefore = MkSystemState (MkToyRuntime True False)
+  (insertBinding 1 (freshFiber emptyConsumerComponent Root)
+    (insertBinding 2 (freshFiber emptyConsumerComponent Root)
+      (insertBinding 0 (MkFiber DGamma.CalculusChecks.providerComponent Root False (ownedA True)
+        (Active id EmptyView)) emptyContext Refl) Refl) Refl)
 
 public export
 r193FrameStart : SystemState Nat ToyKey ToyValue ToyRuntime String
@@ -46,3 +47,8 @@ r193FrameEnd = fromMaybe r193FrameChild (applyTagged LFinishTag (LAdvance 2) r19
 public export
 r193FrameRightStart : SystemState Nat ToyKey ToyValue ToyRuntime String
 r193FrameRightStart = fromMaybe r193FrameEnd (applyTagged LBeginTag (LBegin 1) r193FrameEnd)
+
+||| Actual checked Begin authenticates the concrete provider-backed host cut.
+public export
+0 r193FrameLeftOpening : BeginStep %search %search 2 r193FrameBefore r193FrameStart
+r193FrameLeftOpening = MkBeginStep Refl
