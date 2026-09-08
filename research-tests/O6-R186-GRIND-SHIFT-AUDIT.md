@@ -291,3 +291,133 @@ not an exact ordinal map for repeated actions. No2x2 closed end-to-end fixture
 from sanctioned inputs without the static-class premise. All(i)–(vi) are NOT
 complete; O19 body0, O20/O21 body0, hole census still5=1/3/0/0/1. E14 cap reached
 around04:43; no extra E slot inferred. Fresh consolidated validation follows.
+
+
+## F redirect and conditional-assembler ruling
+
+Supervisor ratified E14/a339ddf8 and authorized F<=8, guard06:17, followed by
+final validation/audit/gate by06:42. No C3 or new A/B/D/E slot was launched.
+The requested full ORIGINAL block classifier was investigated, not assumed.
+InstalledTrace includes Unloading: installed-at-cuts is NOT a proof that an
+actual lifecycle step is PaperBegin/PaperIter/PaperFinish. The actual final-
+active/no-unload evolution (and noEarlier/noLater occurrence restriction) is
+needed to exclude recovery/failed branches. No fake installed=>paper cast.
+
+After F4/F5, this debt was escalated. Supervisor RATIFIED their real original
+ownership/licensing producers and explicitly AUTHORIZED the two small actual
+OInsert-tag helpers and a four-way CONDITIONAL assembler, with identifier and
+doc containing Conditional. Its two missing PaperActivationStep completeness
+arguments must stay VISIBLE and hard open, never added to the public O19
+premises. No column-instantiation claim over that conditional classifier.
+
+## Unit F —8/8 retained; classifier prerequisite NARROWED, not closed
+
+Source: research/DGamma/CP5O19OriginalBlockClassSpike.idr (222 lines), total,
+unbound implicits off. New datatype + seven erased proof declarations.
+
+| Unit | Commit | Declaration | Fresh seconds | Attempt |
+|---|---|---|---:|---|
+| F1 | 8fe63ac3 | O19BlockWordObservation | 4.181 | PASS1 |
+| F2 | af9febf4 | o19OwnedSafeWord | 4.178 | PASS2 |
+| F3 | 8fad367a | o19OriginalBlockWord | 4.174 | PASS1 |
+| F4 | d5985945 | o19OriginalChildrenDistinct | 4.143 | PASS1 |
+| F5 | ff43ee52 | o19SanctionedOriginalWords | 4.174 | PASS1 |
+| F6 | dabcbea7 | o19ObservedOriginalInsertTag | 4.177 | PASS1 |
+| F7 | 3bbada58 | o19AlignedOriginalInsertTag | 4.181 | PASS1 |
+| F8 | 137a3626 | o19OriginalClassesConditional | 4.136 | PASS1 |
+
+F2-1's sole diagnostic was `Undefined name o19TransitionActorOwner`; adding
+its direct AdjacentReplayProducer import passed F2-2. No other F rejection,
+interruption or exhaustion. Every retained unit immediately guarded-committed
+against its exact-source fresh PASS. No post-cap declaration or retry.
+
+F2 simultaneously traverses ACTUAL ActorLifecycleOnly and NoGeneratedChild;
+F3 includes the ACTUAL opening and the complete body word. F5 projects BOTH
+original selected block observations from the exact decomposition and BOTH
+safety exclusions. It produces child/component values, own-lifecycle ownership,
+and opposite-actor child exclusions without a word classifier callback.
+F4 derives cross-child distinctness from ACTUAL original located births and
+original UniqueRawNameInsertions/immutable metadata, not a collision oracle.
+F6 eliminates the explicit actual insertion-plan constructor; F7 obtains it
+from the original aligned checked insertion, proving the real original tag.
+
+F8 o19OriginalClassesConditional assembles all four source observations from
+EXPLICIT F5-compatible observations and authentic ORIGINAL locations. A/A
+requires both visible paper branches, O/A only the right, A/O only the left;
+O/O invokes neither and derives original child inequality, both licensing
+exclusions and the original insertion tag. There is NO separately exported
+unconditional O/O entrypoint and NO claim that F8 discharges the full E13/E14
+static-class input. The paper-branch callbacks are a visible CONDITIONAL
+lemma hypothesis explicitly authorized by supervisor, not a postulate, new
+hole, reached-cut classifier, new O19 premise, or closed classifier producer.
+No column instantiation over F8 was attempted.
+
+## Consolidated fresh validation and frozen gates
+
+P1–P9 ALL PASS (completed04:46:11 UTC): all eight then-retained source modules
+and package. After F8, Q1–Q10 ALL PASS (completed05:12:59 UTC): all NINE retained
+source modules freshly rebuilt at exact current hashes, plus package. Both
+matrices were detached Python -I, internally serialized, with no compiler
+or source-edit overlap. The unchanged 48 GiB RSS guard remained active.
+
+| Check | Exact retained source / command target | Fresh seconds |
+|---|---|---:|
+| Q1 | research/DGamma/CP5O19BodyMetadataSpike.idr | 5.190 |
+| Q2 | research/DGamma/CP5O19MixedActivationRowSpike.idr | 5.184 |
+| Q3 | research/DGamma/CP5O19MixedRowDispatcherSpike.idr | 5.282 |
+| Q4 | research/DGamma/CP5O19CartesianLengthSpike.idr | 4.178 |
+| Q5 | research/DGamma/CP5O19PairObservationSpike.idr | 4.158 |
+| Q6 | research/DGamma/CP5O19CartesianWordRowSpike.idr | 5.198 |
+| Q7 | research/DGamma/CP5O19CartesianColumnsSpike.idr | 5.187 |
+| Q8 | research/DGamma/CP5O20LinearExtensionSpike.idr | 3.142 |
+| Q9 | research/DGamma/CP5O19OriginalBlockClassSpike.idr | 4.181 |
+| Q10 | package | 16.554 |
+
+F-cap and final-proof frozen audits PASS: 5 holes =1/3/0/0/1, unchanged protected
+five declarations and adjacentSwapSuffixSpike full/statement hashes, CP3 blob,
+review hash, no production diff versus34b21c9, no LocalDiamond/other five
+frozen-module diff versusaa8ef19e, 207/207 seeds, seeded LocalDiamond TTC
+125368223 bytes with unchanged02:34:38.629946 UTC mtime. No compiler, staged
+files or tracked changes at those gates; only pre-approved untracked paper/
+and review-o6-body-adversarial.md. No new unsafe/partial/hole/with/let/alias/
+postulate/frozen-deletion call or visibility change. Full exact hashes,
+commands, timestamps, rejected attempts and guarded F commit correspondence
+are in O6-R186-FINAL-EVIDENCE.json and retained /tmp/dgamma-r186 logs/snapshots.
+The artifact commit and final supervisor gate do not claim independent review.
+
+## Status —final bounded R186 shift
+
+A12/12, B16/16, D16/16 slots (15 retained, D3 exhausted), E14/14, F8/8;
+C2/8 retained under explicit redirect rulings, remaining6 deferred. Total67
+retained declarations /68 consumed slots. Last proof attempt F8-1 began
+05:10:21 UTC, safely before06:17. No O19/O20/O21 body attempt (all0). No new
+hole, escape hatch, broad R11, seed/build deletion, or independent acceptance.
+
+Fully proved under their visible indices/premises: arbitrary authenticated
+reached A/A guards; all four mixed row orientations; simultaneously constructed
+actual rows/words/bundles/origins/uniqueness/chains/counts; actual Cartesian
+column induction with product count; original word ownership/child exclusions,
+original birth collision exclusion and insertion tags; Conditional four-way
+source assembly. The column theorem still has its approved original static-
+class premise, and Conditional is not the producer discharging that premise.
+C's two BeforeIn helpers are finite-list capital only, not O20/body progress.
+
+Exact HARD remaining work, in dependency order:
+1. ORIGINAL paper-branch completeness producer: authenticate actual source
+   lifecycle occurrences using noEarlier/noLater, final-active and installed/
+   no-unload/absorbing-Unloading evolution; then combine F5 and F8 to discharge
+   original static classes without a premise. This has NOT landed.
+2. Exact original crossing ORDINAL plan and sound/nonempty/complete/unique
+   selected-pair coverage. Action words/product cardinality do not identify
+   repeated LAdvance positions and do not prove Cartesian origin coverage.
+3. Actual target INSTALLED ranges/blocks, ActorBlockDecomposition, and origin-
+   plan update, all attached to the SAME produced column derivation.
+4. Final same-chain endpoint/full-bundle/external-correspondence O19 assembly,
+   only after all prerequisites. O19 body remains unauthorized/open.
+
+No closed sanctioned-input 2x2 fixture without the static-class premise, no
+WholeBlockSwapDerivation, no O19 closure, no O20/O21 body work. Next shift should
+produce the original paper branches, not relabel the Conditional result as a
+classifier; then exact ordinals/coverage and installed target assembly. Required
+independent reviewer acceptance remains pending with the parent. Final committed
+artifact/evidence plus fresh frozen/process/staging gate are sent to supervisor.
