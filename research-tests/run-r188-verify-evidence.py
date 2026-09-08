@@ -49,6 +49,9 @@ assert [(qualified[k]['effectiveUnit'], qualified[k]['effectiveAttempt']) for k 
 raw, sources, normalized = {}, {}, {}
 prefix = 'dgamma-r188/'
 with tarfile.open(archive, 'r:gz') as tar:
+    dual_roles = ledger.get('finalValidationDualRoles', {})
+    if dual_roles:
+        assert dual_roles == json.loads(tar.extractfile(prefix+'final-validation-dual-roles.json').read())
     archived_ledger = [json.loads(line) for line in tar.extractfile(prefix+'ledger.jsonl').read().decode().splitlines()]
     assert len(archived_ledger) == len(records)
     assert qualified == json.loads(tar.extractfile(prefix+'invocation-qualifications.json').read())
@@ -139,6 +142,10 @@ for receipt in artifacts:
 validations = [r for r in records if re.fullmatch(r'V\d+', r['invocation'])]
 assert len(validations) == args.expected_validations
 assert all(r['passed'] and r['fresh'] for r in validations)
+for unit, role in dual_roles.items():
+    assert unit == 'C92-1' and raw[unit]['passed'] and raw[unit]['fresh'] and raw[unit]['exit'] == 0 and not raw[unit]['interrupted']
+    assert role['target'] == raw[unit]['path'] and role['sourceHash'] == raw[unit]['sourceSHA256']
+    assert sha(git('show', ledger['endCommit']+':'+role['target'])) == role['sourceHash']
 assert not git('diff', '--cached', '--name-only').strip()
 assert not git('diff', '34b21c9', '--', 'src/', 'dgamma.ipkg').strip()
 assert not git('diff', ledger['startCommit'], '--', 'research/DGamma/CP5ConfluenceLocalDiamondSpike.idr').strip()
@@ -147,7 +154,7 @@ modules = re.findall(r'DGamma\.[A-Za-z0-9_.]+', (ROOT/'dgamma.ipkg').read_text()
 assert len(modules) == 207 and all((ROOT/'build/ttc/2025081600'/(m.replace('.', '/')+'.ttc')).is_file() for m in modules)
 report = dict(shift='R188', checkedUTC=datetime.datetime.now(datetime.timezone.utc).isoformat(), endCommit=ledger['endCommit'],
     records=len(records), passed=ledger['passedCount'], rejected=ledger['failedCount'], proofInvocations=len(proof_runs),
-    sourceReceipts=len(source_receipts), artifactReceipts=len(artifacts), validValidations=len(validations),
+    sourceReceipts=len(source_receipts), artifactReceipts=len(artifacts), validValidations=len(validations), finalValidationDualRoles=dual_roles, finalValidationRoles=len(validations)+len(dual_roles),
     expectedNegativeValidations=sum(r['expectedDiagnostic'] is not None for r in validations),
     invalidValidationCount=0, serialized=True, interrupted=0, maximumRSSKiB=max(r['maxSampleRSSKiB'] for r in raw.values()),
     oneNewDeclarationPerProofInvocation=True, oneNewDeclarationPerSourceCommit=True, effectiveAttemptCapsPassed=True,

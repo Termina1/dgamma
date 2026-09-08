@@ -278,3 +278,58 @@ The source runner and independent verifier now enforce that tighter proof stop.
 No C93 or D2 inferred. Final sequence: all changed/frozen modules, R8/R16,
 R182/R181 fixtures, seeded package; consolidate receipts/ledger/archive; exact
 R189 residual list and supervisor gate by11:55. No body work this shift.
+
+## C6 cap92 / FINAL proof boundary eba48ea8
+
+C77–C83 derive unchanged absolute start/size/end for BOTH untouched classes
+(7e6dccb3,c557a607) and actual moved boundary equations/right-end bound8a7e543b.
+C84–C88 derive finite order comparison and source boundary inequalities.
+C89/4ecf52c4 and C90/f8ddac08 construct physical BlockBefore from before/right
+sites. C91/75f7304b covers EVERY actual site pair; C92/eba48ea8 gives COMPLETE
+`o19ActualTargetBlocksFollowOrder` for the SAME actual target block selector.
+Every target boundary inequality is DISCHARGED from source order, owned absolute
+counts and actual target uniqueness; C60 then produces a real dependent gap and
+exact opening-prefix equation. No boundary or target-order oracle remains.
+
+C6:16 declarations/16 fresh invocations, ALL PASS1/3. C91's 227s CPU-bound check
+triggered an interruption/retry gate, but it had ALREADY completed PASS at10:53:45
+before the conditional10:56 stop. Reconciliation discovered that result; NO
+process was killed, NO retry launched, NO interruption qualification created.
+C92 also took227s. All113 source declarations (A12+B8+C92+D1) have guarded
+commit-time receipts;121 proof invocations=113PASS+8 earlier rejections,
+interrupted0; effective C6/C7 qualification unchanged. NO C93 or D2/body.
+
+Supervisor approved C92-1's successful fresh own-Building check as FINAL
+ReachedBlocks validation AND the C92 source check, because those exact bytes
+are committed and never changed afterward. The dual role is explicit in the
+ledger/archive and independently verified against endCommit source bytes.
+All OTHER changed/frozen modules, R8/R16, R182/R181 count7/other fixtures and
+seeded package have separate fresh V checks in the detached serial final plan.
+Final V outcomes remain pending until the completion entry below.
+
+## Exact R189 remaining work (supervisor accepted)
+
+1. NEW `research/DGamma/CP5O19ReachedDecompositionSpike.idr`, importing the
+   checked ReachedBlocks, so the227s C91 is NOT rebuilt for every new lemma:
+   generic ordered-range disjointness from C88/actual prefix count; lifecycle
+   coverage at an actual cut; typed real LocatedActionOccurrence coverage
+   observation; Boolean head coverage observer; structural genuine-origin
+   coverage transport with source→target actor membership; full actual
+   ActorBlockDecomposition constructor using C52/C92. No new safety premise.
+   Reached origin updates, if required by downstream assembly, remain explicit.
+2. D2–D10 (D1/1a42566c already proved SAME-chain endpoint): full operational
+   assembly on this target decomposition, preserve UniqueRawNameInsertions and
+   GeneratedOrchestrationMatched, and genuine same-external correspondence.
+   Equal words/action counts are NOT external/occurrence correspondence.
+3. PRIOR exact type-rehome gate: mechanical lower module for CrossTrace's O19
+   dependency types/eliminators, publicly reexported by CrossTrace; exact move
+   list and every helper import dependency before edits. Preserve definitions
+   byte-for-byte, O19 signature, LocalDiamond, audit old→new; freshly check
+   CrossTrace/every helper/R8/R16/fixtures/seeded package. No such move attempted.
+4. Only then O19 body. Its current lower-helper→CrossTrace imports form a cycle
+   if CrossTrace imports their assembler. Resolve by approved rehome, not a
+   scoped→raw cast, extra safety premise, postulate, or frozen deletion call.
+
+Status before final validation: A/B complete, C FULL selector+FULL target order
+but missing range-disjointness/lifecycle-coverage fields and full record;
+D1 only; O19 OPEN, body0, holesdelta0/split5=1/3/0/0/1. No closure claim.

@@ -65,7 +65,10 @@ with tarfile.open(archive,'r:gz') as tar:
 receipts = [json.loads(s) for s in (OUT/'commit-receipts.jsonl').read_text().splitlines()] if (OUT/'commit-receipts.jsonl').exists() else []
 qualifications = json.loads((OUT/'validation-qualifications.json').read_text()) if (OUT/'validation-qualifications.json').exists() else {}
 assert set(qualifications).issubset({r['unit'] for r in records})
-ledger = dict(invocationQualifications=invocation_qualifications, validationQualifications=qualifications,
+dual_roles = json.loads((OUT/'final-validation-dual-roles.json').read_text()) if (OUT/'final-validation-dual-roles.json').exists() else {}
+for unit, role in dual_roles.items():
+    assert individual[unit]['passed'] and individual[unit]['fresh'] and individual[unit]['sourceSHA256'] == role['sourceHash']
+ledger = dict(finalValidationDualRoles=dual_roles, invocationQualifications=invocation_qualifications, validationQualifications=qualifications,
     qualifiedPassedCount=sum(r['passed'] and qualifications.get(r['unit'], {}).get('validValidation', True) for r in records),
     invalidValidationCount=sum(not q.get('validValidation', True) for q in qualifications.values()),
     rawPassMeaning='passedCount preserves the runner outcome; qualifiedPassedCount excludes explicitly invalidated validation invocations without rewriting their exact records.',
