@@ -73,3 +73,24 @@ o20ShareBeginValues component component Refl leftParent rightParent leftTable ri
   leftFound rightFound leftResolved rightResolved leftAfter rightAfter =
     MkO20SharedBeginObservations component leftParent rightParent leftTable rightTable leftView rightView
       leftFound rightFound leftResolved rightResolved leftAfter rightAfter
+
+||| Both actual observation records are opened FIRST. Their component equality
+||| is derived from the all-name cut and consumed only at B2's explicit-value
+||| boundary. No shared-component or dependent cast oracle is a premise.
+export
+0 o20ShareObservedBegins :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (renaming : NameBijection name) -> (actor : name) ->
+  (leftBefore, leftAfter, rightBefore, rightAfter : SystemState name key value world error) ->
+  O20BeginObservation name key world error value nameEq keyEq actor leftBefore leftAfter ->
+  O20BeginObservation name key world error value nameEq keyEq (renameForward renaming actor) rightBefore rightAfter ->
+  O20AllNameCut name key world error value nameEq renaming leftBefore rightBefore ->
+  O20SharedBeginObservations name key world error value nameEq keyEq renaming actor leftBefore leftAfter rightBefore rightAfter
+o20ShareObservedBegins nameEq keyEq renaming actor leftBefore leftAfter rightBefore rightAfter
+  (MkO20BeginObservation leftComponent leftParent leftTable leftView leftFound leftResolved leftExact)
+  (MkO20BeginObservation rightComponent rightParent rightTable rightView rightFound rightResolved rightExact) paired =
+    o20ShareBeginValues leftComponent rightComponent
+      (fst (o20ObservedBeginsMetadata nameEq keyEq renaming actor leftBefore leftAfter rightBefore rightAfter
+        (MkO20BeginObservation leftComponent leftParent leftTable leftView leftFound leftResolved leftExact)
+        (MkO20BeginObservation rightComponent rightParent rightTable rightView rightFound rightResolved rightExact) paired))
+      leftParent rightParent leftTable rightTable leftView rightView leftFound rightFound leftResolved rightResolved leftExact rightExact
