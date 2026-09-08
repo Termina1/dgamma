@@ -28,7 +28,7 @@ assert all(p.startswith('paper/') or p == 'review-o6-body-adversarial.md' for p 
 processes = subprocess.check_output(['ps','-axo','pid,ppid,command'],text=True)
 assert not re.search(r'/idris2_app/idris2(?:\.so)?(?:\s|$)', processes)
 for part in PARTS:
-    if part != 'LocalDiamond':
+    if part not in ['LocalDiamond','CrossTrace']:
         assert not git('diff',START,'--',PATHS[part]), part
 visibility = {}
 local = (ROOT/PATHS['LocalDiamond']).read_bytes()
@@ -40,15 +40,38 @@ assert statement == '3aae5a9fbc5b14e0411b4a91e557a6f3dc68c9a6282b9ec2b3fc658cec3
 review = sha((ROOT/'review-o6-body-adversarial.md').read_bytes())
 assert review == '61fc23ae4cea4565b442c840be39c41746ecbac73b8c2f73d04f1e3b4f4681e8'
 holes = {p:re.findall(r'\?\w+',text(PATHS[p])) for p in PARTS}
-assert [len(holes[p]) for p in PARTS] == [1,3,0,0,1]
+closed = '?operationalAdjacentBlockSwapSpike_rhs' not in text(PATHS['CrossTrace'])
+assert [len(holes[p]) for p in PARTS] == ([1,2,0,0,1] if closed else [1,3,0,0,1])
 protected = {}
 for part, name in [('CanonicalSort','sortClosingFreeTraceSpike'),('CrossTrace','operationalAdjacentBlockSwapSpike'),('CrossTrace','selectOperationalCanonicalPermutationSpike'),('CrossTrace','canonicalSchedulesConvergeSpike'),('RenamingComposition','replayedCanonicalToOriginalEndpointSpike')]:
     old = git('show',START+':'+PATHS[part])
     new = text(PATHS[part])
     old_decl = old[old.index('0 '+name+' :'):].split('\n\n',1)[0]
     new_decl = new[new.index('0 '+name+' :'):].split('\n\n',1)[0]
+    if name == 'operationalAdjacentBlockSwapSpike':
+        old_decl = old_decl.split('\n'+name+' ',1)[0]
+        new_decl = new_decl.split('\n'+name+' ',1)[0]
     assert old_decl == new_decl, name
     protected[name] = sha(new_decl.encode())
+# Ratified rehome is exact baseline subtraction/concatenation, not a relaxed
+# diff whitelist. The only later addition permitted is the exact O19 body.
+cross_path=PATHS['CrossTrace']
+original=git('show',START+':'+cross_path)
+positions=list(re.finditer(r'(?m)^(?:\|\|\|[^\n]*\n)*public export\n(?:[01] )?(?:(?:record|data) )?([A-Za-z_]\w*)\s*(?=[:\n (])',original))
+spans={m[1]:(m.start(),positions[i+1].start() if i+1<len(positions) else len(original)) for i,m in enumerate(positions)}
+names=[m[1] for m in positions[:28] if m[1]!='CertifiedActorPermutation']
+assert len(names)==27
+chunks={name:original[slice(*spans[name])] for name in names}
+expected_cross=original
+for name in names: expected_cross=expected_cross.replace(chunks[name],'',1)
+expected_cross=expected_cross.replace('\n\nimport DGamma.Core','\n\nimport public DGamma.CP5O19SurfaceSpike\nimport DGamma.Core',1)
+expected_surface=original[:positions[0].start()].replace('module DGamma.CP5ConfluenceCrossTraceSpike','module DGamma.CP5O19SurfaceSpike')+''.join(chunks[name] for name in names)
+assert text('research/DGamma/CP5O19SurfaceSpike.idr')==expected_surface
+if closed:
+    expected_cross=expected_cross.replace('import public DGamma.CP5O19SurfaceSpike\n','import public DGamma.CP5O19SurfaceSpike\nimport DGamma.CP5O19OperationalAssemblySpike\n',1)
+    expected_cross=expected_cross.replace('operationalAdjacentBlockSwapSpike = ?operationalAdjacentBlockSwapSpike_rhs',
+      'operationalAdjacentBlockSwapSpike nameEq keyEq protocol orderSwap sourceTrace sourceBlocks sourcePremises sourceUnique applicableSafety =\n  o19ActualOperationalBlockSwap nameEq keyEq protocol orderSwap sourceTrace sourceBlocks sourcePremises applicableSafety sourceUnique',1)
+assert text(cross_path)==expected_cross, 'CrossTrace differs beyond ratified move and exact O19 body'
 changed = [p for p in git('diff','--name-only',START,'--','research/','research-tests/DGamma/').splitlines() if p.endswith('.idr')]
 assert all('%default total' in text(p) for p in changed)
 assert not any(re.findall(r'\?\w+',text(p)) for p in changed if p not in PATHS.values())
@@ -65,9 +88,9 @@ assert local_ttc.stat().st_size > 125000000 # seeded TTC retained/refreshed by s
 local_time = datetime.datetime.fromtimestamp(local_ttc.stat().st_mtime,datetime.timezone.utc).isoformat()
 # No LocalDiamond visibility change in R189; seeded TTC retained without deletion.
 report = dict(timestamp=datetime.datetime.now(datetime.timezone.utc).isoformat(),head=git('rev-parse','HEAD').strip(),start=START,
-    holes=holes,split=[len(holes[p]) for p in PARTS],productionDiffVs34b21c9='empty',CP3Blob=git('hash-object','src/DGamma/CP3.idr').strip(),
+    O19Closed=closed,ratifiedMovedDeclarations=names,holes=holes,split=[len(holes[p]) for p in PARTS],productionDiffVs34b21c9='empty',CP3Blob=git('hash-object','src/DGamma/CP3.idr').strip(),
     LocalDiamondDiffVsStart='empty',LocalDiamondUnchanged=True,LocalDiamondAuthorizedVisibility=visibility,CanonicalSortDiffVsStart='empty',CanonicalSortAuthorizedVisibility={},DeletionChainDiffVsStart='empty',
-    CrossTraceDiffVsStart='empty',RenamingCompositionDiffVsStart='empty',
+    CrossTraceDiffVsStart='27 ratified byte-identical declaration moves/public import'+(' + exact authorized O19 body/assembler import' if closed else ''),RenamingCompositionDiffVsStart='empty',
     adjacentFullBytes=1470,adjacentFullSHA256=full,adjacentStatementBytes=1154,adjacentStatementSHA256=statement,reviewSHA256=review,
     seeds='207/207',LocalDiamondTTC=dict(bytes=local_ttc.stat().st_size,mtimeUTC=local_time),changedIdrisFiles=changed,
     sourceSHA256={p:sha((ROOT/p).read_bytes()) for p in changed},protectedDeclarationSHA256=protected,prohibitedAdditions=prohibited,
