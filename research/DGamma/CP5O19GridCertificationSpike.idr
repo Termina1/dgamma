@@ -137,3 +137,19 @@ o19GridBounds leftSource rightSource width (S height) leftPosition rightPosition
        (lteSuccLeft (fst (snd (o19GridBounds leftSource (S rightSource) width height leftPosition rightPosition columns))),
         replace {p = LTE (S rightPosition)} (plusSuccRightSucc rightSource height)
           (snd (snd (o19GridBounds leftSource (S rightSource) width height leftPosition rightPosition columns)))))) member
+
+||| Pair uniqueness for the complete grid. The current row's exact right
+||| coordinate is strictly below every remaining column's lower right bound.
+export
+0 o19GridUnique : (leftSource, rightSource, width, height : Nat) ->
+  UniqueKeys (o19GridPairs leftSource rightSource width height)
+o19GridUnique leftSource rightSource width Z = UniqueNil
+o19GridUnique leftSource rightSource width (S height) =
+  o19UniqueAppend (o19FixedRowPairs leftSource rightSource width) (o19GridPairs leftSource (S rightSource) width height)
+    (o19FixedRowUnique leftSource rightSource width)
+    (o19GridUnique leftSource (S rightSource) width height)
+    (\(leftPosition, rightPosition), row, columns =>
+      succNotLTEpred
+        (replace {p = LTE (S rightSource)}
+          (snd (snd (o19FixedRowBounds leftSource rightSource width leftPosition rightPosition row)))
+          (fst (snd (o19GridBounds leftSource (S rightSource) width height leftPosition rightPosition columns)))))
