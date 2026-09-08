@@ -86,3 +86,10 @@ r193HistoricalContinuation : Transitions r45SourcePairFinal r193HistoricalClosed
 r193HistoricalContinuation = MoreTransitions r178ParentFinish
   (MoreTransitions r178ChildRetire (MoreTransitions r193HistoricalRetire
     (MoreTransitions r193HistoricalLeave (MoreTransitions r193HistoricalUnload NoTransitions))))
+
+||| Eight actual checked edges from the empty origin. The generated child
+||| belongs to a genuinely closing parent episode but has NOT been removed.
+public export
+r193HistoricalClosedTrace : Transitions r45Initial r193HistoricalClosed
+r193HistoricalClosedTrace = MoreTransitions r45ParentInsert
+  (MoreTransitions r45Begin (MoreTransitions r45ChildInsert r193HistoricalContinuation))
