@@ -111,3 +111,15 @@ r191RelocatedParentBlock = MkLocatedOpenEpisodeBlockExtended
       (NoLifecycleByStep _ _ (\life, same => case same of Refl impossible)
         (NoLifecycleByStep _ _ (\life, same => case same of Refl impossible) NoLifecycleByEnd))))
   (blockActiveAtFinal (r191ChildGapBlocks 0 Here)) Refl
+
+||| A located occurrence INSIDE the extended parent body, not merely in the
+||| same global trace or at a guessed ordinal. Its prefix is the old body.
+public export
+0 r191RetireInsideParent : LocatedActionOccurrence (ORetire 3)
+  (extendedBody r191RelocatedParentBlock)
+r191RetireInsideParent = MkLocatedActionOccurrence
+  (r191ChildGapState 6) (exchangeMiddle r191BeginRetireExchange)
+  (blockBody (r191ChildGapBlocks 0 Here))
+  (Fired {before = r191ChildGapState 6} {afterState = exchangeMiddle r191BeginRetireExchange}
+    r45NameEq r45KeyEq (ORetire 3) ORetireTag (exchangeEarlyChecked r191BeginRetireExchange))
+  NoTransitions Refl Refl
