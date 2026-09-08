@@ -71,3 +71,23 @@ export
 o19ActualFiniteProductCount nameEq keyEq protocol swap source blocks premises safety unique =
   trans (sym (globalCrossingCount (o19ActualGlobalOriginPlan nameEq keyEq protocol swap source blocks premises safety unique)))
     (o19ActualGlobalOriginProductCount nameEq keyEq protocol swap source blocks premises safety unique)
+
+||| Both selected blocks contain Begin, hence both counts are successors.
+||| Their SAME-chain product law excludes zero nodes and retains exact replay.
+export
+0 o19ActualNonEmptyChain :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (protocol : RegistrationProtocol key value world error) ->
+  {sourceOrder, targetOrder : List name} -> (swap : AdjacentActorOrderSwap name sourceOrder targetOrder) ->
+  {initial, sourceFinal : SystemState name key value world error} -> (source : Transitions initial sourceFinal) ->
+  (blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder source) ->
+  (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq source) ->
+  (safety : AdjacentActorSwapSafety name key world error value protocol nameEq keyEq swap source blocks premises) ->
+  (unique : UniqueRawNameInsertions name key world error value nameEq keyEq source) ->
+  O19NonEmptyChain name key world error value protocol nameEq keyEq
+    (cursorDerivation (columnCursor (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique)))
+o19ActualNonEmptyChain nameEq keyEq protocol swap source blocks premises safety unique =
+  o19ObserveNonEmptyChain
+    (cursorDerivation (columnCursor (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique)))
+    (\zero => uninhabited
+      (trans (sym (o19ActualFiniteProductCount nameEq keyEq protocol swap source blocks premises safety unique)) zero))
