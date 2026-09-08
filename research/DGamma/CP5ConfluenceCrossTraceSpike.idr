@@ -30,21 +30,6 @@ data CertifiedActorPermutation :
     CertifiedActorPermutation name middle after ->
     CertifiedActorPermutation name before after
 
-||| The parent/child licensing mutation is rejected at the one-step safety
-||| boundary, before the recursive O20 theorem is available.
-public export
-0 generatedChildAtHeadContradictsSafety :
-  (transition : Transition first middle) ->
-  (rest : Transitions middle finalState) ->
-  {forbidden, parent : name} ->
-  {component : Component key value world error} ->
-  transitionAction transition =
-    OInsert forbidden (ChildOf parent) component ->
-  NoGeneratedChild forbidden (MoreTransitions transition rest) -> Void
-generatedChildAtHeadContradictsSafety transition rest action
-  (NoGeneratedChildStep transition rest rejected safeRest) =
-    rejected parent component action
-
 ||| Exact safety reconstructed for one adjacent actor pair at its current replay
 ||| state.  It owns the actual two blocks, their order, the full bundle, and both
 ||| generated-child licensing exclusions. R182 additionally certifies right-first

@@ -88,3 +88,18 @@ data NoGeneratedChild :
     NoGeneratedChild forbidden rest ->
     NoGeneratedChild forbidden (MoreTransitions transition rest)
 
+||| The parent/child licensing mutation is rejected at the one-step safety
+||| boundary, before the recursive O20 theorem is available.
+public export
+0 generatedChildAtHeadContradictsSafety :
+  (transition : Transition first middle) ->
+  (rest : Transitions middle finalState) ->
+  {forbidden, parent : name} ->
+  {component : Component key value world error} ->
+  transitionAction transition =
+    OInsert forbidden (ChildOf parent) component ->
+  NoGeneratedChild forbidden (MoreTransitions transition rest) -> Void
+generatedChildAtHeadContradictsSafety transition rest action
+  (NoGeneratedChildStep transition rest rejected safeRest) =
+    rejected parent component action
+
