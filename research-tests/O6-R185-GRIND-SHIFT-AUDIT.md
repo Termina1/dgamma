@@ -91,3 +91,41 @@ rows; only remaining slots begin Cartesian induction. No row/replay oracle may
 be added. C only after A/B unit-stop with>=60min; guard unchanged. A's fixtures
 remain precisely the weaker1-crossing/2x1/guard fixtures documented above; the
 ratification does not turn them into complete2x2 Cartesian applications.
+
+## Unit B14 authorized dependency continuation — retained
+
+B1-B4 derive actual occurrence provenance, insertion no-recovery, finite local
+registration discipline, and actual checked head equations. B5/b7843966 derives
+O/O safety from the SAME whole bundle: pointwise source parent yields/ranks,
+short pair no-recovery, exact untouched-prefix generation scan, and explicit
+child/licensing exclusions. B8/b18f45e2 revises that ONE unconsumed B5 declaration
+to PRODUCE safety AND its actual early alignment simultaneously. This avoids
+reconstructing alignment by observing a separately computed safety builder; no
+surface premise/hole changed. B8 has zero new declarations and one intentional
+nonprotected declaration update, independently fresh-checked/committed.
+
+B6/441b97ee produces early O/O execution from the actual aligned source pair.
+B7 proves exact external correspondence for GENERATED insertions; root/root
+transposition is NOT licensed. B9/c89865ee consumes the EXPLICIT safety/alignment
+package once, builds the actual O/O diamond and invokes frozen suffix replay.
+B10/3e1531b6 produces the WHOLE node pipeline from source bundle/classes alone:
+no early execution, safety, scan, diamond or replay input is required.
+
+B11/B12 extend the observed row with original uniqueness, actual reached bundle,
+same finite derivation and exact count; B13/b35340b0 constructs the genuine
+ARBITRARY generated-insertion O/O row. B14/65a714ad dispatches ACTUAL mixed A/O
+versus O/O source classes to these producers. No O/O input-free row fixture
+has yet been built; OO10 remains a two-insertion GUARD fixture only.
+
+B5-1 rejected an underinstantiated empty tail in a dependent discipline family;
+B5-2 names the exact `last` state and passes. All other B units pass1. No
+exhaustion, interruption, compiler orphan or failed-source commit.14 B checks
+units =13 new declarations +1 same-declaration simultaneous-output correction.
+
+Exact remaining wall: mixed-row induction still missing, and the RIGHT
+activation cases currently cover Begin only (generic A/A row is conditional on
+O19EarlyAlong). Per-cut Advance/Finish captured-map rebasing plus checked
+control/tag applicability, mixed-source ownership transport, Cartesian columns,
+source-origin coordinates/coverage/ranges remain unproduced. Thus NO complete
+prerequisite group(i)-(vi), no Cartesian theorem, and O19 body0 attempts. This
+is missing proof capital, NOT a third O19 specification gap. Holes remain5.
