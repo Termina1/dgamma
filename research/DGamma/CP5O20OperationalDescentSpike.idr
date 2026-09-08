@@ -232,3 +232,25 @@ o20StoppedAfterProgress nameEq keyEq protocol sourceOrder goalOrder goalState go
     (OperationalActorStep (chosenOrderSwap (orientedChoice (progressChoice progress))) (stoppedCertificate rest)
       blocks premises (chosenSafety (orientedChoice (progressChoice progress))) (progressStep progress) (stoppedRealized rest))
     (stoppedChoiceAbsent rest)
+
+||| Structural fold of the SAME finite descent: actual target state/trace,
+||| full blocks/bundle/unique and realized pure certificate produced together.
+export
+0 o20DescentStoppedPermutation :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) -> (sourceOrder, goalOrder : List name) ->
+  (goalState : SystemState name key value world error) ->
+  (goalLinearization : LinearizesSupport name key world error value nameEq keyEq goalState goalOrder) ->
+  {initial, finalState : SystemState name key value world error} -> (trace : Transitions initial finalState) ->
+  (blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder trace) ->
+  (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq trace) ->
+  (unique : UniqueRawNameInsertions name key world error value nameEq keyEq trace) ->
+  (O20OperationalDescent name key world error value protocol nameEq keyEq sourceOrder goalOrder goalState goalLinearization trace blocks premises unique) ->
+  (O20StoppedOperationalPermutation name key world error value protocol nameEq keyEq sourceOrder goalOrder goalState goalLinearization trace blocks premises)
+o20DescentStoppedPermutation nameEq keyEq protocol sourceOrder goalOrder goalState goalLinearization trace blocks premises unique (O20DescentBlocked blocked) =
+  o20StoppedAtSource nameEq keyEq protocol sourceOrder goalOrder goalState goalLinearization trace blocks premises unique blocked
+o20DescentStoppedPermutation nameEq keyEq protocol sourceOrder goalOrder goalState goalLinearization trace blocks premises unique (O20DescentStep progress rest) =
+  o20StoppedAfterProgress nameEq keyEq protocol sourceOrder goalOrder goalState goalLinearization trace blocks premises progress
+    (o20DescentStoppedPermutation nameEq keyEq protocol (chosenTargetOrder (orientedChoice (progressChoice progress))) goalOrder goalState goalLinearization
+      (blockSwapTrace (progressStep progress)) (blockSwapBlocks (progressStep progress)) (blockSwapPremises (progressStep progress)) (progressUnique progress) rest)
