@@ -94,3 +94,15 @@ o20InstalledHeadResolver {name} {key} {world} {error} {value} nameEq keyEq actor
     o20InstalledHeadResolverObserved nameEq keyEq actor deps before middle finalState action tag checked owned rest
       installed tailInstalled lastFiber lastFound excluded
       (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor (registry before)) Refl
+
+||| Project both equations from ONE producer-owned resolver observation.
+export
+0 o20ResolverObservationFrame :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (deps : List key) ->
+  (before, afterState : Registry name key value world error) ->
+  O19ResolutionObservation name key world error value nameEq keyEq deps before afterState ->
+  (resolveView {name} {key} {value} {world} {error} @{nameEq} @{keyEq} deps afterState =
+   resolveView {name} {key} {value} {world} {error} @{nameEq} @{keyEq} deps before)
+o20ResolverObservationFrame nameEq keyEq deps before afterState observed =
+  trans (resolutionAfter observed) (sym (resolutionBefore observed))
