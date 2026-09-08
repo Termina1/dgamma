@@ -162,3 +162,26 @@ o19InsertionActivationChecked nameEq keyEq child parent component (MkSystemState
     PaperFinishStep {actor} sameAction sameTag => case sameAction of
       Refl => o19AdvanceBeforeCheckedInsertion nameEq keyEq actor child parent component (MkSystemState ambient fibers) middle last
         leftTag rightTag leftChecked rightChecked (Right sameTag) distinct independent wellFormed
+
+||| Actual aligned O/A pair adapter. Only label evidence and SAME-pair
+||| well-formedness/independence are consumed; the early edge is constructed.
+export
+0 o19InsertionActivationAligned :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (child : name) ->
+  (parent : Parent name) -> (component : Component key value world error) ->
+  {first, middle, last : SystemState name key value world error} ->
+  (left : Transition first middle) -> (right : Transition middle last) ->
+  (transitionAction left = OInsert child parent component) ->
+  Not (transitionActor right = child) ->
+  (registryWellFormed {name} {key} {value} {world} {error} @{nameEq} @{keyEq} first = True) ->
+  TraceIndependent name key world error value keyEq (MoreTransitions left (MoreTransitions right NoTransitions)) ->
+  PaperActivationStep right ->
+  AlignedTransitions name key world error value nameEq keyEq (MoreTransitions left (MoreTransitions right NoTransitions)) ->
+  CheckedEarlyApplication name key world error value nameEq keyEq first (transitionAction right) (transitionTag right)
+o19InsertionActivationAligned {first} {middle} {last} nameEq keyEq child parent component _ _ inserted distinct wellFormed independent activation
+  (AlignedStep leftAction leftTag leftChecked _ (AlignedStep rightAction rightTag rightChecked _ AlignedEnd)) = case inserted of
+    Refl => o19InsertionActivationChecked nameEq keyEq child parent component first middle last rightAction leftTag rightTag
+      leftChecked rightChecked
+      (\same => distinct (trans (o19TransitionActorOwner (Fired nameEq keyEq rightAction rightTag rightChecked)) (sym same)))
+      independent wellFormed activation
