@@ -54,3 +54,51 @@ restored to HEAD after exact rejected-source SHA authentication. No fourth,
 renamed or shrunken retry; not a proof, not a specification counterexample.
 SV1 reauthenticates retained A1--A8, then stop/audit gate. Continue next
 pre-authorized Unit A(ii)/(iii), not the exhausted captured-domain seam.
+
+## Unit A cutoff at28 / native removal and historical-name obstruction
+
+A10--A17: `CP5O20PairedRemovalSpike` proves finite deletion lookup absence,
+ALL-name paired control deletion, complete ordered table projection deletion,
+actual checked Remove successor, an execution family including native Remove,
+structural all-name induction and BOTH actual LTS projections. No endpoint
+relation/successor callback is a stored input. Earlier stage family retained as
+capital; not asserted universally complete. Failure/diversion and canonical
+trace extraction are still missing. No convergence-body attempt authorized by
+these partial results; `canonicalSchedulesConvergeSpike` remains unchanged.
+
+A18--A28: `R192RemovedBirthCurrentNameProbe` authenticates SIX actual edges:
+root0 Insert, Begin0, child1 Insert, Finish0, Retire1, Remove1. It inhabits FULL
+`SameOrchestrationModuloGenerated` for this same trace on both sides: external
+inputs, external-root generations, E8 surviving registration-tree matching,
+and every `CurrentEndpointRenaming` clause. The current raw-name bijection
+swaps absent names1/2 and fixes live root0; historical generation map is
+identity. Exact original child birth(1,2) exists; structural action observation
+proves no right birth of name2 exists. `r192RemovedBirthObstruction` proves
+original child1 unsupported by support-solution + deletion-lookup theorems;
+E9 generated Retire/Remove matching also holds on these nonempty domains.
+
+**Scope of the negative result:** deriving the all-historical raw-birth bridge
+from E8+CurrentEndpointRenaming alone is false; even E9 cannot supply it.
+This is NOT yet a counterexample to protected canonical convergence:
+`UniqueRawNameInsertions`, independent canonical capital and exact replay
+triangle were NOT packaged here. The actual trace has no raw-name reuse, but
+this is not advertised as a compiled uniqueness certificate. No A8/A10/CP3
+surface cure was made. Owner/reviewer should consider this specification risk
+before another attempted unsupported-birth triangle proof.
+
+### Compiler/protocol qualification (fully retained, not hidden)
+
+A10-1 failed because an abstract CoeffectContext did not expose its entries.
+A subsequent compound shell command correctly FAILED the commit guard before
+any stage/commit or A11 append; an unconditional detached line nevertheless
+checked the IDENTICAL A10 bytes under invocation `A11-1`. This is counted as
+A10 attempt2, not a new declaration/unit. `/tmp/dgamma-r192/invocation-qualifications.json`
+authenticates that fact. A10-3 opened the constructor and passed. A11-2 is the
+FIRST actual A11 declaration check. All subsequent launch/guard commands use
+`set -e`; no compiler escape or unguarded commit occurred. A16-1 missed the
+existing explicit dictionary arguments; A16-2 passed. A28-1's concrete
+support rewrite already normalized away its occurrence; A28-2 proves the
+abstract-state support lemma in a typed inline lambda and applies the actual
+deletion lookup, NOT scalar support Refl over a nested builder.
+
+28 Unit-A micro-units total (A9 reverted). Unit A stops at its authorized cap.
