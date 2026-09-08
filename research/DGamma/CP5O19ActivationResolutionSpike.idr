@@ -7,6 +7,8 @@ import DGamma.Metatheory
 import DGamma.CP4ProgressReliance
 import DGamma.CP4DeletionFrameCore
 import DGamma.CP4DeletionSelectedOwn
+import DGamma.CP5O19AdvanceObservationSpike
+import DGamma.CP5ConfluenceLocalDiamondSpike
 import DGamma.CP4DeletionSelectedForeignLifecycleCore
 import DGamma.CP4DeletionSelectedForeignLifecycleAnchorRelianceSelected
 import Data.List
@@ -163,3 +165,64 @@ o19ResolvePresentLocalUpdate nameEq keyEq deps actor source _ old found survives
       (trans staticComponent (cong fiberComponent (justInjective (trans (sym oldFound) found)))) excluded
 o19ResolvePresentLocalUpdate nameEq keyEq deps actor source _ old found survives LocalDelete excluded =
   case trans (sym (cong isJust (DGamma.CP4DeletionSelectedOwn.lookupDeleteSelf @{nameEq} actor source))) survives of Refl impossible
+
+
+||| Right Advance backwards control at a surviving nondependent local update.
+||| Only the actual right component's dependency list is preserved, not every
+||| resolver in the registry. E9 constructs its primitive resolver observations.
+export
+0 o19AdvanceBeforeNondependentCut :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (early, late : SystemState name key value world error) -> (tag : RuleTag) ->
+  (leftActor : name) -> (leftFiber : Fiber name key value world error) ->
+  (lookupFiber @{nameEq} leftActor (registry early) = Just leftFiber) ->
+  (isJust (lookupFiber {name} {key} {value} {world} {error} @{nameEq} leftActor (registry late)) = True) ->
+  Not (actor = leftActor) ->
+  SystemLocalUpdate name key world error value nameEq leftActor early late ->
+  ((rightFiber : Fiber name key value world error) ->
+    lookupFiber @{nameEq} actor (registry late) = Just rightFiber ->
+    (wanted : key) -> Elem wanted (dependencies (componentDependencies (fiberComponent rightFiber))) ->
+    Not (Elem wanted (dependencies (componentProvisions (fiberComponent leftFiber))))) ->
+  PaperAdvanceSource name key world error value nameEq keyEq actor tag late ->
+  (isJust (partialEffectMapFor nameEq keyEq (LAdvance actor) tag late (projectEffectState @{nameEq} early)) = True) ->
+  RawActivationMove {name} {key} {value} {world} {error} nameEq keyEq (LAdvance actor) tag early
+o19AdvanceBeforeNondependentCut nameEq keyEq actor (MkSystemState ambient fibers) _ _ leftActor leftFiber leftFound leftSurvives distinct update nondependent
+  (AdvanceSourceFinishEmpty {ambient = lateWorld} {fibers = lateFibers} {component} {parent} {retiredFlag} {table} {accumulator} {view} Refl found target) defined =
+    o19FinishEmptyAtObservedTarget nameEq keyEq actor ambient fibers component parent retiredFlag table accumulator view
+      (trans (sym (systemLocalUpdateForeign nameEq actor leftActor distinct (MkSystemState ambient fibers) (MkSystemState lateWorld lateFibers) update)) found)
+      (o19ObservedTargetRebase nameEq keyEq component parent retiredFlag table (Reloading [] accumulator view) fibers lateFibers
+        (resolveView {name} {key} {value} {world} {error} @{nameEq} @{keyEq} (dependencies (componentDependencies component)) fibers) view Refl
+        (o19ResolvePresentLocalUpdate nameEq keyEq (dependencies (componentDependencies component)) leftActor fibers lateFibers leftFiber
+          leftFound leftSurvives (systemRegistryUpdate update)
+          (nondependent (MkFiber component parent retiredFlag table (Reloading [] accumulator view)) found)) target)
+o19AdvanceBeforeNondependentCut nameEq keyEq actor (MkSystemState ambient fibers) _ _ leftActor leftFiber leftFound leftSurvives distinct update nondependent
+  (AdvanceSourceFinishOne {ambient = lateWorld} {fibers = lateFibers} {component} {parent} {retiredFlag} {table} {step} {accumulator} {view} Refl found target) defined =
+    o19AdvanceAtCapturedDomain nameEq keyEq actor ambient fibers component parent retiredFlag table step [] accumulator view
+      (trans (sym (systemLocalUpdateForeign nameEq actor leftActor distinct (MkSystemState ambient fibers) (MkSystemState lateWorld lateFibers) update)) found)
+      (o19ObservedTargetRebase nameEq keyEq component parent retiredFlag table (Reloading [step] accumulator view) fibers lateFibers
+        (resolveView {name} {key} {value} {world} {error} @{nameEq} @{keyEq} (dependencies (componentDependencies component)) fibers) view Refl
+        (o19ResolvePresentLocalUpdate nameEq keyEq (dependencies (componentDependencies component)) leftActor fibers lateFibers leftFiber
+          leftFound leftSurvives (systemRegistryUpdate update)
+          (nondependent (MkFiber component parent retiredFlag table (Reloading [step] accumulator view)) found)) target)
+      (trans (sym (cong isJust
+        (the (partialEffectMapFor nameEq keyEq (LAdvance actor) LFinishTag (the (SystemState name key value world error) (MkSystemState lateWorld lateFibers))
+          (projectEffectState @{nameEq} (the (SystemState name key value world error) (MkSystemState ambient fibers))) =
+          fiberAdvanceRuntimeEffectMap nameEq keyEq actor (MkFiber component parent retiredFlag table (Reloading [step] accumulator view))
+            (projectEffectState @{nameEq} (the (SystemState name key value world error) (MkSystemState ambient fibers))))
+          (rewrite found in Refl)))) defined)
+o19AdvanceBeforeNondependentCut nameEq keyEq actor (MkSystemState ambient fibers) _ _ leftActor leftFiber leftFound leftSurvives distinct update nondependent
+  (AdvanceSourceIter {ambient = lateWorld} {fibers = lateFibers} {component} {parent} {retiredFlag} {table} {step} {next} {more} {accumulator} {view} Refl found target) defined =
+    o19AdvanceAtCapturedDomain nameEq keyEq actor ambient fibers component parent retiredFlag table step (next :: more) accumulator view
+      (trans (sym (systemLocalUpdateForeign nameEq actor leftActor distinct (MkSystemState ambient fibers) (MkSystemState lateWorld lateFibers) update)) found)
+      (o19ObservedTargetRebase nameEq keyEq component parent retiredFlag table (Reloading (step :: next :: more) accumulator view) fibers lateFibers
+        (resolveView {name} {key} {value} {world} {error} @{nameEq} @{keyEq} (dependencies (componentDependencies component)) fibers) view Refl
+        (o19ResolvePresentLocalUpdate nameEq keyEq (dependencies (componentDependencies component)) leftActor fibers lateFibers leftFiber
+          leftFound leftSurvives (systemRegistryUpdate update)
+          (nondependent (MkFiber component parent retiredFlag table (Reloading (step :: next :: more) accumulator view)) found)) target)
+      (trans (sym (cong isJust
+        (the (partialEffectMapFor nameEq keyEq (LAdvance actor) LIterTag (the (SystemState name key value world error) (MkSystemState lateWorld lateFibers))
+          (projectEffectState @{nameEq} (the (SystemState name key value world error) (MkSystemState ambient fibers))) =
+          fiberAdvanceRuntimeEffectMap nameEq keyEq actor (MkFiber component parent retiredFlag table (Reloading (step :: next :: more) accumulator view))
+            (projectEffectState @{nameEq} (the (SystemState name key value world error) (MkSystemState ambient fibers))))
+          (rewrite found in Refl)))) defined)
