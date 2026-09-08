@@ -1,0 +1,627 @@
+{
+  "shift": "R188",
+  "checkedUTC": "2026-09-08T10:19:41.318979+00:00",
+  "endCommit": "4e1ab732896b36aecd72a7ce89d53a2b8a15b7e6",
+  "records": 105,
+  "passed": 97,
+  "rejected": 8,
+  "proofInvocations": 105,
+  "sourceReceipts": 97,
+  "artifactReceipts": 12,
+  "validValidations": 0,
+  "expectedNegativeValidations": 0,
+  "invalidValidationCount": 0,
+  "serialized": true,
+  "interrupted": 0,
+  "maximumRSSKiB": 6114384,
+  "oneNewDeclarationPerProofInvocation": true,
+  "oneNewDeclarationPerSourceCommit": true,
+  "effectiveAttemptCapsPassed": true,
+  "invocationQualifications": {
+    "C7-1": {
+      "effectiveUnit": "C6",
+      "effectiveAttempt": 2,
+      "reason": "Guard correctly refused C6-1 failed source commit; missing shell set-e nevertheless launched unchanged C6 source under the next raw label. Byte-identical duplicate non-PASS, counts against C6 3-attempt cap. Records not rewritten."
+    },
+    "C6-3": {
+      "effectiveUnit": "C6",
+      "effectiveAttempt": 3,
+      "reason": "Final C6 attempt after C6-1 and mislabeled C7-1 duplicate."
+    },
+    "C7-2": {
+      "effectiveUnit": "C7",
+      "effectiveAttempt": 1,
+      "reason": "First actual BeginRangeHead declaration check. Raw C7-1 was the byte-identical C6 duplicate; raw labels retained."
+    }
+  },
+  "sourceDeclarations": [
+    {
+      "unit": "A1",
+      "effectiveAttempt": 1,
+      "declaration": "o19ElemAppendCases",
+      "commit": "2e2987f3c67974680bfa29c755c074d2569614ff"
+    },
+    {
+      "unit": "A2",
+      "effectiveAttempt": 1,
+      "declaration": "o19ElemAppendInjections",
+      "commit": "835d4aa10181c3ed789f1b1f2d9eb90209ecf85e"
+    },
+    {
+      "unit": "A3",
+      "effectiveAttempt": 1,
+      "declaration": "o19UniqueAppend",
+      "commit": "ad5f8ca970f8db4d2eb1860c997097b89d1591b3"
+    },
+    {
+      "unit": "A4",
+      "effectiveAttempt": 1,
+      "declaration": "o19FixedRowComplete",
+      "commit": "1ba1dccd66abcf5b3dccdef1e380021848ccdbb8"
+    },
+    {
+      "unit": "A5",
+      "effectiveAttempt": 1,
+      "declaration": "o19FixedRowBounds",
+      "commit": "d44cc16b918bb881bc6504da54f9156bcee8c909"
+    },
+    {
+      "unit": "A6",
+      "effectiveAttempt": 1,
+      "declaration": "o19FixedRowUnique",
+      "commit": "7ae3bd963e304e1e7c033b80967dd19cb54c1faf"
+    },
+    {
+      "unit": "A7",
+      "effectiveAttempt": 1,
+      "declaration": "o19GridComplete",
+      "commit": "2c2fbfd63240bcc86da7788a220cc2627e02c6cb"
+    },
+    {
+      "unit": "A8",
+      "effectiveAttempt": 1,
+      "declaration": "o19GridBounds",
+      "commit": "6c49160f3c5d30d0afe05b4624aff5d28843720c"
+    },
+    {
+      "unit": "A9",
+      "effectiveAttempt": 1,
+      "declaration": "o19GridUnique",
+      "commit": "97f4c300b92d12d79acd9803d504b8379ceeab15"
+    },
+    {
+      "unit": "A10",
+      "effectiveAttempt": 1,
+      "declaration": "O19GridCertificate",
+      "commit": "73646ec7bdf67d6f62088eb58f2ba323b397274b"
+    },
+    {
+      "unit": "A11",
+      "effectiveAttempt": 1,
+      "declaration": "o19CertifyGrid",
+      "commit": "1ef9cf5fa63b23244591a23992456cc5565dd440"
+    },
+    {
+      "unit": "A12",
+      "effectiveAttempt": 1,
+      "declaration": "r188GridCoverageAndBounds",
+      "commit": "f501751a8efe59a456b513833b7a9552d74a02ea"
+    },
+    {
+      "unit": "B1",
+      "effectiveAttempt": 1,
+      "declaration": "O19NonEmptyChain",
+      "commit": "b057c3c336b3a4946ad37eee544383e741fda200"
+    },
+    {
+      "unit": "B2",
+      "effectiveAttempt": 1,
+      "declaration": "o19ObserveNonEmptyChain",
+      "commit": "260837a8145b78e98be63503b75ea932566f4f90"
+    },
+    {
+      "unit": "B3",
+      "effectiveAttempt": 2,
+      "declaration": "o19ActualFiniteProductCount",
+      "commit": "58c3dd6411feb37c95e93ca24efb8ca092cf3a4b"
+    },
+    {
+      "unit": "B4",
+      "effectiveAttempt": 1,
+      "declaration": "o19ActualNonEmptyChain",
+      "commit": "42e1a31461c2287fa1972793669f5d950e05720c"
+    },
+    {
+      "unit": "B5",
+      "effectiveAttempt": 1,
+      "declaration": "O19WholeBlockResult",
+      "commit": "bb4db2eceb41e7d16573e9a6533404d9db569a9f"
+    },
+    {
+      "unit": "B6",
+      "effectiveAttempt": 1,
+      "declaration": "o19WholeFromObservedChain",
+      "commit": "88e523c9a561e936ae67ab8188743899e7586a8d"
+    },
+    {
+      "unit": "B7",
+      "effectiveAttempt": 1,
+      "declaration": "o19ActualWholeBlock",
+      "commit": "a83bd4c8e6bc9ccdc2fff47a3d474dd640a923e0"
+    },
+    {
+      "unit": "B8",
+      "effectiveAttempt": 1,
+      "declaration": "r188ActualWholeSameChain",
+      "commit": "71611b2f55930e35fab1af1cefd2e23e5c94886d"
+    },
+    {
+      "unit": "C1",
+      "effectiveAttempt": 1,
+      "declaration": "o19ColumnLeftCut",
+      "commit": "d007bc903f12ac4ed2d80326840c6a817a6addf3"
+    },
+    {
+      "unit": "C2",
+      "effectiveAttempt": 1,
+      "declaration": "o19ColumnCutDecomposition",
+      "commit": "473b89557c001d862015b941e110b00d086d6cb0"
+    },
+    {
+      "unit": "C3",
+      "effectiveAttempt": 1,
+      "declaration": "o19ColumnCutAligned",
+      "commit": "facb7c4d2fc547f207060bd4119640fba8e59bd5"
+    },
+    {
+      "unit": "C4",
+      "effectiveAttempt": 1,
+      "declaration": "o19ColumnRangeCounts",
+      "commit": "b8ec06ba0b17486ba197e34fbba7a2fd7716b13d"
+    },
+    {
+      "unit": "C5",
+      "effectiveAttempt": 1,
+      "declaration": "O19BeginRange",
+      "commit": "860fd1da35e1c37daaadb7e09bc2b1e61ef09798"
+    },
+    {
+      "unit": "C6",
+      "effectiveAttempt": 3,
+      "declaration": "o19BeginRangeTag",
+      "commit": "51b915bce5317350ca9b4a5fbb73e21ba3d8857a"
+    },
+    {
+      "unit": "C7",
+      "effectiveAttempt": 1,
+      "declaration": "o19BeginRangeHead",
+      "commit": "adab35f2782e7f62d98a10aef130db6b29e46997"
+    },
+    {
+      "unit": "C8",
+      "effectiveAttempt": 2,
+      "declaration": "o19BeginRangeObserved",
+      "commit": "766183a3556c95d67d0796338980526f9844a75b"
+    },
+    {
+      "unit": "C9",
+      "effectiveAttempt": 1,
+      "declaration": "o19InstalledNoUnloadEvolution",
+      "commit": "76fbaa822b18dc0867ac3d0fbe07371436e05350"
+    },
+    {
+      "unit": "C10",
+      "effectiveAttempt": 1,
+      "declaration": "o19InstalledNoUnloadTrace",
+      "commit": "f5e1111afced8cef7bfa50b390706eab4a53321d"
+    },
+    {
+      "unit": "C11",
+      "effectiveAttempt": 1,
+      "declaration": "o19NoUnloadFromOrigins",
+      "commit": "20bb5bfcd5a0d820a2e5db58b1c785b181dc6ca9"
+    },
+    {
+      "unit": "C12",
+      "effectiveAttempt": 1,
+      "declaration": "o19NoUnloadAppendSplit",
+      "commit": "bc6c88e20ec58cb8d0967190cdeba24137bc2d95"
+    },
+    {
+      "unit": "C13",
+      "effectiveAttempt": 1,
+      "declaration": "o19BeginRangeInstalled",
+      "commit": "2a67a704187bc0e721a18f15645768aab702c492"
+    },
+    {
+      "unit": "C14",
+      "effectiveAttempt": 1,
+      "declaration": "o19ActualRightBeginRange",
+      "commit": "f19d699a75ff36d49c577fa10a8e61fa369941fa"
+    },
+    {
+      "unit": "C15",
+      "effectiveAttempt": 1,
+      "declaration": "o19ActualLeftBeginRange",
+      "commit": "e361387f03d8078dfd9ffddbd3903a316f011d91"
+    },
+    {
+      "unit": "C16",
+      "effectiveAttempt": 1,
+      "declaration": "o19ActualMovedBodiesInstalled",
+      "commit": "35c55f5bfc285b1b28a43f38155dea43c270bb2f"
+    },
+    {
+      "unit": "D1",
+      "effectiveAttempt": 1,
+      "declaration": "o19FiniteEndpoint",
+      "commit": "1a42566c9ee751a6ccdb321e3df12d7f6462a56d"
+    },
+    {
+      "unit": "C17",
+      "effectiveAttempt": 2,
+      "declaration": "o19ActorOnlyPrependObserved",
+      "commit": "5c56cecd644f01caf6605066c37b4834932ffb7b"
+    },
+    {
+      "unit": "C18",
+      "effectiveAttempt": 1,
+      "declaration": "o19ActorOnlyFromWord",
+      "commit": "d9030db0c6215e2d964295c9ac0410173c7667d7"
+    },
+    {
+      "unit": "C19",
+      "effectiveAttempt": 1,
+      "declaration": "o19NoLifecycleWordMember",
+      "commit": "c46c01f1dc1a912854010cd728e699b047343e35"
+    },
+    {
+      "unit": "C20",
+      "effectiveAttempt": 1,
+      "declaration": "o19NoLifecycleFromWord",
+      "commit": "96bec869b00d670cffe498c2bfbd96cf3eda80d9"
+    },
+    {
+      "unit": "C21",
+      "effectiveAttempt": 2,
+      "declaration": "o19SupportedActiveObserved",
+      "commit": "2fb58918b3202afdd7d344ce7656942ef7d4ec74"
+    },
+    {
+      "unit": "C22",
+      "effectiveAttempt": 1,
+      "declaration": "o19LifecycleControlActiveSame",
+      "commit": "d69d3867c6233cbe2f5b9e9c51aaa967d4a00507"
+    },
+    {
+      "unit": "C23",
+      "effectiveAttempt": 1,
+      "declaration": "o19ActualFinalActive",
+      "commit": "0b549b8099294603c74935f2a9957157a2e7bcc1"
+    },
+    {
+      "unit": "C24",
+      "effectiveAttempt": 2,
+      "declaration": "o19SnocInjective",
+      "commit": "fe8acca466872c2c4890490ad3b8d1728670a75f"
+    },
+    {
+      "unit": "C25",
+      "effectiveAttempt": 1,
+      "declaration": "o19OrderedBeforeWord",
+      "commit": "1d1d0b54490943addf0bd678380c83f9de36c3f6"
+    },
+    {
+      "unit": "C26",
+      "effectiveAttempt": 1,
+      "declaration": "o19AppendLeftInjective",
+      "commit": "9d1c502a30ebbc8267ffd0677f1c69e9cbd6df02"
+    },
+    {
+      "unit": "C27",
+      "effectiveAttempt": 1,
+      "declaration": "o19OrderedAfterWord",
+      "commit": "139a4ea9010ad39aff67e68b19af084ef823ffe1"
+    },
+    {
+      "unit": "C28",
+      "effectiveAttempt": 1,
+      "declaration": "o19OrderedOuterNoLifecycle",
+      "commit": "2e8fc5b6295bc9672def6120418d61efc5d3edd2"
+    },
+    {
+      "unit": "C29",
+      "effectiveAttempt": 1,
+      "declaration": "o19ForeignBlockWordNoLifecycle",
+      "commit": "6dc46f73a14cf489c4d98b6cee6e5c673ad266c6"
+    },
+    {
+      "unit": "C30",
+      "effectiveAttempt": 1,
+      "declaration": "o19ActualMovedOutsideLifecycle",
+      "commit": "bad631b68a27e4be4a031927be32a46d45dc754f"
+    },
+    {
+      "unit": "C31",
+      "effectiveAttempt": 1,
+      "declaration": "o19ActualMovedBodiesActorOnly",
+      "commit": "1600cb694e2dd124f7c4c952492be439f639f831"
+    },
+    {
+      "unit": "C32",
+      "effectiveAttempt": 1,
+      "declaration": "o19ActualRightLocatedBlock",
+      "commit": "fe86d408ba5ca65040d46e257df519ea5910ebee"
+    },
+    {
+      "unit": "C33",
+      "effectiveAttempt": 1,
+      "declaration": "o19ActualLeftLocatedBlock",
+      "commit": "e3d22f1b1fbe17d1d26478ba8ffb1ee03fac26de"
+    },
+    {
+      "unit": "C34",
+      "effectiveAttempt": 1,
+      "declaration": "o19ActualMovedBlocksOrdered",
+      "commit": "282f360b567487e40d0de822601939d3f353cadb"
+    },
+    {
+      "unit": "C35",
+      "effectiveAttempt": 1,
+      "declaration": "o19ActorOnlySameWord",
+      "commit": "d5407803dd322c03ea8a45d52ebffbe2139acec6"
+    },
+    {
+      "unit": "C36",
+      "effectiveAttempt": 1,
+      "declaration": "o19LocatedFromActualSegments",
+      "commit": "78fd76a6d4354bb76193525c0771923b7da88e21"
+    },
+    {
+      "unit": "C37",
+      "effectiveAttempt": 1,
+      "declaration": "o19LocatedFromWordCuts",
+      "commit": "2450c0a33053ef0cf4f87f15fd66015fe7511a72"
+    },
+    {
+      "unit": "C38",
+      "effectiveAttempt": 1,
+      "declaration": "o19LocatedAfterFirstCut",
+      "commit": "b53a59c3243993a9487207dd3109bf0387b2515b"
+    },
+    {
+      "unit": "C39",
+      "effectiveAttempt": 1,
+      "declaration": "o19LocatedByWord",
+      "commit": "0575c3aa20efec99bad0aa05494e3be907afdd1b"
+    },
+    {
+      "unit": "C40",
+      "effectiveAttempt": 1,
+      "declaration": "o19PrefixThroughWord",
+      "commit": "18b250317ab3e51f44682c7066fe6cf61e376b36"
+    },
+    {
+      "unit": "C41",
+      "effectiveAttempt": 1,
+      "declaration": "o19ActualSwapWord",
+      "commit": "4e3310c7654aae63d6b94924434f2fba9208f0e9"
+    },
+    {
+      "unit": "C42",
+      "effectiveAttempt": 1,
+      "declaration": "o19UntouchedBeforePlacement",
+      "commit": "c985e36a4d70819b98a1537e14894dbff4893455"
+    },
+    {
+      "unit": "C43",
+      "effectiveAttempt": 1,
+      "declaration": "o19UntouchedAfterPlacement",
+      "commit": "7f6b766a9a0c92394559d4b1eef6db65e89c59bb"
+    },
+    {
+      "unit": "C44",
+      "effectiveAttempt": 1,
+      "declaration": "o19ActualUntouchedBeforeBlock",
+      "commit": "69849fd3dd7a1f8ee1c1b1526bf1db48405c3677"
+    },
+    {
+      "unit": "C45",
+      "effectiveAttempt": 1,
+      "declaration": "o19ActualUntouchedAfterBlock",
+      "commit": "739800d7bd3c1856ecd33afd20d2b13ab417d3e5"
+    },
+    {
+      "unit": "C46",
+      "effectiveAttempt": 1,
+      "declaration": "O19SwapSite",
+      "commit": "fa4256658dc392c9cbc9795a7f4ffbfc2a809fc7"
+    },
+    {
+      "unit": "C47",
+      "effectiveAttempt": 1,
+      "declaration": "o19ClassifySwapTail",
+      "commit": "3fbc26795f9777d4bf9f2b26a4e08b07cc9f9766"
+    },
+    {
+      "unit": "C48",
+      "effectiveAttempt": 1,
+      "declaration": "o19ClassifySwapSite",
+      "commit": "54e88e74f1bc0b15218e20fc0cf8cd7b5264ccc7"
+    },
+    {
+      "unit": "C49",
+      "effectiveAttempt": 1,
+      "declaration": "o19BeforeAppendedSelected",
+      "commit": "8f3bd8027af1fb2f54af08c41536e07e119f94e6"
+    },
+    {
+      "unit": "C50",
+      "effectiveAttempt": 1,
+      "declaration": "o19BeforeInPrepend",
+      "commit": "17cb757a9e2c60ff0f78de8560502b05c58caf01"
+    },
+    {
+      "unit": "C51",
+      "effectiveAttempt": 1,
+      "declaration": "o19ActualBlockAtSite",
+      "commit": "0c37d4efd4af0f6c559f59c77e78ef1f8bbbb8dc"
+    },
+    {
+      "unit": "C52",
+      "effectiveAttempt": 1,
+      "declaration": "o19ActualTargetBlock",
+      "commit": "5c15fdde722a432740cf77d55dc56d287af288a7"
+    },
+    {
+      "unit": "C53",
+      "effectiveAttempt": 2,
+      "declaration": "O19TracePrefix",
+      "commit": "a8e4addf7428306884e8c06e36031d473b406c76"
+    },
+    {
+      "unit": "C54",
+      "effectiveAttempt": 1,
+      "declaration": "o19PrefixAppended",
+      "commit": "9cc631e80c06ce098dcefd3130541054234c4dd0"
+    },
+    {
+      "unit": "C55",
+      "effectiveAttempt": 1,
+      "declaration": "O19PrefixGap",
+      "commit": "f773a5fe94be637c06ce7801707764517b6324a2"
+    },
+    {
+      "unit": "C56",
+      "effectiveAttempt": 1,
+      "declaration": "o19PrefixGapCons",
+      "commit": "42331eb7ae8fa6546f6ae551850e48ce6a6fff92"
+    },
+    {
+      "unit": "C57",
+      "effectiveAttempt": 1,
+      "declaration": "o19PrefixGapByCount",
+      "commit": "7c6b0b71a4147a92805834fe4f45e12985ff1c19"
+    },
+    {
+      "unit": "C58",
+      "effectiveAttempt": 1,
+      "declaration": "o19LocatedBlockPrefixes",
+      "commit": "36d53700702c0459ee20e18b4b053eec4ee943c3"
+    },
+    {
+      "unit": "C59",
+      "effectiveAttempt": 1,
+      "declaration": "o19BlockBeforeFromGap",
+      "commit": "1f6a13e788106bef2d90ef063b1615976cebb2eb"
+    },
+    {
+      "unit": "C60",
+      "effectiveAttempt": 1,
+      "declaration": "o19BlockBeforeByCount",
+      "commit": "bd8cbdce4b89c212cde4a4572c51a72e35ddc05a"
+    },
+    {
+      "unit": "C61",
+      "effectiveAttempt": 1,
+      "declaration": "o19BlockBeforeNotSame",
+      "commit": "6c789ea85c630a758da615f707582ab119dcce93"
+    },
+    {
+      "unit": "C62",
+      "effectiveAttempt": 1,
+      "declaration": "o19BeforeMembers",
+      "commit": "9c8e1d30c299ea0650372ab5725c2b1cd3eeeae8"
+    },
+    {
+      "unit": "C63",
+      "effectiveAttempt": 1,
+      "declaration": "o19UniqueFromNoSelfBefore",
+      "commit": "d21043c7c6c5f514608e477e320bbaa95e4541c7"
+    },
+    {
+      "unit": "C64",
+      "effectiveAttempt": 1,
+      "declaration": "o19DecomposedOrderUnique",
+      "commit": "ee24dc662772b1cf1c3ba2915db86197b0390dc0"
+    },
+    {
+      "unit": "C65",
+      "effectiveAttempt": 1,
+      "declaration": "o19SwapTailMember",
+      "commit": "edaca21b0c4fdd287bfa4426cdbeec2b18678d6c"
+    },
+    {
+      "unit": "C66",
+      "effectiveAttempt": 1,
+      "declaration": "o19SwapTailAbsent",
+      "commit": "7bfd42d620307dc86c395754af7ba991040cbc9d"
+    },
+    {
+      "unit": "C67",
+      "effectiveAttempt": 1,
+      "declaration": "o19SwapTailUnique",
+      "commit": "db11b88945ba13e2e76457553cea66df25feeb7a"
+    },
+    {
+      "unit": "C68",
+      "effectiveAttempt": 1,
+      "declaration": "o19SwapLeadingUnique",
+      "commit": "d954a7772283b427197cb0091658814f62a32e03"
+    },
+    {
+      "unit": "C69",
+      "effectiveAttempt": 1,
+      "declaration": "o19ActualTargetUnique",
+      "commit": "98336b5099bed6c9f1fd303e411e992e0369ae36"
+    },
+    {
+      "unit": "C70",
+      "effectiveAttempt": 1,
+      "declaration": "o19LocatedFromSegmentsWords",
+      "commit": "2cc10d7ffdc3e4230d919c2f5ae1cbcb9faa0be0"
+    },
+    {
+      "unit": "C71",
+      "effectiveAttempt": 1,
+      "declaration": "o19LocatedFromWordCutsWords",
+      "commit": "d9db07838b3d4b2fd2c1181aef676e8a8c117846"
+    },
+    {
+      "unit": "C72",
+      "effectiveAttempt": 1,
+      "declaration": "o19LocatedAfterFirstCutWords",
+      "commit": "64c9ab6b7b9792ef975413f400da8da0d2c21740"
+    },
+    {
+      "unit": "C73",
+      "effectiveAttempt": 1,
+      "declaration": "o19LocatedByWordWords",
+      "commit": "e7be9486bfa66a0eb0f99236b5bb31229f5be060"
+    },
+    {
+      "unit": "C74",
+      "effectiveAttempt": 1,
+      "declaration": "o19PrefixThroughCount",
+      "commit": "3ff3d84af4afaa8fa8e1e1eeacf31cd56a2bc076"
+    },
+    {
+      "unit": "C75",
+      "effectiveAttempt": 1,
+      "declaration": "o19LocatedByWordCounts",
+      "commit": "999272f3c828c4d2b014c09904391ecd5f8a3c6f"
+    },
+    {
+      "unit": "C76",
+      "effectiveAttempt": 1,
+      "declaration": "o19ActualMovedBoundaryWords",
+      "commit": "8acae20352ec9b3e95aefe40c20ba024b2579bca"
+    }
+  ],
+  "archiveSHA256": "58bfc85308b193b9b0a09095fcb7e68bcace91dd99e5c9b217087fdc9a0eb2cc",
+  "seeds": "207/207",
+  "productionDiff": "empty",
+  "LocalDiamondDiff": "empty",
+  "noStagedFiles": true,
+  "finalArtifactReceiptQualification": "Archive cannot contain its own commit-time receipt; final live receipt is reported separately at gate."
+}
