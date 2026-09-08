@@ -73,3 +73,31 @@ o20InversionBeforeGoalMinimum head minimum (next :: rest) goalRest (UniqueCons a
   o20InversionUnderSourceHead head
     (o20InversionBeforeGoalMinimum next minimum rest goalRest uniqueRest
       (\selected, inside => members selected (There inside)) found)
+
+||| Finite inversion availability, NOT a sorting oracle: unique orders of
+||| exactly the same names are equal or own an adjacent goal inversion.
+||| The unequal-head branch finds the goal minimum's actual predecessor;
+||| the equal-head branch recurses on the strictly shorter two tails.
+export
+0 o20FiniteInversionAvailable :
+  {name : Type} -> (nameEq : DecEq name) -> (sourceOrder, goalOrder : List name) ->
+  UniqueKeys sourceOrder -> UniqueKeys goalOrder ->
+  ((selected : name) -> Elem selected sourceOrder -> Elem selected goalOrder) ->
+  ((selected : name) -> Elem selected goalOrder -> Elem selected sourceOrder) ->
+  Either (sourceOrder = goalOrder) (O20FiniteInversion name sourceOrder goalOrder)
+o20FiniteInversionAvailable nameEq [] [] sourceUnique goalUnique forward backward = Left Refl
+o20FiniteInversionAvailable nameEq [] (minimum :: goalRest) sourceUnique goalUnique forward backward =
+  absurd (backward minimum Here)
+o20FiniteInversionAvailable nameEq (head :: rest) [] sourceUnique goalUnique forward backward =
+  absurd (forward head Here)
+o20FiniteInversionAvailable nameEq (head :: rest) (minimum :: goalRest)
+  (UniqueCons sourceAbsent sourceUnique) (UniqueCons goalAbsent goalUnique) forward backward =
+    case decEq @{nameEq} head minimum of
+      Yes Refl => case o20FiniteInversionAvailable nameEq rest goalRest sourceUnique goalUnique
+        (\selected, inside => o20CancelHeadMembership sourceAbsent inside (forward selected (There inside)))
+        (\selected, inside => o20CancelHeadMembership goalAbsent inside (backward selected (There inside))) of
+          Left same => Left (cong (head ::) same)
+          Right inversion => Right (o20InversionUnderSourceHead head (o20InversionUnderGoalHead head inversion))
+      No different => Right (o20InversionBeforeGoalMinimum head minimum rest goalRest
+        (UniqueCons sourceAbsent sourceUnique) forward
+        (o20DifferentHeadMember (\same => different (sym same)) (backward minimum Here)))
