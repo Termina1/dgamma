@@ -21,15 +21,6 @@ import Decidable.Equality
 
 %default total
 
-public export
-data CertifiedActorPermutation :
-  (name : Type) -> List name -> List name -> Type where
-  ActorPermutationDone : CertifiedActorPermutation name order order
-  ActorPermutationStep :
-    AdjacentActorOrderSwap name before middle ->
-    CertifiedActorPermutation name middle after ->
-    CertifiedActorPermutation name before after
-
 ||| Exact one-step operational producer.  Its proof must enumerate the finite
 ||| Cartesian crossing of the two located blocks, derive early applicability and
 ||| orientation-specific premises from the current bundle/safety, invoke the

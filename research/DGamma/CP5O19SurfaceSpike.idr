@@ -685,6 +685,15 @@ blockSwapReplayCorrespondence step =
     (wholeBlockFiniteDerivation (blockSwapWholeDerivation step))
 
 public export
+data CertifiedActorPermutation :
+  (name : Type) -> List name -> List name -> Type where
+  ActorPermutationDone : CertifiedActorPermutation name order order
+  ActorPermutationStep :
+    AdjacentActorOrderSwap name before middle ->
+    CertifiedActorPermutation name middle after ->
+    CertifiedActorPermutation name before after
+
+public export
 0 blockSwapOccurrenceCorrespondence :
   (step : OperationalAdjacentBlockSwap name key world error value protocol nameEq
     keyEq orderSwap sourceTrace sourceBlocks sourcePremises safety) ->
