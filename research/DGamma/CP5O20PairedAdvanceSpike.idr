@@ -89,3 +89,53 @@ export
 o20SuccessfulAdvanceControls {error} [] leftAccumulator rightAccumulator leftView rightView accumulators views = RenamedActive {error} accumulators views
 o20SuccessfulAdvanceControls (step :: rest) leftAccumulator rightAccumulator leftView rightView accumulators views =
   RenamedReloading Refl accumulators views
+
+||| ACTUAL observed paired successful Advance/last-step Finish. The exact two
+||| checked transitions, captured capabilities and callback equations are
+||| authenticated inputs. Outcome equality and EVERY successor field are
+||| produced, not assumed. Canonical cut alignment remains a separate debt.
+export
+0 o20PairedObservedAdvanceCut :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (renaming : NameBijection name) -> (actor : name) ->
+  (component : Component key value world error) ->
+  (step : StepEffect key value world error (dependencies (componentDependencies component)) (componentProvisions component)) ->
+  (rest : List (StepEffect key value world error (dependencies (componentDependencies component)) (componentProvisions component))) ->
+  (leftParent, rightParent : Parent name) -> (leftRetired, rightRetired : Bool) ->
+  (leftTable, rightTable : OwnedTable key value (componentProvisions component)) ->
+  (leftOlder, rightOlder : LocalState key value world (componentProvisions component) -> LocalState key value world (componentProvisions component)) ->
+  (leftView, rightView : View name (dependencies (componentDependencies component))) ->
+  (leftWorld, rightWorld : world) -> (leftRegistry, rightRegistry : Registry name key value world error) ->
+  (leftAfter, rightAfter : LocalState key value world (componentProvisions component)) ->
+  (leftUndo, rightUndo : LocalState key value world (componentProvisions component) -> LocalState key value world (componentProvisions component)) ->
+  (leftCapability, rightCapability : DepValues key value (dependencies (componentDependencies component))) ->
+  (leftTag, rightTag : RuleTag) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor leftRegistry = Just (MkFiber component leftParent leftRetired leftTable (Reloading (step :: rest) leftOlder leftView))) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} (renameForward renaming actor) rightRegistry = Just (MkFiber component rightParent rightRetired rightTable (Reloading (step :: rest) rightOlder rightView))) ->
+  (resolveEffectValues {name} {key} {value} {world} @{keyEq} (dependencies (componentDependencies component)) leftView (projectEffectState {name} {key} {value} {world} {error} @{nameEq} (MkSystemState leftWorld leftRegistry)) = Just leftCapability) ->
+  (resolveEffectValues {name} {key} {value} {world} @{keyEq} (dependencies (componentDependencies component)) rightView (projectEffectState {name} {key} {value} {world} {error} @{nameEq} (MkSystemState rightWorld rightRegistry)) = Just rightCapability) ->
+  (runStepEffect step leftCapability (MkLocalState {key} {value} {world} {provision = componentProvisions component} leftWorld (restrictOwnedPreservingOrder {key} {value} @{keyEq}
+    (componentProvisions component) (effectTables (projectEffectState {name} {key} {value} {world} {error} @{nameEq} (MkSystemState leftWorld leftRegistry)) actor))) = Right (leftAfter, leftUndo)) ->
+  (runStepEffect step rightCapability (MkLocalState {key} {value} {world} {provision = componentProvisions component} rightWorld (restrictOwnedPreservingOrder {key} {value} @{keyEq}
+    (componentProvisions component) (effectTables (projectEffectState {name} {key} {value} {world} {error} @{nameEq} (MkSystemState rightWorld rightRegistry)) (renameForward renaming actor)))) = Right (rightAfter, rightUndo)) ->
+  (checkedApplyAction {name} {key} {value} {world} {error} @{nameEq} @{keyEq} (LAdvance actor) (MkSystemState leftWorld leftRegistry) = Just (leftTag, (MkSystemState (localWorld leftAfter) (replaceBinding @{nameEq} actor (MkFiber component leftParent leftRetired (localTable leftAfter) (o20SuccessfulAdvanceLifecycle {name} {key} {value} {world} {error} rest (pushLocalUndo {key} {value} {world} @{keyEq} (componentProvisions component) leftOlder leftUndo) leftView)) leftRegistry)))) ->
+  (checkedApplyAction {name} {key} {value} {world} {error} @{nameEq} @{keyEq} (LAdvance (renameForward renaming actor)) (MkSystemState rightWorld rightRegistry) = Just (rightTag, (MkSystemState (localWorld rightAfter) (replaceBinding @{nameEq} (renameForward renaming actor) (MkFiber component rightParent rightRetired (localTable rightAfter) (o20SuccessfulAdvanceLifecycle {name} {key} {value} {world} {error} rest (pushLocalUndo {key} {value} {world} @{keyEq} (componentProvisions component) rightOlder rightUndo) rightView)) rightRegistry)))) ->
+  O20AllNameCut name key world error value nameEq renaming (MkSystemState leftWorld leftRegistry) (MkSystemState rightWorld rightRegistry) ->
+  O20AllNameCut name key world error value nameEq renaming (MkSystemState (localWorld leftAfter) (replaceBinding @{nameEq} actor (MkFiber component leftParent leftRetired (localTable leftAfter) (o20SuccessfulAdvanceLifecycle {name} {key} {value} {world} {error} rest (pushLocalUndo {key} {value} {world} @{keyEq} (componentProvisions component) leftOlder leftUndo) leftView)) leftRegistry)) (MkSystemState (localWorld rightAfter) (replaceBinding @{nameEq} (renameForward renaming actor) (MkFiber component rightParent rightRetired (localTable rightAfter) (o20SuccessfulAdvanceLifecycle {name} {key} {value} {world} {error} rest (pushLocalUndo {key} {value} {world} @{keyEq} (componentProvisions component) rightOlder rightUndo) rightView)) rightRegistry))
+o20PairedObservedAdvanceCut {name} {key} {world} {error} {value} nameEq keyEq renaming actor component step rest
+  leftParent rightParent leftRetired rightRetired leftTable rightTable leftOlder rightOlder leftView rightView
+  leftWorld rightWorld leftRegistry rightRegistry leftAfter rightAfter leftUndo rightUndo leftCapability rightCapability
+  leftTag rightTag leftFound rightFound leftResolved rightResolved leftRun rightRun leftChecked rightChecked paired =
+    case o20ReloadingControlParts (o20PresentControl {left = (MkFiber component leftParent leftRetired leftTable (Reloading (step :: rest) leftOlder leftView))} {right = (MkFiber component rightParent rightRetired rightTable (Reloading (step :: rest) rightOlder rightView))}
+      (rewrite sym leftFound in rewrite sym rightFound in allNameControls paired actor)) of
+      (parents, retiredSame, older, views) =>
+        case pairedSuccessfulOutcome name key world error value keyEq renaming
+          (dependencies (componentDependencies component)) (componentProvisions component) actor step leftView rightView (projectEffectState {name} {key} {value} {world} {error} @{nameEq} (MkSystemState leftWorld leftRegistry)) (projectEffectState {name} {key} {value} {world} {error} @{nameEq} (MkSystemState rightWorld rightRegistry))
+          leftCapability rightCapability leftOlder rightOlder leftAfter rightAfter leftUndo rightUndo
+          (allNameEffects paired) views older leftResolved rightResolved leftRun rightRun of
+          (afterSame, pushed) =>
+            o20PairedRuntimeReplacementCut nameEq keyEq renaming actor leftWorld rightWorld (localWorld leftAfter) (localWorld rightAfter)
+              (MkFiber component leftParent leftRetired leftTable (Reloading (step :: rest) leftOlder leftView)) (MkFiber component rightParent rightRetired rightTable (Reloading (step :: rest) rightOlder rightView)) (MkFiber component leftParent leftRetired (localTable leftAfter) (o20SuccessfulAdvanceLifecycle {name} {key} {value} {world} {error} rest (pushLocalUndo {key} {value} {world} @{keyEq} (componentProvisions component) leftOlder leftUndo) leftView)) (MkFiber component rightParent rightRetired (localTable rightAfter) (o20SuccessfulAdvanceLifecycle {name} {key} {value} {world} {error} rest (pushLocalUndo {key} {value} {world} @{keyEq} (componentProvisions component) rightOlder rightUndo) rightView)) leftRegistry rightRegistry leftFound rightFound (cong localWorld afterSame)
+              (cong (\local => bindings (ownedValues (localTable local))) afterSame)
+              (RenamedFibers leftParent rightParent leftRetired rightRetired (localTable leftAfter) (localTable rightAfter)
+                (o20SuccessfulAdvanceLifecycle {name} {key} {value} {world} {error} rest (pushLocalUndo {key} {value} {world} @{keyEq} (componentProvisions component) leftOlder leftUndo) leftView) (o20SuccessfulAdvanceLifecycle {name} {key} {value} {world} {error} rest (pushLocalUndo {key} {value} {world} @{keyEq} (componentProvisions component) rightOlder rightUndo) rightView) parents retiredSame (o20SuccessfulAdvanceControls rest (pushLocalUndo {key} {value} {world} @{keyEq} (componentProvisions component) leftOlder leftUndo) (pushLocalUndo {key} {value} {world} @{keyEq} (componentProvisions component) rightOlder rightUndo) leftView rightView pushed views)) paired
