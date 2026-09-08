@@ -75,3 +75,54 @@ adapter and mixed right-activation rows. Open: total row dispatcher, Cartesian
 columns, exact origins/product count/coverage, actual reached ranges/decomposition/
 origin updates, same-chain endpoint/full bundle/external assembly. O19 body0,
 C0, O20/O21 body0; no closure or independent reviewer acceptance claimed.
+
+## Unit B —16/16 retained; cap, no O19 body
+
+| Unit | Commit | Result | Attempt |
+|---|---|---|---|
+| B1 | d31125ca | Total actual checked A/A Begin/Iter/Finish dispatcher | PASS2 |
+| B2 | a35dba31 | Explicit aligned actual A/A pair adapter | PASS1 |
+| B3 | 617bd742 | Backwards O/Begin from actual insert plan + actual later opening | PASS1 |
+| B4 | 9969e2fd | Total checked O/A Begin/Iter/Finish guards; actual commuted domains | PASS1 |
+| B5 | 65e78451 | Explicit aligned actual O/A adapter | PASS1 |
+| B6 | 329769f5 | Mixed right-activation row step; SAME previous row cursor/origins/guard/replay/count | PASS1 |
+| B7 | 9b8a6a26 | Arbitrary mixed right Begin/Iter/Finish row induction | PASS1 |
+| B8 | fbd10a38 | Unified simultaneous mixed-row output | PASS1 |
+| B9 | 406d8df8 | Explicit activation-row result consumer | PASS1 |
+| B10 | 1727901b | Explicit insertion-row result consumer | PASS1 |
+| B11 | 153cb3d2 | Total A/A,O/A,A/O,O/O row dispatcher | PASS1 |
+| B12 | 89ddd3bb | Structural action-fold equals actual trace count | PASS2 |
+| B13 | 92f44ecf | Dependent trace append count | PASS1 |
+| B14 | 0adf32e9 | Actual sealed suffix count via public fold; constructors frozen | PASS1 |
+| B15 | 9367e961 | Actual produced adjacent result preserves whole length | PASS1 |
+| B16 | 08d4b18c | Actual complete finite derivation preserves reached length | PASS1 |
+
+B1-1 rejected coverage for direct overlapping dependent equality patterns;
+B1-2 uses explicit constructor/equality elimination of the actual supplied
+PaperActivationStep, as the accepted R185 F1 cure. B12-1 lacked the direct
+RankObservation import for the already-public traceActionFold; B12-2 adds ONLY
+that import. Neither exhausted; no visibility change, third-spec-gap event,
+unsafe rewrite or LocalDiamond modification.26/28 A+B declarations PASS1.
+
+B7/B11 no longer ask for early-cut guard vectors. A/A current source-shape and
+E11/E12 guards are produced from ORIGINAL safety plus actual composed finite
+origins/current pair bundle. O/A actual plans produce Begin; existing actual
+Advance commutation proves Iter/Finish domains. Every source class contains
+only paper action/owner/generated-child/licensing observations. B11 builds the
+same cursor, full bundle, uniqueness, finite derivation and structural row
+count in all four orientations. Thus the mixed ROW prerequisite is proved at
+this source-class interface; callers still must derive its actual row classes
+from authoritative selected-block positions. An arbitrary callback or row
+oracle is NOT accepted. B12–B16 are length capital for the NEXT Cartesian cut
+extraction: count is extracted from authentic sealed fold, never from a bare
+unidirectional origin map. This preserves lengths, not exact source ordinals.
+
+CAP:16/16, no extra B slot inferred. Full Cartesian COLUMN induction, exact
+source-pair origin equations, product count, nonempty coverage/uniqueness,
+actual target block ranges/decomposition plus origin update, and same-chain
+endpoint/full bundle/external correspondence ASSEMBLY remain OPEN. No 2x2
+end-to-end Cartesian fixture. (iii)–(vi) not all committed, so O19 body0 attempts,
+not even a tentative elaboration. All five hole declarations unchanged.
+C starts only after this B cap;03:39UTC leaves>150min before the no-new-attempt
+guard, hence the required>=60min. C<=8 pure finite linear-extension/selector
+capital only; no O20 body or runtime canonical endpoint construction.
