@@ -11,6 +11,7 @@ import DGamma.CP5UniqueRawNameInsertions
 import DGamma.CP5RankedEarlyApplicabilitySpike
 import DGamma.CP5O19CartesianCursorSpike
 import DGamma.CP5O19BodyMetadataSpike
+import DGamma.CP5O19ReplayObservationSpike
 import DGamma.CP5O19AdjacentReplayProducerSpike
 import Data.List.Elem
 import Data.Maybe
@@ -65,3 +66,35 @@ o19ReplayedActivationChecked nameEq keyEq protocol swap source blocks premises s
           Refl => case rightOwner of
             Refl => o19SanctionedReplayedAdvance nameEq keyEq protocol swap source blocks premises safety unique cursor earlier later
               leftAction leftTag LFinishTag leftChecked rightChecked decomposition leftOwner (Right Refl) leftActivation
+
+||| Eliminate one EXPLICIT actual pair alignment; all stored dictionaries,
+||| labels and check equations now agree with the sanctioned guard producer.
+export
+0 o19ReplayedActivationAligned :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {sourceOrder, targetOrder : List name} ->
+  (swap : AdjacentActorOrderSwap name sourceOrder targetOrder) ->
+  {initial, first, middle, last, finalState : SystemState name key value world error} ->
+  (source : Transitions initial finalState) ->
+  (blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder source) ->
+  (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq source) ->
+  (safety : AdjacentActorSwapSafety name key world error value protocol nameEq keyEq swap source blocks premises) ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq source ->
+  (cursor : O19ReachedCursor name key world error value protocol nameEq keyEq source) ->
+  (earlier : Transitions initial first) -> (later : Transitions last (cursorFinal cursor)) ->
+  (left : Transition first middle) -> (right : Transition middle last) ->
+  (appendTransitions earlier (MoreTransitions left (MoreTransitions right later)) = cursorTrace cursor) ->
+  (transitionActor left = actorLeft swap) -> (transitionActor right = actorRight swap) ->
+  PaperActivationStep left -> PaperActivationStep right ->
+  AlignedTransitions name key world error value nameEq keyEq (MoreTransitions left (MoreTransitions right NoTransitions)) ->
+  CheckedEarlyApplication name key world error value nameEq keyEq first (transitionAction right) (transitionTag right)
+o19ReplayedActivationAligned nameEq keyEq protocol swap source blocks premises safety unique cursor earlier later
+  _ _ decomposition leftOwner rightOwner leftActivation rightActivation
+  (AlignedStep leftAction leftTag leftChecked _ (AlignedStep rightAction rightTag rightChecked _ AlignedEnd)) =
+    o19ReplayedActivationChecked nameEq keyEq protocol swap source blocks premises safety unique cursor earlier later
+      leftAction rightAction leftTag rightTag leftChecked rightChecked decomposition
+      (trans (sym (o19TransitionActorOwner (Fired nameEq keyEq leftAction leftTag leftChecked))) leftOwner)
+      (trans (sym (o19TransitionActorOwner (Fired nameEq keyEq rightAction rightTag rightChecked))) rightOwner)
+      leftActivation rightActivation
