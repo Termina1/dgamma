@@ -144,3 +144,11 @@ record AdjacentActorSwapSafety
     (LBegin (actorRight orderSwap)) LBeginTag
   0 safetyBlocksAdjacent : (transitionCount (betweenBlocks safetyBlocksOrdered) = 0)
 
+public export
+0 actorBlockTrace :
+  (block : LocatedOpenEpisodeBlock name key world error value nameEq keyEq actor
+    global) ->
+  Transitions (blockPreStart block) (blockEnd block)
+actorBlockTrace block =
+  MoreTransitions (beginTransition (blockOpening block)) (blockBody block)
+

@@ -31,14 +31,6 @@ data CertifiedActorPermutation :
     CertifiedActorPermutation name before after
 
 public export
-0 actorBlockTrace :
-  (block : LocatedOpenEpisodeBlock name key world error value nameEq keyEq actor
-    global) ->
-  Transitions (blockPreStart block) (blockEnd block)
-actorBlockTrace block =
-  MoreTransitions (beginTransition (blockOpening block)) (blockBody block)
-
-public export
 actorBlockTransitionCount :
   LocatedOpenEpisodeBlock name key world error value nameEq keyEq actor global ->
   Nat
