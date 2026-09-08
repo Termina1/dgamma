@@ -381,3 +381,18 @@ o19ActorOnlyFromWord selected forbidden (MoreTransitions step rest) observations
   o19ActorOnlyPrependObserved selected forbidden step rest
     (o19ActorOnlyFromWord selected forbidden rest (\action, member => observations action (There member)))
     (observations (transitionAction step) Here)
+
+||| NoLifecycleBy excludes every lifecycle label in its ACTUAL action word.
+||| This predicate will transport along authenticated outside-range words.
+export
+0 o19NoLifecycleWordMember :
+  {name, key, world, error : Type} -> {value : key -> Type} -> (selected : name) ->
+  {first, last : SystemState name key value world error} ->
+  (trace : Transitions first last) -> NoLifecycleBy selected trace ->
+  (action : Action name key value world error) -> Elem action (o19ActionWord trace) ->
+  (isLifecycleAction action = True) -> Not (actionOwner action = selected)
+o19NoLifecycleWordMember selected _ NoLifecycleByEnd action member lifecycle owner = void (uninhabited member)
+o19NoLifecycleWordMember selected _ (NoLifecycleByStep step rest excluded tail) _ Here lifecycle owner =
+  excluded lifecycle (trans (o19TransitionActorOwner step) owner)
+o19NoLifecycleWordMember selected _ (NoLifecycleByStep step rest excluded tail) action (There member) lifecycle owner =
+  o19NoLifecycleWordMember selected rest tail action member lifecycle owner
