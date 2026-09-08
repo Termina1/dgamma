@@ -121,3 +121,43 @@ o19SourcePairRelabel leftParent rightParent originalLeft originalRight left righ
   (SourceOO leftChild rightChild leftComponent rightComponent leftInsert rightInsert distinct leftLicense rightLicense tag) =
     SourceOO leftChild rightChild leftComponent rightComponent (trans leftAction leftInsert) (trans rightAction rightInsert)
       distinct leftLicense rightLicense (trans rightTag tag)
+
+||| Supervisor-approved INTERNAL static-class bridge. Classify only ORIGINAL
+||| located occurrences in the two fixed source words, then derive current
+||| source classes through the ACTUAL replay origins and preserved tags.
+||| Discharging originalClasses from authoritative O19 blocks is a HARD open
+||| prerequisite to any public O19 body, not an added public theorem premise.
+export
+0 o19OriginalPairAtReplayOrigins :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (leftParent, rightParent : name) -> (leftWord, rightWord : List (Action name key value world error)) ->
+  {initial, originalFinal, currentFinal : SystemState name key value world error} ->
+  (original : Transitions initial originalFinal) -> (current : Transitions initial currentFinal) ->
+  (correspondence : ActionRegistrationReplayCorrespondence name key world error value original current) ->
+  (0 originalClasses : {leftAction, rightAction : Action name key value world error} ->
+    (leftOccurrence : LocatedActionOccurrence leftAction original) ->
+    (rightOccurrence : LocatedActionOccurrence rightAction original) ->
+    Elem leftAction leftWord -> Elem rightAction rightWord ->
+    O19SourcePairObservation name key world error value leftParent rightParent
+      (locatedTransition leftOccurrence) (locatedTransition rightOccurrence)) ->
+  {leftAction, rightAction : Action name key value world error} ->
+  (leftOccurrence : LocatedActionOccurrence leftAction current) -> (rightOccurrence : LocatedActionOccurrence rightAction current) ->
+  Elem leftAction leftWord -> Elem rightAction rightWord ->
+  O19SourcePairObservation name key world error value leftParent rightParent
+    (locatedTransition leftOccurrence) (locatedTransition rightOccurrence)
+o19OriginalPairAtReplayOrigins leftParent rightParent leftWord rightWord original current correspondence originalClasses
+  leftOccurrence rightOccurrence leftIn rightIn =
+    o19SourcePairRelabel leftParent rightParent
+      (locatedTransition (replayActionOrigin correspondence leftOccurrence)) (locatedTransition (replayActionOrigin correspondence rightOccurrence))
+      (locatedTransition leftOccurrence) (locatedTransition rightOccurrence)
+      (trans (locatedAction leftOccurrence) (sym (locatedAction (replayActionOrigin correspondence leftOccurrence))))
+      (sym (replayActionTagPreserved correspondence leftOccurrence))
+      (trans (o19TransitionActorOwner (locatedTransition leftOccurrence))
+        (trans (cong actionOwner (trans (locatedAction leftOccurrence) (sym (locatedAction (replayActionOrigin correspondence leftOccurrence)))))
+          (sym (o19TransitionActorOwner (locatedTransition (replayActionOrigin correspondence leftOccurrence))))))
+      (trans (locatedAction rightOccurrence) (sym (locatedAction (replayActionOrigin correspondence rightOccurrence))))
+      (sym (replayActionTagPreserved correspondence rightOccurrence))
+      (trans (o19TransitionActorOwner (locatedTransition rightOccurrence))
+        (trans (cong actionOwner (trans (locatedAction rightOccurrence) (sym (locatedAction (replayActionOrigin correspondence rightOccurrence)))))
+          (sym (o19TransitionActorOwner (locatedTransition (replayActionOrigin correspondence rightOccurrence))))))
+      (originalClasses (replayActionOrigin correspondence leftOccurrence) (replayActionOrigin correspondence rightOccurrence) leftIn rightIn)
