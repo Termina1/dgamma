@@ -534,3 +534,16 @@ o20SwapNeighbours {name} swap =
   replace {p = \order => O20Neighbours name (actorLeft swap) (actorRight swap) order}
     (sym (actorBeforeExact swap))
     (o20NeighboursAtSplit (actorPrefix swap) (actorLeft swap) (actorRight swap) (actorSuffix swap))
+
+||| COMPLETE native enumeration from any pure neighboring swap. The returned
+||| candidate carries its own safety slots and exact actor-name equations;
+||| its proof fields are never equated to the input swap's proof fields.
+export
+0 o20EnumerateSwap : {name : Type} -> (nameEq : DecEq name) ->
+  {sourceOrder, targetOrder : List name} ->
+  (swap : AdjacentActorOrderSwap name sourceOrder targetOrder) ->
+  O20EnumeratedPair name sourceOrder (o20AdjacentCandidates nameEq sourceOrder [] sourceOrder Refl)
+    (actorLeft swap) (actorRight swap)
+o20EnumerateSwap {sourceOrder} nameEq swap =
+  o20AdjacentCandidatesComplete nameEq sourceOrder [] sourceOrder Refl
+    (actorLeft swap) (actorRight swap) (actorDistinct swap) (o20SwapNeighbours swap)
