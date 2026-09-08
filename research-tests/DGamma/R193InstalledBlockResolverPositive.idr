@@ -52,3 +52,12 @@ r193FrameRightStart = fromMaybe r193FrameEnd (applyTagged LBeginTag (LBegin 1) r
 public export
 0 r193FrameLeftOpening : BeginStep %search %search 2 r193FrameBefore r193FrameStart
 r193FrameLeftOpening = MkBeginStep Refl
+
+||| Both real body edges: native inactive child insertion followed by Finish.
+public export
+0 r193FrameBody : Transitions r193FrameStart r193FrameEnd
+r193FrameBody =
+  MoreTransitions (Fired {before = r193FrameStart} {afterState = r193FrameChild} %search %search
+    (OInsert 3 (ChildOf 2) emptyConsumerComponent) OInsertTag Refl)
+    (MoreTransitions (Fired {before = r193FrameChild} {afterState = r193FrameEnd} %search %search
+      (LAdvance 2) LFinishTag Refl) NoTransitions)
