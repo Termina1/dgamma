@@ -160,3 +160,35 @@ gaps. C28 cap consumed, no C29 inferred. D2–D10/body/rehome remain unattempted
 Original A/B complete; O19 open, hole delta0/split5=1/3/0/0/1. Erased actual
 witnesses are not runtime producers. Fresh guarded receipts and raw compiler
 qualifications remain append-only under /tmp/dgamma-r188.
+
+## Supervisor C3 extension and C3 cap16
+
+Supervisor RATIFIED C2/efa02873 and authorized C29–C44 BEFORE D2, same exact
+residual order. C29/C30 derive all FOUR reached outside-lifecycle facts;
+C31 derives both reached ActorLifecycleOnly bodies. C32/fe86d408 and
+C33/e3d22f1b construct BOTH FULL moved LocatedOpenEpisodeBlock records from
+original O19 inputs, with all installed/ownership/outside/active/decomposition
+fields on the SAME reached trace. C34/282f360b gives their reversed adjacent
+BlockBefore with actual empty gap, from the owned range equations.
+
+C35 transports arbitrary source ActorLifecycleOnly by exact body words without
+requiring a selected-pair NoGeneratedChild hypothesis. C36–C39 reconstruct a
+FULL reached block from exact target word placement plus real alignment,
+occurrence correspondence and active/outside evidence: both dependent cuts,
+actual Begin/body and installedness are derived, not caller cuts. C40/C41
+authenticate actual prefix-through-block and whole reached swap words.
+C42/c985e36a and C43/7f6b766a derive actual before/after untouched word
+placements from their original BlockBefore, using actual reached words rather
+than source bounds on arbitrary targets. C44 instantiates the entire producer
+for EVERY original block before the selected pair: all reached block fields
+are produced, including no-later via genuine original negative predicates and
+authenticated reordered-word membership. Occurrence origins, not word equality,
+are used for reached installedness. No source oracle or surface assumption.
+
+C3:16 declarations/16 fresh invocations, ALL PASS1/3, immediately guarded
+committed. No rejection/exhaustion or new hole/unsafe/with/LocalDiamond change.
+Remaining C work: finish the symmetric AFTER-pair untouched block producer;
+choose/reassemble all blocks for the target order; target BlockBefore/range
+disjointness/lifecycle coverage and reached origin updates. Full target
+ActorBlockDecomposition still not claimed. Cap44 consumed; no C45 inferred.
+D1 only; no D2, rehome, O19/O20/O21 body. Hole delta0/split5=1/3/0/0/1.
