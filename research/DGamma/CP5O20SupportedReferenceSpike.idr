@@ -78,3 +78,32 @@ o20OriginalSupportedImageForward {name} {key} {world} {error} {value} nameEq key
         (replayDiscipline (chainReplayCapital (capitalPremises leftCapital)))
         (replayInitialEmpty (chainReplayCapital (capitalPremises leftCapital)))
         leftUnique rightUnique selected sourceFiber found supported)
+
+||| Backward image of EVERY supported original actor, from accepted scanner
+||| capital and both original uniqueness arguments, not an endpoint oracle.
+export
+0 o20OriginalSupportedImageBackward :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {initial, leftFinal, rightFinal : SystemState name key value world error} ->
+  (leftTrace : Transitions initial leftFinal) -> (rightTrace : Transitions initial rightFinal) ->
+  (inputs : SameOrchestrationModuloGenerated nameEq keyEq leftTrace rightTrace) ->
+  (leftCapital : IndependentCanonicalSchedule name key world error value protocol nameEq keyEq leftTrace) ->
+  (rightCapital : IndependentCanonicalSchedule name key world error value protocol nameEq keyEq rightTrace) ->
+  (0 leftUnique : UniqueRawNameInsertions name key world error value nameEq keyEq leftTrace) ->
+  (0 rightUnique : UniqueRawNameInsertions name key world error value nameEq keyEq rightTrace) ->
+  (selected : name) -> (sourceFiber : Fiber name key value world error) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected (registry rightFinal) = Just sourceFiber) ->
+  (isSupported {name} {key} {value} {world} {error} @{nameEq} @{keyEq} selected rightFinal = True) ->
+  O20SupportedFiberImage name key world error value nameEq
+    (renameBackward (currentNameBijection (endpointRenaming inputs))) selected sourceFiber leftFinal
+o20OriginalSupportedImageBackward {name} {key} {world} {error} {value} nameEq keyEq protocol
+  leftTrace rightTrace inputs leftCapital rightCapital leftUnique rightUnique selected sourceFiber found supported =
+    o20SupportedImageObserved
+      (acceptedAllSupportedMetadataBackward name key world error value nameEq keyEq protocol leftTrace rightTrace inputs
+        (replayAligned (chainReplayCapital (capitalPremises leftCapital)))
+        (replayAligned (chainReplayCapital (capitalPremises rightCapital)))
+        (replayDiscipline (chainReplayCapital (capitalPremises rightCapital)))
+        (replayInitialEmpty (chainReplayCapital (capitalPremises leftCapital)))
+        leftUnique rightUnique selected sourceFiber found supported)
