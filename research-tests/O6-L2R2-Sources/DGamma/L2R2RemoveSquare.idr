@@ -107,3 +107,51 @@ removeSquareFromObservations nameEq keyEq child parent component table outcome a
       (cong2 MkRuntimeSnapshot
         (trans (orchestrationObservedWorld observation) (lifecycleDeleteWorld replay))
         (trans (orchestrationObservedBindings observation) (lifecycleDeleteBindings replay)))
+
+||| Discharge the original-removal observation from the actual lifecycle edge.
+||| Inactive-leaf survival is derived by CP4's local-update theorem. This helper
+||| still consumes a single-role raw replay, supplied by the next producers.
+export
+0 removeSquareFromLifecycleReplay :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (child, parent : name) ->
+  (component : Component key value world error) ->
+  (table : OwnedTable key value (componentProvisions component)) -> (outcome : Maybe error) ->
+  (ambient : world) -> (fibers : Registry name key value world error) ->
+  (action : Action name key value world error) -> (tag : RuleTag) ->
+  (0 lifecycle : isLifecycleAction action = True) ->
+  (middle, finalState : SystemState name key value world error) ->
+  (0 found : lookupFiber {name} {key} {value} {world} {error} @{nameEq} child fibers =
+    Just (MkFiber component (ChildOf parent) True table (Inactive outcome))) ->
+  (0 noChild : hasChild {name} {key} {value} {world} {error} @{nameEq} child fibers = False) ->
+  (0 distinct : Not (child = actionOwner action)) ->
+  (0 valid : registryWellFormed {name} {key} {value} {world} {error} @{nameEq} @{keyEq}
+    (MkSystemState ambient fibers) = True) ->
+  (0 foreign : checkedApplyAction @{nameEq} @{keyEq} action (MkSystemState ambient fibers) = Just (tag, middle)) ->
+  (0 removed : checkedApplyAction @{nameEq} @{keyEq} (ORemove child) middle = Just (ORemoveTag, finalState)) ->
+  (replay : LifecycleDeleteRuntimeCommute name key world error value nameEq keyEq action tag child middle
+    (MkSystemState ambient (deleteBinding @{nameEq} child fibers))) ->
+  ChildRemoveSnapshotExchange name key world error value nameEq keyEq child parent
+    (Fired {before = MkSystemState ambient fibers} {afterState = middle} nameEq keyEq action tag foreign)
+    (Fired {before = middle} {afterState = finalState} nameEq keyEq (ORemove child) ORemoveTag removed)
+removeSquareFromLifecycleReplay nameEq keyEq child parent component table outcome ambient fibers
+  action tag lifecycle (MkSystemState middleWorld middleFibers) finalState found noChild distinct valid foreign removed replay =
+    removeSquareFromObservations nameEq keyEq child parent component table outcome ambient fibers
+      action tag (MkSystemState middleWorld middleFibers) finalState found noChild distinct valid foreign removed replay
+      (removeRuntimeObservation nameEq keyEq child middleWorld middleFibers
+        (MkFiber component (ChildOf parent) True table (Inactive outcome))
+        (survivingInactiveFound
+          (inactiveLeafSurvivesLifecycle nameEq keyEq action lifecycle (MkSystemState ambient fibers)
+            (MkSystemState middleWorld middleFibers) tag
+            (checkedActionProjects nameEq keyEq action (MkSystemState ambient fibers)
+              (MkSystemState middleWorld middleFibers) tag foreign)
+            child (\same => distinct (sym same)) component (ChildOf parent) True table outcome found noChild))
+        (cong not (survivingInactiveChildless
+          (inactiveLeafSurvivesLifecycle nameEq keyEq action lifecycle (MkSystemState ambient fibers)
+            (MkSystemState middleWorld middleFibers) tag
+            (checkedActionProjects nameEq keyEq action (MkSystemState ambient fibers)
+              (MkSystemState middleWorld middleFibers) tag foreign)
+            child (\same => distinct (sym same)) component (ChildOf parent) True table outcome found noChild)))
+        ORemoveTag finalState
+        (checkedActionProjects nameEq keyEq (ORemove child) (MkSystemState middleWorld middleFibers)
+          finalState ORemoveTag removed))
