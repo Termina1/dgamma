@@ -94,3 +94,19 @@ r191ChildGapTrace =
                       (                      MoreTransitions (Fired {before = r191ChildGapState 10} {afterState = r191ChildGapState 11}
                         r45NameEq r45KeyEq (LAdvance 2) LFinishTag Refl)
                         (NoTransitions)))))))))))
+
+||| The real eleven-edge candidate uses the exact fixed evaluator dictionaries.
+public export
+0 r191ChildGapAligned : AlignedTransitions Nat R45Key Unit String R45Value r45NameEq r45KeyEq r191ChildGapTrace
+r191ChildGapAligned =
+  AlignedStep (OInsert 0 Root r45Parent) OInsertTag Refl _ (
+    AlignedStep (OInsert 1 Root r45Child) OInsertTag Refl _ (
+      AlignedStep (OInsert 2 Root r45Child) OInsertTag Refl _ (
+        AlignedStep (LBegin 0) LBeginTag Refl _ (
+          AlignedStep (OInsert 3 (ChildOf 0) r45Child) OInsertTag Refl _ (
+            AlignedStep (LAdvance 0) LFinishTag Refl _ (
+              AlignedStep (LBegin 1) LBeginTag Refl _ (
+                AlignedStep (LAdvance 1) LFinishTag Refl _ (
+                  AlignedStep (ORetire 3) ORetireTag Refl _ (
+                    AlignedStep (LBegin 2) LBeginTag Refl _ (
+                      AlignedStep (LAdvance 2) LFinishTag Refl _ (AlignedEnd)))))))))))
