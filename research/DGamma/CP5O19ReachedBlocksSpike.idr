@@ -1262,3 +1262,10 @@ export
 o19SwapTailMember Here = There Here
 o19SwapTailMember (There Here) = Here
 o19SwapTailMember (There (There member)) = There (There member)
+
+||| Typed absence observation for the new head of a transposed unique pair.
+export
+0 o19SwapTailAbsent : {name : Type} -> {left, right : name} -> {trailing : List name} ->
+  Not (Elem left (right :: trailing)) -> Not (Elem right trailing) -> Not (Elem right (left :: trailing))
+o19SwapTailAbsent absentLeft absentRight Here = absentLeft Here
+o19SwapTailAbsent absentLeft absentRight (There member) = absentRight member
