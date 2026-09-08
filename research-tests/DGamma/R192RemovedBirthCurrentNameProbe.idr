@@ -227,3 +227,12 @@ export
        registrationGeneration source = registrationGeneration rightBirth)))
 r192RemovedBirthAcceptedBySupportedScope birth supported =
   case trans (sym (fst r192RemovedBirthObstruction)) supported of Refl impossible
+
+||| Nonvacuous positive fixture: the genuinely Active child1 in R178's actual
+||| left execution, with its exact located insertion and completed lifecycle.
+public export
+0 r192ActualSupportedBirth : LocatedGeneratedRegistration 1 0 r45Child r178LeftTrace
+r192ActualSupportedBirth = MkLocatedGeneratedRegistration r45AfterBegin r45SourcePairFinal
+  (MoreTransitions r45ParentInsert (MoreTransitions r45Begin NoTransitions)) r45ChildInsert
+  (MoreTransitions r178ParentFinish (MoreTransitions r178ChildBegin
+    (MoreTransitions r178ChildFinish NoTransitions))) Refl Refl
