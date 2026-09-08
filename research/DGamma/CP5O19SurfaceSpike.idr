@@ -736,6 +736,28 @@ data OperationalActorPermutation :
       (ActorPermutationStep orderSwap restCertificate) sourceTrace sourceBlocks
         sourcePremises targetTrace
 
+||| Cross-trace support matching now contains no certificate at all.  It is
+||| publicly constructible without risk because O20 never consumes it as an
+||| operational schedule; it records only renamed set equality.
+public export
+record MappedCanonicalSupportOrders
+  (name, key, world, error : Type) (value : key -> Type)
+  (protocol : RegistrationProtocol key value world error)
+  (nameEq : DecEq name) (keyEq : DecEq key)
+  {initial, leftFinal, rightFinal : SystemState name key value world error}
+  (leftTrace : Transitions initial leftFinal)
+  (rightTrace : Transitions initial rightFinal)
+  (renaming : NameBijection name)
+  (leftSchedule : CanonicalSchedule name key world error value protocol nameEq
+    keyEq leftTrace)
+  (rightSchedule : CanonicalSchedule name key world error value protocol nameEq
+    keyEq rightTrace) where
+  constructor MkMappedCanonicalSupportOrders
+  0 leftSupportMapped : (n : name) -> Elem n (supportOrder leftSchedule) ->
+    Elem (renameForward renaming n) (supportOrder rightSchedule)
+  0 rightSupportMapped : (n : name) -> Elem n (supportOrder rightSchedule) ->
+    Elem (renameBackward renaming n) (supportOrder leftSchedule)
+
 public export
 0 blockSwapOccurrenceCorrespondence :
   (step : OperationalAdjacentBlockSwap name key world error value protocol nameEq
