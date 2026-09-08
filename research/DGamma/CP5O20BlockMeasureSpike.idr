@@ -36,3 +36,11 @@ o20GoalRankObserved nameEq selected head rest (Yes same) observed =
   (\equal => rewrite observed in Refl, \different => void (different same))
 o20GoalRankObserved nameEq selected head rest (No different) observed =
   (\same => void (different same), \unequal => rewrite observed in Refl)
+
+||| A tail member of a unique goal cannot equal the preceding goal name.
+export
+0 o20UniqueTailDifferent :
+  {name : Type} -> {selected, head : name} -> {rest : List name} ->
+  (UniqueKeys (head :: rest)) -> (Elem selected rest) -> (Not (selected = head))
+o20UniqueTailDifferent {rest} (UniqueCons absent unique) member same =
+  absent (replace {p = \chosen => Elem chosen rest} same member)
