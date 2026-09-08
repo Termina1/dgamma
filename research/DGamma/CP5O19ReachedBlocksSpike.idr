@@ -136,3 +136,21 @@ export
     (MoreTransitions (Fired {before = first} {afterState = middle} nameEq keyEq (LBegin selected) tag checked) rest) bodyWord
 o19BeginRangeTag {middle} nameEq keyEq selected _ checked rest bodyWord aligned wordExact Refl =
   MkO19BeginRange middle (MkBeginStep checked) rest wordExact aligned Refl
+
+||| One action-equality elimination identifies the ACTUAL reached Begin;
+||| its rule tag is derived from checked evaluation, never assumed.
+export
+0 o19BeginRangeHead :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  {first, middle, last : SystemState name key value world error} ->
+  (action : Action name key value world error) -> (tag : RuleTag) ->
+  (checked : checkedApplyAction @{nameEq} @{keyEq} action first = Just (tag, middle)) ->
+  (rest : Transitions middle last) -> (bodyWord : List (Action name key value world error)) ->
+  AlignedTransitions name key world error value nameEq keyEq rest ->
+  (o19ActionWord rest = bodyWord) -> (action = LBegin selected) ->
+  O19BeginRange name key world error value nameEq keyEq selected
+    (MoreTransitions (Fired {before = first} {afterState = middle} nameEq keyEq action tag checked) rest) bodyWord
+o19BeginRangeHead {first} {middle} nameEq keyEq selected _ tag checked rest bodyWord aligned wordExact Refl =
+  o19BeginRangeTag nameEq keyEq selected tag checked rest bodyWord aligned wordExact
+    (fst (lBeginBoundary nameEq keyEq selected first middle tag checked))
