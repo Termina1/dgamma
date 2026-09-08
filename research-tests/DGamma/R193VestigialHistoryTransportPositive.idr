@@ -210,3 +210,12 @@ r193VestigialHistoryPair =
     (registrationGeneration r193HistoricalBirth)
     (o20GeneratedHistoryBirth r193HistoricalBirth)
     (o20GeneratedHistoryBirth r193HistoricalBirth) Refl
+
+||| Presence ALONE cannot promote historical transport to the current raw map:
+||| actual history selects1, while the accepted current bijection selects2.
+export
+0 r193VestigialHistoryMismatch :
+  Not (o20HistoricalTarget (generatedGenerationBijection r193HistoricalSameInputs)
+    (historyLeftStamp r193VestigialHistoryPair) =
+    renameForward (expectedBridgeBijection r193HistoricalSameInputs) 1)
+r193VestigialHistoryMismatch mismatch = absurd (the (1 = 2) mismatch)
