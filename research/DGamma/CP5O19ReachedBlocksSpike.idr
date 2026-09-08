@@ -258,3 +258,20 @@ o19NoUnloadAppendSplit selected (MoreTransitions step rest) later noUnload =
       (snd (o19NoUnloadAtCut selected NoTransitions step (appendTransitions rest later) noUnload)))),
    snd (o19NoUnloadAppendSplit selected rest later
      (snd (o19NoUnloadAtCut selected NoTransitions step (appendTransitions rest later) noUnload))))
+
+||| The actual reached Begin establishes installedness; actual no-Unload
+||| and alignment construct the entire reached body as an InstalledTrace.
+export
+0 o19BeginRangeInstalled :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  {first, last : SystemState name key value world error} ->
+  (trace : Transitions first last) -> (bodyWord : List (Action name key value world error)) ->
+  (range : O19BeginRange name key world error value nameEq keyEq selected trace bodyWord) ->
+  NoParentUnload selected trace ->
+  InstalledTrace name key world error value nameEq keyEq selected (rangeBody range)
+o19BeginRangeInstalled {first} nameEq keyEq selected trace bodyWord range noUnload =
+  o19InstalledNoUnloadTrace nameEq keyEq selected (rangeBody range) (rangeBodyAligned range)
+    (snd (o19NoUnloadAtCut selected NoTransitions (beginTransition (rangeOpening range)) (rangeBody range)
+      (replace {p = NoParentUnload selected} (sym (rangeDecomposition range)) noUnload)))
+    (snd (snd (lBeginBoundary nameEq keyEq selected first (rangeStart range) LBeginTag (beginEquation (rangeOpening range)))))
