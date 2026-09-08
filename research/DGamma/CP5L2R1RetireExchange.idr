@@ -29,3 +29,22 @@ record ExactChildRetireExchange
   exchangeMiddle : SystemState name key value world error
   0 exchangeEarlyChecked : checkedApplyAction @{nameEq} @{keyEq} (ORetire child) first = Just (ORetireTag, exchangeMiddle)
   0 exchangeLaterChecked : checkedApplyAction @{nameEq} @{keyEq} (transitionAction left) exchangeMiddle = Just (transitionTag left, finalState)
+
+||| Splice an authenticated adjacent square between unchanged physical
+||| context traces. The final SystemState is literally the source endpoint.
+||| This consumes a produced square; it does not assert all pairs commute.
+public export
+retireExchangeInContext :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} -> {child, parent : name} ->
+  {initial, first, middle, cut, finalState : SystemState name key value world error} ->
+  (earlier : Transitions initial first) ->
+  (left : Transition first middle) -> (right : Transition middle cut) ->
+  (later : Transitions cut finalState) ->
+  ExactChildRetireExchange name key world error value nameEq keyEq child parent left right ->
+  Transitions initial finalState
+retireExchangeInContext {nameEq} {keyEq} {child} earlier left right later
+  (MkExactChildRetireExchange fiber found parentExact distinct retireExact moved earlyChecked laterChecked) =
+  appendTransitions earlier
+    (MoreTransitions (Fired nameEq keyEq (ORetire child) ORetireTag earlyChecked)
+      (MoreTransitions (Fired nameEq keyEq (transitionAction left) (transitionTag left) laterChecked) later))
