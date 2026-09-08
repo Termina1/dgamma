@@ -87,3 +87,46 @@ export
   {first, last : SystemState name key value world error} -> (source : Transitions first last) ->
   O19OrdinalActionMap name key world error value source source (identityActionRegistrationReplayCorrespondence source)
 o19IdentityOrdinalMap source = MkO19OrdinalActionMap id (\occurrence => Refl)
+
+||| Exact GLOBAL-origin plan for a real finite chain. Unlike the paper's
+||| BlockCrossingOriginPlan this does not claim selected-block-local ranges
+||| or Cartesian coverage. It records the two TRUE source ordinals at every
+||| node while definitionally composing that same node's occurrence map.
+public export
+data O19GlobalCrossingPlan :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, sourceFinal : SystemState name key value world error} -> (source : Transitions initial sourceFinal) ->
+  {currentFinal, targetFinal : SystemState name key value world error} ->
+  {current : Transitions initial currentFinal} -> {target : Transitions initial targetFinal} ->
+  (correspondence : ActionRegistrationReplayCorrespondence name key world error value source current) ->
+  FiniteAdjacentSwapDerivation name key world error value protocol nameEq keyEq current target -> List (Nat, Nat) -> Type where
+  GlobalOriginPlanDone :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {protocol : RegistrationProtocol key value world error} -> {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+    {initial, sourceFinal, currentFinal : SystemState name key value world error} ->
+    {source : Transitions initial sourceFinal} -> {current : Transitions initial currentFinal} ->
+    {correspondence : ActionRegistrationReplayCorrespondence name key world error value source current} ->
+    O19GlobalCrossingPlan name key world error value protocol nameEq keyEq source correspondence FiniteAdjacentSwapDone []
+  GlobalOriginPlanStep :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {protocol : RegistrationProtocol key value world error} -> {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+    {initial, sourceFinal, currentFinal, before, middle, afterState, targetFinal : SystemState name key value world error} ->
+    {source : Transitions initial sourceFinal} ->
+    (current : Transitions initial currentFinal) -> (earlier : Transitions initial before) ->
+    (left : Transition before middle) -> (right : Transition middle afterState) -> (later : Transitions afterState currentFinal) ->
+    (orientation : AdjacentSwapOrientationEvidence left right) ->
+    (diamond : LocalRelationalDiamond name key world error value nameEq keyEq left right) ->
+    (result : AdjacentSwapResult name key world error value protocol nameEq keyEq current earlier left right later diamond) ->
+    (target : Transitions initial targetFinal) ->
+    (rest : FiniteAdjacentSwapDerivation name key world error value protocol nameEq keyEq (swappedTrace result) target) ->
+    (correspondence : ActionRegistrationReplayCorrespondence name key world error value source current) ->
+    (leftOrdinal, rightOrdinal : Nat) ->
+    (0 leftExact : locatedActionOrdinal (replayActionOrigin correspondence (adjacentLeftNodeOccurrence result)) = leftOrdinal) ->
+    (0 rightExact : locatedActionOrdinal (replayActionOrigin correspondence (adjacentRightNodeOccurrence result)) = rightOrdinal) ->
+    (positions : List (Nat, Nat)) ->
+    O19GlobalCrossingPlan name key world error value protocol nameEq keyEq source
+      (composeActionRegistrationReplayCorrespondence correspondence (swappedOccurrenceCorrespondence result)) rest positions ->
+    O19GlobalCrossingPlan name key world error value protocol nameEq keyEq source correspondence
+      (FiniteAdjacentSwapStep current earlier left right later orientation diamond result target rest)
+      ((leftOrdinal, rightOrdinal) :: positions)
