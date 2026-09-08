@@ -105,3 +105,35 @@ o19BeginAfterCheckedObservedInsertion nameEq keyEq actor child parent component
         (MkSystemState ambient source) afterState tag wellFormed
         (checkedActionProjects nameEq keyEq (OInsert child parent component)
           (MkSystemState ambient source) afterState tag checked))
+
+||| Explicit observation spine for an O/A Begin row. Each cut owns the actual
+||| insertion, its resolved value/equations and the child/licensing exclusions.
+||| No checked Begin guard is stored for any intermediate cut.
+public export
+data O19ObservedInsertions :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (deps : List key) ->
+  {before, finalState : SystemState name key value world error} ->
+  Transitions before finalState -> Type where
+  ObservedInsertionsEnd :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {nameEq : DecEq name} -> {keyEq : DecEq key} -> {actor : name} -> {deps : List key} ->
+    {before : SystemState name key value world error} ->
+    O19ObservedInsertions name key world error value nameEq keyEq actor deps (NoTransitions {state = before})
+  ObservedInsertionsStep :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {nameEq : DecEq name} -> {keyEq : DecEq key} -> {actor : name} -> {deps : List key} ->
+    {before, middle, finalState : SystemState name key value world error} ->
+    (child : name) -> (parent : Parent name) -> (component : Component key value world error) ->
+    (tag : RuleTag) ->
+    (0 checked : checkedApplyAction @{nameEq} @{keyEq} (OInsert child parent component) before = Just (tag, middle)) ->
+    (rest : Transitions middle finalState) ->
+    (0 childSafe : Not (actor = child)) ->
+    (0 parentSafe : (licensor : name) -> (parent = ChildOf licensor) -> Not (actor = licensor)) ->
+    (0 resolution : O19ResolutionObservation name key world error value nameEq keyEq deps
+      (registry before) (registry middle)) ->
+    (0 remaining : O19ObservedInsertions name key world error value nameEq keyEq actor deps rest) ->
+    O19ObservedInsertions name key world error value nameEq keyEq actor deps
+      (MoreTransitions (Fired {before} {afterState = middle} nameEq keyEq
+        (OInsert child parent component) tag checked) rest)
