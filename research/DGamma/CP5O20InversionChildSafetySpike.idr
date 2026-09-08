@@ -206,3 +206,22 @@ o20IncomparableBlockChildSafety nameEq keyEq protocol original capital unique re
     o20NoGeneratedFromActorBirth (blockBody block) (blockActorOnly block)
       (\component, birth => o20IncomparableReplayedBirth nameEq keyEq protocol original capital unique replayed occurrences
         parent child parentSupported childSupported noPath component (o20GeneratedBirthInBlock block birth))
+
+||| Every reached actor remains supported in the ORIGINAL fixed reference.
+||| Membership is transported through the fixed goal back to the initial
+||| accepted canonical enumeration, whose support soundness is producer-owned.
+export
+0 o20ReachedReferenceSupport :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {protocol : RegistrationProtocol key value world error} ->
+  {initial, originalFinal : SystemState name key value world error} -> {original : Transitions initial originalFinal} ->
+  (capital : IndependentCanonicalSchedule name key world error value protocol nameEq keyEq original) ->
+  {reachedOrder, goalOrder : List name} ->
+  O20SupportedReferenceOrders name key world error value nameEq keyEq originalFinal (supportOrder (canonicalSchedule capital)) goalOrder ->
+  O20SupportedReferenceOrders name key world error value nameEq keyEq originalFinal reachedOrder goalOrder ->
+  (selected : name) -> Elem selected reachedOrder ->
+  isSupported {name} {key} {value} {world} {error} @{nameEq} @{keyEq} selected originalFinal = True
+o20ReachedReferenceSupport capital originalReference reachedReference selected inside =
+  orderSound (supportLinearization (canonicalSchedule capital)) selected
+    (referenceMembersBackward originalReference selected (referenceMembersForward reachedReference selected inside))
