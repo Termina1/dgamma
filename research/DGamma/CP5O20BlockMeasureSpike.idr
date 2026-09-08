@@ -89,3 +89,24 @@ o20AdjacentInversionDrop (head :: rest) left right later crossed =
     sym (plusSuccRightSucc
       (foldr (+) Z (map (rankCrossing head) (rest ++ right :: left :: later)))
       (rankInversions (rest ++ right :: left :: later)))
+
+||| Exact source AND target equations of the selected actor swap connect
+||| the fixed-goal BeforeIn proof to the global block measure. No decrease input.
+export
+0 o20ActorSwapMeasureDrop :
+  {name : Type} -> (nameEq : DecEq name) -> (goal : List name) ->
+  {sourceOrder, targetOrder : List name} ->
+  (swap : AdjacentActorOrderSwap name sourceOrder targetOrder) ->
+  (UniqueKeys goal) -> (BeforeIn (actorRight swap) (actorLeft swap) goal) ->
+  (rankInversions (map (o20GoalRank nameEq goal) sourceOrder) =
+   S (rankInversions (map (o20GoalRank nameEq goal) targetOrder)))
+o20ActorSwapMeasureDrop {name} nameEq goal
+  (MkAdjacentActorOrderSwap earlier left right later sourceExact targetExact different) unique reverseOrder =
+  rewrite sourceExact in
+  rewrite targetExact in
+  rewrite Data.List.mapAppend {a = name} {b = Nat} (o20GoalRank nameEq goal) earlier (left :: right :: later) in
+  rewrite Data.List.mapAppend {a = name} {b = Nat} (o20GoalRank nameEq goal) earlier (right :: left :: later) in
+    o20AdjacentInversionDrop (map (o20GoalRank nameEq goal) earlier)
+      (o20GoalRank nameEq goal left) (o20GoalRank nameEq goal right)
+      (map (o20GoalRank nameEq goal) later)
+      (o20BeforeRankCrossing nameEq goal unique reverseOrder)
