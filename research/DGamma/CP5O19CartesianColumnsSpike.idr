@@ -200,3 +200,19 @@ o19ReplayRowSourceClasses leftParent rightParent leftWord rightWord original sou
       (appendTransitions earlier (MoreTransitions left NoTransitions)) rest right later
       (trans (appendTransitionsAssociative earlier (MoreTransitions left NoTransitions) (appendTransitions rest (MoreTransitions right later))) decomposition)
       (\action, member => leftMembers action (There member)) rightMember selected occurs
+
+||| Project the actual right branch from ONE explicit source observation.
+||| This supplies the zero-row branch without a separate paper-tag oracle.
+export
+0 o19SourcePairRightKind :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {leftParent, rightParent : name} ->
+  {leftBefore, leftAfter, rightBefore, rightAfter : SystemState name key value world error} ->
+  {left : Transition leftBefore leftAfter} -> {right : Transition rightBefore rightAfter} ->
+  O19SourcePairObservation name key world error value leftParent rightParent left right ->
+  Either (PaperActivationStep right) (PaperOrchestrationStep right)
+o19SourcePairRightKind (SourceAA leftActivation rightActivation leftOwner rightOwner) = Left rightActivation
+o19SourcePairRightKind (SourceOA child component inserted rightActivation rightOwner childSafe) = Left rightActivation
+o19SourcePairRightKind (SourceAO child component inserted leftActivation distinct licensing) = Right (PaperInsertStep inserted)
+o19SourcePairRightKind (SourceOO leftChild rightChild leftComponent rightComponent leftInsert rightInsert distinct leftLicense rightLicense tag) =
+  Right (PaperInsertStep rightInsert)
