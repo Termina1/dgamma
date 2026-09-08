@@ -1253,3 +1253,12 @@ o19DecomposedOrderUnique order blocks =
     o19BlockBeforeNotSame (decomposedBlock blocks selected (fst (o19BeforeMembers ordered)))
       (decomposedBlock blocks selected (snd (o19BeforeMembers ordered)))
       (decomposedBlocksFollowOrder blocks selected selected (fst (o19BeforeMembers ordered)) (snd (o19BeforeMembers ordered)) ordered))
+
+||| Exact finite actor-list membership under a selected pair transposition.
+||| This is enumeration membership, NOT action/external correspondence.
+export
+0 o19SwapTailMember : {name : Type} -> {left, right, selected : name} -> {trailing : List name} ->
+  Elem selected (right :: left :: trailing) -> Elem selected (left :: right :: trailing)
+o19SwapTailMember Here = There Here
+o19SwapTailMember (There Here) = Here
+o19SwapTailMember (There (There member)) = There (There member)
