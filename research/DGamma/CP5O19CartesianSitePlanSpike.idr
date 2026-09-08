@@ -41,3 +41,18 @@ export
 o19CrossingSites FiniteAdjacentSwapDone = []
 o19CrossingSites (FiniteAdjacentSwapStep current earlier left right later orientation diamond result target rest) =
   transitionCount earlier :: o19CrossingSites rest
+
+||| Actual finite-chain append concatenates its actual site words. This
+||| structural law is the row/column splice bridge, not a node-count bound.
+export
+0 o19AppendFiniteSites :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {protocol : RegistrationProtocol key value world error} -> {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {initial, sourceFinal, middleFinal, targetFinal : SystemState name key value world error} ->
+  {source : Transitions initial sourceFinal} -> {middle : Transitions initial middleFinal} -> {target : Transitions initial targetFinal} ->
+  (first : FiniteAdjacentSwapDerivation name key world error value protocol nameEq keyEq source middle) ->
+  (second : FiniteAdjacentSwapDerivation name key world error value protocol nameEq keyEq middle target) ->
+  (o19CrossingSites (o19AppendFinite first second) = o19CrossingSites first ++ o19CrossingSites second)
+o19AppendFiniteSites FiniteAdjacentSwapDone second = Refl
+o19AppendFiniteSites (FiniteAdjacentSwapStep current earlier left right later orientation diamond result target rest) second =
+  cong ((transitionCount earlier) ::) (o19AppendFiniteSites rest second)
