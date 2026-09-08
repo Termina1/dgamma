@@ -5,6 +5,7 @@ import DGamma.Coeffects
 import DGamma.Metatheory
 import DGamma.CP3
 import DGamma.CP5O19SurfaceSpike
+import DGamma.CP5O20LinearExtensionSpike
 import DGamma.CP5O19ReachedBlocksSpike
 import DGamma.CP5ConfluenceLocalDiamondSpike
 import DGamma.CP5ConfluenceCanonicalSortSpike
@@ -426,3 +427,37 @@ o20SwapEnumeration swap unique =
    (\selected, member => replace {p = Elem selected} (sym (actorBeforeExact swap))
     (o20SwapLeadingMember (actorPrefix swap) (actorRight swap) (actorLeft swap) (actorSuffix swap)
       (replace {p = Elem selected} (actorAfterExact swap) member))))
+
+||| Preserve the fixed supported reference through an oriented adjacent
+||| swap. The only potentially reversed reference path contradicts the SAME
+||| fixed goal's strict order; it is not excluded by a supplied safety oracle.
+export
+0 o20SwapSupportedReference :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {reference : SystemState name key value world error} ->
+  {sourceOrder, targetOrder, goalOrder : List name} ->
+  (swap : AdjacentActorOrderSwap name sourceOrder targetOrder) ->
+  (capital : O20SupportedReferenceOrders name key world error value nameEq keyEq reference sourceOrder goalOrder) ->
+  BeforeIn (actorRight swap) (actorLeft swap) goalOrder ->
+  O20SupportedReferenceOrders name key world error value nameEq keyEq reference targetOrder goalOrder
+o20SwapSupportedReference swap capital reversed =
+  MkO20SupportedReferenceOrders
+    (fst (o20SwapEnumeration swap (referenceSourceUnique capital)))
+    (referenceGoalUnique capital)
+    (\selected, member => referenceMembersForward capital selected
+      (snd (snd (o20SwapEnumeration swap (referenceSourceUnique capital))) selected member))
+    (\selected, member => fst (snd (o20SwapEnumeration swap (referenceSourceUnique capital))) selected
+      (referenceMembersBackward capital selected member))
+    (\lower, upper, path, lowerIn, upperIn => o20SwapBefore swap
+      (referenceSourceOrdered capital lower upper path
+        (snd (snd (o20SwapEnumeration swap (referenceSourceUnique capital))) lower lowerIn)
+        (snd (snd (o20SwapEnumeration swap (referenceSourceUnique capital))) upper upperIn))
+      (\leftExact, rightExact => o20BeforeAsymmetric (referenceGoalUnique capital) reversed
+        (rewrite sym leftExact in rewrite sym rightExact in
+          referenceGoalOrdered capital lower upper path
+            (referenceMembersForward capital lower
+              (snd (snd (o20SwapEnumeration swap (referenceSourceUnique capital))) lower lowerIn))
+            (referenceMembersForward capital upper
+              (snd (snd (o20SwapEnumeration swap (referenceSourceUnique capital))) upper upperIn)))))
+    (referenceGoalOrdered capital)
