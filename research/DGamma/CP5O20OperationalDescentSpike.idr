@@ -162,3 +162,29 @@ export
 o20OperationalDescent nameEq keyEq protocol sourceOrder goalOrder goalState goalLinearization trace blocks premises unique =
   o20DescendFuel (rankInversions (map (o20GoalRank nameEq goalOrder) sourceOrder)) nameEq keyEq protocol
     sourceOrder goalOrder goalState goalLinearization trace blocks premises unique Refl
+
+||| Full actually reached operational permutation, retaining terminal search
+||| rejection but NOT asserting equality of its actor order with the goal.
+public export
+record O20StoppedOperationalPermutation
+  (name, key, world, error : Type) (value : key -> Type)
+  (protocol : RegistrationProtocol key value world error)
+  (nameEq : DecEq name) (keyEq : DecEq key) (sourceOrder, goalOrder : List name)
+  (goalState : SystemState name key value world error)
+  (goalLinearization : LinearizesSupport name key world error value nameEq keyEq goalState goalOrder)
+  {initial, finalState : SystemState name key value world error}
+  (trace : Transitions initial finalState)
+  (blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder trace)
+  (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq trace) where
+  constructor MkO20StoppedOperationalPermutation
+  0 stoppedOrder : List name
+  0 stoppedFinal : SystemState name key value world error
+  0 stoppedTrace : Transitions initial stoppedFinal
+  0 stoppedBlocks : ActorBlockDecomposition name key world error value nameEq keyEq stoppedOrder stoppedTrace
+  0 stoppedPremises : ReplayInvariantBundle name key world error value protocol nameEq keyEq stoppedTrace
+  0 stoppedUnique : UniqueRawNameInsertions name key world error value nameEq keyEq stoppedTrace
+  0 stoppedCertificate : CertifiedActorPermutation name sourceOrder stoppedOrder
+  0 stoppedRealized : OperationalActorPermutation name key world error value protocol nameEq keyEq
+    stoppedCertificate trace blocks premises stoppedTrace
+  0 stoppedChoiceAbsent : (o20SelectOperationalProgress nameEq keyEq protocol stoppedOrder goalOrder goalState
+    goalLinearization stoppedTrace stoppedBlocks stoppedPremises stoppedUnique = Nothing)
