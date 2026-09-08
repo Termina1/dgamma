@@ -86,3 +86,38 @@ export
 o19ActionWordAppend NoTransitions right = Refl
 o19ActionWordAppend (MoreTransitions step rest) right =
   cong ((transitionAction step) ::) (o19ActionWordAppend rest right)
+
+||| Flat two-sided SOURCE-label transport. The actual replay origin supplies
+||| both action/tag/actor equations; no guard or future classification callback
+||| is introduced, and observations are eliminated by their own constructors.
+export
+0 o19SourcePairRelabel :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (leftParent, rightParent : name) ->
+  {originalLeftBefore, originalLeftAfter, originalRightBefore, originalRightAfter,
+   leftBefore, leftAfter, rightBefore, rightAfter : SystemState name key value world error} ->
+  (originalLeft : Transition originalLeftBefore originalLeftAfter) -> (originalRight : Transition originalRightBefore originalRightAfter) ->
+  (left : Transition leftBefore leftAfter) -> (right : Transition rightBefore rightAfter) ->
+  (transitionAction left = transitionAction originalLeft) -> (transitionTag left = transitionTag originalLeft) ->
+  (transitionActor left = transitionActor originalLeft) ->
+  (transitionAction right = transitionAction originalRight) -> (transitionTag right = transitionTag originalRight) ->
+  (transitionActor right = transitionActor originalRight) ->
+  O19SourcePairObservation name key world error value leftParent rightParent originalLeft originalRight ->
+  O19SourcePairObservation name key world error value leftParent rightParent left right
+o19SourcePairRelabel leftParent rightParent originalLeft originalRight left right leftAction leftTag leftActor rightAction rightTag rightActor
+  (SourceAA leftActivation rightActivation leftOwner rightOwner) =
+    SourceAA (o19PaperActivationRelabel originalLeft left leftAction leftTag leftActivation)
+      (o19PaperActivationRelabel originalRight right rightAction rightTag rightActivation) (trans leftActor leftOwner) (trans rightActor rightOwner)
+o19SourcePairRelabel leftParent rightParent originalLeft originalRight left right leftAction leftTag leftActor rightAction rightTag rightActor
+  (SourceOA child component inserted rightActivation rightOwner childSafe) =
+    SourceOA child component (trans leftAction inserted) (o19PaperActivationRelabel originalRight right rightAction rightTag rightActivation)
+      (trans rightActor rightOwner) childSafe
+o19SourcePairRelabel leftParent rightParent originalLeft originalRight left right leftAction leftTag leftActor rightAction rightTag rightActor
+  (SourceAO child component inserted leftActivation distinct licensing) =
+    SourceAO child component (trans rightAction inserted) (o19PaperActivationRelabel originalLeft left leftAction leftTag leftActivation)
+      (\same => distinct (trans same leftActor))
+      (\licensor, sameParent, sameActor => licensing licensor sameParent (trans (sym leftActor) sameActor))
+o19SourcePairRelabel leftParent rightParent originalLeft originalRight left right leftAction leftTag leftActor rightAction rightTag rightActor
+  (SourceOO leftChild rightChild leftComponent rightComponent leftInsert rightInsert distinct leftLicense rightLicense tag) =
+    SourceOO leftChild rightChild leftComponent rightComponent (trans leftAction leftInsert) (trans rightAction rightInsert)
+      distinct leftLicense rightLicense (trans rightTag tag)
