@@ -1277,3 +1277,16 @@ export
 o19SwapTailUnique (UniqueCons absentLeft (UniqueCons absentRight unique)) =
   UniqueCons (o19SwapTailAbsent absentLeft absentRight)
     (UniqueCons (\member => absentLeft (There member)) unique)
+
+||| Preserve the exact leading enumeration while transposing its unique
+||| adjacent pair. Prefix-head absence is transported by actual membership.
+export
+0 o19SwapLeadingUnique : {name : Type} -> (leading : List name) -> (left, right : name) -> (trailing : List name) ->
+  UniqueKeys (leading ++ (left :: right :: trailing)) -> UniqueKeys (leading ++ (right :: left :: trailing))
+o19SwapLeadingUnique [] left right trailing unique = o19SwapTailUnique unique
+o19SwapLeadingUnique (head :: rest) left right trailing (UniqueCons absent unique) =
+  UniqueCons (\member => absent
+    (o19ElemAppendCases rest (right :: left :: trailing)
+      (fst (o19ElemAppendInjections rest (left :: right :: trailing)))
+      (\tailMember => snd (o19ElemAppendInjections rest (left :: right :: trailing)) (o19SwapTailMember tailMember)) member))
+    (o19SwapLeadingUnique rest left right trailing unique)
