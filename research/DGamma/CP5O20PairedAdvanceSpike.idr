@@ -235,3 +235,28 @@ o20PairedObservedRetireCut nameEq keyEq renaming actor leftWorld rightWorld left
         {left = MkFiber leftComponent leftParent leftRetired leftTable leftLifecycle}
         {right = MkFiber rightComponent rightParent rightRetired rightTable rightLifecycle}
         (rewrite sym leftFound in rewrite sym rightFound in allNameControls paired actor))) paired
+
+||| Actual paired root/generated insertion gap. Freshness, the two checked
+||| edges, common runtime component and renamed parents authenticate alignment.
+||| The global ambient/tables/control successor is not a caller premise.
+export
+0 o20PairedObservedInsertCut :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (renaming : NameBijection name) -> (actor : name) ->
+  (component : Component key value world error) -> (leftParent, rightParent : Parent name) ->
+  ParentRelatedBy renaming leftParent rightParent ->
+  (leftWorld, rightWorld : world) -> (leftRegistry, rightRegistry : Registry name key value world error) ->
+  (leftAbsent : lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor leftRegistry = Nothing) ->
+  (rightAbsent : lookupFiber {name} {key} {value} {world} {error} @{nameEq} (renameForward renaming actor) rightRegistry = Nothing) ->
+  (checkedApplyAction {name} {key} {value} {world} {error} @{nameEq} @{keyEq} (OInsert actor leftParent component) (MkSystemState leftWorld leftRegistry) =
+    Just (OInsertTag, MkSystemState leftWorld (insertBinding @{nameEq} actor (freshFiber component leftParent) leftRegistry leftAbsent))) ->
+  (checkedApplyAction {name} {key} {value} {world} {error} @{nameEq} @{keyEq} (OInsert (renameForward renaming actor) rightParent component) (MkSystemState rightWorld rightRegistry) =
+    Just (OInsertTag, MkSystemState rightWorld (insertBinding @{nameEq} (renameForward renaming actor) (freshFiber component rightParent) rightRegistry rightAbsent))) ->
+  O20AllNameCut name key world error value nameEq renaming (MkSystemState leftWorld leftRegistry) (MkSystemState rightWorld rightRegistry) ->
+  O20AllNameCut name key world error value nameEq renaming
+    (MkSystemState leftWorld (insertBinding @{nameEq} actor (freshFiber component leftParent) leftRegistry leftAbsent))
+    (MkSystemState rightWorld (insertBinding @{nameEq} (renameForward renaming actor) (freshFiber component rightParent) rightRegistry rightAbsent))
+o20PairedObservedInsertCut nameEq keyEq renaming actor component leftParent rightParent parents
+  leftWorld rightWorld leftRegistry rightRegistry leftAbsent rightAbsent leftChecked rightChecked paired =
+    o20AllNameInsert nameEq keyEq renaming actor component leftParent rightParent parents
+      leftWorld rightWorld leftRegistry rightRegistry leftAbsent rightAbsent paired
