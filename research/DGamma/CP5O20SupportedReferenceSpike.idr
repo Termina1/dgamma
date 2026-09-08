@@ -161,3 +161,28 @@ o20SupportedEdgeImage images {lower} {upper} lowerSupported upperSupported (Supp
     (images upper (consumerFiber edge) (consumerFound edge) upperSupported))
 o20SupportedEdgeImage images {upper} lowerSupported upperSupported (SupportParent edge) =
   SupportParent (o20ParentImage edge (images upper (childFiber edge) (childFound edge) upperSupported))
+
+||| The common reference is the transitive closure of Equation62 restricted
+||| to supported vertices, NOT all paths whose two endpoints happen to survive.
+public export
+data O20SupportedPath :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (state : SystemState name key value world error) -> name -> name -> Type where
+  O20SupportedOne :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+    {state : SystemState name key value world error} -> {lower, upper : name} ->
+    (0 lowerSupported : (isSupported {name} {key} {value} {world} {error} @{nameEq} @{keyEq} lower state = True)) ->
+    (0 upperSupported : (isSupported {name} {key} {value} {world} {error} @{nameEq} @{keyEq} upper state = True)) ->
+    (0 edge : SupportEdge nameEq state lower upper) ->
+    O20SupportedPath name key world error value nameEq keyEq state lower upper
+  O20SupportedMore :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+    {state : SystemState name key value world error} -> {lower, middle, upper : name} ->
+    (0 lowerSupported : (isSupported {name} {key} {value} {world} {error} @{nameEq} @{keyEq} lower state = True)) ->
+    (0 middleSupported : (isSupported {name} {key} {value} {world} {error} @{nameEq} @{keyEq} middle state = True)) ->
+    (0 edge : SupportEdge nameEq state lower middle) ->
+    (0 rest : O20SupportedPath name key world error value nameEq keyEq state middle upper) ->
+    O20SupportedPath name key world error value nameEq keyEq state lower upper
