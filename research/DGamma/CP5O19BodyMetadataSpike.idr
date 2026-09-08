@@ -7,6 +7,7 @@ import DGamma.Metatheory
 import DGamma.CP3
 import DGamma.CP5ConfluenceLocalDiamondSpike
 import DGamma.CP5ImmutableBirthMetadataSpike
+import DGamma.CP5O19SourceShapeSpike
 import DGamma.CP5UniqueRawNameInsertions
 import Data.List.Elem
 import Data.Maybe
@@ -47,3 +48,49 @@ o19SourceCutMetadata {name} {key} {world} {error} {value} nameEq keyEq protocol 
         (fst (alignedAppendSplit secondEarlier secondLater
           (replace {p = AlignedTransitions name key world error value nameEq keyEq} (sym secondExact) (replayAligned premises))))
         (replayInitialEmpty premises) actor secondFiber secondFound)
+
+||| Carry actual pre-left resolved-list exclusion to independently located
+||| left/right body cuts. Only source lookups are inputs; both component
+||| equalities come from original birth uniqueness and actual source alignment.
+export
+0 o19NondependencyAcrossCuts :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {initial, base, leftCut, rightCut, finalState : SystemState name key value world error} ->
+  (source : Transitions initial finalState) ->
+  (baseEarlier : Transitions initial base) -> (baseLater : Transitions base finalState) ->
+  (appendTransitions baseEarlier baseLater = source) ->
+  (leftEarlier : Transitions initial leftCut) -> (leftLater : Transitions leftCut finalState) ->
+  (appendTransitions leftEarlier leftLater = source) ->
+  (rightEarlier : Transitions initial rightCut) -> (rightLater : Transitions rightCut finalState) ->
+  (appendTransitions rightEarlier rightLater = source) ->
+  ReplayInvariantBundle name key world error value protocol nameEq keyEq source ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq source ->
+  (leftActor, rightActor : name) ->
+  (leftBase, rightBase, leftNow, rightNow : Fiber name key value world error) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} leftActor (registry base) = Just leftBase) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} rightActor (registry base) = Just rightBase) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} leftActor (registry leftCut) = Just leftNow) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} rightActor (registry rightCut) = Just rightNow) ->
+  (isActive (fiberLifecycle leftBase) = False) ->
+  (registryWellFormed {name} {key} {value} {world} {error} @{nameEq} @{keyEq} base = True) ->
+  (view : View name (dependencies (componentDependencies (fiberComponent rightBase)))) ->
+  (resolveView {name} {key} {value} {world} {error} @{nameEq} @{keyEq}
+    (dependencies (componentDependencies (fiberComponent rightBase))) (registry base) = Just view) ->
+  ((wanted : key) -> Elem wanted (dependencies (componentDependencies (fiberComponent rightNow))) ->
+    Not (Elem wanted (dependencies (componentProvisions (fiberComponent leftNow)))))
+o19NondependencyAcrossCuts {base} nameEq keyEq protocol source
+  baseEarlier baseLater baseExact leftEarlier leftLater leftExact rightEarlier rightLater rightExact
+  premises unique leftActor rightActor leftBase rightBase leftNow rightNow leftBaseFound rightBaseFound leftFound rightFound
+  inactive wellFormed view resolved =
+    replace {p = \component => (wanted : key) -> Elem wanted (dependencies (componentDependencies component)) ->
+      Not (Elem wanted (dependencies (componentProvisions (fiberComponent leftNow))))}
+      (cong snd (o19SourceCutMetadata nameEq keyEq protocol source baseEarlier baseLater baseExact
+        rightEarlier rightLater rightExact premises unique rightActor rightBase rightNow rightBaseFound rightFound))
+      (replace {p = \component => (wanted : key) -> Elem wanted (dependencies (componentDependencies (fiberComponent rightBase))) ->
+        Not (Elem wanted (dependencies (componentProvisions component)))}
+        (cong snd (o19SourceCutMetadata nameEq keyEq protocol source baseEarlier baseLater baseExact
+          leftEarlier leftLater leftExact premises unique leftActor leftBase leftNow leftBaseFound leftFound))
+        (o19ResolvedDependenciesExcluded nameEq keyEq base leftActor leftBase leftBaseFound inactive wellFormed
+          (dependencies (componentDependencies (fiberComponent rightBase))) view resolved))
