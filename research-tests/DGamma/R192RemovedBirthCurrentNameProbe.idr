@@ -262,3 +262,14 @@ r192SupportedBirthScopePositive =
          rewrite trans (supportSetIsSolution r45NameEq r45KeyEq state 0)
            (rewrite parentFound in Refl) in Refl))) r178LeftFinal Refl Refl,
    (r192ActualSupportedBirth ** (Refl, (r192ActualSupportedBirth ** Refl))))
+
+||| A11 PRESENT-remainder negative: a retired/unsupported current child is
+||| NOT automatically vestigial. The exact discarded-generation membership
+||| remains mandatory; an empty discarded scanner list cannot supply it.
+export
+0 r192UnsupportedIsNotVestigialWithoutDiscard :
+  (live : GenerationEnvironment Nat) ->
+  Not (VestigialEndpointGeneration Nat R45Key Unit String R45Value r45NameEq r45KeyEq
+    live [] 1 r178RightFinal)
+r192UnsupportedIsNotVestigialWithoutDiscard live packet =
+  absurd (vestigialBirthDiscarded packet)
