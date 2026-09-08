@@ -126,3 +126,49 @@ not even a tentative elaboration. All five hole declarations unchanged.
 C starts only after this B cap;03:39UTC leaves>150min before the no-new-attempt
 guard, hence the required>=60min. C<=8 pure finite linear-extension/selector
 capital only; no O20 body or runtime canonical endpoint construction.
+
+## Supervisor redirect — D<=16 before further C
+
+At03:39 the supervisor ratified B16/eaa35dea and explicitly authorized D<=16
+Cartesian construction/assembly in order before C. One C1 membership helper
+had already launched03:39:28, passed03:39:31, and was safely guarded-committed
+01feb8cb when the redirect arrived. No C2 was launched. This is1/8 C slots;
+remaining7 only after D stop>=60min, else deferred to R187. No restart.
+
+First Cartesian specification/interface debt: B11's unified row carries its
+own count/decomposition/labels but not the action word of its residual trace.
+Equal lengths alone cannot identify the next left/right block segments. D1
+83fd6820 adds O19WordRow as a strengthened OUTPUT, not a new caller premise.
+D2 8d1f7085 constructs residual word together with the ACTUAL reached row's
+crossing/bundle/unique/finite derivation/node count, using movedLeftAction and
+the authentic sealed action-word projection. No posthoc scalar Refl theorem
+about a separately evaluated nested row builder. D2 passed3: attempts1/2
+required explicit imports of CanonicalSort and RankObservation; no visibility
+change and no semantic proof failure. D3 factors the same four pair producers
+into an explicit orientation/diamond/result package for this boundary.
+
+## D3 exhausted3/3 — rollback and mandatory gate
+
+D3 attempted to factor all four actual pair replay producers through the
+nested Either/DPair classification used by B11. All3 attempts were monitored
+CPU plateaus (~100%, stable2.1GiB), with ZERO diagnostic bytes and no emitted
+fresh Building line. They were bounded/interrupted after203.087,131.602,
+325.409seconds respectively; none hit48GiB. These are computational stalls,
+NOT an established semantic counterexample or a passed proof. Attempt2 moved
+nested left-hand-side observations to explicit actual parameter case splits;
+attempt3 represented the UNUSED dependent orientation binder by an ordinary
+product (same information). Neither broke the stall. Native sample retained
+under/tmp/dgamma-r186/D3-3.sample.txt; it shows active Chez execution/allocation,
+not enough symbolic information to call this definitely parser vs elaborator.
+No fourth attempt, no failed source commit, no module/seed/build deletion.
+
+D3 source fully restored to the committed D2 snapshot, including removal of
+its extra imports. This is the FIRST exhausted micro-unit/same seam in R186.
+D1/D2 remain checked simultaneous residual-word output capital; D3 does not
+exist. Next work must await supervisor permission for a genuinely separate
+boundary cure (e.g. explicit typed four-constructor pair observations and
+one-observation producer helpers), not a renamed fourth D3 attempt. Only3/16
+D slots consumed,2 retained; C1/8 remains the sole in-flight-before-redirect C
+helper. Full Cartesian columns/origins/product/coverage/ranges/endpoint remain
+open and O19 body0. All5 holes/frozen surfaces untouched. Rollback fresh check
+and frozen audit precede the mandatory decision gate.
