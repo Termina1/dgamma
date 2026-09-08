@@ -118,3 +118,30 @@ data O20PairedStage :
     (0 leftChecked : checkedApplyAction {name} {key} {value} {world} {error} @{nameEq} @{keyEq} (OInsert actor leftParent component) (MkSystemState leftWorld leftRegistry) = Just (OInsertTag, MkSystemState leftWorld (insertBinding @{nameEq} actor (freshFiber component leftParent) leftRegistry leftAbsent))) ->
     (0 rightChecked : checkedApplyAction {name} {key} {value} {world} {error} @{nameEq} @{keyEq} (OInsert (renameForward renaming actor) rightParent component) (MkSystemState rightWorld rightRegistry) = Just (OInsertTag, MkSystemState rightWorld (insertBinding @{nameEq} (renameForward renaming actor) (freshFiber component rightParent) rightRegistry rightAbsent))) ->
     O20PairedStage name key world error value nameEq keyEq renaming (MkSystemState leftWorld leftRegistry) (MkSystemState rightWorld rightRegistry) (MkSystemState leftWorld (insertBinding @{nameEq} actor (freshFiber component leftParent) leftRegistry leftAbsent)) (MkSystemState rightWorld (insertBinding @{nameEq} (renameForward renaming actor) (freshFiber component rightParent) rightRegistry rightAbsent))
+
+||| Genuine one-stage all-name preservation by the five operational producers.
+||| Every premise was stored as an actual observation in the stage family;
+||| no preservation callback or desired post-cut field is unpacked here.
+export
+0 o20PairedStageCut :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {leftBefore, rightBefore, leftAfter, rightAfter : SystemState name key value world error} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (renaming : NameBijection name) ->
+  O20PairedStage name key world error value nameEq keyEq renaming leftBefore rightBefore leftAfter rightAfter ->
+  O20AllNameCut name key world error value nameEq renaming leftBefore rightBefore ->
+  O20AllNameCut name key world error value nameEq renaming leftAfter rightAfter
+o20PairedStageCut {name} {key} {world} {error} {value} nameEq keyEq renaming
+  (PairedBeginStage nameEq keyEq renaming actor leftBefore leftAfter rightBefore rightAfter leftOpening rightOpening pairwise) paired =
+    o20PairedActualBeginCut {name} {key} {world} {error} {value} nameEq keyEq renaming actor leftBefore leftAfter rightBefore rightAfter leftOpening rightOpening paired pairwise
+o20PairedStageCut {name} {key} {world} {error} {value} nameEq keyEq renaming
+  (PairedAdvanceStage nameEq keyEq renaming actor component step rest leftParent rightParent leftRetired rightRetired leftTable rightTable leftOlder rightOlder leftView rightView leftWorld rightWorld leftRegistry rightRegistry leftAfter rightAfter leftUndo rightUndo leftCapability rightCapability leftTag rightTag leftFound rightFound leftResolved rightResolved leftRun rightRun leftChecked rightChecked) paired =
+    o20PairedObservedAdvanceCut {name} {key} {world} {error} {value} nameEq keyEq renaming actor component step rest leftParent rightParent leftRetired rightRetired leftTable rightTable leftOlder rightOlder leftView rightView leftWorld rightWorld leftRegistry rightRegistry leftAfter rightAfter leftUndo rightUndo leftCapability rightCapability leftTag rightTag leftFound rightFound leftResolved rightResolved leftRun rightRun leftChecked rightChecked paired
+o20PairedStageCut {name} {key} {world} {error} {value} nameEq keyEq renaming
+  (PairedEmptyFinishStage nameEq keyEq renaming actor component leftParent rightParent leftRetired rightRetired leftTable rightTable leftOlder rightOlder leftView rightView leftWorld rightWorld leftRegistry rightRegistry leftFound rightFound leftChecked rightChecked) paired =
+    o20PairedObservedEmptyFinishCut {name} {key} {world} {error} {value} nameEq keyEq renaming actor component leftParent rightParent leftRetired rightRetired leftTable rightTable leftOlder rightOlder leftView rightView leftWorld rightWorld leftRegistry rightRegistry leftFound rightFound leftChecked rightChecked paired
+o20PairedStageCut {name} {key} {world} {error} {value} nameEq keyEq renaming
+  (PairedRetireStage nameEq keyEq renaming actor leftWorld rightWorld leftRegistry rightRegistry leftOld rightOld leftFound rightFound leftChecked rightChecked) paired =
+    o20PairedObservedRetireCut {name} {key} {world} {error} {value} nameEq keyEq renaming actor leftWorld rightWorld leftRegistry rightRegistry leftOld rightOld leftFound rightFound leftChecked rightChecked paired
+o20PairedStageCut {name} {key} {world} {error} {value} nameEq keyEq renaming
+  (PairedInsertStage nameEq keyEq renaming actor component leftParent rightParent parents leftWorld rightWorld leftRegistry rightRegistry leftAbsent rightAbsent leftChecked rightChecked) paired =
+    o20PairedObservedInsertCut {name} {key} {world} {error} {value} nameEq keyEq renaming actor component leftParent rightParent parents leftWorld rightWorld leftRegistry rightRegistry leftAbsent rightAbsent leftChecked rightChecked paired
