@@ -380,3 +380,16 @@ o20SwapTailBefore (BeforeHere Here) excluded = void (excluded Refl Refl)
 o20SwapTailBefore (BeforeHere (There later)) excluded = BeforeThere (BeforeHere later)
 o20SwapTailBefore (BeforeThere (BeforeHere later)) excluded = BeforeHere (There later)
 o20SwapTailBefore (BeforeThere (BeforeThere later)) excluded = BeforeThere (BeforeThere later)
+
+||| Preserve every other BeforeIn through the unchanged leading enumeration.
+export
+0 o20SwapLeadingBefore :
+  {name : Type} -> (leading : List name) -> (left, right : name) -> (trailing : List name) ->
+  {lower, upper : name} -> BeforeIn lower upper (leading ++ (left :: right :: trailing)) ->
+  ((lower = left) -> (upper = right) -> Void) ->
+  BeforeIn lower upper (leading ++ (right :: left :: trailing))
+o20SwapLeadingBefore [] left right trailing ordered excluded = o20SwapTailBefore ordered excluded
+o20SwapLeadingBefore (head :: rest) left right trailing (BeforeHere later) excluded =
+  BeforeHere (o20SwapLeadingMember rest left right trailing later)
+o20SwapLeadingBefore (head :: rest) left right trailing (BeforeThere later) excluded =
+  BeforeThere (o20SwapLeadingBefore rest left right trailing later excluded)
