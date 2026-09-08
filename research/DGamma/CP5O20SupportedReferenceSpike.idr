@@ -368,3 +368,15 @@ o20SwapLeadingMember [] left right trailing member = o19SwapTailMember member
 o20SwapLeadingMember (head :: rest) left right trailing Here = Here
 o20SwapLeadingMember (head :: rest) left right trailing (There later) =
   There (o20SwapLeadingMember rest left right trailing later)
+
+||| A neighboring transposition changes strict order ONLY for its own pair.
+export
+0 o20SwapTailBefore :
+  {name : Type} -> {left, right, lower, upper : name} -> {trailing : List name} ->
+  BeforeIn lower upper (left :: right :: trailing) ->
+  ((lower = left) -> (upper = right) -> Void) ->
+  BeforeIn lower upper (right :: left :: trailing)
+o20SwapTailBefore (BeforeHere Here) excluded = void (excluded Refl Refl)
+o20SwapTailBefore (BeforeHere (There later)) excluded = BeforeThere (BeforeHere later)
+o20SwapTailBefore (BeforeThere (BeforeHere later)) excluded = BeforeHere (There later)
+o20SwapTailBefore (BeforeThere (BeforeThere later)) excluded = BeforeThere (BeforeThere later)
