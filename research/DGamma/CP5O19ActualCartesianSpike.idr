@@ -17,6 +17,7 @@ import DGamma.CP5O19MixedRowDispatcherSpike
 import DGamma.CP5O19CartesianLengthSpike
 import DGamma.CP5O19PairObservationSpike
 import DGamma.CP5O19CartesianWordRowSpike
+import DGamma.CP5O19CartesianNumericSpike
 import DGamma.CP5O19CartesianSitePlanSpike
 import DGamma.CP5O19OrdinalPlanSpike
 import DGamma.CP5O19PaperBranchCompletenessSpike
@@ -303,3 +304,39 @@ o19AdjacentBlockStartCount leftBlock rightBlock ordered adjacent =
         (trans (cong (\openingCount => openingCount + transitionCount (blockBody leftBlock))
           (transitionPrefixLength (traceBeforeBlock leftBlock) (beginTransition (blockOpening leftBlock))))
           (plusSuccRightSucc (transitionCount (traceBeforeBlock leftBlock)) (transitionCount (blockBody leftBlock))))))))))))
+
+||| SAME ACTUAL B13 source origins = the explicit Cartesian grid of the
+||| ACTUAL selected source-block coordinates. Both map bands come from the
+||| owning identity producer and the authenticated original right start.
+export
+0 o19ActualGlobalGrid :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (protocol : RegistrationProtocol key value world error) ->
+  {sourceOrder, targetOrder : List name} -> (swap : AdjacentActorOrderSwap name sourceOrder targetOrder) ->
+  {initial, sourceFinal : SystemState name key value world error} -> (source : Transitions initial sourceFinal) ->
+  (blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder source) ->
+  (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq source) ->
+  (safety : AdjacentActorSwapSafety name key world error value protocol nameEq keyEq swap source blocks premises) ->
+  (unique : UniqueRawNameInsertions name key world error value nameEq keyEq source) ->
+  (globalCrossingPositions (o19ActualGlobalOriginPlan nameEq keyEq protocol swap source blocks premises safety unique) =
+    o19GridPairs (transitionCount (traceBeforeBlock (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety))))
+      (transitionCount (traceBeforeBlock (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety))))
+      (actorBlockTransitionCount (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)))
+      (actorBlockTransitionCount (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety))))
+o19ActualGlobalGrid nameEq keyEq protocol swap source blocks premises safety unique =
+  trans (o19ActualGlobalCartesianSites nameEq keyEq protocol swap source blocks premises safety unique)
+    (o19NumericColumnGrid (ordinalOrigin (o19IdentityOrdinalMap source))
+      (transitionCount (traceBeforeBlock (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety))))
+      (actorBlockTransitionCount (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)))
+      (actorBlockTransitionCount (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety)))
+      (transitionCount (traceBeforeBlock (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety))))
+      (transitionCount (traceBeforeBlock (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety))))
+      (\index, bound => o19IdentityOrdinalMapPoint source
+        (transitionCount (traceBeforeBlock (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety))) + index))
+      (\index, bound => trans
+        (o19IdentityOrdinalMapPoint source
+          ((transitionCount (traceBeforeBlock (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety))) +
+            actorBlockTransitionCount (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety))) + index))
+        (cong (\start => start + index)
+          (sym (o19AdjacentBlockStartCount (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety))
+            (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety)) (safetyBlocksOrdered safety) (safetyBlocksAdjacent safety))))))
