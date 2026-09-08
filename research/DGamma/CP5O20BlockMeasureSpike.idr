@@ -74,3 +74,18 @@ o20CrossingSumSwap [] left right later pivot =
     (foldr (+) Z (map (rankCrossing pivot) later))
 o20CrossingSumSwap (head :: rest) left right later pivot =
   cong (rankCrossing pivot head +) (o20CrossingSumSwap rest left right later pivot)
+
+||| R175 drop-by-one lifted through the ENTIRE untouched worklist segment.
+export
+0 o20AdjacentInversionDrop :
+  (leading : List Nat) -> (left, right : Nat) -> (later : List Nat) ->
+  (rankCrossing left right = 1) ->
+  (rankInversions (leading ++ left :: right :: later) =
+   S (rankInversions (leading ++ right :: left :: later)))
+o20AdjacentInversionDrop [] left right later crossed = rankHeadInversionDrop left right later crossed
+o20AdjacentInversionDrop (head :: rest) left right later crossed =
+  rewrite o20CrossingSumSwap rest left right later head in
+  rewrite o20AdjacentInversionDrop rest left right later crossed in
+    sym (plusSuccRightSucc
+      (foldr (+) Z (map (rankCrossing head) (rest ++ right :: left :: later)))
+      (rankInversions (rest ++ right :: left :: later)))
