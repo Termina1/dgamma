@@ -311,3 +311,17 @@ o20CheckNoGeneratedChildComplete nameEq forbidden (MoreTransitions step rest)
       (o20CheckNoGeneratedChild nameEq forbidden rest)
       (o20CheckNoGeneratedActionComplete nameEq forbidden (transitionAction step) notChild)
       (o20CheckNoGeneratedChildComplete nameEq forbidden rest notRest)
+
+||| Completeness of the actual selected pre-left-cut Begin checker. This
+||| checks the same action, tag and cut as the physical early certificate.
+export
+0 o20CheckRightAtLeftOpeningComplete :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (left, right : name) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (trace : Transitions initial finalState) ->
+  (block : LocatedOpenEpisodeBlock name key world error value nameEq keyEq left trace) ->
+  CheckedEarlyApplication name key world error value nameEq keyEq (blockPreStart block) (LBegin right) LBeginTag ->
+  isJust (o20CheckRightAtLeftOpening nameEq keyEq left right trace block) = True
+o20CheckRightAtLeftOpeningComplete nameEq keyEq left right trace block early =
+  rewrite earlyApplicationChecked early in Refl
