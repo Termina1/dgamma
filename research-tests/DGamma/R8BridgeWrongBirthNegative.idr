@@ -35,6 +35,8 @@ public export
       rightCapital) ->
   ({child, parent : name} -> {component : Component key value world error} ->
     LocatedGeneratedRegistration child parent component replayed ->
+    (isSupported {name = name} {key = key} {value = value} {world = world}
+      {error = error} @{nameEq} @{keyEq} child leftFinal = True) ->
     LocatedGeneratedRegistration
       (renameForward (replayBridgeBijection bridge) child)
       (renameForward (replayBridgeBijection bridge) parent) component
@@ -46,6 +48,6 @@ replaceBridgeRightOccurrenceWithoutGenerationEquation {occurrences} bridge alter
     (replayBridgeAmbient bridge)
     (replayBridgeTables bridge)
     (replayBridgeControls bridge)
-    (\replayedOccurrence =>
+    (\replayedOccurrence, supported =>
       (replayGeneratedRegistrationOrigin occurrences replayedOccurrence **
-        (Refl, (alternate replayedOccurrence ** ()))))
+        (Refl, (alternate replayedOccurrence supported ** ()))))
