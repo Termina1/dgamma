@@ -638,3 +638,27 @@ o19ActualMovedBodiesActorOnly nameEq keyEq protocol swap source blocks premises 
    o19ActorOnlyFromWord (actorLeft swap) (actorRight swap) (rangeBody (o19ActualLeftBeginRange nameEq keyEq protocol swap source blocks premises safety unique))
     (\action, member => o19OwnedSafeWord (actorLeft swap) (actorRight swap) (blockBody (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety))) (blockActorOnly (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety))) (safetyLeftDoesNotGenerateRight safety)
       action (replace {p = Elem action} (rangeBodyWord (o19ActualLeftBeginRange nameEq keyEq protocol swap source blocks premises safety unique)) member)))
+
+||| FULL ACTUAL moved-right located open episode: its installed/actor-only
+||| body, both outside exclusions, final-active and exact global decomposition
+||| are ALL produced from O19 inputs on the SAME actual Cartesian trace.
+export
+0 o19ActualRightLocatedBlock :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (protocol : RegistrationProtocol key value world error) ->
+  {sourceOrder, targetOrder : List name} -> (swap : AdjacentActorOrderSwap name sourceOrder targetOrder) ->
+  {initial, sourceFinal : SystemState name key value world error} -> (source : Transitions initial sourceFinal) ->
+  (blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder source) ->
+  (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq source) ->
+  (safety : AdjacentActorSwapSafety name key world error value protocol nameEq keyEq swap source blocks premises) ->
+  (unique : UniqueRawNameInsertions name key world error value nameEq keyEq source) ->
+  LocatedOpenEpisodeBlock name key world error value nameEq keyEq (actorRight swap)
+    (cursorTrace (columnCursor (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique)))
+o19ActualRightLocatedBlock nameEq keyEq protocol swap source blocks premises safety unique =
+  MkLocatedOpenEpisodeBlock (blockPreStart (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety))) (rangeStart (o19ActualRightBeginRange nameEq keyEq protocol swap source blocks premises safety unique)) (columnMiddle (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique))
+    (traceBeforeBlock (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety))) (rangeOpening (o19ActualRightBeginRange nameEq keyEq protocol swap source blocks premises safety unique)) (rangeBody (o19ActualRightBeginRange nameEq keyEq protocol swap source blocks premises safety unique))
+    (fst (o19ActualMovedBodiesInstalled nameEq keyEq protocol swap source blocks premises safety unique)) (fst (o19ActualMovedBodiesActorOnly nameEq keyEq protocol swap source blocks premises safety unique)) (columnRest (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique))
+    (fst (fst (o19ActualMovedOutsideLifecycle nameEq keyEq protocol swap source blocks premises safety unique))) (snd (fst (o19ActualMovedOutsideLifecycle nameEq keyEq protocol swap source blocks premises safety unique)))
+    (o19ActualFinalActive nameEq keyEq protocol swap source blocks premises safety unique (actorRight swap) (blockActiveAtFinal (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety))))
+    (trans (cong (\spine => appendTransitions (traceBeforeBlock (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety))) (appendTransitions spine (columnRest (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique)))) (rangeDecomposition (o19ActualRightBeginRange nameEq keyEq protocol swap source blocks premises safety unique)))
+      (columnDecomposition (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique)))
