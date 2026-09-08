@@ -93,3 +93,63 @@ export
   AlignedTransitions name key world error value nameEq keyEq (MoreTransitions step rest) ->
   (checkedApplyAction @{nameEq} @{keyEq} (transitionAction step) before = Just (transitionTag step, afterState))
 o19AlignedHeadChecked nameEq keyEq _ _ (AlignedStep action tag checked rest remaining) = checked
+
+||| Construct O/O safety from the SAME source bundle and actual early result.
+||| Local retirement discipline is derived, and generation scanning starts at
+||| the genuine scanned untouched prefix, never a reset ordinal/environment.
+export
+0 o19InsertionPairSafetyObserved :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (protocol : RegistrationProtocol key value world error) ->
+  (leftChild, rightChild : name) -> (leftParent, rightParent : Parent name) ->
+  (leftComponent, rightComponent : Component key value world error) ->
+  {initial, first, middle, last, finalState : SystemState name key value world error} ->
+  (source : Transitions initial finalState) -> (earlier : Transitions initial first) ->
+  (left : Transition first middle) -> (right : Transition middle last) -> (later : Transitions last finalState) ->
+  (appendTransitions earlier (MoreTransitions left (MoreTransitions right later)) = source) ->
+  ReplayInvariantBundle name key world error value protocol nameEq keyEq source ->
+  (transitionAction left = OInsert leftChild leftParent leftComponent) ->
+  (transitionAction right = OInsert rightChild rightParent rightComponent) ->
+  Not (rightChild = leftChild) ->
+  ((licensor : name) -> (leftParent = ChildOf licensor) -> Not (rightChild = licensor)) ->
+  ((licensor : name) -> (rightParent = ChildOf licensor) -> Not (leftChild = licensor)) ->
+  (early : CheckedEarlyApplication name key world error value nameEq keyEq first
+    (transitionAction right) (transitionTag right)) ->
+  OrchestrationSwapSafety name key world error value protocol nameEq keyEq left right
+o19InsertionPairSafetyObserved {name} {key} {value} {world} {error} {first} {middle} {last}
+  nameEq keyEq protocol leftChild rightChild leftParent rightParent leftComponent rightComponent
+  source earlier left right later decomposition premises leftInsert rightInsert distinct leftLicense rightLicense early =
+    MkOrchestrationSwapSafety (earlyApplicationFinal early)
+      (Fired {before = first} {afterState = earlyApplicationFinal early} nameEq keyEq
+        (transitionAction right) (transitionTag right) (earlyApplicationChecked early)) Refl Refl
+      (RegistrationDisciplineStep left (MoreTransitions right NoTransitions)
+        (replace {p = \action => RegistrationStepDiscipline protocol nameEq action first (MoreTransitions right NoTransitions)} (sym leftInsert)
+          (o19InsertionDisciplineFromProvenance protocol nameEq leftChild leftParent leftComponent first (MoreTransitions right NoTransitions)
+            (replace {p = \action => RegistrationStepProvenance protocol nameEq action first} leftInsert
+            (o19ProvenanceAtOccurrence protocol nameEq source left
+              (replace {p = OccursIn left} decomposition (o19PairOccurrence earlier left right later left OccursHere))
+              (replayProvenance premises))) (\owner => NoParentRecoveryStep right NoTransitions
+            (o19InsertionCannotRecover right rightChild owner rightParent rightComponent rightInsert) NoParentRecoveryEnd)))
+        (RegistrationDisciplineStep right NoTransitions
+          (replace {p = \action => RegistrationStepDiscipline protocol nameEq action middle (NoTransitions {state = last})} (sym rightInsert)
+          (o19InsertionDisciplineFromProvenance protocol nameEq rightChild rightParent rightComponent middle (NoTransitions {state = last})
+            (replace {p = \action => RegistrationStepProvenance protocol nameEq action middle} rightInsert
+            (o19ProvenanceAtOccurrence protocol nameEq source right
+              (replace {p = OccursIn right} decomposition (o19PairOccurrence earlier left right later right (OccursLater OccursHere)))
+              (replayProvenance premises))) (\owner => NoParentRecoveryEnd))) RegistrationDisciplineEnd))
+      (scanFinalOrdinal (scanGenerations nameEq 0 [] earlier)) (scanFinalLive (scanGenerations nameEq 0 [] earlier))
+      (scanFinalOrdinal (scanGenerations nameEq (scanFinalOrdinal (scanGenerations nameEq 0 [] earlier)) (scanFinalLive (scanGenerations nameEq 0 [] earlier)) (MoreTransitions left (MoreTransitions right NoTransitions))))
+      (scanFinalLive (scanGenerations nameEq (scanFinalOrdinal (scanGenerations nameEq 0 [] earlier)) (scanFinalLive (scanGenerations nameEq 0 [] earlier)) (MoreTransitions left (MoreTransitions right NoTransitions))))
+      (generationScan (scanGenerations nameEq (scanFinalOrdinal (scanGenerations nameEq 0 [] earlier)) (scanFinalLive (scanGenerations nameEq 0 [] earlier)) (MoreTransitions left (MoreTransitions right NoTransitions))))
+      (\otherLeft, otherRight, otherLeftParent, otherRightParent, otherLeftComponent, otherRightComponent, leftSame, rightSame, collision =>
+        distinct (trans (cong actionOwner (trans (sym rightInsert) rightSame))
+          (trans (sym collision) (sym (cong actionOwner (trans (sym leftInsert) leftSame))))))
+      (\otherLeft, otherLeftParent, otherRight, otherRightParent, otherLeftComponent, otherRightComponent, leftSame, rightSame =>
+        (\collision => rightLicense otherRightParent
+          (o19InsertParentInjective rightChild otherRight rightParent (ChildOf otherRightParent) rightComponent otherRightComponent
+            (trans (sym rightInsert) rightSame))
+          (trans (cong actionOwner (trans (sym leftInsert) leftSame)) collision),
+         \collision => leftLicense otherLeftParent
+          (o19InsertParentInjective leftChild otherLeft leftParent (ChildOf otherLeftParent) leftComponent otherLeftComponent
+            (trans (sym leftInsert) leftSame))
+          (trans (cong actionOwner (trans (sym rightInsert) rightSame)) collision)))
