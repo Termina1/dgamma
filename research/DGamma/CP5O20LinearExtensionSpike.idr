@@ -174,3 +174,22 @@ export
 o20OrientChoiceObserved nameEq goalOrder goalUnique choice Nothing exact Refl impossible
 o20OrientChoiceObserved nameEq goalOrder goalUnique choice (Just reverseOrder) exact present =
   rewrite exact in Refl
+
+||| Exact native selector expression, exposed at its owning module without
+||| changing visibility or selecting a second, independently computed packet.
+export
+0 o20OrientedSelectorOwnedEquation :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) -> (sourceOrder, goalOrder : List name) ->
+  (goalUnique : UniqueKeys goalOrder) ->
+  {initial, finalState : SystemState name key value world error} -> (trace : Transitions initial finalState) ->
+  (blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder trace) ->
+  (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq trace) ->
+  (unique : UniqueRawNameInsertions name key world error value nameEq keyEq trace) ->
+  (o20SelectOrientedSafeBlocks nameEq keyEq protocol sourceOrder goalOrder goalUnique trace blocks premises unique =
+   head' (mapMaybe
+    (\candidate => o20CheckCandidate nameEq keyEq protocol sourceOrder trace blocks premises unique candidate >>=
+      o20OrientChosenSafeSwap nameEq goalOrder goalUnique)
+    (o20AdjacentCandidates nameEq sourceOrder [] sourceOrder Refl)))
+o20OrientedSelectorOwnedEquation nameEq keyEq protocol sourceOrder goalOrder goalUnique trace blocks premises unique = Refl
