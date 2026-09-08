@@ -3,7 +3,7 @@
 Uses only lane2 files, git objects and process command strings. Does not rebuild,
 modify caches, or access the main worktree. Writes its report under /tmp.
 """
-import datetime, hashlib, json, pathlib, re, subprocess
+import datetime, hashlib, json, pathlib, re, subprocess, tarfile
 ROOT = pathlib.Path('/Users/vyacheslavshebanov/Work/dgamma-lane2')
 OUT = pathlib.Path('/tmp/dgamma-l2r1')
 BASE = '77a9efe144fa706f2b83c6ef4c0096dbfcbf190b'
@@ -95,7 +95,22 @@ for prefix, cap in [('B', 24), ('C', 20)]:
     assert all(len(xs) <= 3 and len(set(xs)) == len(xs) for xs in attempts.values())
 assert [r['unit'] for r in records if r['unit'].startswith('B24-')] == ['B24-1', 'B24-2', 'B24-3']
 assert all(not byunit['B24-'+str(n)]['passed'] for n in range(1, 4))
-assert all('childRemoveAtFound' not in ds for ds in newdecls.values())
+for parked in ['C9', 'C17']:
+    assert [r['unit'] for r in records if r['unit'].startswith(parked+'-')] == [parked+'-1', parked+'-2', parked+'-3']
+    assert all(not byunit[parked+'-'+str(n)]['passed'] for n in range(1, 4))
+assert all(not any(name in ds for name in ['childRemoveAtFound', 'l2r1TransparentRootBirth', 'l2r1RootOriginal']) for ds in newdecls.values())
+manifest = json.loads((ROOT/'research-tests/O6-L2R1-COMPILER-LEDGER.json').read_text())
+archive = ROOT/'research-tests/O6-L2R1-COMPILER-EVIDENCE.tar.gz'
+assert manifest['recordCount'] == len(records) and manifest['passedCount'] == sum(r['passed'] for r in records)
+assert manifest['evidenceArchiveSHA256'] == sha(archive.read_bytes())
+assert set(sourcecommits) <= {r['resultingCommitHash'] for r in manifest['commitReceipts']}
+assert manifest['monitorQualifications'] == json.loads((OUT/'monitor-qualifications.json').read_text())
+with tarfile.open(archive, 'r:gz') as tar:
+    for r in records:
+        for suffix in ['.json', '.log', '.source']:
+            file = r['unit']+suffix
+            assert tar.extractfile(OUT.name+'/'+file).read() == (OUT/file).read_bytes()
+    assert tar.extractfile(OUT.name+'/final-validation-plan.json').read() == (OUT/'final-validation-plan.json').read_bytes()
 assert not git('diff', BASE, '--', 'src/', 'dgamma.ipkg', 'README.md', 'NOTES.md')
 assert not git('diff', '--cached', '--name-only')
 assert not git('diff', '--name-only'), 'Commit artifacts before independent verification'
@@ -115,7 +130,8 @@ report = dict(status='PASS', head=git('rev-parse', 'HEAD').decode().strip(),
     allInvocationsSerialized=True, allRecordedSnapshotsAndLogsAuthenticated=True,
     interruptedC9CompilationSourceIdentityNotAsserted=True,
     protocolIncidents=incidents, preflightRejectedCount=len(incidents),
-    allFinalCurrentSourcesAuthenticated=True, productionAndFrozenResearchUntouched=True,
+    allFinalCurrentSourcesAuthenticated=True, committedArchiveAndManifestAuthenticated=True,
+    evidenceArchiveSHA256=sha(archive.read_bytes()), productionAndFrozenResearchUntouched=True,
     maxSampleRSSKiB=max(r['maxSampleRSSKiB'] for r in records),
     initialRSSQualification='S0-1/S0-2/B1-1 unavailable: pre-fix chez classifier; never a zero-memory claim',
     noUnsafeNewProofs=True, noOwnCompiler=True, noStagedFiles=True, cleanTrackedTree=True,
