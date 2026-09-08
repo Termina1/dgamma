@@ -7,6 +7,8 @@ import DGamma.CP3
 import DGamma.CP4ProgressNoDeadlock
 import DGamma.CP4SupportSolution
 import DGamma.CP5O20PairedRemovalSpike
+import DGamma.CP5ActorLifecycleOnlyExtended
+import DGamma.CP5O20RightOpeningTransportSpike
 import DGamma.CP5ConfluenceLocalDiamondSpike
 import DGamma.CP5ConfluenceDeletionChainSpike
 import DGamma.CP5ConfluenceRenamingCompositionSpike
@@ -163,3 +165,16 @@ r192RemovedBirthObstruction =
       (o20DeletedLookupAbsent r45NameEq 1 (registry r178RightFinal)),
    generatedOrchestrationReflexive Nat R45Key Unit String R45Value r45NameEq r192RemovedBirthTrace,
    r192E8CurrentDoesNotGiveHistoricalBirth)
+
+||| C6 DISTINCT grammar probe on already-authenticated R178 edges, not a
+||| shrunken retry of C4's failed eleven-edge R191 evaluator construction.
+||| Genuine own-child Retire is INSIDE parent0's actual extended body.
+export
+0 r192ExistingParentBodyRetireExtended :
+  ActorLifecycleOnlyExtended r45NameEq 0
+    (MoreTransitions r45ChildInsert (MoreTransitions r178ParentFinish
+      (MoreTransitions r178ChildRetire NoTransitions)))
+r192ExistingParentBodyRetireExtended =
+  ExtendedYieldedRegistrationStep _ _ Refl
+    (ExtendedLifecycleStep _ _ Refl Refl
+      (ExtendedChildRetireStep _ _ 1 r45ChildFresh Refl Refl Refl ExtendedLifecycleEnd))
