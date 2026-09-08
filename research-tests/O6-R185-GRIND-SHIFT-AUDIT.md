@@ -287,3 +287,68 @@ All previous2x2/Cartesian/origin/coverage/range/endpoint walls remain.
 Retained units77; E2 is the sole exhausted unit; O19 body0, C0, O20/O21 body0.
 Guarded commits only since the documented D4 incident; all retained commits
 match their prior fresh checks. E's12 slots are consumed; new scope needs a gate.
+
+## F unit stop (8/8 source-shape units; C deferred)
+
+Supervisor authorized ONLY F<=8 owner-survival/nondependency producers; C is
+explicitly deferred to R186. Either producer's3/3 exhaustion would stop F and
+send work to final validation. Neither producer exhausted: F1 passed3/3.
+No new visibility was required. All work is in CP5O19SourceShapeSpike.idr.
+
+| Unit | Commit | Producer result | Attempt |
+|---|---|---|---|
+| F1 | 3c9f155e | Actual paper-activation installation evolution forces installed output | 3/3 PASS |
+| F2 | fef0f52c | Actual observed lookup: installed implies present | 1/1 PASS |
+| F3 | b1b2397f | Actual aligned activation produces source owner AND target survival | 1/1 PASS |
+| F4 | ee252535 | Actual source bundle/pair decomposition supplies F3 alignment internally | 1/1 PASS |
+| F5 | cac5c457 | Actual active resolved provider + WF exclude inactive owner's static provision | 1/1 PASS |
+| F6 | 32380cb7 | Explicit provider/tail observations expose the smaller-list induction | 1/1 PASS |
+| F7 | 14d9142b | Whole actual resolved dependency list produces static exclusion recursively | 2/2 PASS |
+| F8 | 9741d0b2 | Actual left Begin + sanctioned early-right Begin produce BOTH component observations and pre-left static exclusion | 1/1 PASS |
+
+F1-1 rejected overlapping action/equality-pattern binding. F1-2 rejected
+coverage for dependent direct constructor patterns. F1-3 uses exhaustive
+cases on its actual activation argument and actual action equalities; no
+computed existential or nonlinear/as-pattern. F7-1 rejected inconsistent
+clause arity; F7-2 eta-expands the empty-list contradiction. All three rejected
+snapshots/logs remain, and guarded commits refused them. No fourth attempts.
+
+IMPORTANT SOURCE-SAFETY CORRECTION: current AdjacentActorSwapSafety DOES NOT
+store an explicit incomparable-support or declared-key-exclusion field. Its
+sanctioned safetyRightOpeningEarly, combined with the actual left block Begin,
+means the right dependencies resolve while the left owner is Inactive. WF
+pairwise declared-provision uniqueness therefore produces static nondependency
+without inventing an incomparable-membership input. F5–F8 mechanize precisely
+this implication. F8 constructs both actual observations from checked actions;
+no resolver success, target/domain, footprint or owner-shape oracle is added.
+
+F4 discharges the E11/E12 SOURCE-PRESENCE/SURVIVAL debt for actual left
+activations at an authenticated source pair cut. F8 discharges static exclusion
+AT THE PRE-LEFT OPENING CUT. Remaining synchronization debt is explicit:
+transport those produced component declarations along the actual block bodies
+and connect them to E11/E12's exact current owner/right dependency list. F8 is
+NOT yet a complete sanctioned-input A/A backward guard or an assembled row.
+No claim that all E11/E12 premises have been discharged end-to-end.
+
+Retained micro-units85 (77 before F +8); E2 remains the sole exhausted unit.
+All retained source commits authenticate a prior exact-source ordinary PASS.
+F checkpoint fresh source PASS F8-1:3.111s, max sampled4,181,760KiB.
+F-checkpoint-frozen.json at9741d0b2: clean tracked tree, no compiler/staged files,
+207/207 seeds, census5=1/3/0/0/1, production empty vs34b21c9, both adjacent
+hashes fixed, exactly the two approved LocalDiamond keywords and nothing else.
+The historical commit-only-fresh-PASS shift criterion remains NOT SATISFIED
+because of dropped D4-1/8d553e00; D3's interrupted monitor remains qualified.
+
+## Status after F / final-validation boundary
+
+Fully proved producer capital now includes authenticated actual-pair activation
+owner survival, actual-resolved-list nondependency for inactive declarations,
+and generated pre-left opening component observations/exclusion. Partial:
+metadata synchronization to arbitrary body cuts and hence the full A/A backward
+guard, right-activation row and one total orientation-row dispatcher. Earlier
+right-insertion rows are retained. Open: Cartesian columns, exact origins/product
+count/coverage, reached installed ranges/decomposition/origin updates, endpoint
+correspondence; full new2x2 fixture absent. Prerequisites(i)–(vi) remain incomplete;
+O19 body0, C0, O20/O21 body0. F is exhausted by SLOT COUNT, not proof attempts;
+no extra proof scope is inferred. Next: serialized seeded final validation,
+append-only evidence/frozen audit and mandatory supervisor gate by03:36.

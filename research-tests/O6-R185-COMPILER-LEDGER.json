@@ -2916,5 +2916,340 @@
     "matchingSourceCommits": [
       "2889d78b1e3cbb854674bca72f6e4520518d0106"
     ]
+  },
+  {
+    "unit": "F1-1",
+    "path": "research/DGamma/CP5O19SourceShapeSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O19SourceShapeSpike.idr"
+    ],
+    "start": "2026-09-08T02:03:59.346112+00:00",
+    "end": "2026-09-08T02:04:00.386369+00:00",
+    "seconds": 1.04007404204458,
+    "exit": 1,
+    "fresh": true,
+    "passed": false,
+    "interrupted": false,
+    "maxSampleRSSKiB": 0,
+    "sourceSHA256": "216bccbfe1bd98ff1211a9944245d65144a4a9545c7bbd0e5c7454e229278be1",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "12/12: Building DGamma.CP5O19SourceShapeSpike (research/DGamma/CP5O19SourceShapeSpike.idr)\nError: While processing left hand side of o19ActivationEvolutionInstalled. When unifying:\n    LBegin ?actor = LBegin ?actor\nand:\n    transitionAction (Fired ?nameEq ?keyEq ?action ?tag ?checked) = LBegin ?actor\nPattern variable action unifies with: LBegin ?actor.\n\nDGamma.CP5O19SourceShapeSpike:34:63--34:69\n 30 |   PaperActivationStep (Fired {before = first} {afterState} nameEq keyEq action tag checked) ->\n 31 |   (installedAt {name} {key} {value} {world} {error} @{nameEq} (actionOwner action) afterState = True)\n 32 | o19ActivationEvolutionInstalled nameEq keyEq first afterState action tag checked\n 33 |   (RemainedInstalled beforeInstalled afterInstalled) activation = afterInstalled\n 34 | o19ActivationEvolutionInstalled nameEq keyEq first afterState action tag checked\n                                                                    ^^^^^^\n\nSuggestion: Use the same name for both pattern variables, since they unify.\n",
+    "newTopLevelDeclarations": [
+      "o19ActivationEvolutionInstalled"
+    ],
+    "matchingSourceCommits": []
+  },
+  {
+    "unit": "F1-2",
+    "path": "research/DGamma/CP5O19SourceShapeSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O19SourceShapeSpike.idr"
+    ],
+    "start": "2026-09-08T02:04:54.931617+00:00",
+    "end": "2026-09-08T02:04:57.016931+00:00",
+    "seconds": 2.085136542096734,
+    "exit": 1,
+    "fresh": true,
+    "passed": false,
+    "interrupted": false,
+    "maxSampleRSSKiB": 677424,
+    "sourceSHA256": "ecea9214463c7fd70d2cabdffab55f870352e9501b08d3e84068290a7675df3d",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "12/12: Building DGamma.CP5O19SourceShapeSpike (research/DGamma/CP5O19SourceShapeSpike.idr)\nError: o19ActivationEvolutionInstalled is not covering.\n\nDGamma.CP5O19SourceShapeSpike:19:1--31:102\n 19 | ||| Actual installation evolution plus paper activation rules forces owner\n 20 | ||| survival. The impossible preserved-uninstalled Advance contradicts its\n 21 | ||| real installed source, not a precomputed target-presence assumption.\n 22 | export\n 23 | 0 o19ActivationEvolutionInstalled :\n 24 |   {name, key, world, error : Type} -> {value : key -> Type} ->\n\nMissing cases:\n    o19ActivationEvolutionInstalled _ _ _ _ (LBegin _) LBeginTag _ (RemainedUninstalled _ _) _\n    o19ActivationEvolutionInstalled _ _ _ _ (LBegin _) OInsertTag _ (RemainedUninstalled _ _) _\n    o19ActivationEvolutionInstalled _ _ _ _ (LBegin _) ORetireTag _ (RemainedUninstalled _ _) _\n    o19ActivationEvolutionInstalled _ _ _ _ (LBegin _) ORemoveTag _ (RemainedUninstalled _ _) _\n    o19ActivationEvolutionInstalled _ _ _ _ (LBegin _) LIterTag _ (RemainedUninstalled _ _) _\n    o19ActivationEvolutionInstalled _ _ _ _ (LBegin _) LFinishTag _ (RemainedUninstalled _ _) _\n    o19ActivationEvolutionInstalled _ _ _ _ (LBegin _) LDivertTag _ (RemainedUninstalled _ _) _\n    o19ActivationEvolutionInstalled _ _ _ _ (LBegin _) LRaiseTag _ (RemainedUninstalled _ _) _\n    o19ActivationEvolutionInstalled _ _ _ _ (LBegin _) LLeaveTag _ (RemainedUninstalled _ _) _\n    o19ActivationEvolutionInstalled _ _ _ _ (LBegin _) LUnloadTag _ (RemainedUninstalled _ _) _\n    o19ActivationEvolutionInstalled _ _ _ _ (LBegin _) LBeginTag _ (RemainedUninstalled _ _) _\n    o19ActivationEvolutionInstalled _ _ _ _ (LBegin _) OInsertTag _ (RemainedUninstalled _ _) _\n    o19ActivationEvolutionInstalled _ _ _ _ (LBegin _) ORetireTag _ (RemainedUninstalled _ _) _\n    o19ActivationEvolutionInstalled _ _ _ _ (LBegin _) ORemoveTag _ (RemainedUninstalled _ _) _\n    o19ActivationEvolutionInstalled _ _ _ _ (LBegin _) LIterTag _ (RemainedUninstalled _ _) _\n    o19ActivationEvolutionInstalled _ _ _ _ (LBegin _) LFinishTag _ (RemainedUninstalled _ _) _\n    o19ActivationEvolutionInstalled _ _ _ _ (LBegin _) LDivertTag _ (RemainedUninstalled _ _) _\n    o19ActivationEvolutionInstalled _ _ _ _ (LBegin _) LRaiseTag _ (RemainedUninstalled _ _) _\n    o19ActivationEvolutionInstalled _ _ _ _ (LBegin _) LLeaveTag _ (RemainedUninstalled _ _) _\n    o19ActivationEvolutionInstalled _ _ _ _ (LBegin _) LUnloadTag _ (RemainedUninstalled _ _) _\n    o19ActivationEvolutionInstalled _ _ _ _ (LBegin _) LBeginTag _ (RemainedUninstalled _ _) _\n    o19ActivationEvolutionInstalled _ _ _ _ (LBegin _) OInsertTag _ (RemainedUninstalled _ _) _\n    o19ActivationEvolutionInstalled _ _ _ _ (LBegin _) ORetireTag _ (RemainedUninstalled _ _) _\n    o19ActivationEvolutionInstalled _ _ _ _ (LBegin _) ORemoveTag _ (RemainedUninstalled _ _) _\n    o19ActivationEvolutionInstalled _ _ _ _ (LBegin _) LIterTag _ (RemainedUninstalled _ _) _\n    o19ActivationEvolutionInstalled _ _ _ _ (LBegin _) LFinishTag _ (RemainedUninstalled _ _) _\n    o19ActivationEvolutionInstalled _ _ _ _ (LBegin _) LDivertTag _ (RemainedUninstalled _ _) _\n    o19ActivationEvolutionInstalled _ _ _ _ (LBegin _) LRaiseTag _ (RemainedUninstalled _ _) _\n    o19ActivationEvolutionInstalled _ _ _ _ (LBegin _) LLeaveTag _ (RemainedUninstalled _ _) _\n    o19ActivationEvolutionInstalled _ _ _ _ (LBegin _) LUnloadTag _ (RemainedUninstalled _ _) _\n    o19ActivationEvolutionInstalled _ _ _ _ (LBegin _) LBeginTag _ (RemainedUninstalled _ _) _\n    o19ActivationEvolutionInstalled _ _ _ _ (LBegin _) OInsertTag _ (RemainedUninstalled _ _) _\n    o19ActivationEvolutionInstalled _ _ _ _ (LBegin _) ORetireTag _ (RemainedUninstalled _ _) _\n    o19ActivationEvolutionInstalled _ _ _ _ (LBegin _) ORemoveTag _ (RemainedUninstalled _ _) _\n    o19ActivationEvolutionInstalled _ _ _ _ (LBegin _) LIterTag _ (RemainedUninstalled _ _) _\n    o19ActivationEvolutionInstalled _ _ _ _ (LBegin _) LFinishTag _ (RemainedUninstalled _ _) _\n    o19ActivationEvolutionInstalled _ _ _ _ (LBegin _) LDivertTag _ (RemainedUninstalled _ _) _\n    o19ActivationEvolutionInstalled _ _ _ _ (LBegin _) LRaiseTag _ (RemainedUninstalled _ _) _\n    o19ActivationEvolutionInstalled _ _ _ _ (LBegin _) LLeaveTag _ (RemainedUninstalled _ _) _\n    o19ActivationEvolutionInstalled _ _ _ _ (LBegin _) LUnloadTag _ (RemainedUninstalled _ _) _\n    o19ActivationEvolutionInstalled _ _ _ _ (LBegin _) LBeginTag _ (RemainedUninstalled _ _) _\n    o19ActivationEvolutionInstalled _ _ _ _ (LBegin _) OInsertTag _ (RemainedUninstalled _ _) _\n    o19ActivationEvolutionInstalled _ _ _ _ (LBegin _) ORetireTag _ (RemainedUninstalled _ _) _\n    o19ActivationEvolutionInstalled _ _ _ _ (LBegin _) ORemoveTag _ (RemainedUninstalled _ _) _\n    o19ActivationEvolutionInstalled _ _ _ _ (LBegin _) LIterTag _ (RemainedUninstalled _ _) _\n    o19ActivationEvolutionInstalled _ _ _ _ (LBegin _) LFinishTag _ (RemainedUninstalled _ _) _\n    o19ActivationEvolutionInstalled _ _ _ _ (LBegin _) LDivertTag _ (RemainedUninstalled _ _) _\n    o19ActivationEvolutionInstalled _ _ _ _ (LBegin _) LRaiseTag _ (RemainedUninstalled _ _) _\n    o19ActivationEvolutionInstalled _ _ _ _ (LBegin _) LLeaveTag _ (RemainedUninstalled _ _) _\n    o19ActivationEvolutionInstalled _ _ _ _ (LBegin _) LUnloadTag _ (RemainedUninstalled _ _) _\n    o19ActivationEvolutionInstalled _ _ _ _ (LBegin _) LBeginTag _ (RemainedUninstalled _ _) _\n    o19ActivationEvolutionInstalled _ _ _ _ (LBegin _) OInsertTag _ (RemainedUninstalled _ _) _\n    o19ActivationEvolutionInstalled _ _ _ _ (LBegin _) ORetireTag _ (RemainedUninstalled _ _) _\n    o19ActivationEvolutionInstalled _ _ _ _ (LBegin _) ORemoveTag _ (RemainedUninstalled _ _) _\n    o19ActivationEvolutionInstalled _ _ _ _ (LBegin _) LIterTag _ (RemainedUninstalled _ _) _\n    o19ActivationEvolutionInstalled _ _ _ _ (LBegin _) LFinishTag _ (RemainedUninstalled _ _) _\n    o19ActivationEvolutionInstalled _ _ _ _ (LBegin _) LDivertTag _ (RemainedUninstalled _ _) _\n    o19ActivationEvolutionInstalled _ _ _ _ (LBegin _) LRaiseTag _ (RemainedUninstalled _ _) _\n    o19ActivationEvolutionInstalled _ _ _ _ (LBegin _) LLeaveTag _ (RemainedUninstalled _ _) _\n    o19ActivationEvolutionInstalled _ _ _ _ (LBegin _) LUnloadTag _ (RemainedUninstalled _ _) _\n    o19ActivationEvolutionInstalled _ _ _ _ (LBegin _) LBeginTag _ (RemainedUninstalled _ _) _\n    o19ActivationEvolutionInstalled _ _ _ _ (LBegin _) OInsertTag _ (RemainedUninstalled _ _) _\n    o19ActivationEvolutionInstalled _ _ _ _ (LBegin _) ORetireTag _ (RemainedUninstalled _ _) _\n    o19ActivationEvolutionInstalled _ _ _ _ (LBegin _) ORemoveTag _ (RemainedUninstalled _ _) _\n    o19ActivationEvolutionInstalled _ _ _ _ (LBegin _) LIterTag _ (RemainedUninstalled _ _) _\n    o19ActivationEvolutionInstalled _ _ _ _ (LBegin _) LFinishTag _ (RemainedUninstalled _ _) _\n    o19ActivationEvolutionInstalled _ _ _ _ (LBegin _) LDivertTag _ (RemainedUninstalled _ _) _\n    o19ActivationEvolutionInstalled _ _ _ _ (LBegin _) LRaiseTag _ (RemainedUninstalled _ _) _\n    o19ActivationEvolutionInstalled _ _ _ _ (LBegin _) LLeaveTag _ (RemainedUninstalled _ _) _\n    o19ActivationEvolutionInstalled _ _ _ _ (LBegin _) LUnloadTag _ (RemainedUninstalled _ _) _\n    o19ActivationEvolutionInstalled _ _ _ _ (LAdvance _) _ _ (RemainedUninstalled _ _) _\n    o19ActivationEvolutionInstalled _ _ _ _ (LAdvance _) _ _ (RemainedUninstalled _ _) _\n    o19ActivationEvolutionInstalled _ _ _ _ (LAdvance _) _ _ (RemainedUninstalled _ _) _\n    o19ActivationEvolutionInstalled _ _ _ _ (LAdvance _) _ _ (RemainedUninstalled _ _) _\n    o19ActivationEvolutionInstalled _ _ _ _ (LAdvance _) _ _ (RemainedUninstalled _ _) _\n    o19ActivationEvolutionInstalled _ _ _ _ (LAdvance _) _ _ (RemainedUninstalled _ _) _\n    o19ActivationEvolutionInstalled _ _ _ _ (LAdvance _) _ _ (RemainedUninstalled _ _) _\n    o19ActivationEvolutionInstalled _ _ _ _ (OInsert _ _ _) _ _ (RemainedUninstalled _ _) _\n    o19ActivationEvolutionInstalled _ _ _ _ (ORetire _) _ _ (RemainedUninstalled _ _) _\n    o19ActivationEvolutionInstalled _ _ _ _ (ORemove _) _ _ (RemainedUninstalled _ _) _\n    o19ActivationEvolutionInstalled _ _ _ _ (LDivert _) _ _ (RemainedUninstalled _ _) _\n    o19ActivationEvolutionInstalled _ _ _ _ (LLeave _) _ _ (RemainedUninstalled _ _) _\n    o19ActivationEvolutionInstalled _ _ _ _ (LUnload _) _ _ (RemainedUninstalled _ _) _\n    o19ActivationEvolutionInstalled _ _ _ _ (LUnload _) LUnloadTag _ ClosedInstallation _\n\n",
+    "newTopLevelDeclarations": [
+      "o19ActivationEvolutionInstalled"
+    ],
+    "matchingSourceCommits": []
+  },
+  {
+    "unit": "F1-3",
+    "path": "research/DGamma/CP5O19SourceShapeSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O19SourceShapeSpike.idr"
+    ],
+    "start": "2026-09-08T02:05:38.767561+00:00",
+    "end": "2026-09-08T02:05:40.846573+00:00",
+    "seconds": 2.0788557082414627,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 662560,
+    "sourceSHA256": "bf30c0562843d94a0e4430a9df5b154d6ad934eaf09936c3d6003f1732e18d68",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "12/12: Building DGamma.CP5O19SourceShapeSpike (research/DGamma/CP5O19SourceShapeSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "o19ActivationEvolutionInstalled"
+    ],
+    "matchingSourceCommits": [
+      "3c9f155e45d3b98d7da41228471bc28de6962f09"
+    ]
+  },
+  {
+    "unit": "F2-1",
+    "path": "research/DGamma/CP5O19SourceShapeSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O19SourceShapeSpike.idr"
+    ],
+    "start": "2026-09-08T02:06:28.787312+00:00",
+    "end": "2026-09-08T02:06:30.853837+00:00",
+    "seconds": 2.06635933322832,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 679520,
+    "sourceSHA256": "75dd60428fc066ab3aa8d748ec2b37d7150c7aadfc838d0283efa4d908811731",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "12/12: Building DGamma.CP5O19SourceShapeSpike (research/DGamma/CP5O19SourceShapeSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "o19InstalledOwnerObserved"
+    ],
+    "matchingSourceCommits": [
+      "fef0f52c29691abfe400aaabf4e034d10ec28c4c"
+    ]
+  },
+  {
+    "unit": "F3-1",
+    "path": "research/DGamma/CP5O19SourceShapeSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O19SourceShapeSpike.idr"
+    ],
+    "start": "2026-09-08T02:08:03.717626+00:00",
+    "end": "2026-09-08T02:08:05.800164+00:00",
+    "seconds": 2.0823622499592602,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 677488,
+    "sourceSHA256": "506314f93a676b106ee5b88557f2695b21c92c2034f46050b500466c7c85c0d2",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "12/12: Building DGamma.CP5O19SourceShapeSpike (research/DGamma/CP5O19SourceShapeSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "o19AlignedActivationOwner"
+    ],
+    "matchingSourceCommits": [
+      "b1b2397f7f03081aae3a1b089e5d95770f24e3e1"
+    ]
+  },
+  {
+    "unit": "F4-1",
+    "path": "research/DGamma/CP5O19SourceShapeSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O19SourceShapeSpike.idr"
+    ],
+    "start": "2026-09-08T02:08:39.912253+00:00",
+    "end": "2026-09-08T02:08:43.050119+00:00",
+    "seconds": 3.1376972077414393,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 679520,
+    "sourceSHA256": "1a9ebcca33ef5531e632929ce0ae9f1833e5ba0be842fb36a6610ca51e2870dc",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "12/12: Building DGamma.CP5O19SourceShapeSpike (research/DGamma/CP5O19SourceShapeSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "o19SourcePairOwner"
+    ],
+    "matchingSourceCommits": [
+      "ee2525352ea2692c638d537fe649f15fda127a94"
+    ]
+  },
+  {
+    "unit": "F5-1",
+    "path": "research/DGamma/CP5O19SourceShapeSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O19SourceShapeSpike.idr"
+    ],
+    "start": "2026-09-08T02:18:48.532642+00:00",
+    "end": "2026-09-08T02:18:51.668509+00:00",
+    "seconds": 3.135711541865021,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 2882592,
+    "sourceSHA256": "a346130e167f914453bca0210bac5904df9896e0d12623a7f5e5f1cc1276353e",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "12/12: Building DGamma.CP5O19SourceShapeSpike (research/DGamma/CP5O19SourceShapeSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "o19InactiveResolvedKeyExcluded"
+    ],
+    "matchingSourceCommits": [
+      "cac5c4574f3da574afe462e28f74350006df4222"
+    ]
+  },
+  {
+    "unit": "F6-1",
+    "path": "research/DGamma/CP5O19SourceShapeSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O19SourceShapeSpike.idr"
+    ],
+    "start": "2026-09-08T02:19:49.277473+00:00",
+    "end": "2026-09-08T02:19:52.408390+00:00",
+    "seconds": 3.1307086246088147,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 3008400,
+    "sourceSHA256": "ab6a2c8a34b94b2c17b620653593687d25a885f86008896c21bcf0e5805181f7",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "12/12: Building DGamma.CP5O19SourceShapeSpike (research/DGamma/CP5O19SourceShapeSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "o19ResolutionConsExcluded"
+    ],
+    "matchingSourceCommits": [
+      "32380cb775ef8030b60994ead54b9b2ef43557f3"
+    ]
+  },
+  {
+    "unit": "F7-1",
+    "path": "research/DGamma/CP5O19SourceShapeSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O19SourceShapeSpike.idr"
+    ],
+    "start": "2026-09-08T02:20:18.568158+00:00",
+    "end": "2026-09-08T02:20:20.655828+00:00",
+    "seconds": 2.087468625046313,
+    "exit": 1,
+    "fresh": true,
+    "passed": false,
+    "interrupted": false,
+    "maxSampleRSSKiB": 671472,
+    "sourceSHA256": "d7fda1b8af21fd98245a9b110c09e7a2a55ca0226903bde201714ed590370772",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "12/12: Building DGamma.CP5O19SourceShapeSpike (research/DGamma/CP5O19SourceShapeSpike.idr)\nError: Patterns for o19ResolvedDependenciesExcluded have differing numbers of arguments.\n\nDGamma.CP5O19SourceShapeSpike:200:1--201:21\n 200 | o19ResolvedDependenciesExcluded nameEq keyEq state actor owner found inactive wellFormed [] view resolved wanted absent declares =\n 201 |   uninhabited absent\n\n",
+    "newTopLevelDeclarations": [
+      "o19ResolvedDependenciesExcluded"
+    ],
+    "matchingSourceCommits": []
+  },
+  {
+    "unit": "F7-2",
+    "path": "research/DGamma/CP5O19SourceShapeSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O19SourceShapeSpike.idr"
+    ],
+    "start": "2026-09-08T02:20:41.728223+00:00",
+    "end": "2026-09-08T02:20:44.867551+00:00",
+    "seconds": 3.1391595830209553,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 3008400,
+    "sourceSHA256": "0bb7a9c31126b9bc0df3493bb90e64a61933bf043188951bc89fee3cf4037e24",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "12/12: Building DGamma.CP5O19SourceShapeSpike (research/DGamma/CP5O19SourceShapeSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "o19ResolvedDependenciesExcluded"
+    ],
+    "matchingSourceCommits": [
+      "14d9142bbb5108e07f06e11905282d649cbe4b5d"
+    ]
+  },
+  {
+    "unit": "F8-1",
+    "path": "research/DGamma/CP5O19SourceShapeSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O19SourceShapeSpike.idr"
+    ],
+    "start": "2026-09-08T02:22:28.974155+00:00",
+    "end": "2026-09-08T02:22:32.085047+00:00",
+    "seconds": 3.110694959294051,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 4181760,
+    "sourceSHA256": "b7ade648e85d35b309a086aa458000cca7646806a027bbd0a22e77d508273ce0",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "37/37: Building DGamma.CP5O19SourceShapeSpike (research/DGamma/CP5O19SourceShapeSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "o19OpeningSourceNondependency"
+    ],
+    "matchingSourceCommits": [
+      "9741d0b27a8ea39627ac91002468821e9174f55c"
+    ]
   }
 ]
