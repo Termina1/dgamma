@@ -8,6 +8,7 @@ import DGamma.CP5O20SupportedReferenceSpike
 import DGamma.CP5O19ActivationResolutionSpike
 import DGamma.CP5O20RightOpeningTransportSpike
 import DGamma.CP5O20BeginObservationSpike
+import DGamma.CP5RankedEarlyApplicabilitySpike
 import DGamma.CP4DeletionFrameCore
 import DGamma.CP4DeletionSelectedForeignLifecycleCore
 import Data.List.Elem
@@ -70,3 +71,39 @@ o20IncomparableNativeResolver nameEq keyEq reference right leftFiber rightFiber 
     (\wanted, needed, provided => o20IncomparableDeclarations nameEq keyEq reference (actionOwner action) right
       leftFiber rightFiber leftFound rightFound leftSupported rightSupported noPath wanted needed
       (replace {p = \component => Elem wanted (dependencies (componentProvisions component))} static provided))
+
+||| Backward checked Begin across an actual incomparable native update. The
+||| owner frame and resolver are BOTH derived, not input. This one-edge
+||| transport still requires exact immutable reference components and owner
+||| survival; whole-block extraction of those facts is a separate obligation.
+export
+0 o20IncomparableEarlierBegin :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (reference : SystemState name key value world error) -> (right : name) ->
+  (leftFiber, rightFiber : Fiber name key value world error) ->
+  (before, middle, rightAfter : SystemState name key value world error) ->
+  (action : Action name key value world error) -> (tag : RuleTag) ->
+  (checkedApplyAction {name} {key} {value} {world} {error} @{nameEq} @{keyEq} action before = Just (tag, middle)) ->
+  (observation : O20BeginObservation name key world error value nameEq keyEq right middle rightAfter) ->
+  (old : Fiber name key value world error) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} (actionOwner action) (registry before) = Just old) ->
+  (isJust (lookupFiber {name} {key} {value} {world} {error} @{nameEq} (actionOwner action) (registry middle)) = True) ->
+  (fiberComponent old = fiberComponent leftFiber) ->
+  (fiberComponent rightFiber = beginObservedComponent observation) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} (actionOwner action) (registry reference) = Just leftFiber) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} right (registry reference) = Just rightFiber) ->
+  (isSupported {name} {key} {value} {world} {error} @{nameEq} @{keyEq} (actionOwner action) reference = True) ->
+  (isSupported {name} {key} {value} {world} {error} @{nameEq} @{keyEq} right reference = True) ->
+  Not (O20SupportedPath name key world error value nameEq keyEq reference (actionOwner action) right) ->
+  Not (right = actionOwner action) -> (registryWellFormed @{nameEq} @{keyEq} before = True) ->
+  CheckedEarlyApplication name key world error value nameEq keyEq before (LBegin right) LBeginTag
+o20IncomparableEarlierBegin {name} {key} {value} {world} {error} nameEq keyEq reference right leftFiber rightFiber before middle rightAfter action tag checked observation old oldFound survives leftStatic rightStatic leftFound rightFound leftSupported rightSupported noPath distinct wellFormed =
+  o20RightBeginAtEarlierObservation nameEq keyEq right before middle rightAfter observation wellFormed
+    (sym (systemLocalUpdateForeign nameEq right (actionOwner action) distinct before middle
+      (applyActionLocalUpdate nameEq keyEq action before middle tag
+        (checkedActionProjects nameEq keyEq action before middle tag checked))))
+    (replace {p = \component =>
+      (resolveView {name} {key} {value} {world} {error} @{nameEq} @{keyEq} (dependencies (componentDependencies component)) (registry before) =
+       resolveView {name} {key} {value} {world} {error} @{nameEq} @{keyEq} (dependencies (componentDependencies component)) (registry middle))}
+      rightStatic (sym (o20IncomparableNativeResolver nameEq keyEq reference right leftFiber rightFiber before middle action tag checked old oldFound survives leftStatic leftFound rightFound leftSupported rightSupported noPath)))
