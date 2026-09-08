@@ -102,3 +102,20 @@ o19ProviderReplaceNonDependency nameEq keyEq wanted actor (MkCoeffectContext ent
     (\fiber, occurs =>
       rewrite justInjective (trans (sym (lookupEntryFromElem nameEq entries unique occurs)) found) in
         o19NonProviderObserved keyEq wanted old (providerCandidate @{keyEq} wanted old) Refl excluded)
+
+||| Lift one primitive provider observation through resolveView's Maybe case.
+export
+0 o19ResolveHeadObserved :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (wanted : key) -> (rest : List key) ->
+  (left, right : Registry name key value world error) -> (observed : Maybe name) ->
+  (providerOf {name} {key} {value} {world} {error} @{nameEq} @{keyEq} wanted left = observed) ->
+  (providerOf {name} {key} {value} {world} {error} @{nameEq} @{keyEq} wanted right = observed) ->
+  (resolveView {name} {key} {value} {world} {error} @{nameEq} @{keyEq} rest left =
+   resolveView {name} {key} {value} {world} {error} @{nameEq} @{keyEq} rest right) ->
+  (resolveView {name} {key} {value} {world} {error} @{nameEq} @{keyEq} (wanted :: rest) left =
+   resolveView {name} {key} {value} {world} {error} @{nameEq} @{keyEq} (wanted :: rest) right)
+o19ResolveHeadObserved nameEq keyEq wanted rest left right Nothing leftProvider rightProvider tailSame =
+  rewrite leftProvider in rewrite rightProvider in Refl
+o19ResolveHeadObserved nameEq keyEq wanted rest left right (Just provider) leftProvider rightProvider tailSame =
+  rewrite leftProvider in rewrite rightProvider in cong (map (ProviderView provider)) tailSame
