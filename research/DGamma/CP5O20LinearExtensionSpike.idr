@@ -112,3 +112,19 @@ o20SelectOrientedSafeBlocks nameEq keyEq protocol sourceOrder goalOrder goalStat
     (\candidate => o20CheckCandidate nameEq keyEq protocol sourceOrder trace blocks premises unique candidate >>=
       o20OrientChosenSafeSwap nameEq goalOrder goalState linearization)
     (o20AdjacentCandidates nameEq sourceOrder [] sourceOrder Refl))
+
+||| The same pair cannot also be oriented the opposite way in this fixed
+||| accepted unique target order. This rules out the immediate inverse
+||| orientation, not an arbitrary operational cycle or a global descent.
+export
+0 o20OrientedCannotReverse :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {protocol : RegistrationProtocol key value world error} -> {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {sourceOrder, goalOrder : List name} -> {goalState : SystemState name key value world error} ->
+  {initial, finalState : SystemState name key value world error} -> {trace : Transitions initial finalState} ->
+  {blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder trace} ->
+  {premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq trace} ->
+  (choice : O20OrientedSafeSwap name key world error value protocol nameEq keyEq sourceOrder goalOrder goalState trace blocks premises) ->
+  Not (BeforeIn (actorLeft (chosenOrderSwap (orientedChoice choice))) (actorRight (chosenOrderSwap (orientedChoice choice))) goalOrder)
+o20OrientedCannotReverse choice =
+  o20BeforeAsymmetric (orderUnique (orientedGoalLinearization choice)) (orientedGoalReverse choice)
