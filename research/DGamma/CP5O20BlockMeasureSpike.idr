@@ -62,3 +62,15 @@ o20BeforeRankCrossing {left} {right} nameEq (head :: rest) (UniqueCons absent un
   rewrite Builtin.snd (o20GoalRankObserved nameEq right head rest (decEq @{nameEq} right head) Refl)
     (o20UniqueTailDifferent (UniqueCons absent unique) (Builtin.snd (o20BeforeMembers ordered))) in
       o20BeforeRankCrossing nameEq rest unique ordered
+
+||| Every unaffected actor sees the same total pair contribution.
+export
+0 o20CrossingSumSwap :
+  (leading : List Nat) -> (left, right : Nat) -> (later : List Nat) -> (pivot : Nat) ->
+  (foldr (+) Z (map (rankCrossing pivot) (leading ++ left :: right :: later)) =
+   foldr (+) Z (map (rankCrossing pivot) (leading ++ right :: left :: later)))
+o20CrossingSumSwap [] left right later pivot =
+  rankPlusSwap (rankCrossing pivot left) (rankCrossing pivot right)
+    (foldr (+) Z (map (rankCrossing pivot) later))
+o20CrossingSumSwap (head :: rest) left right later pivot =
+  cong (rankCrossing pivot head +) (o20CrossingSumSwap rest left right later pivot)
