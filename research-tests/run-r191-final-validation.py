@@ -14,7 +14,7 @@ import sys
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 OUT = pathlib.Path('/tmp/dgamma-r191')
 phase=sys.argv[1]
-assert phase in ['prebody','postbody']
+assert phase == 'final'
 plan = json.loads((OUT/(phase+'-validation-plan.json')).read_text())
 assert len({p['unit'] for p in plan}) == len(plan)
 assert not subprocess.check_output(['git', 'diff', '--cached', '--name-only'], cwd=ROOT).strip()
@@ -23,6 +23,9 @@ processes = subprocess.check_output(['ps', '-axo', 'pid,ppid,command'], text=Tru
 assert not re.search(r'/idris2_app/idris2(?:\.so)?(?:\s|$)', processes)
 for item in plan:
     assert re.fullmatch(r'V\d+', item['unit'])
+    import hashlib
+    source = ROOT/('dgamma.ipkg' if item['path']=='package' else item['path'])
+    assert hashlib.sha256(source.read_bytes()).hexdigest() == item['sourceHash'], 'Immutable final source changed'
     assert not (OUT/(item['unit']+'.json')).exists(), 'Final plan never silently overwrites or skips an invocation'
     args = ['python3', '-I', str(ROOT/'research-tests/run-r191-check.py'), item['unit'], item['path']]
     if item['expectedDiagnostic']:
