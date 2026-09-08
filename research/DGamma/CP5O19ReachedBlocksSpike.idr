@@ -444,3 +444,24 @@ o19SupportedActiveObserved nameEq selected source target _ _ sourceFound targetF
 o19SupportedActiveObserved nameEq selected source target _ _ sourceFound targetFound
   (SomeControlFibers (FibersControlRelated lp rp lr rr lt rt leftLifecycle rightLifecycle parents retired lifecycle)) =
     rewrite sourceFound in rewrite targetFound in o19LifecycleControlActiveSame lifecycle
+
+||| Preserve source-final active truth at the SAME actual reached endpoint.
+||| This consumes D1 on its real chain, never a detached endpoint assertion.
+export
+0 o19ActualFinalActive :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (protocol : RegistrationProtocol key value world error) ->
+  {sourceOrder, targetOrder : List name} -> (swap : AdjacentActorOrderSwap name sourceOrder targetOrder) ->
+  {initial, sourceFinal : SystemState name key value world error} -> (source : Transitions initial sourceFinal) ->
+  (blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder source) ->
+  (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq source) ->
+  (safety : AdjacentActorSwapSafety name key world error value protocol nameEq keyEq swap source blocks premises) ->
+  (unique : UniqueRawNameInsertions name key world error value nameEq keyEq source) ->
+  (selected : name) ->
+  (supportedActiveAt {name} {key} {value} {world} {error} @{nameEq} selected sourceFinal = True) ->
+  (supportedActiveAt {name} {key} {value} {world} {error} @{nameEq} selected (cursorFinal (columnCursor (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique))) = True)
+o19ActualFinalActive {sourceFinal} nameEq keyEq protocol swap source blocks premises safety unique selected active =
+  trans (sym (o19SupportedActiveObserved nameEq selected sourceFinal (cursorFinal (columnCursor (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique)))
+    (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected (registry sourceFinal))
+    (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected (registry (cursorFinal (columnCursor (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique))))) Refl Refl
+    (controlPointwise (replayedControls (o19FiniteEndpoint nameEq keyEq (cursorDerivation (columnCursor (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique))) (replayFinalWellFormed premises))) selected))) active
