@@ -155,3 +155,25 @@ owner-gated A11 surface series, not the exhausted B10 seam.
 This ruling supersedes earlier pending/option-comparison language, but does NOT
 unfreeze production in R192. Current-shift O17 prohibition remains; variant
 root-phase work is planned for the explicitly authorized research sequence.
+
+## C4 STOP3/3 — actual R191 reordering not established
+
+C1/C2 research grammar and one-way old inclusion pass; C3 names physical
+candidate states. C4 tries the SAME eleven actions/final state as R191 with
+Retire3 moved before actor1's lifecycle. Attempt1 checked-Begin target
+well-formedness would not normalize. Attempt2 uses actual preceding checked
+validity + raw preservation, passes Begin, then raw child Insert guard fails
+normalization. Attempt3 additionally flattens the already-named state runtime
+expressions; SAME raw child Insert guard failure. Exactly3 attempts; full C4
+body/import/flattening delta restored to committed C3 bytes after SHA check.
+No fourth or shorter raw-equation retry. SV3 authenticates retained state-only
+candidate. Remaining C probes classify EXISTING authenticated R178/R192 traces
+in the new grammar, not a restart of this failed eleven-edge producer.
+
+Important A10 nuance: extending a CONTIGUOUS parent grammar cannot by itself
+move R191's unchanged ordinal8 Retire3 inside parent[3,6): actor1's lifecycle
+at6/7 intervenes. A real operational reordering is required. The proposed new
+trace moved exactly that retirement, not arbitrary endpoint data; it was not
+proved. Consequently revised universal zero-gap completeness and the exact
+R191 normalization remain unproved. No claim that syntax enlargement alone
+solves physical adjacency is made.
