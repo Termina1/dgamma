@@ -46,3 +46,22 @@ o19FiniteSameExternalInputs nameEq
   (FiniteAdjacentSwapStep source earlier left right later orientation diamond result target rest) =
     sameExternalOrchestrationTransitiveSpike nameEq (swappedSameExternalInputs result)
       (o19FiniteSameExternalInputs nameEq rest)
+
+||| The ACTUAL reached endpoint on the SAME cursor derivation, using the
+||| full original bundle's final well-formedness at D1's base boundary.
+export
+0 o19ActualTargetEndpoint :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (protocol : RegistrationProtocol key value world error) ->
+  {sourceOrder, targetOrder : List name} -> (swap : AdjacentActorOrderSwap name sourceOrder targetOrder) ->
+  {initial, sourceFinal : SystemState name key value world error} -> (source : Transitions initial sourceFinal) ->
+  (blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder source) ->
+  (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq source) ->
+  (safety : AdjacentActorSwapSafety name key world error value protocol nameEq keyEq swap source blocks premises) ->
+  (unique : UniqueRawNameInsertions name key world error value nameEq keyEq source) ->
+  RelationalReplayEndpoint name key world error value nameEq keyEq sourceFinal
+    (cursorFinal (columnCursor (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique)))
+o19ActualTargetEndpoint nameEq keyEq protocol swap source blocks premises safety unique =
+  o19FiniteEndpoint nameEq keyEq
+    (cursorDerivation (columnCursor (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique)))
+    (replayFinalWellFormed premises)
