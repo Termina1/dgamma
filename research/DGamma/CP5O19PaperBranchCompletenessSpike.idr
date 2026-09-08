@@ -6,6 +6,7 @@ import DGamma.Coeffects
 import DGamma.Metatheory
 import DGamma.CP3
 import DGamma.CP4DeletionSelectedForeignOrchestration
+import DGamma.CP5CurrentGenerationBirthSpike
 import DGamma.CP5O19AdjacentReplayProducerSpike
 import DGamma.CP5ConfluenceLocalDiamondSpike
 import Data.List
@@ -190,3 +191,26 @@ o19InstalledPrependNoUnload nameEq keyEq selected _ later
             (checkedActionProjects nameEq keyEq (LUnload selected) before afterState tag checked)))))
           (installedTraceStart tail)))
       (o19InstalledPrependNoUnload nameEq keyEq selected rest later tail noUnload)
+
+||| The complete original source contains NO selected L-Unload: the exact
+||| opening is Begin, the body is installed at every cut, and both outside
+||| segments have no selected lifecycle action. No extra O19 premise.
+export
+0 o19OriginalBlockNoUnload :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (source : Transitions initial finalState) ->
+  (block : LocatedOpenEpisodeBlock name key world error value nameEq keyEq selected source) ->
+  NoParentUnload selected source
+o19OriginalBlockNoUnload nameEq keyEq selected source block =
+  replace {p = NoParentUnload selected} (blockDecomposition block)
+    (o19NoLifecyclePrependNoUnload selected (traceBeforeBlock block)
+      (MoreTransitions (beginTransition (blockOpening block)) (appendTransitions (blockBody block) (traceAfterBlock block)))
+      (noEarlierLifecycle block)
+      (NoParentUnloadStep (beginTransition (blockOpening block)) (appendTransitions (blockBody block) (traceAfterBlock block))
+        (\same => case same of Refl impossible)
+        (o19InstalledPrependNoUnload nameEq keyEq selected (blockBody block) (traceAfterBlock block) (blockBodyInstalled block)
+          (replace {p = NoParentUnload selected}
+            (currentBirthTraceAppendEmpty name key world error value (traceAfterBlock block))
+            (o19NoLifecyclePrependNoUnload selected (traceAfterBlock block) NoTransitions (noLaterLifecycle block) NoParentUnloadEnd)))))
