@@ -39,3 +39,22 @@ o20DecomposedLifecyclePaper {name} {key} {world} {error} {value} nameEq keyEq pr
       (MoreTransitions (locatedTransition occurrence) (afterActionOccurrence occurrence))
       (replace {p = AlignedTransitions name key world error value nameEq keyEq}
         (sym (actionOccurrenceDecomposition occurrence)) (replayAligned premises)))) lifecycle
+
+||| Accepted independent canonical capital supplies the complete decomposition
+||| and the exact replay bundle used by A17. No no-failure-at-every-cut or
+||| success-role premise is added; the native final-active argument derives it.
+export
+0 o20CanonicalLifecyclePaper :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (trace : Transitions initial finalState) ->
+  (capital : IndependentCanonicalSchedule name key world error value protocol nameEq keyEq trace) ->
+  (action : Action name key value world error) ->
+  (occurrence : LocatedActionOccurrence action (canonicalTrace (canonicalSchedule capital))) ->
+  (isLifecycleAction action = True) -> PaperActivationStep (locatedTransition occurrence)
+o20CanonicalLifecyclePaper nameEq keyEq protocol trace capital action occurrence lifecycle =
+  o20DecomposedLifecyclePaper nameEq keyEq protocol (canonicalTrace (canonicalSchedule capital))
+    (supportOrder (canonicalSchedule capital)) (canonicalActorBlockDecomposition capital)
+    (canonicalReplayPremises capital) action occurrence lifecycle
