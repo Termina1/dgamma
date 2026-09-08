@@ -227,3 +227,16 @@ export
   BeforeIn lower upper order -> BeforeIn (renaming lower) (renaming upper) (map renaming order)
 o20BeforeMap renaming (BeforeHere later) = BeforeHere (elemMap renaming later)
 o20BeforeMap renaming (BeforeThere later) = BeforeThere (o20BeforeMap renaming later)
+
+||| Recover actual goal membership from the inverse-renamed finite list,
+||| without a computed existential or an assumed actor-set equality.
+export
+0 o20InverseMapMember :
+  {name : Type} -> (forward, backward : name -> name) ->
+  ((selected : name) -> (forward (backward selected) = selected)) ->
+  {selected : name} -> {order : List name} ->
+  Elem selected (map backward order) -> Elem (forward selected) order
+o20InverseMapMember forward backward inverse {order = head :: rest} Here =
+  rewrite inverse head in Here
+o20InverseMapMember forward backward inverse {order = head :: rest} (There later) =
+  There (o20InverseMapMember forward backward inverse later)
