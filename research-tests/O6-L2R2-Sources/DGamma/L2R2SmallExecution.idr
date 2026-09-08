@@ -43,3 +43,26 @@ record SmallNativeExecution where
 public export
 0 smallNativeExecution : SmallNativeExecution
 smallNativeExecution = MkSmallNativeExecution Refl Refl Refl Refl Refl Refl Refl Refl Refl Refl Refl Refl Refl
+
+||| The seven-edge native A12 execution. The parent completes, then its own
+||| child is retired and removed, then the newly available root is inserted,
+||| then the unrelated actor completes. No fallback evaluator or alleged
+||| normalization is involved; the endpoint is LITERALLY smallState7.
+public export
+smallTrace : Transitions (smallState 0) (smallState 7)
+smallTrace =
+  MoreTransitions (Fired {before = smallState 0} {afterState = smallState 1}
+    %search %search (LBegin 0) LBeginTag (smallBegin0 smallNativeExecution))
+    (    MoreTransitions (Fired {before = smallState 1} {afterState = smallState 2}
+      %search %search (LAdvance 0) LFinishTag (smallFinish0 smallNativeExecution))
+      (      MoreTransitions (Fired {before = smallState 2} {afterState = smallState 3}
+        %search %search (ORetire 1) ORetireTag (smallRetire1 smallNativeExecution))
+        (        MoreTransitions (Fired {before = smallState 3} {afterState = smallState 4}
+          %search %search (ORemove 1) ORemoveTag (smallRemove1 smallNativeExecution))
+          (          MoreTransitions (Fired {before = smallState 4} {afterState = smallState 5}
+            %search %search (OInsert 3 Root (smallComponent True)) OInsertTag (smallInsert3 smallNativeExecution))
+            (            MoreTransitions (Fired {before = smallState 5} {afterState = smallState 6}
+              %search %search (LBegin 2) LBeginTag (smallBegin2 smallNativeExecution))
+              (              MoreTransitions (Fired {before = smallState 6} {afterState = smallState 7}
+                %search %search (LAdvance 2) LFinishTag (smallFinish2 smallNativeExecution))
+                (NoTransitions)))))))
