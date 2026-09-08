@@ -144,3 +144,21 @@ o20DescendFuel (S fuel) nameEq keyEq protocol sourceOrder goalOrder goalState go
       o20DescendFuel fuel nameEq keyEq protocol nextOrder goalOrder goalState goalLinearization
         nextTrace nextBlocks nextPremises nextUnique nextMeasured)
     measured (o20SelectOperationalProgress nameEq keyEq protocol sourceOrder goalOrder goalState goalLinearization trace blocks premises unique) Refl
+
+||| No fuel or next-state oracle: initialize the total loop at the finite
+||| fixed-goal inversion count of the actual source actor enumeration.
+export
+0 o20OperationalDescent :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) -> (sourceOrder, goalOrder : List name) ->
+  (goalState : SystemState name key value world error) ->
+  (goalLinearization : LinearizesSupport name key world error value nameEq keyEq goalState goalOrder) ->
+  {initial, finalState : SystemState name key value world error} -> (trace : Transitions initial finalState) ->
+  (blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder trace) ->
+  (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq trace) ->
+  (0 unique : UniqueRawNameInsertions name key world error value nameEq keyEq trace) ->
+  (O20OperationalDescent name key world error value protocol nameEq keyEq sourceOrder goalOrder goalState goalLinearization trace blocks premises unique)
+o20OperationalDescent nameEq keyEq protocol sourceOrder goalOrder goalState goalLinearization trace blocks premises unique =
+  o20DescendFuel (rankInversions (map (o20GoalRank nameEq goalOrder) sourceOrder)) nameEq keyEq protocol
+    sourceOrder goalOrder goalState goalLinearization trace blocks premises unique Refl
