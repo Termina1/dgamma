@@ -57,3 +57,36 @@ export
     (AvailabilityStep first (Fired {before = first} {afterState = snapshotRootMiddle exchange} nameEq keyEq (OInsert root Root component) OInsertTag (snapshotRootEarly exchange)) (MoreTransitions (Fired {before = snapshotRootMiddle exchange} {afterState = snapshotRootFinal exchange} nameEq keyEq (LBegin actor) LBeginTag (snapshotRootLater exchange)) NoTransitions)
       (AvailabilityStep (snapshotRootMiddle exchange) (Fired {before = snapshotRootMiddle exchange} {afterState = snapshotRootFinal exchange} nameEq keyEq (LBegin actor) LBeginTag (snapshotRootLater exchange)) NoTransitions (AvailabilityEnd (snapshotRootFinal exchange)))))
 beginSnapshotRootDecreases nameEq keyEq actor root component beforeBegin beforeRoot exchange prior = Refl
+
+||| Narrow research root-phase step, inspired by CanonicalSort:1583
+||| CanonicalRootInsertionHoist but NOT a copy of its full O17 result:
+||| arbitrary genuine context BEFORE the pair, no suffix, supplied authenticated
+||| availability-aware snapshot square, checked output, support-set equality,
+||| exact local measure decrement. ReplayInvariantBundle, canonical placement,
+||| generic square production, arbitrary-suffix replay and full normalization
+||| remain outside this record. Frozen statements are not weakened.
+public export
+record SnapshotRootPhaseStep
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (keyEq : DecEq key)
+  (actor, root : name) (component : Component key value world error)
+  {initial, first, middle, cut : SystemState name key value world error}
+  (earlier : Transitions initial first)
+  (beforeBegin : checkedApplyAction @{nameEq} @{keyEq} (LBegin actor) first = Just (LBeginTag, middle))
+  (beforeRoot : checkedApplyAction @{nameEq} @{keyEq} (OInsert root Root component) middle = Just (OInsertTag, cut)) where
+  constructor MkSnapshotRootPhaseStep
+  rootPhaseSquare : AvailabilityRootSnapshotExchange name key world error value nameEq keyEq root component
+    (Fired {before = first} {afterState = middle} nameEq keyEq (LBegin actor) LBeginTag beforeBegin)
+    (Fired {before = middle} {afterState = cut} nameEq keyEq (OInsert root Root component) OInsertTag beforeRoot)
+  rootPhaseTrace : Transitions initial (snapshotRootFinal rootPhaseSquare)
+  0 rootPhasePhysical : rootPhaseTrace = appendTransitions earlier
+    (MoreTransitions (Fired {before = first} {afterState = snapshotRootMiddle rootPhaseSquare} nameEq keyEq (OInsert root Root component) OInsertTag (snapshotRootEarly rootPhaseSquare)) (MoreTransitions (Fired {before = snapshotRootMiddle rootPhaseSquare} {afterState = snapshotRootFinal rootPhaseSquare} nameEq keyEq (LBegin actor) LBeginTag (snapshotRootLater rootPhaseSquare)) NoTransitions))
+  0 rootPhaseRuntime : runtimeSnapshot cut = runtimeSnapshot (snapshotRootFinal rootPhaseSquare)
+  0 rootPhaseSupport : supportSet @{nameEq} @{keyEq} cut = supportSet @{nameEq} @{keyEq} (snapshotRootFinal rootPhaseSquare)
+  0 rootPhaseMeasure : (prior : Nat) ->
+    rootBirthInversions prior
+      (AvailabilityStep first (Fired {before = first} {afterState = middle} nameEq keyEq (LBegin actor) LBeginTag beforeBegin) (MoreTransitions (Fired {before = middle} {afterState = cut} nameEq keyEq (OInsert root Root component) OInsertTag beforeRoot) NoTransitions)
+        (AvailabilityStep middle (Fired {before = middle} {afterState = cut} nameEq keyEq (OInsert root Root component) OInsertTag beforeRoot) NoTransitions (AvailabilityEnd cut))) =
+    S (rootBirthInversions prior
+      (AvailabilityStep first (Fired {before = first} {afterState = snapshotRootMiddle rootPhaseSquare} nameEq keyEq (OInsert root Root component) OInsertTag (snapshotRootEarly rootPhaseSquare)) (MoreTransitions (Fired {before = snapshotRootMiddle rootPhaseSquare} {afterState = snapshotRootFinal rootPhaseSquare} nameEq keyEq (LBegin actor) LBeginTag (snapshotRootLater rootPhaseSquare)) NoTransitions)
+        (AvailabilityStep (snapshotRootMiddle rootPhaseSquare) (Fired {before = snapshotRootMiddle rootPhaseSquare} {afterState = snapshotRootFinal rootPhaseSquare} nameEq keyEq (LBegin actor) LBeginTag (snapshotRootLater rootPhaseSquare)) NoTransitions (AvailabilityEnd (snapshotRootFinal rootPhaseSquare)))))
