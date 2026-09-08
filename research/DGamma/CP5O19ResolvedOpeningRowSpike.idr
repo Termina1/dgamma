@@ -160,3 +160,43 @@ o19BeginAtResolvedState nameEq keyEq actor (MkSystemState ambient source) compon
   table resolved found resolution wellFormed =
     o19BeginAtResolvedView nameEq keyEq actor ambient source component parent table
       resolved found resolution wellFormed
+
+||| Derive EVERY cut guard across arbitrarily many observed insertions. The
+||| SAME explicit component/table/view are threaded recursively; actual local
+||| updates preserve the lookup, observed equations preserve resolution, and
+||| preservation supplies each reached domain. No targetFiber is mentioned.
+export
+0 o19OpeningAlongObservedInsertions :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (component : Component key value world error) -> (parent : Parent name) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (resolved : View name (dependencies (componentDependencies component))) ->
+  {before, finalState : SystemState name key value world error} ->
+  (spine : Transitions before finalState) ->
+  O19ObservedInsertions name key world error value nameEq keyEq actor
+    (dependencies (componentDependencies component)) spine ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor (registry before) =
+    Just (MkFiber component parent False table (Inactive Nothing))) ->
+  (resolveView {name} {key} {value} {world} {error} @{nameEq} @{keyEq}
+    (dependencies (componentDependencies component)) (registry before) = Just resolved) ->
+  (registryWellFormed {name} {key} {value} {world} {error} @{nameEq} @{keyEq} before = True) ->
+  O19EarlyAlong name key world error value nameEq keyEq (LBegin actor) LBeginTag spine
+o19OpeningAlongObservedInsertions {before} nameEq keyEq actor component parent table resolved
+  _ ObservedInsertionsEnd found resolution wellFormed =
+    EarlyAlongEnd (o19BeginAtResolvedState nameEq keyEq actor before component parent table
+      resolved found resolution wellFormed)
+o19OpeningAlongObservedInsertions {before} nameEq keyEq actor component parent table resolved
+  _ (ObservedInsertionsStep {middle} child childParent childComponent tag checked rest
+    childSafe parentSafe observed remaining) found resolution wellFormed =
+    EarlyAlongStep (Fired {before} {afterState = middle} nameEq keyEq
+      (OInsert child childParent childComponent) tag checked) rest
+      (o19BeginAtResolvedState nameEq keyEq actor before component parent table
+        resolved found resolution wellFormed)
+      (o19OpeningAlongObservedInsertions nameEq keyEq actor component parent table resolved rest remaining
+        (trans (systemLocalUpdateForeign nameEq actor child childSafe before middle
+          (applyActionLocalUpdate nameEq keyEq (OInsert child childParent childComponent) before middle tag
+            (checkedActionProjects nameEq keyEq (OInsert child childParent childComponent) before middle tag checked))) found)
+        (trans (resolutionAfter observed) (trans (sym (resolutionBefore observed)) resolution))
+        (preservationTheoremProof nameEq keyEq (OInsert child childParent childComponent) before middle tag wellFormed
+          (checkedActionProjects nameEq keyEq (OInsert child childParent childComponent) before middle tag checked)))
