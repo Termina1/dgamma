@@ -1030,3 +1030,14 @@ export
 o19ClassifySwapSite leading left right trailing member =
   o19ElemAppendCases leading (right :: left :: trailing) O19SiteBefore
     (o19ClassifySwapTail leading left right trailing) member
+
+||| Each prefix occurrence is before the first appended selected actor.
+export
+0 o19BeforeAppendedSelected : {name : Type} -> (leading : List name) -> (left : name) ->
+  (trailing : List name) -> {selected : name} -> Elem selected leading ->
+  BeforeIn selected left (leading ++ (left :: trailing))
+o19BeforeAppendedSelected [] left trailing member = void (uninhabited member)
+o19BeforeAppendedSelected (head :: rest) left trailing Here =
+  BeforeHere (snd (o19ElemAppendInjections rest (left :: trailing)) Here)
+o19BeforeAppendedSelected (head :: rest) left trailing (There member) =
+  BeforeThere (o19BeforeAppendedSelected rest left trailing member)
