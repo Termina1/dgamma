@@ -205,3 +205,49 @@ o20AllNameCutFirstThree {key} {value} nameEq keyEq renaming left right paired =
       (effectTables (projectEffectState @{nameEq} right) (renameForward renaming selected))
       (synchronizedTables (allNameEffects paired) selected))
     (allNameControls paired)
+
+||| Full ALL-NAME successor for two ACTUAL checked Begins with shared observed
+||| component. Both lookup/resolver/primitive-output equations authenticate the
+||| observation. This does not solve B7's projected-record equality transport;
+||| that remaining adapter must supply these shared observations canonically.
+export
+0 o20SharedObservedBeginCut :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (renaming : NameBijection name) -> (actor : name) ->
+  (leftBefore, leftAfter, rightBefore, rightAfter : SystemState name key value world error) ->
+  BeginStep nameEq keyEq actor leftBefore leftAfter ->
+  BeginStep nameEq keyEq (renameForward renaming actor) rightBefore rightAfter ->
+  (component : Component key value world error) -> (leftParent, rightParent : Parent name) ->
+  (leftTable, rightTable : OwnedTable key value (componentProvisions component)) ->
+  (leftView, rightView : View name (dependencies (componentDependencies component))) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor (registry leftBefore) =
+    Just (MkFiber component leftParent False leftTable (Inactive Nothing))) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} (renameForward renaming actor) (registry rightBefore) =
+    Just (MkFiber component rightParent False rightTable (Inactive Nothing))) ->
+  (resolveView {name} {key} {value} {world} {error} @{nameEq} @{keyEq}
+    (dependencies (componentDependencies component)) (registry leftBefore) = Just leftView) ->
+  (resolveView {name} {key} {value} {world} {error} @{nameEq} @{keyEq}
+    (dependencies (componentDependencies component)) (registry rightBefore) = Just rightView) ->
+  (MkSystemState (worldState leftBefore) (replaceBinding @{nameEq} actor
+    (MkFiber component leftParent False leftTable (Reloading (componentProgram component) id leftView)) (registry leftBefore)) = leftAfter) ->
+  (MkSystemState (worldState rightBefore) (replaceBinding @{nameEq} (renameForward renaming actor)
+    (MkFiber component rightParent False rightTable (Reloading (componentProgram component) id rightView)) (registry rightBefore)) = rightAfter) ->
+  O20AllNameCut name key world error value nameEq renaming leftBefore rightBefore ->
+  (pairwiseProvisionInvariant {name} {key} {value} {world} {error} @{keyEq} (bindings (registry rightBefore)) = True) ->
+  O20AllNameCut name key world error value nameEq renaming leftAfter rightAfter
+o20SharedObservedBeginCut nameEq keyEq renaming actor leftBefore leftAfter rightBefore rightAfter
+  leftOpening rightOpening component leftParent rightParent leftTable rightTable leftView rightView
+  leftFound rightFound leftResolved rightResolved leftExact rightExact paired pairwise =
+    MkO20AllNameCut
+      (o20PairedBeginEffects nameEq keyEq renaming actor (renameForward renaming actor)
+        leftBefore leftAfter rightBefore rightAfter leftOpening rightOpening (allNameEffects paired))
+      (\selected => rewrite sym leftExact in rewrite sym rightExact in
+        o20PairedReplaceControls nameEq renaming actor
+          (MkFiber component leftParent False leftTable (Inactive Nothing))
+          (MkFiber component rightParent False rightTable (Inactive Nothing))
+          (MkFiber component leftParent False leftTable (Reloading (componentProgram component) id leftView))
+          (MkFiber component rightParent False rightTable (Reloading (componentProgram component) id rightView))
+          (registry leftBefore) (registry rightBefore) leftFound rightFound
+          (o20SharedComponentBeginControl nameEq keyEq renaming actor component leftParent rightParent
+            leftTable rightTable leftView rightView leftBefore rightBefore leftFound rightFound leftResolved rightResolved paired pairwise)
+          (allNameControls paired) selected)
