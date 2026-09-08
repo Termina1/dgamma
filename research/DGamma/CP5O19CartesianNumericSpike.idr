@@ -153,3 +153,12 @@ o19RowPullInside start width index bound =
         Z => Refl
         S later => cong S (o19RowPullInside Z remaining later (fromLteSucc bound))
     S earlier => cong S (o19RowPullInside earlier width index bound)
+
+||| Every coordinate beyond the rotated interval is fixed, with its exact
+||| offset retained for the remaining right-column band.
+export
+0 o19RowPullBeyond : (start, width, index : Nat) ->
+  (o19RowPull start width ((start + S width) + index) = (start + S width) + index)
+o19RowPullBeyond Z Z index = Refl
+o19RowPullBeyond Z (S width) index = cong S (o19RowPullBeyond Z width index)
+o19RowPullBeyond (S start) width index = cong S (o19RowPullBeyond start width index)
