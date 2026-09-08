@@ -10,7 +10,7 @@ import DGamma.CP5AcceptedSupportTruthSpike
 import DGamma.CP5ConfluenceLocalDiamondSpike
 import DGamma.CP5ConfluenceCanonicalSortSpike
 import DGamma.CP5ConfluenceDeletionChainSpike
-import DGamma.CP5ConfluenceCrossTraceSpike
+import DGamma.CP5O19SurfaceSpike
 import DGamma.CP5ConfluenceRenamingCompositionSpike
 import DGamma.CP5O20SupportedBirthBridgeSpike
 import DGamma.CP5O20SupportedEndpointCapitalSpike
