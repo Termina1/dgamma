@@ -218,7 +218,7 @@ Frozen locations (before any owner-signed patch):
 
 | CP3 location | Planned canonical-definition change | Immediate in-file dependents |
 | --- | --- | --- |
-| :1786–1804 `ActorLifecycleOnly` | research-validated own-child Retire/Remove constructors and source-parent/nameEq indexing | :1824–1846 `LocatedOpenEpisodeBlock.blockActorOnly`; :1873 `BlockBefore` through the block type; :3241 `CanonicalSchedule.canonicalBlock` |
+| :1786–1804 `ActorLifecycleOnly` | research-validated own-child Retire/Remove constructors and source-parent/nameEq indexing | :1824–1846 `LocatedOpenEpisodeBlock.blockActorOnly`; :1873 `BlockBefore` through the block type; :3256–3257 `CanonicalSchedule.canonicalBlock` (record begins :3240) |
 | :3156–3198 `CanonicalInputPlacement` | replace strict `allRootInputsFirst` and all-lifecycle root order by the R178 availability interval/earliest/own-lifecycle clauses; retain actual freshness and child-generation-before-own-lifecycle | :3265 `CanonicalSchedule.inputPlacement`, threaded original trace required by replacement record |
 | :3756 `ConfluenceResult`, :3785 `confluenceTheorem` | dependent references must still typecheck; NO strengthening of final-state equivalence or historical/current-name identification | their canonical schedule fields only; preserve production theorem conclusion fidelity |
 
