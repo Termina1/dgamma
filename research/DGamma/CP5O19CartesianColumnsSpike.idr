@@ -456,3 +456,48 @@ export
     o19CrossingSites (cursorDerivation (mixedRowCursor (wordRow row))) ++ o19CrossingSites (cursorDerivation (columnCursor smaller)))
 o19ColumnPrependSites source earlier spine right later leftWord rightHead remainingRight suffixWord row count rightExact smaller =
   o19AppendFiniteSites (cursorDerivation (mixedRowCursor (wordRow row))) (cursorDerivation (columnCursor smaller))
+
+||| Actual column sites from an explicit actual row and strictly smaller
+||| column induction hypothesis; no caller-supplied future operational row.
+export
+0 o19ColumnAfterRowSites :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (protocol : RegistrationProtocol key value world error) ->
+  {initial, originalFinal, before, rightBefore, rightAfter : SystemState name key value world error} ->
+  (original : Transitions initial originalFinal) ->
+  (current : O19ReachedCursor name key world error value protocol nameEq keyEq original) ->
+  (earlier : Transitions initial before) -> (spine : Transitions before rightBefore) ->
+  (right : Transition rightBefore rightAfter) -> (later : Transitions rightAfter (cursorFinal current)) ->
+  (leftWord : List (Action name key value world error)) -> (rightHead : Action name key value world error) ->
+  (remainingRight, suffixWord : List (Action name key value world error)) ->
+  (row : O19WordRow name key world error value protocol nameEq keyEq (cursorTrace current) earlier spine right later) ->
+  (leftExact : o19ActionWord spine = leftWord) -> (leftCount : transitionCount spine = length leftWord) ->
+  (rightExact : transitionAction right = rightHead) -> (restExact : o19ActionWord later = remainingRight ++ suffixWord) ->
+  (0 smallerColumns : (next : O19ReachedCursor name key world error value protocol nameEq keyEq original) ->
+    {nextBefore : SystemState name key value world error} ->
+    (nextEarlier : Transitions initial nextBefore) -> (nextRest : Transitions nextBefore (cursorFinal next)) ->
+    (appendTransitions nextEarlier nextRest = cursorTrace next) ->
+    (o19ActionWord nextRest = leftWord ++ (remainingRight ++ suffixWord)) ->
+    O19ColumnRun name key world error value protocol nameEq keyEq (cursorTrace next) nextEarlier leftWord remainingRight suffixWord) ->
+  (0 rowSites : o19CrossingSites (cursorDerivation (mixedRowCursor (wordRow row))) = o19RowSites (transitionCount earlier) (length leftWord)) ->
+  (0 smallerSites : (next : O19ReachedCursor name key world error value protocol nameEq keyEq original) ->
+    {nextBefore : SystemState name key value world error} ->
+    (nextEarlier : Transitions initial nextBefore) -> (nextRest : Transitions nextBefore (cursorFinal next)) ->
+    (nextDecomposition : appendTransitions nextEarlier nextRest = cursorTrace next) ->
+    (nextWord : o19ActionWord nextRest = leftWord ++ (remainingRight ++ suffixWord)) ->
+    (o19CrossingSites (cursorDerivation (columnCursor (smallerColumns next nextEarlier nextRest nextDecomposition nextWord))) =
+      o19ColumnSites (transitionCount nextEarlier) (length leftWord) (length remainingRight))) ->
+  (o19CrossingSites (cursorDerivation (columnCursor (o19ColumnAfterRow nameEq keyEq protocol original current earlier spine right later leftWord rightHead remainingRight suffixWord row leftExact leftCount rightExact restExact smallerColumns))) =
+    o19ColumnSites (transitionCount earlier) (length leftWord) (S (length remainingRight)))
+o19ColumnAfterRowSites nameEq keyEq protocol original current earlier spine right later leftWord rightHead remainingRight suffixWord
+  row leftExact leftCount rightExact restExact smallerColumns rowSites smallerSites =
+    trans (o19ColumnPrependSites (cursorTrace current) earlier spine right later leftWord rightHead remainingRight suffixWord row leftCount rightExact
+      (smallerColumns (MkO19ReachedCursor (cursorFinal (mixedRowCursor (wordRow row))) (cursorTrace (mixedRowCursor (wordRow row))) (cursorBundle (mixedRowCursor (wordRow row))) (cursorUnique (mixedRowCursor (wordRow row))) (o19AppendFinite (cursorDerivation current) (cursorDerivation (mixedRowCursor (wordRow row))))) (appendTransitions earlier (MoreTransitions (mixedRowRight (wordRow row)) NoTransitions)) (mixedRowRest (wordRow row))
+        (trans (appendTransitionsAssociative earlier (MoreTransitions (mixedRowRight (wordRow row)) NoTransitions) (mixedRowRest (wordRow row))) (mixedRowDecomposition (wordRow row)))
+        (trans (wordRowRest row) (trans (cong (\word => word ++ o19ActionWord later) leftExact) (cong (leftWord ++) restExact)))))
+      (cong2 (++) rowSites
+        (trans (smallerSites (MkO19ReachedCursor (cursorFinal (mixedRowCursor (wordRow row))) (cursorTrace (mixedRowCursor (wordRow row))) (cursorBundle (mixedRowCursor (wordRow row))) (cursorUnique (mixedRowCursor (wordRow row))) (o19AppendFinite (cursorDerivation current) (cursorDerivation (mixedRowCursor (wordRow row))))) (appendTransitions earlier (MoreTransitions (mixedRowRight (wordRow row)) NoTransitions)) (mixedRowRest (wordRow row))
+        (trans (appendTransitionsAssociative earlier (MoreTransitions (mixedRowRight (wordRow row)) NoTransitions) (mixedRowRest (wordRow row))) (mixedRowDecomposition (wordRow row)))
+        (trans (wordRowRest row) (trans (cong (\word => word ++ o19ActionWord later) leftExact) (cong (leftWord ++) restExact))))
+          (cong (\start => o19ColumnSites start (length leftWord) (length remainingRight))
+            (transitionPrefixLength earlier (mixedRowRight (wordRow row))))))
