@@ -210,3 +210,15 @@ o19FixedRowPairsMap leftMap rightMap sourceLeft sourceRight targetLeft targetRig
       (cong (\pair => [pair]) (cong2 MkPair
         (trans (cong leftMap (sym (plusZeroRightNeutral sourceLeft)))
           (trans (leftExact Z (LTESucc LTEZero)) (plusZeroRightNeutral targetLeft))) rightExact)))
+
+||| Derive one numeric row's original pairs from its current left band and
+||| actual right point. These are internal map invariants, not O19 inputs.
+export
+0 o19RowOriginFixed : (originalMap : Nat -> Nat) -> (start, width, leftSource, rightSource : Nat) ->
+  (0 leftExact : (index : Nat) -> LTE (S index) width -> (originalMap (start + index) = leftSource + index)) ->
+  (0 rightExact : originalMap (start + width) = rightSource) ->
+  (o19OriginsAtSites originalMap (o19RowSites start width) = o19FixedRowPairs leftSource rightSource width)
+o19RowOriginFixed originalMap start width leftSource rightSource leftExact rightExact =
+  trans (o19RowOriginPairs originalMap start width)
+    (trans (cong (map (\pair => (originalMap (fst pair), originalMap (snd pair)))) (o19RowPairsFixed start width))
+      (o19FixedRowPairsMap originalMap originalMap start (start + width) leftSource rightSource width leftExact rightExact))
