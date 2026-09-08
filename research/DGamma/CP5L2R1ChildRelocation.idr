@@ -113,3 +113,18 @@ data ForeignChildRun :
     (0 tail : ForeignChildRun nameEq keyEq child rest) ->
     ForeignChildRun nameEq keyEq child
       (MoreTransitions (Fired {before = first} {afterState = middle} nameEq keyEq action tag checked) rest)
+
+||| Iterate the native foreign lookup frame through the entire run. This
+||| preserves the complete child fiber, including its immutable parent field.
+export
+0 foreignChildRunLookup :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (child : name) ->
+  {first, finalState : SystemState name key value world error} ->
+  (trace : Transitions first finalState) -> ForeignChildRun nameEq keyEq child trace ->
+  lookupFiber {name} {key} {value} {world} {error} @{nameEq} child (registry finalState) =
+  lookupFiber {name} {key} {value} {world} {error} @{nameEq} child (registry first)
+foreignChildRunLookup nameEq keyEq child _ ForeignChildEnd = Refl
+foreignChildRunLookup nameEq keyEq child _ (ForeignChildStep action tag checked rest distinct tail) =
+  trans (foreignChildRunLookup nameEq keyEq child rest tail)
+    (childForeignLookupFrame nameEq keyEq child action tag checked distinct)
