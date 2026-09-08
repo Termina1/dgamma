@@ -7,6 +7,10 @@ import DGamma.Metatheory
 import DGamma.CP4DeletionFrameCore
 import DGamma.CP4ProgressPotential
 import DGamma.CP5ConfluenceLocalDiamondSpike
+import DGamma.CP5O19OpeningPropagationSpike
+import DGamma.CP5O19ActualCommutedDomainSpike
+import DGamma.CP5O19CommutedDomainSpike
+import DGamma.CP5RankedEarlyApplicabilitySpike
 import Data.List
 import Data.Maybe
 import Decidable.Equality
@@ -308,3 +312,37 @@ o19AdvanceBeforeObservedCut nameEq keyEq actor (MkSystemState ambient fibers) _ 
           fiberAdvanceRuntimeEffectMap nameEq keyEq actor (MkFiber component parent retiredFlag table (Reloading (step :: next :: more) accumulator view))
             (projectEffectState @{nameEq} (the (SystemState name key value world error) (MkSystemState ambient fibers))))
           (rewrite found in Refl)))) defined)
+
+||| Actual source edges/independence now produce a CHECKED earlier Advance.
+||| Captured-domain commutation, owner framing, control/tag source inversion,
+||| capability/callback extraction and preservation all run in this pipeline.
+||| Only the explicit shared resolver observations remain cut-specific inputs.
+export
+0 o19AdvanceBeforeActualObservedPair :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (first, middle, finalState : SystemState name key value world error) ->
+  (leftAction : Action name key value world error) -> (leftTag, rightTag : RuleTag) ->
+  (leftChecked : checkedApplyAction @{nameEq} @{keyEq} leftAction first = Just (leftTag, middle)) ->
+  (rightChecked : checkedApplyAction @{nameEq} @{keyEq} (LAdvance actor) middle = Just (rightTag, finalState)) ->
+  Either (rightTag = LIterTag) (rightTag = LFinishTag) ->
+  Not (actionOwner leftAction = actor) ->
+  TraceIndependent name key world error value keyEq
+    (MoreTransitions (Fired {before = first} {afterState = middle} nameEq keyEq leftAction leftTag leftChecked)
+      (MoreTransitions (Fired {before = middle} {afterState = finalState} nameEq keyEq (LAdvance actor) rightTag rightChecked) NoTransitions)) ->
+  (observed : (deps : List key) -> Maybe (View name deps)) ->
+  ((deps : List key) -> resolveView {name} {key} {value} {world} {error} @{nameEq} @{keyEq} deps (registry first) = observed deps) ->
+  ((deps : List key) -> resolveView {name} {key} {value} {world} {error} @{nameEq} @{keyEq} deps (registry middle) = observed deps) ->
+  (registryWellFormed {name} {key} {value} {world} {error} @{nameEq} @{keyEq} first = True) ->
+  CheckedEarlyApplication name key world error value nameEq keyEq first (LAdvance actor) rightTag
+o19AdvanceBeforeActualObservedPair nameEq keyEq actor first middle finalState leftAction leftTag rightTag leftChecked rightChecked
+  rightPaper distinct independent observed earlyResolution lateResolution wellFormed =
+    o19CheckObservedRawMove nameEq keyEq (LAdvance actor) rightTag first wellFormed
+      (o19AdvanceBeforeObservedCut nameEq keyEq actor first middle rightTag observed earlyResolution lateResolution
+        (sym (systemLocalUpdateForeign nameEq actor (actionOwner leftAction) (\same => distinct (sym same)) first middle
+          (applyActionLocalUpdate nameEq keyEq leftAction first middle leftTag
+            (checkedActionProjects nameEq keyEq leftAction first middle leftTag leftChecked))))
+        (paperAdvanceSource nameEq keyEq actor rightTag
+          (checkedActionProjects nameEq keyEq (LAdvance actor) middle finalState rightTag rightChecked) rightPaper)
+        (cong isJust (partialRunChecked
+          (o19ActualPairEarlyPartialRun nameEq keyEq leftAction (LAdvance actor) leftTag rightTag leftChecked rightChecked distinct independent))))
