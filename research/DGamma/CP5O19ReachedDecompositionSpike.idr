@@ -159,3 +159,25 @@ o19SwapActorMembership swap selected member =
       (\tailMember => snd (o19ElemAppendInjections (actorPrefix swap) ((actorRight swap) :: (actorLeft swap) :: (actorSuffix swap)))
         (o19SwapTailMember tailMember))
       (replace {p = Elem selected} (actorBeforeExact swap) member))
+
+||| FULL lifecycle coverage for the SAME actual Cartesian reached trace.
+||| The finite chain supplies real origins; the source decomposition supplies
+||| coverage; the exact actor transposition supplies enumeration membership.
+export
+0 o19ActualTargetLifecycleCoverage :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (protocol : RegistrationProtocol key value world error) ->
+  {sourceOrder, targetOrder : List name} -> (swap : AdjacentActorOrderSwap name sourceOrder targetOrder) ->
+  {initial, sourceFinal : SystemState name key value world error} -> (source : Transitions initial sourceFinal) ->
+  (blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder source) ->
+  (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq source) ->
+  (safety : AdjacentActorSwapSafety name key world error value protocol nameEq keyEq swap source blocks premises) ->
+  (unique : UniqueRawNameInsertions name key world error value nameEq keyEq source) ->
+  LifecycleActorsCovered targetOrder
+    (cursorTrace (columnCursor (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique)))
+o19ActualTargetLifecycleCoverage nameEq keyEq protocol swap source blocks premises safety unique =
+  o19LifecycleCoverageFromOrigins source
+    (cursorTrace (columnCursor (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique)))
+    (replayActionOrigin (finiteDerivationOccurrenceCorrespondence
+      (cursorDerivation (columnCursor (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique)))))
+    (o19SwapActorMembership swap) (decomposedLifecycleCoverage blocks)
