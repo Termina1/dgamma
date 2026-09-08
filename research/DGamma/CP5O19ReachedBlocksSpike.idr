@@ -1193,7 +1193,7 @@ o19BlockBeforeFromGap source leftBlock rightBlock gap =
 
 ||| Convert a quantified boundary inequality into FULL physical BlockBefore
 ||| for two located blocks of ONE actual trace. Actual structural prefixes
-||| derive the dependent gap and exact equation; no replay/count oracle.
+||| derive the dependent gap/equation; no count-to-prefix injectivity premise.
 export
 0 o19BlockBeforeByCount :
   {name, key, world, error : Type} -> {value : key -> Type} ->
@@ -1207,3 +1207,19 @@ o19BlockBeforeByCount source leftBlock rightBlock bound =
   o19BlockBeforeFromGap source leftBlock rightBlock
     (o19PrefixGapByCount (prefixThroughBlock leftBlock) (traceBeforeBlock rightBlock) source
       (fst (o19LocatedBlockPrefixes leftBlock)) (snd (o19LocatedBlockPrefixes rightBlock)) bound)
+
+||| Two blocks of the SAME actor cannot be ordered in one actual trace:
+||| the earlier real Begin would violate the later block's no-earlier law.
+export
+0 o19BlockBeforeNotSame : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} -> {selected : name} ->
+  {initial, finalState : SystemState name key value world error} -> {source : Transitions initial finalState} ->
+  (first, second : LocatedOpenEpisodeBlock name key world error value nameEq keyEq selected source) ->
+  Not (BlockBefore name key world error value nameEq keyEq source selected selected first second)
+o19BlockBeforeNotSame {selected} first second ordered =
+  o19NoLifecycleWordMember selected (traceBeforeBlock second) (noEarlierLifecycle second) (LBegin selected)
+    (replace {p = Elem (LBegin selected)} (sym (o19OrderedBeforeWord first second ordered))
+      (fst (o19ElemAppendInjections (o19ActionWord (prefixThroughBlock first)) (o19ActionWord (betweenBlocks ordered)))
+        (replace {p = Elem (LBegin selected)} (sym (o19PrefixThroughWord first))
+          (snd (o19ElemAppendInjections (o19ActionWord (traceBeforeBlock first)) (o19ActionWord (actorBlockTrace first))) Here))))
+    Refl Refl
