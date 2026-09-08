@@ -8,6 +8,7 @@ import DGamma.CP3
 import DGamma.CP5UniqueRawNameInsertions
 import DGamma.CP5ConfluenceLocalDiamondSpike
 import DGamma.CP5ConfluenceCrossTraceSpike
+import DGamma.CP5O19ReplayObservationSpike
 import DGamma.CP5O19CartesianCursorSpike
 import DGamma.CP5O19CartesianColumnsSpike
 import DGamma.CP5O19CartesianNumericSpike
@@ -52,3 +53,21 @@ o19ObserveNonEmptyChain FiniteAdjacentSwapDone nonzero = void (nonzero Refl)
 o19ObserveNonEmptyChain (FiniteAdjacentSwapStep source earlier left right later orientation diamond result target rest) nonzero =
   MkO19NonEmptyChain
     (NonEmptyAdjacentSwap source earlier left right later orientation diamond result target rest) Refl Refl
+
+||| The SAME actual-chain node count, via its own global plan product law.
+export
+0 o19ActualFiniteProductCount :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (protocol : RegistrationProtocol key value world error) ->
+  {sourceOrder, targetOrder : List name} -> (swap : AdjacentActorOrderSwap name sourceOrder targetOrder) ->
+  {initial, sourceFinal : SystemState name key value world error} -> (source : Transitions initial sourceFinal) ->
+  (blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder source) ->
+  (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq source) ->
+  (safety : AdjacentActorSwapSafety name key world error value protocol nameEq keyEq swap source blocks premises) ->
+  (unique : UniqueRawNameInsertions name key world error value nameEq keyEq source) ->
+  (finiteAdjacentSwapNodeCount (cursorDerivation (columnCursor (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique))) =
+    actorBlockTransitionCount (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)) *
+    actorBlockTransitionCount (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety)))
+o19ActualFiniteProductCount nameEq keyEq protocol swap source blocks premises safety unique =
+  trans (sym (globalCrossingCount (o19ActualGlobalOriginPlan nameEq keyEq protocol swap source blocks premises safety unique)))
+    (o19ActualGlobalOriginProductCount nameEq keyEq protocol swap source blocks premises safety unique)
