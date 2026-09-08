@@ -10,6 +10,9 @@ import DGamma.CP5ConfluenceCrossTraceSpike
 import DGamma.CP5UniqueRawNameInsertions
 import DGamma.CP5RankedEarlyApplicabilitySpike
 import DGamma.CP5O19CartesianCursorSpike
+import DGamma.CP4DeletionSelectedForeignOrchestration
+import DGamma.CP5O19ResolvedOpeningRowSpike
+import DGamma.CP5O20BeginObservationSpike
 import DGamma.CP5O19BodyMetadataSpike
 import DGamma.CP5O19ReplayObservationSpike
 import DGamma.CP5O19AdjacentReplayProducerSpike
@@ -98,3 +101,28 @@ o19ReplayedActivationAligned nameEq keyEq protocol swap source blocks premises s
       (trans (sym (o19TransitionActorOwner (Fired nameEq keyEq leftAction leftTag leftChecked))) leftOwner)
       (trans (sym (o19TransitionActorOwner (Fired nameEq keyEq rightAction rightTag rightChecked))) rightOwner)
       leftActivation rightActivation
+
+||| Backwards insertion/Begin guard from the EXPLICIT actual insertion plan
+||| and the actual later Begin observation. A fresh inactive insertion changes
+||| neither a distinct owner's clean fiber nor any successfully resolved view.
+export
+0 o19BeginBeforeInsertPlan :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor, child : name) ->
+  (parent : Parent name) -> (component : Component key value world error) ->
+  (ambient : world) -> (fibers : Registry name key value world error) ->
+  (middle, last : SystemState name key value world error) -> (tag : RuleTag) ->
+  Not (actor = child) ->
+  ForeignInsertPlanView name key world error value nameEq keyEq child parent component ambient fibers tag middle ->
+  (opening : O20BeginObservation name key world error value nameEq keyEq actor middle last) ->
+  (registryWellFormed {name} {key} {value} {world} {error} @{nameEq} @{keyEq} (MkSystemState ambient fibers) = True) ->
+  CheckedEarlyApplication name key world error value nameEq keyEq (MkSystemState ambient fibers) (LBegin actor) LBeginTag
+o19BeginBeforeInsertPlan {name} {key} {world} {error} {value} nameEq keyEq actor child parent component ambient fibers
+  _ last _ distinct (MkForeignInsertPlanView absent guards) opening wellFormed =
+    o19BeginAtResolvedState nameEq keyEq actor (MkSystemState ambient fibers)
+      (beginObservedComponent opening) (beginObservedParent opening) (beginObservedTable opening) (beginObservedView opening)
+      (trans (sym (lookupInsertOther @{nameEq} actor child distinct (freshFiber component parent) fibers absent))
+        (beginObservedFound opening))
+      (trans (sym (resolveViewInactiveInsert {name} {key} {world} {error} {value} nameEq keyEq
+        (dependencies (componentDependencies (beginObservedComponent opening))) child component parent fibers absent))
+        (beginObservedResolved opening)) wellFormed
