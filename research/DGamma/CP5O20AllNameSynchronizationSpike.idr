@@ -187,3 +187,21 @@ o20AllNameInsert {name} {key} {world} {error} {value} nameEq keyEq renaming acto
         leftParent rightParent leftWorld rightWorld leftRegistry rightRegistry leftAbsent rightAbsent (allNameEffects paired))
       (\selected => pairedInsertControls name key world error value nameEq renaming actor component
         leftParent rightParent parents leftRegistry rightRegistry leftAbsent rightAbsent selected (allNameControls paired selected))
+
+||| Projection to EXACT ambient/lookup-table/ALL-control clauses of the
+||| endpoint bridge. The fourth all-generated-birth clause is deliberately
+||| absent. This consumes an internal cut invariant, not a canonical theorem.
+export
+0 o20AllNameCutFirstThree :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (renaming : NameBijection name) ->
+  (left, right : SystemState name key value world error) ->
+  O20AllNameCut name key world error value nameEq renaming left right ->
+  SystemEquivalentByRenaming name key world error value nameEq keyEq renaming left right
+o20AllNameCutFirstThree {key} {value} nameEq keyEq renaming left right paired =
+  MkSystemEquivalentByRenaming (synchronizedAmbient (allNameEffects paired))
+    (\selected, wanted => synchronizationLookupBindings key value keyEq wanted
+      (effectTables (projectEffectState @{nameEq} left) selected)
+      (effectTables (projectEffectState @{nameEq} right) (renameForward renaming selected))
+      (synchronizedTables (allNameEffects paired) selected))
+    (allNameControls paired)
