@@ -134,3 +134,26 @@ Body remains untouched/ineligible; arbitrary paired alignment and missing
 history successor cases remain open. No exhausted3/3 unit. Lane2 compilers
 were recorded on E19 and an artifact/source guard; none was killed or counted
 against main concurrency. Root docs/closing audit remain main responsibility.
+
+## D deepening E23--E40: actual enumeration / selector completeness
+
+All18 PASS1/guarded commits. E23--E31 retain an actual candidate and its OWN
+membership/actor equations, structurally enumerate EVERY distinct neighboring
+pair, and consume any pure adjacent swap through its physical source location.
+The observed native Dec boundary follows the EXACT accumulated-tail call;
+no equality of independently built proof-carrying swaps is assumed. E32--E36
+wire own-slot safety completeness, candidate construction and fixed-target
+orientation into the WHOLE native finite selector: it cannot miss a candidate
+whose FOUR logical safety clauses at its own cuts and goal inversion hold.
+These four clauses are still explicit obligations, not outputs of a newly
+claimed semantic safety producer. Whole stopped-order equality is not proved.
+E37--E40 regress the last candidate after an equal-name head is skipped and two
+other pairs are enumerated, using owned actor equations for actual orientation.
+Duplicate-order fixture is an algorithm regression, NOT accepted canonical
+capital. No physical zero-gap construction or lane2 surface was imported.
+D resolver frames remain the proven one-edge native result; block-wide
+immutable/reference extraction and physical applicability remain separate.
+All E1--E40 passed first attempt; total retained declarations now80 (A30/D10/E40).
+Paper was subsequently read in bounded, untruncated sequential sections through
+all3882 lines, revisiting the initially truncated early portions. No new paper
+erratum or production correction is claimed from that rereading.
