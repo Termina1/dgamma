@@ -90,3 +90,25 @@ export
 o20OrientChosenSafeSwap nameEq goalOrder goalState linearization choice =
   map (\reverseOrder => MkO20OrientedSafeSwap choice linearization reverseOrder)
     (o20CheckBefore nameEq (actorRight (chosenOrderSwap choice)) (actorLeft (chosenOrderSwap choice)) goalOrder)
+
+||| Finite positive selection among ALL actual neighboring candidates,
+||| filtering both real safety and inversion toward a FIXED accepted target
+||| extension. Nothing is NOT canonicality/completeness; operational replay,
+||| reached target linearization, reselection and strict descent remain open.
+export
+0 o20SelectOrientedSafeBlocks :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) -> (sourceOrder, goalOrder : List name) ->
+  (goalState : SystemState name key value world error) ->
+  LinearizesSupport name key world error value nameEq keyEq goalState goalOrder ->
+  {initial, finalState : SystemState name key value world error} -> (trace : Transitions initial finalState) ->
+  (blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder trace) ->
+  (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq trace) ->
+  (0 unique : UniqueRawNameInsertions name key world error value nameEq keyEq trace) ->
+  Maybe (O20OrientedSafeSwap name key world error value protocol nameEq keyEq sourceOrder goalOrder goalState trace blocks premises)
+o20SelectOrientedSafeBlocks nameEq keyEq protocol sourceOrder goalOrder goalState linearization trace blocks premises unique =
+  head' (mapMaybe
+    (\candidate => o20CheckCandidate nameEq keyEq protocol sourceOrder trace blocks premises unique candidate >>=
+      o20OrientChosenSafeSwap nameEq goalOrder goalState linearization)
+    (o20AdjacentCandidates nameEq sourceOrder [] sourceOrder Refl))
