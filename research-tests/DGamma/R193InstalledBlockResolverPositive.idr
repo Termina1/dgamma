@@ -78,3 +78,9 @@ public export
 0 r193FrameActorOnly : ActorLifecycleOnly 2 r193FrameBody
 r193FrameActorOnly = ActorYieldedRegistrationStep _ _ Refl
   (ActorLifecycleStep _ _ Refl Refl ActorLifecycleEnd)
+
+public export
+0 r193FrameNoRightChild : NoGeneratedChild 1 r193FrameBody
+r193FrameNoRightChild =
+  NoGeneratedChildStep _ _ (\parent, component, same => case same of Refl impossible)
+    (NoGeneratedChildStep _ _ (\parent, component, same => case same of Refl impossible) NoGeneratedChildEnd)
