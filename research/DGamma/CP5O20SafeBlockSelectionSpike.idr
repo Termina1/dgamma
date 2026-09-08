@@ -268,3 +268,17 @@ export
   isJust (o20CheckNoGeneratedAction nameEq forbidden action) = True
 o20CheckNoGeneratedActionCompleteObserved nameEq forbidden action (Yes same) checked negative = absurd (negative same)
 o20CheckNoGeneratedActionCompleteObserved nameEq forbidden action (No different) checked negative = rewrite checked in Refl
+
+||| Complete the actual name-only child-action checker from its logical
+||| exclusion clause. Both the observation and scalar authentication are owned.
+export
+0 o20CheckNoGeneratedActionComplete :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (forbidden : name) -> (action : Action name key value world error) ->
+  ((parent : name) -> (component : Component key value world error) ->
+    action = OInsert forbidden (ChildOf parent) component -> Void) ->
+  isJust (o20CheckNoGeneratedAction nameEq forbidden action) = True
+o20CheckNoGeneratedActionComplete nameEq forbidden action notChild =
+  o20CheckNoGeneratedActionCompleteObserved nameEq forbidden action
+    (decEq (o20GeneratedChildName action) (Just forbidden)) Refl
+    (o20NoGeneratedObservation forbidden action notChild)
