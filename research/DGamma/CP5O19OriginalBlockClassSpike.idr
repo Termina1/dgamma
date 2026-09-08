@@ -7,7 +7,7 @@ import DGamma.Metatheory
 import DGamma.CP3
 import DGamma.CP4DeletionSelectedForeignOrchestration
 import DGamma.CP5ConfluenceLocalDiamondSpike
-import DGamma.CP5ConfluenceCrossTraceSpike
+import DGamma.CP5O19SurfaceSpike
 import DGamma.CP5UniqueRawNameInsertions
 import DGamma.CP5ImmutableBirthMetadataSpike
 import DGamma.CP5O19AdjacentReplayProducerSpike
