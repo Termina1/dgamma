@@ -245,3 +245,17 @@ o19RowBandsAfter originalMap start width height leftSource rightSource leftExact
           (trans (cong (\base => base + index) (sym (plusSuccRightSucc start width)))
             (plusSuccRightSucc (start + width) index)))))
     (trans (rightExact (S index) (LTESucc bound)) (sym (plusSuccRightSucc rightSource index))))
+
+||| Pointwise map equality suffices for numeric origin-list equality. No
+||| function equality, extensionality axiom, or extra site premise is used.
+export
+0 o19OriginsAtSitesPointwise : (firstMap, secondMap : Nat -> Nat) ->
+  (0 exact : (position : Nat) -> firstMap position = secondMap position) -> (sites : List Nat) ->
+  (o19OriginsAtSites firstMap sites = o19OriginsAtSites secondMap sites)
+o19OriginsAtSitesPointwise firstMap secondMap exact [] = Refl
+o19OriginsAtSitesPointwise firstMap secondMap exact (point :: rest) =
+  cong2 (::) (cong2 MkPair (exact point) (exact (S point)))
+    (o19OriginsAtSitesPointwise
+      (\position => firstMap (fst (adjacentSwapOrdinalExhaustive point position)))
+      (\position => secondMap (fst (adjacentSwapOrdinalExhaustive point position)))
+      (\position => exact (fst (adjacentSwapOrdinalExhaustive point position))) rest)
