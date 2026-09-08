@@ -1139,3 +1139,19 @@ export
   O19PrefixGap name key world error value (MoreTransitions step first) (MoreTransitions step second)
 o19PrefixGapCons step first second gap =
   MkO19PrefixGap (prefixGapTrace gap) (cong (MoreTransitions step) (prefixGapExact gap))
+
+||| Quantitative order of TWO prefixes of the SAME ACTUAL trace produces
+||| a real dependent gap with exact trace equality. Word equality alone is
+||| deliberately insufficient; structural prefix evidence drives the proof.
+export
+0 o19PrefixGapByCount : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {initial, firstEnd, secondEnd, finalState : SystemState name key value world error} ->
+  (first : Transitions initial firstEnd) -> (second : Transitions initial secondEnd) -> (whole : Transitions initial finalState) ->
+  O19TracePrefix first whole -> O19TracePrefix second whole ->
+  LTE (transitionCount first) (transitionCount second) ->
+  O19PrefixGap name key world error value first second
+o19PrefixGapByCount _ second _ (O19PrefixEmpty _) secondProof bound = MkO19PrefixGap second Refl
+o19PrefixGapByCount _ _ _ (O19PrefixMore step firstRest rest firstProof) (O19PrefixEmpty _) bound = void (uninhabited bound)
+o19PrefixGapByCount _ _ _ (O19PrefixMore step firstRest rest firstProof)
+  (O19PrefixMore _ secondRest _ secondProof) (LTESucc smaller) =
+  o19PrefixGapCons step firstRest secondRest (o19PrefixGapByCount firstRest secondRest rest firstProof secondProof smaller)
