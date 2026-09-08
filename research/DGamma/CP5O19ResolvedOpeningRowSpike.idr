@@ -407,3 +407,60 @@ o19InsertionRowStep nameEq keyEq protocol child parent component source earlier 
         (o19EarlyLabels nameEq keyEq (transitionAction sourceRight) (transitionAction (rowRight previous))
           (transitionTag sourceRight) (transitionTag (rowRight previous))
           (rowAction previous) (rowTag previous) early))
+
+||| Arbitrary-length O/A BEGIN row with EXPLICIT resolved target and observed
+||| insertion spine. One recursion simultaneously derives cut applicability,
+||| crossings, sealed replay bundles, uniqueness, finite derivation and count.
+||| This is an insertion/Begin row, not yet a full mixed-block Cartesian proof.
+export
+0 o19BubbleResolvedInsertionRow :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) -> (actor : name) ->
+  (component : Component key value world error) -> (parent : Parent name) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (resolved : View name (dependencies (componentDependencies component))) ->
+  {initial, sourceFinal, before, rightBefore, rightAfter : SystemState name key value world error} ->
+  (source : Transitions initial sourceFinal) -> (earlier : Transitions initial before) ->
+  (spine : Transitions before rightBefore) ->
+  (opening : BeginStep nameEq keyEq actor rightBefore rightAfter) ->
+  (later : Transitions rightAfter sourceFinal) ->
+  (appendTransitions earlier (appendTransitions spine (MoreTransitions (beginTransition opening) later)) = source) ->
+  ReplayInvariantBundle name key world error value protocol nameEq keyEq source ->
+  (0 unique : UniqueRawNameInsertions name key world error value nameEq keyEq source) ->
+  (observations : O19ObservedInsertions name key world error value nameEq keyEq actor
+    (dependencies (componentDependencies component)) spine) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor (registry before) =
+    Just (MkFiber component parent False table (Inactive Nothing))) ->
+  (resolveView {name} {key} {value} {world} {error} @{nameEq} @{keyEq}
+    (dependencies (componentDependencies component)) (registry before) = Just resolved) ->
+  (registryWellFormed {name} {key} {value} {world} {error} @{nameEq} @{keyEq} before = True) ->
+  O19ActivationRow name key world error value protocol nameEq keyEq source earlier
+    (beginTransition opening) (transitionCount spine)
+o19BubbleResolvedInsertionRow nameEq keyEq protocol actor component parent table resolved
+  source earlier _ opening later decomposition premises unique ObservedInsertionsEnd found resolution wellFormed =
+    o19ActivationRowZero nameEq keyEq protocol source earlier (beginTransition opening) later
+      decomposition premises unique (PaperBeginStep Refl Refl)
+o19BubbleResolvedInsertionRow {before} nameEq keyEq protocol actor component parent table resolved
+  source earlier _ opening later decomposition premises unique
+  (ObservedInsertionsStep {middle} child childParent childComponent tag checked rest childSafe parentSafe observed remaining)
+  found resolution wellFormed =
+    o19InsertionRowStep nameEq keyEq protocol child childParent childComponent source earlier
+      (Fired {before} {afterState = middle} nameEq keyEq (OInsert child childParent childComponent) tag checked)
+      (beginTransition opening) (transitionCount rest)
+      (o19BubbleResolvedInsertionRow nameEq keyEq protocol actor component parent table resolved source
+        (appendTransitions earlier (MoreTransitions
+          (Fired {before} {afterState = middle} nameEq keyEq (OInsert child childParent childComponent) tag checked) NoTransitions))
+        rest opening later
+        (trans (appendTransitionsAssociative earlier (MoreTransitions
+          (Fired {before} {afterState = middle} nameEq keyEq (OInsert child childParent childComponent) tag checked) NoTransitions)
+          (appendTransitions rest (MoreTransitions (beginTransition opening) later))) decomposition)
+        premises unique remaining
+        (trans (systemLocalUpdateForeign nameEq actor child childSafe before middle
+          (applyActionLocalUpdate nameEq keyEq (OInsert child childParent childComponent) before middle tag
+            (checkedActionProjects nameEq keyEq (OInsert child childParent childComponent) before middle tag checked))) found)
+        (trans (resolutionAfter observed) (trans (sym (resolutionBefore observed)) resolution))
+        (preservationTheoremProof nameEq keyEq (OInsert child childParent childComponent) before middle tag wellFormed
+          (checkedActionProjects nameEq keyEq (OInsert child childParent childComponent) before middle tag checked)))
+      Refl childSafe parentSafe
+      (o19BeginAtResolvedState nameEq keyEq actor before component parent table resolved found resolution wellFormed)
