@@ -162,3 +162,28 @@ o20SharedComponentBeginControl {name} {key} {world} {error} {value} nameEq keyEq
         (pairedActualResolvedViews name key world error value nameEq keyEq renaming
           (dependencies (componentDependencies component)) leftWorld rightWorld leftRegistry rightRegistry
           (allNameEffects paired) pairwise leftView rightView leftResolved rightResolved))
+
+||| Derive effects AND EVERY control at the actual two fresh insert outputs.
+||| Freshness is observed on both runtime registries. A whole paired schedule
+||| must still authenticate protocol/orchestration guards and select these cuts.
+export
+0 o20AllNameInsert :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (renaming : NameBijection name) -> (actor : name) ->
+  (component : Component key value world error) -> (leftParent, rightParent : Parent name) ->
+  ParentRelatedBy renaming leftParent rightParent ->
+  (leftWorld, rightWorld : world) -> (leftRegistry, rightRegistry : Registry name key value world error) ->
+  (leftAbsent : (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor leftRegistry = Nothing)) ->
+  (rightAbsent : (lookupFiber {name} {key} {value} {world} {error} @{nameEq} (renameForward renaming actor) rightRegistry = Nothing)) ->
+  O20AllNameCut name key world error value nameEq renaming
+    (MkSystemState leftWorld leftRegistry) (MkSystemState rightWorld rightRegistry) ->
+  O20AllNameCut name key world error value nameEq renaming
+    (MkSystemState leftWorld (insertBinding @{nameEq} actor (freshFiber component leftParent) leftRegistry leftAbsent))
+    (MkSystemState rightWorld (insertBinding @{nameEq} (renameForward renaming actor) (freshFiber component rightParent) rightRegistry rightAbsent))
+o20AllNameInsert {name} {key} {world} {error} {value} nameEq keyEq renaming actor component
+  leftParent rightParent parents leftWorld rightWorld leftRegistry rightRegistry leftAbsent rightAbsent paired =
+    MkO20AllNameCut
+      (pairedInsertEffects name key world error value nameEq keyEq renaming actor component
+        leftParent rightParent leftWorld rightWorld leftRegistry rightRegistry leftAbsent rightAbsent (allNameEffects paired))
+      (\selected => pairedInsertControls name key world error value nameEq renaming actor component
+        leftParent rightParent parents leftRegistry rightRegistry leftAbsent rightAbsent selected (allNameControls paired selected))
