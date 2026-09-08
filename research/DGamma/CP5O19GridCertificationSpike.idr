@@ -97,3 +97,21 @@ o19FixedRowUnique leftSource rightSource (S width) =
     (\pair, earlier, last => case last of
       Here => succNotLTEpred (fst (o19FixedRowBounds (S leftSource) rightSource width leftSource rightSource earlier))
       There absent => void (uninhabited absent))
+
+||| Every bounded Cartesian pair occurs, by the actual right-coordinate
+||| column induction and fixed-row membership, not by product cardinality.
+export
+0 o19GridComplete : (leftSource, rightSource, width, height, leftIndex, rightIndex : Nat) ->
+  LTE (S leftIndex) width -> LTE (S rightIndex) height ->
+  Elem (leftSource + leftIndex, rightSource + rightIndex) (o19GridPairs leftSource rightSource width height)
+o19GridComplete leftSource rightSource width Z leftIndex rightIndex leftBound rightBound = void (uninhabited rightBound)
+o19GridComplete leftSource rightSource width (S height) leftIndex Z leftBound rightBound =
+  replace {p = \point => Elem (leftSource + leftIndex, point) (o19GridPairs leftSource rightSource width (S height))}
+    (sym (plusZeroRightNeutral rightSource))
+    (fst (o19ElemAppendInjections (o19FixedRowPairs leftSource rightSource width) (o19GridPairs leftSource (S rightSource) width height))
+      (o19FixedRowComplete leftSource rightSource width leftIndex leftBound))
+o19GridComplete leftSource rightSource width (S height) leftIndex (S rightIndex) leftBound rightBound =
+  replace {p = \point => Elem (leftSource + leftIndex, point) (o19GridPairs leftSource rightSource width (S height))}
+    (plusSuccRightSucc rightSource rightIndex)
+    (snd (o19ElemAppendInjections (o19FixedRowPairs leftSource rightSource width) (o19GridPairs leftSource (S rightSource) width height))
+      (o19GridComplete leftSource (S rightSource) width height leftIndex rightIndex leftBound (fromLteSucc rightBound)))
