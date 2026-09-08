@@ -195,3 +195,21 @@ anonymous constructor indices, not nonlinear variables, and passes.
 variant canonical decomposition/placement, arbitrary zero-gap completeness,
 and variant O17 availability-aware root-phase construction remain OPEN.
 The owner-ordered deferred unfreeze is a PLAN, not a completed production cure.
+
+## R192 A11 exact-field approval / coverage split
+
+Supervisor need_decision gate approved the EXACT existing fourth field of
+ReplayedCanonicalEndpointBridge gaining ONLY original-endpoint
+`isSupported child leftFinal = True`. The record already binds leftFinal;
+constructor and first three fields remain byte-identical. O21's
+`replayedCanonicalToOriginalEndpointSpike` declaration/body remains unchanged
+and remains a hole. Supported children: fixed current raw-name match plus
+exact historical generation/origin triangle. Unsupported histories:
+generation-only E8 / o20CanonicalOriginMatchOrClosing. PRESENT unmatched
+original remainder: full CP3 VestigialEndpointGeneration in unchanged O21
+endpoint statement. Removed names: actual absence, not invented vestigial data.
+No production/LocalDiamond/O19 change. Exact field/record old/new hashes,
+consumer binder plumbing and serialized guard receipts are specified in
+research-tests/O6-R192-A11-SURFACE-MANIFEST.json and the A8/A10 decision memo.
+A11 is a research-surface correction toward frozen production fidelity,
+NOT a weakening of paper Theorem73 or closure of either protected proof.

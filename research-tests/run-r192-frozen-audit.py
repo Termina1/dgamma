@@ -28,8 +28,28 @@ assert all(p.startswith('paper/') or p == 'review-o6-body-adversarial.md' for p 
 processes = subprocess.check_output(['ps','-axo','pid,ppid,command'],text=True)
 assert not re.search(r'/idris2_app/idris2(?:\.so)?(?:\s|$)', processes)
 for part in PARTS:
-    if part not in ['LocalDiamond','CrossTrace']:
+    if part not in ['LocalDiamond','CrossTrace','RenamingComposition']:
         assert not git('diff',START,'--',PATHS[part]), part
+# Exact owner-gated A11 field-only revision; no other RenamingComposition edit.
+manifest_bytes = (ROOT/'research-tests/O6-R192-A11-SURFACE-MANIFEST.json').read_bytes()
+assert sha(manifest_bytes) == 'b391c8bc6d5e4400266af7bff67cd88133da1082b9baa788169e5f6d815e5382'
+a11 = json.loads(manifest_bytes)
+item = a11['items'][0]
+old_renaming = git('show',START+':'+item['path'])
+expected_renaming = old_renaming
+for replacement in item['replacements']:
+    assert expected_renaming.count(replacement['oldText']) == 1
+    expected_renaming = expected_renaming.replace(replacement['oldText'],replacement['newText'])
+assert text(item['path']) == expected_renaming
+assert sha(text(item['path']).encode()) == item['newSourceSHA256']
+record_text = text(item['path']).split('record ReplayedCanonicalEndpointBridge\n',1)[1].split('\n\n||| Record-style compatibility eliminator',1)[0]
+record_text = 'record ReplayedCanonicalEndpointBridge\n'+record_text
+field_text = '  0 replayedGeneratedBirthMatched :'+record_text.split('  0 replayedGeneratedBirthMatched :',1)[1]
+assert len(record_text.encode()) == a11['newRecordBytes'] and sha(record_text.encode()) == a11['newRecordSHA256']
+assert len(field_text.encode()) == a11['newFieldBytes'] and sha(field_text.encode()) == a11['newFieldSHA256']
+assert sha(record_text[:record_text.index('  0 replayedGeneratedBirthMatched :')].encode()) == a11['unchangedFirstThreeFieldsSHA256']
+o21_text = '0 replayedCanonicalToOriginalEndpointSpike :'+text(item['path']).split('0 replayedCanonicalToOriginalEndpointSpike :',1)[1].split('\n\n',1)[0]
+assert sha(o21_text.encode()) == a11['unchangedO21DeclarationSHA256']
 visibility = {}
 local = (ROOT/PATHS['LocalDiamond']).read_bytes()
 assert local == subprocess.check_output(['git','show',START+':'+PATHS['LocalDiamond']],cwd=ROOT)
@@ -53,7 +73,8 @@ for part, name in [('CanonicalSort','sortClosingFreeTraceSpike'),('CrossTrace','
         new_decl = new_decl.split('\n'+name+' ',1)[0]
     assert old_decl == new_decl, name
     protected[name] = sha(new_decl.encode())
-# R192 has no type rehome permission; all five entry modules and O19 Surface
+# R192 has no type rehome permission; only the exact A11 field is revised.
+# CrossTrace and O19 Surface
 # remain byte-identical until a separately guarded/approved O20 body closure.
 assert not git('diff',START,'--',PATHS['CrossTrace'])
 assert not git('diff',START,'--','research/DGamma/CP5O19SurfaceSpike.idr')
@@ -78,7 +99,7 @@ report = dict(timestamp=datetime.datetime.now(datetime.timezone.utc).isoformat()
     LocalDiamondDiffVsStart='empty',LocalDiamondUnchanged=True,LocalDiamondAuthorizedVisibility=visibility,CanonicalSortDiffVsStart='empty',CanonicalSortAuthorizedVisibility={},DeletionChainDiffVsStart='empty',
     CrossTraceDiffVsStart='empty',RenamingCompositionDiffVsStart='empty',
     adjacentFullBytes=1470,adjacentFullSHA256=full,adjacentStatementBytes=1154,adjacentStatementSHA256=statement,reviewSHA256=review,
-    seeds='207/207',LocalDiamondTTC=dict(bytes=local_ttc.stat().st_size,mtimeUTC=local_time),changedIdrisFiles=changed,
+    seeds='207/207',LocalDiamondTTC=dict(bytes=local_ttc.stat().st_size,mtimeUTC=local_time),changedIdrisFiles=changed,A11SurfaceRevision={k:v for k,v in a11.items() if k != 'items'},
     sourceSHA256={p:sha((ROOT/p).read_bytes()) for p in changed},protectedDeclarationSHA256=protected,prohibitedAdditions=prohibited,
     noCompiler=True,noStagedFiles=True,cleanTrackedTree=True,allowedUntrackedOnly=True)
 out = pathlib.Path(sys.argv[1] if len(sys.argv)>1 else '/tmp/dgamma-r192/frozen.json')

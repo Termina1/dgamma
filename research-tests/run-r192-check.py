@@ -52,6 +52,15 @@ else:
             text = data.decode()
             return set(re.findall(r'^(?:[01] )?([A-Za-z_]\w*)\s*:',text,re.M) + re.findall(r'^(?:record|data)\s+([A-Za-z_]\w*)',text,re.M))
         assert len(declarations(snapshot)-declarations(old.stdout if old.returncode == 0 else b'')) == 1, 'Exactly one new declaration per proof invocation'
+    # Exactly gated A11 surface/consumer declaration checks (not new declarations).
+    if re.fullmatch(r'X[123]-1', unit):
+        approved_bytes = (ROOT/'research-tests/O6-R192-A11-SURFACE-MANIFEST.json').read_bytes()
+        assert hashlib.sha256(approved_bytes).hexdigest() == 'b391c8bc6d5e4400266af7bff67cd88133da1082b9baa788169e5f6d815e5382'
+        approved = [item for item in json.loads(approved_bytes)['items'] if item['unit'] == unit]
+        assert len(approved) == 1 and approved[0]['path'] == path
+        assert hashlib.sha256(snapshot).hexdigest() == approved[0]['newSourceSHA256']
+        assert diagnostic == approved[0]['expectedDiagnostic']
+        assert symbol == (approved[0]['symbol'] if diagnostic else None)
     target.touch()
     if path.startswith('research-tests/'):
         command += ['--source-dir', 'research-tests']

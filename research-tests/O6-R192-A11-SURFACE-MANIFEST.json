@@ -1,0 +1,74 @@
+{
+  "approval": "Supervisor exact-field need_decision reply, 2026-09-08 R192; one existing record/consumer declaration per invocation",
+  "baselineHead": "865de39fbbf857f9880315fb26e4227d7997eed4",
+  "oldFieldBytes": 1154,
+  "newFieldBytes": 1297,
+  "oldFieldSHA256": "574fcb56e55e2bc3f54d36711b23ef6ac767f9c97952c596ce5c72dd6e7123d1",
+  "newFieldSHA256": "037737c2cd0d9c29ae7d1637a7eaf19f9ea75bbc07a1546f8870b312b3af2894",
+  "oldRecordBytes": 3100,
+  "newRecordBytes": 3243,
+  "oldRecordSHA256": "b65cc059e8dea35ce9e7fdd1b580b1d2b5e0e3e03b4ed6aaddf07c6f101cf6d1",
+  "newRecordSHA256": "ac5304c1a6a6e0cea988eac4b0dcdb5756fcf1b67ede7d0db6a4d723c73b695d",
+  "unchangedFirstThreeFieldsSHA256": "e440bbeaf87224e84dc5aec8630d915e5abff4721627de970800705de0a18abf",
+  "unchangedO21DeclarationSHA256": "377b08ff82e1e4212738bb00a45a088b1f0d8fd8bc8b54bf061c96f2f4891681",
+  "items": [
+    {
+      "unit": "X1-1",
+      "path": "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr",
+      "symbol": "ReplayedCanonicalEndpointBridge",
+      "oldSourceSHA256": "91cd8a72fb114fd5e1b7d7ae1c7d48bfa10fc50295eab2e76e223a10ccf1548b",
+      "newSourceSHA256": "833bd3450bc8a4214e0334fd2ad95d7f837bc636f40f2e33c408333395602713",
+      "expectedDiagnostic": null,
+      "replacements": [
+        {
+          "oldText": "  0 replayedGeneratedBirthMatched :\n    {child, parent : name} ->\n    {component : Component key value world error} ->\n    (replayedOccurrence : LocatedGeneratedRegistration child parent component\n      replayedLeftTrace) ->\n    (sourceOccurrence : LocatedGeneratedRegistration child parent component\n      (canonicalTrace (canonicalSchedule leftCapital)) **\n      (sourceOccurrence = replayGeneratedRegistrationOrigin replayedOccurrences\n        replayedOccurrence,\n       (rightOccurrence : LocatedGeneratedRegistration\n         (renameForward (expectedBridgeBijection sameInputs) child)\n         (renameForward (expectedBridgeBijection sameInputs) parent) component\n         (canonicalTrace (canonicalSchedule rightCapital)) **\n         generationForward (generatedGenerationBijection sameInputs)\n           (registrationGeneration\n             (replayGeneratedRegistrationOrigin\n               (canonicalOccurrenceCorrespondence leftCapital)\n               sourceOccurrence)) =\n         registrationGeneration\n           (replayGeneratedRegistrationOrigin\n             (canonicalOccurrenceCorrespondence rightCapital)\n             rightOccurrence))))",
+          "newText": "  0 replayedGeneratedBirthMatched :\n    {child, parent : name} ->\n    {component : Component key value world error} ->\n    (replayedOccurrence : LocatedGeneratedRegistration child parent component\n      replayedLeftTrace) ->\n    (isSupported {name = name} {key = key} {value = value} {world = world}\n      {error = error} @{nameEq} @{keyEq} child leftFinal = True) ->\n    (sourceOccurrence : LocatedGeneratedRegistration child parent component\n      (canonicalTrace (canonicalSchedule leftCapital)) **\n      (sourceOccurrence = replayGeneratedRegistrationOrigin replayedOccurrences\n        replayedOccurrence,\n       (rightOccurrence : LocatedGeneratedRegistration\n         (renameForward (expectedBridgeBijection sameInputs) child)\n         (renameForward (expectedBridgeBijection sameInputs) parent) component\n         (canonicalTrace (canonicalSchedule rightCapital)) **\n         generationForward (generatedGenerationBijection sameInputs)\n           (registrationGeneration\n             (replayGeneratedRegistrationOrigin\n               (canonicalOccurrenceCorrespondence leftCapital)\n               sourceOccurrence)) =\n         registrationGeneration\n           (replayGeneratedRegistrationOrigin\n             (canonicalOccurrenceCorrespondence rightCapital)\n             rightOccurrence))))"
+        }
+      ]
+    },
+    {
+      "unit": "X2-1",
+      "path": "research-tests/DGamma/R8BridgeAuthenticatedDirectionPositive.idr",
+      "symbol": "rebuildAuthenticatedBridge",
+      "oldSourceSHA256": "c8733cfb6181aec6891927f4c053bd5cdd8686749f6311932f56d7cb0eea0a73",
+      "newSourceSHA256": "03c095c04ba02a43ccb1383c293e06834d93a4a1a6e0efe178430daa9b791196",
+      "expectedDiagnostic": null,
+      "replacements": [
+        {
+          "oldText": "    (replayedOccurrence : LocatedGeneratedRegistration child parent component replayed) ->\n",
+          "newText": "    (replayedOccurrence : LocatedGeneratedRegistration child parent component replayed) ->\n    (isSupported {name = name} {key = key} {value = value} {world = world}\n      {error = error} @{nameEq} @{keyEq} child leftFinal = True) ->\n"
+        },
+        {
+          "oldText": "(\\replayedOccurrence =>",
+          "newText": "(\\replayedOccurrence, supported =>"
+        },
+        {
+          "oldText": "match replayedOccurrence)",
+          "newText": "match replayedOccurrence supported)"
+        }
+      ]
+    },
+    {
+      "unit": "X3-1",
+      "path": "research-tests/DGamma/R8BridgeWrongBirthNegative.idr",
+      "symbol": "replaceBridgeRightOccurrenceWithoutGenerationEquation",
+      "oldSourceSHA256": "25a246cd3de69497b83ec8b7648556b03e860d9ba32a4339a665c6979acc2059",
+      "newSourceSHA256": "8f1c1b789f927956a2f8f19c9d0e3f2961d5c94737d9a80a3e522d64b05894be",
+      "expectedDiagnostic": "Mismatch between",
+      "replacements": [
+        {
+          "oldText": "    LocatedGeneratedRegistration child parent component replayed ->\n",
+          "newText": "    LocatedGeneratedRegistration child parent component replayed ->\n    (isSupported {name = name} {key = key} {value = value} {world = world}\n      {error = error} @{nameEq} @{keyEq} child leftFinal = True) ->\n"
+        },
+        {
+          "oldText": "(\\replayedOccurrence =>",
+          "newText": "(\\replayedOccurrence, supported =>"
+        },
+        {
+          "oldText": "alternate replayedOccurrence **",
+          "newText": "alternate replayedOccurrence supported **"
+        }
+      ]
+    }
+  ]
+}
