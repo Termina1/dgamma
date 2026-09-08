@@ -111,3 +111,52 @@ record O19WholeBlockResult
   constructor MkO19WholeBlockResult
   certifiedWholeBlock : WholeBlockSwapDerivation name key world error value protocol nameEq keyEq swap source blocks premises safety target
   0 certifiedWholeChainExact : (wholeBlockFiniteDerivation certifiedWholeBlock = derivation)
+
+||| Internal observation boundary: assemble every WholeBlockSwapDerivation
+||| field from the observed SAME chain, its own local plan/count and the now
+||| proved numeric grid. The next entry discharges every internal premise.
+export
+0 o19WholeFromObservedChain :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (protocol : RegistrationProtocol key value world error) ->
+  {sourceOrder, targetOrder : List name} -> (swap : AdjacentActorOrderSwap name sourceOrder targetOrder) ->
+  {initial, sourceFinal, targetFinal : SystemState name key value world error} -> (source : Transitions initial sourceFinal) ->
+  (blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder source) ->
+  (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq source) ->
+  (safety : AdjacentActorSwapSafety name key world error value protocol nameEq keyEq swap source blocks premises) ->
+  (target : Transitions initial targetFinal) ->
+  (derivation : FiniteAdjacentSwapDerivation name key world error value protocol nameEq keyEq source target) ->
+  (observed : O19NonEmptyChain name key world error value protocol nameEq keyEq derivation) ->
+  (finiteAdjacentSwapNodeCount derivation =
+    actorBlockTransitionCount (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)) *
+    actorBlockTransitionCount (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety))) ->
+  BlockCrossingOriginPlan name key world error value protocol nameEq keyEq source
+    (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety))
+    (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety))
+    (identityActionRegistrationReplayCorrespondence source) derivation
+    (o19GridPairs Z Z (actorBlockTransitionCount (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)))
+      (actorBlockTransitionCount (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety)))) ->
+  O19WholeBlockResult name key world error value protocol nameEq keyEq swap source blocks premises safety target derivation
+o19WholeFromObservedChain nameEq keyEq protocol swap source blocks premises safety target derivation observed count plan =
+  MkO19WholeBlockResult
+    (MkWholeBlockSwapDerivation (observedNonEmptyChain observed)
+      (o19GridPairs Z Z (actorBlockTransitionCount (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)))
+        (actorBlockTransitionCount (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety))))
+      (replace {p = \chain => BlockCrossingOriginPlan name key world error value protocol nameEq keyEq source
+          (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety))
+          (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety))
+          (identityActionRegistrationReplayCorrespondence source) chain
+          (o19GridPairs Z Z (actorBlockTransitionCount (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)))
+            (actorBlockTransitionCount (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety))))}
+        (sym (observedChainExact observed)) plan)
+      (gridEveryPair (o19CertifyGrid
+        (actorBlockTransitionCount (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)))
+        (actorBlockTransitionCount (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety)))))
+      (gridEveryMember (o19CertifyGrid
+        (actorBlockTransitionCount (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)))
+        (actorBlockTransitionCount (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety)))))
+      (gridPairsUnique (o19CertifyGrid
+        (actorBlockTransitionCount (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)))
+        (actorBlockTransitionCount (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety)))))
+      (trans (observedChainCount observed) count))
+    (observedChainExact observed)
