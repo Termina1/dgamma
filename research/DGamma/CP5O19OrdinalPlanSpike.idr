@@ -57,7 +57,7 @@ record O19OrdinalActionMap
 ||| Compose the SAME prefix ordinal map through one ACTUAL sealed adjacent
 ||| result. Both the correspondence index and every new ordinal equation use
 ||| the very same node's operationalOccurrenceFold.
-export
+public export
 0 o19OrdinalMapAfterNode :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   {protocol : RegistrationProtocol key value world error} -> {nameEq : DecEq name} -> {keyEq : DecEq key} ->
@@ -184,7 +184,7 @@ o19GlobalPlanPrepend current earlier left right later orientation diamond result
 ||| ACTUAL finite derivation. The current map is threaded by the same sealed
 ||| result, not selected afresh or inferred from equal action words. No
 ||| crossing ordinal equations or plan are required from the caller.
-export
+public export
 0 o19BuildGlobalOriginPlan :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   {protocol : RegistrationProtocol key value world error} -> {nameEq : DecEq name} -> {keyEq : DecEq key} ->
@@ -264,3 +264,27 @@ o19FiniteOrdinalInjective
           (replayActionOrigin (finiteDerivationOccurrenceCorrespondence rest) second)))
         (operationalOrdinalRelation (swappedOccurrenceFold result) (replayActionOrigin (finiteDerivationOccurrenceCorrespondence rest) first))
         (operationalOrdinalRelation (swappedOccurrenceFold result) (replayActionOrigin (finiteDerivationOccurrenceCorrespondence rest) second)) exact)
+
+||| Observe ONE explicit produced tail-plan constructor at B11's prepend
+||| boundary. This is not a scalar Refl claim about nested Cartesian builders.
+export
+0 o19GlobalPlanPrependPositions :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {protocol : RegistrationProtocol key value world error} -> {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {initial, sourceFinal, currentFinal, before, middle, afterState, targetFinal : SystemState name key value world error} ->
+  {source : Transitions initial sourceFinal} ->
+  (current : Transitions initial currentFinal) -> (earlier : Transitions initial before) ->
+  (left : Transition before middle) -> (right : Transition middle afterState) -> (later : Transitions afterState currentFinal) ->
+  (orientation : AdjacentSwapOrientationEvidence left right) ->
+  (diamond : LocalRelationalDiamond name key world error value nameEq keyEq left right) ->
+  (result : AdjacentSwapResult name key world error value protocol nameEq keyEq current earlier left right later diamond) ->
+  (target : Transitions initial targetFinal) ->
+  (rest : FiniteAdjacentSwapDerivation name key world error value protocol nameEq keyEq (swappedTrace result) target) ->
+  (correspondence : ActionRegistrationReplayCorrespondence name key world error value source current) ->
+  (currentMap : O19OrdinalActionMap name key world error value source current correspondence) ->
+  (tailPlan : O19GlobalPlanResult name key world error value protocol nameEq keyEq source
+    (composeActionRegistrationReplayCorrespondence correspondence (swappedOccurrenceCorrespondence result)) rest) ->
+  (globalCrossingPositions (o19GlobalPlanPrepend current earlier left right later orientation diamond result target rest correspondence currentMap tailPlan) =
+    (ordinalOrigin currentMap (transitionCount earlier), ordinalOrigin currentMap (S (transitionCount earlier))) :: globalCrossingPositions tailPlan)
+o19GlobalPlanPrependPositions current earlier left right later orientation diamond result target rest correspondence currentMap
+  (MkO19GlobalPlanResult positions plan count) = Refl
