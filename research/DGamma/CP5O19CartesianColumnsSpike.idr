@@ -161,3 +161,42 @@ o19OriginalPairAtReplayOrigins leftParent rightParent leftWord rightWord origina
         (trans (cong actionOwner (trans (locatedAction rightOccurrence) (sym (locatedAction (replayActionOrigin correspondence rightOccurrence)))))
           (sym (o19TransitionActorOwner (locatedTransition (replayActionOrigin correspondence rightOccurrence))))))
       (originalClasses (replayActionOrigin correspondence leftOccurrence) (replayActionOrigin correspondence rightOccurrence) leftIn rightIn)
+
+||| Structural actual-source row classifier. Construct exact full-trace
+||| locations of both selected nodes at each real cut, map them to ORIGINAL
+||| births/actions, preserve tags, and project static original labels.
+||| No reached-cut classification callback is requested by this producer.
+export
+0 o19ReplayRowSourceClasses :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (leftParent, rightParent : name) -> (leftWord, rightWord : List (Action name key value world error)) ->
+  {initial, originalFinal, sourceFinal, before, rightBefore, rightAfter : SystemState name key value world error} ->
+  (original : Transitions initial originalFinal) -> (source : Transitions initial sourceFinal) ->
+  (correspondence : ActionRegistrationReplayCorrespondence name key world error value original source) ->
+  (0 originalClasses : {leftAction, rightAction : Action name key value world error} ->
+    (leftOccurrence : LocatedActionOccurrence leftAction original) ->
+    (rightOccurrence : LocatedActionOccurrence rightAction original) ->
+    Elem leftAction leftWord -> Elem rightAction rightWord ->
+    O19SourcePairObservation name key world error value leftParent rightParent
+      (locatedTransition leftOccurrence) (locatedTransition rightOccurrence)) ->
+  (earlier : Transitions initial before) -> (spine : Transitions before rightBefore) ->
+  (right : Transition rightBefore rightAfter) -> (later : Transitions rightAfter sourceFinal) ->
+  (appendTransitions earlier (appendTransitions spine (MoreTransitions right later)) = source) ->
+  ((action : Action name key value world error) -> Elem action (o19ActionWord spine) -> Elem action leftWord) ->
+  Elem (transitionAction right) rightWord ->
+  {selectedBefore, selectedAfter : SystemState name key value world error} ->
+  (selected : Transition selectedBefore selectedAfter) -> OccursIn selected spine ->
+  O19SourcePairObservation name key world error value leftParent rightParent selected right
+o19ReplayRowSourceClasses {before} {rightBefore} {rightAfter} leftParent rightParent leftWord rightWord original source correspondence originalClasses
+  earlier (MoreTransitions {middle} left rest) right later decomposition leftMembers rightMember _ OccursHere =
+    o19OriginalPairAtReplayOrigins leftParent rightParent leftWord rightWord original source correspondence originalClasses
+      (MkLocatedActionOccurrence before middle earlier left (appendTransitions rest (MoreTransitions right later)) Refl decomposition)
+      (MkLocatedActionOccurrence rightBefore rightAfter (appendTransitions earlier (MoreTransitions left rest)) right later Refl
+        (trans (appendTransitionsAssociative earlier (MoreTransitions left rest) (MoreTransitions right later)) decomposition))
+      (leftMembers (transitionAction left) Here) rightMember
+o19ReplayRowSourceClasses leftParent rightParent leftWord rightWord original source correspondence originalClasses
+  earlier (MoreTransitions left rest) right later decomposition leftMembers rightMember selected (OccursLater occurs) =
+    o19ReplayRowSourceClasses leftParent rightParent leftWord rightWord original source correspondence originalClasses
+      (appendTransitions earlier (MoreTransitions left NoTransitions)) rest right later
+      (trans (appendTransitionsAssociative earlier (MoreTransitions left NoTransitions) (appendTransitions rest (MoreTransitions right later))) decomposition)
+      (\action, member => leftMembers action (There member)) rightMember selected occurs
