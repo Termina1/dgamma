@@ -1308,3 +1308,24 @@ o19ActualTargetUnique {sourceOrder} nameEq keyEq protocol swap source blocks pre
   replace {p = UniqueKeys} (sym (actorAfterExact swap))
     (o19SwapLeadingUnique (actorPrefix swap) (actorLeft swap) (actorRight swap) (actorSuffix swap)
       (replace {p = UniqueKeys} (actorBeforeExact swap) (o19DecomposedOrderUnique sourceOrder blocks)))
+
+||| OWN word observations of the direct single-constructor segment producer.
+||| The prefix is its explicit earlier argument; the body word is the explicit
+||| range witness. No scalar observer evaluates a nested replay/cut builder.
+export
+0 o19LocatedFromSegmentsWords :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  {initial, sourceFinal, targetFinal, before, rangeEnd : SystemState name key value world error} ->
+  (source : Transitions initial sourceFinal) ->
+  (block : LocatedOpenEpisodeBlock name key world error value nameEq keyEq selected source) ->
+  (target : Transitions initial targetFinal) ->
+  (origins : ActionRegistrationReplayCorrespondence name key world error value source target) ->
+  (earlier : Transitions initial before) -> (middle : Transitions before rangeEnd) -> (later : Transitions rangeEnd targetFinal) ->
+  (decomposition : appendTransitions earlier (appendTransitions middle later) = target) ->
+  (range : O19BeginRange name key world error value nameEq keyEq selected middle (o19ActionWord (blockBody block))) ->
+  (noEarlier : NoLifecycleBy selected earlier) -> (noLater : NoLifecycleBy selected later) ->
+  (active : supportedActiveAt {name} {key} {value} {world} {error} @{nameEq} selected targetFinal = True) ->
+  (o19ActionWord (traceBeforeBlock (o19LocatedFromActualSegments nameEq keyEq selected source block target origins earlier middle later decomposition range noEarlier noLater active)) = o19ActionWord earlier,
+   o19ActionWord (actorBlockTrace (o19LocatedFromActualSegments nameEq keyEq selected source block target origins earlier middle later decomposition range noEarlier noLater active)) = o19ActionWord (actorBlockTrace block))
+o19LocatedFromSegmentsWords nameEq keyEq selected source block target origins earlier middle later decomposition range noEarlier noLater active = (Refl, cong (LBegin selected ::) (rangeBodyWord range))
