@@ -203,3 +203,37 @@ o19InsertionBeforeCheckedPair nameEq keyEq leftChild rightChild leftParent right
         (checkedActionProjects nameEq keyEq (OInsert leftChild leftParent leftComponent)
           (MkSystemState ambient source) middle leftTag leftChecked))
       rightChecked distinct foreign wellFormed
+
+||| Explicit remaining-guard observation for backwards O/O cut induction.
+||| The next early insertion is produced by OO7 from the ACTUAL checked head.
+export
+0 o19InsertionGuardsStepObserved :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (leftChild, rightChild : name) -> (leftParent, rightParent : Parent name) ->
+  (leftComponent, rightComponent : Component key value world error) ->
+  {before, middle, finalState : SystemState name key value world error} ->
+  (tag : RuleTag) ->
+  (checked : checkedApplyAction @{nameEq} @{keyEq} (OInsert leftChild leftParent leftComponent) before = Just (tag, middle)) ->
+  (rest : Transitions middle finalState) ->
+  Not (rightChild = leftChild) ->
+  ((licensor : name) -> (rightParent = ChildOf licensor) -> Not (licensor = leftChild)) ->
+  (registryWellFormed {name} {key} {value} {world} {error} @{nameEq} @{keyEq} before = True) ->
+  (observed : (CheckedEarlyApplication name key world error value nameEq keyEq middle
+     (OInsert rightChild rightParent rightComponent) OInsertTag,
+   O19EarlyAlong name key world error value nameEq keyEq (OInsert rightChild rightParent rightComponent) OInsertTag rest)) ->
+  (CheckedEarlyApplication name key world error value nameEq keyEq before
+     (OInsert rightChild rightParent rightComponent) OInsertTag,
+   O19EarlyAlong name key world error value nameEq keyEq (OInsert rightChild rightParent rightComponent) OInsertTag
+     (MoreTransitions (Fired {before} {afterState = middle} nameEq keyEq
+       (OInsert leftChild leftParent leftComponent) tag checked) rest))
+o19InsertionGuardsStepObserved {before} {middle} nameEq keyEq leftChild rightChild leftParent rightParent
+  leftComponent rightComponent tag checked rest distinct foreign wellFormed (remainingEarly, remainingGuards) =
+    (o19InsertionBeforeCheckedPair nameEq keyEq leftChild rightChild leftParent rightParent leftComponent rightComponent
+       before middle (earlyApplicationFinal remainingEarly) tag OInsertTag checked
+       (earlyApplicationChecked remainingEarly) distinct foreign wellFormed,
+     EarlyAlongStep (Fired {before} {afterState = middle} nameEq keyEq
+       (OInsert leftChild leftParent leftComponent) tag checked) rest
+       (o19InsertionBeforeCheckedPair nameEq keyEq leftChild rightChild leftParent rightParent leftComponent rightComponent
+         before middle (earlyApplicationFinal remainingEarly) tag OInsertTag checked
+         (earlyApplicationChecked remainingEarly) distinct foreign wellFormed) remainingGuards)
