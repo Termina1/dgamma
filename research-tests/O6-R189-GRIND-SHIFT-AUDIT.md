@@ -47,3 +47,28 @@ A complete; B/C/D not yet attempted. O19 OPEN/body0; holesdelta0,
 5=1/3/0/0/1. All exact live records/snapshots/transcripts/actual guarded receipts
 are append-only under /tmp/dgamma-r189; consolidated final ledger/archive/
 verification and regression validations remain pending.
+
+## Supervisor B ruling and Unit B COMPLETE
+
+Supervisor RATIFIED A/5ecd7bd2 and confirmed the exact O19 surface contains NO
+GeneratedOrchestrationMatched premise/field. That hypothesis remains threaded
+unchanged at its ORIGINAL left/right cross-trace entrypoints (old CrossTrace
+997/1092/1352/1380); inventing an O19 generated-matching transport field or
+assumption is expressly forbidden. NEW OperationalAssembly module approved,
+since the D1 SameChainAssembly module is already imported by ReachedBlocks.
+
+B2/c1cd0dcc structurally folds the full genuine SameExternalOrchestration from
+EACH actual AdjacentSwapResult; no action-label word map. B3/03cd7339 applies
+D1 on the SAME actual cursor chain for the endpoint. B4/0e635f82 retains the
+ENTIRE actual cursorBundle plus cursorUnique; B5/bc82f4ce instantiates the full
+actual external relation. B6 constructs MkOperationalAdjacentBlockSwap with
+all seven fields on that SAME cursor: target state/trace, the certified WHOLE
+derivation, FULL target decomposition, endpoint, full bundle and genuine
+external correspondence. Original uniqueness is consumed by the real cursor;
+reached uniqueness remains available in B4 accompanying erased capital.
+
+B D2–D6:5 declarations/5 fresh PASS1/3 checks, all immediately guarded commits;
+D1 was already R188/1a42566c. Unused D7–D10 slots are not spent on unrelated
+claims. B COMPLETE; no O19 body attempted before the cycle-safe type move.
+The first read-only frozen-audit call preceded B6's commit and correctly
+rejected its dirty source; no compiler or commit guard was affected.
