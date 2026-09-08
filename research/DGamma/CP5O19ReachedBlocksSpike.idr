@@ -1231,3 +1231,12 @@ export
 o19BeforeMembers (BeforeHere member) = (Here, There member)
 o19BeforeMembers (BeforeThere ordered) =
   (There (fst (o19BeforeMembers ordered)), There (snd (o19BeforeMembers ordered)))
+
+||| Irreflexivity of actual finite order implies a unique enumeration.
+export
+0 o19UniqueFromNoSelfBefore : {name : Type} -> (order : List name) ->
+  ((selected : name) -> Not (BeforeIn selected selected order)) -> UniqueKeys order
+o19UniqueFromNoSelfBefore [] noSelf = UniqueNil
+o19UniqueFromNoSelfBefore (head :: rest) noSelf =
+  UniqueCons (\member => noSelf head (BeforeHere member))
+    (o19UniqueFromNoSelfBefore rest (\selected, ordered => noSelf selected (BeforeThere ordered)))
