@@ -379,3 +379,43 @@ o19GeneratedInsertionRowStep nameEq keyEq protocol rightChild leftParent rightPa
         (cursorBundle (orchestrationRowCursor previous)) leftInsert
         (trans (orchestrationRowAction previous) rightInsert) distinct leftLicense rightLicense
         (trans (orchestrationRowTag previous) rightTag))
+
+||| Arbitrary-length generated O/O row with SAME-source licensing classes.
+||| Every cut guard, actual diamond, sealed replay, reached bundle, original
+||| uniqueness, complete finite derivation and exact count are constructed.
+||| Mixed activation/insertion spines and Cartesian column iteration are next.
+export
+0 o19BubbleGeneratedInsertionRow :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (protocol : RegistrationProtocol key value world error) ->
+  (rightChild, leftParent, rightParent : name) -> (rightComponent : Component key value world error) ->
+  {initial, sourceFinal, before, rightBefore, rightAfter : SystemState name key value world error} ->
+  (source : Transitions initial sourceFinal) -> (earlier : Transitions initial before) ->
+  (spine : Transitions before rightBefore) -> (right : Transition rightBefore rightAfter) ->
+  (later : Transitions rightAfter sourceFinal) ->
+  (appendTransitions earlier (appendTransitions spine (MoreTransitions right later)) = source) ->
+  ReplayInvariantBundle name key world error value protocol nameEq keyEq source ->
+  (0 unique : UniqueRawNameInsertions name key world error value nameEq keyEq source) ->
+  (transitionAction right = OInsert rightChild (ChildOf rightParent) rightComponent) ->
+  (transitionTag right = OInsertTag) ->
+  (0 classes : {first, last : SystemState name key value world error} ->
+    (step : Transition first last) -> OccursIn step spine ->
+    (leftChild : name ** (leftComponent : Component key value world error **
+      ((transitionAction step = OInsert leftChild (ChildOf leftParent) leftComponent),
+       Not (rightChild = leftChild),
+       ((licensor : name) -> (ChildOf leftParent = ChildOf licensor) -> Not (rightChild = licensor)),
+       ((licensor : name) -> (ChildOf rightParent = ChildOf licensor) -> Not (leftChild = licensor)))))) ->
+  O19OrchestrationRow name key world error value protocol nameEq keyEq source earlier right (transitionCount spine)
+o19BubbleGeneratedInsertionRow nameEq keyEq protocol rightChild leftParent rightParent rightComponent source earlier
+  NoTransitions right later decomposition premises unique rightInsert rightTag classes =
+    o19OrchestrationRowZero nameEq keyEq protocol source earlier right later decomposition premises unique (PaperInsertStep rightInsert)
+o19BubbleGeneratedInsertionRow nameEq keyEq protocol rightChild leftParent rightParent rightComponent source earlier
+  (MoreTransitions left rest) right later decomposition premises unique rightInsert rightTag classes =
+    o19GeneratedInsertionRowStep nameEq keyEq protocol rightChild leftParent rightParent rightComponent source earlier left right
+      (transitionCount rest)
+      (o19BubbleGeneratedInsertionRow nameEq keyEq protocol rightChild leftParent rightParent rightComponent source
+        (appendTransitions earlier (MoreTransitions left NoTransitions)) rest right later
+        (trans (appendTransitionsAssociative earlier (MoreTransitions left NoTransitions)
+          (appendTransitions rest (MoreTransitions right later))) decomposition)
+        premises unique rightInsert rightTag (\step, occurs => classes step (OccursLater occurs)))
+      rightInsert rightTag (classes left OccursHere)
