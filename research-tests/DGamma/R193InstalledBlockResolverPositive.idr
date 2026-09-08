@@ -84,3 +84,8 @@ public export
 r193FrameNoRightChild =
   NoGeneratedChildStep _ _ (\parent, component, same => case same of Refl impossible)
     (NoGeneratedChildStep _ _ (\parent, component, same => case same of Refl impossible) NoGeneratedChildEnd)
+
+public export
+r193FrameLastFiber : Fiber Nat ToyKey ToyValue ToyRuntime String
+r193FrameLastFiber = fromMaybe (freshFiber emptyConsumerComponent Root)
+  (lookupFiber 2 (registry r193FrameEnd))
