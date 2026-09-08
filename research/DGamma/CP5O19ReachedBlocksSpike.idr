@@ -1511,3 +1511,10 @@ o19OrderedBeforeCount source leftBlock rightBlock ordered =
       (trans (sym (cong length (o19ActionWordAppend (prefixThroughBlock leftBlock) (betweenBlocks ordered))))
         (trans (o19ActionWordLength (appendTransitions (prefixThroughBlock leftBlock) (betweenBlocks ordered)))
           (o19TransitionCountAppend (prefixThroughBlock leftBlock) (betweenBlocks ordered)))))
+
+||| Structural list append length; used only after actual words are owned.
+export
+0 o19ListLengthAppend : {item : Type} -> (left, right : List item) ->
+  (length (left ++ right) = length left + length right)
+o19ListLengthAppend [] right = Refl
+o19ListLengthAppend (head :: rest) right = cong S (o19ListLengthAppend rest right)
