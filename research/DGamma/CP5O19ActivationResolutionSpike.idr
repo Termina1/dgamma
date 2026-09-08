@@ -9,6 +9,10 @@ import DGamma.CP4DeletionFrameCore
 import DGamma.CP4DeletionSelectedOwn
 import DGamma.CP5O19AdvanceObservationSpike
 import DGamma.CP5ConfluenceLocalDiamondSpike
+import DGamma.CP5O19OpeningPropagationSpike
+import DGamma.CP5O19ActualCommutedDomainSpike
+import DGamma.CP5O19CommutedDomainSpike
+import DGamma.CP5RankedEarlyApplicabilitySpike
 import DGamma.CP4DeletionSelectedForeignLifecycleCore
 import DGamma.CP4DeletionSelectedForeignLifecycleAnchorRelianceSelected
 import Data.List
@@ -226,3 +230,40 @@ o19AdvanceBeforeNondependentCut nameEq keyEq actor (MkSystemState ambient fibers
           fiberAdvanceRuntimeEffectMap nameEq keyEq actor (MkFiber component parent retiredFlag table (Reloading (step :: next :: more) accumulator view))
             (projectEffectState @{nameEq} (the (SystemState name key value world error) (MkSystemState ambient fibers))))
           (rewrite found in Refl)))) defined)
+
+
+||| Actual checked pair/commutation supplies the domain and source inversion.
+||| Located owner survival and declared nondependency remain explicit source
+||| shape obligations; deriving them from O19 ranks is a separate producer.
+export
+0 o19AdvanceBeforeNondependentPair :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (first, middle, finalState : SystemState name key value world error) ->
+  (leftAction : Action name key value world error) -> (leftTag, rightTag : RuleTag) ->
+  (leftChecked : checkedApplyAction @{nameEq} @{keyEq} leftAction first = Just (leftTag, middle)) ->
+  (rightChecked : checkedApplyAction @{nameEq} @{keyEq} (LAdvance actor) middle = Just (rightTag, finalState)) ->
+  Either (rightTag = LIterTag) (rightTag = LFinishTag) ->
+  Not (actionOwner leftAction = actor) ->
+  TraceIndependent name key world error value keyEq
+    (MoreTransitions (Fired {before = first} {afterState = middle} nameEq keyEq leftAction leftTag leftChecked)
+      (MoreTransitions (Fired {before = middle} {afterState = finalState} nameEq keyEq (LAdvance actor) rightTag rightChecked) NoTransitions)) ->
+  (leftFiber : Fiber name key value world error) ->
+  (lookupFiber @{nameEq} (actionOwner leftAction) (registry first) = Just leftFiber) ->
+  (isJust (lookupFiber {name} {key} {value} {world} {error} @{nameEq} (actionOwner leftAction) (registry middle)) = True) ->
+  ((rightFiber : Fiber name key value world error) -> lookupFiber @{nameEq} actor (registry middle) = Just rightFiber ->
+    (wanted : key) -> Elem wanted (dependencies (componentDependencies (fiberComponent rightFiber))) ->
+    Not (Elem wanted (dependencies (componentProvisions (fiberComponent leftFiber))))) ->
+  (registryWellFormed {name} {key} {value} {world} {error} @{nameEq} @{keyEq} first = True) ->
+  CheckedEarlyApplication name key world error value nameEq keyEq first (LAdvance actor) rightTag
+o19AdvanceBeforeNondependentPair nameEq keyEq actor first middle finalState leftAction leftTag rightTag leftChecked rightChecked
+  rightPaper distinct independent leftFiber leftFound leftSurvives nondependent wellFormed =
+    o19CheckObservedRawMove nameEq keyEq (LAdvance actor) rightTag first wellFormed
+      (o19AdvanceBeforeNondependentCut nameEq keyEq actor first middle rightTag
+        (actionOwner leftAction) leftFiber leftFound leftSurvives (\same => distinct (sym same))
+        (applyActionLocalUpdate nameEq keyEq leftAction first middle leftTag
+          (checkedActionProjects nameEq keyEq leftAction first middle leftTag leftChecked)) nondependent
+        (paperAdvanceSource nameEq keyEq actor rightTag
+          (checkedActionProjects nameEq keyEq (LAdvance actor) middle finalState rightTag rightChecked) rightPaper)
+        (cong isJust (partialRunChecked
+          (o19ActualPairEarlyPartialRun nameEq keyEq leftAction (LAdvance actor) leftTag rightTag leftChecked rightChecked distinct independent))))
