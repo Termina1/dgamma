@@ -118,3 +118,16 @@ export
   (Not (selected = head)) -> (Elem selected (head :: rest)) -> (Elem selected rest)
 o20MemberPastDifferent different Here = void (different Refl)
 o20MemberPastDifferent different (There member) = member
+
+||| Explicit decidable equality supplies the head rank bound; recursion
+||| contributes only a tail-member bound, not a guessed rank or sentinel fact.
+export
+0 o20GoalRankBoundObserved :
+  {name : Type} -> (nameEq : DecEq name) -> (selected, head : name) -> (rest : List name) ->
+  ((Elem selected rest) -> (LT (o20GoalRank nameEq rest selected) (length rest))) ->
+  (decision : Dec (selected = head)) -> (decEq @{nameEq} selected head = decision) ->
+  (Elem selected (head :: rest)) -> (LT (o20GoalRank nameEq (head :: rest) selected) (length (head :: rest)))
+o20GoalRankBoundObserved nameEq selected head rest smaller (Yes same) observed member =
+  rewrite observed in LTESucc LTEZero
+o20GoalRankBoundObserved nameEq selected head rest smaller (No different) observed member =
+  rewrite observed in LTESucc (smaller (o20MemberPastDifferent different member))
