@@ -144,3 +144,20 @@ data O20PairedExecutionWithRemoval :
       (MkSystemState rightWorld (deleteBinding @{nameEq} (renameForward renaming actor) rightRegistry)) leftAfter rightAfter) ->
     O20PairedExecutionWithRemoval name key world error value nameEq keyEq renaming
       (MkSystemState leftWorld leftRegistry) (MkSystemState rightWorld rightRegistry) leftAfter rightAfter
+
+||| Structural finite induction, now including Remove. Conditional on genuine
+||| paired execution data; NOT extraction from the canonical pair.
+export
+0 o20PairedRemovalExecutionCut :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} -> {renaming : NameBijection name} ->
+  {leftBefore, rightBefore, leftAfter, rightAfter : SystemState name key value world error} ->
+  O20PairedExecutionWithRemoval name key world error value nameEq keyEq renaming leftBefore rightBefore leftAfter rightAfter ->
+  O20AllNameCut name key world error value nameEq renaming leftBefore rightBefore ->
+  O20AllNameCut name key world error value nameEq renaming leftAfter rightAfter
+o20PairedRemovalExecutionCut {nameEq} {keyEq} {renaming} (RemovalExecutionTail tail) paired = o20PairedExecutionCut nameEq keyEq renaming tail paired
+o20PairedRemovalExecutionCut {nameEq} {keyEq} {renaming} (RemovalExecutionStage stage later) paired =
+  o20PairedRemovalExecutionCut later (o20PairedStageCut nameEq keyEq renaming stage paired)
+o20PairedRemovalExecutionCut (RemovalExecutionRemove nameEq keyEq renaming actor leftWorld rightWorld leftRegistry rightRegistry leftChecked rightChecked later) paired =
+  o20PairedRemovalExecutionCut later
+    (o20PairedObservedRemoveCut nameEq keyEq renaming actor leftWorld rightWorld leftRegistry rightRegistry leftChecked rightChecked paired)
