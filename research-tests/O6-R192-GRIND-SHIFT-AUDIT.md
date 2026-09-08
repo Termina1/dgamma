@@ -177,3 +177,21 @@ trace moved exactly that retirement, not arbitrary endpoint data; it was not
 proved. Consequently revised universal zero-gap completeness and the exact
 R191 normalization remain unproved. No claim that syntax enlargement alone
 solves physical adjacency is made.
+
+## Unit C cap8 / research variant status
+
+C5 supplies `LocatedOpenEpisodeBlockExtended`, keeping all physical cuts,
+installedness, no-earlier/later lifecycle, final Active and exact trace
+factorization obligations; only the grammar changes and proof quantities are
+explicitly0. C5-1 lacked the direct Metatheory import; C5-2 passes. C6/C7 prove
+EXISTING actual parent-body traces contain generated Retire and Retire+Remove
+under the variant, with real source fiber/parent metadata. These use the
+already-authenticated R178/R192 edges, not guessed R191 evaluator equations.
+C8 proves the actual one-edge child retirement is neither old ActorLifecycleOnly
+nor ZeroGapPending. C8-1 bound a rest index already NoTransitions; C8-2 uses
+anonymous constructor indices, not nonlinear variables, and passes.
+
+8 C probes,7 kept, C4 reverted. The exact R191 full reordered trace, full
+variant canonical decomposition/placement, arbitrary zero-gap completeness,
+and variant O17 availability-aware root-phase construction remain OPEN.
+The owner-ordered deferred unfreeze is a PLAN, not a completed production cure.
