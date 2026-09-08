@@ -16,6 +16,7 @@ import DGamma.CP5O19CartesianCursorSpike
 import DGamma.CP5O19MixedRowDispatcherSpike
 import DGamma.CP5O19CartesianLengthSpike
 import DGamma.CP5O19PairObservationSpike
+import DGamma.CP5O19CartesianSitePlanSpike
 import DGamma.CP5O19CartesianWordRowSpike
 import Data.List
 import Data.List.Elem
@@ -434,3 +435,24 @@ o19CartesianSourceSpines nameEq keyEq protocol swap source blocks premises safet
     (trans (o19ActionWordAppend (MoreTransitions firstLeft leftRest) (appendTransitions rightSpine later))
       (cong ((o19ActionWord (MoreTransitions firstLeft leftRest)) ++) (o19ActionWordAppend rightSpine later)))
     (\action, member => member)
+
+||| Actual row/column splice sites from the SAME explicit produced values.
+export
+0 o19ColumnPrependSites :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {protocol : RegistrationProtocol key value world error} ->
+  {initial, sourceFinal, before, rightBefore, rightAfter : SystemState name key value world error} ->
+  (source : Transitions initial sourceFinal) -> (earlier : Transitions initial before) ->
+  (spine : Transitions before rightBefore) -> (right : Transition rightBefore rightAfter) -> (later : Transitions rightAfter sourceFinal) ->
+  (leftWord : List (Action name key value world error)) -> (rightHead : Action name key value world error) ->
+  (remainingRight, suffixWord : List (Action name key value world error)) ->
+  (row : O19WordRow name key world error value protocol nameEq keyEq source earlier spine right later) ->
+  (count : transitionCount spine = length leftWord) -> (rightExact : transitionAction right = rightHead) ->
+  (smaller : O19ColumnRun name key world error value protocol nameEq keyEq
+    (cursorTrace (mixedRowCursor (wordRow row)))
+    (appendTransitions earlier (MoreTransitions (mixedRowRight (wordRow row)) NoTransitions)) leftWord remainingRight suffixWord) ->
+  (o19CrossingSites (cursorDerivation (columnCursor (o19ColumnPrepend source earlier spine right later leftWord rightHead remainingRight suffixWord row count rightExact smaller))) =
+    o19CrossingSites (cursorDerivation (mixedRowCursor (wordRow row))) ++ o19CrossingSites (cursorDerivation (columnCursor smaller)))
+o19ColumnPrependSites source earlier spine right later leftWord rightHead remainingRight suffixWord row count rightExact smaller =
+  o19AppendFiniteSites (cursorDerivation (mixedRowCursor (wordRow row))) (cursorDerivation (columnCursor smaller))
