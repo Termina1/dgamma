@@ -276,3 +276,18 @@ o20HistoryRemoveCut nameEq keyEq mapping actor leftLive rightLive leftUnique rig
         (o20HistoryLookupBeforeRemove nameEq actor selected leftLive leftUnique stamp found))
       (\selected, stamp, found => backward selected stamp
         (o20HistoryLookupBeforeRemove nameEq (renameForward renaming actor) selected rightLive rightUnique stamp found))
+
+||| Historical generation stamp of an actual generated registration. This
+||| constructor conversion does not inspect a concrete nested trace builder.
+export
+0 o20GeneratedHistoryBirth :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {initial, finalState : SystemState name key value world error} ->
+  {trace : Transitions initial finalState} -> {child, parent : name} ->
+  {component : Component key value world error} ->
+  (birth : LocatedGeneratedRegistration child parent component trace) ->
+  CurrentGenerationBirth name key world error value trace child (registrationGeneration birth)
+o20GeneratedHistoryBirth {parent} {component}
+  (MkLocatedGeneratedRegistration before afterState earlier step later actionExact decomposition) =
+    MkCurrentGenerationBirth (ChildOf parent) component
+      (MkLocatedActionOccurrence before afterState earlier step later actionExact decomposition) Refl
