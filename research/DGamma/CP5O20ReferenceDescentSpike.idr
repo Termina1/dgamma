@@ -121,3 +121,26 @@ export
 o20RunReferenceSearch nameEq keyEq protocol sourceOrder goalOrder reference goalState goalLinearization trace blocks premises unique capital =
   o20ReferenceDescent nameEq keyEq protocol sourceOrder goalOrder reference goalState goalLinearization trace blocks premises unique capital
     (o20OperationalDescent nameEq keyEq protocol sourceOrder goalOrder goalState goalLinearization trace blocks premises unique)
+
+||| A selected goal inversion is incomparable in the common SUPPORTED
+||| relation. The chosen swap itself supplies source members/order, and the
+||| common-reference producer supplies goal members/order, not new hypotheses.
+export
+0 o20ReferenceIncomparable :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {reference : SystemState name key value world error} ->
+  {sourceOrder, targetOrder, goalOrder : List name} ->
+  (swap : AdjacentActorOrderSwap name sourceOrder targetOrder) ->
+  (capital : O20SupportedReferenceOrders name key world error value nameEq keyEq reference sourceOrder goalOrder) ->
+  BeforeIn (actorRight swap) (actorLeft swap) goalOrder ->
+  (Not (O20SupportedPath name key world error value nameEq keyEq reference (actorLeft swap) (actorRight swap)),
+   Not (O20SupportedPath name key world error value nameEq keyEq reference (actorRight swap) (actorLeft swap)))
+o20ReferenceIncomparable swap capital reversed =
+  ((\path => o20BeforeAsymmetric (referenceGoalUnique capital) reversed
+      (referenceGoalOrdered capital (actorLeft swap) (actorRight swap) path
+        (referenceMembersForward capital (actorLeft swap) (fst (o20ChosenActorFacts swap)))
+        (referenceMembersForward capital (actorRight swap) (fst (snd (o20ChosenActorFacts swap)))))),
+   (\path => o20BeforeAsymmetric (referenceSourceUnique capital) (snd (snd (o20ChosenActorFacts swap)))
+      (referenceSourceOrdered capital (actorRight swap) (actorLeft swap) path
+        (fst (snd (o20ChosenActorFacts swap))) (fst (o20ChosenActorFacts swap)))))
