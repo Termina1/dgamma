@@ -64,3 +64,20 @@ o19OwnedSafeWord actor forbidden _ (ActorYieldedRegistrationStep {child} {childC
 o19OwnedSafeWord actor forbidden _ (ActorYieldedRegistrationStep step rest inserted tail)
   (NoGeneratedChildStep _ _ excluded safeTail) action (There member) =
     o19OwnedSafeWord actor forbidden rest tail safeTail action member
+
+||| Complete ORIGINAL located block-word values/ownership/licensing exclusion:
+||| the actual Begin supplies the head, the actual owned/safe body supplies
+||| every tail occurrence. No word classifier is assumed from the caller.
+export
+0 o19OriginalBlockWord :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} -> (actor, forbidden : name) ->
+  {initial, finalState : SystemState name key value world error} ->
+  {source : Transitions initial finalState} ->
+  (block : LocatedOpenEpisodeBlock name key world error value nameEq keyEq actor source) ->
+  NoGeneratedChild forbidden (blockBody block) ->
+  (action : Action name key value world error) -> Elem action (o19ActionWord (actorBlockTrace block)) ->
+  O19BlockWordObservation name key world error value actor forbidden action
+o19OriginalBlockWord actor forbidden block safe _ Here = BlockOwnLifecycle Refl Refl
+o19OriginalBlockWord actor forbidden block safe action (There member) =
+  o19OwnedSafeWord actor forbidden (blockBody block) (blockActorOnly block) safe action member
