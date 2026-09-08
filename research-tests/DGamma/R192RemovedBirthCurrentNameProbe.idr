@@ -34,3 +34,11 @@ r192RemovedBirthTrace = appendTransitions r178RightTrace
     (DGamma.CP4ProgressNoDeadlock.checkedFromRaw r45NameEq r45KeyEq
       (ORemove 1) r178RightFinal r192RemovedBirthFinal ORemoveTag
       (checkedTransitionTargetValid r178ChildRetire) Refl)) NoTransitions)
+
+||| Changes ONLY absent endpoint names; fixes the live external root0.
+public export
+r192SwapAbsent : Nat -> Nat
+r192SwapAbsent Z = Z
+r192SwapAbsent (S Z) = 2
+r192SwapAbsent (S (S Z)) = 1
+r192SwapAbsent (S (S (S later))) = S (S (S later))
