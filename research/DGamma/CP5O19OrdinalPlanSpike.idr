@@ -146,3 +146,36 @@ record O19GlobalPlanResult
   globalCrossingPositions : List (Nat, Nat)
   0 globalCrossingPlan : O19GlobalCrossingPlan name key world error value protocol nameEq keyEq source correspondence derivation globalCrossingPositions
   0 globalCrossingCount : length globalCrossingPositions = finiteAdjacentSwapNodeCount derivation
+
+||| Prepend the ACTUAL node to an explicit already-produced tail plan.
+||| Coordinates are evaluated from the authentic current prefix map; exact
+||| occurrence equations and count are constructed with that same list.
+export
+0 o19GlobalPlanPrepend :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {protocol : RegistrationProtocol key value world error} -> {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {initial, sourceFinal, currentFinal, before, middle, afterState, targetFinal : SystemState name key value world error} ->
+  {source : Transitions initial sourceFinal} ->
+  (current : Transitions initial currentFinal) -> (earlier : Transitions initial before) ->
+  (left : Transition before middle) -> (right : Transition middle afterState) -> (later : Transitions afterState currentFinal) ->
+  (orientation : AdjacentSwapOrientationEvidence left right) ->
+  (diamond : LocalRelationalDiamond name key world error value nameEq keyEq left right) ->
+  (result : AdjacentSwapResult name key world error value protocol nameEq keyEq current earlier left right later diamond) ->
+  (target : Transitions initial targetFinal) ->
+  (rest : FiniteAdjacentSwapDerivation name key world error value protocol nameEq keyEq (swappedTrace result) target) ->
+  (correspondence : ActionRegistrationReplayCorrespondence name key world error value source current) ->
+  (currentMap : O19OrdinalActionMap name key world error value source current correspondence) ->
+  O19GlobalPlanResult name key world error value protocol nameEq keyEq source
+    (composeActionRegistrationReplayCorrespondence correspondence (swappedOccurrenceCorrespondence result)) rest ->
+  O19GlobalPlanResult name key world error value protocol nameEq keyEq source correspondence
+    (FiniteAdjacentSwapStep current earlier left right later orientation diamond result target rest)
+o19GlobalPlanPrepend current earlier left right later orientation diamond result target rest correspondence currentMap
+  (MkO19GlobalPlanResult positions plan count) =
+    MkO19GlobalPlanResult
+      ((ordinalOrigin currentMap (transitionCount earlier), ordinalOrigin currentMap (S (transitionCount earlier))) :: positions)
+      (GlobalOriginPlanStep current earlier left right later orientation diamond result target rest correspondence
+        (ordinalOrigin currentMap (transitionCount earlier)) (ordinalOrigin currentMap (S (transitionCount earlier)))
+        (ordinalOriginExact currentMap (adjacentLeftNodeOccurrence result))
+        (trans (ordinalOriginExact currentMap (adjacentRightNodeOccurrence result))
+          (cong (ordinalOrigin currentMap) (transitionPrefixLength earlier left))) positions plan)
+      (cong S count)
