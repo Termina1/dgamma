@@ -274,3 +274,17 @@ o19LifecyclePaperChecked nameEq keyEq (LLeave actor) tag (MkSystemState ambient 
         (MkFiber (leaveReplayComponent (foreignLeaveReplayData (leavePlanView (foreignLeavePlanView nameEq keyEq actor ambient fibers tag afterState (checkedActionProjects nameEq keyEq (LLeave actor) (MkSystemState ambient fibers) afterState tag checked))))) (leaveReplayParent (foreignLeaveReplayData (leavePlanView (foreignLeavePlanView nameEq keyEq actor ambient fibers tag afterState (checkedActionProjects nameEq keyEq (LLeave actor) (MkSystemState ambient fibers) afterState tag checked))))) (leaveReplayRetired (foreignLeaveReplayData (leavePlanView (foreignLeavePlanView nameEq keyEq actor ambient fibers tag afterState (checkedActionProjects nameEq keyEq (LLeave actor) (MkSystemState ambient fibers) afterState tag checked))))) (leaveReplayTable (foreignLeaveReplayData (leavePlanView (foreignLeavePlanView nameEq keyEq actor ambient fibers tag afterState (checkedActionProjects nameEq keyEq (LLeave actor) (MkSystemState ambient fibers) afterState tag checked))))) (Unloading (leaveReplayAccumulator (foreignLeaveReplayData (leavePlanView (foreignLeavePlanView nameEq keyEq actor ambient fibers tag afterState (checkedActionProjects nameEq keyEq (LLeave actor) (MkSystemState ambient fibers) afterState tag checked))))) (leaveReplayView (foreignLeaveReplayData (leavePlanView (foreignLeavePlanView nameEq keyEq actor ambient fibers tag afterState (checkedActionProjects nameEq keyEq (LLeave actor) (MkSystemState ambient fibers) afterState tag checked))))) Nothing))
         fibers (trans (leavePlanOwnerFound (foreignLeavePlanView nameEq keyEq actor ambient fibers tag afterState (checkedActionProjects nameEq keyEq (LLeave actor) (MkSystemState ambient fibers) afterState tag checked))) (cong Just (leaveReplayOwnerShape (foreignLeaveReplayData (leavePlanView (foreignLeavePlanView nameEq keyEq actor ambient fibers tag afterState (checkedActionProjects nameEq keyEq (LLeave actor) (MkSystemState ambient fibers) afterState tag checked))))))) in Refl)))
 o19LifecyclePaperChecked nameEq keyEq (LUnload actor) tag before afterState checked lifecycle excluded notUnloading = void (excluded Refl)
+
+||| Extract both actual no-unload facts at a dependent source cut: the
+||| selected transition cannot unload, and its entire actual suffix cannot.
+||| The structural earlier spine identifies this occurrence, not its label.
+export
+0 o19NoUnloadAtCut :
+  {name, key, world, error : Type} -> {value : key -> Type} -> (selected : name) ->
+  {initial, before, afterState, finalState : SystemState name key value world error} ->
+  (earlier : Transitions initial before) -> (step : Transition before afterState) -> (later : Transitions afterState finalState) ->
+  NoParentUnload selected (appendTransitions earlier (MoreTransitions step later)) ->
+  (Not (transitionAction step = LUnload selected), NoParentUnload selected later)
+o19NoUnloadAtCut selected NoTransitions step later (NoParentUnloadStep _ _ excluded tail) = (excluded, tail)
+o19NoUnloadAtCut selected (MoreTransitions head rest) step later (NoParentUnloadStep _ _ excluded tail) =
+  o19NoUnloadAtCut selected rest step later tail
