@@ -147,10 +147,78 @@ uncommitted B7 declaration restored to HEAD, preserving B1--B6. One exhausted
 unit in this B seam (A24 was the independent concrete measure-test seam).
 S3-1 freshly checks the reverted retained module before this stop/gate.
 
+## Unit B final producer stop (16/16 units,15 retained)
+
+B7 stop atfadf779a RATIFIED. Supervisor explicitly authorized9 remaining units
+on DISTINCT shared-component/insert/first-three/birth-remainder prerequisites
+and small positive fixtures; no projected-record-equality retry or O20 body.
+
+B8 passes2: explicit shared component authenticated by BOTH actual inactive
+owner lookup equations, BOTH actual successful resolver equations, internal
+all-name cut and right pairwise-provision invariant. Derives renamed parents,
+actual related Begin views and Reloading controls. Attempt1 used equality
+instead of the existing runtime relation for identity undo; attempt2 correctly
+uses localStateRuntimeReflexive (no function extensionality/certificate equality).
+B9 actual insertion preserves full effects and every raw-name control. B10
+projects exactly the first three endpoint clauses (SystemEquivalentByRenaming)
+from that internal cut; it does NOT construct endpoint synchronization.
+B11--B13 retain an explicit fourth-clause classification: compute actual child
+support at original leftFinal, True uses supportedReplayedBirthBridge's ENTIRE
+exact replay/canonical/original-origin packet, False returns the indexed
+O20UnsupportedBirth remainder. No payload reconstruction/computed dependent
+elimination, no arbitrary renaming, no invented opposite birth or all-birth claim.
+B14 derives the all-name cut after two ACTUAL checked Begins with explicitly
+shared observed component and exact primitive output equations. This is a
+conditional internal successor, NOT a solution to B7's general observation
+adapter or to canonical pair/cut selection.
+
+B15 and B16 are genuine nonempty integration fixtures on the authoritative
+R182 states of the independent two-component six-edge execution. B15 derives
+state2 agreement by two root insertions from the empty origin. B16 applies B14
+to the two real checked state2->3 Begin edges, obtaining the full all-name
+post-cut (not a selected-control or scalar property). Owner lookup is derived
+by lookupInsertOther/lookupInserted. B16 passes3: attempt1 lacked Data.Nat's
+Uninhabited0=1 instance; attempt2 needed explicit FiberAt value-family arguments;
+attempt3 fixes these without changing its goal. Other retained B units pass1.
+No second B exhaustion, no widened/public theorem claim.
+
+### B retained declaration correspondence
+
+| Unit | Declaration | Commit |
+| --- | --- | --- |
+| B1 | `O20AllNameCut` | `481835e6` |
+| B2 | `o20AllNameEmptyOrigin` | `0880dcba` |
+| B3 | `o20PairedReplaceControls` | `25abd2b4` |
+| B4 | `o20PresentControl` | `dbedc11a` |
+| B5 | `o20RelatedFiberMetadata` | `67c4061b` |
+| B6 | `o20ObservedBeginsMetadata` | `a61e9a5e` |
+| B8 | `o20SharedComponentBeginControl` | `69a0e6f2` |
+| B9 | `o20AllNameInsert` | `7e501561` |
+| B10 | `o20AllNameCutFirstThree` | `609904a4` |
+| B11 | `O20BirthBridgeAttempt` | `416e4545` |
+| B12 | `o20BirthBridgeObserved` | `e2f46fce` |
+| B13 | `o20ClassifyReplayedBirth` | `ab4f19b2` |
+| B14 | `o20SharedObservedBeginCut` | `b8e2d55e` |
+| B15 | `r190TwoRootAllNameCut` | `3d1f3044` |
+| B16 | `r190ActualBeginAllNameCut` | `9f0b997e` |
+
+### Four-clause convergence map after B
+
+| Clause | Produced | Still required from accepted canonical capital |
+| --- | --- | --- |
+| Ambient | actual empty/insert/shared-Begin internal successors; exact first-three projection | whole paired cuts through all real Advance/Finish/gaps to endpoints |
+| Tables | full ordered binding invariant in same successors; lookup equality derived | same whole-execution induction, not just local frames |
+| ALL controls | all-name invariant and actual insert/shared-Begin successor, including foreign/unsupported/absent/retired | general shared-observation adapter (B7), every Advance/Finish/gap, actual endpoint coverage |
+| ALL births/origins | actual support classification; full exact supported-child triangle from existing producer | unsupported child's mapped canonical birth and exact original-origin triangle; False explicitly unresolved |
+
 ## Status
 
-O19 closed; selector/convergence open; holes4=1/2/0/0/1, delta0.
-A stopped24/24,23 retained. B currently7/16 consumed,6 retained; B7 exhausted,
-9 authorized units remain pending exhaustion gate. No unsafe/hole/production/
-public-surface/LocalDiamond/O17/O19/O21 changes. Final ledger/archive/verification
-remain due. All exact invocation and guarded-commit evidence append-only in/tmp.
+38 retained new declarations total: A23/24 + B15/16. Exactly40 producer units
+consumed. Exhausted A24 and B7 were reverted/audited/gated; no fourth attempt.
+O19 closed, selector/convergence OPEN, holes4=1/2/0/0/1, delta0. No O20 bodies.
+A real total operational SEARCH and same-chain certificate fold are proved,
+NOT canonical completeness. Real all-name internal synchronization successors
+and exact supported-birth classification are proved, NOT endpoint convergence.
+Next: R191 supported common-reference/completeness/stopped-order equality;
+convergence whole paired episode induction and unsupported births. No O21 work.
+Final serialized seeded regression plan/ledger/archive/verification now due.
