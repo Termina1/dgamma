@@ -352,3 +352,107 @@ correspondence; full new2x2 fixture absent. Prerequisites(i)–(vi) remain incom
 O19 body0, C0, O20/O21 body0. F is exhausted by SLOT COUNT, not proof attempts;
 no extra proof scope is inferred. Next: serialized seeded final validation,
 append-only evidence/frozen audit and mandatory supervisor gate by03:36.
+
+
+## Final seeded validation and exact terminal evidence
+
+All31 final targets PASS (29 ordinary,2 intended diagnostic negatives), using
+one detached SERIAL source-check/build driver with the unchanged48GiB sampled
+RSS guard. No TTC was deleted; existing dependency TTCs were refreshed when
+invalidated, not cold-rebuilt. All5 frozen spikes, every new proof module, the
+3 new limited fixtures, revised-safety/adjacency regressions, existing four-
+crossing fixture, operational threading, theorem assembly, R8 pipeline and
+seeded package were checked. The existing R182 four-crossing regression does
+NOT replace the still-absent new producer-driven2x2 fixture. No legacy R11 suite.
+
+| Check | Target | Result | Seconds | Peak sampled RSS KiB |
+|---|---|---|---|---|
+| V01 | `research/DGamma/CP5ConfluenceLocalDiamondSpike.idr` | Fresh PASS | 491.543 | 49829408 |
+| V02 | `research/DGamma/CP5ConfluenceDeletionChainSpike.idr` | Fresh PASS | 77.758 | 4932064 |
+| V03 | `research/DGamma/CP5ConfluenceCanonicalSortSpike.idr` | Fresh PASS | 54.984 | 19209984 |
+| V04 | `research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr` | Fresh PASS | 9.334 | 4060080 |
+| V05 | `research/DGamma/CP5ConfluenceCrossTraceSpike.idr` | Fresh PASS | 6.215 | 2885264 |
+| V06 | `research/DGamma/CP5O19ActualCommutedDomainSpike.idr` | Fresh PASS | 1.036 | 0 |
+| V07 | `research/DGamma/CP5O19InsertObservationSpike.idr` | Fresh PASS | 3.134 | 2882480 |
+| V08 | `research/DGamma/CP5O19ResolvedOpeningRowSpike.idr` | Fresh PASS | 4.155 | 3903712 |
+| V09 | `research/DGamma/CP5O19ActivationInsertionRowSpike.idr` | Fresh PASS | 4.149 | 3806512 |
+| V10 | `research/DGamma/CP5O19InsertionInsertionRowSpike.idr` | Fresh PASS | 4.162 | 2886864 |
+| V11 | `research/DGamma/CP5O19CartesianInsertionSpike.idr` | Fresh PASS | 5.180 | 3808560 |
+| V12 | `research/DGamma/CP5O19AdvanceObservationSpike.idr` | Fresh PASS | 4.156 | 2886416 |
+| V13 | `research/DGamma/CP5O19ActivationResolutionSpike.idr` | Fresh PASS | 4.152 | 2884528 |
+| V14 | `research/DGamma/CP5O20SafeBlockSelectionSpike.idr` | Fresh PASS | 3.128 | 5656736 |
+| V15 | `research/DGamma/CP5O20BeginObservationSpike.idr` | Fresh PASS | 3.114 | 3091344 |
+| V16 | `research/DGamma/CP5O20CanonicalPairSelectionSpike.idr` | Fresh PASS | 4.151 | 2882288 |
+| V17 | `research/DGamma/CP5O19SourceShapeSpike.idr` | Fresh PASS | 3.107 | 2205168 |
+| V18 | `research-tests/DGamma/R185O19ObservedInsertionRowPositive.idr` | Fresh PASS | 307.853 | 9791280 |
+| V19 | `research-tests/DGamma/R185O19ActivationInsertionRowPositive.idr` | Fresh PASS | 14.544 | 4799952 |
+| V20 | `research-tests/DGamma/R185O19InsertionGuardsPositive.idr` | Fresh PASS | 3.141 | 4555840 |
+| V21 | `research-tests/DGamma/R182O19RevisedSafetyPositive.idr` | Fresh PASS | 17.612 | 3711120 |
+| V22 | `research-tests/DGamma/R182O19RevisedSafetyNegative.idr` | Fresh PASS | 3.147 | 4448608 |
+| V23 | `research-tests/DGamma/R182O19AdjacencyNegative.idr` | Fresh PASS | 13.480 | 4462432 |
+| V24 | `research-tests/DGamma/R183O19GenericBeginRowPositive.idr` | Fresh PASS | 3.120 | 3834336 |
+| V25 | `research-tests/DGamma/R182O19AllFourCrossingsPositive.idr` | Fresh PASS | 191.766 | 13950384 |
+| V26 | `research-tests/DGamma/R7OperationalThreadingPositive.idr` | Fresh PASS | 2.104 | 2403520 |
+| V27 | `research-tests/DGamma/R16ConfluenceTheoremAssemblyPositive.idr` | Fresh PASS | 100.585 | 39931024 |
+| V28 | `research-tests/DGamma/R6SafetyDetachmentNegative.idr` | Exact negative PASS | 1.060 | 0 |
+| V29 | `research-tests/DGamma/R8ZeroDerivationOperationalStepNegative.idr` | Exact negative PASS | 1.060 | 0 |
+| V30 | `research-tests/DGamma/R8FullPipeline.idr` | Fresh PASS | 100.602 | 39109296 |
+| V31 | `package` | Fresh PASS | 16.580 | 275008 |
+
+V01 LocalDiamond:491.543s,49,829,408KiB <50,331,648KiB guard. Its retained
+warnings are pre-existing frozen-source implicit-shadowing warnings, not proof
+failures. The exact negatives require native nonzero exit AND the named symbol
+AND exact diagnostic; they are not mislabeled positive proofs.
+
+Whole shift ledger:137 source-check/build invocations =117 ordinary PASS +2
+intended-negative PASS +17 compiler rejections +1 INTERRUPTED D3-1. All source
+check/build intervals are serialized; all85 retained source commits have prior
+exact-source ordinary fresh PASS.82 new top-level declarations plus2 approved
+visibility units and1 same-declaration revision account for85 retained units.
+E2 is the sole exhausted unit. All attempt caps and one declaration/check
+reconciled. All rejected/interrupted source/log snapshots are retained in the
+committed archive; none matches a retained source commit. Source work stopped
+at F8; no C/O19/O20/O21 body attempt, and no later proof unit was started.
+
+PROTOCOL QUALIFICATIONS ARE PERMANENT, not cured by successful final checks:
+1. D3-1 foreground timeout killed the monitor while its isolated compiler
+   survived; its exact group was later terminated. It is INTERRUPTED/nonfresh,
+   with no uninterrupted-monitor/full-peak claim for that interval.
+2. D4-1 was wrongly committed as8d553e00 after a failed check. Supervisor
+   authorized LOCAL-ONLY removal; rejection and bad hash remain documented.
+   Every retained source commit now has authenticated prior PASS, but shift
+   criterion COMMIT ONLY ON FRESH PASS remains **NOT SATISFIED**.
+3. An ancillary `idris2 --version` query overlapped V01 at approximately
+   02:27:05 UTC, returning0.8.0. It checked/built no source and touched no seed.
+   The source-check/build serialization claim is verified; a stronger claim
+   of zero overlap between ALL compiler-program invocations is NOT made.
+   Separate timestamps for that short query were not retained; its disclosure
+   is persisted as ancillary-version-query.json inside the evidence archive.
+
+## Final status / terminal supervisor and independent-review gate
+
+PROVED: arbitrary O/A observed insertion/Begin, A/O activation/insertion and
+O/O generated-insertion rows, plus mixed RIGHT-INSERTION row with actual
+crossings/replay/bundle/uniqueness/derivation/count. Actual insertion/Advance
+backwards applicability from checked source facts. Conditional A/A backwards
+Begin and Iter/Finish guards. Actual-pair owner survival and pre-left opening
+static dependency exclusion producers. These are prerequisite proofs, not O19.
+PARTIAL: synchronize F8's produced static component declarations along the
+actual block bodies to E11/E12's exact current components/dependency lists;
+then derive full sanctioned-input A/A guards and mixed right-activation rows.
+STILL OPEN: Cartesian column induction; source-pair origins/product count;
+coverage/bounds/UniqueKeys; installed ranges/decomposition/origin updates;
+same-chain endpoint/full-bundle/external correspondence and the full new2x2
+fixture. All(i)–(vi) are still incomplete as an end-to-end prerequisite chain.
+O19 body0. C deferred to R186; O20/O21 body0.5 frozen holes remain1/3/0/0/1.
+
+No production or package change vs34b21c9; CP3 blob and both adjacent-suffix
+hashes unchanged. Removing EXACTLY the two approved LocalDiamond visibility
+keywords reconstructs both324dc4ae and2a01e118 byte-for-byte.207/207 seeds
+preserved. Final evidence manifest authenticates the clean no-compiler/no-staged
+boundary after this audit commit; a further read-only frozen gate follows its
+manifest-only artifact commit. Independent reviewer acceptance is not claimed.
+Next proposed R186 work: metadata synchronization and sanctioned-input A/A
+assembly, then right-activation row/Cartesian prerequisites, only after an
+explicit fresh authorization. No additional work is inferred from remaining
+time in this shift. Mandatory final supervisor gate follows committed evidence.

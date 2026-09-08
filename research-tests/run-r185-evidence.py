@@ -86,7 +86,7 @@ with tarfile.open(ROOT/'research-tests/O6-R185-COMPILER-EVIDENCE.tar.gz','w:gz')
     for path in [OUT/'ledger.jsonl'] + sorted(OUT.glob('*frozen.json')):
         if path.exists():
             archive.add(path,arcname=path.name)
-    for name in ['final-regressions.py', 'final-regressions.json']:
+    for name in ['final-regressions.py', 'final-regressions.json', 'ancillary-version-query.json']:
         path = OUT/name
         if path.exists():
             archive.add(path,arcname=name)
@@ -97,6 +97,8 @@ summary = dict(checks=len(records),ordinaryPasses=sum(r['passed'] and not r['exp
     interruptions=sum(r['interrupted'] for r in records),serialized=True,
     oneNewDeclarationPerInvocation=all(len(r.get('newTopLevelDeclarations', [])) <= 1 for r in records),
     workflowViolations=[dict(unit=r['unit'],detail=r['workflowViolation']) for r in records if 'workflowViolation' in r],
+    ancillaryVersionQuery=(json.loads((OUT/'ancillary-version-query.json').read_text())
+        if (OUT/'ancillary-version-query.json').exists() else None),
     seededPackageBuilds=sum(r['path']=='package' for r in records),
     attemptCapsVerified=attempts,priorFreshPassForEverySourceCommit=proof_commits,
     rejectedSourcesAbsentFromRetainedHistory=True,protocolCommitOnlyFreshPassSatisfied=False,
