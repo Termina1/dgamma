@@ -474,3 +474,22 @@ o20EnumeratedHeadObserved nameEq sourceOrder earlier left right later exact (Yes
 o20EnumeratedHeadObserved nameEq sourceOrder earlier left right later exact (No different) checked distinct =
   rewrite checked in MkO20EnumeratedPair (earlier ++ (right :: left :: later))
     (MkAdjacentActorOrderSwap earlier left right later exact Refl different) Here Refl Refl
+
+||| The exact native tail call remains enumerated after either head decision:
+||| equal names skip; distinct names prepend one ACTUAL candidate.
+export
+0 o20EnumeratedTailObserved :
+  {name : Type} -> (nameEq : DecEq name) -> (sourceOrder, earlier : List name) ->
+  (head, next : name) -> (later : List name) ->
+  (exact : (sourceOrder = earlier ++ (head :: next :: later))) ->
+  (observed : Dec (head = next)) -> (decEq @{nameEq} head next = observed) ->
+  (left, right : name) ->
+  O20EnumeratedPair name sourceOrder
+    (o20AdjacentCandidates nameEq sourceOrder (earlier ++ [head]) (next :: later)
+      (trans exact (appendAssociative earlier [head] (next :: later)))) left right ->
+  O20EnumeratedPair name sourceOrder
+    (o20AdjacentCandidates nameEq sourceOrder earlier (head :: next :: later) exact) left right
+o20EnumeratedTailObserved nameEq sourceOrder earlier head next later exact (Yes same) checked left right packet =
+  rewrite checked in packet
+o20EnumeratedTailObserved nameEq sourceOrder earlier head next later exact (No different) checked left right packet =
+  rewrite checked in o20EnumeratedPairThere packet
