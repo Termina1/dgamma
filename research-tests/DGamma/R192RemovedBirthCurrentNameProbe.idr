@@ -5,6 +5,8 @@ import DGamma.Coeffects
 import DGamma.Metatheory
 import DGamma.CP3
 import DGamma.CP4ProgressNoDeadlock
+import DGamma.CP4SupportSolution
+import DGamma.CP5O20PairedRemovalSpike
 import DGamma.CP5ConfluenceLocalDiamondSpike
 import DGamma.CP5ConfluenceDeletionChainSpike
 import DGamma.CP5ConfluenceRenamingCompositionSpike
@@ -135,3 +137,29 @@ r192E8CurrentDoesNotGiveHistoricalBirth birth =
   r192NoMappedInsertionAt (locatedActionOrdinal (generatedRegistrationActionOccurrence birth))
     (rawInsertionNameAtLocated Nat R45Key Unit String R45Value r192RemovedBirthTrace
       2 (ChildOf 0) r45Child (generatedRegistrationActionOccurrence birth))
+
+||| Precise retained obstruction: the actual original birth is unsupported;
+||| E9 generated Retire/Remove matching ALSO holds (both nonempty domains).
+||| These facts still cannot manufacture the fixed-current-map right birth.
+||| Support is derived from the deletion lookup theorem, not scalar unfolding.
+||| UniqueRawNameInsertions and independent canonical capital are NOT claimed.
+export
+0 r192RemovedBirthObstruction :
+  (isSupported {name = Nat} {key = R45Key} {value = R45Value} {world = Unit} {error = String}
+    @{r45NameEq} @{r45KeyEq} 1 r192RemovedBirthFinal = False,
+   GeneratedOrchestrationMatched Nat R45Key Unit String R45Value r45NameEq
+    r192RemovedBirthTrace r192RemovedBirthTrace (generatedGenerationBijection r192RemovedSameInputs),
+   Not (LocatedGeneratedRegistration
+    (renameForward (expectedBridgeBijection r192RemovedSameInputs) 1)
+    (renameForward (expectedBridgeBijection r192RemovedSameInputs) 0)
+    r45Child r192RemovedBirthTrace))
+r192RemovedBirthObstruction =
+  ((the ((state : SystemState Nat R45Key R45Value Unit String) ->
+      (lookupFiber {name = Nat} {key = R45Key} {value = R45Value} {world = Unit} {error = String}
+        @{r45NameEq} 1 (registry state) = Nothing) ->
+      (isSupported @{r45NameEq} @{r45KeyEq} 1 state = False))
+      (\state, absent => trans (supportSetIsSolution r45NameEq r45KeyEq state 1)
+        (rewrite absent in Refl))) r192RemovedBirthFinal
+      (o20DeletedLookupAbsent r45NameEq 1 (registry r178RightFinal)),
+   generatedOrchestrationReflexive Nat R45Key Unit String R45Value r45NameEq r192RemovedBirthTrace,
+   r192E8CurrentDoesNotGiveHistoricalBirth)
