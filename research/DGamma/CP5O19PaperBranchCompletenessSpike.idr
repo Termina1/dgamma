@@ -69,3 +69,42 @@ o19UnloadingOwnAction nameEq keyEq (LLeave actor) ambient fibers component paren
     (rewrite found in Refl))) raw))
 o19UnloadingOwnAction nameEq keyEq (LUnload actor) ambient fibers component parent retiredFlag table accumulator view outcome found tag afterState raw notUnload =
   void (notUnload Refl)
+
+||| Source observation plus real checked local update extends absorption to
+||| arbitrary actions. Foreign actions preserve the selected lookup exactly;
+||| the own branch uses A1, never an installed-to-paper cast.
+export
+0 o19UnloadingStepObserved :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (action : Action name key value world error) -> (tag : RuleTag) ->
+  (ambient : world) -> (fibers : Registry name key value world error) ->
+  (afterState : SystemState name key value world error) ->
+  (raw : applyAction @{nameEq} @{keyEq} action (MkSystemState ambient fibers) = Just (tag, afterState)) ->
+  (observed : Maybe (Fiber name key value world error)) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected fibers = observed) ->
+  (unloadingEndpoint {name} {key} {value} {world} {error} @{nameEq} selected (MkSystemState ambient fibers) = True) ->
+  Not (action = LUnload selected) ->
+  (unloadingEndpoint {name} {key} {value} {world} {error} @{nameEq} selected afterState = True)
+o19UnloadingStepObserved nameEq keyEq selected action tag ambient fibers afterState raw Nothing found unloading notUnload =
+  void (uninhabited (trans (sym (the (unloadingEndpoint {name} {key} {value} {world} {error} @{nameEq} selected (MkSystemState ambient fibers) = False)
+    (rewrite found in Refl))) unloading))
+o19UnloadingStepObserved nameEq keyEq selected action tag ambient fibers afterState raw
+  (Just (MkFiber component parent retiredFlag table (Inactive outcome))) found unloading notUnload =
+  void (uninhabited (trans (sym (the (unloadingEndpoint {name} {key} {value} {world} {error} @{nameEq} selected (MkSystemState ambient fibers) = False)
+    (rewrite found in Refl))) unloading))
+o19UnloadingStepObserved nameEq keyEq selected action tag ambient fibers afterState raw
+  (Just (MkFiber component parent retiredFlag table (Reloading remaining accumulator view))) found unloading notUnload =
+  void (uninhabited (trans (sym (the (unloadingEndpoint {name} {key} {value} {world} {error} @{nameEq} selected (MkSystemState ambient fibers) = False)
+    (rewrite found in Refl))) unloading))
+o19UnloadingStepObserved nameEq keyEq selected action tag ambient fibers afterState raw
+  (Just (MkFiber component parent retiredFlag table (Active accumulator view))) found unloading notUnload =
+  void (uninhabited (trans (sym (the (unloadingEndpoint {name} {key} {value} {world} {error} @{nameEq} selected (MkSystemState ambient fibers) = False)
+    (rewrite found in Refl))) unloading))
+o19UnloadingStepObserved nameEq keyEq selected action tag ambient fibers afterState raw
+  (Just (MkFiber component parent retiredFlag table (Unloading accumulator view outcome))) found unloading notUnload =
+  case decEq @{nameEq} selected (actionOwner action) of
+    Yes Refl => o19UnloadingOwnAction nameEq keyEq action ambient fibers component parent retiredFlag table accumulator view outcome found tag afterState raw notUnload
+    No distinct => rewrite systemLocalUpdateForeign nameEq selected (actionOwner action) distinct
+      (MkSystemState ambient fibers) afterState (applyActionLocalUpdate nameEq keyEq action (MkSystemState ambient fibers) afterState tag raw) in
+        rewrite found in Refl
