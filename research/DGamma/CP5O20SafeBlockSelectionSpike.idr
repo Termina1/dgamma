@@ -513,3 +513,13 @@ o20AdjacentCandidatesComplete nameEq sourceOrder earlier (head :: next :: rest) 
     (decEq @{nameEq} head next) Refl left right
     (o20AdjacentCandidatesComplete nameEq sourceOrder (earlier ++ [head]) (next :: rest)
       (trans exact (appendAssociative earlier [head] (next :: rest))) left right distinct location)
+
+||| A physical adjacent split induces the structural location, without any
+||| multi-block BeforeIn analysis or computed decomposition equality.
+export
+0 o20NeighboursAtSplit : {name : Type} -> (earlier : List name) -> (left, right : name) ->
+  (later : List name) -> O20Neighbours name left right (earlier ++ (left :: right :: later))
+o20NeighboursAtSplit [] left right later = O20NeighboursHere
+o20NeighboursAtSplit [head] left right later = O20NeighboursLater O20NeighboursHere
+o20NeighboursAtSplit (head :: next :: rest) left right later =
+  O20NeighboursLater (o20NeighboursAtSplit (next :: rest) left right later)
