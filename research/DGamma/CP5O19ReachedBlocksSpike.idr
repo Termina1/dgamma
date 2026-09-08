@@ -1093,3 +1093,18 @@ o19ActualTargetBlock nameEq keyEq protocol swap source blocks premises safety un
   o19ActualBlockAtSite nameEq keyEq protocol swap source blocks premises safety unique
     (o19ClassifySwapSite (actorPrefix swap) (actorLeft swap) (actorRight swap) (actorSuffix swap)
       (replace {p = Elem selected} (actorAfterExact swap) member))
+
+||| Structural front of ONE actual dependent trace. Constructor indices
+||| retain the very same transitions/states, not merely equal action labels.
+public export
+data O19TracePrefix : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {initial, middle, finalState : SystemState name key value world error} ->
+  (front : Transitions initial middle) -> (whole : Transitions initial finalState) -> Type where
+  O19PrefixEmpty : {name, key, world, error : Type} -> {value : key -> Type} ->
+    {initial, finalState : SystemState name key value world error} ->
+    (0 whole : Transitions initial finalState) -> O19TracePrefix NoTransitions whole
+  O19PrefixMore : {name, key, world, error : Type} -> {value : key -> Type} ->
+    {initial, next, middle, finalState : SystemState name key value world error} ->
+    (0 step : Transition initial next) -> (0 front : Transitions next middle) -> (0 whole : Transitions next finalState) ->
+    (0 smaller : O19TracePrefix front whole) ->
+    O19TracePrefix (MoreTransitions step front) (MoreTransitions step whole)
