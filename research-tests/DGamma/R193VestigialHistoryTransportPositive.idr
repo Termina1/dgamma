@@ -197,3 +197,16 @@ r193HistoricalSameInputs = MkSameOrchestrationModuloGenerated
     (SkipRightNonExternalRootBirth (LUnload 0) r193HistoricalUnload NoTransitions Refl Refl
     (ExternalRootBirthCorrespondenceEnd))))))))))))))))
   r193HistoricalTree r193HistoricalCurrent
+
+||| Generation transport selects the SAME authentic child1 insertion in both
+||| histories even though their accepted current bijection moves that name.
+public export
+0 r193VestigialHistoryPair :
+  O20HistoryBirthPair Nat R45Key Unit String R45Value
+    (generatedGenerationBijection r193HistoricalSameInputs)
+    r193HistoricalClosedTrace r193HistoricalClosedTrace 1 1
+r193VestigialHistoryPair =
+  MkO20HistoryBirthPair (registrationGeneration r193HistoricalBirth)
+    (registrationGeneration r193HistoricalBirth)
+    (o20GeneratedHistoryBirth r193HistoricalBirth)
+    (o20GeneratedHistoryBirth r193HistoricalBirth) Refl
