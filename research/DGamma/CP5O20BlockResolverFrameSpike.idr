@@ -106,3 +106,18 @@ export
    resolveView {name} {key} {value} {world} {error} @{nameEq} @{keyEq} deps before)
 o20ResolverObservationFrame nameEq keyEq deps before afterState observed =
   trans (resolutionAfter observed) (sym (resolutionBefore observed))
+
+||| A genuine checked child/root insertion is resolver-inert because the
+||| native inserted fiber is inactive. No activation-domain premise is used.
+export
+0 o20NativeInsertionResolverFrame :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (deps : List key) ->
+  (child : name) -> (parent : Parent name) -> (component : Component key value world error) ->
+  (before, afterState : SystemState name key value world error) -> (tag : RuleTag) ->
+  (checkedApplyAction {name} {key} {value} {world} {error} @{nameEq} @{keyEq} (OInsert child parent component) before = Just (tag, afterState)) ->
+  (resolveView {name} {key} {value} {world} {error} @{nameEq} @{keyEq} deps (registry afterState) =
+   resolveView {name} {key} {value} {world} {error} @{nameEq} @{keyEq} deps (registry before))
+o20NativeInsertionResolverFrame nameEq keyEq deps child parent component before afterState tag checked =
+  o20ResolverObservationFrame nameEq keyEq deps (registry before) (registry afterState)
+    (o19ResolutionAfterCheckedInsert nameEq keyEq deps child parent component before afterState tag checked)
