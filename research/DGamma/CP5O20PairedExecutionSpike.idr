@@ -182,3 +182,23 @@ export
 o20PairedExecutionCut nameEq keyEq renaming PairedExecutionDone paired = paired
 o20PairedExecutionCut nameEq keyEq renaming (PairedExecutionMore stage later) paired =
   o20PairedExecutionCut nameEq keyEq renaming later (o20PairedStageCut nameEq keyEq renaming stage paired)
+
+||| Explicit LTS projection: each genuine stage supplies BOTH actual indexed
+||| transitions, including the native checked callback/Finish/gap branches.
+export
+0 o20PairedStageTransitions :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} -> {renaming : NameBijection name} ->
+  {leftBefore, rightBefore, leftAfter, rightAfter : SystemState name key value world error} ->
+  O20PairedStage name key world error value nameEq keyEq renaming leftBefore rightBefore leftAfter rightAfter ->
+  (Transition leftBefore leftAfter, Transition rightBefore rightAfter)
+o20PairedStageTransitions (PairedBeginStage nameEq keyEq renaming actor leftBefore leftAfter rightBefore rightAfter leftOpening rightOpening pairwise) =
+  (Fired nameEq keyEq (LBegin actor) LBeginTag (beginEquation leftOpening), Fired nameEq keyEq (LBegin (renameForward renaming actor)) LBeginTag (beginEquation rightOpening))
+o20PairedStageTransitions (PairedAdvanceStage nameEq keyEq renaming actor component step rest leftParent rightParent leftRetired rightRetired leftTable rightTable leftOlder rightOlder leftView rightView leftWorld rightWorld leftRegistry rightRegistry leftAfter rightAfter leftUndo rightUndo leftCapability rightCapability leftTag rightTag leftFound rightFound leftResolved rightResolved leftRun rightRun leftChecked rightChecked) =
+  (Fired nameEq keyEq (LAdvance actor) leftTag leftChecked, Fired nameEq keyEq (LAdvance (renameForward renaming actor)) rightTag rightChecked)
+o20PairedStageTransitions (PairedEmptyFinishStage nameEq keyEq renaming actor component leftParent rightParent leftRetired rightRetired leftTable rightTable leftOlder rightOlder leftView rightView leftWorld rightWorld leftRegistry rightRegistry leftFound rightFound leftChecked rightChecked) =
+  (Fired nameEq keyEq (LAdvance actor) LFinishTag leftChecked, Fired nameEq keyEq (LAdvance (renameForward renaming actor)) LFinishTag rightChecked)
+o20PairedStageTransitions (PairedRetireStage nameEq keyEq renaming actor leftWorld rightWorld leftRegistry rightRegistry leftOld rightOld leftFound rightFound leftChecked rightChecked) =
+  (Fired nameEq keyEq (ORetire actor) ORetireTag leftChecked, Fired nameEq keyEq (ORetire (renameForward renaming actor)) ORetireTag rightChecked)
+o20PairedStageTransitions (PairedInsertStage nameEq keyEq renaming actor component leftParent rightParent parents leftWorld rightWorld leftRegistry rightRegistry leftAbsent rightAbsent leftChecked rightChecked) =
+  (Fired nameEq keyEq (OInsert actor leftParent component) OInsertTag leftChecked, Fired nameEq keyEq (OInsert (renameForward renaming actor) rightParent component) OInsertTag rightChecked)
