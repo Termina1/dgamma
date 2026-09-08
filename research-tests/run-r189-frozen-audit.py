@@ -66,7 +66,7 @@ expected_cross=original
 for name in names: expected_cross=expected_cross.replace(chunks[name],'',1)
 expected_cross=expected_cross.replace('\n\nimport DGamma.Core','\n\nimport public DGamma.CP5O19SurfaceSpike\nimport DGamma.Core',1)
 expected_surface=original[:positions[0].start()].replace('module DGamma.CP5ConfluenceCrossTraceSpike','module DGamma.CP5O19SurfaceSpike')+''.join(chunks[name] for name in names)
-assert text('research/DGamma/CP5O19SurfaceSpike.idr')==expected_surface
+assert text('research/DGamma/CP5O19SurfaceSpike.idr')==expected_surface[:-1], 'Only final separating LF normalized by explicit gate'
 if closed:
     expected_cross=expected_cross.replace('import public DGamma.CP5O19SurfaceSpike\n','import public DGamma.CP5O19SurfaceSpike\nimport DGamma.CP5O19OperationalAssemblySpike\n',1)
     expected_cross=expected_cross.replace('operationalAdjacentBlockSwapSpike = ?operationalAdjacentBlockSwapSpike_rhs',

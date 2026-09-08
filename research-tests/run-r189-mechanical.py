@@ -60,7 +60,7 @@ def expected_move(count):
     return cross, header+b''.join(selected[n] for n in NAMES[:count])
 
 unit = sys.argv[1]
-match = re.fullmatch(r'([MI])(\d+)-(\d+)', unit)
+match = re.fullmatch(r'([MIW])(\d+)-(\d+)', unit)
 assert match and match[3] == '1', 'Mechanical rejection requires a gate, no automatic retry/repair'
 kind, number = match[1], int(match[2])
 assert datetime.datetime.now(datetime.timezone.utc) < datetime.datetime(2026,9,8,15,9,50,tzinfo=datetime.timezone.utc)
@@ -80,15 +80,22 @@ if kind == 'M':
     target = CROSS
     name = NAMES[number-1]
     metadata = dict(kind='declaration move',declaration=name,byteCount=len(selected[name]),declarationSHA256=sha(selected[name]),oldLines=[original[:spans[name][0]].count(b'\n')+1, original[:spans[name][1]].count(b'\n')],newStartLine=after_surface[:after_surface.index(selected[name])].count(b'\n')+1)
-else:
+elif kind == 'I':
     assert 1 <= number <= len(HELPERS)
     assert (ROOT/CROSS).read_bytes() == expected_move(len(NAMES))[0]
-    assert (ROOT/SURFACE).read_bytes() == expected_move(len(NAMES))[1]
+    assert (ROOT/SURFACE).read_bytes() == expected_move(len(NAMES))[1][:-1]
     target = 'research/DGamma/CP5O19'+HELPERS[number-1]+'Spike.idr'
     old = (ROOT/target).read_bytes()
     assert old.count(OLD_IMPORT) == 1 and NEW_IMPORT not in old
     expected = {target:old.replace(OLD_IMPORT, NEW_IMPORT, 1)}
     metadata = dict(kind='helper import switch',helper=target,oldSHA256=sha(old))
+else:
+    assert kind == 'W' and number == 1
+    target=SURFACE
+    old=(ROOT/target).read_bytes()
+    assert old==expected_move(len(NAMES))[1] and old.endswith(b'\n\n') and not old.endswith(b'\n\n\n')
+    expected={target:old[:-1]}
+    metadata=dict(kind='approved final separator normalization',authorization='Supervisor approved ONLY final LF removal 2026-09-08T12:14Z',oldSHA256=sha(old))
 assert not (OUT/(unit+'.mechanical.json')).exists()
 for path,data in expected.items():
     (ROOT/path).write_bytes(data)
@@ -115,9 +122,9 @@ assert not git('diff',START,'--','research/DGamma/CP5ConfluenceLocalDiamondSpike
 no_compiler()
 subprocess.run(['git','diff','--check'],cwd=ROOT,check=True)
 subprocess.run(['git','add','--',*expected],cwd=ROOT,check=True)
-subprocess.run(['git','commit','-m','refactor(o19): '+(NAMES[number-1]+' byte-identical type rehome' if kind=='M' else HELPERS[number-1]+' lower-surface import')+' (R189 '+unit+')'],cwd=ROOT,check=True)
+subprocess.run(['git','commit','-m','refactor(o19): '+(NAMES[number-1]+' byte-identical type rehome' if kind=='M' else (HELPERS[number-1]+' lower-surface import' if kind=='I' else 'approved final separator normalization'))+' (R189 '+unit+')'],cwd=ROOT,check=True)
 assert not git('diff','--cached','--name-only').strip()
-receipt = dict(event='GUARDED MECHANICAL COMMIT',unit=kind+str(number),attempt=match[3],invocation=unit,sourceHash=record['sourceSHA256'],sourceHashes=metadata['sourceHashes'],resultingCommitHash=git('rev-parse','HEAD').decode().strip(),timestampUTC=datetime.datetime.now(datetime.timezone.utc).isoformat(),mechanical=metadata,guardChecksPassed=['fresh PASS','exit 0','not interrupted','no expected diagnostic','exact source SHA256','all moved source hashes','one byte-identical declaration move or one exact helper import switch','no intervening compiler invocation','no pre-staged files','no compiler','production freeze','LocalDiamond unchanged','git diff --check','git commit success','no post-staged files'])
+receipt = dict(event='GUARDED MECHANICAL COMMIT',unit=kind+str(number),attempt=match[3],invocation=unit,sourceHash=record['sourceSHA256'],sourceHashes=metadata['sourceHashes'],resultingCommitHash=git('rev-parse','HEAD').decode().strip(),timestampUTC=datetime.datetime.now(datetime.timezone.utc).isoformat(),mechanical=metadata,guardChecksPassed=['fresh PASS','exit 0','not interrupted','no expected diagnostic','exact source SHA256','all moved source hashes','one ratified byte-identical move, import switch, or final separator normalization','no intervening compiler invocation','no pre-staged files','no compiler','production freeze','LocalDiamond unchanged','git diff --check','git commit success','no post-staged files'])
 with (OUT/'commit-receipts.jsonl').open('a') as ledger:
     ledger.write(json.dumps(receipt)+'\n')
 print('GUARDED MECHANICAL COMMIT',json.dumps(receipt),flush=True)

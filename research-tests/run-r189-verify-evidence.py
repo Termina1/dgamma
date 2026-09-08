@@ -24,7 +24,7 @@ parser.add_argument('--expected-bodies', type=int, required=True)
 parser.add_argument('--expected-validations', type=int, required=True)
 args = parser.parse_args()
 assert 0 <= args.expected_a <= 16 and 0 <= args.expected_b <= 9
-assert 0 <= args.expected_mechanical <= 43 and 0 <= args.expected_bodies <= 1
+assert 0 <= args.expected_mechanical <= 44 and 0 <= args.expected_bodies <= 1
 
 def sha(data):
     return hashlib.sha256(data).hexdigest()
@@ -180,14 +180,19 @@ with tarfile.open(archive,'r:gz') as tar:
             assert git('show',commit+':'+SURFACE)==header+b''.join(chunks[n] for n in names[:index])
             assert metadata['declaration']==name and metadata['declarationSHA256']==sha(chunks[name])
             assert re.search(r'^\d+/\d+: Building DGamma\.CP5O19SurfaceSpike \(research/DGamma/CP5O19SurfaceSpike.idr\)$',r['transcript'],re.M)
-        else:
+        elif receipt['unit'].startswith('I'):
             assert receipt['unit'].startswith('I') and len(changed)==1
             path=changed[0]; old=git('show',commit+'^:'+path)
             assert old.count(b'import DGamma.CP5ConfluenceCrossTraceSpike\n')==1
             assert git('show',commit+':'+path)==old.replace(b'import DGamma.CP5ConfluenceCrossTraceSpike\n',b'import DGamma.CP5O19SurfaceSpike\n',1)
+        else:
+            assert receipt['unit']=='W1' and changed==[SURFACE]
+            old=git('show',commit+'^:'+SURFACE)
+            assert old.endswith(b'\n\n') and git('show',commit+':'+SURFACE)==old[:-1]
+            assert metadata['kind']=='approved final separator normalization'
         mechanical_units.add(receipt['unit'])
 assert len(mechanical_units)==args.expected_mechanical
-assert {r['unit'].rsplit('-',1)[0] for r in raw.values() if re.fullmatch(r'[MI]\d+-\d+',r['unit'])}==mechanical_units
+assert {r['unit'].rsplit('-',1)[0] for r in raw.values() if re.fullmatch(r'[MIW]\d+-\d+',r['unit'])}==mechanical_units
 bodies=[r for r in receipts if r['event']=='GUARDED BODY COMMIT']
 assert len(bodies)==args.expected_bodies
 for receipt in bodies:
