@@ -421,3 +421,17 @@ export
       (Builtin.fst (Builtin.snd (o20ChosenActorFacts swap)))
       (Builtin.snd (Builtin.snd (o20ChosenActorFacts swap)))))
 o20CandidateOwnedEquation nameEq keyEq protocol sourceOrder trace blocks premises unique targetOrder swap = Refl
+
+||| A REAL enumerated candidate, retaining its own swap and membership rather
+||| than equating it to a separately constructed proof-carrying swap record.
+public export
+record O20EnumeratedPair
+  (name : Type) (sourceOrder : List name)
+  (candidates : List (targetOrder : List name ** AdjacentActorOrderSwap name sourceOrder targetOrder))
+  (left, right : name) where
+  constructor MkO20EnumeratedPair
+  enumeratedTarget : List name
+  enumeratedSwap : AdjacentActorOrderSwap name sourceOrder enumeratedTarget
+  0 enumeratedMember : Elem (enumeratedTarget ** enumeratedSwap) candidates
+  0 enumeratedLeftExact : (actorLeft enumeratedSwap = left)
+  0 enumeratedRightExact : (actorRight enumeratedSwap = right)
