@@ -1128,3 +1128,14 @@ record O19PrefixGap (name, key, world, error : Type) (value : key -> Type)
   constructor MkO19PrefixGap
   prefixGapTrace : Transitions firstEnd secondEnd
   0 prefixGapExact : appendTransitions first prefixGapTrace = second
+
+||| Typed single-constructor consumer: retain one actual recursive gap
+||| while prepending the SAME transition to both prefix endpoints.
+export
+0 o19PrefixGapCons : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {initial, next, firstEnd, secondEnd : SystemState name key value world error} ->
+  (step : Transition initial next) -> (first : Transitions next firstEnd) -> (second : Transitions next secondEnd) ->
+  O19PrefixGap name key world error value first second ->
+  O19PrefixGap name key world error value (MoreTransitions step first) (MoreTransitions step second)
+o19PrefixGapCons step first second gap =
+  MkO19PrefixGap (prefixGapTrace gap) (cong (MoreTransitions step) (prefixGapExact gap))
