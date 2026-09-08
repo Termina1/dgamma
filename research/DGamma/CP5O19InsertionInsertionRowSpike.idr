@@ -237,3 +237,38 @@ o19InsertionGuardsStepObserved {before} {middle} nameEq keyEq leftChild rightChi
        (o19InsertionBeforeCheckedPair nameEq keyEq leftChild rightChild leftParent rightParent leftComponent rightComponent
          before middle (earlyApplicationFinal remainingEarly) tag OInsertTag checked
          (earlyApplicationChecked remainingEarly) distinct foreign wellFormed) remainingGuards)
+
+||| All O/O cut guards from the actual original final insertion, by backwards
+||| induction over the explicit source insertion spine. No intermediate guard
+||| input; the two source licensing exclusions remain internal shape evidence.
+export
+0 o19InsertionGuardsAlongObservedSpine :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (child : name) -> (parent : Parent name) -> (component : Component key value world error) ->
+  (deps : List key) ->
+  {before, finalState : SystemState name key value world error} ->
+  (spine : Transitions before finalState) ->
+  O19ObservedInsertions name key world error value nameEq keyEq child deps spine ->
+  (0 licensing : {first, last : SystemState name key value world error} ->
+    (step : Transition first last) -> OccursIn step spine ->
+    (licensor : name) -> (parent = ChildOf licensor) -> Not (licensor = transitionActor step)) ->
+  (registryWellFormed {name} {key} {value} {world} {error} @{nameEq} @{keyEq} before = True) ->
+  CheckedEarlyApplication name key world error value nameEq keyEq finalState
+    (OInsert child parent component) OInsertTag ->
+  (CheckedEarlyApplication name key world error value nameEq keyEq before
+     (OInsert child parent component) OInsertTag,
+   O19EarlyAlong name key world error value nameEq keyEq (OInsert child parent component) OInsertTag spine)
+o19InsertionGuardsAlongObservedSpine nameEq keyEq child parent component deps _ ObservedInsertionsEnd
+  licensing wellFormed actual = (actual, EarlyAlongEnd actual)
+o19InsertionGuardsAlongObservedSpine {before} nameEq keyEq child parent component deps _
+  (ObservedInsertionsStep {middle} leftChild leftParent leftComponent tag checked rest childSafe parentSafe observed remaining)
+  licensing wellFormed actual =
+    o19InsertionGuardsStepObserved nameEq keyEq leftChild child leftParent parent leftComponent component
+      tag checked rest childSafe
+      (licensing (Fired {before} {afterState = middle} nameEq keyEq
+        (OInsert leftChild leftParent leftComponent) tag checked) OccursHere) wellFormed
+      (o19InsertionGuardsAlongObservedSpine nameEq keyEq child parent component deps rest remaining
+        (\step, occurs => licensing step (OccursLater occurs))
+        (preservationTheoremProof nameEq keyEq (OInsert leftChild leftParent leftComponent) before middle tag wellFormed
+          (checkedActionProjects nameEq keyEq (OInsert leftChild leftParent leftComponent) before middle tag checked)) actual)
