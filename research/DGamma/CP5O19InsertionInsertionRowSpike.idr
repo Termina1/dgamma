@@ -91,3 +91,31 @@ o19ParentBeforeForeignInsert nameEq Root child insertedParent component source a
 o19ParentBeforeForeignInsert nameEq (ChildOf licensor) child insertedParent component source absent foreign =
   cong isJust (lookupInsertOther @{nameEq} licensor child (foreign licensor Refl)
     (freshFiber component insertedParent) source absent)
+
+||| Project insertion guards BACK across a foreign insertion: absence of a
+||| licensing edge excludes newly supplied parents; declaration disjointness
+||| is a conjunction whose tail is the original registry condition.
+export
+0 o19InsertGuardsBeforeForeign :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (parent : Parent name) -> (component : Component key value world error) ->
+  (child : name) -> (insertedParent : Parent name) -> (insertedComponent : Component key value world error) ->
+  (source : Registry name key value world error) ->
+  (absent : lookupFiber {name} {key} {value} {world} {error} @{nameEq} child source = Nothing) ->
+  ((licensor : name) -> (parent = ChildOf licensor) -> Not (licensor = child)) ->
+  (parentPresent {name} {key} {value} {world} {error} @{nameEq} parent
+      (insertBinding @{nameEq} child (freshFiber insertedComponent insertedParent) source absent) &&
+    provisionsDisjointFrom {name} {key} {value} {world} {error} @{keyEq} (componentProvisions component)
+      (bindings (insertBinding @{nameEq} child (freshFiber insertedComponent insertedParent) source absent)) = True) ->
+  (parentPresent {name} {key} {value} {world} {error} @{nameEq} parent source &&
+    provisionsDisjointFrom {name} {key} {value} {world} {error} @{keyEq}
+      (componentProvisions component) (bindings source) = True)
+o19InsertGuardsBeforeForeign {name} {key} {value} {world} {error} nameEq keyEq parent component child
+  insertedParent insertedComponent (MkCoeffectContext entries unique) absent foreign valid =
+    trans (boolAndCong
+      (trans (sym (o19ParentBeforeForeignInsert nameEq parent child insertedParent insertedComponent
+        (MkCoeffectContext entries unique) absent foreign))
+        (boolAndLeft (parentPresent {name} {key} {value} {world} {error} @{nameEq} parent (insertBinding @{nameEq} child (freshFiber insertedComponent insertedParent) (MkCoeffectContext entries unique) absent)) (provisionsDisjointFrom {name} {key} {value} {world} {error} @{keyEq} (componentProvisions component) (bindings (insertBinding @{nameEq} child (freshFiber insertedComponent insertedParent) (MkCoeffectContext entries unique) absent))) valid))
+      (boolAndRight (not (provisionOverlap @{keyEq} (componentProvisions component) (componentProvisions insertedComponent))) (provisionsDisjointFrom {name} {key} {value} {world} {error} @{keyEq} (componentProvisions component) entries)
+        (boolAndRight (parentPresent {name} {key} {value} {world} {error} @{nameEq} parent (insertBinding @{nameEq} child (freshFiber insertedComponent insertedParent) (MkCoeffectContext entries unique) absent)) (provisionsDisjointFrom {name} {key} {value} {world} {error} @{keyEq} (componentProvisions component) (bindings (insertBinding @{nameEq} child (freshFiber insertedComponent insertedParent) (MkCoeffectContext entries unique) absent))) valid))) Refl
