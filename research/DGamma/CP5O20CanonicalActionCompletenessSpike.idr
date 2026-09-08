@@ -9,6 +9,7 @@ import DGamma.CP5O19SurfaceSpike
 import DGamma.CP5O19OriginalBlockClassSpike
 import DGamma.CP5O19PaperBranchCompletenessSpike
 import DGamma.CP5O19ReachedDecompositionSpike
+import DGamma.CP5CurrentGenerationBirthSpike
 import Data.List.Elem
 import Decidable.Equality
 
@@ -95,3 +96,19 @@ o20DecomposedActionObserved nameEq keyEq protocol trace order blocks premises ac
   Left (o20DecomposedLifecyclePaper nameEq keyEq protocol trace order blocks premises action occurrence exact)
 o20DecomposedActionObserved nameEq keyEq protocol trace order blocks premises action occurrence False exact =
   Right (o20OrchestrationFromAction (locatedTransition occurrence) action (locatedAction occurrence) exact)
+
+||| Erased unilateral role word indexed by the WHOLE actual native trace.
+||| It deliberately does not claim paired edge alignment or a shared name cut.
+public export
+data O20CanonicalTraceRoles :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {before, afterState : SystemState name key value world error} ->
+  Transitions before afterState -> Type where
+  O20RolesEnd : O20CanonicalTraceRoles NoTransitions
+  O20RolesStep :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {before, middle, afterState : SystemState name key value world error} ->
+    {step : Transition before middle} -> {rest : Transitions middle afterState} ->
+    (0 role : Either (PaperActivationStep step) (PaperOrchestrationStep step)) ->
+    (0 roles : O20CanonicalTraceRoles rest) ->
+    O20CanonicalTraceRoles (MoreTransitions step rest)
