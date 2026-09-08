@@ -152,3 +152,19 @@ o19ActiveNotUnloadingObserved nameEq selected state
   (Just (MkFiber component parent retiredFlag table (Unloading accumulator view outcome))) found active =
     void (uninhabited (trans (sym (the (supportedActiveAt {name} {key} {value} {world} {error} @{nameEq} selected state = False)
       (rewrite found in Refl))) active))
+
+||| Prepend an actual no-lifecycle segment to a no-unload suffix. This will
+||| account for BOTH outside-block segments, not merely the installed body.
+export
+0 o19NoLifecyclePrependNoUnload :
+  {name, key, world, error : Type} -> {value : key -> Type} -> (selected : name) ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (earlier : Transitions first middle) -> (later : Transitions middle finalState) ->
+  NoLifecycleBy selected earlier -> NoParentUnload selected later ->
+  NoParentUnload selected (appendTransitions earlier later)
+o19NoLifecyclePrependNoUnload selected _ later NoLifecycleByEnd noUnload = noUnload
+o19NoLifecyclePrependNoUnload selected _ later (NoLifecycleByStep step rest excluded tail) noUnload =
+  NoParentUnloadStep step (appendTransitions rest later)
+    (\same => excluded (trans (cong isLifecycleAction same) Refl)
+      (trans (o19TransitionActorOwner step) (cong actionOwner same)))
+    (o19NoLifecyclePrependNoUnload selected rest later tail noUnload)
