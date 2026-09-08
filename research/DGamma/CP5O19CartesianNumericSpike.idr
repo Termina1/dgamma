@@ -113,3 +113,10 @@ export
 0 o19RowPullBeforeEdge : (start, width : Nat) -> (o19RowPull (S start) width start = start)
 o19RowPullBeforeEdge Z width = Refl
 o19RowPullBeforeEdge (S start) width = cong S (o19RowPullBeforeEdge start width)
+
+||| The moved-right node's source ordinal is the actual row interval end.
+export
+0 o19RowPullAtStart : (start, width : Nat) -> (o19RowPull start width start = start + width)
+o19RowPullAtStart Z Z = Refl
+o19RowPullAtStart Z (S width) = Refl
+o19RowPullAtStart (S start) width = cong S (o19RowPullAtStart start width)
