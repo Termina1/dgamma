@@ -103,3 +103,14 @@ r193FrameEarlierRightBegin =
     r193FrameBefore r193FrameStart r193FrameEnd r193FrameEnd r193FrameRightStart
     r193FrameLeftOpening r193FrameRightOpening r193FrameBody r193FrameInstalled r193FrameActorOnly r193FrameNoRightChild
     NoTransitions Refl Refl r193FrameLastFiber Refl (\wanted, needed, provided => absurd provided)
+
+||| Nonempty coeffect query really resolves to live provider0 on BOTH sides;
+||| this is not merely the vacuous resolver frame for an empty dependency list.
+public export
+0 r193FrameNonemptyResolution :
+  ((resolveView {name = Nat} {key = ToyKey} {value = ToyValue} {world = ToyRuntime} {error = String}
+      [ServiceA] (registry r193FrameBefore),
+    resolveView {name = Nat} {key = ToyKey} {value = ToyValue} {world = ToyRuntime} {error = String}
+      [ServiceA] (registry r193FrameEnd)) =
+   (Just (ProviderView 0 EmptyView), Just (ProviderView 0 EmptyView)))
+r193FrameNonemptyResolution = Refl
