@@ -5,6 +5,7 @@ import DGamma.Calculus
 import DGamma.Coeffects
 import DGamma.Metatheory
 import DGamma.CP3
+import DGamma.CP4DeletionSelectedForeignLifecycleAnchorOpen
 import DGamma.CP4ProgressProgramBound
 import DGamma.CP5ConfluenceLocalDiamondSpike
 import DGamma.CP5O19AdjacentReplayProducerSpike
@@ -109,3 +110,37 @@ o19SourcePairOwner nameEq keyEq protocol source earlier left right later decompo
   o19AlignedActivationOwner nameEq keyEq left
     (fst (alignedAppendSplit (MoreTransitions left NoTransitions) (MoreTransitions right NoTransitions)
       (fst (o19SourcePairFacts nameEq keyEq protocol source earlier left right later decomposition premises)))) activation
+
+||| WF unique declared provisions and an ACTUAL resolved active provider rule
+||| out a requested key in an inactive owner's static provision declaration.
+export
+0 o19InactiveResolvedKeyExcluded :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (state : SystemState name key value world error) -> (actor : name) ->
+  (owner : Fiber name key value world error) -> (lookupFiber @{nameEq} actor (registry state) = Just owner) ->
+  (isActive (fiberLifecycle owner) = False) ->
+  (registryWellFormed {name} {key} {value} {world} {error} @{nameEq} @{keyEq} state = True) ->
+  (wanted : key) -> (provider : name) ->
+  ProviderOfSound name key world error value nameEq keyEq wanted provider (registry state) ->
+  Not (Elem wanted (dependencies (componentProvisions (fiberComponent owner))))
+o19InactiveResolvedKeyExcluded nameEq keyEq state actor owner found inactive wellFormed wanted provider sound declares =
+  uninhabited (trans (sym inactive)
+    (trans (cong (\fiber => isActive (fiberLifecycle fiber))
+      (justInjective (trans (sym found)
+        (trans (cong (\selected => lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected (registry state))
+          (pairwiseSharedProvisionSameName keyEq (registryFibers (registry state))
+            (registryWellFormedPairwiseOpenAnchor nameEq keyEq state wellFormed)
+            actor provider owner (providerOfFiber sound)
+            (lookupEntryElemOpenAnchor nameEq actor (registryFibers (registry state)) owner
+              (lookupFiberEntries nameEq actor owner (registry state) found))
+            (lookupEntryElemOpenAnchor nameEq provider (registryFibers (registry state)) (providerOfFiber sound)
+              (lookupFiberEntries nameEq provider (providerOfFiber sound) (registry state) (providerOfLookup sound)))
+            wanted declares
+            (ownedSound (fiberTable (providerOfFiber sound)) wanted
+              (memberKeyTrueElemOpenAnchor keyEq wanted (ownedValues (fiberTable (providerOfFiber sound)))
+                (replace {p = \observed => isJust observed = True}
+                  (the (valueFromProvider {name} {key} {value} {world} {error} @{nameEq} @{keyEq} provider wanted (registry state) =
+                    lookupBinding @{keyEq} wanted (ownedValues (fiberTable (providerOfFiber sound))))
+                    (rewrite providerOfLookup sound in Refl)) (providerOfValue sound))))))
+          (providerOfLookup sound))))) (providerOfActive sound)))
