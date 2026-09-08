@@ -56,3 +56,32 @@ o20SelectedCanonicalBeginStage {name} {key} {world} {error} {value} {sameInputs}
       (registryWellFormedPairwiseOpenAnchor {name} {key} {value} {world} {error}
         nameEq keyEq (blockPreStart (pairRightBlock pair))
         (Builtin.snd (canonicalPairCutsWellFormed nameEq keyEq pair)))
+
+||| One shared program VALUE and both physical Reloading observations. This
+||| exposes the component-dependent payloads before equality elimination.
+||| No callback, successor or whole-execution alignment is assumed here.
+public export
+record O20SharedReloadingSources
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (renaming : NameBijection name) (actor : name)
+  (left, right : SystemState name key value world error) where
+  constructor MkO20SharedReloadingSources
+  sharedReloadComponent : Component key value world error
+  sharedReloadProgram : List (StepEffect key value world error
+    (dependencies (componentDependencies sharedReloadComponent)) (componentProvisions sharedReloadComponent))
+  reloadLeftParent : Parent name
+  reloadRightParent : Parent name
+  reloadLeftRetired : Bool
+  reloadRightRetired : Bool
+  reloadLeftTable : OwnedTable key value (componentProvisions sharedReloadComponent)
+  reloadRightTable : OwnedTable key value (componentProvisions sharedReloadComponent)
+  reloadLeftOlder : LocalState key value world (componentProvisions sharedReloadComponent) -> LocalState key value world (componentProvisions sharedReloadComponent)
+  reloadRightOlder : LocalState key value world (componentProvisions sharedReloadComponent) -> LocalState key value world (componentProvisions sharedReloadComponent)
+  reloadLeftView : View name (dependencies (componentDependencies sharedReloadComponent))
+  reloadRightView : View name (dependencies (componentDependencies sharedReloadComponent))
+  0 reloadLeftFound : (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor (registry left) =
+    Just (MkFiber sharedReloadComponent reloadLeftParent reloadLeftRetired reloadLeftTable
+      (Reloading sharedReloadProgram reloadLeftOlder reloadLeftView)))
+  0 reloadRightFound : (lookupFiber {name} {key} {value} {world} {error} @{nameEq} (renameForward renaming actor) (registry right) =
+    Just (MkFiber sharedReloadComponent reloadRightParent reloadRightRetired reloadRightTable
+      (Reloading sharedReloadProgram reloadRightOlder reloadRightView)))
