@@ -51,3 +51,25 @@ o19SealedSuffixCount {name} {key} {world} {error} {value} {nameEq} {keyEq} sourc
   trans (sym (o19ActionFoldCount reached))
     (trans (sealedSuffixActionFoldSame name key world error value nameEq keyEq Nat (\action, count => S count) Z seal)
       (o19ActionFoldCount source))
+
+||| The same ACTUAL produced adjacent node preserves whole-trace length.
+||| Its authenticated source decomposition and own sealed suffix are used;
+||| no arbitrary replay map is mistaken for a bijection/count certificate.
+export
+0 o19AdjacentResultCount :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {protocol : RegistrationProtocol key value world error} ->
+  {initial, first, middle, last, sourceFinal : SystemState name key value world error} ->
+  (source : Transitions initial sourceFinal) -> (earlier : Transitions initial first) ->
+  (left : Transition first middle) -> (right : Transition middle last) -> (later : Transitions last sourceFinal) ->
+  (diamond : LocalRelationalDiamond name key world error value nameEq keyEq left right) ->
+  (result : AdjacentSwapResult name key world error value protocol nameEq keyEq source earlier left right later diamond) ->
+  transitionCount (swappedTrace result) = transitionCount source
+o19AdjacentResultCount source earlier left right later diamond result =
+  trans (cong transitionCount (swappedDecomposition result))
+    (trans (o19TransitionCountAppend earlier (MoreTransitions (movedRight diamond) (MoreTransitions (movedLeft diamond) (replayedSuffix result))))
+      (trans (cong (\count => transitionCount earlier + S (S count))
+        (o19SealedSuffixCount later (replayedSuffix result) (sealedSuffixReplay result)))
+        (trans (sym (o19TransitionCountAppend earlier (MoreTransitions left (MoreTransitions right later))))
+          (cong transitionCount (originalDecomposition result)))))
