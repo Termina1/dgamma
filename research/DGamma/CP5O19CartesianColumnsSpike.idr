@@ -352,3 +352,49 @@ o19ColumnAtWordCut nameEq keyEq protocol swap original blocks premises safety un
         (o19SourcePairRightKind (o19ReplayRowSourceClasses (actorLeft swap) (actorRight swap) (leftHead :: leftTail) fullRightWord original (cursorTrace current) (finiteDerivationOccurrenceCorrespondence (cursorDerivation current)) originalClasses earlier (MoreTransitions left rest) right later (trans (cong (appendTransitions earlier) cutExact) decomposition) (\action, member => replace {p = Elem action} leftExact member) (replace {p = \action => Elem action fullRightWord} (sym (fst (consInjective rightExact))) (rightMembers rightHead Here)) left OccursHere))
         (\selected, occurs => (o19ReplayRowSourceClasses (actorLeft swap) (actorRight swap) (leftHead :: leftTail) fullRightWord original (cursorTrace current) (finiteDerivationOccurrenceCorrespondence (cursorDerivation current)) originalClasses earlier (MoreTransitions left rest) right later (trans (cong (appendTransitions earlier) cutExact) decomposition) (\action, member => replace {p = Elem action} leftExact member) (replace {p = \action => Elem action fullRightWord} (sym (fst (consInjective rightExact))) (rightMembers rightHead Here)) selected occurs)))
       leftExact count (fst (consInjective rightExact)) (snd (consInjective rightExact)) smallerColumns
+
+||| ACTUAL Cartesian column loop: structurally recurse down the remaining
+||| right source WORD, execute a full mixed left row, split the actual residual
+||| by its exact source word, and construct the whole relative finite chain,
+||| reached bundle/uniqueness, right spine, residual word and PRODUCT count.
+||| No rows or reached-cut classifier callbacks are public inputs. Only the
+||| approved ORIGINAL static class interface remains to discharge for O19.
+export
+0 o19CartesianColumns :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (protocol : RegistrationProtocol key value world error) ->
+  {sourceOrder, targetOrder : List name} -> (swap : AdjacentActorOrderSwap name sourceOrder targetOrder) ->
+  {initial, originalFinal, before : SystemState name key value world error} ->
+  (original : Transitions initial originalFinal) ->
+  (blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder original) ->
+  (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq original) ->
+  (safety : AdjacentActorSwapSafety name key world error value protocol nameEq keyEq swap original blocks premises) ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq original ->
+  (leftHead : Action name key value world error) -> (leftTail, fullRightWord, suffixWord : List (Action name key value world error)) ->
+  (remainingRight : List (Action name key value world error)) ->
+  (0 originalClasses : {leftAction, rightAction : Action name key value world error} ->
+    (leftOccurrence : LocatedActionOccurrence leftAction original) ->
+    (rightOccurrence : LocatedActionOccurrence rightAction original) ->
+    Elem leftAction (leftHead :: leftTail) -> Elem rightAction fullRightWord ->
+    O19SourcePairObservation name key world error value (actorLeft swap) (actorRight swap)
+      (locatedTransition leftOccurrence) (locatedTransition rightOccurrence)) ->
+  (current : O19ReachedCursor name key world error value protocol nameEq keyEq original) ->
+  (earlier : Transitions initial before) -> (residual : Transitions before (cursorFinal current)) ->
+  (appendTransitions earlier residual = cursorTrace current) ->
+  (o19ActionWord residual = (leftHead :: leftTail) ++ (remainingRight ++ suffixWord)) ->
+  ((action : Action name key value world error) -> Elem action remainingRight -> Elem action fullRightWord) ->
+  O19ColumnRun name key world error value protocol nameEq keyEq (cursorTrace current) earlier (leftHead :: leftTail) remainingRight suffixWord
+o19CartesianColumns {before} nameEq keyEq protocol swap original blocks premises safety unique leftHead leftTail fullRightWord suffixWord
+  [] originalClasses current earlier residual decomposition exact rightMembers =
+    MkO19ColumnRun
+      (MkO19ReachedCursor (cursorFinal current) (cursorTrace current) (cursorBundle current) (cursorUnique current) FiniteAdjacentSwapDone)
+      before NoTransitions residual decomposition Refl exact (sym (multZeroRightZero (length (leftHead :: leftTail))))
+o19CartesianColumns nameEq keyEq protocol swap original blocks premises safety unique leftHead leftTail fullRightWord suffixWord
+  (rightHead :: remainingRight) originalClasses current earlier residual decomposition exact rightMembers =
+    o19ColumnAtWordCut nameEq keyEq protocol swap original blocks premises safety unique leftHead leftTail fullRightWord suffixWord
+      rightHead remainingRight originalClasses current earlier residual decomposition rightMembers
+      (o19CutByWord (leftHead :: leftTail) ((rightHead :: remainingRight) ++ suffixWord) residual exact)
+      (\next, nextEarlier, nextRest, nextDecomposition, nextExact =>
+        o19CartesianColumns nameEq keyEq protocol swap original blocks premises safety unique leftHead leftTail fullRightWord suffixWord
+          remainingRight originalClasses next nextEarlier nextRest nextDecomposition nextExact
+          (\action, member => rightMembers action (There member)))
