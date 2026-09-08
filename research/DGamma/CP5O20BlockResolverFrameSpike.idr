@@ -12,6 +12,8 @@ import DGamma.CP4DeletionFrameCore
 import DGamma.CP5O20RightOpeningTransportSpike
 import DGamma.CP5O20SelectorResolverFrameSpike
 import DGamma.CP5O20BeginObservationSpike
+import DGamma.CP5O19SurfaceSpike
+import DGamma.CP5RankedEarlyApplicabilitySpike
 import Data.List.Elem
 import Data.Maybe
 import Decidable.Equality
@@ -254,3 +256,33 @@ export
 o20InstalledBodyAligned nameEq keyEq actor NoTransitions installed = AlignedEnd
 o20InstalledBodyAligned nameEq keyEq actor _ (InstalledStep action tag checked rest installed tailInstalled) =
   AlignedStep action tag checked rest (o20InstalledBodyAligned nameEq keyEq actor rest tailInstalled)
+
+||| Actual earlier right Begin across an entire installed left block. Both
+||| primitive frames are produced. The exact zero-gap and child-exclusion
+||| predicates remain INPUTS; this is not lane2's relocation/zero-gap cure.
+export
+0 o20DisjointBlockObservedEarlierBegin :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (left, right : name) -> Not (right = left) ->
+  (leftBefore, leftStart, leftEnd, rightBefore, rightStart : SystemState name key value world error) ->
+  BeginStep nameEq keyEq left leftBefore leftStart ->
+  (rightObserved : O20BeginObservation name key world error value nameEq keyEq right rightBefore rightStart) ->
+  (body : Transitions leftStart leftEnd) ->
+  InstalledTrace name key world error value nameEq keyEq left body ->
+  ActorLifecycleOnly left body -> NoGeneratedChild right body ->
+  (gap : Transitions leftEnd rightBefore) -> ZeroGapPending gap ->
+  (registryWellFormed {name} {key} {value} {world} {error} @{nameEq} @{keyEq} leftBefore = True) ->
+  (lastFiber : Fiber name key value world error) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} left (registry leftEnd) = Just lastFiber) ->
+  ((wanted : key) -> Elem wanted (dependencies (componentDependencies (beginObservedComponent rightObserved))) ->
+    Not (Elem wanted (dependencies (componentProvisions (fiberComponent lastFiber))))) ->
+  CheckedEarlyApplication name key world error value nameEq keyEq leftBefore (LBegin right) LBeginTag
+o20DisjointBlockObservedEarlierBegin nameEq keyEq left right distinct leftBefore leftStart leftEnd _ rightStart
+  opening rightObserved body installed only excluded NoTransitions empty wellFormed lastFiber lastFound disjoint =
+    o20RightBeginAtEarlierObservation nameEq keyEq right leftBefore leftEnd rightStart rightObserved wellFormed
+      (o20PhysicalLeftBlockOwnerFrame nameEq keyEq left right distinct leftBefore leftStart leftEnd leftEnd opening body
+        (o20InstalledBodyAligned nameEq keyEq left body installed) only excluded NoTransitions empty)
+      (sym (o20WholeInstalledBlockResolver nameEq keyEq left (dependencies (componentDependencies (beginObservedComponent rightObserved)))
+        leftBefore leftStart leftEnd opening body installed only lastFiber lastFound disjoint))
+o20DisjointBlockObservedEarlierBegin nameEq keyEq left right distinct leftBefore leftStart leftEnd rightBefore rightStart
+  opening rightObserved body installed only excluded (MoreTransitions step rest) Refl wellFormed lastFiber lastFound disjoint impossible
