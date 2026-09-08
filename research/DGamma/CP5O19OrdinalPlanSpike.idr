@@ -179,3 +179,25 @@ o19GlobalPlanPrepend current earlier left right later orientation diamond result
         (trans (ordinalOriginExact currentMap (adjacentRightNodeOccurrence result))
           (cong (ordinalOrigin currentMap) (transitionPrefixLength earlier left))) positions plan)
       (cong S count)
+
+||| Construct the exact GLOBAL source-origin plan for every node of an
+||| ACTUAL finite derivation. The current map is threaded by the same sealed
+||| result, not selected afresh or inferred from equal action words. No
+||| crossing ordinal equations or plan are required from the caller.
+export
+0 o19BuildGlobalOriginPlan :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {protocol : RegistrationProtocol key value world error} -> {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {initial, sourceFinal, currentFinal, targetFinal : SystemState name key value world error} ->
+  {source : Transitions initial sourceFinal} -> {current : Transitions initial currentFinal} -> {target : Transitions initial targetFinal} ->
+  (correspondence : ActionRegistrationReplayCorrespondence name key world error value source current) ->
+  O19OrdinalActionMap name key world error value source current correspondence ->
+  (derivation : FiniteAdjacentSwapDerivation name key world error value protocol nameEq keyEq current target) ->
+  O19GlobalPlanResult name key world error value protocol nameEq keyEq source correspondence derivation
+o19BuildGlobalOriginPlan correspondence currentMap FiniteAdjacentSwapDone = MkO19GlobalPlanResult [] GlobalOriginPlanDone Refl
+o19BuildGlobalOriginPlan correspondence currentMap
+  (FiniteAdjacentSwapStep current earlier left right later orientation diamond result target rest) =
+    o19GlobalPlanPrepend current earlier left right later orientation diamond result target rest correspondence currentMap
+      (o19BuildGlobalOriginPlan
+        (composeActionRegistrationReplayCorrespondence correspondence (swappedOccurrenceCorrespondence result))
+        (o19OrdinalMapAfterNode correspondence currentMap earlier left right later diamond result) rest)
