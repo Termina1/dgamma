@@ -64,3 +64,22 @@ o19ProviderReplaceHeadObserved nameEq keyEq wanted actor current old next rest (
   rewrite exact in o19ProviderHeadObserved nameEq keyEq wanted current old
     (replaceEntries @{nameEq} actor next rest) rest
     (isActive (fiberLifecycle old) && memberKey @{keyEq} wanted (ownedValues (fiberTable old))) Refl tailSame
+
+||| Induction on the ACTUAL ordered registry entries. Every unchanged head
+||| passes through E3; the selected head is absent as a provider on both sides.
+export
+0 o19ProviderReplaceEntries :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (wanted : key) ->
+  (actor : name) -> (next : Fiber name key value world error) ->
+  (entries : List (Binding name (FiberAt name key value world error))) ->
+  (providerCandidate @{keyEq} wanted next = False) ->
+  ((old : Fiber name key value world error) -> Elem (Bind actor old) entries -> providerCandidate @{keyEq} wanted old = False) ->
+  (providerIn {name} {key} {value} {world} {error} @{nameEq} @{keyEq} wanted (replaceEntries @{nameEq} actor next entries) =
+   providerIn {name} {key} {value} {world} {error} @{nameEq} @{keyEq} wanted entries)
+o19ProviderReplaceEntries nameEq keyEq wanted actor next [] nextFalse excluded = Refl
+o19ProviderReplaceEntries nameEq keyEq wanted actor next (Bind current old :: rest) nextFalse excluded =
+  o19ProviderReplaceHeadObserved nameEq keyEq wanted actor current old next rest
+    (decEq @{nameEq} actor current) Refl nextFalse
+    (\same => excluded old (rewrite same in Here))
+    (o19ProviderReplaceEntries nameEq keyEq wanted actor next rest nextFalse (\fiber, occurs => excluded fiber (There occurs)))
