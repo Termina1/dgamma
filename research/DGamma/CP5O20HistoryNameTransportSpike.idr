@@ -72,3 +72,23 @@ o20HistoryCurrentPair {name} {key} {world} {error} {value} nameEq left right map
     MkO20HistoryBirthPair leftStamp rightStamp
       (acceptedLeftCurrentBirth name key world error value nameEq left right mapping registrations leftName leftStamp leftCurrent)
       (acceptedRightCurrentBirth name key world error value nameEq left right mapping registrations rightName rightStamp rightCurrent) matched
+
+||| Eliminate only the observed successful current-generation packet. The
+||| actual birth witnesses are extracted by A4, never supplied by the caller.
+export
+0 o20HistoryCurrentPacket :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) ->
+  {leftFirst, leftFinal, rightFirst, rightFinal : SystemState name key value world error} ->
+  (left : Transitions leftFirst leftFinal) -> (right : Transitions rightFirst rightFinal) ->
+  (mapping : RegistrationGenerationBijection name) ->
+  (registrations : RegistrationCorrespondenceByGeneration nameEq mapping left right) ->
+  (leftName, rightName : name) -> (leftStamp : RegistrationGeneration name) ->
+  (lookupCurrentGeneration @{nameEq} leftName (leftFinalGenerations registrations) = Just leftStamp) ->
+  (rightStamp : RegistrationGeneration name **
+    ((generationForward mapping leftStamp = rightStamp),
+     (lookupCurrentGeneration @{nameEq} rightName (rightFinalGenerations registrations) = Just rightStamp))) ->
+  O20HistoryBirthPair name key world error value mapping left right leftName rightName
+o20HistoryCurrentPacket nameEq left right mapping registrations leftName rightName leftStamp leftCurrent
+  (rightStamp ** (matched, rightCurrent)) =
+    o20HistoryCurrentPair nameEq left right mapping registrations leftName rightName leftStamp rightStamp leftCurrent rightCurrent matched
