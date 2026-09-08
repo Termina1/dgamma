@@ -33,7 +33,7 @@ record ChildRemoveSnapshotExchange
   removeSourceFiber : Fiber name key value world error
   0 removeSourceFound : lookupFiber {name} {key} {value} {world} {error} @{nameEq} child (registry first) = Just removeSourceFiber
   0 removeOwnParent : fiberParent removeSourceFiber = ChildOf parent
-  0 removeForeign : Not (child = transitionActor left)
+  0 removeForeign : Not (child = actionOwner (transitionAction left))
   0 removeRightAction : transitionAction right = ORemove child
   removeEarlyState : SystemState name key value world error
   removeReplayState : SystemState name key value world error
@@ -59,3 +59,51 @@ deletedBindingAbsent keyEq removed entries unique Nothing exact = Refl
 deletedBindingAbsent keyEq removed entries unique (Just found) exact =
   void (deletedKeyNotElem @{keyEq} removed entries unique
     (lookupJustElem @{keyEq} removed (deleteEntries @{keyEq} removed entries) found exact))
+
+||| Assemble the new checked Remove square from a single-role CP4 lifecycle
+||| deletion replay and the ACTUAL original removal observation. The Boolean
+||| absence and both checked alternate edges are derived inside this helper.
+export
+0 removeSquareFromObservations :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (child, parent : name) ->
+  (component : Component key value world error) ->
+  (table : OwnedTable key value (componentProvisions component)) -> (outcome : Maybe error) ->
+  (ambient : world) -> (fibers : Registry name key value world error) ->
+  (action : Action name key value world error) -> (tag : RuleTag) ->
+  (middle, finalState : SystemState name key value world error) ->
+  (0 found : lookupFiber {name} {key} {value} {world} {error} @{nameEq} child fibers =
+    Just (MkFiber component (ChildOf parent) True table (Inactive outcome))) ->
+  (0 noChild : hasChild {name} {key} {value} {world} {error} @{nameEq} child fibers = False) ->
+  (0 distinct : Not (child = actionOwner action)) ->
+  (0 valid : registryWellFormed {name} {key} {value} {world} {error} @{nameEq} @{keyEq}
+    (MkSystemState ambient fibers) = True) ->
+  (0 foreign : checkedApplyAction @{nameEq} @{keyEq} action (MkSystemState ambient fibers) = Just (tag, middle)) ->
+  (0 removed : checkedApplyAction @{nameEq} @{keyEq} (ORemove child) middle = Just (ORemoveTag, finalState)) ->
+  (replay : LifecycleDeleteRuntimeCommute name key world error value nameEq keyEq action tag child middle
+    (MkSystemState ambient (deleteBinding @{nameEq} child fibers))) ->
+  (observation : OrchestrationRuntimeObservation name key world error value (worldState middle)
+    (deleteBinding @{nameEq} child (registry middle)) finalState) ->
+  ChildRemoveSnapshotExchange name key world error value nameEq keyEq child parent
+    (Fired {before = MkSystemState ambient fibers} {afterState = middle} nameEq keyEq action tag foreign)
+    (Fired {before = middle} {afterState = finalState} nameEq keyEq (ORemove child) ORemoveTag removed)
+removeSquareFromObservations nameEq keyEq child parent component table outcome ambient
+  (MkCoeffectContext entries unique) action tag middle finalState found noChild distinct valid foreign removed replay observation =
+    MkChildRemoveSnapshotExchange (MkFiber component (ChildOf parent) True table (Inactive outcome)) found Refl distinct Refl
+      (MkSystemState ambient (deleteBinding @{nameEq} child (MkCoeffectContext entries unique)))
+      (lifecycleDeleteReplayAfter replay)
+      (memberKey @{nameEq} child (deleteBinding @{nameEq} child (MkCoeffectContext entries unique))) Refl
+      (deletedBindingAbsent nameEq child entries unique
+        (lookupEntries @{nameEq} child (deleteEntries @{nameEq} child entries)) Refl)
+      (checkedFromRaw nameEq keyEq (ORemove child) (MkSystemState ambient (MkCoeffectContext entries unique))
+        (MkSystemState ambient (deleteBinding @{nameEq} child (MkCoeffectContext entries unique))) ORemoveTag valid
+        (rewrite found in rewrite noChild in Refl))
+      (checkedFromRaw nameEq keyEq action
+        (MkSystemState ambient (deleteBinding @{nameEq} child (MkCoeffectContext entries unique)))
+        (lifecycleDeleteReplayAfter replay) tag
+        (registryWellFormedInactiveDelete nameEq keyEq ambient child component (ChildOf parent) True table outcome
+          (MkCoeffectContext entries unique) found noChild valid)
+        (lifecycleDeleteReplayRaw replay))
+      (cong2 MkRuntimeSnapshot
+        (trans (orchestrationObservedWorld observation) (lifecycleDeleteWorld replay))
+        (trans (orchestrationObservedBindings observation) (lifecycleDeleteBindings replay)))
