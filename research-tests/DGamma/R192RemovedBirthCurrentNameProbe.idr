@@ -7,6 +7,7 @@ import DGamma.CP3
 import DGamma.CP4ProgressNoDeadlock
 import DGamma.CP5ConfluenceLocalDiamondSpike
 import DGamma.CP5ConfluenceDeletionChainSpike
+import DGamma.CP5ConfluenceRenamingCompositionSpike
 import DGamma.CP5UniqueRawNameInsertions
 import DGamma.CP5GeneratedOrchestrationMatched
 import DGamma.CP5RawClosingRankSpike
@@ -120,3 +121,17 @@ r192NoMappedInsertionAt (S (S (S Z))) observed = case observed of Refl impossibl
 r192NoMappedInsertionAt (S (S (S (S Z)))) observed = case observed of Refl impossible
 r192NoMappedInsertionAt (S (S (S (S (S Z))))) observed = case observed of Refl impossible
 r192NoMappedInsertionAt (S (S (S (S (S (S later)))))) observed = case observed of Refl impossible
+
+||| NEGATIVE theorem: E8 plus CurrentEndpointRenaming does NOT identify all
+||| historical raw birth names. Exact fixed expectedBridgeBijection sends1->2,
+||| but there is no right birth at2. No claim about full canonical capital.
+export
+0 r192E8CurrentDoesNotGiveHistoricalBirth :
+  Not (LocatedGeneratedRegistration
+    (renameForward (expectedBridgeBijection r192RemovedSameInputs) 1)
+    (renameForward (expectedBridgeBijection r192RemovedSameInputs) 0)
+    r45Child r192RemovedBirthTrace)
+r192E8CurrentDoesNotGiveHistoricalBirth birth =
+  r192NoMappedInsertionAt (locatedActionOrdinal (generatedRegistrationActionOccurrence birth))
+    (rawInsertionNameAtLocated Nat R45Key Unit String R45Value r192RemovedBirthTrace
+      2 (ChildOf 0) r45Child (generatedRegistrationActionOccurrence birth))
