@@ -144,3 +144,41 @@ o19InactiveResolvedKeyExcluded nameEq keyEq state actor owner found inactive wel
                     lookupBinding @{keyEq} wanted (ownedValues (fiberTable (providerOfFiber sound))))
                     (rewrite providerOfLookup sound in Refl)) (providerOfValue sound))))))
           (providerOfLookup sound))))) (providerOfActive sound)))
+
+||| Induction frame over explicit ACTUAL provider/tail resolver observations.
+||| The continuation is precisely the smaller requested-list induction, not an
+||| independent nondependency oracle in the public recursive producer below.
+export
+0 o19ResolutionConsExcluded :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (state : SystemState name key value world error) -> (actor : name) ->
+  (owner : Fiber name key value world error) -> (lookupFiber @{nameEq} actor (registry state) = Just owner) ->
+  (isActive (fiberLifecycle owner) = False) ->
+  (registryWellFormed {name} {key} {value} {world} {error} @{nameEq} @{keyEq} state = True) ->
+  (head : key) -> (rest : List key) -> (view : View name (head :: rest)) ->
+  (resolveView {name} {key} {value} {world} {error} @{nameEq} @{keyEq} (head :: rest) (registry state) = Just view) ->
+  (observedHead : Maybe name) ->
+  (providerOf {name} {key} {value} {world} {error} @{nameEq} @{keyEq} head (registry state) = observedHead) ->
+  (observedTail : Maybe (View name rest)) ->
+  (resolveView {name} {key} {value} {world} {error} @{nameEq} @{keyEq} rest (registry state) = observedTail) ->
+  ((tail : View name rest) ->
+    (resolveView {name} {key} {value} {world} {error} @{nameEq} @{keyEq} rest (registry state) = Just tail) ->
+    (wanted : key) -> Elem wanted rest -> Not (Elem wanted (dependencies (componentProvisions (fiberComponent owner))))) ->
+  (wanted : key) -> Elem wanted (head :: rest) -> Not (Elem wanted (dependencies (componentProvisions (fiberComponent owner))))
+o19ResolutionConsExcluded nameEq keyEq state actor owner found inactive wellFormed head rest view resolved
+  Nothing headExact tail tailExact smaller wanted member =
+    case trans (sym (the
+      (resolveView {name} {key} {value} {world} {error} @{nameEq} @{keyEq} (head :: rest) (registry state) = Nothing)
+      (rewrite headExact in Refl))) resolved of Refl impossible
+o19ResolutionConsExcluded nameEq keyEq state actor owner found inactive wellFormed head rest view resolved
+  (Just provider) headExact Nothing tailExact smaller wanted member =
+    case trans (sym (the
+      (resolveView {name} {key} {value} {world} {error} @{nameEq} @{keyEq} (head :: rest) (registry state) = Nothing)
+      (rewrite headExact in rewrite tailExact in Refl))) resolved of Refl impossible
+o19ResolutionConsExcluded nameEq keyEq state actor owner found inactive wellFormed head rest view resolved
+  (Just provider) headExact (Just tail) tailExact smaller _ Here =
+    o19InactiveResolvedKeyExcluded nameEq keyEq state actor owner found inactive wellFormed head provider
+      (providerOfSound nameEq keyEq head provider (registry state) headExact)
+o19ResolutionConsExcluded nameEq keyEq state actor owner found inactive wellFormed head rest view resolved
+  (Just provider) headExact (Just tail) tailExact smaller wanted (There later) = smaller tail tailExact wanted later
