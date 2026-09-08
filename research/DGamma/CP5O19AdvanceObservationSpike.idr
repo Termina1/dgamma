@@ -230,3 +230,31 @@ o19AdvanceAtObservedValues nameEq keyEq actor ambient fibers component parent re
           (Reloading (next :: more) (pushLocalUndo (componentProvisions component) accumulator undo) view)) fibers))
       (rewrite found in rewrite resolved in rewrite ran in rewrite target in
         rewrite trans (viewEqSameNameList nameEq view view) (sameNameListReflexive nameEq (DGamma.Calculus.viewProviders view)) in Refl)
+
+||| Whole nonempty reconstruction from a CAPTURED MAP DOMAIN, deriving both
+||| capability and successful callback internally before constructing control.
+export
+0 o19AdvanceAtCapturedDomain :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (ambient : world) -> (fibers : Registry name key value world error) ->
+  (component : Component key value world error) -> (parent : Parent name) -> (retiredFlag : Bool) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (step : StepEffect key value world error (dependencies (componentDependencies component)) (componentProvisions component)) ->
+  (rest : List (StepEffect key value world error (dependencies (componentDependencies component)) (componentProvisions component))) ->
+  (accumulator : LocalState key value world (componentProvisions component) -> LocalState key value world (componentProvisions component)) ->
+  (view : View name (dependencies (componentDependencies component))) ->
+  (lookupFiber @{nameEq} actor fibers = Just (MkFiber component parent retiredFlag table (Reloading (step :: rest) accumulator view))) ->
+  (targetFiber @{nameEq} @{keyEq} (MkFiber component parent retiredFlag table (Reloading (step :: rest) accumulator view)) fibers = Just view) ->
+  (isJust (fiberAdvanceRuntimeEffectMap nameEq keyEq actor
+    (MkFiber component parent retiredFlag table (Reloading (step :: rest) accumulator view))
+    (projectEffectState @{nameEq} (the (SystemState name key value world error) (MkSystemState ambient fibers)))) = True) ->
+  RawActivationMove {name} {key} {value} {world} {error} nameEq keyEq (LAdvance actor)
+    (case rest of [] => LFinishTag; _ => LIterTag) (MkSystemState ambient fibers)
+o19AdvanceAtCapturedDomain nameEq keyEq actor ambient fibers component parent retiredFlag table step rest accumulator view found target defined =
+  o19AdvanceAtObservedValues nameEq keyEq actor ambient fibers component parent retiredFlag table step rest accumulator view found target
+    (o19AdvanceValuesAtSource nameEq keyEq actor (MkSystemState ambient fibers) component parent retiredFlag table step rest accumulator view found
+      (o19AdvanceValuesObserved nameEq keyEq actor component parent retiredFlag table step rest accumulator view
+        (projectEffectState @{nameEq} (the (SystemState name key value world error) (MkSystemState ambient fibers)))
+        (resolveEffectValues @{keyEq} (dependencies (componentDependencies component)) view
+          (projectEffectState @{nameEq} (the (SystemState name key value world error) (MkSystemState ambient fibers)))) Refl defined))
