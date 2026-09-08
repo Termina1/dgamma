@@ -150,3 +150,38 @@ o20OrientedCandidateCompleteAtOwnSlots nameEq keyEq protocol sourceOrder targetO
         (o20CandidateCompleteAtOwnSlots nameEq keyEq protocol sourceOrder targetOrder swap trace blocks premises unique leftSafe rightSafe early adjacent))
       (\safety => o20OrientChosenSafeSwapComplete nameEq goalOrder goalUnique
         (MkO20ChosenSafeSwap targetOrder swap safety unique) reverseOrder)
+
+||| WHOLE native finite selector cannot miss an enumerated candidate whose
+||| OWN four logical safety clauses and target orientation hold. Enumeration
+||| is producer-owned by E28/E31; semantic safety production and stopped-order
+||| equality remain separate, openly stated debts.
+export
+0 o20SelectEnumeratedComplete :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) -> (sourceOrder, goalOrder : List name) ->
+  (goalUnique : UniqueKeys goalOrder) ->
+  {initial, finalState : SystemState name key value world error} -> (trace : Transitions initial finalState) ->
+  (blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder trace) ->
+  (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq trace) ->
+  (unique : UniqueRawNameInsertions name key world error value nameEq keyEq trace) ->
+  {left, right : name} ->
+  (packet : O20EnumeratedPair name sourceOrder
+    (o20AdjacentCandidates nameEq sourceOrder [] sourceOrder Refl) left right) ->
+  BeforeIn (actorRight (enumeratedSwap packet)) (actorLeft (enumeratedSwap packet)) goalOrder ->
+  NoGeneratedChild (actorRight (enumeratedSwap packet)) (blockBody (decomposedBlock blocks (actorLeft (enumeratedSwap packet)) (Builtin.fst (o20ChosenActorFacts (enumeratedSwap packet))))) ->
+  NoGeneratedChild (actorLeft (enumeratedSwap packet)) (blockBody (decomposedBlock blocks (actorRight (enumeratedSwap packet)) (Builtin.fst (Builtin.snd (o20ChosenActorFacts (enumeratedSwap packet)))))) ->
+  CheckedEarlyApplication name key world error value nameEq keyEq
+    (blockPreStart (decomposedBlock blocks (actorLeft (enumeratedSwap packet)) (Builtin.fst (o20ChosenActorFacts (enumeratedSwap packet))))) (LBegin (actorRight (enumeratedSwap packet))) LBeginTag ->
+  (transitionCount (betweenBlocks (decomposedBlocksFollowOrder blocks (actorLeft (enumeratedSwap packet)) (actorRight (enumeratedSwap packet))
+    (Builtin.fst (o20ChosenActorFacts (enumeratedSwap packet))) (Builtin.fst (Builtin.snd (o20ChosenActorFacts (enumeratedSwap packet)))) (Builtin.snd (Builtin.snd (o20ChosenActorFacts (enumeratedSwap packet)))))) = 0) ->
+  (isJust (o20SelectOrientedSafeBlocks nameEq keyEq protocol sourceOrder goalOrder goalUnique trace blocks premises unique) = True)
+o20SelectEnumeratedComplete nameEq keyEq protocol sourceOrder goalOrder goalUnique trace blocks premises unique packet reverseOrder leftSafe rightSafe early adjacent =
+  rewrite o20OrientedSelectorOwnedEquation nameEq keyEq protocol sourceOrder goalOrder goalUnique trace blocks premises unique in
+    o20MapMaybeSelectionComplete
+      (\candidate => o20CheckCandidate nameEq keyEq protocol sourceOrder trace blocks premises unique candidate >>=
+        o20OrientChosenSafeSwap nameEq goalOrder goalUnique)
+      (o20AdjacentCandidates nameEq sourceOrder [] sourceOrder Refl)
+      (enumeratedTarget packet ** enumeratedSwap packet) (enumeratedMember packet)
+      (o20OrientedCandidateCompleteAtOwnSlots nameEq keyEq protocol sourceOrder (enumeratedTarget packet)
+        goalOrder goalUnique (enumeratedSwap packet) trace blocks premises unique reverseOrder leftSafe rightSafe early adjacent)
