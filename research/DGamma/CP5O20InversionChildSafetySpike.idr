@@ -158,3 +158,26 @@ o20GeneratedBirthInBlock {child} {parent} {component} block birth =
       (MoreTransitions (beginTransition (blockOpening block)) (appendTransitions (blockBody block) (traceAfterBlock block)))
       (o20GeneratedBirthPrepend (beginTransition (blockOpening block)) (appendTransitions (blockBody block) (traceAfterBlock block))
         (o20GeneratedBirthAppend (blockBody block) (traceAfterBlock block) birth)))
+
+||| The actor-only body grammar fixes every child-registration parent to the
+||| selected actor. Structural induction turns excluded located births into
+||| the complete NoGeneratedChild certificate demanded by actual O19 safety.
+export
+0 o20NoGeneratedFromActorBirth :
+  {name, key, world, error : Type} -> {value : key -> Type} -> {actor, forbidden : name} ->
+  {first, finalState : SystemState name key value world error} ->
+  (trace : Transitions first finalState) -> ActorLifecycleOnly actor trace ->
+  ((component : Component key value world error) -> LocatedGeneratedRegistration forbidden actor component trace -> Void) ->
+  NoGeneratedChild forbidden trace
+o20NoGeneratedFromActorBirth NoTransitions ActorLifecycleEnd excluded = NoGeneratedChildEnd
+o20NoGeneratedFromActorBirth (MoreTransitions step rest) (ActorLifecycleStep step rest lifecycle owned only) excluded =
+  NoGeneratedChildStep step rest
+    (\parent, component, same => absurd (trans (sym (cong isLifecycleAction same)) lifecycle))
+    (o20NoGeneratedFromActorBirth rest only
+      (\component, birth => excluded component (o20GeneratedBirthPrepend step rest birth)))
+o20NoGeneratedFromActorBirth (MoreTransitions step rest) (ActorYieldedRegistrationStep step rest yielded only) excluded =
+  NoGeneratedChildStep step rest
+    (\parent, component, same => case trans (sym yielded) same of
+      Refl => excluded component (MkLocatedGeneratedRegistration _ _ NoTransitions step rest same Refl))
+    (o20NoGeneratedFromActorBirth rest only
+      (\component, birth => excluded component (o20GeneratedBirthPrepend step rest birth)))
