@@ -4,6 +4,8 @@ import DGamma.Core
 import DGamma.Coeffects
 import DGamma.Calculus
 import DGamma.CP3
+import DGamma.CP5ConfluenceLocalDiamondSpike
+import DGamma.CP5UniqueRawNameInsertions
 import DGamma.CP5ConfluenceCrossTraceSpike
 import DGamma.CP5O20SafeBlockSelectionSpike
 import Data.List
@@ -51,3 +53,21 @@ o20CheckBefore nameEq left right (head :: rest) =
         Yes member => Just (BeforeHere member)
         No absent => Nothing
     No different => map BeforeThere (o20CheckBefore nameEq left right rest)
+
+||| A genuinely safe actual block swap oriented TOWARD one fixed accepted
+||| support extension. The target linearization and reverse target-order
+||| evidence are retained, but no operational replay/descent is fabricated.
+public export
+record O20OrientedSafeSwap
+  (name, key, world, error : Type) (value : key -> Type)
+  (protocol : RegistrationProtocol key value world error)
+  (nameEq : DecEq name) (keyEq : DecEq key) (sourceOrder, goalOrder : List name)
+  (goalState : SystemState name key value world error)
+  {initial, finalState : SystemState name key value world error}
+  (trace : Transitions initial finalState)
+  (blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder trace)
+  (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq trace) where
+  constructor MkO20OrientedSafeSwap
+  orientedChoice : O20ChosenSafeSwap name key world error value protocol nameEq keyEq sourceOrder trace blocks premises
+  0 orientedGoalLinearization : LinearizesSupport name key world error value nameEq keyEq goalState goalOrder
+  0 orientedGoalReverse : BeforeIn (actorRight (chosenOrderSwap orientedChoice)) (actorLeft (chosenOrderSwap orientedChoice)) goalOrder
