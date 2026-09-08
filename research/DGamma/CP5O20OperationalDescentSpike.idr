@@ -84,3 +84,37 @@ o20DescentZeroObserved nameEq keyEq protocol sourceOrder goalOrder goalState goa
   O20DescentBlocked observed
 o20DescentZeroObserved nameEq keyEq protocol sourceOrder goalOrder goalState goalLinearization trace blocks premises unique measured (Just progress) observed =
   absurd (trans (sym measured) (progressDecrease progress))
+
+||| Successor case at an EXPLICIT actual selection. The smaller argument is
+||| an internal induction hypothesis, supplied only by the structural loop.
+export
+0 o20DescentSuccessorObserved :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) -> (sourceOrder, goalOrder : List name) ->
+  (goalState : SystemState name key value world error) ->
+  (goalLinearization : LinearizesSupport name key world error value nameEq keyEq goalState goalOrder) ->
+  {initial, finalState : SystemState name key value world error} -> (trace : Transitions initial finalState) ->
+  (blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder trace) ->
+  (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq trace) ->
+  (unique : UniqueRawNameInsertions name key world error value nameEq keyEq trace) ->
+  (fuel : Nat) ->
+  (smaller : (nextOrder : List name) -> {nextFinal : SystemState name key value world error} ->
+    (nextTrace : Transitions initial nextFinal) ->
+    (nextBlocks : ActorBlockDecomposition name key world error value nameEq keyEq nextOrder nextTrace) ->
+    (nextPremises : ReplayInvariantBundle name key world error value protocol nameEq keyEq nextTrace) ->
+    (nextUnique : UniqueRawNameInsertions name key world error value nameEq keyEq nextTrace) ->
+    (rankInversions (map (o20GoalRank nameEq goalOrder) nextOrder) = fuel) ->
+    (O20OperationalDescent name key world error value protocol nameEq keyEq nextOrder goalOrder goalState goalLinearization nextTrace nextBlocks nextPremises nextUnique)) ->
+  (rankInversions (map (o20GoalRank nameEq goalOrder) sourceOrder) = S fuel) ->
+  (observed : Maybe (O20OperationalProgress name key world error value protocol nameEq keyEq sourceOrder goalOrder goalState trace blocks premises)) ->
+  (o20SelectOperationalProgress nameEq keyEq protocol sourceOrder goalOrder goalState goalLinearization trace blocks premises unique = observed) ->
+  (O20OperationalDescent name key world error value protocol nameEq keyEq sourceOrder goalOrder goalState goalLinearization trace blocks premises unique)
+o20DescentSuccessorObserved nameEq keyEq protocol sourceOrder goalOrder goalState goalLinearization trace blocks premises unique fuel smaller measured Nothing observed =
+  O20DescentBlocked observed
+o20DescentSuccessorObserved nameEq keyEq protocol sourceOrder goalOrder goalState goalLinearization trace blocks premises unique fuel smaller measured (Just progress) observed =
+  O20DescentStep progress
+    (smaller (chosenTargetOrder (orientedChoice (progressChoice progress)))
+      (blockSwapTrace (progressStep progress)) (blockSwapBlocks (progressStep progress))
+      (blockSwapPremises (progressStep progress)) (progressUnique progress)
+      (successorEqualityInjective (trans (sym (progressDecrease progress)) measured)))
