@@ -188,3 +188,22 @@ record O20StoppedOperationalPermutation
     stoppedCertificate trace blocks premises stoppedTrace
   0 stoppedChoiceAbsent : (o20SelectOperationalProgress nameEq keyEq protocol stoppedOrder goalOrder goalState
     goalLinearization stoppedTrace stoppedBlocks stoppedPremises stoppedUnique = Nothing)
+
+||| Real terminal constructor: same source trace, full capital, identity
+||| certificate/realization, and the exact observed rejection. No goal claim.
+export
+0 o20StoppedAtSource :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) -> (sourceOrder, goalOrder : List name) ->
+  (goalState : SystemState name key value world error) ->
+  (goalLinearization : LinearizesSupport name key world error value nameEq keyEq goalState goalOrder) ->
+  {initial, finalState : SystemState name key value world error} -> (trace : Transitions initial finalState) ->
+  (blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder trace) ->
+  (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq trace) ->
+  (unique : UniqueRawNameInsertions name key world error value nameEq keyEq trace) ->
+  (o20SelectOperationalProgress nameEq keyEq protocol sourceOrder goalOrder goalState goalLinearization trace blocks premises unique = Nothing) ->
+  (O20StoppedOperationalPermutation name key world error value protocol nameEq keyEq sourceOrder goalOrder goalState goalLinearization trace blocks premises)
+o20StoppedAtSource {finalState} nameEq keyEq protocol sourceOrder goalOrder goalState goalLinearization trace blocks premises unique blocked =
+  MkO20StoppedOperationalPermutation sourceOrder finalState trace blocks premises unique
+    ActorPermutationDone (OperationalActorDone blocks premises) blocked
