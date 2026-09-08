@@ -41,3 +41,32 @@ record O20OperationalProgress
   0 progressUnique : UniqueRawNameInsertions name key world error value nameEq keyEq (blockSwapTrace progressStep)
   0 progressDecrease : (rankInversions (map (o20GoalRank nameEq goalOrder) sourceOrder) =
     S (rankInversions (map (o20GoalRank nameEq goalOrder) (chosenTargetOrder (orientedChoice progressChoice)))))
+
+||| Simultaneously PRODUCE the actual O19 step, reached full block/bundle
+||| packet, actual reached uniqueness and fixed-goal drop from ONE safe choice.
+||| There is no caller-supplied reached trace, replay, or decrease witness.
+export
+0 o20RealizeOrientedProgress :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {sourceOrder, goalOrder : List name} -> {goalState : SystemState name key value world error} ->
+  {initial, finalState : SystemState name key value world error} ->
+  (trace : Transitions initial finalState) ->
+  (blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder trace) ->
+  (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq trace) ->
+  (choice : O20OrientedSafeSwap name key world error value protocol nameEq keyEq sourceOrder goalOrder goalState trace blocks premises) ->
+  (O20OperationalProgress name key world error value protocol nameEq keyEq sourceOrder goalOrder goalState trace blocks premises)
+o20RealizeOrientedProgress {name} {key} {world} {error} {value} {goalOrder}
+  nameEq keyEq protocol trace blocks premises choice =
+    MkO20OperationalProgress choice
+      (o19ActualOperationalBlockSwap nameEq keyEq protocol
+        (chosenOrderSwap (orientedChoice choice)) trace blocks premises
+        (chosenSafety (orientedChoice choice)) (chosenSourceUnique (orientedChoice choice)))
+      (blockSwapUniqueInsertions name key world error value protocol nameEq keyEq
+        (o19ActualOperationalBlockSwap nameEq keyEq protocol
+          (chosenOrderSwap (orientedChoice choice)) trace blocks premises
+          (chosenSafety (orientedChoice choice)) (chosenSourceUnique (orientedChoice choice)))
+        (chosenSourceUnique (orientedChoice choice)))
+      (o20ActorSwapMeasureDrop nameEq goalOrder (chosenOrderSwap (orientedChoice choice))
+        (orderUnique (orientedGoalLinearization choice)) (orientedGoalReverse choice))
