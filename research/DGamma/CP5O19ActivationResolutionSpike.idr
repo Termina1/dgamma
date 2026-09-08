@@ -4,6 +4,7 @@ import DGamma.Core
 import DGamma.Calculus
 import DGamma.Coeffects
 import DGamma.Metatheory
+import DGamma.CP4ProgressReliance
 import DGamma.CP4DeletionSelectedForeignLifecycleCore
 import DGamma.CP4DeletionSelectedForeignLifecycleAnchorRelianceSelected
 import Data.List
@@ -83,3 +84,21 @@ o19ProviderReplaceEntries nameEq keyEq wanted actor next (Bind current old :: re
     (decEq @{nameEq} actor current) Refl nextFalse
     (\same => excluded old (rewrite same in Here))
     (o19ProviderReplaceEntries nameEq keyEq wanted actor next rest nextFalse (\fiber, occurs => excluded fiber (There occurs)))
+
+||| Replacement provider equality from a located source component's declared
+||| nondependency and immutable component metadata. No candidate oracle remains.
+export
+0 o19ProviderReplaceNonDependency :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (wanted : key) -> (actor : name) ->
+  (source : Registry name key value world error) -> (old, next : Fiber name key value world error) ->
+  (lookupFiber @{nameEq} actor source = Just old) -> (fiberComponent next = fiberComponent old) ->
+  Not (Elem wanted (dependencies (componentProvisions (fiberComponent old)))) ->
+  (providerOf {name} {key} {value} {world} {error} @{nameEq} @{keyEq} wanted (replaceBinding @{nameEq} actor next source) =
+   providerOf {name} {key} {value} {world} {error} @{nameEq} @{keyEq} wanted source)
+o19ProviderReplaceNonDependency nameEq keyEq wanted actor (MkCoeffectContext entries unique) old next found static excluded =
+  o19ProviderReplaceEntries nameEq keyEq wanted actor next entries
+    (o19NonProviderObserved keyEq wanted next (providerCandidate @{keyEq} wanted next) Refl (rewrite static in excluded))
+    (\fiber, occurs =>
+      rewrite justInjective (trans (sym (lookupEntryFromElem nameEq entries unique occurs)) found) in
+        o19NonProviderObserved keyEq wanted old (providerCandidate @{keyEq} wanted old) Refl excluded)
