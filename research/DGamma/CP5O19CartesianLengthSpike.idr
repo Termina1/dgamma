@@ -26,3 +26,13 @@ export
   traceActionFold name key world error value Nat (\action, count => S count) Z source = transitionCount source
 o19ActionFoldCount NoTransitions = Refl
 o19ActionFoldCount (MoreTransitions step rest) = cong S (o19ActionFoldCount rest)
+
+||| Structural trace append cardinality, with dependent intermediate state.
+export
+0 o19TransitionCountAppend :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, middle, last : SystemState name key value world error} ->
+  (left : Transitions first middle) -> (right : Transitions middle last) ->
+  transitionCount (appendTransitions left right) = transitionCount left + transitionCount right
+o19TransitionCountAppend NoTransitions right = Refl
+o19TransitionCountAppend (MoreTransitions step rest) right = cong S (o19TransitionCountAppend rest right)
