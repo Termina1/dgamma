@@ -435,3 +435,13 @@ record O20EnumeratedPair
   0 enumeratedMember : Elem (enumeratedTarget ** enumeratedSwap) candidates
   0 enumeratedLeftExact : (actorLeft enumeratedSwap = left)
   0 enumeratedRightExact : (actorRight enumeratedSwap = right)
+
+||| Structural location of a neighboring pair. A location always has two
+||| physical cells; later locations recurse into the actual nonempty tail.
+public export
+data O20Neighbours : (name : Type) -> name -> name -> List name -> Type where
+  O20NeighboursHere : {name : Type} -> {left, right : name} -> {later : List name} ->
+    O20Neighbours name left right (left :: right :: later)
+  O20NeighboursLater : {name : Type} -> {left, right, head, next : name} -> {later : List name} ->
+    O20Neighbours name left right (next :: later) ->
+    O20Neighbours name left right (head :: next :: later)
