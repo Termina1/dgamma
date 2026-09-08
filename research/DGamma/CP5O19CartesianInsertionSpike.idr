@@ -115,11 +115,12 @@ export
   ((licensor : name) -> (rightParent = ChildOf licensor) -> Not (leftChild = licensor)) ->
   (early : CheckedEarlyApplication name key world error value nameEq keyEq first
     (transitionAction right) (transitionTag right)) ->
-  OrchestrationSwapSafety name key world error value protocol nameEq keyEq left right
+  (safety : OrchestrationSwapSafety name key world error value protocol nameEq keyEq left right **
+    AlignedTransitions name key world error value nameEq keyEq (MoreTransitions (earlyRight safety) NoTransitions))
 o19InsertionPairSafetyObserved {name} {key} {value} {world} {error} {first} {middle} {last}
   nameEq keyEq protocol leftChild rightChild leftParent rightParent leftComponent rightComponent
   source earlier left right later decomposition premises leftInsert rightInsert distinct leftLicense rightLicense early =
-    MkOrchestrationSwapSafety (earlyApplicationFinal early)
+    (MkOrchestrationSwapSafety (earlyApplicationFinal early)
       (Fired {before = first} {afterState = earlyApplicationFinal early} nameEq keyEq
         (transitionAction right) (transitionTag right) (earlyApplicationChecked early)) Refl Refl
       (RegistrationDisciplineStep left (MoreTransitions right NoTransitions)
@@ -152,7 +153,8 @@ o19InsertionPairSafetyObserved {name} {key} {value} {world} {error} {first} {mid
          \collision => leftLicense otherLeftParent
           (o19InsertParentInjective leftChild otherLeft leftParent (ChildOf otherLeftParent) leftComponent otherLeftComponent
             (trans (sym leftInsert) leftSame))
-          (trans (cong actionOwner (trans (sym rightInsert) rightSame)) collision)))
+          (trans (cong actionOwner (trans (sym rightInsert) rightSame)) collision))) **
+     AlignedStep (transitionAction right) (transitionTag right) (earlyApplicationChecked early) NoTransitions AlignedEnd)
 
 
 ||| Derive the early O/O certificate from the SAME bundle/aligned pair.
