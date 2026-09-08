@@ -1,9 +1,11 @@
 module DGamma.CP5O20FiniteInversionSpike
 
 import DGamma.Coeffects
+import DGamma.Calculus
 import DGamma.CP3
 import DGamma.CP5O19SurfaceSpike
 import DGamma.CP5O20LinearExtensionSpike
+import DGamma.CP5O20SupportedReferenceSpike
 import Data.List
 import Data.List.Elem
 import Decidable.Equality
@@ -101,3 +103,17 @@ o20FiniteInversionAvailable nameEq (head :: rest) (minimum :: goalRest)
       No different => Right (o20InversionBeforeGoalMinimum head minimum rest goalRest
         (UniqueCons sourceAbsent sourceUnique) forward
         (o20DifferentHeadMember (\same => different (sym same)) (backward minimum Here)))
+
+||| The common supported reference already owns every enumeration premise
+||| of finite inversion availability; no permutation/certificate is supplied.
+export
+0 o20ReferenceInversionAvailable :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> {keyEq : DecEq key} ->
+  {reference : SystemState name key value world error} -> (sourceOrder, goalOrder : List name) ->
+  O20SupportedReferenceOrders name key world error value nameEq keyEq reference sourceOrder goalOrder ->
+  Either (sourceOrder = goalOrder) (O20FiniteInversion name sourceOrder goalOrder)
+o20ReferenceInversionAvailable nameEq sourceOrder goalOrder capital =
+  o20FiniteInversionAvailable nameEq sourceOrder goalOrder
+    (referenceSourceUnique capital) (referenceGoalUnique capital)
+    (referenceMembersForward capital) (referenceMembersBackward capital)
