@@ -13,6 +13,8 @@ import DGamma.CP5O19OpeningPropagationSpike
 import DGamma.CP5O19ActualCommutedDomainSpike
 import DGamma.CP5O19CommutedDomainSpike
 import DGamma.CP5RankedEarlyApplicabilitySpike
+import DGamma.CP5O19ResolvedOpeningRowSpike
+import DGamma.CP5O20BeginObservationSpike
 import DGamma.CP4DeletionSelectedForeignLifecycleCore
 import DGamma.CP4DeletionSelectedForeignLifecycleAnchorRelianceSelected
 import Data.List
@@ -267,3 +269,33 @@ o19AdvanceBeforeNondependentPair nameEq keyEq actor first middle finalState left
           (checkedActionProjects nameEq keyEq (LAdvance actor) middle finalState rightTag rightChecked) rightPaper)
         (cong isJust (partialRunChecked
           (o19ActualPairEarlyPartialRun nameEq keyEq leftAction (LAdvance actor) leftTag rightTag leftChecked rightChecked distinct independent))))
+
+||| Backwards Begin from its actual later observation and a checked foreign
+||| nondependent update. As E11, source-owner survival/nondependency remain
+||| honest source-shape premises, not precomputed target/early-guard inputs.
+export
+0 o19BeginBeforeNondependentPair :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (first, middle, finalState : SystemState name key value world error) ->
+  (leftAction : Action name key value world error) -> (leftTag : RuleTag) ->
+  (leftChecked : checkedApplyAction @{nameEq} @{keyEq} leftAction first = Just (leftTag, middle)) ->
+  (leftFiber : Fiber name key value world error) ->
+  (lookupFiber @{nameEq} (actionOwner leftAction) (registry first) = Just leftFiber) ->
+  (isJust (lookupFiber {name} {key} {value} {world} {error} @{nameEq} (actionOwner leftAction) (registry middle)) = True) ->
+  Not (actor = actionOwner leftAction) ->
+  (opening : O20BeginObservation name key world error value nameEq keyEq actor middle finalState) ->
+  ((wanted : key) -> Elem wanted (dependencies (componentDependencies (beginObservedComponent opening))) ->
+    Not (Elem wanted (dependencies (componentProvisions (fiberComponent leftFiber))))) ->
+  (registryWellFormed {name} {key} {value} {world} {error} @{nameEq} @{keyEq} first = True) ->
+  CheckedEarlyApplication name key world error value nameEq keyEq first (LBegin actor) LBeginTag
+o19BeginBeforeNondependentPair nameEq keyEq actor first middle finalState leftAction leftTag leftChecked leftFiber leftFound leftSurvives distinct
+  (MkO20BeginObservation component parent table view found resolved afterShape) nondependent wellFormed =
+    o19BeginAtResolvedState nameEq keyEq actor first component parent table view
+      (trans (sym (systemLocalUpdateForeign nameEq actor (actionOwner leftAction) distinct first middle
+        (applyActionLocalUpdate nameEq keyEq leftAction first middle leftTag
+          (checkedActionProjects nameEq keyEq leftAction first middle leftTag leftChecked)))) found)
+      (trans (sym (o19ResolvePresentLocalUpdate nameEq keyEq (dependencies (componentDependencies component)) (actionOwner leftAction)
+        (registry first) (registry middle) leftFiber leftFound leftSurvives
+        (systemRegistryUpdate (applyActionLocalUpdate nameEq keyEq leftAction first middle leftTag
+          (checkedActionProjects nameEq keyEq leftAction first middle leftTag leftChecked))) nondependent)) resolved) wellFormed
