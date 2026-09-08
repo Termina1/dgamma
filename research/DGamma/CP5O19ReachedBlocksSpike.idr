@@ -796,3 +796,27 @@ o19LocatedFromWordCuts nameEq keyEq selected source block target aligned origins
       (\action, member => noEarlier action (replace {p = Elem action} (cutLeftWord firstCut) member)))
     (o19NoLifecycleFromWord selected (cutSuffix secondCut)
       (\action, member => noLater action (replace {p = Elem action} (cutRightWord secondCut) member))) active
+
+||| The second actual cut is constructed from the FIRST cut's owned
+||| residual word; no caller block cut or independent reached trace is used.
+export
+0 o19LocatedAfterFirstCut :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  {initial, sourceFinal, targetFinal : SystemState name key value world error} ->
+  (source : Transitions initial sourceFinal) ->
+  (block : LocatedOpenEpisodeBlock name key world error value nameEq keyEq selected source) ->
+  (target : Transitions initial targetFinal) ->
+  AlignedTransitions name key world error value nameEq keyEq target ->
+  ActionRegistrationReplayCorrespondence name key world error value source target ->
+  (supportedActiveAt {name} {key} {value} {world} {error} @{nameEq} selected targetFinal = True) ->
+  (beforeWord, afterWord : List (Action name key value world error)) ->
+  ((action : Action name key value world error) -> Elem action beforeWord ->
+    (isLifecycleAction action = True) -> Not (actionOwner action = selected)) ->
+  ((action : Action name key value world error) -> Elem action afterWord ->
+    (isLifecycleAction action = True) -> Not (actionOwner action = selected)) ->
+  (firstCut : O19WordCut name key world error value beforeWord (o19ActionWord (actorBlockTrace block) ++ afterWord) target) ->
+  LocatedOpenEpisodeBlock name key world error value nameEq keyEq selected target
+o19LocatedAfterFirstCut nameEq keyEq selected source block target aligned origins active beforeWord afterWord noEarlier noLater firstCut =
+  o19LocatedFromWordCuts nameEq keyEq selected source block target aligned origins active beforeWord afterWord noEarlier noLater firstCut
+    (o19CutByWord (o19ActionWord (actorBlockTrace block)) afterWord (cutSuffix firstCut) (cutRightWord firstCut))
