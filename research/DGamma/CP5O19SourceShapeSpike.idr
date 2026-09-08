@@ -90,3 +90,22 @@ o19AlignedActivationOwner {first} {afterState} nameEq keyEq _
        (lookupFiber {name} {key} {value} {world} {error} @{nameEq} (actionOwner action) (registry afterState)) Refl
        (o19ActivationEvolutionInstalled nameEq keyEq first afterState action tag checked
          (installationEvolutionStep nameEq keyEq (actionOwner action) action tag first afterState checked) activation))
+
+||| Owner-survival source-shape producer at the ACTUAL O19 pair cut. Bundle
+||| alignment is extracted from its authenticated decomposition, never supplied
+||| as an extra applicability or owner-observation premise.
+export
+0 o19SourcePairOwner :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (protocol : RegistrationProtocol key value world error) ->
+  {initial, first, middle, last, finalState : SystemState name key value world error} ->
+  (source : Transitions initial finalState) -> (earlier : Transitions initial first) ->
+  (left : Transition first middle) -> (right : Transition middle last) -> (later : Transitions last finalState) ->
+  (appendTransitions earlier (MoreTransitions left (MoreTransitions right later)) = source) ->
+  ReplayInvariantBundle name key world error value protocol nameEq keyEq source -> PaperActivationStep left ->
+  ((fiber : Fiber name key value world error ** lookupFiber @{nameEq} (actionOwner (transitionAction left)) (registry first) = Just fiber),
+   (isJust (lookupFiber {name} {key} {value} {world} {error} @{nameEq} (actionOwner (transitionAction left)) (registry middle)) = True))
+o19SourcePairOwner nameEq keyEq protocol source earlier left right later decomposition premises activation =
+  o19AlignedActivationOwner nameEq keyEq left
+    (fst (alignedAppendSplit (MoreTransitions left NoTransitions) (MoreTransitions right NoTransitions)
+      (fst (o19SourcePairFacts nameEq keyEq protocol source earlier left right later decomposition premises)))) activation
