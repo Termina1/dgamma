@@ -107,3 +107,22 @@ o20OriginalSupportedImageBackward {name} {key} {world} {error} {value} nameEq ke
         (replayDiscipline (chainReplayCapital (capitalPremises rightCapital)))
         (replayInitialEmpty (chainReplayCapital (capitalPremises leftCapital)))
         leftUnique rightUnique selected sourceFiber found supported)
+
+||| Transport a genuine provision/dependency edge using the two scanner-owned
+||| images. Both declaration memberships are transported at the same key.
+export
+0 o20PrecedenceImage :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {renaming : name -> name} -> {lower, upper : name} ->
+  {source, target : SystemState name key value world error} ->
+  (edge : PrecedenceEdge nameEq lower upper source) ->
+  (lowerImage : O20SupportedFiberImage name key world error value nameEq renaming lower (providerFiber edge) target) ->
+  (upperImage : O20SupportedFiberImage name key world error value nameEq renaming upper (consumerFiber edge) target) ->
+  PrecedenceEdge nameEq (renaming lower) (renaming upper) target
+o20PrecedenceImage edge lowerImage upperImage =
+  MkPrecedenceEdge (edgeKey edge) (imageFiber lowerImage) (imageFiber upperImage)
+    (imageFound lowerImage) (imageFound upperImage)
+    (replace {p = \component => Elem (edgeKey edge) (dependencies (componentProvisions component))}
+      (sym (imageComponent lowerImage)) (providerDeclares edge))
+    (replace {p = \component => Elem (edgeKey edge) (dependencies (componentDependencies component))}
+      (sym (imageComponent upperImage)) (consumerDeclares edge))
