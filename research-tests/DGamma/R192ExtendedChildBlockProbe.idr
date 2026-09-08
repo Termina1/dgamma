@@ -15,9 +15,9 @@ import Decidable.Equality
 %default total
 %unbound_implicits off
 
-||| Same eleven actions and final state as R191, except actual child Retire3
-||| is moved before actor1's two lifecycle edges. NEW checked trace, not an
-||| assertion that merely extending the grammar moves an old physical action.
+||| Candidate states for relocating child Retire3 before actor1's lifecycle.
+||| C4's checked eleven-edge trace was exhausted/reverted; this declaration
+||| contains NO trace or operational-reordering proof.
 public export
 r192ParentLocalState : Nat -> SystemState Nat R45Key R45Value Unit String
 r192ParentLocalState (Z) = r191ChildGapState 0
