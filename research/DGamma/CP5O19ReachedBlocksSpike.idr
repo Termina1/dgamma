@@ -19,6 +19,9 @@ import DGamma.CP5O19GridCertificationSpike
 import DGamma.CP5O19WholeBlockSpike
 import DGamma.CP5O19CartesianLengthSpike
 import DGamma.CP5O19PaperBranchCompletenessSpike
+import DGamma.CP5O19OriginalBlockClassSpike
+import DGamma.CP5O19AdjacentReplayProducerSpike
+import DGamma.CP5O19SameChainAssemblySpike
 import Data.List
 import Data.List.Elem
 import Data.Nat
@@ -345,3 +348,19 @@ o19ActualMovedBodiesInstalled nameEq keyEq protocol swap source blocks premises 
         (replace {p = NoParentUnload (actorLeft swap)} (sym (columnDecomposition (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique))) (o19NoUnloadFromOrigins (actorLeft swap) source (cursorTrace (columnCursor (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique)))
           (\occurrence => replayActionOrigin (finiteDerivationOccurrenceCorrespondence (cursorDerivation (columnCursor (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique)))) occurrence)
           (o19OriginalBlockNoUnload nameEq keyEq (actorLeft swap) source (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)))))))))))))
+
+||| C2 extension: consume one original word observation for the ACTUAL
+||| reached head. Lifecycle ownership and yielded registration are retained.
+export
+0 o19ActorOnlyPrependObserved :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (selected, forbidden : name) ->
+  {first, middle, last : SystemState name key value world error} ->
+  (step : Transition first middle) -> (rest : Transitions middle last) ->
+  ActorLifecycleOnly selected rest ->
+  O19BlockWordObservation name key world error value selected forbidden (transitionAction step) ->
+  ActorLifecycleOnly selected (MoreTransitions step rest)
+o19ActorOnlyPrependObserved selected forbidden step rest tail (BlockOwnLifecycle lifecycle owner) =
+  ActorLifecycleStep step rest lifecycle (trans (o19TransitionActorOwner step) owner) tail
+o19ActorOnlyPrependObserved selected forbidden step rest tail (BlockGenerated child component inserted safe) =
+  ActorYieldedRegistrationStep step rest inserted tail
