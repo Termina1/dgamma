@@ -2577,5 +2577,344 @@
       "o19ProviderReplaceObserved"
     ],
     "matchingSourceCommits": []
+  },
+  {
+    "unit": "E3-1",
+    "path": "research/DGamma/CP5O19ActivationResolutionSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O19ActivationResolutionSpike.idr"
+    ],
+    "start": "2026-09-08T01:46:14.832058+00:00",
+    "end": "2026-09-08T01:46:15.896344+00:00",
+    "seconds": 1.0641118339262903,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 0,
+    "sourceSHA256": "82459bac4390dca18437e0004e230cd33442328edc92dc450413b8d543677bbb",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "1/1: Building DGamma.CP5O19ActivationResolutionSpike (research/DGamma/CP5O19ActivationResolutionSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "o19ProviderHeadObserved"
+    ],
+    "matchingSourceCommits": [
+      "f941c3cace18784e672845146f26cd8f9783bb03"
+    ]
+  },
+  {
+    "unit": "E4-1",
+    "path": "research/DGamma/CP5O19ActivationResolutionSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O19ActivationResolutionSpike.idr"
+    ],
+    "start": "2026-09-08T01:46:42.689245+00:00",
+    "end": "2026-09-08T01:46:43.740564+00:00",
+    "seconds": 1.0511520830914378,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 0,
+    "sourceSHA256": "213aec1af2590d03ac0ec749cf95ea124d6299511050196fca52cbd2d7556c37",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "1/1: Building DGamma.CP5O19ActivationResolutionSpike (research/DGamma/CP5O19ActivationResolutionSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "o19ProviderReplaceHeadObserved"
+    ],
+    "matchingSourceCommits": [
+      "dc688d7f4238edbce58c70f475a93eefcdf5fa07"
+    ]
+  },
+  {
+    "unit": "E5-1",
+    "path": "research/DGamma/CP5O19ActivationResolutionSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O19ActivationResolutionSpike.idr"
+    ],
+    "start": "2026-09-08T01:47:19.200504+00:00",
+    "end": "2026-09-08T01:47:20.237856+00:00",
+    "seconds": 1.0371705833822489,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 0,
+    "sourceSHA256": "5fe45eb86d975ed8fd97bb5db16f3c1be1545454ef2d6ef2de8aaeb909c01bef",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "1/1: Building DGamma.CP5O19ActivationResolutionSpike (research/DGamma/CP5O19ActivationResolutionSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "o19ProviderReplaceEntries"
+    ],
+    "matchingSourceCommits": [
+      "e68d43268c763772bb75ce8435c75a3ede4b9f76"
+    ]
+  },
+  {
+    "unit": "E6-1",
+    "path": "research/DGamma/CP5O19ActivationResolutionSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O19ActivationResolutionSpike.idr"
+    ],
+    "start": "2026-09-08T01:48:45.376817+00:00",
+    "end": "2026-09-08T01:48:46.432883+00:00",
+    "seconds": 1.055854208767414,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 0,
+    "sourceSHA256": "b68a0529e216885a4451ccae152af851a189687d89bcdb9ee3a0a82635164257",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "1/1: Building DGamma.CP5O19ActivationResolutionSpike (research/DGamma/CP5O19ActivationResolutionSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "o19ProviderReplaceNonDependency"
+    ],
+    "matchingSourceCommits": [
+      "c2a8ded88fd8cf98e9485245d7f47b349e9ef00f"
+    ]
+  },
+  {
+    "unit": "E7-1",
+    "path": "research/DGamma/CP5O19ActivationResolutionSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O19ActivationResolutionSpike.idr"
+    ],
+    "start": "2026-09-08T01:50:02.821477+00:00",
+    "end": "2026-09-08T01:50:03.884996+00:00",
+    "seconds": 1.0633239159360528,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 0,
+    "sourceSHA256": "aaccfbd730aca836238c7fad154b653cfc2501527e1e3104e2a324b6aa6c7e0c",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "1/1: Building DGamma.CP5O19ActivationResolutionSpike (research/DGamma/CP5O19ActivationResolutionSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "o19ResolveHeadObserved"
+    ],
+    "matchingSourceCommits": [
+      "82a650d006a304eefe34db12e3231171a104875f"
+    ]
+  },
+  {
+    "unit": "E8-1",
+    "path": "research/DGamma/CP5O19ActivationResolutionSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O19ActivationResolutionSpike.idr"
+    ],
+    "start": "2026-09-08T01:50:34.536221+00:00",
+    "end": "2026-09-08T01:50:35.570300+00:00",
+    "seconds": 1.0339048327878118,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 0,
+    "sourceSHA256": "021500366751b32e2158c19e37b86ac825a3f0293cf7e693d940e96c26c8527a",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "1/1: Building DGamma.CP5O19ActivationResolutionSpike (research/DGamma/CP5O19ActivationResolutionSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "o19ResolveReplaceNonDependency"
+    ],
+    "matchingSourceCommits": [
+      "839dfdbc79f85499dfc9d4bb92b87e1efa42f4f4"
+    ]
+  },
+  {
+    "unit": "E9-1",
+    "path": "research/DGamma/CP5O19ActivationResolutionSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O19ActivationResolutionSpike.idr"
+    ],
+    "start": "2026-09-08T01:53:23.572930+00:00",
+    "end": "2026-09-08T01:53:24.620812+00:00",
+    "seconds": 1.0476798340678215,
+    "exit": 1,
+    "fresh": true,
+    "passed": false,
+    "interrupted": false,
+    "maxSampleRSSKiB": 0,
+    "sourceSHA256": "d39af6ad6c3e5867bdadb71eb52844d73f0e753d11534e9e08b0ecd1811e3c48",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "1/1: Building DGamma.CP5O19ActivationResolutionSpike (research/DGamma/CP5O19ActivationResolutionSpike.idr)\nError: While processing right hand side of o19ResolvePresentLocalUpdate. Name DGamma.CP4DeletionFrameCore.lookupDeleteSelf is private.\n\nDGamma.CP5O19ActivationResolutionSpike:164:33--164:49\n 160 |   (LocalReplace next {oldFiber} {oldFound} {staticComponent}) excluded =\n 161 |     o19ResolveReplaceNonDependency nameEq keyEq deps actor source old next found\n 162 |       (trans staticComponent (cong fiberComponent (justInjective (trans (sym oldFound) found)))) excluded\n 163 | o19ResolvePresentLocalUpdate nameEq keyEq deps actor source _ old found survives LocalDelete excluded =\n 164 |   case trans (sym (cong isJust (lookupDeleteSelf @{nameEq} actor source))) survives of Refl impossible\n                                       ^^^^^^^^^^^^^^^^\n\nSuggestion: add an explicit export or public export modifier. By default, all names are private in namespace blocks.\n",
+    "newTopLevelDeclarations": [
+      "o19ResolvePresentLocalUpdate"
+    ],
+    "matchingSourceCommits": []
+  },
+  {
+    "unit": "E9-2",
+    "path": "research/DGamma/CP5O19ActivationResolutionSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O19ActivationResolutionSpike.idr"
+    ],
+    "start": "2026-09-08T01:54:19.770678+00:00",
+    "end": "2026-09-08T01:54:20.833937+00:00",
+    "seconds": 1.063084458000958,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 0,
+    "sourceSHA256": "695a7be3a9bff96a2b11a833c40f2f39e4a8037387a6341b5edd8c27148a2538",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "1/1: Building DGamma.CP5O19ActivationResolutionSpike (research/DGamma/CP5O19ActivationResolutionSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "o19ResolvePresentLocalUpdate"
+    ],
+    "matchingSourceCommits": [
+      "3da74b63182a1ab012c58063e53c640b5272aae7"
+    ]
+  },
+  {
+    "unit": "E10-1",
+    "path": "research/DGamma/CP5O19ActivationResolutionSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O19ActivationResolutionSpike.idr"
+    ],
+    "start": "2026-09-08T01:55:52.823864+00:00",
+    "end": "2026-09-08T01:55:55.959517+00:00",
+    "seconds": 3.1354662077501416,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 4190736,
+    "sourceSHA256": "2dcfc4992298f330399a2017d9c219b2db3cbee41322366e2811bedec61df7c3",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "16/16: Building DGamma.CP5O19ActivationResolutionSpike (research/DGamma/CP5O19ActivationResolutionSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "o19AdvanceBeforeNondependentCut"
+    ],
+    "matchingSourceCommits": [
+      "20e84c0e2ec882f44fbb446f8774c52cd4696d97"
+    ]
+  },
+  {
+    "unit": "E11-1",
+    "path": "research/DGamma/CP5O19ActivationResolutionSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O19ActivationResolutionSpike.idr"
+    ],
+    "start": "2026-09-08T01:57:01.555635+00:00",
+    "end": "2026-09-08T01:57:04.696634+00:00",
+    "seconds": 3.1408155825920403,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 3018512,
+    "sourceSHA256": "691b1f65ce9cf227dc2a41c6713b7b2dd1d0a368f46384a69c92c24a8a395e76",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "16/16: Building DGamma.CP5O19ActivationResolutionSpike (research/DGamma/CP5O19ActivationResolutionSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "o19AdvanceBeforeNondependentPair"
+    ],
+    "matchingSourceCommits": [
+      "a004c899cae75e2ceb17c99c2cb2af84f9a3abb8"
+    ]
+  },
+  {
+    "unit": "E12-1",
+    "path": "research/DGamma/CP5O19ActivationResolutionSpike.idr",
+    "command": [
+      "idris2",
+      "--source-dir",
+      "src",
+      "--source-dir",
+      "research",
+      "--check",
+      "research/DGamma/CP5O19ActivationResolutionSpike.idr"
+    ],
+    "start": "2026-09-08T01:57:53.029574+00:00",
+    "end": "2026-09-08T01:57:56.173655+00:00",
+    "seconds": 3.143874999601394,
+    "exit": 0,
+    "fresh": true,
+    "passed": true,
+    "interrupted": false,
+    "maxSampleRSSKiB": 2560192,
+    "sourceSHA256": "699caa76e3935afa24f43da04c07f8b1d5ae23603f6112e034c3888eefec8f46",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "transcript": "46/46: Building DGamma.CP5O19ActivationResolutionSpike (research/DGamma/CP5O19ActivationResolutionSpike.idr)\n",
+    "newTopLevelDeclarations": [
+      "o19BeginBeforeNondependentPair"
+    ],
+    "matchingSourceCommits": [
+      "2889d78b1e3cbb854674bca72f6e4520518d0106"
+    ]
   }
 ]

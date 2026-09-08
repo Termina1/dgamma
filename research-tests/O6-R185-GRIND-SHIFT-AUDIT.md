@@ -252,3 +252,38 @@ not a semantic counterexample. Exactly ONE same-seam exhaustion so far in E.
 No fourth E2 attempt. A potential separate prerequisite is an explicit Boolean
 candidate observation carried through the head, avoiding higher-order/lazy-if
 congruence altogether; supervisor gate required before pursuing it.
+
+## E unit stop (12 slots, 11 retained declarations)
+
+Supervisor approved E3's separate actual-Boolean observation cure after E2,
+then E4 only if E3 passed. Both PASS1: f941c3ca (Boolean head), dc688d7f
+(observed replacement head). E5/e68d4326 performs ordered entry induction;
+E6/c2a8ded8 derives its candidate premises from source lookup + immutable
+component + declared exclusion; E7/82a650d0 observes the Maybe provider;
+E8/839dfdbc derives exact resolver equality for ONLY nondependent requested
+keys. The E2 lazy-congruence seam is genuinely avoided; no second exhaustion.
+
+E9/3da74b63 derives nondependent resolver equality from the actual local-update
+family with a present source owner that survives at the target. Insert/delete
+are refuted from those lookup observations; replacement's staticComponent
+field transports the declaration footprint. E9-1 accidentally referenced a
+private helper; E9-2 uses the already-public lookupDeleteSelf from SelectedOwn,
+with no visibility modification and NO deletion theorem call.
+
+E10/20e84c0e consumes actual PaperAdvanceSource/domain and E9 to derive raw
+backwards Advance while preserving ONLY its actual dependency list. Unlike
+D13 it DOES NOT require equality for every resolver in the registry.
+E11/a004c899 invokes actual checked pair commutation/source inversion and
+preservation to derive CHECKED backwards Iter/Finish; E12/2889d78b derives
+CHECKED backwards Begin from its explicit actual source observation and E9.
+
+IMPORTANT PARTIALITY: E11/E12 still take located source-owner survival and
+static declaration NONDEPENDENCY as explicit SOURCE-SHAPE premises. They are
+not resolver/guard/diamond oracles, but their producers from O19 source-bundle
+ranks/incomparable block membership have NOT landed. Therefore no fully derived
+A/A guard theorem from the sanctioned O19 premises is claimed, and no new
+mixed RIGHT-ACTIVATION row/one total row dispatcher or Cartesian columns landed.
+All previous2x2/Cartesian/origin/coverage/range/endpoint walls remain.
+Retained units77; E2 is the sole exhausted unit; O19 body0, C0, O20/O21 body0.
+Guarded commits only since the documented D4 incident; all retained commits
+match their prior fresh checks. E's12 slots are consumed; new scope needs a gate.
