@@ -100,3 +100,10 @@ o19RowSitesPull start (S width) position =
     (trans (o19RowSitesPull (S start) width (fst (adjacentSwapOrdinalExhaustive start position)))
       (o19RowPullStep start width position (fst (adjacentSwapOrdinalExhaustive start position))
         (snd (adjacentSwapOrdinalExhaustive start position))))
+
+||| Descending source pairs for a row. The right source is the original
+||| end of the left interval. No whole Cartesian coverage is asserted here.
+public export
+o19RowPairs : Nat -> Nat -> List (Nat, Nat)
+o19RowPairs start Z = []
+o19RowPairs start (S width) = o19RowPairs (S start) width ++ [(start, start + S width)]
