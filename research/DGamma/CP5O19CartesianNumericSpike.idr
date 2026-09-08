@@ -87,3 +87,16 @@ o19RowPullStep start width position _ (AdjacentSuffixOrdinal later) =
     S previous => case position of
       Z => void (uninhabited later)
       S after => cong S (o19RowPullStep previous width after after (AdjacentSuffixOrdinal (fromLteSucc later)))
+
+||| The exact descending row site word has the executable closed-form
+||| rotation pull, at EVERY ordinal. This handles repeated labels and all
+||| outside positions without any action-based or cardinality inference.
+export
+0 o19RowSitesPull : (start, width, position : Nat) ->
+  (o19SitesPull (o19RowSites start width) position = o19RowPull start width position)
+o19RowSitesPull start Z position = sym (o19RowPullZero start position)
+o19RowSitesPull start (S width) position =
+  trans (o19SitesPullAppend (o19RowSites (S start) width) [start] position)
+    (trans (o19RowSitesPull (S start) width (fst (adjacentSwapOrdinalExhaustive start position)))
+      (o19RowPullStep start width position (fst (adjacentSwapOrdinalExhaustive start position))
+        (snd (adjacentSwapOrdinalExhaustive start position))))
