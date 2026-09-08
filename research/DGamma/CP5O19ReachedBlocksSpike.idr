@@ -1329,3 +1329,53 @@ export
   (o19ActionWord (traceBeforeBlock (o19LocatedFromActualSegments nameEq keyEq selected source block target origins earlier middle later decomposition range noEarlier noLater active)) = o19ActionWord earlier,
    o19ActionWord (actorBlockTrace (o19LocatedFromActualSegments nameEq keyEq selected source block target origins earlier middle later decomposition range noEarlier noLater active)) = o19ActionWord (actorBlockTrace block))
 o19LocatedFromSegmentsWords nameEq keyEq selected source block target origins earlier middle later decomposition range noEarlier noLater active = (Refl, cong (LBegin selected ::) (rangeBodyWord range))
+
+||| Typed OWN-cut observation: the constructed block starts at the actual
+||| first cut and retains the source block word, via its explicit Begin range.
+export
+0 o19LocatedFromWordCutsWords :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  {initial, sourceFinal, targetFinal : SystemState name key value world error} ->
+  (source : Transitions initial sourceFinal) ->
+  (block : LocatedOpenEpisodeBlock name key world error value nameEq keyEq selected source) ->
+  (target : Transitions initial targetFinal) ->
+  (aligned : AlignedTransitions name key world error value nameEq keyEq target) ->
+  (origins : ActionRegistrationReplayCorrespondence name key world error value source target) ->
+  (active : supportedActiveAt {name} {key} {value} {world} {error} @{nameEq} selected targetFinal = True) ->
+  (beforeWord, afterWord : List (Action name key value world error)) ->
+  (noEarlier : (action : Action name key value world error) -> Elem action beforeWord ->
+    (isLifecycleAction action = True) -> Not (actionOwner action = selected)) ->
+  (noLater : (action : Action name key value world error) -> Elem action afterWord ->
+    (isLifecycleAction action = True) -> Not (actionOwner action = selected)) ->
+  (firstCut : O19WordCut name key world error value beforeWord (o19ActionWord (actorBlockTrace block) ++ afterWord) target) ->
+  (secondCut : O19WordCut name key world error value (o19ActionWord (actorBlockTrace block)) afterWord (cutSuffix firstCut)) ->
+  (o19ActionWord (traceBeforeBlock (o19LocatedFromWordCuts nameEq keyEq selected source block target aligned origins active beforeWord afterWord noEarlier noLater firstCut secondCut)) = beforeWord,
+   o19ActionWord (actorBlockTrace (o19LocatedFromWordCuts nameEq keyEq selected source block target aligned origins active beforeWord afterWord noEarlier noLater firstCut secondCut)) = o19ActionWord (actorBlockTrace block))
+o19LocatedFromWordCutsWords nameEq keyEq selected source block target aligned origins active beforeWord afterWord noEarlier noLater firstCut secondCut =
+  (trans (fst (o19LocatedFromSegmentsWords nameEq keyEq selected source block target origins
+    (cutPrefix firstCut) (cutPrefix secondCut) (cutSuffix secondCut)
+    (trans (cong (appendTransitions (cutPrefix firstCut)) (cutDecomposition secondCut)) (cutDecomposition firstCut))
+    (o19BeginRangeObserved nameEq keyEq selected (cutPrefix secondCut) (o19ActionWord (blockBody block))
+      (fst (alignedAppendSplit (cutPrefix secondCut) (cutSuffix secondCut)
+        (replace {p = AlignedTransitions name key world error value nameEq keyEq} (sym (cutDecomposition secondCut))
+          (snd (alignedAppendSplit (cutPrefix firstCut) (cutSuffix firstCut)
+            (replace {p = AlignedTransitions name key world error value nameEq keyEq} (sym (cutDecomposition firstCut)) aligned))))))
+      (cutLeftWord secondCut))
+    (o19NoLifecycleFromWord selected (cutPrefix firstCut)
+      (\action, member => noEarlier action (replace {p = Elem action} (cutLeftWord firstCut) member)))
+    (o19NoLifecycleFromWord selected (cutSuffix secondCut)
+      (\action, member => noLater action (replace {p = Elem action} (cutRightWord secondCut) member))) active)) (cutLeftWord firstCut),
+   snd (o19LocatedFromSegmentsWords nameEq keyEq selected source block target origins
+    (cutPrefix firstCut) (cutPrefix secondCut) (cutSuffix secondCut)
+    (trans (cong (appendTransitions (cutPrefix firstCut)) (cutDecomposition secondCut)) (cutDecomposition firstCut))
+    (o19BeginRangeObserved nameEq keyEq selected (cutPrefix secondCut) (o19ActionWord (blockBody block))
+      (fst (alignedAppendSplit (cutPrefix secondCut) (cutSuffix secondCut)
+        (replace {p = AlignedTransitions name key world error value nameEq keyEq} (sym (cutDecomposition secondCut))
+          (snd (alignedAppendSplit (cutPrefix firstCut) (cutSuffix firstCut)
+            (replace {p = AlignedTransitions name key world error value nameEq keyEq} (sym (cutDecomposition firstCut)) aligned))))))
+      (cutLeftWord secondCut))
+    (o19NoLifecycleFromWord selected (cutPrefix firstCut)
+      (\action, member => noEarlier action (replace {p = Elem action} (cutLeftWord firstCut) member)))
+    (o19NoLifecycleFromWord selected (cutSuffix secondCut)
+      (\action, member => noLater action (replace {p = Elem action} (cutRightWord secondCut) member))) active))
