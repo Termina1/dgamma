@@ -2,7 +2,13 @@ module DGamma.CP5O20ReferenceDescentSpike
 
 import DGamma.Calculus
 import DGamma.Coeffects
+import DGamma.Metatheory
 import DGamma.CP3
+import DGamma.CP5ConfluenceCanonicalSortSpike
+import DGamma.CP5ConfluenceDeletionChainSpike
+import DGamma.CP5ConfluenceRenamingCompositionSpike
+import DGamma.CP5UniqueRawNameCanonicalCapital
+import DGamma.CP5GeneratedOrchestrationMatched
 import DGamma.CP5ConfluenceLocalDiamondSpike
 import DGamma.CP5O19SurfaceSpike
 import DGamma.CP5O20SafeBlockSelectionSpike
@@ -144,3 +150,36 @@ o20ReferenceIncomparable swap capital reversed =
    (\path => o20BeforeAsymmetric (referenceSourceUnique capital) (snd (snd (o20ChosenActorFacts swap)))
       (referenceSourceOrdered capital (actorRight swap) (actorLeft swap) path
         (fst (snd (o20ChosenActorFacts swap))) (fst (o20ChosenActorFacts swap)))))
+
+||| The accepted public selector inputs now instantiate the ENTIRE actual
+||| stopped search with common supported reference. No goalState, fuel,
+||| common-order, reached-state or final-certificate oracle is required.
+||| Safety completeness and stoppedOrder=goal remain deliberately absent.
+export
+0 o20SearchAcceptedReference :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {initial, leftFinal, rightFinal : SystemState name key value world error} ->
+  (leftTrace : Transitions initial leftFinal) -> (rightTrace : Transitions initial rightFinal) ->
+  (inputs : SameOrchestrationModuloGenerated nameEq keyEq leftTrace rightTrace) ->
+  (leftCapital : IndependentCanonicalSchedule name key world error value protocol nameEq keyEq leftTrace) ->
+  (rightCapital : IndependentCanonicalSchedule name key world error value protocol nameEq keyEq rightTrace) ->
+  (0 leftUnique : UniqueRawNameInsertions name key world error value nameEq keyEq leftTrace) ->
+  (0 rightUnique : UniqueRawNameInsertions name key world error value nameEq keyEq rightTrace) ->
+  (0 generatedMatched : GeneratedOrchestrationMatched name key world error value nameEq leftTrace rightTrace (generatedGenerationBijection inputs)) ->
+  (matching : MappedCanonicalSupportOrders name key world error value protocol nameEq keyEq leftTrace rightTrace
+    (currentNameBijection (endpointRenaming inputs)) (canonicalSchedule leftCapital) (canonicalSchedule rightCapital)) ->
+  O20ReferenceStoppedPermutation name key world error value protocol nameEq keyEq
+    (supportOrder (canonicalSchedule leftCapital))
+    (map (renameBackward (currentNameBijection (endpointRenaming inputs))) (supportOrder (canonicalSchedule rightCapital)))
+    leftFinal (referenceGoalUnique (o20AcceptedSupportedReference nameEq keyEq protocol leftTrace rightTrace inputs leftCapital rightCapital leftUnique rightUnique matching))
+    (canonicalTrace (canonicalSchedule leftCapital)) (canonicalActorBlockDecomposition leftCapital) (canonicalReplayPremises leftCapital)
+o20SearchAcceptedReference {name} {key} {world} {error} {value} {leftFinal} nameEq keyEq protocol
+  leftTrace rightTrace inputs leftCapital rightCapital leftUnique rightUnique generatedMatched matching =
+    o20RunReferenceSearch nameEq keyEq protocol (supportOrder (canonicalSchedule leftCapital))
+      (map (renameBackward (currentNameBijection (endpointRenaming inputs))) (supportOrder (canonicalSchedule rightCapital)))
+      leftFinal (referenceGoalUnique (o20AcceptedSupportedReference nameEq keyEq protocol leftTrace rightTrace inputs leftCapital rightCapital leftUnique rightUnique matching))
+      (canonicalTrace (canonicalSchedule leftCapital)) (canonicalActorBlockDecomposition leftCapital) (canonicalReplayPremises leftCapital)
+      (capitalCanonicalUniqueInsertions name key world error value protocol nameEq keyEq leftCapital leftUnique)
+      (o20AcceptedSupportedReference nameEq keyEq protocol leftTrace rightTrace inputs leftCapital rightCapital leftUnique rightUnique matching)
