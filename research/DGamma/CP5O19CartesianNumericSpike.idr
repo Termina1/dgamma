@@ -169,3 +169,14 @@ o19FixedRowPairs : Nat -> Nat -> Nat -> List (Nat, Nat)
 o19FixedRowPairs leftSource rightSource Z = []
 o19FixedRowPairs leftSource rightSource (S width) =
   o19FixedRowPairs (S leftSource) rightSource width ++ [(leftSource, rightSource)]
+
+||| Identify the actual numeric row's right coordinate with its fixed source
+||| end, including the successor/addition alignment at every left position.
+export
+0 o19RowPairsFixed : (start, width : Nat) ->
+  (o19RowPairs start width = o19FixedRowPairs start (start + width) width)
+o19RowPairsFixed start Z = Refl
+o19RowPairsFixed start (S width) =
+  cong (\pairs => pairs ++ [(start, start + S width)])
+    (trans (o19RowPairsFixed (S start) width)
+      (cong (\rightSource => o19FixedRowPairs (S start) rightSource width) (plusSuccRightSucc start width)))
