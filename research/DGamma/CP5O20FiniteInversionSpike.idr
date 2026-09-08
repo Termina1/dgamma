@@ -55,3 +55,21 @@ export
   Not (Elem head sourceTail) -> Elem selected sourceTail -> Elem selected (head :: goalTail) -> Elem selected goalTail
 o20CancelHeadMembership absent selectedIn Here = absurd (absent selectedIn)
 o20CancelHeadMembership absent selectedIn (There targetIn) = targetIn
+
+||| If the goal minimum is later in the source, its IMMEDIATE predecessor
+||| forms a precise adjacent inversion. Recursion follows that actual member.
+export
+0 o20InversionBeforeGoalMinimum :
+  {name : Type} -> (head, minimum : name) -> (rest, goalRest : List name) ->
+  UniqueKeys (head :: rest) ->
+  ((selected : name) -> Elem selected (head :: rest) -> Elem selected (minimum :: goalRest)) ->
+  Elem minimum rest -> O20FiniteInversion name (head :: rest) (minimum :: goalRest)
+o20InversionBeforeGoalMinimum head minimum [] goalRest unique members found impossible
+o20InversionBeforeGoalMinimum head minimum (minimum :: rest) goalRest (UniqueCons absent uniqueRest) members Here =
+  MkO20FiniteInversion (minimum :: head :: rest)
+    (MkAdjacentActorOrderSwap [] head minimum rest Refl Refl (\Refl => absent Here))
+    (BeforeHere (o20DifferentHeadMember (\Refl => absent Here) (members head Here)))
+o20InversionBeforeGoalMinimum head minimum (next :: rest) goalRest (UniqueCons absent uniqueRest) members (There found) =
+  o20InversionUnderSourceHead head
+    (o20InversionBeforeGoalMinimum next minimum rest goalRest uniqueRest
+      (\selected, inside => members selected (There inside)) found)
