@@ -79,3 +79,11 @@ o19OrdinalMapAfterNode correspondence previous earlier left right later diamond 
         (o19AdjacentSourceOrdinalExact (transitionCount earlier) (locatedActionOrdinal occurrence)
           (locatedActionOrdinal (replayActionOrigin (swappedOccurrenceCorrespondence result) occurrence))
           (operationalOrdinalRelation (swappedOccurrenceFold result) occurrence))))
+
+||| The ORIGINAL coordinate map starts at actual correspondence identity.
+export
+0 o19IdentityOrdinalMap :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, last : SystemState name key value world error} -> (source : Transitions first last) ->
+  O19OrdinalActionMap name key world error value source source (identityActionRegistrationReplayCorrespondence source)
+o19IdentityOrdinalMap source = MkO19OrdinalActionMap id (\occurrence => Refl)
