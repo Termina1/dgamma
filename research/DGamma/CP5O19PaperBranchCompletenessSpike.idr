@@ -8,6 +8,11 @@ import DGamma.CP3
 import DGamma.CP4DeletionSelectedForeignLifecycleDivert
 import DGamma.CP4DeletionSelectedForeignLifecycleLeave
 import DGamma.CP4DeletionSelectedForeignOrchestration
+import DGamma.CP5ConfluenceCrossTraceSpike
+import DGamma.CP5ConfluenceRankObservationSpike
+import DGamma.CP5UniqueRawNameInsertions
+import DGamma.CP5O19ReplayObservationSpike
+import DGamma.CP5O19PairObservationSpike
 import DGamma.CP5O19OriginalBlockClassSpike
 import DGamma.CP5CurrentGenerationBirthSpike
 import DGamma.CP5O19AdjacentReplayProducerSpike
@@ -329,3 +334,43 @@ o19OriginalPaperBranch {finalState} nameEq keyEq selected forbidden source block
 o19OriginalPaperBranch nameEq keyEq selected forbidden source block origin
   (BlockGenerated child component inserted safe) aligned lifecycle =
     void (uninhabited (trans (sym (trans (cong isLifecycleAction inserted) Refl)) lifecycle))
+
+||| UNCONDITIONAL ORIGINAL four-orientation classifier. Every input is an
+||| existing O19 premise or an original location/word membership requested by
+||| the approved static interface. Both Conditional paper-branch hypotheses
+||| are now PRODUCED from the selected actual block; no paper, future row,
+||| reached safety/decomposition, callback, or early-guard oracle remains.
+export
+0 o19OriginalClasses :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (protocol : RegistrationProtocol key value world error) ->
+  {sourceOrder, targetOrder : List name} -> (swap : AdjacentActorOrderSwap name sourceOrder targetOrder) ->
+  {initial, sourceFinal : SystemState name key value world error} -> (source : Transitions initial sourceFinal) ->
+  (blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder source) ->
+  (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq source) ->
+  (safety : AdjacentActorSwapSafety name key world error value protocol nameEq keyEq swap source blocks premises) ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq source ->
+  {leftAction, rightAction : Action name key value world error} ->
+  (leftOrigin : LocatedActionOccurrence leftAction source) -> (rightOrigin : LocatedActionOccurrence rightAction source) ->
+  Elem leftAction (o19ActionWord (actorBlockTrace (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)))) ->
+  Elem rightAction (o19ActionWord (actorBlockTrace (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety)))) ->
+  O19SourcePairObservation name key world error value (actorLeft swap) (actorRight swap)
+    (locatedTransition leftOrigin) (locatedTransition rightOrigin)
+o19OriginalClasses {leftAction} {rightAction} nameEq keyEq protocol swap source blocks premises safety unique
+  leftOrigin rightOrigin leftMember rightMember =
+    o19OriginalClassesConditional nameEq keyEq protocol swap source premises unique leftOrigin rightOrigin
+      (o19SanctionedOriginalWords nameEq keyEq protocol swap source blocks premises safety leftAction rightAction leftMember rightMember)
+      (o19OriginalPaperBranch nameEq keyEq (actorLeft swap) (actorRight swap) source
+        (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)) leftOrigin
+        (o19OriginalBlockWord (actorLeft swap) (actorRight swap) (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)) (safetyLeftDoesNotGenerateRight safety) leftAction leftMember)
+        (snd (alignedAppendSplit (beforeActionOccurrence leftOrigin)
+          (MoreTransitions (locatedTransition leftOrigin) (afterActionOccurrence leftOrigin))
+          (replace {p = AlignedTransitions name key world error value nameEq keyEq}
+            (sym (actionOccurrenceDecomposition leftOrigin)) (replayAligned premises)))))
+      (o19OriginalPaperBranch nameEq keyEq (actorRight swap) (actorLeft swap) source
+        (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety)) rightOrigin
+        (o19OriginalBlockWord (actorRight swap) (actorLeft swap) (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety)) (safetyRightDoesNotGenerateLeft safety) rightAction rightMember)
+        (snd (alignedAppendSplit (beforeActionOccurrence rightOrigin)
+          (MoreTransitions (locatedTransition rightOrigin) (afterActionOccurrence rightOrigin))
+          (replace {p = AlignedTransitions name key world error value nameEq keyEq}
+            (sym (actionOccurrenceDecomposition rightOrigin)) (replayAligned premises)))))
