@@ -730,3 +730,33 @@ o19ActorOnlySameWord selected _ (MoreTransitions reached reachedRest) (ActorLife
 o19ActorOnlySameWord selected _ (MoreTransitions reached reachedRest) (ActorYieldedRegistrationStep step rest inserted tail) exact =
   ActorYieldedRegistrationStep reached reachedRest (trans (fst (consInjective exact)) inserted)
     (o19ActorOnlySameWord selected rest reachedRest tail (snd (consInjective exact)))
+
+||| Internal generic reconstruction boundary for an untouched source block.
+||| Actual dependent segments/range and genuine occurrence origins determine
+||| the reached body/installedness; outside and active proofs remain explicit.
+export
+0 o19LocatedFromActualSegments :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  {initial, sourceFinal, targetFinal, before, rangeEnd : SystemState name key value world error} ->
+  (source : Transitions initial sourceFinal) ->
+  (block : LocatedOpenEpisodeBlock name key world error value nameEq keyEq selected source) ->
+  (target : Transitions initial targetFinal) ->
+  (origins : ActionRegistrationReplayCorrespondence name key world error value source target) ->
+  (earlier : Transitions initial before) -> (middle : Transitions before rangeEnd) -> (later : Transitions rangeEnd targetFinal) ->
+  (appendTransitions earlier (appendTransitions middle later) = target) ->
+  (range : O19BeginRange name key world error value nameEq keyEq selected middle (o19ActionWord (blockBody block))) ->
+  NoLifecycleBy selected earlier -> NoLifecycleBy selected later ->
+  (supportedActiveAt {name} {key} {value} {world} {error} @{nameEq} selected targetFinal = True) ->
+  LocatedOpenEpisodeBlock name key world error value nameEq keyEq selected target
+o19LocatedFromActualSegments {before} {rangeEnd} nameEq keyEq selected source block target origins earlier middle later decomposition range noEarlier noLater active =
+  MkLocatedOpenEpisodeBlock before (rangeStart range) rangeEnd earlier (rangeOpening range) (rangeBody range)
+    (o19BeginRangeInstalled nameEq keyEq selected middle (o19ActionWord (blockBody block)) range
+      (fst (o19NoUnloadAppendSplit selected middle later
+        (snd (o19NoUnloadAppendSplit selected earlier (appendTransitions middle later)
+          (replace {p = NoParentUnload selected} (sym decomposition)
+            (o19NoUnloadFromOrigins selected source target (\occurrence => replayActionOrigin origins occurrence)
+              (o19OriginalBlockNoUnload nameEq keyEq selected source block))))))))
+    (o19ActorOnlySameWord selected (blockBody block) (rangeBody range) (blockActorOnly block) (rangeBodyWord range))
+    later noEarlier noLater active
+    (trans (cong (\spine => appendTransitions earlier (appendTransitions spine later)) (rangeDecomposition range)) decomposition)
