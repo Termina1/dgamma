@@ -184,3 +184,30 @@ rootRetireSquareFromPlan nameEq keyEq child parent root fiber component ambient 
           trans (provisionsDisjointRetireEntries nameEq keyEq (componentProvisions component)
             (bindings fibers) child fiber (lookupFiberEntries nameEq child fiber fibers found)) guards)
         (registryWellFormedRetire nameEq keyEq ambient child fiber fibers found valid))
+
+||| Generic adjacent native ROOT OInsert/own-child ORetire commutation.
+||| The only operational premises are the original TWO checked equations and
+||| a well-formed source; lookup/parent/distinctness authenticate the action
+||| roles. Both alternate checked equations and exact runtime equality are
+||| derived, never assumed. Parent ownership does not confer global freshness.
+export
+0 commuteRootInsertChildRetire :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (child, parent, root : name) ->
+  (fiber : Fiber name key value world error) -> (component : Component key value world error) ->
+  (first, middle, finalState : SystemState name key value world error) -> (tag : RuleTag) ->
+  (0 found : lookupFiber {name} {key} {value} {world} {error} @{nameEq} child (registry first) = Just fiber) ->
+  (0 own : fiberParent fiber = ChildOf parent) -> (0 distinct : Not (child = root)) ->
+  (0 valid : registryWellFormed @{nameEq} @{keyEq} first = True) ->
+  (0 inserted : checkedApplyAction @{nameEq} @{keyEq} (OInsert root Root component) first = Just (tag, middle)) ->
+  (0 retiredLater : checkedApplyAction @{nameEq} @{keyEq} (ORetire child) middle = Just (ORetireTag, finalState)) ->
+  ChildRetireSnapshotExchange name key world error value nameEq keyEq child parent
+    (Fired {before = first} {afterState = middle} nameEq keyEq (OInsert root Root component) tag inserted)
+    (Fired {before = middle} {afterState = finalState} nameEq keyEq (ORetire child) ORetireTag retiredLater)
+commuteRootInsertChildRetire nameEq keyEq child parent root fiber component
+  (MkSystemState ambient fibers) middle finalState tag found own distinct valid inserted retiredLater =
+    rootRetireSquareFromPlan nameEq keyEq child parent root fiber component ambient fibers
+      middle finalState tag found own distinct valid inserted retiredLater
+      (foreignInsertPlanView nameEq keyEq root Root component ambient fibers tag middle
+        (checkedActionProjects nameEq keyEq (OInsert root Root component)
+          (MkSystemState ambient fibers) middle tag inserted))
