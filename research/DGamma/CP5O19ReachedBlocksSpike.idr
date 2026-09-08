@@ -1699,3 +1699,11 @@ o19BeforeChangePrefix (head :: rest) newLeading trailing (UniqueCons absent uniq
   void (absent (snd (o19ElemAppendInjections rest trailing) member))
 o19BeforeChangePrefix (head :: rest) newLeading trailing (UniqueCons absent unique) member (BeforeThere ordered) =
   o19BeforeChangePrefix rest newLeading trailing unique member ordered
+
+||| Exact actor order across two appended enumeration segments.
+export
+0 o19BeforeAcrossAppend : {name : Type} -> {left, right : name} ->
+  (leading, trailing : List name) -> Elem left leading -> Elem right trailing -> BeforeIn left right (leading ++ trailing)
+o19BeforeAcrossAppend [] trailing member later = void (uninhabited member)
+o19BeforeAcrossAppend (head :: rest) trailing Here later = BeforeHere (snd (o19ElemAppendInjections rest trailing) later)
+o19BeforeAcrossAppend (head :: rest) trailing (There member) later = BeforeThere (o19BeforeAcrossAppend rest trailing member later)
