@@ -17,6 +17,7 @@ import DGamma.CP5O19MixedRowDispatcherSpike
 import DGamma.CP5O19CartesianLengthSpike
 import DGamma.CP5O19PairObservationSpike
 import DGamma.CP5O19CartesianWordRowSpike
+import DGamma.CP5O19OrdinalPlanSpike
 import DGamma.CP5O19PaperBranchCompletenessSpike
 import DGamma.CP5O19CartesianColumnsSpike
 import Data.List
@@ -128,3 +129,24 @@ o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safet
     (o19ActualBlockSpines (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety))
       (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety)) (safetyBlocksOrdered safety))
     (safetyBlocksAdjacent safety) Refl Refl
+
+||| Instantiate the true GLOBAL origin-plan producer on the SAME actual
+||| O19 Cartesian chain, starting at identity. No rows, cuts, static classes
+||| or source-ordinal equations are supplied by the caller. This exact plan
+||| is not yet a proof of selected-block-local Cartesian bounds/coverage.
+export
+0 o19ActualGlobalOriginPlan :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (protocol : RegistrationProtocol key value world error) ->
+  {sourceOrder, targetOrder : List name} -> (swap : AdjacentActorOrderSwap name sourceOrder targetOrder) ->
+  {initial, sourceFinal : SystemState name key value world error} -> (source : Transitions initial sourceFinal) ->
+  (blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder source) ->
+  (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq source) ->
+  (safety : AdjacentActorSwapSafety name key world error value protocol nameEq keyEq swap source blocks premises) ->
+  (unique : UniqueRawNameInsertions name key world error value nameEq keyEq source) ->
+  O19GlobalPlanResult name key world error value protocol nameEq keyEq source
+    (identityActionRegistrationReplayCorrespondence source)
+    (cursorDerivation (columnCursor (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique)))
+o19ActualGlobalOriginPlan nameEq keyEq protocol swap source blocks premises safety unique =
+  o19BuildGlobalOriginPlan (identityActionRegistrationReplayCorrespondence source) (o19IdentityOrdinalMap source)
+    (cursorDerivation (columnCursor (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique)))
