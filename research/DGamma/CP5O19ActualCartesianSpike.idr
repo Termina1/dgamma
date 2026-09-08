@@ -252,3 +252,26 @@ o19CartesianActualBlocksSites nameEq keyEq protocol swap source blocks premises 
     (o19ActualBlockSpines (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety))
       (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety)) (safetyBlocksOrdered safety))
     (safetyBlocksAdjacent safety) Refl Refl
+
+||| The SAME B13 global origins are the numeric execution of the now-proved
+||| ACTUAL Cartesian site pattern. Only the numeric closed-form calculation
+||| and its local coverage/uniqueness remain at this ordinal seam.
+export
+0 o19ActualGlobalCartesianSites :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (protocol : RegistrationProtocol key value world error) ->
+  {sourceOrder, targetOrder : List name} -> (swap : AdjacentActorOrderSwap name sourceOrder targetOrder) ->
+  {initial, sourceFinal : SystemState name key value world error} -> (source : Transitions initial sourceFinal) ->
+  (blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder source) ->
+  (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq source) ->
+  (safety : AdjacentActorSwapSafety name key world error value protocol nameEq keyEq swap source blocks premises) ->
+  (unique : UniqueRawNameInsertions name key world error value nameEq keyEq source) ->
+  (globalCrossingPositions (o19ActualGlobalOriginPlan nameEq keyEq protocol swap source blocks premises safety unique) =
+    o19OriginsAtSites (ordinalOrigin (o19IdentityOrdinalMap source))
+      (o19ColumnSites (transitionCount (traceBeforeBlock (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety))))
+        (actorBlockTransitionCount (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)))
+        (actorBlockTransitionCount (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety)))))
+o19ActualGlobalCartesianSites nameEq keyEq protocol swap source blocks premises safety unique =
+  trans (o19ActualGlobalOriginSites nameEq keyEq protocol swap source blocks premises safety unique)
+    (cong (o19OriginsAtSites (ordinalOrigin (o19IdentityOrdinalMap source)))
+      (o19CartesianActualBlocksSites nameEq keyEq protocol swap source blocks premises safety unique))
