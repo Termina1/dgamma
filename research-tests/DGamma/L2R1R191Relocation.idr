@@ -190,3 +190,13 @@ export
   transitionCount (extendedBetweenBlocks ordered) = 0
 r191ParentActorOneZeroGap ordered = zeroGapFromExtendedCutCount
   (r191RelocatedBlocks 0 Here) (r191RelocatedBlocks 1 (There Here)) ordered Refl
+
+||| The second adjacent pair also excludes every nonempty physical gap;
+||| this quantifies over arbitrary authentic BlockBeforeExtended witnesses.
+export
+0 r191ActorOneTwoZeroGap :
+  (ordered : BlockBeforeExtended Nat R45Key Unit String R45Value r45NameEq r45KeyEq
+    r191RelocatedTrace 1 2 (r191RelocatedBlocks 1 (There Here)) (r191RelocatedBlocks 2 (There (There Here)))) ->
+  transitionCount (extendedBetweenBlocks ordered) = 0
+r191ActorOneTwoZeroGap ordered = zeroGapFromExtendedCutCount
+  (r191RelocatedBlocks 1 (There Here)) (r191RelocatedBlocks 2 (There (There Here))) ordered Refl
