@@ -62,3 +62,25 @@ data O20OperationalDescent :
       (chosenTargetOrder (orientedChoice (progressChoice progress))) goalOrder goalState goalLinearization
       (blockSwapTrace (progressStep progress)) (blockSwapBlocks (progressStep progress)) (blockSwapPremises (progressStep progress)) (progressUnique progress)) ->
     O20OperationalDescent name key world error value protocol nameEq keyEq sourceOrder goalOrder goalState goalLinearization trace blocks premises unique
+
+||| Zero measure excludes any positive progress by its OWN exact drop.
+||| The explicit Maybe observation supplies the honest blocked equation.
+export
+0 o20DescentZeroObserved :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) -> (sourceOrder, goalOrder : List name) ->
+  (goalState : SystemState name key value world error) ->
+  (goalLinearization : LinearizesSupport name key world error value nameEq keyEq goalState goalOrder) ->
+  {initial, finalState : SystemState name key value world error} -> (trace : Transitions initial finalState) ->
+  (blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder trace) ->
+  (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq trace) ->
+  (unique : UniqueRawNameInsertions name key world error value nameEq keyEq trace) ->
+  (rankInversions (map (o20GoalRank nameEq goalOrder) sourceOrder) = Z) ->
+  (observed : Maybe (O20OperationalProgress name key world error value protocol nameEq keyEq sourceOrder goalOrder goalState trace blocks premises)) ->
+  (o20SelectOperationalProgress nameEq keyEq protocol sourceOrder goalOrder goalState goalLinearization trace blocks premises unique = observed) ->
+  (O20OperationalDescent name key world error value protocol nameEq keyEq sourceOrder goalOrder goalState goalLinearization trace blocks premises unique)
+o20DescentZeroObserved nameEq keyEq protocol sourceOrder goalOrder goalState goalLinearization trace blocks premises unique measured Nothing observed =
+  O20DescentBlocked observed
+o20DescentZeroObserved nameEq keyEq protocol sourceOrder goalOrder goalState goalLinearization trace blocks premises unique measured (Just progress) observed =
+  absurd (trans (sym measured) (progressDecrease progress))
