@@ -1290,3 +1290,21 @@ o19SwapLeadingUnique (head :: rest) left right trailing (UniqueCons absent uniqu
       (fst (o19ElemAppendInjections rest (left :: right :: trailing)))
       (\tailMember => snd (o19ElemAppendInjections rest (left :: right :: trailing)) (o19SwapTailMember tailMember)) member))
     (o19SwapLeadingUnique rest left right trailing unique)
+
+||| ACTUAL target-order uniqueness, derived from the original blocks and
+||| exact adjacent transposition. No target uniqueness premise is assumed.
+export
+0 o19ActualTargetUnique :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (protocol : RegistrationProtocol key value world error) ->
+  {sourceOrder, targetOrder : List name} -> (swap : AdjacentActorOrderSwap name sourceOrder targetOrder) ->
+  {initial, sourceFinal : SystemState name key value world error} -> (source : Transitions initial sourceFinal) ->
+  (blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder source) ->
+  (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq source) ->
+  (safety : AdjacentActorSwapSafety name key world error value protocol nameEq keyEq swap source blocks premises) ->
+  (unique : UniqueRawNameInsertions name key world error value nameEq keyEq source) ->
+  UniqueKeys targetOrder
+o19ActualTargetUnique {sourceOrder} nameEq keyEq protocol swap source blocks premises safety unique =
+  replace {p = UniqueKeys} (sym (actorAfterExact swap))
+    (o19SwapLeadingUnique (actorPrefix swap) (actorLeft swap) (actorRight swap) (actorSuffix swap)
+      (replace {p = UniqueKeys} (actorBeforeExact swap) (o19DecomposedOrderUnique sourceOrder blocks)))
