@@ -631,3 +631,12 @@ wholeSelectedCoordinateAliasImpossible {safety} whole leftPosition rightPosition
       (selectedBlockCoordinateInjectivity safety)
       leftPosition rightPosition leftBound rightBound exact
 
+public export
+wholeBlockFiniteDerivation :
+  WholeBlockSwapDerivation name key world error value protocol nameEq keyEq
+    orderSwap sourceTrace sourceBlocks sourcePremises safety targetTrace ->
+  FiniteAdjacentSwapDerivation name key world error value protocol nameEq keyEq
+    sourceTrace targetTrace
+wholeBlockFiniteDerivation whole =
+  nonEmptyToFiniteAdjacentSwapDerivation (nonEmptyBlockDerivation whole)
+

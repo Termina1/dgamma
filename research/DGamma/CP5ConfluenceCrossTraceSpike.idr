@@ -30,15 +30,6 @@ data CertifiedActorPermutation :
     CertifiedActorPermutation name middle after ->
     CertifiedActorPermutation name before after
 
-public export
-wholeBlockFiniteDerivation :
-  WholeBlockSwapDerivation name key world error value protocol nameEq keyEq
-    orderSwap sourceTrace sourceBlocks sourcePremises safety targetTrace ->
-  FiniteAdjacentSwapDerivation name key world error value protocol nameEq keyEq
-    sourceTrace targetTrace
-wholeBlockFiniteDerivation whole =
-  nonEmptyToFiniteAdjacentSwapDerivation (nonEmptyBlockDerivation whole)
-
 ||| One actual whole-block transposition.  The finite derivation is mandatory:
 ||| every transition crossing is classified A/A, A/O, O/A, or O/O and carries
 ||| its concrete `AdjacentSwapResult`, including action/registration occurrence
