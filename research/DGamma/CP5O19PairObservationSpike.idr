@@ -227,3 +227,56 @@ o19ObservedPairReplay nameEq keyEq protocol swap original blocks premises safety
 o19ObservedPairReplay nameEq keyEq protocol swap original blocks premises safety unique cursor earlier left right later decomposition
   (ObservedOO leftChild rightChild leftComponent rightComponent leftInsert rightInsert distinct leftLicense rightLicense tag) =
     o19ObservedOOReplay nameEq keyEq protocol swap original blocks premises safety unique cursor earlier left right later decomposition (ObservedOO leftChild rightChild leftComponent rightComponent leftInsert rightInsert distinct leftLicense rightLicense tag)
+
+||| Supervisor-authorized D10: flat SOURCE observations for two still
+||| separated nodes. Independent endpoints are deliberate. Values and exact
+||| action/tag/owner/licensing equations transport to the later actual pair;
+||| no future check, guard, diamond, replay or row is predicted here.
+public export
+data O19SourcePairObservation :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (leftParent, rightParent : name) ->
+  {leftBefore, leftAfter, rightBefore, rightAfter : SystemState name key value world error} ->
+  (left : Transition leftBefore leftAfter) -> (right : Transition rightBefore rightAfter) ->
+  Type where
+  SourceAA :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {leftParent, rightParent : name} ->
+    {leftBefore, leftAfter, rightBefore, rightAfter : SystemState name key value world error} ->
+    {left : Transition leftBefore leftAfter} -> {right : Transition rightBefore rightAfter} ->
+    (0 leftActivation : PaperActivationStep left) -> (0 rightActivation : PaperActivationStep right) ->
+    (0 leftOwner : transitionActor left = leftParent) -> (0 rightOwner : transitionActor right = rightParent) ->
+    O19SourcePairObservation name key world error value leftParent rightParent left right
+  SourceOA :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {leftParent, rightParent : name} ->
+    {leftBefore, leftAfter, rightBefore, rightAfter : SystemState name key value world error} ->
+    {left : Transition leftBefore leftAfter} -> {right : Transition rightBefore rightAfter} ->
+    (child : name) -> (component : Component key value world error) ->
+    (0 inserted : transitionAction left = OInsert child (ChildOf leftParent) component) ->
+    (0 rightActivation : PaperActivationStep right) -> (0 rightOwner : transitionActor right = rightParent) ->
+    (0 childSafe : Not (rightParent = child)) ->
+    O19SourcePairObservation name key world error value leftParent rightParent left right
+  SourceAO :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {leftParent, rightParent : name} ->
+    {leftBefore, leftAfter, rightBefore, rightAfter : SystemState name key value world error} ->
+    {left : Transition leftBefore leftAfter} -> {right : Transition rightBefore rightAfter} ->
+    (child : name) -> (component : Component key value world error) ->
+    (0 inserted : transitionAction right = OInsert child (ChildOf rightParent) component) ->
+    (0 leftActivation : PaperActivationStep left) -> (0 distinct : Not (child = transitionActor left)) ->
+    (0 licensing : (licensor : name) -> (ChildOf rightParent = ChildOf licensor) -> Not (transitionActor left = licensor)) ->
+    O19SourcePairObservation name key world error value leftParent rightParent left right
+  SourceOO :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {leftParent, rightParent : name} ->
+    {leftBefore, leftAfter, rightBefore, rightAfter : SystemState name key value world error} ->
+    {left : Transition leftBefore leftAfter} -> {right : Transition rightBefore rightAfter} ->
+    (leftChild, rightChild : name) -> (leftComponent, rightComponent : Component key value world error) ->
+    (0 leftInsert : transitionAction left = OInsert leftChild (ChildOf leftParent) leftComponent) ->
+    (0 rightInsert : transitionAction right = OInsert rightChild (ChildOf rightParent) rightComponent) ->
+    (0 distinct : Not (rightChild = leftChild)) ->
+    (0 leftLicense : (licensor : name) -> (ChildOf leftParent = ChildOf licensor) -> Not (rightChild = licensor)) ->
+    (0 rightLicense : (licensor : name) -> (ChildOf rightParent = ChildOf licensor) -> Not (leftChild = licensor)) ->
+    (0 tag : transitionTag right = OInsertTag) ->
+    O19SourcePairObservation name key world error value leftParent rightParent left right
