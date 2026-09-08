@@ -31,16 +31,6 @@ data CertifiedActorPermutation :
     CertifiedActorPermutation name before after
 
 public export
-0 blockSwapReplayCorrespondence :
-  (step : OperationalAdjacentBlockSwap name key world error value protocol nameEq
-    keyEq orderSwap sourceTrace sourceBlocks sourcePremises safety) ->
-  RelationalReplayCorrespondence name key world error value sourceTrace
-    (blockSwapTrace step)
-blockSwapReplayCorrespondence step =
-  finiteDerivationReplayCorrespondence
-    (wholeBlockFiniteDerivation (blockSwapWholeDerivation step))
-
-public export
 0 blockSwapOccurrenceCorrespondence :
   (step : OperationalAdjacentBlockSwap name key world error value protocol nameEq
     keyEq orderSwap sourceTrace sourceBlocks sourcePremises safety) ->

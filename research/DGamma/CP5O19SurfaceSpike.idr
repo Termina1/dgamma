@@ -674,3 +674,13 @@ record OperationalAdjacentBlockSwap
   blockSwapSameExternalInputs : SameExternalOrchestration nameEq sourceTrace
     blockSwapTrace
 
+public export
+0 blockSwapReplayCorrespondence :
+  (step : OperationalAdjacentBlockSwap name key world error value protocol nameEq
+    keyEq orderSwap sourceTrace sourceBlocks sourcePremises safety) ->
+  RelationalReplayCorrespondence name key world error value sourceTrace
+    (blockSwapTrace step)
+blockSwapReplayCorrespondence step =
+  finiteDerivationReplayCorrespondence
+    (wholeBlockFiniteDerivation (blockSwapWholeDerivation step))
+
