@@ -88,3 +88,28 @@ public export
 nativeCheckedAt position NoTransitions = ()
 nativeCheckedAt Z (MoreTransitions (Fired nameEq keyEq action tag checked) rest) = checked
 nativeCheckedAt (S position) (MoreTransitions step rest) = nativeCheckedAt position rest
+
+||| A physical run whose EVERY native action has a distinct owner from the
+||| child. Exact dictionaries and equations are indexed by the actual trace.
+public export
+data ForeignChildRun :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (child : name) ->
+  {first, finalState : SystemState name key value world error} ->
+  Transitions first finalState -> Type where
+  ForeignChildEnd :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {nameEq : DecEq name} -> {keyEq : DecEq key} -> {child : name} ->
+    {state : SystemState name key value world error} ->
+    ForeignChildRun nameEq keyEq child (NoTransitions {state})
+  ForeignChildStep :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {nameEq : DecEq name} -> {keyEq : DecEq key} -> {child : name} ->
+    {first, middle, finalState : SystemState name key value world error} ->
+    (action : Action name key value world error) -> (tag : RuleTag) ->
+    (0 checked : checkedApplyAction @{nameEq} @{keyEq} action first = Just (tag, middle)) ->
+    (rest : Transitions middle finalState) ->
+    (0 distinct : Not (child = actionOwner action)) ->
+    (0 tail : ForeignChildRun nameEq keyEq child rest) ->
+    ForeignChildRun nameEq keyEq child
+      (MoreTransitions (Fired {before = first} {afterState = middle} nameEq keyEq action tag checked) rest)
