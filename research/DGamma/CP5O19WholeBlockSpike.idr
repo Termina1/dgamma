@@ -91,3 +91,23 @@ o19ActualNonEmptyChain nameEq keyEq protocol swap source blocks premises safety 
     (cursorDerivation (columnCursor (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique)))
     (\zero => uninhabited
       (trans (sym (o19ActualFiniteProductCount nameEq keyEq protocol swap source blocks premises safety unique)) zero))
+
+||| Whole-block certificate plus its SAME-chain authentication, constructed
+||| together so later assembly never substitutes a separately replayed chain.
+public export
+record O19WholeBlockResult
+  (name, key, world, error : Type) (value : key -> Type)
+  (protocol : RegistrationProtocol key value world error)
+  (nameEq : DecEq name) (keyEq : DecEq key)
+  {sourceOrder, targetOrder : List name}
+  (swap : AdjacentActorOrderSwap name sourceOrder targetOrder)
+  {initial, sourceFinal, targetFinal : SystemState name key value world error}
+  (source : Transitions initial sourceFinal)
+  (blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder source)
+  (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq source)
+  (safety : AdjacentActorSwapSafety name key world error value protocol nameEq keyEq swap source blocks premises)
+  (target : Transitions initial targetFinal)
+  (derivation : FiniteAdjacentSwapDerivation name key world error value protocol nameEq keyEq source target) where
+  constructor MkO19WholeBlockResult
+  certifiedWholeBlock : WholeBlockSwapDerivation name key world error value protocol nameEq keyEq swap source blocks premises safety target
+  0 certifiedWholeChainExact : (wholeBlockFiniteDerivation certifiedWholeBlock = derivation)
