@@ -89,3 +89,23 @@ record O20NativeStepValues
   nativeCallback : O19StepObservation key world error value (dependencies (componentDependencies component))
     (componentProvisions component) step nativeCapability
     (MkLocalState (worldState before) (restrictOwnedPreservingOrder @{keyEq} (componentProvisions component) (ownedValues table)))
+
+||| Eliminate the native already-observed success packet at explicit values.
+||| No local case on a computed existential or projected-observation equality.
+export
+0 o20NativeValuesObserved :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (before : SystemState name key value world error) ->
+  (component : Component key value world error) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (step : StepEffect key value world error (dependencies (componentDependencies component)) (componentProvisions component)) ->
+  (view : View name (dependencies (componentDependencies component))) ->
+  (capability : DepValues key value (dependencies (componentDependencies component)) **
+    ((resolveCommittedValues {name} {key} {value} {world} {error} @{nameEq} @{keyEq} (dependencies (componentDependencies component)) view (registry before) = Just capability),
+      O19StepObservation key world error value (dependencies (componentDependencies component))
+        (componentProvisions component) step capability
+        (MkLocalState (worldState before) (restrictOwnedPreservingOrder @{keyEq} (componentProvisions component) (ownedValues table))))) ->
+  O20NativeStepValues name key world error value nameEq keyEq before component table step view
+o20NativeValuesObserved nameEq keyEq before component table step view (capability ** (resolved, callback)) =
+  MkO20NativeStepValues capability resolved callback
