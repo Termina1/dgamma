@@ -76,3 +76,22 @@ o20OrchestrationFromAction step (LAdvance actor) exact nonLifecycle = absurd non
 o20OrchestrationFromAction step (LDivert actor) exact nonLifecycle = absurd nonLifecycle
 o20OrchestrationFromAction step (LLeave actor) exact nonLifecycle = absurd nonLifecycle
 o20OrchestrationFromAction step (LUnload actor) exact nonLifecycle = absurd nonLifecycle
+
+||| Single observed Bool classification at any actual decomposed occurrence.
+||| The two branches retain exact native tags and locations, not guessed roles.
+export
+0 o20DecomposedActionObserved :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (trace : Transitions initial finalState) -> (order : List name) ->
+  (blocks : ActorBlockDecomposition name key world error value nameEq keyEq order trace) ->
+  (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq trace) ->
+  (action : Action name key value world error) -> (occurrence : LocatedActionOccurrence action trace) ->
+  (observed : Bool) -> (isLifecycleAction action = observed) ->
+  Either (PaperActivationStep (locatedTransition occurrence)) (PaperOrchestrationStep (locatedTransition occurrence))
+o20DecomposedActionObserved nameEq keyEq protocol trace order blocks premises action occurrence True exact =
+  Left (o20DecomposedLifecyclePaper nameEq keyEq protocol trace order blocks premises action occurrence exact)
+o20DecomposedActionObserved nameEq keyEq protocol trace order blocks premises action occurrence False exact =
+  Right (o20OrchestrationFromAction (locatedTransition occurrence) action (locatedAction occurrence) exact)
