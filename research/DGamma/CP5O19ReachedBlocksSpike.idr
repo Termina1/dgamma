@@ -1469,3 +1469,27 @@ export
     transitionCount (prefixThroughBlock (o19LocatedByWord nameEq keyEq selected source block target aligned origins active beforeWord afterWord noEarlier noLater placement)) = length beforeWord + transitionCount (actorBlockTrace block)))
 o19LocatedByWordCounts nameEq keyEq selected source block target aligned origins active beforeWord afterWord noEarlier noLater placement =
   ((trans (sym (o19ActionWordLength (traceBeforeBlock (o19LocatedByWord nameEq keyEq selected source block target aligned origins active beforeWord afterWord noEarlier noLater placement)))) (cong length (fst (o19LocatedByWordWords nameEq keyEq selected source block target aligned origins active beforeWord afterWord noEarlier noLater placement)))), ((trans (sym (o19ActionWordLength (actorBlockTrace (o19LocatedByWord nameEq keyEq selected source block target aligned origins active beforeWord afterWord noEarlier noLater placement)))) (trans (cong length (snd (o19LocatedByWordWords nameEq keyEq selected source block target aligned origins active beforeWord afterWord noEarlier noLater placement))) (o19ActionWordLength (actorBlockTrace block)))), (trans (o19PrefixThroughCount (o19LocatedByWord nameEq keyEq selected source block target aligned origins active beforeWord afterWord noEarlier noLater placement)) (cong2 (+) (trans (sym (o19ActionWordLength (traceBeforeBlock (o19LocatedByWord nameEq keyEq selected source block target aligned origins active beforeWord afterWord noEarlier noLater placement)))) (cong length (fst (o19LocatedByWordWords nameEq keyEq selected source block target aligned origins active beforeWord afterWord noEarlier noLater placement)))) (trans (sym (o19ActionWordLength (actorBlockTrace (o19LocatedByWord nameEq keyEq selected source block target aligned origins active beforeWord afterWord noEarlier noLater placement)))) (trans (cong length (snd (o19LocatedByWordWords nameEq keyEq selected source block target aligned origins active beforeWord afterWord noEarlier noLater placement))) (o19ActionWordLength (actorBlockTrace block))))))))
+
+||| OWN boundary observations of BOTH actual moved block constructors.
+||| The right before-trace is the explicit original earlier argument (a full
+||| trace equation, not scalar Refl); all other words use owned column/range laws.
+export
+0 o19ActualMovedBoundaryWords :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (protocol : RegistrationProtocol key value world error) ->
+  {sourceOrder, targetOrder : List name} -> (swap : AdjacentActorOrderSwap name sourceOrder targetOrder) ->
+  {initial, sourceFinal : SystemState name key value world error} -> (source : Transitions initial sourceFinal) ->
+  (blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder source) ->
+  (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq source) ->
+  (safety : AdjacentActorSwapSafety name key world error value protocol nameEq keyEq swap source blocks premises) ->
+  (unique : UniqueRawNameInsertions name key world error value nameEq keyEq source) ->
+  (traceBeforeBlock (o19ActualRightLocatedBlock nameEq keyEq protocol swap source blocks premises safety unique) = (traceBeforeBlock (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety))),
+   (o19ActionWord (traceBeforeBlock (o19ActualLeftLocatedBlock nameEq keyEq protocol swap source blocks premises safety unique)) = o19ActionWord (traceBeforeBlock (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety))) ++ (o19ActionWord (actorBlockTrace (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety)))),
+    (o19ActionWord (actorBlockTrace (o19ActualRightLocatedBlock nameEq keyEq protocol swap source blocks premises safety unique)) = (o19ActionWord (actorBlockTrace (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety)))),
+     o19ActionWord (actorBlockTrace (o19ActualLeftLocatedBlock nameEq keyEq protocol swap source blocks premises safety unique)) = (o19ActionWord (actorBlockTrace (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)))))))
+o19ActualMovedBoundaryWords nameEq keyEq protocol swap source blocks premises safety unique =
+  (Refl,
+   (trans (o19ActionWordAppend (traceBeforeBlock (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety))) (columnRight (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique)))
+      (cong (o19ActionWord (traceBeforeBlock (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety))) ++) (columnRightWord (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique))),
+    (cong (LBegin (actorRight swap) ::) (rangeBodyWord (o19ActualRightBeginRange nameEq keyEq protocol swap source blocks premises safety unique)),
+     cong (LBegin (actorLeft swap) ::) (rangeBodyWord (o19ActualLeftBeginRange nameEq keyEq protocol swap source blocks premises safety unique)))))
