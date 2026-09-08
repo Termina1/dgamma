@@ -153,3 +153,40 @@ o19InsertionPairSafetyObserved {name} {key} {value} {world} {error} {first} {mid
           (o19InsertParentInjective leftChild otherLeft leftParent (ChildOf otherLeftParent) leftComponent otherLeftComponent
             (trans (sym leftInsert) leftSame))
           (trans (cong actionOwner (trans (sym rightInsert) rightSame)) collision)))
+
+
+||| Derive the early O/O certificate from the SAME bundle/aligned pair.
+||| Exact insertion tags are internal source shape, never a changed O19 premise.
+export
+0 o19InsertionPairEarly :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (protocol : RegistrationProtocol key value world error) ->
+  (leftChild, rightChild : name) -> (leftParent, rightParent : Parent name) ->
+  (leftComponent, rightComponent : Component key value world error) ->
+  {initial, first, middle, last, finalState : SystemState name key value world error} ->
+  (source : Transitions initial finalState) -> (earlier : Transitions initial first) ->
+  (left : Transition first middle) -> (right : Transition middle last) -> (later : Transitions last finalState) ->
+  (appendTransitions earlier (MoreTransitions left (MoreTransitions right later)) = source) ->
+  ReplayInvariantBundle name key world error value protocol nameEq keyEq source ->
+  (transitionAction left = OInsert leftChild leftParent leftComponent) ->
+  (transitionAction right = OInsert rightChild rightParent rightComponent) ->
+  Not (rightChild = leftChild) ->
+  ((licensor : name) -> (rightParent = ChildOf licensor) -> Not (leftChild = licensor)) ->
+  (transitionTag right = OInsertTag) ->
+  CheckedEarlyApplication name key world error value nameEq keyEq first
+    (transitionAction right) (transitionTag right)
+o19InsertionPairEarly {first} {middle} {last} nameEq keyEq protocol leftChild rightChild leftParent rightParent
+  leftComponent rightComponent source earlier left right later decomposition premises leftInsert rightInsert distinct rightLicense rightTag =
+    o19EarlyLabels nameEq keyEq (OInsert rightChild rightParent rightComponent) (transitionAction right)
+      OInsertTag (transitionTag right) rightInsert rightTag
+      (o19InsertionBeforeCheckedPair nameEq keyEq leftChild rightChild leftParent rightParent leftComponent rightComponent
+        first middle last (transitionTag left) (transitionTag right)
+        (trans (cong (\action => checkedApplyAction @{nameEq} @{keyEq} action first) (sym leftInsert))
+          (o19AlignedHeadChecked nameEq keyEq left (MoreTransitions right NoTransitions)
+            (Builtin.fst (o19SourcePairFacts nameEq keyEq protocol source earlier left right later decomposition premises))))
+        (trans (cong (\action => checkedApplyAction @{nameEq} @{keyEq} action middle) (sym rightInsert))
+          (o19AlignedHeadChecked nameEq keyEq right NoTransitions
+            (Builtin.snd (alignedAppendSplit (MoreTransitions left NoTransitions) (MoreTransitions right NoTransitions)
+              (Builtin.fst (o19SourcePairFacts nameEq keyEq protocol source earlier left right later decomposition premises))))))
+        distinct (\licensor, parentSame, collision => rightLicense licensor parentSame (sym collision))
+        (Builtin.fst (Builtin.snd (o19SourcePairFacts nameEq keyEq protocol source earlier left right later decomposition premises))))
