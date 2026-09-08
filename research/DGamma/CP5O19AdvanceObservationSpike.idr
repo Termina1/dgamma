@@ -5,6 +5,8 @@ import DGamma.Calculus
 import DGamma.Coeffects
 import DGamma.Metatheory
 import DGamma.CP4DeletionFrameCore
+import DGamma.CP4ProgressPotential
+import DGamma.CP5ConfluenceLocalDiamondSpike
 import Data.List
 import Data.Maybe
 import Decidable.Equality
@@ -171,3 +173,22 @@ o19AdvanceValuesAtSource nameEq keyEq actor (MkSystemState ambient fibers) compo
       (trans (sym (resolveEffectValuesProjected nameEq keyEq (dependencies (componentDependencies component)) view (MkSystemState ambient fibers))) resolved,
        rewrite sym (projectedActorTable nameEq actor (MkSystemState ambient fibers)
          (MkFiber component parent retiredFlag table (Reloading (step :: rest) accumulator view)) found) in ran))
+
+||| Empty Finish has no callback but still needs the actual target guard.
+export
+0 o19FinishEmptyAtObservedTarget :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (ambient : world) -> (fibers : Registry name key value world error) ->
+  (component : Component key value world error) -> (parent : Parent name) -> (retiredFlag : Bool) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (accumulator : LocalState key value world (componentProvisions component) -> LocalState key value world (componentProvisions component)) ->
+  (view : View name (dependencies (componentDependencies component))) ->
+  (lookupFiber @{nameEq} actor fibers = Just (MkFiber component parent retiredFlag table (Reloading [] accumulator view))) ->
+  (targetFiber @{nameEq} @{keyEq} (MkFiber component parent retiredFlag table (Reloading [] accumulator view)) fibers = Just view) ->
+  RawActivationMove {name} {key} {value} {world} {error} nameEq keyEq (LAdvance actor) LFinishTag (MkSystemState ambient fibers)
+o19FinishEmptyAtObservedTarget nameEq keyEq actor ambient fibers component parent retiredFlag table accumulator view found target =
+  MkRawActivationMove
+    (MkSystemState ambient (replaceBinding @{nameEq} actor (MkFiber component parent retiredFlag table (Active accumulator view)) fibers))
+    (rewrite found in rewrite target in
+      rewrite trans (viewEqSameNameList nameEq view view) (sameNameListReflexive nameEq (DGamma.Calculus.viewProviders view)) in Refl)
