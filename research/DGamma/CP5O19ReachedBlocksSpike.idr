@@ -171,3 +171,25 @@ o19BeginRangeObserved nameEq keyEq selected _ bodyWord AlignedEnd wordExact = vo
 o19BeginRangeObserved nameEq keyEq selected _ bodyWord (AlignedStep action tag checked rest aligned) wordExact =
   o19BeginRangeHead nameEq keyEq selected action tag checked rest bodyWord aligned
     (snd (consInjective wordExact)) (fst (consInjective wordExact))
+
+||| Installedness survives a checked step unless it is the selected Unload.
+||| Consume the actual four-way installation observation, not paper labels.
+export
+0 o19InstalledNoUnloadEvolution :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (before, afterState : SystemState name key value world error) ->
+  (action : Action name key value world error) -> (tag : RuleTag) ->
+  (checked : checkedApplyAction @{nameEq} @{keyEq} action before = Just (tag, afterState)) ->
+  (installedAt {name} {key} {value} {world} {error} @{nameEq} selected before = True) ->
+  Not (action = LUnload selected) ->
+  InstallationEvolution name key world error value nameEq keyEq selected before afterState action tag ->
+  (installedAt {name} {key} {value} {world} {error} @{nameEq} selected afterState = True)
+o19InstalledNoUnloadEvolution nameEq keyEq selected before afterState _ _ checked atStart excluded
+  (RemainedUninstalled notInstalled atEnd) = void (uninhabited (trans (sym notInstalled) atStart))
+o19InstalledNoUnloadEvolution nameEq keyEq selected before afterState _ _ checked atStart excluded
+  (RemainedInstalled installed atEnd) = atEnd
+o19InstalledNoUnloadEvolution nameEq keyEq selected before afterState _ _ checked atStart excluded
+  OpenedInstallation = snd (snd (lBeginBoundary nameEq keyEq selected before afterState LBeginTag checked))
+o19InstalledNoUnloadEvolution nameEq keyEq selected before afterState _ _ checked atStart excluded
+  ClosedInstallation = void (excluded Refl)
