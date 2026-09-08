@@ -7,6 +7,7 @@ import DGamma.Metatheory
 import DGamma.CP3
 import DGamma.CP5ConfluenceLocalDiamondSpike
 import DGamma.CP5ImmutableBirthMetadataSpike
+import DGamma.CP5O20BeginObservationSpike
 import DGamma.CP5O19SourceShapeSpike
 import DGamma.CP5UniqueRawNameInsertions
 import Data.List.Elem
@@ -94,3 +95,42 @@ o19NondependencyAcrossCuts {base} nameEq keyEq protocol source
           leftEarlier leftLater leftExact premises unique leftActor leftBase leftNow leftBaseFound leftFound))
         (o19ResolvedDependenciesExcluded nameEq keyEq base leftActor leftBase leftBaseFound inactive wellFormed
           (dependencies (componentDependencies (fiberComponent rightBase))) view resolved))
+
+||| Explicit actual Begin observations specialize the cut transport, deriving
+||| their inactive fiber and successful resolver rather than requesting them.
+export
+0 o19ObservedOpeningExclusionAtCuts :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {initial, base, leftOpened, rightOpened, leftCut, rightCut, finalState : SystemState name key value world error} ->
+  (source : Transitions initial finalState) ->
+  (baseEarlier : Transitions initial base) -> (baseLater : Transitions base finalState) ->
+  (appendTransitions baseEarlier baseLater = source) ->
+  (leftEarlier : Transitions initial leftCut) -> (leftLater : Transitions leftCut finalState) ->
+  (appendTransitions leftEarlier leftLater = source) ->
+  (rightEarlier : Transitions initial rightCut) -> (rightLater : Transitions rightCut finalState) ->
+  (appendTransitions rightEarlier rightLater = source) ->
+  ReplayInvariantBundle name key world error value protocol nameEq keyEq source ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq source ->
+  (leftActor, rightActor : name) ->
+  (leftSeen : O20BeginObservation name key world error value nameEq keyEq leftActor base leftOpened) ->
+  (rightSeen : O20BeginObservation name key world error value nameEq keyEq rightActor base rightOpened) ->
+  (leftNow, rightNow : Fiber name key value world error) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} leftActor (registry leftCut) = Just leftNow) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} rightActor (registry rightCut) = Just rightNow) ->
+  ((wanted : key) -> Elem wanted (dependencies (componentDependencies (fiberComponent rightNow))) ->
+    Not (Elem wanted (dependencies (componentProvisions (fiberComponent leftNow)))))
+o19ObservedOpeningExclusionAtCuts {name} {key} {value} {world} {error} nameEq keyEq protocol source
+  baseEarlier baseLater baseExact leftEarlier leftLater leftExact rightEarlier rightLater rightExact premises unique leftActor rightActor
+  leftSeen rightSeen leftNow rightNow leftFound rightFound =
+    o19NondependencyAcrossCuts nameEq keyEq protocol source baseEarlier baseLater baseExact
+      leftEarlier leftLater leftExact rightEarlier rightLater rightExact premises unique leftActor rightActor
+      (MkFiber (beginObservedComponent leftSeen) (beginObservedParent leftSeen) False (beginObservedTable leftSeen) (Inactive Nothing))
+      (MkFiber (beginObservedComponent rightSeen) (beginObservedParent rightSeen) False (beginObservedTable rightSeen) (Inactive Nothing))
+      leftNow rightNow (beginObservedFound leftSeen) (beginObservedFound rightSeen) leftFound rightFound Refl
+      (alignedTraceWellFormedEnd nameEq keyEq baseEarlier
+        (fst (alignedAppendSplit baseEarlier baseLater
+          (replace {p = AlignedTransitions name key world error value nameEq keyEq} (sym baseExact) (replayAligned premises))))
+        (replayInitialWellFormed premises))
+      (beginObservedView rightSeen) (beginObservedResolved rightSeen)
