@@ -43,3 +43,24 @@ export
    providerIn {name} {key} {value} {world} {error} @{nameEq} @{keyEq} wanted (Bind current fiber :: right))
 o19ProviderHeadObserved nameEq keyEq wanted current fiber left right False exact tailSame = rewrite exact in tailSame
 o19ProviderHeadObserved nameEq keyEq wanted current fiber left right True exact tailSame = rewrite exact in Refl
+
+
+||| E4 consumes the independently checked observed-Boolean head boundary.
+export
+0 o19ProviderReplaceHeadObserved :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (wanted : key) ->
+  (actor, current : name) -> (old, next : Fiber name key value world error) ->
+  (rest : List (Binding name (FiberAt name key value world error))) ->
+  (decision : Dec (actor = current)) -> (decEq @{nameEq} actor current = decision) ->
+  (providerCandidate @{keyEq} wanted next = False) ->
+  ((actor = current) -> providerCandidate @{keyEq} wanted old = False) ->
+  (providerIn {name} {key} {value} {world} {error} @{nameEq} @{keyEq} wanted (replaceEntries @{nameEq} actor next rest) = providerIn {name} {key} {value} {world} {error} @{nameEq} @{keyEq} wanted rest) ->
+  (providerIn {name} {key} {value} {world} {error} @{nameEq} @{keyEq} wanted (replaceEntries @{nameEq} actor next (Bind current old :: rest)) =
+   providerIn {name} {key} {value} {world} {error} @{nameEq} @{keyEq} wanted (Bind current old :: rest))
+o19ProviderReplaceHeadObserved nameEq keyEq wanted actor _ old next rest (Yes Refl) exact nextFalse oldFalse tailSame =
+  rewrite exact in rewrite nextFalse in rewrite oldFalse Refl in Refl
+o19ProviderReplaceHeadObserved nameEq keyEq wanted actor current old next rest (No distinct) exact nextFalse oldFalse tailSame =
+  rewrite exact in o19ProviderHeadObserved nameEq keyEq wanted current old
+    (replaceEntries @{nameEq} actor next rest) rest
+    (isActive (fiberLifecycle old) && memberKey @{keyEq} wanted (ownedValues (fiberTable old))) Refl tailSame
