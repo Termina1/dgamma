@@ -172,3 +172,53 @@ D slots consumed,2 retained; C1/8 remains the sole in-flight-before-redirect C
 helper. Full Cartesian columns/origins/product/coverage/ranges/endpoint remain
 open and O19 body0. All5 holes/frozen surfaces untouched. Rollback fresh check
 and frozen audit precede the mandatory decision gate.
+
+## D representation ruling and cap —15 retained/16 slots
+
+Supervisor explicitly ratified D3's rollback fd738e17 and approved D4 typed
+four-constructor ACTUAL pair observations, one single-observation helper per
+orientation, total producer as projection, not nested Either/DPair elimination.
+D4–D9 all PASS1 (~4.15s): the representation cost wall was genuinely avoided.
+A second boundary was identified before editing: AdjacentSwapOrientationEvidence
+requires adjacent endpoints, but the source row's left/right nodes are still
+SEPARATED before tail bubbling. Supervisor explicitly approved D10 flat SOURCE
+observations with independent endpoints and producer-owned label transport to
+D4's actual adjacent observations. No third specification gap is bypassed.
+
+| Unit | Commit | Result | Attempt |
+|---|---|---|---|
+| D1 | 83fd6820 | Strong actual mixed-row + residual source-word output | PASS1 |
+| D2 | 8d1f7085 | Simultaneous explicit node/row/word construction | PASS3 |
+| D3 | none | Nested dispatcher pre-diagnostic stalls; exact rollback/gate | exhausted3/3 |
+| D4 | 5ec06064 | Typed actual pair observation, one constructor/orientation | PASS1 |
+| D5 | b21a7d30 | Single-observation A/A guard+diamond+sealed replay | PASS1 |
+| D6 | e7ae5bf0 | Single-observation O/A guard+diamond+sealed replay | PASS1 |
+| D7 | 97c6583b | Single-observation A/O actual replay | PASS1 |
+| D8 | f80624a1 | Single-observation generated O/O actual replay | PASS1 |
+| D9 | 32ce1d21 | Total actual producer as flat typed-observation projection | PASS1 |
+| D10 | 2d8f7b38 | Flat separated-source pair values/labels/licensing observation | PASS1 |
+| D11 | 2766b159 | Paper branch transport by actual action/tag equations | PASS1 |
+| D12 | e939dca5 | Project source observation onto actual reached right node | PASS1 |
+| D13 | cadf6f7c | Explicit reached observation -> actual simultaneous node/word row | PASS1 |
+| D14 | 9a15d034 | Produce actual reached observation from same previous row labels | PASS1 |
+| D15 | c9579da3 | Arbitrary mixed word-row induction; all same-chain fields simultaneous | PASS1 |
+| D16 | 25f6270e | Structural action-word length equals actual trace count | PASS1 |
+
+D15's source classifier carries ONLY flat source values/action/tag/owner/
+licensing data. The actual reached guard, orientation, diamond, sealed suffix
+replay, full current bundle, uniqueness, finite derivation, exact row count AND
+residual word are all produced. Intermediate pair observations are passed as
+ordinary arguments to explicit consumers, never computed-existential cases.
+The zero-row's Refl sees its direct MkO19MixedRow/MkO19ReachedCursor/Done data,
+not a posthoc scalar observer of an independently run nested builder.
+
+Still a ROW result. Action words alone do not identify repeated LAdvance
+occurrences, so no exact original ordinal plan is claimed. Cartesian column
+iteration, cut extraction/reached source-class transfer, exact source-pair
+origins, product count/nonempty complete/unique coverage, actual installed
+ranges/block decomposition/origin update, and same-chain endpoint/full-bundle/
+external assembly remain OPEN. No2x2 end-to-end Cartesian fixture. D16 cap is
+consumed; only one same-seam exhaustion. No O19/O20/O21 body attempt or closure.
+C remains1/8 (in-flight before the earlier redirect), eligible to resume only
+under the supervisor's post-D timing rule. D cap at04:15 leaves>120min before
+06:17 no-new-attempt guard; final validation/gate still reserved by06:42.
