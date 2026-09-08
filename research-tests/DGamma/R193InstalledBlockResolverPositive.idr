@@ -34,3 +34,7 @@ r193FrameBefore = fromMaybe initialSystem (do
 public export
 r193FrameStart : SystemState Nat ToyKey ToyValue ToyRuntime String
 r193FrameStart = fromMaybe r193FrameBefore (applyTagged LBeginTag (LBegin 2) r193FrameBefore)
+
+public export
+r193FrameChild : SystemState Nat ToyKey ToyValue ToyRuntime String
+r193FrameChild = fromMaybe r193FrameStart (applyTagged OInsertTag (OInsert 3 (ChildOf 2) emptyConsumerComponent) r193FrameStart)
