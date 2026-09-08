@@ -1269,3 +1269,11 @@ export
   Not (Elem left (right :: trailing)) -> Not (Elem right trailing) -> Not (Elem right (left :: trailing))
 o19SwapTailAbsent absentLeft absentRight Here = absentLeft Here
 o19SwapTailAbsent absentLeft absentRight (There member) = absentRight member
+
+||| A transposed unique pair remains unique, without a new distinctness axiom.
+export
+0 o19SwapTailUnique : {name : Type} -> {left, right : name} -> {trailing : List name} ->
+  UniqueKeys (left :: right :: trailing) -> UniqueKeys (right :: left :: trailing)
+o19SwapTailUnique (UniqueCons absentLeft (UniqueCons absentRight unique)) =
+  UniqueCons (o19SwapTailAbsent absentLeft absentRight)
+    (UniqueCons (\member => absentLeft (There member)) unique)
