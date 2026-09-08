@@ -214,3 +214,24 @@ o19OriginalBlockNoUnload nameEq keyEq selected source block =
           (replace {p = NoParentUnload selected}
             (currentBirthTraceAppendEmpty name key world error value (traceAfterBlock block))
             (o19NoLifecyclePrependNoUnload selected (traceAfterBlock block) NoTransitions (noLaterLifecycle block) NoParentUnloadEnd)))))
+
+||| An explicit ACTUAL AdvanceStructure leaves exactly Iter and Finish when
+||| the reached cut cannot be Unloading. The rejected Divert/Raise branches
+||| use their genuine endpoint fact; the callback payload is never recast.
+export
+0 o19PaperAdvanceNoUnloading :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (before, afterState : SystemState name key value world error) -> (tag : RuleTag) ->
+  (checked : checkedApplyAction @{nameEq} @{keyEq} (LAdvance selected) before = Just (tag, afterState)) ->
+  Not (unloadingEndpoint {name} {key} {value} {world} {error} @{nameEq} selected afterState = True) ->
+  AdvanceStructure name key world error value nameEq keyEq selected tag before afterState ->
+  PaperActivationStep (Fired {before} {afterState} nameEq keyEq (LAdvance selected) tag checked)
+o19PaperAdvanceNoUnloading nameEq keyEq selected before afterState _ checked excluded
+  (IterAdvance fiber found payload reloading) = PaperIterStep Refl Refl
+o19PaperAdvanceNoUnloading nameEq keyEq selected before afterState _ checked excluded
+  (FinishAdvance fiber found payload active) = PaperFinishStep Refl Refl
+o19PaperAdvanceNoUnloading nameEq keyEq selected before afterState _ checked excluded
+  (DivertAdvance unloading) = void (excluded unloading)
+o19PaperAdvanceNoUnloading nameEq keyEq selected before afterState _ checked excluded
+  (RaiseAdvance unloading) = void (excluded unloading)
