@@ -65,3 +65,15 @@ export
 childRetireBeforeForeign nameEq keyEq child fiber before afterState action tag checked distinct found valid =
   childRetireAtFound nameEq keyEq child fiber before
     (trans (sym (childForeignLookupFrame nameEq keyEq child action tag checked distinct)) found) valid
+
+||| The type of the producer-owned checked equation at a physical trace
+||| ordinal; out-of-range observations carry only Unit, never an edge.
+public export
+0 NativeCheckedAt :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {0 first, finalState : SystemState name key value world error} ->
+  Nat -> Transitions first finalState -> Type
+NativeCheckedAt position NoTransitions = Unit
+NativeCheckedAt Z (MoreTransitions (Fired {before} {afterState} nameEq keyEq action tag checked) rest) =
+  checkedApplyAction @{nameEq} @{keyEq} action before = Just (tag, afterState)
+NativeCheckedAt (S position) (MoreTransitions step rest) = NativeCheckedAt position rest
