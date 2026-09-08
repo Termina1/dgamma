@@ -375,3 +375,27 @@ o19AdvanceBeforeObservedInsertPlan nameEq keyEq actor child parent component amb
       (\deps => Refl)
       (\deps => resolveViewInactiveInsert {name} {key} {value} {world} {error} nameEq keyEq deps child component parent fibers absent)
       wellFormed
+
+||| Right Iter/Finish early applicability across an ACTUAL insertion, from
+||| the two original checked edges, pair independence and source preservation.
+||| No early edge, map-domain, callback, target or resolver observation input.
+export
+0 o19AdvanceBeforeCheckedInsertion :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor, child : name) ->
+  (parent : Parent name) -> (component : Component key value world error) ->
+  (first, middle, finalState : SystemState name key value world error) -> (leftTag, rightTag : RuleTag) ->
+  (leftChecked : checkedApplyAction @{nameEq} @{keyEq} (OInsert child parent component) first = Just (leftTag, middle)) ->
+  (rightChecked : checkedApplyAction @{nameEq} @{keyEq} (LAdvance actor) middle = Just (rightTag, finalState)) ->
+  Either (rightTag = LIterTag) (rightTag = LFinishTag) -> Not (child = actor) ->
+  TraceIndependent name key world error value keyEq
+    (MoreTransitions (Fired {before = first} {afterState = middle} nameEq keyEq (OInsert child parent component) leftTag leftChecked)
+      (MoreTransitions (Fired {before = middle} {afterState = finalState} nameEq keyEq (LAdvance actor) rightTag rightChecked) NoTransitions)) ->
+  (registryWellFormed {name} {key} {value} {world} {error} @{nameEq} @{keyEq} first = True) ->
+  CheckedEarlyApplication name key world error value nameEq keyEq first (LAdvance actor) rightTag
+o19AdvanceBeforeCheckedInsertion nameEq keyEq actor child parent component (MkSystemState ambient fibers) middle finalState leftTag rightTag
+  leftChecked rightChecked rightPaper distinct independent wellFormed =
+    o19AdvanceBeforeObservedInsertPlan nameEq keyEq actor child parent component ambient fibers middle finalState leftTag rightTag
+      leftChecked rightChecked rightPaper distinct independent wellFormed
+      (foreignInsertPlanView nameEq keyEq child parent component ambient fibers leftTag middle
+        (checkedActionProjects nameEq keyEq (OInsert child parent component) (MkSystemState ambient fibers) middle leftTag leftChecked))
