@@ -123,3 +123,46 @@ r191RetireInsideParent = MkLocatedActionOccurrence
   (Fired {before = r191ChildGapState 6} {afterState = exchangeMiddle r191BeginRetireExchange}
     r45NameEq r45KeyEq (ORetire 3) ORetireTag (exchangeEarlyChecked r191BeginRetireExchange))
   NoTransitions Refl Refl
+
+||| All three actual extended blocks in the relocated trace. Actor0 includes
+||| Retire3; actor1 starts immediately afterwards; actor2 reuses its old body.
+||| This is block inhabitation, not full canonical decomposition/placement.
+public export
+0 r191RelocatedBlocks : (actor : Nat) -> Elem actor [0, 1, 2] ->
+  LocatedOpenEpisodeBlockExtended Nat R45Key Unit String R45Value
+    r45NameEq r45KeyEq actor r191RelocatedTrace
+r191RelocatedBlocks Z member = r191RelocatedParentBlock
+r191RelocatedBlocks (S Z) member = MkLocatedOpenEpisodeBlockExtended
+  (exchangeMiddle r191BeginRetireExchange) (exchangeMiddle r191FinishRetireExchange) (r191ChildGapState 9)
+  (appendTransitions (extendedBefore r191RelocatedParentBlock)
+    (MoreTransitions (beginTransition (extendedOpening r191RelocatedParentBlock))
+      (extendedBody r191RelocatedParentBlock)))
+  (MkBeginStep (exchangeLaterChecked r191BeginRetireExchange))
+  (MoreTransitions (Fired {before = exchangeMiddle r191FinishRetireExchange} {afterState = r191ChildGapState 9}
+      r45NameEq r45KeyEq (LAdvance 1) LFinishTag (exchangeLaterChecked r191FinishRetireExchange)) NoTransitions)
+  (InstalledStep (LAdvance 1) LFinishTag (exchangeLaterChecked r191FinishRetireExchange) _ Refl (InstalledEnd Refl))
+  (ExtendedLifecycleStep _ _ Refl Refl ExtendedLifecycleEnd)
+  (MoreTransitions (beginTransition (blockOpening (r191ChildGapBlocks 2 (There (There Here)))))
+    (blockBody (r191ChildGapBlocks 2 (There (There Here)))))
+  (NoLifecycleByStep _ _ (\life => case life of Refl impossible) (NoLifecycleByStep _ _ (\life => case life of Refl impossible) (NoLifecycleByStep _ _ (\life => case life of Refl impossible) (NoLifecycleByStep _ _ (\life, same => case same of Refl impossible) (NoLifecycleByStep _ _ (\life => case life of Refl impossible) (NoLifecycleByStep _ _ (\life, same => case same of Refl impossible) (NoLifecycleByStep _ _ (\life => case life of Refl impossible) NoLifecycleByEnd)))))))
+  (NoLifecycleByStep _ _ (\life, same => case same of Refl impossible) (NoLifecycleByStep _ _ (\life, same => case same of Refl impossible) NoLifecycleByEnd))
+  (blockActiveAtFinal (r191ChildGapBlocks 1 (There Here))) Refl
+r191RelocatedBlocks (S (S Z)) member = MkLocatedOpenEpisodeBlockExtended
+  (r191ChildGapState 9) (r191ChildGapState 10) (r191ChildGapState 11)
+  (appendTransitions (appendTransitions (extendedBefore r191RelocatedParentBlock)
+    (MoreTransitions (beginTransition (extendedOpening r191RelocatedParentBlock))
+      (extendedBody r191RelocatedParentBlock))) (MoreTransitions (Fired {before = exchangeMiddle r191BeginRetireExchange} {afterState = exchangeMiddle r191FinishRetireExchange}
+      r45NameEq r45KeyEq (LBegin 1) LBeginTag (exchangeLaterChecked r191BeginRetireExchange)) (MoreTransitions (Fired {before = exchangeMiddle r191FinishRetireExchange} {afterState = r191ChildGapState 9}
+      r45NameEq r45KeyEq (LAdvance 1) LFinishTag (exchangeLaterChecked r191FinishRetireExchange)) NoTransitions)))
+  (blockOpening (r191ChildGapBlocks 2 (There (There Here))))
+  (blockBody (r191ChildGapBlocks 2 (There (There Here))))
+  (blockBodyInstalled (r191ChildGapBlocks 2 (There (There Here))))
+  (actorLifecycleOnlyIntoExtended r45NameEq (blockActorOnly (r191ChildGapBlocks 2 (There (There Here)))))
+  NoTransitions
+  (NoLifecycleByStep _ _ (\life => case life of Refl impossible) (NoLifecycleByStep _ _ (\life => case life of Refl impossible) (NoLifecycleByStep _ _ (\life => case life of Refl impossible) (NoLifecycleByStep _ _ (\life, same => case same of Refl impossible) (NoLifecycleByStep _ _ (\life => case life of Refl impossible) (NoLifecycleByStep _ _ (\life, same => case same of Refl impossible) (NoLifecycleByStep _ _ (\life => case life of Refl impossible) (NoLifecycleByStep _ _ (\life, same => case same of Refl impossible) (NoLifecycleByStep _ _ (\life, same => case same of Refl impossible) NoLifecycleByEnd)))))))))
+  NoLifecycleByEnd (blockActiveAtFinal (r191ChildGapBlocks 2 (There (There Here)))) Refl
+r191RelocatedBlocks (S (S (S later))) member = case member of
+  Here impossible
+  There Here impossible
+  There (There Here) impossible
+  There (There (There absent)) => absurd absent
