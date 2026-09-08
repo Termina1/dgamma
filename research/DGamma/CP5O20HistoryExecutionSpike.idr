@@ -4,11 +4,13 @@ import DGamma.Calculus
 import DGamma.Coeffects
 import DGamma.Metatheory
 import DGamma.CP3
+import DGamma.CP4DeletionInactiveInvariant
 import DGamma.CP4DeletionSelectedForeignLifecycleAnchorOpen
 import DGamma.CP5O20HistoryNameTransportSpike
 import DGamma.CP5O20SharedBeginAdapterSpike
 import DGamma.CP5O20PairedAdvanceSpike
 import DGamma.CP5ConfluenceRenamingCompositionSpike
+import Data.Maybe
 import Decidable.Equality
 
 %default total
@@ -76,3 +78,27 @@ o20HistoryRetireCut {name} {key} {world} {error} {value} nameEq keyEq mapping ac
       (o20PairedObservedRetireCut {name} {key} {world} {error} {value} nameEq keyEq renaming actor
         leftWorld rightWorld leftRegistry rightRegistry leftOld rightOld leftFound rightFound leftChecked rightChecked runtime)
       forward backward
+
+||| Exact current-generation insertion preserves a pointwise name/stamp map.
+||| This generic lookup lemma is used in BOTH directions; its new-owner clause
+||| is an actual generation-match equation, not an endpoint relation oracle.
+export
+0 o20HistoryPutCompatibility :
+  {name : Type} -> (nameEq : DecEq name) ->
+  (rawTarget : name -> name) -> (stampTarget : RegistrationGeneration name -> name) ->
+  (actor : name) -> (newStamp : RegistrationGeneration name) -> (live : GenerationEnvironment name) ->
+  (rawTarget actor = stampTarget newStamp) ->
+  ((selected : name) -> (stamp : RegistrationGeneration name) ->
+    (lookupCurrentGeneration @{nameEq} selected live = Just stamp) -> (rawTarget selected = stampTarget stamp)) ->
+  (selected : name) -> (stamp : RegistrationGeneration name) ->
+  (lookupCurrentGeneration @{nameEq} selected (putCurrentGeneration @{nameEq} actor newStamp live) = Just stamp) ->
+  (rawTarget selected = stampTarget stamp)
+o20HistoryPutCompatibility nameEq rawTarget stampTarget actor newStamp live matched previous selected stamp found =
+  case decEq @{nameEq} selected actor of
+    Yes same => trans (cong rawTarget same)
+      (trans matched (cong stampTarget (justInjective
+        (trans (sym (lookupPutCurrentSelf nameEq actor newStamp live))
+          (trans (cong (\query => lookupCurrentGeneration @{nameEq} query
+            (putCurrentGeneration @{nameEq} actor newStamp live)) (sym same)) found)))))
+    No different => previous selected stamp
+      (trans (sym (lookupPutCurrentOther nameEq selected actor different newStamp live)) found)
