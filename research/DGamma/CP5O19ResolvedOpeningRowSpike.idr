@@ -464,3 +464,40 @@ o19BubbleResolvedInsertionRow {before} nameEq keyEq protocol actor component par
           (checkedActionProjects nameEq keyEq (OInsert child childParent childComponent) before middle tag checked)))
       Refl childSafe parentSafe
       (o19BeginAtResolvedState nameEq keyEq actor before component parent table resolved found resolution wellFormed)
+
+
+||| Initial-guard specialization with the actual Begin observation EXPLICIT.
+||| Source-prefix well-formedness is derived from the same full replay bundle.
+export
+0 o19BubbleObservedBeginRow :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) -> (actor : name) ->
+  {initial, sourceFinal, before, rightBefore, rightAfter : SystemState name key value world error} ->
+  (source : Transitions initial sourceFinal) -> (earlier : Transitions initial before) ->
+  (spine : Transitions before rightBefore) -> (opening : BeginStep nameEq keyEq actor rightBefore rightAfter) ->
+  (later : Transitions rightAfter sourceFinal) ->
+  (appendTransitions earlier (appendTransitions spine (MoreTransitions (beginTransition opening) later)) = source) ->
+  ReplayInvariantBundle name key world error value protocol nameEq keyEq source ->
+  (0 unique : UniqueRawNameInsertions name key world error value nameEq keyEq source) ->
+  (early : CheckedEarlyApplication name key world error value nameEq keyEq before (LBegin actor) LBeginTag) ->
+  (initialObservation : O20BeginObservation name key world error value nameEq keyEq actor before
+    (earlyApplicationFinal early)) ->
+  (observations : O19ObservedInsertions name key world error value nameEq keyEq actor
+    (dependencies (componentDependencies (beginObservedComponent initialObservation))) spine) ->
+  O19ActivationRow name key world error value protocol nameEq keyEq source earlier
+    (beginTransition opening) (transitionCount spine)
+o19BubbleObservedBeginRow {name} {key} {world} {error} {value}
+  nameEq keyEq protocol actor source earlier spine opening later decomposition premises unique
+  early initialObservation observations =
+    o19BubbleResolvedInsertionRow nameEq keyEq protocol actor
+      (beginObservedComponent initialObservation) (beginObservedParent initialObservation)
+      (beginObservedTable initialObservation) (beginObservedView initialObservation)
+      source earlier spine opening later decomposition premises unique observations
+      (beginObservedFound initialObservation) (beginObservedResolved initialObservation)
+      (alignedTraceWellFormedEnd nameEq keyEq earlier
+        (Builtin.fst (alignedAppendSplit earlier
+          (appendTransitions spine (MoreTransitions (beginTransition opening) later))
+          (replace {p = AlignedTransitions name key world error value nameEq keyEq}
+            (sym decomposition) (replayAligned premises))))
+        (replayInitialWellFormed premises))
