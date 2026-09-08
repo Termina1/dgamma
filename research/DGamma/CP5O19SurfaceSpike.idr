@@ -536,3 +536,60 @@ foldBlockCrossingOriginPlan
         (rightNodeSourceBlockLabel prefixOccurrences rightBlock _ result rightOrigin)
         restPositions (foldBlockCrossingOriginPlan restPlan)
 
+||| A genuine whole-block swap is nonempty and covers the exact Cartesian set
+||| of source transition positions once.  Completeness, sound bounds, uniqueness,
+||| and node count make the selected-block indices semantically non-phantom.
+public export
+record WholeBlockSwapDerivation
+  (name, key, world, error : Type) (value : key -> Type)
+  (protocol : RegistrationProtocol key value world error)
+  (nameEq : DecEq name) (keyEq : DecEq key)
+  {sourceOrder, targetOrder : List name}
+  (orderSwap : AdjacentActorOrderSwap name sourceOrder targetOrder)
+  {initial, sourceFinal, targetFinal : SystemState name key value world error}
+  (sourceTrace : Transitions initial sourceFinal)
+  (sourceBlocks : ActorBlockDecomposition name key world error value nameEq keyEq
+    sourceOrder sourceTrace)
+  (sourcePremises : ReplayInvariantBundle name key world error value protocol
+    nameEq keyEq sourceTrace)
+  (safety : AdjacentActorSwapSafety name key world error value protocol nameEq
+    keyEq orderSwap sourceTrace sourceBlocks sourcePremises)
+  (targetTrace : Transitions initial targetFinal) where
+  constructor MkWholeBlockSwapDerivation
+  nonEmptyBlockDerivation : NonEmptyFiniteAdjacentSwapDerivation name key world
+    error value protocol nameEq keyEq sourceTrace targetTrace
+  crossedSourcePositions : List (Nat, Nat)
+  0 blockCrossingPlan : BlockCrossingOriginPlan name key world error value
+    protocol nameEq keyEq sourceTrace
+    (decomposedBlock sourceBlocks (actorLeft orderSwap)
+      (safetyLeftInOrder safety))
+    (decomposedBlock sourceBlocks (actorRight orderSwap)
+      (safetyRightInOrder safety))
+    (identityActionRegistrationReplayCorrespondence sourceTrace)
+    (nonEmptyToFiniteAdjacentSwapDerivation nonEmptyBlockDerivation)
+    crossedSourcePositions
+  0 everyBlockPairCrossed : (leftPosition, rightPosition : Nat) ->
+    LTE (S leftPosition)
+      (actorBlockTransitionCount (decomposedBlock sourceBlocks
+        (actorLeft orderSwap) (safetyLeftInOrder safety))) ->
+    LTE (S rightPosition)
+      (actorBlockTransitionCount (decomposedBlock sourceBlocks
+        (actorRight orderSwap) (safetyRightInOrder safety))) ->
+    Elem (leftPosition, rightPosition) crossedSourcePositions
+  0 everyCrossingUsesSelectedBlocks : (leftPosition, rightPosition : Nat) ->
+    Elem (leftPosition, rightPosition) crossedSourcePositions ->
+    ( LTE (S leftPosition)
+        (actorBlockTransitionCount (decomposedBlock sourceBlocks
+          (actorLeft orderSwap) (safetyLeftInOrder safety)))
+    , LTE (S rightPosition)
+        (actorBlockTransitionCount (decomposedBlock sourceBlocks
+          (actorRight orderSwap) (safetyRightInOrder safety)))
+    )
+  0 blockCrossingPositionsUnique : UniqueKeys crossedSourcePositions
+  0 blockCrossingNodeCountExact :
+    nonEmptyAdjacentSwapNodeCount nonEmptyBlockDerivation =
+      actorBlockTransitionCount (decomposedBlock sourceBlocks
+        (actorLeft orderSwap) (safetyLeftInOrder safety)) *
+      actorBlockTransitionCount (decomposedBlock sourceBlocks
+        (actorRight orderSwap) (safetyRightInOrder safety))
+
