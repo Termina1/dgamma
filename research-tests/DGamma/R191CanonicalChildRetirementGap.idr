@@ -5,10 +5,18 @@ import DGamma.Calculus
 import DGamma.Coeffects
 import DGamma.Metatheory
 import DGamma.CP3
+import DGamma.CP3Support
+import DGamma.CP4Support
+import DGamma.CP4SupportSolution
+import DGamma.CP4SupportQuiescence
+import DGamma.CP4RecoveryEffectRespect
+import DGamma.CP4DeletionSelectedForeignLifecycleAnchorEndpoint
 import DGamma.CP5O19SurfaceSpike
 import DGamma.CP5ConfluenceLocalDiamondSpike
 import DGamma.CP5ConfluenceCanonicalSortSpike
 import DGamma.R45BareDiamondDisciplineCounterexamplePositive
+import DGamma.R172O17OpenParentRootReuseCandidate
+import DGamma.R182O19RevisedSafetyPositive
 import Data.List.Elem
 import Data.Maybe
 import Data.Nat
@@ -143,3 +151,32 @@ r191ChildGapDiscipline =
                   RegistrationDisciplineStep _ _ () (
                     RegistrationDisciplineStep _ _ () (
                       RegistrationDisciplineStep _ _ () (RegistrationDisciplineEnd)))))))))))
+
+||| All fifteen actual replay premises are inhabited, including discipline,
+||| totality, genuine relational independence, support and quiescence. Closed
+||| empty-key/Unit algebra is reused; no O17 theorem or O21 withdrawal is called.
+public export
+0 r191ChildGapBundle : ReplayInvariantBundle Nat R45Key Unit String R45Value
+  r45Protocol r45NameEq r45KeyEq r191ChildGapTrace
+r191ChildGapBundle = MkReplayInvariantBundle
+  r191ChildGapAligned r191ChildGapDiscipline Refl Refl Refl Refl Refl
+  (TraceComponentsTotalStep _ _ (r172ReuseAnyTransitionTotal (Fired {before = r191ChildGapState 0} {afterState = r191ChildGapState 1} r45NameEq r45KeyEq (OInsert 0 Root r45Parent) OInsertTag Refl)) (TraceComponentsTotalStep _ _ (r172ReuseAnyTransitionTotal (Fired {before = r191ChildGapState 1} {afterState = r191ChildGapState 2} r45NameEq r45KeyEq (OInsert 1 Root r45Child) OInsertTag Refl)) (TraceComponentsTotalStep _ _ (r172ReuseAnyTransitionTotal (Fired {before = r191ChildGapState 2} {afterState = r191ChildGapState 3} r45NameEq r45KeyEq (OInsert 2 Root r45Child) OInsertTag Refl)) (TraceComponentsTotalStep _ _ (r172ReuseAnyTransitionTotal (Fired {before = r191ChildGapState 3} {afterState = r191ChildGapState 4} r45NameEq r45KeyEq (LBegin 0) LBeginTag Refl)) (TraceComponentsTotalStep _ _ (r172ReuseAnyTransitionTotal (Fired {before = r191ChildGapState 4} {afterState = r191ChildGapState 5} r45NameEq r45KeyEq (OInsert 3 (ChildOf 0) r45Child) OInsertTag Refl)) (TraceComponentsTotalStep _ _ (r172ReuseAnyTransitionTotal (Fired {before = r191ChildGapState 5} {afterState = r191ChildGapState 6} r45NameEq r45KeyEq (LAdvance 0) LFinishTag Refl)) (TraceComponentsTotalStep _ _ (r172ReuseAnyTransitionTotal (Fired {before = r191ChildGapState 6} {afterState = r191ChildGapState 7} r45NameEq r45KeyEq (LBegin 1) LBeginTag Refl)) (TraceComponentsTotalStep _ _ (r172ReuseAnyTransitionTotal (Fired {before = r191ChildGapState 7} {afterState = r191ChildGapState 8} r45NameEq r45KeyEq (LAdvance 1) LFinishTag Refl)) (TraceComponentsTotalStep _ _ (r172ReuseAnyTransitionTotal (Fired {before = r191ChildGapState 8} {afterState = r191ChildGapState 9} r45NameEq r45KeyEq (ORetire 3) ORetireTag Refl)) (TraceComponentsTotalStep _ _ (r172ReuseAnyTransitionTotal (Fired {before = r191ChildGapState 9} {afterState = r191ChildGapState 10} r45NameEq r45KeyEq (LBegin 2) LBeginTag Refl)) (TraceComponentsTotalStep _ _ (r172ReuseAnyTransitionTotal (Fired {before = r191ChildGapState 10} {afterState = r191ChildGapState 11} r45NameEq r45KeyEq (LAdvance 2) LFinishTag Refl)) TraceComponentsTotalEnd)))))))))))
+  (MkTraceIndependent
+    (\left, right, distinct, leftT, rightT => r172ReuseMapsCommute
+      (runTraceEffectTransformation leftT) (runTraceEffectTransformation rightT)
+      (r182IndependentTransformationRespects left leftT)
+      (r182IndependentTransformationRespects right rightT))
+    (\left, right, distinct, stage, foreign, origin =>
+      r182IndependentIteratorObserved left stage (runTraceEffectTransformation foreign)
+        origin (runTraceEffectTransformation foreign origin) Refl))
+  (registrationDisciplineProvenance r45Protocol r45NameEq r191ChildGapTrace r191ChildGapDiscipline)
+  (reachedRegistryProtocolRanked r45Protocol r45NameEq r45KeyEq (MkReachedFromEmpty (r191ChildGapState 0) r191ChildGapTrace r191ChildGapAligned Refl Refl) (registrationDisciplineProvenance r45Protocol r45NameEq r191ChildGapTrace r191ChildGapDiscipline))
+  (reachedRegistryParentRanksIncrease r45Protocol r45NameEq r45KeyEq (MkReachedFromEmpty (r191ChildGapState 0) r191ChildGapTrace r191ChildGapAligned Refl Refl) (registrationDisciplineProvenance r45Protocol r45NameEq r191ChildGapTrace r191ChildGapDiscipline))
+  (disciplinedEndpointPrecedenceAcyclic r45Protocol r45NameEq r45KeyEq (r191ChildGapState 11)
+    (MkReachedFromEmpty (r191ChildGapState 0) r191ChildGapTrace r191ChildGapAligned Refl Refl) r191ChildGapDiscipline)
+  (supportCombinedWellFounded r45Protocol r45NameEq (r191ChildGapState 11)
+    (reachedRegistryProtocolRanked r45Protocol r45NameEq r45KeyEq (MkReachedFromEmpty (r191ChildGapState 0) r191ChildGapTrace r191ChildGapAligned Refl Refl) (registrationDisciplineProvenance r45Protocol r45NameEq r191ChildGapTrace r191ChildGapDiscipline))
+    (reachedRegistryParentRanksIncrease r45Protocol r45NameEq r45KeyEq (MkReachedFromEmpty (r191ChildGapState 0) r191ChildGapTrace r191ChildGapAligned Refl Refl) (registrationDisciplineProvenance r45Protocol r45NameEq r191ChildGapTrace r191ChildGapDiscipline)))
+  (deletionPremisesGiveSupportMatchesActive r45Protocol r45NameEq r45KeyEq
+    (r191ChildGapState 0) (r191ChildGapState 11) r191ChildGapTrace
+    r191ChildGapAligned r191ChildGapDiscipline Refl Refl Refl Refl (TraceComponentsTotalStep _ _ (r172ReuseAnyTransitionTotal (Fired {before = r191ChildGapState 0} {afterState = r191ChildGapState 1} r45NameEq r45KeyEq (OInsert 0 Root r45Parent) OInsertTag Refl)) (TraceComponentsTotalStep _ _ (r172ReuseAnyTransitionTotal (Fired {before = r191ChildGapState 1} {afterState = r191ChildGapState 2} r45NameEq r45KeyEq (OInsert 1 Root r45Child) OInsertTag Refl)) (TraceComponentsTotalStep _ _ (r172ReuseAnyTransitionTotal (Fired {before = r191ChildGapState 2} {afterState = r191ChildGapState 3} r45NameEq r45KeyEq (OInsert 2 Root r45Child) OInsertTag Refl)) (TraceComponentsTotalStep _ _ (r172ReuseAnyTransitionTotal (Fired {before = r191ChildGapState 3} {afterState = r191ChildGapState 4} r45NameEq r45KeyEq (LBegin 0) LBeginTag Refl)) (TraceComponentsTotalStep _ _ (r172ReuseAnyTransitionTotal (Fired {before = r191ChildGapState 4} {afterState = r191ChildGapState 5} r45NameEq r45KeyEq (OInsert 3 (ChildOf 0) r45Child) OInsertTag Refl)) (TraceComponentsTotalStep _ _ (r172ReuseAnyTransitionTotal (Fired {before = r191ChildGapState 5} {afterState = r191ChildGapState 6} r45NameEq r45KeyEq (LAdvance 0) LFinishTag Refl)) (TraceComponentsTotalStep _ _ (r172ReuseAnyTransitionTotal (Fired {before = r191ChildGapState 6} {afterState = r191ChildGapState 7} r45NameEq r45KeyEq (LBegin 1) LBeginTag Refl)) (TraceComponentsTotalStep _ _ (r172ReuseAnyTransitionTotal (Fired {before = r191ChildGapState 7} {afterState = r191ChildGapState 8} r45NameEq r45KeyEq (LAdvance 1) LFinishTag Refl)) (TraceComponentsTotalStep _ _ (r172ReuseAnyTransitionTotal (Fired {before = r191ChildGapState 8} {afterState = r191ChildGapState 9} r45NameEq r45KeyEq (ORetire 3) ORetireTag Refl)) (TraceComponentsTotalStep _ _ (r172ReuseAnyTransitionTotal (Fired {before = r191ChildGapState 9} {afterState = r191ChildGapState 10} r45NameEq r45KeyEq (LBegin 2) LBeginTag Refl)) (TraceComponentsTotalStep _ _ (r172ReuseAnyTransitionTotal (Fired {before = r191ChildGapState 10} {afterState = r191ChildGapState 11} r45NameEq r45KeyEq (LAdvance 2) LFinishTag Refl)) TraceComponentsTotalEnd))))))))))))
