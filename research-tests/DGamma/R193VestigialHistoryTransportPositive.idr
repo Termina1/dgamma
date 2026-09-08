@@ -41,3 +41,12 @@ r193HistoricalRetire = Fired r45NameEq r45KeyEq (ORetire 0) ORetireTag
   (DGamma.CP4ProgressNoDeadlock.checkedFromRaw r45NameEq r45KeyEq
     (ORetire 0) r178RightFinal r193HistoricalParentRetired ORetireTag
     (checkedTransitionTargetValid r178ChildRetire) Refl)
+
+||| The parent leaves its now-invalid target, retaining its authentic undo.
+public export
+r193HistoricalLeaving : SystemState Nat R45Key R45Value Unit String
+r193HistoricalLeaving = MkSystemState ()
+  (replaceBinding @{r45NameEq} 0
+    (setFiberLifecycle (retireFiber r193HistoricalParentActive)
+      (Unloading (pushLocalUndo @{r45KeyEq} r45Spec id id) EmptyView Nothing))
+    (registry r193HistoricalParentRetired))
