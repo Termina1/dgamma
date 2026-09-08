@@ -767,6 +767,7 @@ Original failed receipts are retained, not relabelled.
 All **52 effective final checks passed** (45 positives, 7 expected negatives),
 including all 13 changed Idris targets, package and all five spikes. This is
 seeded validation, not a cold rebuild. See the [R193 audit](research-tests/O6-R193-GRIND-SHIFT-AUDIT.md)
+[independent verification](research-tests/O6-R193-VERIFICATION.md),
 and [lane2 integration boundary](research-tests/O6-R193-LANE2-INTEGRATION.md).
 Lane2 L2R1 reports 35 checked declarations and 15 final checks at its pinned
 artifact commit; L2R2 remains separately pending, and no source merge occurred.

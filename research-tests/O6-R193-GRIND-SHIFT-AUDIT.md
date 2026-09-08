@@ -343,3 +343,17 @@ uses frozen ActorLifecycleOnly, not the extended Retire/Remove copy.
 No proof-source change afterad77399f; final independent/frozen audits and
 committed evidence follow this documentation checkpoint. No acceptance ruling
 is fabricated.
+
+
+## Final independent/frozen verification PASS
+
+At20fbd8e7, read-only verification authenticated115 source commits and178
+invocation snapshots/logs; all13 changed Idris targets have their own final
+checks, all52 effective final slots match, and no unplanned final invocation
+or third retry exists. All attempts and validation starts meet their cutoffs.
+Frozen audit PASS: production/CP3/LocalDiamond/O19/all protected bodies and
+statements unchanged; census4=1/2/0/0/1;207/207 seeds; no main compiler or
+staged files; tracked tree clean at the audited head. The evidence package
+records this pre-artifact anchor rather than attempting a self-referential
+archive/commit hash. Post-artifact read-only reruns will confirm source identity.
+Owner/reviewer gate remains required.

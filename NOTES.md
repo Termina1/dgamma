@@ -3489,9 +3489,12 @@ and15 final checks; the C9 active-source/preflight incident and unavailable
 early RSS caveats remain explicit. The exact copied-definition inventory and
 remaining B/C debts are in O6-R193-LANE2-INTEGRATION.md. Ongoing L2R2 is not
 certified by that report. No lane2 source was edited or merged, and main
-baseline checks cannot certify research copies. Final independent/frozen
-audits, committed ledger/archive and owner/reviewer ruling remain pending
-at this documentation checkpoint.
+baseline checks cannot certify research copies. Final independent/frozen audits PASS at20fbd8e7: all115 source commits and
+178 invocation snapshots/logs authenticated; all13 changed Idris targets have
+own final checks; production/CP3/LocalDiamond/O19/protected bodies and census
+unchanged,207/207 seeds, no main compiler or staged files. Ledger/archive
+are committed with the R193 verification packet. Owner/reviewer ruling remains
+pending; this is checked local progress, not Theorem73 completion.
 
 Next: produce whole paired history/callback/insertion capital, handle the
 vestigial endpoint remainder, produce the final bridge, and derive actual
