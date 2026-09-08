@@ -43,3 +43,41 @@ export
   transitionCount (appendTransitions left right) = transitionCount left + transitionCount right
 extendedCountAppend NoTransitions right = Refl
 extendedCountAppend (MoreTransitions step rest) right = cong S (extendedCountAppend rest right)
+
+||| If normalization has produced coincident PHYSICAL cut counts, every
+||| BlockBeforeExtended witness has a zero-length gap. The cut-count premise
+||| is explicit: the extended grammar alone does not prove normalization.
+export
+0 zeroGapFromExtendedCutCount :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} -> {earlierName, laterName : name} ->
+  {initial, finalState : SystemState name key value world error} ->
+  {global : Transitions initial finalState} ->
+  (earlier : LocatedOpenEpisodeBlockExtended name key world error value nameEq keyEq earlierName global) ->
+  (later : LocatedOpenEpisodeBlockExtended name key world error value nameEq keyEq laterName global) ->
+  (ordered : BlockBeforeExtended name key world error value nameEq keyEq global earlierName laterName earlier later) ->
+  (0 sameCut : transitionCount
+    (appendTransitions (extendedBefore earlier)
+      (MoreTransitions (beginTransition (extendedOpening earlier)) (extendedBody earlier))) =
+    transitionCount (extendedBefore later)) ->
+  transitionCount (extendedBetweenBlocks ordered) = 0
+zeroGapFromExtendedCutCount earlier later ordered sameCut =
+  sym (plusRightCancel 0 (transitionCount (extendedBetweenBlocks ordered)) 1
+    (plusLeftCancel
+      (transitionCount (appendTransitions (extendedBefore earlier)
+        (MoreTransitions (beginTransition (extendedOpening earlier)) (extendedBody earlier))))
+      1 (transitionCount (extendedBetweenBlocks ordered) + 1)
+      (trans (cong (\count => count + 1) sameCut)
+        (trans (sym (extendedCountAppend (extendedBefore later)
+          (MoreTransitions (beginTransition (extendedOpening later)) NoTransitions)))
+          (trans (cong transitionCount (extendedBlocksOrdered ordered))
+            (trans (extendedCountAppend
+              (appendTransitions (extendedBefore earlier)
+                (MoreTransitions (beginTransition (extendedOpening earlier)) (extendedBody earlier)))
+              (appendTransitions (extendedBetweenBlocks ordered)
+                (MoreTransitions (beginTransition (extendedOpening later)) NoTransitions)))
+              (cong (\count => transitionCount
+                (appendTransitions (extendedBefore earlier)
+                  (MoreTransitions (beginTransition (extendedOpening earlier)) (extendedBody earlier))) + count)
+                (extendedCountAppend (extendedBetweenBlocks ordered)
+                  (MoreTransitions (beginTransition (extendedOpening later)) NoTransitions)))))))))
