@@ -137,3 +137,26 @@ data O19ObservedInsertions :
     O19ObservedInsertions name key world error value nameEq keyEq actor deps
       (MoreTransitions (Fired {before} {afterState = middle} nameEq keyEq
         (OInsert child parent component) tag checked) rest)
+
+
+||| State-observed adapter, retaining the EXPLICIT clean fiber and target.
+export
+0 o19BeginAtResolvedState :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (before : SystemState name key value world error) ->
+  (component : Component key value world error) -> (parent : Parent name) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (resolved : View name (dependencies (componentDependencies component))) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor (registry before) =
+    Just (MkFiber component parent False table (Inactive Nothing))) ->
+  (resolveView {name} {key} {value} {world} {error} @{nameEq} @{keyEq}
+    (dependencies (componentDependencies component)) (registry before) = Just resolved) ->
+  (registryWellFormed {name} {key} {value} {world} {error} @{nameEq} @{keyEq}
+    before = True) ->
+  CheckedEarlyApplication name key world error value nameEq keyEq
+    before (LBegin actor) LBeginTag
+o19BeginAtResolvedState nameEq keyEq actor (MkSystemState ambient source) component parent
+  table resolved found resolution wellFormed =
+    o19BeginAtResolvedView nameEq keyEq actor ambient source component parent table
+      resolved found resolution wellFormed
