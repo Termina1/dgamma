@@ -20,6 +20,8 @@ OUT.mkdir(exist_ok=True)
 unit, path = sys.argv[1:3]
 diagnostic = sys.argv[3] if len(sys.argv) > 3 else None
 symbol = sys.argv[4] if len(sys.argv) > 4 else None
+assert not (OUT/(unit+'.json')).exists(), 'Invocation names are append-only'
+assert datetime.datetime.now(datetime.timezone.utc) < datetime.datetime(2026,9,8,11,30,25,tzinfo=datetime.timezone.utc), 'R188 new-attempt time guard'
 procs = subprocess.check_output(['ps', '-axo', 'pid,ppid,command'], text=True)
 if re.search(r'/idris2_app/idris2(?:\.so)?(?:\s|$)', procs):
     raise SystemExit('Existing compiler: reconcile orphan before fresh attempt')
@@ -31,8 +33,14 @@ else:
     target = ROOT/path
     if not target.is_file() or target.stat().st_size == 0:
         raise SystemExit('Missing/empty source target: refusing touch or compiler launch')
-    target.touch()
     snapshot = target.read_bytes()
+    if re.fullmatch(r'[A-E]\d+-\d+', unit):
+        old = subprocess.run(['git','show','HEAD:'+path],cwd=ROOT,capture_output=True)
+        def declarations(data):
+            text = data.decode()
+            return set(re.findall(r'^(?:[01] )?([A-Za-z_]\w*)\s*:',text,re.M) + re.findall(r'^(?:record|data)\s+([A-Za-z_]\w*)',text,re.M))
+        assert len(declarations(snapshot)-declarations(old.stdout if old.returncode == 0 else b'')) == 1, 'Exactly one new declaration per proof invocation'
+    target.touch()
     if path.startswith('research-tests/'):
         command += ['--source-dir', 'research-tests']
     command += ['--check', path]
@@ -60,7 +68,7 @@ with (OUT/(unit+'.log')).open('w') as log:
         if maximum > 48*1024*1024 and not interrupted:
             stop(signal.SIGTERM, None)
 text = (OUT/(unit+'.log')).read_text()
-fresh = path == 'package' or ('Building DGamma.'+pathlib.Path(path).stem) in text
+fresh = path == 'package' or bool(re.search(r'^\d+/\d+: Building DGamma\.'+re.escape(pathlib.Path(path).stem)+r' \('+re.escape(path)+r'\)$', text, re.M))
 passed = fresh and not interrupted and (process.returncode == 0 and 'Error:' not in text if not diagnostic
           else process.returncode != 0 and diagnostic in text and (not symbol or symbol in text))
 record = dict(unit=unit,path=path,command=command,start=started,
