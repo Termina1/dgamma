@@ -1073,3 +1073,23 @@ o19ActualBlockAtSite nameEq keyEq protocol swap source blocks premises safety un
 o19ActualBlockAtSite {selected} nameEq keyEq protocol swap source blocks premises safety unique (O19SiteAfter member) =
   o19ActualUntouchedAfterBlock nameEq keyEq protocol swap source blocks premises safety unique selected (decomposedBlock blocks selected (replace {p = Elem selected} (sym (actorBeforeExact swap)) (snd (o19ElemAppendInjections (actorPrefix swap) ((actorLeft swap) :: (actorRight swap) :: (actorSuffix swap))) (There (There member)))))
     (decomposedBlocksFollowOrder blocks (actorRight swap) selected (safetyRightInOrder safety) (replace {p = Elem selected} (sym (actorBeforeExact swap)) (snd (o19ElemAppendInjections (actorPrefix swap) ((actorLeft swap) :: (actorRight swap) :: (actorSuffix swap))) (There (There member)))) (replace {p = BeforeIn (actorRight swap) selected} (sym (actorBeforeExact swap)) (o19BeforeInPrepend (actorPrefix swap) (BeforeThere (BeforeHere member)))))
+
+||| COMPLETE block selector at the actual TARGET actor order, all fields
+||| of each LocatedOpenEpisodeBlock derived on the SAME actual reached trace.
+||| Global order/disjointness/coverage obligations are deliberately separate.
+export
+0 o19ActualTargetBlock :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (protocol : RegistrationProtocol key value world error) ->
+  {sourceOrder, targetOrder : List name} -> (swap : AdjacentActorOrderSwap name sourceOrder targetOrder) ->
+  {initial, sourceFinal : SystemState name key value world error} -> (source : Transitions initial sourceFinal) ->
+  (blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder source) ->
+  (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq source) ->
+  (safety : AdjacentActorSwapSafety name key world error value protocol nameEq keyEq swap source blocks premises) ->
+  (unique : UniqueRawNameInsertions name key world error value nameEq keyEq source) ->
+  (selected : name) -> Elem selected targetOrder ->
+  LocatedOpenEpisodeBlock name key world error value nameEq keyEq selected (cursorTrace (columnCursor (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique)))
+o19ActualTargetBlock nameEq keyEq protocol swap source blocks premises safety unique selected member =
+  o19ActualBlockAtSite nameEq keyEq protocol swap source blocks premises safety unique
+    (o19ClassifySwapSite (actorPrefix swap) (actorLeft swap) (actorRight swap) (actorSuffix swap)
+      (replace {p = Elem selected} (actorAfterExact swap) member))
