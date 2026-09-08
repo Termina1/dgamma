@@ -1119,3 +1119,12 @@ export
 o19PrefixAppended NoTransitions rest = O19PrefixEmpty rest
 o19PrefixAppended (MoreTransitions step smaller) rest =
   O19PrefixMore step smaller (appendTransitions smaller rest) (o19PrefixAppended smaller rest)
+
+||| Actual dependent gap between two prefixes with an owned exact equation.
+public export
+record O19PrefixGap (name, key, world, error : Type) (value : key -> Type)
+  {initial, firstEnd, secondEnd : SystemState name key value world error}
+  (first : Transitions initial firstEnd) (second : Transitions initial secondEnd) where
+  constructor MkO19PrefixGap
+  prefixGapTrace : Transitions firstEnd secondEnd
+  0 prefixGapExact : appendTransitions first prefixGapTrace = second
