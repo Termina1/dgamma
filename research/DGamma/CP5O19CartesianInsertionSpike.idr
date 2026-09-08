@@ -81,3 +81,15 @@ export
 o19InsertionDisciplineFromProvenance protocol nameEq child Root component before rest provenance noRecovery = provenance
 o19InsertionDisciplineFromProvenance protocol nameEq child (ChildOf owner) component before rest provenance noRecovery =
   (provenance, ParentDoesNotRecover (noRecovery owner))
+
+||| The actual checked equation under the declared dictionaries, obtained by
+||| eliminating alignment once rather than assuming dictionary equality.
+export
+0 o19AlignedHeadChecked :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {before, afterState, finalState : SystemState name key value world error} ->
+  (step : Transition before afterState) -> (rest : Transitions afterState finalState) ->
+  AlignedTransitions name key world error value nameEq keyEq (MoreTransitions step rest) ->
+  (checkedApplyAction @{nameEq} @{keyEq} (transitionAction step) before = Just (transitionTag step, afterState))
+o19AlignedHeadChecked nameEq keyEq _ _ (AlignedStep action tag checked rest remaining) = checked
