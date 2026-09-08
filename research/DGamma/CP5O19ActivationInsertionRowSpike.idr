@@ -51,3 +51,24 @@ record O19OrchestrationRow
   0 orchestrationRowClass : PaperOrchestrationStep orchestrationRowRight
   0 orchestrationRowNodeCount : finiteAdjacentSwapNodeCount (cursorDerivation orchestrationRowCursor) = crossings
 
+
+||| Constructor-owned zero row; its count observes only finite Done.
+export
+0 o19OrchestrationRowZero :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {initial, sourceFinal, before, rightAfter : SystemState name key value world error} ->
+  (source : Transitions initial sourceFinal) -> (earlier : Transitions initial before) ->
+  (right : Transition before rightAfter) -> (later : Transitions rightAfter sourceFinal) ->
+  (appendTransitions earlier (MoreTransitions right later) = source) ->
+  ReplayInvariantBundle name key world error value protocol nameEq keyEq source ->
+  (0 unique : UniqueRawNameInsertions name key world error value nameEq keyEq source) ->
+  PaperOrchestrationStep right ->
+  O19OrchestrationRow name key world error value protocol nameEq keyEq source earlier right 0
+o19OrchestrationRowZero {sourceFinal} {rightAfter} nameEq keyEq protocol source earlier
+  right later decomposition premises unique activation =
+    MkO19OrchestrationRow
+      (MkO19ReachedCursor sourceFinal source premises unique FiniteAdjacentSwapDone)
+      rightAfter right later decomposition Refl Refl Refl activation Refl
+
