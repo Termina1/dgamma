@@ -179,3 +179,14 @@ public export
     r191RelocatedTrace 1 2 (r191RelocatedBlocks 1 (There Here)) (r191RelocatedBlocks 2 (There (There Here))))
 r191RelocatedBlockOrders =
   (MkBlockBeforeExtended NoTransitions Refl, MkBlockBeforeExtended NoTransitions Refl)
+
+||| EVERY physical ordering witness between the relocated parent and actor1
+||| has zero transitions in its gap. No gap-length or normalization premise
+||| is supplied by callers: the two concrete cut expressions coincide.
+export
+0 r191ParentActorOneZeroGap :
+  (ordered : BlockBeforeExtended Nat R45Key Unit String R45Value r45NameEq r45KeyEq
+    r191RelocatedTrace 0 1 (r191RelocatedBlocks 0 Here) (r191RelocatedBlocks 1 (There Here))) ->
+  transitionCount (extendedBetweenBlocks ordered) = 0
+r191ParentActorOneZeroGap ordered = zeroGapFromExtendedCutCount
+  (r191RelocatedBlocks 0 Here) (r191RelocatedBlocks 1 (There Here)) ordered Refl
