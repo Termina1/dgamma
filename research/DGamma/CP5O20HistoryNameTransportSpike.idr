@@ -4,6 +4,10 @@ import DGamma.Calculus
 import DGamma.Coeffects
 import DGamma.Metatheory
 import DGamma.CP3
+import DGamma.CP4DeletionGenerationUnique
+import DGamma.CP4DeletionInactiveInvariant
+import DGamma.CP5O20PairedRemovalSpike
+import Data.Maybe
 import DGamma.CP5O20AllNameSynchronizationSpike
 import DGamma.CP5CurrentGenerationBirthSpike
 import DGamma.CP5ImmutableBirthMetadataSpike
@@ -219,3 +223,22 @@ export
 o20HistoryEmptyOrigin nameEq mapping renaming initial empty =
   MkO20HistoryCut renaming (o20AllNameEmptyOrigin nameEq renaming initial empty)
     (\selected, stamp, found => absurd found) (\selected, stamp, found => absurd found)
+
+||| Deleting a unique live generation cannot reveal a different shadow birth.
+||| Every surviving current lookup is the exact pre-deletion lookup.
+export
+0 o20HistoryLookupBeforeRemove :
+  {name : Type} -> (nameEq : DecEq name) -> (removed, selected : name) ->
+  (live : GenerationEnvironment name) -> GenerationEnvironmentNamesUnique live ->
+  (stamp : RegistrationGeneration name) ->
+  (lookupCurrentGeneration @{nameEq} selected (deleteCurrentGeneration @{nameEq} removed live) = Just stamp) ->
+  (lookupCurrentGeneration @{nameEq} selected live = Just stamp)
+o20HistoryLookupBeforeRemove nameEq removed selected live unique stamp found =
+  case decEq @{nameEq} selected removed of
+    Yes same => void (nothingIsNotJust
+      (trans (sym (lookupDeleteCurrentSelf nameEq removed live unique))
+        (trans (cong (\query => lookupCurrentGeneration @{nameEq} query
+          (deleteCurrentGeneration @{nameEq} removed live)) (sym same)) found)))
+    No different => trans
+      (sym (lookupAdvanceGenerationOther {key = Unit} {value = \_ => Unit} {world = Unit} {error = Unit}
+        nameEq 0 (ORemove removed) selected different live)) found
