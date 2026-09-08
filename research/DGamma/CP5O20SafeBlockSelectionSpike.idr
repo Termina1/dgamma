@@ -292,3 +292,22 @@ export
 o20MapApplyPresent combine Nothing right Refl rightPresent impossible
 o20MapApplyPresent combine (Just left) Nothing leftPresent Refl impossible
 o20MapApplyPresent combine (Just left) (Just right) leftPresent rightPresent = Refl
+
+||| Structural completeness of the ACTUAL whole-trace child checker. This
+||| proves the check cannot reject an established NoGeneratedChild clause;
+||| obtaining both clauses at an accepted inversion is a separate obligation.
+export
+0 o20CheckNoGeneratedChildComplete :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (forbidden : name) ->
+  {first, finalState : SystemState name key value world error} ->
+  (trace : Transitions first finalState) -> NoGeneratedChild forbidden trace ->
+  isJust (o20CheckNoGeneratedChild nameEq forbidden trace) = True
+o20CheckNoGeneratedChildComplete nameEq forbidden NoTransitions NoGeneratedChildEnd = Refl
+o20CheckNoGeneratedChildComplete nameEq forbidden (MoreTransitions step rest)
+  (NoGeneratedChildStep step rest notChild notRest) =
+    o20MapApplyPresent (NoGeneratedChildStep step rest)
+      (o20CheckNoGeneratedAction nameEq forbidden (transitionAction step))
+      (o20CheckNoGeneratedChild nameEq forbidden rest)
+      (o20CheckNoGeneratedActionComplete nameEq forbidden (transitionAction step) notChild)
+      (o20CheckNoGeneratedChildComplete nameEq forbidden rest notRest)
