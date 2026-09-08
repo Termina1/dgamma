@@ -259,3 +259,28 @@ o19OriginsAtSitesPointwise firstMap secondMap exact (point :: rest) =
       (\position => firstMap (fst (adjacentSwapOrdinalExhaustive point position)))
       (\position => secondMap (fst (adjacentSwapOrdinalExhaustive point position)))
       (\position => exact (fst (adjacentSwapOrdinalExhaustive point position))) rest)
+
+||| FULL numeric Cartesian equality from the TWO bounded current-map
+||| bands. Every row pair and every next band is produced by the actual
+||| rotation; height induction yields the explicit grid enumeration.
+export
+0 o19NumericColumnGrid : (originalMap : Nat -> Nat) -> (start, width, height, leftSource, rightSource : Nat) ->
+  (0 leftExact : (index : Nat) -> LTE (S index) width -> (originalMap (start + index) = leftSource + index)) ->
+  (0 rightExact : (index : Nat) -> LTE (S index) height -> (originalMap ((start + width) + index) = rightSource + index)) ->
+  (o19OriginsAtSites originalMap (o19ColumnSites start width height) = o19GridPairs leftSource rightSource width height)
+o19NumericColumnGrid originalMap start width Z leftSource rightSource leftExact rightExact = Refl
+o19NumericColumnGrid originalMap start width (S height) leftSource rightSource leftExact rightExact =
+  trans (o19OriginsAtSitesAppend originalMap (o19RowSites start width) (o19ColumnSites (S start) width height))
+    (cong2 (++)
+      (o19RowOriginFixed originalMap start width leftSource rightSource leftExact
+        (trans (cong originalMap (sym (plusZeroRightNeutral (start + width))))
+          (trans (rightExact Z (LTESucc LTEZero)) (plusZeroRightNeutral rightSource))))
+      (trans
+        (o19OriginsAtSitesPointwise
+          (\position => originalMap (o19SitesPull (o19RowSites start width) position))
+          (\position => originalMap (o19RowPull start width position))
+          (\position => cong originalMap (o19RowSitesPull start width position))
+          (o19ColumnSites (S start) width height))
+        (o19NumericColumnGrid (\position => originalMap (o19RowPull start width position)) (S start) width height leftSource (S rightSource)
+          (fst (o19RowBandsAfter originalMap start width height leftSource rightSource leftExact rightExact))
+          (snd (o19RowBandsAfter originalMap start width height leftSource rightSource leftExact rightExact)))))
