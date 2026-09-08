@@ -62,3 +62,16 @@ o19ObservedTargetRebase nameEq keyEq component parent False table lifecycle earl
     trans earlyResolution (trans (sym lateResolution) target)
 o19ObservedTargetRebase nameEq keyEq component parent True table lifecycle earlier later
   observed view earlyResolution lateResolution target = void (nothingIsNotJust target)
+
+||| Actual successful step output, retaining its own inverse and local state.
+||| This observation authenticates the primitive callback, not a control guard.
+public export
+record O19StepObservation (key, world, error : Type) (value : key -> Type)
+  (deps : List key) (provision : CoeffectSpec key)
+  (step : StepEffect key value world error deps provision)
+  (capability : DepValues key value deps)
+  (localBefore : LocalState key value world provision) where
+  constructor MkO19StepObservation
+  stepObservedAfter : LocalState key value world provision
+  stepObservedUndo : LocalState key value world provision -> LocalState key value world provision
+  0 stepObservedRan : runStepEffect step capability localBefore = Right (stepObservedAfter, stepObservedUndo)
