@@ -31,3 +31,29 @@ export
 supportSetAcrossSnapshot {name} {key} {world} {error} {value} nameEq keyEq left right same =
   cong (\snapshot => supportFuel {name} {key} {value} {world} {error} @{nameEq} @{keyEq}
     (length (snapshotBindings snapshot)) (snapshotBindings snapshot) []) same
+
+||| Snapshot/no-suffix counterpart of CP5L2R1RootExchange:77
+||| beginRootExchangeDecreases: the genuine checked Begin/root pair loses
+||| exactly ONE lifecycle-before-root inversion for every prior count. Endpoint
+||| identity is not required. This LOCAL measure does not replay an arbitrary
+||| suffix or prove the prefix's lifecycle count; the physical C20 instance
+||| checks its full annotated trace separately.
+export
+0 beginSnapshotRootDecreases :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (actor, root : name) -> (component : Component key value world error) ->
+  {first, middle, cut : SystemState name key value world error} ->
+  (0 beforeBegin : checkedApplyAction @{nameEq} @{keyEq} (LBegin actor) first = Just (LBeginTag, middle)) ->
+  (0 beforeRoot : checkedApplyAction @{nameEq} @{keyEq} (OInsert root Root component) middle = Just (OInsertTag, cut)) ->
+  (exchange : AvailabilityRootSnapshotExchange name key world error value nameEq keyEq root component
+    (Fired {before = first} {afterState = middle} nameEq keyEq (LBegin actor) LBeginTag beforeBegin)
+    (Fired {before = middle} {afterState = cut} nameEq keyEq (OInsert root Root component) OInsertTag beforeRoot)) ->
+  (prior : Nat) ->
+  rootBirthInversions prior
+    (AvailabilityStep first (Fired {before = first} {afterState = middle} nameEq keyEq (LBegin actor) LBeginTag beforeBegin) (MoreTransitions (Fired {before = middle} {afterState = cut} nameEq keyEq (OInsert root Root component) OInsertTag beforeRoot) NoTransitions)
+      (AvailabilityStep middle (Fired {before = middle} {afterState = cut} nameEq keyEq (OInsert root Root component) OInsertTag beforeRoot) NoTransitions (AvailabilityEnd cut))) =
+  S (rootBirthInversions prior
+    (AvailabilityStep first (Fired {before = first} {afterState = snapshotRootMiddle exchange} nameEq keyEq (OInsert root Root component) OInsertTag (snapshotRootEarly exchange)) (MoreTransitions (Fired {before = snapshotRootMiddle exchange} {afterState = snapshotRootFinal exchange} nameEq keyEq (LBegin actor) LBeginTag (snapshotRootLater exchange)) NoTransitions)
+      (AvailabilityStep (snapshotRootMiddle exchange) (Fired {before = snapshotRootMiddle exchange} {afterState = snapshotRootFinal exchange} nameEq keyEq (LBegin actor) LBeginTag (snapshotRootLater exchange)) NoTransitions (AvailabilityEnd (snapshotRootFinal exchange)))))
+beginSnapshotRootDecreases nameEq keyEq actor root component beforeBegin beforeRoot exchange prior = Refl
