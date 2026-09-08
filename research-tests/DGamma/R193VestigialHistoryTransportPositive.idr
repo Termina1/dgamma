@@ -93,3 +93,10 @@ public export
 r193HistoricalClosedTrace : Transitions r45Initial r193HistoricalClosed
 r193HistoricalClosedTrace = MoreTransitions r45ParentInsert
   (MoreTransitions r45Begin (MoreTransitions r45ChildInsert r193HistoricalContinuation))
+
+||| Authentic birth at ordinal2 in the actual closing trace.
+public export
+0 r193HistoricalBirth : LocatedGeneratedRegistration 1 0 r45Child r193HistoricalClosedTrace
+r193HistoricalBirth = MkLocatedGeneratedRegistration r45AfterBegin r45SourcePairFinal
+  (MoreTransitions r45ParentInsert (MoreTransitions r45Begin NoTransitions))
+  r45ChildInsert r193HistoricalContinuation Refl Refl
