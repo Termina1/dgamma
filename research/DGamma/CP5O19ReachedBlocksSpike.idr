@@ -546,3 +546,27 @@ o19OrderedAfterWord leftBlock rightBlock ordered =
               (trans (o19ActionWordAppend (betweenBlocks ordered) (appendTransitions (actorBlockTrace rightBlock) (traceAfterBlock rightBlock)))
                 (cong (o19ActionWord (betweenBlocks ordered) ++)
                   (o19ActionWordAppend (actorBlockTrace rightBlock) (traceAfterBlock rightBlock)))))))))))))
+
+||| Cross-actor outer exclusions are DERIVED from the original ordered
+||| source words, not supplied as extra O19 safety assumptions.
+export
+0 o19OrderedOuterNoLifecycle :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} -> {leftActor, rightActor : name} ->
+  {initial, finalState : SystemState name key value world error} -> {source : Transitions initial finalState} ->
+  (leftBlock : LocatedOpenEpisodeBlock name key world error value nameEq keyEq leftActor source) ->
+  (rightBlock : LocatedOpenEpisodeBlock name key world error value nameEq keyEq rightActor source) ->
+  (ordered : BlockBefore name key world error value nameEq keyEq source leftActor rightActor leftBlock rightBlock) ->
+  (NoLifecycleBy rightActor (traceBeforeBlock leftBlock), NoLifecycleBy leftActor (traceAfterBlock rightBlock))
+o19OrderedOuterNoLifecycle {leftActor} {rightActor} leftBlock rightBlock ordered =
+  (o19NoLifecycleFromWord rightActor (traceBeforeBlock leftBlock)
+    (\action, member => o19NoLifecycleWordMember rightActor (traceBeforeBlock rightBlock) (noEarlierLifecycle rightBlock) action
+      (replace {p = Elem action} (sym (o19OrderedBeforeWord leftBlock rightBlock ordered))
+      (fst (o19ElemAppendInjections (o19ActionWord (prefixThroughBlock leftBlock)) (o19ActionWord (betweenBlocks ordered))) (replace {p = Elem action} (sym (o19ActionWordAppend (prefixToBlockOpening leftBlock) (blockBody leftBlock)))
+        (fst (o19ElemAppendInjections (o19ActionWord (prefixToBlockOpening leftBlock)) (o19ActionWord (blockBody leftBlock))) (replace {p = Elem action} (sym (o19ActionWordAppend (traceBeforeBlock leftBlock) (MoreTransitions (beginTransition (blockOpening leftBlock)) NoTransitions)))
+          (fst (o19ElemAppendInjections (o19ActionWord (traceBeforeBlock leftBlock)) [LBegin leftActor]) member))))))),
+   o19NoLifecycleFromWord leftActor (traceAfterBlock rightBlock)
+    (\action, member => o19NoLifecycleWordMember leftActor (traceAfterBlock leftBlock) (noLaterLifecycle leftBlock) action
+      (replace {p = Elem action} (sym (o19OrderedAfterWord leftBlock rightBlock ordered))
+      (snd (o19ElemAppendInjections (o19ActionWord (betweenBlocks ordered)) ((o19ActionWord (actorBlockTrace rightBlock)) ++ (o19ActionWord (traceAfterBlock rightBlock))))
+        (snd (o19ElemAppendInjections (o19ActionWord (actorBlockTrace rightBlock)) (o19ActionWord (traceAfterBlock rightBlock))) member)))))
