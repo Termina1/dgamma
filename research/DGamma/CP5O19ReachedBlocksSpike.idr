@@ -1049,3 +1049,27 @@ export
   BeforeIn left right (leading ++ trailing)
 o19BeforeInPrepend [] ordered = ordered
 o19BeforeInPrepend (head :: rest) ordered = BeforeThere (o19BeforeInPrepend rest ordered)
+
+||| Assemble ALL four classes of reached blocks using only actual target
+||| sites and the ORIGINAL block decomposition. Untouched order evidence is
+||| derived from exact list positions, not added to the O19 safety surface.
+export
+0 o19ActualBlockAtSite :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (protocol : RegistrationProtocol key value world error) ->
+  {sourceOrder, targetOrder : List name} -> (swap : AdjacentActorOrderSwap name sourceOrder targetOrder) ->
+  {initial, sourceFinal : SystemState name key value world error} -> (source : Transitions initial sourceFinal) ->
+  (blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder source) ->
+  (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq source) ->
+  (safety : AdjacentActorSwapSafety name key world error value protocol nameEq keyEq swap source blocks premises) ->
+  (unique : UniqueRawNameInsertions name key world error value nameEq keyEq source) ->
+  {selected : name} -> O19SwapSite (actorPrefix swap) (actorLeft swap) (actorRight swap) (actorSuffix swap) selected ->
+  LocatedOpenEpisodeBlock name key world error value nameEq keyEq selected (cursorTrace (columnCursor (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique)))
+o19ActualBlockAtSite {selected} nameEq keyEq protocol swap source blocks premises safety unique (O19SiteBefore member) =
+  o19ActualUntouchedBeforeBlock nameEq keyEq protocol swap source blocks premises safety unique selected (decomposedBlock blocks selected (replace {p = Elem selected} (sym (actorBeforeExact swap)) (fst (o19ElemAppendInjections (actorPrefix swap) ((actorLeft swap) :: (actorRight swap) :: (actorSuffix swap))) member)))
+    (decomposedBlocksFollowOrder blocks selected (actorLeft swap) (replace {p = Elem selected} (sym (actorBeforeExact swap)) (fst (o19ElemAppendInjections (actorPrefix swap) ((actorLeft swap) :: (actorRight swap) :: (actorSuffix swap))) member)) (safetyLeftInOrder safety) (replace {p = BeforeIn selected (actorLeft swap)} (sym (actorBeforeExact swap)) (o19BeforeAppendedSelected (actorPrefix swap) (actorLeft swap) ((actorRight swap) :: (actorSuffix swap)) member)))
+o19ActualBlockAtSite nameEq keyEq protocol swap source blocks premises safety unique O19SiteRight = o19ActualRightLocatedBlock nameEq keyEq protocol swap source blocks premises safety unique
+o19ActualBlockAtSite nameEq keyEq protocol swap source blocks premises safety unique O19SiteLeft = o19ActualLeftLocatedBlock nameEq keyEq protocol swap source blocks premises safety unique
+o19ActualBlockAtSite {selected} nameEq keyEq protocol swap source blocks premises safety unique (O19SiteAfter member) =
+  o19ActualUntouchedAfterBlock nameEq keyEq protocol swap source blocks premises safety unique selected (decomposedBlock blocks selected (replace {p = Elem selected} (sym (actorBeforeExact swap)) (snd (o19ElemAppendInjections (actorPrefix swap) ((actorLeft swap) :: (actorRight swap) :: (actorSuffix swap))) (There (There member)))))
+    (decomposedBlocksFollowOrder blocks (actorRight swap) selected (safetyRightInOrder safety) (replace {p = Elem selected} (sym (actorBeforeExact swap)) (snd (o19ElemAppendInjections (actorPrefix swap) ((actorLeft swap) :: (actorRight swap) :: (actorSuffix swap))) (There (There member)))) (replace {p = BeforeIn (actorRight swap) selected} (sym (actorBeforeExact swap)) (o19BeforeInPrepend (actorPrefix swap) (BeforeThere (BeforeHere member)))))
