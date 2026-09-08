@@ -30,21 +30,6 @@ data CertifiedActorPermutation :
     CertifiedActorPermutation name middle after ->
     CertifiedActorPermutation name before after
 
-public export
-0 blockCrossingLabels :
-  (whole : WholeBlockSwapDerivation name key world error value protocol nameEq
-    keyEq orderSwap sourceTrace sourceBlocks sourcePremises safety targetTrace) ->
-  DerivationCrossesBlockPositions name key world error value protocol nameEq keyEq
-    sourceTrace
-    (decomposedBlock sourceBlocks (actorLeft orderSwap)
-      (safetyLeftInOrder safety))
-    (decomposedBlock sourceBlocks (actorRight orderSwap)
-      (safetyRightInOrder safety))
-    (identityActionRegistrationReplayCorrespondence sourceTrace)
-    (nonEmptyToFiniteAdjacentSwapDerivation (nonEmptyBlockDerivation whole))
-    (crossedSourcePositions whole)
-blockCrossingLabels whole = foldBlockCrossingOriginPlan (blockCrossingPlan whole)
-
 ||| A shifted block-start/compensating-position alias is impossible at the
 ||| authoritative whole-block boundary, even though isolated caller blocks can
 ||| be arithmetically aliased.
