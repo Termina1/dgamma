@@ -27,3 +27,9 @@ r193HistoricalParentActive : Fiber Nat R45Key R45Value Unit String
 r193HistoricalParentActive = setFiberRuntime r45ParentBegun
   (restrictOwnedPreservingOrder @{r45KeyEq} r45Spec (ownedValues (fiberTable r45ParentBegun)))
   (Active (pushLocalUndo @{r45KeyEq} r45Spec id id) EmptyView)
+
+||| Parent retirement follows the actual already-retired child endpoint.
+public export
+r193HistoricalParentRetired : SystemState Nat R45Key R45Value Unit String
+r193HistoricalParentRetired = MkSystemState ()
+  (replaceBinding @{r45NameEq} 0 (retireFiber r193HistoricalParentActive) (registry r178RightFinal))
