@@ -225,3 +225,14 @@ export
 o20SelectSafeAdjacentBlocks nameEq keyEq protocol sourceOrder trace blocks premises unique =
   head' (mapMaybe (o20CheckCandidate nameEq keyEq protocol sourceOrder trace blocks premises unique)
     (o20AdjacentCandidates nameEq sourceOrder [] sourceOrder Refl))
+
+||| Completeness of the ACTUAL empty-gap checker. The physical zero-gap
+||| premise is explicit here and must still be derived at an accepted pair.
+export
+0 o20CheckEmptyGapComplete :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, finalState : SystemState name key value world error} ->
+  (gap : Transitions first finalState) -> transitionCount gap = 0 ->
+  isJust (o20CheckEmptyGap gap) = True
+o20CheckEmptyGapComplete NoTransitions empty = Refl
+o20CheckEmptyGapComplete (MoreTransitions step rest) Refl impossible
