@@ -7,6 +7,7 @@ import DGamma.CP3
 import DGamma.CP4DeletionFrameCore
 import DGamma.CP5O20EpisodeSynchronizationSpike
 import DGamma.CP5O20PairedPrefixProducerSpike
+import DGamma.CP5O20PairedExecutionSpike
 import DGamma.CP5O20AllNameSynchronizationSpike
 import Data.List.Elem
 import Data.Maybe
@@ -107,3 +108,39 @@ o20PairedObservedRemoveCut nameEq keyEq renaming actor leftWorld rightWorld left
   MkO20AllNameCut
     (o20PairedDeleteEffects nameEq keyEq renaming actor leftWorld rightWorld leftRegistry rightRegistry (allNameEffects paired))
     (o20PairedDeleteControls nameEq renaming actor leftRegistry rightRegistry (allNameControls paired))
+
+||| Conservative operational extension: old actual stages plus ACTUAL paired
+||| Remove steps at their physical cuts. No conclusion or preservation
+||| callback is stored. Failure/diversion and canonical extraction remain open.
+public export
+data O20PairedExecutionWithRemoval :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (renaming : NameBijection name) ->
+  (leftBefore, rightBefore, leftAfter, rightAfter : SystemState name key value world error) -> Type where
+  RemovalExecutionTail :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {nameEq : DecEq name} -> {keyEq : DecEq key} -> {renaming : NameBijection name} ->
+    {leftBefore, rightBefore, leftAfter, rightAfter : SystemState name key value world error} ->
+    (0 tail : O20PairedExecution name key world error value nameEq keyEq renaming leftBefore rightBefore leftAfter rightAfter) ->
+    O20PairedExecutionWithRemoval name key world error value nameEq keyEq renaming leftBefore rightBefore leftAfter rightAfter
+  RemovalExecutionStage :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {nameEq : DecEq name} -> {keyEq : DecEq key} -> {renaming : NameBijection name} ->
+    {leftBefore, rightBefore, leftMiddle, rightMiddle, leftAfter, rightAfter : SystemState name key value world error} ->
+    (0 stage : O20PairedStage name key world error value nameEq keyEq renaming leftBefore rightBefore leftMiddle rightMiddle) ->
+    (0 later : O20PairedExecutionWithRemoval name key world error value nameEq keyEq renaming leftMiddle rightMiddle leftAfter rightAfter) ->
+    O20PairedExecutionWithRemoval name key world error value nameEq keyEq renaming leftBefore rightBefore leftAfter rightAfter
+  RemovalExecutionRemove :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    (nameEq : DecEq name) -> (keyEq : DecEq key) -> (renaming : NameBijection name) -> (actor : name) ->
+    (leftWorld, rightWorld : world) -> (leftRegistry, rightRegistry : Registry name key value world error) ->
+    {leftAfter, rightAfter : SystemState name key value world error} ->
+    (0 leftChecked : checkedApplyAction {name} {key} {value} {world} {error} @{nameEq} @{keyEq} (ORemove actor) (MkSystemState leftWorld leftRegistry) =
+      Just (ORemoveTag, MkSystemState leftWorld (deleteBinding @{nameEq} actor leftRegistry))) ->
+    (0 rightChecked : checkedApplyAction {name} {key} {value} {world} {error} @{nameEq} @{keyEq} (ORemove (renameForward renaming actor)) (MkSystemState rightWorld rightRegistry) =
+      Just (ORemoveTag, MkSystemState rightWorld (deleteBinding @{nameEq} (renameForward renaming actor) rightRegistry))) ->
+    (0 later : O20PairedExecutionWithRemoval name key world error value nameEq keyEq renaming
+      (MkSystemState leftWorld (deleteBinding @{nameEq} actor leftRegistry))
+      (MkSystemState rightWorld (deleteBinding @{nameEq} (renameForward renaming actor) rightRegistry)) leftAfter rightAfter) ->
+    O20PairedExecutionWithRemoval name key world error value nameEq keyEq renaming
+      (MkSystemState leftWorld leftRegistry) (MkSystemState rightWorld rightRegistry) leftAfter rightAfter
