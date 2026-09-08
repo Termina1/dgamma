@@ -240,3 +240,14 @@ o19InsertActivationExternal nameEq keyEq child (ChildOf parent) component left r
         (SkipRightInternal (movedLeft diamond) NoTransitions
           (childInsertCannotBeRoot (movedLeft diamond) (trans (movedLeftAction diamond) inserted))
           SameExternalOrchestrationEnd)))
+
+||| Constructor injectivity for the named insertion parent, independent of
+||| any computed row. Used to discharge the exact diamond licensing clause.
+export
+0 o19InsertParentInjective :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (firstChild, secondChild : name) -> (firstParent, secondParent : Parent name) ->
+  (firstComponent, secondComponent : Component key value world error) ->
+  (OInsert firstChild firstParent firstComponent = OInsert secondChild secondParent secondComponent) ->
+  (firstParent = secondParent)
+o19InsertParentInjective _ _ _ _ _ _ Refl = Refl
