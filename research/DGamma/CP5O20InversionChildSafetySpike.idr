@@ -126,3 +126,17 @@ o20GeneratedBirthAppend trace following (MkLocatedGeneratedRegistration before a
   MkLocatedGeneratedRegistration before afterState prior birth (appendTransitions later following) action
     (trans (sym (appendTransitionsAssociative prior (MoreTransitions birth later) following))
       (cong (\candidate => appendTransitions candidate following) exact))
+
+||| Structural lifting through the actual preceding trace, never a scalar
+||| position chosen independently of the occurrence's trace spine.
+export
+0 o20GeneratedBirthAfterTrace :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (prior : Transitions first middle) -> (trace : Transitions middle finalState) ->
+  {child, parent : name} -> {component : Component key value world error} ->
+  LocatedGeneratedRegistration child parent component trace ->
+  LocatedGeneratedRegistration child parent component (appendTransitions prior trace)
+o20GeneratedBirthAfterTrace NoTransitions trace birth = birth
+o20GeneratedBirthAfterTrace (MoreTransitions step rest) trace birth =
+  o20GeneratedBirthPrepend step (appendTransitions rest trace) (o20GeneratedBirthAfterTrace rest trace birth)
