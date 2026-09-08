@@ -110,3 +110,23 @@ o20ObserveSharedActualBegins nameEq keyEq renaming actor leftBefore leftAfter ri
   o20ShareObservedBegins nameEq keyEq renaming actor leftBefore leftAfter rightBefore rightAfter
     (o20ObserveActualBegin nameEq keyEq actor leftBefore leftAfter leftOpening)
     (o20ObserveActualBegin nameEq keyEq (renameForward renaming actor) rightBefore rightAfter rightOpening) paired
+
+||| Consume the producer-owned shared observation at the existing B8 successor.
+||| Its exact component-indexed payloads need no projected-record coercions.
+export
+0 o20BeginCutFromSharedObservations :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (renaming : NameBijection name) -> (actor : name) ->
+  (leftBefore, leftAfter, rightBefore, rightAfter : SystemState name key value world error) ->
+  BeginStep nameEq keyEq actor leftBefore leftAfter ->
+  BeginStep nameEq keyEq (renameForward renaming actor) rightBefore rightAfter ->
+  O20SharedBeginObservations name key world error value nameEq keyEq renaming actor leftBefore leftAfter rightBefore rightAfter ->
+  O20AllNameCut name key world error value nameEq renaming leftBefore rightBefore ->
+  (pairwiseProvisionInvariant {name} {key} {value} {world} {error} @{keyEq} (bindings (registry rightBefore)) = True) ->
+  O20AllNameCut name key world error value nameEq renaming leftAfter rightAfter
+o20BeginCutFromSharedObservations nameEq keyEq renaming actor leftBefore leftAfter rightBefore rightAfter leftOpening rightOpening
+  (MkO20SharedBeginObservations component leftParent rightParent leftTable rightTable leftView rightView
+    leftFound rightFound leftResolved rightResolved leftExact rightExact) paired pairwise =
+      o20SharedObservedBeginCut nameEq keyEq renaming actor leftBefore leftAfter rightBefore rightAfter
+        leftOpening rightOpening component leftParent rightParent leftTable rightTable leftView rightView
+        leftFound rightFound leftResolved rightResolved leftExact rightExact paired pairwise
