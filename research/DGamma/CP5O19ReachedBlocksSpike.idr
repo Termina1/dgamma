@@ -8,6 +8,7 @@ import DGamma.CP3
 import DGamma.CP5UniqueRawNameInsertions
 import DGamma.CP5ConfluenceLocalDiamondSpike
 import DGamma.CP5ConfluenceCrossTraceSpike
+import DGamma.CP5ConfluenceRankObservationSpike
 import DGamma.CP5O19ReplayObservationSpike
 import DGamma.CP5O19CartesianCursorSpike
 import DGamma.CP5O19CartesianColumnsSpike
@@ -154,3 +155,19 @@ export
 o19BeginRangeHead {first} {middle} nameEq keyEq selected _ tag checked rest bodyWord aligned wordExact Refl =
   o19BeginRangeTag nameEq keyEq selected tag checked rest bodyWord aligned wordExact
     (fst (lBeginBoundary nameEq keyEq selected first middle tag checked))
+
+||| The actual aligned range and its exact Begin-headed word produce its
+||| own opening/body package. Only one explicit aligned spine is eliminated.
+export
+0 o19BeginRangeObserved :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  {first, last : SystemState name key value world error} ->
+  (trace : Transitions first last) -> (bodyWord : List (Action name key value world error)) ->
+  AlignedTransitions name key world error value nameEq keyEq trace ->
+  (o19ActionWord trace = LBegin selected :: bodyWord) ->
+  O19BeginRange name key world error value nameEq keyEq selected trace bodyWord
+o19BeginRangeObserved nameEq keyEq selected _ bodyWord AlignedEnd wordExact = void (uninhabited (cong length wordExact))
+o19BeginRangeObserved nameEq keyEq selected _ bodyWord (AlignedStep action tag checked rest aligned) wordExact =
+  o19BeginRangeHead nameEq keyEq selected action tag checked rest bodyWord aligned
+    (snd (consInjective wordExact)) (fst (consInjective wordExact))
