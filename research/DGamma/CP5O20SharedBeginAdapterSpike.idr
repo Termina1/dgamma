@@ -94,3 +94,19 @@ o20ShareObservedBegins nameEq keyEq renaming actor leftBefore leftAfter rightBef
         (MkO20BeginObservation leftComponent leftParent leftTable leftView leftFound leftResolved leftExact)
         (MkO20BeginObservation rightComponent rightParent rightTable rightView rightFound rightResolved rightExact) paired))
       leftParent rightParent leftTable rightTable leftView rightView leftFound rightFound leftResolved rightResolved leftExact rightExact
+
+||| General ACTUAL BeginStep producer: neither observations, shared component,
+||| resolution witnesses nor output equations are supplied by the caller.
+export
+0 o20ObserveSharedActualBegins :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (renaming : NameBijection name) -> (actor : name) ->
+  (leftBefore, leftAfter, rightBefore, rightAfter : SystemState name key value world error) ->
+  BeginStep nameEq keyEq actor leftBefore leftAfter ->
+  BeginStep nameEq keyEq (renameForward renaming actor) rightBefore rightAfter ->
+  O20AllNameCut name key world error value nameEq renaming leftBefore rightBefore ->
+  O20SharedBeginObservations name key world error value nameEq keyEq renaming actor leftBefore leftAfter rightBefore rightAfter
+o20ObserveSharedActualBegins nameEq keyEq renaming actor leftBefore leftAfter rightBefore rightAfter leftOpening rightOpening paired =
+  o20ShareObservedBegins nameEq keyEq renaming actor leftBefore leftAfter rightBefore rightAfter
+    (o20ObserveActualBegin nameEq keyEq actor leftBefore leftAfter leftOpening)
+    (o20ObserveActualBegin nameEq keyEq (renameForward renaming actor) rightBefore rightAfter rightOpening) paired
