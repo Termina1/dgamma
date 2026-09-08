@@ -155,3 +155,35 @@ removeSquareFromLifecycleReplay nameEq keyEq child parent component table outcom
         ORemoveTag finalState
         (checkedActionProjects nameEq keyEq (ORemove child) (MkSystemState middleWorld middleFibers)
           finalState ORemoveTag removed))
+
+||| Generic native LBegin/own-child ORemove square for a retired Inactive leaf.
+||| Source childlessness is explicit. The CP4 Begin commuter is EXECUTED; no
+||| replay/snapshot oracle is an argument. The original two checked edges,
+||| source well-formedness, lookup and distinctness determine the square.
+export
+0 commuteBeginChildRemove :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (child, parent, actor : name) ->
+  (component : Component key value world error) ->
+  (table : OwnedTable key value (componentProvisions component)) -> (outcome : Maybe error) ->
+  (ambient : world) -> (fibers : Registry name key value world error) ->
+  (tag : RuleTag) ->
+  (middle, finalState : SystemState name key value world error) ->
+  (0 found : lookupFiber {name} {key} {value} {world} {error} @{nameEq} child fibers =
+    Just (MkFiber component (ChildOf parent) True table (Inactive outcome))) ->
+  (0 noChild : hasChild {name} {key} {value} {world} {error} @{nameEq} child fibers = False) ->
+  (0 distinct : Not (child = actor)) ->
+  (0 valid : registryWellFormed {name} {key} {value} {world} {error} @{nameEq} @{keyEq}
+    (MkSystemState ambient fibers) = True) ->
+  (0 foreign : checkedApplyAction @{nameEq} @{keyEq} (LBegin actor) (MkSystemState ambient fibers) = Just (tag, middle)) ->
+  (0 removed : checkedApplyAction @{nameEq} @{keyEq} (ORemove child) middle = Just (ORemoveTag, finalState)) ->
+  ChildRemoveSnapshotExchange name key world error value nameEq keyEq child parent
+    (Fired {before = MkSystemState ambient fibers} {afterState = middle} nameEq keyEq (LBegin actor) tag foreign)
+    (Fired {before = middle} {afterState = finalState} nameEq keyEq (ORemove child) ORemoveTag removed)
+commuteBeginChildRemove nameEq keyEq child parent actor component table outcome ambient fibers
+  tag middle finalState found noChild distinct valid foreign removed =
+    removeSquareFromLifecycleReplay nameEq keyEq child parent component table outcome ambient fibers
+      (LBegin actor) tag Refl middle finalState found noChild distinct valid foreign removed
+      (beginOneDeleteRuntimeCommute nameEq keyEq actor ambient fibers child component (ChildOf parent)
+        True table outcome found noChild (\same => distinct (sym same)) valid
+        (checkedActionProjects nameEq keyEq (LBegin actor) (MkSystemState ambient fibers) middle tag foreign))
