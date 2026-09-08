@@ -96,3 +96,14 @@ r192RemovedSameInputs = MkSameOrchestrationModuloGenerated
   (sameExternalOrchestrationReflexiveSpike r45NameEq r192RemovedBirthTrace)
   (MatchExternalRootBirth _ _ _ _ Refl Refl Refl (SkipLeftNonExternalRootBirth (LBegin 0) _ _ Refl Refl (SkipRightNonExternalRootBirth (LBegin 0) _ _ Refl Refl (SkipLeftNonExternalRootBirth (OInsert 1 (ChildOf 0) r45Child) _ _ Refl Refl (SkipRightNonExternalRootBirth (OInsert 1 (ChildOf 0) r45Child) _ _ Refl Refl (SkipLeftNonExternalRootBirth (LAdvance 0) _ _ Refl Refl (SkipRightNonExternalRootBirth (LAdvance 0) _ _ Refl Refl (SkipLeftNonExternalRootBirth (ORetire 1) _ _ Refl Refl (SkipRightNonExternalRootBirth (ORetire 1) _ _ Refl Refl (SkipLeftNonExternalRootBirth (ORemove 1) _ _ Refl Refl (SkipRightNonExternalRootBirth (ORemove 1) _ _ Refl Refl (ExternalRootBirthCorrespondenceEnd))))))))))))
   r192RemovedBirthTree r192RemovedCurrent
+
+||| Exact nonvacuous original generated birth; its historical name is1.
+public export
+0 r192RemovedOriginalBirth : LocatedGeneratedRegistration 1 0 r45Child r192RemovedBirthTrace
+r192RemovedOriginalBirth = MkLocatedGeneratedRegistration r45AfterBegin r45SourcePairFinal
+  (MoreTransitions r45ParentInsert (MoreTransitions r45Begin NoTransitions)) r45ChildInsert
+  (MoreTransitions r178ParentFinish (MoreTransitions r178ChildRetire
+    (MoreTransitions (Fired r45NameEq r45KeyEq (ORemove 1) ORemoveTag
+      (DGamma.CP4ProgressNoDeadlock.checkedFromRaw r45NameEq r45KeyEq
+        (ORemove 1) r178RightFinal r192RemovedBirthFinal ORemoveTag
+        (checkedTransitionTargetValid r178ChildRetire) Refl)) NoTransitions))) Refl Refl
