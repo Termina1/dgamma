@@ -4,6 +4,7 @@ import DGamma.Calculus
 import DGamma.Coeffects
 import DGamma.Metatheory
 import DGamma.CP3
+import DGamma.CP5O20AllNameSynchronizationSpike
 import DGamma.CP5CurrentGenerationBirthSpike
 import DGamma.CP5ImmutableBirthMetadataSpike
 import DGamma.CP5ConfluenceRenamingCompositionSpike
@@ -161,3 +162,24 @@ export
 o20HistorySupportedEndpoint nameEq keyEq left right mapping registrations current selected leftStamp found supported =
   o20HistorySupportedChoice nameEq keyEq left right mapping registrations current selected leftStamp supported
     (leftCurrentGenerationMapped current selected leftStamp found)
+
+||| Internal physical cut indexed by the LIVE generation environments. Its
+||| all-name runtime bijection is internal, NOT the supplied endpoint map.
+||| Live births authenticate its action on names; absent historical births
+||| remain in O20HistoryBirthPair rather than constraining the current map.
+||| This is an invariant specification, not arbitrary-trace extraction.
+public export
+record O20HistoryCut
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (mapping : RegistrationGenerationBijection name)
+  (leftLive, rightLive : GenerationEnvironment name)
+  (left, right : SystemState name key value world error) where
+  constructor MkO20HistoryCut
+  historyCutBijection : NameBijection name
+  0 historyCutRuntime : O20AllNameCut name key world error value nameEq historyCutBijection left right
+  0 historyCutForward : (selected : name) -> (stamp : RegistrationGeneration name) ->
+    (lookupCurrentGeneration @{nameEq} selected leftLive = Just stamp) ->
+    (renameForward historyCutBijection selected = o20HistoricalTarget mapping stamp)
+  0 historyCutBackward : (selected : name) -> (stamp : RegistrationGeneration name) ->
+    (lookupCurrentGeneration @{nameEq} selected rightLive = Just stamp) ->
+    (renameBackward historyCutBijection selected = generationName (generationBackward mapping stamp))
