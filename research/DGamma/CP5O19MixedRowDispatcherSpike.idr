@@ -43,3 +43,18 @@ record O19MixedRow
   0 mixedRowActor : transitionActor mixedRowRight = transitionActor sourceRight
   0 mixedRowClass : Either (PaperActivationStep mixedRowRight) (PaperOrchestrationStep mixedRowRight)
   0 mixedRowNodeCount : finiteAdjacentSwapNodeCount (cursorDerivation mixedRowCursor) = crossings
+
+||| Consume the EXPLICIT activation-row result once, retaining every actual
+||| field and its own count proof; no separately evaluated row is observed.
+export
+0 o19MixedRowFromActivation :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {protocol : RegistrationProtocol key value world error} ->
+  {initial, sourceFinal, before, rightBefore, rightAfter : SystemState name key value world error} ->
+  {source : Transitions initial sourceFinal} -> {earlier : Transitions initial before} ->
+  {right : Transition rightBefore rightAfter} -> {crossings : Nat} ->
+  O19ActivationRow name key world error value protocol nameEq keyEq source earlier right crossings ->
+  O19MixedRow name key world error value protocol nameEq keyEq source earlier right crossings
+o19MixedRowFromActivation (MkO19ActivationRow cursor middle right rest decomposition action tag actor activation count) =
+  MkO19MixedRow cursor middle right rest decomposition action tag actor (Left activation) count
