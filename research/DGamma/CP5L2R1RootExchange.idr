@@ -52,3 +52,18 @@ rootExchangeInContext {nameEq} {keyEq} {root} {component} earlier left right lat
   appendTransitions earlier
     (MoreTransitions (Fired nameEq keyEq (OInsert root Root component) OInsertTag earlyChecked)
       (MoreTransitions (Fired nameEq keyEq (transitionAction left) (transitionTag left) laterChecked) later))
+
+||| Executable lifecycle-before-root-BIRTH inversion count on an actual-state
+||| trace. `prior` is the count of earlier lifecycle edges. Blocked inversions
+||| may remain in a normal form: zero is NOT claimed by R178 availability.
+public export
+rootBirthInversions :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {0 first, finalState : SystemState name key value world error} ->
+  {0 trace : Transitions first finalState} ->
+  Nat -> AvailabilityTrace name key world error value trace -> Nat
+rootBirthInversions prior (AvailabilityEnd state) = 0
+rootBirthInversions prior (AvailabilityStep first (Fired _ _ (OInsert root Root component) _ _) rest later) =
+  prior + rootBirthInversions prior later
+rootBirthInversions prior (AvailabilityStep first (Fired _ _ action _ _) rest later) =
+  rootBirthInversions (if isLifecycleAction action then S prior else prior) later
