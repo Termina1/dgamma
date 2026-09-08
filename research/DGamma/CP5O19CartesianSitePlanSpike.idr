@@ -56,3 +56,13 @@ export
 o19AppendFiniteSites FiniteAdjacentSwapDone second = Refl
 o19AppendFiniteSites (FiniteAdjacentSwapStep current earlier left right later orientation diamond result target rest) second =
   cong ((transitionCount earlier) ::) (o19AppendFiniteSites rest second)
+
+||| Execute an explicit site word numerically, retaining both true source
+||| coordinates at each crossing and updating the ordinal map by that exact
+||| adjacent transposition. The actual-plan connection is proved below.
+public export
+o19OriginsAtSites : (Nat -> Nat) -> List Nat -> List (Nat, Nat)
+o19OriginsAtSites originalMap [] = []
+o19OriginsAtSites originalMap (point :: rest) =
+  (originalMap point, originalMap (S point)) ::
+    o19OriginsAtSites (\position => originalMap (fst (adjacentSwapOrdinalExhaustive point position))) rest
