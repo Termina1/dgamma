@@ -183,3 +183,26 @@ record O20HistoryCut
   0 historyCutBackward : (selected : name) -> (stamp : RegistrationGeneration name) ->
     (lookupCurrentGeneration @{nameEq} selected rightLive = Just stamp) ->
     (renameBackward historyCutBijection selected = generationName (generationBackward mapping stamp))
+
+||| Any owned internal cut at the accepted final generation environments
+||| agrees with the supplied current bijection on supported current names.
+||| This does not rebase the whole all-name control relation or cover a
+||| present vestigial remainder; those are separate endpoint obligations.
+export
+0 o20HistoryCutSupportedAgreement :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {leftFirst, leftFinal, rightFirst, rightFinal : SystemState name key value world error} ->
+  (left : Transitions leftFirst leftFinal) -> (right : Transitions rightFirst rightFinal) ->
+  (mapping : RegistrationGenerationBijection name) ->
+  (registrations : RegistrationCorrespondenceByGeneration nameEq mapping left right) ->
+  (current : CurrentEndpointRenaming nameEq keyEq mapping left right registrations) ->
+  (paired : O20HistoryCut name key world error value nameEq mapping
+    (leftFinalGenerations registrations) (rightFinalGenerations registrations) leftFinal rightFinal) ->
+  (selected : name) -> (stamp : RegistrationGeneration name) ->
+  (lookupCurrentGeneration @{nameEq} selected (leftFinalGenerations registrations) = Just stamp) ->
+  (isSupported {name} {key} {value} {world} {error} @{nameEq} @{keyEq} selected leftFinal = True) ->
+  (renameForward (historyCutBijection paired) selected = renameForward (currentNameBijection current) selected)
+o20HistoryCutSupportedAgreement nameEq keyEq left right mapping registrations current paired selected stamp found supported =
+  trans (historyCutForward paired selected stamp found)
+    (o20HistorySupportedEndpoint nameEq keyEq left right mapping registrations current selected stamp found supported)
