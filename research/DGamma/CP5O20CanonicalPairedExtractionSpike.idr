@@ -177,3 +177,25 @@ o20ShareActualReloadingSource {name} {key} {world} {error} {value} {nameEq} {ren
     o20ReloadingSourcesFromObservation component remaining leftParent leftRetired leftTable leftOlder leftView
       (lookupFiber {name} {key} {value} {world} {error} @{nameEq} (renameForward renaming actor) (registry right))
       (rewrite sym leftFound in allNameControls paired actor) leftFound Refl
+
+||| Extract source program alignment in all three genuine paper-Advance
+||| branches (Iter, one-step Finish, empty Finish). This is actual source
+||| extraction, not a fabricated paired edge or a callback-success assumption.
+export
+0 o20SharePaperAdvanceSources :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {renaming : NameBijection name} -> {actor : name} -> {tag : RuleTag} ->
+  {left, right : SystemState name key value world error} ->
+  PaperAdvanceSource name key world error value nameEq keyEq actor tag left ->
+  O20AllNameCut name key world error value nameEq renaming left right ->
+  O20SharedReloadingSources name key world error value nameEq renaming actor left right
+o20SharePaperAdvanceSources
+  (AdvanceSourceIter {component} {parent} {retiredFlag} {table} {step} {next} {more} {accumulator} {view} Refl found target) paired =
+    o20ShareActualReloadingSource component (step :: next :: more) parent retiredFlag table accumulator view found paired
+o20SharePaperAdvanceSources
+  (AdvanceSourceFinishEmpty {component} {parent} {retiredFlag} {table} {accumulator} {view} Refl found target) paired =
+    o20ShareActualReloadingSource component [] parent retiredFlag table accumulator view found paired
+o20SharePaperAdvanceSources
+  (AdvanceSourceFinishOne {component} {parent} {retiredFlag} {table} {step} {accumulator} {view} Refl found target) paired =
+    o20ShareActualReloadingSource component [step] parent retiredFlag table accumulator view found paired
