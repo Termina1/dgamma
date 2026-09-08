@@ -197,3 +197,39 @@ commit receipt. 20 compiler invocations, 17 PASS (including D9-1), 3 non-PASS.
 
 D16 cap consumed at 06:45 UTC; no D17 inferred. No O19/O20/O21 body attempt,
 hole delta0. Authorized validation may proceed while awaiting next scope.
+
+## Supervisor E authorization and E16 cap
+
+Supervisor RATIFIED D16/3442c517 and authorized E<=16 before the unchanged
+08:43:56 guard, same residual order and body prerequisites. V1 actual-entry
+regression passed before E started; no overlap/compiler orphan.
+
+E1 `beda808f` derives the E14 actual-spine site theorem with actual counts.
+E2 `02b11909` discharges static classes through the actual observed zero gap;
+E3 `72c34d0c` proves the B3 ACTUAL O19 block site closed form, with no internal
+classifier/cut/site input. E4 `66532e71` proves B13's SAME actual global list
+is numerical execution of that now-proved actual Cartesian site pattern.
+
+E5–E7 define pointwise site pulls and prove exact pull composition and exact
+origin-list concatenation. E8–E11 give/prove a closed-form row rotation at
+EVERY ordinal, by the exhaustive actual adjacent relation and actual site
+word induction (including outside positions). E12 `1847eb2c` observes the
+SINGLE actual identity-map constructor pointwise in its owning module.
+E13–E16 define the descending source-pair row and prove that numeric row
+execution under ANY original map yields exactly that mapped pair list.
+These are genuine equalities, not an inference from cardinality/injectivity.
+
+The FULL Cartesian offset-list equation remains OPEN: next extend numeric
+row calculation through columns, using row-pull inside/beyond interval facts
+and the two-band current-map invariant; relate actual right-block start to
+left start+left count; then local coverage, bounds, uniqueness and nonempty.
+Reached installed target blocks/decomposition/origin updates and same-chain
+endpoint/full-bundle/external assembly remain unstarted. No O19/O20/O21 body.
+
+E16 allocation consumed,16/16 retained.17 checks:16 PASS,1 non-PASS. Only E10
+needed2/3: overlapping indexed LHS patterns failed coverage, repaired by
+eliminating the four ordinal-region constructors first and refining natural
+arguments in the bodies. No mathematical escape, new hole, with, postulate,
+LocalDiamond change or protected surface change. E12's owning-module check
+cost49s/~20GiB; other numeric checks ~3s. No E17 inferred. Final validation
+and mandatory append-only ledger/archive/gate remain due by09:08.
