@@ -104,3 +104,58 @@ o19ActivationInsertExternal nameEq keyEq child (ChildOf parent) component left r
         (SkipRightInternal (movedLeft diamond) NoTransitions
           (o19ActivationInternal nameEq (movedLeft diamond) (movedLeftActivationBranch diamond activation))
           SameExternalOrchestrationEnd)))
+
+
+||| Actual A/O diamond AND frozen suffix replay. Its early insertion is
+||| derived by the A/O producer; no intermediate checked guard is assumed.
+export
+0 o19ActivationInsertReplay :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (child : name) -> (parent : Parent name) -> (component : Component key value world error) ->
+  {initial, first, middle, last, finalState : SystemState name key value world error} ->
+  (source : Transitions initial finalState) -> (earlier : Transitions initial first) ->
+  (left : Transition first middle) -> (right : Transition middle last) ->
+  (later : Transitions last finalState) ->
+  (appendTransitions earlier (MoreTransitions left (MoreTransitions right later)) = source) ->
+  ReplayInvariantBundle name key world error value protocol nameEq keyEq source ->
+  PaperActivationStep left -> (transitionAction right = OInsert child parent component) ->
+  Not (child = transitionActor left) ->
+  ((licensor : name) -> (parent = ChildOf licensor) -> Not (transitionActor left = licensor)) ->
+  (diamond : LocalRelationalDiamond name key world error value nameEq keyEq left right **
+   AdjacentSwapResult name key world error value protocol nameEq keyEq source earlier left right later diamond)
+o19ActivationInsertReplay nameEq keyEq protocol child parent component source earlier left right later
+  decomposition premises activation inserted childSafe parentSafe =
+    ((activationOrchestrationDiamondSpike nameEq keyEq left right
+        (Builtin.fst (o19SourcePairFacts nameEq keyEq protocol source earlier left right later decomposition premises))
+        activation (PaperInsertStep inserted)
+        (\same => childSafe (trans (sym (cong actionOwner inserted))
+          (trans (sym (o19TransitionActorOwner right)) (sym same))))
+        (\otherChild, licensor, otherComponent, same => parentSafe licensor
+          (o19InsertParentInjective child otherChild parent (ChildOf licensor) component otherComponent
+            (trans (sym inserted) same)))
+        (Builtin.fst (Builtin.snd (o19SourcePairFacts nameEq keyEq protocol source earlier left right later decomposition premises)))
+        (Builtin.snd (Builtin.snd (o19SourcePairFacts nameEq keyEq protocol source earlier left right later decomposition premises)))) **
+     adjacentSwapSuffixSpike nameEq keyEq protocol source earlier left right later decomposition premises
+       (activationOrchestrationDiamondSpike nameEq keyEq left right
+        (Builtin.fst (o19SourcePairFacts nameEq keyEq protocol source earlier left right later decomposition premises))
+        activation (PaperInsertStep inserted)
+        (\same => childSafe (trans (sym (cong actionOwner inserted))
+          (trans (sym (o19TransitionActorOwner right)) (sym same))))
+        (\otherChild, licensor, otherComponent, same => parentSafe licensor
+          (o19InsertParentInjective child otherChild parent (ChildOf licensor) component otherComponent
+            (trans (sym inserted) same)))
+        (Builtin.fst (Builtin.snd (o19SourcePairFacts nameEq keyEq protocol source earlier left right later decomposition premises)))
+        (Builtin.snd (Builtin.snd (o19SourcePairFacts nameEq keyEq protocol source earlier left right later decomposition premises))))
+       (o19ActivationInsertExternal nameEq keyEq child parent component left right activation inserted
+         (activationOrchestrationDiamondSpike nameEq keyEq left right
+        (Builtin.fst (o19SourcePairFacts nameEq keyEq protocol source earlier left right later decomposition premises))
+        activation (PaperInsertStep inserted)
+        (\same => childSafe (trans (sym (cong actionOwner inserted))
+          (trans (sym (o19TransitionActorOwner right)) (sym same))))
+        (\otherChild, licensor, otherComponent, same => parentSafe licensor
+          (o19InsertParentInjective child otherChild parent (ChildOf licensor) component otherComponent
+            (trans (sym inserted) same)))
+        (Builtin.fst (Builtin.snd (o19SourcePairFacts nameEq keyEq protocol source earlier left right later decomposition premises)))
+        (Builtin.snd (Builtin.snd (o19SourcePairFacts nameEq keyEq protocol source earlier left right later decomposition premises))))))
