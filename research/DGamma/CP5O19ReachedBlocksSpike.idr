@@ -1443,3 +1443,29 @@ o19PrefixThroughCount block =
     (trans (cong (\count => count + transitionCount (blockBody block))
       (o19TransitionCountAppend (traceBeforeBlock block) (MoreTransitions (beginTransition (blockOpening block)) NoTransitions)))
       (sym (plusAssociative (transitionCount (traceBeforeBlock block)) 1 (transitionCount (blockBody block)))))
+
+||| ACTUAL constructed block boundary counts from OWN word metadata.
+||| Start, whole-block size, and end are derived by structural word/count
+||| laws, not scalar Refl observations of nested reconstruction builders.
+export
+0 o19LocatedByWordCounts :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  {initial, sourceFinal, targetFinal : SystemState name key value world error} ->
+  (source : Transitions initial sourceFinal) ->
+  (block : LocatedOpenEpisodeBlock name key world error value nameEq keyEq selected source) ->
+  (target : Transitions initial targetFinal) ->
+  (aligned : AlignedTransitions name key world error value nameEq keyEq target) ->
+  (origins : ActionRegistrationReplayCorrespondence name key world error value source target) ->
+  (active : supportedActiveAt {name} {key} {value} {world} {error} @{nameEq} selected targetFinal = True) ->
+  (beforeWord, afterWord : List (Action name key value world error)) ->
+  (noEarlier : (action : Action name key value world error) -> Elem action beforeWord ->
+    (isLifecycleAction action = True) -> Not (actionOwner action = selected)) ->
+  (noLater : (action : Action name key value world error) -> Elem action afterWord ->
+    (isLifecycleAction action = True) -> Not (actionOwner action = selected)) ->
+  (placement : o19ActionWord target = beforeWord ++ (o19ActionWord (actorBlockTrace block) ++ afterWord)) ->
+  (transitionCount (traceBeforeBlock (o19LocatedByWord nameEq keyEq selected source block target aligned origins active beforeWord afterWord noEarlier noLater placement)) = length beforeWord,
+   (transitionCount (actorBlockTrace (o19LocatedByWord nameEq keyEq selected source block target aligned origins active beforeWord afterWord noEarlier noLater placement)) = transitionCount (actorBlockTrace block),
+    transitionCount (prefixThroughBlock (o19LocatedByWord nameEq keyEq selected source block target aligned origins active beforeWord afterWord noEarlier noLater placement)) = length beforeWord + transitionCount (actorBlockTrace block)))
+o19LocatedByWordCounts nameEq keyEq selected source block target aligned origins active beforeWord afterWord noEarlier noLater placement =
+  ((trans (sym (o19ActionWordLength (traceBeforeBlock (o19LocatedByWord nameEq keyEq selected source block target aligned origins active beforeWord afterWord noEarlier noLater placement)))) (cong length (fst (o19LocatedByWordWords nameEq keyEq selected source block target aligned origins active beforeWord afterWord noEarlier noLater placement)))), ((trans (sym (o19ActionWordLength (actorBlockTrace (o19LocatedByWord nameEq keyEq selected source block target aligned origins active beforeWord afterWord noEarlier noLater placement)))) (trans (cong length (snd (o19LocatedByWordWords nameEq keyEq selected source block target aligned origins active beforeWord afterWord noEarlier noLater placement))) (o19ActionWordLength (actorBlockTrace block)))), (trans (o19PrefixThroughCount (o19LocatedByWord nameEq keyEq selected source block target aligned origins active beforeWord afterWord noEarlier noLater placement)) (cong2 (+) (trans (sym (o19ActionWordLength (traceBeforeBlock (o19LocatedByWord nameEq keyEq selected source block target aligned origins active beforeWord afterWord noEarlier noLater placement)))) (cong length (fst (o19LocatedByWordWords nameEq keyEq selected source block target aligned origins active beforeWord afterWord noEarlier noLater placement)))) (trans (sym (o19ActionWordLength (actorBlockTrace (o19LocatedByWord nameEq keyEq selected source block target aligned origins active beforeWord afterWord noEarlier noLater placement)))) (trans (cong length (snd (o19LocatedByWordWords nameEq keyEq selected source block target aligned origins active beforeWord afterWord noEarlier noLater placement))) (o19ActionWordLength (actorBlockTrace block))))))))
