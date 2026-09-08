@@ -860,3 +860,24 @@ o19PrefixThroughWord {selected} block =
     (trans (cong (\word => word ++ o19ActionWord (blockBody block))
       (o19ActionWordAppend (traceBeforeBlock block) (MoreTransitions (beginTransition (blockOpening block)) NoTransitions)))
       (sym (appendAssociative (o19ActionWord (traceBeforeBlock block)) [LBegin selected] (o19ActionWord (blockBody block)))))
+
+||| Exact ACTUAL whole reached word, derived from the OWN column trace
+||| decomposition and residual words. This is not occurrence correspondence.
+export
+0 o19ActualSwapWord :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (protocol : RegistrationProtocol key value world error) ->
+  {sourceOrder, targetOrder : List name} -> (swap : AdjacentActorOrderSwap name sourceOrder targetOrder) ->
+  {initial, sourceFinal : SystemState name key value world error} -> (source : Transitions initial sourceFinal) ->
+  (blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder source) ->
+  (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq source) ->
+  (safety : AdjacentActorSwapSafety name key world error value protocol nameEq keyEq swap source blocks premises) ->
+  (unique : UniqueRawNameInsertions name key world error value nameEq keyEq source) ->
+  (o19ActionWord (cursorTrace (columnCursor (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique))) =
+    o19ActionWord (traceBeforeBlock (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety))) ++ ((o19ActionWord (actorBlockTrace (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety)))) ++ ((o19ActionWord (actorBlockTrace (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)))) ++ (o19ActionWord (traceAfterBlock (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety)))))))
+o19ActualSwapWord nameEq keyEq protocol swap source blocks premises safety unique =
+  trans (sym (cong o19ActionWord (columnDecomposition (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique))))
+    (trans (o19ActionWordAppend (traceBeforeBlock (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety))) (appendTransitions (columnRight (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique)) (columnRest (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique))))
+      (cong (o19ActionWord (traceBeforeBlock (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety))) ++)
+        (trans (o19ActionWordAppend (columnRight (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique)) (columnRest (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique)))
+          (cong2 (++) (columnRightWord (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique)) (columnRestWord (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique))))))
