@@ -207,3 +207,34 @@ o19ActivationInsertionStepObserved {name} {key} {world} {error} {value}
         (trans (cong (\count => count + 1) (orchestrationRowNodeCount previous))
           (plusCommutative crossings 1)))
 
+
+
+||| The next A/O crossing consumes only the actual previous row and classes.
+export
+0 o19ActivationInsertionStep :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (child : name) -> (parent : Parent name) -> (component : Component key value world error) ->
+  {initial, sourceFinal, before, middle, rightBefore, rightAfter : SystemState name key value world error} ->
+  (source : Transitions initial sourceFinal) -> (earlier : Transitions initial before) ->
+  (left : Transition before middle) -> (sourceRight : Transition rightBefore rightAfter) ->
+  (crossings : Nat) ->
+  (previous : O19OrchestrationRow name key world error value protocol nameEq keyEq source
+    (appendTransitions earlier (MoreTransitions left NoTransitions)) sourceRight crossings) ->
+  PaperActivationStep left -> (transitionAction sourceRight = OInsert child parent component) ->
+  Not (child = transitionActor left) ->
+  ((licensor : name) -> (parent = ChildOf licensor) -> Not (transitionActor left = licensor)) ->
+  O19OrchestrationRow name key world error value protocol nameEq keyEq source earlier sourceRight (S crossings)
+o19ActivationInsertionStep nameEq keyEq protocol child parent component source earlier left sourceRight crossings
+  previous activation inserted childSafe parentSafe =
+    o19ActivationInsertionStepObserved nameEq keyEq protocol source earlier left sourceRight crossings
+      previous activation
+      (o19ActivationInsertReplay nameEq keyEq protocol child parent component
+        (cursorTrace (orchestrationRowCursor previous)) earlier left
+        (orchestrationRowRight previous) (orchestrationRowRest previous)
+        (trans (sym (appendTransitionsAssociative earlier (MoreTransitions left NoTransitions)
+          (MoreTransitions (orchestrationRowRight previous) (orchestrationRowRest previous))))
+          (orchestrationRowDecomposition previous))
+        (cursorBundle (orchestrationRowCursor previous)) activation
+        (trans (orchestrationRowAction previous) inserted) childSafe parentSafe)
