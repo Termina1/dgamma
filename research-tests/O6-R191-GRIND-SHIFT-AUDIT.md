@@ -252,3 +252,34 @@ not automatically "inside parent block" by the current grammar. No full accepted
 canonical counterexample is claimed; a native grammar probe + checked actual
 child-retirement fixture will separate this from the root-gap issue. No surface
 change is requested or made on this source observation alone.
+
+## C3 child-retirement grammar probe / exhausted CF1 fixture stop
+
+CP3-1: one native expected-rejection probe, actual r45SourceRetire cannot be an
+ActorYieldedRegistrationStep (ORetire 1 vs OInsert). Exact source/log retained;
+disposable source hash-authenticated and removed. No production/surface edit.
+
+CF1 attempted ONE stronger local fixture: actual checked child retirement +
+ChildOf parent + Not RootOrchestrationStep + exclusion from every ActorLifecycleOnly
+single-step body. CF1-1 failed the dependent lookup/parent impossible branch;
+CF1-2 used the existing exported childRetireCannotBeRoot lemma but failed the
+impossible pattern's rest=NoTransitions refinement; CF1-3 fixed that pattern and
+failed the concrete lookup Refl under the explicitly supplied r45NameEq dictionary.
+THREE attempts EXHAUSTED. Whole untracked fixture source removed after exact
+snapshot SHA256 authentication. No fourth attempt, renamed/shrunken retry, staged
+source, TTC deletion or claim that the non-checking aggregate theorem is proved.
+
+CFV1 freshly reruns the EXISTING actual R45 source trace/checked child-retirement
+fixture. This is evidence of an actual child retirement, NOT an accepted canonical
+selector counterexample. src/DGamma/CP3StatementChecks.idr:567 already states and
+proves childRetireCannotBeRoot from the real child lookup/parent; the missing local
+CF1 instantiation above is not silently filled by that generic theorem.
+
+The remaining zero-gap fidelity concern is precise: RootInputsBeforeLifecycle
+excludes ROOT retire/remove only, while ActorLifecycleOnly permits CHILD INSERT
+but not child retire/remove. Thus "all child orchestration is inside its parent's
+block" is NOT a field of the present grammar. Accepted canonical inputs might
+separately rule out those gap actions, but that exclusion has not been proved;
+no full accepted countermodel is asserted. Initial root placement is still an
+O20 input and its preservation is not an O17/A8 dependency. Stop/gate before any
+new surface claim or any forced zero-gap/early/selector body.
