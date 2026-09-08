@@ -2,6 +2,7 @@ module DGamma.CP5ActorLifecycleOnlyExtended
 
 import DGamma.Calculus
 import DGamma.Coeffects
+import DGamma.Metatheory
 import DGamma.CP3
 import Decidable.Equality
 
@@ -77,3 +78,29 @@ actorLifecycleOnlyIntoExtended nameEq (ActorLifecycleStep step rest lifecycle ow
   ExtendedLifecycleStep step rest lifecycle owned (actorLifecycleOnlyIntoExtended nameEq only)
 actorLifecycleOnlyIntoExtended nameEq (ActorYieldedRegistrationStep step rest yielded only) =
   ExtendedYieldedRegistrationStep step rest yielded (actorLifecycleOnlyIntoExtended nameEq only)
+
+||| Exact physical block research copy. Only the actor-body grammar differs
+||| from CP3; source/destination, installedness, original trace decomposition,
+||| no-other-lifecycle and final active evidence remain fully indexed.
+public export
+record LocatedOpenEpisodeBlockExtended
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (keyEq : DecEq key) (selected : name)
+  {initial, finalState : SystemState name key value world error}
+  (global : Transitions initial finalState) where
+  constructor MkLocatedOpenEpisodeBlockExtended
+  extendedPreStart : SystemState name key value world error
+  extendedStart : SystemState name key value world error
+  extendedEnd : SystemState name key value world error
+  extendedBefore : Transitions initial extendedPreStart
+  extendedOpening : BeginStep nameEq keyEq selected extendedPreStart extendedStart
+  extendedBody : Transitions extendedStart extendedEnd
+  0 extendedInstalled : InstalledTrace name key world error value nameEq keyEq selected extendedBody
+  0 extendedActorOnly : ActorLifecycleOnlyExtended nameEq selected extendedBody
+  extendedAfter : Transitions extendedEnd finalState
+  0 extendedNoEarlier : NoLifecycleBy selected extendedBefore
+  0 extendedNoLater : NoLifecycleBy selected extendedAfter
+  0 extendedActiveAtFinal : supportedActiveAt @{nameEq} selected finalState = True
+  0 extendedDecomposition : appendTransitions extendedBefore
+    (MoreTransitions (beginTransition extendedOpening)
+      (appendTransitions extendedBody extendedAfter)) = global
