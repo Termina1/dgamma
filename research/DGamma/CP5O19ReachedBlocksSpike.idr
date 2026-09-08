@@ -1011,3 +1011,13 @@ data O19SwapSite : {name : Type} -> (leading : List name) -> (left, right : name
     O19SwapSite leading left right trailing left
   O19SiteAfter : {name : Type} -> {leading, trailing : List name} -> {left, right, selected : name} ->
     Elem selected trailing -> O19SwapSite leading left right trailing selected
+
+||| Single structural observation of the two selected target positions or
+||| the actual trailing member. No equality-of-label classification is used.
+export
+0 o19ClassifySwapTail : {name : Type} -> (leading : List name) -> (left, right : name) ->
+  (trailing : List name) -> {selected : name} -> Elem selected (right :: left :: trailing) ->
+  O19SwapSite leading left right trailing selected
+o19ClassifySwapTail leading left right trailing Here = O19SiteRight
+o19ClassifySwapTail leading left right trailing (There Here) = O19SiteLeft
+o19ClassifySwapTail leading left right trailing (There (There member)) = O19SiteAfter member
