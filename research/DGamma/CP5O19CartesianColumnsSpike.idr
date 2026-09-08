@@ -42,3 +42,18 @@ record O19WordCut
   0 cutLeftWord : o19ActionWord cutPrefix = leftWord
   0 cutRightWord : o19ActionWord cutSuffix = rightWord
   0 cutLeftCount : transitionCount cutPrefix = length leftWord
+
+||| Extend an EXPLICIT produced cut by its actual observed source head.
+||| All count/decomposition/word proofs see this same cut and constructor.
+export
+0 o19WordCutPrepend :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, middle, last : SystemState name key value world error} ->
+  (step : Transition first middle) -> (rest : Transitions middle last) ->
+  (wanted : Action name key value world error) -> (leftWord, rightWord : List (Action name key value world error)) ->
+  (transitionAction step = wanted) -> O19WordCut name key world error value leftWord rightWord rest ->
+  O19WordCut name key world error value (wanted :: leftWord) rightWord (MoreTransitions step rest)
+o19WordCutPrepend step rest wanted leftWord rightWord exact
+  (MkO19WordCut between leading suffix decomposition leftExact rightExact count) =
+    MkO19WordCut between (MoreTransitions step leading) suffix (cong (MoreTransitions step) decomposition)
+      (trans (cong (\action => action :: o19ActionWord leading) exact) (cong (wanted ::) leftExact)) rightExact (cong S count)
