@@ -109,3 +109,26 @@ o20ReloadingSourcesFromLifecycle component remaining leftParent rightParent left
   (RenamedReloading Refl older views) leftFound rightFound =
     MkO20SharedReloadingSources component remaining leftParent rightParent leftRetired rightRetired
       leftTable rightTable leftOlder rightOlder leftView rightView leftFound rightFound
+
+||| Component identity is constructor-owned by FiberRelatedBy. Open that
+||| constructor separately from its dependent lifecycle relation.
+export
+0 o20ReloadingSourcesFromFibers :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {renaming : NameBijection name} -> {actor : name} ->
+  {left, right : SystemState name key value world error} ->
+  (component : Component key value world error) ->
+  (remaining : List (StepEffect key value world error (dependencies (componentDependencies component)) (componentProvisions component))) ->
+  (leftParent : Parent name) -> (leftRetired : Bool) ->
+  (leftTable : OwnedTable key value (componentProvisions component)) ->
+  (leftOlder : LocalState key value world (componentProvisions component) -> LocalState key value world (componentProvisions component)) ->
+  (leftView : View name (dependencies (componentDependencies component))) ->
+  (rightFiber : Fiber name key value world error) ->
+  (FiberRelatedBy renaming (MkFiber component leftParent leftRetired leftTable (Reloading remaining leftOlder leftView)) rightFiber) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor (registry left) = Just (MkFiber component leftParent leftRetired leftTable (Reloading remaining leftOlder leftView))) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} (renameForward renaming actor) (registry right) = Just rightFiber) ->
+  O20SharedReloadingSources name key world error value nameEq renaming actor left right
+o20ReloadingSourcesFromFibers component remaining leftParent leftRetired leftTable leftOlder leftView _
+  (RenamedFibers _ rightParent _ rightRetired _ rightTable _ rightLifecycle parents retiredSame lifecycle) leftFound rightFound =
+    o20ReloadingSourcesFromLifecycle component remaining leftParent rightParent leftRetired rightRetired
+      leftTable rightTable leftOlder leftView rightLifecycle lifecycle leftFound rightFound
