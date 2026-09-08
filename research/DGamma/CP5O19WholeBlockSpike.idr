@@ -160,3 +160,28 @@ o19WholeFromObservedChain nameEq keyEq protocol swap source blocks premises safe
         (actorBlockTransitionCount (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety)))))
       (trans (observedChainCount observed) count))
     (observedChainExact observed)
+
+||| WholeBlockSwapDerivation on the SAME actual B3/B13/F14 chain, from O19
+||| inputs only. All internal count, nonempty, local-plan and grid obligations
+||| are discharged. This quantity-0 witness is not yet the operational body:
+||| reached installed blocks and final same-chain assembly remain separate.
+export
+0 o19ActualWholeBlock :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (protocol : RegistrationProtocol key value world error) ->
+  {sourceOrder, targetOrder : List name} -> (swap : AdjacentActorOrderSwap name sourceOrder targetOrder) ->
+  {initial, sourceFinal : SystemState name key value world error} -> (source : Transitions initial sourceFinal) ->
+  (blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder source) ->
+  (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq source) ->
+  (safety : AdjacentActorSwapSafety name key world error value protocol nameEq keyEq swap source blocks premises) ->
+  (unique : UniqueRawNameInsertions name key world error value nameEq keyEq source) ->
+  O19WholeBlockResult name key world error value protocol nameEq keyEq swap source blocks premises safety
+    (cursorTrace (columnCursor (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique)))
+    (cursorDerivation (columnCursor (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique)))
+o19ActualWholeBlock nameEq keyEq protocol swap source blocks premises safety unique =
+  o19WholeFromObservedChain nameEq keyEq protocol swap source blocks premises safety
+    (cursorTrace (columnCursor (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique)))
+    (cursorDerivation (columnCursor (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique)))
+    (o19ActualNonEmptyChain nameEq keyEq protocol swap source blocks premises safety unique)
+    (o19ActualFiniteProductCount nameEq keyEq protocol swap source blocks premises safety unique)
+    (o19ActualLocalOriginPlan nameEq keyEq protocol swap source blocks premises safety unique)
