@@ -38,3 +38,25 @@ export
 o20CanonicalOriginCoverage {name} {key} {world} {error} {value} nameEq keyEq protocol renaming left right registrations capital selected parent component birth =
   acceptedLeftBirthCoverage name key world error value nameEq left right renaming registrations selected parent component
     (generatedRegistrationActionOccurrence (replayGeneratedRegistrationOrigin (canonicalOccurrenceCorrespondence capital) birth))
+
+||| Authenticate the classifier's EXACT stamp against the supplied real birth.
+||| Unique raw insertion positions close the raw-name-only classifier seam;
+||| neither original endpoint presence nor support is needed.
+export
+0 o20CoveredOriginStamp :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {initial, finalState : SystemState name key value world error} ->
+  (original : Transitions initial finalState) ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq original ->
+  (events : List (RegistrationEvent name key world error value)) ->
+  (selected, parent : name) -> (component : Component key value world error) ->
+  (birth : LocatedGeneratedRegistration selected parent component original) ->
+  (coverage : ClassifiedGeneratedBirth name key world error value Z original events selected) ->
+  eventChildGeneration (coveredEvent coverage) = registrationGeneration birth
+o20CoveredOriginStamp original unique events selected parent component birth
+  (MkClassifiedGeneratedBirth event childSame (MkScannedRegistrationBirth scanned stamp) classification) =
+    case childSame of
+      Refl => trans stamp (cong (MkRegistrationGeneration (eventChild event))
+        (uniqueInsertionPosition unique (eventChild event) (ChildOf (eventParent event)) (ChildOf parent)
+          (eventComponent event) component scanned (generatedRegistrationActionOccurrence birth)))
