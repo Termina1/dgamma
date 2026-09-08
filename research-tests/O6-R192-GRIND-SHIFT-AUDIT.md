@@ -102,3 +102,20 @@ abstract-state support lemma in a typed inline lambda and applies the actual
 deletion lookup, NOT scalar support Refl over a nested builder.
 
 28 Unit-A micro-units total (A9 reverted). Unit A stops at its authorized cap.
+
+## Supervisor candidate-A11 ruling / bounded side-analysis D1
+
+A28 cap ratified; removed-historical-name mismatch designated candidate A11,
+not a protected theorem counterexample. Exact field and downstream audit is
+recorded in `O6-R192-A8-A10-DECISION-MEMO.md`: research fourth clause
+`replayedGeneratedBirthMatched` quantifies ALL historical births under the
+CURRENT raw map, without presence/support/current-generation premises.
+Frozen CP3 requires historical matching by GENERATION and final-state effects/
+controls modulo full vestigial evidence, not that historical raw-name bridge.
+No implemented field consumer was found; the endpoint assembly remains a hole.
+Proposal is restrict current-raw fourth matching to supported/non-vestigial
+current births, generation-only classification for historical remainder, full
+vestigial evidence only for PRESENT endpoint remainder, absent proof for
+removed remainder. Exact clause map + six-fixture plan in memo. OWNER GATE
+before editing any research/production surface; no edits made. This bounded
+analysis consumes1 of6 authorized A11 side units and0 compiler invocations.
