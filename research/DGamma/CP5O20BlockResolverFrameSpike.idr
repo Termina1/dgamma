@@ -11,6 +11,7 @@ import DGamma.CP5O19AdjacentReplayProducerSpike
 import DGamma.CP4DeletionFrameCore
 import DGamma.CP5O20RightOpeningTransportSpike
 import DGamma.CP5O20SelectorResolverFrameSpike
+import DGamma.CP5O20SupportedReferenceSpike
 import DGamma.CP5O20BeginObservationSpike
 import DGamma.CP5O19SurfaceSpike
 import DGamma.CP5RankedEarlyApplicabilitySpike
@@ -310,3 +311,42 @@ o20DisjointBlockActualEarlierBegin nameEq keyEq left right distinct leftBefore l
     o20DisjointBlockObservedEarlierBegin nameEq keyEq left right distinct leftBefore leftStart leftEnd rightBefore rightStart
       opening (o20ObserveActualBegin nameEq keyEq right rightBefore rightStart rightOpening)
       body installed only excluded gap empty wellFormed lastFiber lastFound disjoint
+
+||| Fixed-reference incomparability now produces BOTH frames across the WHOLE
+||| native opening+installed body, including every yielded insertion. Only
+||| TWO endpoint/reference component attachments remain explicit; all inner
+||| immutable transport and survival are derived. ZeroGap/child exclusion and
+||| source well-formedness remain honest physical premises, not outputs.
+export
+0 o20IncomparableInstalledEarlierBegin :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (left, right : name) -> Not (right = left) ->
+  (reference : SystemState name key value world error) ->
+  (referenceLeft, referenceRight : Fiber name key value world error) ->
+  (leftBefore, leftStart, leftEnd, rightBefore, rightStart : SystemState name key value world error) ->
+  BeginStep nameEq keyEq left leftBefore leftStart ->
+  (rightOpening : BeginStep nameEq keyEq right rightBefore rightStart) ->
+  (body : Transitions leftStart leftEnd) ->
+  InstalledTrace name key world error value nameEq keyEq left body ->
+  ActorLifecycleOnly left body -> NoGeneratedChild right body ->
+  (gap : Transitions leftEnd rightBefore) -> ZeroGapPending gap ->
+  (registryWellFormed {name} {key} {value} {world} {error} @{nameEq} @{keyEq} leftBefore = True) ->
+  (lastFiber : Fiber name key value world error) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} left (registry leftEnd) = Just lastFiber) ->
+  (fiberComponent lastFiber = fiberComponent referenceLeft) ->
+  (beginObservedComponent (o20ObserveActualBegin nameEq keyEq right rightBefore rightStart rightOpening) = fiberComponent referenceRight) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} left (registry reference) = Just referenceLeft) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} right (registry reference) = Just referenceRight) ->
+  (isSupported {name} {key} {value} {world} {error} @{nameEq} @{keyEq} left reference = True) ->
+  (isSupported {name} {key} {value} {world} {error} @{nameEq} @{keyEq} right reference = True) ->
+  Not (O20SupportedPath name key world error value nameEq keyEq reference left right) ->
+  CheckedEarlyApplication name key world error value nameEq keyEq leftBefore (LBegin right) LBeginTag
+o20IncomparableInstalledEarlierBegin nameEq keyEq left right distinct reference referenceLeft referenceRight
+  leftBefore leftStart leftEnd rightBefore rightStart opening rightOpening body installed only excluded gap empty wellFormed
+  lastFiber lastFound leftStatic rightStatic leftFound rightFound leftSupported rightSupported noPath =
+    o20DisjointBlockActualEarlierBegin nameEq keyEq left right distinct leftBefore leftStart leftEnd rightBefore rightStart
+      opening rightOpening body installed only excluded gap empty wellFormed lastFiber lastFound
+      (\wanted, needed, provided => o20IncomparableDeclarations nameEq keyEq reference left right referenceLeft referenceRight
+        leftFound rightFound leftSupported rightSupported noPath wanted
+        (replace {p = \component => Elem wanted (dependencies (componentDependencies component))} rightStatic needed)
+        (replace {p = \component => Elem wanted (dependencies (componentProvisions component))} leftStatic provided))
