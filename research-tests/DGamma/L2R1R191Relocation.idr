@@ -55,3 +55,21 @@ r191BeginRetireExchange = MkExactChildRetireExchange
   (rewrite checkedActionTargetValid r45NameEq r45KeyEq (ORetire 3)
     (r191ChildGapState 7) (exchangeMiddle r191FinishRetireExchange) ORetireTag
     (exchangeEarlyChecked r191FinishRetireExchange) in Refl)
+
+||| Eleven native edges obtained by splicing the TWO local exchange proofs.
+||| The untouched prefix is the actual old parent block; the untouched suffix
+||| is the actual old actor2 block. The endpoint is literally the old state11.
+public export
+0 r191RelocatedTrace : Transitions (r191ChildGapState 0) (r191ChildGapState 11)
+r191RelocatedTrace = retireExchangeInContext
+  (prefixThroughBlock (r191ChildGapBlocks 0 Here))
+  (Fired {before = r191ChildGapState 6} {afterState = r191ChildGapState 7}
+    r45NameEq r45KeyEq (LBegin 1) LBeginTag (nativeCheckedAt 6 r191ChildGapTrace))
+  (Fired {before = r191ChildGapState 7} {afterState = exchangeMiddle r191FinishRetireExchange}
+    r45NameEq r45KeyEq (ORetire 3) ORetireTag (exchangeEarlyChecked r191FinishRetireExchange))
+  (MoreTransitions
+    (Fired {before = exchangeMiddle r191FinishRetireExchange} {afterState = r191ChildGapState 9}
+      r45NameEq r45KeyEq (LAdvance 1) LFinishTag (exchangeLaterChecked r191FinishRetireExchange))
+    (MoreTransitions (beginTransition (blockOpening (r191ChildGapBlocks 2 (There (There Here)))))
+      (blockBody (r191ChildGapBlocks 2 (There (There Here))))))
+  r191BeginRetireExchange
