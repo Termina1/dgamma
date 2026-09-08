@@ -65,3 +65,11 @@ r193FrameBody =
 public export
 0 r193FrameRightOpening : BeginStep %search %search 1 r193FrameEnd r193FrameRightStart
 r193FrameRightOpening = MkBeginStep Refl
+
+public export
+0 r193FrameInstalled : InstalledTrace Nat ToyKey ToyRuntime String ToyValue %search %search 2 r193FrameBody
+r193FrameInstalled =
+  InstalledStep (OInsert 3 (ChildOf 2) emptyConsumerComponent) OInsertTag Refl
+    (MoreTransitions (Fired {before = r193FrameChild} {afterState = r193FrameEnd} %search %search
+      (LAdvance 2) LFinishTag Refl) NoTransitions) Refl
+    (InstalledStep (LAdvance 2) LFinishTag Refl NoTransitions Refl (InstalledEnd Refl))
