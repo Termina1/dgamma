@@ -99,3 +99,43 @@ o19StepSuccessObserved nameEq keyEq actor step capability state (Left failure) e
     Refl impossible
 o19StepSuccessObserved nameEq keyEq actor step capability state (Right (localAfter, undo)) exact defined =
   MkO19StepObservation localAfter undo exact
+
+||| Decode the ACTUAL captured capability map first, then the callback. Both
+||| observations come from ordinary evaluator arguments; no computed dependent
+||| result is scrutinized locally and no checked early edge is assumed.
+export
+0 o19AdvanceValuesObserved :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (component : Component key value world error) -> (parent : Parent name) -> (retiredFlag : Bool) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (step : StepEffect key value world error (dependencies (componentDependencies component)) (componentProvisions component)) ->
+  (rest : List (StepEffect key value world error (dependencies (componentDependencies component)) (componentProvisions component))) ->
+  (accumulator : LocalState key value world (componentProvisions component) -> LocalState key value world (componentProvisions component)) ->
+  (view : View name (dependencies (componentDependencies component))) ->
+  (state : EffectState name key value world) ->
+  (observed : Maybe (DepValues key value (dependencies (componentDependencies component)))) ->
+  (resolveEffectValues @{keyEq} (dependencies (componentDependencies component)) view state = observed) ->
+  (isJust (fiberAdvanceRuntimeEffectMap nameEq keyEq actor
+    (MkFiber component parent retiredFlag table (Reloading (step :: rest) accumulator view)) state) = True) ->
+  (capability : DepValues key value (dependencies (componentDependencies component)) **
+    (resolveEffectValues @{keyEq} (dependencies (componentDependencies component)) view state = Just capability,
+     O19StepObservation key world error value (dependencies (componentDependencies component))
+       (componentProvisions component) step capability
+       (MkLocalState (effectAmbient state) (restrictOwnedPreservingOrder @{keyEq} (componentProvisions component) (effectTables state actor)))))
+o19AdvanceValuesObserved nameEq keyEq actor component parent retiredFlag table step rest accumulator view state Nothing exact defined =
+  case trans (sym (cong isJust
+    (the (fiberAdvanceRuntimeEffectMap nameEq keyEq actor
+      (MkFiber component parent retiredFlag table (Reloading (step :: rest) accumulator view)) state = Nothing)
+      (rewrite exact in Refl)))) defined of
+    Refl impossible
+o19AdvanceValuesObserved nameEq keyEq actor component parent retiredFlag table step rest accumulator view state (Just capability) exact defined =
+  (capability ** (exact,
+    o19StepSuccessObserved nameEq keyEq actor step capability state
+      (runStepEffect step capability (MkLocalState (effectAmbient state)
+        (restrictOwnedPreservingOrder @{keyEq} (componentProvisions component) (effectTables state actor)))) Refl
+      (trans (sym (cong isJust
+        (the (fiberAdvanceRuntimeEffectMap nameEq keyEq actor
+          (MkFiber component parent retiredFlag table (Reloading (step :: rest) accumulator view)) state =
+          stepForwardEffectMap nameEq keyEq actor step capability state)
+          (rewrite exact in Refl)))) defined)))
