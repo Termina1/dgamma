@@ -73,3 +73,19 @@ o19AdjacentResultCount source earlier left right later diamond result =
         (o19SealedSuffixCount later (replayedSuffix result) (sealedSuffixReplay result)))
         (trans (sym (o19TransitionCountAppend earlier (MoreTransitions left (MoreTransitions right later))))
           (cong transitionCount (originalDecomposition result)))))
+
+||| Whole finite derivation preserves the ACTUAL reached trace length,
+||| by recursion on its explicit node chain. This supports later Cartesian
+||| range extraction but is not a block-origin/product-count theorem.
+export
+0 o19FiniteTraceCount :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {protocol : RegistrationProtocol key value world error} ->
+  {initial, sourceFinal, reachedFinal : SystemState name key value world error} ->
+  {source : Transitions initial sourceFinal} -> {reached : Transitions initial reachedFinal} ->
+  FiniteAdjacentSwapDerivation name key world error value protocol nameEq keyEq source reached ->
+  transitionCount reached = transitionCount source
+o19FiniteTraceCount FiniteAdjacentSwapDone = Refl
+o19FiniteTraceCount (FiniteAdjacentSwapStep source earlier left right later orientation diamond result reached rest) =
+  trans (o19FiniteTraceCount rest) (o19AdjacentResultCount source earlier left right later diamond result)
