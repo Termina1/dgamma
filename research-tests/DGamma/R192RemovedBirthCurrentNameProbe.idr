@@ -84,3 +84,15 @@ r192RemovedCurrent = MkCurrentEndpointRenaming r192AbsentBijection
   (\n, generation, found => case n of
     Z => Right (generation ** (Refl, found))
     S later => void (nothingIsNotJust found))
+
+||| FULL SameOrchestrationModuloGenerated, not merely a bare bijection:
+||| exact external inputs, external root generations, E8 surviving tree, and
+||| CurrentEndpointRenaming are all inhabited for the actual trace pair.
+public export
+0 r192RemovedSameInputs : SameOrchestrationModuloGenerated r45NameEq r45KeyEq
+  r192RemovedBirthTrace r192RemovedBirthTrace
+r192RemovedSameInputs = MkSameOrchestrationModuloGenerated
+  identityRegistrationGenerationBijection
+  (sameExternalOrchestrationReflexiveSpike r45NameEq r192RemovedBirthTrace)
+  (MatchExternalRootBirth _ _ _ _ Refl Refl Refl (SkipLeftNonExternalRootBirth (LBegin 0) _ _ Refl Refl (SkipRightNonExternalRootBirth (LBegin 0) _ _ Refl Refl (SkipLeftNonExternalRootBirth (OInsert 1 (ChildOf 0) r45Child) _ _ Refl Refl (SkipRightNonExternalRootBirth (OInsert 1 (ChildOf 0) r45Child) _ _ Refl Refl (SkipLeftNonExternalRootBirth (LAdvance 0) _ _ Refl Refl (SkipRightNonExternalRootBirth (LAdvance 0) _ _ Refl Refl (SkipLeftNonExternalRootBirth (ORetire 1) _ _ Refl Refl (SkipRightNonExternalRootBirth (ORetire 1) _ _ Refl Refl (SkipLeftNonExternalRootBirth (ORemove 1) _ _ Refl Refl (SkipRightNonExternalRootBirth (ORemove 1) _ _ Refl Refl (ExternalRootBirthCorrespondenceEnd))))))))))))
+  r192RemovedBirthTree r192RemovedCurrent
