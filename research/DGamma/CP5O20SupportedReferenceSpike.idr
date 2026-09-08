@@ -198,3 +198,23 @@ export
 o20SupportedPathRaw (O20SupportedOne lowerSupported upperSupported edge) = SupportPathOne edge
 o20SupportedPathRaw (O20SupportedMore lowerSupported middleSupported edge rest) =
   SupportPathMore edge (o20SupportedPathRaw rest)
+
+||| Structural common-reference path transport. The induction traverses only
+||| authenticated supported vertices, so a vestigial middle cannot enter it.
+export
+0 o20SupportedPathImage :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} -> {renaming : name -> name} ->
+  {source, target : SystemState name key value world error} ->
+  ((selected : name) -> (fiber : Fiber name key value world error) ->
+    (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected (registry source) = Just fiber) ->
+    (isSupported {name} {key} {value} {world} {error} @{nameEq} @{keyEq} selected source = True) ->
+    O20SupportedFiberImage name key world error value nameEq renaming selected fiber target) ->
+  {lower, upper : name} ->
+  O20SupportedPath name key world error value nameEq keyEq source lower upper ->
+  SupportPath nameEq target (renaming lower) (renaming upper)
+o20SupportedPathImage images (O20SupportedOne lowerSupported upperSupported edge) =
+  SupportPathOne (o20SupportedEdgeImage images lowerSupported upperSupported edge)
+o20SupportedPathImage images (O20SupportedMore lowerSupported middleSupported edge rest) =
+  SupportPathMore (o20SupportedEdgeImage images lowerSupported middleSupported edge)
+    (o20SupportedPathImage images rest)
