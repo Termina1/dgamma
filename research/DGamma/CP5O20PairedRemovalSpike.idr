@@ -28,3 +28,15 @@ export
 o20AbsentLookupObserved keyEq wanted context absent Nothing exact = exact
 o20AbsentLookupObserved keyEq wanted (MkCoeffectContext entries unique) absent (Just provided) exact =
   void (absent (lookupJustElem @{keyEq} wanted entries provided exact))
+
+||| Removing a binding really makes that lookup absent. Uses the finite
+||| unique-key invariant of the executable context, not a control postulate.
+export
+0 o20DeletedLookupAbsent :
+  {key : Type} -> {value : key -> Type} ->
+  (keyEq : DecEq key) -> (removed : key) -> (context : CoeffectContext key value) ->
+  (lookupBinding @{keyEq} removed (deleteBinding @{keyEq} removed context) = Nothing)
+o20DeletedLookupAbsent keyEq removed (MkCoeffectContext entries unique) =
+  o20AbsentLookupObserved keyEq removed (deleteBinding @{keyEq} removed (MkCoeffectContext entries unique))
+    (deletedKeyNotElem @{keyEq} removed entries unique)
+    (lookupBinding @{keyEq} removed (deleteBinding @{keyEq} removed (MkCoeffectContext entries unique))) Refl
