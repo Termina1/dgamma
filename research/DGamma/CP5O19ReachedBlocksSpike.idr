@@ -481,3 +481,26 @@ o19SnocInjective (head :: rest) [] last exact =
     (cong S (trans (HL.hasLengthUnique (HL.hasLength (rest ++ [last])) (HL.hasLengthAppend (HL.hasLength rest) (HL.hasLength [last]))) (plusCommutative (length rest) 1)))))
 o19SnocInjective (first :: firstRest) (second :: secondRest) last exact =
   cong2 (::) (fst (consInjective exact)) (o19SnocInjective firstRest secondRest last (snd (consInjective exact)))
+
+||| Authenticate the ORIGINAL right-before word from BlockBefore's exact
+||| opening-prefix equation. Cancelling its actual final Begin is sound for
+||| arbitrary words, including repeated lifecycle action labels.
+export
+0 o19OrderedBeforeWord :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} -> {leftActor, rightActor : name} ->
+  {initial, finalState : SystemState name key value world error} -> {source : Transitions initial finalState} ->
+  (leftBlock : LocatedOpenEpisodeBlock name key world error value nameEq keyEq leftActor source) ->
+  (rightBlock : LocatedOpenEpisodeBlock name key world error value nameEq keyEq rightActor source) ->
+  (ordered : BlockBefore name key world error value nameEq keyEq source leftActor rightActor leftBlock rightBlock) ->
+  (o19ActionWord (traceBeforeBlock rightBlock) = o19ActionWord (prefixThroughBlock leftBlock) ++ o19ActionWord (betweenBlocks ordered))
+o19OrderedBeforeWord {rightActor} leftBlock rightBlock ordered =
+  o19SnocInjective (o19ActionWord (traceBeforeBlock rightBlock))
+    (o19ActionWord (prefixThroughBlock leftBlock) ++ o19ActionWord (betweenBlocks ordered)) (LBegin rightActor)
+    (trans (sym (o19ActionWordAppend (traceBeforeBlock rightBlock) (MoreTransitions (beginTransition (blockOpening rightBlock)) NoTransitions)))
+      (trans (cong o19ActionWord (blocksOrderedInGlobal ordered))
+        (trans (o19ActionWordAppend (prefixThroughBlock leftBlock)
+          (appendTransitions (betweenBlocks ordered) (MoreTransitions (beginTransition (blockOpening rightBlock)) NoTransitions)))
+          (trans (cong (o19ActionWord (prefixThroughBlock leftBlock) ++)
+            (o19ActionWordAppend (betweenBlocks ordered) (MoreTransitions (beginTransition (blockOpening rightBlock)) NoTransitions)))
+            (appendAssociative (o19ActionWord (prefixThroughBlock leftBlock)) (o19ActionWord (betweenBlocks ordered)) [LBegin rightActor])))))
