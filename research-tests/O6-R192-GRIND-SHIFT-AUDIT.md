@@ -119,3 +119,39 @@ vestigial evidence only for PRESENT endpoint remainder, absent proof for
 removed remainder. Exact clause map + six-fixture plan in memo. OWNER GATE
 before editing any research/production surface; no edits made. This bounded
 analysis consumes1 of6 authorized A11 side units and0 compiler invocations.
+
+## Unit B STOP / B10 exhausted3/3
+
+B1--B7 retain actual earlier Begin construction, structural foreign-owner
+lookup frame, derived actor-body foreign owners, exactly `ZeroGapPending gap =
+transitionCount gap = 0`, literal-gap lookup preservation, and physical
+pre-left/Begin/body/gap/pre-right owner transport. B7 produces a real checked
+right-first Begin at the pre-left cut, BUT still takes the actual right
+component's primitive resolver-frame equation explicitly. Deriving that frame
+from accepted supported incomparability remains debt; it is NOT hidden in
+ZeroGapPending. Thus the requested accepted right-first theorem with only one
+new zero-gap hypothesis is NOT complete.
+
+B8/B9 retain scalar map-Maybe positivity and exact BeforeIn tail membership.
+B10 orientation-check completeness exhausted3/3:
+1. separate module cannot unfold `export`-opaque o20CheckBefore;
+2. moved ONLY this pending proof to its owning LinearExtension module, without
+   changing visibility, but `proof` was a reserved identifier;
+3. replaced that identifier; native checker rejects distinct left/head binders
+   unified by BeforeHere. No fourth/nonlinear retry. Whole B10 restored to
+   authenticated HEAD; both attempted locations match retained bytes. Logs,
+   source snapshots and rejected guard runs retained. SV2 rechecks retained
+   capital and the restored dependency. Unit B stops at10 micro-units,9 kept.
+
+No candidate-enumeration completeness, orientation wiring, stopped-order goal
+equality or selector body was proved. The remaining hypotheses were not
+folded into a falsely named zero-gap assumption. Continue authorized C and
+owner-gated A11 surface series, not the exhausted B10 seam.
+
+## R192 binding owner decision — verbatim (2026-09-08)
+
+> OWNER DECISION (2026-09-08, binding, record verbatim in your A8/A10 memo, audit, THM73-PLAN and NOTES): A8 and A10 are resolved by OPTION A — a DEFERRED PRODUCTION UNFREEZE of src/DGamma/CP3.idr limited to the canonical-form definitions: CanonicalInputPlacement (A8: root-first MODULO PROVISION AVAILABILITY, the R178 replacement placement record) and ActorLifecycleOnly (A10: the actor's own generated-child ORetire/ORemove belong to the parent's block). Sequence: (1) research-copies FIRST — prove both cures on research variants (ActorLifecycleOnlyExtended; the R178 placement record), including the zero-gap completeness for the selector and the O17 root phase on those variants, with fixtures (R191 F1–F6 child-retire candidate must fall INSIDE the parent block under the variant; the R174 provision-collision candidate must be admissible under the revised placement); (2) then a single production-unfreeze shift prepares the EXACT CP3 diff (definitions + in-file dependents), the clause map, and a memory-safe seeded rebuild plan (the CP3 change invalidates most downstream TTCs; plan a serialized module-by-module build via the /tmp/dgamma-build-loop.sh pattern under the 48 GiB monitor — the from-scratch Chez peak was ~138 GiB; never run the whole package build in one unmonitored process); (3) the owner signs the production diff before it is committed. Until (3): production stays byte-identical to 34b21c9; the frozen-surface rules are unchanged. Your Unit C memo becomes the plan for (1)–(2): make it precise (names, line numbers, dependents, fixture list, rebuild plan). No production edit this shift.
+
+This ruling supersedes earlier pending/option-comparison language, but does NOT
+unfreeze production in R192. Current-shift O17 prohibition remains; variant
+root-phase work is planned for the explicitly authorized research sequence.

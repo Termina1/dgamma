@@ -3624,3 +3624,11 @@ transport, pre-cut whole-prefix agreement and matched Advance/Finish remain.
 No new success-observation premise was added to O20. No O17/root or O21 work;
 all frozen bodies/LocalDiamond/production/CP3 unchanged. Audit/evidence:
 `research-tests/O6-R184-GRIND-SHIFT-AUDIT.md`.
+
+## R192 binding owner decision — verbatim (2026-09-08)
+
+> OWNER DECISION (2026-09-08, binding, record verbatim in your A8/A10 memo, audit, THM73-PLAN and NOTES): A8 and A10 are resolved by OPTION A — a DEFERRED PRODUCTION UNFREEZE of src/DGamma/CP3.idr limited to the canonical-form definitions: CanonicalInputPlacement (A8: root-first MODULO PROVISION AVAILABILITY, the R178 replacement placement record) and ActorLifecycleOnly (A10: the actor's own generated-child ORetire/ORemove belong to the parent's block). Sequence: (1) research-copies FIRST — prove both cures on research variants (ActorLifecycleOnlyExtended; the R178 placement record), including the zero-gap completeness for the selector and the O17 root phase on those variants, with fixtures (R191 F1–F6 child-retire candidate must fall INSIDE the parent block under the variant; the R174 provision-collision candidate must be admissible under the revised placement); (2) then a single production-unfreeze shift prepares the EXACT CP3 diff (definitions + in-file dependents), the clause map, and a memory-safe seeded rebuild plan (the CP3 change invalidates most downstream TTCs; plan a serialized module-by-module build via the /tmp/dgamma-build-loop.sh pattern under the 48 GiB monitor — the from-scratch Chez peak was ~138 GiB; never run the whole package build in one unmonitored process); (3) the owner signs the production diff before it is committed. Until (3): production stays byte-identical to 34b21c9; the frozen-surface rules are unchanged. Your Unit C memo becomes the plan for (1)–(2): make it precise (names, line numbers, dependents, fixture list, rebuild plan). No production edit this shift.
+
+This ruling supersedes earlier pending/option-comparison language, but does NOT
+unfreeze production in R192. Current-shift O17 prohibition remains; variant
+root-phase work is planned for the explicitly authorized research sequence.
