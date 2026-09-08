@@ -119,3 +119,22 @@ o19ResolveHeadObserved nameEq keyEq wanted rest left right Nothing leftProvider 
   rewrite leftProvider in rewrite rightProvider in Refl
 o19ResolveHeadObserved nameEq keyEq wanted rest left right (Just provider) leftProvider rightProvider tailSame =
   rewrite leftProvider in rewrite rightProvider in cong (map (ProviderView provider)) tailSame
+
+||| Backwards AND forwards resolver equality for precisely the dependencies
+||| that exclude the changing component's provision. Unrelated targets need
+||| not agree. The actual ordered provider observations are derived internally.
+export
+0 o19ResolveReplaceNonDependency :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (deps : List key) -> (actor : name) ->
+  (source : Registry name key value world error) -> (old, next : Fiber name key value world error) ->
+  (lookupFiber @{nameEq} actor source = Just old) -> (fiberComponent next = fiberComponent old) ->
+  ((wanted : key) -> Elem wanted deps -> Not (Elem wanted (dependencies (componentProvisions (fiberComponent old))))) ->
+  (resolveView {name} {key} {value} {world} {error} @{nameEq} @{keyEq} deps (replaceBinding @{nameEq} actor next source) =
+   resolveView {name} {key} {value} {world} {error} @{nameEq} @{keyEq} deps source)
+o19ResolveReplaceNonDependency nameEq keyEq [] actor source old next found static excluded = Refl
+o19ResolveReplaceNonDependency nameEq keyEq (wanted :: rest) actor source old next found static excluded =
+  o19ResolveHeadObserved nameEq keyEq wanted rest (replaceBinding @{nameEq} actor next source) source
+    (providerOf {name} {key} {value} {world} {error} @{nameEq} @{keyEq} wanted source)
+    (o19ProviderReplaceNonDependency nameEq keyEq wanted actor source old next found static (excluded wanted Here)) Refl
+    (o19ResolveReplaceNonDependency nameEq keyEq rest actor source old next found static (\key, present => excluded key (There present)))
