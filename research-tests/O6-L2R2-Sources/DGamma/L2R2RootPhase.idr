@@ -116,3 +116,26 @@ rootPhaseFromSnapshot {cut} nameEq keyEq actor root component earlier beforeBegi
     Refl (snapshotRootSame exchange)
     (supportSetAcrossSnapshot nameEq keyEq cut (snapshotRootFinal exchange) (snapshotRootSame exchange))
     (beginSnapshotRootDecreases nameEq keyEq actor root component beforeBegin beforeRoot exchange)
+
+||| Producer-owned physical C' root-phase evidence: the ORIGINAL six-edge
+||| run ends at state9; the swapped six-edge run has a potentially different
+||| native endpoint, exposed by its authenticated square. Counts are computed
+||| on full actual-state annotations from cut0, not an unlinked tag word or an
+||| assumed prior count. This is a nontrivial admitted move, not normalization.
+public export
+record SmallRootPhaseEvidence where
+  constructor MkSmallRootPhaseEvidence
+  smallPhase : SnapshotRootPhaseStep Nat Bool Unit String (\key => Unit) %search %search
+    2 3 (smallComponent True) (beforeActionOccurrence smallRootBirth)
+    (smallEarlyBegin2 smallNativeExecution) (smallLateInsert3 smallNativeExecution)
+  smallOriginalRun : Transitions (smallState 0) (smallState 9)
+  smallOriginalTrail : AvailabilityTrace Nat Bool Unit String (\key => Unit) smallOriginalRun
+  smallMovedTrail : AvailabilityTrace Nat Bool Unit String (\key => Unit) (rootPhaseTrace smallPhase)
+  0 smallOriginalPhysical : smallOriginalRun = appendTransitions (beforeActionOccurrence smallRootBirth)
+    (MoreTransitions
+      (Fired {before = smallState 4} {afterState = smallState 8} %search %search (LBegin 2) LBeginTag (smallEarlyBegin2 smallNativeExecution))
+      (MoreTransitions
+        (Fired {before = smallState 8} {afterState = smallState 9} %search %search (OInsert 3 Root (smallComponent True)) OInsertTag (smallLateInsert3 smallNativeExecution)) NoTransitions))
+  0 smallOriginalInversions : rootBirthInversions 0 smallOriginalTrail = 3
+  0 smallMovedInversions : rootBirthInversions 0 smallMovedTrail = 2
+  0 smallPhysicalExactlyOne : rootBirthInversions 0 smallOriginalTrail = S (rootBirthInversions 0 smallMovedTrail)
