@@ -1,0 +1,645 @@
+{
+  "generatedUTC": "2026-09-08T12:34:31.220289+00:00",
+  "startCommit": "8e133ed5",
+  "endCommit": "892631c6c52397f2f2c60862da327554ba30ecba",
+  "moves": [
+    {
+      "declaration": "AdjacentActorOrderSwap",
+      "oldFile": "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
+      "newFile": "research/DGamma/CP5O19SurfaceSpike.idr",
+      "oldRange": [
+        23,
+        38
+      ],
+      "newRange": [
+        23,
+        38
+      ],
+      "lineDelta": 0,
+      "oldSignatureLine": 27,
+      "newSignatureLine": 27,
+      "definitionSHA256": "d08a2531460ff1df0e49884c1b1f02477e73f3b07699c715a8e91cb66bbcf816",
+      "definitionBytes": 685,
+      "byteIdentical": true
+    },
+    {
+      "declaration": "ActorBlockDecomposition",
+      "oldFile": "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
+      "newFile": "research/DGamma/CP5O19SurfaceSpike.idr",
+      "oldRange": [
+        49,
+        79
+      ],
+      "newRange": [
+        40,
+        70
+      ],
+      "lineDelta": -9,
+      "oldSignatureLine": 51,
+      "newSignatureLine": 42,
+      "definitionSHA256": "cac6d453ee42f503bd95e8439e61128cc86c1dc10c289591851aea8c64dd3079",
+      "definitionBytes": 1554,
+      "byteIdentical": true
+    },
+    {
+      "declaration": "NoGeneratedChild",
+      "oldFile": "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
+      "newFile": "research/DGamma/CP5O19SurfaceSpike.idr",
+      "oldRange": [
+        81,
+        98
+      ],
+      "newRange": [
+        72,
+        89
+      ],
+      "lineDelta": -9,
+      "oldSignatureLine": 85,
+      "newSignatureLine": 76,
+      "definitionSHA256": "eaf47773edd1755c15f0520e31d18ab960ecf29545719f691404c0d620ea3193",
+      "definitionBytes": 923,
+      "byteIdentical": true
+    },
+    {
+      "declaration": "generatedChildAtHeadContradictsSafety",
+      "oldFile": "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
+      "newFile": "research/DGamma/CP5O19SurfaceSpike.idr",
+      "oldRange": [
+        100,
+        113
+      ],
+      "newRange": [
+        91,
+        104
+      ],
+      "lineDelta": -9,
+      "oldSignatureLine": 103,
+      "newSignatureLine": 94,
+      "definitionSHA256": "a1da68d794be2d7a317b8be4e1ac7ba3ae4ac8475e60df20c0155da9f879899f",
+      "definitionBytes": 677,
+      "byteIdentical": true
+    },
+    {
+      "declaration": "AdjacentActorSwapSafety",
+      "oldFile": "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
+      "newFile": "research/DGamma/CP5O19SurfaceSpike.idr",
+      "oldRange": [
+        115,
+        154
+      ],
+      "newRange": [
+        106,
+        145
+      ],
+      "lineDelta": -9,
+      "oldSignatureLine": 122,
+      "newSignatureLine": 113,
+      "definitionSHA256": "aa8355215d1d955cd4446c7841994676d991a195f5fed20cc106fdcb8350cfb8",
+      "definitionBytes": 2341,
+      "byteIdentical": true
+    },
+    {
+      "declaration": "actorBlockTrace",
+      "oldFile": "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
+      "newFile": "research/DGamma/CP5O19SurfaceSpike.idr",
+      "oldRange": [
+        156,
+        162
+      ],
+      "newRange": [
+        147,
+        153
+      ],
+      "lineDelta": -9,
+      "oldSignatureLine": 157,
+      "newSignatureLine": 148,
+      "definitionSHA256": "9994aa2070e0d37b49bbbe6c5d8111a154d9aec1406d821302b83e48f85042aa",
+      "definitionBytes": 282,
+      "byteIdentical": true
+    },
+    {
+      "declaration": "actorBlockTransitionCount",
+      "oldFile": "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
+      "newFile": "research/DGamma/CP5O19SurfaceSpike.idr",
+      "oldRange": [
+        164,
+        168
+      ],
+      "newRange": [
+        155,
+        159
+      ],
+      "lineDelta": -9,
+      "oldSignatureLine": 165,
+      "newSignatureLine": 156,
+      "definitionSHA256": "d945fe48971b9715660161fabc91b67ba4efbeba014235da7af299713a0305ea",
+      "definitionBytes": 202,
+      "byteIdentical": true
+    },
+    {
+      "declaration": "successorEqualityInjective",
+      "oldFile": "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
+      "newFile": "research/DGamma/CP5O19SurfaceSpike.idr",
+      "oldRange": [
+        170,
+        172
+      ],
+      "newRange": [
+        161,
+        163
+      ],
+      "lineDelta": -9,
+      "oldSignatureLine": 171,
+      "newSignatureLine": 162,
+      "definitionSHA256": "5bd747c498c32c22a22b5bea18c7987e99db463320907aeea1aef553b744de2b",
+      "definitionBytes": 117,
+      "byteIdentical": true
+    },
+    {
+      "declaration": "addLeftInjective",
+      "oldFile": "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
+      "newFile": "research/DGamma/CP5O19SurfaceSpike.idr",
+      "oldRange": [
+        174,
+        179
+      ],
+      "newRange": [
+        165,
+        170
+      ],
+      "lineDelta": -9,
+      "oldSignatureLine": 175,
+      "newSignatureLine": 166,
+      "definitionSHA256": "df66b000ad1bd1af208cd25147160041720291eee3a8c8152ea43de8f5b7660f",
+      "definitionBytes": 273,
+      "byteIdentical": true
+    },
+    {
+      "declaration": "SelectedBlockCoordinateInjectivity",
+      "oldFile": "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
+      "newFile": "research/DGamma/CP5O19SurfaceSpike.idr",
+      "oldRange": [
+        181,
+        230
+      ],
+      "newRange": [
+        172,
+        221
+      ],
+      "lineDelta": -9,
+      "oldSignatureLine": 186,
+      "newSignatureLine": 177,
+      "definitionSHA256": "d85721ec1f330e0de9a09b4ee5a3f49e632a02ea5eb861e49b5677b7fda5e77b",
+      "definitionBytes": 3201,
+      "byteIdentical": true
+    },
+    {
+      "declaration": "selectedBlockCoordinateInjectivity",
+      "oldFile": "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
+      "newFile": "research/DGamma/CP5O19SurfaceSpike.idr",
+      "oldRange": [
+        232,
+        251
+      ],
+      "newRange": [
+        223,
+        242
+      ],
+      "lineDelta": -9,
+      "oldSignatureLine": 233,
+      "newSignatureLine": 224,
+      "definitionSHA256": "bff8cdfbf28b4d4e9879134669aeb90538676a50c01f8564f5b0ca250a1f775a",
+      "definitionBytes": 1143,
+      "byteIdentical": true
+    },
+    {
+      "declaration": "NodeCrossesSourceBlockPosition",
+      "oldFile": "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
+      "newFile": "research/DGamma/CP5O19SurfaceSpike.idr",
+      "oldRange": [
+        253,
+        282
+      ],
+      "newRange": [
+        244,
+        273
+      ],
+      "lineDelta": -9,
+      "oldSignatureLine": 260,
+      "newSignatureLine": 251,
+      "definitionSHA256": "b5bdfd614aa636200c3b27e84107ee7324ab6892e9f171776f664237e70646cf",
+      "definitionBytes": 1550,
+      "byteIdentical": true
+    },
+    {
+      "declaration": "transitionPrefixLength",
+      "oldFile": "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
+      "newFile": "research/DGamma/CP5O19SurfaceSpike.idr",
+      "oldRange": [
+        284,
+        291
+      ],
+      "newRange": [
+        275,
+        282
+      ],
+      "lineDelta": -9,
+      "oldSignatureLine": 285,
+      "newSignatureLine": 276,
+      "definitionSHA256": "b548fec1cbd3bf40d49ec7c6a02d8118eae9bb37c01d44af2f963e4ed45042ed",
+      "definitionBytes": 405,
+      "byteIdentical": true
+    },
+    {
+      "declaration": "adjacentLeftNodeOccurrence",
+      "oldFile": "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
+      "newFile": "research/DGamma/CP5O19SurfaceSpike.idr",
+      "oldRange": [
+        293,
+        311
+      ],
+      "newRange": [
+        284,
+        302
+      ],
+      "lineDelta": -9,
+      "oldSignatureLine": 296,
+      "newSignatureLine": 287,
+      "definitionSHA256": "5e35a695bbdc34a37740613b9c1ee6447a759f03a98a7695da86bb8811cfcbb6",
+      "definitionBytes": 1014,
+      "byteIdentical": true
+    },
+    {
+      "declaration": "adjacentRightNodeOccurrence",
+      "oldFile": "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
+      "newFile": "research/DGamma/CP5O19SurfaceSpike.idr",
+      "oldRange": [
+        313,
+        336
+      ],
+      "newRange": [
+        304,
+        327
+      ],
+      "lineDelta": -9,
+      "oldSignatureLine": 317,
+      "newSignatureLine": 308,
+      "definitionSHA256": "bc24ed56d74df49fcfa3312fea87551f7bc83a8a63563c599dff2699acc8d92f",
+      "definitionBytes": 1232,
+      "byteIdentical": true
+    },
+    {
+      "declaration": "leftNodeSourceBlockLabel",
+      "oldFile": "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
+      "newFile": "research/DGamma/CP5O19SurfaceSpike.idr",
+      "oldRange": [
+        338,
+        366
+      ],
+      "newRange": [
+        329,
+        357
+      ],
+      "lineDelta": -9,
+      "oldSignatureLine": 341,
+      "newSignatureLine": 332,
+      "definitionSHA256": "f094cd1ec0a1039044edf59877d4943b38a037aa00aadede47b8036ccd84d0d8",
+      "definitionBytes": 1633,
+      "byteIdentical": true
+    },
+    {
+      "declaration": "rightNodeSourceBlockLabel",
+      "oldFile": "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
+      "newFile": "research/DGamma/CP5O19SurfaceSpike.idr",
+      "oldRange": [
+        368,
+        396
+      ],
+      "newRange": [
+        359,
+        387
+      ],
+      "lineDelta": -9,
+      "oldSignatureLine": 369,
+      "newSignatureLine": 360,
+      "definitionSHA256": "1a42ad49f90cee90ef333a2e388b2e2c72bd6db86eeb1bfff66051cc2a230e8a",
+      "definitionBytes": 1570,
+      "byteIdentical": true
+    },
+    {
+      "declaration": "DerivationCrossesBlockPositions",
+      "oldFile": "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
+      "newFile": "research/DGamma/CP5O19SurfaceSpike.idr",
+      "oldRange": [
+        398,
+        460
+      ],
+      "newRange": [
+        389,
+        451
+      ],
+      "lineDelta": -9,
+      "oldSignatureLine": 403,
+      "newSignatureLine": 394,
+      "definitionSHA256": "2bf9cc2c5252a554d76aca29b433065e163f36816c867dd7579326e29c59268f",
+      "definitionBytes": 3650,
+      "byteIdentical": true
+    },
+    {
+      "declaration": "BlockCrossingOriginPlan",
+      "oldFile": "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
+      "newFile": "research/DGamma/CP5O19SurfaceSpike.idr",
+      "oldRange": [
+        462,
+        527
+      ],
+      "newRange": [
+        453,
+        518
+      ],
+      "lineDelta": -9,
+      "oldSignatureLine": 466,
+      "newSignatureLine": 457,
+      "definitionSHA256": "3014bdfe1825b89ef7c377fae638b2e84c15fa2d5d0bffde55be5eff782452c9",
+      "definitionBytes": 3753,
+      "byteIdentical": true
+    },
+    {
+      "declaration": "foldBlockCrossingOriginPlan",
+      "oldFile": "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
+      "newFile": "research/DGamma/CP5O19SurfaceSpike.idr",
+      "oldRange": [
+        529,
+        546
+      ],
+      "newRange": [
+        520,
+        537
+      ],
+      "lineDelta": -9,
+      "oldSignatureLine": 532,
+      "newSignatureLine": 523,
+      "definitionSHA256": "cf70035d6d878a3e69a85c50e19a9d98abd4196d45964a7a9dab31555d494271",
+      "definitionBytes": 1176,
+      "byteIdentical": true
+    },
+    {
+      "declaration": "WholeBlockSwapDerivation",
+      "oldFile": "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
+      "newFile": "research/DGamma/CP5O19SurfaceSpike.idr",
+      "oldRange": [
+        548,
+        603
+      ],
+      "newRange": [
+        539,
+        594
+      ],
+      "lineDelta": -9,
+      "oldSignatureLine": 552,
+      "newSignatureLine": 543,
+      "definitionSHA256": "d253d171d27510e773d65e8ce4d38aa2436d9e8fb0af2341ee55999391f8f53a",
+      "definitionBytes": 3073,
+      "byteIdentical": true
+    },
+    {
+      "declaration": "blockCrossingLabels",
+      "oldFile": "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
+      "newFile": "research/DGamma/CP5O19SurfaceSpike.idr",
+      "oldRange": [
+        605,
+        618
+      ],
+      "newRange": [
+        596,
+        609
+      ],
+      "lineDelta": -9,
+      "oldSignatureLine": 606,
+      "newSignatureLine": 597,
+      "definitionSHA256": "151bb8dfd5b2bf471d41a012efab3f84a247961ae4396eeee3d22bd7c37fa42d",
+      "definitionBytes": 740,
+      "byteIdentical": true
+    },
+    {
+      "declaration": "wholeSelectedCoordinateAliasImpossible",
+      "oldFile": "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
+      "newFile": "research/DGamma/CP5O19SurfaceSpike.idr",
+      "oldRange": [
+        620,
+        641
+      ],
+      "newRange": [
+        611,
+        632
+      ],
+      "lineDelta": -9,
+      "oldSignatureLine": 624,
+      "newSignatureLine": 615,
+      "definitionSHA256": "b5ab74038918921d316be8fa3f7a102af167c464c87858c31d7651c5837caadc",
+      "definitionBytes": 1269,
+      "byteIdentical": true
+    },
+    {
+      "declaration": "wholeBlockFiniteDerivation",
+      "oldFile": "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
+      "newFile": "research/DGamma/CP5O19SurfaceSpike.idr",
+      "oldRange": [
+        643,
+        650
+      ],
+      "newRange": [
+        634,
+        641
+      ],
+      "lineDelta": -9,
+      "oldSignatureLine": 644,
+      "newSignatureLine": 635,
+      "definitionSHA256": "05c9db1adca87d2542a5d0bc367e77b4e5dd65028c9303f7ebaa3eb5e5653b9d",
+      "definitionBytes": 411,
+      "byteIdentical": true
+    },
+    {
+      "declaration": "OperationalAdjacentBlockSwap",
+      "oldFile": "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
+      "newFile": "research/DGamma/CP5O19SurfaceSpike.idr",
+      "oldRange": [
+        652,
+        684
+      ],
+      "newRange": [
+        643,
+        675
+      ],
+      "lineDelta": -9,
+      "oldSignatureLine": 657,
+      "newSignatureLine": 648,
+      "definitionSHA256": "349d08ceac1c2af97c76046db20ca491ed6533a9f77efcc96487e0ca400adbb7",
+      "definitionBytes": 1896,
+      "byteIdentical": true
+    },
+    {
+      "declaration": "blockSwapReplayCorrespondence",
+      "oldFile": "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
+      "newFile": "research/DGamma/CP5O19SurfaceSpike.idr",
+      "oldRange": [
+        686,
+        694
+      ],
+      "newRange": [
+        677,
+        685
+      ],
+      "lineDelta": -9,
+      "oldSignatureLine": 687,
+      "newSignatureLine": 678,
+      "definitionSHA256": "6f170fab3e56591d4229d7a3f7daf618127dcbf3cb13ce66e1f1bf5b86e9d6ab",
+      "definitionBytes": 440,
+      "byteIdentical": true
+    },
+    {
+      "declaration": "CertifiedActorPermutation",
+      "oldFile": "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
+      "newFile": "research/DGamma/CP5O19SurfaceSpike.idr",
+      "oldRange": [
+        40,
+        47
+      ],
+      "newRange": [
+        687,
+        694
+      ],
+      "lineDelta": 647,
+      "oldSignatureLine": 41,
+      "newSignatureLine": 688,
+      "definitionSHA256": "d5551b523b85086de1262663da8fcac9a90761bb3be7590bd9b0c3b5c0d0b79b",
+      "definitionBytes": 344,
+      "byteIdentical": true
+    },
+    {
+      "declaration": "OperationalActorPermutation",
+      "oldFile": "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
+      "newFile": "research/DGamma/CP5O19SurfaceSpike.idr",
+      "oldRange": [
+        729,
+        770
+      ],
+      "newRange": [
+        696,
+        737
+      ],
+      "lineDelta": -33,
+      "oldSignatureLine": 734,
+      "newSignatureLine": 701,
+      "definitionSHA256": "350ca254bc0a35951ac97d4e10f838e54312510b7ae46f49717d7f6498af11be",
+      "definitionBytes": 2484,
+      "byteIdentical": true
+    },
+    {
+      "declaration": "MappedCanonicalSupportOrders",
+      "oldFile": "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
+      "newFile": "research/DGamma/CP5O19SurfaceSpike.idr",
+      "oldRange": [
+        871,
+        891
+      ],
+      "newRange": [
+        739,
+        759
+      ],
+      "lineDelta": -132,
+      "oldSignatureLine": 875,
+      "newSignatureLine": 743,
+      "definitionSHA256": "3700c675de16e5f0da10f3a4e27d280654f5fbda333fdc91cea93b7c93d42340",
+      "definitionBytes": 1166,
+      "byteIdentical": true
+    },
+    {
+      "declaration": "canonicalActorBlockDecomposition",
+      "oldFile": "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
+      "newFile": "research/DGamma/CP5O19SurfaceSpike.idr",
+      "oldRange": [
+        1018,
+        1032
+      ],
+      "newRange": [
+        761,
+        775
+      ],
+      "lineDelta": -257,
+      "oldSignatureLine": 1021,
+      "newSignatureLine": 764,
+      "definitionSHA256": "1f2774227e872a97a48842684f67bac2aeae71bb7c6569335e7c3cbc7e228097",
+      "definitionBytes": 786,
+      "byteIdentical": true
+    },
+    {
+      "declaration": "CertifiedOperationalCanonicalPermutation",
+      "oldFile": "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
+      "newFile": "research/DGamma/CP5O19SurfaceSpike.idr",
+      "oldRange": [
+        1034,
+        1072
+      ],
+      "newRange": [
+        777,
+        815
+      ],
+      "lineDelta": -257,
+      "oldSignatureLine": 1039,
+      "newSignatureLine": 782,
+      "definitionSHA256": "e3183a2f0b6c25f616c1766597add70f8e94dca70f034e4ba5c20d97d3ad21c0",
+      "definitionBytes": 2312,
+      "byteIdentical": true
+    },
+    {
+      "declaration": "blockSwapOccurrenceCorrespondence",
+      "oldFile": "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
+      "newFile": "research/DGamma/CP5O19SurfaceSpike.idr",
+      "oldRange": [
+        696,
+        704
+      ],
+      "newRange": [
+        817,
+        825
+      ],
+      "lineDelta": 121,
+      "oldSignatureLine": 697,
+      "newSignatureLine": 818,
+      "definitionSHA256": "b9a513f7fc1ddd9634c6389c98bdb4de325332f4dd650aa38ecae62512c1c27a",
+      "definitionBytes": 460,
+      "byteIdentical": true
+    }
+  ],
+  "protected": [
+    {
+      "declaration": "operationalAdjacentBlockSwapSpike",
+      "oldSignatureLine": 711,
+      "newSignatureLine": 29,
+      "oldBodyLine": 727,
+      "newBodyLine": 45,
+      "signatureSHA256": "e81d83c165b65ae6d4f6e29347b53fa6b7db83d6f5f29d6c6b07c0f9d09c11e8",
+      "signatureUnchanged": true
+    },
+    {
+      "declaration": "selectOperationalCanonicalPermutationSpike",
+      "oldSignatureLine": 1078,
+      "newSignatureLine": 275,
+      "oldBodyLine": 1100,
+      "newBodyLine": 297,
+      "signatureSHA256": "8db1b940921a3c0eb877b2112c25d5325f9058444f7d0a901a66965ffece0540",
+      "signatureUnchanged": true
+    },
+    {
+      "declaration": "canonicalSchedulesConvergeSpike",
+      "oldSignatureLine": 1338,
+      "newSignatureLine": 535,
+      "oldBodyLine": 1363,
+      "newBodyLine": 560,
+      "signatureSHA256": "4ed416287b6b068a2cf78208f4718c98f0e1084d4520a74dc8c67097af345f59",
+      "signatureUnchanged": true
+    }
+  ],
+  "separatorQualification": "All declaration text/comment/fields/body bytes identical; inter-declaration blank separators excluded from each hash. Exactly one surplus final LF was removed under W1 explicit supervisor gate. Extra five declarations inserted ahead of the stable final projection without another EOF edit."
+}

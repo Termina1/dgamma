@@ -138,6 +138,8 @@ for receipt in artifacts:
     r = raw[receipt['sourceInvocation']]
     assert r['passed'] and r['fresh'] and r['exit'] == 0 and not r['interrupted'] and r['expectedDiagnostic'] is None
     assert receipt['sourceHash'] == r['sourceSHA256']
+    sourcePath='dgamma.ipkg' if r['path']=='package' else r['path']
+    assert sha(git('show',receipt['resultingCommitHash']+':'+sourcePath))==receipt['sourceHash'], ('artifact commit-time source hash',receipt['resultingCommitHash'])
     changed = git('diff-tree', '--no-commit-id', '--name-only', '-r', receipt['resultingCommitHash']).decode().splitlines()
     assert set(changed).issubset(receipt['paths']) and all(p.startswith('research-tests/') and not p.endswith('.idr') for p in changed)
 
@@ -153,6 +155,8 @@ assert len(names)==27 and names[0]=='AdjacentActorOrderSwap' and names[-1]=='blo
 names+=['CertifiedActorPermutation','OperationalActorPermutation','MappedCanonicalSupportOrders','canonicalActorBlockDecomposition','CertifiedOperationalCanonicalPermutation']
 chunks={name:original[slice(*spans[name])] for name in names}
 header=original[:positions[0].start()].replace(b'module DGamma.CP5ConfluenceCrossTraceSpike',b'module DGamma.CP5O19SurfaceSpike')
+helperNames=['BodyMetadata', 'OrdinalPlan', 'CartesianSitePlan', 'PairObservation', 'MixedActivationRow', 'MixedRowDispatcher', 'CartesianWordRow', 'CartesianColumns', 'OriginalBlockClass', 'PaperBranchCompleteness', 'ActualCartesian', 'WholeBlock', 'SameChainAssembly', 'ReachedBlocks', 'ReachedDecomposition', 'OperationalAssembly']
+helperPaths=['research/DGamma/CP5O19'+n+'Spike.idr' for n in helperNames]+['research/DGamma/CP5O20'+n+'Spike.idr' for n in ['EpisodeSynchronization','CanonicalPairSelection','BeginObservation']]
 mechanical=[r for r in receipts if r['event']=='GUARDED MECHANICAL COMMIT']
 assert len(mechanical)==args.expected_mechanical
 mechanical_units=set()
@@ -182,10 +186,12 @@ with tarfile.open(archive,'r:gz') as tar:
             if index>27: expected_lower=expected_lower[:-1]
             assert git('show',commit+':'+SURFACE)==expected_lower
             assert metadata['declaration']==name and metadata['declarationSHA256']==sha(chunks[name])
+            assert len(declarations(chunks[name]))==1, (unit,'mechanical commit contains more than one declaration')
             assert re.search(r'^\d+/\d+: Building DGamma\.CP5O19SurfaceSpike \(research/DGamma/CP5O19SurfaceSpike.idr\)$',r['transcript'],re.M)
         elif receipt['unit'].startswith('I'):
             assert receipt['unit'].startswith('I') and len(changed)==1
-            path=changed[0]; old=git('show',commit+'^:'+path)
+            path=changed[0]; assert path==helperPaths[int(receipt['unit'][1:])-1], (unit,path)
+            old=git('show',commit+'^:'+path)
             assert old.count(b'import DGamma.CP5ConfluenceCrossTraceSpike\n')==1
             assert git('show',commit+':'+path)==old.replace(b'import DGamma.CP5ConfluenceCrossTraceSpike\n',b'import DGamma.CP5O19SurfaceSpike\n',1)
         else:
@@ -195,6 +201,27 @@ with tarfile.open(archive,'r:gz') as tar:
             assert metadata['kind']=='approved final separator normalization'
         mechanical_units.add(receipt['unit'])
 assert len(mechanical_units)==args.expected_mechanical
+mechanicalRuns=[r for r in raw.values() if re.fullmatch(r'[MIW]\d+-\d+',r['unit'])]
+mechanicalAttempts=collections.defaultdict(list)
+for r in mechanicalRuns:
+    name,attempt=r['unit'].rsplit('-',1);mechanicalAttempts[name].append(int(attempt))
+assert all(sorted(a)==list(range(1,max(a)+1)) and max(a)<=3 for a in mechanicalAttempts.values())
+rejectedMechanical=[r['unit'] for r in mechanicalRuns if not r['passed']]
+assert rejectedMechanical==['M30-1']
+with tarfile.open(archive,'r:gz') as tar:
+    rollback=json.loads(tar.extractfile(archiveRoot+'M30-1-rollback.json').read())
+    assert rollback['proofTextEdited'] is False and rollback['transcriptsRetained']
+    assert rollback['restoredCommit']==git('rev-parse','80671d8e').decode().strip()
+    for p in rollback['paths']:
+        assert sha(git('show',rollback['restoredCommit']+':'+p['path']))==p['restoredSHA256']
+        assert sha(tar.extractfile(archiveRoot+'M30-1.'+pathlib.Path(p['path']).name+'.source').read())==p['rejectedSHA256']
+    dry=json.loads(tar.extractfile(archiveRoot+'M30-extractor-dry-run.json').read())
+    assert dry['allDeclarationsRecognized'] and dry['mappedChunkDeclarations']==['MappedCanonicalSupportOrders']
+for name in ['canonicalSupportOrderForwardFromTruth','canonicalSupportOrderBackwardFromTruth','canonicalSupportOrdersFromTruth']:
+    private=original[slice(*spans[name])]
+    assert private in git('show',ledger['endCommit']+':'+CROSS)
+    assert private not in git('show',ledger['endCommit']+':'+SURFACE)
+
 assert {r['unit'].rsplit('-',1)[0] for r in raw.values() if re.fullmatch(r'[MIW]\d+-\d+',r['unit'])}==mechanical_units
 bodies=[r for r in receipts if r['event']=='GUARDED BODY COMMIT']
 assert len(bodies)==args.expected_bodies
@@ -217,6 +244,11 @@ for receipt in bodies:
 body_runs=[r for r in raw.values() if re.fullmatch(r'O19-\d+',r['unit'])]
 assert len(body_runs)<=3 and (bool(body_runs)==bool(args.expected_bodies))
 assert len(source_receipts)+len(artifacts)+len(mechanical)+len(bodies)==len(receipts)
+sourceChanging=git('log','--format=%H',ledger['startCommit']+'..'+ledger['endCommit'],'--','research/','research-tests/DGamma/','src/','dgamma.ipkg').decode().splitlines()
+assert set(sourceChanging)=={r['resultingCommitHash'] for r in source_receipts+mechanical+bodies}, 'Unreceipted source-changing commit'
+checkpoints=[r for r in raw.values() if re.fullmatch(r'S\d+-\d+',r['unit'])]
+assert [r['unit'] for r in checkpoints]==['S1-1'] and all(r['passed'] and r['fresh'] and r['exit']==0 for r in checkpoints)
+
 for r in raw.values():
     assert utc(r['start'])<datetime.datetime(2026,9,8,15,9,50,tzinfo=datetime.timezone.utc),r['unit']
 
@@ -227,6 +259,24 @@ for unit, role in dual_roles.items():
     assert raw[unit]['passed'] and raw[unit]['fresh'] and raw[unit]['exit'] == 0 and not raw[unit]['interrupted']
     assert role['target'] == raw[unit]['path'] and role['sourceHash'] == raw[unit]['sourceSHA256']
     assert sha(git('show', ledger['endCommit']+':'+role['target'])) == role['sourceHash']
+clauseMap=json.loads((ROOT/'research-tests/O6-R189-CLAUSE-MAP.json').read_text())
+assert len(clauseMap['moves'])==32 and {m['declaration'] for m in clauseMap['moves']}==set(names)
+endLower=git('show',ledger['endCommit']+':'+SURFACE)
+endCross=git('show',ledger['endCommit']+':'+CROSS)
+lowerMatches=list(re.finditer(positions[0].re.pattern,endLower))
+lowerSpans={m[1].decode():(m.start(),lowerMatches[i+1].start() if i+1<len(lowerMatches) else len(endLower)) for i,m in enumerate(lowerMatches)}
+for row in clauseMap['moves']:
+    name=row['declaration']; oldChunk=chunks[name].rstrip(b'\n')+b'\n'; newChunk=endLower[slice(*lowerSpans[name])].rstrip(b'\n')+b'\n'
+    assert oldChunk==newChunk and sha(oldChunk)==row['definitionSHA256']
+    oldLine=original[:spans[name][0]].count(b'\n')+1; newLine=endLower[:lowerSpans[name][0]].count(b'\n')+1
+    count=oldChunk.count(b'\n')
+    assert row['oldRange']==[oldLine,oldLine+count-1] and row['newRange']==[newLine,newLine+count-1]
+    assert row['lineDelta']==newLine-oldLine and row['byteIdentical']
+for row in clauseMap['protected']:
+    marker=b'0 '+row['declaration'].encode()+b' :'
+    at=endCross.index(marker);tail=endCross.index(b'\n'+row['declaration'].encode()+b' ',at)
+    assert row['newSignatureLine']==endCross[:at].count(b'\n')+1 and row['newBodyLine']==endCross[:tail].count(b'\n')+2
+    assert row['signatureSHA256']==sha(endCross[at:tail]) and row['signatureUnchanged']
 assert not git('diff', '--cached', '--name-only').strip()
 assert not git('diff', '34b21c9', '--', 'src/', 'dgamma.ipkg').strip()
 assert not git('diff', ledger['startCommit'], '--', 'research/DGamma/CP5ConfluenceLocalDiamondSpike.idr').strip()
@@ -235,7 +285,7 @@ modules = re.findall(r'DGamma\.[A-Za-z0-9_.]+', (ROOT/'dgamma.ipkg').read_text()
 assert len(modules) == 207 and all((ROOT/'build/ttc/2025081600'/(m.replace('.', '/')+'.ttc')).is_file() for m in modules)
 report = dict(shift='R189', checkedUTC=datetime.datetime.now(datetime.timezone.utc).isoformat(), endCommit=ledger['endCommit'],
     records=len(records), passed=ledger['passedCount'], rejected=ledger['failedCount'], proofInvocations=len(proof_runs),
-    sourceReceipts=len(source_receipts), artifactReceipts=len(artifacts), mechanicalReceipts=len(mechanical), bodyReceipts=len(bodies), bodyInvocations=len(body_runs), validValidations=len(validations), finalValidationDualRoles=dual_roles, finalValidationRoles=len(validations)+len(dual_roles),
+    sourceReceipts=len(source_receipts), artifactReceipts=len(artifacts), mechanicalReceipts=len(mechanical), mechanicalInvocations=len(mechanicalRuns), rejectedMechanical=rejectedMechanical, mechanicalAttemptCapsPassed=True, baselineCheckpoints=[r['unit'] for r in checkpoints], privateHelpersPreserved=True, clauseMapVerified=True, allSourceChangingCommitsReceipted=True, bodyReceipts=len(bodies), bodyInvocations=len(body_runs), validValidations=len(validations), finalValidationDualRoles=dual_roles, finalValidationRoles=len(validations)+len(dual_roles),
     expectedNegativeValidations=sum(r['expectedDiagnostic'] is not None for r in validations),
     invalidValidationCount=0, serialized=True, interrupted=0, maximumRSSKiB=max(r['maxSampleRSSKiB'] for r in raw.values()),
     oneNewDeclarationPerProofInvocation=True, oneNewDeclarationPerSourceCommit=True, effectiveAttemptCapsPassed=True,

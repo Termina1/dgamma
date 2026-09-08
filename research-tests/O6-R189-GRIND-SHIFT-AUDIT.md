@@ -169,3 +169,24 @@ all35 O19 modules (including Surface and both new proof modules), the
 three amended O20 helper importers, existing R8/R16/R181-count7/R182
 safety/adjacency/R188 whole-chain regressions, and SEEDED package build.
 This plan is NOT a completed build claim. O19 body still unattempted.
+
+## C62 and complete concrete B7 accepted checkpoint
+
+All62 prebody validations freshly PASS, including own-source checks for
+all35 O19 modules/the three lowered O20 helpers, frozen surfaces, required
+R8/R16/R181-count7/R182 safety/adjacency regressions and seeded package.
+B7-1 then freshly PASS/guarded committed the single concrete no-oracle
+full OperationalAdjacentBlockSwap regression on the genuine six-step trace.
+The new public O19 body is still UNATTEMPTED at this checkpoint.
+
+V1 unchanged LocalDiamond own-source check took493.24s. Largest sampled
+RSS49,824,992KiB (~47.52GiB), below48-GiB watchdog; no interruption.
+No cache was deleted. Package success is SEEDED, NOT207 forced source rebuilds.
+Compiler-free scan also finds no protected-hole name reference in any of
+the35 O19 or three lowered O20 helper module bodies.
+
+Installing the exact one-body runner now: it independently requires52
+guarded mechanical commits, the accepted A/B/B7 proof receipts, all62
+current-source validation hashes, clean tree and the exact5-hole frozen
+census BEFORE touching O19. On failure it retains the snapshot/transcript,
+fully restores the committed source, then stops/gates; no automatic retry.
