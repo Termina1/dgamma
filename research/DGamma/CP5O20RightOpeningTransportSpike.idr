@@ -114,3 +114,25 @@ export
    lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor (registry finalState))
 o20EmptyGapKeepsLookup nameEq actor NoTransitions empty = Refl
 o20EmptyGapKeepsLookup nameEq actor (MoreTransitions step rest) Refl impossible
+
+||| Physical pre-left -> left Begin -> left body -> actual gap -> pre-right
+||| owner frame. Body owner-disjointness is DERIVED; gap assumption is named.
+export
+0 o20PhysicalLeftBlockOwnerFrame :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (left, right : name) -> Not (right = left) ->
+  (leftBefore, leftStart, leftEnd, rightBefore : SystemState name key value world error) ->
+  BeginStep nameEq keyEq left leftBefore leftStart ->
+  (body : Transitions leftStart leftEnd) ->
+  AlignedTransitions name key world error value nameEq keyEq body ->
+  ActorLifecycleOnly left body -> NoGeneratedChild right body ->
+  (gap : Transitions leftEnd rightBefore) -> ZeroGapPending gap ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} right (registry leftBefore) =
+   lookupFiber {name} {key} {value} {world} {error} @{nameEq} right (registry rightBefore))
+o20PhysicalLeftBlockOwnerFrame nameEq keyEq left right distinct leftBefore leftStart leftEnd rightBefore opening body aligned only excluded gap empty =
+  trans (sym (systemLocalUpdateForeign nameEq right left distinct leftBefore leftStart
+    (applyActionLocalUpdate nameEq keyEq (LBegin left) leftBefore leftStart LBeginTag
+      (checkedActionProjects nameEq keyEq (LBegin left) leftBefore leftStart LBeginTag (beginEquation opening)))))
+    (trans (o20ForeignTraceOwnerFrame nameEq keyEq right body aligned
+      (o20ActorBodyForeignOwners left right distinct body only excluded))
+      (o20EmptyGapKeepsLookup nameEq right gap empty))
