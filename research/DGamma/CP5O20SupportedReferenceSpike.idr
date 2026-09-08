@@ -5,6 +5,7 @@ import DGamma.Coeffects
 import DGamma.Metatheory
 import DGamma.CP3
 import DGamma.CP5O19SurfaceSpike
+import DGamma.CP5O19ReachedBlocksSpike
 import DGamma.CP5ConfluenceLocalDiamondSpike
 import DGamma.CP5ConfluenceCanonicalSortSpike
 import DGamma.CP5ConfluenceDeletionChainSpike
@@ -356,3 +357,14 @@ o20AcceptedSupportedReference nameEq keyEq protocol leftTrace rightTrace inputs 
     (o20GoalReferenceOrdered (currentNameBijection (endpointRenaming inputs))
       (supportOrder (canonicalSchedule rightCapital)) (supportLinearization (canonicalSchedule rightCapital))
       (o20OriginalSupportedImageForward nameEq keyEq protocol leftTrace rightTrace inputs leftCapital rightCapital leftUnique rightUnique))
+
+||| Exact membership transport through an arbitrary finite leading word.
+export
+0 o20SwapLeadingMember :
+  {name : Type} -> (leading : List name) -> (left, right : name) -> (trailing : List name) ->
+  {selected : name} -> Elem selected (leading ++ (left :: right :: trailing)) ->
+  Elem selected (leading ++ (right :: left :: trailing))
+o20SwapLeadingMember [] left right trailing member = o19SwapTailMember member
+o20SwapLeadingMember (head :: rest) left right trailing Here = Here
+o20SwapLeadingMember (head :: rest) left right trailing (There later) =
+  There (o20SwapLeadingMember rest left right trailing later)
