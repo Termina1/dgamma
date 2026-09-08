@@ -48,7 +48,7 @@ def no_compiler():
     assert not re.search(r'/idris2_app/idris2(?:\.so)?(?:\s|$)', subprocess.check_output(['ps','-axo','pid,ppid,command'],text=True)), 'Reconcile compiler/orphan first'
 def chunks():
     original = git('show', START+':'+CROSS)
-    positions = list(re.finditer(rb'(?m)^(?:\|\|\|[^\n]*\n)*public export\n(?:[01] )?(?:(?:record|data) )?([A-Za-z_]\w*)\s*(?=[:\n (])', original))
+    positions = list(re.finditer(rb'(?m)^(?:\|\|\|[^\n]*\n)*(?:(?:public export|export|private)\n)?(?=(?:record|data) |(?:[01] )?\w+[ \t]*:)(?:[01] )?(?:(?:record|data) )?([A-Za-z_]\w*)', original))
     spans = {m[1].decode():(m.start(), positions[i+1].start() if i+1 < len(positions) else len(original)) for i,m in enumerate(positions)}
     selected = {name:original[slice(*spans[name])] for name in NAMES}
     header = original[:positions[0].start()].replace(b'module DGamma.CP5ConfluenceCrossTraceSpike', b'module DGamma.CP5O19SurfaceSpike')

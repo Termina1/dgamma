@@ -118,3 +118,26 @@ switches. CertifiedActorPermutation now moves, superseding 'stays'. No hole
 is moved/called; no O20 proof/body/signature edit. Extra declarations insert
 before the stable final projection; the normalized final separator stays fixed.
 Full transitive own-source check sweep is required before D; still no body attempt.
+
+## C M30-1 STOP / extraction-boundary correction gate
+
+M28 and M29 PASS1/3, immediate commits through80671d8e. M30-1 FAIL
+(non-import visibility error): the public-export-only extractor accidentally
+included THREE following PRIVATE helpers in the MappedCanonicalSupportOrders
+chunk, making canonicalSupportOrdersFromTruth inaccessible to CrossTrace.
+This was a real rejected mechanical invocation, NOT a compiler success or a
+proof failure; exact snapshot/raw transcript/rollback receipt retained.
+No such move was committed, no visibility/proof edit attempted. Both files
+fully restored byte-exactly to80671d8e before immediate STOP/gate.
+
+Supervisor authorized only the extraction-boundary repair, compiler-free
+dry-run, fresh baseline artifact checkpoint, then SAME-STATEMENT M30-2
+within3/3. All top-level declaration boundaries (public export/export/private
+and unannotated private) are now recognized. Dry-run authenticates exactly
+ONE declaration in the Mapped chunk; the three private helpers remain
+byte-identical IN CrossTrace. Per-move one-declaration assertion added.
+Compiler-free parser self-test first rejected a draft pattern missing the
+inline-parameter AdjacentActorOrderSwap record; corrected BEFORE any source
+edit or compiler attempt, then equality of full declaration inventories PASS.
+Any new non-import/non-extractor failure requires another immediate gate.
+S1-1 restored-baseline checkpoint freshly PASS in6.23s, own CrossTrace line.

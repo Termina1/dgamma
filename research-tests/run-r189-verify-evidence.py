@@ -146,7 +146,7 @@ for receipt in artifacts:
 CROSS='research/DGamma/CP5ConfluenceCrossTraceSpike.idr'
 SURFACE='research/DGamma/CP5O19SurfaceSpike.idr'
 original=git('show',ledger['startCommit']+':'+CROSS)
-positions=list(re.finditer(rb'(?m)^(?:\|\|\|[^\n]*\n)*public export\n(?:[01] )?(?:(?:record|data) )?([A-Za-z_]\w*)\s*(?=[:\n (])',original))
+positions=list(re.finditer(rb'(?m)^(?:\|\|\|[^\n]*\n)*(?:(?:public export|export|private)\n)?(?=(?:record|data) |(?:[01] )?\w+[ \t]*:)(?:[01] )?(?:(?:record|data) )?([A-Za-z_]\w*)',original))
 spans={m[1].decode():(m.start(),positions[i+1].start() if i+1<len(positions) else len(original)) for i,m in enumerate(positions)}
 names=[m[1].decode() for m in positions[:28] if m[1] != b'CertifiedActorPermutation']
 assert len(names)==27 and names[0]=='AdjacentActorOrderSwap' and names[-1]=='blockSwapOccurrenceCorrespondence'

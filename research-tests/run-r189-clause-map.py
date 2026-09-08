@@ -13,7 +13,7 @@ LOWER='research/DGamma/CP5O19SurfaceSpike.idr'
 old=subprocess.check_output(['git','show','8e133ed5:'+CROSS],cwd=ROOT,text=True)
 new=(ROOT/CROSS).read_text()
 lower=(ROOT/LOWER).read_text()
-pattern=r'(?m)^(?:\|\|\|[^\n]*\n)*public export\n(?:[01] )?(?:(?:record|data) )?([A-Za-z_]\w*)\s*(?=[:\n (])'
+pattern=r'(?m)^(?:\|\|\|[^\n]*\n)*(?:(?:public export|export|private)\n)?(?=(?:record|data) |(?:[01] )?\w+[ \t]*:)(?:[01] )?(?:(?:record|data) )?([A-Za-z_]\w*)'
 def spans(text):
     matches=list(re.finditer(pattern,text))
     return {m[1]:(m.start(),matches[i+1].start() if i+1<len(matches) else len(text)) for i,m in enumerate(matches)}

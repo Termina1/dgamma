@@ -57,7 +57,7 @@ for part, name in [('CanonicalSort','sortClosingFreeTraceSpike'),('CrossTrace','
 # diff whitelist. The only later addition permitted is the exact O19 body.
 cross_path=PATHS['CrossTrace']
 original=git('show',START+':'+cross_path)
-positions=list(re.finditer(r'(?m)^(?:\|\|\|[^\n]*\n)*public export\n(?:[01] )?(?:(?:record|data) )?([A-Za-z_]\w*)\s*(?=[:\n (])',original))
+positions=list(re.finditer(r'(?m)^(?:\|\|\|[^\n]*\n)*(?:(?:public export|export|private)\n)?(?=(?:record|data) |(?:[01] )?\w+[ \t]*:)(?:[01] )?(?:(?:record|data) )?([A-Za-z_]\w*)',original))
 spans={m[1]:(m.start(),positions[i+1].start() if i+1<len(positions) else len(original)) for i,m in enumerate(positions)}
 names=[m[1] for m in positions[:28] if m[1]!='CertifiedActorPermutation']
 assert len(names)==27
