@@ -33,3 +33,22 @@ record AvailabilityRootExchange
     (OInsert root Root component) first = Just (OInsertTag, rootSwapMiddle)
   0 rootSwapLaterChecked : checkedApplyAction @{nameEq} @{keyEq}
     (transitionAction left) rootSwapMiddle = Just (transitionTag left, finalState)
+
+||| Execute a produced root square between unchanged physical prefix/suffix.
+||| The literal source endpoint is preserved; there is no suffix replay oracle.
+public export
+rootExchangeInContext :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {root : name} -> {component : Component key value world error} ->
+  {initial, first, middle, cut, finalState : SystemState name key value world error} ->
+  (earlier : Transitions initial first) ->
+  (left : Transition first middle) -> (right : Transition middle cut) ->
+  (later : Transitions cut finalState) ->
+  AvailabilityRootExchange name key world error value nameEq keyEq root component left right ->
+  Transitions initial finalState
+rootExchangeInContext {nameEq} {keyEq} {root} {component} earlier left right later
+  (MkAvailabilityRootExchange distinct rootAction compatible moved earlyChecked laterChecked) =
+  appendTransitions earlier
+    (MoreTransitions (Fired nameEq keyEq (OInsert root Root component) OInsertTag earlyChecked)
+      (MoreTransitions (Fired nameEq keyEq (transitionAction left) (transitionTag left) laterChecked) later))
