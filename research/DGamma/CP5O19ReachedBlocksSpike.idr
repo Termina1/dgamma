@@ -56,3 +56,29 @@ export
 o19ColumnCutDecomposition earlier leftWord rightWord suffixWord run cut =
   trans (cong (\rest => appendTransitions earlier (appendTransitions (columnRight run) rest)) (cutDecomposition cut))
     (columnDecomposition run)
+
+||| Extract all three actual reached alignments from the OWN cursor bundle
+||| through its exact decomposition and the SAME left/suffix cut.
+export
+0 o19ColumnCutAligned :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {protocol : RegistrationProtocol key value world error} -> {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {initial, sourceFinal, before : SystemState name key value world error} ->
+  {source : Transitions initial sourceFinal} -> (earlier : Transitions initial before) ->
+  (leftWord, rightWord, suffixWord : List (Action name key value world error)) ->
+  (run : O19ColumnRun name key world error value protocol nameEq keyEq source earlier leftWord rightWord suffixWord) ->
+  (cut : O19WordCut name key world error value leftWord suffixWord (columnRest run)) ->
+  (AlignedTransitions name key world error value nameEq keyEq (columnRight run),
+   (AlignedTransitions name key world error value nameEq keyEq (cutPrefix cut),
+    AlignedTransitions name key world error value nameEq keyEq (cutSuffix cut)))
+o19ColumnCutAligned earlier leftWord rightWord suffixWord run cut =
+  (fst (alignedAppendSplit (columnRight run) (columnRest run)
+    (snd (alignedAppendSplit earlier (appendTransitions (columnRight run) (columnRest run))
+      (replace {p = AlignedTransitions name key world error value nameEq keyEq}
+        (sym (columnDecomposition run)) (replayAligned (cursorBundle (columnCursor run))))))),
+   alignedAppendSplit (cutPrefix cut) (cutSuffix cut)
+     (replace {p = AlignedTransitions name key world error value nameEq keyEq} (sym (cutDecomposition cut))
+       (snd (alignedAppendSplit (columnRight run) (columnRest run)
+         (snd (alignedAppendSplit earlier (appendTransitions (columnRight run) (columnRest run))
+           (replace {p = AlignedTransitions name key world error value nameEq keyEq}
+             (sym (columnDecomposition run)) (replayAligned (cursorBundle (columnCursor run))))))))))
