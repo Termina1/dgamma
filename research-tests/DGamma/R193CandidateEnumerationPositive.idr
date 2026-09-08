@@ -38,3 +38,14 @@ public export
 r193EnumeratedReverseOrder =
   rewrite enumeratedRightExact r193LastPairEnumerated in
   rewrite enumeratedLeftExact r193LastPairEnumerated in BeforeHere Here
+
+||| The native target-order checker accepts the actual final candidate's
+||| orientation after the skipped/earlier candidates, by completeness.
+export
+0 r193EnumeratedOrientationAccepted :
+  (isJust (o20CheckBefore r193SelectionNameEq
+    (actorRight (enumeratedSwap r193LastPairEnumerated))
+    (actorLeft (enumeratedSwap r193LastPairEnumerated)) [1, 3]) = True)
+r193EnumeratedOrientationAccepted = o20CheckBeforeComplete r193SelectionNameEq
+  (actorRight (enumeratedSwap r193LastPairEnumerated))
+  (actorLeft (enumeratedSwap r193LastPairEnumerated)) [1, 3] r193EnumeratedReverseOrder
