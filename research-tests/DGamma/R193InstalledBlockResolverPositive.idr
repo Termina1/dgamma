@@ -9,6 +9,8 @@ import DGamma.CP3
 import DGamma.Section3Example
 import DGamma.CP5O19SurfaceSpike
 import DGamma.CP5O20BlockResolverFrameSpike
+import DGamma.CP5O20BeginObservationSpike
+import DGamma.CP5O20RightOpeningTransportSpike
 import DGamma.CP5RankedEarlyApplicabilitySpike
 import Data.List.Elem
 import Data.Maybe
@@ -89,3 +91,15 @@ public export
 r193FrameLastFiber : Fiber Nat ToyKey ToyValue ToyRuntime String
 r193FrameLastFiber = fromMaybe (freshFiber emptyConsumerComponent Root)
   (lookupFiber 2 (registry r193FrameEnd))
+
+||| Apply the WHOLE native transport theorem: no owner/resolver frame or
+||| pre-left right-Begin success was supplied. The concrete physical gap is
+||| empty; this does not derive a zero gap for arbitrary canonical schedules.
+public export
+0 r193FrameEarlierRightBegin :
+  CheckedEarlyApplication Nat ToyKey ToyRuntime String ToyValue %search %search r193FrameBefore (LBegin 1) LBeginTag
+r193FrameEarlierRightBegin =
+  o20DisjointBlockActualEarlierBegin %search %search 2 1 (\Refl impossible)
+    r193FrameBefore r193FrameStart r193FrameEnd r193FrameEnd r193FrameRightStart
+    r193FrameLeftOpening r193FrameRightOpening r193FrameBody r193FrameInstalled r193FrameActorOnly r193FrameNoRightChild
+    NoTransitions Refl Refl r193FrameLastFiber Refl (\wanted, needed, provided => absurd provided)
