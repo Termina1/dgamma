@@ -141,3 +141,44 @@ SUR1..SUR4 each fresh own-Building PASS in SERIAL order; the special one-use
 Python guard authenticates all four hashes/latest invocation chain and records
 a GUARDED SURFACE COMMIT receipt. Post-migration R190 actual-state fixtures and
 selector regressions are the next serial checks, before C producer continuation.
+
+## C16 cap: producer-owned achievements and exact remaining gap
+
+C1..C16 all retained. C7 first attempt used the nonexistent constructor
+`UniqueKeyCons`; exact native diagnostic, corrected to UniqueCons on attempt2.
+No exhausted C unit and no fourth attempt. CP1/SUR are separately authorized
+probe/surface units, not mislabeled proof attempts.
+
+| Unit | Fresh invocation | Guarded commit |
+|---|---|---|
+| C1 | C1-1 | `5d12078b` |
+| C2 | C2-1 | `67230b93` |
+| C3 | C3-1 | `42d2a1de` |
+| C4 | C4-1 | `c0b0fd21` |
+| C5 | C5-1 | `7f890cd6` |
+| C6 | C6-1 | `1e79ced6` |
+| C7 | C7-2 | `6452c614` |
+| C8 | C8-1 | `41bb2d5e` |
+| C9 | C9-1 | `e6c144f9` |
+| C10 | C10-1 | `1761f6a5` |
+| C11 | C11-1 | `a2207ad4` |
+| C12 | C12-1 | `d65ddb01` |
+| C13 | C13-1 | `2d5672b6` |
+| C14 | C14-1 | `5c443136` |
+| C15 | C15-1 | `373e450e` |
+| C16 | C16-1 | `a6d3a162` |
+
+C1 consumes the accepted selector inputs, initializes the ACTUAL operational
+reference descent and obtains original-to-canonical uniqueness from the owned
+chain. No goalState, external reference, fuel, or operational certificate input.
+C2--C10 own exact finite equality-or-adjacent-inversion availability, instantiated
+at the ACTUAL stopped order. This is NOT unconditional stoppedOrder=goal.
+C11--C16 prove completeness of actual empty-gap and no-generated-child checkers
+from their logical clauses. They do NOT derive those clauses at a selected
+accepted inversion; right-first Begin, physical child-gap exclusion and complete
+actual enumeration/rejection-to-no-inversion transport remain open.
+
+Selector prerequisites now: common reference/actual trace transport CLOSED;
+finite inversion availability CLOSED; actual accepted safety completeness OPEN;
+stoppedOrder=goal OPEN. Selector body untouched, no body attempt spent.
+B20 follows this cap under prior authorization after supervisor checkpoint.
