@@ -55,3 +55,13 @@ r192AbsentBijection = MkNameBijection r192SwapAbsent r192SwapAbsent
                    S Z => Refl
                    S (S Z) => Refl
                    S (S (S later)) => Refl)
+
+||| E8's ACTUAL generation-tree scanner matches child generation(1,2) to
+||| itself, even though it has subsequently been removed from both endpoints.
+public export
+0 r192RemovedBirthTree : RegistrationCorrespondenceByGeneration r45NameEq
+  identityRegistrationGenerationBijection r192RemovedBirthTrace r192RemovedBirthTrace
+r192RemovedBirthTree = MkRegistrationCorrespondenceByGeneration
+  (MkRegistrationIndexState [(0, MkRegistrationGeneration 0 0)] [(0, (MkRegistrationActivation (MkRegistrationGeneration 0 0) 1))] [((MkRegistrationActivation (MkRegistrationGeneration 0 0) 1), 1)] [])
+  (MkRegistrationIndexState [(0, MkRegistrationGeneration 0 0)] [(0, (MkRegistrationActivation (MkRegistrationGeneration 0 0) 1))] [((MkRegistrationActivation (MkRegistrationGeneration 0 0) 1), 1)] [])
+  (SkipLeftNonRegistration (OInsert 0 Root r45Parent) _ _ Refl Refl (SkipRightNonRegistration (OInsert 0 Root r45Parent) _ _ Refl Refl (SkipLeftNonRegistration (LBegin 0) _ _ Refl Refl (SkipRightNonRegistration (LBegin 0) _ _ Refl Refl (QueueLeftGeneratedRegistration _ _ Refl (MkSurvivingRegistration (MkRegistrationActivation (MkRegistrationGeneration 0 0) 1) Refl (NoParentUnloadStep _ _ (\same => case same of Refl impossible) (NoParentUnloadStep _ _ (\same => case same of Refl impossible) (NoParentUnloadStep _ _ (\same => case same of Refl impossible) NoParentUnloadEnd)))) (MatchRightWithPendingLeft _ _ Refl (MkSurvivingRegistration (MkRegistrationActivation (MkRegistrationGeneration 0 0) 1) Refl (NoParentUnloadStep _ _ (\same => case same of Refl impossible) (NoParentUnloadStep _ _ (\same => case same of Refl impossible) (NoParentUnloadStep _ _ (\same => case same of Refl impossible) NoParentUnloadEnd)))) [] _ [] (MkRegistrationEventMatch Refl (MkRegistrationActivation (MkRegistrationGeneration 0 0) 1) (MkRegistrationActivation (MkRegistrationGeneration 0 0) 1) Refl Refl Refl Refl Refl) (SkipLeftNonRegistration (LAdvance 0) _ _ Refl Refl (SkipRightNonRegistration (LAdvance 0) _ _ Refl Refl (SkipLeftNonRegistration (ORetire 1) _ _ Refl Refl (SkipRightNonRegistration (ORetire 1) _ _ Refl Refl (SkipLeftNonRegistration (ORemove 1) _ _ Refl Refl (SkipRightNonRegistration (ORemove 1) _ _ Refl Refl (RegistrationCorrespondenceEnd)))))))))))))
