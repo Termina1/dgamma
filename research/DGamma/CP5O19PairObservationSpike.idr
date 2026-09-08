@@ -6,7 +6,7 @@ import DGamma.Coeffects
 import DGamma.Metatheory
 import DGamma.CP3
 import DGamma.CP5ConfluenceLocalDiamondSpike
-import DGamma.CP5ConfluenceCrossTraceSpike
+import DGamma.CP5O19SurfaceSpike
 import DGamma.CP5UniqueRawNameInsertions
 import DGamma.CP5O19CartesianCursorSpike
 import DGamma.CP5O19AdjacentReplayProducerSpike
