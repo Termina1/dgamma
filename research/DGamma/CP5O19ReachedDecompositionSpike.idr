@@ -181,3 +181,30 @@ o19ActualTargetLifecycleCoverage nameEq keyEq protocol swap source blocks premis
     (replayActionOrigin (finiteDerivationOccurrenceCorrespondence
       (cursorDerivation (columnCursor (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique)))))
     (o19SwapActorMembership swap) (decomposedLifecycleCoverage blocks)
+
+||| COMPLETE ActorBlockDecomposition on the SAME actual reached trace.
+||| Every individual block, physical order, disjointness and lifecycle
+||| coverage field is constructed from original O19 inputs only.
+export
+0 o19ActualTargetDecomposition :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (protocol : RegistrationProtocol key value world error) ->
+  {sourceOrder, targetOrder : List name} -> (swap : AdjacentActorOrderSwap name sourceOrder targetOrder) ->
+  {initial, sourceFinal : SystemState name key value world error} -> (source : Transitions initial sourceFinal) ->
+  (blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder source) ->
+  (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq source) ->
+  (safety : AdjacentActorSwapSafety name key world error value protocol nameEq keyEq swap source blocks premises) ->
+  (unique : UniqueRawNameInsertions name key world error value nameEq keyEq source) ->
+  ActorBlockDecomposition name key world error value nameEq keyEq targetOrder
+    (cursorTrace (columnCursor (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique)))
+o19ActualTargetDecomposition nameEq keyEq protocol swap source blocks premises safety unique =
+  MkActorBlockDecomposition
+    (o19ActualTargetBlock nameEq keyEq protocol swap source blocks premises safety unique)
+    (o19ActualTargetBlocksFollowOrder nameEq keyEq protocol swap source blocks premises safety unique)
+    (\early, late, earlyIn, lateIn, ordered =>
+      o19OrderedBlockRangesDisjoint
+        (cursorTrace (columnCursor (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique)))
+        (o19ActualTargetBlock nameEq keyEq protocol swap source blocks premises safety unique early earlyIn)
+        (o19ActualTargetBlock nameEq keyEq protocol swap source blocks premises safety unique late lateIn)
+        (o19ActualTargetBlocksFollowOrder nameEq keyEq protocol swap source blocks premises safety unique early late earlyIn lateIn ordered))
+    (o19ActualTargetLifecycleCoverage nameEq keyEq protocol swap source blocks premises safety unique)
