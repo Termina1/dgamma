@@ -1707,3 +1707,18 @@ export
 o19BeforeAcrossAppend [] trailing member later = void (uninhabited member)
 o19BeforeAcrossAppend (head :: rest) trailing Here later = BeforeHere (snd (o19ElemAppendInjections rest trailing) later)
 o19BeforeAcrossAppend (head :: rest) trailing (There member) later = BeforeThere (o19BeforeAcrossAppend rest trailing member later)
+
+||| The actual source BlockBefore determines its non-overlapping boundary
+||| inequality. This is derived from its owned dependent gap, never assumed.
+export
+0 o19OrderedBoundaryLTE :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} -> {leftActor, rightActor : name} ->
+  {initial, finalState : SystemState name key value world error} -> (source : Transitions initial finalState) ->
+  (leftBlock : LocatedOpenEpisodeBlock name key world error value nameEq keyEq leftActor source) ->
+  (rightBlock : LocatedOpenEpisodeBlock name key world error value nameEq keyEq rightActor source) ->
+  (ordered : BlockBefore name key world error value nameEq keyEq source leftActor rightActor leftBlock rightBlock) ->
+  LTE (transitionCount (prefixThroughBlock leftBlock)) (transitionCount (traceBeforeBlock rightBlock))
+o19OrderedBoundaryLTE source leftBlock rightBlock ordered =
+  replace {p = LTE (transitionCount (prefixThroughBlock leftBlock))}
+    (sym (o19OrderedBeforeCount source leftBlock rightBlock ordered)) (lteAddRight (transitionCount (prefixThroughBlock leftBlock)))
