@@ -38,3 +38,18 @@ o19AdjacentSourceOrdinalExact point target source relation =
   uniqueAdjacentOrdinalInjective point source (fst (adjacentSwapOrdinalExhaustive point target)) target target
     (o19AdjacentOrdinalSymmetric relation)
     (o19AdjacentOrdinalSymmetric (snd (adjacentSwapOrdinalExhaustive point target))) Refl
+
+||| The same actual prefix correspondence owns an executable ordinal map
+||| and its all-occurrence authentication. This distinguishes repeated Iter
+||| occurrences even when their complete action/tag labels are identical.
+public export
+record O19OrdinalActionMap
+  (name, key, world, error : Type) (value : key -> Type)
+  {sourceFirst, sourceFinal, currentFirst, currentFinal : SystemState name key value world error}
+  (source : Transitions sourceFirst sourceFinal) (current : Transitions currentFirst currentFinal)
+  (correspondence : ActionRegistrationReplayCorrespondence name key world error value source current) where
+  constructor MkO19OrdinalActionMap
+  ordinalOrigin : Nat -> Nat
+  0 ordinalOriginExact : {action : Action name key value world error} ->
+    (occurrence : LocatedActionOccurrence action current) ->
+    (locatedActionOrdinal (replayActionOrigin correspondence occurrence) = ordinalOrigin (locatedActionOrdinal occurrence))
