@@ -39,3 +39,20 @@ export
   O19WordCut name key world error value leftWord suffixWord (columnRest run)
 o19ColumnLeftCut earlier leftWord rightWord suffixWord run =
   o19CutByWord leftWord suffixWord (columnRest run) (columnRestWord run)
+
+||| Authenticate the reached three-spine decomposition with the OWNED cut
+||| equation and the OWNED column decomposition. No rebuilt replay equation.
+export
+0 o19ColumnCutDecomposition :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {protocol : RegistrationProtocol key value world error} -> {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {initial, sourceFinal, before : SystemState name key value world error} ->
+  {source : Transitions initial sourceFinal} -> (earlier : Transitions initial before) ->
+  (leftWord, rightWord, suffixWord : List (Action name key value world error)) ->
+  (run : O19ColumnRun name key world error value protocol nameEq keyEq source earlier leftWord rightWord suffixWord) ->
+  (cut : O19WordCut name key world error value leftWord suffixWord (columnRest run)) ->
+  (appendTransitions earlier (appendTransitions (columnRight run) (appendTransitions (cutPrefix cut) (cutSuffix cut))) =
+    cursorTrace (columnCursor run))
+o19ColumnCutDecomposition earlier leftWord rightWord suffixWord run cut =
+  trans (cong (\rest => appendTransitions earlier (appendTransitions (columnRight run) rest)) (cutDecomposition cut))
+    (columnDecomposition run)
