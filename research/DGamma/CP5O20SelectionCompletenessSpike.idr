@@ -28,3 +28,11 @@ export
   (source : Maybe a) -> isJust source = True -> isJust (map make source) = True
 o20MapMaybePresent make Nothing Refl impossible
 o20MapMaybePresent make (Just value) present = Refl
+
+||| Any strict BeforeIn on a nonempty list puts its RIGHT member in the tail.
+export
+0 o20BeforeRightInTail :
+  {name : Type} -> {left, right, head : name} -> {rest : List name} ->
+  BeforeIn left right (head :: rest) -> Elem right rest
+o20BeforeRightInTail (BeforeHere member) = member
+o20BeforeRightInTail (BeforeThere later) = snd (o20BeforeMembers later)
