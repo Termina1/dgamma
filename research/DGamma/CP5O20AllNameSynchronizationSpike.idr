@@ -51,3 +51,36 @@ o20AllNameEmptyOrigin {name} {key} {world} {error} {value} nameEq renaming
     MkO20AllNameCut
       (MkRenamedRuntimeEffects Refl (synchronizationEmptyTables name key world error value nameEq renaming ambient fibers empty))
       (\selected => snd (synchronizationEmptyObservations name key world error value nameEq renaming ambient fibers empty selected))
+
+||| General ALL-NAME successor for two actual replacements. The owner case
+||| uses the produced new local control relation; every foreign name uses the
+||| old all-name invariant, regardless of support/absence/retirement status.
+export
+0 o20PairedReplaceControls :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (renaming : NameBijection name) -> (actor : name) ->
+  (leftOld, rightOld, leftNext, rightNext : Fiber name key value world error) ->
+  (leftRegistry, rightRegistry : Registry name key value world error) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor leftRegistry = Just leftOld) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} (renameForward renaming actor) rightRegistry = Just rightOld) ->
+  FiberRelatedBy renaming leftNext rightNext ->
+  ((selected : name) -> MaybeFiberRelatedBy renaming
+    (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected leftRegistry)
+    (lookupFiber {name} {key} {value} {world} {error} @{nameEq} (renameForward renaming selected) rightRegistry)) ->
+  (selected : name) -> MaybeFiberRelatedBy renaming
+    (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected (replaceBinding @{nameEq} actor leftNext leftRegistry))
+    (lookupFiber {name} {key} {value} {world} {error} @{nameEq} (renameForward renaming selected)
+      (replaceBinding @{nameEq} (renameForward renaming actor) rightNext rightRegistry))
+o20PairedReplaceControls nameEq renaming actor leftOld rightOld leftNext rightNext
+  leftRegistry rightRegistry leftFound rightFound nextRelated previous selected =
+    case decEq @{nameEq} selected actor of
+      Yes same => rewrite same in
+        rewrite lookupReplacedFiber @{nameEq} actor leftOld leftNext leftRegistry leftFound in
+        rewrite lookupReplacedFiber @{nameEq} (renameForward renaming actor) rightOld rightNext rightRegistry rightFound in
+          RenamedPresent nextRelated
+      No different =>
+        rewrite lookupReplaceOther @{nameEq} selected actor different leftNext leftRegistry in
+        rewrite lookupReplaceOther @{nameEq} (renameForward renaming selected) (renameForward renaming actor)
+          (\same => different (trans (sym (renameLeftInverse renaming selected))
+            (trans (cong (renameBackward renaming) same) (renameLeftInverse renaming actor)))) rightNext rightRegistry in
+          previous selected
