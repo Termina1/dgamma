@@ -58,3 +58,11 @@ terminal artifact commit necessarily cannot include its own future receipt;
 that append-only receipt remains in /tmp/dgamma-r192/commit-receipts.jsonl.
 A final supervisor gate/addendum will record the publication decision without
 changing Idris bytes or rewriting compiler evidence.
+
+## R192 final gate — accepted checked PARTIAL
+
+Supervisor independently verified and RATIFIED9f41aea1; permission to close
+granted, no more proof/source edits. Artifact-only gate addendum records the
+verbatim ruling and subsequent read-only PASS audits. Independent reviewer
+is parent-owned/read-only and pending at this handoff. Remaining proof/fixture
+debts and the deferred production-unfreeze requirement are unchanged.
