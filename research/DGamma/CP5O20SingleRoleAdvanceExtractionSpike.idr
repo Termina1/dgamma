@@ -135,3 +135,28 @@ o20IterNativeValues nameEq keyEq actor before afterState component parent retire
         (resolveEffectValues {name} {key} {value} {world} @{keyEq} (dependencies (componentDependencies component)) view
           (projectEffectState {name} {key} {value} {world} {error} @{nameEq} before)) Refl
         (o20IterCapturedDomain nameEq keyEq actor before afterState component parent retiredFlag table step next more older view found checked)))
+
+||| Actual last-step Finish extracts BOTH capability and successful callback
+||| from its checked native transition. Program/fiber lookup identifies the
+||| actual source, but no domain, callback outcome or post-cut relation is input.
+export
+0 o20FinishOneNativeValues :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (before, afterState : SystemState name key value world error) ->
+  (component : Component key value world error) -> (parent : Parent name) -> (retiredFlag : Bool) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (step : StepEffect key value world error (dependencies (componentDependencies component)) (componentProvisions component)) ->
+  (older : LocalState key value world (componentProvisions component) -> LocalState key value world (componentProvisions component)) ->
+  (view : View name (dependencies (componentDependencies component))) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor (registry before) = Just (MkFiber component parent retiredFlag table (Reloading [step] older view))) ->
+  (checkedApplyAction {name} {key} {value} {world} {error} @{nameEq} @{keyEq} (LAdvance actor) before = Just (LFinishTag, afterState)) ->
+  O20NativeStepValues name key world error value nameEq keyEq before component table step view
+o20FinishOneNativeValues nameEq keyEq actor before afterState component parent retiredFlag table step older view found checked =
+  o20NativeValuesObserved nameEq keyEq before component table step view
+    (o19AdvanceValuesAtSource nameEq keyEq actor before component parent retiredFlag table step [] older view found
+      (o19AdvanceValuesObserved nameEq keyEq actor component parent retiredFlag table step [] older view
+        (projectEffectState {name} {key} {value} {world} {error} @{nameEq} before)
+        (resolveEffectValues {name} {key} {value} {world} @{keyEq} (dependencies (componentDependencies component)) view
+          (projectEffectState {name} {key} {value} {world} {error} @{nameEq} before)) Refl
+        (o20FinishOneCapturedDomain nameEq keyEq actor before afterState component parent retiredFlag table step older view found checked)))
