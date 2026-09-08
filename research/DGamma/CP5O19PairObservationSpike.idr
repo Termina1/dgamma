@@ -107,3 +107,34 @@ o19ObservedAAReplay nameEq keyEq protocol swap original blocks premises safety u
       (o19ReplayedActivationAligned nameEq keyEq protocol swap original blocks premises safety unique cursor earlier later left right
         decomposition leftOwner rightOwner leftActivation rightActivation
         (fst (o19SourcePairFacts nameEq keyEq protocol (cursorTrace cursor) earlier left right later decomposition (cursorBundle cursor))))
+
+||| Single-observation O/A producer; actual insertion and later activation
+||| produce the guard/domain, licensing follows from this observed pair.
+export
+0 o19ObservedOAReplay :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (protocol : RegistrationProtocol key value world error) ->
+  {sourceOrder, targetOrder : List name} -> (swap : AdjacentActorOrderSwap name sourceOrder targetOrder) ->
+  {initial, originalFinal, first, middle, last : SystemState name key value world error} ->
+  (original : Transitions initial originalFinal) ->
+  (blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder original) ->
+  (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq original) ->
+  (safety : AdjacentActorSwapSafety name key world error value protocol nameEq keyEq swap original blocks premises) ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq original ->
+  (cursor : O19ReachedCursor name key world error value protocol nameEq keyEq original) ->
+  (earlier : Transitions initial first) -> (left : Transition first middle) -> (right : Transition middle last) ->
+  (later : Transitions last (cursorFinal cursor)) ->
+  (appendTransitions earlier (MoreTransitions left (MoreTransitions right later)) = cursorTrace cursor) ->
+  {leftOrchestration : PaperOrchestrationStep left} -> {rightActivation : PaperActivationStep right} ->
+  O19PairObservation name key world error value (actorLeft swap) (actorRight swap) left right
+    (AdjacentOrchestrationActivation left right leftOrchestration rightActivation) ->
+  (diamond : LocalRelationalDiamond name key world error value nameEq keyEq left right **
+    AdjacentSwapResult name key world error value protocol nameEq keyEq (cursorTrace cursor) earlier left right later diamond)
+o19ObservedOAReplay nameEq keyEq protocol swap original blocks premises safety unique cursor earlier left right later decomposition
+  (ObservedOA child component inserted rightActivation rightOwner childSafe) =
+    o19InsertActivationReplay nameEq keyEq protocol child (ChildOf (actorLeft swap)) component (cursorTrace cursor) earlier left right later
+      decomposition (cursorBundle cursor) inserted rightActivation
+      (\same => childSafe (trans (sym rightOwner) same))
+      (\licensor, sameParent, sameActor => case sameParent of Refl => actorDistinct swap (trans (sym sameActor) rightOwner))
+      (o19InsertionActivationAligned nameEq keyEq child (ChildOf (actorLeft swap)) component left right inserted
+        (\same => childSafe (trans (sym rightOwner) same)) (fst (snd (o19SourcePairFacts nameEq keyEq protocol (cursorTrace cursor) earlier left right later decomposition (cursorBundle cursor)))) (snd (snd (o19SourcePairFacts nameEq keyEq protocol (cursorTrace cursor) earlier left right later decomposition (cursorBundle cursor)))) rightActivation (fst (o19SourcePairFacts nameEq keyEq protocol (cursorTrace cursor) earlier left right later decomposition (cursorBundle cursor))))
