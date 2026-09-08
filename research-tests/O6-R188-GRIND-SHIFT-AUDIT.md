@@ -65,3 +65,17 @@ actual exact-source guarded receipts. No exhausted unit. B is fully proved,
 but C reached installed ActorBlockDecomposition and D final assembly remain.
 O19/O20/O21 body attempts0/0/0; holes unchanged5=1/3/0/0/1. Quantity-0 actual
 replay/whole producers are erased constructive witnesses, not runtime APIs.
+
+## C6 diagnostic/label correction — raw evidence retained
+
+C6-1 rejected an indexed pattern binding `tag` that Refl forced to LBeginTag;
+repair is an anonymous `_` argument (no nonlinear pattern). The commit guard
+correctly REFUSED the failed source. A shell sequencing mistake (no set-e)
+then launched the unchanged C6 source under raw label C7-1; it failed with
+identical sourceSHA/transcript diagnostic. This IS C6's second attempt, NOT
+an attempt at the next declaration. C6-3 freshly PASSed the mechanical fix,
+within the actual3-attempt cap. No failed source was ever committed and no
+compiler overlapped. Both raw records remain immutable; explicit effective-
+unit/attempt qualifications live in invocation-qualifications.json and will
+be consolidated. Future shell chains use set-e. Real C7 starts at raw C7-2;
+no attempt or source history is retroactively fabricated.
