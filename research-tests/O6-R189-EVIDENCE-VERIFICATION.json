@@ -1,0 +1,135 @@
+{
+  "shift": "R189",
+  "checkedUTC": "2026-09-08T13:03:19.758725+00:00",
+  "endCommit": "d08e6641e038dec8c83b1e25fe9c73c854f7034f",
+  "records": 132,
+  "passed": 130,
+  "rejected": 2,
+  "proofInvocations": 16,
+  "sourceReceipts": 15,
+  "artifactReceipts": 11,
+  "mechanicalReceipts": 52,
+  "mechanicalInvocations": 53,
+  "rejectedMechanical": [
+    "M30-1"
+  ],
+  "mechanicalAttemptCapsPassed": true,
+  "baselineCheckpoints": [
+    "S1-1"
+  ],
+  "privateHelpersPreserved": true,
+  "clauseMapVerified": true,
+  "allSourceChangingCommitsReceipted": true,
+  "bodyReceipts": 0,
+  "bodyInvocations": 0,
+  "validValidations": 62,
+  "finalValidationDualRoles": {},
+  "finalValidationRoles": 62,
+  "expectedNegativeValidations": 2,
+  "invalidValidationCount": 0,
+  "serialized": true,
+  "interrupted": 0,
+  "maximumRSSKiB": 49824992,
+  "oneNewDeclarationPerProofInvocation": true,
+  "oneNewDeclarationPerSourceCommit": true,
+  "effectiveAttemptCapsPassed": true,
+  "invocationQualifications": {},
+  "sourceDeclarations": [
+    {
+      "unit": "A1",
+      "effectiveAttempt": 1,
+      "declaration": "o19OrderedRangeSeparation",
+      "commit": "9a93f9ea3d6a5953acf6564661089897e840b20f"
+    },
+    {
+      "unit": "A2",
+      "effectiveAttempt": 1,
+      "declaration": "o19OrderedBlockRangesDisjoint",
+      "commit": "6b105da3bbf76389bf62ae85009cb7dafa8140d2"
+    },
+    {
+      "unit": "A3",
+      "effectiveAttempt": 2,
+      "declaration": "o19LifecycleCoveredAtCut",
+      "commit": "0f9d4913643852886ae2dcce71b92099bd3809bf"
+    },
+    {
+      "unit": "A4",
+      "effectiveAttempt": 1,
+      "declaration": "o19LocatedLifecycleCovered",
+      "commit": "41244d254eeae7db40174046e1f56741560089c9"
+    },
+    {
+      "unit": "A5",
+      "effectiveAttempt": 1,
+      "declaration": "o19CoveredHeadObserved",
+      "commit": "bdb75cefc3cf83c2afade65f3f05476924966680"
+    },
+    {
+      "unit": "A6",
+      "effectiveAttempt": 1,
+      "declaration": "o19LifecycleCoverageFromOrigins",
+      "commit": "e1ef9233c5e390d2b7da010a139f496cacc07e74"
+    },
+    {
+      "unit": "A7",
+      "effectiveAttempt": 1,
+      "declaration": "o19SwapActorMembership",
+      "commit": "d0042bbfbebb9ec2dc4d99525f35910b17b176a9"
+    },
+    {
+      "unit": "A8",
+      "effectiveAttempt": 1,
+      "declaration": "o19ActualTargetLifecycleCoverage",
+      "commit": "a482d638f820c5c31c060389edf7a002fd143ec9"
+    },
+    {
+      "unit": "A9",
+      "effectiveAttempt": 1,
+      "declaration": "o19ActualTargetDecomposition",
+      "commit": "5ecd7bd2fa6124a4668d5a12cacad437d2352876"
+    },
+    {
+      "unit": "B2",
+      "effectiveAttempt": 1,
+      "declaration": "o19FiniteSameExternalInputs",
+      "commit": "c1cd0dcca7e2c5531e23740c6af57cb4f6881683"
+    },
+    {
+      "unit": "B3",
+      "effectiveAttempt": 1,
+      "declaration": "o19ActualTargetEndpoint",
+      "commit": "03cd7339e72688e5c2526ebc0f1f4e454405a70b"
+    },
+    {
+      "unit": "B4",
+      "effectiveAttempt": 1,
+      "declaration": "o19ActualTargetPremises",
+      "commit": "0e635f82c90d8abb3778dfa0d4dded8ca939cc93"
+    },
+    {
+      "unit": "B5",
+      "effectiveAttempt": 1,
+      "declaration": "o19ActualTargetSameExternalInputs",
+      "commit": "bc82f4ce2e03b1c59adc06ea5cb31f6264568db6"
+    },
+    {
+      "unit": "B6",
+      "effectiveAttempt": 1,
+      "declaration": "o19ActualOperationalBlockSwap",
+      "commit": "edd102018ece784e4d0f4de54fe9268085afce70"
+    },
+    {
+      "unit": "B7",
+      "effectiveAttempt": 1,
+      "declaration": "r189IndependentOperationalSwap",
+      "commit": "d47d3c113acaadd284b92c6e6b6cf6fc5edb6d3a"
+    }
+  ],
+  "archiveSHA256": "976daee3f5c08ec69277948546df44722062b600f79ecdf26e6725b956deecca",
+  "seeds": "207/207",
+  "productionDiff": "empty",
+  "LocalDiamondDiff": "empty",
+  "noStagedFiles": true,
+  "finalArtifactReceiptQualification": "Archive cannot contain its own commit-time receipt; final live receipt is reported separately at gate."
+}
