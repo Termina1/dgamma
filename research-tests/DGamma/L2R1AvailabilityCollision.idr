@@ -32,3 +32,12 @@ l2r1ObservedAction (MoreTransitions (Fired nameEq keyEq action tag checked) rest
 l2r1ObservedAction (MoreTransitions step rest) wanted (S position) observed =
   currentBirthPrependLocation Nat ToyKey ToyRuntime String ToyValue step rest wanted (l2r1ObservedAction rest wanted position observed)
 
+||| Exact actual-state annotations; this erased proof reification does not
+||| invent earlier availability. The underlying R178 predicate is executable.
+public export
+0 l2r1Annotate :
+  {first, finalState : SystemState Nat ToyKey ToyValue ToyRuntime String} ->
+  (trace : Transitions first finalState) -> AvailabilityTrace Nat ToyKey ToyRuntime String ToyValue trace
+l2r1Annotate {first} NoTransitions = AvailabilityEnd first
+l2r1Annotate {first} (MoreTransitions step rest) = AvailabilityStep first step rest (l2r1Annotate rest)
+
