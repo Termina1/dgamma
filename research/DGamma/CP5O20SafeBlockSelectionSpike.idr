@@ -399,3 +399,25 @@ o20MapMaybeSelectionComplete check (head :: rest) head Here selectedPresent =
 o20MapMaybeSelectionComplete check (head :: rest) selected (There later) selectedPresent =
   o20HeadMapMaybeObserved check head rest (check head) Refl
     (Right (o20MapMaybeSelectionComplete check rest selected later selectedPresent))
+
+||| Exact constructor equation owned by the native candidate producer. This
+||| exposes its SAME swap/safety packet to completeness consumers without
+||| changing visibility or equating independently computed observations.
+export
+0 o20CandidateOwnedEquation :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) -> (sourceOrder : List name) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (trace : Transitions initial finalState) ->
+  (blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder trace) ->
+  (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq trace) ->
+  (unique : UniqueRawNameInsertions name key world error value nameEq keyEq trace) ->
+  (targetOrder : List name) -> (swap : AdjacentActorOrderSwap name sourceOrder targetOrder) ->
+  (o20CheckCandidate nameEq keyEq protocol sourceOrder trace blocks premises unique (targetOrder ** swap) =
+   map (\safety => MkO20ChosenSafeSwap targetOrder swap safety unique)
+    (o20CheckSafetyAtMembers nameEq keyEq protocol swap trace blocks premises
+      (Builtin.fst (o20ChosenActorFacts swap))
+      (Builtin.fst (Builtin.snd (o20ChosenActorFacts swap)))
+      (Builtin.snd (Builtin.snd (o20ChosenActorFacts swap)))))
+o20CandidateOwnedEquation nameEq keyEq protocol sourceOrder trace blocks premises unique targetOrder swap = Refl
