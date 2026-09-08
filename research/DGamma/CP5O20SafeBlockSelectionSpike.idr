@@ -372,3 +372,15 @@ o20CheckSafetyAtMembersComplete nameEq keyEq protocol swap trace blocks premises
     (o20CheckNoGeneratedChildComplete nameEq (actorLeft swap) (blockBody (decomposedBlock blocks (actorRight swap) rightIn)) rightSafe)
     (o20CheckRightAtLeftOpeningComplete nameEq keyEq (actorLeft swap) (actorRight swap) trace (decomposedBlock blocks (actorLeft swap) leftIn) early)
     (o20CheckEmptyGapComplete (betweenBlocks (decomposedBlocksFollowOrder blocks (actorLeft swap) (actorRight swap) leftIn rightIn ordered)) adjacent)
+
+||| Scalar case elimination for exhaustive finite filtering. A failed head
+||| preserves a later positive; a successful head already makes selection total.
+export
+0 o20HeadMapMaybeObserved :
+  {a, b : Type} -> (check : a -> Maybe b) -> (head : a) -> (rest : List a) ->
+  (observed : Maybe b) -> (0 checked : check head = observed) ->
+  Either (isJust observed = True) (isJust (head' (mapMaybe check rest)) = True) ->
+  isJust (head' (mapMaybe check (head :: rest))) = True
+o20HeadMapMaybeObserved check head rest Nothing checked (Left Refl) impossible
+o20HeadMapMaybeObserved check head rest Nothing checked (Right laterPresent) = rewrite checked in laterPresent
+o20HeadMapMaybeObserved check head rest (Just selected) checked positive = rewrite checked in Refl
