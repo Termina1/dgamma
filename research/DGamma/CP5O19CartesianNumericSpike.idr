@@ -24,3 +24,14 @@ export
 o19SitesPullAppend [] second position = Refl
 o19SitesPullAppend (point :: rest) second position =
   cong (\source => fst (adjacentSwapOrdinalExhaustive point source)) (o19SitesPullAppend rest second position)
+
+||| Execute two site words sequentially: the second consumes the ACTUAL
+||| composed first-word pull. This is exact origin-list concatenation.
+export
+0 o19OriginsAtSitesAppend : (originalMap : Nat -> Nat) -> (first, second : List Nat) ->
+  (o19OriginsAtSites originalMap (first ++ second) =
+    o19OriginsAtSites originalMap first ++ o19OriginsAtSites (\position => originalMap (o19SitesPull first position)) second)
+o19OriginsAtSitesAppend originalMap [] second = Refl
+o19OriginsAtSitesAppend originalMap (point :: rest) second =
+  cong ((originalMap point, originalMap (S point)) ::)
+    (o19OriginsAtSitesAppend (\position => originalMap (fst (adjacentSwapOrdinalExhaustive point position))) rest second)
