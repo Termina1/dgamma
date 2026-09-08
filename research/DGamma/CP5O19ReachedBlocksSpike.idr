@@ -82,3 +82,24 @@ o19ColumnCutAligned earlier leftWord rightWord suffixWord run cut =
          (snd (alignedAppendSplit earlier (appendTransitions (columnRight run) (columnRest run))
            (replace {p = AlignedTransitions name key world error value nameEq keyEq}
              (sym (columnDecomposition run)) (replayAligned (cursorBundle (columnCursor run))))))))))
+
+||| Count the ACTUAL reached ranges and full trace. Full length uses the
+||| sealed-suffix finite-chain theorem; cut counts use owned word equations.
+export
+0 o19ColumnRangeCounts :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {protocol : RegistrationProtocol key value world error} -> {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {initial, sourceFinal, before : SystemState name key value world error} ->
+  {source : Transitions initial sourceFinal} -> (earlier : Transitions initial before) ->
+  (leftWord, rightWord, suffixWord : List (Action name key value world error)) ->
+  (run : O19ColumnRun name key world error value protocol nameEq keyEq source earlier leftWord rightWord suffixWord) ->
+  (cut : O19WordCut name key world error value leftWord suffixWord (columnRest run)) ->
+  ((transitionCount (columnRight run) = length rightWord),
+   ((transitionCount (cutPrefix cut) = length leftWord),
+    ((transitionCount (cutSuffix cut) = length suffixWord),
+     (transitionCount (cursorTrace (columnCursor run)) = transitionCount source))))
+o19ColumnRangeCounts earlier leftWord rightWord suffixWord run cut =
+  (trans (sym (o19ActionWordLength (columnRight run))) (cong length (columnRightWord run)),
+   (cutLeftCount cut,
+    (trans (sym (o19ActionWordLength (cutSuffix cut))) (cong length (cutRightWord cut)),
+     o19FiniteTraceCount (cursorDerivation (columnCursor run)))))
