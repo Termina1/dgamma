@@ -78,3 +78,11 @@ r193HistoricalUnload = Fired r45NameEq r45KeyEq (LUnload 0) LUnloadTag
   (DGamma.CP4ProgressNoDeadlock.checkedFromRaw r45NameEq r45KeyEq
     (LUnload 0) r193HistoricalLeaving r193HistoricalClosed LUnloadTag
     (checkedTransitionTargetValid r193HistoricalLeave) Refl)
+
+||| Actual five-edge continuation after the generated birth, including the
+||| authenticated final parent L-Unload used by the discarded-birth scanner.
+public export
+r193HistoricalContinuation : Transitions r45SourcePairFinal r193HistoricalClosed
+r193HistoricalContinuation = MoreTransitions r178ParentFinish
+  (MoreTransitions r178ChildRetire (MoreTransitions r193HistoricalRetire
+    (MoreTransitions r193HistoricalLeave (MoreTransitions r193HistoricalUnload NoTransitions))))
