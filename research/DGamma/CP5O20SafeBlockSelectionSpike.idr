@@ -255,3 +255,16 @@ o20NoGeneratedObservation forbidden (LAdvance selected) notChild Refl impossible
 o20NoGeneratedObservation forbidden (LDivert selected) notChild Refl impossible
 o20NoGeneratedObservation forbidden (LLeave selected) notChild Refl impossible
 o20NoGeneratedObservation forbidden (LUnload selected) notChild Refl impossible
+
+||| Scalar observed-result elimination for the actual finite action checker;
+||| this does not observe a nested replay or existential producer.
+export
+0 o20CheckNoGeneratedActionCompleteObserved :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (forbidden : name) -> (action : Action name key value world error) ->
+  (observed : Dec (o20GeneratedChildName action = Just forbidden)) ->
+  (0 checked : decEq (o20GeneratedChildName action) (Just forbidden) = observed) ->
+  Not (o20GeneratedChildName action = Just forbidden) ->
+  isJust (o20CheckNoGeneratedAction nameEq forbidden action) = True
+o20CheckNoGeneratedActionCompleteObserved nameEq forbidden action (Yes same) checked negative = absurd (negative same)
+o20CheckNoGeneratedActionCompleteObserved nameEq forbidden action (No different) checked negative = rewrite checked in Refl
