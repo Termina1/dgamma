@@ -7,6 +7,7 @@ import DGamma.CP3
 import DGamma.CP4RuntimeBindings
 import DGamma.CP4ProgressNoDeadlock
 import DGamma.L2R2CheckedSnapshot
+import DGamma.L2R2RetireSquare
 import DGamma.CP5L2R1ChildRelocation
 import Decidable.Equality
 import Data.List.Elem
@@ -94,3 +95,56 @@ retireInsertedSnapshot nameEq child root fiber component ambient
     cong (MkRuntimeSnapshot ambient)
       (replaceOtherHeadObserved nameEq child root (retireFiber fiber)
         (freshFiber component Root) entries (decEq @{nameEq} child root) Refl distinct)
+
+||| Assemble a root/own-child-Retire square from an observed insertion source
+||| and an independently produced checked late root insertion. The original
+||| retirement endpoint is recovered from its actual native equation.
+export
+0 rootRetireSquareAtInsert :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (child, parent, root : name) ->
+  (fiber : Fiber name key value world error) ->
+  (component : Component key value world error) -> (ambient : world) ->
+  (fibers : Registry name key value world error) ->
+  (0 absent : lookupFiber {name} {key} {value} {world} {error} @{nameEq} root fibers = Nothing) ->
+  (0 found : lookupFiber {name} {key} {value} {world} {error} @{nameEq} child fibers = Just fiber) ->
+  (0 own : fiberParent fiber = ChildOf parent) ->
+  (0 distinct : Not (child = root)) ->
+  (0 valid : registryWellFormed {name} {key} {value} {world} {error} @{nameEq} @{keyEq}
+    (MkSystemState ambient fibers) = True) ->
+  (finalState : SystemState name key value world error) ->
+  (0 inserted : checkedApplyAction @{nameEq} @{keyEq} (OInsert root Root component)
+    (MkSystemState ambient fibers) = Just (OInsertTag,
+      MkSystemState ambient (insertBinding @{nameEq} root (freshFiber component Root) fibers absent))) ->
+  (0 retiredLater : checkedApplyAction @{nameEq} @{keyEq} (ORetire child)
+    (MkSystemState ambient (insertBinding @{nameEq} root (freshFiber component Root) fibers absent)) =
+      Just (ORetireTag, finalState)) ->
+  (replay : CheckedSnapshotStep name key world error value nameEq keyEq (OInsert root Root component)
+    (MkSystemState ambient (replaceBinding @{nameEq} child (retireFiber fiber) fibers)) OInsertTag
+    (MkRuntimeSnapshot ambient (Bind root (freshFiber component Root) ::
+      bindings (replaceBinding @{nameEq} child (retireFiber fiber) fibers)))) ->
+  ChildRetireSnapshotExchange name key world error value nameEq keyEq child parent
+    (Fired {before = MkSystemState ambient fibers}
+      {afterState = MkSystemState ambient (insertBinding @{nameEq} root (freshFiber component Root) fibers absent)}
+      nameEq keyEq (OInsert root Root component) OInsertTag inserted)
+    (Fired {before = MkSystemState ambient (insertBinding @{nameEq} root (freshFiber component Root) fibers absent)}
+      {afterState = finalState} nameEq keyEq (ORetire child) ORetireTag retiredLater)
+rootRetireSquareAtInsert nameEq keyEq child parent root fiber component ambient fibers
+  absent found own distinct valid finalState inserted retiredLater replay =
+    MkChildRetireSnapshotExchange fiber found own distinct Refl
+      (MkSystemState ambient (replaceBinding @{nameEq} child (retireFiber fiber) fibers))
+      (snapshotAfter replay)
+      (childRetireAtFound nameEq keyEq child fiber (MkSystemState ambient fibers) found valid)
+      (snapshotChecked replay)
+      (trans
+        (cong runtimeSnapshot (cong snd (justInjective
+          (trans (sym retiredLater)
+            (childRetireAtFound nameEq keyEq child fiber
+              (MkSystemState ambient (insertBinding @{nameEq} root (freshFiber component Root) fibers absent))
+              (trans (lookupInsertOther @{nameEq} child root distinct (freshFiber component Root) fibers absent) found)
+              (checkedActionTargetValid nameEq keyEq (OInsert root Root component)
+                (MkSystemState ambient fibers)
+                (MkSystemState ambient (insertBinding @{nameEq} root (freshFiber component Root) fibers absent))
+                OInsertTag inserted))))))
+        (trans (retireInsertedSnapshot nameEq child root fiber component ambient fibers absent distinct)
+          (sym (snapshotExact replay))))
