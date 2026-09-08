@@ -17,6 +17,7 @@ import DGamma.CP5O19MixedRowDispatcherSpike
 import DGamma.CP5O19CartesianLengthSpike
 import DGamma.CP5O19PairObservationSpike
 import DGamma.CP5O19CartesianWordRowSpike
+import DGamma.CP5O19CartesianSitePlanSpike
 import DGamma.CP5O19OrdinalPlanSpike
 import DGamma.CP5O19PaperBranchCompletenessSpike
 import DGamma.CP5O19CartesianColumnsSpike
@@ -174,3 +175,24 @@ o19ActualGlobalOriginProductCount nameEq keyEq protocol swap source blocks premi
       (cong2 (*)
         (o19ActionWordLength (actorBlockTrace (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety))))
         (o19ActionWordLength (actorBlockTrace (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety))))))
+
+||| Reduce B13's SAME actual global-origin list to numerical execution of
+||| its ACTUAL finite-chain sites. The initial map is the field of B8's
+||| actual identity producer; this is not a caller-selected numeric oracle.
+||| The Cartesian closed form of these sites/coordinates is still to prove.
+export
+0 o19ActualGlobalOriginSites :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (protocol : RegistrationProtocol key value world error) ->
+  {sourceOrder, targetOrder : List name} -> (swap : AdjacentActorOrderSwap name sourceOrder targetOrder) ->
+  {initial, sourceFinal : SystemState name key value world error} -> (source : Transitions initial sourceFinal) ->
+  (blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder source) ->
+  (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq source) ->
+  (safety : AdjacentActorSwapSafety name key world error value protocol nameEq keyEq swap source blocks premises) ->
+  (unique : UniqueRawNameInsertions name key world error value nameEq keyEq source) ->
+  (globalCrossingPositions (o19ActualGlobalOriginPlan nameEq keyEq protocol swap source blocks premises safety unique) =
+    o19OriginsAtSites (ordinalOrigin (o19IdentityOrdinalMap source))
+      (o19CrossingSites (cursorDerivation (columnCursor (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique)))))
+o19ActualGlobalOriginSites nameEq keyEq protocol swap source blocks premises safety unique =
+  o19GlobalPlanSites (identityActionRegistrationReplayCorrespondence source) (o19IdentityOrdinalMap source)
+    (cursorDerivation (columnCursor (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique)))
