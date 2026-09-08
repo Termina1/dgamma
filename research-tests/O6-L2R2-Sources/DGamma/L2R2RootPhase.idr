@@ -90,3 +90,29 @@ record SnapshotRootPhaseStep
     S (rootBirthInversions prior
       (AvailabilityStep first (Fired {before = first} {afterState = snapshotRootMiddle rootPhaseSquare} nameEq keyEq (OInsert root Root component) OInsertTag (snapshotRootEarly rootPhaseSquare)) (MoreTransitions (Fired {before = snapshotRootMiddle rootPhaseSquare} {afterState = snapshotRootFinal rootPhaseSquare} nameEq keyEq (LBegin actor) LBeginTag (snapshotRootLater rootPhaseSquare)) NoTransitions)
         (AvailabilityStep (snapshotRootMiddle rootPhaseSquare) (Fired {before = snapshotRootMiddle rootPhaseSquare} {afterState = snapshotRootFinal rootPhaseSquare} nameEq keyEq (LBegin actor) LBeginTag (snapshotRootLater rootPhaseSquare)) NoTransitions (AvailabilityEnd (snapshotRootFinal rootPhaseSquare)))))
+
+||| Produce the scoped step from an authenticated admissible square, keeping
+||| the arbitrary physical earlier context unchanged. This is NOT a square
+||| dispatcher or a suffix-replay oracle: the square is an explicit premise,
+||| the returned trace is assembled from its actual checked edges, and support
+||| preservation follows from runtime binding equality rather than an input
+||| support-preservation assumption. No full O17 normalization is claimed.
+export
+0 rootPhaseFromSnapshot :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (actor, root : name) -> (component : Component key value world error) ->
+  {initial, first, middle, cut : SystemState name key value world error} ->
+  (earlier : Transitions initial first) ->
+  (0 beforeBegin : checkedApplyAction @{nameEq} @{keyEq} (LBegin actor) first = Just (LBeginTag, middle)) ->
+  (0 beforeRoot : checkedApplyAction @{nameEq} @{keyEq} (OInsert root Root component) middle = Just (OInsertTag, cut)) ->
+  (exchange : AvailabilityRootSnapshotExchange name key world error value nameEq keyEq root component
+    (Fired {before = first} {afterState = middle} nameEq keyEq (LBegin actor) LBeginTag beforeBegin)
+    (Fired {before = middle} {afterState = cut} nameEq keyEq (OInsert root Root component) OInsertTag beforeRoot)) ->
+  SnapshotRootPhaseStep name key world error value nameEq keyEq actor root component earlier beforeBegin beforeRoot
+rootPhaseFromSnapshot {cut} nameEq keyEq actor root component earlier beforeBegin beforeRoot exchange =
+  MkSnapshotRootPhaseStep exchange
+    (appendTransitions earlier (MoreTransitions (Fired {before = first} {afterState = snapshotRootMiddle exchange} nameEq keyEq (OInsert root Root component) OInsertTag (snapshotRootEarly exchange)) (MoreTransitions (Fired {before = snapshotRootMiddle exchange} {afterState = snapshotRootFinal exchange} nameEq keyEq (LBegin actor) LBeginTag (snapshotRootLater exchange)) NoTransitions)))
+    Refl (snapshotRootSame exchange)
+    (supportSetAcrossSnapshot nameEq keyEq cut (snapshotRootFinal exchange) (snapshotRootSame exchange))
+    (beginSnapshotRootDecreases nameEq keyEq actor root component beforeBegin beforeRoot exchange)
