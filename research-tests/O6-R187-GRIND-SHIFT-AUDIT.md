@@ -53,3 +53,77 @@ unit/attempt/source hash and guard-check lists to commit-receipts.jsonl at commi
 consolidated R187 ledger/archive will include them. Final archive cannot contain
 its own self-referential artifact-commit receipt; that receipt remains in /tmp
 and is supplied at the final supervisor gate.
+
+## Unit A — original paper completeness and unconditional classes
+
+At 05:47 UTC A1–A12 are committed (14 invocations; A6 and A12 each
+passed 2/3 after a parse/import correction, every other unit passed 1/3).
+Final compiler source hash `aeacce8e4e93656fdb08f99b87155e0f226a76f1c433d636590bbdb2c11c60bf`.
+The new `CP5O19PaperBranchCompletenessSpike` proves actual Unloading
+absorption for every action except selected L-Unload, actual aligned
+no-unload trace absorption, Active/Unloading incompatibility, no-unload
+from installed body + exact Begin + no-earlier/no-later selected lifecycle,
+and real checked lifecycle classification using produced AdvanceStructure
+and Divert/Leave endpoint equations. A11 derives original paper branch
+completeness at exact located source occurrences; A12
+`o19OriginalClasses` discharges BOTH explicit F8 hypotheses from actual
+O19 block/bundle/safety/unique premises. It does NOT cast installed to
+paper and introduces no additional classifier/guard premise.
+
+Unit A's 12-declaration allocation is consumed; E13/E14 concrete
+instantiation itself has not yet been written. It is the immediate
+Unit B entry adapter before any crossing-plan work. No body attempt.
+R186 qualifications remain: E14 alone still has approved static original
+classes; R186 A11/A12 take no reached safety/decomposition.
+Actual R187 guarded-commit receipts are appended live under `/tmp/dgamma-r187`.
+
+## Unit B cap — 16/16, partial; no O19 body attempt
+
+B1–B3 (`79a53f92`, `27819102`, `1554c476`) derive the actual five-spine
+source equation from BlockBefore, eliminate the sanctioned zero gap, and
+instantiate E13/E14 using A12's derived classes. `o19CartesianActualBlocks`
+requires ONLY actual O19 blocks/bundle/safety/UniqueRawNameInsertions; no
+static classifier, guessed cut, row, or reached guard input remains.
+
+B4–B12 build executable all-action ordinal maps from the sealed adjacent
+ordinal relation and construct `O19GlobalCrossingPlan` for EVERY actual node
+of a finite chain. The source map starts at identity and is definitionally
+extended by each same AdjacentSwapResult. `O19GlobalPlanResult` owns the
+coordinate list, actual origin equations and length=node-count together.
+B13 (`bc192920`) instantiates this genuine GLOBAL-origin plan on the SAME
+actual O19 Cartesian chain. B15 (`d284c844`) proves its length equals the
+actual selected-block product. B16 proves ALL-action origin-ordinal
+injectivity of every finite sealed derivation, including repeated Iter labels.
+
+B14 (`0e32ad1f`) is ONLY a localization adapter: it consumes the still-missing
+single offset-list equation to produce `BlockCrossingOriginPlan`. It does
+NOT prove that equation. GLOBAL source ordinals + product cardinality are
+not selected-block-local Cartesian coverage, bounds, uniqueness or nonempty
+whole-block assembly. No false completion claim, selected-origin oracle,
+O19 surface change, LocalDiamond change, or new hole was introduced.
+
+All 16 B declarations passed first attempt. OrdinalPlan checks from B5 onward
+cost approximately 48 seconds / 19–21 GiB, below the retained 48 GiB guard.
+The 16-declaration cap is consumed; no B17 inferred. HARD residuals:
+1. Prove the actual numeric origin list equals the shifted complete Cartesian
+   list; derive local sound bounds, completeness, pair uniqueness/nonempty.
+2. Actual reached installed ranges/blocks and ActorBlockDecomposition plus
+   origin-plan updates, using the same chain and sealed replay capital.
+3. Same-chain endpoint/full-bundle/external correspondence assembly and O19
+   body ONLY after every prerequisite has been committed.
+
+No O19/O20/O21 body attempt (0/0/0), hole delta 0, expected split 1/3/0/0/1.
+At 06:13 UTC the B cap leaves >150 minutes before the new-attempt guard;
+continue the six authorized remaining C finite-linear-extension selector
+slots. C does not include an O20 body.
+
+### Receipt schema qualification
+
+All source commits have actual commit-time unit, attempt, source hash,
+resulting hash, UTC timestamp and passed guards. Unit0's actual raw artifact
+receipt recorded invocation=`R186-repair`, source hash, commit, UTC and guards,
+but omitted separately named unit/attempt fields. Its compiler-free nature
+means no new R187 attempt exists. That historical raw receipt is NOT rewritten
+or fabricated. The artifact writer is now fixed for future commits to include
+unit, attempt (or explicit non-encoding), and sourceInvocation as well. R186
+historical receipts remain explicitly not recorded.
