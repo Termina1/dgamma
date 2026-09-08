@@ -82,3 +82,12 @@ not countermodels or an excuse to change sanctioned safety. The O/O remaining
 chain is an explicit prerequisite to the requested B Cartesian induction; a
 scope gate will resolve whether B's14 slots may first finish that dependency.
 All five holes and all original spikes, LocalDiamond, production are unchanged.
+
+## Supervisor ruling: B14 starts with the missing O/O Cartesian dependencies
+
+Supervisor ratifies74356b18 and explicitly authorizes B's14 units FIRST on O/O
+source registration scan/safety -> same-chain replay -> row and necessary mixed
+rows; only remaining slots begin Cartesian induction. No row/replay oracle may
+be added. C only after A/B unit-stop with>=60min; guard unchanged. A's fixtures
+remain precisely the weaker1-crossing/2x1/guard fixtures documented above; the
+ratification does not turn them into complete2x2 Cartesian applications.
