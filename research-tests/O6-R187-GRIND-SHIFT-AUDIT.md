@@ -127,3 +127,30 @@ means no new R187 attempt exists. That historical raw receipt is NOT rewritten
 or fabricated. The artifact writer is now fixed for future commits to include
 unit, attempt (or explicit non-encoding), and sourceInvocation as well. R186
 historical receipts remain explicitly not recorded.
+
+## Supervisor D authorization and C completion
+
+At the B16 tracked-clean gate supervisor RATIFIED `7b9e2ee9` and authorized
+C's six remaining slots <=25 minutes, then D<=16 until 08:43:56, with the
+missing actual offset-list equation FIRST, followed by actual installed
+blocks and same-chain assembly; O19 body only after all prerequisites.
+
+C3–C8 completed within seven minutes (06:15–06:22): actual BeforeIn checker;
+O20OrientedSafeSwap retaining a real safe choice and fixed accepted target
+linearization; orientation of actual chosen candidates; finite positive
+selector scanning ALL neighboring candidates for both actual safety and
+target inversion; exclusion of opposite orientation of the same pair; and
+the standard two-sided support-path incomparability lemma when BOTH orders
+linearize the SAME semantic reference state. That final common-relation
+linearization remains a visible hypothesis; cross-trace/reached production
+is not claimed. Nothing from the positive selector is NOT canonicality;
+completeness, global strict descent, reached linearization, operational
+reselection and O20 body remain open. Both safety clauses and source unique
+are retained by the actual chosen object.
+
+C3/C4/C6/C7/C8 passed1/3; C5 passed2/3 after eta-expanding an erased record
+constructor argument to the unrestricted function required by map. Its
+failed guard invocation refused to commit, as designed; no mis-commit or
+history change. All six declarations immediately guarded-committed, live
+receipts retained. C allocation now8/8 including R186's first two; no C9.
+Proceeding newly authorized D<=16. No body attempt, no surface/frozen change.
