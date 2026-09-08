@@ -30,27 +30,6 @@ data CertifiedActorPermutation :
     CertifiedActorPermutation name middle after ->
     CertifiedActorPermutation name before after
 
-public export
-0 selectedBlockCoordinateInjectivity :
-  (safety : AdjacentActorSwapSafety name key world error value protocol nameEq
-    keyEq orderSwap sourceTrace sourceBlocks sourcePremises) ->
-  SelectedBlockCoordinateInjectivity name key world error value protocol nameEq
-    keyEq orderSwap sourceTrace sourceBlocks sourcePremises safety
-selectedBlockCoordinateInjectivity {sourceBlocks} {orderSwap} safety =
-  MkSelectedBlockCoordinateInjectivity
-    (\first, second, exact => addLeftInjective _ first second exact)
-    (\first, second, exact => addLeftInjective _ first second exact)
-    (decomposedOrderedBlockRangesDisjoint sourceBlocks
-      (actorLeft orderSwap) (actorRight orderSwap)
-      (safetyLeftInOrder safety) (safetyRightInOrder safety)
-      (safetyLeftBeforeRight safety))
-    (\rightPosition, leftPosition, rightBound, leftBound, exact =>
-      decomposedOrderedBlockRangesDisjoint sourceBlocks
-        (actorLeft orderSwap) (actorRight orderSwap)
-        (safetyLeftInOrder safety) (safetyRightInOrder safety)
-        (safetyLeftBeforeRight safety) leftPosition rightPosition leftBound
-        rightBound (sym exact))
-
 ||| Occurrence-authenticated label for one current adjacent node.  The current
 ||| occurrence is pinned to the node's exact ordinal, then mapped through the
 ||| composed prefix replay correspondence to the original source trace.  Its

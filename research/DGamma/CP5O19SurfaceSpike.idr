@@ -220,3 +220,24 @@ record SelectedBlockCoordinateInjectivity
       transitionCount (traceBeforeBlock (decomposedBlock sourceBlocks
         (actorLeft orderSwap) (safetyLeftInOrder safety))) + leftPosition)
 
+public export
+0 selectedBlockCoordinateInjectivity :
+  (safety : AdjacentActorSwapSafety name key world error value protocol nameEq
+    keyEq orderSwap sourceTrace sourceBlocks sourcePremises) ->
+  SelectedBlockCoordinateInjectivity name key world error value protocol nameEq
+    keyEq orderSwap sourceTrace sourceBlocks sourcePremises safety
+selectedBlockCoordinateInjectivity {sourceBlocks} {orderSwap} safety =
+  MkSelectedBlockCoordinateInjectivity
+    (\first, second, exact => addLeftInjective _ first second exact)
+    (\first, second, exact => addLeftInjective _ first second exact)
+    (decomposedOrderedBlockRangesDisjoint sourceBlocks
+      (actorLeft orderSwap) (actorRight orderSwap)
+      (safetyLeftInOrder safety) (safetyRightInOrder safety)
+      (safetyLeftBeforeRight safety))
+    (\rightPosition, leftPosition, rightBound, leftBound, exact =>
+      decomposedOrderedBlockRangesDisjoint sourceBlocks
+        (actorLeft orderSwap) (actorRight orderSwap)
+        (safetyLeftInOrder safety) (safetyRightInOrder safety)
+        (safetyLeftBeforeRight safety) leftPosition rightPosition leftBound
+        rightBound (sym exact))
+
