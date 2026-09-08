@@ -607,3 +607,37 @@ o19CartesianColumnsSites nameEq keyEq protocol swap original blocks premises saf
         o19CartesianColumnsSites nameEq keyEq protocol swap original blocks premises safety unique leftHead leftTail fullRightWord suffixWord
           remainingRight originalClasses next nextEarlier nextRest nextDecomposition nextExact
           (\action, member => rightMembers action (There member)))
+
+||| E14 ACTUAL source-spine site adapter: both factors are actual trace
+||| counts, from D16 and structural word lengths. Static classes stay internal.
+export
+0 o19CartesianSourceSpinesSites :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (protocol : RegistrationProtocol key value world error) ->
+  {sourceOrder, targetOrder : List name} -> (swap : AdjacentActorOrderSwap name sourceOrder targetOrder) ->
+  {initial, sourceFinal, before, leftAfter, rightBefore, rightAfter : SystemState name key value world error} ->
+  (source : Transitions initial sourceFinal) ->
+  (blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder source) ->
+  (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq source) ->
+  (safety : AdjacentActorSwapSafety name key world error value protocol nameEq keyEq swap source blocks premises) ->
+  (unique : UniqueRawNameInsertions name key world error value nameEq keyEq source) ->
+  (earlier : Transitions initial before) -> (firstLeft : Transition before leftAfter) ->
+  (leftRest : Transitions leftAfter rightBefore) -> (rightSpine : Transitions rightBefore rightAfter) -> (later : Transitions rightAfter sourceFinal) ->
+  (decomposition : appendTransitions earlier (appendTransitions (MoreTransitions firstLeft leftRest) (appendTransitions rightSpine later)) = source) ->
+  (0 originalClasses : {leftAction, rightAction : Action name key value world error} ->
+    (leftOccurrence : LocatedActionOccurrence leftAction source) ->
+    (rightOccurrence : LocatedActionOccurrence rightAction source) ->
+    Elem leftAction (o19ActionWord (MoreTransitions firstLeft leftRest)) -> Elem rightAction (o19ActionWord rightSpine) ->
+    O19SourcePairObservation name key world error value (actorLeft swap) (actorRight swap)
+      (locatedTransition leftOccurrence) (locatedTransition rightOccurrence)) ->
+  (o19CrossingSites (cursorDerivation (columnCursor (o19CartesianSourceSpines nameEq keyEq protocol swap source blocks premises safety unique earlier firstLeft leftRest rightSpine later decomposition originalClasses))) =
+    o19ColumnSites (transitionCount earlier) (transitionCount (MoreTransitions firstLeft leftRest)) (transitionCount rightSpine))
+o19CartesianSourceSpinesSites nameEq keyEq protocol swap source blocks premises safety unique earlier firstLeft leftRest rightSpine later decomposition originalClasses =
+  trans (o19CartesianColumnsSites nameEq keyEq protocol swap source blocks premises safety unique (transitionAction firstLeft) (o19ActionWord leftRest)
+    (o19ActionWord rightSpine) (o19ActionWord later) (o19ActionWord rightSpine) originalClasses
+    (o19InitialCursor nameEq keyEq protocol source premises unique)
+    earlier (appendTransitions (MoreTransitions firstLeft leftRest) (appendTransitions rightSpine later)) decomposition
+    (trans (o19ActionWordAppend (MoreTransitions firstLeft leftRest) (appendTransitions rightSpine later))
+      (cong ((o19ActionWord (MoreTransitions firstLeft leftRest)) ++) (o19ActionWordAppend rightSpine later)))
+    (\action, member => member))
+    (cong2 (o19ColumnSites (transitionCount earlier)) (o19ActionWordLength (MoreTransitions firstLeft leftRest)) (o19ActionWordLength rightSpine))
