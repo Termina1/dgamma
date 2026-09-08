@@ -57,3 +57,8 @@ l2r1CollisionExecution = fromMaybe
      OInsert 1 (ChildOf 0) providerComponent, ORetire 1, ORemove 1,
      OInsert 2 Root providerComponent, ORetire 2, LAdvance 0]
     (MkSystemState (MkToyRuntime False False) emptyContext))
+||| Excludes the fallback: all eight native checked actions actually ran.
+||| The original R174 scalar shape is NOT used as an applicability premise.
+export
+0 l2r1CollisionRan : transitionCount (certifiedTrace l2r1CollisionExecution) = 8
+l2r1CollisionRan = Refl
