@@ -128,3 +128,22 @@ foreignChildRunLookup nameEq keyEq child _ ForeignChildEnd = Refl
 foreignChildRunLookup nameEq keyEq child _ (ForeignChildStep action tag checked rest distinct tail) =
   trans (foreignChildRunLookup nameEq keyEq child rest tail)
     (childForeignLookupFrame nameEq keyEq child action tag checked distinct)
+
+||| Derive checked early Retire before an arbitrarily long foreign run from
+||| its actual final lookup. This iterates EARLY APPLICABILITY only; replaying
+||| the foreign run after retirement remains a separate commutation obligation.
+export
+0 childRetireBeforeForeignRun :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (child : name) ->
+  (fiber : Fiber name key value world error) ->
+  (first, finalState : SystemState name key value world error) ->
+  (trace : Transitions first finalState) -> ForeignChildRun nameEq keyEq child trace ->
+  (0 found : lookupFiber {name} {key} {value} {world} {error} @{nameEq} child (registry finalState) = Just fiber) ->
+  (0 valid : registryWellFormed @{nameEq} @{keyEq} first = True) ->
+  checkedApplyAction @{nameEq} @{keyEq} (ORetire child) first =
+    Just (ORetireTag, MkSystemState (worldState first)
+      (replaceBinding @{nameEq} child (retireFiber fiber) (registry first)))
+childRetireBeforeForeignRun nameEq keyEq child fiber first finalState trace foreign found valid =
+  childRetireAtFound nameEq keyEq child fiber first
+    (trans (sym (foreignChildRunLookup nameEq keyEq child trace foreign)) found) valid
