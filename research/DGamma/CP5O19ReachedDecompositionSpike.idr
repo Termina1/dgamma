@@ -144,3 +144,18 @@ o19LifecycleCoverageFromOrigins {targetFirst} source (MoreTransitions {middle} h
     (\lifecycle => membership (actionOwner (transitionAction head))
       (o19LocatedLifecycleCovered source covered (transitionAction head)
         (origins (MkLocatedActionOccurrence targetFirst middle NoTransitions head tail Refl Refl)) lifecycle))
+
+||| Source-to-target actor enumeration membership for the exact order swap.
+||| This list fact is not used as a substitute for trace occurrence origins.
+export
+0 o19SwapActorMembership :
+  {name : Type} -> {sourceOrder, targetOrder : List name} ->
+  (swap : AdjacentActorOrderSwap name sourceOrder targetOrder) ->
+  (selected : name) -> Elem selected sourceOrder -> Elem selected targetOrder
+o19SwapActorMembership swap selected member =
+  replace {p = Elem selected} (sym (actorAfterExact swap))
+    (o19ElemAppendCases (actorPrefix swap) ((actorLeft swap) :: (actorRight swap) :: (actorSuffix swap))
+      (fst (o19ElemAppendInjections (actorPrefix swap) ((actorRight swap) :: (actorLeft swap) :: (actorSuffix swap))))
+      (\tailMember => snd (o19ElemAppendInjections (actorPrefix swap) ((actorRight swap) :: (actorLeft swap) :: (actorSuffix swap)))
+        (o19SwapTailMember tailMember))
+      (replace {p = Elem selected} (actorBeforeExact swap) member))
