@@ -286,3 +286,27 @@ o20DisjointBlockObservedEarlierBegin nameEq keyEq left right distinct leftBefore
         leftBefore leftStart leftEnd opening body installed only lastFiber lastFound disjoint))
 o20DisjointBlockObservedEarlierBegin nameEq keyEq left right distinct leftBefore leftStart leftEnd rightBefore rightStart
   opening rightObserved body installed only excluded (MoreTransitions step rest) Refl wellFormed lastFiber lastFound disjoint impossible
+
+||| Execute the actual right-opening observer, not a caller-provided view.
+export
+0 o20DisjointBlockActualEarlierBegin :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (left, right : name) -> Not (right = left) ->
+  (leftBefore, leftStart, leftEnd, rightBefore, rightStart : SystemState name key value world error) ->
+  BeginStep nameEq keyEq left leftBefore leftStart ->
+  (rightOpening : BeginStep nameEq keyEq right rightBefore rightStart) ->
+  (body : Transitions leftStart leftEnd) ->
+  InstalledTrace name key world error value nameEq keyEq left body ->
+  ActorLifecycleOnly left body -> NoGeneratedChild right body ->
+  (gap : Transitions leftEnd rightBefore) -> ZeroGapPending gap ->
+  (registryWellFormed {name} {key} {value} {world} {error} @{nameEq} @{keyEq} leftBefore = True) ->
+  (lastFiber : Fiber name key value world error) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} left (registry leftEnd) = Just lastFiber) ->
+  ((wanted : key) -> Elem wanted (dependencies (componentDependencies (beginObservedComponent (o20ObserveActualBegin nameEq keyEq right rightBefore rightStart rightOpening)))) ->
+    Not (Elem wanted (dependencies (componentProvisions (fiberComponent lastFiber))))) ->
+  CheckedEarlyApplication name key world error value nameEq keyEq leftBefore (LBegin right) LBeginTag
+o20DisjointBlockActualEarlierBegin nameEq keyEq left right distinct leftBefore leftStart leftEnd rightBefore rightStart
+  opening rightOpening body installed only excluded gap empty wellFormed lastFiber lastFound disjoint =
+    o20DisjointBlockObservedEarlierBegin nameEq keyEq left right distinct leftBefore leftStart leftEnd rightBefore rightStart
+      opening (o20ObserveActualBegin nameEq keyEq right rightBefore rightStart rightOpening)
+      body installed only excluded gap empty wellFormed lastFiber lastFound disjoint
