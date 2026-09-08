@@ -192,3 +192,30 @@ o20BeginObservedEndpointComponent nameEq keyEq actor before start finalState obs
     (MkFiber (beginObservedComponent observed) (beginObservedParent observed) False (beginObservedTable observed)
       (Reloading (componentProgram (beginObservedComponent observed)) id (beginObservedView observed)))
     lastFiber (o20BeginObservedAfterLookup nameEq keyEq actor before start observed) lastFound
+
+||| Opening resolver frame from the native Begin and its own observation.
+||| Endpoint disjointness is carried BACK through the installed body; source
+||| and successor owner lookups are both the opening producer's equations.
+export
+0 o20InstalledOpeningResolver :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) -> (deps : List key) ->
+  (before, start, finalState : SystemState name key value world error) ->
+  BeginStep nameEq keyEq actor before start ->
+  (observed : O20BeginObservation name key world error value nameEq keyEq actor before start) ->
+  (body : Transitions start finalState) ->
+  InstalledTrace name key world error value nameEq keyEq actor body ->
+  (lastFiber : Fiber name key value world error) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor (registry finalState) = Just lastFiber) ->
+  ((wanted : key) -> Elem wanted deps -> Not (Elem wanted (dependencies (componentProvisions (fiberComponent lastFiber))))) ->
+  (resolveView {name} {key} {value} {world} {error} @{nameEq} @{keyEq} deps (registry start) =
+   resolveView {name} {key} {value} {world} {error} @{nameEq} @{keyEq} deps (registry before))
+o20InstalledOpeningResolver nameEq keyEq actor deps before start finalState opening observed body installed lastFiber lastFound excluded =
+  o19ResolvePresentLocalUpdate nameEq keyEq deps actor (registry before) (registry start)
+    (MkFiber (beginObservedComponent observed) (beginObservedParent observed) False (beginObservedTable observed) (Inactive Nothing))
+    (beginObservedFound observed) (cong isJust (o20BeginObservedAfterLookup nameEq keyEq actor before start observed))
+    (systemRegistryUpdate (applyActionLocalUpdate nameEq keyEq (LBegin actor) before start LBeginTag
+      (checkedActionProjects nameEq keyEq (LBegin actor) before start LBeginTag (beginEquation opening))))
+    (\wanted, needed, provided => excluded wanted needed
+      (replace {p = \component => Elem wanted (dependencies (componentProvisions component))}
+        (sym (o20BeginObservedEndpointComponent nameEq keyEq actor before start finalState observed body installed lastFiber lastFound)) provided))
