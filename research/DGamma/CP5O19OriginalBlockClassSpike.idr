@@ -81,3 +81,24 @@ export
 o19OriginalBlockWord actor forbidden block safe _ Here = BlockOwnLifecycle Refl Refl
 o19OriginalBlockWord actor forbidden block safe action (There member) =
   o19OwnedSafeWord actor forbidden (blockBody block) (blockActorOnly block) safe action member
+
+||| Actual ORIGINAL births with distinct licensing parents have distinct raw
+||| child names, by original UniqueRawNameInsertions and immutable birth
+||| metadata. No independent row collision/renaming assumption is requested.
+export
+0 o19OriginalChildrenDistinct :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (source : Transitions initial finalState) -> UniqueRawNameInsertions name key world error value nameEq keyEq source ->
+  (leftParent, rightParent, leftChild, rightChild : name) ->
+  (leftComponent, rightComponent : Component key value world error) -> Not (leftParent = rightParent) ->
+  LocatedActionOccurrence (OInsert leftChild (ChildOf leftParent) leftComponent) source ->
+  LocatedActionOccurrence (OInsert rightChild (ChildOf rightParent) rightComponent) source ->
+  Not (rightChild = leftChild)
+o19OriginalChildrenDistinct {name} {key} {world} {error} {value} nameEq keyEq source unique leftParent rightParent leftChild rightChild
+  leftComponent rightComponent parentsDifferent leftBirth rightBirth same = case same of
+    Refl => case cong Builtin.fst
+      (uniqueRawBirthMetadata name key world error value nameEq keyEq source unique leftChild
+        (ChildOf leftParent) (ChildOf rightParent) leftComponent rightComponent leftBirth rightBirth) of
+      Refl => parentsDifferent Refl
