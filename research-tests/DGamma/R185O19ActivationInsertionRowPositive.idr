@@ -43,3 +43,17 @@ r185GapBirthPosition selected (S (S (S (S (S (S Z)))))) observed = case observed
 r185GapBirthPosition selected (S (S (S (S (S (S (S Z))))))) observed = case observed of Refl impossible
 r185GapBirthPosition selected (S (S (S (S (S (S (S (S Z)))))))) observed = case observed of Refl impossible
 r185GapBirthPosition selected (S (S (S (S (S (S (S (S (S later))))))))) observed = case observed of Refl impossible
+
+||| Full original uniqueness for the actual nine-edge fixture.
+public export
+0 r185GapUnique : UniqueRawNameInsertions Nat R45Key Unit String R45Value
+  r45NameEq r45KeyEq (Builtin.fst r182GapTrace)
+r185GapUnique = MkUniqueRawNameInsertions
+  (\selected, leftParent, rightParent, leftComponent, rightComponent, left, right =>
+    trans (r185GapBirthPosition selected (locatedActionOrdinal left)
+      (rawInsertionNameAtLocated Nat R45Key Unit String R45Value (Builtin.fst r182GapTrace)
+        selected leftParent leftComponent left))
+      (sym (r185GapBirthPosition selected (locatedActionOrdinal right)
+        (rawInsertionNameAtLocated Nat R45Key Unit String R45Value (Builtin.fst r182GapTrace)
+          selected rightParent rightComponent right))))
+
