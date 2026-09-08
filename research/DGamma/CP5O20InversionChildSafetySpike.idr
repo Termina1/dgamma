@@ -181,3 +181,28 @@ o20NoGeneratedFromActorBirth (MoreTransitions step rest) (ActorYieldedRegistrati
       Refl => excluded component (MkLocatedGeneratedRegistration _ _ NoTransitions step rest same Refl))
     (o20NoGeneratedFromActorBirth rest only
       (\component, birth => excluded component (o20GeneratedBirthPrepend step rest birth)))
+
+||| Supported incomparability now PRODUCES one physical block's complete
+||| child-exclusion clause, using actual body grammar and both origin maps.
+export
+0 o20IncomparableBlockChildSafety :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {initial, originalFinal, replayedFinal : SystemState name key value world error} ->
+  (original : Transitions initial originalFinal) ->
+  (capital : IndependentCanonicalSchedule name key world error value protocol nameEq keyEq original) ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq original ->
+  (replayed : Transitions initial replayedFinal) ->
+  ActionRegistrationReplayCorrespondence name key world error value (canonicalTrace (canonicalSchedule capital)) replayed ->
+  (parent, child : name) ->
+  (block : LocatedOpenEpisodeBlock name key world error value nameEq keyEq parent replayed) ->
+  (isSupported {name} {key} {value} {world} {error} @{nameEq} @{keyEq} parent originalFinal = True) ->
+  (isSupported {name} {key} {value} {world} {error} @{nameEq} @{keyEq} child originalFinal = True) ->
+  Not (O20SupportedPath name key world error value nameEq keyEq originalFinal parent child) ->
+  NoGeneratedChild child (blockBody block)
+o20IncomparableBlockChildSafety nameEq keyEq protocol original capital unique replayed occurrences
+  parent child block parentSupported childSupported noPath =
+    o20NoGeneratedFromActorBirth (blockBody block) (blockActorOnly block)
+      (\component, birth => o20IncomparableReplayedBirth nameEq keyEq protocol original capital unique replayed occurrences
+        parent child parentSupported childSupported noPath component (o20GeneratedBirthInBlock block birth))
