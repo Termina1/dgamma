@@ -1,6 +1,7 @@
 module DGamma.CP5ConfluenceCrossTraceSpike
 
 import public DGamma.CP5O19SurfaceSpike
+import DGamma.CP5O19OperationalAssemblySpike
 import DGamma.Core
 import DGamma.Calculus
 import DGamma.Coeffects
@@ -42,7 +43,8 @@ public export
     keyEq orderSwap sourceTrace sourceBlocks sourcePremises) ->
   OperationalAdjacentBlockSwap name key world error value protocol nameEq keyEq
     orderSwap sourceTrace sourceBlocks sourcePremises applicableSafety
-operationalAdjacentBlockSwapSpike = ?operationalAdjacentBlockSwapSpike_rhs
+operationalAdjacentBlockSwapSpike nameEq keyEq protocol orderSwap sourceTrace sourceBlocks sourcePremises sourceUnique applicableSafety =
+  o19ActualOperationalBlockSwap nameEq keyEq protocol orderSwap sourceTrace sourceBlocks sourcePremises applicableSafety sourceUnique
 
 public export
 0 operationalPermutationReplayCorrespondence :
