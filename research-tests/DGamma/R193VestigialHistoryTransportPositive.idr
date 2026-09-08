@@ -127,3 +127,12 @@ r193HistoricalTree = MkRegistrationCorrespondenceByGeneration
     (SkipLeftNonRegistration (LUnload 0) r193HistoricalUnload NoTransitions Refl Refl
     (SkipRightNonRegistration (LUnload 0) r193HistoricalUnload NoTransitions Refl Refl
     (RegistrationCorrespondenceEnd)))))))))))))))))
+
+||| ALL fields of the real present vestigial entry, including discarded-birth
+||| membership owned by the actual scanner. Inactivity alone is never used.
+public export
+0 r193HistoricalVestigial : VestigialEndpointGeneration Nat R45Key Unit String R45Value
+  r45NameEq r45KeyEq (leftFinalGenerations r193HistoricalTree)
+  (leftDeletedGenerations r193HistoricalTree) 1 r193HistoricalClosed
+r193HistoricalVestigial = MkVestigialEndpointGeneration (MkRegistrationGeneration 1 2)
+  Refl Here r45ChildRetired Refl Refl Refl Refl Refl Refl
