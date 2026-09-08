@@ -905,3 +905,26 @@ o19UntouchedBeforePlacement nameEq keyEq protocol swap source blocks premises sa
         (cong (\word => word ++ (o19ActionWord (betweenBlocks ordered))) (o19PrefixThroughWord untouched))))
       (trans (sym (appendAssociative ((o19ActionWord (traceBeforeBlock untouched)) ++ (o19ActionWord (actorBlockTrace untouched))) (o19ActionWord (betweenBlocks ordered)) ((o19ActionWord (actorBlockTrace (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety)))) ++ ((o19ActionWord (actorBlockTrace (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)))) ++ (o19ActionWord (traceAfterBlock (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety))))))))
         (sym (appendAssociative (o19ActionWord (traceBeforeBlock untouched)) (o19ActionWord (actorBlockTrace untouched)) ((o19ActionWord (betweenBlocks ordered)) ++ ((o19ActionWord (actorBlockTrace (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety)))) ++ ((o19ActionWord (actorBlockTrace (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)))) ++ (o19ActionWord (traceAfterBlock (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety)))))))))))
+
+||| Authentic TARGET placement for any original block after the pair.
+||| The actual sealed/reached suffix word is used, not a source trace bound.
+export
+0 o19UntouchedAfterPlacement :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (protocol : RegistrationProtocol key value world error) ->
+  {sourceOrder, targetOrder : List name} -> (swap : AdjacentActorOrderSwap name sourceOrder targetOrder) ->
+  {initial, sourceFinal : SystemState name key value world error} -> (source : Transitions initial sourceFinal) ->
+  (blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder source) ->
+  (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq source) ->
+  (safety : AdjacentActorSwapSafety name key world error value protocol nameEq keyEq swap source blocks premises) ->
+  (unique : UniqueRawNameInsertions name key world error value nameEq keyEq source) ->
+  (selected : name) ->
+  (untouched : LocatedOpenEpisodeBlock name key world error value nameEq keyEq selected source) ->
+  (ordered : BlockBefore name key world error value nameEq keyEq source (actorRight swap) selected (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety)) untouched) ->
+  (o19ActionWord (cursorTrace (columnCursor (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique))) = ((o19ActionWord (traceBeforeBlock (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)))) ++ ((o19ActionWord (actorBlockTrace (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety)))) ++ ((o19ActionWord (actorBlockTrace (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)))) ++ (o19ActionWord (betweenBlocks ordered))))) ++ ((o19ActionWord (actorBlockTrace untouched)) ++ (o19ActionWord (traceAfterBlock untouched))))
+o19UntouchedAfterPlacement nameEq keyEq protocol swap source blocks premises safety unique selected untouched ordered =
+  trans (o19ActualSwapWord nameEq keyEq protocol swap source blocks premises safety unique)
+    (trans (cong (\word => (o19ActionWord (traceBeforeBlock (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)))) ++ ((o19ActionWord (actorBlockTrace (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety)))) ++ ((o19ActionWord (actorBlockTrace (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)))) ++ word))) (o19OrderedAfterWord (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety)) untouched ordered))
+      (trans (cong ((o19ActionWord (traceBeforeBlock (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)))) ++) (cong ((o19ActionWord (actorBlockTrace (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety)))) ++) (appendAssociative (o19ActionWord (actorBlockTrace (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)))) (o19ActionWord (betweenBlocks ordered)) ((o19ActionWord (actorBlockTrace untouched)) ++ (o19ActionWord (traceAfterBlock untouched))))))
+        (trans (cong ((o19ActionWord (traceBeforeBlock (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)))) ++) (appendAssociative (o19ActionWord (actorBlockTrace (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety)))) ((o19ActionWord (actorBlockTrace (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)))) ++ (o19ActionWord (betweenBlocks ordered))) ((o19ActionWord (actorBlockTrace untouched)) ++ (o19ActionWord (traceAfterBlock untouched)))))
+          (appendAssociative (o19ActionWord (traceBeforeBlock (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)))) ((o19ActionWord (actorBlockTrace (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety)))) ++ ((o19ActionWord (actorBlockTrace (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)))) ++ (o19ActionWord (betweenBlocks ordered)))) ((o19ActionWord (actorBlockTrace untouched)) ++ (o19ActionWord (traceAfterBlock untouched)))))))
