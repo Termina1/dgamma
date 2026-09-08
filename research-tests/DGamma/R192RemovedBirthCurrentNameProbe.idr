@@ -178,3 +178,21 @@ r192ExistingParentBodyRetireExtended =
   ExtendedYieldedRegistrationStep _ _ Refl
     (ExtendedLifecycleStep _ _ Refl Refl
       (ExtendedChildRetireStep _ _ 1 r45ChildFresh Refl Refl Refl ExtendedLifecycleEnd))
+
+||| Both generated Retire AND Remove occur in this actual parent0 body.
+||| The Remove equation/physical destination are the already-checked A19 cut.
+export
+0 r192ExistingParentBodyRemoveExtended :
+  ActorLifecycleOnlyExtended r45NameEq 0
+    (MoreTransitions r45ChildInsert (MoreTransitions r178ParentFinish
+      (MoreTransitions r178ChildRetire (MoreTransitions
+        (Fired {before = r178RightFinal} {afterState = r192RemovedBirthFinal}
+          r45NameEq r45KeyEq (ORemove 1) ORemoveTag
+          (DGamma.CP4ProgressNoDeadlock.checkedFromRaw r45NameEq r45KeyEq
+            (ORemove 1) r178RightFinal r192RemovedBirthFinal ORemoveTag
+            (checkedTransitionTargetValid r178ChildRetire) Refl)) NoTransitions))))
+r192ExistingParentBodyRemoveExtended =
+  ExtendedYieldedRegistrationStep _ _ Refl
+    (ExtendedLifecycleStep _ _ Refl Refl
+      (ExtendedChildRetireStep _ _ 1 r45ChildFresh Refl Refl Refl
+        (ExtendedChildRemoveStep _ _ 1 r45ChildRetired Refl Refl Refl ExtendedLifecycleEnd)))
