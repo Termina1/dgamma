@@ -233,3 +233,48 @@ o19MixedActivationRowStep nameEq keyEq protocol swap original blocks premises sa
         (o19InsertionActivationAligned nameEq keyEq child (ChildOf (actorLeft swap)) component left (rowRight previous) inserted
           (\same => childSafe (trans (sym (trans (rowActor previous) rightOwner)) same))
           (fst (snd (o19SourcePairFacts nameEq keyEq protocol (cursorTrace (rowCursor previous)) earlier left (rowRight previous) (rowRest previous) (trans (sym (appendTransitionsAssociative earlier (MoreTransitions left NoTransitions) (MoreTransitions (rowRight previous) (rowRest previous)))) (rowDecomposition previous)) (cursorBundle (rowCursor previous))))) (snd (snd (o19SourcePairFacts nameEq keyEq protocol (cursorTrace (rowCursor previous)) earlier left (rowRight previous) (rowRest previous) (trans (sym (appendTransitionsAssociative earlier (MoreTransitions left NoTransitions) (MoreTransitions (rowRight previous) (rowRest previous)))) (rowDecomposition previous)) (cursorBundle (rowCursor previous))))) (rowActivation previous) (fst (o19SourcePairFacts nameEq keyEq protocol (cursorTrace (rowCursor previous)) earlier left (rowRight previous) (rowRest previous) (trans (sym (appendTransitionsAssociative earlier (MoreTransitions left NoTransitions) (MoreTransitions (rowRight previous) (rowRest previous)))) (rowDecomposition previous)) (cursorBundle (rowCursor previous))))))
+
+||| Arbitrary MIXED right-activation row, not restricted to Begin. All A/A
+||| and O/A cut guards, actual diamonds, sealed suffix replays, current full
+||| bundles/uniqueness and exact row node count are built simultaneously.
+||| Source classes carry ONLY actual action/owner labels and child separation.
+export
+0 o19BubbleMixedActivationRow :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {sourceOrder, targetOrder : List name} ->
+  (swap : AdjacentActorOrderSwap name sourceOrder targetOrder) ->
+  {initial, originalFinal, sourceFinal, before, rightBefore, rightAfter : SystemState name key value world error} ->
+  (original : Transitions initial originalFinal) ->
+  (blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder original) ->
+  (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq original) ->
+  (safety : AdjacentActorSwapSafety name key world error value protocol nameEq keyEq swap original blocks premises) ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq original ->
+  (source : Transitions initial sourceFinal) ->
+  FiniteAdjacentSwapDerivation name key world error value protocol nameEq keyEq original source ->
+  (earlier : Transitions initial before) -> (spine : Transitions before rightBefore) ->
+  (right : Transition rightBefore rightAfter) -> (later : Transitions rightAfter sourceFinal) ->
+  (appendTransitions earlier (appendTransitions spine (MoreTransitions right later)) = source) ->
+  ReplayInvariantBundle name key world error value protocol nameEq keyEq source ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq source ->
+  PaperActivationStep right -> (transitionActor right = actorRight swap) ->
+  (0 classes : {first, last : SystemState name key value world error} ->
+    (step : Transition first last) -> OccursIn step spine ->
+    Either (PaperActivationStep step, transitionActor step = actorLeft swap)
+      (child : name ** (component : Component key value world error **
+        ((transitionAction step = OInsert child (ChildOf (actorLeft swap)) component), Not (actorRight swap = child))))) ->
+  O19ActivationRow name key world error value protocol nameEq keyEq source earlier right (transitionCount spine)
+o19BubbleMixedActivationRow nameEq keyEq protocol swap original blocks premises safety unique source prior earlier
+  NoTransitions right later decomposition currentPremises currentUnique activation rightOwner classes =
+    o19ActivationRowZero nameEq keyEq protocol source earlier right later decomposition currentPremises currentUnique activation
+o19BubbleMixedActivationRow nameEq keyEq protocol swap original blocks premises safety unique source prior earlier
+  (MoreTransitions left rest) right later decomposition currentPremises currentUnique activation rightOwner classes =
+    o19MixedActivationRowStep nameEq keyEq protocol swap original blocks premises safety unique source prior earlier left right
+      (transitionCount rest)
+      (o19BubbleMixedActivationRow nameEq keyEq protocol swap original blocks premises safety unique source prior
+        (appendTransitions earlier (MoreTransitions left NoTransitions)) rest right later
+        (trans (appendTransitionsAssociative earlier (MoreTransitions left NoTransitions)
+          (appendTransitions rest (MoreTransitions right later))) decomposition)
+        currentPremises currentUnique activation rightOwner (\step, occurs => classes step (OccursLater occurs)))
+      rightOwner (classes left OccursHere)
