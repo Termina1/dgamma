@@ -103,3 +103,22 @@ export
   ((fiberComponent left = fiberComponent right), ParentRelatedBy renaming (fiberParent left) (fiberParent right))
 o20RelatedFiberMetadata (RenamedFibers leftParent rightParent leftRetired rightRetired
   leftTable rightTable leftLifecycle rightLifecycle parents retired lifecycle) = (Refl, parents)
+
+||| Actual Begin observations plus the INTERNAL pre-cut relation derive the
+||| component equality and renamed parents required to pair their interpreters.
+export
+0 o20ObservedBeginsMetadata :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (renaming : NameBijection name) -> (actor : name) ->
+  (leftBefore, leftAfter, rightBefore, rightAfter : SystemState name key value world error) ->
+  (left : O20BeginObservation name key world error value nameEq keyEq actor leftBefore leftAfter) ->
+  (right : O20BeginObservation name key world error value nameEq keyEq (renameForward renaming actor) rightBefore rightAfter) ->
+  O20AllNameCut name key world error value nameEq renaming leftBefore rightBefore ->
+  ((beginObservedComponent left = beginObservedComponent right),
+    ParentRelatedBy renaming (beginObservedParent left) (beginObservedParent right))
+o20ObservedBeginsMetadata nameEq keyEq renaming actor leftBefore leftAfter rightBefore rightAfter left right paired =
+  o20RelatedFiberMetadata
+    {left = MkFiber (beginObservedComponent left) (beginObservedParent left) False (beginObservedTable left) (Inactive Nothing)}
+    {right = MkFiber (beginObservedComponent right) (beginObservedParent right) False (beginObservedTable right) (Inactive Nothing)}
+    (o20PresentControl (rewrite sym (beginObservedFound left) in
+      rewrite sym (beginObservedFound right) in allNameControls paired actor))
