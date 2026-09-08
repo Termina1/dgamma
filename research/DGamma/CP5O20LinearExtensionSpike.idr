@@ -125,3 +125,16 @@ export
   Not (BeforeIn (actorLeft (chosenOrderSwap (orientedChoice choice))) (actorRight (chosenOrderSwap (orientedChoice choice))) goalOrder)
 o20OrientedCannotReverse choice =
   o20BeforeAsymmetric (orientedGoalUnique choice) (orientedGoalReverse choice)
+
+||| Matched-head branch of the ACTUAL target-order checker. Both primitive
+||| decisions are authenticated separately; only membership is eliminated.
+export
+0 o20BeforeMatchedMemberObserved :
+  {name : Type} -> (nameEq : DecEq name) -> (left, right : name) -> (rest : List name) ->
+  (decEq @{nameEq} left left = Yes Refl) ->
+  (observed : Dec (Elem right rest)) -> (isElem @{nameEq} right rest = observed) ->
+  Elem right rest -> (isJust (o20CheckBefore nameEq left right (left :: rest)) = True)
+o20BeforeMatchedMemberObserved nameEq left right rest same (Yes member) exact present =
+  rewrite same in rewrite exact in Refl
+o20BeforeMatchedMemberObserved nameEq left right rest same (No absent) exact present =
+  void (absent present)
