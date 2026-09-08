@@ -57,3 +57,23 @@ r185GapUnique = MkUniqueRawNameInsertions
         (rawInsertionNameAtLocated Nat R45Key Unit String R45Value (Builtin.fst r182GapTrace)
           selected rightParent rightComponent right))))
 
+
+||| Input-free actual TWO-crossing A/O row; reached bundle, uniqueness,
+||| derivation and count2 come from the generic induction. This is 2x1,
+||| NOT a full 2x2 Cartesian assertion or scalar observer over a replay.
+export
+0 r185ActualActivationInsertionRow :
+  O19OrchestrationRow Nat R45Key Unit String R45Value r45Protocol r45NameEq r45KeyEq
+    (Builtin.fst r182GapTrace)
+    (MoreTransitions (Fired {before = r182GapState 0} {afterState = r182GapState 1} r45NameEq r45KeyEq (OInsert 0 Root r45Child) OInsertTag Refl) (MoreTransitions (Fired {before = r182GapState 1} {afterState = r182GapState 2} r45NameEq r45KeyEq (OInsert 1 Root r45Child) OInsertTag Refl) NoTransitions))
+    (Fired {before = r182GapState 4} {afterState = r182GapState 5} r45NameEq r45KeyEq (OInsert 2 Root r45Child) OInsertTag Refl) 2
+r185ActualActivationInsertionRow =
+  o19BubbleActivationInsertionRow r45NameEq r45KeyEq r45Protocol 2 Root r45Child
+    (Builtin.fst r182GapTrace)
+    (MoreTransitions (Fired {before = r182GapState 0} {afterState = r182GapState 1} r45NameEq r45KeyEq (OInsert 0 Root r45Child) OInsertTag Refl) (MoreTransitions (Fired {before = r182GapState 1} {afterState = r182GapState 2} r45NameEq r45KeyEq (OInsert 1 Root r45Child) OInsertTag Refl) NoTransitions))
+    (MoreTransitions (Fired {before = r182GapState 2} {afterState = r182GapState 3} r45NameEq r45KeyEq (LBegin 0) LBeginTag Refl) (MoreTransitions (Fired {before = r182GapState 3} {afterState = r182GapState 4} r45NameEq r45KeyEq (LAdvance 0) LFinishTag Refl) NoTransitions))
+    (Fired {before = r182GapState 4} {afterState = r182GapState 5} r45NameEq r45KeyEq (OInsert 2 Root r45Child) OInsertTag Refl) (MoreTransitions (Fired {before = r182GapState 5} {afterState = r182GapState 6} r45NameEq r45KeyEq (LBegin 1) LBeginTag Refl) (MoreTransitions (Fired {before = r182GapState 6} {afterState = r182GapState 7} r45NameEq r45KeyEq (LAdvance 1) LFinishTag Refl) (MoreTransitions (Fired {before = r182GapState 7} {afterState = r182GapState 8} r45NameEq r45KeyEq (LBegin 2) LBeginTag Refl) (MoreTransitions (Fired {before = r182GapState 8} {afterState = r182GapState 9} r45NameEq r45KeyEq (LAdvance 2) LFinishTag Refl) NoTransitions)))) Refl r182GapBundle r185GapUnique Refl
+    (o19TwoForeignActivationClasses 2 (Fired {before = r182GapState 2} {afterState = r182GapState 3} r45NameEq r45KeyEq (LBegin 0) LBeginTag Refl) (Fired {before = r182GapState 3} {afterState = r182GapState 4} r45NameEq r45KeyEq (LAdvance 0) LFinishTag Refl)
+      (PaperBeginStep Refl Refl) (PaperFinishStep Refl Refl)
+      (\same => case same of Refl impossible) (\same => case same of Refl impossible))
+    (\step, occurs, licensor, same => case same of Refl impossible)
