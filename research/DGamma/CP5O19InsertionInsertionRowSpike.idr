@@ -148,3 +148,32 @@ o19RightInsertionBeforeObservedLeft nameEq keyEq leftChild rightChild leftParent
         (freshFiber leftComponent leftParent) source leftAbsent)) rightAbsent)
       (o19InsertGuardsBeforeForeign nameEq keyEq rightParent rightComponent leftChild leftParent leftComponent
         source leftAbsent foreign rightGuards) wellFormed
+
+||| Eliminate the original first plan once, then PRODUCE the actual second
+||| plan at its exact reached registry before crossing the observed boundary.
+export
+0 o19InsertionBeforePairPlan :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (leftChild, rightChild : name) -> (leftParent, rightParent : Parent name) ->
+  (leftComponent, rightComponent : Component key value world error) ->
+  (ambient : world) -> (source : Registry name key value world error) ->
+  (middle, afterState : SystemState name key value world error) -> (leftTag, rightTag : RuleTag) ->
+  ForeignInsertPlanView name key world error value nameEq keyEq leftChild leftParent leftComponent ambient source leftTag middle ->
+  (checkedApplyAction @{nameEq} @{keyEq} (OInsert rightChild rightParent rightComponent) middle = Just (rightTag, afterState)) ->
+  Not (rightChild = leftChild) ->
+  ((licensor : name) -> (rightParent = ChildOf licensor) -> Not (licensor = leftChild)) ->
+  (registryWellFormed {name} {key} {value} {world} {error} @{nameEq} @{keyEq}
+    (MkSystemState ambient source) = True) ->
+  CheckedEarlyApplication name key world error value nameEq keyEq (MkSystemState ambient source)
+    (OInsert rightChild rightParent rightComponent) OInsertTag
+o19InsertionBeforePairPlan nameEq keyEq leftChild rightChild leftParent rightParent leftComponent rightComponent
+  ambient source _ afterState _ rightTag (MkForeignInsertPlanView leftAbsent leftGuards) rightChecked
+  distinct foreign wellFormed =
+    o19RightInsertionBeforeObservedLeft nameEq keyEq leftChild rightChild leftParent rightParent leftComponent rightComponent
+      ambient source leftAbsent rightTag afterState
+      (foreignInsertPlanView nameEq keyEq rightChild rightParent rightComponent ambient
+        (insertBinding @{nameEq} leftChild (freshFiber leftComponent leftParent) source leftAbsent) rightTag afterState
+        (checkedActionProjects nameEq keyEq (OInsert rightChild rightParent rightComponent)
+          (MkSystemState ambient (insertBinding @{nameEq} leftChild (freshFiber leftComponent leftParent) source leftAbsent))
+          afterState rightTag rightChecked)) distinct foreign wellFormed
