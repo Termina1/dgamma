@@ -190,3 +190,64 @@ guarded mechanical commits, the accepted A/B/B7 proof receipts, all62
 current-source validation hashes, clean tree and the exact5-hole frozen
 census BEFORE touching O19. On failure it retains the snapshot/transcript,
 fully restores the committed source, then stops/gates; no automatic retry.
+
+## Status
+
+**O19 CLOSED**, exact original statement, fresh O19-1 PASS1/3 and immediate
+guarded commit `d8025345ed04c231211ca464e1dbef2ffd6b2c32`. Body merely applies the
+proved actual same-chain assembler; the final arguments are deliberately
+safety then uniqueness at the assembler, uniqueness then safety publicly.
+No extra premise/field, no label-only surrogate, no invented generated-
+matching premise, no desired replay/decomposition supplied as an oracle.
+
+Fully proved in this shift: full actual reached ActorBlockDecomposition
+(A1–A9); same-chain external relation/endpoint/full bundle/complete operational
+record (B2–B6); concrete direct and public full-record regressions (B7/B8);
+and the exact public O19 producer. All proof additions are quantity0,
+%default total/%unbound_implicits off, with no unsafe escape hatch.
+32 existing declarations were byte-identically rehomed (not newly proved);
+19 exact import substitutions close the transitive cycle. Three private
+support-truth helpers stayed byte-identical in CrossTrace.
+
+Census **4 = 1/2/0/0/1**, in CanonicalSort/CrossTrace/DeletionChain/
+LocalDiamond/RenamingComposition order. O17/O20/O21/O24 remain explicitly
+open and UNCHANGED; full Thm73 is NOT claimed. No production promotion.
+No third specification gap was discovered; only the gated transitive import
+omission, approved separator normalization and rejected extractor error.
+Next action is the mandatory independent supervisor/reviewer closure gate;
+no other hole work or extra proof attempt is authorized by this completion.
+
+### Final validation/evidence
+
+155 exact compiler/source/package records:153 accepted,2 rejected
+(A3-1/M30-1),0 interruptions,0 exhausted seams,0 invocation relabeling.
+16 single-declaration proof/test source commits,52 guarded mechanical
+commits and1 guarded body commit; all source-changing commits receipted.
+83 fresh validations =62 prebody +21 postbody, with4 expected-diagnostic
+negative checks (two per phase); all validation records accepted.
+B8 public regression fresh PASS1/3 in262.75s;
+O19 body check4.16s. Both full-record regression
+proofs are compile-time Idris checks, NOT a claimed JS runtime test.
+Two SEEDED207-module package builds passed: V62 in16.61s
+and V83 in16.56s. No cache deletion; maximum sampled
+RSS49,824,992KiB, below48-GiB watchdog.
+
+Old O19 hole body line727 is now closed body line46
+(two body lines), signature starts30; full
+source-derived32-declaration old→new line map is committed separately.
+O19 statement SHA256 `e81d83c165b65ae6d4f6e29347b53fa6b7db83d6f5f29d6c6b07c0f9d09c11e8` unchanged.
+Frozen adjacentSwapSuffixSpike full SHA256
+`2d01486bf953f11191b758ac3cfb5722d1d02b1a192b6e552adc8a3f58199ecf`; statement SHA256
+`3aae5a9fbc5b14e0411b4a91e557a6f3dc68c9a6282b9ec2b3fc658cec337adf`.
+CP3 blob `2c697e532e83989de8591fa6a4378747c6a501c0`; production/package diff empty vs34b21c9;
+LocalDiamond and every other protected declaration unchanged vs8e133ed5.
+Tracked tree/stage clean; only permitted paper/ and immutable review file
+untracked. Final archive cannot contain its own closing commit-time receipt;
+that exact live receipt/commit/hash are separately reported at the gate.
+
+Independent verification command:
+`python3 -I research-tests/run-r189-verify-evidence.py --expected-a9
+ --expected-b7 --expected-mechanical52 --expected-bodies1
+ --expected-validations83` (spaces between option/value are required;
+the recorded actual command uses them). Final frozen audit and verifier
+are rerun compiler-free after the evidence commit.

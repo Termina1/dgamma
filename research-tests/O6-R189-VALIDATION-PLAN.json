@@ -1,0 +1,423 @@
+{
+  "prebody": [
+    {
+      "path": "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+      "expectedDiagnostic": null,
+      "unit": "V1"
+    },
+    {
+      "path": "research/DGamma/CP5ConfluenceDeletionChainSpike.idr",
+      "expectedDiagnostic": null,
+      "unit": "V2"
+    },
+    {
+      "path": "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+      "expectedDiagnostic": null,
+      "unit": "V3"
+    },
+    {
+      "path": "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr",
+      "expectedDiagnostic": null,
+      "unit": "V4"
+    },
+    {
+      "path": "research/DGamma/CP5O19SurfaceSpike.idr",
+      "expectedDiagnostic": null,
+      "unit": "V5"
+    },
+    {
+      "path": "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
+      "expectedDiagnostic": null,
+      "unit": "V6"
+    },
+    {
+      "path": "research/DGamma/CP5O20EpisodeSynchronizationSpike.idr",
+      "expectedDiagnostic": null,
+      "unit": "V7"
+    },
+    {
+      "path": "research/DGamma/CP5O20CanonicalPairSelectionSpike.idr",
+      "expectedDiagnostic": null,
+      "unit": "V8"
+    },
+    {
+      "path": "research/DGamma/CP5O20BeginObservationSpike.idr",
+      "expectedDiagnostic": null,
+      "unit": "V9"
+    },
+    {
+      "path": "research/DGamma/CP5O19AdjacentReplayProducerSpike.idr",
+      "expectedDiagnostic": null,
+      "unit": "V10"
+    },
+    {
+      "path": "research/DGamma/CP5O19ReplayObservationSpike.idr",
+      "expectedDiagnostic": null,
+      "unit": "V11"
+    },
+    {
+      "path": "research/DGamma/CP5O19CartesianCursorSpike.idr",
+      "expectedDiagnostic": null,
+      "unit": "V12"
+    },
+    {
+      "path": "research/DGamma/CP5O19OpeningPropagationSpike.idr",
+      "expectedDiagnostic": null,
+      "unit": "V13"
+    },
+    {
+      "path": "research/DGamma/CP5O19ActivationRowSpike.idr",
+      "expectedDiagnostic": null,
+      "unit": "V14"
+    },
+    {
+      "path": "research/DGamma/CP5O19InsertObservationSpike.idr",
+      "expectedDiagnostic": null,
+      "unit": "V15"
+    },
+    {
+      "path": "research/DGamma/CP5O19ResolvedOpeningRowSpike.idr",
+      "expectedDiagnostic": null,
+      "unit": "V16"
+    },
+    {
+      "path": "research/DGamma/CP5O19ActivationInsertionRowSpike.idr",
+      "expectedDiagnostic": null,
+      "unit": "V17"
+    },
+    {
+      "path": "research/DGamma/CP5O19CommutedDomainSpike.idr",
+      "expectedDiagnostic": null,
+      "unit": "V18"
+    },
+    {
+      "path": "research/DGamma/CP5O19ActualCommutedDomainSpike.idr",
+      "expectedDiagnostic": null,
+      "unit": "V19"
+    },
+    {
+      "path": "research/DGamma/CP5O19AdvanceObservationSpike.idr",
+      "expectedDiagnostic": null,
+      "unit": "V20"
+    },
+    {
+      "path": "research/DGamma/CP5O19ActivationResolutionSpike.idr",
+      "expectedDiagnostic": null,
+      "unit": "V21"
+    },
+    {
+      "path": "research/DGamma/CP5O19InsertionInsertionRowSpike.idr",
+      "expectedDiagnostic": null,
+      "unit": "V22"
+    },
+    {
+      "path": "research/DGamma/CP5O19CartesianInsertionSpike.idr",
+      "expectedDiagnostic": null,
+      "unit": "V23"
+    },
+    {
+      "path": "research/DGamma/CP5O19SourceShapeSpike.idr",
+      "expectedDiagnostic": null,
+      "unit": "V24"
+    },
+    {
+      "path": "research/DGamma/CP5O19BodyMetadataSpike.idr",
+      "expectedDiagnostic": null,
+      "unit": "V25"
+    },
+    {
+      "path": "research/DGamma/CP5O19MixedActivationRowSpike.idr",
+      "expectedDiagnostic": null,
+      "unit": "V26"
+    },
+    {
+      "path": "research/DGamma/CP5O19MixedRowDispatcherSpike.idr",
+      "expectedDiagnostic": null,
+      "unit": "V27"
+    },
+    {
+      "path": "research/DGamma/CP5O19CartesianLengthSpike.idr",
+      "expectedDiagnostic": null,
+      "unit": "V28"
+    },
+    {
+      "path": "research/DGamma/CP5O19PairObservationSpike.idr",
+      "expectedDiagnostic": null,
+      "unit": "V29"
+    },
+    {
+      "path": "research/DGamma/CP5O19OrdinalPlanSpike.idr",
+      "expectedDiagnostic": null,
+      "unit": "V30"
+    },
+    {
+      "path": "research/DGamma/CP5O19CartesianSitePlanSpike.idr",
+      "expectedDiagnostic": null,
+      "unit": "V31"
+    },
+    {
+      "path": "research/DGamma/CP5O19CartesianWordRowSpike.idr",
+      "expectedDiagnostic": null,
+      "unit": "V32"
+    },
+    {
+      "path": "research/DGamma/CP5O19CartesianNumericSpike.idr",
+      "expectedDiagnostic": null,
+      "unit": "V33"
+    },
+    {
+      "path": "research/DGamma/CP5O19OriginalBlockClassSpike.idr",
+      "expectedDiagnostic": null,
+      "unit": "V34"
+    },
+    {
+      "path": "research/DGamma/CP5O19PaperBranchCompletenessSpike.idr",
+      "expectedDiagnostic": null,
+      "unit": "V35"
+    },
+    {
+      "path": "research/DGamma/CP5O19CartesianColumnsSpike.idr",
+      "expectedDiagnostic": null,
+      "unit": "V36"
+    },
+    {
+      "path": "research/DGamma/CP5O19ActualCartesianSpike.idr",
+      "expectedDiagnostic": null,
+      "unit": "V37"
+    },
+    {
+      "path": "research/DGamma/CP5O19GridCertificationSpike.idr",
+      "expectedDiagnostic": null,
+      "unit": "V38"
+    },
+    {
+      "path": "research/DGamma/CP5O19WholeBlockSpike.idr",
+      "expectedDiagnostic": null,
+      "unit": "V39"
+    },
+    {
+      "path": "research/DGamma/CP5O19SameChainAssemblySpike.idr",
+      "expectedDiagnostic": null,
+      "unit": "V40"
+    },
+    {
+      "path": "research/DGamma/CP5O19ReachedBlocksSpike.idr",
+      "expectedDiagnostic": null,
+      "unit": "V41"
+    },
+    {
+      "path": "research/DGamma/CP5O19ReachedDecompositionSpike.idr",
+      "expectedDiagnostic": null,
+      "unit": "V42"
+    },
+    {
+      "path": "research/DGamma/CP5O19OperationalAssemblySpike.idr",
+      "expectedDiagnostic": null,
+      "unit": "V43"
+    },
+    {
+      "path": "research-tests/DGamma/R188O19GridCertificationPositive.idr",
+      "expectedDiagnostic": null,
+      "unit": "V44"
+    },
+    {
+      "path": "research-tests/DGamma/R188O19WholeBlockSameChainPositive.idr",
+      "expectedDiagnostic": null,
+      "unit": "V45"
+    },
+    {
+      "path": "research-tests/DGamma/R182O19RevisedSafetyPositive.idr",
+      "expectedDiagnostic": null,
+      "unit": "V46"
+    },
+    {
+      "path": "research-tests/DGamma/R182O19RevisedSafetyNegative.idr",
+      "expectedDiagnostic": null,
+      "unit": "V47"
+    },
+    {
+      "path": "research-tests/DGamma/R182O19AdjacencyNegative.idr",
+      "expectedDiagnostic": null,
+      "unit": "V48"
+    },
+    {
+      "path": "research-tests/DGamma/R181O19SafetyCompletion.idr",
+      "expectedDiagnostic": null,
+      "unit": "V49"
+    },
+    {
+      "path": "research-tests/DGamma/R182O19AllFourCrossingsPositive.idr",
+      "expectedDiagnostic": null,
+      "unit": "V50"
+    },
+    {
+      "path": "research-tests/DGamma/R8FullPipeline.idr",
+      "expectedDiagnostic": null,
+      "unit": "V51"
+    },
+    {
+      "path": "research-tests/DGamma/R16ConfluenceTheoremAssemblyPositive.idr",
+      "expectedDiagnostic": null,
+      "unit": "V52"
+    },
+    {
+      "path": "research-tests/DGamma/R16EndpointControlsImpossibilityPositive.idr",
+      "expectedDiagnostic": null,
+      "unit": "V53"
+    },
+    {
+      "path": "research-tests/DGamma/R7OperationalThreadingPositive.idr",
+      "expectedDiagnostic": null,
+      "unit": "V54"
+    },
+    {
+      "path": "research-tests/DGamma/R185O19ObservedInsertionRowPositive.idr",
+      "expectedDiagnostic": null,
+      "unit": "V55"
+    },
+    {
+      "path": "research-tests/DGamma/R185O19ActivationInsertionRowPositive.idr",
+      "expectedDiagnostic": null,
+      "unit": "V56"
+    },
+    {
+      "path": "research-tests/DGamma/R185O19InsertionGuardsPositive.idr",
+      "expectedDiagnostic": null,
+      "unit": "V57"
+    },
+    {
+      "path": "research-tests/DGamma/R183O19GenericBeginRowPositive.idr",
+      "expectedDiagnostic": null,
+      "unit": "V58"
+    },
+    {
+      "path": "research/DGamma/CP5O20LinearExtensionSpike.idr",
+      "expectedDiagnostic": null,
+      "unit": "V59"
+    },
+    {
+      "path": "research-tests/DGamma/R6SafetyDetachmentNegative.idr",
+      "expectedDiagnostic": "firstPremises and secondPremises",
+      "unit": "V60"
+    },
+    {
+      "path": "research-tests/DGamma/R8ZeroDerivationOperationalStepNegative.idr",
+      "expectedDiagnostic": "FiniteAdjacentSwapDerivation",
+      "unit": "V61"
+    },
+    {
+      "path": "package",
+      "expectedDiagnostic": null,
+      "unit": "V62"
+    }
+  ],
+  "postbody": [
+    {
+      "path": "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
+      "expectedDiagnostic": null,
+      "unit": "V63"
+    },
+    {
+      "path": "research-tests/DGamma/R188O19GridCertificationPositive.idr",
+      "expectedDiagnostic": null,
+      "unit": "V64"
+    },
+    {
+      "path": "research-tests/DGamma/R188O19WholeBlockSameChainPositive.idr",
+      "expectedDiagnostic": null,
+      "unit": "V65"
+    },
+    {
+      "path": "research-tests/DGamma/R182O19RevisedSafetyPositive.idr",
+      "expectedDiagnostic": null,
+      "unit": "V66"
+    },
+    {
+      "path": "research-tests/DGamma/R182O19RevisedSafetyNegative.idr",
+      "expectedDiagnostic": null,
+      "unit": "V67"
+    },
+    {
+      "path": "research-tests/DGamma/R182O19AdjacencyNegative.idr",
+      "expectedDiagnostic": null,
+      "unit": "V68"
+    },
+    {
+      "path": "research-tests/DGamma/R181O19SafetyCompletion.idr",
+      "expectedDiagnostic": null,
+      "unit": "V69"
+    },
+    {
+      "path": "research-tests/DGamma/R182O19AllFourCrossingsPositive.idr",
+      "expectedDiagnostic": null,
+      "unit": "V70"
+    },
+    {
+      "path": "research-tests/DGamma/R8FullPipeline.idr",
+      "expectedDiagnostic": null,
+      "unit": "V71"
+    },
+    {
+      "path": "research-tests/DGamma/R16ConfluenceTheoremAssemblyPositive.idr",
+      "expectedDiagnostic": null,
+      "unit": "V72"
+    },
+    {
+      "path": "research-tests/DGamma/R16EndpointControlsImpossibilityPositive.idr",
+      "expectedDiagnostic": null,
+      "unit": "V73"
+    },
+    {
+      "path": "research-tests/DGamma/R7OperationalThreadingPositive.idr",
+      "expectedDiagnostic": null,
+      "unit": "V74"
+    },
+    {
+      "path": "research-tests/DGamma/R185O19ObservedInsertionRowPositive.idr",
+      "expectedDiagnostic": null,
+      "unit": "V75"
+    },
+    {
+      "path": "research-tests/DGamma/R185O19ActivationInsertionRowPositive.idr",
+      "expectedDiagnostic": null,
+      "unit": "V76"
+    },
+    {
+      "path": "research-tests/DGamma/R185O19InsertionGuardsPositive.idr",
+      "expectedDiagnostic": null,
+      "unit": "V77"
+    },
+    {
+      "path": "research-tests/DGamma/R183O19GenericBeginRowPositive.idr",
+      "expectedDiagnostic": null,
+      "unit": "V78"
+    },
+    {
+      "path": "research/DGamma/CP5O20LinearExtensionSpike.idr",
+      "expectedDiagnostic": null,
+      "unit": "V79"
+    },
+    {
+      "path": "research-tests/DGamma/R6SafetyDetachmentNegative.idr",
+      "expectedDiagnostic": "firstPremises and secondPremises",
+      "unit": "V80"
+    },
+    {
+      "path": "research-tests/DGamma/R8ZeroDerivationOperationalStepNegative.idr",
+      "expectedDiagnostic": "FiniteAdjacentSwapDerivation",
+      "unit": "V81"
+    },
+    {
+      "path": "research-tests/DGamma/R189O19OperationalAssemblyPositive.idr",
+      "expectedDiagnostic": null,
+      "unit": "V82"
+    },
+    {
+      "path": "package",
+      "expectedDiagnostic": null,
+      "unit": "V83"
+    }
+  ],
+  "allSourceChecksRequireOwnBuildingLine": true,
+  "packageBuildsAreSeededNot207ForcedSourceRebuilds": true
+}

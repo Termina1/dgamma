@@ -1,7 +1,7 @@
 {
-  "generatedUTC": "2026-09-08T12:34:31.220289+00:00",
+  "generatedUTC": "2026-09-08T13:15:22.742069+00:00",
   "startCommit": "8e133ed5",
-  "endCommit": "892631c6c52397f2f2c60862da327554ba30ecba",
+  "endCommit": "00e5975d51e795f32883c85e8d0623fd6686c2af",
   "moves": [
     {
       "declaration": "AdjacentActorOrderSwap",
@@ -616,27 +616,27 @@
     {
       "declaration": "operationalAdjacentBlockSwapSpike",
       "oldSignatureLine": 711,
-      "newSignatureLine": 29,
+      "newSignatureLine": 30,
       "oldBodyLine": 727,
-      "newBodyLine": 45,
+      "newBodyLine": 46,
       "signatureSHA256": "e81d83c165b65ae6d4f6e29347b53fa6b7db83d6f5f29d6c6b07c0f9d09c11e8",
       "signatureUnchanged": true
     },
     {
       "declaration": "selectOperationalCanonicalPermutationSpike",
       "oldSignatureLine": 1078,
-      "newSignatureLine": 275,
+      "newSignatureLine": 277,
       "oldBodyLine": 1100,
-      "newBodyLine": 297,
+      "newBodyLine": 299,
       "signatureSHA256": "8db1b940921a3c0eb877b2112c25d5325f9058444f7d0a901a66965ffece0540",
       "signatureUnchanged": true
     },
     {
       "declaration": "canonicalSchedulesConvergeSpike",
       "oldSignatureLine": 1338,
-      "newSignatureLine": 535,
+      "newSignatureLine": 537,
       "oldBodyLine": 1363,
-      "newBodyLine": 560,
+      "newBodyLine": 562,
       "signatureSHA256": "4ed416287b6b068a2cf78208f4718c98f0e1084d4520a74dc8c67097af345f59",
       "signatureUnchanged": true
     }
