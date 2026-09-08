@@ -53,3 +53,29 @@ record O19OrdinalActionMap
   0 ordinalOriginExact : {action : Action name key value world error} ->
     (occurrence : LocatedActionOccurrence action current) ->
     (locatedActionOrdinal (replayActionOrigin correspondence occurrence) = ordinalOrigin (locatedActionOrdinal occurrence))
+
+||| Compose the SAME prefix ordinal map through one ACTUAL sealed adjacent
+||| result. Both the correspondence index and every new ordinal equation use
+||| the very same node's operationalOccurrenceFold.
+export
+0 o19OrdinalMapAfterNode :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {protocol : RegistrationProtocol key value world error} -> {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {initial, sourceFinal, currentFinal, before, middle, afterState : SystemState name key value world error} ->
+  {source : Transitions initial sourceFinal} -> {current : Transitions initial currentFinal} ->
+  (correspondence : ActionRegistrationReplayCorrespondence name key world error value source current) ->
+  O19OrdinalActionMap name key world error value source current correspondence ->
+  (earlier : Transitions initial before) -> (left : Transition before middle) -> (right : Transition middle afterState) ->
+  (later : Transitions afterState currentFinal) ->
+  (diamond : LocalRelationalDiamond name key world error value nameEq keyEq left right) ->
+  (result : AdjacentSwapResult name key world error value protocol nameEq keyEq current earlier left right later diamond) ->
+  O19OrdinalActionMap name key world error value source (swappedTrace result)
+    (composeActionRegistrationReplayCorrespondence correspondence (swappedOccurrenceCorrespondence result))
+o19OrdinalMapAfterNode correspondence previous earlier left right later diamond result =
+  MkO19OrdinalActionMap
+    (\position => ordinalOrigin previous (fst (adjacentSwapOrdinalExhaustive (transitionCount earlier) position)))
+    (\occurrence => trans (ordinalOriginExact previous (replayActionOrigin (swappedOccurrenceCorrespondence result) occurrence))
+      (cong (ordinalOrigin previous)
+        (o19AdjacentSourceOrdinalExact (transitionCount earlier) (locatedActionOrdinal occurrence)
+          (locatedActionOrdinal (replayActionOrigin (swappedOccurrenceCorrespondence result) occurrence))
+          (operationalOrdinalRelation (swappedOccurrenceFold result) occurrence))))
