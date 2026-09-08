@@ -219,3 +219,24 @@ o20InstalledOpeningResolver nameEq keyEq actor deps before start finalState open
     (\wanted, needed, provided => excluded wanted needed
       (replace {p = \component => Elem wanted (dependencies (componentProvisions component))}
         (sym (o20BeginObservedEndpointComponent nameEq keyEq actor before start finalState observed body installed lastFiber lastFound)) provided))
+
+||| The entire real opening+body resolver frame. Actual Begin is observed
+||| here, once; component/survival premises are derived inside the segment.
+export
+0 o20WholeInstalledBlockResolver :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) -> (deps : List key) ->
+  (before, start, finalState : SystemState name key value world error) ->
+  BeginStep nameEq keyEq actor before start ->
+  (body : Transitions start finalState) ->
+  InstalledTrace name key world error value nameEq keyEq actor body ->
+  ActorLifecycleOnly actor body ->
+  (lastFiber : Fiber name key value world error) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor (registry finalState) = Just lastFiber) ->
+  ((wanted : key) -> Elem wanted deps -> Not (Elem wanted (dependencies (componentProvisions (fiberComponent lastFiber))))) ->
+  (resolveView {name} {key} {value} {world} {error} @{nameEq} @{keyEq} deps (registry finalState) =
+   resolveView {name} {key} {value} {world} {error} @{nameEq} @{keyEq} deps (registry before))
+o20WholeInstalledBlockResolver nameEq keyEq actor deps before start finalState opening body installed only lastFiber lastFound excluded =
+  trans (o20InstalledActorBodyResolver nameEq keyEq actor deps body installed only lastFiber lastFound excluded)
+    (o20InstalledOpeningResolver nameEq keyEq actor deps before start finalState opening
+      (o20ObserveActualBegin nameEq keyEq actor before start opening) body installed lastFiber lastFound excluded)
