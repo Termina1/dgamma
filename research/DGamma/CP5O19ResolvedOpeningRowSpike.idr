@@ -5,6 +5,13 @@ import DGamma.Calculus
 import DGamma.Coeffects
 import DGamma.Metatheory
 import DGamma.CP3
+import DGamma.CP3StatementChecks
+import DGamma.CP5O19AdjacentReplayProducerSpike
+import DGamma.CP5O19ActivationRowSpike
+import DGamma.CP5O19CartesianCursorSpike
+import DGamma.CP5ConfluenceCanonicalSortSpike
+import DGamma.CP5UniqueRawNameInsertions
+import Data.Nat
 import DGamma.CP4DeletionSelectedForeignOrchestration
 import DGamma.CP5ConfluenceLocalDiamondSpike
 import DGamma.CP5RankedEarlyApplicabilitySpike
@@ -200,3 +207,36 @@ o19OpeningAlongObservedInsertions {before} nameEq keyEq actor component parent t
         (trans (resolutionAfter observed) (trans (sym (resolutionBefore observed)) resolution))
         (preservationTheoremProof nameEq keyEq (OInsert child childParent childComponent) before middle tag wellFormed
           (checkedActionProjects nameEq keyEq (OInsert child childParent childComponent) before middle tag checked)))
+
+
+||| External correspondence from the SAME O/A diamond. Root inserts match
+||| exactly; generated inserts and activation nodes are proved internal.
+export
+0 o19InsertActivationExternal :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (child : name) -> (parent : Parent name) -> (component : Component key value world error) ->
+  {first, middle, last : SystemState name key value world error} ->
+  (left : Transition first middle) -> (right : Transition middle last) ->
+  (transitionAction left = OInsert child parent component) -> PaperActivationStep right ->
+  (diamond : LocalRelationalDiamond name key world error value nameEq keyEq left right) ->
+  SameExternalOrchestration nameEq
+    (MoreTransitions left (MoreTransitions right NoTransitions))
+    (MoreTransitions (movedRight diamond) (MoreTransitions (movedLeft diamond) NoTransitions))
+o19InsertActivationExternal nameEq keyEq child Root component left right inserted activation diamond =
+  SkipRightInternal (movedRight diamond) (MoreTransitions (movedLeft diamond) NoTransitions)
+    (o19ActivationInternal nameEq (movedRight diamond) (movedRightActivationBranch diamond activation))
+    (MatchExternalInput (OInsert child Root component) left (MoreTransitions right NoTransitions)
+      (RootInsertStep inserted) (movedLeft diamond) NoTransitions
+      (RootInsertStep (trans (movedLeftAction diamond) inserted))
+      inserted (trans (movedLeftAction diamond) inserted)
+      (SkipLeftInternal right NoTransitions (o19ActivationInternal nameEq right activation)
+        SameExternalOrchestrationEnd))
+o19InsertActivationExternal nameEq keyEq child (ChildOf parent) component left right inserted activation diamond =
+  SkipLeftInternal left (MoreTransitions right NoTransitions) (childInsertCannotBeRoot left inserted)
+    (SkipLeftInternal right NoTransitions (o19ActivationInternal nameEq right activation)
+      (SkipRightInternal (movedRight diamond) (MoreTransitions (movedLeft diamond) NoTransitions)
+        (o19ActivationInternal nameEq (movedRight diamond) (movedRightActivationBranch diamond activation))
+        (SkipRightInternal (movedLeft diamond) NoTransitions
+          (childInsertCannotBeRoot (movedLeft diamond) (trans (movedLeftAction diamond) inserted))
+          SameExternalOrchestrationEnd)))
