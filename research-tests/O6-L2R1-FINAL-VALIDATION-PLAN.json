@@ -1,0 +1,92 @@
+[
+  {
+    "unit": "V1",
+    "path": "research/DGamma/CP5ActorLifecycleOnlyExtended.idr",
+    "sourceHash": "259bbb336aab6a3babcec41ccba9fc2eca5299422a3a8e5443715f004365b380",
+    "purpose": "unchanged trusted regression / leaf-before-dependent"
+  },
+  {
+    "unit": "V2",
+    "path": "research/DGamma/CP5AvailabilityAwarePlacement.idr",
+    "sourceHash": "0e62fa35c396e9f26465c07dd24aab2e14d25c7d5c5980c28d5d313c63869c26",
+    "purpose": "unchanged trusted regression / leaf-before-dependent"
+  },
+  {
+    "unit": "V3",
+    "path": "research-tests/DGamma/R174O17ProvisionCollisionCandidate.idr",
+    "sourceHash": "85b616df762a4e210a9846ca2f91487082ac39d9eec648bdcd3fd6ac56c1fc4e",
+    "purpose": "unchanged trusted regression / leaf-before-dependent"
+  },
+  {
+    "unit": "V4",
+    "path": "research-tests/DGamma/R174O17SortedProvisionGuard.idr",
+    "sourceHash": "fc3117ea219c83232e94c15ba1bd6886161d7eac1d0de424b230cd62e86d5f14",
+    "purpose": "unchanged trusted regression / leaf-before-dependent"
+  },
+  {
+    "unit": "V5",
+    "path": "research-tests/DGamma/R191CanonicalChildRetirementGap.idr",
+    "sourceHash": "316518f801b9e1067e483b2bc59717c4ce9a2acd35087d194220b64fbf5f5b06",
+    "purpose": "unchanged trusted regression / leaf-before-dependent"
+  },
+  {
+    "unit": "V6",
+    "path": "research/DGamma/CP5L2R1ChildRelocation.idr",
+    "sourceHash": "e17e18bfc1faefc5351a85d4276edae53360b6391d8efc7d3c4b25913e483b9c",
+    "purpose": "current lane source"
+  },
+  {
+    "unit": "V7",
+    "path": "research/DGamma/CP5L2R1RetireExchange.idr",
+    "sourceHash": "e0333ffc16b61711f01bc1a100c7a89bd2b6ddad134d635ab0403fbd238f36ae",
+    "purpose": "current lane source"
+  },
+  {
+    "unit": "V8",
+    "path": "research/DGamma/CP5L2R1ExtendedZeroGap.idr",
+    "sourceHash": "e1f99b0891d0e7ac06830569f671640224cd509dc462efa2cede4bc12b966b3a",
+    "purpose": "current lane source"
+  },
+  {
+    "unit": "V9",
+    "path": "research/DGamma/CP5L2R1RootExchange.idr",
+    "sourceHash": "956e51296e47f4a4debf259237ef9862e58f5ecdc2adbd8d96a03466c12db845",
+    "purpose": "current lane source"
+  },
+  {
+    "unit": "V10",
+    "path": "research/DGamma/CP5L2R1PlacementCopies.idr",
+    "sourceHash": "7b6aa5dcc87ded6d83eac32a1da9ce37510fc959dfd604f91489c92450b7567f",
+    "purpose": "current lane source"
+  },
+  {
+    "unit": "V11",
+    "path": "research/DGamma/CP5L2R1CanonicalSortCopies.idr",
+    "sourceHash": "54475d875a8cd1b784d6c2009c4f2ca4dcbf0fd717953628eb568c43c1af0cea",
+    "purpose": "current lane source"
+  },
+  {
+    "unit": "V12",
+    "path": "research-tests/DGamma/L2R1AvailabilityCollision.idr",
+    "sourceHash": "5973b5048540e9c8d57f2d3c5f8fa4d5c7e846daa9d50cc4f169ab4b9dfbcdd2",
+    "purpose": "current lane source"
+  },
+  {
+    "unit": "V13",
+    "path": "research-tests/DGamma/L2R1RootHoist.idr",
+    "sourceHash": "1368bd0e947ffef976811d82de1ab52719c20a9a71f836bfb70d208ab248106b",
+    "purpose": "current lane source"
+  },
+  {
+    "unit": "V14",
+    "path": "research-tests/DGamma/L2R1R191Relocation.idr",
+    "sourceHash": "a392dc8a351b9984f808be322dcb41c13aec580fd4ab93d2da0af9074263caab",
+    "purpose": "current lane source"
+  },
+  {
+    "unit": "V15",
+    "path": "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
+    "sourceHash": "666d18626e49cbb0d6ac2f7624fe9f6b3519d539dbb574670f420bacd9fc69bb",
+    "purpose": "unchanged trusted regression / leaf-before-dependent"
+  }
+]
