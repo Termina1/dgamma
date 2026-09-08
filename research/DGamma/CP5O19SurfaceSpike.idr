@@ -450,3 +450,70 @@ data DerivationCrossesBlockPositions :
         diamond result target rest)
       ((leftPosition, rightPosition) :: restPositions)
 
+||| Producer-side recursive plan.  It contains only the two source-origin
+||| equations available at each actual intermediate replay node; it does not
+||| assume a prebuilt `DerivationCrossesBlockPositions` value.
+public export
+data BlockCrossingOriginPlan :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {sourceInitial, sourceFinal : SystemState name key value world error} ->
+  (sourceTrace : Transitions sourceInitial sourceFinal) ->
+  {leftActor, rightActor : name} ->
+  (leftBlock : LocatedOpenEpisodeBlock name key world error value nameEq keyEq
+    leftActor sourceTrace) ->
+  (rightBlock : LocatedOpenEpisodeBlock name key world error value nameEq keyEq
+    rightActor sourceTrace) ->
+  {currentInitial, currentFinal, targetFinal :
+    SystemState name key value world error} ->
+  {current : Transitions currentInitial currentFinal} ->
+  (prefixOccurrences : ActionRegistrationReplayCorrespondence name key world
+    error value sourceTrace current) ->
+  {target : Transitions currentInitial targetFinal} ->
+  FiniteAdjacentSwapDerivation name key world error value protocol nameEq keyEq
+    current target -> List (Nat, Nat) -> Type where
+  CrossingOriginPlanDone :
+    BlockCrossingOriginPlan name key world error value protocol nameEq keyEq
+      sourceTrace leftBlock rightBlock prefixOccurrences FiniteAdjacentSwapDone []
+  CrossingOriginPlanStep :
+    {initial, pairFirst, pairMiddle, pairFinal, originalFinal, targetFinal :
+      SystemState name key value world error} ->
+    {leftPosition, rightPosition : Nat} ->
+    (original : Transitions initial originalFinal) ->
+    (prefixTrace : Transitions initial pairFirst) ->
+    (left : Transition pairFirst pairMiddle) ->
+    (right : Transition pairMiddle pairFinal) ->
+    (suffix : Transitions pairFinal originalFinal) ->
+    (orientation : AdjacentSwapOrientationEvidence left right) ->
+    (diamond : LocalRelationalDiamond name key world error value nameEq keyEq
+      left right) ->
+    (result : AdjacentSwapResult name key world error value protocol nameEq keyEq
+      original prefixTrace left right suffix diamond) ->
+    (target : Transitions initial targetFinal) ->
+    (rest : FiniteAdjacentSwapDerivation name key world error value protocol
+      nameEq keyEq (swappedTrace result) target) ->
+    (prefixOccurrences : ActionRegistrationReplayCorrespondence name key world
+      error value sourceTrace original) ->
+    {leftActor, rightActor : name} ->
+    (leftBlock : LocatedOpenEpisodeBlock name key world error value nameEq keyEq
+      leftActor sourceTrace) ->
+    (rightBlock : LocatedOpenEpisodeBlock name key world error value nameEq keyEq
+      rightActor sourceTrace) ->
+    locatedActionOrdinal (replayActionOrigin prefixOccurrences
+      (adjacentLeftNodeOccurrence result)) =
+      transitionCount (traceBeforeBlock leftBlock) + leftPosition ->
+    locatedActionOrdinal (replayActionOrigin prefixOccurrences
+      (adjacentRightNodeOccurrence result)) =
+      transitionCount (traceBeforeBlock rightBlock) + rightPosition ->
+    (restPositions : List (Nat, Nat)) ->
+    BlockCrossingOriginPlan name key world error value protocol nameEq keyEq
+      sourceTrace leftBlock rightBlock
+      (composeActionRegistrationReplayCorrespondence prefixOccurrences
+        (swappedOccurrenceCorrespondence result)) rest restPositions ->
+    BlockCrossingOriginPlan name key world error value protocol nameEq keyEq
+      sourceTrace leftBlock rightBlock prefixOccurrences
+      (FiniteAdjacentSwapStep original prefixTrace left right suffix orientation
+        diamond result target rest)
+      ((leftPosition, rightPosition) :: restPositions)
+
