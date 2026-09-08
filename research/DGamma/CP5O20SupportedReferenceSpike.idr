@@ -4,6 +4,7 @@ import DGamma.Calculus
 import DGamma.Coeffects
 import DGamma.Metatheory
 import DGamma.CP3
+import DGamma.CP5O19SurfaceSpike
 import DGamma.CP5ConfluenceLocalDiamondSpike
 import DGamma.CP5ConfluenceCanonicalSortSpike
 import DGamma.CP5ConfluenceDeletionChainSpike
@@ -316,3 +317,42 @@ o20GoalReferenceOrdered renaming rightOrder linearization images lower upper pat
         (o20SupportedPathImage images path)
         (o20InverseMapMember (renameForward renaming) (renameBackward renaming) (renameRightInverse renaming) lowerIn)
         (o20InverseMapMember (renameForward renaming) (renameBackward renaming) (renameRightInverse renaming) upperIn))
+
+||| Construct the common SUPPORTED reference from the actual accepted
+||| endpoints. Both orders, their uniqueness and exact finite sets are owned;
+||| no common-order or target metadata conclusion is supplied by callers.
+export
+0 o20AcceptedSupportedReference :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {initial, leftFinal, rightFinal : SystemState name key value world error} ->
+  (leftTrace : Transitions initial leftFinal) -> (rightTrace : Transitions initial rightFinal) ->
+  (inputs : SameOrchestrationModuloGenerated nameEq keyEq leftTrace rightTrace) ->
+  (leftCapital : IndependentCanonicalSchedule name key world error value protocol nameEq keyEq leftTrace) ->
+  (rightCapital : IndependentCanonicalSchedule name key world error value protocol nameEq keyEq rightTrace) ->
+  (0 leftUnique : UniqueRawNameInsertions name key world error value nameEq keyEq leftTrace) ->
+  (0 rightUnique : UniqueRawNameInsertions name key world error value nameEq keyEq rightTrace) ->
+  (matching : MappedCanonicalSupportOrders name key world error value protocol nameEq keyEq leftTrace rightTrace
+    (currentNameBijection (endpointRenaming inputs)) (canonicalSchedule leftCapital) (canonicalSchedule rightCapital)) ->
+  O20SupportedReferenceOrders name key world error value nameEq keyEq leftFinal
+    (supportOrder (canonicalSchedule leftCapital))
+    (map (renameBackward (currentNameBijection (endpointRenaming inputs))) (supportOrder (canonicalSchedule rightCapital)))
+o20AcceptedSupportedReference nameEq keyEq protocol leftTrace rightTrace inputs leftCapital rightCapital leftUnique rightUnique matching =
+  MkO20SupportedReferenceOrders
+    (orderUnique (supportLinearization (canonicalSchedule leftCapital)))
+    (o20InverseMapUnique (renameForward (currentNameBijection (endpointRenaming inputs)))
+      (renameBackward (currentNameBijection (endpointRenaming inputs)))
+      (renameRightInverse (currentNameBijection (endpointRenaming inputs)))
+      (orderUnique (supportLinearization (canonicalSchedule rightCapital))))
+    (fst (o20MappedMembers (currentNameBijection (endpointRenaming inputs))
+      (supportOrder (canonicalSchedule leftCapital)) (supportOrder (canonicalSchedule rightCapital))
+      (leftSupportMapped matching) (rightSupportMapped matching)))
+    (snd (o20MappedMembers (currentNameBijection (endpointRenaming inputs))
+      (supportOrder (canonicalSchedule leftCapital)) (supportOrder (canonicalSchedule rightCapital))
+      (leftSupportMapped matching) (rightSupportMapped matching)))
+    (\lower, upper, path, lowerIn, upperIn => supportPathsOrdered (supportLinearization (canonicalSchedule leftCapital))
+      lower upper (o20SupportedPathRaw path) lowerIn upperIn)
+    (o20GoalReferenceOrdered (currentNameBijection (endpointRenaming inputs))
+      (supportOrder (canonicalSchedule rightCapital)) (supportLinearization (canonicalSchedule rightCapital))
+      (o20OriginalSupportedImageForward nameEq keyEq protocol leftTrace rightTrace inputs leftCapital rightCapital leftUnique rightUnique))
