@@ -44,3 +44,23 @@ export
 o19ProvenanceAtOccurrence protocol nameEq _ _ OccursHere (RegistrationProvenanceStep _ _ head rest) = head
 o19ProvenanceAtOccurrence protocol nameEq _ step (OccursLater occurs) (RegistrationProvenanceStep _ rest head remaining) =
   o19ProvenanceAtOccurrence protocol nameEq rest step occurs remaining
+
+||| An actual insertion is not any parent recovery transition. This makes
+||| retirement discipline of the finite O/O pair genuinely vacuous locally,
+||| without dropping the original whole-source retirement discipline.
+export
+0 o19InsertionCannotRecover :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {before, afterState : SystemState name key value world error} ->
+  (step : Transition before afterState) -> (child, owner : name) ->
+  (parent : Parent name) -> (component : Component key value world error) ->
+  (transitionAction step = OInsert child parent component) ->
+  ParentRecoveryStep owner step -> Void
+o19InsertionCannotRecover step child owner parent component inserted (ParentLeaves action) =
+  uninhabited (cong isLifecycleAction (trans (sym inserted) action))
+o19InsertionCannotRecover step child owner parent component inserted (ParentDivertsBefore action) =
+  uninhabited (cong isLifecycleAction (trans (sym inserted) action))
+o19InsertionCannotRecover step child owner parent component inserted (ParentDivertsAfter action tag) =
+  uninhabited (cong isLifecycleAction (trans (sym inserted) action))
+o19InsertionCannotRecover step child owner parent component inserted (ParentRaises action tag) =
+  uninhabited (cong isLifecycleAction (trans (sym inserted) action))
