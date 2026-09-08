@@ -85,3 +85,27 @@ record O20SharedReloadingSources
   0 reloadRightFound : (lookupFiber {name} {key} {value} {world} {error} @{nameEq} (renameForward renaming actor) (registry right) =
     Just (MkFiber sharedReloadComponent reloadRightParent reloadRightRetired reloadRightTable
       (Reloading sharedReloadProgram reloadRightOlder reloadRightView)))
+
+||| The native control constructor supplies program equality. Eliminate it at
+||| explicit values, never by equating projections of dependent observations.
+export
+0 o20ReloadingSourcesFromLifecycle :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {renaming : NameBijection name} -> {actor : name} ->
+  {left, right : SystemState name key value world error} ->
+  (component : Component key value world error) ->
+  (remaining : List (StepEffect key value world error (dependencies (componentDependencies component)) (componentProvisions component))) ->
+  (leftParent, rightParent : Parent name) -> (leftRetired, rightRetired : Bool) ->
+  (leftTable, rightTable : OwnedTable key value (componentProvisions component)) ->
+  (leftOlder : LocalState key value world (componentProvisions component) -> LocalState key value world (componentProvisions component)) ->
+  (leftView : View name (dependencies (componentDependencies component))) ->
+  (rightLifecycle : Lifecycle key value world error name (dependencies (componentDependencies component)) (componentProvisions component)) ->
+  (LifecycleRelatedBy renaming (Reloading remaining leftOlder leftView) rightLifecycle) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor (registry left) = Just (MkFiber component leftParent leftRetired leftTable (Reloading remaining leftOlder leftView))) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} (renameForward renaming actor) (registry right) = Just (MkFiber component rightParent rightRetired rightTable rightLifecycle)) ->
+  O20SharedReloadingSources name key world error value nameEq renaming actor left right
+o20ReloadingSourcesFromLifecycle component remaining leftParent rightParent leftRetired rightRetired
+  leftTable rightTable leftOlder leftView (Reloading _ rightOlder rightView)
+  (RenamedReloading Refl older views) leftFound rightFound =
+    MkO20SharedReloadingSources component remaining leftParent rightParent leftRetired rightRetired
+      leftTable rightTable leftOlder rightOlder leftView rightView leftFound rightFound
