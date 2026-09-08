@@ -28,8 +28,7 @@ data O20OperationalDescent :
   (name, key, world, error : Type) -> (value : key -> Type) ->
   (protocol : RegistrationProtocol key value world error) ->
   (nameEq : DecEq name) -> (keyEq : DecEq key) -> (sourceOrder, goalOrder : List name) ->
-  (goalState : SystemState name key value world error) ->
-  (goalLinearization : LinearizesSupport name key world error value nameEq keyEq goalState goalOrder) ->
+  (goalUnique : UniqueKeys goalOrder) ->
   {initial, finalState : SystemState name key value world error} ->
   (trace : Transitions initial finalState) ->
   (blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder trace) ->
@@ -39,29 +38,27 @@ data O20OperationalDescent :
     {name, key, world, error : Type} -> {value : key -> Type} ->
     {protocol : RegistrationProtocol key value world error} ->
     {nameEq : DecEq name} -> {keyEq : DecEq key} -> {sourceOrder, goalOrder : List name} ->
-    {goalState : SystemState name key value world error} ->
-    {goalLinearization : LinearizesSupport name key world error value nameEq keyEq goalState goalOrder} ->
+    {goalUnique : UniqueKeys goalOrder} ->
     {initial, finalState : SystemState name key value world error} -> {trace : Transitions initial finalState} ->
     {blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder trace} ->
     {premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq trace} ->
     {unique : UniqueRawNameInsertions name key world error value nameEq keyEq trace} ->
-    (0 blocked : (o20SelectOperationalProgress nameEq keyEq protocol sourceOrder goalOrder goalState goalLinearization trace blocks premises unique = Nothing)) ->
-    O20OperationalDescent name key world error value protocol nameEq keyEq sourceOrder goalOrder goalState goalLinearization trace blocks premises unique
+    (0 blocked : (o20SelectOperationalProgress nameEq keyEq protocol sourceOrder goalOrder goalUnique trace blocks premises unique = Nothing)) ->
+    O20OperationalDescent name key world error value protocol nameEq keyEq sourceOrder goalOrder goalUnique trace blocks premises unique
   O20DescentStep :
     {name, key, world, error : Type} -> {value : key -> Type} ->
     {protocol : RegistrationProtocol key value world error} ->
     {nameEq : DecEq name} -> {keyEq : DecEq key} -> {sourceOrder, goalOrder : List name} ->
-    {goalState : SystemState name key value world error} ->
-    {goalLinearization : LinearizesSupport name key world error value nameEq keyEq goalState goalOrder} ->
+    {goalUnique : UniqueKeys goalOrder} ->
     {initial, finalState : SystemState name key value world error} -> {trace : Transitions initial finalState} ->
     {blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder trace} ->
     {premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq trace} ->
     {unique : UniqueRawNameInsertions name key world error value nameEq keyEq trace} ->
-    (0 progress : O20OperationalProgress name key world error value protocol nameEq keyEq sourceOrder goalOrder goalState trace blocks premises) ->
+    (0 progress : O20OperationalProgress name key world error value protocol nameEq keyEq sourceOrder goalOrder trace blocks premises) ->
     (0 rest : O20OperationalDescent name key world error value protocol nameEq keyEq
-      (chosenTargetOrder (orientedChoice (progressChoice progress))) goalOrder goalState goalLinearization
+      (chosenTargetOrder (orientedChoice (progressChoice progress))) goalOrder goalUnique
       (blockSwapTrace (progressStep progress)) (blockSwapBlocks (progressStep progress)) (blockSwapPremises (progressStep progress)) (progressUnique progress)) ->
-    O20OperationalDescent name key world error value protocol nameEq keyEq sourceOrder goalOrder goalState goalLinearization trace blocks premises unique
+    O20OperationalDescent name key world error value protocol nameEq keyEq sourceOrder goalOrder goalUnique trace blocks premises unique
 
 ||| Zero measure excludes any positive progress by its OWN exact drop.
 ||| The explicit Maybe observation supplies the honest blocked equation.
@@ -70,19 +67,18 @@ export
   {name, key, world, error : Type} -> {value : key -> Type} ->
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (protocol : RegistrationProtocol key value world error) -> (sourceOrder, goalOrder : List name) ->
-  (goalState : SystemState name key value world error) ->
-  (goalLinearization : LinearizesSupport name key world error value nameEq keyEq goalState goalOrder) ->
+  (goalUnique : UniqueKeys goalOrder) ->
   {initial, finalState : SystemState name key value world error} -> (trace : Transitions initial finalState) ->
   (blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder trace) ->
   (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq trace) ->
   (unique : UniqueRawNameInsertions name key world error value nameEq keyEq trace) ->
   (rankInversions (map (o20GoalRank nameEq goalOrder) sourceOrder) = Z) ->
-  (observed : Maybe (O20OperationalProgress name key world error value protocol nameEq keyEq sourceOrder goalOrder goalState trace blocks premises)) ->
-  (o20SelectOperationalProgress nameEq keyEq protocol sourceOrder goalOrder goalState goalLinearization trace blocks premises unique = observed) ->
-  (O20OperationalDescent name key world error value protocol nameEq keyEq sourceOrder goalOrder goalState goalLinearization trace blocks premises unique)
-o20DescentZeroObserved nameEq keyEq protocol sourceOrder goalOrder goalState goalLinearization trace blocks premises unique measured Nothing observed =
+  (observed : Maybe (O20OperationalProgress name key world error value protocol nameEq keyEq sourceOrder goalOrder trace blocks premises)) ->
+  (o20SelectOperationalProgress nameEq keyEq protocol sourceOrder goalOrder goalUnique trace blocks premises unique = observed) ->
+  (O20OperationalDescent name key world error value protocol nameEq keyEq sourceOrder goalOrder goalUnique trace blocks premises unique)
+o20DescentZeroObserved nameEq keyEq protocol sourceOrder goalOrder goalUnique trace blocks premises unique measured Nothing observed =
   O20DescentBlocked observed
-o20DescentZeroObserved nameEq keyEq protocol sourceOrder goalOrder goalState goalLinearization trace blocks premises unique measured (Just progress) observed =
+o20DescentZeroObserved nameEq keyEq protocol sourceOrder goalOrder goalUnique trace blocks premises unique measured (Just progress) observed =
   absurd (trans (sym measured) (progressDecrease progress))
 
 ||| Successor case at an EXPLICIT actual selection. The smaller argument is
@@ -92,8 +88,7 @@ export
   {name, key, world, error : Type} -> {value : key -> Type} ->
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (protocol : RegistrationProtocol key value world error) -> (sourceOrder, goalOrder : List name) ->
-  (goalState : SystemState name key value world error) ->
-  (goalLinearization : LinearizesSupport name key world error value nameEq keyEq goalState goalOrder) ->
+  (goalUnique : UniqueKeys goalOrder) ->
   {initial, finalState : SystemState name key value world error} -> (trace : Transitions initial finalState) ->
   (blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder trace) ->
   (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq trace) ->
@@ -105,14 +100,14 @@ export
     (nextPremises : ReplayInvariantBundle name key world error value protocol nameEq keyEq nextTrace) ->
     (nextUnique : UniqueRawNameInsertions name key world error value nameEq keyEq nextTrace) ->
     (rankInversions (map (o20GoalRank nameEq goalOrder) nextOrder) = fuel) ->
-    (O20OperationalDescent name key world error value protocol nameEq keyEq nextOrder goalOrder goalState goalLinearization nextTrace nextBlocks nextPremises nextUnique)) ->
+    (O20OperationalDescent name key world error value protocol nameEq keyEq nextOrder goalOrder goalUnique nextTrace nextBlocks nextPremises nextUnique)) ->
   (rankInversions (map (o20GoalRank nameEq goalOrder) sourceOrder) = S fuel) ->
-  (observed : Maybe (O20OperationalProgress name key world error value protocol nameEq keyEq sourceOrder goalOrder goalState trace blocks premises)) ->
-  (o20SelectOperationalProgress nameEq keyEq protocol sourceOrder goalOrder goalState goalLinearization trace blocks premises unique = observed) ->
-  (O20OperationalDescent name key world error value protocol nameEq keyEq sourceOrder goalOrder goalState goalLinearization trace blocks premises unique)
-o20DescentSuccessorObserved nameEq keyEq protocol sourceOrder goalOrder goalState goalLinearization trace blocks premises unique fuel smaller measured Nothing observed =
+  (observed : Maybe (O20OperationalProgress name key world error value protocol nameEq keyEq sourceOrder goalOrder trace blocks premises)) ->
+  (o20SelectOperationalProgress nameEq keyEq protocol sourceOrder goalOrder goalUnique trace blocks premises unique = observed) ->
+  (O20OperationalDescent name key world error value protocol nameEq keyEq sourceOrder goalOrder goalUnique trace blocks premises unique)
+o20DescentSuccessorObserved nameEq keyEq protocol sourceOrder goalOrder goalUnique trace blocks premises unique fuel smaller measured Nothing observed =
   O20DescentBlocked observed
-o20DescentSuccessorObserved nameEq keyEq protocol sourceOrder goalOrder goalState goalLinearization trace blocks premises unique fuel smaller measured (Just progress) observed =
+o20DescentSuccessorObserved nameEq keyEq protocol sourceOrder goalOrder goalUnique trace blocks premises unique fuel smaller measured (Just progress) observed =
   O20DescentStep progress
     (smaller (chosenTargetOrder (orientedChoice (progressChoice progress)))
       (blockSwapTrace (progressStep progress)) (blockSwapBlocks (progressStep progress))
@@ -127,23 +122,22 @@ export
   {name, key, world, error : Type} -> {value : key -> Type} ->
   (fuel : Nat) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (protocol : RegistrationProtocol key value world error) -> (sourceOrder, goalOrder : List name) ->
-  (goalState : SystemState name key value world error) ->
-  (goalLinearization : LinearizesSupport name key world error value nameEq keyEq goalState goalOrder) ->
+  (goalUnique : UniqueKeys goalOrder) ->
   {initial, finalState : SystemState name key value world error} -> (trace : Transitions initial finalState) ->
   (blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder trace) ->
   (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq trace) ->
   (unique : UniqueRawNameInsertions name key world error value nameEq keyEq trace) ->
   (rankInversions (map (o20GoalRank nameEq goalOrder) sourceOrder) = fuel) ->
-  (O20OperationalDescent name key world error value protocol nameEq keyEq sourceOrder goalOrder goalState goalLinearization trace blocks premises unique)
-o20DescendFuel Z nameEq keyEq protocol sourceOrder goalOrder goalState goalLinearization trace blocks premises unique measured =
-  o20DescentZeroObserved nameEq keyEq protocol sourceOrder goalOrder goalState goalLinearization trace blocks premises unique measured
-    (o20SelectOperationalProgress nameEq keyEq protocol sourceOrder goalOrder goalState goalLinearization trace blocks premises unique) Refl
-o20DescendFuel (S fuel) nameEq keyEq protocol sourceOrder goalOrder goalState goalLinearization trace blocks premises unique measured =
-  o20DescentSuccessorObserved nameEq keyEq protocol sourceOrder goalOrder goalState goalLinearization trace blocks premises unique fuel
+  (O20OperationalDescent name key world error value protocol nameEq keyEq sourceOrder goalOrder goalUnique trace blocks premises unique)
+o20DescendFuel Z nameEq keyEq protocol sourceOrder goalOrder goalUnique trace blocks premises unique measured =
+  o20DescentZeroObserved nameEq keyEq protocol sourceOrder goalOrder goalUnique trace blocks premises unique measured
+    (o20SelectOperationalProgress nameEq keyEq protocol sourceOrder goalOrder goalUnique trace blocks premises unique) Refl
+o20DescendFuel (S fuel) nameEq keyEq protocol sourceOrder goalOrder goalUnique trace blocks premises unique measured =
+  o20DescentSuccessorObserved nameEq keyEq protocol sourceOrder goalOrder goalUnique trace blocks premises unique fuel
     (\nextOrder, nextTrace, nextBlocks, nextPremises, nextUnique, nextMeasured =>
-      o20DescendFuel fuel nameEq keyEq protocol nextOrder goalOrder goalState goalLinearization
+      o20DescendFuel fuel nameEq keyEq protocol nextOrder goalOrder goalUnique
         nextTrace nextBlocks nextPremises nextUnique nextMeasured)
-    measured (o20SelectOperationalProgress nameEq keyEq protocol sourceOrder goalOrder goalState goalLinearization trace blocks premises unique) Refl
+    measured (o20SelectOperationalProgress nameEq keyEq protocol sourceOrder goalOrder goalUnique trace blocks premises unique) Refl
 
 ||| No fuel or next-state oracle: initialize the total loop at the finite
 ||| fixed-goal inversion count of the actual source actor enumeration.
@@ -152,16 +146,15 @@ export
   {name, key, world, error : Type} -> {value : key -> Type} ->
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (protocol : RegistrationProtocol key value world error) -> (sourceOrder, goalOrder : List name) ->
-  (goalState : SystemState name key value world error) ->
-  (goalLinearization : LinearizesSupport name key world error value nameEq keyEq goalState goalOrder) ->
+  (goalUnique : UniqueKeys goalOrder) ->
   {initial, finalState : SystemState name key value world error} -> (trace : Transitions initial finalState) ->
   (blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder trace) ->
   (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq trace) ->
   (0 unique : UniqueRawNameInsertions name key world error value nameEq keyEq trace) ->
-  (O20OperationalDescent name key world error value protocol nameEq keyEq sourceOrder goalOrder goalState goalLinearization trace blocks premises unique)
-o20OperationalDescent nameEq keyEq protocol sourceOrder goalOrder goalState goalLinearization trace blocks premises unique =
+  (O20OperationalDescent name key world error value protocol nameEq keyEq sourceOrder goalOrder goalUnique trace blocks premises unique)
+o20OperationalDescent nameEq keyEq protocol sourceOrder goalOrder goalUnique trace blocks premises unique =
   o20DescendFuel (rankInversions (map (o20GoalRank nameEq goalOrder) sourceOrder)) nameEq keyEq protocol
-    sourceOrder goalOrder goalState goalLinearization trace blocks premises unique Refl
+    sourceOrder goalOrder goalUnique trace blocks premises unique Refl
 
 ||| Full actually reached operational permutation, retaining terminal search
 ||| rejection but NOT asserting equality of its actor order with the goal.
@@ -170,8 +163,7 @@ record O20StoppedOperationalPermutation
   (name, key, world, error : Type) (value : key -> Type)
   (protocol : RegistrationProtocol key value world error)
   (nameEq : DecEq name) (keyEq : DecEq key) (sourceOrder, goalOrder : List name)
-  (goalState : SystemState name key value world error)
-  (goalLinearization : LinearizesSupport name key world error value nameEq keyEq goalState goalOrder)
+  (goalUnique : UniqueKeys goalOrder)
   {initial, finalState : SystemState name key value world error}
   (trace : Transitions initial finalState)
   (blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder trace)
@@ -186,8 +178,7 @@ record O20StoppedOperationalPermutation
   0 stoppedCertificate : CertifiedActorPermutation name sourceOrder stoppedOrder
   0 stoppedRealized : OperationalActorPermutation name key world error value protocol nameEq keyEq
     stoppedCertificate trace blocks premises stoppedTrace
-  0 stoppedChoiceAbsent : (o20SelectOperationalProgress nameEq keyEq protocol stoppedOrder goalOrder goalState
-    goalLinearization stoppedTrace stoppedBlocks stoppedPremises stoppedUnique = Nothing)
+  0 stoppedChoiceAbsent : (o20SelectOperationalProgress nameEq keyEq protocol stoppedOrder goalOrder goalUnique stoppedTrace stoppedBlocks stoppedPremises stoppedUnique = Nothing)
 
 ||| Real terminal constructor: same source trace, full capital, identity
 ||| certificate/realization, and the exact observed rejection. No goal claim.
@@ -196,15 +187,14 @@ export
   {name, key, world, error : Type} -> {value : key -> Type} ->
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (protocol : RegistrationProtocol key value world error) -> (sourceOrder, goalOrder : List name) ->
-  (goalState : SystemState name key value world error) ->
-  (goalLinearization : LinearizesSupport name key world error value nameEq keyEq goalState goalOrder) ->
+  (goalUnique : UniqueKeys goalOrder) ->
   {initial, finalState : SystemState name key value world error} -> (trace : Transitions initial finalState) ->
   (blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder trace) ->
   (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq trace) ->
   (unique : UniqueRawNameInsertions name key world error value nameEq keyEq trace) ->
-  (o20SelectOperationalProgress nameEq keyEq protocol sourceOrder goalOrder goalState goalLinearization trace blocks premises unique = Nothing) ->
-  (O20StoppedOperationalPermutation name key world error value protocol nameEq keyEq sourceOrder goalOrder goalState goalLinearization trace blocks premises)
-o20StoppedAtSource {finalState} nameEq keyEq protocol sourceOrder goalOrder goalState goalLinearization trace blocks premises unique blocked =
+  (o20SelectOperationalProgress nameEq keyEq protocol sourceOrder goalOrder goalUnique trace blocks premises unique = Nothing) ->
+  (O20StoppedOperationalPermutation name key world error value protocol nameEq keyEq sourceOrder goalOrder goalUnique trace blocks premises)
+o20StoppedAtSource {finalState} nameEq keyEq protocol sourceOrder goalOrder goalUnique trace blocks premises unique blocked =
   MkO20StoppedOperationalPermutation sourceOrder finalState trace blocks premises unique
     ActorPermutationDone (OperationalActorDone blocks premises) blocked
 
@@ -215,17 +205,16 @@ export
   {name, key, world, error : Type} -> {value : key -> Type} ->
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (protocol : RegistrationProtocol key value world error) -> (sourceOrder, goalOrder : List name) ->
-  (goalState : SystemState name key value world error) ->
-  (goalLinearization : LinearizesSupport name key world error value nameEq keyEq goalState goalOrder) ->
+  (goalUnique : UniqueKeys goalOrder) ->
   {initial, finalState : SystemState name key value world error} -> (trace : Transitions initial finalState) ->
   (blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder trace) ->
   (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq trace) ->
-  (progress : O20OperationalProgress name key world error value protocol nameEq keyEq sourceOrder goalOrder goalState trace blocks premises) ->
+  (progress : O20OperationalProgress name key world error value protocol nameEq keyEq sourceOrder goalOrder trace blocks premises) ->
   (rest : O20StoppedOperationalPermutation name key world error value protocol nameEq keyEq
-    (chosenTargetOrder (orientedChoice (progressChoice progress))) goalOrder goalState goalLinearization
+    (chosenTargetOrder (orientedChoice (progressChoice progress))) goalOrder goalUnique
     (blockSwapTrace (progressStep progress)) (blockSwapBlocks (progressStep progress)) (blockSwapPremises (progressStep progress))) ->
-  (O20StoppedOperationalPermutation name key world error value protocol nameEq keyEq sourceOrder goalOrder goalState goalLinearization trace blocks premises)
-o20StoppedAfterProgress nameEq keyEq protocol sourceOrder goalOrder goalState goalLinearization trace blocks premises progress rest =
+  (O20StoppedOperationalPermutation name key world error value protocol nameEq keyEq sourceOrder goalOrder goalUnique trace blocks premises)
+o20StoppedAfterProgress nameEq keyEq protocol sourceOrder goalOrder goalUnique trace blocks premises progress rest =
   MkO20StoppedOperationalPermutation (stoppedOrder rest) (stoppedFinal rest) (stoppedTrace rest)
     (stoppedBlocks rest) (stoppedPremises rest) (stoppedUnique rest)
     (ActorPermutationStep (chosenOrderSwap (orientedChoice (progressChoice progress))) (stoppedCertificate rest))
@@ -240,19 +229,18 @@ export
   {name, key, world, error : Type} -> {value : key -> Type} ->
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (protocol : RegistrationProtocol key value world error) -> (sourceOrder, goalOrder : List name) ->
-  (goalState : SystemState name key value world error) ->
-  (goalLinearization : LinearizesSupport name key world error value nameEq keyEq goalState goalOrder) ->
+  (goalUnique : UniqueKeys goalOrder) ->
   {initial, finalState : SystemState name key value world error} -> (trace : Transitions initial finalState) ->
   (blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder trace) ->
   (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq trace) ->
   (unique : UniqueRawNameInsertions name key world error value nameEq keyEq trace) ->
-  (O20OperationalDescent name key world error value protocol nameEq keyEq sourceOrder goalOrder goalState goalLinearization trace blocks premises unique) ->
-  (O20StoppedOperationalPermutation name key world error value protocol nameEq keyEq sourceOrder goalOrder goalState goalLinearization trace blocks premises)
-o20DescentStoppedPermutation nameEq keyEq protocol sourceOrder goalOrder goalState goalLinearization trace blocks premises unique (O20DescentBlocked blocked) =
-  o20StoppedAtSource nameEq keyEq protocol sourceOrder goalOrder goalState goalLinearization trace blocks premises unique blocked
-o20DescentStoppedPermutation nameEq keyEq protocol sourceOrder goalOrder goalState goalLinearization trace blocks premises unique (O20DescentStep progress rest) =
-  o20StoppedAfterProgress nameEq keyEq protocol sourceOrder goalOrder goalState goalLinearization trace blocks premises progress
-    (o20DescentStoppedPermutation nameEq keyEq protocol (chosenTargetOrder (orientedChoice (progressChoice progress))) goalOrder goalState goalLinearization
+  (O20OperationalDescent name key world error value protocol nameEq keyEq sourceOrder goalOrder goalUnique trace blocks premises unique) ->
+  (O20StoppedOperationalPermutation name key world error value protocol nameEq keyEq sourceOrder goalOrder goalUnique trace blocks premises)
+o20DescentStoppedPermutation nameEq keyEq protocol sourceOrder goalOrder goalUnique trace blocks premises unique (O20DescentBlocked blocked) =
+  o20StoppedAtSource nameEq keyEq protocol sourceOrder goalOrder goalUnique trace blocks premises unique blocked
+o20DescentStoppedPermutation nameEq keyEq protocol sourceOrder goalOrder goalUnique trace blocks premises unique (O20DescentStep progress rest) =
+  o20StoppedAfterProgress nameEq keyEq protocol sourceOrder goalOrder goalUnique trace blocks premises progress
+    (o20DescentStoppedPermutation nameEq keyEq protocol (chosenTargetOrder (orientedChoice (progressChoice progress))) goalOrder goalUnique
       (blockSwapTrace (progressStep progress)) (blockSwapBlocks (progressStep progress)) (blockSwapPremises (progressStep progress)) (progressUnique progress) rest)
 
 ||| Full no-oracle operational SEARCH result. Selection, actual O19 replay,
@@ -264,13 +252,12 @@ export
   {name, key, world, error : Type} -> {value : key -> Type} ->
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (protocol : RegistrationProtocol key value world error) -> (sourceOrder, goalOrder : List name) ->
-  (goalState : SystemState name key value world error) ->
-  (goalLinearization : LinearizesSupport name key world error value nameEq keyEq goalState goalOrder) ->
+  (goalUnique : UniqueKeys goalOrder) ->
   {initial, finalState : SystemState name key value world error} -> (trace : Transitions initial finalState) ->
   (blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder trace) ->
   (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq trace) ->
   (0 unique : UniqueRawNameInsertions name key world error value nameEq keyEq trace) ->
-  (O20StoppedOperationalPermutation name key world error value protocol nameEq keyEq sourceOrder goalOrder goalState goalLinearization trace blocks premises)
-o20RunOperationalSearch nameEq keyEq protocol sourceOrder goalOrder goalState goalLinearization trace blocks premises unique =
-  o20DescentStoppedPermutation nameEq keyEq protocol sourceOrder goalOrder goalState goalLinearization trace blocks premises unique
-    (o20OperationalDescent nameEq keyEq protocol sourceOrder goalOrder goalState goalLinearization trace blocks premises unique)
+  (O20StoppedOperationalPermutation name key world error value protocol nameEq keyEq sourceOrder goalOrder goalUnique trace blocks premises)
+o20RunOperationalSearch nameEq keyEq protocol sourceOrder goalOrder goalUnique trace blocks premises unique =
+  o20DescentStoppedPermutation nameEq keyEq protocol sourceOrder goalOrder goalUnique trace blocks premises unique
+    (o20OperationalDescent nameEq keyEq protocol sourceOrder goalOrder goalUnique trace blocks premises unique)

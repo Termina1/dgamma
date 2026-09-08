@@ -113,3 +113,31 @@ uses the semantic full-path linearization, a conditional helper superseded for
 the accepted supported reference by A28. A reference-to-full-path conversion
 will not be introduced. A phantom unrelated goal registry will not be invented.
 Supervisor gate requested before any change of this internal search surface.
+
+## C internal search-surface migration (PRIOR supervisor authorization)
+
+Supervisor explicitly approved ONE exception to one-new-declaration/check and
+ONE guarded multi-module surface-only commit. Exactly four source modules:
+LinearExtension, OperationalProgress, OperationalDescent, ReferenceDescent.
+Only signatures and argument plumbing change: drop unused goalState and full
+LinearizesSupport, carry exact UniqueKeys goal instead. Drop the resulting
+orderUnique projection at the SAME original measure-drop application. Actual
+candidate enumeration, safety production, O19 call, reached uniqueness/drop,
+structural descent and certificate/result folds are unchanged.
+
+| Old internal clause | New clause |
+|---|---|
+| goalState + LinearizesSupport goalState goal | UniqueKeys goal, already produced by A17 |
+| orientedGoalLinearization | orientedGoalUnique |
+| full-path conditional o20OrientedSupportIncomparable | replaced by A28 o20ReferenceIncomparable, at the constructed common supported-vertex relation |
+| actual safety fields and O19 step | byte-identical call payload, no weakening |
+| global fixed-goal exact drop and total reselection | unchanged computation/proof, uniqueness directly supplied |
+| blocked terminal result | remains blocked, never canonical by fiat |
+
+The obsolete full-path helper is removed (no callers); A28 is the deliberately
+supported counterpart, NOT a proof of its old arbitrary-state full-path type.
+Protected O20 statements and all five entry modules remain byte-identical.
+SUR1..SUR4 each fresh own-Building PASS in SERIAL order; the special one-use
+Python guard authenticates all four hashes/latest invocation chain and records
+a GUARDED SURFACE COMMIT receipt. Post-migration R190 actual-state fixtures and
+selector regressions are the next serial checks, before C producer continuation.

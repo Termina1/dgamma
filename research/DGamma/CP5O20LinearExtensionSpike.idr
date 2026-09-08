@@ -55,21 +55,20 @@ o20CheckBefore nameEq left right (head :: rest) =
     No different => map BeforeThere (o20CheckBefore nameEq left right rest)
 
 ||| A genuinely safe actual block swap oriented TOWARD one fixed accepted
-||| support extension. The target linearization and reverse target-order
+||| support extension. Exact target uniqueness and reverse target-order
 ||| evidence are retained, but no operational replay/descent is fabricated.
 public export
 record O20OrientedSafeSwap
   (name, key, world, error : Type) (value : key -> Type)
   (protocol : RegistrationProtocol key value world error)
   (nameEq : DecEq name) (keyEq : DecEq key) (sourceOrder, goalOrder : List name)
-  (goalState : SystemState name key value world error)
   {initial, finalState : SystemState name key value world error}
   (trace : Transitions initial finalState)
   (blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder trace)
   (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq trace) where
   constructor MkO20OrientedSafeSwap
   orientedChoice : O20ChosenSafeSwap name key world error value protocol nameEq keyEq sourceOrder trace blocks premises
-  0 orientedGoalLinearization : LinearizesSupport name key world error value nameEq keyEq goalState goalOrder
+  0 orientedGoalUnique : UniqueKeys goalOrder
   0 orientedGoalReverse : BeforeIn (actorRight (chosenOrderSwap orientedChoice)) (actorLeft (chosenOrderSwap orientedChoice)) goalOrder
 
 ||| Orient ONE explicitly produced safe choice, never a separately guessed
@@ -80,37 +79,35 @@ export
   {protocol : RegistrationProtocol key value world error} ->
   (nameEq : DecEq name) -> {keyEq : DecEq key} ->
   {sourceOrder : List name} -> (goalOrder : List name) ->
-  (goalState : SystemState name key value world error) ->
-  LinearizesSupport name key world error value nameEq keyEq goalState goalOrder ->
+  UniqueKeys goalOrder ->
   {initial, finalState : SystemState name key value world error} -> {trace : Transitions initial finalState} ->
   {blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder trace} ->
   {premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq trace} ->
   O20ChosenSafeSwap name key world error value protocol nameEq keyEq sourceOrder trace blocks premises ->
-  Maybe (O20OrientedSafeSwap name key world error value protocol nameEq keyEq sourceOrder goalOrder goalState trace blocks premises)
-o20OrientChosenSafeSwap nameEq goalOrder goalState linearization choice =
-  map (\reverseOrder => MkO20OrientedSafeSwap choice linearization reverseOrder)
+  Maybe (O20OrientedSafeSwap name key world error value protocol nameEq keyEq sourceOrder goalOrder trace blocks premises)
+o20OrientChosenSafeSwap nameEq goalOrder goalUnique choice =
+  map (\reverseOrder => MkO20OrientedSafeSwap choice goalUnique reverseOrder)
     (o20CheckBefore nameEq (actorRight (chosenOrderSwap choice)) (actorLeft (chosenOrderSwap choice)) goalOrder)
 
 ||| Finite positive selection among ALL actual neighboring candidates,
 ||| filtering both real safety and inversion toward a FIXED accepted target
-||| extension. Nothing is NOT canonicality/completeness; operational replay,
-||| reached target linearization, reselection and strict descent remain open.
+||| extension. Nothing is NOT canonicality/completeness. The actual search
+||| separately carries the fixed supported reference through reached traces.
 export
 0 o20SelectOrientedSafeBlocks :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (protocol : RegistrationProtocol key value world error) -> (sourceOrder, goalOrder : List name) ->
-  (goalState : SystemState name key value world error) ->
-  LinearizesSupport name key world error value nameEq keyEq goalState goalOrder ->
+  UniqueKeys goalOrder ->
   {initial, finalState : SystemState name key value world error} -> (trace : Transitions initial finalState) ->
   (blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder trace) ->
   (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq trace) ->
   (0 unique : UniqueRawNameInsertions name key world error value nameEq keyEq trace) ->
-  Maybe (O20OrientedSafeSwap name key world error value protocol nameEq keyEq sourceOrder goalOrder goalState trace blocks premises)
-o20SelectOrientedSafeBlocks nameEq keyEq protocol sourceOrder goalOrder goalState linearization trace blocks premises unique =
+  Maybe (O20OrientedSafeSwap name key world error value protocol nameEq keyEq sourceOrder goalOrder trace blocks premises)
+o20SelectOrientedSafeBlocks nameEq keyEq protocol sourceOrder goalOrder goalUnique trace blocks premises unique =
   head' (mapMaybe
     (\candidate => o20CheckCandidate nameEq keyEq protocol sourceOrder trace blocks premises unique candidate >>=
-      o20OrientChosenSafeSwap nameEq goalOrder goalState linearization)
+      o20OrientChosenSafeSwap nameEq goalOrder goalUnique)
     (o20AdjacentCandidates nameEq sourceOrder [] sourceOrder Refl))
 
 ||| The same pair cannot also be oriented the opposite way in this fixed
@@ -120,39 +117,11 @@ export
 0 o20OrientedCannotReverse :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   {protocol : RegistrationProtocol key value world error} -> {nameEq : DecEq name} -> {keyEq : DecEq key} ->
-  {sourceOrder, goalOrder : List name} -> {goalState : SystemState name key value world error} ->
+  {sourceOrder, goalOrder : List name} ->
   {initial, finalState : SystemState name key value world error} -> {trace : Transitions initial finalState} ->
   {blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder trace} ->
   {premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq trace} ->
-  (choice : O20OrientedSafeSwap name key world error value protocol nameEq keyEq sourceOrder goalOrder goalState trace blocks premises) ->
+  (choice : O20OrientedSafeSwap name key world error value protocol nameEq keyEq sourceOrder goalOrder trace blocks premises) ->
   Not (BeforeIn (actorLeft (chosenOrderSwap (orientedChoice choice))) (actorRight (chosenOrderSwap (orientedChoice choice))) goalOrder)
 o20OrientedCannotReverse choice =
-  o20BeforeAsymmetric (orderUnique (orientedGoalLinearization choice)) (orientedGoalReverse choice)
-
-||| The standard linear-extension inversion lemma at the SAME semantic
-||| support relation: if the source enumeration also linearizes goalState,
-||| the selected inverted pair has no support/ancestor path either way.
-||| Producing this common-relation linearization after actual O19 replay or
-||| cross-trace renaming remains an O20 prerequisite, not an assumed body.
-export
-0 o20OrientedSupportIncomparable :
-  {name, key, world, error : Type} -> {value : key -> Type} ->
-  {protocol : RegistrationProtocol key value world error} -> {nameEq : DecEq name} -> {keyEq : DecEq key} ->
-  {sourceOrder, goalOrder : List name} -> {goalState : SystemState name key value world error} ->
-  {initial, finalState : SystemState name key value world error} -> {trace : Transitions initial finalState} ->
-  {blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder trace} ->
-  {premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq trace} ->
-  (choice : O20OrientedSafeSwap name key world error value protocol nameEq keyEq sourceOrder goalOrder goalState trace blocks premises) ->
-  LinearizesSupport name key world error value nameEq keyEq goalState sourceOrder ->
-  (Not (SupportPath nameEq goalState (actorLeft (chosenOrderSwap (orientedChoice choice))) (actorRight (chosenOrderSwap (orientedChoice choice)))),
-   Not (SupportPath nameEq goalState (actorRight (chosenOrderSwap (orientedChoice choice))) (actorLeft (chosenOrderSwap (orientedChoice choice)))))
-o20OrientedSupportIncomparable choice sourceLinearization =
-  (\path => o20OrientedCannotReverse choice
-    (supportPathsOrdered (orientedGoalLinearization choice)
-      (actorLeft (chosenOrderSwap (orientedChoice choice))) (actorRight (chosenOrderSwap (orientedChoice choice))) path
-      (snd (o20BeforeMembers (orientedGoalReverse choice))) (fst (o20BeforeMembers (orientedGoalReverse choice)))),
-   \path => o20BeforeAsymmetric (orderUnique sourceLinearization)
-    (safetyLeftBeforeRight (chosenSafety (orientedChoice choice)))
-    (supportPathsOrdered sourceLinearization
-      (actorRight (chosenOrderSwap (orientedChoice choice))) (actorLeft (chosenOrderSwap (orientedChoice choice))) path
-      (safetyRightInOrder (chosenSafety (orientedChoice choice))) (safetyLeftInOrder (chosenSafety (orientedChoice choice)))))
+  o20BeforeAsymmetric (orientedGoalUnique choice) (orientedGoalReverse choice)
