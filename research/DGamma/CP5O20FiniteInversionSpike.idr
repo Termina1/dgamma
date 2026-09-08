@@ -30,3 +30,11 @@ o20InversionUnderSourceHead head
     MkO20FiniteInversion (head :: target)
       (MkAdjacentActorOrderSwap (head :: leading) left right trailing
         (cong (head ::) beforeExact) (cong (head ::) afterExact) distinct) reverseOrder
+
+||| Goal-head extension changes only the reverse-order evidence.
+export
+0 o20InversionUnderGoalHead :
+  {name : Type} -> {sourceOrder, goalOrder : List name} -> (head : name) ->
+  O20FiniteInversion name sourceOrder goalOrder -> O20FiniteInversion name sourceOrder (head :: goalOrder)
+o20InversionUnderGoalHead head (MkO20FiniteInversion target swap reverseOrder) =
+  MkO20FiniteInversion target swap (BeforeThere reverseOrder)
