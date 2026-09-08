@@ -61,10 +61,24 @@ smallEarlierUnavailable (S (S (S (S later)))) bounded =
   void (succNotLTEzero (fromLteSucc (fromLteSucc (fromLteSucc (fromLteSucc bounded)))))
 
 ||| The actual located root birth inhabits R178's availability-aware EARLIEST
-||| clause (replacement of CP3:3165ff/3173ff strict root placement). Current
+||| clause (replacement of CP3:3164/3173 strict root placement). Current
 ||| compatibility and ALL earlier-cut exclusions are proved. This certificate
 ||| is not yet the entire AvailabilityAwareCanonicalInputPlacement package.
 public export
 0 smallRootEarliest : EarliestAvailableRootBirth Nat Bool Unit String (\key => Unit)
   %search %search smallTrace 3 (smallComponent True) smallRootBirth
 smallRootEarliest = MkEarliestAvailableRootBirth smallAvailabilityTrail Refl smallEarlierUnavailable
+
+||| The FROZEN strict CanonicalInputPlacement (CP3:3156, field3173) is
+||| uninhabited for this actual native trace, for EVERY support state/order.
+||| Its root-before-every-lifecycle clause would require ordinal4 < ordinal0.
+||| This is an actual negative certificate, not a sampled Boolean rejection.
+export
+0 smallStrictPlacementRejected :
+  (supportState : SystemState Nat Bool (\key => Unit) Unit String) -> (order : List Nat) ->
+  CanonicalInputPlacement Nat Bool Unit String (\key => Unit) %search %search supportState order smallTrace -> Void
+smallStrictPlacementRejected supportState order placement =
+  succNotLTEzero (rootGenerationBeforeLifecycle placement smallRootBirth
+    (MkLocatedActionOccurrence (smallState 0) (smallState 1) NoTransitions
+      (Fired {before = smallState 0} {afterState = smallState 1} %search %search (LBegin 0) LBeginTag (smallBegin0 smallNativeExecution))
+      (MoreTransitions (Fired {before = smallState 1} {afterState = smallState 2} %search %search (LAdvance 0) LFinishTag (smallFinish0 smallNativeExecution)) (MoreTransitions (Fired {before = smallState 2} {afterState = smallState 3} %search %search (ORetire 1) ORetireTag (smallRetire1 smallNativeExecution)) (MoreTransitions (Fired {before = smallState 3} {afterState = smallState 4} %search %search (ORemove 1) ORemoveTag (smallRemove1 smallNativeExecution)) (MoreTransitions (Fired {before = smallState 4} {afterState = smallState 5} %search %search (OInsert 3 Root (smallComponent True)) OInsertTag (smallInsert3 smallNativeExecution)) (MoreTransitions (Fired {before = smallState 5} {afterState = smallState 6} %search %search (LBegin 2) LBeginTag (smallBegin2 smallNativeExecution)) (MoreTransitions (Fired {before = smallState 6} {afterState = smallState 7} %search %search (LAdvance 2) LFinishTag (smallFinish2 smallNativeExecution)) NoTransitions)))))) Refl Refl) Refl)
