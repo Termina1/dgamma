@@ -275,3 +275,31 @@ o19ActualGlobalCartesianSites nameEq keyEq protocol swap source blocks premises 
   trans (o19ActualGlobalOriginSites nameEq keyEq protocol swap source blocks premises safety unique)
     (cong (o19OriginsAtSites (ordinalOrigin (o19IdentityOrdinalMap source)))
       (o19CartesianActualBlocksSites nameEq keyEq protocol swap source blocks premises safety unique))
+
+||| Authenticate the right block's ORIGINAL start from the actual ordered
+||| opening-prefix equation and the actual sanctioned empty gap. This is a
+||| dependent-source count theorem, not a caller-supplied coordinate offset.
+export
+0 o19AdjacentBlockStartCount :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} -> {leftActor, rightActor : name} ->
+  {initial, finalState : SystemState name key value world error} -> {source : Transitions initial finalState} ->
+  (leftBlock : LocatedOpenEpisodeBlock name key world error value nameEq keyEq leftActor source) ->
+  (rightBlock : LocatedOpenEpisodeBlock name key world error value nameEq keyEq rightActor source) ->
+  (ordered : BlockBefore name key world error value nameEq keyEq source leftActor rightActor leftBlock rightBlock) ->
+  (transitionCount (betweenBlocks ordered) = 0) ->
+  (transitionCount (traceBeforeBlock rightBlock) = transitionCount (traceBeforeBlock leftBlock) + actorBlockTransitionCount leftBlock)
+o19AdjacentBlockStartCount leftBlock rightBlock ordered adjacent =
+  successorEqualityInjective
+    (trans (sym (transitionPrefixLength (traceBeforeBlock rightBlock) (beginTransition (blockOpening rightBlock))))
+    (trans (cong transitionCount (blocksOrderedInGlobal ordered))
+    (trans (o19TransitionCountAppend (prefixThroughBlock leftBlock)
+      (appendTransitions (betweenBlocks ordered) (MoreTransitions (beginTransition (blockOpening rightBlock)) NoTransitions)))
+    (trans (cong (\count => transitionCount (prefixThroughBlock leftBlock) + count)
+      (transitionPrefixLength (betweenBlocks ordered) (beginTransition (blockOpening rightBlock))))
+    (trans (cong (\gapCount => transitionCount (prefixThroughBlock leftBlock) + S gapCount) adjacent)
+    (trans (plusCommutative (transitionCount (prefixThroughBlock leftBlock)) 1)
+      (cong S (trans (o19TransitionCountAppend (prefixToBlockOpening leftBlock) (blockBody leftBlock))
+        (trans (cong (\openingCount => openingCount + transitionCount (blockBody leftBlock))
+          (transitionPrefixLength (traceBeforeBlock leftBlock) (beginTransition (blockOpening leftBlock))))
+          (plusSuccRightSucc (transitionCount (traceBeforeBlock leftBlock)) (transitionCount (blockBody leftBlock))))))))))))
