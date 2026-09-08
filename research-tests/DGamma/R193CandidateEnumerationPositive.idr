@@ -28,3 +28,13 @@ public export
 r193LastPairEnumerated = o20AdjacentCandidatesComplete r193SelectionNameEq
   [4, 4, 2, 3, 1] [] [4, 4, 2, 3, 1] Refl 3 1 (\same => absurd same)
   (O20NeighboursLater (O20NeighboursLater (O20NeighboursLater O20NeighboursHere)))
+
+||| Orientation uses the exact actors of the REAL returned candidate, not a
+||| scalar Refl observation of the nested candidate builder.
+public export
+0 r193EnumeratedReverseOrder :
+  BeforeIn (actorRight (enumeratedSwap r193LastPairEnumerated))
+    (actorLeft (enumeratedSwap r193LastPairEnumerated)) [1, 3]
+r193EnumeratedReverseOrder =
+  rewrite enumeratedRightExact r193LastPairEnumerated in
+  rewrite enumeratedLeftExact r193LastPairEnumerated in BeforeHere Here
