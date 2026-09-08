@@ -445,3 +445,15 @@ data O20Neighbours : (name : Type) -> name -> name -> List name -> Type where
   O20NeighboursLater : {name : Type} -> {left, right, head, next : name} -> {later : List name} ->
     O20Neighbours name left right (next :: later) ->
     O20Neighbours name left right (head :: next :: later)
+
+||| Lift the ACTUAL candidate's own membership; no equality of proof fields.
+export
+0 o20EnumeratedPairThere :
+  {name : Type} -> {sourceOrder : List name} ->
+  {candidates : List (targetOrder : List name ** AdjacentActorOrderSwap name sourceOrder targetOrder)} ->
+  {head : (targetOrder : List name ** AdjacentActorOrderSwap name sourceOrder targetOrder)} ->
+  {left, right : name} -> O20EnumeratedPair name sourceOrder candidates left right ->
+  O20EnumeratedPair name sourceOrder (head :: candidates) left right
+o20EnumeratedPairThere packet = MkO20EnumeratedPair
+  (enumeratedTarget packet) (enumeratedSwap packet) (There (enumeratedMember packet))
+  (enumeratedLeftExact packet) (enumeratedRightExact packet)
