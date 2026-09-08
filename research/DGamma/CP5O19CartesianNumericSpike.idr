@@ -222,3 +222,26 @@ o19RowOriginFixed originalMap start width leftSource rightSource leftExact right
   trans (o19RowOriginPairs originalMap start width)
     (trans (cong (map (\pair => (originalMap (fst pair), originalMap (snd pair)))) (o19RowPairsFixed start width))
       (o19FixedRowPairsMap originalMap originalMap start (start + width) leftSource rightSource width leftExact rightExact))
+
+||| BOTH exact source-coordinate bands survive one whole row rotation.
+||| The remaining right band advances by one; the left origins stay fixed.
+||| All equations are produced from the actual inside/beyond pull laws.
+export
+0 o19RowBandsAfter : (originalMap : Nat -> Nat) -> (start, width, height, leftSource, rightSource : Nat) ->
+  (0 leftExact : (index : Nat) -> LTE (S index) width -> (originalMap (start + index) = leftSource + index)) ->
+  (0 rightExact : (index : Nat) -> LTE (S index) (S height) -> (originalMap ((start + width) + index) = rightSource + index)) ->
+  (((index : Nat) -> LTE (S index) width ->
+      (originalMap (o19RowPull start width ((S start) + index)) = leftSource + index)),
+   ((index : Nat) -> LTE (S index) height ->
+      (originalMap (o19RowPull start width (((S start) + width) + index)) = (S rightSource) + index)))
+o19RowBandsAfter originalMap start width height leftSource rightSource leftExact rightExact =
+  (\index, bound => trans
+    (cong originalMap (trans (cong (o19RowPull start width) (plusSuccRightSucc start index)) (o19RowPullInside start width index bound)))
+    (leftExact index bound),
+   \index, bound => trans
+    (cong originalMap
+      (trans (cong (o19RowPull start width) (cong (\base => base + index) (plusSuccRightSucc start width)))
+        (trans (o19RowPullBeyond start width index)
+          (trans (cong (\base => base + index) (sym (plusSuccRightSucc start width)))
+            (plusSuccRightSucc (start + width) index)))))
+    (trans (rightExact (S index) (LTESucc bound)) (sym (plusSuccRightSucc rightSource index))))
