@@ -1223,3 +1223,11 @@ o19BlockBeforeNotSame {selected} first second ordered =
         (replace {p = Elem (LBegin selected)} (sym (o19PrefixThroughWord first))
           (snd (o19ElemAppendInjections (o19ActionWord (traceBeforeBlock first)) (o19ActionWord (actorBlockTrace first))) Here))))
     Refl Refl
+
+||| Both exact enumeration members from an actual BeforeIn witness.
+export
+0 o19BeforeMembers : {name : Type} -> {left, right : name} -> {order : List name} ->
+  BeforeIn left right order -> (Elem left order, Elem right order)
+o19BeforeMembers (BeforeHere member) = (Here, There member)
+o19BeforeMembers (BeforeThere ordered) =
+  (There (fst (o19BeforeMembers ordered)), There (snd (o19BeforeMembers ordered)))
