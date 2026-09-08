@@ -28,3 +28,17 @@ r193RemovedHistoryPair =
     (registrationGeneration r192RemovedOriginalBirth)
     (o20GeneratedHistoryBirth r192RemovedOriginalBirth)
     (o20GeneratedHistoryBirth r192RemovedOriginalBirth) Refl
+
+||| The previous obstruction is now handled on its genuine history-only
+||| branch: target1 has an actual opposite birth, while current image2 still
+||| has none. This neither fabricates support nor treats absence as vestigial.
+export
+0 r193RemovedHistoryBranch :
+  ((o20HistoricalTarget (generatedGenerationBijection r192RemovedSameInputs)
+      (historyLeftStamp r193RemovedHistoryPair) = 1),
+   Not (LocatedGeneratedRegistration
+     (renameForward (expectedBridgeBijection r192RemovedSameInputs) 1)
+     (renameForward (expectedBridgeBijection r192RemovedSameInputs) 0)
+     r45Child r192RemovedBirthTrace))
+r193RemovedHistoryBranch =
+  (o20HistoryTargetOwned r193RemovedHistoryPair, r192E8CurrentDoesNotGiveHistoricalBirth)
