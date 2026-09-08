@@ -117,3 +117,36 @@ export
   (isJust (map make source >>= next) = True)
 o20MappedBindPresent make next Nothing Refl each impossible
 o20MappedBindPresent make next (Just payload) present each = each payload
+
+||| Native candidate and orientation are BOTH complete for the same safety
+||| payload and the same fixed target order. Four actual safety clauses remain
+||| explicit; no successful orientation or swapped endpoint is a premise.
+export
+0 o20OrientedCandidateCompleteAtOwnSlots :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) -> (sourceOrder, targetOrder, goalOrder : List name) ->
+  (goalUnique : UniqueKeys goalOrder) ->
+  (swap : AdjacentActorOrderSwap name sourceOrder targetOrder) ->
+  {initial, finalState : SystemState name key value world error} -> (trace : Transitions initial finalState) ->
+  (blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder trace) ->
+  (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq trace) ->
+  (unique : UniqueRawNameInsertions name key world error value nameEq keyEq trace) ->
+  BeforeIn (actorRight swap) (actorLeft swap) goalOrder ->
+  NoGeneratedChild (actorRight swap) (blockBody (decomposedBlock blocks (actorLeft swap) (Builtin.fst (o20ChosenActorFacts swap)))) ->
+  NoGeneratedChild (actorLeft swap) (blockBody (decomposedBlock blocks (actorRight swap) (Builtin.fst (Builtin.snd (o20ChosenActorFacts swap))))) ->
+  CheckedEarlyApplication name key world error value nameEq keyEq
+    (blockPreStart (decomposedBlock blocks (actorLeft swap) (Builtin.fst (o20ChosenActorFacts swap)))) (LBegin (actorRight swap)) LBeginTag ->
+  (transitionCount (betweenBlocks (decomposedBlocksFollowOrder blocks (actorLeft swap) (actorRight swap)
+    (Builtin.fst (o20ChosenActorFacts swap)) (Builtin.fst (Builtin.snd (o20ChosenActorFacts swap))) (Builtin.snd (Builtin.snd (o20ChosenActorFacts swap))))) = 0) ->
+  (isJust (o20CheckCandidate nameEq keyEq protocol sourceOrder trace blocks premises unique (targetOrder ** swap) >>=
+    o20OrientChosenSafeSwap nameEq goalOrder goalUnique) = True)
+o20OrientedCandidateCompleteAtOwnSlots nameEq keyEq protocol sourceOrder targetOrder goalOrder goalUnique swap trace blocks premises unique reverseOrder leftSafe rightSafe early adjacent =
+  rewrite o20CandidateOwnedEquation nameEq keyEq protocol sourceOrder trace blocks premises unique targetOrder swap in
+    o20MappedBindPresent (\safety => MkO20ChosenSafeSwap targetOrder swap safety unique)
+      (o20OrientChosenSafeSwap nameEq goalOrder goalUnique)
+      (o20CheckSafetyAtMembers nameEq keyEq protocol swap trace blocks premises (Builtin.fst (o20ChosenActorFacts swap)) (Builtin.fst (Builtin.snd (o20ChosenActorFacts swap))) (Builtin.snd (Builtin.snd (o20ChosenActorFacts swap))))
+      (trans (cong isJust (sym (o20CandidateOwnedEquation nameEq keyEq protocol sourceOrder trace blocks premises unique targetOrder swap)))
+        (o20CandidateCompleteAtOwnSlots nameEq keyEq protocol sourceOrder targetOrder swap trace blocks premises unique leftSafe rightSafe early adjacent))
+      (\safety => o20OrientChosenSafeSwapComplete nameEq goalOrder goalUnique
+        (MkO20ChosenSafeSwap targetOrder swap safety unique) reverseOrder)
