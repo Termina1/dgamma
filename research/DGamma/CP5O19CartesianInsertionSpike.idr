@@ -346,3 +346,36 @@ o19InsertionInsertionStepObserved {name} {key} {world} {error} {value}
           (plusCommutative crossings 1)))
 
 
+
+||| Consume one explicit generated-insertion SOURCE class, then produce the
+||| actual next O/O crossing. All executable/safety/replay fields are derived.
+export
+0 o19GeneratedInsertionRowStep :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (protocol : RegistrationProtocol key value world error) ->
+  (rightChild, leftParent, rightParent : name) -> (rightComponent : Component key value world error) ->
+  {initial, sourceFinal, before, middle, rightBefore, rightAfter : SystemState name key value world error} ->
+  (source : Transitions initial sourceFinal) -> (earlier : Transitions initial before) ->
+  (left : Transition before middle) -> (sourceRight : Transition rightBefore rightAfter) -> (crossings : Nat) ->
+  (previous : O19OrchestrationRow name key world error value protocol nameEq keyEq source
+    (appendTransitions earlier (MoreTransitions left NoTransitions)) sourceRight crossings) ->
+  (transitionAction sourceRight = OInsert rightChild (ChildOf rightParent) rightComponent) ->
+  (transitionTag sourceRight = OInsertTag) ->
+  (observed : (leftChild : name ** (leftComponent : Component key value world error **
+    ((transitionAction left = OInsert leftChild (ChildOf leftParent) leftComponent),
+     Not (rightChild = leftChild),
+     ((licensor : name) -> (ChildOf leftParent = ChildOf licensor) -> Not (rightChild = licensor)),
+     ((licensor : name) -> (ChildOf rightParent = ChildOf licensor) -> Not (leftChild = licensor)))))) ->
+  O19OrchestrationRow name key world error value protocol nameEq keyEq source earlier sourceRight (S crossings)
+o19GeneratedInsertionRowStep nameEq keyEq protocol rightChild leftParent rightParent rightComponent
+  source earlier left sourceRight crossings previous rightInsert rightTag
+  (leftChild ** (leftComponent ** (leftInsert, distinct, leftLicense, rightLicense))) =
+    o19InsertionInsertionStepObserved nameEq keyEq protocol source earlier left sourceRight crossings previous
+      (PaperInsertStep leftInsert)
+      (o19GeneratedInsertionReplay nameEq keyEq protocol leftChild rightChild leftParent rightParent leftComponent rightComponent
+        (cursorTrace (orchestrationRowCursor previous)) earlier left (orchestrationRowRight previous) (orchestrationRowRest previous)
+        (trans (sym (appendTransitionsAssociative earlier (MoreTransitions left NoTransitions)
+          (MoreTransitions (orchestrationRowRight previous) (orchestrationRowRest previous)))) (orchestrationRowDecomposition previous))
+        (cursorBundle (orchestrationRowCursor previous)) leftInsert
+        (trans (orchestrationRowAction previous) rightInsert) distinct leftLicense rightLicense
+        (trans (orchestrationRowTag previous) rightTag))
