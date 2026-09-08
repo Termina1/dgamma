@@ -105,3 +105,19 @@ o19LocatedLifecycleCovered trace covered action (MkLocatedActionOccurrence befor
     (o19LifecycleCoveredAtCut earlier selected later
       (replace {p = LifecycleActorsCovered order} (sym decomposition) covered)
       (trans (cong isLifecycleAction actionExact) lifecycle))
+
+||| Typed Boolean boundary for one actual reached head. An explicit observed
+||| Bool and equation avoid lazy conditional reduction over a replay builder.
+export
+0 o19CoveredHeadObserved :
+  {name, key, world, error : Type} -> {value : key -> Type} -> {order : List name} ->
+  {initial, middle, finalState : SystemState name key value world error} ->
+  (head : Transition initial middle) -> (tail : Transitions middle finalState) ->
+  LifecycleActorsCovered order tail -> (observed : Bool) ->
+  (isLifecycleAction (transitionAction head) = observed) ->
+  ((isLifecycleAction (transitionAction head) = True) -> Elem (actionOwner (transitionAction head)) order) ->
+  LifecycleActorsCovered order (MoreTransitions head tail)
+o19CoveredHeadObserved head tail covered True observed membership =
+  CoveredLifecycleStep head tail observed
+    (replace {p = \actor => Elem actor order} (sym (o19TransitionActorOwner head)) (membership observed)) covered
+o19CoveredHeadObserved head tail covered False observed membership = CoveredOrchestrationStep head tail observed covered
