@@ -75,3 +75,27 @@ record O19StepObservation (key, world, error : Type) (value : key -> Type)
   stepObservedAfter : LocalState key value world provision
   stepObservedUndo : LocalState key value world provision -> LocalState key value world provision
   0 stepObservedRan : runStepEffect step capability localBefore = Right (stepObservedAfter, stepObservedUndo)
+
+||| Decode an EXPLICIT callback result using partial-map definedness. A failed
+||| callback contradicts that domain; no successful callback is an input.
+export
+0 o19StepSuccessObserved :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {deps : List key} -> {provision : CoeffectSpec key} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (step : StepEffect key value world error deps provision) ->
+  (capability : DepValues key value deps) -> (state : EffectState name key value world) ->
+  (observed : Either error (LocalState key value world provision,
+    LocalState key value world provision -> LocalState key value world provision)) ->
+  (runStepEffect step capability (MkLocalState (effectAmbient state)
+    (restrictOwnedPreservingOrder @{keyEq} provision (effectTables state actor))) = observed) ->
+  (isJust (stepForwardEffectMap nameEq keyEq actor step capability state) = True) ->
+  O19StepObservation key world error value deps provision step capability
+    (MkLocalState (effectAmbient state) (restrictOwnedPreservingOrder @{keyEq} provision (effectTables state actor)))
+o19StepSuccessObserved nameEq keyEq actor step capability state (Left failure) exact defined =
+  case trans (sym (cong isJust
+    (the (stepForwardEffectMap nameEq keyEq actor step capability state = Nothing)
+      (rewrite exact in Refl)))) defined of
+    Refl impossible
+o19StepSuccessObserved nameEq keyEq actor step capability state (Right (localAfter, undo)) exact defined =
+  MkO19StepObservation localAfter undo exact
