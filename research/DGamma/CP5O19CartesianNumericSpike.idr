@@ -188,3 +188,25 @@ o19GridPairs : Nat -> Nat -> Nat -> Nat -> List (Nat, Nat)
 o19GridPairs leftSource rightSource width Z = []
 o19GridPairs leftSource rightSource width (S height) =
   o19FixedRowPairs leftSource rightSource width ++ o19GridPairs leftSource (S rightSource) width height
+
+||| Map the two coordinates separately using actual bounded left-band and
+||| right-point equations. The bounded law is restricted structurally, so
+||| no value outside the certified source interval is assumed.
+export
+0 o19FixedRowPairsMap : (leftMap, rightMap : Nat -> Nat) ->
+  (sourceLeft, sourceRight, targetLeft, targetRight, width : Nat) ->
+  (0 leftExact : (index : Nat) -> LTE (S index) width -> (leftMap (sourceLeft + index) = targetLeft + index)) ->
+  (0 rightExact : rightMap sourceRight = targetRight) ->
+  (map (\pair => (leftMap (fst pair), rightMap (snd pair))) (o19FixedRowPairs sourceLeft sourceRight width) =
+    o19FixedRowPairs targetLeft targetRight width)
+o19FixedRowPairsMap leftMap rightMap sourceLeft sourceRight targetLeft targetRight Z leftExact rightExact = Refl
+o19FixedRowPairsMap leftMap rightMap sourceLeft sourceRight targetLeft targetRight (S width) leftExact rightExact =
+  trans (mapAppend (\pair => (leftMap (fst pair), rightMap (snd pair)))
+    (o19FixedRowPairs (S sourceLeft) sourceRight width) [(sourceLeft, sourceRight)])
+    (cong2 (++)
+      (o19FixedRowPairsMap leftMap rightMap (S sourceLeft) sourceRight (S targetLeft) targetRight width
+        (\index, bound => trans (cong leftMap (plusSuccRightSucc sourceLeft index))
+          (trans (leftExact (S index) (LTESucc bound)) (sym (plusSuccRightSucc targetLeft index)))) rightExact)
+      (cong (\pair => [pair]) (cong2 MkPair
+        (trans (cong leftMap (sym (plusZeroRightNeutral sourceLeft)))
+          (trans (leftExact Z (LTESucc LTEZero)) (plusZeroRightNeutral targetLeft))) rightExact)))
