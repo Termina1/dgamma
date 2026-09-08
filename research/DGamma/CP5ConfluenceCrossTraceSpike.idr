@@ -30,15 +30,6 @@ data CertifiedActorPermutation :
     CertifiedActorPermutation name middle after ->
     CertifiedActorPermutation name before after
 
-public export
-transitionPrefixLength : (earlierTrace : Transitions initial before) ->
-  (step : Transition before after) ->
-  transitionCount (appendTransitions earlierTrace
-    (MoreTransitions step NoTransitions)) = S (transitionCount earlierTrace)
-transitionPrefixLength NoTransitions step = Refl
-transitionPrefixLength (MoreTransitions earlier rest) step =
-  cong S (transitionPrefixLength rest step)
-
 ||| The current left node is located constructively from the exact decomposition
 ||| already stored by its `AdjacentSwapResult`.
 public export

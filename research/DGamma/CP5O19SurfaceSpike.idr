@@ -272,3 +272,12 @@ record NodeCrossesSourceBlockPosition
       (replayActionOrigin prefixOccurrences currentNodeOccurrence) =
     transitionCount (traceBeforeBlock sourceBlock) + position
 
+public export
+transitionPrefixLength : (earlierTrace : Transitions initial before) ->
+  (step : Transition before after) ->
+  transitionCount (appendTransitions earlierTrace
+    (MoreTransitions step NoTransitions)) = S (transitionCount earlierTrace)
+transitionPrefixLength NoTransitions step = Refl
+transitionPrefixLength (MoreTransitions earlier rest) step =
+  cong S (transitionPrefixLength rest step)
+
