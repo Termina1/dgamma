@@ -27,3 +27,20 @@ childForeignLookupFrame nameEq keyEq child {before} {afterState} action tag chec
   systemLocalUpdateForeign nameEq child (actionOwner action) distinct before afterState
     (applyActionLocalUpdate nameEq keyEq action before afterState tag
       (checkedActionProjects nameEq keyEq action before afterState tag checked))
+
+||| Native early retirement at an observed source fiber, with its checked
+||| target admitted by the existing four-clause preservation theorem.
+export
+0 childRetireAtFound :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (child : name) ->
+  (fiber : Fiber name key value world error) ->
+  (state : SystemState name key value world error) ->
+  (0 found : lookupFiber {name} {key} {value} {world} {error} @{nameEq} child (registry state) = Just fiber) ->
+  (0 valid : registryWellFormed @{nameEq} @{keyEq} state = True) ->
+  checkedApplyAction @{nameEq} @{keyEq} (ORetire child) state =
+    Just (ORetireTag, MkSystemState (worldState state)
+      (replaceBinding @{nameEq} child (retireFiber fiber) (registry state)))
+childRetireAtFound nameEq keyEq child fiber (MkSystemState ambient fibers) found valid =
+  rewrite found in
+  rewrite registryWellFormedRetire nameEq keyEq ambient child fiber fibers found valid in Refl
