@@ -684,3 +684,13 @@ blockSwapReplayCorrespondence step =
   finiteDerivationReplayCorrespondence
     (wholeBlockFiniteDerivation (blockSwapWholeDerivation step))
 
+public export
+0 blockSwapOccurrenceCorrespondence :
+  (step : OperationalAdjacentBlockSwap name key world error value protocol nameEq
+    keyEq orderSwap sourceTrace sourceBlocks sourcePremises safety) ->
+  ActionRegistrationReplayCorrespondence name key world error value sourceTrace
+    (blockSwapTrace step)
+blockSwapOccurrenceCorrespondence step =
+  finiteDerivationOccurrenceCorrespondence
+    (wholeBlockFiniteDerivation (blockSwapWholeDerivation step))
+

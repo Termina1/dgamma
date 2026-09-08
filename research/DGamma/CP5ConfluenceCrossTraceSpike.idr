@@ -30,16 +30,6 @@ data CertifiedActorPermutation :
     CertifiedActorPermutation name middle after ->
     CertifiedActorPermutation name before after
 
-public export
-0 blockSwapOccurrenceCorrespondence :
-  (step : OperationalAdjacentBlockSwap name key world error value protocol nameEq
-    keyEq orderSwap sourceTrace sourceBlocks sourcePremises safety) ->
-  ActionRegistrationReplayCorrespondence name key world error value sourceTrace
-    (blockSwapTrace step)
-blockSwapOccurrenceCorrespondence step =
-  finiteDerivationOccurrenceCorrespondence
-    (wholeBlockFiniteDerivation (blockSwapWholeDerivation step))
-
 ||| Exact one-step operational producer.  Its proof must enumerate the finite
 ||| Cartesian crossing of the two located blocks, derive early applicability and
 ||| orientation-specific premises from the current bundle/safety, invoke the
