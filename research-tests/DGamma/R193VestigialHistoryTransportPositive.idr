@@ -141,3 +141,15 @@ r193HistoricalVestigial = MkVestigialEndpointGeneration (MkRegistrationGeneratio
 export
 0 r193ChildNotRoot : {n : Nat} -> Not (ChildOf n = Root)
 r193ChildNotRoot Refl impossible
+
+||| The PRESENT generated child is not accidentally treated as an external
+||| root. Every actual live root is fixed by the endpoint's 1/2 transposition.
+export
+0 r193HistoricalRootFixed : (n : Nat) -> (fiber : Fiber Nat R45Key R45Value Unit String) ->
+  (lookupFiber {name = Nat} {key = R45Key} {value = R45Value} {world = Unit} {error = String} @{r45NameEq}
+    n (registry r193HistoricalClosed) = Just fiber) ->
+  (fiberParent fiber = Root) -> (r192SwapAbsent n = n)
+r193HistoricalRootFixed Z fiber found root = Refl
+r193HistoricalRootFixed (S Z) fiber found root =
+  void (r193ChildNotRoot (trans (cong fiberParent (justInjective found)) root))
+r193HistoricalRootFixed (S (S later)) fiber found root = void (nothingIsNotJust found)
