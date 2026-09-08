@@ -62,3 +62,15 @@ export
 o20ReloadingControlParts (RenamedFibers leftParent rightParent leftRetired rightRetired leftTable rightTable
   (Reloading remaining leftAccumulator leftView) (Reloading remaining rightAccumulator rightView)
   parents retiredSame (RenamedReloading remainingSame accumulators views)) = (parents, retiredSame, accumulators, views)
+
+||| Exact successful nondiverting Advance control branch of applyAction:
+||| consuming the last step finishes immediately; a nonempty tail stays open.
+public export
+o20SuccessfulAdvanceLifecycle :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {deps : List key} -> {provision : CoeffectSpec key} ->
+  List (StepEffect key value world error deps provision) ->
+  (LocalState key value world provision -> LocalState key value world provision) ->
+  View name deps -> Lifecycle key value world error name deps provision
+o20SuccessfulAdvanceLifecycle [] accumulator view = Active accumulator view
+o20SuccessfulAdvanceLifecycle (step :: rest) accumulator view = Reloading (step :: rest) accumulator view
