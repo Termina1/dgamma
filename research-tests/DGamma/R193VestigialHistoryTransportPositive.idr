@@ -219,3 +219,15 @@ export
     (historyLeftStamp r193VestigialHistoryPair) =
     renameForward (expectedBridgeBijection r193HistoricalSameInputs) 1)
 r193VestigialHistoryMismatch mismatch = absurd (the (1 = 2) mismatch)
+
+||| Both concrete runtime observations: child1 is physically PRESENT, while
+||| the accepted current map sends it to a physically ABSENT name2. E15 owns
+||| the actual vestigial evidence, not just this presence/absence computation.
+export
+0 r193VestigialCurrentPresence :
+  ((lookupFiber {name = Nat} {key = R45Key} {value = R45Value} {world = Unit} {error = String} @{r45NameEq}
+      1 (registry r193HistoricalClosed) = Just r45ChildRetired),
+   (lookupFiber {name = Nat} {key = R45Key} {value = R45Value} {world = Unit} {error = String} @{r45NameEq}
+      (renameForward (expectedBridgeBijection r193HistoricalSameInputs) 1)
+      (registry r193HistoricalClosed) = Nothing))
+r193VestigialCurrentPresence = (Refl, Refl)
