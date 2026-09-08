@@ -46,3 +46,19 @@ o19UniqueAppend (head :: rest) second (UniqueCons absent restUnique) secondUniqu
     (o19ElemAppendCases rest second absent (disjoint head Here))
     (o19UniqueAppend rest second restUnique secondUnique
       (\point, member => disjoint point (There member)))
+
+||| Every bounded left coordinate occurs in the fixed-right descending row.
+export
+0 o19FixedRowComplete : (leftSource, rightSource, width, index : Nat) ->
+  LTE (S index) width ->
+  Elem (leftSource + index, rightSource) (o19FixedRowPairs leftSource rightSource width)
+o19FixedRowComplete leftSource rightSource Z index bound = void (uninhabited bound)
+o19FixedRowComplete leftSource rightSource (S width) Z bound =
+  replace {p = \point => Elem (point, rightSource) (o19FixedRowPairs leftSource rightSource (S width))}
+    (sym (plusZeroRightNeutral leftSource))
+    (snd (o19ElemAppendInjections (o19FixedRowPairs (S leftSource) rightSource width) [(leftSource, rightSource)]) Here)
+o19FixedRowComplete leftSource rightSource (S width) (S index) bound =
+  replace {p = \point => Elem (point, rightSource) (o19FixedRowPairs leftSource rightSource (S width))}
+    (plusSuccRightSucc leftSource index)
+    (fst (o19ElemAppendInjections (o19FixedRowPairs (S leftSource) rightSource width) [(leftSource, rightSource)])
+      (o19FixedRowComplete (S leftSource) rightSource width index (fromLteSucc bound)))
