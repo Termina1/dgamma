@@ -99,3 +99,15 @@ o20IncomparableReplayedBirth {name} {key} {world} {error} {value} {originalFinal
   original capital unique replayed occurrences parent child parentSupported childSupported noPath component birth =
     o20IncomparableBirthObserved nameEq keyEq protocol original capital unique replayed occurrences parent child component birth
       parentSupported childSupported noPath (lookupFiber {name} {key} {value} {world} {error} @{nameEq} child (registry originalFinal)) Refl
+
+||| Lift the SAME generated birth through one real preceding transition.
+export
+0 o20GeneratedBirthPrepend :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (step : Transition first middle) -> (rest : Transitions middle finalState) ->
+  {child, parent : name} -> {component : Component key value world error} ->
+  LocatedGeneratedRegistration child parent component rest ->
+  LocatedGeneratedRegistration child parent component (MoreTransitions step rest)
+o20GeneratedBirthPrepend step rest (MkLocatedGeneratedRegistration before afterState prior birth later action exact) =
+  MkLocatedGeneratedRegistration before afterState (MoreTransitions step prior) birth later action (cong (MoreTransitions step) exact)
