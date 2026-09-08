@@ -333,3 +333,53 @@ Final V outcomes remain pending until the completion entry below.
 Status before final validation: A/B complete, C FULL selector+FULL target order
 but missing range-disjointness/lifecycle-coverage fields and full record;
 D1 only; O19 OPEN, body0, holesdelta0/split5=1/3/0/0/1. No closure claim.
+
+## FINAL validation and frozen/source audit
+
+Detached serial V1–V28 ALL PASSED, complete11:23:01 UTC; all starts before11:30.
+C92-1 is the separately authorized final ReachedBlocks/source dual role, with
+exact final committed source SHA verified. Thus29 final validation roles:
+28 separate V checks +1 dual source check. V1 LocalDiamond495s/49,834,176KiB
+(47.525GiB, below48GiB guard); V16 fresh R8FullPipeline100.7s; V17/V18 fresh
+R16 assembly/endpoint; V11–V13 revised R182 positive/negative/adjacency;
+V14 authentic R181 count7; V15 all four R182 crossings; V9/V10 BOTH added R188
+regressions; V28 seeded package build16.57s. V26/V27 are the TWO expected
+negative compiler checks, with their specific diagnostics. No invalid target,
+cache deletion, legacy broad R11, interruption, overlapping compiler or
+uncommitted proof. New helper/grid/whole/endpoint modules and ALL FIVE frozen
+spikes received their own exact-source fresh checks (ReachedBlocks via C92).
+
+Whole shift:149 exact compiler records=141PASS+8 earlier proof rejections;
+113 source declarations/receipts,121 proof invocations;16 C6 declarations ALL
+PASS1/3. Actual/effective C6/C7 invocation labels remain explicitly qualified,
+never rewritten. Source witnesses are quantity0 erased constructive proofs,
+NOT advertised as runtime producers. All added proof files default total and
+unbound implicits off; no new TODO/hole/unsafe/with/let/postulate escape.
+
+Final frozen audit: O19 OPEN/body0; hole delta0, split5=1/3/0/0/1 (not closure
+split4). LocalDiamond and other protected modules BYTE-IDENTICAL to7ce28f69.
+`adjacentSwapSuffixSpike` full1470 SHA256
+2d01486bf953f11191b758ac3cfb5722d1d02b1a192b6e552adc8a3f58199ecf;
+statement1154 SHA256
+3aae5a9fbc5b14e0411b4a91e557a6f3dc68c9a6282b9ec2b3fc658cec337adf.
+Production `src/` +ipkg diff vs34b21c9 EMPTY; CP3 blob
+2c697e532e83989de8591fa6a4378747c6a501c0; seeds207/207. Staged/tracked deltas
+empty, only permitted untracked paper/ and immutable review file. No type
+rehome or LocalDiamond visibility change, no O17/O20/O21/withdrawal edit.
+
+## Status
+
+| Work | Checked correspondence / commit | Status |
+|---|---|---|
+| A | GridCertification:o19CertifyGrid /1ef9cf5f; regressionf501751a | COMPLETE: bounded-pair completeness, both bounds, actual grid uniqueness |
+| B | WholeBlock:o19ActualWholeBlock /a83bd4c8; same-chain regression71611b2f | COMPLETE: SAME B3/B13/F14 finite chain, nonempty/product, whole block result |
+| C | ReachedBlocks:o19ActualTargetBlock /5c15fdde; o19ActualTargetBlocksFollowOrder /eba48ea8 | PARTIAL overall: FULL individual selector + FULL physical order; all moved/untouched boundaries proved; missing range-disjointness/coverage fields and full record |
+| D | SameChainAssembly:o19FiniteEndpoint /1a42566c | PARTIAL:1/10; operational assembly, target invariants and genuine same-external correspondence remain |
+| E /O19 | CrossTrace:operationalAdjacentBlockSwapSpike | OPEN, no body attempt; no new source hole |
+
+The exact accepted R189 plan is above. The source/archive correspondence is
+checked independently by `run-r188-verify-evidence.py --expected-c 92
+--expected-validations 28`; its JSON report, ALL append-only records/source
+snapshots/logs/qualifications/commit-time receipts and the consolidated ledger
+are committed in the final evidence artifacts. The final evidence artifact's
+OWN commit-time receipt cannot be inside its own archive; report it at gate.
