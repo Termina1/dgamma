@@ -170,3 +170,30 @@ r193HistoricalCurrent = MkCurrentEndpointRenaming r192AbsentBijection
     Z => Right (generation ** (Refl, found))
     S Z => Left r193HistoricalVestigial
     S (S later) => void (nothingIsNotJust found))
+
+||| FULL accepted same-inputs package for two actual eight-edge histories:
+||| external actions, root birth generations, real discarded tree, and all
+||| current fields. No independent canonical schedule is asserted or supplied.
+public export
+0 r193HistoricalSameInputs : SameOrchestrationModuloGenerated r45NameEq r45KeyEq
+  r193HistoricalClosedTrace r193HistoricalClosedTrace
+r193HistoricalSameInputs = MkSameOrchestrationModuloGenerated
+  identityRegistrationGenerationBijection
+  (sameExternalOrchestrationReflexiveSpike r45NameEq r193HistoricalClosedTrace)
+  (MatchExternalRootBirth r45ParentInsert (MoreTransitions r45Begin (MoreTransitions r45ChildInsert r193HistoricalContinuation)) r45ParentInsert (MoreTransitions r45Begin (MoreTransitions r45ChildInsert r193HistoricalContinuation)) Refl Refl Refl
+    (SkipLeftNonExternalRootBirth (LBegin 0) r45Begin (MoreTransitions r45ChildInsert r193HistoricalContinuation) Refl Refl
+    (SkipRightNonExternalRootBirth (LBegin 0) r45Begin (MoreTransitions r45ChildInsert r193HistoricalContinuation) Refl Refl
+    (SkipLeftNonExternalRootBirth (OInsert 1 (ChildOf 0) r45Child) r45ChildInsert r193HistoricalContinuation Refl Refl
+    (SkipRightNonExternalRootBirth (OInsert 1 (ChildOf 0) r45Child) r45ChildInsert r193HistoricalContinuation Refl Refl
+    (SkipLeftNonExternalRootBirth (LAdvance 0) r178ParentFinish (MoreTransitions r178ChildRetire (MoreTransitions r193HistoricalRetire (MoreTransitions r193HistoricalLeave (MoreTransitions r193HistoricalUnload NoTransitions)))) Refl Refl
+    (SkipRightNonExternalRootBirth (LAdvance 0) r178ParentFinish (MoreTransitions r178ChildRetire (MoreTransitions r193HistoricalRetire (MoreTransitions r193HistoricalLeave (MoreTransitions r193HistoricalUnload NoTransitions)))) Refl Refl
+    (SkipLeftNonExternalRootBirth (ORetire 1) r178ChildRetire (MoreTransitions r193HistoricalRetire (MoreTransitions r193HistoricalLeave (MoreTransitions r193HistoricalUnload NoTransitions))) Refl Refl
+    (SkipRightNonExternalRootBirth (ORetire 1) r178ChildRetire (MoreTransitions r193HistoricalRetire (MoreTransitions r193HistoricalLeave (MoreTransitions r193HistoricalUnload NoTransitions))) Refl Refl
+    (SkipLeftNonExternalRootBirth (ORetire 0) r193HistoricalRetire (MoreTransitions r193HistoricalLeave (MoreTransitions r193HistoricalUnload NoTransitions)) Refl Refl
+    (SkipRightNonExternalRootBirth (ORetire 0) r193HistoricalRetire (MoreTransitions r193HistoricalLeave (MoreTransitions r193HistoricalUnload NoTransitions)) Refl Refl
+    (SkipLeftNonExternalRootBirth (LLeave 0) r193HistoricalLeave (MoreTransitions r193HistoricalUnload NoTransitions) Refl Refl
+    (SkipRightNonExternalRootBirth (LLeave 0) r193HistoricalLeave (MoreTransitions r193HistoricalUnload NoTransitions) Refl Refl
+    (SkipLeftNonExternalRootBirth (LUnload 0) r193HistoricalUnload NoTransitions Refl Refl
+    (SkipRightNonExternalRootBirth (LUnload 0) r193HistoricalUnload NoTransitions Refl Refl
+    (ExternalRootBirthCorrespondenceEnd))))))))))))))))
+  r193HistoricalTree r193HistoricalCurrent
