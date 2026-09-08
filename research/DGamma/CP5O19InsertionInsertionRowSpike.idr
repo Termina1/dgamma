@@ -52,3 +52,24 @@ o19InsertAtObservedFresh nameEq keyEq child parent component ambient source (app
     (MkRawActivationMove
       (MkSystemState ambient (coeffectAfter applied))
       (rewrite guards in rewrite inserted in Refl))
+
+
+||| Actual fresh-plan production, not equality of unrelated absence tokens.
+export
+0 o19InsertFromAbsentGuards :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (child : name) -> (parent : Parent name) -> (component : Component key value world error) ->
+  (ambient : world) -> (source : Registry name key value world error) ->
+  (absent : lookupFiber {name} {key} {value} {world} {error} @{nameEq} child source = Nothing) ->
+  (parentPresent {name} {key} {value} {world} {error} @{nameEq} parent source &&
+    provisionsDisjointFrom {name} {key} {value} {world} {error} @{keyEq}
+      (componentProvisions component) (bindings source) = True) ->
+  (registryWellFormed {name} {key} {value} {world} {error} @{nameEq} @{keyEq}
+    (MkSystemState ambient source) = True) ->
+  CheckedEarlyApplication name key world error value nameEq keyEq (MkSystemState ambient source)
+    (OInsert child parent component) OInsertTag
+o19InsertFromAbsentGuards nameEq keyEq child parent component ambient source absent guards wellFormed =
+  o19InsertAtObservedFresh nameEq keyEq child parent component ambient source
+    (DGamma.CP4DeletionSelectedForeignOrchestration.setFreshFromAbsent nameEq child
+      (freshFiber component parent) source absent) guards wellFormed
