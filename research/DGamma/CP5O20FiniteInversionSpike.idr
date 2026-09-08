@@ -19,3 +19,14 @@ record O20FiniteInversion (name : Type) (sourceOrder, goalOrder : List name) whe
   0 invertedOrder : List name
   0 invertedSwap : AdjacentActorOrderSwap name sourceOrder invertedOrder
   0 invertedGoalBefore : BeforeIn (actorRight invertedSwap) (actorLeft invertedSwap) goalOrder
+
+||| A later inversion remains the SAME selected pair under a source head.
+export
+0 o20InversionUnderSourceHead :
+  {name : Type} -> {sourceOrder, goalOrder : List name} -> (head : name) ->
+  O20FiniteInversion name sourceOrder goalOrder -> O20FiniteInversion name (head :: sourceOrder) goalOrder
+o20InversionUnderSourceHead head
+  (MkO20FiniteInversion target (MkAdjacentActorOrderSwap leading left right trailing beforeExact afterExact distinct) reverseOrder) =
+    MkO20FiniteInversion (head :: target)
+      (MkAdjacentActorOrderSwap (head :: leading) left right trailing
+        (cong (head ::) beforeExact) (cong (head ::) afterExact) distinct) reverseOrder
