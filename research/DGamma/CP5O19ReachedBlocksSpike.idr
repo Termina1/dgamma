@@ -120,3 +120,19 @@ record O19BeginRange
   0 rangeBodyWord : (o19ActionWord rangeBody = bodyWord)
   0 rangeBodyAligned : AlignedTransitions name key world error value nameEq keyEq rangeBody
   0 rangeDecomposition : (MoreTransitions (beginTransition rangeOpening) rangeBody = trace)
+
+||| One explicit checked Begin head, normalized by its ACTUAL rule tag.
+export
+0 o19BeginRangeTag :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  {first, middle, last : SystemState name key value world error} ->
+  (tag : RuleTag) ->
+  (checked : checkedApplyAction @{nameEq} @{keyEq} (LBegin selected) first = Just (tag, middle)) ->
+  (rest : Transitions middle last) -> (bodyWord : List (Action name key value world error)) ->
+  AlignedTransitions name key world error value nameEq keyEq rest ->
+  (o19ActionWord rest = bodyWord) -> (tag = LBeginTag) ->
+  O19BeginRange name key world error value nameEq keyEq selected
+    (MoreTransitions (Fired {before = first} {afterState = middle} nameEq keyEq (LBegin selected) tag checked) rest) bodyWord
+o19BeginRangeTag {middle} nameEq keyEq selected _ checked rest bodyWord aligned wordExact Refl =
+  MkO19BeginRange middle (MkBeginStep checked) rest wordExact aligned Refl
