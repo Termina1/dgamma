@@ -5,6 +5,8 @@ import DGamma.Calculus
 import DGamma.Coeffects
 import DGamma.Metatheory
 import DGamma.CP4ProgressReliance
+import DGamma.CP4DeletionFrameCore
+import DGamma.CP4DeletionSelectedOwn
 import DGamma.CP4DeletionSelectedForeignLifecycleCore
 import DGamma.CP4DeletionSelectedForeignLifecycleAnchorRelianceSelected
 import Data.List
@@ -138,3 +140,26 @@ o19ResolveReplaceNonDependency nameEq keyEq (wanted :: rest) actor source old ne
     (providerOf {name} {key} {value} {world} {error} @{nameEq} @{keyEq} wanted source)
     (o19ProviderReplaceNonDependency nameEq keyEq wanted actor source old next found static (excluded wanted Here)) Refl
     (o19ResolveReplaceNonDependency nameEq keyEq rest actor source old next found static (\key, present => excluded key (There present)))
+
+||| A located owner surviving a local update forces its replacement case.
+||| Insert/delete are refuted from actual lookup observations. Static component
+||| metadata supplied by the update carries declaration exclusion automatically.
+export
+0 o19ResolvePresentLocalUpdate :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (deps : List key) -> (actor : name) ->
+  (source, target : Registry name key value world error) -> (old : Fiber name key value world error) ->
+  (lookupFiber @{nameEq} actor source = Just old) ->
+  (isJust (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor target) = True) ->
+  RegistryLocalUpdate name key world error value nameEq actor source target ->
+  ((wanted : key) -> Elem wanted deps -> Not (Elem wanted (dependencies (componentProvisions (fiberComponent old))))) ->
+  (resolveView {name} {key} {value} {world} {error} @{nameEq} @{keyEq} deps target =
+   resolveView {name} {key} {value} {world} {error} @{nameEq} @{keyEq} deps source)
+o19ResolvePresentLocalUpdate nameEq keyEq deps actor source _ old found survives (LocalInsert next absent) excluded =
+  void (nothingIsNotJust (trans (sym absent) found))
+o19ResolvePresentLocalUpdate nameEq keyEq deps actor source _ old found survives
+  (LocalReplace next {oldFiber} {oldFound} {staticComponent}) excluded =
+    o19ResolveReplaceNonDependency nameEq keyEq deps actor source old next found
+      (trans staticComponent (cong fiberComponent (justInjective (trans (sym oldFound) found)))) excluded
+o19ResolvePresentLocalUpdate nameEq keyEq deps actor source _ old found survives LocalDelete excluded =
+  case trans (sym (cong isJust (DGamma.CP4DeletionSelectedOwn.lookupDeleteSelf @{nameEq} actor source))) survives of Refl impossible
