@@ -269,3 +269,51 @@ o19SanctionedAdvanceBeforePair nameEq keyEq protocol swap source blocks premises
         (Fired nameEq keyEq leftAction leftTag leftChecked)
         (Fired nameEq keyEq (LAdvance (actorRight swap)) rightTag rightChecked)
         later decomposition premises leftActivation)
+
+||| E12 specialized to the exact sanctioned source cuts, consuming explicit
+||| owner and later Begin observations once. The caller below derives both.
+export
+0 o19SanctionedBeginObservedOwner :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {sourceOrder, targetOrder : List name} ->
+  (swap : AdjacentActorOrderSwap name sourceOrder targetOrder) ->
+  {initial, first, middle, last, finalState : SystemState name key value world error} ->
+  (source : Transitions initial finalState) ->
+  (blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder source) ->
+  (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq source) ->
+  (safety : AdjacentActorSwapSafety name key world error value protocol nameEq keyEq swap source blocks premises) ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq source ->
+  (earlier : Transitions initial first) -> (later : Transitions last finalState) ->
+  (leftAction : Action name key value world error) -> (leftTag : RuleTag) ->
+  (leftChecked : checkedApplyAction @{nameEq} @{keyEq} leftAction first = Just (leftTag, middle)) ->
+  (rightChecked : checkedApplyAction @{nameEq} @{keyEq} (LBegin (actorRight swap)) middle = Just (LBeginTag, last)) ->
+  (appendTransitions earlier
+    (MoreTransitions (Fired {before = first} {afterState = middle} nameEq keyEq leftAction leftTag leftChecked)
+      (MoreTransitions (Fired {before = middle} {afterState = last} nameEq keyEq (LBegin (actorRight swap)) LBeginTag rightChecked) later)) = source) ->
+  (actionOwner leftAction = actorLeft swap) ->
+  ((fiber : Fiber name key value world error **
+    (lookupFiber {name} {key} {value} {world} {error} @{nameEq} (actionOwner leftAction) (registry first) = Just fiber)),
+   (isJust (lookupFiber {name} {key} {value} {world} {error} @{nameEq} (actionOwner leftAction) (registry middle)) = True)) ->
+  (opening : O20BeginObservation name key world error value nameEq keyEq (actorRight swap) middle last) ->
+  CheckedEarlyApplication name key world error value nameEq keyEq first (LBegin (actorRight swap)) LBeginTag
+o19SanctionedBeginObservedOwner {name} {key} {value} {world} {error} {first} {middle} {last}
+  nameEq keyEq protocol swap source blocks premises safety unique earlier later leftAction leftTag leftChecked rightChecked
+  decomposition leftOwner ((leftFiber ** leftFound), leftSurvives) opening =
+    o19BeginBeforeNondependentPair nameEq keyEq (actorRight swap) first middle last leftAction leftTag leftChecked
+      leftFiber leftFound leftSurvives (\same => actorDistinct swap (trans (sym leftOwner) (sym same))) opening
+      (o19SanctionedCutNondependency nameEq keyEq protocol swap source blocks premises safety unique
+        earlier (MoreTransitions (Fired nameEq keyEq leftAction leftTag leftChecked)
+          (MoreTransitions (Fired nameEq keyEq (LBegin (actorRight swap)) LBeginTag rightChecked) later)) decomposition
+        (appendTransitions earlier (MoreTransitions (Fired nameEq keyEq leftAction leftTag leftChecked) NoTransitions))
+        (MoreTransitions (Fired nameEq keyEq (LBegin (actorRight swap)) LBeginTag rightChecked) later)
+        (trans (appendTransitionsAssociative earlier (MoreTransitions (Fired nameEq keyEq leftAction leftTag leftChecked) NoTransitions)
+          (MoreTransitions (Fired nameEq keyEq (LBegin (actorRight swap)) LBeginTag rightChecked) later)) decomposition)
+        leftFiber
+        (MkFiber (beginObservedComponent opening) (beginObservedParent opening) False (beginObservedTable opening) (Inactive Nothing))
+        (trans (cong (\actor => lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor (registry first)) (sym leftOwner)) leftFound)
+        (beginObservedFound opening))
+      (fst (snd (o19SourcePairFacts nameEq keyEq protocol source earlier
+        (Fired nameEq keyEq leftAction leftTag leftChecked) (Fired nameEq keyEq (LBegin (actorRight swap)) LBeginTag rightChecked)
+        later decomposition premises)))
