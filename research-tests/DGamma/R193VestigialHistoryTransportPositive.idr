@@ -136,3 +136,8 @@ public export
   (leftDeletedGenerations r193HistoricalTree) 1 r193HistoricalClosed
 r193HistoricalVestigial = MkVestigialEndpointGeneration (MkRegistrationGeneration 1 2)
   Refl Here r45ChildRetired Refl Refl Refl Refl Refl Refl
+
+||| Primitive parent-role separation, independent of any computed fiber.
+export
+0 r193ChildNotRoot : {n : Nat} -> Not (ChildOf n = Root)
+r193ChildNotRoot Refl impossible
