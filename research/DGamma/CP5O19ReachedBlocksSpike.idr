@@ -1556,3 +1556,40 @@ o19PreserveAbsoluteCounts original reached beforeWord counts preserved =
   (trans (fst counts) preserved,
    (fst (snd counts), trans (o19PrefixThroughCount reached)
       (trans (cong2 (+) (trans (fst counts) preserved) (fst (snd counts))) (sym (o19PrefixThroughCount original)))))
+
+||| ACTUAL before-pair untouched blocks preserve their absolute start,
+||| whole-block size AND end, via the OWN reconstruction count observations.
+export
+0 o19ActualUntouchedBeforeCounts :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (protocol : RegistrationProtocol key value world error) ->
+  {sourceOrder, targetOrder : List name} -> (swap : AdjacentActorOrderSwap name sourceOrder targetOrder) ->
+  {initial, sourceFinal : SystemState name key value world error} -> (source : Transitions initial sourceFinal) ->
+  (blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder source) ->
+  (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq source) ->
+  (safety : AdjacentActorSwapSafety name key world error value protocol nameEq keyEq swap source blocks premises) ->
+  (unique : UniqueRawNameInsertions name key world error value nameEq keyEq source) ->
+  (selected : name) ->
+  (untouched : LocatedOpenEpisodeBlock name key world error value nameEq keyEq selected source) ->
+  (ordered : BlockBefore name key world error value nameEq keyEq source selected (actorLeft swap) untouched (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety))) ->
+  (transitionCount (traceBeforeBlock (o19ActualUntouchedBeforeBlock nameEq keyEq protocol swap source blocks premises safety unique selected untouched ordered)) = transitionCount (traceBeforeBlock untouched),
+   (transitionCount (actorBlockTrace (o19ActualUntouchedBeforeBlock nameEq keyEq protocol swap source blocks premises safety unique selected untouched ordered)) = transitionCount (actorBlockTrace untouched),
+    transitionCount (prefixThroughBlock (o19ActualUntouchedBeforeBlock nameEq keyEq protocol swap source blocks premises safety unique selected untouched ordered)) = transitionCount (prefixThroughBlock untouched)))
+o19ActualUntouchedBeforeCounts nameEq keyEq protocol swap source blocks premises safety unique selected untouched ordered =
+  o19PreserveAbsoluteCounts untouched (o19ActualUntouchedBeforeBlock nameEq keyEq protocol swap source blocks premises safety unique selected untouched ordered) (o19ActionWord (traceBeforeBlock untouched))
+    (o19LocatedByWordCounts nameEq keyEq selected source untouched (cursorTrace (columnCursor (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique)))
+    (replayAligned (cursorBundle (columnCursor (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique))))
+    (finiteDerivationOccurrenceCorrespondence (cursorDerivation (columnCursor (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique))))
+    (o19ActualFinalActive nameEq keyEq protocol swap source blocks premises safety unique selected (blockActiveAtFinal untouched))
+    (o19ActionWord (traceBeforeBlock untouched)) ((o19ActionWord (betweenBlocks ordered)) ++ ((o19ActionWord (actorBlockTrace (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety)))) ++ ((o19ActionWord (actorBlockTrace (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)))) ++ (o19ActionWord (traceAfterBlock (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety)))))))
+    (o19NoLifecycleWordMember selected (traceBeforeBlock untouched) (noEarlierLifecycle untouched))
+    (\action, member => o19NoLifecycleWordMember selected (traceAfterBlock untouched) (noLaterLifecycle untouched) action
+      (replace {p = Elem action} (sym (o19OrderedAfterWord untouched (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)) ordered))
+      (o19ElemAppendCases (o19ActionWord (betweenBlocks ordered)) ((o19ActionWord (actorBlockTrace (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety)))) ++ ((o19ActionWord (actorBlockTrace (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)))) ++ (o19ActionWord (traceAfterBlock (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety))))))
+        (\inGap => fst (o19ElemAppendInjections (o19ActionWord (betweenBlocks ordered)) ((o19ActionWord (actorBlockTrace (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)))) ++ (o19ActionWord (traceAfterBlock (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)))))) inGap)
+        (\inRest => snd (o19ElemAppendInjections (o19ActionWord (betweenBlocks ordered)) ((o19ActionWord (actorBlockTrace (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)))) ++ (o19ActionWord (traceAfterBlock (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)))))) (o19ElemAppendCases (o19ActionWord (actorBlockTrace (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety)))) ((o19ActionWord (actorBlockTrace (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)))) ++ (o19ActionWord (traceAfterBlock (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety)))))
+          (\inRight => (snd (o19ElemAppendInjections (o19ActionWord (actorBlockTrace (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)))) (o19ActionWord (traceAfterBlock (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety))))) (replace {p = Elem action} (sym (o19OrderedAfterWord (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)) (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety)) (safetyBlocksOrdered safety))) (snd (o19ElemAppendInjections (o19ActionWord (betweenBlocks (safetyBlocksOrdered safety))) ((o19ActionWord (actorBlockTrace (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety)))) ++ (o19ActionWord (traceAfterBlock (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety)))))) (fst (o19ElemAppendInjections (o19ActionWord (actorBlockTrace (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety)))) (o19ActionWord (traceAfterBlock (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety))))) inRight)))))
+          (\inLeftSuffix => o19ElemAppendCases (o19ActionWord (actorBlockTrace (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)))) (o19ActionWord (traceAfterBlock (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety))))
+            (\inLeft => (fst (o19ElemAppendInjections (o19ActionWord (actorBlockTrace (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)))) (o19ActionWord (traceAfterBlock (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety))))) inLeft))
+            (\inSuffix => (snd (o19ElemAppendInjections (o19ActionWord (actorBlockTrace (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)))) (o19ActionWord (traceAfterBlock (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety))))) (replace {p = Elem action} (sym (o19OrderedAfterWord (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)) (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety)) (safetyBlocksOrdered safety))) (snd (o19ElemAppendInjections (o19ActionWord (betweenBlocks (safetyBlocksOrdered safety))) ((o19ActionWord (actorBlockTrace (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety)))) ++ (o19ActionWord (traceAfterBlock (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety)))))) (snd (o19ElemAppendInjections (o19ActionWord (actorBlockTrace (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety)))) (o19ActionWord (traceAfterBlock (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety))))) inSuffix))))) inLeftSuffix) inRest)) member)))
+    (o19UntouchedBeforePlacement nameEq keyEq protocol swap source blocks premises safety unique selected untouched ordered)) (o19ActionWordLength (traceBeforeBlock untouched))
