@@ -43,3 +43,19 @@ record ChildRemoveSnapshotExchange
   0 removeEarlyChecked : checkedApplyAction @{nameEq} @{keyEq} (ORemove child) first = Just (ORemoveTag, removeEarlyState)
   0 removeReplayChecked : checkedApplyAction @{nameEq} @{keyEq} (transitionAction left) removeEarlyState = Just (transitionTag left, removeReplayState)
   0 removeReplaySnapshot : runtimeSnapshot finalState = runtimeSnapshot removeReplayState
+
+||| Eliminating one actual post-delete lookup yields a Boolean absence proof.
+||| The present branch contradicts Coeffects:320 deletedKeyNotElem, using native
+||| lookupJustElem. CP3:4462 has a private lookup law; it is NOT imported here.
+export
+0 deletedBindingAbsent :
+  {key : Type} -> {item : key -> Type} ->
+  (keyEq : DecEq key) -> (removed : key) -> (entries : List (Binding key item)) ->
+  (0 unique : UniqueKeys (bindingKeys entries)) ->
+  (observed : Maybe (item removed)) ->
+  (0 exact : lookupEntries @{keyEq} removed (deleteEntries @{keyEq} removed entries) = observed) ->
+  isJust observed = False
+deletedBindingAbsent keyEq removed entries unique Nothing exact = Refl
+deletedBindingAbsent keyEq removed entries unique (Just found) exact =
+  void (deletedKeyNotElem @{keyEq} removed entries unique
+    (lookupJustElem @{keyEq} removed (deleteEntries @{keyEq} removed entries) found exact))
