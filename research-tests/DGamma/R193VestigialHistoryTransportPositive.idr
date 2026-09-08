@@ -33,3 +33,11 @@ public export
 r193HistoricalParentRetired : SystemState Nat R45Key R45Value Unit String
 r193HistoricalParentRetired = MkSystemState ()
   (replaceBinding @{r45NameEq} 0 (retireFiber r193HistoricalParentActive) (registry r178RightFinal))
+
+||| The old checked child Retire owns the source well-formedness here.
+public export
+r193HistoricalRetire : Transition r178RightFinal r193HistoricalParentRetired
+r193HistoricalRetire = Fired r45NameEq r45KeyEq (ORetire 0) ORetireTag
+  (DGamma.CP4ProgressNoDeadlock.checkedFromRaw r45NameEq r45KeyEq
+    (ORetire 0) r178RightFinal r193HistoricalParentRetired ORetireTag
+    (checkedTransitionTargetValid r178ChildRetire) Refl)
