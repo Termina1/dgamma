@@ -339,3 +339,36 @@ o20FourChecksPresent combine (Just first) Nothing third fourth firstYes Refl thi
 o20FourChecksPresent combine (Just first) (Just second) Nothing fourth firstYes secondYes Refl fourthYes impossible
 o20FourChecksPresent combine (Just first) (Just second) (Just third) Nothing firstYes secondYes thirdYes Refl impossible
 o20FourChecksPresent combine (Just first) (Just second) (Just third) (Just fourth) firstYes secondYes thirdYes fourthYes = Refl
+
+||| COMPLETE actual safety check at its precise member-selected cuts. All
+||| four logical clauses refer to the checker's OWN decomposed blocks/gap;
+||| no proof irrelevance identifies them with a separately guessed split.
+export
+0 o20CheckSafetyAtMembersComplete :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {sourceOrder, targetOrder : List name} -> (swap : AdjacentActorOrderSwap name sourceOrder targetOrder) ->
+  {initial, finalState : SystemState name key value world error} -> (trace : Transitions initial finalState) ->
+  (blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder trace) ->
+  (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq trace) ->
+  (leftIn : Elem (actorLeft swap) sourceOrder) -> (rightIn : Elem (actorRight swap) sourceOrder) ->
+  (ordered : BeforeIn (actorLeft swap) (actorRight swap) sourceOrder) ->
+  NoGeneratedChild (actorRight swap) (blockBody (decomposedBlock blocks (actorLeft swap) leftIn)) ->
+  NoGeneratedChild (actorLeft swap) (blockBody (decomposedBlock blocks (actorRight swap) rightIn)) ->
+  CheckedEarlyApplication name key world error value nameEq keyEq
+    (blockPreStart (decomposedBlock blocks (actorLeft swap) leftIn)) (LBegin (actorRight swap)) LBeginTag ->
+  (transitionCount (betweenBlocks (decomposedBlocksFollowOrder blocks (actorLeft swap) (actorRight swap) leftIn rightIn ordered)) = 0) ->
+  isJust (o20CheckSafetyAtMembers nameEq keyEq protocol swap trace blocks premises leftIn rightIn ordered) = True
+o20CheckSafetyAtMembersComplete nameEq keyEq protocol swap trace blocks premises leftIn rightIn ordered leftSafe rightSafe early adjacent =
+  o20FourChecksPresent
+    (\leftSafe, rightSafe, early, adjacent => MkAdjacentActorSwapSafety leftIn rightIn ordered
+      (decomposedBlocksFollowOrder blocks (actorLeft swap) (actorRight swap) leftIn rightIn ordered) leftSafe rightSafe early adjacent)
+    (o20CheckNoGeneratedChild nameEq (actorRight swap) (blockBody (decomposedBlock blocks (actorLeft swap) leftIn)))
+    (o20CheckNoGeneratedChild nameEq (actorLeft swap) (blockBody (decomposedBlock blocks (actorRight swap) rightIn)))
+    (o20CheckRightAtLeftOpening nameEq keyEq (actorLeft swap) (actorRight swap) trace (decomposedBlock blocks (actorLeft swap) leftIn))
+    (o20CheckEmptyGap (betweenBlocks (decomposedBlocksFollowOrder blocks (actorLeft swap) (actorRight swap) leftIn rightIn ordered)))
+    (o20CheckNoGeneratedChildComplete nameEq (actorRight swap) (blockBody (decomposedBlock blocks (actorLeft swap) leftIn)) leftSafe)
+    (o20CheckNoGeneratedChildComplete nameEq (actorLeft swap) (blockBody (decomposedBlock blocks (actorRight swap) rightIn)) rightSafe)
+    (o20CheckRightAtLeftOpeningComplete nameEq keyEq (actorLeft swap) (actorRight swap) trace (decomposedBlock blocks (actorLeft swap) leftIn) early)
+    (o20CheckEmptyGapComplete (betweenBlocks (decomposedBlocksFollowOrder blocks (actorLeft swap) (actorRight swap) leftIn rightIn ordered)) adjacent)
