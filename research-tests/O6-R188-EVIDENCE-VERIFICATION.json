@@ -1,19 +1,28 @@
 {
   "shift": "R188",
-  "checkedUTC": "2026-09-08T10:19:41.318979+00:00",
-  "endCommit": "4e1ab732896b36aecd72a7ce89d53a2b8a15b7e6",
-  "records": 105,
-  "passed": 97,
+  "checkedUTC": "2026-09-08T11:34:31.205986+00:00",
+  "endCommit": "9613af9e1a3fca8f37fe41c89a0182d99ff7637e",
+  "records": 149,
+  "passed": 141,
   "rejected": 8,
-  "proofInvocations": 105,
-  "sourceReceipts": 97,
-  "artifactReceipts": 12,
-  "validValidations": 0,
-  "expectedNegativeValidations": 0,
+  "proofInvocations": 121,
+  "sourceReceipts": 113,
+  "artifactReceipts": 16,
+  "validValidations": 28,
+  "finalValidationDualRoles": {
+    "C92-1": {
+      "target": "research/DGamma/CP5O19ReachedBlocksSpike.idr",
+      "sourceHash": "ed86827ff244f95f6846a61923f484e90efb105baf00e7c092048a01703a358f",
+      "role": "FINAL ReachedBlocks validation AND successful C92 source check",
+      "authorization": "Supervisor approved dual role: exact checked bytes are the committed final bytes; every other changed/frozen module receives its own fresh V check."
+    }
+  },
+  "finalValidationRoles": 29,
+  "expectedNegativeValidations": 2,
   "invalidValidationCount": 0,
   "serialized": true,
   "interrupted": 0,
-  "maximumRSSKiB": 6114384,
+  "maximumRSSKiB": 49834176,
   "oneNewDeclarationPerProofInvocation": true,
   "oneNewDeclarationPerSourceCommit": true,
   "effectiveAttemptCapsPassed": true,
@@ -616,9 +625,105 @@
       "effectiveAttempt": 1,
       "declaration": "o19ActualMovedBoundaryWords",
       "commit": "8acae20352ec9b3e95aefe40c20ba024b2579bca"
+    },
+    {
+      "unit": "C77",
+      "effectiveAttempt": 1,
+      "declaration": "o19OrderedBeforeCount",
+      "commit": "bfc5175c38f8f46c19274467d7192b75e0ff749a"
+    },
+    {
+      "unit": "C78",
+      "effectiveAttempt": 1,
+      "declaration": "o19ListLengthAppend",
+      "commit": "86f1db5d6ef65347e652536f6dc7d1fa6aebff2b"
+    },
+    {
+      "unit": "C79",
+      "effectiveAttempt": 1,
+      "declaration": "o19ListSwapLength",
+      "commit": "c020f3e26777edaa807b0d4ab2208288b8215e58"
+    },
+    {
+      "unit": "C80",
+      "effectiveAttempt": 1,
+      "declaration": "o19PreserveAbsoluteCounts",
+      "commit": "02e11296a818dd0e0d9b313b68bfc6102bccfe0a"
+    },
+    {
+      "unit": "C81",
+      "effectiveAttempt": 1,
+      "declaration": "o19ActualUntouchedBeforeCounts",
+      "commit": "7e6dccb3f9dfb35b7bb15c74a03ae48a52f9fb22"
+    },
+    {
+      "unit": "C82",
+      "effectiveAttempt": 1,
+      "declaration": "o19ActualUntouchedAfterCounts",
+      "commit": "c557a607607bf476de7aba529417907246102ca5"
+    },
+    {
+      "unit": "C83",
+      "effectiveAttempt": 1,
+      "declaration": "o19ActualMovedAbsoluteCounts",
+      "commit": "8a7e543b09c602c19ae732b7b579fbbe2b3b6d65"
+    },
+    {
+      "unit": "C84",
+      "effectiveAttempt": 1,
+      "declaration": "o19BeforeAsymmetric",
+      "commit": "e153f50de4939fb85f02dbabf899af00e6367705"
+    },
+    {
+      "unit": "C85",
+      "effectiveAttempt": 1,
+      "declaration": "o19BeforeChangeSuffix",
+      "commit": "f760362ed09d085cc43b94e4852161477b87675e"
+    },
+    {
+      "unit": "C86",
+      "effectiveAttempt": 1,
+      "declaration": "o19BeforeChangePrefix",
+      "commit": "ba1f6bbeb908e40f06c8d7da97f2f736c7edc34b"
+    },
+    {
+      "unit": "C87",
+      "effectiveAttempt": 1,
+      "declaration": "o19BeforeAcrossAppend",
+      "commit": "a25db4ee70f33cb77a9b70bba6e2a453f49d1b7c"
+    },
+    {
+      "unit": "C88",
+      "effectiveAttempt": 1,
+      "declaration": "o19OrderedBoundaryLTE",
+      "commit": "d527943cbb20a51a786ab02d09665c3d7dd03642"
+    },
+    {
+      "unit": "C89",
+      "effectiveAttempt": 1,
+      "declaration": "o19ActualBeforeSiteOrder",
+      "commit": "4ecf52c4facb76cb9c472de20f5b41ffcd2a1e5e"
+    },
+    {
+      "unit": "C90",
+      "effectiveAttempt": 1,
+      "declaration": "o19ActualRightSiteOrder",
+      "commit": "f8ddac083b25c6357fed2a0f801475a46f834b81"
+    },
+    {
+      "unit": "C91",
+      "effectiveAttempt": 1,
+      "declaration": "o19ActualSitesFollowOrder",
+      "commit": "75f7304be4a891cf991ebc68af266481a9d27584"
+    },
+    {
+      "unit": "C92",
+      "effectiveAttempt": 1,
+      "declaration": "o19ActualTargetBlocksFollowOrder",
+      "commit": "eba48ea8c55523fb8c34be047e161f4424217f1d"
     }
   ],
-  "archiveSHA256": "58bfc85308b193b9b0a09095fcb7e68bcace91dd99e5c9b217087fdc9a0eb2cc",
+  "archiveSHA256": "2fccae19c1b7830a2c7e2b2a9e3265b8afddd5319bcb785d792ccb125c328216",
   "seeds": "207/207",
   "productionDiff": "empty",
   "LocalDiamondDiff": "empty",
