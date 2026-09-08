@@ -1190,3 +1190,20 @@ o19BlockBeforeFromGap source leftBlock rightBlock gap =
     (trans (cong (\leading => appendTransitions leading (MoreTransitions (beginTransition (blockOpening rightBlock)) NoTransitions)) (sym (prefixGapExact gap)))
       (appendTransitionsAssociative (prefixThroughBlock leftBlock) (prefixGapTrace gap)
         (MoreTransitions (beginTransition (blockOpening rightBlock)) NoTransitions)))
+
+||| Convert a quantified boundary inequality into FULL physical BlockBefore
+||| for two located blocks of ONE actual trace. Actual structural prefixes
+||| derive the dependent gap and exact equation; no replay/count oracle.
+export
+0 o19BlockBeforeByCount :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} -> {leftActor, rightActor : name} ->
+  {initial, finalState : SystemState name key value world error} -> (source : Transitions initial finalState) ->
+  (leftBlock : LocatedOpenEpisodeBlock name key world error value nameEq keyEq leftActor source) ->
+  (rightBlock : LocatedOpenEpisodeBlock name key world error value nameEq keyEq rightActor source) ->
+  LTE (transitionCount (prefixThroughBlock leftBlock)) (transitionCount (traceBeforeBlock rightBlock)) ->
+  BlockBefore name key world error value nameEq keyEq source leftActor rightActor leftBlock rightBlock
+o19BlockBeforeByCount source leftBlock rightBlock bound =
+  o19BlockBeforeFromGap source leftBlock rightBlock
+    (o19PrefixGapByCount (prefixThroughBlock leftBlock) (traceBeforeBlock rightBlock) source
+      (fst (o19LocatedBlockPrefixes leftBlock)) (snd (o19LocatedBlockPrefixes rightBlock)) bound)
