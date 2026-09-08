@@ -44,3 +44,18 @@ smallAvailabilityTrail =
     (AvailabilityStep (smallState 3) (Fired {before = smallState 3} {afterState = smallState 4} %search %search (ORemove 1) ORemoveTag (smallRemove1 smallNativeExecution))
     NoTransitions
     (AvailabilityEnd (smallState 4))))))
+
+||| Every strictly earlier cut is incompatible for the ACTUAL located root
+||| birth. In particular, retiring the present child at cut3 does not free its
+||| declared key; only Remove1 produces compatible cut4. No finite sample is
+||| substituted for this quantified Nat/LT statement.
+export
+0 smallEarlierUnavailable : (earlier : Nat) -> LT earlier (locatedActionOrdinal smallRootBirth) ->
+  rootCutCompatible Nat Bool Unit String (\key => Unit) %search %search
+    (smallComponent True) earlier smallAvailabilityTrail = False
+smallEarlierUnavailable Z bounded = Refl
+smallEarlierUnavailable (S Z) bounded = Refl
+smallEarlierUnavailable (S (S Z)) bounded = Refl
+smallEarlierUnavailable (S (S (S Z))) bounded = Refl
+smallEarlierUnavailable (S (S (S (S later)))) bounded =
+  void (succNotLTEzero (fromLteSucc (fromLteSucc (fromLteSucc (fromLteSucc bounded)))))
