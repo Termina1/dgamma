@@ -132,3 +132,25 @@ o20ReloadingSourcesFromFibers component remaining leftParent leftRetired leftTab
   (RenamedFibers _ rightParent _ rightRetired _ rightTable _ rightLifecycle parents retiredSame lifecycle) leftFound rightFound =
     o20ReloadingSourcesFromLifecycle component remaining leftParent rightParent leftRetired rightRetired
       leftTable rightTable leftOlder leftView rightLifecycle lifecycle leftFound rightFound
+
+||| Decode an EXPLICIT right lookup. The absent constructor is ruled out by
+||| the genuine all-name pre-cut relation, not by an endpoint lookup oracle.
+export
+0 o20ReloadingSourcesFromObservation :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {renaming : NameBijection name} -> {actor : name} ->
+  {left, right : SystemState name key value world error} ->
+  (component : Component key value world error) ->
+  (remaining : List (StepEffect key value world error (dependencies (componentDependencies component)) (componentProvisions component))) ->
+  (leftParent : Parent name) -> (leftRetired : Bool) ->
+  (leftTable : OwnedTable key value (componentProvisions component)) ->
+  (leftOlder : LocalState key value world (componentProvisions component) -> LocalState key value world (componentProvisions component)) ->
+  (leftView : View name (dependencies (componentDependencies component))) ->
+  (observed : Maybe (Fiber name key value world error)) ->
+  (MaybeFiberRelatedBy renaming (Just (MkFiber component leftParent leftRetired leftTable (Reloading remaining leftOlder leftView))) observed) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor (registry left) = Just (MkFiber component leftParent leftRetired leftTable (Reloading remaining leftOlder leftView))) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} (renameForward renaming actor) (registry right) = observed) ->
+  O20SharedReloadingSources name key world error value nameEq renaming actor left right
+o20ReloadingSourcesFromObservation component remaining leftParent leftRetired leftTable leftOlder leftView (Just rightFiber)
+  (RenamedPresent related) leftFound rightFound =
+    o20ReloadingSourcesFromFibers component remaining leftParent leftRetired leftTable leftOlder leftView rightFiber related leftFound rightFound
