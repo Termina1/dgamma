@@ -342,3 +342,24 @@ export
 o20HistoryEndpointPartition nameEq keyEq left right mapping registrations current selected stamp found =
   o20HistoryEndpointChoice nameEq keyEq left right mapping registrations current selected stamp
     (leftCurrentGenerationMapped current selected stamp found)
+
+||| Exact history/current agreement for ANY non-vestigial current generation,
+||| including unsupported present fibers. The full inert discarded-generation
+||| alternative, not presence alone, is what must be excluded.
+export
+0 o20HistoryNonVestigialEndpoint :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {leftFirst, leftFinal, rightFirst, rightFinal : SystemState name key value world error} ->
+  (left : Transitions leftFirst leftFinal) -> (right : Transitions rightFirst rightFinal) ->
+  (mapping : RegistrationGenerationBijection name) ->
+  (registrations : RegistrationCorrespondenceByGeneration nameEq mapping left right) ->
+  (current : CurrentEndpointRenaming nameEq keyEq mapping left right registrations) ->
+  (selected : name) -> (stamp : RegistrationGeneration name) ->
+  (lookupCurrentGeneration @{nameEq} selected (leftFinalGenerations registrations) = Just stamp) ->
+  Not (VestigialEndpointGeneration name key world error value nameEq keyEq
+    (leftFinalGenerations registrations) (leftDeletedGenerations registrations) selected leftFinal) ->
+  (o20HistoricalTarget mapping stamp = renameForward (currentNameBijection current) selected)
+o20HistoryNonVestigialEndpoint nameEq keyEq left right mapping registrations current selected stamp found nonVestigial =
+  either (\vestigial => void (nonVestigial vestigial)) (\same => same)
+    (o20HistoryEndpointPartition nameEq keyEq left right mapping registrations current selected stamp found)
