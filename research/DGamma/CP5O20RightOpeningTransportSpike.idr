@@ -91,3 +91,13 @@ o20ActorBodyForeignOwners left right distinct (MoreTransitions step rest)
 o20ActorBodyForeignOwners left right distinct (MoreTransitions step rest)
   (ActorYieldedRegistrationStep _ _ yielded only) (NoGeneratedChildStep _ _ excluded safeRest) chosen (OccursLater occurs) same =
     o20ActorBodyForeignOwners left right distinct rest only safeRest chosen occurs same
+
+||| The sole intended extra physical hypothesis for eventual accepted-selector
+||| completeness. It states ONLY that this exact indexed gap has zero edges.
+||| It does not contain a Begin guard, selection success or goal equality.
+public export
+ZeroGapPending :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, finalState : SystemState name key value world error} ->
+  (gap : Transitions first finalState) -> Type
+ZeroGapPending gap = transitionCount gap = 0
