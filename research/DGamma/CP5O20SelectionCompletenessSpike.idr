@@ -45,3 +45,17 @@ export
   Not (left = head) -> BeforeIn left right (head :: rest) -> BeforeIn left right rest
 o20BeforeDifferentHeadTail different (BeforeHere member) = void (different Refl)
 o20BeforeDifferentHeadTail different (BeforeThere later) = later
+
+||| COMPLETE actual target BeforeIn checker by structural order induction.
+||| Distinctness and membership come from the original order witness; no
+||| successful check is a caller premise and no target payload is equated.
+export
+0 o20CheckBeforeComplete :
+  {name : Type} -> (nameEq : DecEq name) -> (left, right : name) -> (order : List name) ->
+  BeforeIn left right order -> (isJust (o20CheckBefore nameEq left right order) = True)
+o20CheckBeforeComplete nameEq left right [] ordered impossible
+o20CheckBeforeComplete nameEq left right (head :: rest) ordered =
+  o20BeforeOwnerDecisionObserved nameEq left right head rest (decEq @{nameEq} left head) Refl
+    (o20BeforeRightInTail ordered)
+    (\different => o20MapMaybePresent (BeforeThere {other = head}) (o20CheckBefore nameEq left right rest)
+      (o20CheckBeforeComplete nameEq left right rest (o20BeforeDifferentHeadTail different ordered)))
