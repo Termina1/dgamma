@@ -290,3 +290,15 @@ invalidValidationCount and qualifiedPassedCount, so V3 cannot silently count
 as evidence. Both Python scripts compile syntactically. Proof checks/commits
 and F14 are unaffected. This audit is an append-only correction, not an
 invented receipt or hidden historical rewrite.
+
+## Supervisor-authorized V3 probe-cleanup
+
+Supervisor requested removal of EXACTLY TWO spurious build artifacts from
+V3's mistyped empty module. Python asserted the names are precisely
+CP5LocalDiamondSpike.ttc/.ttm, neither contains Confluence, both are regular
+files inside build/ttc, and there are exactly two. Their bytes/SHA256 were
+retained under /tmp/dgamma-r187/probe-artifact-backup plus probe-cleanup.json;
+then only those two were removed. The REAL CP5ConfluenceLocalDiamondSpike
+TTC/TTM remain present. No production seed or real LocalDiamond TTC was
+removed. This is the explicit supervisor-authorized probe-cleanup exception,
+not a source/cache reset. V4 continues unchanged on the REAL protected file.
