@@ -95,3 +95,36 @@ o19ActualBlockSpines leftBlock rightBlock ordered =
     (MoreTransitions (beginTransition (blockOpening rightBlock)) NoTransitions)
     (appendTransitions (blockBody rightBlock) (traceAfterBlock rightBlock)))
     (blockDecomposition rightBlock))))))
+
+||| The ACTUAL O19 Cartesian loop, with NO internal classification, cut,
+||| row, or decomposition premise. All spines come from the selected original
+||| blocks, the gap is the sanctioned actual adjacency, and A12 produces every
+||| original class. This yields the actual reached bundle/unique/relative
+||| finite chain/product count, NOT yet the ordinal WholeBlockSwapDerivation
+||| or the target installed ActorBlockDecomposition.
+export
+0 o19CartesianActualBlocks :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (protocol : RegistrationProtocol key value world error) ->
+  {sourceOrder, targetOrder : List name} -> (swap : AdjacentActorOrderSwap name sourceOrder targetOrder) ->
+  {initial, sourceFinal : SystemState name key value world error} -> (source : Transitions initial sourceFinal) ->
+  (blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder source) ->
+  (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq source) ->
+  (safety : AdjacentActorSwapSafety name key world error value protocol nameEq keyEq swap source blocks premises) ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq source ->
+  O19ColumnRun name key world error value protocol nameEq keyEq source
+    (traceBeforeBlock (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)))
+    (o19ActionWord (actorBlockTrace (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety))))
+    (o19ActionWord (actorBlockTrace (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety))))
+    (o19ActionWord (traceAfterBlock (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety))))
+o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique =
+  o19CartesianAdjacentObserved nameEq keyEq protocol swap source blocks premises safety unique
+    (traceBeforeBlock (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)))
+    (beginTransition (blockOpening (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety))))
+    (blockBody (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)))
+    (betweenBlocks (safetyBlocksOrdered safety))
+    (actorBlockTrace (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety)))
+    (traceAfterBlock (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety)))
+    (o19ActualBlockSpines (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety))
+      (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety)) (safetyBlocksOrdered safety))
+    (safetyBlocksAdjacent safety) Refl Refl
