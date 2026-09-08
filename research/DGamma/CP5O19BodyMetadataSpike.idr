@@ -233,3 +233,39 @@ o19SanctionedAdvanceObservedOwner {name} {key} {value} {world} {error} {first} {
       (fst (snd (o19SourcePairFacts nameEq keyEq protocol source earlier
         (Fired nameEq keyEq leftAction leftTag leftChecked) (Fired nameEq keyEq (LAdvance (actorRight swap)) rightTag rightChecked)
         later decomposition premises)))
+
+||| Complete sanctioned-input A/A backwards Iter/Finish guard at an actual
+||| pair of the source: F4 produces owner survival, A4 produces the EXACT
+||| current static exclusion, and E11 derives callback/domain/control success.
+export
+0 o19SanctionedAdvanceBeforePair :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {sourceOrder, targetOrder : List name} ->
+  (swap : AdjacentActorOrderSwap name sourceOrder targetOrder) ->
+  {initial, first, middle, last, finalState : SystemState name key value world error} ->
+  (source : Transitions initial finalState) ->
+  (blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder source) ->
+  (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq source) ->
+  (safety : AdjacentActorSwapSafety name key world error value protocol nameEq keyEq swap source blocks premises) ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq source ->
+  (earlier : Transitions initial first) -> (later : Transitions last finalState) ->
+  (leftAction : Action name key value world error) -> (leftTag, rightTag : RuleTag) ->
+  (leftChecked : checkedApplyAction @{nameEq} @{keyEq} leftAction first = Just (leftTag, middle)) ->
+  (rightChecked : checkedApplyAction @{nameEq} @{keyEq} (LAdvance (actorRight swap)) middle = Just (rightTag, last)) ->
+  (appendTransitions earlier
+    (MoreTransitions (Fired {before = first} {afterState = middle} nameEq keyEq leftAction leftTag leftChecked)
+      (MoreTransitions (Fired {before = middle} {afterState = last} nameEq keyEq (LAdvance (actorRight swap)) rightTag rightChecked) later)) = source) ->
+  (actionOwner leftAction = actorLeft swap) ->
+  Either (rightTag = LIterTag) (rightTag = LFinishTag) ->
+  PaperActivationStep (Fired {before = first} {afterState = middle} nameEq keyEq leftAction leftTag leftChecked) ->
+  CheckedEarlyApplication name key world error value nameEq keyEq first (LAdvance (actorRight swap)) rightTag
+o19SanctionedAdvanceBeforePair nameEq keyEq protocol swap source blocks premises safety unique
+  earlier later leftAction leftTag rightTag leftChecked rightChecked decomposition leftOwner rightPaper leftActivation =
+    o19SanctionedAdvanceObservedOwner nameEq keyEq protocol swap source blocks premises safety unique
+      earlier later leftAction leftTag rightTag leftChecked rightChecked decomposition leftOwner rightPaper
+      (o19SourcePairOwner nameEq keyEq protocol source earlier
+        (Fired nameEq keyEq leftAction leftTag leftChecked)
+        (Fired nameEq keyEq (LAdvance (actorRight swap)) rightTag rightChecked)
+        later decomposition premises leftActivation)
