@@ -58,3 +58,40 @@ o19CartesianAdjacentObserved nameEq keyEq protocol swap source blocks premises s
           (replace {p = Elem _} leftWord leftMember) (replace {p = Elem _} rightWord rightMember))
 o19CartesianAdjacentObserved nameEq keyEq protocol swap source blocks premises safety unique earlier firstLeft leftRest
   (MoreTransitions step rest) rightSpine later decomposition adjacent leftWord rightWord = void (uninhabited adjacent)
+
+||| Actual five-piece source equation from BlockBefore, not a caller's
+||| guessed cut. The existing opening-prefix equation is normalized by
+||| dependent append associativity and the actual right decomposition.
+export
+0 o19ActualBlockSpines :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} -> {leftActor, rightActor : name} ->
+  {initial, finalState : SystemState name key value world error} ->
+  {source : Transitions initial finalState} ->
+  (leftBlock : LocatedOpenEpisodeBlock name key world error value nameEq keyEq leftActor source) ->
+  (rightBlock : LocatedOpenEpisodeBlock name key world error value nameEq keyEq rightActor source) ->
+  (ordered : BlockBefore name key world error value nameEq keyEq source leftActor rightActor leftBlock rightBlock) ->
+  (appendTransitions (traceBeforeBlock leftBlock)
+    (appendTransitions (actorBlockTrace leftBlock)
+      (appendTransitions (betweenBlocks ordered)
+        (appendTransitions (actorBlockTrace rightBlock) (traceAfterBlock rightBlock)))) = source)
+o19ActualBlockSpines leftBlock rightBlock ordered =
+  trans (sym (appendTransitionsAssociative (traceBeforeBlock leftBlock)
+    (MoreTransitions (beginTransition (blockOpening leftBlock)) NoTransitions)
+    (appendTransitions (blockBody leftBlock)
+      (appendTransitions (betweenBlocks ordered) (appendTransitions (actorBlockTrace rightBlock) (traceAfterBlock rightBlock))))))
+  (trans (sym (appendTransitionsAssociative (prefixToBlockOpening leftBlock) (blockBody leftBlock)
+    (appendTransitions (betweenBlocks ordered) (appendTransitions (actorBlockTrace rightBlock) (traceAfterBlock rightBlock)))))
+  (trans (cong (appendTransitions (prefixThroughBlock leftBlock))
+    (sym (appendTransitionsAssociative (betweenBlocks ordered)
+      (MoreTransitions (beginTransition (blockOpening rightBlock)) NoTransitions)
+      (appendTransitions (blockBody rightBlock) (traceAfterBlock rightBlock)))))
+  (trans (sym (appendTransitionsAssociative (prefixThroughBlock leftBlock)
+    (appendTransitions (betweenBlocks ordered) (MoreTransitions (beginTransition (blockOpening rightBlock)) NoTransitions))
+    (appendTransitions (blockBody rightBlock) (traceAfterBlock rightBlock))))
+  (trans (cong (\leading => appendTransitions leading (appendTransitions (blockBody rightBlock) (traceAfterBlock rightBlock)))
+    (sym (blocksOrderedInGlobal ordered)))
+  (trans (appendTransitionsAssociative (traceBeforeBlock rightBlock)
+    (MoreTransitions (beginTransition (blockOpening rightBlock)) NoTransitions)
+    (appendTransitions (blockBody rightBlock) (traceAfterBlock rightBlock)))
+    (blockDecomposition rightBlock))))))
