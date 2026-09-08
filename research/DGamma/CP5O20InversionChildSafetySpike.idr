@@ -6,6 +6,8 @@ import DGamma.Metatheory
 import DGamma.CP3
 import DGamma.CP5O19SurfaceSpike
 import DGamma.CP5O20SupportedReferenceSpike
+import DGamma.CP5O20ReferenceDescentSpike
+import DGamma.CP5O20SafeBlockSelectionSpike
 import DGamma.CP5O20SupportedBirthBridgeSpike
 import DGamma.CP5ConfluenceCanonicalSortSpike
 import DGamma.CP5ConfluenceDeletionChainSpike
@@ -225,3 +227,43 @@ export
 o20ReachedReferenceSupport capital originalReference reachedReference selected inside =
   orderSound (supportLinearization (canonicalSchedule capital)) selected
     (referenceMembersBackward originalReference selected (referenceMembersForward reachedReference selected inside))
+
+||| BOTH physical child-exclusion clauses at the ACTUAL reached adjacent
+||| inversion. Origin correspondence comes from the supplied sealed operational
+||| chain; support and incomparability come from its fixed reference invariant.
+||| No child exclusion, lookup, component equation, or birth oracle is an input.
+export
+0 o20ReachedInversionChildSafety :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {initial, originalFinal, replayedFinal : SystemState name key value world error} ->
+  (original : Transitions initial originalFinal) ->
+  (capital : IndependentCanonicalSchedule name key world error value protocol nameEq keyEq original) ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq original ->
+  {reachedOrder, goalOrder, swappedOrder : List name} ->
+  O20SupportedReferenceOrders name key world error value nameEq keyEq originalFinal (supportOrder (canonicalSchedule capital)) goalOrder ->
+  O20SupportedReferenceOrders name key world error value nameEq keyEq originalFinal reachedOrder goalOrder ->
+  (replayed : Transitions initial replayedFinal) ->
+  {certificate : CertifiedActorPermutation name (supportOrder (canonicalSchedule capital)) reachedOrder} ->
+  OperationalActorPermutation name key world error value protocol nameEq keyEq certificate
+    (canonicalTrace (canonicalSchedule capital)) (canonicalActorBlockDecomposition capital) (canonicalReplayPremises capital) replayed ->
+  (blocks : ActorBlockDecomposition name key world error value nameEq keyEq reachedOrder replayed) ->
+  (swap : AdjacentActorOrderSwap name reachedOrder swappedOrder) ->
+  BeforeIn (actorRight swap) (actorLeft swap) goalOrder ->
+  (NoGeneratedChild (actorRight swap) (blockBody (decomposedBlock blocks (actorLeft swap) (fst (o20ChosenActorFacts swap)))),
+   NoGeneratedChild (actorLeft swap) (blockBody (decomposedBlock blocks (actorRight swap) (fst (snd (o20ChosenActorFacts swap))))))
+o20ReachedInversionChildSafety nameEq keyEq protocol original capital unique originalReference reachedReference
+  replayed operational blocks swap reverseGoal =
+    (o20IncomparableBlockChildSafety nameEq keyEq protocol original capital unique replayed
+      (operationalPermutationOccurrenceCorrespondence operational) (actorLeft swap) (actorRight swap)
+      (decomposedBlock blocks (actorLeft swap) (fst (o20ChosenActorFacts swap)))
+      (o20ReachedReferenceSupport capital originalReference reachedReference (actorLeft swap) (fst (o20ChosenActorFacts swap)))
+      (o20ReachedReferenceSupport capital originalReference reachedReference (actorRight swap) (fst (snd (o20ChosenActorFacts swap))))
+      (fst (o20ReferenceIncomparable swap reachedReference reverseGoal)),
+     o20IncomparableBlockChildSafety nameEq keyEq protocol original capital unique replayed
+      (operationalPermutationOccurrenceCorrespondence operational) (actorRight swap) (actorLeft swap)
+      (decomposedBlock blocks (actorRight swap) (fst (snd (o20ChosenActorFacts swap))))
+      (o20ReachedReferenceSupport capital originalReference reachedReference (actorRight swap) (fst (snd (o20ChosenActorFacts swap))))
+      (o20ReachedReferenceSupport capital originalReference reachedReference (actorLeft swap) (fst (o20ChosenActorFacts swap)))
+      (snd (o20ReferenceIncomparable swap reachedReference reverseGoal)))
