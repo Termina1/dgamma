@@ -153,3 +153,24 @@ o20BeforeOwnerDecisionObserved nameEq left right _ rest (Yes Refl) exact member 
   o20BeforeMatchedMemberObserved nameEq left right rest exact (isElem @{nameEq} right rest) Refl member
 o20BeforeOwnerDecisionObserved nameEq left right head rest (No different) exact member smaller =
   rewrite exact in smaller different
+
+||| Exact observed target-order success is preserved by the native orientation
+||| producer. This equation is proved at its defining module, not by exposing
+||| or changing an imported declaration's visibility.
+export
+0 o20OrientChoiceObserved :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {protocol : RegistrationProtocol key value world error} ->
+  (nameEq : DecEq name) -> {keyEq : DecEq key} ->
+  {sourceOrder : List name} -> (goalOrder : List name) ->
+  (goalUnique : UniqueKeys goalOrder) ->
+  {initial, finalState : SystemState name key value world error} -> {trace : Transitions initial finalState} ->
+  {blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder trace} ->
+  {premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq trace} ->
+  (choice : O20ChosenSafeSwap name key world error value protocol nameEq keyEq sourceOrder trace blocks premises) ->
+  (observed : Maybe (BeforeIn (actorRight (chosenOrderSwap choice)) (actorLeft (chosenOrderSwap choice)) goalOrder)) ->
+  (o20CheckBefore nameEq (actorRight (chosenOrderSwap choice)) (actorLeft (chosenOrderSwap choice)) goalOrder = observed) ->
+  (isJust observed = True) -> (isJust (o20OrientChosenSafeSwap nameEq goalOrder goalUnique choice) = True)
+o20OrientChoiceObserved nameEq goalOrder goalUnique choice Nothing exact Refl impossible
+o20OrientChoiceObserved nameEq goalOrder goalUnique choice (Just reverseOrder) exact present =
+  rewrite exact in Refl
