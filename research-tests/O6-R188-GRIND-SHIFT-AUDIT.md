@@ -111,3 +111,52 @@ BlockBefore/range-disjointness/lifecycle coverage, and reached origin-plan
 updates. The cap is consumed; no C17 inferred. Proceed authorized D to derive
 same-chain endpoint/full-bundle/external and isolate final assembly's exact
 reached-block requirement. O19 body remains unattempted; no surface gap asserted.
+
+## Supervisor C2 extension and integration ruling
+
+At C16 supervisor authorized12 more C micro-units BEFORE further D: C17–C28.
+D1 had launched08:45:12 before that steering; its fresh PASS was immediately
+committed1a42566c and consumes1/10 D. It proves generic finite-chain endpoint
+composition from each actual node's own endpoint, and supports C final-active.
+No D2 launched. Return to C2 was immediate at the safe committed boundary.
+
+Supervisor also AGREED the eventual module-cycle wall is integration, NOT a
+specification gap. Helpers depend on CrossTrace types while its hole would
+import their assembler. Conditional preauthorization: AFTER C2/D committed,
+exact-list need_decision gate, then byte-identical type/eliminator rehome into
+a new lower research module, public reexport by CrossTrace, helper import
+updates, unchanged hole signature at a documented new location, mechanical
+move/check discipline and all downstream regressions. No move list submitted,
+no rehome/import-cycle workaround/type surface edit attempted in R188 so far.
+
+## C2 cap12 — additional checked reached-block properties; still partial
+
+C17/C18 reconstruct ActorLifecycleOnly from actual original word observations;
+C19/C20 extract/reconstruct no-lifecycle properties of authenticated words.
+C21/C22 prove active truth via explicit observed control-related lookups;
+C22 isolates the lifecycle proof elimination at top level. C23/0b549b80
+transports ANY original final-active fact to the SAME actual Cartesian endpoint
+via D1's real chain. C24/C26 prove right-singleton/left-word cancellation with
+no action decidability assumption. C25/1d1d0b54 and C27/139a4ea9 derive the
+EXACT original before-right/after-left words from BlockBefore and both actual
+source decompositions. C28 derives BOTH cross-actor outer no-lifecycle facts:
+no right lifecycle in original before-left, no left lifecycle in after-right.
+No added O19 safety assumption or source-word/occurrence conflation.
+
+12 declarations/15 invocations; C17 missing direct AdjacentReplayProducer
+import repaired on2/3; C21 nested indexed lifecycle LHS failed coverage, fixed
+by explicit proof observation on2/3 and immediately factored into the C22
+single-elimination helper; C24 mistakenly named an absent stdlib lengthAppend,
+repaired on2/3 using the existing HasLength append/uniqueness laws. C27's
+missing parenthesis was caught compiler-free before launch and corrected;
+its only compiler invocation PASSed. Others PASS1/3. No3/3 exhaustion.
+
+C2 is NOT the full reached ActorBlockDecomposition yet. Remaining: instantiate
+actor-only and outer no-lifecycle transports across the exact reached words,
+build BOTH full moved LocatedOpenEpisodeBlock records; transport all untouched
+blocks; prove target order/BlockBefore, disjoint ranges, lifecycle coverage,
+and reached origin-plan updates. These are proof obligations, not new surface
+gaps. C28 cap consumed, no C29 inferred. D2–D10/body/rehome remain unattempted.
+Original A/B complete; O19 open, hole delta0/split5=1/3/0/0/1. Erased actual
+witnesses are not runtime producers. Fresh guarded receipts and raw compiler
+qualifications remain append-only under /tmp/dgamma-r188.
