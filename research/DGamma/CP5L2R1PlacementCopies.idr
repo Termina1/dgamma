@@ -49,3 +49,29 @@ record AvailabilityCanonicalSchedule
   canonicalRegistrationTree : CanonicalRegistrationCorrespondence original
     canonicalTrace (endpointWithdrawnGenerations canonicalEndpoint)
 
+||| Research copy of CanonicalSort:87-112 support transport. Keeps the
+||| original-order witness; transports ONLY the R178 placement field. It does
+||| not claim that arbitrary reduced endpoint orderings transport.
+public export
+record AvailabilityCanonicalSupportTransport
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (keyEq : DecEq key)
+  (originalFinal, reducedFinal : SystemState name key value world error)
+  (endpoint : CanonicalEndpointRelation name key world error value nameEq keyEq
+    originalFinal reducedFinal)
+  (order : List name) where
+  constructor MkAvailabilityCanonicalSupportTransport
+  0 supportTruthPreserved : (n : name) ->
+    isSupported @{nameEq} @{keyEq} n originalFinal =
+      isSupported @{nameEq} @{keyEq} n reducedFinal
+  originalSupportLinearization :
+    LinearizesSupport name key world error value nameEq keyEq originalFinal order
+  inputPlacementToOriginal :
+    {initial, sourceFinal, canonicalFinal : SystemState name key value world error} ->
+    (source : Transitions initial sourceFinal) ->
+    (canonical : Transitions initial canonicalFinal) ->
+    AvailabilityAwareCanonicalInputPlacement name key world error value nameEq keyEq reducedFinal
+      order source canonical ->
+    AvailabilityAwareCanonicalInputPlacement name key world error value nameEq keyEq originalFinal
+      order source canonical
+
