@@ -464,3 +464,37 @@ E5-1 failed only on a missing DIRECT LocalDiamond import for the existing
 proved occurrence converter; E5-2 imports it and PASS. Every other E unit PASS1.
 No exhausted E goal or fourth attempt. Follow-up cap complete; proceed to
 fresh changed modules, frozen spikes, R8/R16, fixtures and seeded package.
+
+## Final validation COMPLETE / source and documentation cutoff
+
+All84 immutable planned checks PASS: 81 positive source checks, two expected
+native rejections, one seeded package build. All83 source checks own their exact
+Building line and current/snapshot source SHA256; all records/logs/exit roles
+and serialization were independently reauthenticated by the author script.
+Completion: 2026-09-08T18:12:47.866396+00:00 (exact timestamp also in the authentication
+record). V84 package started18:12:31Z. No validation actually started after18:15.
+Maximum sampled RSS49,785,664KiB <50,331,648KiB (48GiB); no interruption.
+Fresh LocalDiamond493.640s, DeletionChain78.996s; all changed modules, frozen
+spikes, O19 chain, R8FullPipeline, both R16 and all inherited/current planned
+fixtures passed. Package PASS is seeded --build, not a forced rebuild of207.
+
+The supervisor ratified a narrow validation-only timing exception while V1/V2
+were running: only the HASH-FROZEN V1--V84 plan/bytes could start until18:30.
+Every proof/new/unplanned check retained18:15;48GiB and no-concurrency guards
+were unchanged. The guard pins the exact plan SHA256, path, diagnostic role
+and target source hash. The exception was not needed by the actual starts.
+No commit was interleaved into the running serial plan.
+
+The supervisor also authorized exact README.md/NOTES.md docs-only guard paths
+and an append-only R180--R191 root status correction after V84: O19 closed R189,
+four holes, O20 capital partial, A8 O17-only and A10 awaiting its owner. No
+historical status/evidence was deleted; proof/production/plan bytes did not
+change. The final docs/guard commit occurs only after V84 and a compiler-free
+check. All94 exact source-commit receipts were mechanically reauthenticated;
+this author review is NOT the independent acceptance gate.
+
+The final source/proof result is partial: no O20 body attempted or closed.
+Exact R192 tasks and every ownership boundary are in O6-R191-O20-DESIGN.md.
+The consolidated ledger/archive and verification follow this cutoff without
+an Idris delta; their own final artifact commit receipt cannot be inside its
+own archive. Final supervisor/reviewer gate remains to be recorded.

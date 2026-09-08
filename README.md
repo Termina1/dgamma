@@ -706,3 +706,29 @@ Census stays **5 = 1/3/0/0/1**; all five hole declarations, LocalDiamond,
 production and CP3 are byte-unchanged from their frozen baselines.
 See the [R184 audit](research-tests/O6-R184-GRIND-SHIFT-AUDIT.md) for exact
 remaining obligations, per-commit checks and bounded failure evidence.
+
+### R180–R191 research milestone — O19 closed, O20 still partial
+
+**Current research census: 4 = 1/2/0/0/1** (CanonicalSort/CrossTrace/
+DeletionChain/LocalDiamond/RenamingComposition). O19 closed in R189; both O20
+bodies remain open and byte-unchanged in R191. The historical milestones above
+are retained, not current closure claims. Production remains frozen.
+
+| Paper / research obligation | Idris correspondence | Current status |
+| --- | --- | --- |
+| Thm73 / O19 actual adjacent block swap | `CP5ConfluenceCrossTraceSpike.operationalAdjacentBlockSwapSpike` | Proved at the accepted revised safety boundary (R189); unchanged in R191 |
+| Thm73 / O20 accepted common reference and search | `CP5O20SupportedReferenceSpike.o20AcceptedSupportedReference`; `CP5O20ReferenceDescentSpike.o20SearchAcceptedReference` | Proved from accepted capital; stopped order is not yet proved the goal |
+| Thm73 / O20 finite inversion and physical child safety | `CP5O20FiniteInversionSpike.o20StoppedInversionAvailable`; `CP5O20InversionChildSafetySpike.o20ReachedInversionChildSafety` | Proved; physical early Begin, zero gap and exact selection wiring remain |
+| Thm73 / general actual paired Begin | `CP5O20SharedBeginAdapterSpike.o20PairedActualBeginCut` | Proved from real steps and the pre-cut invariant, without a shared-component oracle |
+| Thm73 / actual paired Advance/Finish/gap induction | `CP5O20PairedExecutionSpike.o20PairedExecutionCut`, `o20PairedExecutionTraces` | Proved for the native-edge paired family; canonical extraction and omitted-case completeness remain |
+| Thm73 / unsupported original-birth disposition | `CP5O20CanonicalBirthDispositionSpike.o20CanonicalOriginMatchOrClosing` | Proved weaker result: authentic closing or a matched right-original birth; not the full current-name/right-canonical triangle |
+
+R191 retains 94 new checked declarations and an eleven-edge paired integration
+fixture. **A8 is O17-only initial placement**: accepted O20 inputs already supply
+root-first placement. **A10 is an owner-pending child-orchestration grammar/gap
+candidate**, not a fully inhabited accepted counterexample. No selector or
+convergence closure is claimed.
+
+See the [R191 ownership/design map](research-tests/O6-R191-O20-DESIGN.md),
+[verification](research-tests/O6-R191-VERIFICATION.md) and
+[append-only audit](research-tests/O6-R191-GRIND-SHIFT-AUDIT.md).

@@ -21,7 +21,19 @@ unit, path = sys.argv[1:3]
 diagnostic = sys.argv[3] if len(sys.argv) > 3 else None
 symbol = sys.argv[4] if len(sys.argv) > 4 else None
 assert not (OUT/(unit+'.json')).exists(), 'Invocation names are append-only'
-assert datetime.datetime.now(datetime.timezone.utc) < datetime.datetime(2026,9,8,18,15,0,tzinfo=datetime.timezone.utc), 'R191 new-attempt time guard'
+# Supervisor-ratified 17:57Z exception: ONLY this immutable V1--V84
+# plan's exact existing source bytes may be validated through 18:30.
+# Proof/new/unplanned checks retain the original 18:15 all-start cutoff.
+planned_validation = False
+if re.fullmatch(r'V\d+', unit):
+    plan_bytes = (OUT/'final-validation-plan.json').read_bytes()
+    assert hashlib.sha256(plan_bytes).hexdigest() == '66fd32515fe8a32c844cba1208ff2a74e2b3a90f224b71df2a5861da95d5ab74', 'Frozen validation plan changed'
+    items = [item for item in json.loads(plan_bytes) if item['unit'] == unit]
+    assert len(items) == 1 and items[0]['path'] == path and items[0]['expectedDiagnostic'] == diagnostic and symbol is None, 'Unplanned validation invocation'
+    planned_source = ROOT/('dgamma.ipkg' if path == 'package' else path)
+    assert hashlib.sha256(planned_source.read_bytes()).hexdigest() == items[0]['sourceHash'], 'Validation source is not frozen bytes'
+    planned_validation = True
+assert datetime.datetime.now(datetime.timezone.utc) < datetime.datetime(2026,9,8,18,30 if planned_validation else 15,0,tzinfo=datetime.timezone.utc), 'R191 proof/unplanned18:15 or frozen-validation18:30 start guard'
 if re.fullmatch(r'[A-F]\d+-\d+', unit):
     assert datetime.datetime.now(datetime.timezone.utc) < datetime.datetime(2026,9,8,18,15,0,tzinfo=datetime.timezone.utc), 'R191 proof-attempt stop; reserve final validation'
 procs = subprocess.check_output(['ps', '-axo', 'pid,ppid,command'], text=True)

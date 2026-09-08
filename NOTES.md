@@ -3200,3 +3200,60 @@ search toward the fixed accepted finite extension and prove existence/descent;
 connect actual common components/dependency lists and matched program execution
 to the paired-prefix invariant. No new attempt beyond the ratified/capped units.
 Independent reviewer acceptance remains pending.
+
+## Status — R180–R191 (2026-09-08)
+
+This addendum supersedes the *current-status interpretation* of the historical
+R179 entries above, without deleting their evidence or stop records.
+
+- **O19 closed in R189** at the accepted revised safety boundary. The current
+  research census is **4 = 1/2/0/0/1** (CanonicalSort/CrossTrace/DeletionChain/
+  LocalDiamond/RenamingComposition). Both O20 bodies remain open; neither was
+  attempted in R191. Production, CP3 and the frozen adjacent-swap declaration
+  are unchanged.
+- **R191 owns 94 new checked declarations.** The accepted supported common
+  reference, its transport through the actual operational search, finite
+  stopped-order inversion availability and two-sided physical child exclusion
+  are proved. The goal-state/full-path plumbing was removed in one expressly
+  ratified four-module internal migration because only goal-order uniqueness
+  was used. Restricted supported paths are never coerced to arbitrary full
+  support paths.
+- **Convergence capital advanced:** the general actual Begin adapter now derives
+  its shared component through explicit observed values. Actual observed
+  Advance/last-step Finish, empty-program Finish and root/child insertion and
+  retirement successors preserve all-name cuts. The native-edge paired family
+  stores no successor or preservation oracle; its total induction and both
+  actual LTS projections are proved. An eleven-edge identity-renamed fixture
+  derives the full endpoint cut from a genuine empty origin.
+- **Unsupported-birth progress is deliberately weaker:** every actual canonical
+  origin owns an exact original stamp and either authentic closing evidence or
+  a matched right-original event/birth and generation equation. Closing is not
+  discarded, current raw-name equality is not invented, and right-canonical
+  retention is not presumed. No O21 withdrawal theorem was consumed.
+- **A8 is O17-only initial-placement construction**, not an extra O20 dependency:
+  accepted O20 capital already contains root-first placement. Actual operational
+  preservation/physical gap ownership remain separate obligations.
+- **A10 awaits the owner's grammar-gap decision.** The child-retirement candidate
+  owns eleven checked edges, alignment, real registration discipline, all15
+  bundle clauses and all3 frozen blocks. Full decomposition/placement/canonical
+  acceptance were not inhabited. F7 exhausted3/3 on native finite `BeforeIn`
+  coverage and was restored; it is NOT an accepted counterexample. The ratified
+  next-shift direction is the R188 target-order selector pattern, not a disguised
+  fourth flat-case retry. CF1 also stopped3/3 and was removed; both stops are
+  recorded. No proposed grammar cure was implemented.
+
+**Next:** owner A10 decision; selector physical zero gap, right-first Begin,
+exact enumeration/orientation wiring and `stoppedOrder = goal`; convergence
+canonical paired extraction, Remove/failure/diversion completeness and the
+unsupported fixed-current-name/right-canonical triangle. Attempt either body
+only after its required clauses are producer-owned. No new unsafe escape,
+postulate, partiality or proof hole was added. New proof functions/specifications
+are erased; runtime data remain explicit. These results are not a deployed
+plugin runtime or a runtime-performance claim.
+
+The exact ownership correspondence, final verification, every compiler
+invocation/receipt and remaining gates are in
+`research-tests/O6-R191-O20-DESIGN.md`, `O6-R191-VERIFICATION.md`,
+`O6-R191-GRIND-SHIFT-AUDIT.md` and the R191 compiler ledger/archive. Author review
+and compiler success do not substitute for the required independent acceptance
+review.
