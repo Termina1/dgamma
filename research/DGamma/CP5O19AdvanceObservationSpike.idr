@@ -192,3 +192,41 @@ o19FinishEmptyAtObservedTarget nameEq keyEq actor ambient fibers component paren
     (MkSystemState ambient (replaceBinding @{nameEq} actor (MkFiber component parent retiredFlag table (Active accumulator view)) fibers))
     (rewrite found in rewrite target in
       rewrite trans (viewEqSameNameList nameEq view view) (sameNameListReflexive nameEq (DGamma.Calculus.viewProviders view)) in Refl)
+
+||| The actual remaining-list constructor selects Iter versus Finish. This
+||| consumes D8's EXPLICIT output once and builds the real raw control edge.
+export
+0 o19AdvanceAtObservedValues :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (ambient : world) -> (fibers : Registry name key value world error) ->
+  (component : Component key value world error) -> (parent : Parent name) -> (retiredFlag : Bool) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (step : StepEffect key value world error (dependencies (componentDependencies component)) (componentProvisions component)) ->
+  (rest : List (StepEffect key value world error (dependencies (componentDependencies component)) (componentProvisions component))) ->
+  (accumulator : LocalState key value world (componentProvisions component) -> LocalState key value world (componentProvisions component)) ->
+  (view : View name (dependencies (componentDependencies component))) ->
+  (lookupFiber @{nameEq} actor fibers = Just (MkFiber component parent retiredFlag table (Reloading (step :: rest) accumulator view))) ->
+  (targetFiber @{nameEq} @{keyEq} (MkFiber component parent retiredFlag table (Reloading (step :: rest) accumulator view)) fibers = Just view) ->
+  (observed : (capability : DepValues key value (dependencies (componentDependencies component)) **
+    (resolveCommittedValues {name} {key} {value} {world} {error} @{nameEq} @{keyEq} (dependencies (componentDependencies component)) view fibers = Just capability,
+     O19StepObservation key world error value (dependencies (componentDependencies component)) (componentProvisions component) step capability
+       (MkLocalState ambient (restrictOwnedPreservingOrder @{keyEq} (componentProvisions component) (ownedValues table)))))) ->
+  RawActivationMove {name} {key} {value} {world} {error} nameEq keyEq (LAdvance actor)
+    (case rest of [] => LFinishTag; _ => LIterTag) (MkSystemState ambient fibers)
+o19AdvanceAtObservedValues nameEq keyEq actor ambient fibers component parent retiredFlag table step [] accumulator view found target
+  (capability ** (resolved, MkO19StepObservation localAfter undo ran)) =
+    MkRawActivationMove
+      (MkSystemState (localWorld localAfter) (replaceBinding @{nameEq} actor
+        (MkFiber component parent retiredFlag (localTable localAfter)
+          (Active (pushLocalUndo (componentProvisions component) accumulator undo) view)) fibers))
+      (rewrite found in rewrite resolved in rewrite ran in rewrite target in
+        rewrite trans (viewEqSameNameList nameEq view view) (sameNameListReflexive nameEq (DGamma.Calculus.viewProviders view)) in Refl)
+o19AdvanceAtObservedValues nameEq keyEq actor ambient fibers component parent retiredFlag table step (next :: more) accumulator view found target
+  (capability ** (resolved, MkO19StepObservation localAfter undo ran)) =
+    MkRawActivationMove
+      (MkSystemState (localWorld localAfter) (replaceBinding @{nameEq} actor
+        (MkFiber component parent retiredFlag (localTable localAfter)
+          (Reloading (next :: more) (pushLocalUndo (componentProvisions component) accumulator undo) view)) fibers))
+      (rewrite found in rewrite resolved in rewrite ran in rewrite target in
+        rewrite trans (viewEqSameNameList nameEq view view) (sameNameListReflexive nameEq (DGamma.Calculus.viewProviders view)) in Refl)
