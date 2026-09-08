@@ -62,3 +62,30 @@ not a proof PASS. A20-2 uses both absolute dirs and absolute target; own-target
 Building authenticated against either spelling. PASS2, exact-source committed.
 No compiler orphaned; lane2 compiler recorded separately. Runner changed only
 path spellings; seeded TTC retained. Main's callback/roles path stays research-only.
+
+## Unit A initial cap — 30/30 retained at A30
+
+A17--A24: actual complete block coverage + native final-active/no-unload
+absorption exclude Raise/Divert/Leave/Unload at EVERY lifecycle occurrence;
+non-lifecycle action inversion includes Insert/Retire/Remove. Structural trace
+induction produces `O20CanonicalTraceRoles` for the WHOLE accepted canonical
+trace, not just selected blocks. This is unilateral complete role extraction,
+NOT paired execution alignment. A21-1 typoed import rejected despite exit0;
+fresh=false caught it, A21-2 PASS. A20-1 tooling failure is counted above.
+
+A25--A30: separate native Iter and last-step Finish checked transitions own
+captured-map definedness, then actual capability and successful callback values
+with exact primitive resolver/callback equations. No role Either adapter, no
+caller success/domain witness, no computed existential local case. These
+single-role producers are new narrower structures, not R192 exhausted A9.
+The actual source lookup/program shape is still explicit (native source
+inversion/shared-source capital already exists); no arbitrary paired fold yet.
+
+Retained A1--A30; 33 compiler invocations (A12/A20/A21 each attempt2), no3/3,
+no body attempt, no extra hole. Initial A cap honored; moving immediately to D
+under owner rescope. Later A/D deepening is authorized after D. Exact bridge
+wall: history cut has only empty and actual Remove successor; Begin/Advance/
+Insert/Retire live-generation preservation and arbitrary edge alignment remain
+unextracted, supported agreement does not rebase all-name endpoint control,
+and present vestigial remainders remain unresolved. All four bridge clauses
+are therefore NOT producer-owned; protected convergence body is ineligible.
