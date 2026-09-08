@@ -1,0 +1,291 @@
+{
+  "gate": "D3 exhausted3/3, exact rollback, first same-seam exhaustion; requires supervisor decision",
+  "records": [
+    {
+      "unit": "D1-1",
+      "path": "research/DGamma/CP5O19CartesianWordRowSpike.idr",
+      "command": [
+        "idris2",
+        "--source-dir",
+        "src",
+        "--source-dir",
+        "research",
+        "--check",
+        "research/DGamma/CP5O19CartesianWordRowSpike.idr"
+      ],
+      "start": "2026-09-08T03:43:14.991643+00:00",
+      "end": "2026-09-08T03:43:19.166545+00:00",
+      "seconds": 4.174714750144631,
+      "exit": 0,
+      "fresh": true,
+      "passed": true,
+      "interrupted": false,
+      "maxSampleRSSKiB": 2888672,
+      "sourceSHA256": "6e9ffd00fe0032c2f390333f462dcd70f615211a91dfbe1805985ea0e4a471c8",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "transcript": "55/55: Building DGamma.CP5O19CartesianWordRowSpike (research/DGamma/CP5O19CartesianWordRowSpike.idr)\n"
+    },
+    {
+      "unit": "D2-1",
+      "path": "research/DGamma/CP5O19CartesianWordRowSpike.idr",
+      "command": [
+        "idris2",
+        "--source-dir",
+        "src",
+        "--source-dir",
+        "research",
+        "--check",
+        "research/DGamma/CP5O19CartesianWordRowSpike.idr"
+      ],
+      "start": "2026-09-08T03:44:31.304602+00:00",
+      "end": "2026-09-08T03:44:35.451576+00:00",
+      "seconds": 4.146787750069052,
+      "exit": 1,
+      "fresh": true,
+      "passed": false,
+      "interrupted": false,
+      "maxSampleRSSKiB": 2220512,
+      "sourceSHA256": "4d38c55d608576a0c87cd93b996902ec49cadbbbd833b6dbf18b2f493f46e3c5",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "transcript": "55/55: Building DGamma.CP5O19CartesianWordRowSpike (research/DGamma/CP5O19CartesianWordRowSpike.idr)\nError: While processing right hand side of o19WordRowStepObserved. Undefined name uniqueInsertionsAfterFiniteDerivation. \n\nDGamma.CP5O19CartesianWordRowSpike:67:12--67:49\n 63 |   orientation (diamond ** result) =\n 64 |     MkO19WordRow\n 65 |       (MkO19MixedRow\n 66 |         (MkO19ReachedCursor (replayedFinal result) (swappedTrace result) (swappedPremises result)\n 67 |           (uniqueInsertionsAfterFiniteDerivation name key world error value protocol nameEq keyEq (FiniteAdjacentSwapStep (cursorTrace (mixedRowCursor (wordRow previous))) earlier left (mixedRowRight (wordRow previous)) (mixedRowRest (wordRow previous)) orientation diamond result (swappedTrace result) FiniteAdjacentSwapDone) (cursorUnique (mixedRowCursor (wordRow previous))))\n                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\n"
+    },
+    {
+      "unit": "D2-2",
+      "path": "research/DGamma/CP5O19CartesianWordRowSpike.idr",
+      "command": [
+        "idris2",
+        "--source-dir",
+        "src",
+        "--source-dir",
+        "research",
+        "--check",
+        "research/DGamma/CP5O19CartesianWordRowSpike.idr"
+      ],
+      "start": "2026-09-08T03:45:03.599440+00:00",
+      "end": "2026-09-08T03:45:07.779686+00:00",
+      "seconds": 4.180072874762118,
+      "exit": 1,
+      "fresh": true,
+      "passed": false,
+      "interrupted": false,
+      "maxSampleRSSKiB": 2205344,
+      "sourceSHA256": "322ff7ecc33f97af970584283cb0bbf1badf530e1cc6827dfb27f8e2e28e5611",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "transcript": "55/55: Building DGamma.CP5O19CartesianWordRowSpike (research/DGamma/CP5O19CartesianWordRowSpike.idr)\nError: While processing right hand side of o19WordRowStepObserved. When unifying:\n    transitionAction (movedLeft diamond) :: o19ActionWord (replayedSuffix result) = transitionAction left :: (o19ActionWord rest ++ o19ActionWord later)\nand:\n    o19ActionWord (mixedRowRest ?postpone) = o19ActionWord ?spine ++ o19ActionWord ?later\nUndefined name DGamma.CP5ConfluenceRankObservationSpike.traceActionFold. \n\nDGamma.CP5O19CartesianWordRowSpike:81:8--82:138\n 81 |       (trans (cong (\\action => action :: o19ActionWord (replayedSuffix result)) (movedLeftAction diamond))\n 82 |         (cong ((transitionAction left) ::) (trans (o19SealedActionWord nameEq keyEq (sealedSuffixReplay result)) (wordRowRest previous))))\n\n"
+    },
+    {
+      "unit": "D2-3",
+      "path": "research/DGamma/CP5O19CartesianWordRowSpike.idr",
+      "command": [
+        "idris2",
+        "--source-dir",
+        "src",
+        "--source-dir",
+        "research",
+        "--check",
+        "research/DGamma/CP5O19CartesianWordRowSpike.idr"
+      ],
+      "start": "2026-09-08T03:45:48.021416+00:00",
+      "end": "2026-09-08T03:45:52.177305+00:00",
+      "seconds": 4.1557050831615925,
+      "exit": 0,
+      "fresh": true,
+      "passed": true,
+      "interrupted": false,
+      "maxSampleRSSKiB": 3923696,
+      "sourceSHA256": "b4071d57044243e9bcf1a55107885d4864766032228bfeb41378ec4c3c34465c",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "transcript": "55/55: Building DGamma.CP5O19CartesianWordRowSpike (research/DGamma/CP5O19CartesianWordRowSpike.idr)\n"
+    },
+    {
+      "unit": "D3-1",
+      "path": "research/DGamma/CP5O19CartesianWordRowSpike.idr",
+      "command": [
+        "idris2",
+        "--source-dir",
+        "src",
+        "--source-dir",
+        "research",
+        "--check",
+        "research/DGamma/CP5O19CartesianWordRowSpike.idr"
+      ],
+      "start": "2026-09-08T03:47:24.876499+00:00",
+      "end": "2026-09-08T03:50:47.964465+00:00",
+      "seconds": 203.0872902921401,
+      "exit": -15,
+      "fresh": false,
+      "passed": false,
+      "interrupted": true,
+      "maxSampleRSSKiB": 2209504,
+      "sourceSHA256": "b47a4120425dbef0fca6a1324fd5a36a915b10908e2680bf26903a8a3b8fbbe0",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "transcript": ""
+    },
+    {
+      "unit": "D3-2",
+      "path": "research/DGamma/CP5O19CartesianWordRowSpike.idr",
+      "command": [
+        "idris2",
+        "--source-dir",
+        "src",
+        "--source-dir",
+        "research",
+        "--check",
+        "research/DGamma/CP5O19CartesianWordRowSpike.idr"
+      ],
+      "start": "2026-09-08T03:51:24.627121+00:00",
+      "end": "2026-09-08T03:53:36.229333+00:00",
+      "seconds": 131.60171099985018,
+      "exit": -15,
+      "fresh": false,
+      "passed": false,
+      "interrupted": true,
+      "maxSampleRSSKiB": 2209568,
+      "sourceSHA256": "e8d3efe51e4a8a2ea5d35a6704609c2ec542fcabf00c87380deccfc1f3422080",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "transcript": ""
+    },
+    {
+      "unit": "D3-3",
+      "path": "research/DGamma/CP5O19CartesianWordRowSpike.idr",
+      "command": [
+        "idris2",
+        "--source-dir",
+        "src",
+        "--source-dir",
+        "research",
+        "--check",
+        "research/DGamma/CP5O19CartesianWordRowSpike.idr"
+      ],
+      "start": "2026-09-08T03:54:04.841108+00:00",
+      "end": "2026-09-08T03:59:30.251220+00:00",
+      "seconds": 325.40913745900616,
+      "exit": -15,
+      "fresh": false,
+      "passed": false,
+      "interrupted": true,
+      "maxSampleRSSKiB": 2209552,
+      "sourceSHA256": "3fe61fa0a29a29d4f298047b5c7374564a9a7128dbd35c1e282a02e9ea2150d4",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "transcript": ""
+    },
+    {
+      "unit": "D3-rollback",
+      "path": "research/DGamma/CP5O19CartesianWordRowSpike.idr",
+      "command": [
+        "idris2",
+        "--source-dir",
+        "src",
+        "--source-dir",
+        "research",
+        "--check",
+        "research/DGamma/CP5O19CartesianWordRowSpike.idr"
+      ],
+      "start": "2026-09-08T04:00:06.104354+00:00",
+      "end": "2026-09-08T04:00:10.256955+00:00",
+      "seconds": 4.152425040956587,
+      "exit": 0,
+      "fresh": true,
+      "passed": true,
+      "interrupted": false,
+      "maxSampleRSSKiB": 3749696,
+      "sourceSHA256": "b4071d57044243e9bcf1a55107885d4864766032228bfeb41378ec4c3c34465c",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "transcript": "55/55: Building DGamma.CP5O19CartesianWordRowSpike (research/DGamma/CP5O19CartesianWordRowSpike.idr)\n"
+    }
+  ],
+  "frozen": {
+    "timestamp": "2026-09-08T04:00:41.359896+00:00",
+    "head": "f1fb8ff064d40460fe5bea13675e626597fea10c",
+    "start": "aa8ef19e",
+    "holes": {
+      "CanonicalSort": [
+        "?sortClosingFreeTraceSpike_rhs"
+      ],
+      "CrossTrace": [
+        "?operationalAdjacentBlockSwapSpike_rhs",
+        "?selectOperationalCanonicalPermutationSpike_rhs",
+        "?canonicalSchedulesConvergeSpike_rhs"
+      ],
+      "DeletionChain": [],
+      "LocalDiamond": [],
+      "RenamingComposition": [
+        "?replayedCanonicalToOriginalEndpointSpike_rhs"
+      ]
+    },
+    "split": [
+      1,
+      3,
+      0,
+      0,
+      1
+    ],
+    "productionDiffVs34b21c9": "empty",
+    "CP3Blob": "2c697e532e83989de8591fa6a4378747c6a501c0",
+    "LocalDiamondDiffVsStart": "empty",
+    "LocalDiamondUnchanged": true,
+    "LocalDiamondAuthorizedVisibility": {},
+    "CanonicalSortDiffVsStart": "empty",
+    "CanonicalSortAuthorizedVisibility": {},
+    "DeletionChainDiffVsStart": "empty",
+    "CrossTraceDiffVsStart": "empty",
+    "RenamingCompositionDiffVsStart": "empty",
+    "adjacentFullBytes": 1470,
+    "adjacentFullSHA256": "2d01486bf953f11191b758ac3cfb5722d1d02b1a192b6e552adc8a3f58199ecf",
+    "adjacentStatementBytes": 1154,
+    "adjacentStatementSHA256": "3aae5a9fbc5b14e0411b4a91e557a6f3dc68c9a6282b9ec2b3fc658cec337adf",
+    "reviewSHA256": "61fc23ae4cea4565b442c840be39c41746ecbac73b8c2f73d04f1e3b4f4681e8",
+    "seeds": "207/207",
+    "LocalDiamondTTC": {
+      "bytes": 125368223,
+      "mtimeUTC": "2026-09-08T02:34:38.629946+00:00"
+    },
+    "changedIdrisFiles": [
+      "research/DGamma/CP5O19BodyMetadataSpike.idr",
+      "research/DGamma/CP5O19CartesianLengthSpike.idr",
+      "research/DGamma/CP5O19CartesianWordRowSpike.idr",
+      "research/DGamma/CP5O19MixedActivationRowSpike.idr",
+      "research/DGamma/CP5O19MixedRowDispatcherSpike.idr",
+      "research/DGamma/CP5O20LinearExtensionSpike.idr"
+    ],
+    "sourceSHA256": {
+      "research/DGamma/CP5O19BodyMetadataSpike.idr": "868f15fd273e746f84195b8b0936df97919cca87dadf9a8bbcc6ff8e181d78a7",
+      "research/DGamma/CP5O19CartesianLengthSpike.idr": "09a850747f99fc9c8ad0ea70c36de41e0514af51897a951387b9d9c363727790",
+      "research/DGamma/CP5O19CartesianWordRowSpike.idr": "b4071d57044243e9bcf1a55107885d4864766032228bfeb41378ec4c3c34465c",
+      "research/DGamma/CP5O19MixedActivationRowSpike.idr": "54bb6d1f335943c7598cb8073155c2a1eb760e03b13cf2deb541fbf63dac4a52",
+      "research/DGamma/CP5O19MixedRowDispatcherSpike.idr": "6b5e01921fb8c32c1b04d8aaf0900880de81a245516e2e7cb53c25ef1f20c52f",
+      "research/DGamma/CP5O20LinearExtensionSpike.idr": "59ac51ea62ba0e8c65c8ed8ce0fd00c4234da5d42b64ccc6c8ac24d7031e8e57"
+    },
+    "protectedDeclarationSHA256": {
+      "sortClosingFreeTraceSpike": "1df8d174b9a4f119a5a52e2073a72907bdb890413f877d55886e905e1d0279d1",
+      "operationalAdjacentBlockSwapSpike": "e0a085b88ac2c48db4e8a7466db9e289eb9fe8ceec22f30ed6f7082eaa25220d",
+      "selectOperationalCanonicalPermutationSpike": "b00063eacf339b58828eac5829cebc66fc7265f3518be459af0602463b6fbae7",
+      "canonicalSchedulesConvergeSpike": "0e8a177ea7bb4807cb77680cde29e75f7d37224711cc51cf7bf6636426690dd9",
+      "replayedCanonicalToOriginalEndpointSpike": "377b08ff82e1e4212738bb00a45a088b1f0d8fd8bc8b54bf061c96f2f4891681"
+    },
+    "prohibitedAdditions": {
+      "\\bbelieve_me\\b": [],
+      "\\bassert_total\\b": [],
+      "^\\s*partial\\b": [],
+      "\\?\\w+": [],
+      "\\blet\\b": [],
+      "\\bwith\\b": [],
+      "\\bdeletionTheoremProof\\b": [],
+      "\\bpostulate\\b": [],
+      "\\b[A-Za-z_]\\w*@\\s*[\\(\\[]": []
+    },
+    "noCompiler": true,
+    "noStagedFiles": true,
+    "cleanTrackedTree": true,
+    "allowedUntrackedOnly": true
+  },
+  "residual": "No D3 retained, no fourth retry; D4<=D16 needs a separate authorized observation boundary. O19 body0; all Cartesian column/origin/product/coverage/range/endpoint prerequisites still open."
+}
