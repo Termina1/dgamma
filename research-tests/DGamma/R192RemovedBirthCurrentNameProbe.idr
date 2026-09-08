@@ -42,3 +42,16 @@ r192SwapAbsent Z = Z
 r192SwapAbsent (S Z) = 2
 r192SwapAbsent (S (S Z)) = 1
 r192SwapAbsent (S (S (S later))) = S (S (S later))
+
+||| Constructive total bijection. This is not an asserted permutation.
+public export
+r192AbsentBijection : NameBijection Nat
+r192AbsentBijection = MkNameBijection r192SwapAbsent r192SwapAbsent
+  (\n => case n of Z => Refl
+                   S Z => Refl
+                   S (S Z) => Refl
+                   S (S (S later)) => Refl)
+  (\n => case n of Z => Refl
+                   S Z => Refl
+                   S (S Z) => Refl
+                   S (S (S later)) => Refl)
