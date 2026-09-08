@@ -136,3 +136,32 @@ o20PhysicalLeftBlockOwnerFrame nameEq keyEq left right distinct leftBefore leftS
     (trans (o20ForeignTraceOwnerFrame nameEq keyEq right body aligned
       (o20ActorBodyForeignOwners left right distinct body only excluded))
       (o20EmptyGapKeepsLookup nameEq right gap empty))
+
+||| Actual right-first Begin at the pre-left cut, from BOTH real openings and
+||| the complete physical segment. Owner transport is derived. The remaining
+||| primitive dependency-resolver frame is EXPLICIT and NOT hidden in ZeroGap.
+||| Deriving that frame from accepted incomparability remains unproved.
+export
+0 o20RightBeginAcrossActualLeftBlock :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (left, right : name) -> Not (right = left) ->
+  (leftBefore, leftStart, leftEnd, rightBefore, rightStart : SystemState name key value world error) ->
+  BeginStep nameEq keyEq left leftBefore leftStart ->
+  (rightOpening : BeginStep nameEq keyEq right rightBefore rightStart) ->
+  (body : Transitions leftStart leftEnd) ->
+  AlignedTransitions name key world error value nameEq keyEq body ->
+  ActorLifecycleOnly left body -> NoGeneratedChild right body ->
+  (gap : Transitions leftEnd rightBefore) -> ZeroGapPending gap ->
+  (registryWellFormed @{nameEq} @{keyEq} leftBefore = True) ->
+  (resolveView {name} {key} {value} {world} {error} @{nameEq} @{keyEq}
+    (dependencies (componentDependencies (beginObservedComponent
+      (o20ObserveActualBegin nameEq keyEq right rightBefore rightStart rightOpening)))) (registry leftBefore) =
+   resolveView {name} {key} {value} {world} {error} @{nameEq} @{keyEq}
+    (dependencies (componentDependencies (beginObservedComponent
+      (o20ObserveActualBegin nameEq keyEq right rightBefore rightStart rightOpening)))) (registry rightBefore)) ->
+  CheckedEarlyApplication name key world error value nameEq keyEq leftBefore (LBegin right) LBeginTag
+o20RightBeginAcrossActualLeftBlock nameEq keyEq left right distinct leftBefore leftStart leftEnd rightBefore rightStart leftOpening rightOpening body aligned only excluded gap empty wellFormed resolverFrame =
+  o20RightBeginAtEarlierObservation nameEq keyEq right leftBefore rightBefore rightStart
+    (o20ObserveActualBegin nameEq keyEq right rightBefore rightStart rightOpening) wellFormed
+    (o20PhysicalLeftBlockOwnerFrame nameEq keyEq left right distinct leftBefore leftStart leftEnd rightBefore leftOpening body aligned only excluded gap empty)
+    resolverFrame
