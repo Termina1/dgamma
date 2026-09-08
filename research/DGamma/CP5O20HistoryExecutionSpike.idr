@@ -1,5 +1,6 @@
 module DGamma.CP5O20HistoryExecutionSpike
 
+import DGamma.Core
 import DGamma.Calculus
 import DGamma.Coeffects
 import DGamma.Metatheory
@@ -149,3 +150,38 @@ o20HistoryMatchedInsertCut {name} {key} {world} {error} {value} nameEq keyEq map
         (trans (renameLeftInverse renaming actor)
           (sym (cong generationName (trans (cong (generationBackward mapping) (sym matched))
             (generationLeftInverse mapping (MkRegistrationGeneration actor leftOrdinal)))))) backward)
+
+||| Actual empty-program Finish changes no live stamp and derives the whole
+||| runtime successor through the existing checked native producer. This is
+||| the empty native case, not a callback-domain or paired-extraction oracle.
+export
+0 o20HistoryEmptyFinishCut :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (mapping : RegistrationGenerationBijection name) -> (actor : name) ->
+  (leftOrdinal, rightOrdinal : Nat) -> (leftLive, rightLive : GenerationEnvironment name) ->
+  (component : Component key value world error) ->
+  (leftParent, rightParent : Parent name) -> (leftRetired, rightRetired : Bool) ->
+  (leftTable, rightTable : OwnedTable key value (componentProvisions component)) ->
+  (leftOlder, rightOlder : LocalState key value world (componentProvisions component) -> LocalState key value world (componentProvisions component)) ->
+  (leftView, rightView : View name (dependencies (componentDependencies component))) ->
+  (leftWorld, rightWorld : world) -> (leftRegistry, rightRegistry : Registry name key value world error) ->
+  (paired : O20HistoryCut name key world error value nameEq mapping leftLive rightLive
+    (MkSystemState leftWorld leftRegistry) (MkSystemState rightWorld rightRegistry)) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor leftRegistry = Just (MkFiber component leftParent leftRetired leftTable (Reloading [] leftOlder leftView))) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} (renameForward (historyCutBijection paired) actor) rightRegistry = Just (MkFiber component rightParent rightRetired rightTable (Reloading [] rightOlder rightView))) ->
+  (checkedApplyAction {name} {key} {value} {world} {error} @{nameEq} @{keyEq} (LAdvance actor) (MkSystemState leftWorld leftRegistry) = Just (LFinishTag, (MkSystemState leftWorld (replaceBinding @{nameEq} actor (MkFiber component leftParent leftRetired leftTable (Active leftOlder leftView)) leftRegistry)))) ->
+  (checkedApplyAction {name} {key} {value} {world} {error} @{nameEq} @{keyEq} (LAdvance (renameForward (historyCutBijection paired) actor)) (MkSystemState rightWorld rightRegistry) = Just (LFinishTag, (MkSystemState rightWorld (replaceBinding @{nameEq} (renameForward (historyCutBijection paired) actor) (MkFiber component rightParent rightRetired rightTable (Active rightOlder rightView)) rightRegistry)))) ->
+  O20HistoryCut name key world error value nameEq mapping
+    (advanceGenerationEnvironment {name} {key} {value} {world} {error} @{nameEq} leftOrdinal (LAdvance actor) leftLive)
+    (advanceGenerationEnvironment {name} {key} {value} {world} {error} @{nameEq} rightOrdinal
+      (LAdvance (renameForward (historyCutBijection paired) actor)) rightLive)
+    (MkSystemState leftWorld (replaceBinding @{nameEq} actor (MkFiber component leftParent leftRetired leftTable (Active leftOlder leftView)) leftRegistry)) (MkSystemState rightWorld (replaceBinding @{nameEq} (renameForward (historyCutBijection paired) actor) (MkFiber component rightParent rightRetired rightTable (Active rightOlder rightView)) rightRegistry))
+o20HistoryEmptyFinishCut {name} {key} {world} {error} {value} nameEq keyEq mapping actor leftOrdinal rightOrdinal leftLive rightLive
+  component leftParent rightParent leftRetired rightRetired leftTable rightTable leftOlder rightOlder leftView rightView
+  leftWorld rightWorld leftRegistry rightRegistry (MkO20HistoryCut renaming runtime forward backward)
+  leftFound rightFound leftChecked rightChecked =
+    MkO20HistoryCut renaming
+      (o20PairedObservedEmptyFinishCut {name} {key} {world} {error} {value} nameEq keyEq renaming actor
+        component leftParent rightParent leftRetired rightRetired leftTable rightTable leftOlder rightOlder leftView rightView
+        leftWorld rightWorld leftRegistry rightRegistry leftFound rightFound leftChecked rightChecked runtime)
+      forward backward
