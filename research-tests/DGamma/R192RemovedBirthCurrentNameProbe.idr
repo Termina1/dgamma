@@ -236,3 +236,29 @@ r192ActualSupportedBirth = MkLocatedGeneratedRegistration r45AfterBegin r45Sourc
   (MoreTransitions r45ParentInsert (MoreTransitions r45Begin NoTransitions)) r45ChildInsert
   (MoreTransitions r178ParentFinish (MoreTransitions r178ChildBegin
     (MoreTransitions r178ChildFinish NoTransitions))) Refl Refl
+
+||| Supported POSITIVE: support is actually proved by two fixed-point clauses
+||| at authenticated primitive lookups, not assumed and not scalar unfolding
+||| over a replay builder. The real right birth/generation triangle is identity.
+export
+0 r192SupportedBirthScopePositive :
+  (isSupported {name = Nat} {key = R45Key} {value = R45Value} {world = Unit} {error = String}
+    @{r45NameEq} @{r45KeyEq} 1 r178LeftFinal = True,
+   (source : LocatedGeneratedRegistration 1 0 r45Child r178LeftTrace **
+     (source = r192ActualSupportedBirth,
+      (rightBirth : LocatedGeneratedRegistration 1 0 r45Child r178LeftTrace **
+        registrationGeneration source = registrationGeneration rightBirth))))
+r192SupportedBirthScopePositive =
+  ((the ((state : SystemState Nat R45Key R45Value Unit String) ->
+      (lookupFiber {name = Nat} {key = R45Key} {value = R45Value} {world = Unit} {error = String}
+        @{r45NameEq} 0 (registry state) = Just
+          (MkFiber r45Parent Root False (restrictOwnedPreservingOrder @{r45KeyEq} r45Spec emptyContext)
+            (Active (pushLocalUndo @{r45KeyEq} r45Spec id id) EmptyView))) ->
+      (lookupFiber {name = Nat} {key = R45Key} {value = R45Value} {world = Unit} {error = String}
+        @{r45NameEq} 1 (registry state) = Just (MkFiber r45Child (ChildOf 0) False emptyOwned (Active id EmptyView))) ->
+      (isSupported @{r45NameEq} @{r45KeyEq} 1 state = True))
+      (\state, parentFound, childFound => trans (supportSetIsSolution r45NameEq r45KeyEq state 1)
+        (rewrite childFound in
+         rewrite trans (supportSetIsSolution r45NameEq r45KeyEq state 0)
+           (rewrite parentFound in Refl) in Refl))) r178LeftFinal Refl Refl,
+   (r192ActualSupportedBirth ** (Refl, (r192ActualSupportedBirth ** Refl))))
