@@ -22,7 +22,7 @@ diagnostic = sys.argv[3] if len(sys.argv) > 3 else None
 symbol = sys.argv[4] if len(sys.argv) > 4 else None
 assert not (OUT/(unit+'.json')).exists(), 'Invocation names are append-only'
 assert datetime.datetime.now(datetime.timezone.utc) < datetime.datetime(2026,9,8,18,15,0,tzinfo=datetime.timezone.utc), 'R191 new-attempt time guard'
-if re.fullmatch(r'[A-E]\d+-\d+', unit):
+if re.fullmatch(r'[A-F]\d+-\d+', unit):
     assert datetime.datetime.now(datetime.timezone.utc) < datetime.datetime(2026,9,8,18,15,0,tzinfo=datetime.timezone.utc), 'R191 proof-attempt stop; reserve final validation'
 procs = subprocess.check_output(['ps', '-axo', 'pid,ppid,command'], text=True)
 if re.search(r'/idris2_app/idris2(?:\.so)?(?:\s|$)', procs):
@@ -36,7 +36,7 @@ else:
     if not target.is_file() or target.stat().st_size == 0:
         raise SystemExit('Missing/empty source target: refusing touch or compiler launch')
     snapshot = target.read_bytes()
-    if re.fullmatch(r'[A-E]\d+-\d+', unit):
+    if re.fullmatch(r'[A-F]\d+-\d+', unit):
         old = subprocess.run(['git','show','HEAD:'+path],cwd=ROOT,capture_output=True)
         def declarations(data):
             text = data.decode()

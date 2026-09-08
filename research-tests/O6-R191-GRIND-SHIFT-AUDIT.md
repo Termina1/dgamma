@@ -283,3 +283,25 @@ separately rule out those gap actions, but that exclusion has not been proved;
 no full accepted countermodel is asserted. Initial root placement is still an
 O20 input and its preservation is not an O17/A8 dependency. Stop/gate before any
 new surface claim or any forced zero-gap/early/selector body.
+
+## Accepted-gap investigation F1/F2 resource and exact-state repair
+
+F1 observed-cut function passed. F2-1 attempted the full SAME eleven-edge trace
+using nested evaluator observations; it was deliberately interrupted after
+382.844s CPU normalization (max sampled691952KiB, no own Building flush). Native
+record is interrupted/fresh=false, NOT a validation. F2-2 replaced the supporting
+F1 cuts by explicit physical registry states, retaining the SAME trace goal;
+it failed at erased uniqueness-certificate context for the child insertion.
+F2-3 fixed that exact certificate to the real pre-insert parent-begun registry,
+and used the actual normalized parent table/pushed undo after its Finish. PASS:
+ALL ELEVEN ACTUAL checked edges, including child-retirement between root1/root2.
+No fallback, proof irrelevance, lookup postulate or source-state substitution.
+Only one new declaration (the trace) in each F2 invocation; the supporting data
+family repair is authenticated by the complete source hash of F2-3.
+
+Administrative guard tightening: include newly authorized F proof labels in the
+runner's pre-check single-new-declaration guard. F1/F2 already satisfied the
+unconditional commit guard's exact single-new-declaration check; no source delta
+was admitted without it. Existing source snapshots/records remain unchanged.
+The fixture is NOT yet accepted canonical capital: alignment, discipline, bundle,
+exact decomposition and CanonicalInputPlacement still need owned proofs.
