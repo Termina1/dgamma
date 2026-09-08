@@ -111,3 +111,18 @@ export
   LocatedGeneratedRegistration child parent component (MoreTransitions step rest)
 o20GeneratedBirthPrepend step rest (MkLocatedGeneratedRegistration before afterState prior birth later action exact) =
   MkLocatedGeneratedRegistration before afterState (MoreTransitions step prior) birth later action (cong (MoreTransitions step) exact)
+
+||| Extend a located birth by the actual following suffix without changing
+||| its before-cut, action, or local occurrence.
+export
+0 o20GeneratedBirthAppend :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (trace : Transitions first middle) -> (following : Transitions middle finalState) ->
+  {child, parent : name} -> {component : Component key value world error} ->
+  LocatedGeneratedRegistration child parent component trace ->
+  LocatedGeneratedRegistration child parent component (appendTransitions trace following)
+o20GeneratedBirthAppend trace following (MkLocatedGeneratedRegistration before afterState prior birth later action exact) =
+  MkLocatedGeneratedRegistration before afterState prior birth (appendTransitions later following) action
+    (trans (sym (appendTransitionsAssociative prior (MoreTransitions birth later) following))
+      (cong (\candidate => appendTransitions candidate following) exact))
