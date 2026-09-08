@@ -845,3 +845,18 @@ export
 o19LocatedByWord nameEq keyEq selected source block target aligned origins active beforeWord afterWord noEarlier noLater placement =
   o19LocatedAfterFirstCut nameEq keyEq selected source block target aligned origins active beforeWord afterWord noEarlier noLater
     (o19CutByWord beforeWord (o19ActionWord (actorBlockTrace block) ++ afterWord) target placement)
+
+||| Word of an actual prefix-through-block, with dependent append and the
+||| real opening normalized. Used to place untouched blocks in reached words.
+export
+0 o19PrefixThroughWord :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} -> {selected : name} ->
+  {initial, finalState : SystemState name key value world error} -> {source : Transitions initial finalState} ->
+  (block : LocatedOpenEpisodeBlock name key world error value nameEq keyEq selected source) ->
+  (o19ActionWord (prefixThroughBlock block) = o19ActionWord (traceBeforeBlock block) ++ o19ActionWord (actorBlockTrace block))
+o19PrefixThroughWord {selected} block =
+  trans (o19ActionWordAppend (prefixToBlockOpening block) (blockBody block))
+    (trans (cong (\word => word ++ o19ActionWord (blockBody block))
+      (o19ActionWordAppend (traceBeforeBlock block) (MoreTransitions (beginTransition (blockOpening block)) NoTransitions)))
+      (sym (appendAssociative (o19ActionWord (traceBeforeBlock block)) [LBegin selected] (o19ActionWord (blockBody block)))))
