@@ -62,3 +62,24 @@ o19FixedRowComplete leftSource rightSource (S width) (S index) bound =
     (plusSuccRightSucc leftSource index)
     (fst (o19ElemAppendInjections (o19FixedRowPairs (S leftSource) rightSource width) [(leftSource, rightSource)])
       (o19FixedRowComplete (S leftSource) rightSource width index (fromLteSucc bound)))
+
+||| Actual row membership gives BOTH left bounds and the exact fixed right
+||| coordinate. No conclusion is drawn from cardinality or action labels.
+export
+0 o19FixedRowBounds : (leftSource, rightSource, width, leftPosition, rightPosition : Nat) ->
+  Elem (leftPosition, rightPosition) (o19FixedRowPairs leftSource rightSource width) ->
+  (LTE leftSource leftPosition,
+   (LTE (S leftPosition) (leftSource + width), (rightPosition = rightSource)))
+o19FixedRowBounds leftSource rightSource Z leftPosition rightPosition member = void (uninhabited member)
+o19FixedRowBounds leftSource rightSource (S width) leftPosition rightPosition member =
+  o19ElemAppendCases (o19FixedRowPairs (S leftSource) rightSource width) [(leftSource, rightSource)]
+    (\earlier =>
+      (lteSuccLeft (fst (o19FixedRowBounds (S leftSource) rightSource width leftPosition rightPosition earlier)),
+       (replace {p = LTE (S leftPosition)} (plusSuccRightSucc leftSource width)
+          (fst (snd (o19FixedRowBounds (S leftSource) rightSource width leftPosition rightPosition earlier))),
+        snd (snd (o19FixedRowBounds (S leftSource) rightSource width leftPosition rightPosition earlier)))))
+    (\last => case last of
+      Here => (reflexive,
+        (replace {p = LTE (S leftSource)} (plusSuccRightSucc leftSource width)
+          (LTESucc (lteAddRight leftSource)), Refl))
+      There absent => void (uninhabited absent)) member
