@@ -103,3 +103,44 @@ generatedChildAtHeadContradictsSafety transition rest action
   (NoGeneratedChildStep transition rest rejected safeRest) =
     rejected parent component action
 
+||| Exact safety reconstructed for one adjacent actor pair at its current replay
+||| state.  It owns the actual two blocks, their order, the full bundle, and both
+||| generated-child licensing exclusions. R182 additionally certifies right-first
+||| opening at the pre-left cut; left-first is already owned by blockOpening.
+||| This is first-step applicability, NOT an assumed swapped trace or diamond.
+||| These fields are intentionally not reducible to `actorDistinct`.
+public export
+record AdjacentActorSwapSafety
+  (name, key, world, error : Type) (value : key -> Type)
+  (protocol : RegistrationProtocol key value world error)
+  (nameEq : DecEq name) (keyEq : DecEq key)
+  {sourceOrder, targetOrder : List name}
+  (orderSwap : AdjacentActorOrderSwap name sourceOrder targetOrder)
+  {initial, sourceFinal : SystemState name key value world error}
+  (sourceTrace : Transitions initial sourceFinal)
+  (sourceBlocks : ActorBlockDecomposition name key world error value nameEq keyEq
+    sourceOrder sourceTrace)
+  (sourcePremises : ReplayInvariantBundle name key world error value protocol
+    nameEq keyEq sourceTrace) where
+  constructor MkAdjacentActorSwapSafety
+  safetyLeftInOrder : Elem (actorLeft orderSwap) sourceOrder
+  safetyRightInOrder : Elem (actorRight orderSwap) sourceOrder
+  safetyLeftBeforeRight : BeforeIn (actorLeft orderSwap) (actorRight orderSwap)
+    sourceOrder
+  safetyBlocksOrdered : BlockBefore name key world error value nameEq keyEq
+    sourceTrace (actorLeft orderSwap) (actorRight orderSwap)
+    (decomposedBlock sourceBlocks (actorLeft orderSwap) safetyLeftInOrder)
+    (decomposedBlock sourceBlocks (actorRight orderSwap) safetyRightInOrder)
+  0 safetyLeftDoesNotGenerateRight : NoGeneratedChild (actorRight orderSwap)
+    (blockBody (decomposedBlock sourceBlocks (actorLeft orderSwap)
+      safetyLeftInOrder))
+  0 safetyRightDoesNotGenerateLeft : NoGeneratedChild (actorLeft orderSwap)
+    (blockBody (decomposedBlock sourceBlocks (actorRight orderSwap)
+      safetyRightInOrder))
+  0 safetyRightOpeningEarly : CheckedEarlyApplication name key world error value
+    nameEq keyEq
+    (blockPreStart (decomposedBlock sourceBlocks (actorLeft orderSwap)
+      safetyLeftInOrder))
+    (LBegin (actorRight orderSwap)) LBeginTag
+  0 safetyBlocksAdjacent : (transitionCount (betweenBlocks safetyBlocksOrdered) = 0)
+
