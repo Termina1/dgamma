@@ -6,6 +6,8 @@ import DGamma.Metatheory
 import DGamma.CP3
 import DGamma.CP4RuntimeBindings
 import DGamma.CP4ProgressNoDeadlock
+import DGamma.CP4DeletionSelectedForeignOrchestration
+import DGamma.CP4DeletionCommuteCore
 import DGamma.L2R2CheckedSnapshot
 import DGamma.L2R2RetireSquare
 import DGamma.CP5L2R1ChildRelocation
@@ -148,3 +150,37 @@ rootRetireSquareAtInsert nameEq keyEq child parent root fiber component ambient 
                 OInsertTag inserted))))))
         (trans (retireInsertedSnapshot nameEq child root fiber component ambient fibers absent distinct)
           (sym (snapshotExact replay))))
+
+||| Eliminate the native insertion plan once, derive freshness/availability
+||| across retirement, and PRODUCE the checked alternate insertion. No alternate
+||| evaluator equation or snapshot equality is supplied by the caller.
+export
+0 rootRetireSquareFromPlan :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (child, parent, root : name) ->
+  (fiber : Fiber name key value world error) ->
+  (component : Component key value world error) -> (ambient : world) ->
+  (fibers : Registry name key value world error) ->
+  (middle, finalState : SystemState name key value world error) -> (tag : RuleTag) ->
+  (0 found : lookupFiber {name} {key} {value} {world} {error} @{nameEq} child fibers = Just fiber) ->
+  (0 own : fiberParent fiber = ChildOf parent) -> (0 distinct : Not (child = root)) ->
+  (0 valid : registryWellFormed {name} {key} {value} {world} {error} @{nameEq} @{keyEq}
+    (MkSystemState ambient fibers) = True) ->
+  (0 inserted : checkedApplyAction @{nameEq} @{keyEq} (OInsert root Root component)
+    (MkSystemState ambient fibers) = Just (tag, middle)) ->
+  (0 retiredLater : checkedApplyAction @{nameEq} @{keyEq} (ORetire child) middle = Just (ORetireTag, finalState)) ->
+  ForeignInsertPlanView name key world error value nameEq keyEq root Root component ambient fibers tag middle ->
+  ChildRetireSnapshotExchange name key world error value nameEq keyEq child parent
+    (Fired {before = MkSystemState ambient fibers} {afterState = middle}
+      nameEq keyEq (OInsert root Root component) tag inserted)
+    (Fired {before = middle} {afterState = finalState} nameEq keyEq (ORetire child) ORetireTag retiredLater)
+rootRetireSquareFromPlan nameEq keyEq child parent root fiber component ambient fibers
+  _ finalState _ found own distinct valid inserted retiredLater (MkForeignInsertPlanView absent guards) =
+    rootRetireSquareAtInsert nameEq keyEq child parent root fiber component ambient fibers
+      absent found own distinct valid finalState inserted retiredLater
+      (checkedRootInsert nameEq keyEq root component ambient (replaceBinding @{nameEq} child (retireFiber fiber) fibers)
+        (trans (lookupReplaceOther @{nameEq} root child (\same => distinct (sym same)) (retireFiber fiber) fibers) absent)
+        (rewrite replaceBindingRuntimeBindings nameEq child (retireFiber fiber) fibers in
+          trans (provisionsDisjointRetireEntries nameEq keyEq (componentProvisions component)
+            (bindings fibers) child fiber (lookupFiberEntries nameEq child fiber fibers found)) guards)
+        (registryWellFormedRetire nameEq keyEq ambient child fiber fibers found valid))
