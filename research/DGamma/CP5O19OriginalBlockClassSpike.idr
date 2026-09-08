@@ -5,6 +5,7 @@ import DGamma.Calculus
 import DGamma.Coeffects
 import DGamma.Metatheory
 import DGamma.CP3
+import DGamma.CP4DeletionSelectedForeignOrchestration
 import DGamma.CP5ConfluenceLocalDiamondSpike
 import DGamma.CP5ConfluenceCrossTraceSpike
 import DGamma.CP5UniqueRawNameInsertions
@@ -125,3 +126,17 @@ o19SanctionedOriginalWords nameEq keyEq protocol swap source blocks premises saf
      (safetyLeftDoesNotGenerateRight safety) leftAction leftMember,
    o19OriginalBlockWord (actorRight swap) (actorLeft swap) (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety))
      (safetyRightDoesNotGenerateLeft safety) rightAction rightMember)
+
+||| The actual explicit insertion-plan constructor owns its exact source tag.
+||| This is a constructor elimination, not a Refl observer of an independent
+||| nested builder. Used to discharge genuine original O/O and A/O tags.
+export
+0 o19ObservedOriginalInsertTag :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (child : name) -> (parent : Parent name) ->
+  (component : Component key value world error) -> (ambient : world) ->
+  (source : Registry name key value world error) -> (tag : RuleTag) ->
+  (afterState : SystemState name key value world error) ->
+  ForeignInsertPlanView name key world error value nameEq keyEq child parent component ambient source tag afterState ->
+  tag = OInsertTag
+o19ObservedOriginalInsertTag nameEq keyEq child parent component ambient source _ _ (MkForeignInsertPlanView absent guards) = Refl
