@@ -57,3 +57,16 @@ r193HistoricalLeave = Fired r45NameEq r45KeyEq (LLeave 0) LLeaveTag
   (DGamma.CP4ProgressNoDeadlock.checkedFromRaw r45NameEq r45KeyEq
     (LLeave 0) r193HistoricalParentRetired r193HistoricalLeaving LLeaveTag
     (checkedTransitionTargetValid r193HistoricalRetire) Refl)
+
+||| Native unload applies the actual accumulated inverse to the normalized
+||| owner table. Both projections refer to that exact runtime callback result.
+public export
+r193HistoricalClosed : SystemState Nat R45Key R45Value Unit String
+r193HistoricalClosed = MkSystemState
+  (localWorld ((pushLocalUndo @{r45KeyEq} r45Spec id id)
+    (MkLocalState () (restrictOwnedPreservingOrder @{r45KeyEq} r45Spec (ownedValues (fiberTable r193HistoricalParentActive))))))
+  (replaceBinding @{r45NameEq} 0
+    (setFiberRuntime (retireFiber r193HistoricalParentActive)
+      (localTable ((pushLocalUndo @{r45KeyEq} r45Spec id id)
+        (MkLocalState () (restrictOwnedPreservingOrder @{r45KeyEq} r45Spec (ownedValues (fiberTable r193HistoricalParentActive))))))
+      (Inactive Nothing)) (registry r193HistoricalLeaving))
