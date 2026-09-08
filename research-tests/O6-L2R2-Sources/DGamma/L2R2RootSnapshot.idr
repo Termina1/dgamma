@@ -39,3 +39,17 @@ record AvailabilityRootSnapshotExchange
   0 snapshotRootEarly : checkedApplyAction @{nameEq} @{keyEq} (OInsert root Root component) first = Just (OInsertTag, snapshotRootMiddle)
   0 snapshotRootLater : checkedApplyAction @{nameEq} @{keyEq} (transitionAction left) snapshotRootMiddle = Just (transitionTag left, snapshotRootFinal)
   0 snapshotRootSame : runtimeSnapshot finalState = runtimeSnapshot snapshotRootFinal
+
+||| The small native Begin2/Insert3 square after child removal, now at the
+||| supervisor-approved snapshot level. Both routes really run; cut4 and cut8
+||| are available and the crossed Begin2 is not a root input. The original
+||| endpoint is state9, the replay endpoint state6; literal equality is NOT
+||| asserted, and the old exact C13 fixture remains parked.
+public export
+0 smallRootSnapshotSquare : AvailabilityRootSnapshotExchange Nat Bool Unit String (\key => Unit)
+  %search %search 3 (smallComponent True)
+  (Fired {before = smallState 4} {afterState = smallState 8} %search %search (LBegin 2) LBeginTag (smallEarlyBegin2 smallNativeExecution))
+  (Fired {before = smallState 8} {afterState = smallState 9} %search %search (OInsert 3 Root (smallComponent True)) OInsertTag (smallLateInsert3 smallNativeExecution))
+smallRootSnapshotSquare = MkAvailabilityRootSnapshotExchange
+  (\same => case same of Refl impossible) Refl Refl (smallState 5) (smallState 6)
+  (smallInsert3 smallNativeExecution) (smallBegin2 smallNativeExecution) (smallAlternateSnapshot smallNativeExecution)
