@@ -18,3 +18,13 @@ import Decidable.Equality
 public export
 r193SelectionNameEq : DecEq Nat
 r193SelectionNameEq = %search
+
+||| The desired pair is LAST, after an equal-name head that must be skipped
+||| and two other real candidates. This is a finite enumeration regression,
+||| not an assertion that duplicate actor orders are accepted canonical input.
+public export
+0 r193LastPairEnumerated : O20EnumeratedPair Nat [4, 4, 2, 3, 1]
+  (o20AdjacentCandidates r193SelectionNameEq [4, 4, 2, 3, 1] [] [4, 4, 2, 3, 1] Refl) 3 1
+r193LastPairEnumerated = o20AdjacentCandidatesComplete r193SelectionNameEq
+  [4, 4, 2, 3, 1] [] [4, 4, 2, 3, 1] Refl 3 1 (\same => absurd same)
+  (O20NeighboursLater (O20NeighboursLater (O20NeighboursLater O20NeighboursHere)))
