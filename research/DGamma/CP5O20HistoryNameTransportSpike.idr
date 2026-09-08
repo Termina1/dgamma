@@ -92,3 +92,24 @@ export
 o20HistoryCurrentPacket nameEq left right mapping registrations leftName rightName leftStamp leftCurrent
   (rightStamp ** (matched, rightCurrent)) =
     o20HistoryCurrentPair nameEq left right mapping registrations leftName rightName leftStamp rightStamp leftCurrent rightCurrent matched
+
+||| The supported-side success packet pins the history-indexed target to the
+||| supplied current raw image. The accepted right scanner owns its name.
+export
+0 o20HistoryEndpointPacketAgrees :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) ->
+  {leftFirst, leftFinal, rightFirst, rightFinal : SystemState name key value world error} ->
+  (left : Transitions leftFirst leftFinal) -> (right : Transitions rightFirst rightFinal) ->
+  (mapping : RegistrationGenerationBijection name) ->
+  (registrations : RegistrationCorrespondenceByGeneration nameEq mapping left right) ->
+  (rightName : name) -> (leftStamp : RegistrationGeneration name) ->
+  (rightStamp : RegistrationGeneration name **
+    ((generationForward mapping leftStamp = rightStamp),
+     (lookupCurrentGeneration @{nameEq} rightName (rightFinalGenerations registrations) = Just rightStamp))) ->
+  (o20HistoricalTarget mapping leftStamp = rightName)
+o20HistoryEndpointPacketAgrees {name} {key} {world} {error} {value} nameEq left right mapping registrations
+  rightName leftStamp (rightStamp ** (matched, rightCurrent)) =
+    trans (cong generationName matched)
+      (cong generationName (currentBirthStampExact
+        (acceptedRightCurrentBirth name key world error value nameEq left right mapping registrations rightName rightStamp rightCurrent)))
