@@ -493,3 +493,23 @@ o20EnumeratedTailObserved nameEq sourceOrder earlier head next later exact (Yes 
   rewrite checked in packet
 o20EnumeratedTailObserved nameEq sourceOrder earlier head next later exact (No different) checked left right packet =
   rewrite checked in o20EnumeratedPairThere packet
+
+||| COMPLETE finite candidate enumeration at every distinct actual adjacent
+||| location. Structural location induction follows the producer's EXACT tail
+||| call; no guessed swap equality, successful search premise or fixed suffix.
+export
+0 o20AdjacentCandidatesComplete :
+  {name : Type} -> (nameEq : DecEq name) -> (sourceOrder, earlier, later : List name) ->
+  (exact : (sourceOrder = earlier ++ later)) -> (left, right : name) -> Not (left = right) ->
+  O20Neighbours name left right later ->
+  O20EnumeratedPair name sourceOrder (o20AdjacentCandidates nameEq sourceOrder earlier later exact) left right
+o20AdjacentCandidatesComplete nameEq sourceOrder earlier [] exact left right distinct location impossible
+o20AdjacentCandidatesComplete nameEq sourceOrder earlier [last] exact left right distinct location impossible
+o20AdjacentCandidatesComplete nameEq sourceOrder earlier (first :: second :: rest) exact _ _ distinct O20NeighboursHere =
+  o20EnumeratedHeadObserved nameEq sourceOrder earlier first second rest exact
+    (decEq @{nameEq} first second) Refl distinct
+o20AdjacentCandidatesComplete nameEq sourceOrder earlier (head :: next :: rest) exact left right distinct (O20NeighboursLater location) =
+  o20EnumeratedTailObserved nameEq sourceOrder earlier head next rest exact
+    (decEq @{nameEq} head next) Refl left right
+    (o20AdjacentCandidatesComplete nameEq sourceOrder (earlier ++ [head]) (next :: rest)
+      (trans exact (appendAssociative earlier [head] (next :: rest))) left right distinct location)
