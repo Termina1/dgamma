@@ -119,3 +119,32 @@ o19InsertGuardsBeforeForeign {name} {key} {value} {world} {error} nameEq keyEq p
         (boolAndLeft (parentPresent {name} {key} {value} {world} {error} @{nameEq} parent (insertBinding @{nameEq} child (freshFiber insertedComponent insertedParent) (MkCoeffectContext entries unique) absent)) (provisionsDisjointFrom {name} {key} {value} {world} {error} @{keyEq} (componentProvisions component) (bindings (insertBinding @{nameEq} child (freshFiber insertedComponent insertedParent) (MkCoeffectContext entries unique) absent))) valid))
       (boolAndRight (not (provisionOverlap @{keyEq} (componentProvisions component) (componentProvisions insertedComponent))) (provisionsDisjointFrom {name} {key} {value} {world} {error} @{keyEq} (componentProvisions component) entries)
         (boolAndRight (parentPresent {name} {key} {value} {world} {error} @{nameEq} parent (insertBinding @{nameEq} child (freshFiber insertedComponent insertedParent) (MkCoeffectContext entries unique) absent)) (provisionsDisjointFrom {name} {key} {value} {world} {error} @{keyEq} (componentProvisions component) (bindings (insertBinding @{nameEq} child (freshFiber insertedComponent insertedParent) (MkCoeffectContext entries unique) absent))) valid))) Refl
+
+||| At an explicit first insertion result, eliminate the ACTUAL second plan
+||| and construct its checked early execution. Both domain and guard facts
+||| come from this source plan, not from a selected desired target state.
+export
+0 o19RightInsertionBeforeObservedLeft :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (leftChild, rightChild : name) -> (leftParent, rightParent : Parent name) ->
+  (leftComponent, rightComponent : Component key value world error) ->
+  (ambient : world) -> (source : Registry name key value world error) ->
+  (leftAbsent : lookupFiber {name} {key} {value} {world} {error} @{nameEq} leftChild source = Nothing) ->
+  (tag : RuleTag) -> (afterState : SystemState name key value world error) ->
+  ForeignInsertPlanView name key world error value nameEq keyEq rightChild rightParent rightComponent ambient
+    (insertBinding @{nameEq} leftChild (freshFiber leftComponent leftParent) source leftAbsent) tag afterState ->
+  Not (rightChild = leftChild) ->
+  ((licensor : name) -> (rightParent = ChildOf licensor) -> Not (licensor = leftChild)) ->
+  (registryWellFormed {name} {key} {value} {world} {error} @{nameEq} @{keyEq}
+    (MkSystemState ambient source) = True) ->
+  CheckedEarlyApplication name key world error value nameEq keyEq (MkSystemState ambient source)
+    (OInsert rightChild rightParent rightComponent) OInsertTag
+o19RightInsertionBeforeObservedLeft nameEq keyEq leftChild rightChild leftParent rightParent
+  leftComponent rightComponent ambient source leftAbsent _ _ (MkForeignInsertPlanView rightAbsent rightGuards)
+  distinct foreign wellFormed =
+    o19InsertFromAbsentGuards nameEq keyEq rightChild rightParent rightComponent ambient source
+      (trans (sym (lookupInsertOther @{nameEq} rightChild leftChild distinct
+        (freshFiber leftComponent leftParent) source leftAbsent)) rightAbsent)
+      (o19InsertGuardsBeforeForeign nameEq keyEq rightParent rightComponent leftChild leftParent leftComponent
+        source leftAbsent foreign rightGuards) wellFormed
