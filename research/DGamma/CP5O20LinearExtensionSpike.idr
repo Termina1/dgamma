@@ -128,3 +128,31 @@ export
   Not (BeforeIn (actorLeft (chosenOrderSwap (orientedChoice choice))) (actorRight (chosenOrderSwap (orientedChoice choice))) goalOrder)
 o20OrientedCannotReverse choice =
   o20BeforeAsymmetric (orderUnique (orientedGoalLinearization choice)) (orientedGoalReverse choice)
+
+||| The standard linear-extension inversion lemma at the SAME semantic
+||| support relation: if the source enumeration also linearizes goalState,
+||| the selected inverted pair has no support/ancestor path either way.
+||| Producing this common-relation linearization after actual O19 replay or
+||| cross-trace renaming remains an O20 prerequisite, not an assumed body.
+export
+0 o20OrientedSupportIncomparable :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {protocol : RegistrationProtocol key value world error} -> {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {sourceOrder, goalOrder : List name} -> {goalState : SystemState name key value world error} ->
+  {initial, finalState : SystemState name key value world error} -> {trace : Transitions initial finalState} ->
+  {blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder trace} ->
+  {premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq trace} ->
+  (choice : O20OrientedSafeSwap name key world error value protocol nameEq keyEq sourceOrder goalOrder goalState trace blocks premises) ->
+  LinearizesSupport name key world error value nameEq keyEq goalState sourceOrder ->
+  (Not (SupportPath nameEq goalState (actorLeft (chosenOrderSwap (orientedChoice choice))) (actorRight (chosenOrderSwap (orientedChoice choice)))),
+   Not (SupportPath nameEq goalState (actorRight (chosenOrderSwap (orientedChoice choice))) (actorLeft (chosenOrderSwap (orientedChoice choice)))))
+o20OrientedSupportIncomparable choice sourceLinearization =
+  (\path => o20OrientedCannotReverse choice
+    (supportPathsOrdered (orientedGoalLinearization choice)
+      (actorLeft (chosenOrderSwap (orientedChoice choice))) (actorRight (chosenOrderSwap (orientedChoice choice))) path
+      (snd (o20BeforeMembers (orientedGoalReverse choice))) (fst (o20BeforeMembers (orientedGoalReverse choice)))),
+   \path => o20BeforeAsymmetric (orderUnique sourceLinearization)
+    (safetyLeftBeforeRight (chosenSafety (orientedChoice choice)))
+    (supportPathsOrdered sourceLinearization
+      (actorRight (chosenOrderSwap (orientedChoice choice))) (actorLeft (chosenOrderSwap (orientedChoice choice))) path
+      (safetyRightInOrder (chosenSafety (orientedChoice choice))) (safetyLeftInOrder (chosenSafety (orientedChoice choice)))))
