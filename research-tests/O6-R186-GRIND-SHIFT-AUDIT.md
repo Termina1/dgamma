@@ -222,3 +222,72 @@ consumed; only one same-seam exhaustion. No O19/O20/O21 body attempt or closure.
 C remains1/8 (in-flight before the earlier redirect), eligible to resume only
 under the supervisor's post-D timing rule. D cap at04:15 leaves>120min before
 06:17 no-new-attempt guard; final validation/gate still reserved by06:42.
+
+## E redirect / internal static-class interface ruling
+
+Supervisor ratified D16/b1edd4a8 and authorized E<=14 Cartesian COLUMN loop
+before C. C2 had launched04:17:18 and passed04:17:22 before redirect arrival;
+its guarded d6f938ca is retained. No C3. C now2/8, remaining6 deferred unless
+E unit-stops with>=60min. E guard06:17; final validation/audit/gate by06:42.
+
+Before any new surface, the agent escalated the source-class interface: D15
+needs classifications at each new replayed SOURCE cut; action words alone do
+not preserve tags or identify repeated LAdvance ordinals. Supervisor ruled this
+is an INTERNAL column interface, NOT a third PUBLIC O19 specification gap:
+static classes indexed ONLY on ORIGINAL LocatedActionOccurrence pairs whose
+action labels belong to the fixed two original block words are approved.
+No reached-cut callbacks. The loop must derive every current class using its
+ACTUAL finite origins/tag preservation and flat two-sided label transport.
+The ORIGINAL-BLOCK classifier producer from bundle/decomposition/safety/
+uniqueness is a HARD prerequisite BEFORE any public O19 body. Exact ordinal
+plan remains separate. Public O19 telescope is never changed.
+
+## Unit E —14/14 retained, ACTUAL Cartesian column loop proved
+
+| Unit | Commit | Result | Attempt |
+|---|---|---|---|
+| E1 | 38aa3edb | Actual word-indexed dependent cut/decomposition/count output | PASS1 |
+| E2 | 87e73b76 | Explicit cut/head constructor with exact words and count | PASS2 |
+| E3 | 4d7d6deb | Actual residual cut producer by structural exact word | PASS1 |
+| E4 | c47acddc | Exact action word of dependent trace append | PASS1 |
+| E5 | ef53d103 | Flat two-sided source observation label/tag transport | PASS1 |
+| E6 | 00b6edba | ORIGINAL static classes -> current observations by actual origins | PASS1 |
+| E7 | c541a822 | Actual whole-source locations at every row cut produced structurally | PASS1 |
+| E8 | cd83fd89 | Actual right branch projected from explicit source observation | PASS1 |
+| E9 | af342ae0 | Simultaneous column cursor/right spine/residual/product count output | PASS1 |
+| E10 | f942527d | Prepend actual row + actual smaller column run; counts compose | PASS1 |
+| E11 | dc471a7d | Same-row residual and original origin chain into smaller induction | PASS1 |
+| E12 | 95cdd118 | Actual word cut forces heads, derives classes, executes D15 row | PASS2 |
+| E13 | b12f2f77 | TOTAL actual Cartesian COLUMN loop; all same-chain evidence simultaneous | PASS1 |
+| E14 | 154e6459 | Instantiate loop at TWO ACTUAL source spines | PASS1 |
+
+E2-1 used Idris's reserved prefix keyword as a pattern variable; E2-2 renames
+it leading. E12-1 tried to bind a cutMiddle already forced to cursorFinal by
+NoTransitions; E12-2 uses the forced-index underscore (no alias/nonlinear
+pattern). No E exhaustion or interruption. The D3 representation wall did
+NOT recur. Every retained E unit immediately guarded-committed after fresh
+PASS. Source proof module: CP5O19CartesianColumnsSpike.idr, default total.
+
+E13 structurally recurses down the remaining right SOURCE WORD. E3 splits the
+ACTUAL residual trace by its exact left/right words, not by count alone. E7
+constructs exact full-trace locations for left/right nodes and E6 uses the
+actual finite origin map/tag preservation to classify their ORIGINAL static
+counterparts. D15 produces the complete mixed row (all4 orientations). E10–E11
+compose the SAME row and smaller run: actual right spine, reached full bundle,
+uniqueness, relative finite derivation, residual left/suffix word and PRODUCT
+node count. The INTERNAL smallerColumns argument of E11/E12 is supplied ONLY
+by E13's recursion on a strictly smaller remaining-right list; E13/E14 accept
+NO future row/cut-class/diamond/replay oracle. Totality passed without escapes.
+E14 builds both source words, initial cursor, exact initial residual and identity
+subset map. o19ActionWordLength equates each product factor with the actual
+source spine's transition count. Count does not imply pair-label uniqueness.
+
+Hard residuals: original-block static classifier producer is NOT proved;
+exact original crossing ordinal plan, sound/nonempty/complete/unique selected
+pair coverage, actual target INSTALLED ranges and ActorBlockDecomposition plus
+origin-plan update, and final same-chain endpoint/bundle/external O19 assembly
+remain OPEN. The result is NOT WholeBlockSwapDerivation, and an action word is
+not an exact ordinal map for repeated actions. No2x2 closed end-to-end fixture
+from sanctioned inputs without the static-class premise. All(i)–(vi) are NOT
+complete; O19 body0, O20/O21 body0, hole census still5=1/3/0/0/1. E14 cap reached
+around04:43; no extra E slot inferred. Fresh consolidated validation follows.
