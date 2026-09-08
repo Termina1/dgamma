@@ -32,3 +32,62 @@ record RetirementReplay
     runtimeSnapshot {name} {key} {value} {world} {error}
       (MkSystemState (worldState finalState)
         (replaceBinding @{nameEq} child (retireFiber fiber) (registry finalState)))
+
+||| Structural native replay of a whole ForeignChildRun, in continuation form
+||| to avoid computed existential eliminations. The EXPLICIT per-edge callback
+||| is the missing complete square dispatcher plus snapshot transport: it must
+||| supply one checked action, not a suffix replay. This proves the fold only;
+||| L2R2 does NOT provide that callback for all foreign action kinds.
+export
+0 foreignRetireReplayCPS :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (child : name) ->
+  (fiber : Fiber name key value world error) ->
+  (first, finalState : SystemState name key value world error) ->
+  (trace : Transitions first finalState) -> ForeignChildRun nameEq keyEq child trace ->
+  (0 found : lookupFiber {name} {key} {value} {world} {error} @{nameEq} child (registry first) = Just fiber) ->
+  (0 originalValid : registryWellFormed @{nameEq} @{keyEq} first = True) ->
+  (current : SystemState name key value world error) ->
+  (0 currentValid : registryWellFormed @{nameEq} @{keyEq} current = True) ->
+  (0 currentSame : runtimeSnapshot current = runtimeSnapshot {name} {key} {value} {world} {error}
+    (MkSystemState (worldState first) (replaceBinding @{nameEq} child (retireFiber fiber) (registry first)))) ->
+  (0 single : (before, afterState, replaySource : SystemState name key value world error) ->
+    (action : Action name key value world error) -> (tag : RuleTag) ->
+    checkedApplyAction @{nameEq} @{keyEq} action before = Just (tag, afterState) ->
+    Not (child = actionOwner action) ->
+    lookupFiber {name} {key} {value} {world} {error} @{nameEq} child (registry before) = Just fiber ->
+    registryWellFormed @{nameEq} @{keyEq} before = True ->
+    registryWellFormed @{nameEq} @{keyEq} replaySource = True ->
+    runtimeSnapshot replaySource = runtimeSnapshot {name} {key} {value} {world} {error}
+      (MkSystemState (worldState before) (replaceBinding @{nameEq} child (retireFiber fiber) (registry before))) ->
+    CheckedSnapshotStep name key world error value nameEq keyEq action replaySource tag
+      (runtimeSnapshot {name} {key} {value} {world} {error}
+        (MkSystemState (worldState afterState) (replaceBinding @{nameEq} child (retireFiber fiber) (registry afterState))))) ->
+  (0 answer : Type) ->
+  (0 done : (target : SystemState name key value world error) ->
+    (replayed : Transitions current target) ->
+    transitionCount replayed = transitionCount trace ->
+    runtimeSnapshot target = runtimeSnapshot {name} {key} {value} {world} {error}
+      (MkSystemState (worldState finalState) (replaceBinding @{nameEq} child (retireFiber fiber) (registry finalState))) -> answer) ->
+  answer
+foreignRetireReplayCPS nameEq keyEq child fiber _ _ _ ForeignChildEnd
+  found originalValid current currentValid currentSame single answer done =
+    done current NoTransitions Refl currentSame
+foreignRetireReplayCPS nameEq keyEq child fiber first finalState _
+  (ForeignChildStep {middle} action tag checked rest distinct tail)
+  found originalValid current currentValid currentSame single answer done =
+    foreignRetireReplayCPS nameEq keyEq child fiber middle finalState rest tail
+      (trans (childForeignLookupFrame nameEq keyEq child action tag checked distinct) found)
+      (checkedActionTargetValid nameEq keyEq action first middle tag checked)
+      (snapshotAfter (single first middle current action tag checked distinct found originalValid currentValid currentSame))
+      (checkedActionTargetValid nameEq keyEq action current
+        (snapshotAfter (single first middle current action tag checked distinct found originalValid currentValid currentSame)) tag
+        (snapshotChecked (single first middle current action tag checked distinct found originalValid currentValid currentSame)))
+      (snapshotExact (single first middle current action tag checked distinct found originalValid currentValid currentSame))
+      single answer
+      (\target, replayed, count, same => done target
+        (MoreTransitions (Fired {before = current}
+          {afterState = snapshotAfter (single first middle current action tag checked distinct found originalValid currentValid currentSame)}
+          nameEq keyEq action tag
+          (snapshotChecked (single first middle current action tag checked distinct found originalValid currentValid currentSame))) replayed)
+        (cong S count) same)
