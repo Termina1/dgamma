@@ -734,7 +734,7 @@ See the [R191 ownership/design map](research-tests/O6-R191-O20-DESIGN.md),
 [append-only audit](research-tests/O6-R191-GRIND-SHIFT-AUDIT.md).
 
 
-## R193 research milestone (in progress)
+## R193 checked partial research milestone (115 retained)
 
 Production remains byte-frozen at `34b21c9`; this is **not** a completion of
 Theorem73. Main-lane results and exact qualifications are in
@@ -743,14 +743,30 @@ Theorem73. Main-lane results and exact qualifications are in
 | Paper correspondence | Idris research declaration | Status |
 |---|---|---|
 | Thm73 canonical endpoint transport, auxiliary | `CP5O20HistoryNameTransportSpike.o20HistoryEndpointPartition` | Proved: genuine vestigial branch OR historical/current-name agreement; not unconditional rebasing |
+| Thm73 canonical action analysis, auxiliary | `CP5O20CanonicalActionCompletenessSpike.o20WholeCanonicalRoles`; `CP5O20SingleRoleAdvanceExtractionSpike.o20IterNativeValues`, `o20FinishOneNativeValues` | Proved unilateral role completeness and native single-role extraction; arbitrary paired alignment remains open |
 | Thm73 paired execution, auxiliary | `CP5O20HistoryExecutionSpike.o20HistoryMatchedInsertCut`, `o20HistoryObservedAdvanceCut` | Proved local preservation of an input history cut; insertion stamp matching and native callback observations still explicit |
 | Thm73 operational selection, auxiliary | `CP5O20SafeBlockSelectionSpike.o20EnumerateSwap`, `CP5O20SelectionCompletenessSpike.o20SelectEnumeratedComplete` | Proved actual enumeration and conditional whole-selector success; four own-cut semantic safety clauses not generally produced |
-| Thm73 operational selection, auxiliary | `CP5O20BlockResolverFrameSpike.o20IncomparableInstalledEarlierBegin` | Proved whole native installed-block owner/resolver transport; two reference-component attachments, child exclusion and exact zero gap remain explicit |
+| Thm73 operational selection, auxiliary | `CP5O20BlockResolverFrameSpike.o20IncomparableInstalledEarlierBegin` | Proved whole-block owner/resolver transport for frozen `ActorLifecycleOnly`; two reference-component attachments, child exclusion and exact zero gap remain explicit |
 | Thm73 protected convergence body | `CP5ConfluenceCrossTraceSpike.canonicalSchedulesConvergeSpike` | Open; no body attempt or widened statement |
 
 A genuine eight-edge history now witnesses **physically present vestigial**
 child1 being mapped to absent2 by accepted current renaming while historical
 birth transport selects1. This supplies full same-inputs history data, **not**
 independent canonical schedules, and is not a protected-convergence
-counterexample. Lane2 exclusively owns A8/A10 research grammar/placement work;
-its final outcomes and final seeded verification are still pending here.
+counterexample. A second regression uses actual Begin2/child3 Insert/Finish2/
+Begin1 steps with a nonempty `[ServiceA]` resolver: generic theorems produce an
+earlier Begin1 and whole-block resolver equality. Its provider-backed initial
+cut is physical host data, not an authenticated original/canonical history.
+
+The 115 main declarations (A30/D10/E75) were individually checked and committed;
+source is frozen at `ad77399f`. Original final LocalDiamond check V2 hit the
+48GiB guard. A separately authenticated, supervisor-approved unchanged-source
+52GiB retry passed (sampled 48.14221GiB); every other check retains 48GiB.
+Original failed receipts are retained, not relabelled.
+
+All **52 effective final checks passed** (45 positives, 7 expected negatives),
+including all 13 changed Idris targets, package and all five spikes. This is
+seeded validation, not a cold rebuild. See the [R193 audit](research-tests/O6-R193-GRIND-SHIFT-AUDIT.md)
+and [lane2 integration boundary](research-tests/O6-R193-LANE2-INTEGRATION.md).
+Lane2 L2R1 reports 35 checked declarations and 15 final checks at its pinned
+artifact commit; L2R2 remains separately pending, and no source merge occurred.

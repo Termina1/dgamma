@@ -70,7 +70,8 @@ dual_roles = json.loads((OUT/'final-validation-dual-roles.json').read_text()) if
 for unit, role in dual_roles.items():
     assert individual[unit]['passed'] and individual[unit]['fresh'] and individual[unit]['sourceSHA256'] == role['sourceHash']
 continuation = json.loads((OUT/'final-validation-continuation.json').read_text()) if (OUT/'final-validation-continuation.json').exists() else None
-ledger = dict(finalValidationContinuation=continuation, finalValidationDualRoles=dual_roles, invocationQualifications=invocation_qualifications, validationQualifications=qualifications,
+monitoring = json.loads((OUT/'monitor-qualifications.json').read_text()) if (OUT/'monitor-qualifications.json').exists() else None
+ledger = dict(memoryMonitoringQualifications=monitoring, finalValidationContinuation=continuation, finalValidationDualRoles=dual_roles, invocationQualifications=invocation_qualifications, validationQualifications=qualifications,
     qualifiedPassedCount=sum(r['passed'] and qualifications.get(r['unit'], {}).get('validValidation', True) for r in records),
     invalidValidationCount=sum(not q.get('validValidation', True) for q in qualifications.values()),
     supersededHistoricalValidationCount=sum(q.get('superseded',False) for q in qualifications.values()),

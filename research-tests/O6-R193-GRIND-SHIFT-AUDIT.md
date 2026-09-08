@@ -290,3 +290,56 @@ The separate continuation manifest retains original V2 and maps only its final
 acceptance slot to V2R1, conditional on fresh PASS. The retry source hash is
 checked against both the frozen plan and git77a9efe1. Every other check retains
 48GiB. V3–V52 may run only after retry PASS; no third retry is authorized.
+
+
+### Paper-reading evidence correction
+
+The22:53 full20-call visibility claim above was premature: only3201–3882
+were visibly reread in the resumed segment, while the inherited summary
+explicitly retained a truncation caveat for1–3200. That earlier attestation
+is WITHDRAWN and preserved under paper-reread-manifest-premature-attestation.json.
+A fresh small-chunk1–3200 reread is being performed before any replacement
+full-coverage claim. No mathematical result relied on that reading claim.
+
+The replacement reread is now COMPLETE:32 newly visible100-line calls at
+1,101,...3101 plus the4 visible200-line tail calls at3201,3401,3601,3801,
+covering all3882 content lines without gaps, overlaps or truncated responses.
+The corrected36-call manifest preserves the withdrawn20-call claim separately.
+No new tested erratum or source change is inferred.
+
+
+### V2R1 retained final PASS
+
+The one authorized unchanged-source retry passed with its own fresh Building
+line, exit0,491.214s, sampled50,480,768KiB
+(48.14221GiB), under the exceptional52GiB guard.
+The heavy lock covered the entire compiler lifetime and was released. V3–V52
+then continued serially with the default48GiB guard. Original V2 is still
+failed/interrupted; the authenticated manifest substitutes only its acceptance
+slot, never its record. Eight noncompiler guard regression tests passed; their
+generated Python bytecode was moved into the evidence directory, not staged.
+
+
+## Final52-slot completion
+
+All52 effective checks PASS/fresh:45 positive and7 expected-negative results,
+completed23:27:55Z. Original V2 remains failed/interrupted; V2R1 substitutes
+only that acceptance slot. Thus53 raw final invocations; overall178 serialized
+checking/build invocations,168 matched outcomes and10 non-PASS (9 rejected
+proof attempts and1 resource interruption). All13 changed Idris targets,
+package, all five spikes, R8/R16 boundaries, ReachedBlocks and both all-four
+fixtures received their required final checks. No cold build/cache deletion.
+V51:118.468s/16,422,416KiB; V52:30.166s/8,436,288KiB. No third retry.
+
+Zero RSS entries mean no live sample captured by the1s sampler, not zero
+memory use; the exact units and qualification are archived. The only elevated
+guard was source-pinned V2R1, sampled50,480,768KiB under52GiB.
+
+Lane2 integration is version-pinned in O6-R193-LANE2-INTEGRATION.md: L2R1
+reports35 retained /15 final checks with all protocol caveats preserved;
+L2R2 remains ongoing and is not inferred from main baseline checks. Main D
+uses frozen ActorLifecycleOnly, not the extended Retire/Remove copy.
+
+No proof-source change afterad77399f; final independent/frozen audits and
+committed evidence follow this documentation checkpoint. No acceptance ruling
+is fabricated.

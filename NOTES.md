@@ -3406,3 +3406,95 @@ are not interchangeable without occurrence-owned transport. That attachment
 is included in the OPEN arbitrary paired-execution/insertion stamp producer,
 not smuggled into the local successor conclusions. All producer/consumer
 qualifications in the previous status section remain in force.
+
+
+## Status — R193 frozen115-declaration partial milestone
+
+This supersedes the100-declaration checkpoint above. Main source freeze is
+ad77399f55d8bc935e0f26714f532370da4aa918:115 individually fresh-checked,
+immediately guarded-committed declarations (A30/D10/E75), no exhausted unit.
+Theorem73 remains partial; no protected convergence-body attempt occurred.
+
+### Fully proved local results
+
+- Authentic history-indexed birth/name transport, supported agreement, and
+  genuine vestigial-or-agreement endpoint partition; empty-origin and checked
+  local history-cut successors for Begin, Retire, matched Insert, Remove,
+  empty Finish, and observed nonempty Iter/Finish. Successor cuts are produced,
+  not supplied as hypotheses.
+- Unilateral actual canonical-role completeness and separate native Iter /
+  last-step Finish success extractors. These do not align two whole traces.
+- Enumeration completeness for every distinct physical adjacent actor pair,
+  carrying the actual selected payload through checking, orientation and
+  finite search. Whole selector success is conditional at its OWN slots.
+- Whole native InstalledTrace opening+body resolver equality and actual earlier
+  right Begin across that block. Internal component transport, survival,
+  evaluator alignment and owner/resolver frames are derived. This induction
+  uses frozen ActorLifecycleOnly (lifecycle / yielded Insert), not lane2's
+  extended Retire/Remove grammar. Endpoint/reference component attachments,
+  source WF, physical child exclusion and exact zero
+  gap are still explicit.
+- Removed-history, actual present-vestigial history, non-head candidate-search,
+  and genuinely nonempty-resolver block regressions. The latter proves actual
+  [ServiceA] resolution to provider0 and invokes the generic frame theorem.
+
+### Partial / stated / open
+
+A(i): arbitrary initial-to-final history-cut production and endpoint rebasing
+remain open. Original birth ordinals need occurrence-owned transport into a
+reordered canonical replay; supported/non-vestigial agreement does not settle
+all names, and genuine vestigial entries need separate treatment.
+
+A(ii): arbitrary whole paired canonical extraction/alignment remains open.
+Matched insertion stamps, fresh-name/parent alignment and native callback
+observation wiring are not supplied by the current local successor lemmas.
+
+A(iii): the producer-owned final bridge is still missing. D5 /
+o20SupportedBridgeFromOwnedCut CONSUMES an all-name cut; it is not that producer.
+canonicalSchedulesConvergeSpike is untouched, its statement unchanged and
+its body attempt ineligible. The four protected holes remain4=1/2/0/0/1.
+
+D: four semantic own-cut safety clauses (two NoGeneratedChild clauses, actual
+earlier right Begin and actual gap0), the two physical reference-component
+attachments and whole stopped-order equality are not generally derived from
+accepted inputs. Main consumes ZeroGapPending and does not claim a lane2 cure.
+
+The eight-edge present-vestigial fixture supplies full same-inputs history data
+but no independent canonical schedules; the native block fixture begins at
+a literal well-formed provider-backed host cut, not an authenticated original
+registration history. Neither is a protected-convergence counterexample.
+No new escape hatch, hole, postulate, partial function, with, cast, or assumed
+successor was added; all production and frozen research bytes stay unchanged.
+
+### Validation and review
+
+All52 effective final checks PASSED (45 positives /7 expected negatives),
+completed23:27:55Z against the immutable plan plus its one authorized
+substitution. There were53 raw final invocations; overall178 checking/build
+invocations matched168 expected outcomes, with9 rejected proof attempts and
+1 preserved resource interruption. Original V2
+LocalDiamond stopped at48.12408GiB under the48GiB guard; that failed/interrupted
+record remains intact. The supervisor authorized exactly one unchanged-source
+52GiB retry, V2R1, which passed/fresh/exit0 at48.14221GiB in491.214s while
+holding the shared heavy lock. Its separate authenticated continuation manifest
+substitutes only the final acceptance slot. All other checks retain48GiB.
+Eight noncompiler authorization/immutability regression tests passed.
+
+The premature20-call fully-visible paper-reading attestation was withdrawn,
+preserved and corrected: a subsequent36-call visible reread covers all3882
+content lines. No mathematical result depends on the premature claim.
+
+Lane2 L2R1 version-pinned evidence reports35 retained declarations (B23/C12)
+and15 final checks; the C9 active-source/preflight incident and unavailable
+early RSS caveats remain explicit. The exact copied-definition inventory and
+remaining B/C debts are in O6-R193-LANE2-INTEGRATION.md. Ongoing L2R2 is not
+certified by that report. No lane2 source was edited or merged, and main
+baseline checks cannot certify research copies. Final independent/frozen
+audits, committed ledger/archive and owner/reviewer ruling remain pending
+at this documentation checkpoint.
+
+Next: produce whole paired history/callback/insertion capital, handle the
+vestigial endpoint remainder, produce the final bridge, and derive actual
+selector safety/stopped equality before attempting the protected body.
+Research grammar/placement changes require the separately owned lane2 route;
+production unfreeze still requires explicit owner approval.

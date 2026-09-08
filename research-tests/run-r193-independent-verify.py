@@ -112,6 +112,14 @@ if not INTERIM:
     assert completion['invocations'] == [item['unit'] for item in plans]
     assert completion['originalPlanInvocations'] == original_units and completion['substitutions'] == substitutions
     assert completion['serial'] is True
+    raw_final_units = {r['unit'] for r in records if r['unit'].startswith('V')}
+    assert raw_final_units == set(original_units) | set(substitutions.values()), 'No unplanned validation invocation or third retry'
+    covered_paths = {item['path'] for item in plans}
+    assert set(newdecls).issubset(covered_paths), 'Every changed Idris target needs its own final check'
+    assert 'package' in covered_paths
+    assert all('research/DGamma/CP5Confluence'+part+'Spike.idr' in covered_paths for part in ['LocalDiamond','DeletionChain','CanonicalSort','RenamingComposition','CrossTrace'])
+    if substitutions:
+        assert [r['unit'] for r in records if r['path'] == 'research/DGamma/CP5ConfluenceLocalDiamondSpike.idr'] == ['V2', 'V2R1']
     for item in plans:
         record = byunit[item['unit']]
         assert record['passed'] and record['fresh'] and record['sourceSHA256'] == item['sourceHash'] and record['path'] == item['path']
@@ -133,11 +141,12 @@ report = dict(status='PASS',phase='interim' if INTERIM else 'final',head=git('re
     timestampUTC=datetime.datetime.now(datetime.timezone.utc).isoformat(),invocationCount=len(records),
     passedCount=sum(r['passed'] for r in records),failedCount=sum(not r['passed'] for r in records),
     expectedNegativeCount=sum(r['passed'] and bool(r['expectedDiagnostic']) for r in records),
-    finalCheckCount=len(plans),allFinalCurrentSourcesAuthenticated=not INTERIM,
+    finalCheckCount=len(plans),rawFinalInvocationCount=sum(r['unit'].startswith('V') for r in records),allFinalCurrentSourcesAuthenticated=not INTERIM,
     finalValidationSubstitutions=substitutions,validationContinuationSHA256=continuation_hash,
     originalResourceStopRetained=('V2' in byunit and byunit['V2']['interrupted']),
     interruptedCount=sum(r['interrupted'] for r in records),
     newDeclarationCount=sum(map(len,newdecls.values())),newDeclarations=newdecls,sourceCommitCount=len(sourcecommits),
+    changedIdrisTargetCount=len(newdecls),allChangedIdrisTargetsHaveOwnFinalCheck=not INTERIM,
     allSourceCommitsReceiptAuthenticated=True,allInvocationsSerializedWithinMainWorktree=True,
     allLogsAndSnapshotsAuthenticated=True,attemptCounts={unit:len(runs) for unit,runs in attempts.items()},
     maxSampleRSSKiB=max(r['maxSampleRSSKiB'] for r in records),
