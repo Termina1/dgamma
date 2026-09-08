@@ -6,6 +6,7 @@ import DGamma.Metatheory
 import DGamma.CP3
 import DGamma.CP4RuntimeBindings
 import DGamma.CP4ProgressNoDeadlock
+import DGamma.L2R2CheckedSnapshot
 import DGamma.CP5L2R1ChildRelocation
 import Decidable.Equality
 import Data.List.Elem
@@ -31,3 +32,25 @@ export
       (Bind root (freshFiber component Root) :: bindings fibers))
 rootInsertAtAbsence nameEq keyEq root component ambient (MkCoeffectContext entries unique) absent free =
   rewrite free in rewrite absent in Refl
+
+||| Produce an actual checked root insertion from native freshness, declaration
+||| availability, and source well-formedness. The returned state has precisely
+||| the inserted world/ordered bindings, but owns its uniqueness certificate.
+export
+0 checkedRootInsert :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (root : name) ->
+  (component : Component key value world error) -> (ambient : world) ->
+  (fibers : Registry name key value world error) ->
+  (0 absent : lookupFiber {name} {key} {value} {world} {error} @{nameEq} root fibers = Nothing) ->
+  (0 free : provisionsDisjointFrom {name} {key} {value} {world} {error} @{keyEq}
+    (componentProvisions component) (bindings fibers) = True) ->
+  (0 valid : registryWellFormed {name} {key} {value} {world} {error} @{nameEq} @{keyEq} (MkSystemState ambient fibers) = True) ->
+  CheckedSnapshotStep name key world error value nameEq keyEq (OInsert root Root component)
+    (MkSystemState ambient fibers) OInsertTag
+    (MkRuntimeSnapshot ambient (Bind root (freshFiber component Root) :: bindings fibers))
+checkedRootInsert nameEq keyEq root component ambient fibers absent free valid =
+  checkedSnapshotObserved nameEq keyEq (OInsert root Root component) (MkSystemState ambient fibers)
+    OInsertTag (MkRuntimeSnapshot ambient (Bind root (freshFiber component Root) :: bindings fibers))
+    (applyAction @{nameEq} @{keyEq} (OInsert root Root component) (MkSystemState ambient fibers)) Refl
+    (rootInsertAtAbsence nameEq keyEq root component ambient fibers absent free) valid
