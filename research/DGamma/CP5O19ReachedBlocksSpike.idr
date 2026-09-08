@@ -193,3 +193,24 @@ o19InstalledNoUnloadEvolution nameEq keyEq selected before afterState _ _ checke
   OpenedInstallation = snd (snd (lBeginBoundary nameEq keyEq selected before afterState LBeginTag checked))
 o19InstalledNoUnloadEvolution nameEq keyEq selected before afterState _ _ checked atStart excluded
   ClosedInstallation = void (excluded Refl)
+
+||| Construct installedness at EVERY reached cut by the aligned trace's
+||| own steps and actual installation observations. No arbitrary source bound.
+export
+0 o19InstalledNoUnloadTrace :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  {first, last : SystemState name key value world error} ->
+  (trace : Transitions first last) -> AlignedTransitions name key world error value nameEq keyEq trace ->
+  NoParentUnload selected trace ->
+  (installedAt {name} {key} {value} {world} {error} @{nameEq} selected first = True) ->
+  InstalledTrace name key world error value nameEq keyEq selected trace
+o19InstalledNoUnloadTrace nameEq keyEq selected _ AlignedEnd noUnload atStart = InstalledEnd atStart
+o19InstalledNoUnloadTrace {first} nameEq keyEq selected _
+  (AlignedStep {middle} action tag checked rest aligned) noUnload atStart =
+    InstalledStep action tag checked rest atStart
+      (o19InstalledNoUnloadTrace nameEq keyEq selected rest aligned
+        (snd (o19NoUnloadAtCut selected NoTransitions (Fired nameEq keyEq action tag checked) rest noUnload))
+        (o19InstalledNoUnloadEvolution nameEq keyEq selected first middle action tag checked atStart
+          (fst (o19NoUnloadAtCut selected NoTransitions (Fired nameEq keyEq action tag checked) rest noUnload))
+          (installationEvolutionStep nameEq keyEq selected action tag first middle checked)))
