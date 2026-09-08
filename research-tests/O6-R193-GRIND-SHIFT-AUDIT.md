@@ -190,3 +190,29 @@ disjointness. No per-cut immutable-component or successor-resolver oracle is
 accepted. Whole actor-body recursion and reference-endpoint component
 attachment remain to be wired; these two units alone do not close D safety.
 Total retained declarations88 = A30/D10/E48; no3/3 exhaustion or body attempt.
+
+
+## D deepening E49--E60: whole installed-block native resolver producer
+
+All12 retained and guarded committed. E52-1 exposed the non-definitional
+transitionActor/actionOwner boundary; the existing owned equation repaired
+it, E52-2 PASS. E49--E51 and E53--E60 PASS1. E52 inducts over the ACTUAL
+InstalledTrace and ActorLifecycleOnly body: owned native lifecycle updates
+transport components through the full remaining installed trace, and native
+yielded insertions preserve every resolver by inactive insertion. E53--E56
+attach the REAL opening lookup/component and include that opening in the
+whole resolver frame. E57 derives alignment from InstalledTrace. E58--E59
+construct actual checked earlier right Begin across the full opening/body,
+using both actual openings and deriving owner and dependency resolver frames.
+E60 derives the declaration disjointness from fixed-reference supported
+incomparability. TWO endpoint/reference component equations remain explicit;
+all INNER component transport/survival/alignment is produced, not input.
+
+This closes the former one-edge-only LIMIT of the resolver construction,
+NOT accepted-selector completeness: physical NoGeneratedChild and actual
+ZeroGapPending still enter, as do source well-formedness and endpoint lookup/
+reference-component attachments. No zero-gap producer/relocation/extended
+grammar or placement work was duplicated from lane2. Whole stopped-order
+equality remains open. The selector's enumerated-candidate search completeness
+still requires semantic safety at that candidate's own cuts. Total100 retained
+= A30/D10/E60. No3/3 or body attempt; census remains last-audited4.

@@ -3341,3 +3341,47 @@ granted, no more proof/source edits. Artifact-only gate addendum records the
 verbatim ruling and subsequent read-only PASS audits. Independent reviewer
 is parent-owned/read-only and pending at this handoff. Remaining proof/fixture
 debts and the deferred production-unfreeze requirement are unchanged.
+
+
+## Status — R193 main A/D research milestone (100 retained, in progress)
+
+The R192 ACCEPT-WITH-NOTES review's citation repair is retained: frozen CP3
+CanonicalSchedule starts3240, canonicalBlock is3256--3257, inputPlacement3265.
+D5/o20SupportedBridgeFromOwnedCut still CONSUMES an all-name cut.
+
+Fully checked local advances: historical birth transport and live-generation
+compatibility, authentic vestigial-vs-non-vestigial endpoint partition,
+actual canonical unilateral role classification, separate native Iter/Finish
+success observation extraction, local history-cut preservation under checked
+Begin/Retire/matched Insert/Remove/empty and observed nonempty Finish/Iter;
+actual candidate enumeration and conditional whole finite selection; whole
+installed opening+body resolver transport from fixed-reference incomparability.
+The last result derives internal immutable component transport, survival,
+alignment, owner and resolver frames, not merely one-edge consequences.
+
+Partial/open: arbitrary whole paired canonical alignment and history-cut
+production, aligned insertion stamps/fresh names, wiring native single-role
+observations through whole paired execution, all-name endpoint rebasing and
+vestigial remainder treatment, producer-owned final bridge, automatic
+reference-component attachment at the two physical endpoints, four semantic
+selector-safety clauses at the actually enumerated cuts, and stopped-order
+equality. canonicalSchedulesConvergeSpike remains untouched/ineligible; all
+four protected holes and their statements are unchanged. ZeroGapPending is
+only CONSUMED in main; lane2 owns relocation/extended grammar/root-phase work.
+
+The actual8-edge present-vestigial fixture proves the historical map cannot
+be silently identified with accepted current renaming merely from physical
+presence. It has genuine discarded-generation/parent-closing evidence and
+full SameOrchestrationModuloGenerated data, but NO independent canonical
+capital; it is not a convergence counterexample. The duplicate-order candidate
+fixture is algorithmic regression data, not accepted canonical capital.
+
+No new escape hatch, postulate, partial function, with, unsafe cast or assumed
+successor cut was added. Existing frozen premises and explicitly conditional
+lemmas are not advertised as theorem completion. Rejected attempts remain
+archived; E47-1's nonexistent import exited0 but freshness correctly rejected
+it, and E52-1 required the existing transitionActor/actionOwner equation.
+No3/3 exhaustion. Production/src, CP3, package, LocalDiamond, O19 and protected
+adjacent/hole bytes remain frozen; final fresh audit/validation is pending.
+Next: targeted native whole-block regression, final serial seeded validations,
+lane2 outcome integration, committed evidence and supervisor/reviewer gate.

@@ -732,3 +732,25 @@ convergence closure is claimed.
 See the [R191 ownership/design map](research-tests/O6-R191-O20-DESIGN.md),
 [verification](research-tests/O6-R191-VERIFICATION.md) and
 [append-only audit](research-tests/O6-R191-GRIND-SHIFT-AUDIT.md).
+
+
+## R193 research milestone (in progress)
+
+Production remains byte-frozen at `34b21c9`; this is **not** a completion of
+Theorem73. Main-lane results and exact qualifications are in
+[`O6-R193-GRIND-SHIFT-AUDIT.md`](research-tests/O6-R193-GRIND-SHIFT-AUDIT.md).
+
+| Paper correspondence | Idris research declaration | Status |
+|---|---|---|
+| Thm73 canonical endpoint transport, auxiliary | `CP5O20HistoryNameTransportSpike.o20HistoryEndpointPartition` | Proved: genuine vestigial branch OR historical/current-name agreement; not unconditional rebasing |
+| Thm73 paired execution, auxiliary | `CP5O20HistoryExecutionSpike.o20HistoryMatchedInsertCut`, `o20HistoryObservedAdvanceCut` | Proved local preservation of an input history cut; insertion stamp matching and native callback observations still explicit |
+| Thm73 operational selection, auxiliary | `CP5O20SafeBlockSelectionSpike.o20EnumerateSwap`, `CP5O20SelectionCompletenessSpike.o20SelectEnumeratedComplete` | Proved actual enumeration and conditional whole-selector success; four own-cut semantic safety clauses not generally produced |
+| Thm73 operational selection, auxiliary | `CP5O20BlockResolverFrameSpike.o20IncomparableInstalledEarlierBegin` | Proved whole native installed-block owner/resolver transport; two reference-component attachments, child exclusion and exact zero gap remain explicit |
+| Thm73 protected convergence body | `CP5ConfluenceCrossTraceSpike.canonicalSchedulesConvergeSpike` | Open; no body attempt or widened statement |
+
+A genuine eight-edge history now witnesses **physically present vestigial**
+child1 being mapped to absent2 by accepted current renaming while historical
+birth transport selects1. This supplies full same-inputs history data, **not**
+independent canonical schedules, and is not a protected-convergence
+counterexample. Lane2 exclusively owns A8/A10 research grammar/placement work;
+its final outcomes and final seeded verification are still pending here.
