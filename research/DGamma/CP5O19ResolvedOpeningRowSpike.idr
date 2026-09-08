@@ -77,3 +77,31 @@ o19BeginAfterObservedInsertion nameEq keyEq actor child parent component ambient
         (beginObservedFound initial))
       (trans (resolutionAfter resolution)
         (trans (sym (resolutionBefore resolution)) (beginObservedResolved initial))) wellFormed
+
+||| Use the SAME checked insertion for its plan and preservation, keeping the
+||| resolver observation explicit at the per-cut boundary.
+export
+0 o19BeginAfterCheckedObservedInsertion :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor, child : name) ->
+  (parent : Parent name) -> (component : Component key value world error) ->
+  (before, opened, afterState : SystemState name key value world error) -> (tag : RuleTag) ->
+  (initial : O20BeginObservation name key world error value nameEq keyEq actor before opened) ->
+  (resolution : O19ResolutionObservation name key world error value nameEq keyEq
+    (dependencies (componentDependencies (beginObservedComponent initial)))
+    (registry before) (registry afterState)) ->
+  Not (actor = child) ->
+  (checkedApplyAction @{nameEq} @{keyEq} (OInsert child parent component) before = Just (tag, afterState)) ->
+  (registryWellFormed {name} {key} {value} {world} {error} @{nameEq} @{keyEq} before = True) ->
+  CheckedEarlyApplication name key world error value nameEq keyEq afterState (LBegin actor) LBeginTag
+o19BeginAfterCheckedObservedInsertion nameEq keyEq actor child parent component
+  (MkSystemState ambient source) opened afterState tag initial resolution distinct checked wellFormed =
+    o19BeginAfterObservedInsertion nameEq keyEq actor child parent component ambient source
+      opened afterState tag initial resolution distinct
+      (foreignInsertPlanView nameEq keyEq child parent component ambient source tag afterState
+        (checkedActionProjects nameEq keyEq (OInsert child parent component)
+          (MkSystemState ambient source) afterState tag checked))
+      (preservationTheoremProof nameEq keyEq (OInsert child parent component)
+        (MkSystemState ambient source) afterState tag wellFormed
+        (checkedActionProjects nameEq keyEq (OInsert child parent component)
+          (MkSystemState ambient source) afterState tag checked))
