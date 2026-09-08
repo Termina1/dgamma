@@ -758,6 +758,22 @@ record MappedCanonicalSupportOrders
   0 rightSupportMapped : (n : name) -> Elem n (supportOrder rightSchedule) ->
     Elem (renameBackward renaming n) (supportOrder leftSchedule)
 
+||| The bridge-facing capital exposes the exact first-state blocks consumed by
+||| O19 together with the producer's disjoint-range invariant.
+public export
+canonicalActorBlockDecomposition :
+  (capital : IndependentCanonicalSchedule name key world error value protocol
+    nameEq keyEq original) ->
+  ActorBlockDecomposition name key world error value nameEq keyEq
+    (supportOrder (canonicalSchedule capital))
+    (canonicalTrace (canonicalSchedule capital))
+canonicalActorBlockDecomposition
+  (MkIndependentCanonicalSchedule premises reduction ordering sorted
+    supportTransport accounting _ Refl classified) =
+      MkActorBlockDecomposition (sortedBlock sorted)
+        (sortedBlocksFollowOrder sorted) (sortedBlockRangesDisjoint sorted)
+        (sortedLifecycleCoverage sorted)
+
 public export
 0 blockSwapOccurrenceCorrespondence :
   (step : OperationalAdjacentBlockSwap name key world error value protocol nameEq
