@@ -44,3 +44,24 @@ last bounded pair, both outside-coordinate exclusions, and same-list uniqueness.
 All12 declarations fresh PASS1/3, immediately guarded committed; no rejection.
 Proceed B, rather than spending unused A slots on unrelated statements.
 No O19 body attempt or hole/surface/LocalDiamond change.
+
+## Unit B complete — SAME-chain WholeBlockSwapDerivation
+
+B1/B2 define and structurally produce O19NonEmptyChain with EXACT forgetful
+and count equations; zero is excluded by the same chain's own count. B3
+obtains finite count from o19ActualGlobalOriginProductCount via B13's actual
+plan count; B4 uses BOTH successor block counts to derive nonzero. B5/B6
+simultaneously construct WholeBlockSwapDerivation and its exact finite-chain
+identity, retaining F14 local plan by explicit equality transport and supplying
+ALL coverage/bounds/UniqueKeys/exact node-count fields from A. B7/a83bd4c8
+instantiates everything from original O19 inputs only on the SAME B3/B13/F14
+cursor derivation. No equal-length or separately replayed chain is substituted.
+B8 consumes the resulting producer-owned chain equation as a regression.
+
+8 declarations/9 invocations; B3-1 rejected for omitted DIRECT import of
+ReplayObservation (o19ActionWord hidden in the actual-run dependent type);
+B3-2 PASS after adding that import. Others PASS1/3, all accepted commits have
+actual exact-source guarded receipts. No exhausted unit. B is fully proved,
+but C reached installed ActorBlockDecomposition and D final assembly remain.
+O19/O20/O21 body attempts0/0/0; holes unchanged5=1/3/0/0/1. Quantity-0 actual
+replay/whole producers are erased constructive witnesses, not runtime APIs.
