@@ -30,3 +30,17 @@ A started: A1 append-membership elimination fresh PASS1/3 and guarded committed.
 B–E unattempted. O19 open; hole delta0, split5=1/3/0/0/1. All live exact
 invocations/snapshots/logs and actual commit-time receipts in /tmp/dgamma-r188;
 consolidated committed ledger/archive/verification due at final boundary.
+
+## Unit A complete — grid certification
+
+A1–A11 prove append membership elimination/injections, disjoint unique append,
+fixed-row completeness/bounds/uniqueness, full shifted-grid completeness/bounds/
+uniqueness, and o19CertifyGrid at ZERO offsets. Its three erased fields are
+EXACTLY the everyBlockPairCrossed/everyCrossingUsesSelectedBlocks/
+blockCrossingPositionsUnique obligations on o19GridPairs Z Z width height.
+Right-column separation, not product cardinality or all-action injectivity,
+proves UniqueKeys. A11 commit1ef9cf5f. A12 non-square2x3 regression checks the
+last bounded pair, both outside-coordinate exclusions, and same-list uniqueness.
+All12 declarations fresh PASS1/3, immediately guarded committed; no rejection.
+Proceed B, rather than spending unused A slots on unrelated statements.
+No O19 body attempt or hole/surface/LocalDiamond change.
