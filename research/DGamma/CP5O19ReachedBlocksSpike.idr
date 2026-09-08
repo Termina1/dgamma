@@ -1021,3 +1021,12 @@ export
 o19ClassifySwapTail leading left right trailing Here = O19SiteRight
 o19ClassifySwapTail leading left right trailing (There Here) = O19SiteLeft
 o19ClassifySwapTail leading left right trailing (There (There member)) = O19SiteAfter member
+
+||| Complete positional classifier for the actual target list shape.
+export
+0 o19ClassifySwapSite : {name : Type} -> (leading : List name) -> (left, right : name) ->
+  (trailing : List name) -> {selected : name} -> Elem selected (leading ++ (right :: left :: trailing)) ->
+  O19SwapSite leading left right trailing selected
+o19ClassifySwapSite leading left right trailing member =
+  o19ElemAppendCases leading (right :: left :: trailing) O19SiteBefore
+    (o19ClassifySwapTail leading left right trailing) member
