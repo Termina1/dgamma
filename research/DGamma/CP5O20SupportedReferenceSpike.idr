@@ -253,3 +253,19 @@ o20InverseMapUnique forward backward inverse {order = head :: rest} (UniqueCons 
   UniqueCons (\member => absent (rewrite sym (inverse head) in
     o20InverseMapMember forward backward inverse member))
     (o20InverseMapUnique forward backward inverse unique)
+
+||| Convert the accepted two name-mapped membership directions into exact
+||| membership equivalence of the source and fixed inverse-renamed goal.
+export
+0 o20MappedMembers :
+  {name : Type} -> (renaming : NameBijection name) -> (sourceOrder, targetOrder : List name) ->
+  ((selected : name) -> Elem selected sourceOrder -> Elem (renameForward renaming selected) targetOrder) ->
+  ((selected : name) -> Elem selected targetOrder -> Elem (renameBackward renaming selected) sourceOrder) ->
+  (((selected : name) -> Elem selected sourceOrder -> Elem selected (map (renameBackward renaming) targetOrder)),
+   ((selected : name) -> Elem selected (map (renameBackward renaming) targetOrder) -> Elem selected sourceOrder))
+o20MappedMembers renaming sourceOrder targetOrder forward backward =
+  ((\selected, member => rewrite sym (renameLeftInverse renaming selected) in
+      elemMap (renameBackward renaming) (forward selected member)),
+   (\selected, member => rewrite sym (renameLeftInverse renaming selected) in
+      backward (renameForward renaming selected)
+        (o20InverseMapMember (renameForward renaming) (renameBackward renaming) (renameRightInverse renaming) member)))
