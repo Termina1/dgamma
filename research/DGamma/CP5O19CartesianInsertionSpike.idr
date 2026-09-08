@@ -64,3 +64,20 @@ o19InsertionCannotRecover step child owner parent component inserted (ParentDive
   uninhabited (cong isLifecycleAction (trans (sym inserted) action))
 o19InsertionCannotRecover step child owner parent component inserted (ParentRaises action tag) =
   uninhabited (cong isLifecycleAction (trans (sym inserted) action))
+
+||| Reconstruct finite insertion discipline from ACTUAL pointwise provenance
+||| and explicit no-recovery evidence for that short suffix.
+export
+0 o19InsertionDisciplineFromProvenance :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (protocol : RegistrationProtocol key value world error) -> (nameEq : DecEq name) ->
+  (child : name) -> (parent : Parent name) -> (component : Component key value world error) ->
+  (before : SystemState name key value world error) ->
+  {afterState, finalState : SystemState name key value world error} ->
+  (rest : Transitions afterState finalState) ->
+  RegistrationStepProvenance protocol nameEq (OInsert child parent component) before ->
+  ((owner : name) -> NoParentRecovery owner rest) ->
+  RegistrationStepDiscipline protocol nameEq (OInsert child parent component) before rest
+o19InsertionDisciplineFromProvenance protocol nameEq child Root component before rest provenance noRecovery = provenance
+o19InsertionDisciplineFromProvenance protocol nameEq child (ChildOf owner) component before rest provenance noRecovery =
+  (provenance, ParentDoesNotRecover (noRecovery owner))
