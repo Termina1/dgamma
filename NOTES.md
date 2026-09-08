@@ -3385,3 +3385,24 @@ No3/3 exhaustion. Production/src, CP3, package, LocalDiamond, O19 and protected
 adjacent/hole bytes remain frozen; final fresh audit/validation is pending.
 Next: targeted native whole-block regression, final serial seeded validations,
 lane2 outcome integration, committed evidence and supervisor/reviewer gate.
+
+
+### R193 source-freeze addendum (ad77399f)
+
+115 retained A30/D10/E75, no exhausted unit. The new native physical fixture
+has nonempty [ServiceA] resolution to live provider0, actual Begin2/child3
+Insert/Finish2/Begin1, and theorem-produced earlier Begin1 plus whole-block
+resolver equality. Its concrete provider-backed starting cut is NOT claimed
+to have original/canonical registration history. The callback-driven setup
+that failed to normalize is preserved in E66-1; a literal cut cures this
+fixture boundary without changing the theorem or claiming runtime failure.
+E73's first failure was a missing defining import, not a logical counterexample.
+No new proof hole/escape hatch. Final52-check seeded plan is authenticated;
+results, lane2 integration and owner/reviewer acceptance remain pending.
+
+The history-cut generation map must be indexed to the actual scanner's birth
+ordinals. Original same-inputs stamps and reordered canonical replay stamps
+are not interchangeable without occurrence-owned transport. That attachment
+is included in the OPEN arbitrary paired-execution/insertion stamp producer,
+not smuggled into the local successor conclusions. All producer/consumer
+qualifications in the previous status section remain in force.

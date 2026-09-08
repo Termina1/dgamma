@@ -216,3 +216,45 @@ grammar or placement work was duplicated from lane2. Whole stopped-order
 equality remains open. The selector's enumerated-candidate search completeness
 still requires semantic safety at that candidate's own cuts. Total100 retained
 = A30/D10/E60. No3/3 or body attempt; census remains last-audited4.
+
+
+## E61--E75 native nonempty-resolver fixture / source freeze
+
+All15 retained; E66 and E73 needed second attempts, the other13 PASS1. The
+physical fixture starts from a concrete well-formed host cut with live
+ServiceA provider0 and dependent provision-empty roots2/1. Its FOUR actual
+checked edges are Begin2/InsertChild3/Finish2/Begin1. The installed actor-body
+and actual child exclusion are constructed from those edges, and E73 applies
+the whole native block theorem to PRODUCE earlier Begin1, with no caller
+owner/resolver frame or earlier-success witness. E74 proves the nonempty
+[ServiceA] query really resolves to provider0 on both sides; E75 applies the
+generic whole-block resolver theorem to that same nonempty query.
+
+This is native physical-frame data, NOT original/canonical schedule capital,
+registration discipline, a placement fixture or lane2's zero-gap producer.
+E66-1 did not normalize the imported callback-driven setup; E66-2 changes
+ONLY that fixture initializer to a literal provider-backed host cut, retaining
+all prior/rejected source snapshots. It does not assert that the old runtime
+computation fails. E73-1 lacked the direct ZeroGapPending defining import;
+E73-2 adds the needed imports. Source guards correctly refused both rejected
+commits; no subsequent compiler was launched before each successful retry's
+commit. An interim frozen audit invoked while E61 was untracked correctly
+refused its clean-tree condition; the rerun after663985f2 PASS authenticated
+census4/207 seeds. These noncompiler guard events are archived separately.
+
+Source freeze ad77399f:115 declarations/115 receipt-authenticated source commits,
+A30/D10/E75;125 serialized invocations,116 PASS/9 rejected, zero interrupted,
+max sampled5,669,072KiB. Fresh pre-final frozen audit: production empty vs
+34b21c9, LocalDiamond/CP3/all five spike bodies and protected declarations
+unchanged, census4=1/2/0/0/1,207/207 retained seeds. These are PRE-FINAL checks.
+The immutable52-entry final plan covers package/all five spikes, every changed
+Idris target, direct bridge/negative boundaries, R8/R16, ReachedBlocks and both
+all-four crossing fixtures. Baseline B/C checks in that plan validate ONLY
+the unchanged main-worktree baseline, not lane2's separate research copies.
+
+History transport qualification: a generation-bijection used for local cut
+induction must match the actual scanner's insertion ordinals. An original
+same-inputs generation map cannot silently be used at reordered canonical
+ordinals; replay/occurrence-owned stamp transport belongs to the remaining
+whole-paired/insertion-alignment obligation. No current local lemma claims
+that missing original-to-canonical ordinal attachment is already produced.
