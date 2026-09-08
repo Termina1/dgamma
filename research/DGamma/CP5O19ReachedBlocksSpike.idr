@@ -214,3 +214,29 @@ o19InstalledNoUnloadTrace {first} nameEq keyEq selected _
         (o19InstalledNoUnloadEvolution nameEq keyEq selected first middle action tag checked atStart
           (fst (o19NoUnloadAtCut selected NoTransitions (Fired nameEq keyEq action tag checked) rest noUnload))
           (installationEvolutionStep nameEq keyEq selected action tag first middle checked)))
+
+||| Negative Unload evidence transports through genuine located occurrence
+||| origins. This is NOT action-word equality mistaken for correspondence.
+||| Only the reached trace spine is eliminated; every source cut is owned by
+||| its actual origin package and authenticated decomposition.
+export
+0 o19NoUnloadFromOrigins :
+  {name, key, world, error : Type} -> {value : key -> Type} -> (selected : name) ->
+  {sourceFirst, sourceLast, targetFirst, targetLast : SystemState name key value world error} ->
+  (source : Transitions sourceFirst sourceLast) -> (target : Transitions targetFirst targetLast) ->
+  ({action : Action name key value world error} -> LocatedActionOccurrence action target -> LocatedActionOccurrence action source) ->
+  NoParentUnload selected source -> NoParentUnload selected target
+o19NoUnloadFromOrigins selected source NoTransitions origins noUnload = NoParentUnloadEnd
+o19NoUnloadFromOrigins {targetFirst} selected source (MoreTransitions {middle} step rest) origins noUnload =
+  NoParentUnloadStep step rest
+    (\same => fst (o19NoUnloadAtCut selected
+      (beforeActionOccurrence (origins (MkLocatedActionOccurrence targetFirst middle NoTransitions step rest Refl Refl)))
+      (locatedTransition (origins (MkLocatedActionOccurrence targetFirst middle NoTransitions step rest Refl Refl)))
+      (afterActionOccurrence (origins (MkLocatedActionOccurrence targetFirst middle NoTransitions step rest Refl Refl)))
+      (replace {p = NoParentUnload selected}
+        (sym (actionOccurrenceDecomposition (origins (MkLocatedActionOccurrence targetFirst middle NoTransitions step rest Refl Refl)))) noUnload))
+      (trans (locatedAction (origins (MkLocatedActionOccurrence targetFirst middle NoTransitions step rest Refl Refl))) same))
+    (o19NoUnloadFromOrigins selected source rest
+      (\occurrence => origins (MkLocatedActionOccurrence (actionBeforeState occurrence) (actionAfterState occurrence)
+        (MoreTransitions step (beforeActionOccurrence occurrence)) (locatedTransition occurrence) (afterActionOccurrence occurrence)
+        (locatedAction occurrence) (cong (MoreTransitions step) (actionOccurrenceDecomposition occurrence)))) noUnload)
