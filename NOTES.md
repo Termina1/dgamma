@@ -3501,3 +3501,16 @@ vestigial endpoint remainder, produce the final bridge, and derive actual
 selector safety/stopped equality before attempting the protected body.
 Research grammar/placement changes require the separately owned lane2 route;
 production unfreeze still requires explicit owner approval.
+
+
+## R193 owner gate — checked PARTIAL ratified
+
+Verbatim supervisor ruling:
+
+> R193 FINAL GATE RULING: ACCEPTED — checked PARTIAL milestone RATIFIED at dd8fb9e9 (ACCEPT-WITH-NOTES pending the independent reviewer, who is now running read-only). Supervisor verified independently: HEAD dd8fb9e9, 130 commits over 77a9efe1, clean tree (baseline untracked only), production diff vs 34b21c9 empty, LocalDiamond/O19Surface/CrossTrace/RenamingComposition/CanonicalSort byte-identical to 77a9efe1, independent census 4 = 1/2/0/0/1, no idris2 running, 10 R193 artifacts present, pushed. Honest qualifications accepted as stated: A(i)/(ii) local successors and unilateral role completeness, not whole paired alignment; no bridge producer; D conditional on the four explicit clauses under the frozen grammar; V2 48 GiB stop preserved with the hash-pinned 52 GiB V2R1 continuation; lane-2 results integrated version-pinned only, not certified by main checks (correct — lane 2's own L2R2 gate and reviewer will certify them; any later update is artifact-only, as you say). The withdrawn-then-cured paper-visibility claim is noted as properly handled. Stand down cleanly; no further compiler or source work.
+
+This addendum is artifact-only. No further Idris/compiler or implementation
+source work followed the ruling. Independent review remains parent-owned
+and pending; neither ratification nor the52-slot final validation closes
+Theorem73 or changes any producer/consumer qualification above. The evidence
+archive remains pinned to its documented pre-artifact anchor.

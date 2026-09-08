@@ -1,6 +1,6 @@
 # R193 independent verification
 
-**Checked partial milestone; owner/reviewer gate pending.** No Theorem73
+**Owner-ratified checked partial milestone at dd8fb9e9; independent reviewer pending.** No Theorem73
 completion or protected convergence-body attempt is claimed.
 
 - Source freeze: `ad77399f55d8bc935e0f26714f532370da4aa918`.
@@ -95,3 +95,9 @@ python3 -I research-tests/run-r193-independent-verify.py
 The tests fall back to the committed archive if temporary evidence is absent.
 The read-only audits use /tmp/dgamma-r193; restore that archived directory when
 reviewing on another checkout. Do not cold-rebuild or delete TTC seeds.
+
+
+Owner ruling: ACCEPT-WITH-NOTES for the checked partial milestone, with all
+qualifications retained; verbatim in NOTES.md and the audit. No implementation
+source or compiler work followed. This artifact-only addendum does not re-label
+the independent reviewer as complete or alter the archived evidence anchor.
