@@ -86,3 +86,24 @@ o20PairedDeleteEffects {name} {key} {world} {error} {value} nameEq keyEq renamin
         (projectEffectState {name} {key} {value} {world} {error} @{nameEq} (MkSystemState leftWorld leftRegistry))
         (projectEffectState {name} {key} {value} {world} {error} @{nameEq} (MkSystemState rightWorld rightRegistry)) paired selected)
         (tablesExact (projectDeleteEffectFrame nameEq keyEq (renameForward renaming actor) rightWorld rightRegistry) (renameForward renaming selected))))
+
+||| Actual checked Remove successor, roots OR children. Both native evaluator
+||| equations pin the physical destinations; effects and all controls are
+||| derived. This neither suppresses Remove nor changes the earlier family.
+export
+0 o20PairedObservedRemoveCut :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (renaming : NameBijection name) -> (actor : name) ->
+  (leftWorld, rightWorld : world) -> (leftRegistry, rightRegistry : Registry name key value world error) ->
+  (checkedApplyAction {name} {key} {value} {world} {error} @{nameEq} @{keyEq} (ORemove actor) (MkSystemState leftWorld leftRegistry) =
+    Just (ORemoveTag, MkSystemState leftWorld (deleteBinding @{nameEq} actor leftRegistry))) ->
+  (checkedApplyAction {name} {key} {value} {world} {error} @{nameEq} @{keyEq} (ORemove (renameForward renaming actor)) (MkSystemState rightWorld rightRegistry) =
+    Just (ORemoveTag, MkSystemState rightWorld (deleteBinding @{nameEq} (renameForward renaming actor) rightRegistry))) ->
+  O20AllNameCut name key world error value nameEq renaming (MkSystemState leftWorld leftRegistry) (MkSystemState rightWorld rightRegistry) ->
+  O20AllNameCut name key world error value nameEq renaming
+    (MkSystemState leftWorld (deleteBinding @{nameEq} actor leftRegistry))
+    (MkSystemState rightWorld (deleteBinding @{nameEq} (renameForward renaming actor) rightRegistry))
+o20PairedObservedRemoveCut nameEq keyEq renaming actor leftWorld rightWorld leftRegistry rightRegistry leftChecked rightChecked paired =
+  MkO20AllNameCut
+    (o20PairedDeleteEffects nameEq keyEq renaming actor leftWorld rightWorld leftRegistry rightRegistry (allNameEffects paired))
+    (o20PairedDeleteControls nameEq renaming actor leftRegistry rightRegistry (allNameControls paired))
