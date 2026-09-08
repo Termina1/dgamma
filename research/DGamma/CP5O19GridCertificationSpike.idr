@@ -20,3 +20,16 @@ o19ElemAppendCases [] second inFirst inSecond member = inSecond member
 o19ElemAppendCases (head :: rest) second inFirst inSecond Here = inFirst Here
 o19ElemAppendCases (head :: rest) second inFirst inSecond (There member) =
   o19ElemAppendCases rest second (\later => inFirst (There later)) inSecond member
+
+||| Both append injections, proved on the actual first-list spine.
+export
+0 o19ElemAppendInjections : {item : Type} -> {point : item} ->
+  (first, second : List item) ->
+  ((Elem point first -> Elem point (first ++ second)),
+   (Elem point second -> Elem point (first ++ second)))
+o19ElemAppendInjections [] second = (\member => void (uninhabited member), id)
+o19ElemAppendInjections (head :: rest) second =
+  (\member => case member of
+    Here => Here
+    There later => There (fst (o19ElemAppendInjections rest second) later),
+   \member => There (snd (o19ElemAppendInjections rest second) member))
