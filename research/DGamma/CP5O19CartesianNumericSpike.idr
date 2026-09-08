@@ -162,3 +162,10 @@ export
 o19RowPullBeyond Z Z index = Refl
 o19RowPullBeyond Z (S width) index = cong S (o19RowPullBeyond Z width index)
 o19RowPullBeyond (S start) width index = cong S (o19RowPullBeyond start width index)
+
+||| Descending contiguous left coordinates against one fixed right source.
+public export
+o19FixedRowPairs : Nat -> Nat -> Nat -> List (Nat, Nat)
+o19FixedRowPairs leftSource rightSource Z = []
+o19FixedRowPairs leftSource rightSource (S width) =
+  o19FixedRowPairs (S leftSource) rightSource width ++ [(leftSource, rightSource)]
