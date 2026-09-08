@@ -11,6 +11,7 @@ import DGamma.CP5O19AdjacentReplayProducerSpike
 import DGamma.CP4DeletionFrameCore
 import DGamma.CP5O20RightOpeningTransportSpike
 import DGamma.CP5O20SelectorResolverFrameSpike
+import DGamma.CP5O20BeginObservationSpike
 import Data.List.Elem
 import Data.Maybe
 import Decidable.Equality
@@ -154,3 +155,20 @@ o20InstalledActorBodyResolver {name} {key} {world} {error} {value} {first} nameE
     trans (o20InstalledActorBodyResolver nameEq keyEq actor deps rest tailInstalled only lastFiber lastFound excluded)
       (o20NativeInsertionResolverFrame nameEq keyEq deps child (ChildOf actor) childComponent first middle tag
         (replace {p = \candidate => checkedApplyAction {name} {key} {value} {world} {error} @{nameEq} @{keyEq} candidate first = Just (tag, middle)} yielded checked))
+
+||| The checked Begin producer's own exact destination yields the actual
+||| post-opening owner lookup. No unrelated target fiber or new view is chosen.
+export
+0 o20BeginObservedAfterLookup :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (before, afterState : SystemState name key value world error) ->
+  (observed : O20BeginObservation name key world error value nameEq keyEq actor before afterState) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor (registry afterState) =
+    Just (MkFiber (beginObservedComponent observed) (beginObservedParent observed) False (beginObservedTable observed)
+      (Reloading (componentProgram (beginObservedComponent observed)) id (beginObservedView observed))))
+o20BeginObservedAfterLookup {name} {key} {world} {error} {value} nameEq keyEq actor before afterState
+  (MkO20BeginObservation component parent table view found resolved afterExact) =
+    trans (sym (cong (\state => lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor (registry state)) afterExact))
+      (lookupReplacedFiber actor (MkFiber component parent False table (Inactive Nothing))
+        (MkFiber component parent False table (Reloading (componentProgram component) id view)) (registry before) found)
