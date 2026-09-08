@@ -130,3 +130,19 @@ data O19GlobalCrossingPlan :
     O19GlobalCrossingPlan name key world error value protocol nameEq keyEq source correspondence
       (FiniteAdjacentSwapStep current earlier left right later orientation diamond result target rest)
       ((leftOrdinal, rightOrdinal) :: positions)
+
+||| Simultaneous global list, authentic source-origin plan and exact node
+||| count. This is NOT selected Cartesian coverage, bounds or uniqueness.
+public export
+record O19GlobalPlanResult
+  (name, key, world, error : Type) (value : key -> Type)
+  (protocol : RegistrationProtocol key value world error) (nameEq : DecEq name) (keyEq : DecEq key)
+  {initial, sourceFinal : SystemState name key value world error} (source : Transitions initial sourceFinal)
+  {currentFinal, targetFinal : SystemState name key value world error}
+  {current : Transitions initial currentFinal} {target : Transitions initial targetFinal}
+  (correspondence : ActionRegistrationReplayCorrespondence name key world error value source current)
+  (derivation : FiniteAdjacentSwapDerivation name key world error value protocol nameEq keyEq current target) where
+  constructor MkO19GlobalPlanResult
+  globalCrossingPositions : List (Nat, Nat)
+  0 globalCrossingPlan : O19GlobalCrossingPlan name key world error value protocol nameEq keyEq source correspondence derivation globalCrossingPositions
+  0 globalCrossingCount : length globalCrossingPositions = finiteAdjacentSwapNodeCount derivation
