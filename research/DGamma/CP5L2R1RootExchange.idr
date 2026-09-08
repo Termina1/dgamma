@@ -67,3 +67,28 @@ rootBirthInversions prior (AvailabilityStep first (Fired _ _ (OInsert root Root 
   prior + rootBirthInversions prior later
 rootBirthInversions prior (AvailabilityStep first (Fired _ _ action _ _) rest later) =
   rootBirthInversions (if isLifecycleAction action then S prior else prior) later
+
+||| Every admitted Begin/root-insert square decreases this physical inversion
+||| count by EXACTLY one, with arbitrary prior lifecycle count and arbitrary
+||| authentic suffix. Applicability is carried by the produced native square,
+||| not inferred from a rank list. No global root-placement producer is claimed.
+export
+0 beginRootExchangeDecreases :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor, root : name) ->
+  (component : Component key value world error) ->
+  (first, middle, cut, finalState : SystemState name key value world error) ->
+  (0 beforeBegin : checkedApplyAction @{nameEq} @{keyEq} (LBegin actor) first = Just (LBeginTag, middle)) ->
+  (0 beforeRoot : checkedApplyAction @{nameEq} @{keyEq} (OInsert root Root component) middle = Just (OInsertTag, cut)) ->
+  (exchange : AvailabilityRootExchange name key world error value nameEq keyEq root component
+    (Fired {before = first} {afterState = middle} nameEq keyEq (LBegin actor) LBeginTag beforeBegin) (Fired {before = middle} {afterState = cut} nameEq keyEq (OInsert root Root component) OInsertTag beforeRoot)) ->
+  {0 rest : Transitions cut finalState} ->
+  (later : AvailabilityTrace name key world error value rest) -> (prior : Nat) ->
+  rootBirthInversions prior
+    (AvailabilityStep first (Fired {before = first} {afterState = middle} nameEq keyEq (LBegin actor) LBeginTag beforeBegin) (MoreTransitions (Fired {before = middle} {afterState = cut} nameEq keyEq (OInsert root Root component) OInsertTag beforeRoot) rest)
+      (AvailabilityStep middle (Fired {before = middle} {afterState = cut} nameEq keyEq (OInsert root Root component) OInsertTag beforeRoot) rest later)) =
+  S (rootBirthInversions prior
+    (AvailabilityStep first (Fired {before = first} {afterState = rootSwapMiddle exchange} nameEq keyEq (OInsert root Root component) OInsertTag (rootSwapEarlyChecked exchange)) (MoreTransitions (Fired {before = rootSwapMiddle exchange} {afterState = cut} nameEq keyEq (LBegin actor) LBeginTag (rootSwapLaterChecked exchange)) rest)
+      (AvailabilityStep (rootSwapMiddle exchange) (Fired {before = rootSwapMiddle exchange} {afterState = cut} nameEq keyEq (LBegin actor) LBeginTag (rootSwapLaterChecked exchange)) rest later)))
+beginRootExchangeDecreases nameEq keyEq actor root component first middle cut finalState
+  beforeBegin beforeRoot exchange later prior = Refl
