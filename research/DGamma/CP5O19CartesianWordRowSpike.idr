@@ -138,3 +138,45 @@ o19WordRowStep nameEq keyEq protocol swap original blocks premises safety unique
   o19WordRowAtObservedPair nameEq keyEq protocol swap original blocks premises safety unique source prior earlier left rest right later previous
     (o19SourcePairAtReachedRight (actorLeft swap) (actorRight swap) left right (mixedRowRight (wordRow previous))
       (mixedRowAction (wordRow previous)) (mixedRowTag (wordRow previous)) (mixedRowActor (wordRow previous)) observed)
+
+||| Genuine arbitrary mixed row induction with SIMULTANEOUS residual source
+||| word, actual crossings, reached full bundle, uniqueness, finite derivation
+||| and exact node count. Flat source labels are restricted structurally;
+||| every current guard/observation/node/replay is produced, never requested.
+export
+0 o19BubbleWordRow :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (protocol : RegistrationProtocol key value world error) ->
+  {sourceOrder, targetOrder : List name} -> (swap : AdjacentActorOrderSwap name sourceOrder targetOrder) ->
+  {initial, originalFinal, sourceFinal, before, rightBefore, rightAfter : SystemState name key value world error} ->
+  (original : Transitions initial originalFinal) ->
+  (blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder original) ->
+  (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq original) ->
+  (safety : AdjacentActorSwapSafety name key world error value protocol nameEq keyEq swap original blocks premises) ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq original ->
+  (source : Transitions initial sourceFinal) ->
+  FiniteAdjacentSwapDerivation name key world error value protocol nameEq keyEq original source ->
+  (earlier : Transitions initial before) -> (spine : Transitions before rightBefore) ->
+  (right : Transition rightBefore rightAfter) -> (later : Transitions rightAfter sourceFinal) ->
+  (appendTransitions earlier (appendTransitions spine (MoreTransitions right later)) = source) ->
+  ReplayInvariantBundle name key world error value protocol nameEq keyEq source ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq source ->
+  Either (PaperActivationStep right) (PaperOrchestrationStep right) ->
+  (0 classes : {first, last : SystemState name key value world error} ->
+    (step : Transition first last) -> OccursIn step spine ->
+    O19SourcePairObservation name key world error value (actorLeft swap) (actorRight swap) step right) ->
+  O19WordRow name key world error value protocol nameEq keyEq source earlier spine right later
+o19BubbleWordRow {sourceFinal} {rightAfter} nameEq keyEq protocol swap original blocks premises safety unique source prior earlier
+  NoTransitions right later decomposition currentPremises currentUnique kind classes =
+    MkO19WordRow
+      (MkO19MixedRow (MkO19ReachedCursor sourceFinal source currentPremises currentUnique FiniteAdjacentSwapDone)
+        rightAfter right later decomposition Refl Refl Refl kind Refl) Refl
+o19BubbleWordRow nameEq keyEq protocol swap original blocks premises safety unique source prior earlier
+  (MoreTransitions left rest) right later decomposition currentPremises currentUnique kind classes =
+    o19WordRowStep nameEq keyEq protocol swap original blocks premises safety unique source prior earlier left rest right later
+      (o19BubbleWordRow nameEq keyEq protocol swap original blocks premises safety unique source prior
+        (appendTransitions earlier (MoreTransitions left NoTransitions)) rest right later
+        (trans (appendTransitionsAssociative earlier (MoreTransitions left NoTransitions)
+          (appendTransitions rest (MoreTransitions right later))) decomposition)
+        currentPremises currentUnique kind (\step, occurs => classes step (OccursLater occurs)))
+      (classes left OccursHere)
