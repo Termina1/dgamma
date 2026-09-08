@@ -59,3 +59,12 @@ smallEarlierUnavailable (S (S Z)) bounded = Refl
 smallEarlierUnavailable (S (S (S Z))) bounded = Refl
 smallEarlierUnavailable (S (S (S (S later)))) bounded =
   void (succNotLTEzero (fromLteSucc (fromLteSucc (fromLteSucc (fromLteSucc bounded)))))
+
+||| The actual located root birth inhabits R178's availability-aware EARLIEST
+||| clause (replacement of CP3:3165ff/3173ff strict root placement). Current
+||| compatibility and ALL earlier-cut exclusions are proved. This certificate
+||| is not yet the entire AvailabilityAwareCanonicalInputPlacement package.
+public export
+0 smallRootEarliest : EarliestAvailableRootBirth Nat Bool Unit String (\key => Unit)
+  %search %search smallTrace 3 (smallComponent True) smallRootBirth
+smallRootEarliest = MkEarliestAvailableRootBirth smallAvailabilityTrail Refl smallEarlierUnavailable
