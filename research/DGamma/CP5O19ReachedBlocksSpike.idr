@@ -1518,3 +1518,18 @@ export
   (length (left ++ right) = length left + length right)
 o19ListLengthAppend [] right = Refl
 o19ListLengthAppend (head :: rest) right = cong S (o19ListLengthAppend rest right)
+
+||| Pure length commutation of the two middle owned words, normalized to
+||| the original left/right absolute boundary grouping. No replay is inferred.
+export
+0 o19ListSwapLength : {item : Type} -> (first, second, third, last : List item) ->
+  (length (first ++ (second ++ (third ++ last))) = ((length first + length third) + length second) + length last)
+o19ListSwapLength first second third last =
+  trans (o19ListLengthAppend first (second ++ (third ++ last)))
+    (trans (cong (length first +)
+      (trans (o19ListLengthAppend second (third ++ last)) (cong (length second +) (o19ListLengthAppend third last))))
+      (trans (cong (length first +)
+        (trans (plusAssociative (length second) (length third) (length last))
+          (cong (\count => count + length last) (plusCommutative (length second) (length third)))))
+        (trans (plusAssociative (length first) (length third + length second) (length last))
+          (cong (\count => count + length last) (plusAssociative (length first) (length third) (length second))))))
