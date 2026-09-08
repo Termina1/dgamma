@@ -72,3 +72,25 @@ replaceOtherHeadObserved keyEq changed current next old rest (Yes same) exact di
   void (distinct same)
 replaceOtherHeadObserved keyEq changed current next old rest (No different) exact distinct =
   rewrite exact in Refl
+
+||| Exact runtime shape of retiring a child after a distinct root birth.
+||| This is the ordered-binding half of the exchange, not evaluator replay.
+export
+0 retireInsertedSnapshot :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (child, root : name) ->
+  (fiber : Fiber name key value world error) ->
+  (component : Component key value world error) -> (ambient : world) ->
+  (fibers : Registry name key value world error) ->
+  (0 absent : lookupFiber {name} {key} {value} {world} {error} @{nameEq} root fibers = Nothing) ->
+  (0 distinct : Not (child = root)) ->
+  runtimeSnapshot {name} {key} {value} {world} {error} (MkSystemState ambient
+    (replaceBinding @{nameEq} child (retireFiber fiber)
+      (insertBinding @{nameEq} root (freshFiber component Root) fibers absent))) =
+  MkRuntimeSnapshot ambient (Bind root (freshFiber component Root) ::
+    bindings (replaceBinding @{nameEq} child (retireFiber fiber) fibers))
+retireInsertedSnapshot nameEq child root fiber component ambient
+  (MkCoeffectContext entries unique) absent distinct =
+    cong (MkRuntimeSnapshot ambient)
+      (replaceOtherHeadObserved nameEq child root (retireFiber fiber)
+        (freshFiber component Root) entries (decEq @{nameEq} child root) Refl distinct)
