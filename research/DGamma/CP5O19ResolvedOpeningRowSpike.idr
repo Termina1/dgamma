@@ -289,3 +289,35 @@ o19InsertActivationDiamond {first} nameEq keyEq protocol child parent component
           (trans (sym inserted) same)))
       (Builtin.fst (Builtin.snd (o19SourcePairFacts nameEq keyEq protocol source earlier left right later decomposition premises)))
       (Builtin.snd (Builtin.snd (o19SourcePairFacts nameEq keyEq protocol source earlier left right later decomposition premises)))
+
+
+||| Consume the FROZEN suffix producer for this same actual O/A diamond.
+export
+0 o19InsertActivationReplay :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (child : name) -> (parent : Parent name) -> (component : Component key value world error) ->
+  {initial, first, middle, last, finalState : SystemState name key value world error} ->
+  (source : Transitions initial finalState) -> (earlier : Transitions initial first) ->
+  (left : Transition first middle) -> (right : Transition middle last) ->
+  (later : Transitions last finalState) ->
+  (appendTransitions earlier (MoreTransitions left (MoreTransitions right later)) = source) ->
+  ReplayInvariantBundle name key world error value protocol nameEq keyEq source ->
+  (transitionAction left = OInsert child parent component) -> PaperActivationStep right ->
+  Not (transitionActor right = child) ->
+  ((licensor : name) -> (parent = ChildOf licensor) -> Not (transitionActor right = licensor)) ->
+  CheckedEarlyApplication name key world error value nameEq keyEq first
+    (transitionAction right) (transitionTag right) ->
+  (diamond : LocalRelationalDiamond name key world error value nameEq keyEq left right **
+   AdjacentSwapResult name key world error value protocol nameEq keyEq source earlier left right later diamond)
+o19InsertActivationReplay nameEq keyEq protocol child parent component
+  source earlier left right later decomposition premises inserted activation childSafe parentSafe early =
+    (o19InsertActivationDiamond nameEq keyEq protocol child parent component source earlier left right later
+       decomposition premises inserted activation childSafe parentSafe early **
+     adjacentSwapSuffixSpike nameEq keyEq protocol source earlier left right later decomposition premises
+       (o19InsertActivationDiamond nameEq keyEq protocol child parent component source earlier left right later
+         decomposition premises inserted activation childSafe parentSafe early)
+       (o19InsertActivationExternal nameEq keyEq child parent component left right inserted activation
+         (o19InsertActivationDiamond nameEq keyEq protocol child parent component source earlier left right later
+           decomposition premises inserted activation childSafe parentSafe early)))
