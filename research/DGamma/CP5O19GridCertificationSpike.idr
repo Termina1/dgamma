@@ -153,3 +153,16 @@ o19GridUnique leftSource rightSource width (S height) =
         (replace {p = LTE (S rightSource)}
           (snd (snd (o19FixedRowBounds leftSource rightSource width leftPosition rightPosition row)))
           (fst (snd (o19GridBounds leftSource (S rightSource) width height leftPosition rightPosition columns)))))
+
+||| Exactly the three local-grid fields required by WholeBlockSwapDerivation.
+||| The list is the AUTHENTIC numeric grid, not a caller-selected enumeration.
+public export
+record O19GridCertificate (width, height : Nat) where
+  constructor MkO19GridCertificate
+  0 gridEveryPair : (leftPosition, rightPosition : Nat) ->
+    LTE (S leftPosition) width -> LTE (S rightPosition) height ->
+    Elem (leftPosition, rightPosition) (o19GridPairs Z Z width height)
+  0 gridEveryMember : (leftPosition, rightPosition : Nat) ->
+    Elem (leftPosition, rightPosition) (o19GridPairs Z Z width height) ->
+    (LTE (S leftPosition) width, LTE (S rightPosition) height)
+  0 gridPairsUnique : UniqueKeys (o19GridPairs Z Z width height)
