@@ -218,3 +218,12 @@ o20SupportedPathImage images (O20SupportedOne lowerSupported upperSupported edge
 o20SupportedPathImage images (O20SupportedMore lowerSupported middleSupported edge rest) =
   SupportPathMore (o20SupportedEdgeImage images lowerSupported middleSupported edge)
     (o20SupportedPathImage images rest)
+
+||| Strict list order is functorial, independently of either semantic state.
+export
+0 o20BeforeMap :
+  {name, other : Type} -> (renaming : name -> other) ->
+  {lower, upper : name} -> {order : List name} ->
+  BeforeIn lower upper order -> BeforeIn (renaming lower) (renaming upper) (map renaming order)
+o20BeforeMap renaming (BeforeHere later) = BeforeHere (elemMap renaming later)
+o20BeforeMap renaming (BeforeThere later) = BeforeThere (o20BeforeMap renaming later)
