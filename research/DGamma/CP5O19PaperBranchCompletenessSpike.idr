@@ -8,6 +8,7 @@ import DGamma.CP3
 import DGamma.CP4DeletionSelectedForeignLifecycleDivert
 import DGamma.CP4DeletionSelectedForeignLifecycleLeave
 import DGamma.CP4DeletionSelectedForeignOrchestration
+import DGamma.CP5O19OriginalBlockClassSpike
 import DGamma.CP5CurrentGenerationBirthSpike
 import DGamma.CP5O19AdjacentReplayProducerSpike
 import DGamma.CP5ConfluenceLocalDiamondSpike
@@ -288,3 +289,43 @@ export
 o19NoUnloadAtCut selected NoTransitions step later (NoParentUnloadStep _ _ excluded tail) = (excluded, tail)
 o19NoUnloadAtCut selected (MoreTransitions head rest) step later (NoParentUnloadStep _ _ excluded tail) =
   o19NoUnloadAtCut selected rest step later tail
+
+||| ORIGINAL paper-branch completeness for an actual block-owned lifecycle
+||| occurrence. The two actual block boundaries plus no-earlier/no-later give
+||| whole-source no-unload; its actual suffix would carry any Unloading output
+||| to the final-active endpoint, contradiction. The explicit alignment is a
+||| projection of the original bundle at this exact dependent cut.
+export
+0 o19OriginalPaperBranch :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected, forbidden : name) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (source : Transitions initial finalState) ->
+  (block : LocatedOpenEpisodeBlock name key world error value nameEq keyEq selected source) ->
+  {action : Action name key value world error} ->
+  (origin : LocatedActionOccurrence action source) ->
+  O19BlockWordObservation name key world error value selected forbidden action ->
+  AlignedTransitions name key world error value nameEq keyEq
+    (MoreTransitions (locatedTransition origin) (afterActionOccurrence origin)) ->
+  (isLifecycleAction action = True) -> PaperActivationStep (locatedTransition origin)
+o19OriginalPaperBranch {finalState} nameEq keyEq selected forbidden source block
+  (MkLocatedActionOccurrence before afterState earlier _ later actionExact decomposition)
+  (BlockOwnLifecycle ownLifecycle owner) (AlignedStep checkedAction tag checked _ alignedTail) lifecycle =
+    o19LifecyclePaperChecked nameEq keyEq checkedAction tag before afterState checked
+      (trans (cong isLifecycleAction actionExact) lifecycle)
+      (\same => fst (o19NoUnloadAtCut selected earlier (Fired nameEq keyEq checkedAction tag checked) later
+        (replace {p = NoParentUnload selected} (sym decomposition)
+          (o19OriginalBlockNoUnload nameEq keyEq selected source block)))
+        (trans same (cong LUnload (trans (cong actionOwner actionExact) owner))))
+      (\unloading => uninhabited (trans
+        (sym (o19ActiveNotUnloadingObserved nameEq selected finalState
+          (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected (registry finalState)) Refl (blockActiveAtFinal block)))
+        (o19UnloadingTrace nameEq keyEq selected later alignedTail
+          (snd (o19NoUnloadAtCut selected earlier (Fired nameEq keyEq checkedAction tag checked) later
+            (replace {p = NoParentUnload selected} (sym decomposition)
+              (o19OriginalBlockNoUnload nameEq keyEq selected source block))))
+          (replace {p = \actor => unloadingEndpoint {name} {key} {value} {world} {error} @{nameEq} actor afterState = True}
+            (trans (cong actionOwner actionExact) owner) unloading))))
+o19OriginalPaperBranch nameEq keyEq selected forbidden source block origin
+  (BlockGenerated child component inserted safe) aligned lifecycle =
+    void (uninhabited (trans (sym (trans (cong isLifecycleAction inserted) Refl)) lifecycle))
