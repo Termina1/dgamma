@@ -141,3 +141,11 @@ inline-parameter AdjacentActorOrderSwap record; corrected BEFORE any source
 edit or compiler attempt, then equality of full declaration inventories PASS.
 Any new non-import/non-extractor failure requires another immediate gate.
 S1-1 restored-baseline checkpoint freshly PASS in6.23s, own CrossTrace line.
+
+M30-2 driver initially STOPPED at its old first-attempt-only preflight before
+ANY source edit/compiler launch. This is NOT another Idris invocation.
+Runner now permits ONLY the explicitly gated M30-2, authenticating rejected
+M30-1, its full rollback and the dry-run. Exact one-declaration assertion is
+now present at the actual move-preflight site (initial text replacement
+missed the shorter assertion in this runner; compiler-free inspection caught it).
+All retry caps remain3/3, no invocation relabeling.

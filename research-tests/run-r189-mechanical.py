@@ -67,7 +67,12 @@ def expected_move(count):
 
 unit = sys.argv[1]
 match = re.fullmatch(r'([MIW])(\d+)-(\d+)', unit)
-assert match and match[3] == '1', 'Mechanical rejection requires a gate, no automatic retry/repair'
+assert match and (match[3]=='1' or unit=='M30-2'), 'Only explicitly gated M30-2 retry is authorized'
+if unit=='M30-2':
+    rejected=json.loads((OUT/'M30-1.json').read_text())
+    rollback=json.loads((OUT/'M30-1-rollback.json').read_text())
+    assert not rejected['passed'] and rollback['proofTextEdited'] is False
+    assert json.loads((OUT/'M30-extractor-dry-run.json').read_text())['mappedChunkDeclarations']==['MappedCanonicalSupportOrders']
 kind, number = match[1], int(match[2])
 assert datetime.datetime.now(datetime.timezone.utc) < datetime.datetime(2026,9,8,15,9,50,tzinfo=datetime.timezone.utc)
 assert git('branch','--show-current').decode().strip() == 'cp5-thm73-scoping'
@@ -87,6 +92,8 @@ if kind == 'M':
     expected = {CROSS:after_cross, SURFACE:after_surface}
     target = CROSS
     name = NAMES[number-1]
+    declarations=re.findall(rb'(?m)^(?:[01] )?[A-Za-z_]\w*[ \t]*:|^(?:record|data) [A-Za-z_]\w*',selected[name])
+    assert len(declarations)==1, 'Exactly ONE declaration per mechanical move'
     metadata = dict(kind='declaration move',declaration=name,byteCount=len(selected[name]),declarationSHA256=sha(selected[name]),oldLines=[original[:spans[name][0]].count(b'\n')+1, original[:spans[name][1]].count(b'\n')],newStartLine=after_surface[:after_surface.index(selected[name])].count(b'\n')+1)
 elif kind == 'I':
     assert 1 <= number <= len(HELPERS)
