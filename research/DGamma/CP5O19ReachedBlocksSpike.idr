@@ -1240,3 +1240,16 @@ o19UniqueFromNoSelfBefore [] noSelf = UniqueNil
 o19UniqueFromNoSelfBefore (head :: rest) noSelf =
   UniqueCons (\member => noSelf head (BeforeHere member))
     (o19UniqueFromNoSelfBefore rest (\selected, ordered => noSelf selected (BeforeThere ordered)))
+
+||| Uniqueness is DERIVED from the original decomposition, not added as
+||| an O19 safety premise: repeated actors would have two ordered episodes.
+export
+0 o19DecomposedOrderUnique : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} -> (order : List name) ->
+  {initial, finalState : SystemState name key value world error} -> {source : Transitions initial finalState} ->
+  ActorBlockDecomposition name key world error value nameEq keyEq order source -> UniqueKeys order
+o19DecomposedOrderUnique order blocks =
+  o19UniqueFromNoSelfBefore order (\selected, ordered =>
+    o19BlockBeforeNotSame (decomposedBlock blocks selected (fst (o19BeforeMembers ordered)))
+      (decomposedBlock blocks selected (snd (o19BeforeMembers ordered)))
+      (decomposedBlocksFollowOrder blocks selected selected (fst (o19BeforeMembers ordered)) (snd (o19BeforeMembers ordered)) ordered))
