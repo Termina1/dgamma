@@ -60,3 +60,31 @@ o20CoveredOriginStamp original unique events selected parent component birth
       Refl => trans stamp (cong (MkRegistrationGeneration (eventChild event))
         (uniqueInsertionPosition unique (eventChild event) (ChildOf (eventParent event)) (ChildOf parent)
           (eventComponent event) component scanned (generatedRegistrationActionOccurrence birth)))
+
+||| Keep the genuine closing branch; a retained event produces its actual
+||| opposite ORIGINAL birth and the generation equation. This makes neither
+||| a fixed-current-name claim nor a right-canonical retention assumption.
+export
+0 o20MatchClassifiedOrigin :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {leftFirst, leftFinal, rightFirst, rightFinal : SystemState name key value world error} ->
+  {left : Transitions leftFirst leftFinal} -> {right : Transitions rightFirst rightFinal} ->
+  (renaming : RegistrationGenerationBijection name) ->
+  (matching : AuthenticatedRegistrationMatching name key world error value renaming left right) ->
+  (selected : name) -> (origin : RegistrationGeneration name) ->
+  (coverage : ClassifiedGeneratedBirth name key world error value Z left (leftScannedEvents matching) selected) ->
+  eventChildGeneration (coveredEvent coverage) = origin ->
+  Either
+    (DeletedClosingRegistration (coveredEvent coverage) (afterActionOccurrence (scannedLocatedBirth (coveredBirth coverage))))
+    (opposite : RegistrationEvent name key world error value **
+      (RegistrationEventMatch renaming (coveredEvent coverage) opposite,
+       ScannedRegistrationBirth name key world error value Z right opposite,
+       generationForward renaming origin = eventChildGeneration opposite))
+o20MatchClassifiedOrigin renaming matching selected origin
+  (MkClassifiedGeneratedBirth event child birth (Left retained)) stamp =
+    case matchedEventForward matching event retained of
+      (opposite ** (rightMember, relation)) => Right (opposite **
+        (relation, rightScannedBirths matching opposite rightMember,
+          trans (cong (generationForward renaming) (sym stamp)) (matchedChildGeneration relation)))
+o20MatchClassifiedOrigin renaming matching selected origin
+  (MkClassifiedGeneratedBirth event child birth (Right closing)) stamp = Left closing
