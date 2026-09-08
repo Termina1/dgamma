@@ -54,3 +54,21 @@ checkedRootInsert nameEq keyEq root component ambient fibers absent free valid =
     OInsertTag (MkRuntimeSnapshot ambient (Bind root (freshFiber component Root) :: bindings fibers))
     (applyAction @{nameEq} @{keyEq} (OInsert root Root component) (MkSystemState ambient fibers)) Refl
     (rootInsertAtAbsence nameEq keyEq root component ambient fibers absent free) valid
+
+||| One observed name decision proves that replacing a different binding
+||| leaves an inserted head untouched. This compares ordered entries only.
+export
+0 replaceOtherHeadObserved :
+  {key : Type} -> {item : key -> Type} ->
+  (keyEq : DecEq key) -> (changed, current : key) ->
+  (next : item changed) -> (old : item current) ->
+  (rest : List (Binding key item)) ->
+  (decision : Dec (changed = current)) ->
+  (0 exact : decEq @{keyEq} changed current = decision) ->
+  (0 distinct : Not (changed = current)) ->
+  replaceEntries @{keyEq} changed next (Bind current old :: rest) =
+    Bind current old :: replaceEntries @{keyEq} changed next rest
+replaceOtherHeadObserved keyEq changed current next old rest (Yes same) exact distinct =
+  void (distinct same)
+replaceOtherHeadObserved keyEq changed current next old rest (No different) exact distinct =
+  rewrite exact in Refl
