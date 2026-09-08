@@ -17,6 +17,7 @@ import DGamma.CP5O19CartesianCursorSpike
 import DGamma.CP5O19MixedRowDispatcherSpike
 import DGamma.CP5O19MixedActivationRowSpike
 import DGamma.CP5O19PairObservationSpike
+import DGamma.CP5O19CartesianSitePlanSpike
 import DGamma.CP5O19CartesianLengthSpike
 import Data.List
 import Data.List.Elem
@@ -180,3 +181,27 @@ o19BubbleWordRow nameEq keyEq protocol swap original blocks premises safety uniq
           (appendTransitions rest (MoreTransitions right later))) decomposition)
         currentPremises currentUnique kind (\step, occurs => classes step (OccursLater occurs)))
       (classes left OccursHere)
+
+||| The ONE explicit produced-node row boundary appends exactly its actual
+||| prefix ordinal to the previous actual sites. The finite-splice law is
+||| consumed in this owning producer module; no nested-builder Refl observer.
+export
+0 o19WordRowStepObservedSites :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (protocol : RegistrationProtocol key value world error) ->
+  {initial, sourceFinal, before, middle, rightBefore, rightAfter : SystemState name key value world error} ->
+  (source : Transitions initial sourceFinal) -> (earlier : Transitions initial before) ->
+  (left : Transition before middle) -> (rest : Transitions middle rightBefore) ->
+  (right : Transition rightBefore rightAfter) -> (later : Transitions rightAfter sourceFinal) ->
+  (previous : O19WordRow name key world error value protocol nameEq keyEq source
+    (appendTransitions earlier (MoreTransitions left NoTransitions)) rest right later) ->
+  (orientation : AdjacentSwapOrientationEvidence left (mixedRowRight (wordRow previous))) ->
+  (produced : (diamond : LocalRelationalDiamond name key world error value nameEq keyEq left (mixedRowRight (wordRow previous)) **
+    AdjacentSwapResult name key world error value protocol nameEq keyEq
+      (cursorTrace (mixedRowCursor (wordRow previous))) earlier left (mixedRowRight (wordRow previous)) (mixedRowRest (wordRow previous)) diamond)) ->
+  (o19CrossingSites (cursorDerivation (mixedRowCursor (wordRow (o19WordRowStepObserved nameEq keyEq protocol source earlier left rest right later previous orientation produced)))) =
+    o19CrossingSites (cursorDerivation (mixedRowCursor (wordRow previous))) ++ [transitionCount earlier])
+o19WordRowStepObservedSites nameEq keyEq protocol source earlier left rest right later previous orientation (diamond ** result) =
+  o19AppendFiniteSites (cursorDerivation (mixedRowCursor (wordRow previous)))
+    (FiniteAdjacentSwapStep (cursorTrace (mixedRowCursor (wordRow previous))) earlier left (mixedRowRight (wordRow previous))
+      (mixedRowRest (wordRow previous)) orientation diamond result (swappedTrace result) FiniteAdjacentSwapDone)
