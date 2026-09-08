@@ -1,0 +1,3006 @@
+{
+  "title": "R185 checked prerequisite milestone: no O19 theorem closure",
+  "generatedUTC": "2026-09-08T02:52:07.411117+00:00",
+  "idrisVersion": "Idris 2, version 0.8.0",
+  "authenticatedBeforeManifestCommit": {
+    "timestamp": "2026-09-08T02:51:43.358249+00:00",
+    "head": "7a15af1639e508104f44d40615031c7f35ee79ec",
+    "start": "324dc4ae",
+    "holes": {
+      "CanonicalSort": [
+        "?sortClosingFreeTraceSpike_rhs"
+      ],
+      "CrossTrace": [
+        "?operationalAdjacentBlockSwapSpike_rhs",
+        "?selectOperationalCanonicalPermutationSpike_rhs",
+        "?canonicalSchedulesConvergeSpike_rhs"
+      ],
+      "DeletionChain": [],
+      "LocalDiamond": [],
+      "RenamingComposition": [
+        "?replayedCanonicalToOriginalEndpointSpike_rhs"
+      ]
+    },
+    "split": [
+      1,
+      3,
+      0,
+      0,
+      1
+    ],
+    "productionDiffVs34b21c9": "empty",
+    "CP3Blob": "2c697e532e83989de8591fa6a4378747c6a501c0",
+    "LocalDiamondDiffVsStart": "two approved visibility keywords only",
+    "LocalDiamondStrippedMatches2a01e118": true,
+    "LocalDiamondAuthorizedVisibility": {
+      "PaperAdvanceSource": "public export",
+      "paperAdvanceSource": "export"
+    },
+    "CanonicalSortDiffVsStart": "empty",
+    "CanonicalSortAuthorizedVisibility": {},
+    "DeletionChainDiffVsStart": "empty",
+    "CrossTraceDiffVsStart": "empty",
+    "RenamingCompositionDiffVsStart": "empty",
+    "adjacentFullBytes": 1470,
+    "adjacentFullSHA256": "2d01486bf953f11191b758ac3cfb5722d1d02b1a192b6e552adc8a3f58199ecf",
+    "adjacentStatementBytes": 1154,
+    "adjacentStatementSHA256": "3aae5a9fbc5b14e0411b4a91e557a6f3dc68c9a6282b9ec2b3fc658cec337adf",
+    "reviewSHA256": "61fc23ae4cea4565b442c840be39c41746ecbac73b8c2f73d04f1e3b4f4681e8",
+    "seeds": "207/207",
+    "LocalDiamondTTC": {
+      "bytes": 125368223,
+      "mtimeUTC": "2026-09-08T02:34:38.629946+00:00"
+    },
+    "changedIdrisFiles": [
+      "research-tests/DGamma/R185O19ActivationInsertionRowPositive.idr",
+      "research-tests/DGamma/R185O19InsertionGuardsPositive.idr",
+      "research-tests/DGamma/R185O19ObservedInsertionRowPositive.idr",
+      "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+      "research/DGamma/CP5O19ActivationInsertionRowSpike.idr",
+      "research/DGamma/CP5O19ActivationResolutionSpike.idr",
+      "research/DGamma/CP5O19AdvanceObservationSpike.idr",
+      "research/DGamma/CP5O19CartesianInsertionSpike.idr",
+      "research/DGamma/CP5O19InsertionInsertionRowSpike.idr",
+      "research/DGamma/CP5O19ResolvedOpeningRowSpike.idr",
+      "research/DGamma/CP5O19SourceShapeSpike.idr"
+    ],
+    "sourceSHA256": {
+      "research-tests/DGamma/R185O19ActivationInsertionRowPositive.idr": "7282931bee762f24c93943cb95a3530b4a9f6579d8fedb524273506f6d0023d0",
+      "research-tests/DGamma/R185O19InsertionGuardsPositive.idr": "2b88095daffc00a4dbf7de0d388293edf9e062091391b38f5c9ba91d5cba23fc",
+      "research-tests/DGamma/R185O19ObservedInsertionRowPositive.idr": "d4afe7fdb8094852de0cb41d5082a6156485f6080a4cf2858a112a31c1d6983c",
+      "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr": "f77f66a3e3a62f2ff757709f08d1488a25d54d425af74dcec4c2c0f0ed28c6fd",
+      "research/DGamma/CP5O19ActivationInsertionRowSpike.idr": "92182efb39ab89edde5663af0ad0aa4e9d00c6780c30a09c632740737ea0f625",
+      "research/DGamma/CP5O19ActivationResolutionSpike.idr": "699caa76e3935afa24f43da04c07f8b1d5ae23603f6112e034c3888eefec8f46",
+      "research/DGamma/CP5O19AdvanceObservationSpike.idr": "ce984fd7e9a5166a11b8150a164d0a1699648a171845436d206e08d1a51b33f6",
+      "research/DGamma/CP5O19CartesianInsertionSpike.idr": "930f87e85893a3589aef0dabf536727271efaed7ac9b3c074c51435be6b863e3",
+      "research/DGamma/CP5O19InsertionInsertionRowSpike.idr": "7b37cdd0c88f10d122b21d7e187e32ecc333b7d2f58d22577243e1666c1019a9",
+      "research/DGamma/CP5O19ResolvedOpeningRowSpike.idr": "2e3108bae048b31c7acfb3998f4c1396b821789ba11753972cf09e3608724781",
+      "research/DGamma/CP5O19SourceShapeSpike.idr": "b7ade648e85d35b309a086aa458000cca7646806a027bbd0a22e77d508273ce0"
+    },
+    "protectedDeclarationSHA256": {
+      "sortClosingFreeTraceSpike": "1df8d174b9a4f119a5a52e2073a72907bdb890413f877d55886e905e1d0279d1",
+      "operationalAdjacentBlockSwapSpike": "e0a085b88ac2c48db4e8a7466db9e289eb9fe8ceec22f30ed6f7082eaa25220d",
+      "selectOperationalCanonicalPermutationSpike": "b00063eacf339b58828eac5829cebc66fc7265f3518be459af0602463b6fbae7",
+      "canonicalSchedulesConvergeSpike": "0e8a177ea7bb4807cb77680cde29e75f7d37224711cc51cf7bf6636426690dd9",
+      "replayedCanonicalToOriginalEndpointSpike": "377b08ff82e1e4212738bb00a45a088b1f0d8fd8bc8b54bf061c96f2f4891681"
+    },
+    "prohibitedAdditions": {
+      "\\bbelieve_me\\b": [],
+      "\\bassert_total\\b": [],
+      "^\\s*partial\\b": [],
+      "\\?\\w+": [],
+      "\\blet\\b": [],
+      "\\bwith\\b": [],
+      "\\bdeletionTheoremProof\\b": [],
+      "\\bpostulate\\b": [],
+      "\\b[A-Za-z_]\\w*@\\s*[\\(\\[]": []
+    },
+    "noCompiler": true,
+    "noStagedFiles": true,
+    "cleanTrackedTree": true,
+    "allowedUntrackedOnly": true
+  },
+  "evidenceReconciliation": {
+    "checks": 137,
+    "ordinaryPasses": 117,
+    "intendedNegativePasses": 2,
+    "rejectedOrInterrupted": 18,
+    "compilerRejections": 17,
+    "interruptions": 1,
+    "serialized": true,
+    "oneNewDeclarationPerInvocation": true,
+    "workflowViolations": [],
+    "ancillaryVersionQuery": {
+      "command": "idris2 --version",
+      "observedUTCPrecision": "The enclosing shell printed Tue Sep 8 02:27:05 UTC 2026 immediately before this version query; separate start/end process timestamps were not retained.",
+      "stdout": "Idris 2, version 0.8.0",
+      "result": "passed",
+      "overlappedSourceCheck": "V01",
+      "sourceCheckedOrBuilt": false,
+      "seedModifiedByQuery": false,
+      "sourceCheckBuildSerialization": "All source checks/builds remain serialized, as checked by the per-attempt ledger.",
+      "strictCompilerProgramInvocationSerialization": false,
+      "qualification": "The ancillary version-only process overlaps V01. No strict zero-overlap claim is made for all compiler-program invocations. This is separate from the D3 monitor interruption and D4 dropped failed-check commit."
+    },
+    "seededPackageBuilds": 1,
+    "attemptCapsVerified": {
+      "A1": [
+        1,
+        2
+      ],
+      "A2": [
+        1
+      ],
+      "A3": [
+        1
+      ],
+      "A4": [
+        1
+      ],
+      "A5": [
+        1
+      ],
+      "A6": [
+        1
+      ],
+      "A7": [
+        1
+      ],
+      "A8": [
+        1
+      ],
+      "A9": [
+        1
+      ],
+      "A10": [
+        1
+      ],
+      "A11": [
+        1,
+        2
+      ],
+      "A12": [
+        1
+      ],
+      "A13": [
+        1
+      ],
+      "A14": [
+        1
+      ],
+      "A15": [
+        1
+      ],
+      "A16": [
+        1,
+        2
+      ],
+      "AO1": [
+        1
+      ],
+      "AO2": [
+        1
+      ],
+      "AO3": [
+        1
+      ],
+      "AO4": [
+        1
+      ],
+      "AO5": [
+        1
+      ],
+      "AO6": [
+        1
+      ],
+      "AO7": [
+        1
+      ],
+      "AO8": [
+        1
+      ],
+      "AO9": [
+        1
+      ],
+      "AO10": [
+        1
+      ],
+      "OO1": [
+        1,
+        2
+      ],
+      "OO2": [
+        1
+      ],
+      "OO3": [
+        1
+      ],
+      "OO4": [
+        1
+      ],
+      "OO5": [
+        1
+      ],
+      "OO6": [
+        1
+      ],
+      "OO7": [
+        1
+      ],
+      "OO8": [
+        1
+      ],
+      "OO9": [
+        1
+      ],
+      "OO10": [
+        1
+      ],
+      "B1": [
+        1
+      ],
+      "B2": [
+        1
+      ],
+      "B3": [
+        1
+      ],
+      "B4": [
+        1
+      ],
+      "B5": [
+        1,
+        2
+      ],
+      "B6": [
+        1
+      ],
+      "B7": [
+        1
+      ],
+      "B8": [
+        1
+      ],
+      "B9": [
+        1
+      ],
+      "B10": [
+        1
+      ],
+      "B11": [
+        1
+      ],
+      "B12": [
+        1
+      ],
+      "B13": [
+        1
+      ],
+      "B14": [
+        1
+      ],
+      "D1": [
+        1
+      ],
+      "D2": [
+        1
+      ],
+      "D3": [
+        1,
+        2,
+        3
+      ],
+      "D4": [
+        1,
+        2
+      ],
+      "D5": [
+        1
+      ],
+      "D6": [
+        1
+      ],
+      "D7": [
+        1
+      ],
+      "D8": [
+        1,
+        2
+      ],
+      "D9": [
+        1,
+        2
+      ],
+      "D10": [
+        1
+      ],
+      "D11": [
+        1
+      ],
+      "D12": [
+        1,
+        2
+      ],
+      "D13": [
+        1
+      ],
+      "D14": [
+        1
+      ],
+      "D15": [
+        1
+      ],
+      "D16": [
+        1
+      ],
+      "E1": [
+        1
+      ],
+      "E2": [
+        1,
+        2,
+        3
+      ],
+      "E3": [
+        1
+      ],
+      "E4": [
+        1
+      ],
+      "E5": [
+        1
+      ],
+      "E6": [
+        1
+      ],
+      "E7": [
+        1
+      ],
+      "E8": [
+        1
+      ],
+      "E9": [
+        1,
+        2
+      ],
+      "E10": [
+        1
+      ],
+      "E11": [
+        1
+      ],
+      "E12": [
+        1
+      ],
+      "F1": [
+        1,
+        2,
+        3
+      ],
+      "F2": [
+        1
+      ],
+      "F3": [
+        1
+      ],
+      "F4": [
+        1
+      ],
+      "F5": [
+        1
+      ],
+      "F6": [
+        1
+      ],
+      "F7": [
+        1,
+        2
+      ],
+      "F8": [
+        1
+      ]
+    },
+    "priorFreshPassForEverySourceCommit": [
+      {
+        "commit": "b29c191a776e42d0a0c059da248a51f845380abe",
+        "path": "research/DGamma/CP5O19ResolvedOpeningRowSpike.idr",
+        "check": "A1-2",
+        "passedAt": "2026-09-07T23:58:19.037988+00:00",
+        "sourceSHA256": "06d898e02b8265aba6152a4ea13acb5595ee12c3d712e41dc8e7bb46de11e9eb"
+      },
+      {
+        "commit": "dbcfdab854f0dd3dad23779a12a07fac4a050aa3",
+        "path": "research/DGamma/CP5O19ResolvedOpeningRowSpike.idr",
+        "check": "A2-1",
+        "passedAt": "2026-09-07T23:59:01.135416+00:00",
+        "sourceSHA256": "aa237a70e9f544eb6218d221b28e84b5d3e7dccbb82570fafea25ac1fc6d0391"
+      },
+      {
+        "commit": "1f88500dfa4b551c6df946f79bd77dd03a0eb3d2",
+        "path": "research/DGamma/CP5O19ResolvedOpeningRowSpike.idr",
+        "check": "A3-1",
+        "passedAt": "2026-09-07T23:59:37.904239+00:00",
+        "sourceSHA256": "eac3818c33c4e165c275f246ae2ff425b2f78ca1d5a3e05759b36650ae7f49c3"
+      },
+      {
+        "commit": "3295fc0af524da63a4cf1dc3ffcefb0b5f743469",
+        "path": "research/DGamma/CP5O19ResolvedOpeningRowSpike.idr",
+        "check": "A4-1",
+        "passedAt": "2026-09-08T00:00:25.293316+00:00",
+        "sourceSHA256": "f04fe8d706dabb1727cfa65ed0b1ae0ab02e5d8596d61e00cb02d5c8893cb451"
+      },
+      {
+        "commit": "3f145ee55ea10f1a26fe136281e41287d2ce17e1",
+        "path": "research/DGamma/CP5O19ResolvedOpeningRowSpike.idr",
+        "check": "A5-1",
+        "passedAt": "2026-09-08T00:01:40.194077+00:00",
+        "sourceSHA256": "a45fc1bfbdf5b3dafcb3cda46e022b9c243c0bf540efec57300439ae84fca63b"
+      },
+      {
+        "commit": "40f47bc6160b0d2a065ea6aafcfbec21f544b062",
+        "path": "research/DGamma/CP5O19ResolvedOpeningRowSpike.idr",
+        "check": "A6-1",
+        "passedAt": "2026-09-08T00:02:28.268154+00:00",
+        "sourceSHA256": "2488844e37b48823595825052df40ffde5b00b320732f188f9455bdaa97e57b6"
+      },
+      {
+        "commit": "f82bef8d27f314932f617fd6204a323fce274f8e",
+        "path": "research/DGamma/CP5O19ResolvedOpeningRowSpike.idr",
+        "check": "A7-1",
+        "passedAt": "2026-09-08T00:04:02.155745+00:00",
+        "sourceSHA256": "938b1ea4ed1802a33529f9d8f5b20614c4297389cbf2c318d6f8a917602516ca"
+      },
+      {
+        "commit": "007cf231e7614523c0f2aba424468c67fcf95e2d",
+        "path": "research/DGamma/CP5O19ResolvedOpeningRowSpike.idr",
+        "check": "A8-1",
+        "passedAt": "2026-09-08T00:05:20.461697+00:00",
+        "sourceSHA256": "54e4554b20f4aefd11ff037d391e0b5a51eb1c831dc2eee3a54b4facf0b54c3c"
+      },
+      {
+        "commit": "c88386c13af01d9d85d91ead34bc59dd82b48405",
+        "path": "research/DGamma/CP5O19ResolvedOpeningRowSpike.idr",
+        "check": "A9-1",
+        "passedAt": "2026-09-08T00:06:11.561725+00:00",
+        "sourceSHA256": "9fb41bbede55f1201bd71dad5a6fde4a51164fff0234e4a01ab59851e5f4b28e"
+      },
+      {
+        "commit": "9f5855186ac65c579806c25e70055b4e3b14b372",
+        "path": "research/DGamma/CP5O19ResolvedOpeningRowSpike.idr",
+        "check": "A10-1",
+        "passedAt": "2026-09-08T00:06:40.562841+00:00",
+        "sourceSHA256": "2d71949820fc73788abc913b969975f2a5487f024916c90463748e941ab2f889"
+      },
+      {
+        "commit": "ae394d614e05008d33f835dffb2942bcae04cde7",
+        "path": "research/DGamma/CP5O19ResolvedOpeningRowSpike.idr",
+        "check": "A11-2",
+        "passedAt": "2026-09-08T00:07:22.656844+00:00",
+        "sourceSHA256": "c91557ecadc8eb1512d00c777abe51f31e3360fe57248c56d1b9f27bd2d8dafa"
+      },
+      {
+        "commit": "f4652019dfd8ec1af6e957279786c7aa3c534ccf",
+        "path": "research/DGamma/CP5O19ResolvedOpeningRowSpike.idr",
+        "check": "A12-1",
+        "passedAt": "2026-09-08T00:07:54.419325+00:00",
+        "sourceSHA256": "34838e6de966ebe3e0b45be2c8e16fe8234e51f1ac7d153958a11b3a51460035"
+      },
+      {
+        "commit": "be35080fa510a4bd3017c5c6a2bc069b999bd5a3",
+        "path": "research/DGamma/CP5O19ResolvedOpeningRowSpike.idr",
+        "check": "A13-1",
+        "passedAt": "2026-09-08T00:08:59.539569+00:00",
+        "sourceSHA256": "9fdf4e8cc1d5a78a402e3658bf05c07656822f7c811b1c60b314b30791e437e7"
+      },
+      {
+        "commit": "6ebab1561d4e4385d642c5cd22320f828adc70ca",
+        "path": "research/DGamma/CP5O19ResolvedOpeningRowSpike.idr",
+        "check": "A14-1",
+        "passedAt": "2026-09-08T00:09:40.465920+00:00",
+        "sourceSHA256": "8e25078054d73b8be4c7e94f48e7a16e71a29c5f85c22ff269a053cc821be68e"
+      },
+      {
+        "commit": "cd0dc601874b31f98887a2910fd59450eda55788",
+        "path": "research/DGamma/CP5O19ResolvedOpeningRowSpike.idr",
+        "check": "A15-1",
+        "passedAt": "2026-09-08T00:10:29.396915+00:00",
+        "sourceSHA256": "2e3108bae048b31c7acfb3998f4c1396b821789ba11753972cf09e3608724781"
+      },
+      {
+        "commit": "9338a8de3d1028d95305841069f8ea30765349a3",
+        "path": "research-tests/DGamma/R185O19ObservedInsertionRowPositive.idr",
+        "check": "A16-2",
+        "passedAt": "2026-09-08T00:11:48.780611+00:00",
+        "sourceSHA256": "d4afe7fdb8094852de0cb41d5082a6156485f6080a4cf2858a112a31c1d6983c"
+      },
+      {
+        "commit": "3c961ceaf014e3b7a262f0ba0ce46c03486cabcc",
+        "path": "research/DGamma/CP5O19ActivationInsertionRowSpike.idr",
+        "check": "AO1-1",
+        "passedAt": "2026-09-08T00:12:58.982004+00:00",
+        "sourceSHA256": "4fe2fa37602c9563229fe6b32d2202d3a02cf10e54f4d2fcd6e528e45e573617"
+      },
+      {
+        "commit": "fffb39e0d64ac57e63b6fb53e62c6a96e577e06c",
+        "path": "research/DGamma/CP5O19ActivationInsertionRowSpike.idr",
+        "check": "AO2-1",
+        "passedAt": "2026-09-08T00:13:15.684034+00:00",
+        "sourceSHA256": "70ea8fde30d099dee5bac79a99639f7109befb35fc32b06ceba1d6eaae37e77a"
+      },
+      {
+        "commit": "79299e5ae76b69849da59722ab15ef1326fac8ff",
+        "path": "research/DGamma/CP5O19ActivationInsertionRowSpike.idr",
+        "check": "AO3-1",
+        "passedAt": "2026-09-08T00:13:46.919228+00:00",
+        "sourceSHA256": "c8da2ad16b135b727519a34629654e75eb8a13822509ed074dd4b72425aa07e8"
+      },
+      {
+        "commit": "c3a7624323c11712372749625509b01d6fd98d41",
+        "path": "research/DGamma/CP5O19ActivationInsertionRowSpike.idr",
+        "check": "AO4-1",
+        "passedAt": "2026-09-08T00:14:21.325025+00:00",
+        "sourceSHA256": "8efcc797b3a2011564cb4b783575e571731a5be9635974218c7779e8760bb792"
+      },
+      {
+        "commit": "1afbe765e7dcbfb8f144d4ad4f3c2e53a0f3032b",
+        "path": "research/DGamma/CP5O19ActivationInsertionRowSpike.idr",
+        "check": "AO5-1",
+        "passedAt": "2026-09-08T00:14:48.174995+00:00",
+        "sourceSHA256": "990a8adb388040dffc426ba917ad8beb8db5208d02930a3fa6722dd79748a7dc"
+      },
+      {
+        "commit": "7ad9e90c542947be6f2e00d95fe9b7abb6aa8c4d",
+        "path": "research/DGamma/CP5O19ActivationInsertionRowSpike.idr",
+        "check": "AO6-1",
+        "passedAt": "2026-09-08T00:15:18.822408+00:00",
+        "sourceSHA256": "07e543d5300dc8de6e85e5161cd9b37a32266fc78e245d4a4864d56b9675d63a"
+      },
+      {
+        "commit": "57503281d69570bee51e7c928504c5cf32fe421c",
+        "path": "research/DGamma/CP5O19ActivationInsertionRowSpike.idr",
+        "check": "AO7-1",
+        "passedAt": "2026-09-08T00:15:56.988774+00:00",
+        "sourceSHA256": "92182efb39ab89edde5663af0ad0aa4e9d00c6780c30a09c632740737ea0f625"
+      },
+      {
+        "commit": "d391b7aa0a56afd2e6674c56abb0fd53fa59d6bd",
+        "path": "research-tests/DGamma/R185O19ActivationInsertionRowPositive.idr",
+        "check": "AO8-1",
+        "passedAt": "2026-09-08T00:16:36.195122+00:00",
+        "sourceSHA256": "a28ff0675b732ab9bf39b2f265ec9595dc2fc6ec07aba53430694525f992db8d"
+      },
+      {
+        "commit": "908acac8c023c436beb0920793d0c166c9d2ed3d",
+        "path": "research-tests/DGamma/R185O19ActivationInsertionRowPositive.idr",
+        "check": "AO9-1",
+        "passedAt": "2026-09-08T00:16:58.051645+00:00",
+        "sourceSHA256": "1563c787968d250ba70d64d25547ea95ba4783a5ce9172ac952972234bd5ba1d"
+      },
+      {
+        "commit": "42a4244c65ca19efffb3cace13560af0d088e09e",
+        "path": "research-tests/DGamma/R185O19ActivationInsertionRowPositive.idr",
+        "check": "AO10-1",
+        "passedAt": "2026-09-08T00:17:31.530653+00:00",
+        "sourceSHA256": "7282931bee762f24c93943cb95a3530b4a9f6579d8fedb524273506f6d0023d0"
+      },
+      {
+        "commit": "2b50d45a5d43023ecbbcf80da3b381698ef97191",
+        "path": "research/DGamma/CP5O19InsertionInsertionRowSpike.idr",
+        "check": "OO1-2",
+        "passedAt": "2026-09-08T00:19:49.760756+00:00",
+        "sourceSHA256": "ad4610d54a926b55465ac0297c8858134642d93bef78fa3c0667da59cc0f57a8"
+      },
+      {
+        "commit": "ae1e1a6549bf8a35bbe067af53a189764b8a112d",
+        "path": "research/DGamma/CP5O19InsertionInsertionRowSpike.idr",
+        "check": "OO2-1",
+        "passedAt": "2026-09-08T00:20:14.613539+00:00",
+        "sourceSHA256": "f3a7c375eab0883e758b3eec67e0613c39d4b19aade3638fa1cee65ec0fef8a1"
+      },
+      {
+        "commit": "52d247f8fdfa453c82aa3331a51341af5b2db3d9",
+        "path": "research/DGamma/CP5O19InsertionInsertionRowSpike.idr",
+        "check": "OO3-1",
+        "passedAt": "2026-09-08T00:20:42.091345+00:00",
+        "sourceSHA256": "5d4f5bbead4970d1f5d91baf5c361fb31495a7573d7b7b0b52c23d929255026b"
+      },
+      {
+        "commit": "64cf2cc8409ea0546daeee173f5a3e6e0366d2f9",
+        "path": "research/DGamma/CP5O19InsertionInsertionRowSpike.idr",
+        "check": "OO4-1",
+        "passedAt": "2026-09-08T00:21:42.436908+00:00",
+        "sourceSHA256": "4e98115ae19cd2f595502d5808e079b0d06e54594ae2519bc537c122def41444"
+      },
+      {
+        "commit": "2358b28aa40f9200d0aed59c1a3cbaa571c8202b",
+        "path": "research/DGamma/CP5O19InsertionInsertionRowSpike.idr",
+        "check": "OO5-1",
+        "passedAt": "2026-09-08T00:22:18.437777+00:00",
+        "sourceSHA256": "c8272a2941b5465cea01d61a83d471bcb522780a3f47e82d476409fcd0ea30dc"
+      },
+      {
+        "commit": "4f51343de9c54c88e5582009a6296b73f6ba3245",
+        "path": "research/DGamma/CP5O19InsertionInsertionRowSpike.idr",
+        "check": "OO6-1",
+        "passedAt": "2026-09-08T00:22:52.580536+00:00",
+        "sourceSHA256": "07360829b88ab0cc4cf84c1e5126ab25c6a2b92b2e45308638c7349ea877e388"
+      },
+      {
+        "commit": "82e0e67dcb8b8d8f05b174ea6050ba151282227d",
+        "path": "research/DGamma/CP5O19InsertionInsertionRowSpike.idr",
+        "check": "OO7-1",
+        "passedAt": "2026-09-08T00:23:23.259310+00:00",
+        "sourceSHA256": "7185b4802d523732a7a498feaba610f352dd7ec4061b8c2b3bd828631d474e81"
+      },
+      {
+        "commit": "4b4621ee516e444367a0c1eafaf8891df526bc22",
+        "path": "research/DGamma/CP5O19InsertionInsertionRowSpike.idr",
+        "check": "OO8-1",
+        "passedAt": "2026-09-08T00:24:26.946840+00:00",
+        "sourceSHA256": "56a688d366af3e218907aec5001045be4dab78de69180a25d76bda401e4a4b03"
+      },
+      {
+        "commit": "25b41d569385aaec386d1c42728c4ef1879b6f0a",
+        "path": "research/DGamma/CP5O19InsertionInsertionRowSpike.idr",
+        "check": "OO9-1",
+        "passedAt": "2026-09-08T00:25:00.656691+00:00",
+        "sourceSHA256": "7b37cdd0c88f10d122b21d7e187e32ecc333b7d2f58d22577243e1666c1019a9"
+      },
+      {
+        "commit": "96f3401d3d7d6b91aaf8cacbecd0ba68a2ea23e8",
+        "path": "research-tests/DGamma/R185O19InsertionGuardsPositive.idr",
+        "check": "OO10-1",
+        "passedAt": "2026-09-08T00:25:39.798855+00:00",
+        "sourceSHA256": "2b88095daffc00a4dbf7de0d388293edf9e062091391b38f5c9ba91d5cba23fc"
+      },
+      {
+        "commit": "cecf4a0484084c554ba525bcf2d2a0b3a5374af2",
+        "path": "research/DGamma/CP5O19CartesianInsertionSpike.idr",
+        "check": "B1-1",
+        "passedAt": "2026-09-08T00:31:17.975424+00:00",
+        "sourceSHA256": "49fd603f1ce37d718bca658a49ee63d34a5d7e12d4a9cc6ec81b8d33ff5a0ebf"
+      },
+      {
+        "commit": "7d88ce400db12d9251669230511820bf7fdfeec0",
+        "path": "research/DGamma/CP5O19CartesianInsertionSpike.idr",
+        "check": "B2-1",
+        "passedAt": "2026-09-08T00:31:46.382250+00:00",
+        "sourceSHA256": "fe7387c518f263153ea53cd611a46f878640261f547e67c6024cd0f3f5981b26"
+      },
+      {
+        "commit": "8fd19645a6100f0026b3ac0c91c483d30c5ad9a3",
+        "path": "research/DGamma/CP5O19CartesianInsertionSpike.idr",
+        "check": "B3-1",
+        "passedAt": "2026-09-08T00:32:14.606044+00:00",
+        "sourceSHA256": "b991ebbcdb14bb7d1bc5b490b3dbd093b3591d3a2fbeda86baae50f9745e10e4"
+      },
+      {
+        "commit": "3baa8b6ea231d2b115b2c6fe576641970d3a1944",
+        "path": "research/DGamma/CP5O19CartesianInsertionSpike.idr",
+        "check": "B4-1",
+        "passedAt": "2026-09-08T00:32:37.226329+00:00",
+        "sourceSHA256": "a75ebb8392e247c501675f3ec1bf8d58f883d8ac30c59d45975ef94be09abc63"
+      },
+      {
+        "commit": "b7843966afe5d17928a2d008da3ad4152a58be47",
+        "path": "research/DGamma/CP5O19CartesianInsertionSpike.idr",
+        "check": "B5-2",
+        "passedAt": "2026-09-08T00:34:24.344556+00:00",
+        "sourceSHA256": "3d9608474dc5ba0b461ba0c047b154d7a99c561615a4ec608dd99392c45aa961"
+      },
+      {
+        "commit": "441b97ee74a9f863b3060e9d3415ae2f9b37507d",
+        "path": "research/DGamma/CP5O19CartesianInsertionSpike.idr",
+        "check": "B6-1",
+        "passedAt": "2026-09-08T00:35:06.012064+00:00",
+        "sourceSHA256": "a64ba7db56ccb2b1be3245134c355628ff065f0a535f1595a8490918f4f69465"
+      },
+      {
+        "commit": "5754b87ff0cb34c510ba06a8f3f728c345ee1cbf",
+        "path": "research/DGamma/CP5O19CartesianInsertionSpike.idr",
+        "check": "B7-1",
+        "passedAt": "2026-09-08T00:35:40.412966+00:00",
+        "sourceSHA256": "a4dc5bf1aab03ab7b7ec0a9e04de04729f93af6a61a2f9057b89453366787310"
+      },
+      {
+        "commit": "b18f45e235590873a0b5f4b0524419c755b93c4b",
+        "path": "research/DGamma/CP5O19CartesianInsertionSpike.idr",
+        "check": "B8-1",
+        "passedAt": "2026-09-08T00:36:44.988874+00:00",
+        "sourceSHA256": "53d8f26e4e0d8286417754ce33779021f259ed0e94b7786b0dc0a319b2ce950c"
+      },
+      {
+        "commit": "c89865ee40605847cf9c70226bba3de439430432",
+        "path": "research/DGamma/CP5O19CartesianInsertionSpike.idr",
+        "check": "B9-1",
+        "passedAt": "2026-09-08T00:37:27.034491+00:00",
+        "sourceSHA256": "8463997f882efa753302d18ac768e81d5f6451fb443fcd4922f946406e061578"
+      },
+      {
+        "commit": "3e1531b63e92ee83c5f6179a13089ddb32552e21",
+        "path": "research/DGamma/CP5O19CartesianInsertionSpike.idr",
+        "check": "B10-1",
+        "passedAt": "2026-09-08T00:38:07.050519+00:00",
+        "sourceSHA256": "ba25b17a6f6a909e0e0034a173f687200bb2fa89c95644e9f3a74ff9835ae42b"
+      },
+      {
+        "commit": "d7a5915ab8342ff56cccfc21eb05516f1abeee90",
+        "path": "research/DGamma/CP5O19CartesianInsertionSpike.idr",
+        "check": "B11-1",
+        "passedAt": "2026-09-08T00:38:34.814305+00:00",
+        "sourceSHA256": "69aa7d9bafded4a236d548203564a542331301de57d8e880d8eb985cfb0afe4c"
+      },
+      {
+        "commit": "32120cfa3b4d65fdd36ae48b8e153b8c5bdd886c",
+        "path": "research/DGamma/CP5O19CartesianInsertionSpike.idr",
+        "check": "B12-1",
+        "passedAt": "2026-09-08T00:40:03.882521+00:00",
+        "sourceSHA256": "9604ec0c67a3f9a6628a1b610b6293cbfa50682c177105803b1fbb680d200c3b"
+      },
+      {
+        "commit": "b35340b0d790868583d441d4d8757767fbb93761",
+        "path": "research/DGamma/CP5O19CartesianInsertionSpike.idr",
+        "check": "B13-1",
+        "passedAt": "2026-09-08T00:40:45.992393+00:00",
+        "sourceSHA256": "af84bf5d16189ff4bb487c1798d9690c5b4a62d32379156099d4268fed087fe6"
+      },
+      {
+        "commit": "65a714ad4401bdc38e3d36664d8f6391e566f6f4",
+        "path": "research/DGamma/CP5O19CartesianInsertionSpike.idr",
+        "check": "B14-1",
+        "passedAt": "2026-09-08T00:41:42.985373+00:00",
+        "sourceSHA256": "8acf0031f5b8c076b84f376b2efae5ce9fcf39fd4d07333438cf4869c73bb81b"
+      },
+      {
+        "commit": "9e0a7b30e07d908f2faccbc16eae38cebf1cc26d",
+        "path": "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+        "check": "D1-1",
+        "passedAt": "2026-09-08T00:55:41.846934+00:00",
+        "sourceSHA256": "468fddb99c8cc7061e22ad178ccc2b7204147213287bc5af178f2fe5c0b996ed"
+      },
+      {
+        "commit": "1cf297ff69e1a0127435af88dcbeafd642675541",
+        "path": "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+        "check": "D2-1",
+        "passedAt": "2026-09-08T01:04:33.027187+00:00",
+        "sourceSHA256": "f77f66a3e3a62f2ff757709f08d1488a25d54d425af74dcec4c2c0f0ed28c6fd"
+      },
+      {
+        "commit": "43a98451193c536901c31d9b48e9cdfc9e577260",
+        "path": "research/DGamma/CP5O19AdvanceObservationSpike.idr",
+        "check": "D3-3",
+        "passedAt": "2026-09-08T01:09:10.547495+00:00",
+        "sourceSHA256": "2860f54643dc842a15e4228312af4373c8c27fa2ee9b918a099be111bfda31c5"
+      },
+      {
+        "commit": "518580dc31b3c4c64160d2f4a9bd0d2b8d7b297e",
+        "path": "research/DGamma/CP5O19AdvanceObservationSpike.idr",
+        "check": "D4-2",
+        "passedAt": "2026-09-08T01:12:08.492373+00:00",
+        "sourceSHA256": "0ce5164fc85714172296dacb5d66098ae8cbea383ad14cd1fac1e887d2c43697"
+      },
+      {
+        "commit": "f7cb56a593216d4d917e73f5b95411c61bc6b1c9",
+        "path": "research/DGamma/CP5O19AdvanceObservationSpike.idr",
+        "check": "D5-1",
+        "passedAt": "2026-09-08T01:12:42.566811+00:00",
+        "sourceSHA256": "23ea0f805428eeff8e07778cd58f47d9f06b8bb0c1f1d8b5b1122d2881e5ff87"
+      },
+      {
+        "commit": "86b37c9fee42d70987b01582b89d88f60d9290ab",
+        "path": "research/DGamma/CP5O19AdvanceObservationSpike.idr",
+        "check": "D6-1",
+        "passedAt": "2026-09-08T01:13:17.672663+00:00",
+        "sourceSHA256": "f5b89bfd802390bbd7076cbf2c4bfa08cde1ab511bbe1c7bf05f616d5dc07052"
+      },
+      {
+        "commit": "59fa5ef4d71425aab6d6376d8d0ad22902b84592",
+        "path": "research/DGamma/CP5O19AdvanceObservationSpike.idr",
+        "check": "D7-1",
+        "passedAt": "2026-09-08T01:13:59.545394+00:00",
+        "sourceSHA256": "afd030706553eec978794fe7364ff0a70dd5157c0c31a0fb8958fc18b85693b8"
+      },
+      {
+        "commit": "1d74c2882c0d4318bb2673028b3b62189c482a0a",
+        "path": "research/DGamma/CP5O19AdvanceObservationSpike.idr",
+        "check": "D8-2",
+        "passedAt": "2026-09-08T01:15:43.354501+00:00",
+        "sourceSHA256": "3352b56173cec37a33792166e9e6afb28daa88c5e0d921e57d710df8595f0ed8"
+      },
+      {
+        "commit": "b6d58304c394f8d5c0b296187d7d3c09832773c6",
+        "path": "research/DGamma/CP5O19AdvanceObservationSpike.idr",
+        "check": "D9-2",
+        "passedAt": "2026-09-08T01:18:23.038463+00:00",
+        "sourceSHA256": "628847d917ae707144fa4b8e8ea364d0e968eec6f24d9acafd53c02bbcf23eb4"
+      },
+      {
+        "commit": "b3daacff9515a55b01f7f6467a1da4c839cca472",
+        "path": "research/DGamma/CP5O19AdvanceObservationSpike.idr",
+        "check": "D10-1",
+        "passedAt": "2026-09-08T01:19:18.604721+00:00",
+        "sourceSHA256": "0aa88cc8f8f58b42892f113e017c34bbd20f94f4d0806d764f33375b0a7b24ed"
+      },
+      {
+        "commit": "9646c67607c85a62102d5fb837d986110f5617ca",
+        "path": "research/DGamma/CP5O19AdvanceObservationSpike.idr",
+        "check": "D11-1",
+        "passedAt": "2026-09-08T01:20:02.821602+00:00",
+        "sourceSHA256": "916042c35e0502c4cb40781f54a672cb29b5d87ef60b50c010ec94d11851d6ea"
+      },
+      {
+        "commit": "d54e1903b36f825e1b2de45f74d143e3b623f6c2",
+        "path": "research/DGamma/CP5O19AdvanceObservationSpike.idr",
+        "check": "D12-2",
+        "passedAt": "2026-09-08T01:22:14.565395+00:00",
+        "sourceSHA256": "6b51295d71858f8ef5a31c64be6d16b998a8879f84ae28165cbc0c2d16199652"
+      },
+      {
+        "commit": "d892bdac577331a8c0652512409358ca9dd8ad78",
+        "path": "research/DGamma/CP5O19AdvanceObservationSpike.idr",
+        "check": "D13-1",
+        "passedAt": "2026-09-08T01:29:42.658691+00:00",
+        "sourceSHA256": "a0427077dfe86aa801dfd8fa7f3502b9921b46230d91fed965af3d9779ce7862"
+      },
+      {
+        "commit": "7ce853918821a7ed43420a9b38a224037794b1cd",
+        "path": "research/DGamma/CP5O19AdvanceObservationSpike.idr",
+        "check": "D14-1",
+        "passedAt": "2026-09-08T01:31:22.018716+00:00",
+        "sourceSHA256": "fc5c21215d893c5c233346a63a25bcd7d54ff20ca84240e58d1484f96d64d7ed"
+      },
+      {
+        "commit": "8b409569e1da72c4943cbfc0b86cb6a593f7a565",
+        "path": "research/DGamma/CP5O19AdvanceObservationSpike.idr",
+        "check": "D15-1",
+        "passedAt": "2026-09-08T01:32:10.694118+00:00",
+        "sourceSHA256": "ce984fd7e9a5166a11b8150a164d0a1699648a171845436d206e08d1a51b33f6"
+      },
+      {
+        "commit": "8a007f767bbbbd922e134ac42739bee231fbc8fb",
+        "path": "research/DGamma/CP5O19CartesianInsertionSpike.idr",
+        "check": "D16-1",
+        "passedAt": "2026-09-08T01:33:11.240744+00:00",
+        "sourceSHA256": "930f87e85893a3589aef0dabf536727271efaed7ac9b3c074c51435be6b863e3"
+      },
+      {
+        "commit": "33fddb38fa4323bf0b9c5fac6805c50f04718bbf",
+        "path": "research/DGamma/CP5O19ActivationResolutionSpike.idr",
+        "check": "E1-1",
+        "passedAt": "2026-09-08T01:41:56.925000+00:00",
+        "sourceSHA256": "946d1431790f7bfde356dd9ec686f9f1afb9bfdc4dadeb766ba7595d5c03806e"
+      },
+      {
+        "commit": "f941c3cace18784e672845146f26cd8f9783bb03",
+        "path": "research/DGamma/CP5O19ActivationResolutionSpike.idr",
+        "check": "E3-1",
+        "passedAt": "2026-09-08T01:46:15.896344+00:00",
+        "sourceSHA256": "82459bac4390dca18437e0004e230cd33442328edc92dc450413b8d543677bbb"
+      },
+      {
+        "commit": "dc688d7f4238edbce58c70f475a93eefcdf5fa07",
+        "path": "research/DGamma/CP5O19ActivationResolutionSpike.idr",
+        "check": "E4-1",
+        "passedAt": "2026-09-08T01:46:43.740564+00:00",
+        "sourceSHA256": "213aec1af2590d03ac0ec749cf95ea124d6299511050196fca52cbd2d7556c37"
+      },
+      {
+        "commit": "e68d43268c763772bb75ce8435c75a3ede4b9f76",
+        "path": "research/DGamma/CP5O19ActivationResolutionSpike.idr",
+        "check": "E5-1",
+        "passedAt": "2026-09-08T01:47:20.237856+00:00",
+        "sourceSHA256": "5fe45eb86d975ed8fd97bb5db16f3c1be1545454ef2d6ef2de8aaeb909c01bef"
+      },
+      {
+        "commit": "c2a8ded88fd8cf98e9485245d7f47b349e9ef00f",
+        "path": "research/DGamma/CP5O19ActivationResolutionSpike.idr",
+        "check": "E6-1",
+        "passedAt": "2026-09-08T01:48:46.432883+00:00",
+        "sourceSHA256": "b68a0529e216885a4451ccae152af851a189687d89bcdb9ee3a0a82635164257"
+      },
+      {
+        "commit": "82a650d006a304eefe34db12e3231171a104875f",
+        "path": "research/DGamma/CP5O19ActivationResolutionSpike.idr",
+        "check": "E7-1",
+        "passedAt": "2026-09-08T01:50:03.884996+00:00",
+        "sourceSHA256": "aaccfbd730aca836238c7fad154b653cfc2501527e1e3104e2a324b6aa6c7e0c"
+      },
+      {
+        "commit": "839dfdbc79f85499dfc9d4bb92b87e1efa42f4f4",
+        "path": "research/DGamma/CP5O19ActivationResolutionSpike.idr",
+        "check": "E8-1",
+        "passedAt": "2026-09-08T01:50:35.570300+00:00",
+        "sourceSHA256": "021500366751b32e2158c19e37b86ac825a3f0293cf7e693d940e96c26c8527a"
+      },
+      {
+        "commit": "3da74b63182a1ab012c58063e53c640b5272aae7",
+        "path": "research/DGamma/CP5O19ActivationResolutionSpike.idr",
+        "check": "E9-2",
+        "passedAt": "2026-09-08T01:54:20.833937+00:00",
+        "sourceSHA256": "695a7be3a9bff96a2b11a833c40f2f39e4a8037387a6341b5edd8c27148a2538"
+      },
+      {
+        "commit": "20e84c0e2ec882f44fbb446f8774c52cd4696d97",
+        "path": "research/DGamma/CP5O19ActivationResolutionSpike.idr",
+        "check": "E10-1",
+        "passedAt": "2026-09-08T01:55:55.959517+00:00",
+        "sourceSHA256": "2dcfc4992298f330399a2017d9c219b2db3cbee41322366e2811bedec61df7c3"
+      },
+      {
+        "commit": "a004c899cae75e2ceb17c99c2cb2af84f9a3abb8",
+        "path": "research/DGamma/CP5O19ActivationResolutionSpike.idr",
+        "check": "E11-1",
+        "passedAt": "2026-09-08T01:57:04.696634+00:00",
+        "sourceSHA256": "691b1f65ce9cf227dc2a41c6713b7b2dd1d0a368f46384a69c92c24a8a395e76"
+      },
+      {
+        "commit": "2889d78b1e3cbb854674bca72f6e4520518d0106",
+        "path": "research/DGamma/CP5O19ActivationResolutionSpike.idr",
+        "check": "E12-1",
+        "passedAt": "2026-09-08T01:57:56.173655+00:00",
+        "sourceSHA256": "699caa76e3935afa24f43da04c07f8b1d5ae23603f6112e034c3888eefec8f46"
+      },
+      {
+        "commit": "3c9f155e45d3b98d7da41228471bc28de6962f09",
+        "path": "research/DGamma/CP5O19SourceShapeSpike.idr",
+        "check": "F1-3",
+        "passedAt": "2026-09-08T02:05:40.846573+00:00",
+        "sourceSHA256": "bf30c0562843d94a0e4430a9df5b154d6ad934eaf09936c3d6003f1732e18d68"
+      },
+      {
+        "commit": "fef0f52c29691abfe400aaabf4e034d10ec28c4c",
+        "path": "research/DGamma/CP5O19SourceShapeSpike.idr",
+        "check": "F2-1",
+        "passedAt": "2026-09-08T02:06:30.853837+00:00",
+        "sourceSHA256": "75dd60428fc066ab3aa8d748ec2b37d7150c7aadfc838d0283efa4d908811731"
+      },
+      {
+        "commit": "b1b2397f7f03081aae3a1b089e5d95770f24e3e1",
+        "path": "research/DGamma/CP5O19SourceShapeSpike.idr",
+        "check": "F3-1",
+        "passedAt": "2026-09-08T02:08:05.800164+00:00",
+        "sourceSHA256": "506314f93a676b106ee5b88557f2695b21c92c2034f46050b500466c7c85c0d2"
+      },
+      {
+        "commit": "ee2525352ea2692c638d537fe649f15fda127a94",
+        "path": "research/DGamma/CP5O19SourceShapeSpike.idr",
+        "check": "F4-1",
+        "passedAt": "2026-09-08T02:08:43.050119+00:00",
+        "sourceSHA256": "1a9ebcca33ef5531e632929ce0ae9f1833e5ba0be842fb36a6610ca51e2870dc"
+      },
+      {
+        "commit": "cac5c4574f3da574afe462e28f74350006df4222",
+        "path": "research/DGamma/CP5O19SourceShapeSpike.idr",
+        "check": "F5-1",
+        "passedAt": "2026-09-08T02:18:51.668509+00:00",
+        "sourceSHA256": "a346130e167f914453bca0210bac5904df9896e0d12623a7f5e5f1cc1276353e"
+      },
+      {
+        "commit": "32380cb775ef8030b60994ead54b9b2ef43557f3",
+        "path": "research/DGamma/CP5O19SourceShapeSpike.idr",
+        "check": "F6-1",
+        "passedAt": "2026-09-08T02:19:52.408390+00:00",
+        "sourceSHA256": "ab6a2c8a34b94b2c17b620653593687d25a885f86008896c21bcf0e5805181f7"
+      },
+      {
+        "commit": "14d9142bbb5108e07f06e11905282d649cbe4b5d",
+        "path": "research/DGamma/CP5O19SourceShapeSpike.idr",
+        "check": "F7-2",
+        "passedAt": "2026-09-08T02:20:44.867551+00:00",
+        "sourceSHA256": "0bb7a9c31126b9bc0df3493bb90e64a61933bf043188951bc89fee3cf4037e24"
+      },
+      {
+        "commit": "9741d0b27a8ea39627ac91002468821e9174f55c",
+        "path": "research/DGamma/CP5O19SourceShapeSpike.idr",
+        "check": "F8-1",
+        "passedAt": "2026-09-08T02:22:32.085047+00:00",
+        "sourceSHA256": "b7ade648e85d35b309a086aa458000cca7646806a027bbd0a22e77d508273ce0"
+      }
+    ],
+    "rejectedSourcesAbsentFromRetainedHistory": true,
+    "protocolCommitOnlyFreshPassSatisfied": false,
+    "droppedMislabeledCommit": "8d553e00",
+    "dropAuthorizedLocalOnly": true,
+    "monitorInterruption": "D3-1: foreground timeout killed wrapper; isolated compiler reconciled/terminated, peak not fully retained",
+    "retainedNewDeclarations": 82,
+    "ledgerSHA256": "e5a2769c5d9843b354996d149944c69002da27e811be2cdf034829889c462f3f",
+    "archiveSHA256": "2139a6ca4af46a2e479544ad089c530d5fd0fae45f2beee53e839acaf1f7dbd8",
+    "units": [
+      {
+        "unit": "baseline",
+        "passed": true,
+        "fresh": true,
+        "seconds": 3.117391916923225,
+        "commits": [
+          "324dc4aec495f4835dde2dfaff88d039409342b7"
+        ]
+      },
+      {
+        "unit": "A1-1",
+        "passed": false,
+        "fresh": true,
+        "seconds": 4.162104125134647,
+        "commits": []
+      },
+      {
+        "unit": "A1-2",
+        "passed": true,
+        "fresh": true,
+        "seconds": 4.1763327908702195,
+        "commits": [
+          "b29c191a776e42d0a0c059da248a51f845380abe"
+        ]
+      },
+      {
+        "unit": "A2-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 4.1814366253092885,
+        "commits": [
+          "dbcfdab854f0dd3dad23779a12a07fac4a050aa3"
+        ]
+      },
+      {
+        "unit": "A3-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 4.190557583235204,
+        "commits": [
+          "1f88500dfa4b551c6df946f79bd77dd03a0eb3d2"
+        ]
+      },
+      {
+        "unit": "A4-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 4.174294791184366,
+        "commits": [
+          "3295fc0af524da63a4cf1dc3ffcefb0b5f743469"
+        ]
+      },
+      {
+        "unit": "A5-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 4.1758079580031335,
+        "commits": [
+          "3f145ee55ea10f1a26fe136281e41287d2ce17e1"
+        ]
+      },
+      {
+        "unit": "A6-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 4.168053874745965,
+        "commits": [
+          "40f47bc6160b0d2a065ea6aafcfbec21f544b062"
+        ]
+      },
+      {
+        "unit": "A7-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 4.148264792282134,
+        "commits": [
+          "f82bef8d27f314932f617fd6204a323fce274f8e"
+        ]
+      },
+      {
+        "unit": "A8-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 4.155546000227332,
+        "commits": [
+          "007cf231e7614523c0f2aba424468c67fcf95e2d"
+        ]
+      },
+      {
+        "unit": "A9-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 5.222094041761011,
+        "commits": [
+          "c88386c13af01d9d85d91ead34bc59dd82b48405"
+        ]
+      },
+      {
+        "unit": "A10-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 5.216075458098203,
+        "commits": [
+          "9f5855186ac65c579806c25e70055b4e3b14b372"
+        ]
+      },
+      {
+        "unit": "A11-1",
+        "passed": false,
+        "fresh": true,
+        "seconds": 4.145004000049084,
+        "commits": []
+      },
+      {
+        "unit": "A11-2",
+        "passed": true,
+        "fresh": true,
+        "seconds": 5.208377458155155,
+        "commits": [
+          "ae394d614e05008d33f835dffb2942bcae04cde7"
+        ]
+      },
+      {
+        "unit": "A12-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 5.197702041361481,
+        "commits": [
+          "f4652019dfd8ec1af6e957279786c7aa3c534ccf"
+        ]
+      },
+      {
+        "unit": "A13-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 5.190634415950626,
+        "commits": [
+          "be35080fa510a4bd3017c5c6a2bc069b999bd5a3"
+        ]
+      },
+      {
+        "unit": "A14-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 5.197988125029951,
+        "commits": [
+          "6ebab1561d4e4385d642c5cd22320f828adc70ca"
+        ]
+      },
+      {
+        "unit": "A15-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 5.17510937480256,
+        "commits": [
+          "cd0dc601874b31f98887a2910fd59450eda55788"
+        ]
+      },
+      {
+        "unit": "A16-1",
+        "passed": false,
+        "fresh": true,
+        "seconds": 3.1301702079363167,
+        "commits": []
+      },
+      {
+        "unit": "A16-2",
+        "passed": true,
+        "fresh": true,
+        "seconds": 4.180451250169426,
+        "commits": [
+          "9338a8de3d1028d95305841069f8ea30765349a3"
+        ]
+      },
+      {
+        "unit": "AO1-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 4.149805875029415,
+        "commits": [
+          "3c961ceaf014e3b7a262f0ba0ce46c03486cabcc"
+        ]
+      },
+      {
+        "unit": "AO2-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 4.158323584124446,
+        "commits": [
+          "fffb39e0d64ac57e63b6fb53e62c6a96e577e06c"
+        ]
+      },
+      {
+        "unit": "AO3-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 4.148787959013134,
+        "commits": [
+          "79299e5ae76b69849da59722ab15ef1326fac8ff"
+        ]
+      },
+      {
+        "unit": "AO4-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 5.203236208297312,
+        "commits": [
+          "c3a7624323c11712372749625509b01d6fd98d41"
+        ]
+      },
+      {
+        "unit": "AO5-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 5.197576500009745,
+        "commits": [
+          "1afbe765e7dcbfb8f144d4ad4f3c2e53a0f3032b"
+        ]
+      },
+      {
+        "unit": "AO6-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 5.214302332606167,
+        "commits": [
+          "7ad9e90c542947be6f2e00d95fe9b7abb6aa8c4d"
+        ]
+      },
+      {
+        "unit": "AO7-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 5.213417415972799,
+        "commits": [
+          "57503281d69570bee51e7c928504c5cf32fe421c"
+        ]
+      },
+      {
+        "unit": "AO8-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 4.185916208196431,
+        "commits": [
+          "d391b7aa0a56afd2e6674c56abb0fd53fa59d6bd"
+        ]
+      },
+      {
+        "unit": "AO9-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 4.162753082811832,
+        "commits": [
+          "908acac8c023c436beb0920793d0c166c9d2ed3d"
+        ]
+      },
+      {
+        "unit": "AO10-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 4.169521540869027,
+        "commits": [
+          "42a4244c65ca19efffb3cace13560af0d088e09e"
+        ]
+      },
+      {
+        "unit": "OO1-1",
+        "passed": false,
+        "fresh": true,
+        "seconds": 3.1324165002442896,
+        "commits": []
+      },
+      {
+        "unit": "OO1-2",
+        "passed": true,
+        "fresh": true,
+        "seconds": 4.150249832775444,
+        "commits": [
+          "2b50d45a5d43023ecbbcf80da3b381698ef97191"
+        ]
+      },
+      {
+        "unit": "OO2-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 4.135479666292667,
+        "commits": [
+          "ae1e1a6549bf8a35bbe067af53a189764b8a112d"
+        ]
+      },
+      {
+        "unit": "OO3-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 4.150680167134851,
+        "commits": [
+          "52d247f8fdfa453c82aa3331a51341af5b2db3d9"
+        ]
+      },
+      {
+        "unit": "OO4-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 4.156293957959861,
+        "commits": [
+          "64cf2cc8409ea0546daeee173f5a3e6e0366d2f9"
+        ]
+      },
+      {
+        "unit": "OO5-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 4.136838125064969,
+        "commits": [
+          "2358b28aa40f9200d0aed59c1a3cbaa571c8202b"
+        ]
+      },
+      {
+        "unit": "OO6-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 4.151666333898902,
+        "commits": [
+          "4f51343de9c54c88e5582009a6296b73f6ba3245"
+        ]
+      },
+      {
+        "unit": "OO7-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 4.145240582991391,
+        "commits": [
+          "82e0e67dcb8b8d8f05b174ea6050ba151282227d"
+        ]
+      },
+      {
+        "unit": "OO8-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 4.1485746670514345,
+        "commits": [
+          "4b4621ee516e444367a0c1eafaf8891df526bc22"
+        ]
+      },
+      {
+        "unit": "OO9-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 4.150537250097841,
+        "commits": [
+          "25b41d569385aaec386d1c42728c4ef1879b6f0a"
+        ]
+      },
+      {
+        "unit": "OO10-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 4.154815417248756,
+        "commits": [
+          "96f3401d3d7d6b91aaf8cacbecd0ba68a2ea23e8"
+        ]
+      },
+      {
+        "unit": "A-checkpoint",
+        "passed": true,
+        "fresh": true,
+        "seconds": 5.194471166934818,
+        "commits": [
+          "25b41d569385aaec386d1c42728c4ef1879b6f0a"
+        ]
+      },
+      {
+        "unit": "B1-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 4.146699041128159,
+        "commits": [
+          "cecf4a0484084c554ba525bcf2d2a0b3a5374af2"
+        ]
+      },
+      {
+        "unit": "B2-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 4.169733082875609,
+        "commits": [
+          "7d88ce400db12d9251669230511820bf7fdfeec0"
+        ]
+      },
+      {
+        "unit": "B3-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 4.139512416906655,
+        "commits": [
+          "8fd19645a6100f0026b3ac0c91c483d30c5ad9a3"
+        ]
+      },
+      {
+        "unit": "B4-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 4.1618772922083735,
+        "commits": [
+          "3baa8b6ea231d2b115b2c6fe576641970d3a1944"
+        ]
+      },
+      {
+        "unit": "B5-1",
+        "passed": false,
+        "fresh": true,
+        "seconds": 3.119966208934784,
+        "commits": []
+      },
+      {
+        "unit": "B5-2",
+        "passed": true,
+        "fresh": true,
+        "seconds": 5.234177624806762,
+        "commits": [
+          "b7843966afe5d17928a2d008da3ad4152a58be47"
+        ]
+      },
+      {
+        "unit": "B6-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 5.211521707940847,
+        "commits": [
+          "441b97ee74a9f863b3060e9d3415ae2f9b37507d"
+        ]
+      },
+      {
+        "unit": "B7-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 5.195549792144448,
+        "commits": [
+          "5754b87ff0cb34c510ba06a8f3f728c345ee1cbf"
+        ]
+      },
+      {
+        "unit": "B8-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 5.192314000334591,
+        "commits": [
+          "b18f45e235590873a0b5f4b0524419c755b93c4b"
+        ]
+      },
+      {
+        "unit": "B9-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 5.201087167020887,
+        "commits": [
+          "c89865ee40605847cf9c70226bba3de439430432"
+        ]
+      },
+      {
+        "unit": "B10-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 5.185103124938905,
+        "commits": [
+          "3e1531b63e92ee83c5f6179a13089ddb32552e21"
+        ]
+      },
+      {
+        "unit": "B11-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 5.204550749622285,
+        "commits": [
+          "d7a5915ab8342ff56cccfc21eb05516f1abeee90"
+        ]
+      },
+      {
+        "unit": "B12-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 6.205441957805306,
+        "commits": [
+          "32120cfa3b4d65fdd36ae48b8e153b8c5bdd886c"
+        ]
+      },
+      {
+        "unit": "B13-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 6.24249520804733,
+        "commits": [
+          "b35340b0d790868583d441d4d8757767fbb93761"
+        ]
+      },
+      {
+        "unit": "B14-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 6.258613165933639,
+        "commits": [
+          "65a714ad4401bdc38e3d36664d8f6391e566f6f4"
+        ]
+      },
+      {
+        "unit": "B-checkpoint",
+        "passed": true,
+        "fresh": true,
+        "seconds": 6.226137208286673,
+        "commits": [
+          "65a714ad4401bdc38e3d36664d8f6391e566f6f4"
+        ]
+      },
+      {
+        "unit": "D1-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 490.14953429205343,
+        "commits": [
+          "9e0a7b30e07d908f2faccbc16eae38cebf1cc26d"
+        ]
+      },
+      {
+        "unit": "D2-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 493.2775282501243,
+        "commits": [
+          "1cf297ff69e1a0127435af88dcbeafd642675541"
+        ]
+      },
+      {
+        "unit": "D3-1",
+        "passed": false,
+        "fresh": false,
+        "seconds": null,
+        "commits": []
+      },
+      {
+        "unit": "D3-2",
+        "passed": false,
+        "fresh": true,
+        "seconds": 1.061313332989812,
+        "commits": []
+      },
+      {
+        "unit": "D3-3",
+        "passed": true,
+        "fresh": true,
+        "seconds": 1.0544189591892064,
+        "commits": [
+          "43a98451193c536901c31d9b48e9cdfc9e577260"
+        ]
+      },
+      {
+        "unit": "D4-1",
+        "passed": false,
+        "fresh": true,
+        "seconds": 1.0454072919674218,
+        "commits": []
+      },
+      {
+        "unit": "D4-2",
+        "passed": true,
+        "fresh": true,
+        "seconds": 1.063584000337869,
+        "commits": [
+          "518580dc31b3c4c64160d2f4a9bd0d2b8d7b297e"
+        ]
+      },
+      {
+        "unit": "D5-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 1.067494333256036,
+        "commits": [
+          "f7cb56a593216d4d917e73f5b95411c61bc6b1c9"
+        ]
+      },
+      {
+        "unit": "D6-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 1.0608690828084946,
+        "commits": [
+          "86b37c9fee42d70987b01582b89d88f60d9290ab"
+        ]
+      },
+      {
+        "unit": "D7-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 1.0440321248024702,
+        "commits": [
+          "59fa5ef4d71425aab6d6376d8d0ad22902b84592"
+        ]
+      },
+      {
+        "unit": "D8-1",
+        "passed": false,
+        "fresh": true,
+        "seconds": 1.0402674996294081,
+        "commits": []
+      },
+      {
+        "unit": "D8-2",
+        "passed": true,
+        "fresh": true,
+        "seconds": 1.0647772499360144,
+        "commits": [
+          "1d74c2882c0d4318bb2673028b3b62189c482a0a"
+        ]
+      },
+      {
+        "unit": "D9-1",
+        "passed": false,
+        "fresh": true,
+        "seconds": 2.1006159582175314,
+        "commits": []
+      },
+      {
+        "unit": "D9-2",
+        "passed": true,
+        "fresh": true,
+        "seconds": 2.1087836669757962,
+        "commits": [
+          "b6d58304c394f8d5c0b296187d7d3c09832773c6"
+        ]
+      },
+      {
+        "unit": "D10-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 2.0948972501792014,
+        "commits": [
+          "b3daacff9515a55b01f7f6467a1da4c839cca472"
+        ]
+      },
+      {
+        "unit": "D11-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 2.0953600420616567,
+        "commits": [
+          "9646c67607c85a62102d5fb837d986110f5617ca"
+        ]
+      },
+      {
+        "unit": "D12-1",
+        "passed": false,
+        "fresh": true,
+        "seconds": 2.085922915954143,
+        "commits": []
+      },
+      {
+        "unit": "D12-2",
+        "passed": true,
+        "fresh": true,
+        "seconds": 2.0724800410680473,
+        "commits": [
+          "d54e1903b36f825e1b2de45f74d143e3b623f6c2"
+        ]
+      },
+      {
+        "unit": "D13-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 347.15851070778444,
+        "commits": [
+          "d892bdac577331a8c0652512409358ca9dd8ad78"
+        ]
+      },
+      {
+        "unit": "D14-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 3.1207194589078426,
+        "commits": [
+          "7ce853918821a7ed43420a9b38a224037794b1cd"
+        ]
+      },
+      {
+        "unit": "D15-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 3.1300224997103214,
+        "commits": [
+          "8b409569e1da72c4943cbfc0b86cb6a593f7a565"
+        ]
+      },
+      {
+        "unit": "D16-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 25.93628012528643,
+        "commits": [
+          "8a007f767bbbbd922e134ac42739bee231fbc8fb"
+        ]
+      },
+      {
+        "unit": "E1-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 1.0621380000375211,
+        "commits": [
+          "33fddb38fa4323bf0b9c5fac6805c50f04718bbf"
+        ]
+      },
+      {
+        "unit": "E2-1",
+        "passed": false,
+        "fresh": true,
+        "seconds": 1.0425862921401858,
+        "commits": []
+      },
+      {
+        "unit": "E2-2",
+        "passed": false,
+        "fresh": true,
+        "seconds": 1.0330718751065433,
+        "commits": []
+      },
+      {
+        "unit": "E2-3",
+        "passed": false,
+        "fresh": true,
+        "seconds": 1.0622525843791664,
+        "commits": []
+      },
+      {
+        "unit": "E3-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 1.0641118339262903,
+        "commits": [
+          "f941c3cace18784e672845146f26cd8f9783bb03"
+        ]
+      },
+      {
+        "unit": "E4-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 1.0511520830914378,
+        "commits": [
+          "dc688d7f4238edbce58c70f475a93eefcdf5fa07"
+        ]
+      },
+      {
+        "unit": "E5-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 1.0371705833822489,
+        "commits": [
+          "e68d43268c763772bb75ce8435c75a3ede4b9f76"
+        ]
+      },
+      {
+        "unit": "E6-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 1.055854208767414,
+        "commits": [
+          "c2a8ded88fd8cf98e9485245d7f47b349e9ef00f"
+        ]
+      },
+      {
+        "unit": "E7-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 1.0633239159360528,
+        "commits": [
+          "82a650d006a304eefe34db12e3231171a104875f"
+        ]
+      },
+      {
+        "unit": "E8-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 1.0339048327878118,
+        "commits": [
+          "839dfdbc79f85499dfc9d4bb92b87e1efa42f4f4"
+        ]
+      },
+      {
+        "unit": "E9-1",
+        "passed": false,
+        "fresh": true,
+        "seconds": 1.0476798340678215,
+        "commits": []
+      },
+      {
+        "unit": "E9-2",
+        "passed": true,
+        "fresh": true,
+        "seconds": 1.063084458000958,
+        "commits": [
+          "3da74b63182a1ab012c58063e53c640b5272aae7"
+        ]
+      },
+      {
+        "unit": "E10-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 3.1354662077501416,
+        "commits": [
+          "20e84c0e2ec882f44fbb446f8774c52cd4696d97"
+        ]
+      },
+      {
+        "unit": "E11-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 3.1408155825920403,
+        "commits": [
+          "a004c899cae75e2ceb17c99c2cb2af84f9a3abb8"
+        ]
+      },
+      {
+        "unit": "E12-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 3.143874999601394,
+        "commits": [
+          "2889d78b1e3cbb854674bca72f6e4520518d0106"
+        ]
+      },
+      {
+        "unit": "F1-1",
+        "passed": false,
+        "fresh": true,
+        "seconds": 1.04007404204458,
+        "commits": []
+      },
+      {
+        "unit": "F1-2",
+        "passed": false,
+        "fresh": true,
+        "seconds": 2.085136542096734,
+        "commits": []
+      },
+      {
+        "unit": "F1-3",
+        "passed": true,
+        "fresh": true,
+        "seconds": 2.0788557082414627,
+        "commits": [
+          "3c9f155e45d3b98d7da41228471bc28de6962f09"
+        ]
+      },
+      {
+        "unit": "F2-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 2.06635933322832,
+        "commits": [
+          "fef0f52c29691abfe400aaabf4e034d10ec28c4c"
+        ]
+      },
+      {
+        "unit": "F3-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 2.0823622499592602,
+        "commits": [
+          "b1b2397f7f03081aae3a1b089e5d95770f24e3e1"
+        ]
+      },
+      {
+        "unit": "F4-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 3.1376972077414393,
+        "commits": [
+          "ee2525352ea2692c638d537fe649f15fda127a94"
+        ]
+      },
+      {
+        "unit": "F5-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 3.135711541865021,
+        "commits": [
+          "cac5c4574f3da574afe462e28f74350006df4222"
+        ]
+      },
+      {
+        "unit": "F6-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 3.1307086246088147,
+        "commits": [
+          "32380cb775ef8030b60994ead54b9b2ef43557f3"
+        ]
+      },
+      {
+        "unit": "F7-1",
+        "passed": false,
+        "fresh": true,
+        "seconds": 2.087468625046313,
+        "commits": []
+      },
+      {
+        "unit": "F7-2",
+        "passed": true,
+        "fresh": true,
+        "seconds": 3.1391595830209553,
+        "commits": [
+          "14d9142bbb5108e07f06e11905282d649cbe4b5d"
+        ]
+      },
+      {
+        "unit": "F8-1",
+        "passed": true,
+        "fresh": true,
+        "seconds": 3.110694959294051,
+        "commits": [
+          "9741d0b27a8ea39627ac91002468821e9174f55c"
+        ]
+      },
+      {
+        "unit": "V01",
+        "passed": true,
+        "fresh": true,
+        "seconds": 491.54303150018677,
+        "commits": [
+          "1cf297ff69e1a0127435af88dcbeafd642675541"
+        ]
+      },
+      {
+        "unit": "V02",
+        "passed": true,
+        "fresh": true,
+        "seconds": 77.75799599988386,
+        "commits": [
+          "324dc4aec495f4835dde2dfaff88d039409342b7"
+        ]
+      },
+      {
+        "unit": "V03",
+        "passed": true,
+        "fresh": true,
+        "seconds": 54.98382099997252,
+        "commits": [
+          "324dc4aec495f4835dde2dfaff88d039409342b7"
+        ]
+      },
+      {
+        "unit": "V04",
+        "passed": true,
+        "fresh": true,
+        "seconds": 9.333646915853024,
+        "commits": [
+          "324dc4aec495f4835dde2dfaff88d039409342b7"
+        ]
+      },
+      {
+        "unit": "V05",
+        "passed": true,
+        "fresh": true,
+        "seconds": 6.214817292056978,
+        "commits": [
+          "324dc4aec495f4835dde2dfaff88d039409342b7"
+        ]
+      },
+      {
+        "unit": "V06",
+        "passed": true,
+        "fresh": true,
+        "seconds": 1.0358823747374117,
+        "commits": [
+          "324dc4aec495f4835dde2dfaff88d039409342b7"
+        ]
+      },
+      {
+        "unit": "V07",
+        "passed": true,
+        "fresh": true,
+        "seconds": 3.1344855832867324,
+        "commits": [
+          "324dc4aec495f4835dde2dfaff88d039409342b7"
+        ]
+      },
+      {
+        "unit": "V08",
+        "passed": true,
+        "fresh": true,
+        "seconds": 4.15471800044179,
+        "commits": [
+          "cd0dc601874b31f98887a2910fd59450eda55788"
+        ]
+      },
+      {
+        "unit": "V09",
+        "passed": true,
+        "fresh": true,
+        "seconds": 4.149183499626815,
+        "commits": [
+          "57503281d69570bee51e7c928504c5cf32fe421c"
+        ]
+      },
+      {
+        "unit": "V10",
+        "passed": true,
+        "fresh": true,
+        "seconds": 4.162472832947969,
+        "commits": [
+          "25b41d569385aaec386d1c42728c4ef1879b6f0a"
+        ]
+      },
+      {
+        "unit": "V11",
+        "passed": true,
+        "fresh": true,
+        "seconds": 5.179592625238001,
+        "commits": [
+          "8a007f767bbbbd922e134ac42739bee231fbc8fb"
+        ]
+      },
+      {
+        "unit": "V12",
+        "passed": true,
+        "fresh": true,
+        "seconds": 4.156260416842997,
+        "commits": [
+          "8b409569e1da72c4943cbfc0b86cb6a593f7a565"
+        ]
+      },
+      {
+        "unit": "V13",
+        "passed": true,
+        "fresh": true,
+        "seconds": 4.1516947080381215,
+        "commits": [
+          "2889d78b1e3cbb854674bca72f6e4520518d0106"
+        ]
+      },
+      {
+        "unit": "V14",
+        "passed": true,
+        "fresh": true,
+        "seconds": 3.128339750226587,
+        "commits": [
+          "324dc4aec495f4835dde2dfaff88d039409342b7"
+        ]
+      },
+      {
+        "unit": "V15",
+        "passed": true,
+        "fresh": true,
+        "seconds": 3.114420250058174,
+        "commits": [
+          "324dc4aec495f4835dde2dfaff88d039409342b7"
+        ]
+      },
+      {
+        "unit": "V16",
+        "passed": true,
+        "fresh": true,
+        "seconds": 4.151001791935414,
+        "commits": [
+          "324dc4aec495f4835dde2dfaff88d039409342b7"
+        ]
+      },
+      {
+        "unit": "V17",
+        "passed": true,
+        "fresh": true,
+        "seconds": 3.1065677921287715,
+        "commits": [
+          "9741d0b27a8ea39627ac91002468821e9174f55c"
+        ]
+      },
+      {
+        "unit": "V18",
+        "passed": true,
+        "fresh": true,
+        "seconds": 307.85273333312944,
+        "commits": [
+          "9338a8de3d1028d95305841069f8ea30765349a3"
+        ]
+      },
+      {
+        "unit": "V19",
+        "passed": true,
+        "fresh": true,
+        "seconds": 14.544124000240117,
+        "commits": [
+          "42a4244c65ca19efffb3cace13560af0d088e09e"
+        ]
+      },
+      {
+        "unit": "V20",
+        "passed": true,
+        "fresh": true,
+        "seconds": 3.1411534999497235,
+        "commits": [
+          "96f3401d3d7d6b91aaf8cacbecd0ba68a2ea23e8"
+        ]
+      },
+      {
+        "unit": "V21",
+        "passed": true,
+        "fresh": true,
+        "seconds": 17.611788541078568,
+        "commits": [
+          "324dc4aec495f4835dde2dfaff88d039409342b7"
+        ]
+      },
+      {
+        "unit": "V22",
+        "passed": true,
+        "fresh": true,
+        "seconds": 3.1467339997179806,
+        "commits": [
+          "324dc4aec495f4835dde2dfaff88d039409342b7"
+        ]
+      },
+      {
+        "unit": "V23",
+        "passed": true,
+        "fresh": true,
+        "seconds": 13.479714208748192,
+        "commits": [
+          "324dc4aec495f4835dde2dfaff88d039409342b7"
+        ]
+      },
+      {
+        "unit": "V24",
+        "passed": true,
+        "fresh": true,
+        "seconds": 3.120457542128861,
+        "commits": [
+          "324dc4aec495f4835dde2dfaff88d039409342b7"
+        ]
+      },
+      {
+        "unit": "V25",
+        "passed": true,
+        "fresh": true,
+        "seconds": 191.76573912519962,
+        "commits": [
+          "324dc4aec495f4835dde2dfaff88d039409342b7"
+        ]
+      },
+      {
+        "unit": "V26",
+        "passed": true,
+        "fresh": true,
+        "seconds": 2.1039632079191506,
+        "commits": [
+          "324dc4aec495f4835dde2dfaff88d039409342b7"
+        ]
+      },
+      {
+        "unit": "V27",
+        "passed": true,
+        "fresh": true,
+        "seconds": 100.58457416621968,
+        "commits": [
+          "324dc4aec495f4835dde2dfaff88d039409342b7"
+        ]
+      },
+      {
+        "unit": "V28",
+        "passed": true,
+        "fresh": true,
+        "seconds": 1.0595019161701202,
+        "commits": [
+          "324dc4aec495f4835dde2dfaff88d039409342b7"
+        ]
+      },
+      {
+        "unit": "V29",
+        "passed": true,
+        "fresh": true,
+        "seconds": 1.0604459159076214,
+        "commits": [
+          "324dc4aec495f4835dde2dfaff88d039409342b7"
+        ]
+      },
+      {
+        "unit": "V30",
+        "passed": true,
+        "fresh": true,
+        "seconds": 100.60238825017586,
+        "commits": [
+          "324dc4aec495f4835dde2dfaff88d039409342b7"
+        ]
+      },
+      {
+        "unit": "V31",
+        "passed": true,
+        "fresh": true,
+        "seconds": 16.580075333360583,
+        "commits": [
+          "324dc4aec495f4835dde2dfaff88d039409342b7"
+        ]
+      }
+    ]
+  },
+  "finalChecks": [
+    {
+      "unit": "V01",
+      "path": "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+      "command": [
+        "idris2",
+        "--source-dir",
+        "src",
+        "--source-dir",
+        "research",
+        "--check",
+        "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr"
+      ],
+      "start": "2026-09-08T02:26:34.566638+00:00",
+      "end": "2026-09-08T02:34:46.132995+00:00",
+      "seconds": 491.54303150018677,
+      "exit": 0,
+      "fresh": true,
+      "passed": true,
+      "interrupted": false,
+      "maxSampleRSSKiB": 49829408,
+      "sourceSHA256": "f77f66a3e3a62f2ff757709f08d1488a25d54d425af74dcec4c2c0f0ed28c6fd",
+      "expectedDiagnostic": null,
+      "symbol": null
+    },
+    {
+      "unit": "V02",
+      "path": "research/DGamma/CP5ConfluenceDeletionChainSpike.idr",
+      "command": [
+        "idris2",
+        "--source-dir",
+        "src",
+        "--source-dir",
+        "research",
+        "--check",
+        "research/DGamma/CP5ConfluenceDeletionChainSpike.idr"
+      ],
+      "start": "2026-09-08T02:34:46.199395+00:00",
+      "end": "2026-09-08T02:36:03.958257+00:00",
+      "seconds": 77.75799599988386,
+      "exit": 0,
+      "fresh": true,
+      "passed": true,
+      "interrupted": false,
+      "maxSampleRSSKiB": 4932064,
+      "sourceSHA256": "5ca243616ce40e65aaeed35318d96156e98370c4319859e63f18f7b178ffec88",
+      "expectedDiagnostic": null,
+      "symbol": null
+    },
+    {
+      "unit": "V03",
+      "path": "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+      "command": [
+        "idris2",
+        "--source-dir",
+        "src",
+        "--source-dir",
+        "research",
+        "--check",
+        "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr"
+      ],
+      "start": "2026-09-08T02:36:04.025192+00:00",
+      "end": "2026-09-08T02:36:59.009720+00:00",
+      "seconds": 54.98382099997252,
+      "exit": 0,
+      "fresh": true,
+      "passed": true,
+      "interrupted": false,
+      "maxSampleRSSKiB": 19209984,
+      "sourceSHA256": "3b62ba1c3bc88503116ed22d82c667043f7f41dd483fb093cc25b677a55245cc",
+      "expectedDiagnostic": null,
+      "symbol": null
+    },
+    {
+      "unit": "V04",
+      "path": "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr",
+      "command": [
+        "idris2",
+        "--source-dir",
+        "src",
+        "--source-dir",
+        "research",
+        "--check",
+        "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr"
+      ],
+      "start": "2026-09-08T02:36:59.074498+00:00",
+      "end": "2026-09-08T02:37:08.408430+00:00",
+      "seconds": 9.333646915853024,
+      "exit": 0,
+      "fresh": true,
+      "passed": true,
+      "interrupted": false,
+      "maxSampleRSSKiB": 4060080,
+      "sourceSHA256": "91cd8a72fb114fd5e1b7d7ae1c7d48bfa10fc50295eab2e76e223a10ccf1548b",
+      "expectedDiagnostic": null,
+      "symbol": null
+    },
+    {
+      "unit": "V05",
+      "path": "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
+      "command": [
+        "idris2",
+        "--source-dir",
+        "src",
+        "--source-dir",
+        "research",
+        "--check",
+        "research/DGamma/CP5ConfluenceCrossTraceSpike.idr"
+      ],
+      "start": "2026-09-08T02:37:08.471613+00:00",
+      "end": "2026-09-08T02:37:14.686661+00:00",
+      "seconds": 6.214817292056978,
+      "exit": 0,
+      "fresh": true,
+      "passed": true,
+      "interrupted": false,
+      "maxSampleRSSKiB": 2885264,
+      "sourceSHA256": "3af10eda3d7dd6435b02dd09339c2ac83aa6006cfe5f5063f8bc4106960feb57",
+      "expectedDiagnostic": null,
+      "symbol": null
+    },
+    {
+      "unit": "V06",
+      "path": "research/DGamma/CP5O19ActualCommutedDomainSpike.idr",
+      "command": [
+        "idris2",
+        "--source-dir",
+        "src",
+        "--source-dir",
+        "research",
+        "--check",
+        "research/DGamma/CP5O19ActualCommutedDomainSpike.idr"
+      ],
+      "start": "2026-09-08T02:37:14.749406+00:00",
+      "end": "2026-09-08T02:37:15.785472+00:00",
+      "seconds": 1.0358823747374117,
+      "exit": 0,
+      "fresh": true,
+      "passed": true,
+      "interrupted": false,
+      "maxSampleRSSKiB": 0,
+      "sourceSHA256": "127441004e810475a36ac92abc43763db40b7051b19986006e1cb466c8792909",
+      "expectedDiagnostic": null,
+      "symbol": null
+    },
+    {
+      "unit": "V07",
+      "path": "research/DGamma/CP5O19InsertObservationSpike.idr",
+      "command": [
+        "idris2",
+        "--source-dir",
+        "src",
+        "--source-dir",
+        "research",
+        "--check",
+        "research/DGamma/CP5O19InsertObservationSpike.idr"
+      ],
+      "start": "2026-09-08T02:37:15.846395+00:00",
+      "end": "2026-09-08T02:37:18.981085+00:00",
+      "seconds": 3.1344855832867324,
+      "exit": 0,
+      "fresh": true,
+      "passed": true,
+      "interrupted": false,
+      "maxSampleRSSKiB": 2882480,
+      "sourceSHA256": "19d825b490b27545c77eb3846e9af46236f95eabcd632a1e143a4969a331dbc5",
+      "expectedDiagnostic": null,
+      "symbol": null
+    },
+    {
+      "unit": "V08",
+      "path": "research/DGamma/CP5O19ResolvedOpeningRowSpike.idr",
+      "command": [
+        "idris2",
+        "--source-dir",
+        "src",
+        "--source-dir",
+        "research",
+        "--check",
+        "research/DGamma/CP5O19ResolvedOpeningRowSpike.idr"
+      ],
+      "start": "2026-09-08T02:37:19.042227+00:00",
+      "end": "2026-09-08T02:37:23.197154+00:00",
+      "seconds": 4.15471800044179,
+      "exit": 0,
+      "fresh": true,
+      "passed": true,
+      "interrupted": false,
+      "maxSampleRSSKiB": 3903712,
+      "sourceSHA256": "2e3108bae048b31c7acfb3998f4c1396b821789ba11753972cf09e3608724781",
+      "expectedDiagnostic": null,
+      "symbol": null
+    },
+    {
+      "unit": "V09",
+      "path": "research/DGamma/CP5O19ActivationInsertionRowSpike.idr",
+      "command": [
+        "idris2",
+        "--source-dir",
+        "src",
+        "--source-dir",
+        "research",
+        "--check",
+        "research/DGamma/CP5O19ActivationInsertionRowSpike.idr"
+      ],
+      "start": "2026-09-08T02:37:23.260642+00:00",
+      "end": "2026-09-08T02:37:27.410032+00:00",
+      "seconds": 4.149183499626815,
+      "exit": 0,
+      "fresh": true,
+      "passed": true,
+      "interrupted": false,
+      "maxSampleRSSKiB": 3806512,
+      "sourceSHA256": "92182efb39ab89edde5663af0ad0aa4e9d00c6780c30a09c632740737ea0f625",
+      "expectedDiagnostic": null,
+      "symbol": null
+    },
+    {
+      "unit": "V10",
+      "path": "research/DGamma/CP5O19InsertionInsertionRowSpike.idr",
+      "command": [
+        "idris2",
+        "--source-dir",
+        "src",
+        "--source-dir",
+        "research",
+        "--check",
+        "research/DGamma/CP5O19InsertionInsertionRowSpike.idr"
+      ],
+      "start": "2026-09-08T02:37:27.469164+00:00",
+      "end": "2026-09-08T02:37:31.631840+00:00",
+      "seconds": 4.162472832947969,
+      "exit": 0,
+      "fresh": true,
+      "passed": true,
+      "interrupted": false,
+      "maxSampleRSSKiB": 2886864,
+      "sourceSHA256": "7b37cdd0c88f10d122b21d7e187e32ecc333b7d2f58d22577243e1666c1019a9",
+      "expectedDiagnostic": null,
+      "symbol": null
+    },
+    {
+      "unit": "V11",
+      "path": "research/DGamma/CP5O19CartesianInsertionSpike.idr",
+      "command": [
+        "idris2",
+        "--source-dir",
+        "src",
+        "--source-dir",
+        "research",
+        "--check",
+        "research/DGamma/CP5O19CartesianInsertionSpike.idr"
+      ],
+      "start": "2026-09-08T02:37:31.694549+00:00",
+      "end": "2026-09-08T02:37:36.874378+00:00",
+      "seconds": 5.179592625238001,
+      "exit": 0,
+      "fresh": true,
+      "passed": true,
+      "interrupted": false,
+      "maxSampleRSSKiB": 3808560,
+      "sourceSHA256": "930f87e85893a3589aef0dabf536727271efaed7ac9b3c074c51435be6b863e3",
+      "expectedDiagnostic": null,
+      "symbol": null
+    },
+    {
+      "unit": "V12",
+      "path": "research/DGamma/CP5O19AdvanceObservationSpike.idr",
+      "command": [
+        "idris2",
+        "--source-dir",
+        "src",
+        "--source-dir",
+        "research",
+        "--check",
+        "research/DGamma/CP5O19AdvanceObservationSpike.idr"
+      ],
+      "start": "2026-09-08T02:37:36.934626+00:00",
+      "end": "2026-09-08T02:37:41.091095+00:00",
+      "seconds": 4.156260416842997,
+      "exit": 0,
+      "fresh": true,
+      "passed": true,
+      "interrupted": false,
+      "maxSampleRSSKiB": 2886416,
+      "sourceSHA256": "ce984fd7e9a5166a11b8150a164d0a1699648a171845436d206e08d1a51b33f6",
+      "expectedDiagnostic": null,
+      "symbol": null
+    },
+    {
+      "unit": "V13",
+      "path": "research/DGamma/CP5O19ActivationResolutionSpike.idr",
+      "command": [
+        "idris2",
+        "--source-dir",
+        "src",
+        "--source-dir",
+        "research",
+        "--check",
+        "research/DGamma/CP5O19ActivationResolutionSpike.idr"
+      ],
+      "start": "2026-09-08T02:37:41.153328+00:00",
+      "end": "2026-09-08T02:37:45.305223+00:00",
+      "seconds": 4.1516947080381215,
+      "exit": 0,
+      "fresh": true,
+      "passed": true,
+      "interrupted": false,
+      "maxSampleRSSKiB": 2884528,
+      "sourceSHA256": "699caa76e3935afa24f43da04c07f8b1d5ae23603f6112e034c3888eefec8f46",
+      "expectedDiagnostic": null,
+      "symbol": null
+    },
+    {
+      "unit": "V14",
+      "path": "research/DGamma/CP5O20SafeBlockSelectionSpike.idr",
+      "command": [
+        "idris2",
+        "--source-dir",
+        "src",
+        "--source-dir",
+        "research",
+        "--check",
+        "research/DGamma/CP5O20SafeBlockSelectionSpike.idr"
+      ],
+      "start": "2026-09-08T02:37:45.367537+00:00",
+      "end": "2026-09-08T02:37:48.496071+00:00",
+      "seconds": 3.128339750226587,
+      "exit": 0,
+      "fresh": true,
+      "passed": true,
+      "interrupted": false,
+      "maxSampleRSSKiB": 5656736,
+      "sourceSHA256": "de3c1f51979011489036a570819d6b92a671461e5408986af1e8663b61b5a024",
+      "expectedDiagnostic": null,
+      "symbol": null
+    },
+    {
+      "unit": "V15",
+      "path": "research/DGamma/CP5O20BeginObservationSpike.idr",
+      "command": [
+        "idris2",
+        "--source-dir",
+        "src",
+        "--source-dir",
+        "research",
+        "--check",
+        "research/DGamma/CP5O20BeginObservationSpike.idr"
+      ],
+      "start": "2026-09-08T02:37:48.557012+00:00",
+      "end": "2026-09-08T02:37:51.671645+00:00",
+      "seconds": 3.114420250058174,
+      "exit": 0,
+      "fresh": true,
+      "passed": true,
+      "interrupted": false,
+      "maxSampleRSSKiB": 3091344,
+      "sourceSHA256": "5e633b7a4cba1f83e5212f470512ad718182506b4f92c40897789b5d947c7bae",
+      "expectedDiagnostic": null,
+      "symbol": null
+    },
+    {
+      "unit": "V16",
+      "path": "research/DGamma/CP5O20CanonicalPairSelectionSpike.idr",
+      "command": [
+        "idris2",
+        "--source-dir",
+        "src",
+        "--source-dir",
+        "research",
+        "--check",
+        "research/DGamma/CP5O20CanonicalPairSelectionSpike.idr"
+      ],
+      "start": "2026-09-08T02:37:51.734581+00:00",
+      "end": "2026-09-08T02:37:55.885797+00:00",
+      "seconds": 4.151001791935414,
+      "exit": 0,
+      "fresh": true,
+      "passed": true,
+      "interrupted": false,
+      "maxSampleRSSKiB": 2882288,
+      "sourceSHA256": "a841cc7c44ab0ccaf1b8583b699b3ed04e8bfd7f4f43528f6d51d5a9ae2fb9c7",
+      "expectedDiagnostic": null,
+      "symbol": null
+    },
+    {
+      "unit": "V17",
+      "path": "research/DGamma/CP5O19SourceShapeSpike.idr",
+      "command": [
+        "idris2",
+        "--source-dir",
+        "src",
+        "--source-dir",
+        "research",
+        "--check",
+        "research/DGamma/CP5O19SourceShapeSpike.idr"
+      ],
+      "start": "2026-09-08T02:37:55.949548+00:00",
+      "end": "2026-09-08T02:37:59.056345+00:00",
+      "seconds": 3.1065677921287715,
+      "exit": 0,
+      "fresh": true,
+      "passed": true,
+      "interrupted": false,
+      "maxSampleRSSKiB": 2205168,
+      "sourceSHA256": "b7ade648e85d35b309a086aa458000cca7646806a027bbd0a22e77d508273ce0",
+      "expectedDiagnostic": null,
+      "symbol": null
+    },
+    {
+      "unit": "V18",
+      "path": "research-tests/DGamma/R185O19ObservedInsertionRowPositive.idr",
+      "command": [
+        "idris2",
+        "--source-dir",
+        "src",
+        "--source-dir",
+        "research",
+        "--source-dir",
+        "research-tests",
+        "--check",
+        "research-tests/DGamma/R185O19ObservedInsertionRowPositive.idr"
+      ],
+      "start": "2026-09-08T02:37:59.118704+00:00",
+      "end": "2026-09-08T02:43:06.974497+00:00",
+      "seconds": 307.85273333312944,
+      "exit": 0,
+      "fresh": true,
+      "passed": true,
+      "interrupted": false,
+      "maxSampleRSSKiB": 9791280,
+      "sourceSHA256": "d4afe7fdb8094852de0cb41d5082a6156485f6080a4cf2858a112a31c1d6983c",
+      "expectedDiagnostic": null,
+      "symbol": null
+    },
+    {
+      "unit": "V19",
+      "path": "research-tests/DGamma/R185O19ActivationInsertionRowPositive.idr",
+      "command": [
+        "idris2",
+        "--source-dir",
+        "src",
+        "--source-dir",
+        "research",
+        "--source-dir",
+        "research-tests",
+        "--check",
+        "research-tests/DGamma/R185O19ActivationInsertionRowPositive.idr"
+      ],
+      "start": "2026-09-08T02:43:07.037649+00:00",
+      "end": "2026-09-08T02:43:21.582055+00:00",
+      "seconds": 14.544124000240117,
+      "exit": 0,
+      "fresh": true,
+      "passed": true,
+      "interrupted": false,
+      "maxSampleRSSKiB": 4799952,
+      "sourceSHA256": "7282931bee762f24c93943cb95a3530b4a9f6579d8fedb524273506f6d0023d0",
+      "expectedDiagnostic": null,
+      "symbol": null
+    },
+    {
+      "unit": "V20",
+      "path": "research-tests/DGamma/R185O19InsertionGuardsPositive.idr",
+      "command": [
+        "idris2",
+        "--source-dir",
+        "src",
+        "--source-dir",
+        "research",
+        "--source-dir",
+        "research-tests",
+        "--check",
+        "research-tests/DGamma/R185O19InsertionGuardsPositive.idr"
+      ],
+      "start": "2026-09-08T02:43:21.646545+00:00",
+      "end": "2026-09-08T02:43:24.787907+00:00",
+      "seconds": 3.1411534999497235,
+      "exit": 0,
+      "fresh": true,
+      "passed": true,
+      "interrupted": false,
+      "maxSampleRSSKiB": 4555840,
+      "sourceSHA256": "2b88095daffc00a4dbf7de0d388293edf9e062091391b38f5c9ba91d5cba23fc",
+      "expectedDiagnostic": null,
+      "symbol": null
+    },
+    {
+      "unit": "V21",
+      "path": "research-tests/DGamma/R182O19RevisedSafetyPositive.idr",
+      "command": [
+        "idris2",
+        "--source-dir",
+        "src",
+        "--source-dir",
+        "research",
+        "--source-dir",
+        "research-tests",
+        "--check",
+        "research-tests/DGamma/R182O19RevisedSafetyPositive.idr"
+      ],
+      "start": "2026-09-08T02:43:24.851638+00:00",
+      "end": "2026-09-08T02:43:42.463745+00:00",
+      "seconds": 17.611788541078568,
+      "exit": 0,
+      "fresh": true,
+      "passed": true,
+      "interrupted": false,
+      "maxSampleRSSKiB": 3711120,
+      "sourceSHA256": "a49817fc2666c8cef04fbff3c059ecfd421da3424c5ed20be010d9e132ff301f",
+      "expectedDiagnostic": null,
+      "symbol": null
+    },
+    {
+      "unit": "V22",
+      "path": "research-tests/DGamma/R182O19RevisedSafetyNegative.idr",
+      "command": [
+        "idris2",
+        "--source-dir",
+        "src",
+        "--source-dir",
+        "research",
+        "--source-dir",
+        "research-tests",
+        "--check",
+        "research-tests/DGamma/R182O19RevisedSafetyNegative.idr"
+      ],
+      "start": "2026-09-08T02:43:42.525508+00:00",
+      "end": "2026-09-08T02:43:45.672430+00:00",
+      "seconds": 3.1467339997179806,
+      "exit": 0,
+      "fresh": true,
+      "passed": true,
+      "interrupted": false,
+      "maxSampleRSSKiB": 4448608,
+      "sourceSHA256": "a78c28f3fe7a1b29900c6b3d0522f9a0c8e1476169867e964818b6a697d22e54",
+      "expectedDiagnostic": null,
+      "symbol": null
+    },
+    {
+      "unit": "V23",
+      "path": "research-tests/DGamma/R182O19AdjacencyNegative.idr",
+      "command": [
+        "idris2",
+        "--source-dir",
+        "src",
+        "--source-dir",
+        "research",
+        "--source-dir",
+        "research-tests",
+        "--check",
+        "research-tests/DGamma/R182O19AdjacencyNegative.idr"
+      ],
+      "start": "2026-09-08T02:43:45.734790+00:00",
+      "end": "2026-09-08T02:43:59.214806+00:00",
+      "seconds": 13.479714208748192,
+      "exit": 0,
+      "fresh": true,
+      "passed": true,
+      "interrupted": false,
+      "maxSampleRSSKiB": 4462432,
+      "sourceSHA256": "07641432a6c2d2cf79b2cbf2ea182fb80c769d73ef21550df797110b027879d1",
+      "expectedDiagnostic": null,
+      "symbol": null
+    },
+    {
+      "unit": "V24",
+      "path": "research-tests/DGamma/R183O19GenericBeginRowPositive.idr",
+      "command": [
+        "idris2",
+        "--source-dir",
+        "src",
+        "--source-dir",
+        "research",
+        "--source-dir",
+        "research-tests",
+        "--check",
+        "research-tests/DGamma/R183O19GenericBeginRowPositive.idr"
+      ],
+      "start": "2026-09-08T02:43:59.280166+00:00",
+      "end": "2026-09-08T02:44:02.400838+00:00",
+      "seconds": 3.120457542128861,
+      "exit": 0,
+      "fresh": true,
+      "passed": true,
+      "interrupted": false,
+      "maxSampleRSSKiB": 3834336,
+      "sourceSHA256": "03523ebd512131a0f906bf9feb86bdf3a68b407b072ff6d822c172d3708dc8dc",
+      "expectedDiagnostic": null,
+      "symbol": null
+    },
+    {
+      "unit": "V25",
+      "path": "research-tests/DGamma/R182O19AllFourCrossingsPositive.idr",
+      "command": [
+        "idris2",
+        "--source-dir",
+        "src",
+        "--source-dir",
+        "research",
+        "--source-dir",
+        "research-tests",
+        "--check",
+        "research-tests/DGamma/R182O19AllFourCrossingsPositive.idr"
+      ],
+      "start": "2026-09-08T02:44:02.464716+00:00",
+      "end": "2026-09-08T02:47:14.232421+00:00",
+      "seconds": 191.76573912519962,
+      "exit": 0,
+      "fresh": true,
+      "passed": true,
+      "interrupted": false,
+      "maxSampleRSSKiB": 13950384,
+      "sourceSHA256": "1fd0c49cfeb33b053221efa3be78986740ec2b6bfb61dff34901babbe249cb22",
+      "expectedDiagnostic": null,
+      "symbol": null
+    },
+    {
+      "unit": "V26",
+      "path": "research-tests/DGamma/R7OperationalThreadingPositive.idr",
+      "command": [
+        "idris2",
+        "--source-dir",
+        "src",
+        "--source-dir",
+        "research",
+        "--source-dir",
+        "research-tests",
+        "--check",
+        "research-tests/DGamma/R7OperationalThreadingPositive.idr"
+      ],
+      "start": "2026-09-08T02:47:14.297545+00:00",
+      "end": "2026-09-08T02:47:16.401703+00:00",
+      "seconds": 2.1039632079191506,
+      "exit": 0,
+      "fresh": true,
+      "passed": true,
+      "interrupted": false,
+      "maxSampleRSSKiB": 2403520,
+      "sourceSHA256": "9cd588a0f20cae4f2e6f58d02757f5434df33f32d80583bbfa22cfbaf2fe4315",
+      "expectedDiagnostic": null,
+      "symbol": null
+    },
+    {
+      "unit": "V27",
+      "path": "research-tests/DGamma/R16ConfluenceTheoremAssemblyPositive.idr",
+      "command": [
+        "idris2",
+        "--source-dir",
+        "src",
+        "--source-dir",
+        "research",
+        "--source-dir",
+        "research-tests",
+        "--check",
+        "research-tests/DGamma/R16ConfluenceTheoremAssemblyPositive.idr"
+      ],
+      "start": "2026-09-08T02:47:16.464721+00:00",
+      "end": "2026-09-08T02:48:57.050411+00:00",
+      "seconds": 100.58457416621968,
+      "exit": 0,
+      "fresh": true,
+      "passed": true,
+      "interrupted": false,
+      "maxSampleRSSKiB": 39931024,
+      "sourceSHA256": "a023cef7449b651b5fbf8a488403a7c025f270e68baefd68275c25c65ea4bfa0",
+      "expectedDiagnostic": null,
+      "symbol": null
+    },
+    {
+      "unit": "V28",
+      "path": "research-tests/DGamma/R6SafetyDetachmentNegative.idr",
+      "command": [
+        "idris2",
+        "--source-dir",
+        "src",
+        "--source-dir",
+        "research",
+        "--source-dir",
+        "research-tests",
+        "--check",
+        "research-tests/DGamma/R6SafetyDetachmentNegative.idr"
+      ],
+      "start": "2026-09-08T02:48:57.111609+00:00",
+      "end": "2026-09-08T02:48:58.171267+00:00",
+      "seconds": 1.0595019161701202,
+      "exit": 1,
+      "fresh": true,
+      "passed": true,
+      "interrupted": false,
+      "maxSampleRSSKiB": 0,
+      "sourceSHA256": "2a7dd5d170838d96c8c549b0bf8ff7f72f0180309c3fb0d668f5c06c0d06ba34",
+      "expectedDiagnostic": "firstPremises and secondPremises",
+      "symbol": "detachSafetyFromCurrentState"
+    },
+    {
+      "unit": "V29",
+      "path": "research-tests/DGamma/R8ZeroDerivationOperationalStepNegative.idr",
+      "command": [
+        "idris2",
+        "--source-dir",
+        "src",
+        "--source-dir",
+        "research",
+        "--source-dir",
+        "research-tests",
+        "--check",
+        "research-tests/DGamma/R8ZeroDerivationOperationalStepNegative.idr"
+      ],
+      "start": "2026-09-08T02:48:58.232875+00:00",
+      "end": "2026-09-08T02:48:59.293500+00:00",
+      "seconds": 1.0604459159076214,
+      "exit": 1,
+      "fresh": true,
+      "passed": true,
+      "interrupted": false,
+      "maxSampleRSSKiB": 0,
+      "sourceSHA256": "69f3604c9468e8e7e9aace369e75cb50e057e858e910ff3f82c4baa418314c41",
+      "expectedDiagnostic": "FiniteAdjacentSwapDerivation",
+      "symbol": "zeroDerivationOperationalStepStillAccepted"
+    },
+    {
+      "unit": "V30",
+      "path": "research-tests/DGamma/R8FullPipeline.idr",
+      "command": [
+        "idris2",
+        "--source-dir",
+        "src",
+        "--source-dir",
+        "research",
+        "--source-dir",
+        "research-tests",
+        "--check",
+        "research-tests/DGamma/R8FullPipeline.idr"
+      ],
+      "start": "2026-09-08T02:48:59.355736+00:00",
+      "end": "2026-09-08T02:50:39.959226+00:00",
+      "seconds": 100.60238825017586,
+      "exit": 0,
+      "fresh": true,
+      "passed": true,
+      "interrupted": false,
+      "maxSampleRSSKiB": 39109296,
+      "sourceSHA256": "7583af47a1b91494f1b08858f0951792cf987ea3456146c25b0dc06800a28519",
+      "expectedDiagnostic": null,
+      "symbol": null
+    },
+    {
+      "unit": "V31",
+      "path": "package",
+      "command": [
+        "idris2",
+        "--build",
+        "dgamma.ipkg"
+      ],
+      "start": "2026-09-08T02:50:40.022952+00:00",
+      "end": "2026-09-08T02:50:56.603355+00:00",
+      "seconds": 16.580075333360583,
+      "exit": 0,
+      "fresh": true,
+      "passed": true,
+      "interrupted": false,
+      "maxSampleRSSKiB": 275008,
+      "sourceSHA256": "aee761a37757cb047ddbf0f846bc23ce830ed755422f96852d08eb435c368727",
+      "expectedDiagnostic": null,
+      "symbol": null
+    }
+  ],
+  "scriptsSHA256": {
+    "run-r185-commit.py": "b14670ff783ded72a87da2d8e891efc6f1a27da7f46dad54a06c973ee6725414",
+    "run-r185-evidence.py": "bffcaf9592d1212359fed71912bbfdc2bf42f6be59fc01fb2d8e3ebcb0141384",
+    "run-r185-regressions.py": "671b9a926ab107f39fbb184fbc2da58bd2af13a74ce900011649e56236ee3bce",
+    "run-r185-check.py": "6a7fed294fb59e03c9189d2973d95472d4307f9a831ad0172d050b8e9875e972",
+    "run-r185-frozen-audit.py": "5f7813d80fdf08e5447e593205bf10a498f2e8c90f91ab12917cf6581bba8846"
+  },
+  "auditSHA256": "cc444c5e6ddced84f65362815ced7637bd31784bff918b48914c63a2199f7e06",
+  "sourceChecksAndBuildsSerialized": true,
+  "strictAllCompilerProgramInvocationsSerialized": false,
+  "commitOnlyFreshPassShiftCriterionSatisfied": false,
+  "retainedMicroUnits": 85,
+  "soleExhaustedUnit": "E2",
+  "remainingHoles": 5,
+  "O19BodyAttempts": 0,
+  "CDeferredTo": "R186",
+  "O20BodyAttempts": 0,
+  "O21BodyAttempts": 0,
+  "remainingWalls": [
+    "static component synchronization to exact body cuts",
+    "sanctioned-input A/A backward guards",
+    "mixed right-activation rows/one total dispatcher",
+    "Cartesian columns",
+    "source-pair origins/product count",
+    "coverage/bounds/UniqueKeys",
+    "installed ranges/decomposition/origin updates",
+    "same-chain endpoint/full-bundle/external correspondence",
+    "new producer-driven 2x2 fixture"
+  ],
+  "independentReviewerAcceptance": "required, not claimed by producer"
+}
