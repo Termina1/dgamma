@@ -5,6 +5,7 @@ import DGamma.Calculus
 import DGamma.Coeffects
 import DGamma.Metatheory
 import DGamma.CP4DeletionFrameCore
+import DGamma.CP4DeletionSelectedForeignOrchestration
 import DGamma.CP4ProgressPotential
 import DGamma.CP5ConfluenceLocalDiamondSpike
 import DGamma.CP5O19OpeningPropagationSpike
@@ -346,3 +347,31 @@ o19AdvanceBeforeActualObservedPair nameEq keyEq actor first middle finalState le
           (checkedActionProjects nameEq keyEq (LAdvance actor) middle finalState rightTag rightChecked) rightPaper)
         (cong isJust (partialRunChecked
           (o19ActualPairEarlyPartialRun nameEq keyEq leftAction (LAdvance actor) leftTag rightTag leftChecked rightChecked distinct independent))))
+
+||| The actual insertion plan PRODUCES shared resolver observations for every
+||| dependency list. Hence this boundary accepts no resolution/guard oracle.
+export
+0 o19AdvanceBeforeObservedInsertPlan :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor, child : name) ->
+  (parent : Parent name) -> (component : Component key value world error) ->
+  (ambient : world) -> (fibers : Registry name key value world error) ->
+  (middle, finalState : SystemState name key value world error) -> (leftTag, rightTag : RuleTag) ->
+  (leftChecked : checkedApplyAction @{nameEq} @{keyEq} (OInsert child parent component) (MkSystemState ambient fibers) = Just (leftTag, middle)) ->
+  (rightChecked : checkedApplyAction @{nameEq} @{keyEq} (LAdvance actor) middle = Just (rightTag, finalState)) ->
+  Either (rightTag = LIterTag) (rightTag = LFinishTag) -> Not (child = actor) ->
+  TraceIndependent name key world error value keyEq
+    (MoreTransitions (Fired {before = MkSystemState ambient fibers} {afterState = middle} nameEq keyEq (OInsert child parent component) leftTag leftChecked)
+      (MoreTransitions (Fired {before = middle} {afterState = finalState} nameEq keyEq (LAdvance actor) rightTag rightChecked) NoTransitions)) ->
+  (registryWellFormed {name} {key} {value} {world} {error} @{nameEq} @{keyEq} (MkSystemState ambient fibers) = True) ->
+  ForeignInsertPlanView name key world error value nameEq keyEq child parent component ambient fibers leftTag middle ->
+  CheckedEarlyApplication name key world error value nameEq keyEq (MkSystemState ambient fibers) (LAdvance actor) rightTag
+o19AdvanceBeforeObservedInsertPlan nameEq keyEq actor child parent component ambient fibers _ finalState _ rightTag
+  leftChecked rightChecked rightPaper distinct independent wellFormed (MkForeignInsertPlanView absent guards) =
+    o19AdvanceBeforeActualObservedPair nameEq keyEq actor (MkSystemState ambient fibers)
+      (MkSystemState ambient (insertBinding @{nameEq} child (freshFiber component parent) fibers absent)) finalState
+      (OInsert child parent component) OInsertTag rightTag leftChecked rightChecked rightPaper distinct independent
+      (\deps => resolveView {name} {key} {value} {world} {error} @{nameEq} @{keyEq} deps fibers)
+      (\deps => Refl)
+      (\deps => resolveViewInactiveInsert {name} {key} {value} {world} {error} nameEq keyEq deps child component parent fibers absent)
+      wellFormed
