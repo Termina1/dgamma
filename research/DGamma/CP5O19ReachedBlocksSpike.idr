@@ -364,3 +364,20 @@ o19ActorOnlyPrependObserved selected forbidden step rest tail (BlockOwnLifecycle
   ActorLifecycleStep step rest lifecycle (trans (o19TransitionActorOwner step) owner) tail
 o19ActorOnlyPrependObserved selected forbidden step rest tail (BlockGenerated child component inserted safe) =
   ActorYieldedRegistrationStep step rest inserted tail
+
+||| Fold actual reached heads using bounded word observations. A caller's
+||| classifier is an internal boundary; original blocks supply it at assembly.
+export
+0 o19ActorOnlyFromWord :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (selected, forbidden : name) ->
+  {first, last : SystemState name key value world error} ->
+  (trace : Transitions first last) ->
+  ((action : Action name key value world error) -> Elem action (o19ActionWord trace) ->
+    O19BlockWordObservation name key world error value selected forbidden action) ->
+  ActorLifecycleOnly selected trace
+o19ActorOnlyFromWord selected forbidden NoTransitions observations = ActorLifecycleEnd
+o19ActorOnlyFromWord selected forbidden (MoreTransitions step rest) observations =
+  o19ActorOnlyPrependObserved selected forbidden step rest
+    (o19ActorOnlyFromWord selected forbidden rest (\action, member => observations action (There member)))
+    (observations (transitionAction step) Here)
