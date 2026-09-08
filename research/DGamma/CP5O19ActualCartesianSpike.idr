@@ -196,3 +196,32 @@ export
 o19ActualGlobalOriginSites nameEq keyEq protocol swap source blocks premises safety unique =
   o19GlobalPlanSites (identityActionRegistrationReplayCorrespondence source) (o19IdentityOrdinalMap source)
     (cursorDerivation (columnCursor (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique)))
+
+||| Actual empty-gap site adapter, discharging static classes with A12.
+export
+0 o19CartesianAdjacentObservedSites :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (protocol : RegistrationProtocol key value world error) ->
+  {sourceOrder, targetOrder : List name} -> (swap : AdjacentActorOrderSwap name sourceOrder targetOrder) ->
+  {initial, sourceFinal, before, leftAfter, leftEnd, rightBefore, rightAfter : SystemState name key value world error} ->
+  (source : Transitions initial sourceFinal) ->
+  (blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder source) ->
+  (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq source) ->
+  (safety : AdjacentActorSwapSafety name key world error value protocol nameEq keyEq swap source blocks premises) ->
+  (unique : UniqueRawNameInsertions name key world error value nameEq keyEq source) ->
+  (earlier : Transitions initial before) -> (firstLeft : Transition before leftAfter) -> (leftRest : Transitions leftAfter leftEnd) ->
+  (gap : Transitions leftEnd rightBefore) -> (rightSpine : Transitions rightBefore rightAfter) -> (later : Transitions rightAfter sourceFinal) ->
+  (decomposition : appendTransitions earlier (appendTransitions (MoreTransitions firstLeft leftRest) (appendTransitions gap (appendTransitions rightSpine later))) = source) ->
+  (adjacent : transitionCount gap = 0) ->
+  (leftWord : o19ActionWord (MoreTransitions firstLeft leftRest) = o19ActionWord (actorBlockTrace (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)))) ->
+  (rightWord : o19ActionWord rightSpine = o19ActionWord (actorBlockTrace (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety)))) ->
+  (o19CrossingSites (cursorDerivation (columnCursor (o19CartesianAdjacentObserved nameEq keyEq protocol swap source blocks premises safety unique earlier firstLeft leftRest gap rightSpine later decomposition adjacent leftWord rightWord))) =
+    o19ColumnSites (transitionCount earlier) (transitionCount (MoreTransitions firstLeft leftRest)) (transitionCount rightSpine))
+o19CartesianAdjacentObservedSites nameEq keyEq protocol swap source blocks premises safety unique earlier firstLeft leftRest
+  NoTransitions rightSpine later decomposition adjacent leftWord rightWord =
+    o19CartesianSourceSpinesSites nameEq keyEq protocol swap source blocks premises safety unique earlier firstLeft leftRest rightSpine later decomposition
+      (\leftOrigin, rightOrigin, leftMember, rightMember =>
+        o19OriginalClasses nameEq keyEq protocol swap source blocks premises safety unique leftOrigin rightOrigin
+          (replace {p = Elem _} leftWord leftMember) (replace {p = Elem _} rightWord rightMember))
+o19CartesianAdjacentObservedSites nameEq keyEq protocol swap source blocks premises safety unique earlier firstLeft leftRest
+  (MoreTransitions step rest) rightSpine later decomposition adjacent leftWord rightWord = void (uninhabited adjacent)
