@@ -201,3 +201,36 @@ o19BuildGlobalOriginPlan correspondence currentMap
       (o19BuildGlobalOriginPlan
         (composeActionRegistrationReplayCorrespondence correspondence (swappedOccurrenceCorrespondence result))
         (o19OrdinalMapAfterNode correspondence currentMap earlier left right later diamond result) rest)
+
+||| Localize a produced GLOBAL plan using ONE exact offset-list equation.
+||| This transports real node origins, not action labels. Proving that the
+||| actual Cartesian algorithm's global list IS the shifted complete/unique
+||| Cartesian coordinate list remains the explicit missing obligation.
+export
+0 o19LocalizeGlobalPlan :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {protocol : RegistrationProtocol key value world error} -> {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {initial, sourceFinal, currentFinal, targetFinal : SystemState name key value world error} ->
+  {source : Transitions initial sourceFinal} -> {current : Transitions initial currentFinal} -> {target : Transitions initial targetFinal} ->
+  {correspondence : ActionRegistrationReplayCorrespondence name key world error value source current} ->
+  {derivation : FiniteAdjacentSwapDerivation name key world error value protocol nameEq keyEq current target} ->
+  {leftActor, rightActor : name} ->
+  (leftBlock : LocatedOpenEpisodeBlock name key world error value nameEq keyEq leftActor source) ->
+  (rightBlock : LocatedOpenEpisodeBlock name key world error value nameEq keyEq rightActor source) ->
+  {globalPositions : List (Nat, Nat)} ->
+  O19GlobalCrossingPlan name key world error value protocol nameEq keyEq source correspondence derivation globalPositions ->
+  (positions : List (Nat, Nat)) ->
+  (globalPositions = map (\pair => (transitionCount (traceBeforeBlock leftBlock) + fst pair, transitionCount (traceBeforeBlock rightBlock) + snd pair)) positions) ->
+  BlockCrossingOriginPlan name key world error value protocol nameEq keyEq source leftBlock rightBlock correspondence derivation positions
+o19LocalizeGlobalPlan leftBlock rightBlock GlobalOriginPlanDone [] exact = CrossingOriginPlanDone
+o19LocalizeGlobalPlan leftBlock rightBlock GlobalOriginPlanDone (pair :: positions) exact = void (uninhabited (cong length exact))
+o19LocalizeGlobalPlan leftBlock rightBlock
+  (GlobalOriginPlanStep current earlier left right later orientation diamond result target rest correspondence leftOrdinal rightOrdinal leftExact rightExact globalPositions tail)
+  [] exact = void (uninhabited (cong length exact))
+o19LocalizeGlobalPlan leftBlock rightBlock
+  (GlobalOriginPlanStep current earlier left right later orientation diamond result target rest correspondence leftOrdinal rightOrdinal leftExact rightExact globalPositions tail)
+  ((leftPosition, rightPosition) :: positions) exact =
+    CrossingOriginPlanStep current earlier left right later orientation diamond result target rest correspondence leftBlock rightBlock
+      (trans leftExact (cong fst (fst (consInjective exact))))
+      (trans rightExact (cong snd (fst (consInjective exact)))) positions
+      (o19LocalizeGlobalPlan leftBlock rightBlock tail positions (snd (consInjective exact)))
