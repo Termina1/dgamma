@@ -317,3 +317,17 @@ Full independent canonical/replay countershape capital, full one-/two-sided
 present CP3 vestigial instances and a concrete active-fake negative remain OPEN
 fixtures. This is not hidden behind the E8/Current/E9 success or R4's conditional
 assembly test. See the audit's six-row exact fixture matrix and final ledger.
+
+## Endpoint scope repair is not an intermediate-cut proof
+
+A11's original-support guard repairs the endpoint fourth field. It does not
+prove that a fixed CURRENT-name ALL-name intermediate cut can cross arbitrary
+UNSUPPORTED historical generated insertions. The actual removed fixture swaps
+absent1/2 at the endpoint while its historical birth is1 on both traces;
+matching such histories may require a generation-indexed internal name map
+agreeing with the supplied current map only on relevant endpoint names, or
+a proved reconstruction path. No alternate map/coercion is implemented.
+Full canonical/replay capital is not packaged, so this remains a construction
+risk, NOT a new protected-theorem or production-confluence counterexample.
+D5 honestly takes its all-name cut as input. The third endpoint field is
+unchanged; its full vestigial-domain compatibility also remains an audit debt.

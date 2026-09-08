@@ -3299,3 +3299,37 @@ negative are still open. O21's exact declaration/body bytes and proof hole
 are unchanged. Unit C's precise deferred CP3/unfreeze sequence, affected
 clause map and 48-GiB serialized seeded rebuild protocol are in the owner memo.
 No production edits/build-seed deletion or O17 construction occurred in R192.
+
+## Status — R192 checked partial milestone
+
+Fully checked new capital:48 total declarations (A27, B9, C7, D5), including
+actual bilateral Begin/Reloading observations, native paired Remove and both
+LTS projections, conditional physical right-first Begin, the research extended
+actor grammar/inclusion, historical removed-name obstruction, actual supported
+positive, and the entire newly scoped fourth bridge clause from an OWNED
+all-name cut plus accepted canonical capital. The cut is not extracted here.
+The only approved mathematical surface change is A11's two-line ORIGINAL
+support guard; first3 fields and O21 statement/body bytes are unchanged.
+
+Partial/stated: arbitrary canonical paired extraction and failure/diversion;
+resolver/candidate/orientation/stopped-order completeness; physical zero gap;
+full R191 reordering and availability-aware canonical decomposition/O17 phase;
+full canonical/vestigial fixtures; selector/convergence/O21 holes (census4).
+A9/B10/C4 were exhausted3/3 and wholly reverted, no fourth attempts. No new
+postulate/unsafe/partial escape hatch or proof hole was introduced.
+
+Validation:113 serialized invocations,96 expected PASS (including9 negatives),
+17 rejected development attempts,0 interrupted;37/37 frozen final checks plus
+V38 final-source PASS.52 source commits have independently verified receipts.
+V16 is retained but superseded only for an approved three-comment-line fix;
+all declaration/type/body bytes of that probe stayed identical. Idris2 0.8.0;
+seeded package PASS,207/207 TTC retained, max sampled RSS49,825,328KiB.
+Production remains byte-identical to34b21c9; O19/LocalDiamond/adjacent frozen.
+
+Next: close the research placement/relocation and operational extraction debts
+with explicit producer ownership, investigate history-sensitive internal maps
+versus current endpoint maps, then exact owner-signed CP3/in-file-dependent
+diff and the memo's serialized seeded48GiB rebuild plan. No production cure,
+O17 body construction, zero-gap coercion or O21 withdrawal consumption in R192.
+See O6-R192-GRIND-SHIFT-AUDIT, decision memo, compiler ledger/archive and
+verification for exact claims, remaining fixtures and invocation qualification.

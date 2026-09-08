@@ -24,7 +24,7 @@ Python-guarded exact-source fresh-PASS commit. Proof witnesses erased.
 
 S0-1 baseline PASS, not a proof unit. Per-unit entries follow.
 
-## Status
+## Baseline status (historical; superseded by final status below)
 
 Initial census unchanged4=1/2/0/0/1. Both O20 bodies open and untouched.
 A8/A10 owner decision pending; no surface cure chosen or implemented.
@@ -286,3 +286,75 @@ incorrectly saying that whole module is unchanged. Rebuild inventory is a
 407-module read-only plan (163 production,90 research,154 fixtures), generated
 before D5 and subject to regeneration against an eventual owner-signed CP3 diff.
 No production build/cache action was performed by the inventory generator.
+
+## Final status — checked partial R192 milestone
+
+- **48 retained new declarations:** A27/28 (A9 reverted), B9/10 (B10
+  reverted/stopped), C7/8 (C4 reverted), D5 new +1 compiler-free analysis.
+  All48 have exact-source fresh PASS and immediate guarded source receipts.
+- A11 has3 separately approved existing-declaration changes (record and2
+  constructor fixtures). All source changes have **52** authenticated receipts,
+  including the one separately approved comment-only correction below.
+- **113 compiler invocations:**96 expected PASS,17 rejected development
+  attempts,0 interrupted. The96 include9 authenticated expected negatives.
+  All are serialized, with immutable source/log/JSON and explicit invocation
+  qualification. No fourth attempt at A9/B10/C4. C5-1 failed only because
+  BeginStep's Metatheory import was missing; C5-2 passed after that import.
+- Original immutable final plan **37/37 PASS**, including all8 direct bridge
+  consumers, R191 F1–F6 file, R174 collision file, R8 pipeline/independent
+  capital checks, wrong trace/occurrence/generation negatives, and seeded
+  package --build. Additional final-source **V38 PASS**.
+- LocalDiamond fresh V2 PASS503.251s at49,825,328KiB (~47.52GiB), narrowly
+  below the48GiB sampled-process stop threshold. R8 full pipeline V33
+  PASS99.718s at39,136,672KiB. These are sampled RSS, not absolute peak claims.
+  Package V1 is a **seeded** --build PASS, not a cold207-module rebuild.
+- Frozen gate and independent receipt/source audit PASS at final source HEAD
+  `293d75184e963987bf1c3c375773601ce21aad03`. Source universe remains
+  production==34b21c9; CP3 blob2c697e532e83989de8591fa6a4378747c6a501c0;
+  O19/LocalDiamond/adjacent exact hashes preserved; census4=1/2/0/0/1;
+  207/207 seeds retained; no compiler/staged files/unsafe additions.
+
+### Exact comment-only correction after37 checks
+
+Supervisor explicitly approved replacing ONLY C3's stale three-line docstring
+which implied a checked relocated trace after C4 had been exhausted/reverted.
+The corrected text says candidate states only, NO trace/reordering proof.
+All non-docstring bytes SHA stays
+`f39a6354284ee97d06bd754ba16e538f1d236748d87ff4d404f122d0a856b7cf`.
+Whole file SHA677f90fcee71163893ca2a0ac95b1939debbf44ced06643acb46128b0d80fead
+→4b0ff1f9ad16b3031440e57f683eb3e7e5095b4a4191b6db97a0a1067dde4a6b.
+Manifest applied only after37/37 completed. Y1COMMENT fresh PASS3.133s and
+immediate guarded comment commit293d7518; immutable V38 fresh PASS3.131s.
+V16 remains a VALID historical check, marked superseded for CURRENT source
+coverage by Y1COMMENT/V38. No record overwritten, no C4 body retry.
+
+### What remains open (not hidden by the A11 surface correction)
+
+Whole canonical paired extraction; native callback/result and failure/diversion
+coverage; unsupported-history internal name transport; resolver frame derivation
+for right-first Begin; actual candidate/orientation enumeration completeness;
+physical zero-gap proof; stopped-order goal equality; full extended canonical
+R191 reordering/decomposition; R178 availability-aware earliest placement and
+variant O17 root phase; full concrete canonical/vestigial fixture matrix.
+Selector/convergence/O21 bodies remain untouched holes. A8/A10 production
+unfreeze is DEFERRED pending research proofs, exact diff and owner signature.
+
+The consolidated archive authenticates all113 compiler records and receipts
+through its documented source/evidence boundary; a publication commit cannot
+contain its own future hash/receipt. Terminal artifact receipts continue in
+/tmp/dgamma-r192/commit-receipts.jsonl. Independent reviewer/final supervisor
+gate is required; completion is a checked PARTIAL milestone, not Theorem73.
+
+## Endpoint scope repair is not an intermediate-cut proof
+
+A11's original-support guard repairs the endpoint fourth field. It does not
+prove that a fixed CURRENT-name ALL-name intermediate cut can cross arbitrary
+UNSUPPORTED historical generated insertions. The actual removed fixture swaps
+absent1/2 at the endpoint while its historical birth is1 on both traces;
+matching such histories may require a generation-indexed internal name map
+agreeing with the supplied current map only on relevant endpoint names, or
+a proved reconstruction path. No alternate map/coercion is implemented.
+Full canonical/replay capital is not packaged, so this remains a construction
+risk, NOT a new protected-theorem or production-confluence counterexample.
+D5 honestly takes its all-name cut as input. The third endpoint field is
+unchanged; its full vestigial-domain compatibility also remains an audit debt.
