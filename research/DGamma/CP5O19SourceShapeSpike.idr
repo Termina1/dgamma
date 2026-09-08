@@ -182,3 +182,26 @@ o19ResolutionConsExcluded nameEq keyEq state actor owner found inactive wellForm
       (providerOfSound nameEq keyEq head provider (registry state) headExact)
 o19ResolutionConsExcluded nameEq keyEq state actor owner found inactive wellFormed head rest view resolved
   (Just provider) headExact (Just tail) tailExact smaller wanted (There later) = smaller tail tailExact wanted later
+
+||| Every successfully resolved dependency excludes the static declarations of
+||| an inactive owner. The actual provider and tail observations and the entire
+||| exclusion induction are generated here; there is no footprint premise.
+export
+0 o19ResolvedDependenciesExcluded :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (state : SystemState name key value world error) -> (actor : name) ->
+  (owner : Fiber name key value world error) -> (lookupFiber @{nameEq} actor (registry state) = Just owner) ->
+  (isActive (fiberLifecycle owner) = False) ->
+  (registryWellFormed {name} {key} {value} {world} {error} @{nameEq} @{keyEq} state = True) ->
+  (deps : List key) -> (view : View name deps) ->
+  (resolveView {name} {key} {value} {world} {error} @{nameEq} @{keyEq} deps (registry state) = Just view) ->
+  (wanted : key) -> Elem wanted deps -> Not (Elem wanted (dependencies (componentProvisions (fiberComponent owner))))
+o19ResolvedDependenciesExcluded nameEq keyEq state actor owner found inactive wellFormed [] view resolved wanted absent =
+  \declares => uninhabited absent
+o19ResolvedDependenciesExcluded nameEq keyEq state actor owner found inactive wellFormed (head :: rest) view resolved wanted member =
+  o19ResolutionConsExcluded nameEq keyEq state actor owner found inactive wellFormed head rest view resolved
+    (providerOf {name} {key} {value} {world} {error} @{nameEq} @{keyEq} head (registry state)) Refl
+    (resolveView {name} {key} {value} {world} {error} @{nameEq} @{keyEq} rest (registry state)) Refl
+    (\tail, tailExact => o19ResolvedDependenciesExcluded nameEq keyEq state actor owner found inactive wellFormed rest tail tailExact)
+    wanted member
