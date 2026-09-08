@@ -59,3 +59,24 @@ o20CheckBeforeComplete nameEq left right (head :: rest) ordered =
     (o20BeforeRightInTail ordered)
     (\different => o20MapMaybePresent (BeforeThere {other = head}) (o20CheckBefore nameEq left right rest)
       (o20CheckBeforeComplete nameEq left right rest (o20BeforeDifferentHeadTail different ordered)))
+
+||| COMPLETE actual orientation for any actual safe choice whose right actor
+||| precedes its left in the fixed goal. Enumeration and safety completeness
+||| are separate; no successful order-check result is assumed here.
+export
+0 o20OrientChosenSafeSwapComplete :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {protocol : RegistrationProtocol key value world error} ->
+  (nameEq : DecEq name) -> {keyEq : DecEq key} ->
+  {sourceOrder : List name} -> (goalOrder : List name) ->
+  (goalUnique : UniqueKeys goalOrder) ->
+  {initial, finalState : SystemState name key value world error} -> {trace : Transitions initial finalState} ->
+  {blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder trace} ->
+  {premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq trace} ->
+  (choice : O20ChosenSafeSwap name key world error value protocol nameEq keyEq sourceOrder trace blocks premises) ->
+  BeforeIn (actorRight (chosenOrderSwap choice)) (actorLeft (chosenOrderSwap choice)) goalOrder ->
+  (isJust (o20OrientChosenSafeSwap nameEq goalOrder goalUnique choice) = True)
+o20OrientChosenSafeSwapComplete nameEq goalOrder goalUnique choice reverseOrder =
+  o20OrientChoiceObserved nameEq goalOrder goalUnique choice
+    (o20CheckBefore nameEq (actorRight (chosenOrderSwap choice)) (actorLeft (chosenOrderSwap choice)) goalOrder) Refl
+    (o20CheckBeforeComplete nameEq (actorRight (chosenOrderSwap choice)) (actorLeft (chosenOrderSwap choice)) goalOrder reverseOrder)
