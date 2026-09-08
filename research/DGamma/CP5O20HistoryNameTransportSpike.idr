@@ -140,3 +140,24 @@ o20HistorySupportedChoice nameEq keyEq left right mapping registrations current 
 o20HistorySupportedChoice nameEq keyEq left right mapping registrations current selected leftStamp supported (Right matched) =
   o20HistoryEndpointPacketAgrees nameEq left right mapping registrations
     (renameForward (currentNameBijection current) selected) leftStamp matched
+
+||| Endpoint agreement for every supported current generation. The current
+||| coupling choice is obtained from the supplied accepted endpoint record;
+||| no raw-name equation or opposite birth is an input. Mere presence alone
+||| would not exclude the full vestigial alternative.
+export
+0 o20HistorySupportedEndpoint :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {leftFirst, leftFinal, rightFirst, rightFinal : SystemState name key value world error} ->
+  (left : Transitions leftFirst leftFinal) -> (right : Transitions rightFirst rightFinal) ->
+  (mapping : RegistrationGenerationBijection name) ->
+  (registrations : RegistrationCorrespondenceByGeneration nameEq mapping left right) ->
+  (current : CurrentEndpointRenaming nameEq keyEq mapping left right registrations) ->
+  (selected : name) -> (leftStamp : RegistrationGeneration name) ->
+  (lookupCurrentGeneration @{nameEq} selected (leftFinalGenerations registrations) = Just leftStamp) ->
+  (isSupported {name} {key} {value} {world} {error} @{nameEq} @{keyEq} selected leftFinal = True) ->
+  (o20HistoricalTarget mapping leftStamp = renameForward (currentNameBijection current) selected)
+o20HistorySupportedEndpoint nameEq keyEq left right mapping registrations current selected leftStamp found supported =
+  o20HistorySupportedChoice nameEq keyEq left right mapping registrations current selected leftStamp supported
+    (leftCurrentGenerationMapped current selected leftStamp found)
