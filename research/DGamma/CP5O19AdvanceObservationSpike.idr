@@ -4,6 +4,7 @@ import DGamma.Core
 import DGamma.Calculus
 import DGamma.Coeffects
 import DGamma.Metatheory
+import DGamma.CP4DeletionFrameCore
 import Data.List
 import Data.Maybe
 import Decidable.Equality
@@ -139,3 +140,34 @@ o19AdvanceValuesObserved nameEq keyEq actor component parent retiredFlag table s
           (MkFiber component parent retiredFlag table (Reloading (step :: rest) accumulator view)) state =
           stepForwardEffectMap nameEq keyEq actor step capability state)
           (rewrite exact in Refl)))) defined)))
+
+||| Rebase the EXPLICIT capability/callback output onto the raw evaluator's
+||| actual committed resolver and owned-table normalization. The two existing
+||| projection lemmas do the transport; no proof irrelevance is involved.
+export
+0 o19AdvanceValuesAtSource :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (before : SystemState name key value world error) ->
+  (component : Component key value world error) -> (parent : Parent name) -> (retiredFlag : Bool) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (step : StepEffect key value world error (dependencies (componentDependencies component)) (componentProvisions component)) ->
+  (rest : List (StepEffect key value world error (dependencies (componentDependencies component)) (componentProvisions component))) ->
+  (accumulator : LocalState key value world (componentProvisions component) -> LocalState key value world (componentProvisions component)) ->
+  (view : View name (dependencies (componentDependencies component))) ->
+  (lookupFiber @{nameEq} actor (registry before) = Just (MkFiber component parent retiredFlag table (Reloading (step :: rest) accumulator view))) ->
+  (observed : (capability : DepValues key value (dependencies (componentDependencies component)) **
+    (resolveEffectValues @{keyEq} (dependencies (componentDependencies component)) view (projectEffectState @{nameEq} before) = Just capability,
+     O19StepObservation key world error value (dependencies (componentDependencies component)) (componentProvisions component) step capability
+       (MkLocalState (effectAmbient (projectEffectState @{nameEq} before))
+         (restrictOwnedPreservingOrder @{keyEq} (componentProvisions component) (effectTables (projectEffectState @{nameEq} before) actor)))))) ->
+  (capability : DepValues key value (dependencies (componentDependencies component)) **
+    (resolveCommittedValues {name} {key} {value} {world} {error} @{nameEq} @{keyEq} (dependencies (componentDependencies component)) view (registry before) = Just capability,
+     O19StepObservation key world error value (dependencies (componentDependencies component)) (componentProvisions component) step capability
+       (MkLocalState (worldState before) (restrictOwnedPreservingOrder @{keyEq} (componentProvisions component) (ownedValues table)))))
+o19AdvanceValuesAtSource nameEq keyEq actor (MkSystemState ambient fibers) component parent retiredFlag table step rest accumulator view found
+  (capability ** (resolved, ran)) =
+    (capability **
+      (trans (sym (resolveEffectValuesProjected nameEq keyEq (dependencies (componentDependencies component)) view (MkSystemState ambient fibers))) resolved,
+       rewrite sym (projectedActorTable nameEq actor (MkSystemState ambient fibers)
+         (MkFiber component parent retiredFlag table (Reloading (step :: rest) accumulator view)) found) in ran))
