@@ -89,3 +89,19 @@ o19LifecycleCoveredAtCut (MoreTransitions head tail) selected later (CoveredLife
   o19LifecycleCoveredAtCut tail selected later rest observed
 o19LifecycleCoveredAtCut (MoreTransitions head tail) selected later (CoveredOrchestrationStep _ _ orchestration rest) observed =
   o19LifecycleCoveredAtCut tail selected later rest observed
+
+||| Genuine LocatedActionOccurrence observation: recover actor membership
+||| through the OWN exact trace decomposition and OWN action equation.
+export
+0 o19LocatedLifecycleCovered :
+  {name, key, world, error : Type} -> {value : key -> Type} -> {order : List name} ->
+  {initial, finalState : SystemState name key value world error} ->
+  (trace : Transitions initial finalState) -> LifecycleActorsCovered order trace ->
+  (action : Action name key value world error) -> LocatedActionOccurrence action trace ->
+  (isLifecycleAction action = True) -> Elem (actionOwner action) order
+o19LocatedLifecycleCovered trace covered action (MkLocatedActionOccurrence before afterState earlier selected later actionExact decomposition) lifecycle =
+  replace {p = \actor => Elem actor order}
+    (trans (o19TransitionActorOwner selected) (cong actionOwner actionExact))
+    (o19LifecycleCoveredAtCut earlier selected later
+      (replace {p = LifecycleActorsCovered order} (sym decomposition) covered)
+      (trans (cong isLifecycleAction actionExact) lifecycle))
