@@ -31,3 +31,20 @@ record O20SupportedFiberImage
     (renaming selected) (registry target) = Just imageFiber)
   0 imageComponent : (fiberComponent imageFiber = fiberComponent sourceFiber)
   0 imageParent : (fiberParent imageFiber = supportMapParent name renaming (fiberParent sourceFiber))
+
+||| Eliminate one explicitly supplied scanner result, never a local case on a
+||| computed existential and never a caller assertion about target metadata.
+export
+0 o20SupportedImageObserved :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {renaming : name -> name} -> {selected : name} ->
+  {sourceFiber : Fiber name key value world error} ->
+  {target : SystemState name key value world error} ->
+  (targetFiber : Fiber name key value world error **
+    ((lookupFiber {name} {key} {value} {world} {error} @{nameEq}
+      (renaming selected) (registry target) = Just targetFiber),
+     (fiberComponent targetFiber = fiberComponent sourceFiber),
+     (fiberParent targetFiber = supportMapParent name renaming (fiberParent sourceFiber)))) ->
+  O20SupportedFiberImage name key world error value nameEq renaming selected sourceFiber target
+o20SupportedImageObserved (targetFiber ** (found, component, parent)) =
+  MkO20SupportedFiberImage targetFiber found component parent
