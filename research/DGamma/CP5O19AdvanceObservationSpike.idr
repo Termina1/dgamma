@@ -258,3 +258,53 @@ o19AdvanceAtCapturedDomain nameEq keyEq actor ambient fibers component parent re
         (projectEffectState @{nameEq} (the (SystemState name key value world error) (MkSystemState ambient fibers)))
         (resolveEffectValues @{keyEq} (dependencies (componentDependencies component)) view
           (projectEffectState @{nameEq} (the (SystemState name key value world error) (MkSystemState ambient fibers)))) Refl defined))
+
+||| Reconstruct right Advance from its ACTUAL later source and captured-map
+||| domain, plus explicit shared resolver values and owner lookup framing.
+||| Shared resolution for ALL lists fits insertion cuts; it is not claimed
+||| for arbitrary activation cuts whose unrelated targets may genuinely grow.
+export
+0 o19AdvanceBeforeObservedCut :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (early, late : SystemState name key value world error) -> (tag : RuleTag) ->
+  (observed : (deps : List key) -> Maybe (View name deps)) ->
+  ((deps : List key) -> resolveView {name} {key} {value} {world} {error} @{nameEq} @{keyEq} deps (registry early) = observed deps) ->
+  ((deps : List key) -> resolveView {name} {key} {value} {world} {error} @{nameEq} @{keyEq} deps (registry late) = observed deps) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor (registry early) = lookupFiber @{nameEq} actor (registry late)) ->
+  PaperAdvanceSource name key world error value nameEq keyEq actor tag late ->
+  (isJust (partialEffectMapFor nameEq keyEq (LAdvance actor) tag late (projectEffectState @{nameEq} early)) = True) ->
+  RawActivationMove {name} {key} {value} {world} {error} nameEq keyEq (LAdvance actor) tag early
+o19AdvanceBeforeObservedCut nameEq keyEq actor (MkSystemState ambient fibers) _ _ observed earlyResolution lateResolution sameLookup
+  (AdvanceSourceFinishEmpty {ambient = lateWorld} {fibers = lateFibers} {component} {parent} {retiredFlag} {table} {accumulator} {view} Refl found target) defined =
+    o19FinishEmptyAtObservedTarget nameEq keyEq actor ambient fibers component parent retiredFlag table accumulator view
+      (trans sameLookup found)
+      (o19ObservedTargetRebase nameEq keyEq component parent retiredFlag table (Reloading [] accumulator view) fibers lateFibers
+        (observed (dependencies (componentDependencies component))) view
+        (earlyResolution (dependencies (componentDependencies component))) (lateResolution (dependencies (componentDependencies component))) target)
+o19AdvanceBeforeObservedCut nameEq keyEq actor (MkSystemState ambient fibers) _ _ observed earlyResolution lateResolution sameLookup
+  (AdvanceSourceFinishOne {ambient = lateWorld} {fibers = lateFibers} {component} {parent} {retiredFlag} {table} {step} {accumulator} {view} Refl found target) defined =
+    o19AdvanceAtCapturedDomain nameEq keyEq actor ambient fibers component parent retiredFlag table step [] accumulator view
+      (trans sameLookup found)
+      (o19ObservedTargetRebase nameEq keyEq component parent retiredFlag table (Reloading [step] accumulator view) fibers lateFibers
+        (observed (dependencies (componentDependencies component))) view
+        (earlyResolution (dependencies (componentDependencies component))) (lateResolution (dependencies (componentDependencies component))) target)
+      (trans (sym (cong isJust
+        (the (partialEffectMapFor nameEq keyEq (LAdvance actor) LFinishTag (the (SystemState name key value world error) (MkSystemState lateWorld lateFibers))
+          (projectEffectState @{nameEq} (the (SystemState name key value world error) (MkSystemState ambient fibers))) =
+          fiberAdvanceRuntimeEffectMap nameEq keyEq actor (MkFiber component parent retiredFlag table (Reloading [step] accumulator view))
+            (projectEffectState @{nameEq} (the (SystemState name key value world error) (MkSystemState ambient fibers))))
+          (rewrite found in Refl)))) defined)
+o19AdvanceBeforeObservedCut nameEq keyEq actor (MkSystemState ambient fibers) _ _ observed earlyResolution lateResolution sameLookup
+  (AdvanceSourceIter {ambient = lateWorld} {fibers = lateFibers} {component} {parent} {retiredFlag} {table} {step} {next} {more} {accumulator} {view} Refl found target) defined =
+    o19AdvanceAtCapturedDomain nameEq keyEq actor ambient fibers component parent retiredFlag table step (next :: more) accumulator view
+      (trans sameLookup found)
+      (o19ObservedTargetRebase nameEq keyEq component parent retiredFlag table (Reloading (step :: next :: more) accumulator view) fibers lateFibers
+        (observed (dependencies (componentDependencies component))) view
+        (earlyResolution (dependencies (componentDependencies component))) (lateResolution (dependencies (componentDependencies component))) target)
+      (trans (sym (cong isJust
+        (the (partialEffectMapFor nameEq keyEq (LAdvance actor) LIterTag (the (SystemState name key value world error) (MkSystemState lateWorld lateFibers))
+          (projectEffectState @{nameEq} (the (SystemState name key value world error) (MkSystemState ambient fibers))) =
+          fiberAdvanceRuntimeEffectMap nameEq keyEq actor (MkFiber component parent retiredFlag table (Reloading (step :: next :: more) accumulator view))
+            (projectEffectState @{nameEq} (the (SystemState name key value world error) (MkSystemState ambient fibers))))
+          (rewrite found in Refl)))) defined)
