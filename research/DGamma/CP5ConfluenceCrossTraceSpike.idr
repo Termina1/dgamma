@@ -30,31 +30,6 @@ data CertifiedActorPermutation :
     CertifiedActorPermutation name middle after ->
     CertifiedActorPermutation name before after
 
-||| The current right node is likewise located with no caller-supplied
-||| occurrence.  Associativity and the checked source decomposition determine
-||| its exact prefix.
-public export
-0 adjacentRightNodeOccurrence :
-  {initial, pairFirst, pairMiddle, pairFinal, originalFinal :
-    SystemState name key value world error} ->
-  {original : Transitions initial originalFinal} ->
-  {prefixTrace : Transitions initial pairFirst} ->
-  {left : Transition pairFirst pairMiddle} ->
-  {right : Transition pairMiddle pairFinal} ->
-  {suffix : Transitions pairFinal originalFinal} ->
-  {diamond : LocalRelationalDiamond name key world error value nameEq keyEq
-    left right} ->
-  (result : AdjacentSwapResult name key world error value protocol nameEq keyEq
-    original prefixTrace left right suffix diamond) ->
-  LocatedActionOccurrence (transitionAction right) original
-adjacentRightNodeOccurrence {prefixTrace} {left} {right} {suffix} result =
-  MkLocatedActionOccurrence _ _
-    (appendTransitions prefixTrace (MoreTransitions left NoTransitions)) right
-    suffix Refl
-    (trans (appendTransitionsAssociative prefixTrace
-      (MoreTransitions left NoTransitions) (MoreTransitions right suffix))
-      (originalDecomposition result))
-
 ||| Build an authenticated label using only the exact intermediate replay fold
 ||| output plus the remaining source-block ordinal equation.
 public export
