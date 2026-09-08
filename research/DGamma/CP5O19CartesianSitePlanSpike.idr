@@ -90,3 +90,10 @@ public export
 o19RowSites : Nat -> Nat -> List Nat
 o19RowSites start Z = []
 o19RowSites start (S width) = o19RowSites (S start) width ++ [start]
+
+||| Expected full Cartesian site word: each complete descending left row
+||| moves one right node to the growing left boundary, then the next column.
+public export
+o19ColumnSites : Nat -> Nat -> Nat -> List Nat
+o19ColumnSites start width Z = []
+o19ColumnSites start width (S height) = o19RowSites start width ++ o19ColumnSites (S start) width height
