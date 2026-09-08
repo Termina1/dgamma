@@ -190,3 +190,29 @@ o19InsertionPairEarly {first} {middle} {last} nameEq keyEq protocol leftChild ri
               (Builtin.fst (o19SourcePairFacts nameEq keyEq protocol source earlier left right later decomposition premises))))))
         distinct (\licensor, parentSame, collision => rightLicense licensor parentSame (sym collision))
         (Builtin.fst (Builtin.snd (o19SourcePairFacts nameEq keyEq protocol source earlier left right later decomposition premises))))
+
+||| Both generated insertion nodes are internal in the source and in the
+||| actual diamond. Root/root transposition is deliberately NOT licensed.
+export
+0 o19GeneratedInsertionPairExternal :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (leftChild, rightChild, leftParent, rightParent : name) ->
+  (leftComponent, rightComponent : Component key value world error) ->
+  {first, middle, last : SystemState name key value world error} ->
+  (left : Transition first middle) -> (right : Transition middle last) ->
+  (transitionAction left = OInsert leftChild (ChildOf leftParent) leftComponent) ->
+  (transitionAction right = OInsert rightChild (ChildOf rightParent) rightComponent) ->
+  (diamond : LocalRelationalDiamond name key world error value nameEq keyEq left right) ->
+  SameExternalOrchestration nameEq
+    (MoreTransitions left (MoreTransitions right NoTransitions))
+    (MoreTransitions (movedRight diamond) (MoreTransitions (movedLeft diamond) NoTransitions))
+o19GeneratedInsertionPairExternal nameEq keyEq leftChild rightChild leftParent rightParent leftComponent rightComponent
+  left right leftInsert rightInsert diamond =
+    SkipLeftInternal left (MoreTransitions right NoTransitions) (childInsertCannotBeRoot left leftInsert)
+      (SkipLeftInternal right NoTransitions (childInsertCannotBeRoot right rightInsert)
+        (SkipRightInternal (movedRight diamond) (MoreTransitions (movedLeft diamond) NoTransitions)
+          (childInsertCannotBeRoot (movedRight diamond) (trans (movedRightAction diamond) rightInsert))
+          (SkipRightInternal (movedLeft diamond) NoTransitions
+            (childInsertCannotBeRoot (movedLeft diamond) (trans (movedLeftAction diamond) leftInsert))
+            SameExternalOrchestrationEnd)))
