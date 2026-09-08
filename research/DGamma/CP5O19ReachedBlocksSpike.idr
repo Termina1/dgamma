@@ -240,3 +240,21 @@ o19NoUnloadFromOrigins {targetFirst} selected source (MoreTransitions {middle} s
       (\occurrence => origins (MkLocatedActionOccurrence (actionBeforeState occurrence) (actionAfterState occurrence)
         (MoreTransitions step (beforeActionOccurrence occurrence)) (locatedTransition occurrence) (afterActionOccurrence occurrence)
         (locatedAction occurrence) (cong (MoreTransitions step) (actionOccurrenceDecomposition occurrence)))) noUnload)
+
+||| Split no-Unload at an ACTUAL dependent append cut. One earlier spine
+||| is inspected; the matching evidence is observed by the existing cut lemma.
+export
+0 o19NoUnloadAppendSplit :
+  {name, key, world, error : Type} -> {value : key -> Type} -> (selected : name) ->
+  {first, middle, last : SystemState name key value world error} ->
+  (earlier : Transitions first middle) -> (later : Transitions middle last) ->
+  NoParentUnload selected (appendTransitions earlier later) ->
+  (NoParentUnload selected earlier, NoParentUnload selected later)
+o19NoUnloadAppendSplit selected NoTransitions later noUnload = (NoParentUnloadEnd, noUnload)
+o19NoUnloadAppendSplit selected (MoreTransitions step rest) later noUnload =
+  (NoParentUnloadStep step rest
+    (fst (o19NoUnloadAtCut selected NoTransitions step (appendTransitions rest later) noUnload))
+    (fst (o19NoUnloadAppendSplit selected rest later
+      (snd (o19NoUnloadAtCut selected NoTransitions step (appendTransitions rest later) noUnload)))),
+   snd (o19NoUnloadAppendSplit selected rest later
+     (snd (o19NoUnloadAtCut selected NoTransitions step (appendTransitions rest later) noUnload))))
