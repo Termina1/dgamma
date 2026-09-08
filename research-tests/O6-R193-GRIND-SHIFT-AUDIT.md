@@ -89,3 +89,24 @@ Insert/Retire live-generation preservation and arbitrary edge alignment remain
 unextracted, supported agreement does not rebase all-name endpoint control,
 and present vestigial remainders remain unresolved. All four bridge clauses
 are therefore NOT producer-owned; protected convergence body is ineligible.
+
+## Unit D initial cap — 10/10 retained
+
+D1--D3 derive declaration disjointness from the fixed supported reference,
+actual surviving-step dependency resolver equality, and a checked earlier
+Begin with BOTH owner/resolver frames produced. Immutable component transport
+and owner survival remain explicit; this is ONE native edge, not arbitrary
+block-wide extraction. No unconditional selector guard has been smuggled in.
+D4--D9 prove native target `BeforeIn` checker and safe-choice orientation
+complete. D4-1 could not unfold an imported export-only checker; statement
+moved into its producer module unchanged, D4-2 PASS, no visibility edits.
+D6-1 missing implicit `BeforeThere.other` rejected; explicit argument D6-2 PASS.
+D10 publishes exact native candidate constructor equation; candidate
+membership, safety at its OWN slots, whole selection/stopped equality OPEN.
+No3/3 or body attempt. D cap honored; owner-authorized A/D deepening follows.
+Neither root phase nor extended grammar/fixtures were edited in this lane.
+
+Final/archive/independent tooling is being adapted from R192 rather than
+trusted with inherited fixed counts/exceptions. All known all-four fixtures
+now explicitly acquire the shared heavy lock in addition to the large spikes
+and every R8 target. All recorded own runs remain light so far.

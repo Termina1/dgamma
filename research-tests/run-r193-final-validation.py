@@ -13,15 +13,33 @@ import sys
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 OUT = pathlib.Path('/tmp/dgamma-r193')
+
+def compiler_scopes():
+    owned, lane2, unknown = [], [], []
+    for row in subprocess.check_output(['ps','-axo','pid,ppid,command'], text=True).splitlines():
+        cells = row.strip().split(None, 2)
+        if len(cells) != 3 or not re.search(r'/idris2_app/idris2(?:\.so)?(?:\s|$)', cells[2]):
+            continue
+        cwd_probe = subprocess.run(['lsof','-a','-p',cells[0],'-d','cwd','-Fn'],capture_output=True,text=True)
+        directories = [line[1:] for line in cwd_probe.stdout.splitlines() if line.startswith('n')]
+        if str(ROOT)+'/' in cells[2] or str(ROOT) in directories:
+            owned.append(row)
+        elif '/Users/vyacheslavshebanov/Work/dgamma-lane2/' in cells[2] or '/Users/vyacheslavshebanov/Work/dgamma-lane2' in directories:
+            lane2.append(row)
+        else:
+            unknown.append(row)
+    return owned, lane2, unknown
+
 phase=sys.argv[1]
-assert phase in ['final','final-source-recheck']
-plan_stem = 'final-validation' if phase == 'final' else 'final-source-recheck'
+assert phase == 'final'
+plan_stem = 'final-validation'
 plan = json.loads((OUT/(plan_stem+'-plan.json')).read_text())
 assert len({p['unit'] for p in plan}) == len(plan)
 assert not subprocess.check_output(['git', 'diff', '--cached', '--name-only'], cwd=ROOT).strip()
 assert not subprocess.check_output(['git', 'diff', '--name-only', '--', 'research/', 'src/', 'research-tests/DGamma/'], cwd=ROOT).strip()
-processes = subprocess.check_output(['ps', '-axo', 'pid,ppid,command'], text=True)
-assert not re.search(r'/idris2_app/idris2(?:\.so)?(?:\s|$)', processes)
+owned_compilers,lane2_compilers,unknown_compilers=compiler_scopes()
+assert not owned_compilers and not unknown_compilers
+if lane2_compilers:print('lane-2 compiler (separate worktree)',lane2_compilers,flush=True)
 for item in plan:
     assert re.fullmatch(r'V\d+', item['unit'])
     import hashlib

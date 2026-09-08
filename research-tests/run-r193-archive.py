@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Archive a completed shift's exact invocation records without invoking Idris.
-Usage: python3 -I research-tests/run-r193-archive.py R193 a83706a7 FINAL_HEAD
+Usage: python3 -I research-tests/run-r193-archive.py R193 77a9efe1 FINAL_HEAD
 matchingSourceCommits lists baseline/change commits whose target bytes match;
 it is not a claim that every matching commit was made immediately after this run.
 """
@@ -14,7 +14,7 @@ import sys
 import tarfile
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 shift, start, end = sys.argv[1:4]
-assert shift=='R193' and start=='a83706a7'
+assert shift=='R193' and start=='77a9efe1'
 OUT = pathlib.Path('/tmp/dgamma-'+shift.lower())
 def git(*args):
     return subprocess.check_output(['git', *args], cwd=ROOT)
@@ -51,7 +51,8 @@ for r in records:
         target=r['path'],startUTC=r['start'],endUTC=r['end'],exit=r['exit'],fresh=r['fresh'],passed=r['passed'],
         interrupted=r['interrupted'],sourceHash=r['sourceSHA256'],matchingSourceCommits=[c for c,h in commits[target] if h==r['sourceSHA256']],
         command=r['command'],seconds=r['seconds'],maxSampleRSSKiB=r['maxSampleRSSKiB'],expectedDiagnostic=r['expectedDiagnostic'],symbol=r.get('symbol'),
-        record=r['unit']+'.json',log=r['unit']+'.log',source=r['unit']+'.source'))
+        record=r['unit']+'.json',log=r['unit']+'.log',source=r['unit']+'.source',
+        compilerScope=r.get('compilerScope','serialized pre-parallel main lane'),lane2Compilers=r.get('lane2Compilers',[]),heavyLock=r.get('heavyLock',[])))
 archive = ROOT/('research-tests/O6-'+shift+'-COMPILER-EVIDENCE.tar.gz')
 with tarfile.open(archive,'w:gz') as tar:
     for p in sorted(OUT.iterdir()):

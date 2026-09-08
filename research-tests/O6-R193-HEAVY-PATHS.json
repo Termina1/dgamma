@@ -1,4 +1,6 @@
 [
+  "research-tests/DGamma/R182O19AllFourCrossingsPositive.idr",
+  "research-tests/DGamma/R182O19FourCrossingsPositive.idr",
   "research-tests/DGamma/R8FullPipeline.idr",
   "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
   "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",

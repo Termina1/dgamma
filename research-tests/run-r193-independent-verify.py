@@ -1,75 +1,130 @@
 #!/usr/bin/env python3
-"""Read-only independent receipt/source/validation audit; no compiler/cache edits."""
-import datetime,hashlib,json,pathlib,re,subprocess
-ROOT=pathlib.Path(__file__).resolve().parents[1];OUT=pathlib.Path('/tmp/dgamma-r193')
-def git(*args):return subprocess.check_output(['git',*args],cwd=ROOT)
-def sha(b):return hashlib.sha256(b).hexdigest()
-records=[json.loads(s) for s in (OUT/'ledger.jsonl').read_text().splitlines()]
-byunit={r['unit']:r for r in records};assert len(byunit)==len(records)
-receipts=[json.loads(s) for s in (OUT/'commit-receipts.jsonl').read_text().splitlines()]
-bycommit={r['resultingCommitHash']:r for r in receipts};assert len(bycommit)==len(receipts)
-for r in records:
- assert json.loads((OUT/(r['unit']+'.json')).read_text())==r
- assert (OUT/(r['unit']+'.log')).read_text()==r['transcript']
- assert sha((OUT/(r['unit']+'.source')).read_bytes())==r['sourceSHA256']
- if r['passed']:
-  assert r['fresh'] and not r['interrupted']
-  if r['expectedDiagnostic']:
-   assert r['exit']!=0 and r['expectedDiagnostic'] in r['transcript']
-   assert r.get('symbol') and r['symbol'] in r['transcript']
-  else:assert r['exit']==0 and 'Error:' not in r['transcript']
-for first,second in zip(records,records[1:]):assert first['end']<=second['start']
-sourcecommits=git('log','--format=%H','a83706a7..HEAD','--','research/','research-tests/DGamma/').decode().splitlines()
-assert len(sourcecommits)==52
-for commit in sourcecommits:
- receipt=bycommit[commit];r=byunit[receipt['invocation']]
- assert receipt['event'] in ['GUARDED COMMIT','GUARDED A11 SURFACE COMMIT','GUARDED COMMENT-ONLY COMMIT']
- assert r['passed'] and r['sourceSHA256']==receipt['sourceHash']
- changed=git('diff-tree','--no-commit-id','--name-only','-r',commit,'--','research/','research-tests/DGamma/').decode().splitlines()
- assert changed==[r['path']]
- assert sha(git('show',commit+':'+r['path']))==r['sourceSHA256']
- assert r['end']<=receipt['timestampUTC']
- assert not any(r['end']<other['start']<receipt['timestampUTC'] for other in records)
-assert (OUT/'final-validation-plan.json').read_bytes()==(ROOT/'research-tests/O6-R193-FINAL-VALIDATION-PLAN.json').read_bytes()
-assert (OUT/'final-source-recheck-plan.json').read_bytes()==(ROOT/'research-tests/O6-R193-FINAL-SOURCE-RECHECK-PLAN.json').read_bytes()
-plans=json.loads((OUT/'final-validation-plan.json').read_text())+json.loads((OUT/'final-source-recheck-plan.json').read_text())
-qualifications=json.loads((OUT/'validation-qualifications.json').read_text())
-assert set(qualifications)=={'V16'} and qualifications['V16']['superseded']
-for item in plans:
- r=byunit[item['unit']]
- assert r['passed'] and r['fresh'] and r['sourceSHA256']==item['sourceHash']
- assert r['expectedDiagnostic']==item['expectedDiagnostic'] and r.get('symbol')==item.get('symbol')
- if item['unit']=='V16':
-  assert qualifications['V16']['oldSourceHash']==r['sourceSHA256']
-  assert byunit['V38']['path']==r['path'] and byunit['V38']['sourceSHA256']==qualifications['V16']['newSourceHash']
- else:assert sha((ROOT/('dgamma.ipkg' if r['path']=='package' else r['path'])).read_bytes())==r['sourceSHA256']
-assert byunit['Y1COMMENT']['passed'] and byunit['Y1COMMENT']['sourceSHA256']==byunit['V38']['sourceSHA256']
-for key in ['A9','B10','C4']:
- assert [r['unit'] for r in records if re.fullmatch(key+r'-\d+',r['unit'])]==[key+'-1',key+'-2',key+'-3']
- assert all(not byunit[key+'-'+str(n)]['passed'] for n in range(1,4))
-qual=json.loads((OUT/'invocation-qualifications.json').read_text())
-assert byunit['A10-1']['sourceSHA256']==byunit['A11-1']['sourceSHA256']
-assert qual['A11-1']['effectiveUnit']=='A10' and qual['A11-1']['effectiveAttempt']==2
-paths=git('diff','--name-only','a83706a7','--','research/','research-tests/DGamma/').decode().splitlines()
-newdecls={}
+"""Read-only R193 receipt/source/validation audit. --interim omits final plan.
+No compiler, source/cache mutation, fixed inherited counts, or R192 exceptions.
+"""
+import datetime, hashlib, json, pathlib, re, subprocess, sys
+ROOT = pathlib.Path(__file__).resolve().parents[1]
+OUT = pathlib.Path('/tmp/dgamma-r193')
+START = '77a9efe1'
+INTERIM = sys.argv[1:] == ['--interim']
+assert sys.argv[1:] in [[], ['--interim']]
+def git(*args):
+    return subprocess.check_output(['git', *args], cwd=ROOT)
+def sha(data):
+    return hashlib.sha256(data).hexdigest()
 def declarations(data):
- text=data.decode();return set(re.findall(r'^(?:[01] )?([A-Za-z_]\w*)\s*:',text,re.M)+re.findall(r'^(?:record|data)\s+([A-Za-z_]\w*)',text,re.M))
+    text = data.decode()
+    return set(re.findall(r'^(?:[01] )?([A-Za-z_]\w*)\s*:', text, re.M) + re.findall(r'^(?:record|data)\s+([A-Za-z_]\w*)', text, re.M))
+def compiler_scopes():
+    owned, lane2, unknown = [], [], []
+    for row in subprocess.check_output(['ps','-axo','pid,ppid,command'], text=True).splitlines():
+        cells = row.strip().split(None, 2)
+        if len(cells) != 3 or not re.search(r'/idris2_app/idris2(?:\.so)?(?:\s|$)', cells[2]):
+            continue
+        probe = subprocess.run(['lsof','-a','-p',cells[0],'-d','cwd','-Fn'],capture_output=True,text=True)
+        directories = [line[1:] for line in probe.stdout.splitlines() if line.startswith('n')]
+        if str(ROOT)+'/' in cells[2] or str(ROOT) in directories:
+            owned.append(row)
+        elif '/Users/vyacheslavshebanov/Work/dgamma-lane2/' in cells[2] or '/Users/vyacheslavshebanov/Work/dgamma-lane2' in directories:
+            lane2.append(row)
+        else:
+            unknown.append(row)
+    return owned, lane2, unknown
+records = [json.loads(s) for s in (OUT/'ledger.jsonl').read_text().splitlines()]
+byunit = {r['unit']: r for r in records}
+assert len(byunit) == len(records)
+receipts = [json.loads(s) for s in (OUT/'commit-receipts.jsonl').read_text().splitlines()]
+bycommit = {r['resultingCommitHash']: r for r in receipts}
+assert len(bycommit) == len(receipts)
+for record in records:
+    unit = record['unit']
+    assert json.loads((OUT/(unit+'.json')).read_text()) == record, unit
+    assert (OUT/(unit+'.log')).read_text() == record['transcript'], unit
+    assert sha((OUT/(unit+'.source')).read_bytes()) == record['sourceSHA256'], unit
+    if record['passed']:
+        assert record['fresh'] and not record['interrupted'], unit
+        if record['path'] != 'package':
+            relative = re.escape(record['path'])
+            absolute = re.escape(str(ROOT/record['path']))
+            assert re.search(r'^\d+/\d+: Building [^\n]+ \((?:'+relative+'|'+absolute+r')\)$', record['transcript'], re.M), unit
+        if record['expectedDiagnostic']:
+            assert record['exit'] != 0 and record['expectedDiagnostic'] in record['transcript'], unit
+            assert record.get('symbol') and record['symbol'] in record['transcript'], unit
+        else:
+            assert record['exit'] == 0 and 'Error:' not in record['transcript'], unit
+for first, second in zip(records, records[1:]):
+    assert first['end'] <= second['start'], (first['unit'], second['unit'])
+sourcecommits = git('log','--format=%H',START+'..HEAD','--','research/','research-tests/DGamma/').decode().splitlines()
+for commit in sourcecommits:
+    receipt = bycommit[commit]
+    record = byunit[receipt['invocation']]
+    assert receipt['event'] == 'GUARDED COMMIT', commit
+    assert record['passed'] and record['sourceSHA256'] == receipt['sourceHash'], commit
+    changed = git('diff-tree','--no-commit-id','--name-only','-r',commit,'--','research/','research-tests/DGamma/').decode().splitlines()
+    assert changed == [record['path']], commit
+    current = git('show',commit+':'+record['path'])
+    prior = subprocess.run(['git','show',commit+'^:'+record['path']],cwd=ROOT,capture_output=True)
+    old = prior.stdout if prior.returncode == 0 else b''
+    assert len(declarations(current)-declarations(old)) == 1, commit
+    assert declarations(old).issubset(declarations(current)), commit
+    assert sha(current) == record['sourceSHA256'], commit
+    assert record['end'] <= receipt['timestampUTC'], commit
+    assert not any(record['end'] < other['start'] < receipt['timestampUTC'] for other in records), commit
+attempts = {}
+for record in records:
+    match = re.fullmatch(r'([A-Z]+\d+)-(\d+)',record['unit'])
+    if match:
+        attempts.setdefault(match[1], []).append(record)
+for unit, runs in attempts.items():
+    numbers = [int(r['unit'].rsplit('-',1)[1]) for r in runs]
+    assert numbers == list(range(1, len(runs)+1)) and len(runs) <= 3, unit
+    assert not any(r['passed'] for r in runs[:-1]), unit
+paths = git('diff','--name-only',START,'--','research/','research-tests/DGamma/').decode().splitlines()
+newdecls = {}
 for path in paths:
- if not path.endswith('.idr'):continue
- old=subprocess.run(['git','show','a83706a7:'+path],cwd=ROOT,capture_output=True).stdout
- added=sorted(declarations((ROOT/path).read_bytes())-declarations(old));newdecls[path]=added
-assert sum(map(len,newdecls.values()))==48
+    if not path.endswith('.idr'):
+        continue
+    old = subprocess.run(['git','show',START+':'+path],cwd=ROOT,capture_output=True).stdout
+    newdecls[path] = sorted(declarations((ROOT/path).read_bytes())-declarations(old))
+assert sum(map(len,newdecls.values())) == len(sourcecommits)
+plans = []
+if not INTERIM:
+    plan_bytes = (OUT/'final-validation-plan.json').read_bytes()
+    assert plan_bytes == (ROOT/'research-tests/O6-R193-FINAL-VALIDATION-PLAN.json').read_bytes()
+    assert sha(plan_bytes) == (OUT/'final-validation-plan.sha256').read_text().strip()
+    plans = json.loads(plan_bytes)
+    assert len({item['unit'] for item in plans}) == len(plans)
+    completion = json.loads((OUT/'final-validation-complete.json').read_text())
+    assert completion['invocations'] == [item['unit'] for item in plans]
+    assert completion['serial'] is True
+    for item in plans:
+        record = byunit[item['unit']]
+        assert record['passed'] and record['fresh'] and record['sourceSHA256'] == item['sourceHash']
+        assert record['expectedDiagnostic'] == item['expectedDiagnostic'] and record.get('symbol') == item.get('symbol')
+        path = 'dgamma.ipkg' if record['path'] == 'package' else record['path']
+        assert sha((ROOT/path).read_bytes()) == record['sourceSHA256']
+        assert record['start'] < '2026-09-09T00:00:44+00:00'
 assert not git('diff','34b21c9','--','src/','dgamma.ipkg')
-assert not git('diff','--cached','--name-only') and not git('diff','--name-only')
-assert git('hash-object','src/DGamma/CP3.idr').decode().strip()=='2c697e532e83989de8591fa6a4378747c6a501c0'
-assert not re.search(r'/idris2_app/idris2(?:\.so)?(?:\s|$)',subprocess.check_output(['ps','-axo','pid,ppid,command'],text=True))
-report=dict(status='PASS',head=git('rev-parse','HEAD').decode().strip(),timestampUTC=datetime.datetime.now(datetime.timezone.utc).isoformat(),
- invocationCount=len(records),passedCount=sum(r['passed'] for r in records),failedCount=sum(not r['passed'] for r in records),expectedNegativeCount=sum(r['passed'] and bool(r['expectedDiagnostic']) for r in records),
- finalCheckCount=len(plans),supersededHistoricalFinalChecks=['V16'],allFinalCurrentSourcesAuthenticated=True,
- newDeclarationCount=48,newDeclarations=newdecls,sourceCommitCount=len(sourcecommits),allSourceCommitsReceiptAuthenticated=True,
- allInvocationsSerialized=True,allLogsAndSnapshotsAuthenticated=True,maxSampleRSSKiB=max(r['maxSampleRSSKiB'] for r in records),
- allSourceAttemptsBeforeCutoff=all(r['start']<'2026-09-08T21:46:48' for r in records if re.fullmatch(r'[A-FX]\d+-\d+',r['unit'])),
- productionFrozen=True,noUnsafeNewProofs='separate frozen audit enforces prohibition census',noCompiler=True,noStagedFiles=True,cleanTrackedTree=True)
+assert not git('diff','--cached','--name-only')
+assert not git('diff','--name-only','--','research/','research-tests/DGamma/','src/','dgamma.ipkg')
+if not INTERIM:
+    assert not git('diff','--name-only')
+assert git('hash-object','src/DGamma/CP3.idr').decode().strip() == '2c697e532e83989de8591fa6a4378747c6a501c0'
+owned, lane2, unknown = compiler_scopes()
+assert not owned and not unknown, 'Only a separately scoped lane2 compiler may coexist'
+report = dict(status='PASS',phase='interim' if INTERIM else 'final',head=git('rev-parse','HEAD').decode().strip(),
+    timestampUTC=datetime.datetime.now(datetime.timezone.utc).isoformat(),invocationCount=len(records),
+    passedCount=sum(r['passed'] for r in records),failedCount=sum(not r['passed'] for r in records),
+    expectedNegativeCount=sum(r['passed'] and bool(r['expectedDiagnostic']) for r in records),
+    finalCheckCount=len(plans),allFinalCurrentSourcesAuthenticated=not INTERIM,
+    newDeclarationCount=sum(map(len,newdecls.values())),newDeclarations=newdecls,sourceCommitCount=len(sourcecommits),
+    allSourceCommitsReceiptAuthenticated=True,allInvocationsSerializedWithinMainWorktree=True,
+    allLogsAndSnapshotsAuthenticated=True,attemptCounts={unit:len(runs) for unit,runs in attempts.items()},
+    maxSampleRSSKiB=max(r['maxSampleRSSKiB'] for r in records),
+    allSourceAttemptsBeforeCutoff=all(r['start']<'2026-09-08T23:45:44+00:00' for runs in attempts.values() for r in runs),
+    productionFrozen=True,noUnsafeNewProofs='separate frozen audit enforces prohibition census',
+    noCompiler=True,compilerScope='main worktree only',lane2Compilers=lane2,noStagedFiles=True,
+    cleanTrackedProofTree=True,cleanTrackedTree=not bool(git('diff','--name-only')))
 assert report['allSourceAttemptsBeforeCutoff']
-(OUT/'independent-verification.json').write_text(json.dumps(report,indent=2)+'\n')
-print(json.dumps({k:v for k,v in report.items() if k!='newDeclarations'},indent=2))
+(OUT/('interim-independent-verification.json' if INTERIM else 'independent-verification.json')).write_text(json.dumps(report,indent=2)+'\n')
+print(json.dumps({k:v for k,v in report.items() if k not in ['newDeclarations','attemptCounts']},indent=2))
