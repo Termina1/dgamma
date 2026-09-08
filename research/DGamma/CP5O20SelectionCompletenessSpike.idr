@@ -36,3 +36,12 @@ export
   BeforeIn left right (head :: rest) -> Elem right rest
 o20BeforeRightInTail (BeforeHere member) = member
 o20BeforeRightInTail (BeforeThere later) = snd (o20BeforeMembers later)
+
+||| Distinct left/head names eliminate only the BeforeIn head constructor;
+||| no flat multi-block order split or nonlinear name pattern is needed.
+export
+0 o20BeforeDifferentHeadTail :
+  {name : Type} -> {left, right, head : name} -> {rest : List name} ->
+  Not (left = head) -> BeforeIn left right (head :: rest) -> BeforeIn left right rest
+o20BeforeDifferentHeadTail different (BeforeHere member) = void (different Refl)
+o20BeforeDifferentHeadTail different (BeforeThere later) = later
