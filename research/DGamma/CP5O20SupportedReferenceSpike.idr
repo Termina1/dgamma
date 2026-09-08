@@ -126,3 +126,16 @@ o20PrecedenceImage edge lowerImage upperImage =
       (sym (imageComponent lowerImage)) (providerDeclares edge))
     (replace {p = \component => Elem (edgeKey edge) (dependencies (componentDependencies component))}
       (sym (imageComponent upperImage)) (consumerDeclares edge))
+
+||| The parent half of Equation62 uses the SAME image's exact parent equation.
+export
+0 o20ParentImage :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {renaming : name -> name} -> {lower, upper : name} ->
+  {source, target : SystemState name key value world error} ->
+  (edge : ParentSupportEdge nameEq lower upper source) ->
+  (upperImage : O20SupportedFiberImage name key world error value nameEq renaming upper (childFiber edge) target) ->
+  ParentSupportEdge nameEq (renaming lower) (renaming upper) target
+o20ParentImage {name} {renaming} edge upperImage =
+  MkParentSupportEdge (imageFiber upperImage) (imageFound upperImage)
+    (trans (imageParent upperImage) (cong (supportMapParent name renaming) (childParent edge)))
