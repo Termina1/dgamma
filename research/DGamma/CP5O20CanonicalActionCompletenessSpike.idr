@@ -129,3 +129,20 @@ o20RolesInTail step rest classified action
   (MkLocatedActionOccurrence before afterState prior located later exact decomposition) =
     classified action (MkLocatedActionOccurrence before afterState (MoreTransitions step prior)
       located later exact (cong (MoreTransitions step) decomposition))
+
+||| Structural induction over every edge of the actual trace, not a selected
+||| pair. The classifier is consumed at the head and transported into its tail.
+export
+0 o20RolesFromLocations :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {before, afterState : SystemState name key value world error} ->
+  (trace : Transitions before afterState) ->
+  ((action : Action name key value world error) ->
+   (location : LocatedActionOccurrence action trace) ->
+   Either (PaperActivationStep (locatedTransition location)) (PaperOrchestrationStep (locatedTransition location))) ->
+  O20CanonicalTraceRoles trace
+o20RolesFromLocations NoTransitions classified = O20RolesEnd
+o20RolesFromLocations {before} (MoreTransitions {middle} step rest) classified =
+  O20RolesStep
+    (classified (transitionAction step) (MkLocatedActionOccurrence before middle NoTransitions step rest Refl Refl))
+    (o20RolesFromLocations rest (o20RolesInTail step rest classified))
