@@ -202,3 +202,19 @@ o20PairedStageTransitions (PairedRetireStage nameEq keyEq renaming actor leftWor
   (Fired nameEq keyEq (ORetire actor) ORetireTag leftChecked, Fired nameEq keyEq (ORetire (renameForward renaming actor)) ORetireTag rightChecked)
 o20PairedStageTransitions (PairedInsertStage nameEq keyEq renaming actor component leftParent rightParent parents leftWorld rightWorld leftRegistry rightRegistry leftAbsent rightAbsent leftChecked rightChecked) =
   (Fired nameEq keyEq (OInsert actor leftParent component) OInsertTag leftChecked, Fired nameEq keyEq (OInsert (renameForward renaming actor) rightParent component) OInsertTag rightChecked)
+
+||| Both full native LTS traces are reconstructed along the exact same
+||| intermediate cuts as the paired induction. This is not a list-of-orders
+||| surrogate and does not invent transitions at a desired endpoint.
+export
+0 o20PairedExecutionTraces :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} -> {renaming : NameBijection name} ->
+  {leftBefore, rightBefore, leftAfter, rightAfter : SystemState name key value world error} ->
+  O20PairedExecution name key world error value nameEq keyEq renaming leftBefore rightBefore leftAfter rightAfter ->
+  (Transitions leftBefore leftAfter, Transitions rightBefore rightAfter)
+o20PairedExecutionTraces PairedExecutionDone = (NoTransitions, NoTransitions)
+o20PairedExecutionTraces (PairedExecutionMore stage later) =
+  case o20PairedStageTransitions stage of
+    (leftStep, rightStep) => case o20PairedExecutionTraces later of
+      (leftTrace, rightTrace) => (MoreTransitions leftStep leftTrace, MoreTransitions rightStep rightTrace)
