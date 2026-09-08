@@ -71,3 +71,21 @@ o19OrderedBlockRangesDisjoint trace earlyBlock lateBlock ordered earlyPosition l
     earlyPosition latePosition
     (replace {p = \count => LTE count (transitionCount (traceBeforeBlock lateBlock))}
       (o19PrefixThroughCount earlyBlock) (o19OrderedBoundaryLTE trace earlyBlock lateBlock ordered)) earlyBound
+
+||| Observe lifecycle coverage at an actual dependent cut, retaining the
+||| selected Transition rather than looking up an action label in a word.
+export
+0 o19LifecycleCoveredAtCut :
+  {name, key, world, error : Type} -> {value : key -> Type} -> {order : List name} ->
+  {initial, before, afterState, finalState : SystemState name key value world error} ->
+  (earlier : Transitions initial before) -> (selected : Transition before afterState) ->
+  (later : Transitions afterState finalState) ->
+  LifecycleActorsCovered order (appendTransitions earlier (MoreTransitions selected later)) ->
+  (isLifecycleAction (transitionAction selected) = True) -> Elem (transitionActor selected) order
+o19LifecycleCoveredAtCut NoTransitions selected later (CoveredLifecycleStep _ _ lifecycle member rest) observed = member
+o19LifecycleCoveredAtCut NoTransitions selected later (CoveredOrchestrationStep _ _ orchestration rest) observed =
+  void (uninhabited (trans (sym orchestration) observed))
+o19LifecycleCoveredAtCut (MoreTransitions head tail) selected later (CoveredLifecycleStep _ _ lifecycle member rest) observed =
+  o19LifecycleCoveredAtCut tail selected later rest observed
+o19LifecycleCoveredAtCut (MoreTransitions head tail) selected later (CoveredOrchestrationStep _ _ orchestration rest) observed =
+  o19LifecycleCoveredAtCut tail selected later rest observed
