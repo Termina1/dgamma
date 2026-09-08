@@ -131,3 +131,14 @@ o20GoalRankBoundObserved nameEq selected head rest smaller (Yes same) observed m
   rewrite observed in LTESucc LTEZero
 o20GoalRankBoundObserved nameEq selected head rest smaller (No different) observed member =
   rewrite observed in LTESucc (smaller (o20MemberPastDifferent different member))
+
+||| Every actual goal member has a rank STRICTLY below the finite goal
+||| length. The absent-name sentinel cannot masquerade as a member rank.
+export
+0 o20GoalMemberRankBound :
+  {name : Type} -> (nameEq : DecEq name) -> (goal : List name) -> (selected : name) ->
+  (Elem selected goal) -> (LT (o20GoalRank nameEq goal selected) (length goal))
+o20GoalMemberRankBound nameEq [] selected member = absurd member
+o20GoalMemberRankBound nameEq (head :: rest) selected member =
+  o20GoalRankBoundObserved nameEq selected head rest (o20GoalMemberRankBound nameEq rest selected)
+    (decEq @{nameEq} selected head) Refl member
