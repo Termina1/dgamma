@@ -73,3 +73,21 @@ o19InsertFromAbsentGuards nameEq keyEq child parent component ambient source abs
   o19InsertAtObservedFresh nameEq keyEq child parent component ambient source
     (DGamma.CP4DeletionSelectedForeignOrchestration.setFreshFromAbsent nameEq child
       (freshFiber component parent) source absent) guards wellFormed
+
+||| A foreign insertion cannot supply this licensing parent. Observe Parent
+||| once; the child case is a named lookup frame, not a resolver transport.
+export
+0 o19ParentBeforeForeignInsert :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (parent : Parent name) -> (child : name) ->
+  (insertedParent : Parent name) -> (component : Component key value world error) ->
+  (source : Registry name key value world error) ->
+  (absent : lookupFiber {name} {key} {value} {world} {error} @{nameEq} child source = Nothing) ->
+  ((licensor : name) -> (parent = ChildOf licensor) -> Not (licensor = child)) ->
+  (parentPresent {name} {key} {value} {world} {error} @{nameEq} parent
+    (insertBinding @{nameEq} child (freshFiber component insertedParent) source absent) =
+   parentPresent {name} {key} {value} {world} {error} @{nameEq} parent source)
+o19ParentBeforeForeignInsert nameEq Root child insertedParent component source absent foreign = Refl
+o19ParentBeforeForeignInsert nameEq (ChildOf licensor) child insertedParent component source absent foreign =
+  cong isJust (lookupInsertOther @{nameEq} licensor child (foreign licensor Refl)
+    (freshFiber component insertedParent) source absent)
