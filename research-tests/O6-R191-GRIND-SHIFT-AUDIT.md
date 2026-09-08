@@ -305,3 +305,43 @@ unconditional commit guard's exact single-new-declaration check; no source delta
 was admitted without it. Existing source snapshots/records remain unchanged.
 The fixture is NOT yet accepted canonical capital: alignment, discipline, bundle,
 exact decomposition and CanonicalInputPlacement still need owned proofs.
+
+## Accepted-gap investigation STOP: F7 exhausted, six owned units retained
+
+| Invocation | Result | Seconds | Max sample RSS KiB |
+|---|---|---:|---:|
+| F1-1 | PASS | 2.101 | 2597280 |
+| F2-1 | INTERRUPTED | 382.844 | 691952 |
+| F2-2 | FAIL | 2.094 | 673056 |
+| F2-3 | PASS | 3.137 | 3654000 |
+| F3-1 | PASS | 3.136 | 2951936 |
+| F4-1 | PASS | 4.174 | 4254848 |
+| F5-1 | PASS | 5.221 | 4763456 |
+| F6-1 | PASS | 6.234 | 3720784 |
+| F7-1 | FAIL | 47.762 | 4530992 |
+| F7-2 | FAIL | 231.463 | 11334800 |
+| F7-3 | FAIL | 97.559 | 1732336 |
+| FV1 | PASS | 6.257 | 3720800 |
+
+F1--F6 own concrete physical states, all11 checked edges, all alignment,
+actual yield/retirement discipline, ALL15 ReplayInvariantBundle premises and
+ALL3 LocatedOpenEpisodeBlocks with the frozen actor-only grammar.
+
+F7 attempted the FULL ActorBlockDecomposition (all order/range/coverage fields).
+Attempt1 failed on nonexistent lteTransitive; attempt2 repaired to transitive,
+then failed TOTAL COVERAGE of nested finite BeforeIn cases. Attempt3 flattened
+the complete finite-order branches and delegated range separation to the existing
+O19 theorem; it still failed native total coverage. THREE attempts EXHAUSTED.
+Source restored exactly to HEAD/F6 after snapshot authentication; extra F7 import
+removed with that restoration. FV1 fresh PASS reauthenticates the complete
+retained fixture. No fourth attempt, renamed/shrunken retry or cached PASS claim.
+F8 was NOT appended or invoked: the compound commit guard stopped while F7-2
+was still running, before any F8 source edit.
+
+Consequently this is NOT an accepted canonical counterexample. Full decomposition,
+RootInputsBeforeLifecycle proof, remaining CanonicalInputPlacement fields and
+IndependentCanonicalSchedule are NOT claimed inhabited. The concrete trace
+shows the intended child retirement and valid physical episodes, but its missing
+accepted capital may not be filled by prose. No statement/specification cure is
+implemented. The proposed grammar concern remains an investigation, not a
+refutation of the frozen selector. Stop/gate, then B20 as directed.
