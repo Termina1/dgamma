@@ -523,3 +523,14 @@ o20NeighboursAtSplit [] left right later = O20NeighboursHere
 o20NeighboursAtSplit [head] left right later = O20NeighboursLater O20NeighboursHere
 o20NeighboursAtSplit (head :: next :: rest) left right later =
   O20NeighboursLater (o20NeighboursAtSplit (next :: rest) left right later)
+
+||| Every pure adjacent swap owns an actual source-list neighboring location.
+||| The transport changes only the list index, never a computed swap packet.
+export
+0 o20SwapNeighbours : {name : Type} -> {sourceOrder, targetOrder : List name} ->
+  (swap : AdjacentActorOrderSwap name sourceOrder targetOrder) ->
+  O20Neighbours name (actorLeft swap) (actorRight swap) sourceOrder
+o20SwapNeighbours {name} swap =
+  replace {p = \order => O20Neighbours name (actorLeft swap) (actorRight swap) order}
+    (sym (actorBeforeExact swap))
+    (o20NeighboursAtSplit (actorPrefix swap) (actorLeft swap) (actorRight swap) (actorSuffix swap))
