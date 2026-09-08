@@ -269,3 +269,23 @@ o20MappedMembers renaming sourceOrder targetOrder forward backward =
    (\selected, member => rewrite sym (renameLeftInverse renaming selected) in
       backward (renameForward renaming selected)
         (o20InverseMapMember (renameForward renaming) (renameBackward renaming) (renameRightInverse renaming) member)))
+
+||| Finite common SUPPORTED reference capital. This deliberately does not
+||| claim LinearizesSupport at the original state for arbitrary surviving paths.
+public export
+record O20SupportedReferenceOrders
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (keyEq : DecEq key)
+  (reference : SystemState name key value world error)
+  (sourceOrder, goalOrder : List name) where
+  constructor MkO20SupportedReferenceOrders
+  0 referenceSourceUnique : UniqueKeys sourceOrder
+  0 referenceGoalUnique : UniqueKeys goalOrder
+  0 referenceMembersForward : (selected : name) -> Elem selected sourceOrder -> Elem selected goalOrder
+  0 referenceMembersBackward : (selected : name) -> Elem selected goalOrder -> Elem selected sourceOrder
+  0 referenceSourceOrdered : (lower, upper : name) ->
+    O20SupportedPath name key world error value nameEq keyEq reference lower upper ->
+    Elem lower sourceOrder -> Elem upper sourceOrder -> BeforeIn lower upper sourceOrder
+  0 referenceGoalOrdered : (lower, upper : name) ->
+    O20SupportedPath name key world error value nameEq keyEq reference lower upper ->
+    Elem lower goalOrder -> Elem upper goalOrder -> BeforeIn lower upper goalOrder
