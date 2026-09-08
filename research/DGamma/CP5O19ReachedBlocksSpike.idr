@@ -616,3 +616,25 @@ o19ActualMovedOutsideLifecycle nameEq keyEq protocol swap source blocks premises
     o19NoLifecycleFromWord (actorLeft swap) (cutSuffix (o19ColumnLeftCut (traceBeforeBlock (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety))) (o19ActionWord (actorBlockTrace (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)))) (o19ActionWord (actorBlockTrace (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety)))) (o19ActionWord (traceAfterBlock (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety)))) (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique)))
       (\action, member => o19NoLifecycleWordMember (actorLeft swap) (traceAfterBlock (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety))) (snd (o19OrderedOuterNoLifecycle (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)) (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety)) (safetyBlocksOrdered safety))) action
         (replace {p = Elem action} (cutRightWord (o19ColumnLeftCut (traceBeforeBlock (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety))) (o19ActionWord (actorBlockTrace (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)))) (o19ActionWord (actorBlockTrace (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety)))) (o19ActionWord (traceAfterBlock (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety)))) (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique))) member))))
+
+||| BOTH ACTUAL reached bodies retain actor lifecycle/generated-child
+||| ownership, deriving every word observation from the selected original body.
+export
+0 o19ActualMovedBodiesActorOnly :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (protocol : RegistrationProtocol key value world error) ->
+  {sourceOrder, targetOrder : List name} -> (swap : AdjacentActorOrderSwap name sourceOrder targetOrder) ->
+  {initial, sourceFinal : SystemState name key value world error} -> (source : Transitions initial sourceFinal) ->
+  (blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder source) ->
+  (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq source) ->
+  (safety : AdjacentActorSwapSafety name key world error value protocol nameEq keyEq swap source blocks premises) ->
+  (unique : UniqueRawNameInsertions name key world error value nameEq keyEq source) ->
+  (ActorLifecycleOnly (actorRight swap) (rangeBody (o19ActualRightBeginRange nameEq keyEq protocol swap source blocks premises safety unique)),
+   ActorLifecycleOnly (actorLeft swap) (rangeBody (o19ActualLeftBeginRange nameEq keyEq protocol swap source blocks premises safety unique)))
+o19ActualMovedBodiesActorOnly nameEq keyEq protocol swap source blocks premises safety unique =
+  (o19ActorOnlyFromWord (actorRight swap) (actorLeft swap) (rangeBody (o19ActualRightBeginRange nameEq keyEq protocol swap source blocks premises safety unique))
+    (\action, member => o19OwnedSafeWord (actorRight swap) (actorLeft swap) (blockBody (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety))) (blockActorOnly (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety))) (safetyRightDoesNotGenerateLeft safety)
+      action (replace {p = Elem action} (rangeBodyWord (o19ActualRightBeginRange nameEq keyEq protocol swap source blocks premises safety unique)) member)),
+   o19ActorOnlyFromWord (actorLeft swap) (actorRight swap) (rangeBody (o19ActualLeftBeginRange nameEq keyEq protocol swap source blocks premises safety unique))
+    (\action, member => o19OwnedSafeWord (actorLeft swap) (actorRight swap) (blockBody (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety))) (blockActorOnly (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety))) (safetyLeftDoesNotGenerateRight safety)
+      action (replace {p = Elem action} (rangeBodyWord (o19ActualLeftBeginRange nameEq keyEq protocol swap source blocks premises safety unique)) member)))
