@@ -65,3 +65,28 @@ o19InstalledOwnerObserved nameEq actor state Nothing exact installed =
   case trans (sym (the (installedAt {name} {key} {value} {world} {error} @{nameEq} actor state = False)
     (rewrite exact in Refl))) installed of Refl impossible
 o19InstalledOwnerObserved nameEq actor state (Just fiber) exact installed = cong isJust exact
+
+||| Both owner observations are PRODUCED from the aligned actual activation:
+||| source presence by rule inversion, target survival by installation evolution.
+export
+0 o19AlignedActivationOwner :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {first, afterState : SystemState name key value world error} ->
+  (step : Transition first afterState) ->
+  AlignedTransitions name key world error value nameEq keyEq (MoreTransitions step NoTransitions) ->
+  PaperActivationStep step ->
+  ((fiber : Fiber name key value world error ** lookupFiber @{nameEq} (actionOwner (transitionAction step)) (registry first) = Just fiber),
+   (isJust (lookupFiber {name} {key} {value} {world} {error} @{nameEq} (actionOwner (transitionAction step)) (registry afterState)) = True))
+o19AlignedActivationOwner {first} {afterState} nameEq keyEq _
+  (AlignedStep action tag checked _ AlignedEnd) activation =
+    (lifecycleActorPresent nameEq keyEq action first afterState tag
+      (checkedActionProjects nameEq keyEq action first afterState tag checked)
+      (case activation of
+        PaperBeginStep sameAction sameTag => trans (cong isLifecycleAction sameAction) Refl
+        PaperIterStep sameAction sameTag => trans (cong isLifecycleAction sameAction) Refl
+        PaperFinishStep sameAction sameTag => trans (cong isLifecycleAction sameAction) Refl),
+     o19InstalledOwnerObserved nameEq (actionOwner action) afterState
+       (lookupFiber {name} {key} {value} {world} {error} @{nameEq} (actionOwner action) (registry afterState)) Refl
+       (o19ActivationEvolutionInstalled nameEq keyEq first afterState action tag checked
+         (installationEvolutionStep nameEq keyEq (actionOwner action) action tag first afterState checked) activation))
