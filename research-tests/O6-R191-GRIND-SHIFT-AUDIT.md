@@ -345,3 +345,71 @@ shows the intended child retirement and valid physical episodes, but its missing
 accepted capital may not be filled by prose. No statement/specification cure is
 implemented. The proposed grammar concern remains an investigation, not a
 refutation of the frozen selector. Stop/gate, then B20 as directed.
+
+## B20 CAP: all20 retained; actual paired operational induction, not canonical extraction
+
+| Unit | Fresh retained invocation | Commit | Seconds | RSS KiB |
+|---|---|---|---:|---:|
+| B1 | B1-1 | fc624834 | 3.124 | 4177280 |
+| B2 | B2-1 | 908ee429 | 3.145 | 3810528 |
+| B3 | B3-1 | 0274319b | 3.139 | 3810496 |
+| B4 | B4-1 | ce8d7694 | 3.142 | 3808432 |
+| B5 | B5-1 | 53128e0e | 3.120 | 3810496 |
+| B6 | B6-1 | 9ca4e0cb | 3.143 | 3810496 |
+| B7 | B7-1 | 39b77ac9 | 3.149 | 5663184 |
+| B8 | B8-1 | 6e5abafa | 3.140 | 4737536 |
+| B9 | B9-1 | ddb8c03b | 3.117 | 5663440 |
+| B10 | B10-2 | 9493d040 | 3.154 | 5663184 |
+| B11 | B11-2 | 8a75122b | 4.180 | 2884768 |
+| B12 | B12-1 | c48f49d7 | 4.182 | 2882624 |
+| B13 | B13-2 | 093d954c | 4.181 | 2882640 |
+| B14 | B14-1 | b6b14aeb | 4.193 | 2884736 |
+| B15 | B15-1 | e13233ae | 4.173 | 2884496 |
+| B16 | B16-1 | 2e96f81e | 4.180 | 2884560 |
+| B17 | B17-1 | f2d9d307 | 3.126 | 3869888 |
+| B18 | B18-1 | ab3b7f16 | 3.129 | 3201824 |
+| B19 | B19-1 | e3055e08 | 4.161 | 2884080 |
+| B20 | B20-1 | 6787a36d | 3.119 | 2978848 |
+
+General shared Begin adapter B1--B6 is CLOSED through the expressly
+authorized B8-style explicit observed VALUE boundary. B2 eliminates equality
+before the component-dependent payloads; B3 DERIVES that equality from the
+actual observations and pre-cut; B4 owns observations from both actual Begins;
+B5/B6 own the full ALL-NAME successor. This does NOT reattempt R190 B7
+suspended-record projected equality.
+
+B7--B16 provide whole-runtime replacement, pre-control extraction, executable
+Advance/last-step Finish control, actual checked successful Advance and both
+Finish cases, and actual checked root-or-child insertion/retirement gaps.
+Callback results/capabilities are authenticated by their evaluator equations;
+post ambient, tables and pointwise undo/control relations are derived.
+B11 is the OBSERVED shared-program boundary, not yet a general canonical
+Advance observation/alignment producer.
+
+B17 stores only actual native checked stages, source observations and input
+alignment metadata. Proof fields are quantity0. NO post-cut fact or preservation
+callback is a constructor argument. B18 proves their preservation, B19 indexes
+sequences by the physical intermediate cuts, and B20 performs structural TOTAL
+induction through Begin/Advance/Finish/insertion/retirement gaps.
+
+Limits: arbitrary accepted canonical traces have NOT been shown to inhabit
+this paired family. Remove, failure and diversion are NOT constructors; no
+claim is made that accepted executions exclude the missing cases. The fourth
+all-generated-birth triangle, notably unsupported births, is still NOT owned.
+Neither O20 body was attempted.
+
+Attempts: B10-1 failed on an unconstrained RenamedActive error parameter;
+B10-2 pinned it and PASS. B11-1 could not bind an implicit value family in the
+large physical statement; B11-2 pinned primitive type parameters and PASS.
+B13-1 had the same empty-program RenamedActive error parameter; B13-2 pinned
+it and PASS. All other B units PASS1. Commit guards stopped compound commands
+before any next-unit append on failed B10/B13 records. The first compiler-free
+B17 generation stopped on newline-versus-space header validation before any
+source write or invocation; normalized whitespace generation then B17-1 PASS.
+No exhausted B unit, fourth attempt, unsafe escape or new hole.
+
+R192 A10 note mandated by the F7 stop ruling: the wall was native finite
+BeforeIn coverage over the THREE-block order. Use the R188 target-order
+selector pattern next shift, rather than redoing the exhausted flat case split.
+F1--F6 remain candidate evidence ONLY; decomposition/placement/full accepted
+schedule have not been inhabited.
