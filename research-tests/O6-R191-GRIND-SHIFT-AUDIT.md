@@ -413,3 +413,54 @@ BeforeIn coverage over the THREE-block order. Use the R188 target-order
 selector pattern next shift, rather than redoing the exhausted flat case split.
 F1--F6 remain candidate evidence ONLY; decomposition/placement/full accepted
 schedule have not been inhabited.
+
+## Follow-up E CAP: eight retained, then final verification
+
+| Unit | Fresh retained invocation | Commit | Seconds | RSS KiB |
+|---|---|---|---:|---:|
+| E1 | E1-1 | 89dd8110 | 4.177 | 2884080 |
+| E2 | E2-1 | 444175b1 | 3.123 | 2206944 |
+| E3 | E3-1 | 96451527 | 3.107 | 4807120 |
+| E4 | E4-1 | f3ccd3b0 | 3.114 | 4937008 |
+| E5 | E5-2 | 7198fd11 | 3.126 | 2884608 |
+| E6 | E6-1 | 70d2e213 | 3.126 | 2884592 |
+| E7 | E7-1 | 3eec078d | 3.131 | 5663104 |
+| E8 | E8-1 | 27ac2a4b | 3.127 | 5384240 |
+
+E1/E2 explicitly reconstruct both NATIVE Transition/Transitions values
+from the genuine paired family, at its same physical intermediate cuts.
+E3 inhabits the eleven-edge child-retirement run TWICE at identity renaming,
+using ALL5 stage constructors, including a genuine callback Advance/Finish.
+E4 derives both complete native traces and ALL-NAME endpoint agreement from
+that actual run and the actual empty origin, with no endpoint oracle. This is
+an operational integration fixture, NOT an accepted canonical counterexample
+or a shrunken F7 decomposition retry. Identity renaming is a fixture limitation;
+it does not test nontrivial name permutation.
+
+### Unsupported-birth ownership analysis and honest tractable producer
+
+CurrentEndpointRenaming (CP3, around2960) governs CURRENT endpoint names and
+admits an explicit vestigial alternative. RegistrationGenerationBijection is
+a different historical-generation object. No conversion for unsupported
+names is automatic. CanonicalRegistrationCorrespondence.originalRegistrationAccounted
+(CP3, around3115) offers withdrawn OR right-canonical retained registration;
+that branch cannot be thrown away. The fourth protected bridge clause instead
+demands a right-CANONICAL birth at BOTH fixed current renamed child/parent,
+with the precise left-original -> right-original generation equation.
+
+E5 owns the sealed scanner classification for EVERY actual canonical origin,
+without support or endpoint lookup premises. E6 uses actual unique insertion
+positions to pin its exact historical stamp to that very source birth. E7
+retains authentic closing rejection OR produces an authenticated right-ORIGINAL
+birth/event and its generation equation. E8 constructs this whole disposition
+from accepted registration correspondence, left canonical capital, and the
+accepted left uniqueness. The closing branch remains explicit; right-canonical
+retention and fixed current child/parent names are NOT claimed. No assumed
+triangle, no O21 withdrawal theorem, no new hole, and no surface change.
+This is a proved weaker ownership result, not convergence closure and not a
+proof that the full protected theorem is false.
+
+E5-1 failed only on a missing DIRECT LocalDiamond import for the existing
+proved occurrence converter; E5-2 imports it and PASS. Every other E unit PASS1.
+No exhausted E goal or fourth attempt. Follow-up cap complete; proceed to
+fresh changed modules, frozen spikes, R8/R16, fixtures and seeded package.
