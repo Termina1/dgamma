@@ -140,3 +140,21 @@ export
 o20GeneratedBirthAfterTrace NoTransitions trace birth = birth
 o20GeneratedBirthAfterTrace (MoreTransitions step rest) trace birth =
   o20GeneratedBirthPrepend step (appendTransitions rest trace) (o20GeneratedBirthAfterTrace rest trace birth)
+
+||| A birth in the selected physical block is a birth of the SAME replayed
+||| whole trace, authenticated by the decomposition owned by that block.
+export
+0 o20GeneratedBirthInBlock :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} -> {actor, child, parent : name} ->
+  {component : Component key value world error} ->
+  {initial, finalState : SystemState name key value world error} -> {trace : Transitions initial finalState} ->
+  (block : LocatedOpenEpisodeBlock name key world error value nameEq keyEq actor trace) ->
+  LocatedGeneratedRegistration child parent component (blockBody block) ->
+  LocatedGeneratedRegistration child parent component trace
+o20GeneratedBirthInBlock {child} {parent} {component} block birth =
+  replace {p = \candidate => LocatedGeneratedRegistration child parent component candidate} (blockDecomposition block)
+    (o20GeneratedBirthAfterTrace (traceBeforeBlock block)
+      (MoreTransitions (beginTransition (blockOpening block)) (appendTransitions (blockBody block) (traceAfterBlock block)))
+      (o20GeneratedBirthPrepend (beginTransition (blockOpening block)) (appendTransitions (blockBody block) (traceAfterBlock block))
+        (o20GeneratedBirthAppend (blockBody block) (traceAfterBlock block) birth)))
