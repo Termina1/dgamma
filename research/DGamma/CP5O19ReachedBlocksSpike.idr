@@ -706,3 +706,27 @@ o19ActualMovedBlocksOrdered nameEq keyEq protocol swap source blocks premises sa
     (cong (\leading => appendTransitions leading (MoreTransitions (beginTransition (rangeOpening (o19ActualLeftBeginRange nameEq keyEq protocol swap source blocks premises safety unique))) NoTransitions))
       (sym (trans (appendTransitionsAssociative (traceBeforeBlock (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety))) (MoreTransitions (beginTransition (rangeOpening (o19ActualRightBeginRange nameEq keyEq protocol swap source blocks premises safety unique))) NoTransitions) (rangeBody (o19ActualRightBeginRange nameEq keyEq protocol swap source blocks premises safety unique)))
         (cong (appendTransitions (traceBeforeBlock (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)))) (rangeDecomposition (o19ActualRightBeginRange nameEq keyEq protocol swap source blocks premises safety unique))))))
+
+||| Actor-only structure transports along exact body words, even for an
+||| untouched block with no selected-pair NoGeneratedChild hypothesis.
+||| This is a label-property theorem, NOT replay/external correspondence.
+export
+0 o19ActorOnlySameWord :
+  {name, key, world, error : Type} -> {value : key -> Type} -> (selected : name) ->
+  {sourceFirst, sourceLast, targetFirst, targetLast : SystemState name key value world error} ->
+  (source : Transitions sourceFirst sourceLast) -> (target : Transitions targetFirst targetLast) ->
+  ActorLifecycleOnly selected source -> (o19ActionWord target = o19ActionWord source) ->
+  ActorLifecycleOnly selected target
+o19ActorOnlySameWord selected _ NoTransitions ActorLifecycleEnd exact = ActorLifecycleEnd
+o19ActorOnlySameWord selected _ (MoreTransitions step rest) ActorLifecycleEnd exact = void (uninhabited (cong length exact))
+o19ActorOnlySameWord selected _ NoTransitions (ActorLifecycleStep step rest lifecycle owner tail) exact = void (uninhabited (cong length exact))
+o19ActorOnlySameWord selected _ NoTransitions (ActorYieldedRegistrationStep step rest inserted tail) exact = void (uninhabited (cong length exact))
+o19ActorOnlySameWord selected _ (MoreTransitions reached reachedRest) (ActorLifecycleStep step rest lifecycle owner tail) exact =
+  ActorLifecycleStep reached reachedRest
+    (trans (cong isLifecycleAction (fst (consInjective exact))) lifecycle)
+    (trans (o19TransitionActorOwner reached) (trans (cong actionOwner (fst (consInjective exact)))
+      (trans (sym (o19TransitionActorOwner step)) owner)))
+    (o19ActorOnlySameWord selected rest reachedRest tail (snd (consInjective exact)))
+o19ActorOnlySameWord selected _ (MoreTransitions reached reachedRest) (ActorYieldedRegistrationStep step rest inserted tail) exact =
+  ActorYieldedRegistrationStep reached reachedRest (trans (fst (consInjective exact)) inserted)
+    (o19ActorOnlySameWord selected rest reachedRest tail (snd (consInjective exact)))
