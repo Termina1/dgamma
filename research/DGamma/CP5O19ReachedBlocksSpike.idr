@@ -1493,3 +1493,21 @@ o19ActualMovedBoundaryWords nameEq keyEq protocol swap source blocks premises sa
       (cong (o19ActionWord (traceBeforeBlock (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety))) ++) (columnRightWord (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique))),
     (cong (LBegin (actorRight swap) ::) (rangeBodyWord (o19ActualRightBeginRange nameEq keyEq protocol swap source blocks premises safety unique)),
      cong (LBegin (actorLeft swap) ::) (rangeBodyWord (o19ActualLeftBeginRange nameEq keyEq protocol swap source blocks premises safety unique)))))
+
+||| ORIGINAL before-right absolute count from the real ordered gap and
+||| actual prefix-through-left. Both append operands have genuine states.
+export
+0 o19OrderedBeforeCount :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} -> {leftActor, rightActor : name} ->
+  {initial, finalState : SystemState name key value world error} -> (source : Transitions initial finalState) ->
+  (leftBlock : LocatedOpenEpisodeBlock name key world error value nameEq keyEq leftActor source) ->
+  (rightBlock : LocatedOpenEpisodeBlock name key world error value nameEq keyEq rightActor source) ->
+  (ordered : BlockBefore name key world error value nameEq keyEq source leftActor rightActor leftBlock rightBlock) ->
+  (transitionCount (traceBeforeBlock rightBlock) = transitionCount (prefixThroughBlock leftBlock) + transitionCount (betweenBlocks ordered))
+o19OrderedBeforeCount source leftBlock rightBlock ordered =
+  trans (sym (o19ActionWordLength (traceBeforeBlock rightBlock)))
+    (trans (cong length (o19OrderedBeforeWord leftBlock rightBlock ordered))
+      (trans (sym (cong length (o19ActionWordAppend (prefixThroughBlock leftBlock) (betweenBlocks ordered))))
+        (trans (o19ActionWordLength (appendTransitions (prefixThroughBlock leftBlock) (betweenBlocks ordered)))
+          (o19TransitionCountAppend (prefixThroughBlock leftBlock) (betweenBlocks ordered)))))
