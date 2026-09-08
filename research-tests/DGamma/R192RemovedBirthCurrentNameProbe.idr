@@ -24,3 +24,13 @@ import Decidable.Equality
 public export
 r192RemovedBirthFinal : SystemState Nat R45Key R45Value Unit String
 r192RemovedBirthFinal = MkSystemState () (deleteBinding @{r45NameEq} 1 (registry r178RightFinal))
+
+||| Six actual edges: root Insert, Begin, child Insert, Finish, child Retire,
+||| child Remove. This probe supplies no independent canonical capital.
+public export
+0 r192RemovedBirthTrace : Transitions r45Initial r192RemovedBirthFinal
+r192RemovedBirthTrace = appendTransitions r178RightTrace
+  (MoreTransitions (Fired r45NameEq r45KeyEq (ORemove 1) ORemoveTag
+    (DGamma.CP4ProgressNoDeadlock.checkedFromRaw r45NameEq r45KeyEq
+      (ORemove 1) r178RightFinal r192RemovedBirthFinal ORemoveTag
+      (checkedTransitionTargetValid r178ChildRetire) Refl)) NoTransitions)
