@@ -101,3 +101,16 @@ ZeroGapPending :
   {first, finalState : SystemState name key value world error} ->
   (gap : Transitions first finalState) -> Type
 ZeroGapPending gap = transitionCount gap = 0
+
+||| Zero edges preserve the actual lookup by trace-spine elimination. A nonzero
+||| gap is impossible only with the explicit ZeroGapPending evidence.
+export
+0 o20EmptyGapKeepsLookup :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (actor : name) ->
+  {first, finalState : SystemState name key value world error} ->
+  (gap : Transitions first finalState) -> ZeroGapPending gap ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor (registry first) =
+   lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor (registry finalState))
+o20EmptyGapKeepsLookup nameEq actor NoTransitions empty = Refl
+o20EmptyGapKeepsLookup nameEq actor (MoreTransitions step rest) Refl impossible
