@@ -166,3 +166,19 @@ data O20PairedExecution :
     O20PairedStage name key world error value nameEq keyEq renaming leftBefore rightBefore leftMiddle rightMiddle ->
     O20PairedExecution name key world error value nameEq keyEq renaming leftMiddle rightMiddle leftAfter rightAfter ->
     O20PairedExecution name key world error value nameEq keyEq renaming leftBefore rightBefore leftAfter rightAfter
+
+||| Actual paired Advance/Finish/insertion/retirement-gap induction. Each
+||| successor uses the native stage producer; none of the three endpoint
+||| clauses is a constructor argument. Canonical extraction and the fourth
+||| all-generated-birth clause remain separate, explicitly unproved obligations.
+export
+0 o20PairedExecutionCut :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {leftBefore, rightBefore, leftAfter, rightAfter : SystemState name key value world error} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (renaming : NameBijection name) ->
+  O20PairedExecution name key world error value nameEq keyEq renaming leftBefore rightBefore leftAfter rightAfter ->
+  O20AllNameCut name key world error value nameEq renaming leftBefore rightBefore ->
+  O20AllNameCut name key world error value nameEq renaming leftAfter rightAfter
+o20PairedExecutionCut nameEq keyEq renaming PairedExecutionDone paired = paired
+o20PairedExecutionCut nameEq keyEq renaming (PairedExecutionMore stage later) paired =
+  o20PairedExecutionCut nameEq keyEq renaming later (o20PairedStageCut nameEq keyEq renaming stage paired)
