@@ -110,3 +110,11 @@ o20ActorSwapMeasureDrop {name} nameEq goal
       (o20GoalRank nameEq goal left) (o20GoalRank nameEq goal right)
       (map (o20GoalRank nameEq goal) later)
       (o20BeforeRankCrossing nameEq goal unique reverseOrder)
+
+||| Eliminate only actual membership at a head already proved different.
+export
+0 o20MemberPastDifferent :
+  {name : Type} -> {selected, head : name} -> {rest : List name} ->
+  (Not (selected = head)) -> (Elem selected (head :: rest)) -> (Elem selected rest)
+o20MemberPastDifferent different Here = void (different Refl)
+o20MemberPastDifferent different (There member) = member
