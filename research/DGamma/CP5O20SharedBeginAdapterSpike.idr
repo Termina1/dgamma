@@ -41,3 +41,35 @@ record O20SharedBeginObservations
   0 sharedRightAfter : MkSystemState (worldState rightBefore) (replaceBinding @{nameEq} (renameForward renaming actor)
     (MkFiber sharedBeginComponent sharedRightParent False sharedRightTable
       (Reloading (componentProgram sharedBeginComponent) id sharedRightView)) (registry rightBefore)) = rightAfter
+
+||| Eliminate equality of TWO EXPLICIT component VALUES before their dependent
+||| payloads. No equality between projections of suspended observation records
+||| is eliminated. The next producer derives this scalar equality itself.
+export
+0 o20ShareBeginValues :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} -> {renaming : NameBijection name} -> {actor : name} ->
+  {leftBefore, leftAfter, rightBefore, rightAfter : SystemState name key value world error} ->
+  (leftComponent, rightComponent : Component key value world error) -> leftComponent = rightComponent ->
+  (leftParent, rightParent : Parent name) ->
+  (leftTable : OwnedTable key value (componentProvisions leftComponent)) ->
+  (rightTable : OwnedTable key value (componentProvisions rightComponent)) ->
+  (leftView : View name (dependencies (componentDependencies leftComponent))) ->
+  (rightView : View name (dependencies (componentDependencies rightComponent))) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor (registry leftBefore) =
+    Just (MkFiber leftComponent leftParent False leftTable (Inactive Nothing))) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} (renameForward renaming actor) (registry rightBefore) =
+    Just (MkFiber rightComponent rightParent False rightTable (Inactive Nothing))) ->
+  (resolveView {name} {key} {value} {world} {error} @{nameEq} @{keyEq}
+    (dependencies (componentDependencies leftComponent)) (registry leftBefore) = Just leftView) ->
+  (resolveView {name} {key} {value} {world} {error} @{nameEq} @{keyEq}
+    (dependencies (componentDependencies rightComponent)) (registry rightBefore) = Just rightView) ->
+  (MkSystemState (worldState leftBefore) (replaceBinding @{nameEq} actor
+    (MkFiber leftComponent leftParent False leftTable (Reloading (componentProgram leftComponent) id leftView)) (registry leftBefore)) = leftAfter) ->
+  (MkSystemState (worldState rightBefore) (replaceBinding @{nameEq} (renameForward renaming actor)
+    (MkFiber rightComponent rightParent False rightTable (Reloading (componentProgram rightComponent) id rightView)) (registry rightBefore)) = rightAfter) ->
+  O20SharedBeginObservations name key world error value nameEq keyEq renaming actor leftBefore leftAfter rightBefore rightAfter
+o20ShareBeginValues component component Refl leftParent rightParent leftTable rightTable leftView rightView
+  leftFound rightFound leftResolved rightResolved leftAfter rightAfter =
+    MkO20SharedBeginObservations component leftParent rightParent leftTable rightTable leftView rightView
+      leftFound rightFound leftResolved rightResolved leftAfter rightAfter
