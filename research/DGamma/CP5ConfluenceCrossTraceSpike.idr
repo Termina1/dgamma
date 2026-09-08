@@ -31,10 +31,6 @@ data CertifiedActorPermutation :
     CertifiedActorPermutation name before after
 
 public export
-0 successorEqualityInjective : S left = S right -> left = right
-successorEqualityInjective Refl = Refl
-
-public export
 0 addLeftInjective : (start, left, right : Nat) ->
   start + left = start + right -> left = right
 addLeftInjective Z left right exact = exact

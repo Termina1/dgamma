@@ -158,3 +158,7 @@ actorBlockTransitionCount :
   Nat
 actorBlockTransitionCount block = S (transitionCount (blockBody block))
 
+public export
+0 successorEqualityInjective : S left = S right -> left = right
+successorEqualityInjective Refl = Refl
+
