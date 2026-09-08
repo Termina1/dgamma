@@ -512,3 +512,37 @@ export
 o19AppendLeftInjective [] first second exact = exact
 o19AppendLeftInjective (head :: rest) first second exact =
   o19AppendLeftInjective rest first second (snd (consInjective exact))
+
+||| Authenticate the ORIGINAL after-left word as the actual gap/right/after
+||| word. Both source decompositions are used; no arbitrary suffix is assumed.
+export
+0 o19OrderedAfterWord :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} -> {leftActor, rightActor : name} ->
+  {initial, finalState : SystemState name key value world error} -> {source : Transitions initial finalState} ->
+  (leftBlock : LocatedOpenEpisodeBlock name key world error value nameEq keyEq leftActor source) ->
+  (rightBlock : LocatedOpenEpisodeBlock name key world error value nameEq keyEq rightActor source) ->
+  (ordered : BlockBefore name key world error value nameEq keyEq source leftActor rightActor leftBlock rightBlock) ->
+  (o19ActionWord (traceAfterBlock leftBlock) = o19ActionWord (betweenBlocks ordered) ++
+    (o19ActionWord (actorBlockTrace rightBlock) ++ o19ActionWord (traceAfterBlock rightBlock)))
+o19OrderedAfterWord leftBlock rightBlock ordered =
+  o19AppendLeftInjective (o19ActionWord (actorBlockTrace leftBlock)) (o19ActionWord (traceAfterBlock leftBlock))
+    (o19ActionWord (betweenBlocks ordered) ++ (o19ActionWord (actorBlockTrace rightBlock) ++ o19ActionWord (traceAfterBlock rightBlock)))
+    (o19AppendLeftInjective (o19ActionWord (traceBeforeBlock leftBlock))
+      (o19ActionWord (actorBlockTrace leftBlock) ++ o19ActionWord (traceAfterBlock leftBlock))
+      (o19ActionWord (actorBlockTrace leftBlock) ++ (o19ActionWord (betweenBlocks ordered) ++
+        (o19ActionWord (actorBlockTrace rightBlock) ++ o19ActionWord (traceAfterBlock rightBlock))))
+      (trans (cong (o19ActionWord (traceBeforeBlock leftBlock) ++)
+        (sym (o19ActionWordAppend (actorBlockTrace leftBlock) (traceAfterBlock leftBlock))))
+      (trans (sym (o19ActionWordAppend (traceBeforeBlock leftBlock) (appendTransitions (actorBlockTrace leftBlock) (traceAfterBlock leftBlock))))
+      (trans (cong o19ActionWord (blockDecomposition leftBlock))
+      (trans (sym (cong o19ActionWord (o19ActualBlockSpines leftBlock rightBlock ordered)))
+      (trans (o19ActionWordAppend (traceBeforeBlock leftBlock)
+        (appendTransitions (actorBlockTrace leftBlock) (appendTransitions (betweenBlocks ordered) (appendTransitions (actorBlockTrace rightBlock) (traceAfterBlock rightBlock)))))
+        (cong (o19ActionWord (traceBeforeBlock leftBlock) ++)
+          (trans (o19ActionWordAppend (actorBlockTrace leftBlock)
+            (appendTransitions (betweenBlocks ordered) (appendTransitions (actorBlockTrace rightBlock) (traceAfterBlock rightBlock))))
+            (cong (o19ActionWord (actorBlockTrace leftBlock) ++)
+              (trans (o19ActionWordAppend (betweenBlocks ordered) (appendTransitions (actorBlockTrace rightBlock) (traceAfterBlock rightBlock)))
+                (cong (o19ActionWord (betweenBlocks ordered) ++)
+                  (o19ActionWordAppend (actorBlockTrace rightBlock) (traceAfterBlock rightBlock)))))))))))))
