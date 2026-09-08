@@ -182,3 +182,54 @@ Selector prerequisites now: common reference/actual trace transport CLOSED;
 finite inversion availability CLOSED; actual accepted safety completeness OPEN;
 stoppedOrder=goal OPEN. Selector body untouched, no body attempt spent.
 B20 follows this cap under prior authorization after supervisor checkpoint.
+
+## C2 cap (D1--D16): physical child safety and actual checker completeness
+
+Supervisor deferred B20 and authorized C2<=16 after C cap. Labels D1--D16
+disambiguate this second C tranche from existing C2-1 invocation. All16 retained.
+D2 attempts1/2 failed at support-active local-case conversion (exact native logs);
+attempt3 directly observed supportedActiveAt=False and passed. No fourth attempt.
+No other D failure, no exhausted/reverted micro-unit.
+
+| Unit | Fresh invocation | Guarded commit |
+|---|---|---|
+| D1 | D1-1 | `350ee3a0` |
+| D2 | D2-3 | `cba5f43b` |
+| D3 | D3-1 | `11406f1a` |
+| D4 | D4-1 | `bba8792e` |
+| D5 | D5-1 | `1217eace` |
+| D6 | D6-1 | `454c9094` |
+| D7 | D7-1 | `1b30952d` |
+| D8 | D8-1 | `ad963cd2` |
+| D9 | D9-1 | `235e263a` |
+| D10 | D10-1 | `ac02c1da` |
+| D11 | D11-1 | `5904a2a2` |
+| D12 | D12-1 | `755623c2` |
+| D13 | D13-1 | `0e0389cd` |
+| D14 | D14-1 | `95de4a29` |
+| D15 | D15-1 | `9c68fe92` |
+| D16 | D16-1 | `49f755ea` |
+
+D1--D11 close BOTH PHYSICAL CHILD-EXCLUSION clauses at the ACTUAL reached
+inversion: sealed operational occurrence origin -> original canonical origin ->
+original immutable parent metadata -> original supported path contradiction.
+Actual ActorLifecycleOnly body grammar then yields complete NoGeneratedChild,
+with exact chosen member/block cuts. Reached support is recovered through fixed
+goal membership back to the initial accepted canonical enumeration. No lookup,
+child-safety, component equality or birth-exclusion oracle remains in D11.
+
+D12--D14 close actual early-Begin checker and all-four safety checker completeness
+from their exact logical physical clauses; no unrelated BlockBefore split is
+identified by proof irrelevance. D15--D16 close finite head/mapMaybe exhaustiveness:
+ANY enumerated actual positive implies a positive overall selection, even with
+earlier rejected candidates. Neither actual candidate enumeration membership nor
+positive orientation is assumed to have been proved by that generic fact.
+
+Remaining selector obligations: physical ZERO GAP (including child orchestration),
+physical RIGHT-FIRST BEGIN at accepted inversion; exact candidate membership and
+orientation-completeness wiring; then rejection=>no inversion and stopped=goal.
+The gap proof must retain/derive original canonical root placement along the
+actual operational chain: generic decomposition+reference alone do not exclude
+the already-known R182 intervening-root fixture. This is a missing proof invariant,
+NOT a claimed refutation of the accepted public selector. No protected statement
+change, body attempt, O19 edit, LocalDiamond edit, or O21 dependency.
