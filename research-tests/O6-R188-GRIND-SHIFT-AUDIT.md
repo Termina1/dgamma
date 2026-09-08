@@ -79,3 +79,35 @@ compiler overlapped. Both raw records remain immutable; explicit effective-
 unit/attempt qualifications live in invocation-qualifications.json and will
 be consolidated. Future shell chains use set-e. Real C7 starts at raw C7-2;
 no attempt or source history is retroactively fabricated.
+
+## Unit C cap16 — actual moved ranges/installed bodies proved; decomposition partial
+
+C1–C4 extract the SAME actual column residual's dependent left/suffix cut,
+authenticate its global right-left-suffix decomposition, derive all reached
+alignments from the OWN cursor bundle, and count all actual reached ranges
+plus whole-trace length using CartesianLength's sealed-chain theorem.
+C5–C8 construct actual Begin/body observations with exact decompositions,
+normalizing the actual action and checked tag at separate typed boundaries.
+C9/C10 derive installedness at EVERY cut from actual checked installation
+observations and no selected Unload. C11 transports no-Unload via genuine
+located occurrence origins (NOT action-word correspondence); C12 splits this
+evidence at actual dependent cuts. C13 uses the real reached Begin boundary
+and these no-Unload facts to construct InstalledTrace. C14/f19d699a and
+C15/e361387f extract both ACTUAL reached Begin/body ranges from O19 inputs
+only, on the SAME B3/B13/F14 chain. C16 produces BOTH moved InstalledTrace
+proofs from the source blocks' no-Unload via that SAME finite occurrence map,
+then the OWN reached cuts. No arbitrary reached trace/source-bound shortcut.
+
+C uses16 retained declarations and19 invocations. C6 consumed3 actual
+attempts (raw C6-1, mislabeled duplicate C7-1, PASS C6-3); real C7 passed at
+raw C7-2. C8 passed2/3 after adding the missing direct RankObservation import
+needed to reduce the existing action-word fold. Others PASS1/3. Raw/effective
+labels are qualified explicitly, never rewritten. No3/3 exhausted statement.
+
+C is NOT complete ActorBlockDecomposition: remaining are moved ActorLifecycleOnly,
+no-earlier/no-later selected lifecycle, final-active transport, exact full
+LocatedOpenEpisodeBlock assembly, transport ALL untouched blocks, target-order
+BlockBefore/range-disjointness/lifecycle coverage, and reached origin-plan
+updates. The cap is consumed; no C17 inferred. Proceed authorized D to derive
+same-chain endpoint/full-bundle/external and isolate final assembly's exact
+reached-block requirement. O19 body remains unattempted; no surface gap asserted.
