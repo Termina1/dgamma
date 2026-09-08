@@ -280,3 +280,19 @@ data O19SourcePairObservation :
     (0 rightLicense : (licensor : name) -> (ChildOf rightParent = ChildOf licensor) -> Not (leftChild = licensor)) ->
     (0 tag : transitionTag right = OInsertTag) ->
     O19SourcePairObservation name key world error value leftParent rightParent left right
+
+||| Structural paper-branch transport through the ACTUAL right action/tag
+||| equations. No checked edge or successful tag is guessed by this adapter.
+export
+0 o19PaperActivationRelabel :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {sourceBefore, sourceAfter, reachedBefore, reachedAfter : SystemState name key value world error} ->
+  (source : Transition sourceBefore sourceAfter) -> (reached : Transition reachedBefore reachedAfter) ->
+  (transitionAction reached = transitionAction source) -> (transitionTag reached = transitionTag source) ->
+  PaperActivationStep source -> PaperActivationStep reached
+o19PaperActivationRelabel source reached action tag (PaperBeginStep sameAction sameTag) =
+  PaperBeginStep (trans action sameAction) (trans tag sameTag)
+o19PaperActivationRelabel source reached action tag (PaperIterStep sameAction sameTag) =
+  PaperIterStep (trans action sameAction) (trans tag sameTag)
+o19PaperActivationRelabel source reached action tag (PaperFinishStep sameAction sameTag) =
+  PaperFinishStep (trans action sameAction) (trans tag sameTag)
