@@ -1404,3 +1404,28 @@ export
 o19LocatedAfterFirstCutWords nameEq keyEq selected source block target aligned origins active beforeWord afterWord noEarlier noLater firstCut =
   o19LocatedFromWordCutsWords nameEq keyEq selected source block target aligned origins active beforeWord afterWord noEarlier noLater firstCut
     (o19CutByWord (o19ActionWord (actorBlockTrace block)) afterWord (cutSuffix firstCut) (cutRightWord firstCut))
+
+||| FULL constructed reached block retains its exact prefix and original
+||| whole block word. All metadata comes through OWN typed cut observations.
+export
+0 o19LocatedByWordWords :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  {initial, sourceFinal, targetFinal : SystemState name key value world error} ->
+  (source : Transitions initial sourceFinal) ->
+  (block : LocatedOpenEpisodeBlock name key world error value nameEq keyEq selected source) ->
+  (target : Transitions initial targetFinal) ->
+  (aligned : AlignedTransitions name key world error value nameEq keyEq target) ->
+  (origins : ActionRegistrationReplayCorrespondence name key world error value source target) ->
+  (active : supportedActiveAt {name} {key} {value} {world} {error} @{nameEq} selected targetFinal = True) ->
+  (beforeWord, afterWord : List (Action name key value world error)) ->
+  (noEarlier : (action : Action name key value world error) -> Elem action beforeWord ->
+    (isLifecycleAction action = True) -> Not (actionOwner action = selected)) ->
+  (noLater : (action : Action name key value world error) -> Elem action afterWord ->
+    (isLifecycleAction action = True) -> Not (actionOwner action = selected)) ->
+  (placement : o19ActionWord target = beforeWord ++ (o19ActionWord (actorBlockTrace block) ++ afterWord)) ->
+  (o19ActionWord (traceBeforeBlock (o19LocatedByWord nameEq keyEq selected source block target aligned origins active beforeWord afterWord noEarlier noLater placement)) = beforeWord,
+   o19ActionWord (actorBlockTrace (o19LocatedByWord nameEq keyEq selected source block target aligned origins active beforeWord afterWord noEarlier noLater placement)) = o19ActionWord (actorBlockTrace block))
+o19LocatedByWordWords nameEq keyEq selected source block target aligned origins active beforeWord afterWord noEarlier noLater placement =
+  o19LocatedAfterFirstCutWords nameEq keyEq selected source block target aligned origins active beforeWord afterWord noEarlier noLater
+    (o19CutByWord beforeWord (o19ActionWord (actorBlockTrace block) ++ afterWord) target placement)
