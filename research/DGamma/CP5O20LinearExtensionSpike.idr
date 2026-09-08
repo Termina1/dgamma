@@ -71,3 +71,22 @@ record O20OrientedSafeSwap
   orientedChoice : O20ChosenSafeSwap name key world error value protocol nameEq keyEq sourceOrder trace blocks premises
   0 orientedGoalLinearization : LinearizesSupport name key world error value nameEq keyEq goalState goalOrder
   0 orientedGoalReverse : BeforeIn (actorRight (chosenOrderSwap orientedChoice)) (actorLeft (chosenOrderSwap orientedChoice)) goalOrder
+
+||| Orient ONE explicitly produced safe choice, never a separately guessed
+||| swap. A rejected orientation does not prevent later candidates.
+export
+0 o20OrientChosenSafeSwap :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {protocol : RegistrationProtocol key value world error} ->
+  (nameEq : DecEq name) -> {keyEq : DecEq key} ->
+  {sourceOrder : List name} -> (goalOrder : List name) ->
+  (goalState : SystemState name key value world error) ->
+  LinearizesSupport name key world error value nameEq keyEq goalState goalOrder ->
+  {initial, finalState : SystemState name key value world error} -> {trace : Transitions initial finalState} ->
+  {blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder trace} ->
+  {premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq trace} ->
+  O20ChosenSafeSwap name key world error value protocol nameEq keyEq sourceOrder trace blocks premises ->
+  Maybe (O20OrientedSafeSwap name key world error value protocol nameEq keyEq sourceOrder goalOrder goalState trace blocks premises)
+o20OrientChosenSafeSwap nameEq goalOrder goalState linearization choice =
+  map (\reverseOrder => MkO20OrientedSafeSwap choice linearization reverseOrder)
+    (o20CheckBefore nameEq (actorRight (chosenOrderSwap choice)) (actorLeft (chosenOrderSwap choice)) goalOrder)
