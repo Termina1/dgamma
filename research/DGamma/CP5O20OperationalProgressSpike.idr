@@ -70,3 +70,22 @@ o20RealizeOrientedProgress {name} {key} {world} {error} {value} {goalOrder}
         (chosenSourceUnique (orientedChoice choice)))
       (o20ActorSwapMeasureDrop nameEq goalOrder (chosenOrderSwap (orientedChoice choice))
         (orderUnique (orientedGoalLinearization choice)) (orientedGoalReverse choice))
+
+||| Finite safe-candidate enumeration now realizes each returned positive
+||| as an actual operational step and a strict global decrease. Nothing still
+||| means blocked, NOT canonicality or finite-linear-extension completeness.
+export
+0 o20SelectOperationalProgress :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) -> (sourceOrder, goalOrder : List name) ->
+  (goalState : SystemState name key value world error) ->
+  (LinearizesSupport name key world error value nameEq keyEq goalState goalOrder) ->
+  {initial, finalState : SystemState name key value world error} -> (trace : Transitions initial finalState) ->
+  (blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder trace) ->
+  (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq trace) ->
+  (0 unique : UniqueRawNameInsertions name key world error value nameEq keyEq trace) ->
+  (Maybe (O20OperationalProgress name key world error value protocol nameEq keyEq sourceOrder goalOrder goalState trace blocks premises))
+o20SelectOperationalProgress nameEq keyEq protocol sourceOrder goalOrder goalState linearization trace blocks premises unique =
+  map (\choice => o20RealizeOrientedProgress nameEq keyEq protocol trace blocks premises choice)
+    (o20SelectOrientedSafeBlocks nameEq keyEq protocol sourceOrder goalOrder goalState linearization trace blocks premises unique)
