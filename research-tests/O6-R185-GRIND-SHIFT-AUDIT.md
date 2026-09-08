@@ -129,3 +129,105 @@ control/tag applicability, mixed-source ownership transport, Cartesian columns,
 source-origin coordinates/coverage/ranges remain unproduced. Thus NO complete
 prerequisite group(i)-(vi), no Cartesian theorem, and O19 body0 attempts. This
 is missing proof capital, NOT a third O19 specification gap. Holes remain5.
+
+## Unit D authorization and protocol incidents
+
+Supervisor authorized D<=16 after B: explicit captured-map/value/control/tag
+observations for right Advance/Finish, mixed rows, then Cartesian/coordinates
+as slots allow. “Prerequisite(i) complete” was explicitly qualified to mean
+orientation-row capital only; full right-activation guards, 2x2 fixtures and
+all Cartesian/coverage/range/endpoint prerequisites still remain open.
+
+Exactly two LocalDiamond visibility changes were individually approved:
+D1/9e0a7b30 public-export PaperAdvanceSource (490.150s fresh PASS), then
+D2/1cf297ff plain-export paperAdvanceSource (493.278s fresh PASS). Sampled
+peak RSS49,806,864/49,831,760KiB both below48GiB. Both adjacent full/statement
+SHA256 checked after EACH. Removing precisely these keywords reconstructs
+2a01e118 and324dc4ae byte-for-byte. No declaration/body/signature/order changes.
+Frozen audit now checks this exact allowance rather than allowing other edits.
+
+D3-1 INTERRUPTED: a foreground120s tool timeout killed the monitoring wrapper
+while a transitive research dependency rebuild kept its isolated compiler
+alive. Detected at01:07UTC; terminated only recorded group42593, reconciled
+no remaining compiler, retained every TTC/source/log. The orphan RSS sample
+was below48GiB but the wrapper's final peak was not retained: NO uninterrupted
+48GiB-monitor claim for that interval. Charged as attempt1, not a PASS.
+D3-2 rejected coverage of an Either-indexed RuleTag; D3-3/43a98451 proves the
+stronger ALL-tag primitive captured-map equality by exhaustive RuleTag cases.
+Unused heavy imports removed; future attempts detached (no tool timeout).
+
+D4-1 PROCESS VIOLATION: failure (resolver phantom implicits) was followed by
+an accidental commit8d553e00 despite the PASS assertion failing, because the
+shell commands were not exception-stopping. Supervisor verified the tip was
+LOCAL-ONLY, unpushed (origin1cf297ff), and explicitly authorized
+`git reset --mixed HEAD^`, retaining failed source/log and D3/43a98451.
+The bad hash was dropped, not silently relabeled. D4-2/518580dc adds the
+explicit resolver implicits and freshly passes. This is a protocol violation,
+NOT excused: acceptance criterion “commit only on fresh PASS” is NOT SATISFIED
+for R185 even though every RETAINED proof commit is now checked. Mandatory
+future procedure is run-r185-commit.py: JSON PASS/fresh/exit/hash/no-compiler/
+no-staged-files checks and git subprocesses in ONE exception-stopping Python
+process. The script has already refused D8-1's rejected source correctly.
+
+D5/f7cb56a5 actual primitive callback output (state/inverse/equation),
+D6/86b37c9f derives callback success from actual partial-map domain,
+D7/59fa5ef4 derives captured capabilities and callback together,
+D8/1d74c288 rebases those actual observations onto the raw committed resolver
+and owned-table normalization. D8-1 was missing explicit resolver phantom
+world/error/value; D8-2 passes. D4 is concrete-fiber/resolved-value target
+rebasing, NOT the old opaque targetFiber statement. No new semantic oracle,
+unsafe primitive or hole; raw and checked control/tag reconstruction follows.
+
+D9/b6d58304 derives empty Finish raw control; D10/b3daacff derives the
+nonempty Iter/Finish tags from the ACTUAL continuation-list constructor and
+D8's callback output; D11/9646c676 composes capability/callback/control from
+captured domain. D12/d54e1903 consumes the ACTUAL PaperAdvanceSource and
+explicit resolver values; D13/d892bdac uses the newly exported source producer,
+ACTUAL pair independence/frames/commutation, foreign-owner framing and
+preservation to produce the CHECKED early edge. D13's seeded dependency
+refresh (including frozen CanonicalSort) PASS347.159s, peak43,087,600KiB;
+no TTC deletion/cold build and the detached48GiB monitor survived throughout.
+
+D14/7ce85391 derives every resolver observation from the ACTUAL insertion plan;
+D15/8b409569 derives right Iter/Finish early applicability across an ACTUAL
+insertion from BOTH checked source edges, pair independence, distinct owners
+and source well-formedness. No early edge, partial-map-domain, capability,
+callback, target, resolver, diamond or replay oracle is an input to D15.
+The source component/table/control and exact successful tag are obtained by
+paperAdvanceSource. Thus the two approved visibility consumers are concrete:
+D12 matches PaperAdvanceSource's3 constructors; D13 invokes paperAdvanceSource.
+No additional LocalDiamond visibility was changed or relied on.
+
+Qualifications: D12/D13 require equal resolver observations for ALL dependency
+lists, which D14 derives for insertion cuts. They do NOT assert that arbitrary
+activation cuts preserve unrelated targets. D15 is a per-cut insertion/Advance
+guard, not a mixed right-activation row. A/A backwards target guards, mixed
+right-activation row induction, full2x2 O/O fixture and Cartesian/coverage/
+range/endpoint prerequisites remain open. No O19/O20 body attempt.
+D9-1 rejected missing RawActivationMove phantom implicits; D9-2 passes.
+D12-1 rejected underinstantiated captured late source, fixed by its explicit
+SystemState type at2. No unit exhaustion; D3 passed on charged attempt3.
+
+D16/8a007f76 completes ARBITRARY mixed A/O + generated O/O source-row
+induction through the ONE B14 dispatcher. Its original source-class function
+is restricted along the inductive source spine; guards/crossings/frozen replay,
+actual reached bundle/original uniqueness/finite derivation/exact row count
+are all built. This is a RIGHT INSERTION row, not a Cartesian column theorem.
+D's16 slots are consumed (2 approved visibility-only units +14 declarations).
+Current retained micro-units66; no exhausted unit. All retained source commits
+have a prior exact-source fresh ordinary PASS verified by run-r185-evidence.py.
+The historical D4-1 procedure violation remains explicitly NOT SATISFIED.
+
+## Status at D unit stop
+
+Proved this shift: arbitrary insertion/Begin row, arbitrary activation/insertion
+row, arbitrary generated-insertion O/O row, their mixed RIGHT INSERTION row;
+actual insertion/Advance Iter-or-Finish per-cut guard via captured domain and
+explicit observations, with no callback/target/early-edge oracle. The weaker
+input-free fixtures remain1-crossing O/A,2x1 A/O and2-insertion O/O guard-only.
+Partial: right activation mixed rows (A/A guard prerequisites remain), 2x2
+Cartesian fixture. Unproved: Cartesian column induction, exact pair origins/
+product count/coverage, installed range/decomposition/origin updates and
+same-chain endpoint/full-bundle/external correspondence. Five holes unchanged;
+O19 body0 attempts; O20 selector continuation C not started; no O20/O21 body.
+Next authorized work must be gated at this unit stop; no implicit extra D slots.

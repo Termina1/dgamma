@@ -30,9 +30,15 @@ assert not re.search(r'/idris2_app/idris2(?:\.so)?(?:\s|$)', processes)
 for part in PARTS:
     if part != 'LocalDiamond':
         assert not git('diff',START,'--',PATHS[part]), part
-visibility = {}
-assert not git('diff', START, '--', PATHS['LocalDiamond'])
+visibility = {'PaperAdvanceSource':'public export', 'paperAdvanceSource':'export'}
 local = (ROOT/PATHS['LocalDiamond']).read_bytes()
+stripped = local
+for keyword, declaration in [(b'public export', b'data PaperAdvanceSource :'),
+                             (b'export', b'0 paperAdvanceSource :')]:
+    assert stripped.count(keyword+b'\n'+declaration) == 1
+    stripped = stripped.replace(keyword+b'\n'+declaration, declaration, 1)
+assert stripped == subprocess.check_output(['git','show','2a01e118:'+PATHS['LocalDiamond']],cwd=ROOT)
+assert stripped == subprocess.check_output(['git','show',START+':'+PATHS['LocalDiamond']],cwd=ROOT)
 start = local.index(b'0 adjacentSwapSuffixSpike :')
 full, statement = sha(local[start:start+1470]), sha(local[start:start+1154])
 assert full == '2d01486bf953f11191b758ac3cfb5722d1d02b1a192b6e552adc8a3f58199ecf'
@@ -63,10 +69,10 @@ assert len(modules) == 207 and all((seed/(m.replace('.','/')+'.ttc')).exists() f
 local_ttc = seed/'DGamma/CP5ConfluenceLocalDiamondSpike.ttc'
 assert local_ttc.stat().st_size > 125000000 # seeded TTC retained/refreshed by serialized frozen regression
 local_time = datetime.datetime.fromtimestamp(local_ttc.stat().st_mtime,datetime.timezone.utc).isoformat()
-# The LocalDiamond source is byte-unchanged throughout R185; no TTC deletion.
+# Exactly two individually gated visibility keywords; no TTC deletion.
 report = dict(timestamp=datetime.datetime.now(datetime.timezone.utc).isoformat(),head=git('rev-parse','HEAD').strip(),start=START,
     holes=holes,split=[len(holes[p]) for p in PARTS],productionDiffVs34b21c9='empty',CP3Blob=git('hash-object','src/DGamma/CP3.idr').strip(),
-    LocalDiamondDiffVsStart='empty',LocalDiamondAuthorizedVisibility=visibility,CanonicalSortDiffVsStart='empty',CanonicalSortAuthorizedVisibility={},DeletionChainDiffVsStart='empty',
+    LocalDiamondDiffVsStart='two approved visibility keywords only',LocalDiamondStrippedMatches2a01e118=True,LocalDiamondAuthorizedVisibility=visibility,CanonicalSortDiffVsStart='empty',CanonicalSortAuthorizedVisibility={},DeletionChainDiffVsStart='empty',
     CrossTraceDiffVsStart='empty',RenamingCompositionDiffVsStart='empty',
     adjacentFullBytes=1470,adjacentFullSHA256=full,adjacentStatementBytes=1154,adjacentStatementSHA256=statement,reviewSHA256=review,
     seeds='207/207',LocalDiamondTTC=dict(bytes=local_ttc.stat().st_size,mtimeUTC=local_time),changedIdrisFiles=changed,
