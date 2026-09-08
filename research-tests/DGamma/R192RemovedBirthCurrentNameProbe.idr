@@ -209,3 +209,21 @@ r192RetirementHasNoLegacyOrZeroGapCoercion =
     ActorLifecycleStep _ _ lifecycle _ _ => case lifecycle of Refl impossible
     ActorYieldedRegistrationStep _ _ yielded _ => case yielded of Refl impossible,
    \empty => case empty of Refl impossible)
+
+||| A11 NEW-scope positive at the exact OLD countershape. It is deliberately
+||| vacuous on the unsupported child, never a fabricated right birth. This is
+||| the scoped fourth-clause instance, NOT full independent canonical capital.
+export
+0 r192RemovedBirthAcceptedBySupportedScope :
+  (birth : LocatedGeneratedRegistration 1 0 r45Child r192RemovedBirthTrace) ->
+  (isSupported {name = Nat} {key = R45Key} {value = R45Value} {world = Unit} {error = String}
+    @{r45NameEq} @{r45KeyEq} 1 r192RemovedBirthFinal = True) ->
+  (source : LocatedGeneratedRegistration 1 0 r45Child r192RemovedBirthTrace **
+    (source = birth,
+     (rightBirth : LocatedGeneratedRegistration
+       (renameForward (expectedBridgeBijection r192RemovedSameInputs) 1)
+       (renameForward (expectedBridgeBijection r192RemovedSameInputs) 0)
+       r45Child r192RemovedBirthTrace **
+       registrationGeneration source = registrationGeneration rightBirth)))
+r192RemovedBirthAcceptedBySupportedScope birth supported =
+  case trans (sym (fst r192RemovedBirthObstruction)) supported of Refl impossible
