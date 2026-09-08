@@ -88,3 +88,32 @@ o20MatchClassifiedOrigin renaming matching selected origin
           trans (cong (generationForward renaming) (sym stamp)) (matchedChildGeneration relation)))
 o20MatchClassifiedOrigin renaming matching selected origin
   (MkClassifiedGeneratedBirth event child birth (Right closing)) stamp = Left closing
+
+||| Producer-owned honest disposition of EVERY canonical original birth,
+||| including unsupported children. Its exact original stamp and either a
+||| genuine closing classification or a mapped ORIGINAL right birth are owned.
+||| This is deliberately weaker than the protected full triangle: closing is
+||| not discarded, current raw-name equality is not guessed, and right canonical
+||| retention is not presumed. No O21 withdrawal theorem is consumed.
+export
+0 o20CanonicalOriginMatchOrClosing :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (protocol : RegistrationProtocol key value world error) ->
+  {initial, leftFinal, rightFinal : SystemState name key value world error} ->
+  (left : Transitions initial leftFinal) -> (right : Transitions initial rightFinal) ->
+  (inputs : SameOrchestrationModuloGenerated nameEq keyEq left right) ->
+  (capital : IndependentCanonicalSchedule name key world error value protocol nameEq keyEq left) ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq left ->
+  (selected, parent : name) -> (component : Component key value world error) ->
+  (birth : LocatedGeneratedRegistration selected parent component (canonicalTrace (canonicalSchedule capital))) ->
+  (coverage : ClassifiedGeneratedBirth name key world error value Z left (leftScannedEvents (acceptedAuthenticatedRegistrationMatching name key world error value nameEq left right (generatedGenerationBijection inputs) (generatedRegistrationTree inputs))) selected **
+    (eventChildGeneration (coveredEvent coverage) = registrationGeneration (replayGeneratedRegistrationOrigin (canonicalOccurrenceCorrespondence capital) birth),
+     Either
+       (DeletedClosingRegistration (coveredEvent coverage) (afterActionOccurrence (scannedLocatedBirth (coveredBirth coverage))))
+       (opposite : RegistrationEvent name key world error value **
+         (RegistrationEventMatch (generatedGenerationBijection inputs) (coveredEvent coverage) opposite,
+          ScannedRegistrationBirth name key world error value Z right opposite,
+          generationForward (generatedGenerationBijection inputs) (registrationGeneration (replayGeneratedRegistrationOrigin (canonicalOccurrenceCorrespondence capital) birth)) = eventChildGeneration opposite))))
+o20CanonicalOriginMatchOrClosing {name} {key} {world} {error} {value} nameEq keyEq protocol left right inputs capital unique
+  selected parent component birth =
+    ((o20CanonicalOriginCoverage nameEq keyEq protocol (generatedGenerationBijection inputs) left right (generatedRegistrationTree inputs) capital selected parent component birth) ** ((o20CoveredOriginStamp {nameEq} {keyEq} left unique (leftScannedEvents (acceptedAuthenticatedRegistrationMatching name key world error value nameEq left right (generatedGenerationBijection inputs) (generatedRegistrationTree inputs))) selected parent component (replayGeneratedRegistrationOrigin (canonicalOccurrenceCorrespondence capital) birth) (o20CanonicalOriginCoverage nameEq keyEq protocol (generatedGenerationBijection inputs) left right (generatedRegistrationTree inputs) capital selected parent component birth)), o20MatchClassifiedOrigin (generatedGenerationBijection inputs) (acceptedAuthenticatedRegistrationMatching name key world error value nameEq left right (generatedGenerationBijection inputs) (generatedRegistrationTree inputs)) selected (registrationGeneration (replayGeneratedRegistrationOrigin (canonicalOccurrenceCorrespondence capital) birth)) (o20CanonicalOriginCoverage nameEq keyEq protocol (generatedGenerationBijection inputs) left right (generatedRegistrationTree inputs) capital selected parent component birth) (o20CoveredOriginStamp {nameEq} {keyEq} left unique (leftScannedEvents (acceptedAuthenticatedRegistrationMatching name key world error value nameEq left right (generatedGenerationBijection inputs) (generatedRegistrationTree inputs))) selected parent component (replayGeneratedRegistrationOrigin (canonicalOccurrenceCorrespondence capital) birth) (o20CanonicalOriginCoverage nameEq keyEq protocol (generatedGenerationBijection inputs) left right (generatedRegistrationTree inputs) capital selected parent component birth))))
