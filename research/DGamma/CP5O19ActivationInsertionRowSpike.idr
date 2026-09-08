@@ -238,3 +238,44 @@ o19ActivationInsertionStep nameEq keyEq protocol child parent component source e
           (orchestrationRowDecomposition previous))
         (cursorBundle (orchestrationRowCursor previous)) activation
         (trans (orchestrationRowAction previous) inserted) childSafe parentSafe)
+
+||| Arbitrary-length A/O INSERT row. The A/O diamond derives early execution
+||| at every crossing, so no per-cut applicability oracle is required. Reached
+||| bundle, original uniqueness, derivation and count are built simultaneously.
+export
+0 o19BubbleActivationInsertionRow :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (child : name) -> (parent : Parent name) -> (component : Component key value world error) ->
+  {initial, sourceFinal, before, rightBefore, rightAfter : SystemState name key value world error} ->
+  (source : Transitions initial sourceFinal) -> (earlier : Transitions initial before) ->
+  (spine : Transitions before rightBefore) -> (right : Transition rightBefore rightAfter) ->
+  (later : Transitions rightAfter sourceFinal) ->
+  (appendTransitions earlier (appendTransitions spine (MoreTransitions right later)) = source) ->
+  ReplayInvariantBundle name key world error value protocol nameEq keyEq source ->
+  (0 unique : UniqueRawNameInsertions name key world error value nameEq keyEq source) ->
+  (transitionAction right = OInsert child parent component) ->
+  (0 classes : {first, last : SystemState name key value world error} ->
+    (step : Transition first last) -> OccursIn step spine ->
+    (PaperActivationStep step, Not (child = transitionActor step))) ->
+  (0 licensing : {first, last : SystemState name key value world error} ->
+    (step : Transition first last) -> OccursIn step spine ->
+    (licensor : name) -> (parent = ChildOf licensor) -> Not (transitionActor step = licensor)) ->
+  O19OrchestrationRow name key world error value protocol nameEq keyEq source earlier right (transitionCount spine)
+o19BubbleActivationInsertionRow nameEq keyEq protocol child parent component source earlier
+  NoTransitions right later decomposition premises unique inserted classes licensing =
+    o19OrchestrationRowZero nameEq keyEq protocol source earlier right later decomposition premises unique
+      (PaperInsertStep inserted)
+o19BubbleActivationInsertionRow nameEq keyEq protocol child parent component source earlier
+  (MoreTransitions left rest) right later decomposition premises unique inserted classes licensing =
+    o19ActivationInsertionStep nameEq keyEq protocol child parent component source earlier left right
+      (transitionCount rest)
+      (o19BubbleActivationInsertionRow nameEq keyEq protocol child parent component source
+        (appendTransitions earlier (MoreTransitions left NoTransitions)) rest right later
+        (trans (appendTransitionsAssociative earlier (MoreTransitions left NoTransitions)
+          (appendTransitions rest (MoreTransitions right later))) decomposition)
+        premises unique inserted (\step, occurs => classes step (OccursLater occurs))
+        (\step, occurs => licensing step (OccursLater occurs)))
+      (Builtin.fst (classes left OccursHere)) inserted (Builtin.snd (classes left OccursHere))
+      (licensing left OccursHere)
