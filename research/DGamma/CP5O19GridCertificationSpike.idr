@@ -33,3 +33,16 @@ o19ElemAppendInjections (head :: rest) second =
     Here => Here
     There later => There (fst (o19ElemAppendInjections rest second) later),
    \member => There (snd (o19ElemAppendInjections rest second) member))
+
+||| Concatenate unique lists only with an actual disjoint-membership proof.
+export
+0 o19UniqueAppend : {item : Type} -> (first, second : List item) ->
+  UniqueKeys first -> UniqueKeys second ->
+  ((point : item) -> Elem point first -> Not (Elem point second)) ->
+  UniqueKeys (first ++ second)
+o19UniqueAppend [] second UniqueNil secondUnique disjoint = secondUnique
+o19UniqueAppend (head :: rest) second (UniqueCons absent restUnique) secondUnique disjoint =
+  UniqueCons
+    (o19ElemAppendCases rest second absent (disjoint head Here))
+    (o19UniqueAppend rest second restUnique secondUnique
+      (\point, member => disjoint point (There member)))
