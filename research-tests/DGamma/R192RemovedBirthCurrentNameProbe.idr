@@ -65,3 +65,22 @@ r192RemovedBirthTree = MkRegistrationCorrespondenceByGeneration
   (MkRegistrationIndexState [(0, MkRegistrationGeneration 0 0)] [(0, (MkRegistrationActivation (MkRegistrationGeneration 0 0) 1))] [((MkRegistrationActivation (MkRegistrationGeneration 0 0) 1), 1)] [])
   (MkRegistrationIndexState [(0, MkRegistrationGeneration 0 0)] [(0, (MkRegistrationActivation (MkRegistrationGeneration 0 0) 1))] [((MkRegistrationActivation (MkRegistrationGeneration 0 0) 1), 1)] [])
   (SkipLeftNonRegistration (OInsert 0 Root r45Parent) _ _ Refl Refl (SkipRightNonRegistration (OInsert 0 Root r45Parent) _ _ Refl Refl (SkipLeftNonRegistration (LBegin 0) _ _ Refl Refl (SkipRightNonRegistration (LBegin 0) _ _ Refl Refl (QueueLeftGeneratedRegistration _ _ Refl (MkSurvivingRegistration (MkRegistrationActivation (MkRegistrationGeneration 0 0) 1) Refl (NoParentUnloadStep _ _ (\same => case same of Refl impossible) (NoParentUnloadStep _ _ (\same => case same of Refl impossible) (NoParentUnloadStep _ _ (\same => case same of Refl impossible) NoParentUnloadEnd)))) (MatchRightWithPendingLeft _ _ Refl (MkSurvivingRegistration (MkRegistrationActivation (MkRegistrationGeneration 0 0) 1) Refl (NoParentUnloadStep _ _ (\same => case same of Refl impossible) (NoParentUnloadStep _ _ (\same => case same of Refl impossible) (NoParentUnloadStep _ _ (\same => case same of Refl impossible) NoParentUnloadEnd)))) [] _ [] (MkRegistrationEventMatch Refl (MkRegistrationActivation (MkRegistrationGeneration 0 0) 1) (MkRegistrationActivation (MkRegistrationGeneration 0 0) 1) Refl Refl Refl Refl Refl) (SkipLeftNonRegistration (LAdvance 0) _ _ Refl Refl (SkipRightNonRegistration (LAdvance 0) _ _ Refl Refl (SkipLeftNonRegistration (ORetire 1) _ _ Refl Refl (SkipRightNonRegistration (ORetire 1) _ _ Refl Refl (SkipLeftNonRegistration (ORemove 1) _ _ Refl Refl (SkipRightNonRegistration (ORemove 1) _ _ Refl Refl (RegistrationCorrespondenceEnd)))))))))))))
+
+||| All FOUR fields of CurrentEndpointRenaming accept the absent-name swap.
+||| No vestigial exception is used: the child generation is no longer current.
+public export
+0 r192RemovedCurrent : CurrentEndpointRenaming r45NameEq r45KeyEq
+  identityRegistrationGenerationBijection r192RemovedBirthTrace r192RemovedBirthTrace r192RemovedBirthTree
+r192RemovedCurrent = MkCurrentEndpointRenaming r192AbsentBijection
+  (\n, fiber, found, root => case n of
+    Z => Refl
+    S later => void (nothingIsNotJust found))
+  (\n, fiber, found, root => case n of
+    Z => Refl
+    S later => void (nothingIsNotJust found))
+  (\n, generation, found => case n of
+    Z => Right (generation ** (Refl, found))
+    S later => void (nothingIsNotJust found))
+  (\n, generation, found => case n of
+    Z => Right (generation ** (Refl, found))
+    S later => void (nothingIsNotJust found))
