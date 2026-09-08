@@ -58,3 +58,17 @@ export
   O19MixedRow name key world error value protocol nameEq keyEq source earlier right crossings
 o19MixedRowFromActivation (MkO19ActivationRow cursor middle right rest decomposition action tag actor activation count) =
   MkO19MixedRow cursor middle right rest decomposition action tag actor (Left activation) count
+
+||| Same explicit-result boundary for the generated-insertion row producer.
+export
+0 o19MixedRowFromInsertion :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {protocol : RegistrationProtocol key value world error} ->
+  {initial, sourceFinal, before, rightBefore, rightAfter : SystemState name key value world error} ->
+  {source : Transitions initial sourceFinal} -> {earlier : Transitions initial before} ->
+  {right : Transition rightBefore rightAfter} -> {crossings : Nat} ->
+  O19OrchestrationRow name key world error value protocol nameEq keyEq source earlier right crossings ->
+  O19MixedRow name key world error value protocol nameEq keyEq source earlier right crossings
+o19MixedRowFromInsertion (MkO19OrchestrationRow cursor middle right rest decomposition action tag actor activation count) =
+  MkO19MixedRow cursor middle right rest decomposition action tag actor (Right activation) count
