@@ -57,3 +57,21 @@ o19WordCutPrepend step rest wanted leftWord rightWord exact
   (MkO19WordCut between leading suffix decomposition leftExact rightExact count) =
     MkO19WordCut between (MoreTransitions step leading) suffix (cong (MoreTransitions step) decomposition)
       (trans (cong (\action => action :: o19ActionWord leading) exact) (cong (wanted ::) leftExact)) rightExact (cong S count)
+
+||| Construct the ACTUAL dependent cut by the exact residual source word.
+||| Both spines shrink structurally; no length-only reconstruction, guessed
+||| state, cut oracle or computed-existential case is used.
+export
+0 o19CutByWord :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, last : SystemState name key value world error} ->
+  (leftWord, rightWord : List (Action name key value world error)) ->
+  (trace : Transitions first last) -> (o19ActionWord trace = leftWord ++ rightWord) ->
+  O19WordCut name key world error value leftWord rightWord trace
+o19CutByWord {first} [] rightWord trace exact =
+  MkO19WordCut first NoTransitions trace Refl Refl exact Refl
+o19CutByWord (wanted :: restWord) rightWord NoTransitions exact =
+  void (uninhabited (cong length exact))
+o19CutByWord (wanted :: restWord) rightWord (MoreTransitions step rest) exact =
+  o19WordCutPrepend step rest wanted restWord rightWord (fst (consInjective exact))
+    (o19CutByWord restWord rightWord rest (snd (consInjective exact)))
