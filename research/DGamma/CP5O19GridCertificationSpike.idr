@@ -115,3 +115,25 @@ o19GridComplete leftSource rightSource width (S height) leftIndex (S rightIndex)
     (plusSuccRightSucc rightSource rightIndex)
     (snd (o19ElemAppendInjections (o19FixedRowPairs leftSource rightSource width) (o19GridPairs leftSource (S rightSource) width height))
       (o19GridComplete leftSource (S rightSource) width height leftIndex rightIndex leftBound (fromLteSucc rightBound)))
+
+||| Every actual grid member lies in BOTH shifted half-open intervals.
+||| The lower right bound is also the disjointness invariant for columns.
+export
+0 o19GridBounds : (leftSource, rightSource, width, height, leftPosition, rightPosition : Nat) ->
+  Elem (leftPosition, rightPosition) (o19GridPairs leftSource rightSource width height) ->
+  ((LTE leftSource leftPosition, LTE (S leftPosition) (leftSource + width)),
+   (LTE rightSource rightPosition, LTE (S rightPosition) (rightSource + height)))
+o19GridBounds leftSource rightSource width Z leftPosition rightPosition member = void (uninhabited member)
+o19GridBounds leftSource rightSource width (S height) leftPosition rightPosition member =
+  o19ElemAppendCases (o19FixedRowPairs leftSource rightSource width) (o19GridPairs leftSource (S rightSource) width height)
+    (\row =>
+      ((fst (o19FixedRowBounds leftSource rightSource width leftPosition rightPosition row),
+        fst (snd (o19FixedRowBounds leftSource rightSource width leftPosition rightPosition row))),
+       replace {p = \point => (LTE rightSource point, LTE (S point) (rightSource + S height))}
+         (sym (snd (snd (o19FixedRowBounds leftSource rightSource width leftPosition rightPosition row))))
+         (reflexive, replace {p = LTE (S rightSource)} (plusSuccRightSucc rightSource height) (LTESucc (lteAddRight rightSource)))))
+    (\columns =>
+      (fst (o19GridBounds leftSource (S rightSource) width height leftPosition rightPosition columns),
+       (lteSuccLeft (fst (snd (o19GridBounds leftSource (S rightSource) width height leftPosition rightPosition columns))),
+        replace {p = LTE (S rightPosition)} (plusSuccRightSucc rightSource height)
+          (snd (snd (o19GridBounds leftSource (S rightSource) width height leftPosition rightPosition columns)))))) member
