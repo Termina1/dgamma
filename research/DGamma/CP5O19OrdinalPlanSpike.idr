@@ -27,3 +27,14 @@ o19AdjacentOrdinalSymmetric (AdjacentPrefixOrdinal earlier) = AdjacentPrefixOrdi
 o19AdjacentOrdinalSymmetric AdjacentMovedRightOrdinal = AdjacentMovedLeftOrdinal
 o19AdjacentOrdinalSymmetric AdjacentMovedLeftOrdinal = AdjacentMovedRightOrdinal
 o19AdjacentOrdinalSymmetric (AdjacentSuffixOrdinal later) = AdjacentSuffixOrdinal later
+
+||| An ACTUAL sealed node's origin ordinal agrees with the executable
+||| four-region classifier. Source-position uniqueness is not action equality.
+export
+0 o19AdjacentSourceOrdinalExact :
+  (point, target, source : Nat) -> AdjacentSwapOrdinalRelation point target source ->
+  (source = fst (adjacentSwapOrdinalExhaustive point target))
+o19AdjacentSourceOrdinalExact point target source relation =
+  uniqueAdjacentOrdinalInjective point source (fst (adjacentSwapOrdinalExhaustive point target)) target target
+    (o19AdjacentOrdinalSymmetric relation)
+    (o19AdjacentOrdinalSymmetric (snd (adjacentSwapOrdinalExhaustive point target))) Refl
