@@ -37,3 +37,17 @@ record O20AllNameCut
       (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected (registry left))
       (lookupFiber {name} {key} {value} {world} {error} @{nameEq}
         (renameForward renaming selected) (registry right))
+
+||| Full empty-origin PRODUCER. The only input property is the actual empty
+||| runtime registry; effects and controls for EVERY queried name are derived.
+export
+0 o20AllNameEmptyOrigin :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (renaming : NameBijection name) ->
+  (initial : SystemState name key value world error) -> (bindings (registry initial) = []) ->
+  O20AllNameCut name key world error value nameEq renaming initial initial
+o20AllNameEmptyOrigin {name} {key} {world} {error} {value} nameEq renaming
+  (MkSystemState ambient fibers) empty =
+    MkO20AllNameCut
+      (MkRenamedRuntimeEffects Refl (synchronizationEmptyTables name key world error value nameEq renaming ambient fibers empty))
+      (\selected => snd (synchronizationEmptyObservations name key world error value nameEq renaming ambient fibers empty selected))
