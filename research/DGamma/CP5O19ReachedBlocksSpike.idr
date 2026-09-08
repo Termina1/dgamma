@@ -997,3 +997,17 @@ o19ActualUntouchedAfterBlock nameEq keyEq protocol swap source blocks premises s
           (\inGap => (replace {p = Elem action} (sym (o19OrderedBeforeWord (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety)) untouched ordered)) (snd (o19ElemAppendInjections (o19ActionWord (prefixThroughBlock (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety)))) (o19ActionWord (betweenBlocks ordered))) inGap))) inLeftGap) inRest) member))
     (o19NoLifecycleWordMember selected (traceAfterBlock untouched) (noLaterLifecycle untouched))
     (o19UntouchedAfterPlacement nameEq keyEq protocol swap source blocks premises safety unique selected untouched ordered)
+
+||| Positional classification in the target order, retaining prefix/suffix
+||| membership rather than testing names (repeated labels are not conflated).
+public export
+data O19SwapSite : {name : Type} -> (leading : List name) -> (left, right : name) ->
+  (trailing : List name) -> (selected : name) -> Type where
+  O19SiteBefore : {name : Type} -> {leading, trailing : List name} -> {left, right, selected : name} ->
+    Elem selected leading -> O19SwapSite leading left right trailing selected
+  O19SiteRight : {name : Type} -> {leading, trailing : List name} -> {left, right : name} ->
+    O19SwapSite leading left right trailing right
+  O19SiteLeft : {name : Type} -> {leading, trailing : List name} -> {left, right : name} ->
+    O19SwapSite leading left right trailing left
+  O19SiteAfter : {name : Type} -> {leading, trailing : List name} -> {left, right, selected : name} ->
+    Elem selected trailing -> O19SwapSite leading left right trailing selected
