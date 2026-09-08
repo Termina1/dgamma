@@ -7,8 +7,10 @@ import DGamma.CP3
 import DGamma.CP5ConfluenceRankObservationSpike
 import DGamma.CP5ConfluenceLocalDiamondSpike
 import DGamma.CP5ConfluenceCanonicalSortSpike
+import DGamma.CP5O19ReplayObservationSpike
 import DGamma.CP5O19CartesianCursorSpike
 import DGamma.CP5O19MixedRowDispatcherSpike
+import Data.List
 import Data.Nat
 import Decidable.Equality
 
@@ -89,3 +91,13 @@ export
 o19FiniteTraceCount FiniteAdjacentSwapDone = Refl
 o19FiniteTraceCount (FiniteAdjacentSwapStep source earlier left right later orientation diamond result reached rest) =
   trans (o19FiniteTraceCount rest) (o19AdjacentResultCount source earlier left right later diamond result)
+
+||| Structural bridge from exact residual ACTION WORDS to actual trace-cut
+||| lengths. This counts the explicit spine, not a separately evaluated row.
+export
+0 o19ActionWordLength :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, last : SystemState name key value world error} ->
+  (trace : Transitions first last) -> length (o19ActionWord trace) = transitionCount trace
+o19ActionWordLength NoTransitions = Refl
+o19ActionWordLength (MoreTransitions step rest) = cong S (o19ActionWordLength rest)
