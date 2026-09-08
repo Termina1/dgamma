@@ -92,3 +92,24 @@ exception-stopping set -e. All28 units retained; no exhaustion/hole/surface edit
 
 All proof records/snapshots/native logs are append-only under /tmp/dgamma-r191;
 consolidation follows final validation. A cap is a scope gate, not shift closure.
+
+## C goal-state seam probe and design gate
+
+C+16 selector units authorized after A cap. CP1-1 is ONE disposable native
+expected-rejection probe of restricted-reference to full-path conversion:
+`SupportPath ...` does not unify with `O20SupportedPath ...`. Exact fresh
+source/log/JSON retained, source fully removed after hash authentication.
+CP2-1 freshly reruns the EXISTING R143/R6 four-fiber static witness; no new
+countermodel is invented and no claim that its arbitrary state satisfies the
+full canonical premises is made. The fixture documents why generic full-path
+coercion is invalid, not why the public selector is false.
+
+The R190 loop's goalState/LinearizesSupport is not intrinsically false: the
+naturally inverse-renamed original right state could supply it after a full
+state-renaming/support equivariance development. But the ACTUAL loop consumes
+only `orderUnique (orientedGoalLinearization choice)` at progress measure drop;
+the remaining field travels unchanged. `o20OrientedSupportIncomparable` alone
+uses the semantic full-path linearization, a conditional helper superseded for
+the accepted supported reference by A28. A reference-to-full-path conversion
+will not be introduced. A phantom unrelated goal registry will not be invented.
+Supervisor gate requested before any change of this internal search surface.
