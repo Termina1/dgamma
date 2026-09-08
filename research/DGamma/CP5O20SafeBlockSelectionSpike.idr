@@ -236,3 +236,22 @@ export
   isJust (o20CheckEmptyGap gap) = True
 o20CheckEmptyGapComplete NoTransitions empty = Refl
 o20CheckEmptyGapComplete (MoreTransitions step rest) Refl impossible
+
+||| Generated-child exclusion implies a negative finite name observation;
+||| no component equality decision or metadata replacement is needed.
+export
+0 o20NoGeneratedObservation :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (forbidden : name) -> (action : Action name key value world error) ->
+  ((parent : name) -> (component : Component key value world error) ->
+    action = OInsert forbidden (ChildOf parent) component -> Void) ->
+  Not (o20GeneratedChildName action = Just forbidden)
+o20NoGeneratedObservation forbidden (OInsert forbidden (ChildOf parent) component) notChild Refl = notChild parent component Refl
+o20NoGeneratedObservation forbidden (OInsert selected Root component) notChild Refl impossible
+o20NoGeneratedObservation forbidden (ORetire selected) notChild Refl impossible
+o20NoGeneratedObservation forbidden (ORemove selected) notChild Refl impossible
+o20NoGeneratedObservation forbidden (LBegin selected) notChild Refl impossible
+o20NoGeneratedObservation forbidden (LAdvance selected) notChild Refl impossible
+o20NoGeneratedObservation forbidden (LDivert selected) notChild Refl impossible
+o20NoGeneratedObservation forbidden (LLeave selected) notChild Refl impossible
+o20NoGeneratedObservation forbidden (LUnload selected) notChild Refl impossible
