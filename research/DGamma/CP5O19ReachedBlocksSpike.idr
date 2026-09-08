@@ -582,3 +582,37 @@ export
 o19ForeignBlockWordNoLifecycle distinct (BlockOwnLifecycle lifecycle owner) active same = distinct (trans (sym owner) same)
 o19ForeignBlockWordNoLifecycle distinct (BlockGenerated child component inserted safe) active same =
   uninhabited (trans (sym (trans (cong isLifecycleAction inserted) Refl)) active)
+
+||| ALL FOUR outside-lifecycle properties on the actual reached cuts.
+||| Cross-actor exclusions come from authenticated original ordering; moved
+||| words come from the OWN run/cut, with no new safety or ordering premise.
+export
+0 o19ActualMovedOutsideLifecycle :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (protocol : RegistrationProtocol key value world error) ->
+  {sourceOrder, targetOrder : List name} -> (swap : AdjacentActorOrderSwap name sourceOrder targetOrder) ->
+  {initial, sourceFinal : SystemState name key value world error} -> (source : Transitions initial sourceFinal) ->
+  (blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder source) ->
+  (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq source) ->
+  (safety : AdjacentActorSwapSafety name key world error value protocol nameEq keyEq swap source blocks premises) ->
+  (unique : UniqueRawNameInsertions name key world error value nameEq keyEq source) ->
+  ((NoLifecycleBy (actorRight swap) (traceBeforeBlock (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety))), NoLifecycleBy (actorRight swap) (columnRest (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique))),
+   (NoLifecycleBy (actorLeft swap) (appendTransitions (traceBeforeBlock (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety))) (columnRight (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique))), NoLifecycleBy (actorLeft swap) (cutSuffix (o19ColumnLeftCut (traceBeforeBlock (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety))) (o19ActionWord (actorBlockTrace (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)))) (o19ActionWord (actorBlockTrace (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety)))) (o19ActionWord (traceAfterBlock (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety)))) (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique)))))
+o19ActualMovedOutsideLifecycle nameEq keyEq protocol swap source blocks premises safety unique =
+  ((fst (o19OrderedOuterNoLifecycle (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)) (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety)) (safetyBlocksOrdered safety)),
+    o19NoLifecycleFromWord (actorRight swap) (columnRest (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique))
+      (\action, member => o19ElemAppendCases (o19ActionWord (actorBlockTrace (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)))) (o19ActionWord (traceAfterBlock (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety))))
+        (\inLeft => o19ForeignBlockWordNoLifecycle (actorDistinct swap)
+          (o19OriginalBlockWord (actorLeft swap) (actorRight swap) (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)) (safetyLeftDoesNotGenerateRight safety) action inLeft))
+        (\inSuffix => o19NoLifecycleWordMember (actorRight swap) (traceAfterBlock (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety))) (noLaterLifecycle (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety))) action inSuffix)
+        (replace {p = Elem action} (columnRestWord (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique)) member))),
+   (o19NoLifecycleFromWord (actorLeft swap) (appendTransitions (traceBeforeBlock (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety))) (columnRight (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique)))
+      (\action, member => o19ElemAppendCases (o19ActionWord (traceBeforeBlock (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)))) (o19ActionWord (columnRight (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique)))
+        (\inEarlier => o19NoLifecycleWordMember (actorLeft swap) (traceBeforeBlock (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety))) (noEarlierLifecycle (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety))) action inEarlier)
+        (\inRight => o19ForeignBlockWordNoLifecycle (\same => actorDistinct swap (sym same))
+          (o19OriginalBlockWord (actorRight swap) (actorLeft swap) (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety)) (safetyRightDoesNotGenerateLeft safety) action
+            (replace {p = Elem action} (columnRightWord (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique)) inRight)))
+        (replace {p = Elem action} (o19ActionWordAppend (traceBeforeBlock (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety))) (columnRight (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique))) member)),
+    o19NoLifecycleFromWord (actorLeft swap) (cutSuffix (o19ColumnLeftCut (traceBeforeBlock (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety))) (o19ActionWord (actorBlockTrace (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)))) (o19ActionWord (actorBlockTrace (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety)))) (o19ActionWord (traceAfterBlock (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety)))) (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique)))
+      (\action, member => o19NoLifecycleWordMember (actorLeft swap) (traceAfterBlock (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety))) (snd (o19OrderedOuterNoLifecycle (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)) (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety)) (safetyBlocksOrdered safety))) action
+        (replace {p = Elem action} (cutRightWord (o19ColumnLeftCut (traceBeforeBlock (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety))) (o19ActionWord (actorBlockTrace (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)))) (o19ActionWord (actorBlockTrace (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety)))) (o19ActionWord (traceAfterBlock (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety)))) (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique))) member))))
