@@ -270,3 +270,35 @@ o19ColumnPrepend source earlier spine right later leftWord rightHead remainingRi
     (trans (o19AppendFiniteCount (cursorDerivation (mixedRowCursor (wordRow row))) (cursorDerivation (columnCursor smaller)))
       (trans (cong (\nodes => nodes + finiteAdjacentSwapNodeCount (cursorDerivation (columnCursor smaller))) (trans (mixedRowNodeCount (wordRow row)) count))
         (trans (cong ((length leftWord) +) (columnNodeCount smaller)) (sym (multRightSuccPlus (length leftWord) (length remainingRight))))))
+
+||| Internal row-result elimination boundary. The smallerColumns argument is
+||| the induction hypothesis on the STRICTLY SMALLER remaining right word,
+||| supplied by the column recursion itself, never a public O19 premise.
+||| Carry this row's real residual word/full original origin chain forward.
+export
+0 o19ColumnAfterRow :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (protocol : RegistrationProtocol key value world error) ->
+  {initial, originalFinal, before, rightBefore, rightAfter : SystemState name key value world error} ->
+  (original : Transitions initial originalFinal) ->
+  (current : O19ReachedCursor name key world error value protocol nameEq keyEq original) ->
+  (earlier : Transitions initial before) -> (spine : Transitions before rightBefore) ->
+  (right : Transition rightBefore rightAfter) -> (later : Transitions rightAfter (cursorFinal current)) ->
+  (leftWord : List (Action name key value world error)) -> (rightHead : Action name key value world error) ->
+  (remainingRight, suffixWord : List (Action name key value world error)) ->
+  (row : O19WordRow name key world error value protocol nameEq keyEq (cursorTrace current) earlier spine right later) ->
+  (o19ActionWord spine = leftWord) -> (transitionCount spine = length leftWord) ->
+  (transitionAction right = rightHead) -> (o19ActionWord later = remainingRight ++ suffixWord) ->
+  (0 smallerColumns : (next : O19ReachedCursor name key world error value protocol nameEq keyEq original) ->
+    {nextBefore : SystemState name key value world error} ->
+    (nextEarlier : Transitions initial nextBefore) -> (nextRest : Transitions nextBefore (cursorFinal next)) ->
+    (appendTransitions nextEarlier nextRest = cursorTrace next) ->
+    (o19ActionWord nextRest = leftWord ++ (remainingRight ++ suffixWord)) ->
+    O19ColumnRun name key world error value protocol nameEq keyEq (cursorTrace next) nextEarlier leftWord remainingRight suffixWord) ->
+  O19ColumnRun name key world error value protocol nameEq keyEq (cursorTrace current) earlier leftWord (rightHead :: remainingRight) suffixWord
+o19ColumnAfterRow nameEq keyEq protocol original current earlier spine right later leftWord rightHead remainingRight suffixWord
+  row leftExact leftCount rightExact restExact smallerColumns =
+    o19ColumnPrepend (cursorTrace current) earlier spine right later leftWord rightHead remainingRight suffixWord row leftCount rightExact
+      (smallerColumns (MkO19ReachedCursor (cursorFinal (mixedRowCursor (wordRow row))) (cursorTrace (mixedRowCursor (wordRow row))) (cursorBundle (mixedRowCursor (wordRow row))) (cursorUnique (mixedRowCursor (wordRow row))) (o19AppendFinite (cursorDerivation current) (cursorDerivation (mixedRowCursor (wordRow row))))) (appendTransitions earlier (MoreTransitions (mixedRowRight (wordRow row)) NoTransitions)) (mixedRowRest (wordRow row))
+        (trans (appendTransitionsAssociative earlier (MoreTransitions (mixedRowRight (wordRow row)) NoTransitions) (mixedRowRest (wordRow row))) (mixedRowDecomposition (wordRow row)))
+        (trans (wordRowRest row) (trans (cong (\word => word ++ o19ActionWord later) leftExact) (cong (leftWord ++) restExact))))
