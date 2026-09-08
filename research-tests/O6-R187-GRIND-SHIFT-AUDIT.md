@@ -302,3 +302,86 @@ then only those two were removed. The REAL CP5ConfluenceLocalDiamondSpike
 TTC/TTM remain present. No production seed or real LocalDiamond TTC was
 removed. This is the explicit supervisor-authorized probe-cleanup exception,
 not a source/cache reset. V4 continues unchanged on the REAL protected file.
+
+## Final validation — completed before the attempt guard
+
+V1–V31 completed by07:57:24 UTC. V3 is the explicit invalid empty-target
+probe, not a validation of LocalDiamond. The other30 validations all passed:
+28 ordinary positive checks/builds and2 exact intended negatives. All eight
+R187-changed research modules and all five frozen spikes were freshly
+source-checked; R8 full pipeline, R16 conditional assembly and endpoint
+controls, operational threading, all four orientation fixtures, actual
+insertion/activation guards, revised safety/adjacency positive/impossibility
+fixtures, both attack negatives, and the seeded package build passed.
+No broad legacy R11 was run. V31's EMPTY transcript is preserved: the
+inherited package fresh flag does NOT imply forced rebuilding of sources.
+
+| Invocation | Target | Qualified result | Seconds | Sample peak KiB |
+|---|---|---|---:|---:|
+| V1 | `research/DGamma/CP5O19ActualCartesianSpike.idr` | Fresh source PASS | 4.162 | 3932416 |
+| V2 | `research-tests/DGamma/R8FullPipeline.idr` | Fresh source PASS | 100.678 | 39109248 |
+| V3 | `research/DGamma/CP5LocalDiamondSpike.idr` | INVALID: empty mistyped target, raw PASS retained | 1.063 | 0 |
+| V4 | `research/DGamma/CP5ConfluenceLocalDiamondSpike.idr` | Fresh source PASS | 491.174 | 49771216 |
+| V5 | `research/DGamma/CP5ConfluenceDeletionChainSpike.idr` | Fresh source PASS | 77.733 | 4766336 |
+| V6 | `research/DGamma/CP5ConfluenceCanonicalSortSpike.idr` | Fresh source PASS | 54.981 | 20121248 |
+| V7 | `research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr` | Fresh source PASS | 9.341 | 4060080 |
+| V8 | `research/DGamma/CP5ConfluenceCrossTraceSpike.idr` | Fresh source PASS | 6.248 | 2885296 |
+| V9 | `research/DGamma/CP5O19PaperBranchCompletenessSpike.idr` | Fresh source PASS | 5.198 | 5630368 |
+| V10 | `research/DGamma/CP5O19OrdinalPlanSpike.idr` | Fresh source PASS | 48.722 | 20373200 |
+| V11 | `research/DGamma/CP5O19CartesianSitePlanSpike.idr` | Fresh source PASS | 3.117 | 4650384 |
+| V12 | `research/DGamma/CP5O19CartesianWordRowSpike.idr` | Fresh source PASS | 6.241 | 5660960 |
+| V13 | `research/DGamma/CP5O19CartesianColumnsSpike.idr` | Fresh source PASS | 9.347 | 2886608 |
+| V14 | `research/DGamma/CP5O19CartesianNumericSpike.idr` | Fresh source PASS | 3.121 | 5193328 |
+| V15 | `research/DGamma/CP5O19ActualCartesianSpike.idr` | Fresh source PASS | 5.224 | 5661200 |
+| V16 | `research/DGamma/CP5O20LinearExtensionSpike.idr` | Fresh source PASS | 3.150 | 5135504 |
+| V17 | `research-tests/DGamma/R185O19ObservedInsertionRowPositive.idr` | Fresh source PASS | 4.162 | 5189856 |
+| V18 | `research-tests/DGamma/R185O19ActivationInsertionRowPositive.idr` | Fresh source PASS | 4.141 | 5293440 |
+| V19 | `research-tests/DGamma/R185O19InsertionGuardsPositive.idr` | Fresh source PASS | 4.154 | 5051728 |
+| V20 | `research-tests/DGamma/R182O19RevisedSafetyPositive.idr` | Fresh source PASS | 17.620 | 3142368 |
+| V21 | `research-tests/DGamma/R182O19RevisedSafetyNegative.idr` | Fresh source PASS | 3.121 | 4680416 |
+| V22 | `research-tests/DGamma/R182O19AdjacencyNegative.idr` | Fresh source PASS | 13.518 | 5277744 |
+| V23 | `research-tests/DGamma/R183O19GenericBeginRowPositive.idr` | Fresh source PASS | 4.188 | 4799984 |
+| V24 | `research-tests/DGamma/R182O19AllFourCrossingsPositive.idr` | Fresh source PASS | 30.060 | 7137248 |
+| V25 | `research-tests/DGamma/R7OperationalThreadingPositive.idr` | Fresh source PASS | 2.101 | 2403472 |
+| V26 | `research-tests/DGamma/R16ConfluenceTheoremAssemblyPositive.idr` | Fresh source PASS | 2.088 | 915104 |
+| V27 | `research-tests/DGamma/R16EndpointControlsImpossibilityPositive.idr` | Fresh source PASS | 3.141 | 3008048 |
+| V28 | `research-tests/DGamma/R6SafetyDetachmentNegative.idr` | Intended-negative PASS (native nonzero + exact diagnostic + symbol) | 1.041 | 0 |
+| V29 | `research-tests/DGamma/R8ZeroDerivationOperationalStepNegative.idr` | Intended-negative PASS (native nonzero + exact diagnostic + symbol) | 1.055 | 0 |
+| V30 | `research-tests/DGamma/R8FullPipeline.idr` | Fresh source PASS | 100.614 | 39109296 |
+| V31 | `package` | Seeded package PASS; no forced rebuild | 16.594 | 274208 |
+
+## R187 protocol census and status
+
+A12:14 checks12PASS; B16:16checks16PASS; C's6 R187 slots:7checks6PASS;
+D16:20checks17PASS (D9-1 was successful-but-uncommitted after whitespace guard);
+E16:17checks16PASS; F14:15checks14PASS. Total proof invocations89, retained
+source declarations/commits80. Each of the89 proof invocations introduced
+EXACTLY ONE top-level declaration relative to its latest authenticated
+source; compiler-free preflight checked this from archived source snapshots
+and real receipts. Every source commit had no intervening compiler launch
+after its own fresh PASS. No unit exhausted3 attempts; no third attempt.
+
+Overall120 invocations:112 raw PASS,8 non-PASS,0 interrupted. Excluding ONLY
+explicitly invalidated V3 gives111 qualified PASS =109 ordinary PASS +2
+intended-negative PASS. Raw outcomes are never rewritten. The only retained
+successful-but-uncommitted proof check is D9-1; no invented receipt exists.
+All invocations are serialized and below48GiB. Largest sampled RSS is real
+LocalDiamond V4:49,771,216KiB versus50,331,648KiB guard. Existing warning
+transcripts are retained, not hidden. Source work stopped at F14; no body.
+
+The final proof is F14/af7255ec: the actual offset-list equation is DERIVED
+and consumed in the SAME-chain local origin plan. O19 remains OPEN because
+local coverage/bounds/UniqueKeys/nonempty WholeBlockSwapDerivation, actual
+reached installed blocks/decomposition/origin updates, and same-chain
+endpoint/full bundle/external assembly are still missing. O19/O20/O21 body
+attempts0/0/0. O20 positive oriented selection is not complete sorting or
+strict descent. O17 owner-paused/A8; O21 withdrawals parked. See
+O6-R187-R188-HANDOFF.md for precise symbols, field obligations, order and
+permanent evidence qualifications. No further proof slots inferred.
+
+New compiler-free run-r187-verify-evidence.py independently authenticates
+both durable archives, exact records/log/source hashes, matching commits,
+all80 real source receipts, one new declaration for all89 proof invocations,
+attempt caps, serialization/RSS, V3 exclusion and authorized probe backups,
+production freeze and no staging. Its Python syntax and live source-protocol
+preflight passed; the complete archive verification follows archive creation.
