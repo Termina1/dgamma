@@ -180,3 +180,11 @@ o19RowPairsFixed start (S width) =
   cong (\pairs => pairs ++ [(start, start + S width)])
     (trans (o19RowPairsFixed (S start) width)
       (cong (\rightSource => o19FixedRowPairs (S start) rightSource width) (plusSuccRightSucc start width)))
+
+||| Cartesian coordinates in the ACTUAL column order: descending left
+||| rows, advancing original right coordinates. Certification follows later.
+public export
+o19GridPairs : Nat -> Nat -> Nat -> Nat -> List (Nat, Nat)
+o19GridPairs leftSource rightSource width Z = []
+o19GridPairs leftSource rightSource width (S height) =
+  o19FixedRowPairs leftSource rightSource width ++ o19GridPairs leftSource (S rightSource) width height
