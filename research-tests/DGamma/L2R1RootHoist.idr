@@ -13,8 +13,8 @@ import Decidable.Equality
 %default total
 %unbound_implicits off
 
-||| Explicit small source/original-cut/alternate-cut states. Root2 has empty
-||| provisions, so this is the ADMISSIBLE fixture, not the blocked R174 collision.
+||| Candidate admissible-root states (trace/square NOT proved in L2R1).
+||| Root2 has empty provisions, unlike the blocked R174 collision.
 ||| No recursively nested evaluator builds these state indices.
 public export
 l2r1RootState : Nat -> SystemState Nat R45Key R45Value Unit String

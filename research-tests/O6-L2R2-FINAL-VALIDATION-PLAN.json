@@ -1,0 +1,96 @@
+[
+  {
+    "unit": "V1",
+    "path": "research-tests/O6-L2R2-Sources/DGamma/L2R2CheckedSnapshot.idr",
+    "sourceHash": "b9a3fae39718c38608bf0fe170bfb9423a2ae2ec01eee0c2caa13e2858301fd1",
+    "dependsOn": []
+  },
+  {
+    "unit": "V2",
+    "path": "research-tests/O6-L2R2-Sources/DGamma/L2R2ConditionalGap.idr",
+    "sourceHash": "fd6880ca32527ddf650d6e3a2e29a03c80ca8f4aae98a2deb69aace278ff5c4e",
+    "dependsOn": []
+  },
+  {
+    "unit": "V3",
+    "path": "research-tests/O6-L2R2-Sources/DGamma/L2R2RemoveSquare.idr",
+    "sourceHash": "468ba99efd8afd34af1e30c8faeb2c0c39bcd91310cc29efdff2b02c363b801d",
+    "dependsOn": []
+  },
+  {
+    "unit": "V4",
+    "path": "research-tests/O6-L2R2-Sources/DGamma/L2R2RetireSquare.idr",
+    "sourceHash": "cffee42d3cb0f68e0231067996d6176e4053d8c397354e55b41b1cc94d6a6670",
+    "dependsOn": []
+  },
+  {
+    "unit": "V5",
+    "path": "research-tests/O6-L2R2-Sources/DGamma/L2R2SmallStates.idr",
+    "sourceHash": "12ff7e550820038df7af063d127983790b408d548e2cdde24dfaeafd9015faf7",
+    "dependsOn": []
+  },
+  {
+    "unit": "V6",
+    "path": "research-tests/O6-L2R2-Sources/DGamma/L2R2ForeignReplay.idr",
+    "sourceHash": "1bbf7451b694208b2a4140c63b4de51976484e212b50f8e5235178f1e0f03c86",
+    "dependsOn": [
+      "research-tests/O6-L2R2-Sources/DGamma/L2R2CheckedSnapshot.idr"
+    ]
+  },
+  {
+    "unit": "V7",
+    "path": "research-tests/O6-L2R2-Sources/DGamma/L2R2RetireInsert.idr",
+    "sourceHash": "831a4b3858acd8927b3b17473a882784568a8ed13dffb819ddf1341427915934",
+    "dependsOn": [
+      "research-tests/O6-L2R2-Sources/DGamma/L2R2CheckedSnapshot.idr",
+      "research-tests/O6-L2R2-Sources/DGamma/L2R2RetireSquare.idr"
+    ]
+  },
+  {
+    "unit": "V8",
+    "path": "research-tests/O6-L2R2-Sources/DGamma/L2R2SmallExecution.idr",
+    "sourceHash": "ba4f682b9df1407899cd3674251b29a43e55780b5a582c44cca493471f835920",
+    "dependsOn": [
+      "research-tests/O6-L2R2-Sources/DGamma/L2R2SmallStates.idr"
+    ]
+  },
+  {
+    "unit": "V9",
+    "path": "research-tests/O6-L2R2-Sources/DGamma/L2R2RootSnapshot.idr",
+    "sourceHash": "9e7628fcec9402050a8f28a8143aaa747c50c350b19c6ad5e38bac9672943a71",
+    "dependsOn": [
+      "research-tests/O6-L2R2-Sources/DGamma/L2R2SmallExecution.idr",
+      "research-tests/O6-L2R2-Sources/DGamma/L2R2SmallStates.idr"
+    ]
+  },
+  {
+    "unit": "V10",
+    "path": "research-tests/O6-L2R2-Sources/DGamma/L2R2SmallPlacement.idr",
+    "sourceHash": "9462b867ac47ebae84049a5fc0c666eeaacd345fe768a940629dd413177a9171",
+    "dependsOn": [
+      "research-tests/O6-L2R2-Sources/DGamma/L2R2SmallExecution.idr",
+      "research-tests/O6-L2R2-Sources/DGamma/L2R2SmallStates.idr"
+    ]
+  },
+  {
+    "unit": "V11",
+    "path": "research-tests/O6-L2R2-Sources/DGamma/L2R2RootPhase.idr",
+    "sourceHash": "7f8e23a533dd193b7f99c6456b4381cf4578b5304309e79d88fe75a3e0baec55",
+    "dependsOn": [
+      "research-tests/O6-L2R2-Sources/DGamma/L2R2RootSnapshot.idr",
+      "research-tests/O6-L2R2-Sources/DGamma/L2R2SmallExecution.idr",
+      "research-tests/O6-L2R2-Sources/DGamma/L2R2SmallPlacement.idr",
+      "research-tests/O6-L2R2-Sources/DGamma/L2R2SmallStates.idr"
+    ]
+  },
+  {
+    "unit": "V12",
+    "path": "research-tests/O6-L2R2-Sources/DGamma/L2R2SmallBlocks.idr",
+    "sourceHash": "41d8ca5b859034da477f991b33e4c09d9cca0285746afedcc7d91ceb099a816c",
+    "dependsOn": [
+      "research-tests/O6-L2R2-Sources/DGamma/L2R2SmallExecution.idr",
+      "research-tests/O6-L2R2-Sources/DGamma/L2R2SmallPlacement.idr",
+      "research-tests/O6-L2R2-Sources/DGamma/L2R2SmallStates.idr"
+    ]
+  }
+]
