@@ -74,3 +74,18 @@ o20SuccessfulAdvanceLifecycle :
   View name deps -> Lifecycle key value world error name deps provision
 o20SuccessfulAdvanceLifecycle [] accumulator view = Active accumulator view
 o20SuccessfulAdvanceLifecycle (step :: rest) accumulator view = Reloading (step :: rest) accumulator view
+
+||| The two actual tail cases preserve full accumulator/view correspondence.
+export
+0 o20SuccessfulAdvanceControls :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {deps : List key} -> {provision : CoeffectSpec key} -> {renaming : NameBijection name} ->
+  (remaining : List (StepEffect key value world error deps provision)) ->
+  (leftAccumulator, rightAccumulator : LocalState key value world provision -> LocalState key value world provision) ->
+  (leftView, rightView : View name deps) ->
+  AccumulatorRelated leftAccumulator rightAccumulator -> ViewRelatedBy renaming leftView rightView ->
+  LifecycleRelatedBy renaming (o20SuccessfulAdvanceLifecycle {error} remaining leftAccumulator leftView)
+    (o20SuccessfulAdvanceLifecycle {error} remaining rightAccumulator rightView)
+o20SuccessfulAdvanceControls {error} [] leftAccumulator rightAccumulator leftView rightView accumulators views = RenamedActive {error} accumulators views
+o20SuccessfulAdvanceControls (step :: rest) leftAccumulator rightAccumulator leftView rightView accumulators views =
+  RenamedReloading Refl accumulators views
