@@ -393,3 +393,16 @@ o20SwapLeadingBefore (head :: rest) left right trailing (BeforeHere later) exclu
   BeforeHere (o20SwapLeadingMember rest left right trailing later)
 o20SwapLeadingBefore (head :: rest) left right trailing (BeforeThere later) excluded =
   BeforeThere (o20SwapLeadingBefore rest left right trailing later excluded)
+
+||| Reindex only by the actual swap's two producer-owned word equations.
+export
+0 o20SwapBefore :
+  {name : Type} -> {sourceOrder, targetOrder : List name} ->
+  (swap : AdjacentActorOrderSwap name sourceOrder targetOrder) ->
+  {lower, upper : name} -> BeforeIn lower upper sourceOrder ->
+  ((lower = actorLeft swap) -> (upper = actorRight swap) -> Void) ->
+  BeforeIn lower upper targetOrder
+o20SwapBefore {lower} {upper} swap ordered excluded =
+  replace {p = BeforeIn lower upper} (sym (actorAfterExact swap))
+    (o20SwapLeadingBefore (actorPrefix swap) (actorLeft swap) (actorRight swap) (actorSuffix swap)
+      (replace {p = BeforeIn lower upper} (actorBeforeExact swap) ordered) excluded)
