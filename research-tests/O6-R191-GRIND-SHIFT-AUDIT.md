@@ -233,3 +233,22 @@ actual operational chain: generic decomposition+reference alone do not exclude
 the already-known R182 intervening-root fixture. This is a missing proof invariant,
 NOT a claimed refutation of the accepted public selector. No protected statement
 change, body attempt, O19 edit, LocalDiamond edit, or O21 dependency.
+
+## C3 initial-placement dependency clarification (supervisor steering)
+
+CA1 freshly reruns the actual R182 root-gap fixture. Correct dependency:
+`allRootInputsFirst (inputPlacement (canonicalSchedule leftCapital))` is already
+an INITIAL O20 premise via accepted capital. O20 needs its preservation along
+actual block swaps, not O17/A8's construction of that initial placement. A8
+therefore remains an O17-only construction obligation, not an extra O20 premise.
+The earlier C2 statement that root placement must be retained was a preservation
+obligation; it did not justify treating missing construction as an O20 blocker.
+
+A second ownership seam requires examination before forcing the zero-gap claim:
+ActorLifecycleOnly allows actor lifecycle steps and child O-Insert, NOT child
+O-Retire/O-Remove. RootInputsBeforeLifecycle constrains root retire/remove, NOT
+retirement/removal of ChildOf fibers. Those non-root orchestration actions are
+not automatically "inside parent block" by the current grammar. No full accepted
+canonical counterexample is claimed; a native grammar probe + checked actual
+child-retirement fixture will separate this from the root-gap issue. No surface
+change is requested or made on this source observation alone.
