@@ -93,3 +93,18 @@ fixtureProducedMeasuresAgree =
   (admittedMoveMeasuresUnique (fst terminalFixtureMoves) (singleAdmitted iterationFixtures),
    admittedMoveMeasuresUnique firstBundleFromProducer (firstBundleAdmitted iterationFixtures),
    admittedMoveMeasuresUnique (snd terminalFixtureMoves) (secondBundleAdmitted iterationFixtures))
+
+||| Numeric 2->1->0 path derived solely from the PRODUCED moves' exact
+||| decrement equations and terminal native zero. No normalization of opaque
+||| move records and no old firstBundleAdmitted/secondBundleAdmitted facts.
+export
+0 fixtureDistancePathFromProducers :
+  (beforeDistance firstBundleFromProducer = 2,
+   afterDistance firstBundleFromProducer = 1,
+   beforeDistance (snd terminalFixtureMoves) = 1,
+   afterDistance (snd terminalFixtureMoves) = 0)
+fixtureDistancePathFromProducers =
+  ((trans (dropsExactlyOne firstBundleFromProducer) (cong S (trans (sym (afterDistanceEquation firstBundleFromProducer)) (trans (beforeDistanceEquation (snd terminalFixtureMoves)) (trans (dropsExactlyOne (snd terminalFixtureMoves)) (cong S (trans (sym (afterDistanceEquation (snd terminalFixtureMoves))) (bundleZero iterationFixtures)))))))),
+   (trans (sym (afterDistanceEquation firstBundleFromProducer)) (trans (beforeDistanceEquation (snd terminalFixtureMoves)) (trans (dropsExactlyOne (snd terminalFixtureMoves)) (cong S (trans (sym (afterDistanceEquation (snd terminalFixtureMoves))) (bundleZero iterationFixtures)))))),
+   (trans (dropsExactlyOne (snd terminalFixtureMoves)) (cong S (trans (sym (afterDistanceEquation (snd terminalFixtureMoves))) (bundleZero iterationFixtures)))),
+   (trans (sym (afterDistanceEquation (snd terminalFixtureMoves))) (bundleZero iterationFixtures)))
