@@ -76,3 +76,33 @@ export
 phaseHistoryPastOwner nameEq actor owner seen flag distance rest True equation path =
   HistoryOwned (phaseMaybeOwnerDecoded nameEq actor owner equation) path
 phaseHistoryPastOwner nameEq actor owner seen flag distance rest False equation path = HistoryReset path
+
+||| Decode only the observed physical-position guard. The recursive tail
+||| decoder is a structural induction hypothesis. Exact count arithmetic is
+||| retained together with the path, not inferred from a Boolean label.
+export
+0 phaseHistoryAtPositionGuard : {name : Type} -> (nameEq : DecEq name) ->
+  (actor : name) -> (offset, release : Nat) -> (seen : Bool) ->
+  (owner : Maybe name) -> (flag : Bool) -> (rest : List (Maybe name, Bool)) ->
+  (0 tailDecoder : (nextSeen : Bool) ->
+    phaseReleaseCheck nameEq actor (S offset) release nextSeen rest = True ->
+    (distance : Nat ** (S offset + distance = release, PhaseHistoryPath actor nextSeen distance rest))) ->
+  (matched : Bool) -> (0 position : (offset == release) = matched) ->
+  (0 accepted : (if matched then seen && maybe False (\selected => isYes (decEq @{nameEq} actor selected)) owner
+    else phaseReleaseCheck nameEq actor (S offset) release
+      (maybe False (\selected => isYes (decEq @{nameEq} actor selected)) owner && (seen || flag)) rest) = True) ->
+  (distance : Nat ** (offset + distance = release, PhaseHistoryPath actor seen distance ((owner, flag) :: rest)))
+phaseHistoryAtPositionGuard nameEq actor offset release seen owner flag rest tailDecoder True position accepted =
+  (0 ** (trans (plusZeroRightNeutral offset) (phaseNatEqual offset release position),
+    replace {p = \prior => PhaseHistoryPath actor prior 0 ((owner, flag) :: rest)}
+      (sym (boolAndLeft seen (maybe False (\selected => isYes (decEq @{nameEq} actor selected)) owner) accepted))
+      (HistoryRelease (phaseMaybeOwnerDecoded nameEq actor owner
+        (boolAndRight seen (maybe False (\selected => isYes (decEq @{nameEq} actor selected)) owner) accepted)))))
+phaseHistoryAtPositionGuard nameEq actor offset release seen owner flag rest tailDecoder False position accepted =
+  (S (fst (tailDecoder (maybe False (\selected => isYes (decEq @{nameEq} actor selected)) owner && (seen || flag)) accepted)) **
+    (trans (sym (plusSuccRightSucc offset (fst (tailDecoder (maybe False (\selected => isYes (decEq @{nameEq} actor selected)) owner && (seen || flag)) accepted))))
+      (fst (snd (tailDecoder (maybe False (\selected => isYes (decEq @{nameEq} actor selected)) owner && (seen || flag)) accepted))),
+     phaseHistoryPastOwner nameEq actor owner seen flag
+       (fst (tailDecoder (maybe False (\selected => isYes (decEq @{nameEq} actor selected)) owner && (seen || flag)) accepted)) rest
+       (maybe False (\selected => isYes (decEq @{nameEq} actor selected)) owner) Refl
+       (snd (snd (tailDecoder (maybe False (\selected => isYes (decEq @{nameEq} actor selected)) owner && (seen || flag)) accepted)))))
