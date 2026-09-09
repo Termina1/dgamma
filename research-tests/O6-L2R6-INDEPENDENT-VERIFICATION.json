@@ -1,0 +1,113 @@
+{
+  "status": "PASS",
+  "head": "6f27530344b8d68080dc725e6daf3c8edc5c7112",
+  "timestampUTC": "2026-09-09T05:18:05.051889+00:00",
+  "invocationCount": 65,
+  "passedCount": 62,
+  "failedCount": 3,
+  "finalCheckCount": 11,
+  "newDeclarationCount": 50,
+  "newDeclarations": {
+    "research-tests/O6-L2R6-Sources/DGamma/L2R6Anchors.idr": [
+      "AnchorAssignment",
+      "DistanceObservation",
+      "PlacedBundle",
+      "anchorAssignment",
+      "anchorOf",
+      "distanceObservation",
+      "lastReleaseCut",
+      "placedRootsAt",
+      "rootDistance",
+      "targetPosition",
+      "totalDistance"
+    ],
+    "research-tests/O6-L2R6-Sources/DGamma/L2R6DistanceDecrease.idr": [
+      "distanceOneLeft"
+    ],
+    "research-tests/O6-L2R6-Sources/DGamma/L2R6ForcedFixtures.idr": [
+      "ForcedClassifierFixtures",
+      "forcedClassifierFixtures"
+    ],
+    "research-tests/O6-L2R6-Sources/DGamma/L2R6ForcedScan.idr": [
+      "ForcedOnTrace",
+      "KeyForcedAt",
+      "ReleaseWitness",
+      "childDeclaredOverlap",
+      "classifyForced",
+      "forcedOnTraceLeast",
+      "foundChildOverlap",
+      "keyForcedAt",
+      "keyForcedOrdinal",
+      "ownChildReleaseStep",
+      "releaseWitnessObserved",
+      "scanReleaseOrdinals"
+    ],
+    "research-tests/O6-L2R6-Sources/DGamma/L2R6FrontFixtures.idr": [
+      "FrontDispositionFixtures",
+      "frontDispositionFixtures"
+    ],
+    "research-tests/O6-L2R6-Sources/DGamma/L2R6FrontNormal.idr": [
+      "ForcedRootNeverRetired",
+      "ForcedRootRetireInBlock",
+      "FrontNormal",
+      "frontControlHead",
+      "originForced",
+      "rootControlAction",
+      "rootOriginAt",
+      "scanFrontDisposition"
+    ],
+    "research-tests/O6-L2R6-Sources/DGamma/L2R6Iteration.idr": [
+      "AdmittedCrossing",
+      "AdmittedDistanceMove",
+      "DistanceIteration",
+      "iterationEndpoint",
+      "nativeActionWord"
+    ],
+    "research-tests/O6-L2R6-Sources/DGamma/L2R6IterationFixtures.idr": [
+      "IterationFixtures",
+      "fixtureIterations",
+      "iterationFixtures"
+    ],
+    "research-tests/O6-L2R6-Sources/DGamma/L2R6IterationObligations.idr": [
+      "GeneralAdmittedMoveExistence",
+      "GeneralDistanceIteration",
+      "PhaseIterationResult"
+    ],
+    "research-tests/O6-L2R6-Sources/DGamma/L2R6Phase.idr": [
+      "ForcedRootPhase"
+    ],
+    "research-tests/O6-L2R6-Sources/DGamma/L2R6PlacementFixtures.idr": [
+      "PlacementDistanceFixtures",
+      "placementDistanceFixtures"
+    ]
+  },
+  "proofCommitCount": 50,
+  "commentOnlyRepairCount": 1,
+  "commentRepairValidatedPending": false,
+  "allCommitsReceiptAuthenticated": true,
+  "allSourceHashesAndLogsAuthenticated": true,
+  "D9BodyOnlyBundleAndFixtureRecheckAuthenticated": true,
+  "immutableFinalPlanPublishedBeforeChecks": true,
+  "finalPlanLeafBeforeDependent": true,
+  "allFinalSourcesFreshlyChecked": true,
+  "allInvocationsSerialized": true,
+  "maxSampleRSSKiB": 2123536,
+  "RSSQualification": "250ms sampled, not continuous peak",
+  "archiveSHA256": "5481bffa839581c172500074c75a40407a382b82dcfd345ee631d85c7346645c",
+  "predecessorProofSourcesUntouched": true,
+  "authorizedPredecessorDocsOnly": [
+    "research-tests/O6-L2R5-CP3-DIFF-DRAFT.md",
+    "research-tests/O6-L2R5-CP3-REHOME-MANIFEST.json",
+    "research-tests/run-l2r5-draft.py"
+  ],
+  "tier1CodeHashesUnchanged": true,
+  "all30RenamingsSerialized": true,
+  "productionAndFrozenResearchUntouched": true,
+  "noSharedLockInteractionByCheckRunner": true,
+  "sharedLockAndWindowNotInspected": true,
+  "noOwnCompiler": true,
+  "noStagedFiles": true,
+  "cleanTrackedTree": true,
+  "noUntrackedDeliverables": true,
+  "independentHumanProofReviewRequired": true
+}
