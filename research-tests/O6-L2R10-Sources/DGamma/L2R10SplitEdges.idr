@@ -33,3 +33,9 @@ record SplitNativeEdge
   (tag : RuleTag) where
   constructor MkSplitNativeEdge
   0 splitEdgeChecked : checkedApplyAction @{%search} @{%search} action (states from) = Just (tag, states to)
+
+||| Split path first edge, ONE native equation per invocation.
+public export
+0 splitRootEdge : SplitNativeEdge contiguityState 4 8
+  (OInsert 3 Root (smallComponent True)) OInsertTag
+splitRootEdge = MkSplitNativeEdge Refl
