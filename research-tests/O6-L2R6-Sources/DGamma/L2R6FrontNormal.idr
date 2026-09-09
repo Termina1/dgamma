@@ -28,3 +28,14 @@ rootOriginAt : {name, key, world, error : Type} -> {value : key -> Type} ->
 rootOriginAt nameEq actor cut catalog = map pred (lastReleaseCut
   (map catalogOrdinal (filter (\entry => catalogOrdinal entry <= cut &&
     isYes (decEq @{nameEq} actor (catalogRoot entry))) catalog)))
+
+||| Test whether the observed birth origin has an assigned release anchor.
+||| Initially installed roots have no in-trace forced origin. Equivalence
+||| with the independent inductive ForcedOnTrace classifier remains owed.
+public export
+originForced : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {0 first, finalState : SystemState name key value world error} ->
+  {0 trace : Transitions first finalState} ->
+  DecEq name -> DecEq key -> AvailabilityTrace name key world error value trace -> Maybe Nat -> Bool
+originForced nameEq keyEq trail Nothing = False
+originForced nameEq keyEq trail (Just ordinal) = isJust (anchorOf nameEq keyEq trail ordinal)
