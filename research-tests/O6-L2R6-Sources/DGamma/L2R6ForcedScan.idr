@@ -138,3 +138,19 @@ ForcedOnTrace : {name, key, world, error : Type} -> {value : key -> Type} ->
 ForcedOnTrace nameEq keyEq trail = ForcedRootInput
   (\ordinal => Elem ordinal (map catalogOrdinal (scanRootCatalog 0 trail)))
   (\ordinal => keyForcedOrdinal nameEq keyEq trail ordinal = True)
+
+||| Executable prefix-closure classifier over the AUTHENTIC ordered catalog.
+||| Each root is flagged iff some catalog seed at or before its ordinal has
+||| an actual earlier child release. General equivalence to ForcedOnTrace is
+||| an outstanding proof, not an assumed field of this runtime definition.
+public export
+classifyForced : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {0 first, finalState : SystemState name key value world error} ->
+  {0 trace : Transitions first finalState} ->
+  DecEq name -> DecEq key -> (trail : AvailabilityTrace name key world error value trace) ->
+  (catalog : List (RootCatalogEntry name key world error value)) ->
+  (0 exact : catalog = scanRootCatalog 0 trail) -> List (name, Bool)
+classifyForced nameEq keyEq trail catalog exact = map
+  (\entry => (catalogRoot entry, any
+    (\seed => catalogOrdinal seed <= catalogOrdinal entry &&
+      keyForcedOrdinal nameEq keyEq trail (catalogOrdinal seed)) catalog)) catalog
