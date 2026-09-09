@@ -123,3 +123,23 @@ r198OccurrenceElevenEndpoint =
     (MkO20StampedCut
       (o20AllNameEmptyOrigin r45NameEq identityNameBijection (r191ChildGapState 0) Refl)
       (\selected, stamp, found => absurd found) (\selected, stamp, found => absurd found))
+
+||| R193/R195's actual PRESENT vestigial original history retains its closing
+||| disposition and owned internal history cut through a zero-edge terminal path.
+||| This is NOT canonical deletion, unilateral stuttering, or current-map
+||| rebasing; no unmatched native edge is silently skipped by this fixture.
+export
+0 r198ClosingHistoryZeroRetention :
+  (O20GenerationOnlyDisposition Nat R45Key Unit String R45Value identityRegistrationGenerationBijection
+    r193HistoricalClosedTrace r193HistoricalClosedTrace (MkRegistrationGeneration 1 2),
+   O20HistoryCut Nat R45Key Unit String R45Value r45NameEq identityRegistrationGenerationBijection
+    (leftFinalGenerations r193HistoricalTree) (rightFinalGenerations r193HistoricalTree)
+    r193HistoricalClosed r193HistoricalClosed)
+r198ClosingHistoryZeroRetention =
+  (r195ClosingHistoryRetained,
+   o20OccurrenceStampedHistoryCut {keyEq = r45KeyEq}
+    {leftWord = r193HistoricalClosedTrace} {rightWord = r193HistoricalClosedTrace}
+    OccurrenceHistoryEnd
+    (MkO20StampedCut (historyCutRuntime r195VestigialInternalHistoryCut)
+      (historyCutForward r195VestigialInternalHistoryCut)
+      (historyCutBackward r195VestigialInternalHistoryCut)))
