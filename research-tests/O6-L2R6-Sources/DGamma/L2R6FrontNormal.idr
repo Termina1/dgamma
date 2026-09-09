@@ -79,3 +79,18 @@ scanFrontDisposition {name} {key} {world} {error} {value} nameEq keyEq whole ord
     (not (rootControlAction action && rootInputAtSource name key world error value nameEq action source &&
       originForced nameEq keyEq whole (rootOriginAt nameEq (actionOwner action) ordinal (scanRootCatalog 0 whole))))
     (scanFrontDisposition nameEq keyEq whole (S ordinal) (seen || isLifecycleAction action) later)
+
+||| Accepted front-normal scan with explicit observed Bool and producer-owned
+||| equation. General correspondence to ForcedOnTrace/generation-origin
+||| proofs is NOT implied merely by accepting this executable predicate.
+public export
+record FrontNormal
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (keyEq : DecEq key)
+  {0 first, finalState : SystemState name key value world error}
+  {0 trace : Transitions first finalState}
+  (trail : AvailabilityTrace name key world error value trace) where
+  constructor MkFrontNormal
+  frontObserved : Bool
+  0 frontEquation : fst (scanFrontDisposition nameEq keyEq trail 0 False trail) = frontObserved
+  0 frontAccepted : frontObserved = True
