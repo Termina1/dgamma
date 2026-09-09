@@ -94,3 +94,18 @@ record FrontNormal
   frontObserved : Bool
   0 frontEquation : fst (scanFrontDisposition nameEq keyEq trail 0 False trail) = frontObserved
   0 frontAccepted : frontObserved = True
+
+||| The no-forced-control option, explicitly checked by the total native
+||| scan. It is not imposed on all quiescent traces by fiat; the paper's
+||| open-set/lifecycle argument still owes this disposition when applicable.
+public export
+record ForcedRootNeverRetired
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (keyEq : DecEq key)
+  {0 first, finalState : SystemState name key value world error}
+  {0 trace : Transitions first finalState}
+  (trail : AvailabilityTrace name key world error value trace) where
+  constructor MkForcedRootNeverRetired
+  neverRetiredObserved : Bool
+  0 neverRetiredEquation : snd (scanFrontDisposition nameEq keyEq trail 0 False trail) = neverRetiredObserved
+  0 neverRetiredAccepted : neverRetiredObserved = True
