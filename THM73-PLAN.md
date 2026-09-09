@@ -4052,3 +4052,15 @@ is o20DeletionRetainedClosingBirth, then actual-chain selection; next A work is
 canonical physical Insert position/origin attachment and whole modulo folds.
 No re-budget, no hidden new hole or exhausted-statement retry. Evidence and
 review gate are recorded in research-tests/O6-R200-*.
+
+
+## R200 owner FINAL gate — D4 checked PARTIAL seal
+
+Full165-source+seeded-package validation and all212 expected outcomes are
+complete. Post-D3 machine authentication reports clean tracked tree, no staged
+files, and only the permitted untracked paper/review artifacts. See
+`research-tests/O6-R200-OWNER-FINAL-GATE.md` for the exact checked B base type,
+missing historical transport, closed A residual result, still-open Insert/whole
+history producers, C0, comment hashes, resource/census evidence and archive
+anchor limitations. Independent reviewer/owner decision is requested; no new
+budget, proof attempt or full confluence completion is implied by this seal.

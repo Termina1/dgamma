@@ -169,3 +169,14 @@ is closed; global discarded-selection/all-name bridge and physical Insert/whole
 modulo history synchronization are not. C0/ineligible. No new hole/escape,
 42 proved functions +2 indexed-family declarations. Final owner/reviewer gate
 follows post-publication clean-tree authentication; no new proof attempts.
+
+
+## D4 —owner gate sealing checkpoint
+
+Post-D3 independent machine authentication and strict frozen/clean audit PASS
+at9be579ad. Only paper/ and review-o6-body-adversarial.md are untracked; nothing
+staged. The final gate document states the checked B base type and every open
+producer boundary, with full resource/hash/receipt evidence. D4 is artifact-only
+and anchored to the unchanged V166 package PASS; no further native invocation.
+Parent/reviewer decision is requested rather than assumed. All ordered units
+are capped/completed; no four-hour budget self-extension or new proof attempt.

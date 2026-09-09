@@ -1021,3 +1021,15 @@ Production unchanged, protected census4. Global some-node coverage/ALL-NAME
 bridge, physical Insert/whole modulo histories and convergence remain OPEN;
 C0/ineligible. This is not a cold build or full confluence theorem. Independent
 review/owner gate follows; exact limits and evidence are in the R200 audit.
+
+
+## R200 owner FINAL gate — D4 checked PARTIAL seal
+
+Full165-source+seeded-package validation and all212 expected outcomes are
+complete. Post-D3 machine authentication reports clean tracked tree, no staged
+files, and only the permitted untracked paper/review artifacts. See
+`research-tests/O6-R200-OWNER-FINAL-GATE.md` for the exact checked B base type,
+missing historical transport, closed A residual result, still-open Insert/whole
+history producers, C0, comment hashes, resource/census evidence and archive
+anchor limitations. Independent reviewer/owner decision is requested; no new
+budget, proof attempt or full confluence completion is implied by this seal.

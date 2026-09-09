@@ -4368,3 +4368,15 @@ or mutation. Archive anchor precedes publication/gate receipts by design.
 274 inventory entries include111 NOT rechecked;165 source targets plus seeded
 package is not a cold-build/all-inventory certification. Zero RSS samples in13
 checks mean no captured live peak, not zero memory. See O6-R200-* evidence.
+
+
+## R200 owner FINAL gate — D4 checked PARTIAL seal
+
+Full165-source+seeded-package validation and all212 expected outcomes are
+complete. Post-D3 machine authentication reports clean tracked tree, no staged
+files, and only the permitted untracked paper/review artifacts. See
+`research-tests/O6-R200-OWNER-FINAL-GATE.md` for the exact checked B base type,
+missing historical transport, closed A residual result, still-open Insert/whole
+history producers, C0, comment hashes, resource/census evidence and archive
+anchor limitations. Independent reviewer/owner decision is requested; no new
+budget, proof attempt or full confluence completion is implied by this seal.
