@@ -58,3 +58,34 @@ export
   {observed : Maybe (Fiber name key value world error)} ->
   FiberControlMaybeRelated (Just fiber) observed -> (observed = Nothing) -> Void
 o20PresentControlsNotAbsent (SomeControlFibers related) absent = uninhabited absent
+
+||| The ACTUAL deletion node preserves presence of a full current vestigial
+||| generation that it does not select. Its result and target lookup are
+||| produced from the node. Target discarded/current transport remains open.
+export
+0 o20UnselectedVestigialStillPresent :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {protocol : RegistrationProtocol key value world error} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {leftFirst, leftFinal, rightFirst, rightFinal : SystemState name key value world error} ->
+  (left : Transitions leftFirst leftFinal) -> (right : Transitions rightFirst rightFinal) ->
+  (mapping : RegistrationGenerationBijection name) ->
+  (registrations : RegistrationCorrespondenceByGeneration nameEq mapping left right) ->
+  (premises : CanonicalizationPremises name key world error value protocol nameEq keyEq left) ->
+  (candidate : DeletableClosingEpisode name key world error value nameEq keyEq left) ->
+  (step : DeletionChainStep name key world error value protocol nameEq keyEq left premises candidate) ->
+  (selected : name) ->
+  (packet : VestigialEndpointGeneration name key world error value nameEq keyEq
+    (leftFinalGenerations registrations) (leftDeletedGenerations registrations) selected leftFinal) ->
+  Not (Elem (vestigialGeneration packet) (selectedRegistrations candidate)) ->
+  O20PresentLookup name key world error value nameEq selected (survivingFinal (deletionResult step))
+o20UnselectedVestigialStillPresent {name} {key} {world} {error} {value}
+  nameEq keyEq left right mapping registrations premises candidate step selected packet outside =
+    o20PresentLookupObserved nameEq selected (survivingFinal (deletionResult step))
+      (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected (registry (survivingFinal (deletionResult step)))) Refl
+      (o20PresentControlsNotAbsent
+        (replace {p = \observed => FiberControlMaybeRelated observed
+          (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected (registry (survivingFinal (deletionResult step))))}
+          (vestigialFiberPresent packet)
+          (o20UnselectedVestigialControls nameEq keyEq left right mapping registrations candidate
+            (deletionResult step) selected packet outside)))
