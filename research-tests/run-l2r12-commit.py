@@ -16,8 +16,20 @@ record = json.loads((pathlib.Path('/tmp/dgamma-l2r12')/(unit+'.json')).read_text
 assert record['passed'] and record['fresh'] and not record['interrupted'] and not record['sourceMutationObserved']
 assert record['exit'] == 0 and not record['expectedDiagnostic']
 assert json.loads(pathlib.Path('/tmp/dgamma-l2r12/ledger.jsonl').read_text().splitlines()[-1])['unit'] == unit, 'No intervening compiler invocation'
-# No validation-based declaration publication exception has been invoked this shift.
-assert not unit.startswith('V'), 'Source commit requires bounded proof PASS'
+# User-authorized rstrip-only fresh validation after the B3 EOF guard.
+source_attempt = unit
+if unit == 'V1':
+    trim = json.loads(pathlib.Path('/tmp/dgamma-l2r12/B3-rstrip-authority.json').read_text())
+    source_attempt = trim['sourceAttempt']
+    prior = json.loads(pathlib.Path('/tmp/dgamma-l2r12/B3-1.json').read_text())
+    before = pathlib.Path('/tmp/dgamma-l2r12/B3-1.source').read_bytes()
+    after = (ROOT/record['path']).read_bytes()
+    assert prior['passed'] and prior['fresh'] and prior['path'] == record['path'] == trim['path']
+    assert before.rstrip()+b'\n' == after and before != after
+    assert hashlib.sha256(before).hexdigest() == trim['beforeSHA256']
+    assert record['sourceSHA256'] == trim['afterSHA256']
+else:
+    assert not unit.startswith('V'), 'Source commit requires bounded proof PASS'
 assert record['buildingCount'] == 1
 assert record['maxSampleRSSKiB'] <= 18*1024*1024, 'Light-only shift runner; heavy requires prior declared ledger and separate guarded authority'
 old = subprocess.run(['git','show','HEAD:'+record['path']],cwd=ROOT,capture_output=True)
@@ -43,7 +55,7 @@ subprocess.run(['git','diff','--check'],cwd=ROOT,check=True)
 subprocess.run(['git','add','--',*commitPaths],cwd=ROOT,check=True)
 subprocess.run(['git','commit','-m',message],cwd=ROOT,check=True)
 assert not subprocess.check_output(['git','diff','--cached','--name-only'],cwd=ROOT,text=True).strip()
-receipt = dict(paths=commitPaths,sourceHashes={record['path']:record['sourceSHA256'],**{x['path']:x['sourceSHA256'] for x in record.get('bundleSources',[])}},event='GUARDED COMMIT', unit=unit.rsplit('-',1)[0], attempt=unit.rsplit('-',1)[1] if '-' in unit else 'validation', invocation=unit, sourceHash=record['sourceSHA256'], resultingCommitHash=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(), timestampUTC=datetime.datetime.now(datetime.timezone.utc).isoformat(), guardChecksPassed=['fresh PASS','exit 0','not interrupted','no expected diagnostic','exact source SHA256','one new declaration','no intervening compiler invocation','no pre-staged files','no compiler','git diff --check','git commit success','no post-staged files'])
+receipt = dict(paths=commitPaths,sourceHashes={record['path']:record['sourceSHA256'],**{x['path']:x['sourceSHA256'] for x in record.get('bundleSources',[])}},event='GUARDED COMMIT', unit=source_attempt.rsplit('-',1)[0], attempt=source_attempt.rsplit('-',1)[1], invocation=unit, sourceAttempt=source_attempt, rstripOnlyRevalidation=(unit == 'V1'), sourceHash=record['sourceSHA256'], resultingCommitHash=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(), timestampUTC=datetime.datetime.now(datetime.timezone.utc).isoformat(), guardChecksPassed=['fresh PASS','exit 0','not interrupted','no expected diagnostic','exact source SHA256','one new declaration','no intervening compiler invocation','no pre-staged files','no compiler','git diff --check','git commit success','no post-staged files'])
 with pathlib.Path('/tmp/dgamma-l2r12/commit-receipts.jsonl').open('a') as ledger:
     ledger.write(json.dumps(receipt)+'\n')
 print('GUARDED COMMIT',json.dumps(receipt),flush=True)
