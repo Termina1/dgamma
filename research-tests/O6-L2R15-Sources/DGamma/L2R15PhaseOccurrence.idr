@@ -63,3 +63,18 @@ phaseEventAtNativePrefix {source} nameEq (MoreTransitions head before) step rest
   phaseEventThroughNativeHead nameEq head (appendTransitions before (MoreTransitions step rest)) trail
     (transitionCount before) (phaseActionOwner nameEq source (transitionAction step), isLifecycleAction (transitionAction step))
     (phaseEventAtNativePrefix nameEq before step rest)
+
+||| Transport the native prefix query through an authentic global trace
+||| decomposition. Only its equality is eliminated, preserving the trail.
+export
+0 phaseEventAtNativeSplit : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, source, target, finalState : SystemState name key value world error} ->
+  (nameEq : DecEq name) -> (before : Transitions first source) ->
+  (step : Transition source target) -> (rest : Transitions target finalState) ->
+  (global : Transitions first finalState) ->
+  (trail : AvailabilityTrace name key world error value global) ->
+  (0 physical : appendTransitions before (MoreTransitions step rest) = global) ->
+  head' (drop (transitionCount before) (phaseEvents nameEq trail)) =
+    Just (phaseActionOwner nameEq source (transitionAction step), isLifecycleAction (transitionAction step))
+phaseEventAtNativeSplit nameEq before step rest _ trail Refl =
+  phaseEventAtNativePrefix nameEq before step rest trail
