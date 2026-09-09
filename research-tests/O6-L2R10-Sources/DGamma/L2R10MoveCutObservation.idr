@@ -95,3 +95,26 @@ selectedCutAtPair {name} {key} {world} {error} {value} nameEq keyEq trail entry 
     (checkedApplyAction {name} {key} {value} {world} {error} @{nameEq} @{keyEq}
       (OInsert (catalogRoot entry) Root (catalogComponent entry)) source)
     Refl member split zeros positive equation (scanCatalogBirth 0 trail entry member))
+
+||| Eliminate ONLY the explicit predecessor-data Maybe. Nothing is retained
+||| honestly; no native predecessor existence or move is supplied by fiat.
+public export
+selectedCutAtLookup :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {0 initial, finalState : SystemState name key value world error} ->
+  {0 trace : Transitions initial finalState} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (trail : AvailabilityTrace name key world error value trace) ->
+  (entry : RootCatalogEntry name key world error value) ->
+  (before, after : List (RootCatalogEntry name key world error value)) ->
+  (predecessor : Nat) ->
+  (0 member : Elem entry (scanRootCatalog 0 trail)) ->
+  (0 split : scanRootCatalog 0 trail = before ++ entry :: after) ->
+  (0 zeros : All (\item => rootDistance nameEq keyEq trail (catalogOrdinal item) = 0) before) ->
+  (0 positive : rootDistance nameEq keyEq trail (catalogOrdinal entry) = S predecessor) ->
+  (observed : Maybe (SystemState name key value world error, Action name key value world error)) ->
+  (0 equation : head' (drop (pred (catalogOrdinal entry)) (trailSourceActions trail)) = observed) ->
+  Maybe (SelectedSquareCut name key world error value nameEq keyEq trail)
+selectedCutAtLookup nameEq keyEq trail entry before after predecessor member split zeros positive Nothing equation = Nothing
+selectedCutAtLookup nameEq keyEq trail entry before after predecessor member split zeros positive (Just observed) equation =
+  selectedCutAtPair nameEq keyEq trail entry before after predecessor member split zeros positive observed equation
