@@ -39,3 +39,34 @@ record FixtureRootRegions where
   0 barrierRegionCount : transitionCount barrierRegion = 2
   0 smallRegionNF : AttachedNormalForm Nat Bool Unit String (\key => Unit) %search %search smallTrace smallRegion 4
   0 barrierRegionNF : AttachedNormalForm Nat Bool Unit String (\key => Unit) %search %search barrierTrace barrierRegion 4
+
+||| NONVACUOUS general occurrence coverage on both native pre-attachment
+||| windows. Catalog completeness is built by cons induction from the A22
+||| actual members, then catalogNormalForm handles every dependent occurrence.
+||| The widths are 1 and 2, not the honestly empty post-attachment gaps.
+public export
+0 fixtureRootRegions : FixtureRootRegions
+fixtureRootRegions = MkFixtureRootRegions
+  (MoreTransitions (Fired {before = smallState 4} {afterState = smallState 5} %search %search
+    (OInsert 3 Root (smallComponent True)) OInsertTag (smallInsert3 smallNativeExecution)) NoTransitions)
+  (MoreTransitions (Fired {before = barrierState 4} {afterState = barrierState 5} %search %search
+    (OInsert 3 Root (smallComponent True)) OInsertTag (smallInsert3 smallNativeExecution))
+    (MoreTransitions (Fired {before = barrierState 5} {afterState = barrierState 6} %search %search
+      (OInsert 4 Root (smallComponent False)) OInsertTag (insertS barrierNativeExecution)) NoTransitions))
+  Refl Refl Refl Refl
+  (catalogNormalForm _ 4
+    (catalogConsObserved
+      (Fired {before = smallState 4} {afterState = smallState 5} %search %search
+        (OInsert 3 Root (smallComponent True)) OInsertTag (smallInsert3 smallNativeExecution)) NoTransitions 4
+      (c12CatalogR fixtureCoverage) (\n, action, exact => void (nothingIsNotJust exact))))
+  (catalogNormalForm _ 4
+    (catalogConsObserved
+      (Fired {before = barrierState 4} {afterState = barrierState 5} %search %search
+        (OInsert 3 Root (smallComponent True)) OInsertTag (smallInsert3 smallNativeExecution))
+      (MoreTransitions (Fired {before = barrierState 5} {afterState = barrierState 6} %search %search
+        (OInsert 4 Root (smallComponent False)) OInsertTag (insertS barrierNativeExecution)) NoTransitions) 4
+      (barrierCatalogR fixtureCoverage)
+      (catalogConsObserved
+        (Fired {before = barrierState 5} {afterState = barrierState 6} %search %search
+          (OInsert 4 Root (smallComponent False)) OInsertTag (insertS barrierNativeExecution)) NoTransitions 5
+        (barrierCatalogS fixtureCoverage) (\n, action, exact => void (nothingIsNotJust exact)))))
