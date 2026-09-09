@@ -71,3 +71,28 @@ replayLifecycleAtFound nameEq keyEq child parent actor childFiber actorFiber bef
     (replayRetirementLifecycle nameEq keyEq child parent actor childFiber actorFiber before action tag role
       (retirementProviderFrame nameEq keyEq child parent actor childFiber actorFiber (registry before) childFound ownChild actorFound)
       distinct valid afterState original)
+
+||| A successful original lifecycle role cannot have a missing actor. This
+||| eliminates the finite role witness, never a native computed lookup twice.
+export
+0 lifecycleRoleMissing : {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (before, afterState : SystemState name key value world error) ->
+  (action : Action name key value world error) -> (tag : RuleTag) ->
+  (0 role : Elem (action, tag) [(LBegin actor, LBeginTag), (LAdvance actor, LIterTag), (LAdvance actor, LFinishTag)]) ->
+  (0 missing : lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor (registry before) = Nothing) ->
+  (0 original : checkedApplyAction @{nameEq} @{keyEq} action before = Just (tag, afterState)) -> Void
+lifecycleRoleMissing nameEq keyEq actor before afterState _ _ Here missing original =
+  absurd (replace {p = \observed => observed = Just (LBeginTag, afterState)}
+    (the (applyAction @{nameEq} @{keyEq} (LBegin actor) before = Nothing) (rewrite missing in Refl))
+    (checkedActionProjects nameEq keyEq (LBegin actor) before afterState LBeginTag original))
+lifecycleRoleMissing nameEq keyEq actor before afterState _ _ (There Here) missing original =
+  absurd (replace {p = \observed => observed = Just (LIterTag, afterState)}
+    (the (applyAction @{nameEq} @{keyEq} (LAdvance actor) before = Nothing) (rewrite missing in Refl))
+    (checkedActionProjects nameEq keyEq (LAdvance actor) before afterState LIterTag original))
+lifecycleRoleMissing nameEq keyEq actor before afterState _ _ (There (There Here)) missing original =
+  absurd (replace {p = \observed => observed = Just (LFinishTag, afterState)}
+    (the (applyAction @{nameEq} @{keyEq} (LAdvance actor) before = Nothing) (rewrite missing in Refl))
+    (checkedActionProjects nameEq keyEq (LAdvance actor) before afterState LFinishTag original))
+lifecycleRoleMissing nameEq keyEq actor before afterState action tag
+  (There (There (There impossibleRole))) missing original = absurd impossibleRole
