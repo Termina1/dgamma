@@ -136,3 +136,19 @@ o20WholeEmbeddingReflectsSourceOrder result _ _ _ _
     fst (o20OffsetStrictOrder ((deletionSurvivingBeforeCount result + deletionSurvivingEpisodeCount result)) lt rt)
       (o20SubsequenceReflectsSourceOrder (afterDeletion result) lt rt ls rs leftExact rightExact
         (snd (o20OffsetStrictOrder ((deletionOriginalBeforeCount result + deletionOriginalEpisodeCount result)) ls rs) ordered))
+
+||| A real Unload inside the left segment keeps its physical index when a
+||| later segment is appended. An out-of-range index cannot satisfy the input.
+export
+0 o20ClosingActionAtAppendLeft :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (earlier : Transitions first middle) -> (later : Transitions middle finalState) ->
+  (ordinal : Nat) -> (actor : name) ->
+  (rawClosingActionAt name key world error value ordinal earlier = Just (LUnload actor)) ->
+  (rawClosingActionAt name key world error value ordinal (appendTransitions earlier later) = Just (LUnload actor))
+o20ClosingActionAtAppendLeft name key world error value NoTransitions later ordinal actor exact = absurd exact
+o20ClosingActionAtAppendLeft name key world error value
+  (MoreTransitions (Fired nameEq keyEq action tag checked) rest) later Z actor exact = exact
+o20ClosingActionAtAppendLeft name key world error value (MoreTransitions step rest) later (S ordinal) actor exact =
+  o20ClosingActionAtAppendLeft name key world error value rest later ordinal actor exact
