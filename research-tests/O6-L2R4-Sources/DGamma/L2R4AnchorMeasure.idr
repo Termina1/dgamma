@@ -51,3 +51,11 @@ anchorMeasureStep nameEq (AnchorBirth root anchor) later history =
 anchorMeasureStep nameEq (AnchorLife actor) later history = later (AnchorLife actor :: history)
 anchorMeasureStep nameEq (AnchorRelease marker) later history = later (AnchorRelease marker :: history)
 anchorMeasureStep nameEq AnchorOther later history = later (AnchorOther :: history)
+
+||| Availability-aware VARIANT measure: total fixed bundle-release-anchor
+||| inversions over a full chronological event trail, starting from reverse
+||| history (normally []). Executable total fold. This is deliberately NOT the
+||| position-dependent compatible-cut measure from EarliestAvailableRootBirth.
+public export
+anchorInversions : {name : Type} -> DecEq name -> List (AnchorEvent name) -> List (AnchorEvent name) -> Nat
+anchorInversions nameEq history events = foldr (anchorMeasureStep nameEq) (\past => 0) events history
