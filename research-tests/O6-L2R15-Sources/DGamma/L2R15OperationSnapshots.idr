@@ -25,3 +25,14 @@ export
     (MkSystemState ambient (replaceBinding @{nameEq} actor fiber source)) =
   MkRuntimeSnapshot ambient (replaceEntries @{nameEq} actor fiber (bindings source))
 nativeReplaceSnapshot nameEq actor fiber ambient (MkCoeffectContext entries unique) = Refl
+
+||| Arbitrary-registry deletion has its exact raw binding snapshot. This
+||| evaluates deleteBinding's representation only, never a native Remove.
+export
+0 nativeDeleteSnapshot : {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (actor : name) ->
+  (ambient : world) -> (source : Registry name key value world error) ->
+  runtimeSnapshot {name} {key} {world} {error} {value}
+    (MkSystemState ambient (deleteBinding @{nameEq} actor source)) =
+  MkRuntimeSnapshot ambient (deleteEntries @{nameEq} actor (bindings source))
+nativeDeleteSnapshot nameEq actor ambient (MkCoeffectContext entries unique) = Refl
