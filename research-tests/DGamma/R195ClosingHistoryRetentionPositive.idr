@@ -58,3 +58,18 @@ public export
     r193HistoricalClosedTrace r193HistoricalClosedTrace (MkRegistrationGeneration 1 2)
 r195ClosingHistoryRetained = O20OriginalClosingBirth r195ClosingEvent
   r195ClosingScannedBirth Refl r195ActualClosingDisposition
+
+||| The actual identity replay keeps the original closing disposition and
+||| its exact physical birth stamp simultaneously. This is the R193 history
+||| fixture, not a canonical pair or a nonempty operational permutation.
+export
+0 r195ClosingReplayRetention :
+  (O20GenerationOnlyDisposition Nat R45Key Unit String R45Value identityRegistrationGenerationBijection
+     r193HistoricalClosedTrace r193HistoricalClosedTrace (registrationGeneration r193HistoricalBirth),
+   (generationForward (replayGenerationRenaming (identityActionRegistrationReplayCorrespondence r193HistoricalClosedTrace))
+      (registrationGeneration (replayGeneratedRegistrationOrigin
+        (identityActionRegistrationReplayCorrespondence r193HistoricalClosedTrace) r193HistoricalBirth)) =
+      registrationGeneration r193HistoricalBirth))
+r195ClosingReplayRetention = o20HistoryReplayAttachment identityRegistrationGenerationBijection
+  (identityActionRegistrationReplayCorrespondence r193HistoricalClosedTrace) 1 0 r45Child
+  r193HistoricalBirth r195ClosingHistoryRetained
