@@ -19,3 +19,16 @@ data AnchorEvent : Type -> Type where
   AnchorRelease : {name : Type} -> Nat -> AnchorEvent name
   AnchorBirth : {name : Type} -> name -> Maybe Nat -> AnchorEvent name
   AnchorOther : {name : Type} -> AnchorEvent name
+
+||| One event's action on a root's historical foreign-lifecycle count.
+||| A matching release discards earlier history; other roots do not reset it.
+||| This fixed-anchor distinction avoids the compatible-cut 1,1,0 plateau.
+public export
+anchorHistoryStep : {name : Type} -> (nameEq : DecEq name) ->
+  (root : name) -> (anchor : Maybe Nat) -> AnchorEvent name -> Nat -> Nat
+anchorHistoryStep nameEq root anchor (AnchorLife actor) prior =
+  if isYes (decEq @{nameEq} actor root) then prior else S prior
+anchorHistoryStep nameEq root anchor (AnchorRelease marker) prior =
+  if anchor == Just marker then 0 else prior
+anchorHistoryStep nameEq root anchor (AnchorBirth actor otherAnchor) prior = prior
+anchorHistoryStep nameEq root anchor AnchorOther prior = prior
