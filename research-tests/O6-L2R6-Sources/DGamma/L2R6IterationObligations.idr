@@ -78,3 +78,20 @@ GeneralAdmittedMoveExistence {name} {key} {world} {error} {value} {initial} name
     ForcedRootNeverRetired name key world error value nameEq keyEq nextTrail,
     (item : RootCatalogEntry name key world error value) -> Elem item (scanRootCatalog 0 nextTrail) ->
       ForcedOnTrace nameEq keyEq nextTrail (catalogOrdinal item) -> ForcedRootPhase name key world error value nameEq keyEq nextTrail item))
+
+||| General iteration theorem TYPE with Nat accessibility over TOTAL physical
+||| distance, under explicit phase/front/no-forced-control premises. No
+||| assumed move oracle is accepted. normalizePhaseDistance is the named OPEN
+||| producer obligation; this Type alias is not its implementation or a hole.
+public export
+GeneralDistanceIteration : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {initial, finalState : SystemState name key value world error} -> {trace : Transitions initial finalState} ->
+  DecEq name -> DecEq key -> AvailabilityTrace name key world error value trace -> Type
+GeneralDistanceIteration {name} {key} {world} {error} {value} {initial} nameEq keyEq trail =
+  (0 valid : registryWellFormed @{nameEq} @{keyEq} initial = True) ->
+  (0 front : FrontNormal name key world error value nameEq keyEq trail) ->
+  (0 never : ForcedRootNeverRetired name key world error value nameEq keyEq trail) ->
+  (0 phases : (entry : RootCatalogEntry name key world error value) -> Elem entry (scanRootCatalog 0 trail) ->
+    ForcedOnTrace nameEq keyEq trail (catalogOrdinal entry) -> ForcedRootPhase name key world error value nameEq keyEq trail entry) ->
+  (0 accessibleDistance : Accessible LT (totalDistance nameEq keyEq trail)) ->
+  PhaseIterationResult name key world error value nameEq keyEq trail
