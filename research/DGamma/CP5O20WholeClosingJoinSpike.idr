@@ -7,6 +7,7 @@ import DGamma.CP3
 import DGamma.CP5RawClosingRankSpike
 import DGamma.CP5ConfluenceLocalDiamondSpike
 import DGamma.CP5O20DeletionRetainedUnloadSpike
+import DGamma.CP5O20DeletionRetainedBirthSpike
 import DGamma.CP5ConfluenceDeletionChainSpike
 import DGamma.CP5O20RetainedClosingIndexSpike
 import Data.List
@@ -334,3 +335,59 @@ o20DeletionRetainedBirthEmbedding {protocol} {nameEq} {keyEq} trace premises can
         (deletionStepOperationalOccurrenceFoldSpike nameEq keyEq protocol trace premises candidate
           (deletionResult step) (deletionProducerCapital step))
         (generatedRegistrationActionOccurrence birth)))
+
+||| The actual deletion step produces a retained birth AND its own suffix
+||| close across all three segments, except for the explicitly returned
+||| selected-parent center close. Its exact source index/order are retained.
+export
+0 o20DeletionRetainedClosingBirthOrSelectedParent :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (trace : Transitions initial finalState) ->
+  (premises : CanonicalizationPremises name key world error value protocol nameEq keyEq trace) ->
+  (candidate : DeletableClosingEpisode name key world error value nameEq keyEq trace) ->
+  (step : DeletionChainStep name key world error value protocol nameEq keyEq trace premises candidate) ->
+  (generation : RegistrationGeneration name) ->
+  (classified : DeletedGenerationClassification name key world error value nameEq trace generation) ->
+  Not (Elem generation (selectedRegistrations candidate)) ->
+  Either
+    (sourceClose : Nat **
+      (LT (registrationOrdinal (deletedOccurrence classified)) sourceClose,
+       deletedParent classified = selectedActor candidate,
+       (centerIndex : Nat **
+         (sourceClose = deletionOriginalBeforeCount (deletionResult step) + centerIndex,
+          rawClosingActionAt name key world error value centerIndex
+            (MoreTransitions (beginTransition (closedOpening (locatedEpisode (selectedEpisode candidate))))
+              (closedTransitions (locatedEpisode (selectedEpisode candidate)))) = Just (LUnload (deletedParent classified))))))
+    (birth : LocatedGeneratedRegistration (generationName generation) (deletedParent classified)
+      (deletedComponent classified) (survivingTrace (deletionResult step)) **
+      (generationForward (deletionProducerGenerationRenaming (deletionProducerCapital step)) generation = registrationGeneration birth,
+       ActionOccurs (LUnload (deletedParent classified)) (afterRegistration birth)))
+o20DeletionRetainedClosingBirthOrSelectedParent name key world error value protocol nameEq keyEq trace premises candidate step generation classified outside =
+  case originalRegistrationAccounted (deletionRegistrationAccounting step) (deletedOccurrence classified) of
+    Left selected => void (outside
+      (replace {p = Elem generation} (deletionWithdrawnGenerationsExact step)
+        (replace {p = \stamp => Elem stamp (endpointWithdrawnGenerations (deletionEndpoint step))}
+          (deletedOccurrenceGeneration classified) selected)))
+    Right (birth ** originalExact) =>
+      case o20DeletedBirthClosingIndex name key world error value nameEq trace generation classified of
+        (sourceClose ** (sourceOrder, sourceExact)) =>
+          case o20WholeClosingIndexRetainedOrSelectedCenter name key world error value protocol nameEq keyEq
+            trace premises candidate (deletionResult step) (deletedParent classified) sourceClose sourceExact of
+            Left (selected, (centerIndex ** (centerOffset, centerExact))) =>
+              Left (sourceClose ** (sourceOrder, selected, (centerIndex ** (centerOffset, centerExact))))
+            Right (targetClose ** (targetExact, closeEmbedding)) =>
+              Right (birth **
+                (o20DeletionRetainedBirthGeneration trace premises candidate step birth generation
+                  (trans originalExact (deletedOccurrenceGeneration classified)),
+                 o20UnloadBeyondBirthCut name key world error value (beforeRegistration birth)
+                   (registrationTransition birth) (afterRegistration birth) targetClose (deletedParent classified)
+                   (o20WholeEmbeddingReflectsSourceOrder (deletionResult step)
+                     (registrationOrdinal birth) targetClose (registrationOrdinal (deletedOccurrence classified)) sourceClose
+                     (o20DeletionRetainedBirthEmbedding trace premises candidate step birth
+                       (registrationGeneration (deletedOccurrence classified)) originalExact)
+                     closeEmbedding sourceOrder)
+                   (trans (cong (rawClosingActionAt name key world error value targetClose)
+                     (registrationDecomposition birth)) targetExact)))
