@@ -138,3 +138,47 @@ o20SupportedReplayedInsertOrigins name key world error value nameEq keyEq protoc
     o20ReplayedInsertPositionsAtLookup name key world error value nameEq keyEq protocol left right inputs
       leftCapital rightCapital leftUnique rightUnique matched replayed occurrences child parent component supported leftBirth
       (o20OriginalSupportedLookup nameEq keyEq protocol left leftCapital child supported)
+
+||| The literal accepted operational execution supplies the exchanged trace
+||| and its correspondence. Original positions and both physical Insert origins
+||| are outputs at the SAME conjugated maps used by the modulo goal.
+export
+0 o20PermutedCanonicalInsertOrigins :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {protocol : RegistrationProtocol key value world error} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {initial, leftFinal, rightFinal : SystemState name key value world error} ->
+  {leftTrace : Transitions initial leftFinal} ->
+  {rightTrace : Transitions initial rightFinal} ->
+  {sameInputs : SameOrchestrationModuloGenerated nameEq keyEq leftTrace rightTrace} ->
+  {leftCapital : IndependentCanonicalSchedule name key world error value protocol
+    nameEq keyEq leftTrace} ->
+  {rightCapital : IndependentCanonicalSchedule name key world error value protocol
+    nameEq keyEq rightTrace} ->
+  {matching : MappedCanonicalSupportOrders name key world error value protocol
+    nameEq keyEq leftTrace rightTrace
+    (currentNameBijection (endpointRenaming sameInputs))
+    (canonicalSchedule leftCapital) (canonicalSchedule rightCapital)} ->
+  {operational : CertifiedOperationalCanonicalPermutation name key world error value
+    protocol nameEq keyEq leftTrace rightTrace sameInputs leftCapital rightCapital matching} ->
+  (execution : PermutedCanonicalExecution name key world error value protocol
+    nameEq keyEq leftTrace rightTrace sameInputs leftCapital rightCapital operational) ->
+  (0 leftUnique : UniqueRawNameInsertions name key world error value nameEq keyEq leftTrace) ->
+  (0 rightUnique : UniqueRawNameInsertions name key world error value nameEq keyEq rightTrace) ->
+  (0 generatedMatched : GeneratedOrchestrationMatched name key world error value nameEq
+    leftTrace rightTrace (generatedGenerationBijection sameInputs)) ->
+  (child, parent : name) -> (component : Component key value world error) ->
+  (isSupported {name} {key} {value} {world} {error} @{nameEq} @{keyEq} child leftFinal = True) ->
+  (birth : LocatedGeneratedRegistration child parent component (operationalTargetTrace operational)) ->
+  O20PhysicalInsertOriginPositions name key world error value
+    (composeActionRegistrationReplayCorrespondence (canonicalOccurrenceCorrespondence leftCapital)
+      (permutationOccurrenceCorrespondence execution))
+    (canonicalOccurrenceCorrespondence rightCapital) (generatedGenerationBijection sameInputs)
+    (expectedBridgeBijection sameInputs) child parent component birth
+o20PermutedCanonicalInsertOrigins {name} {key} {world} {error} {value} {protocol} {nameEq} {keyEq}
+  {leftTrace} {rightTrace} {sameInputs} {leftCapital} {rightCapital} {operational}
+  execution leftUnique rightUnique generatedMatched child parent component supported birth =
+    o20SupportedReplayedInsertOrigins name key world error value nameEq keyEq protocol leftTrace rightTrace sameInputs
+      leftCapital rightCapital leftUnique rightUnique generatedMatched
+      (operationalTargetTrace operational) (permutationOccurrenceCorrespondence execution)
+      child parent component supported birth
