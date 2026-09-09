@@ -164,3 +164,18 @@ o20DeletionRegisteredUnloadFree name key world error value protocol nameEq keyEq
       (reachedCurrentRegisteredInactive {name} {key} {world} {error} {value}
         nameEq keyEq (selectedRegistrations candidate)
         (the (Transitions initial initial) NoTransitions) Z [] GenerationTraceScanEnd AlignedEnd NoRegisteredEpisodeEnd)
+
+||| Read only the native head's registered-Unload exclusion from its
+||| source-indexed certificate. No discarded history is inferred here.
+export
+0 o20RegisteredUnloadHeadExcludes :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {registered : List (RegistrationGeneration name)} ->
+  {ordinal : Nat} -> {live : GenerationEnvironment name} ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  {step : Transition first middle} -> {rest : Transitions middle finalState} ->
+  O20RegisteredUnloadFree name key world error value nameEq registered ordinal live
+    (MoreTransitions step rest) ->
+  (actor : name) -> (transitionAction step = LUnload actor) ->
+  GenerationOwnedActor nameEq registered ordinal live (transitionAction step) -> Void
+o20RegisteredUnloadHeadExcludes (O20RegisteredUnloadStep step rest excludes tail) = excludes
