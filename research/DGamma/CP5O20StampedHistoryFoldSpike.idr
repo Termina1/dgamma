@@ -190,3 +190,70 @@ data O20StampedStage :
       (MkSystemState leftWorld leftRegistry) (MkSystemState rightWorld rightRegistry)
       (MkSystemState leftWorld (deleteBinding @{nameEq} actor leftRegistry))
       (MkSystemState rightWorld (deleteBinding @{nameEq} (renameForward renaming actor) rightRegistry))
+
+||| All six stamped native roles preserve the fixed-index cut. Runtime
+||| preservation uses the actual paired-stage/Remove producers; E43 supplies
+||| insertion history in both directions and removal uses unique live lookup.
+||| This is conditional on a supplied stage synchronization; not universal pairing.
+export
+0 o20StampedStageCut :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {mapping : RegistrationGenerationBijection name} -> {renaming : NameBijection name} ->
+  {leftOrdinal, rightOrdinal : Nat} ->
+  {leftLive, rightLive, leftNext, rightNext : GenerationEnvironment name} ->
+  {leftBefore, rightBefore, leftAfter, rightAfter : SystemState name key value world error} ->
+  O20StampedStage name key world error value nameEq keyEq mapping renaming
+    leftOrdinal rightOrdinal leftLive rightLive leftNext rightNext
+    leftBefore rightBefore leftAfter rightAfter ->
+  O20StampedCut name key world error value nameEq mapping renaming leftLive rightLive leftBefore rightBefore ->
+  O20StampedCut name key world error value nameEq mapping renaming leftNext rightNext leftAfter rightAfter
+o20StampedStageCut {mapping} {leftOrdinal} {rightOrdinal} {leftLive} {rightLive}
+  (StampedBeginStage nameEq keyEq renaming actor leftBefore leftAfter rightBefore rightAfter leftOpening rightOpening pairwise) paired =
+  MkO20StampedCut
+    (o20PairedStageCut nameEq keyEq renaming
+      (PairedBeginStage nameEq keyEq renaming actor leftBefore leftAfter rightBefore rightAfter leftOpening rightOpening pairwise) (stampedRuntime paired))
+    (stampedForward paired) (stampedBackward paired)
+o20StampedStageCut {mapping} {leftOrdinal} {rightOrdinal} {leftLive} {rightLive}
+  (StampedAdvanceStage nameEq keyEq renaming actor component step rest leftParent rightParent leftRetired rightRetired leftTable rightTable leftOlder rightOlder leftView rightView leftWorld rightWorld leftRegistry rightRegistry leftAfter rightAfter leftUndo rightUndo leftCapability rightCapability leftTag rightTag leftFound rightFound leftResolved rightResolved leftRun rightRun leftChecked rightChecked) paired =
+  MkO20StampedCut
+    (o20PairedStageCut nameEq keyEq renaming
+      (PairedAdvanceStage nameEq keyEq renaming actor component step rest leftParent rightParent leftRetired rightRetired leftTable rightTable leftOlder rightOlder leftView rightView leftWorld rightWorld leftRegistry rightRegistry leftAfter rightAfter leftUndo rightUndo leftCapability rightCapability leftTag rightTag leftFound rightFound leftResolved rightResolved leftRun rightRun leftChecked rightChecked) (stampedRuntime paired))
+    (stampedForward paired) (stampedBackward paired)
+o20StampedStageCut {mapping} {leftOrdinal} {rightOrdinal} {leftLive} {rightLive}
+  (StampedEmptyFinishStage nameEq keyEq renaming actor component leftParent rightParent leftRetired rightRetired leftTable rightTable leftOlder rightOlder leftView rightView leftWorld rightWorld leftRegistry rightRegistry leftFound rightFound leftChecked rightChecked) paired =
+  MkO20StampedCut
+    (o20PairedStageCut nameEq keyEq renaming
+      (PairedEmptyFinishStage nameEq keyEq renaming actor component leftParent rightParent leftRetired rightRetired leftTable rightTable leftOlder rightOlder leftView rightView leftWorld rightWorld leftRegistry rightRegistry leftFound rightFound leftChecked rightChecked) (stampedRuntime paired))
+    (stampedForward paired) (stampedBackward paired)
+o20StampedStageCut {mapping} {leftOrdinal} {rightOrdinal} {leftLive} {rightLive}
+  (StampedRetireStage nameEq keyEq renaming actor leftWorld rightWorld leftRegistry rightRegistry leftOld rightOld leftFound rightFound leftChecked rightChecked) paired =
+  MkO20StampedCut
+    (o20PairedStageCut nameEq keyEq renaming
+      (PairedRetireStage nameEq keyEq renaming actor leftWorld rightWorld leftRegistry rightRegistry leftOld rightOld leftFound rightFound leftChecked rightChecked) (stampedRuntime paired))
+    (stampedForward paired) (stampedBackward paired)
+o20StampedStageCut {mapping} {leftOrdinal} {rightOrdinal} {leftLive} {rightLive}
+  (StampedInsertStage nameEq keyEq renaming actor component leftParent rightParent parents leftWorld rightWorld leftRegistry rightRegistry leftAbsent rightAbsent leftChecked rightChecked matched) paired =
+  MkO20StampedCut
+    (o20PairedStageCut nameEq keyEq renaming
+      (PairedInsertStage nameEq keyEq renaming actor component leftParent rightParent parents leftWorld rightWorld leftRegistry rightRegistry leftAbsent rightAbsent leftChecked rightChecked) (stampedRuntime paired))
+    (o20HistoryPutCompatibility nameEq (renameForward renaming) (o20HistoricalTarget mapping)
+      actor (MkRegistrationGeneration actor leftOrdinal) leftLive
+      (sym (cong generationName matched)) (stampedForward paired))
+    (o20HistoryPutCompatibility nameEq (renameBackward renaming)
+      (\stamp => generationName (generationBackward mapping stamp))
+      (renameForward renaming actor) (MkRegistrationGeneration (renameForward renaming actor) rightOrdinal)
+      rightLive (trans (renameLeftInverse renaming actor)
+        (sym (cong generationName (trans (cong (generationBackward mapping) (sym matched))
+          (generationLeftInverse mapping (MkRegistrationGeneration actor leftOrdinal))))))
+      (stampedBackward paired))
+o20StampedStageCut {leftLive} {rightLive}
+  (StampedRemoveStage nameEq keyEq renaming actor leftUnique rightUnique
+    leftWorld rightWorld leftRegistry rightRegistry leftChecked rightChecked) paired =
+  MkO20StampedCut
+    (o20PairedObservedRemoveCut nameEq keyEq renaming actor leftWorld rightWorld
+      leftRegistry rightRegistry leftChecked rightChecked (stampedRuntime paired))
+    (\selected, stamp, found => stampedForward paired selected stamp
+      (o20HistoryLookupBeforeRemove nameEq actor selected leftLive leftUnique stamp found))
+    (\selected, stamp, found => stampedBackward paired selected stamp
+      (o20HistoryLookupBeforeRemove nameEq (renameForward renaming actor) selected rightLive rightUnique stamp found))
