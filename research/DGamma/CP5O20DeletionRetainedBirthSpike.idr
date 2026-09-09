@@ -137,3 +137,26 @@ o20DeletionRetainedBirthAccounted trace premises candidate step generation class
         (deletedOccurrenceGeneration classified) member)))
 o20DeletionRetainedBirthAccounted trace premises candidate step generation classified outside (Right accounted) =
   o20DeletionRetainedBirthFromAccount trace premises candidate step generation classified accounted
+
+||| A nonselected deleted classification has a REAL retained birth in this
+||| deletion step, at its stored forward generation coordinate. The original
+||| later parent Unload is not yet transported by this theorem.
+export
+0 o20DeletionRetainedBirth :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {protocol : RegistrationProtocol key value world error} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {initial, finalState : SystemState name key value world error} ->
+  (trace : Transitions initial finalState) ->
+  (premises : CanonicalizationPremises name key world error value protocol nameEq keyEq trace) ->
+  (candidate : DeletableClosingEpisode name key world error value nameEq keyEq trace) ->
+  (step : DeletionChainStep name key world error value protocol nameEq keyEq trace premises candidate) ->
+  (generation : RegistrationGeneration name) ->
+  (classified : DeletedGenerationClassification name key world error value nameEq trace generation) ->
+  Not (Elem generation (selectedRegistrations candidate)) ->
+  O20RetainedGenerationBirth name key world error value
+    (deletionProducerGenerationRenaming (deletionProducerCapital step)) generation
+    (survivingTrace (deletionResult step))
+o20DeletionRetainedBirth trace premises candidate step generation classified outside =
+  o20DeletionRetainedBirthAccounted trace premises candidate step generation classified outside
+    (originalRegistrationAccounted (deletionRegistrationAccounting step) (deletedOccurrence classified))
