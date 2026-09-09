@@ -74,3 +74,14 @@ filterTailObserved predicate head items True equation wanted member =
   rewrite equation in There member
 filterTailObserved predicate head items False equation wanted member =
   rewrite equation in member
+
+||| General filtered membership producer from a genuine unfiltered member
+||| and the actual item's observed accepted test. Membership alone is split.
+export
+0 filterMemberObserved : {a : Type} -> (predicate : a -> Bool) -> (item : a) ->
+  {items : List a} -> (0 member : Elem item items) -> (observed : Bool) ->
+  (0 equation : predicate item = observed) -> (0 accepted : observed = True) -> Elem item (filter predicate items)
+filterMemberObserved predicate item Here observed equation accepted = rewrite trans equation accepted in Here
+filterMemberObserved predicate item (There {y} {xs} later) observed equation accepted =
+  filterTailObserved predicate y xs (predicate y) Refl item
+    (filterMemberObserved predicate item later observed equation accepted)
