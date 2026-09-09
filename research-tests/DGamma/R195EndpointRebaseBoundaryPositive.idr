@@ -37,3 +37,17 @@ public export
     r193HistoricalClosed r193HistoricalClosed
 r195VestigialInternalHistoryCut =
   o20IdentityHistoryCut r45NameEq r193HistoricalClosedTrace r193HistoricalTree
+
+||| Complete original-endpoint rebasing obstruction: accepted same inputs,
+||| an owned ALL-name internal history cut, and impossibility of the current-
+||| map cut coexist. No independent canonical capital is packaged here.
+export
+0 r195OriginalEndpointRebaseObstruction :
+  (SameOrchestrationModuloGenerated r45NameEq r45KeyEq r193HistoricalClosedTrace r193HistoricalClosedTrace,
+   O20HistoryCut Nat R45Key Unit String R45Value r45NameEq identityRegistrationGenerationBijection
+     (leftFinalGenerations r193HistoricalTree) (rightFinalGenerations r193HistoricalTree)
+     r193HistoricalClosed r193HistoricalClosed,
+   (O20AllNameCut Nat R45Key Unit String R45Value r45NameEq
+     (expectedBridgeBijection r193HistoricalSameInputs) r193HistoricalClosed r193HistoricalClosed -> Void))
+r195OriginalEndpointRebaseObstruction =
+  (r193HistoricalSameInputs, r195VestigialInternalHistoryCut, r195VestigialCurrentCutImpossible)
