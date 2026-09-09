@@ -322,3 +322,33 @@ o20AttachRootMatchPacket nameEq keyEq right rightNow leftReplay rightReplay left
   o20AttachRootAtRetainedBirth {nameEq} {keyEq} leftReplay rightReplay leftLaw rightLaw
     original unique root component leftBirth rightBirth matched
     (o20RetainedRootBirth nameEq right rightNow external root component rightBirth)
+
+||| Every actual left canonical root obtains an actual right canonical root
+||| and both exact ordinal equations from accepted capital. R196 C6 supplies
+||| both root laws; no opposite birth, original matching or law is assumed.
+export
+0 o20CanonicalRootOrdinalAttachment :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {initial, leftFinal, rightFinal : SystemState name key value world error} ->
+  (left : Transitions initial leftFinal) -> (right : Transitions initial rightFinal) ->
+  (inputs : SameOrchestrationModuloGenerated nameEq keyEq left right) ->
+  (leftCapital : IndependentCanonicalSchedule name key world error value protocol nameEq keyEq left) ->
+  (rightCapital : IndependentCanonicalSchedule name key world error value protocol nameEq keyEq right) ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq right ->
+  (root : name) -> (component : Component key value world error) ->
+  (leftBirth : LocatedActionOccurrence (OInsert root Root component)
+    (canonicalTrace (canonicalSchedule leftCapital))) ->
+  O20AttachedRootBirth name key world error value
+    (canonicalOccurrenceCorrespondence leftCapital) (canonicalOccurrenceCorrespondence rightCapital)
+    (generatedGenerationBijection inputs) root component leftBirth
+o20CanonicalRootOrdinalAttachment nameEq keyEq protocol left right inputs leftCapital rightCapital unique
+  root component leftBirth =
+  o20AttachRootMatchPacket nameEq keyEq right (canonicalTrace (canonicalSchedule rightCapital))
+    (canonicalOccurrenceCorrespondence leftCapital) (canonicalOccurrenceCorrespondence rightCapital)
+    (o20CanonicalRootReplayOrdinals leftCapital) (o20CanonicalRootReplayOrdinals rightCapital)
+    (sameInputs (canonicalSchedule rightCapital)) (generatedGenerationBijection inputs) unique root component leftBirth
+    (o20RootBirthMatchLocated (generatedGenerationBijection inputs) left right
+      (externalRootGenerationsCoupled inputs) root component
+      (replayActionOrigin (canonicalOccurrenceCorrespondence leftCapital) leftBirth))
