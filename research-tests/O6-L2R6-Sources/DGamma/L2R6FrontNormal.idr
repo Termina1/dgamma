@@ -109,3 +109,31 @@ record ForcedRootNeverRetired
   neverRetiredObserved : Bool
   0 neverRetiredEquation : snd (scanFrontDisposition nameEq keyEq trail 0 False trail) = neverRetiredObserved
   0 neverRetiredAccepted : neverRetiredObserved = True
+
+||| Alternative disposition for ONE actual forced-root control: same global
+||| occurrence inside the releasing actor's body, after its full core/bundle.
+||| TYPE ONLY. Current attached grammar ends at that bundle, so this option
+||| has a structural obstruction; no universal disposition is chosen here.
+public export
+record ForcedRootRetireInBlock
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (keyEq : DecEq key)
+  {first, finalState : SystemState name key value world error}
+  {global : Transitions first finalState}
+  (trail : AvailabilityTrace name key world error value global)
+  (action : Action name key value world error)
+  (control : LocatedActionOccurrence action global)
+  (bundleAction : Action name key value world error) (bundleOrdinal : Nat)
+  (bundle : AttachedBundleOccurrence name key world error value nameEq keyEq global bundleAction bundleOrdinal) where
+  constructor MkForcedRootRetireInBlock
+  0 isRetireOrRemove : rootControlAction action = True
+  0 isActualRootControl : rootInputAtSource name key world error value nameEq action (actionBeforeState control) = True
+  controlForcedObserved : Bool
+  0 controlForcedEquation : originForced nameEq keyEq trail
+    (rootOriginAt nameEq (actionOwner action) (locatedActionOrdinal control) (scanRootCatalog 0 trail)) = controlForcedObserved
+  0 controlForcedAccepted : controlForcedObserved = True
+  insideAttachedBody : LocatedActionOccurrence action (attachedBody (containingBlock bundle))
+  0 samePhysicalControl : locatedActionOrdinal control =
+    transitionCount (attachedBefore (containingBlock bundle)) + S (locatedActionOrdinal insideAttachedBody)
+  0 afterWholeBundle : LTE (transitionCount (memberCore bundle) + transitionCount (memberBundle bundle))
+    (locatedActionOrdinal insideAttachedBody)
