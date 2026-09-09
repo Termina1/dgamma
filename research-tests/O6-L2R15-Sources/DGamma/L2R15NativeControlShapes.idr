@@ -75,3 +75,18 @@ nativeRemoveShapeFromView nameEq keyEq actor ambient source _ _ checked
   (MkRemoveSuccessView fiber found removable noChild) =
   MkNativeActionShape (MkSystemState ambient (deleteBinding @{nameEq} actor source)) checked
     (nativeDeleteSnapshot nameEq actor ambient source)
+
+||| GENERAL removal-shape producer from ONE original native edge, for any
+||| registry and actor. Covers both old/new packet removals without requiring
+||| an alternate Remove, a chosen target shape, or additional freshness.
+export
+0 nativeRemoveShape : {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (source, target : SystemState name key value world error) -> (tag : RuleTag) ->
+  (0 checked : checkedApplyAction @{nameEq} @{keyEq} (ORemove actor) source = Just (tag, target)) ->
+  NativeActionShape name key world error value nameEq keyEq (ORemove actor) source tag
+    (MkRuntimeSnapshot (worldState source) (deleteEntries @{nameEq} actor (bindings (registry source))))
+nativeRemoveShape nameEq keyEq actor (MkSystemState ambient source) target tag checked =
+  nativeRemoveShapeFromView nameEq keyEq actor ambient source target tag checked
+    (removeSuccessView nameEq keyEq actor ambient source tag target
+      (checkedActionProjects nameEq keyEq (ORemove actor) (MkSystemState ambient source) target tag checked))
