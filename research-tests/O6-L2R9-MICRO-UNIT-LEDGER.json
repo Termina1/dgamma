@@ -1,0 +1,1280 @@
+{
+  "base": "a7120095",
+  "sourceBoundary": "6dbfd2360319a95ed9bb868485851d554ad0f910",
+  "archiveBoundary": "4b3bafe11cd85caab37fee5de3096b4c9dd6eade",
+  "caps": {
+    "A": 16,
+    "B": 12,
+    "C": 14,
+    "D": 14,
+    "E": 3
+  },
+  "attemptedSlots": {
+    "A": 15,
+    "B": 11,
+    "C": 14,
+    "D": 14
+  },
+  "retainedByUnit": {
+    "A": 14,
+    "B": 9,
+    "C": 14,
+    "D": 13
+  },
+  "retainedDeclarations": 50,
+  "stopped3of3": [
+    "A14",
+    "B4",
+    "B12"
+  ],
+  "capStopped2of3": [
+    "D14"
+  ],
+  "notAttempted": [
+    "A16",
+    "B3"
+  ],
+  "EBookkeeping": [
+    "E1 ed09d119 exact authorization/source closure",
+    "E2 bd28c47b exact predecessor TYPE-comment repair/V5",
+    "E3 4dcfd2ab honest Tier-2 sync"
+  ],
+  "records": [
+    {
+      "unit": "A1",
+      "status": "checked total definition/proof; exact native scope/quantity in source",
+      "declarations": [
+        "overlapOrdinals"
+      ],
+      "commit": "c0523d7e914309580bf18a436db1ab256e841c48",
+      "attempts": [
+        {
+          "unit": "A1-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "interrupted": false,
+          "sourceSHA256": "c886aafca7742a8736c252a355bb6cd0595f2ad7aa6bafba75560853e9ebc8bf",
+          "maxSampleRSSKiB": 207232,
+          "seconds": 0.5813892083242536
+        }
+      ]
+    },
+    {
+      "unit": "A2",
+      "status": "checked total definition/proof; exact native scope/quantity in source",
+      "declarations": [
+        "ordinalAtParent"
+      ],
+      "commit": "6c3f998d5ac361a27d7582134bb0cb0f90474288",
+      "attempts": [
+        {
+          "unit": "A2-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "interrupted": false,
+          "sourceSHA256": "3f0bfd0ef6eeffa4e9efd3ec3ed86a7a176a382471af06d3099e9a59353efece",
+          "maxSampleRSSKiB": 201616,
+          "seconds": 0.5894822082482278
+        }
+      ]
+    },
+    {
+      "unit": "A3",
+      "status": "checked total definition/proof; exact native scope/quantity in source",
+      "declarations": [
+        "ordinalAtLookup"
+      ],
+      "commit": "3c081b3f3098763cf9593f73761c4d4731a85452",
+      "attempts": [
+        {
+          "unit": "A3-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "interrupted": false,
+          "sourceSHA256": "1e02e9d94f53a97685de27a448086c5a4e44adfa5565c304012b35ce09bb6944",
+          "maxSampleRSSKiB": 197616,
+          "seconds": 0.5756982499733567
+        }
+      ]
+    },
+    {
+      "unit": "A4",
+      "status": "checked total definition/proof; exact native scope/quantity in source",
+      "declarations": [
+        "ordinalAtAction"
+      ],
+      "commit": "3951bfbc01c59e793d11ae8797547891e9d4689d",
+      "attempts": [
+        {
+          "unit": "A4-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "interrupted": false,
+          "sourceSHA256": "31cfe00952939b07e1a8b9339fbc1f0e8304e0ca3e1e97eab6f1bf50421a409c",
+          "maxSampleRSSKiB": 203936,
+          "seconds": 0.594111334066838
+        }
+      ]
+    },
+    {
+      "unit": "A5",
+      "status": "GENERAL executable ordinal scan; not old-scan agreement or phase producer",
+      "declarations": [
+        "releaseOrdinalScan"
+      ],
+      "commit": "163ce4b0d56e86ca779bf028fba084e8a3b69c79",
+      "attempts": [
+        {
+          "unit": "A5-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "interrupted": false,
+          "sourceSHA256": "a796168b998dae282da12337fc68bc70c5e72d0cdc5aa2941f002fe773bf221b",
+          "maxSampleRSSKiB": 275552,
+          "seconds": 0.8635268327780068
+        }
+      ]
+    },
+    {
+      "unit": "A6",
+      "status": "checked total definition/proof; exact native scope/quantity in source",
+      "declarations": [
+        "overlapOrdinalLink"
+      ],
+      "commit": "18a044af47da39b02592a66d09820ffca45e57ba",
+      "attempts": [
+        {
+          "unit": "A6-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "interrupted": false,
+          "sourceSHA256": "b3eaef8579079112a847d6b271f029565c597558c1e6377460fdfd129912274e",
+          "maxSampleRSSKiB": 191728,
+          "seconds": 0.5811708327382803
+        }
+      ]
+    },
+    {
+      "unit": "A7",
+      "status": "checked total definition/proof; exact native scope/quantity in source",
+      "declarations": [
+        "parentOrdinalLink"
+      ],
+      "commit": "7b5eb55ce1a59d1bd3e8d2c0fdc941864d1787b4",
+      "attempts": [
+        {
+          "unit": "A7-1",
+          "passed": false,
+          "fresh": true,
+          "exit": 1,
+          "interrupted": false,
+          "sourceSHA256": "eea68ea52c7a7267b3074de877e1c2048b77919f7647a85ca4be8d6af8ce3860",
+          "maxSampleRSSKiB": 195168,
+          "seconds": 0.5876651252619922
+        },
+        {
+          "unit": "A7-2",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "interrupted": false,
+          "sourceSHA256": "271ff068edacf5f12977bd7c429d13e40e35af6ec1537b847cfbd3154436045d",
+          "maxSampleRSSKiB": 272352,
+          "seconds": 0.8839770411141217
+        }
+      ]
+    },
+    {
+      "unit": "A8",
+      "status": "checked total definition/proof; exact native scope/quantity in source",
+      "declarations": [
+        "lookupOrdinalLink"
+      ],
+      "commit": "21458cc53b3c6c943416dae0abac3e29848bec5f",
+      "attempts": [
+        {
+          "unit": "A8-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "interrupted": false,
+          "sourceSHA256": "1f7f3f62eb791248fabde2d1ca65e301661ae2cba9000b51c567d512d9c1e5a1",
+          "maxSampleRSSKiB": 280848,
+          "seconds": 0.8743223748169839
+        }
+      ]
+    },
+    {
+      "unit": "A9",
+      "status": "checked total definition/proof; exact native scope/quantity in source",
+      "declarations": [
+        "actionOrdinalLink"
+      ],
+      "commit": "536f8522648d1d5071daa9e9e4d2d8a23f8e9b42",
+      "attempts": [
+        {
+          "unit": "A9-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "interrupted": false,
+          "sourceSHA256": "d51592eae84c340f53bfbaec5dffee7ceb8a3f8bd1639ec4feb1a836bef36f47",
+          "maxSampleRSSKiB": 297536,
+          "seconds": 0.8710383749566972
+        }
+      ]
+    },
+    {
+      "unit": "A10",
+      "status": "checked total definition/proof; exact native scope/quantity in source",
+      "declarations": [
+        "releaseShiftOrdinal"
+      ],
+      "commit": "58f95816d221ea9c4cf706310f7c47d6b6e646d2",
+      "attempts": [
+        {
+          "unit": "A10-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "interrupted": false,
+          "sourceSHA256": "4c5fe5d3d851cdc5eb1b2ab1490bf84d27e1952966b84374567e821938cc2f27",
+          "maxSampleRSSKiB": 271888,
+          "seconds": 0.8736866246908903
+        }
+      ]
+    },
+    {
+      "unit": "A11",
+      "status": "checked total definition/proof; exact native scope/quantity in source",
+      "declarations": [
+        "releaseShiftList"
+      ],
+      "commit": "183679c1c5a3885d9ba88534204855fdab5b0aa2",
+      "attempts": [
+        {
+          "unit": "A11-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "interrupted": false,
+          "sourceSHA256": "5c5dc0efb325ca9d69869323e7386b4686750892e691291285f83870858a4d65",
+          "maxSampleRSSKiB": 261584,
+          "seconds": 0.8702708752825856
+        }
+      ]
+    },
+    {
+      "unit": "A12",
+      "status": "GENERAL exact projection equality to erased enumeration; arbitrary-release completeness/old scan agreement OPEN",
+      "declarations": [
+        "releaseOrdinalLink"
+      ],
+      "commit": "57a92bf6c6c174be84bee2f447249927f80aef77",
+      "attempts": [
+        {
+          "unit": "A12-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "interrupted": false,
+          "sourceSHA256": "23ba52baf7aa846beb2cba0a8337307afb83ab5ff4652e43b2644ad1414600b0",
+          "maxSampleRSSKiB": 261040,
+          "seconds": 0.8644011248834431
+        }
+      ]
+    },
+    {
+      "unit": "A13",
+      "status": "TYPE ONLY; producer/fixture OPEN",
+      "declarations": [
+        "OrdinalFixtures"
+      ],
+      "commit": "feaceebd8881d8aecf9f6e01dcb7c0fd665493d0",
+      "attempts": [
+        {
+          "unit": "A13-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "interrupted": false,
+          "sourceSHA256": "f5c7d96b52001814059b449f8dd4e13861c8e776ab144f7137f05a7d305cd967",
+          "maxSampleRSSKiB": 294272,
+          "seconds": 0.8835441251285374
+        }
+      ]
+    },
+    {
+      "unit": "A14",
+      "status": "STOP3/3; full revert; no restatement",
+      "declarations": [],
+      "commit": null,
+      "attempts": [
+        {
+          "unit": "A14-1",
+          "passed": false,
+          "fresh": true,
+          "exit": 1,
+          "interrupted": false,
+          "sourceSHA256": "e8b1b57235fd3c33f193169d9fe1c9b7d377d54f3bd51a341bc9f7b6500aa214",
+          "maxSampleRSSKiB": 274288,
+          "seconds": 0.8745284592732787
+        },
+        {
+          "unit": "A14-2",
+          "passed": false,
+          "fresh": true,
+          "exit": 1,
+          "interrupted": false,
+          "sourceSHA256": "13e3598f5ee7e52acb191822652e3a8df608c63315de43f4b152e62db66d66ff",
+          "maxSampleRSSKiB": 183824,
+          "seconds": 0.5816450421698391
+        },
+        {
+          "unit": "A14-3",
+          "passed": false,
+          "fresh": true,
+          "exit": 1,
+          "interrupted": false,
+          "sourceSHA256": "6975debf5da95044978eeadbab5506c64c63bbd138ecb9c1b534ff9ea5c45e4b",
+          "maxSampleRSSKiB": 244224,
+          "seconds": 1.450873457826674
+        }
+      ]
+    },
+    {
+      "unit": "A15",
+      "status": "unrestricted native availability trail pair ONLY; REPL [3]/[3] diagnostic, data-agreement proof OPEN",
+      "declarations": [
+        "ordinalFixtureTrails"
+      ],
+      "commit": "e23d387d12be676017d5f586da0c4c431a565215",
+      "attempts": [
+        {
+          "unit": "A15-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "interrupted": false,
+          "sourceSHA256": "935b1b4fb524980bca18c1bc9f2e9de892423dbaf356f32d1105cb672b88c090",
+          "maxSampleRSSKiB": 274128,
+          "seconds": 0.8651784583926201
+        }
+      ]
+    },
+    {
+      "unit": "A16",
+      "status": "NOT ATTEMPTED; one-slot old-scan agreement cannot close remaining chain; no cap extension",
+      "declarations": [],
+      "commit": null,
+      "attempts": []
+    },
+    {
+      "unit": "B1",
+      "status": "checked total definition/proof; exact native scope/quantity in source",
+      "declarations": [
+        "contiguityOriginalFirst"
+      ],
+      "commit": "56b61fedacfb1b6f400f0a9cf51998ee476a0a6b",
+      "attempts": [
+        {
+          "unit": "B1-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "interrupted": false,
+          "sourceSHA256": "e96d52c77c7ab3d3c921d589aff3bbc27f55dcc74cfcd9879227c6e5a53a6093",
+          "maxSampleRSSKiB": 278528,
+          "seconds": 1.1716510420665145
+        }
+      ]
+    },
+    {
+      "unit": "B2",
+      "status": "checked total definition/proof; exact native scope/quantity in source",
+      "declarations": [
+        "contiguityOriginalLast"
+      ],
+      "commit": "a4fabf6028c7e3407acc7542d2548b76c628e8de",
+      "attempts": [
+        {
+          "unit": "B2-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "interrupted": false,
+          "sourceSHA256": "53569c687e50ef7c816eddf58a4537e4af8e4fd2b18333174bcc462f3feaabfa",
+          "maxSampleRSSKiB": 275376,
+          "seconds": 1.450715667102486
+        }
+      ]
+    },
+    {
+      "unit": "B3",
+      "status": "NOT LAUNCHED this shift; inherited L2R8 third/final attempt unspent because split producer missing",
+      "declarations": [],
+      "commit": null,
+      "attempts": []
+    },
+    {
+      "unit": "B4",
+      "status": "STOP3/3; full revert; no restatement",
+      "declarations": [],
+      "commit": null,
+      "attempts": [
+        {
+          "unit": "B4-1",
+          "passed": false,
+          "fresh": false,
+          "exit": -15,
+          "interrupted": true,
+          "sourceSHA256": "31970ea74f750e67518b88b8cc22a30311c2d5f5cc7162d9cfc9f999b3d212ab",
+          "maxSampleRSSKiB": 18963024,
+          "seconds": 58.81538625014946
+        },
+        {
+          "unit": "B4-2",
+          "passed": false,
+          "fresh": false,
+          "exit": -15,
+          "interrupted": true,
+          "sourceSHA256": "ee22bf0e2d48c1d4c5a525d98be7df48323389ef7ad44fc0b0fbf4335c835e09",
+          "maxSampleRSSKiB": 15800928,
+          "seconds": 94.08935779239982
+        },
+        {
+          "unit": "B4-3",
+          "passed": false,
+          "fresh": false,
+          "exit": -15,
+          "interrupted": true,
+          "sourceSHA256": "7fbeb4b83a082fab7e4f305955de7089e17803f1cb1db93aa3ad6fb425e7ad5d",
+          "maxSampleRSSKiB": 18951360,
+          "seconds": 146.68126383284107
+        }
+      ]
+    },
+    {
+      "unit": "B5",
+      "status": "checked total definition/proof; exact native scope/quantity in source",
+      "declarations": [
+        "contiguityRestoredFirst"
+      ],
+      "commit": "788e27f576e1c83b697f27c5166e41fee73882dd",
+      "attempts": [
+        {
+          "unit": "B5-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "interrupted": false,
+          "sourceSHA256": "ca7ea8c34aaa78cc9c36530451f8d94e64f18c227e6531e06cbc1e66944fc76a",
+          "maxSampleRSSKiB": 268384,
+          "seconds": 2.9300460000522435
+        }
+      ]
+    },
+    {
+      "unit": "B6",
+      "status": "checked total definition/proof; exact native scope/quantity in source",
+      "declarations": [
+        "contiguityRestoredLast"
+      ],
+      "commit": "85c665de6eff6fa7b20544a95de6e6077ab73cc8",
+      "attempts": [
+        {
+          "unit": "B6-1",
+          "passed": false,
+          "fresh": false,
+          "exit": -15,
+          "interrupted": true,
+          "sourceSHA256": "1b0a9eb9798bc8ffc777e1408f77a2764064b093bb99d9ad8f8079d294eddb6e",
+          "maxSampleRSSKiB": 334944,
+          "seconds": 254.44803337473422
+        },
+        {
+          "unit": "B6-2",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "interrupted": false,
+          "sourceSHA256": "1d3a3398f85884537ab3d8983e844f71add7dab50f56ac58d21dcf15be3383d9",
+          "maxSampleRSSKiB": 268464,
+          "seconds": 3.5149701670743525
+        }
+      ]
+    },
+    {
+      "unit": "B7",
+      "status": "native original/restored and split-state-recipe snapshots equal; split execution/restoration OPEN",
+      "declarations": [
+        "contiguityEndpoints"
+      ],
+      "commit": "4046363f3c5f9621f32125a81dceb0473257ebf7",
+      "attempts": [
+        {
+          "unit": "B7-1",
+          "passed": false,
+          "fresh": true,
+          "exit": 1,
+          "interrupted": false,
+          "sourceSHA256": "c721c8fc143329b8c04d2f732239ca223c85ea35ccfc3b8b11f114a99be9f7fb",
+          "maxSampleRSSKiB": 0,
+          "seconds": 0.2989983749575913
+        },
+        {
+          "unit": "B7-2",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "interrupted": false,
+          "sourceSHA256": "f94c9de1dcce2c4c04820f9f7c81c18a4df51312ad258bf6abd5a5889b7e4080",
+          "maxSampleRSSKiB": 203680,
+          "seconds": 0.5840023751370609
+        }
+      ]
+    },
+    {
+      "unit": "B8",
+      "status": "TYPE ONLY; producer/fixture OPEN",
+      "declarations": [
+        "SplitPathPacket"
+      ],
+      "commit": "2ec8188338fe750e0945e9e019efb081e005af66",
+      "attempts": [
+        {
+          "unit": "B8-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "interrupted": false,
+          "sourceSHA256": "ba2c4f8672dbf2594e25b8ff01e4ba4cf39c8e780e5a57eb738347516fd02309",
+          "maxSampleRSSKiB": 297696,
+          "seconds": 0.8803534996695817
+        }
+      ]
+    },
+    {
+      "unit": "B9",
+      "status": "checked data/record/family; producer separately listed",
+      "declarations": [
+        "RestoredFirstPacket"
+      ],
+      "commit": "3de54eff40c41bad60e7fb901730bea4b3e69bea",
+      "attempts": [
+        {
+          "unit": "B9-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "interrupted": false,
+          "sourceSHA256": "e98896880ddab8fe44ce56693a02153d5e6027914a5a1dd99c4517a733794206",
+          "maxSampleRSSKiB": 282272,
+          "seconds": 0.8702892907895148
+        }
+      ]
+    },
+    {
+      "unit": "B10",
+      "status": "checked data/record/family; producer separately listed",
+      "declarations": [
+        "RestoredLastPacket"
+      ],
+      "commit": "48e62c7ab4165052b9e5a6e317278a9f1a658e4b",
+      "attempts": [
+        {
+          "unit": "B10-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "interrupted": false,
+          "sourceSHA256": "513259c37832729cc05f086f23e34be46d6de4a945be828f037f9fcb179e672b",
+          "maxSampleRSSKiB": 275792,
+          "seconds": 2.9286746247671545
+        }
+      ]
+    },
+    {
+      "unit": "B11",
+      "status": "TYPE ONLY; producer/fixture OPEN",
+      "declarations": [
+        "CoreRestorationFixture"
+      ],
+      "commit": "3e8c5109a8aa53ced0795d24a6ec3a22d92620c9",
+      "attempts": [
+        {
+          "unit": "B11-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "interrupted": false,
+          "sourceSHA256": "aaebbe466879b6412fee61580940e00250da2c6b0ca0a8c671f611a35c80b83b",
+          "maxSampleRSSKiB": 297328,
+          "seconds": 2.0456887087784708
+        }
+      ]
+    },
+    {
+      "unit": "B12",
+      "status": "STOP3/3; full revert; no restatement",
+      "declarations": [],
+      "commit": null,
+      "attempts": [
+        {
+          "unit": "B12-1",
+          "passed": false,
+          "fresh": false,
+          "exit": -15,
+          "interrupted": true,
+          "sourceSHA256": "48c08ec7b8b50aabf44f1057592a7f59e44587019645dcc0d839d8d38366d662",
+          "maxSampleRSSKiB": 438192,
+          "seconds": 265.3613238329999
+        },
+        {
+          "unit": "B12-2",
+          "passed": false,
+          "fresh": false,
+          "exit": -15,
+          "interrupted": true,
+          "sourceSHA256": "72baeb9acb4c077d14d07e6547539aa3cd9449ef0407f727d4a039dba1d0e757",
+          "maxSampleRSSKiB": 439072,
+          "seconds": 407.48500820901245
+        },
+        {
+          "unit": "B12-3",
+          "passed": false,
+          "fresh": false,
+          "exit": -15,
+          "interrupted": true,
+          "sourceSHA256": "061f1274d81b2ca7232a17817548e38be417834b02da29154a5ad505ff9b6126",
+          "maxSampleRSSKiB": 444176,
+          "seconds": 263.9220743337646
+        }
+      ]
+    },
+    {
+      "unit": "C1",
+      "status": "checked data/record/family; producer separately listed",
+      "declarations": [
+        "ControlClass"
+      ],
+      "commit": "0c5b71326e452575aebb96883ee1a1eb2ad81eb0",
+      "attempts": [
+        {
+          "unit": "C1-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "interrupted": false,
+          "sourceSHA256": "29c96f0e2c60aa8c713466e10ac416124b05e2fd70d930ef91ee94485f2bbfde",
+          "maxSampleRSSKiB": 197648,
+          "seconds": 0.5808909996412694
+        }
+      ]
+    },
+    {
+      "unit": "C2",
+      "status": "checked total definition/proof; exact native scope/quantity in source",
+      "declarations": [
+        "controlAtDifference"
+      ],
+      "commit": "eadc2da29a0e89c71fc14cd6d0ded02b5b359938",
+      "attempts": [
+        {
+          "unit": "C2-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "interrupted": false,
+          "sourceSHA256": "e00aa52aa41a6469d4dfe854601ce096e3a29b753b9b7b4e4614741a2aaadabc",
+          "maxSampleRSSKiB": 274272,
+          "seconds": 0.8703020419925451
+        }
+      ]
+    },
+    {
+      "unit": "C3",
+      "status": "checked total definition/proof; exact native scope/quantity in source",
+      "declarations": [
+        "controlAtParent"
+      ],
+      "commit": "af4e41161018adeec956a7ff57b10fa3ac8f0a82",
+      "attempts": [
+        {
+          "unit": "C3-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "interrupted": false,
+          "sourceSHA256": "9671981bdd82e7185b00bf49dd3314cd7a7442b3bb31003c5bb08540e495f47d",
+          "maxSampleRSSKiB": 280752,
+          "seconds": 0.8577369167469442
+        }
+      ]
+    },
+    {
+      "unit": "C4",
+      "status": "checked total definition/proof; exact native scope/quantity in source",
+      "declarations": [
+        "controlAtLookup"
+      ],
+      "commit": "a4fae02e37b1c033f45144bcb5fc122f1588b7f2",
+      "attempts": [
+        {
+          "unit": "C4-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "interrupted": false,
+          "sourceSHA256": "ae367c28168b895c4309a05b39b872cc3b3d6958413020dde8e2ac961ec497aa",
+          "maxSampleRSSKiB": 278992,
+          "seconds": 0.8491162080317736
+        }
+      ]
+    },
+    {
+      "unit": "C5",
+      "status": "checked data/record/family; producer separately listed",
+      "declarations": [
+        "PredecessorClass"
+      ],
+      "commit": "572c1e1448eafab2c755a54d983b124697f6d2f9",
+      "attempts": [
+        {
+          "unit": "C5-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "interrupted": false,
+          "sourceSHA256": "d16ee94e2c086ef4276521435ed2c30db628989387b7ad34e421e077f1a7ef45",
+          "maxSampleRSSKiB": 204336,
+          "seconds": 0.5822919998317957
+        }
+      ]
+    },
+    {
+      "unit": "C6",
+      "status": "checked total definition/proof; exact native scope/quantity in source",
+      "declarations": [
+        "lifecycleAtDifference"
+      ],
+      "commit": "298318a10085f9c231b8872a71b01429151332fb",
+      "attempts": [
+        {
+          "unit": "C6-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "interrupted": false,
+          "sourceSHA256": "f066dfca8850c76579f954d612a8f6fe58ac7a87d0e80dcecfc2c6987bdcde47",
+          "maxSampleRSSKiB": 204368,
+          "seconds": 0.5742858750745654
+        }
+      ]
+    },
+    {
+      "unit": "C7",
+      "status": "checked total definition/proof; exact native scope/quantity in source",
+      "declarations": [
+        "insertAtDifference"
+      ],
+      "commit": "6f5ba13943d677c13946ebf4f567c8da7291f1e9",
+      "attempts": [
+        {
+          "unit": "C7-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "interrupted": false,
+          "sourceSHA256": "aec0f4e996da8a8b9951d613c0d683dc5184c401f1f3f7b1b4d8c196f5859500",
+          "maxSampleRSSKiB": 281872,
+          "seconds": 0.8819515001960099
+        }
+      ]
+    },
+    {
+      "unit": "C8",
+      "status": "checked total definition/proof; exact native scope/quantity in source",
+      "declarations": [
+        "insertAtParent"
+      ],
+      "commit": "ad29421d0d6f5297829222993c80c57e6bfe20a8",
+      "attempts": [
+        {
+          "unit": "C8-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "interrupted": false,
+          "sourceSHA256": "6d95eb754e810f1e895f7335fc4e990f8583c90338357243dc29f786ee9ec911",
+          "maxSampleRSSKiB": 266832,
+          "seconds": 0.8687815833836794
+        }
+      ]
+    },
+    {
+      "unit": "C9",
+      "status": "GENERAL actual source/action observation sum; selected-native local/missing exclusion and move production OPEN",
+      "declarations": [
+        "classifyPredecessor"
+      ],
+      "commit": "0544f6b395ab9e559d7968ca43f7ef33c5c317f6",
+      "attempts": [
+        {
+          "unit": "C9-1",
+          "passed": false,
+          "fresh": true,
+          "exit": 1,
+          "interrupted": false,
+          "sourceSHA256": "0e809c69aab0ea9b9098e0e18adc5f0e01a705a1354431cf5d81550c5dcc649d",
+          "maxSampleRSSKiB": 198320,
+          "seconds": 0.5769218327477574
+        },
+        {
+          "unit": "C9-2",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "interrupted": false,
+          "sourceSHA256": "2224abc2ccb764f3ba7578e33251c07875d21099844736633401928bf16a84fa",
+          "maxSampleRSSKiB": 261632,
+          "seconds": 0.8820618339814246
+        }
+      ]
+    },
+    {
+      "unit": "C10",
+      "status": "checked data/record/family; producer separately listed",
+      "declarations": [
+        "NativeDistanceSelection"
+      ],
+      "commit": "a546d66f152c93111b69f6dabb4e36ff1475f0c1",
+      "attempts": [
+        {
+          "unit": "C10-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "interrupted": false,
+          "sourceSHA256": "71ecdc95d088fa392d73e3c8168eede6629cac05fbc732a18d3bb98184a75133",
+          "maxSampleRSSKiB": 301184,
+          "seconds": 0.8833982502110302
+        }
+      ]
+    },
+    {
+      "unit": "C11",
+      "status": "GENERAL actual native-catalog first-positive observation/positive-total decoder + authentic native-birth decoder",
+      "declarations": [
+        "selectNativeDistanceRoot"
+      ],
+      "commit": "dddb9483fb58a8073be9ce30ddd11acf26014192",
+      "attempts": [
+        {
+          "unit": "C11-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "interrupted": false,
+          "sourceSHA256": "50dac868447dbf171af580759be250289d9febc4a59a06adf3a7ab8f2b487774",
+          "maxSampleRSSKiB": 301824,
+          "seconds": 0.8727794587612152
+        }
+      ]
+    },
+    {
+      "unit": "C12",
+      "status": "LOCAL exact head-guard contradiction only; whole accepted-scan extraction OPEN",
+      "declarations": [
+        "rootControlHeadExcluded"
+      ],
+      "commit": "c0b8c4b6bc87dc0ecfec07c20e8669496179b209",
+      "attempts": [
+        {
+          "unit": "C12-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "interrupted": false,
+          "sourceSHA256": "44339281d55c8f0ce34f9c01a406d1a7efe9c6602dedcab9048d0c12236966ec",
+          "maxSampleRSSKiB": 1233824,
+          "seconds": 1.155697416048497
+        }
+      ]
+    },
+    {
+      "unit": "C13",
+      "status": "GENERAL observed conditional-distance/floor arithmetic; no floor producer",
+      "declarations": [
+        "positiveFloorAtGuard"
+      ],
+      "commit": "83c79e4d07fc7c8dbb852afa5f2f40553db16922",
+      "attempts": [
+        {
+          "unit": "C13-1",
+          "passed": false,
+          "fresh": true,
+          "exit": 1,
+          "interrupted": false,
+          "sourceSHA256": "8dbbb0897484989ae9150a39d012f0f4b00e7f7d4338380a39d2abed61c9b7ac",
+          "maxSampleRSSKiB": 192816,
+          "seconds": 0.5867679580114782
+        },
+        {
+          "unit": "C13-2",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "interrupted": false,
+          "sourceSHA256": "a79d070d78f1e0ccfd214e54e7bffac04452df5f9a88d1d30a509097bf2a92e1",
+          "maxSampleRSSKiB": 889152,
+          "seconds": 0.8743885830044746
+        }
+      ]
+    },
+    {
+      "unit": "C14",
+      "status": "native adjacent root-birth exclusion UNDER numeric externalFloor and stated Front/Never/phase domain",
+      "declarations": [
+        "rootBirthPredecessorExcluded"
+      ],
+      "commit": "f55de2ea8b8bbb8afa14782424b1df11bcaceb9f",
+      "attempts": [
+        {
+          "unit": "C14-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "interrupted": false,
+          "sourceSHA256": "abe1e48438b86f12bc8db3f1f7ce77f6b642837353b1fb052339b3e0c0127e25",
+          "maxSampleRSSKiB": 1305200,
+          "seconds": 1.1572628747671843
+        }
+      ]
+    },
+    {
+      "unit": "D1",
+      "status": "checked data/record/family; producer separately listed",
+      "declarations": [
+        "LaneProviderHeadObserved"
+      ],
+      "commit": "b06a81ffa6ecae289792c0c288d941c27635b156",
+      "attempts": [
+        {
+          "unit": "D1-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "interrupted": false,
+          "sourceSHA256": "d36c5fd2c3ab2d61d6f6d501fc09aa36dcf7c308f212cba233d08d5eef583893",
+          "maxSampleRSSKiB": 192304,
+          "seconds": 0.5765814580954611
+        }
+      ]
+    },
+    {
+      "unit": "D2",
+      "status": "checked total definition/proof; exact native scope/quantity in source",
+      "declarations": [
+        "laneHeadAtGuard"
+      ],
+      "commit": "0b73cb9b789e4282932734f2201705ac30f2cccf",
+      "attempts": [
+        {
+          "unit": "D2-1",
+          "passed": false,
+          "fresh": true,
+          "exit": 1,
+          "interrupted": false,
+          "sourceSHA256": "7cf11ae97ae7e71cf10d22ddc4be23d61d848db2af21ab94e4fdcc388bfb6c40",
+          "maxSampleRSSKiB": 224032,
+          "seconds": 1.1605984158813953
+        },
+        {
+          "unit": "D2-2",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "interrupted": false,
+          "sourceSHA256": "962cf19076f75228043841d98c1b6eba3af6719570c4a92e34200e5cdd96b7f8",
+          "maxSampleRSSKiB": 183888,
+          "seconds": 0.5818044999614358
+        }
+      ]
+    },
+    {
+      "unit": "D3",
+      "status": "checked total definition/proof; exact native scope/quantity in source",
+      "declarations": [
+        "laneProviderHeadObserved"
+      ],
+      "commit": "58375d49106325681111d83ba56d6b1d20da630b",
+      "attempts": [
+        {
+          "unit": "D3-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "interrupted": false,
+          "sourceSHA256": "7c7ec35cba2e411be8aa81f0cf742cbcb182a56e846cd6c9a1466abe249f4210",
+          "maxSampleRSSKiB": 183792,
+          "seconds": 0.5873670000582933
+        }
+      ]
+    },
+    {
+      "unit": "D4",
+      "status": "GENERIC conditional equality lemma; D5-1 native splice failed, working adapter uses D6 instead",
+      "declarations": [
+        "laneNativeAtBool"
+      ],
+      "commit": "a16d38902dc0404f938095050341072aefddc86b",
+      "attempts": [
+        {
+          "unit": "D4-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "interrupted": false,
+          "sourceSHA256": "1d39ab463b833021df538febeb7112366e81710fa88e1cb85bbadf48983320d0",
+          "maxSampleRSSKiB": 184064,
+          "seconds": 0.5878361249342561
+        }
+      ]
+    },
+    {
+      "unit": "D5",
+      "status": "GENERAL native head equality FROM actual observed record, no projected/recreated if type",
+      "declarations": [
+        "laneProviderHeadSame"
+      ],
+      "commit": "61972e018a8c709936e7fa4b57bf0928df77cc1f",
+      "attempts": [
+        {
+          "unit": "D5-1",
+          "passed": false,
+          "fresh": true,
+          "exit": 1,
+          "interrupted": false,
+          "sourceSHA256": "7aa2ad507aa2969f1d7c41819c3addbeb5d7687feeae2d75a6c15df80889b664",
+          "maxSampleRSSKiB": 183856,
+          "seconds": 0.5797948748804629
+        },
+        {
+          "unit": "D5-2",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "interrupted": false,
+          "sourceSHA256": "77423f6231bdb2d0dcca855f286323961fd0ba207d7ff1268641ebbb150f8d5d",
+          "maxSampleRSSKiB": 233232,
+          "seconds": 0.8795767920091748
+        }
+      ]
+    },
+    {
+      "unit": "D6",
+      "status": "checked total definition/proof; exact native scope/quantity in source",
+      "declarations": [
+        "laneObservedBoolEliminate"
+      ],
+      "commit": "a1cb1343027e409ff69038ea36c95b6898828b3d",
+      "attempts": [
+        {
+          "unit": "D6-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "interrupted": false,
+          "sourceSHA256": "f1b7279919f89d2c15a11d33716a8ac32f70567a899369316d0b048b96c3028a",
+          "maxSampleRSSKiB": 183952,
+          "seconds": 0.5877580419182777
+        }
+      ]
+    },
+    {
+      "unit": "D7",
+      "status": "checked total definition/proof; exact native scope/quantity in source",
+      "declarations": [
+        "providerRetirementAtName"
+      ],
+      "commit": "a9bab9d4d9aea8013214331bf77f6a738a6f836f",
+      "attempts": [
+        {
+          "unit": "D7-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "interrupted": false,
+          "sourceSHA256": "580e16ff6e7f3d72773296df5e7389f5bac4895cc6263bdd645c1c23e36709bb",
+          "maxSampleRSSKiB": 297680,
+          "seconds": 0.884701875038445
+        }
+      ]
+    },
+    {
+      "unit": "D8",
+      "status": "checked total definition/proof; exact native scope/quantity in source",
+      "declarations": [
+        "providerRetirementAtHead"
+      ],
+      "commit": "fd28b20e2ebc32f8ffe41f1b2a60a2d31ba1d2d6",
+      "attempts": [
+        {
+          "unit": "D8-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "interrupted": false,
+          "sourceSHA256": "be6b3473fdcd785d7ec7983accd050be78ee144d8a54b20f01b1aac222e73ab4",
+          "maxSampleRSSKiB": 278544,
+          "seconds": 0.881504625082016
+        }
+      ]
+    },
+    {
+      "unit": "D9",
+      "status": "GENERAL exact native provider invariance for an actually installed retirement",
+      "declarations": [
+        "providerRetirementEntries"
+      ],
+      "commit": "92bb13de800b864b34e8bde33ec7b14bd62b196d",
+      "attempts": [
+        {
+          "unit": "D9-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "interrupted": false,
+          "sourceSHA256": "e54c2988ddfe1b777be139944bbadbb7d519105b861a2ebe1c4af28a8aa80a7a",
+          "maxSampleRSSKiB": 294592,
+          "seconds": 0.8776714168488979
+        }
+      ]
+    },
+    {
+      "unit": "D10",
+      "status": "checked total definition/proof; exact native scope/quantity in source",
+      "declarations": [
+        "resolveAtObservedProvider"
+      ],
+      "commit": "5fa4506b2c6f16c4f28362b808764ddc8cb30a57",
+      "attempts": [
+        {
+          "unit": "D10-1",
+          "passed": false,
+          "fresh": true,
+          "exit": 1,
+          "interrupted": false,
+          "sourceSHA256": "6fb20c92b720e0e46e68c2d42848cd3a180b4da130d3865acc5ec8d8d1899a68",
+          "maxSampleRSSKiB": 208976,
+          "seconds": 0.5928693749010563
+        },
+        {
+          "unit": "D10-2",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "interrupted": false,
+          "sourceSHA256": "510a4efd68bea72a5e741257cd150d4b6e475f6664882536868b7a0b0783042b",
+          "maxSampleRSSKiB": 220288,
+          "seconds": 0.5805652923882008
+        }
+      ]
+    },
+    {
+      "unit": "D11",
+      "status": "GENERAL exact native resolver invariance for an actually installed retirement",
+      "declarations": [
+        "resolveRetirementEntries"
+      ],
+      "commit": "04cb909381653bf1327b6ebe45125d55128ef6d2",
+      "attempts": [
+        {
+          "unit": "D11-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "interrupted": false,
+          "sourceSHA256": "6e0c22f88ff72a2362615c0e1d0ab5db748df077a7ca393ea7bf3a73275dd578",
+          "maxSampleRSSKiB": 277168,
+          "seconds": 0.8778039161115885
+        }
+      ]
+    },
+    {
+      "unit": "D12",
+      "status": "GENERAL primitive AND observed resolver equality from actual RetirementProviderFrame; replay OPEN",
+      "declarations": [
+        "retirementFrameResolverSame"
+      ],
+      "commit": "e3a0000c4b2ffb8ee93ee6214eecb7fc4ccf0d3e",
+      "attempts": [
+        {
+          "unit": "D12-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "interrupted": false,
+          "sourceSHA256": "744b5e612c14c511cb57f1870ec1b43c1c2df80dc21bf7a7d5a87d9e6df4116e",
+          "maxSampleRSSKiB": 295872,
+          "seconds": 0.8843138329684734
+        }
+      ]
+    },
+    {
+      "unit": "D13",
+      "status": "TYPE ONLY; producer/fixture OPEN",
+      "declarations": [
+        "NativeLifecycleRetirementRole"
+      ],
+      "commit": "6dbfd2360319a95ed9bb868485851d554ad0f910",
+      "attempts": [
+        {
+          "unit": "D13-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "interrupted": false,
+          "sourceSHA256": "fed18eebf2a88619ba82ae99fcb64f13442b6891c98847b85abfd8a886f45d76",
+          "maxSampleRSSKiB": 271072,
+          "seconds": 0.8800350418314338
+        }
+      ]
+    },
+    {
+      "unit": "D14",
+      "status": "CAP STOP after2/3; third UNUSED; full revert; TYPE ONLY",
+      "declarations": [],
+      "commit": null,
+      "attempts": [
+        {
+          "unit": "D14-1",
+          "passed": false,
+          "fresh": true,
+          "exit": 1,
+          "interrupted": false,
+          "sourceSHA256": "fb33eeb043cf2bedb74ca772618c3f0e4d92910a387853b7404d456ca3ee9177",
+          "maxSampleRSSKiB": 214432,
+          "seconds": 0.585673667024821
+        },
+        {
+          "unit": "D14-2",
+          "passed": false,
+          "fresh": true,
+          "exit": 1,
+          "interrupted": false,
+          "sourceSHA256": "e8f156fe52c29a4ee8ba6b27199158c5590b8fe5c5e1ba2b57e688c0c6acd625",
+          "maxSampleRSSKiB": 172112,
+          "seconds": 0.5846451660618186
+        }
+      ]
+    }
+  ]
+}
