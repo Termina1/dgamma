@@ -110,3 +110,43 @@ o20RootMatchSkipLeft {name} {key} {world} {error} {value} mapping leftOrdinal ri
   replace {p = \ordinal => O20RootBirthMatch name key world error value mapping
     root component ordinal rightOrdinal right}
     (plusSuccRightSucc leftOrdinal position) (recurse position observed)
+
+||| Internal Nat eliminator at matched root heads. The head uses the stored
+||| external-root equation; the tail extends the same recursive right birth.
+export
+0 o20RootMatchMatchedLeft :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (mapping : RegistrationGenerationBijection name) ->
+  (leftOrdinal, rightOrdinal : Nat) ->
+  {leftFirst, leftMiddle, leftFinal, rightFirst, rightMiddle, rightFinal : SystemState name key value world error} ->
+  (leftStep : Transition leftFirst leftMiddle) -> (leftRest : Transitions leftMiddle leftFinal) ->
+  (rightStep : Transition rightFirst rightMiddle) -> (rightRest : Transitions rightMiddle rightFinal) ->
+  (actual : name) -> (actualComponent : Component key value world error) ->
+  (transitionAction leftStep = OInsert actual Root actualComponent) ->
+  (transitionAction rightStep = OInsert actual Root actualComponent) ->
+  (generationForward mapping (MkRegistrationGeneration actual leftOrdinal) =
+    MkRegistrationGeneration actual rightOrdinal) ->
+  (root : name) -> (component : Component key value world error) ->
+  ((position : Nat) ->
+    (rawClosingActionAt name key world error value position leftRest = Just (OInsert root Root component)) ->
+    O20RootBirthMatch name key world error value mapping root component
+      ((S leftOrdinal) + position) (S rightOrdinal) rightRest) ->
+  (position : Nat) ->
+  (rawClosingActionAt name key world error value position (MoreTransitions leftStep leftRest) =
+    Just (OInsert root Root component)) ->
+  O20RootBirthMatch name key world error value mapping root component
+    (leftOrdinal + position) rightOrdinal (MoreTransitions rightStep rightRest)
+o20RootMatchMatchedLeft {name} {key} {world} {error} {value} mapping leftOrdinal rightOrdinal
+  leftStep leftRest rightStep rightRest actual actualComponent leftExact rightExact matched
+  root component recurse Z observed =
+  o20RootMatchHead mapping actual root actualComponent component leftOrdinal rightOrdinal
+    rightStep rightRest rightExact
+    (trans (sym leftExact) (coveredHeadActionObserved name key world error value
+      leftStep leftRest (OInsert root Root component) observed)) matched
+o20RootMatchMatchedLeft {name} {key} {world} {error} {value} mapping leftOrdinal rightOrdinal
+  leftStep leftRest rightStep rightRest actual actualComponent leftExact rightExact matched
+  root component recurse (S position) observed =
+  replace {p = \ordinal => O20RootBirthMatch name key world error value mapping
+    root component ordinal rightOrdinal (MoreTransitions rightStep rightRest)}
+    (plusSuccRightSucc leftOrdinal position)
+    (o20RootMatchPrepend rightOrdinal rightStep rightRest (recurse position observed))
