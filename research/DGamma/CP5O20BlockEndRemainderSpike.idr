@@ -190,3 +190,20 @@ o20NoLifecycleActiveAtOwnerDecision {name} {key} {value} {world} {error}
       (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected (registry before)) Refl
       (systemLocalUpdateForeign nameEq selected (actionOwner action) distinct before afterState
         (applyActionLocalUpdate nameEq keyEq action before afterState tag raw))) active
+
+||| A native checked step with no selected lifecycle reflects Active backwards.
+||| The library owner decision is made exactly once with its own equation.
+export
+0 o20NoLifecycleActiveBackward :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (action : Action name key value world error) ->
+  (before, afterState : SystemState name key value world error) -> (tag : RuleTag) ->
+  (checkedApplyAction {name} {key} {value} {world} {error} @{nameEq} @{keyEq} action before = Just (tag, afterState)) ->
+  ((isLifecycleAction action = True) -> (actionOwner action = selected) -> Void) ->
+  (supportedActiveAt {name} {key} {value} {world} {error} @{nameEq} selected afterState = True) ->
+  (supportedActiveAt {name} {key} {value} {world} {error} @{nameEq} selected before = True)
+o20NoLifecycleActiveBackward nameEq keyEq selected action before afterState tag checked excluded active =
+  o20NoLifecycleActiveAtOwnerDecision nameEq keyEq selected action before afterState tag
+    (checkedActionProjects nameEq keyEq action before afterState tag checked) excluded
+    (decEq @{nameEq} selected (actionOwner action)) Refl active
