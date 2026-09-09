@@ -143,3 +143,21 @@ targets.111 inherited unclassified/legacy entries are NOT rechecked. Full
 202-invocation and micro-unit ledgers retain A3 exhaustion and A20's genuine
 PASS/whitespace-guard refusal. No artifact replacement, source/native change,
 clock extension or independent human review claim. D3/4; final gate/D4 remains.
+
+
+## R198 owner FINAL gate — D4 clean close
+
+Owner ACCEPTED checked PARTIAL atbe6addfb and authorized D4 artifact-only close;
+owner reports pushingbe6addfb. Verbatim ruling:
+`research-tests/O6-R198-OWNER-FINAL-GATE.md`. Post-D3 independent machine audit
+PASS authenticates202 native records,41 source +6 artifact receipts,151 final
+checks; full1042-file archive verification PASS; tracked tree clean, baseline
+untracked only, no staged files/main compiler/lock, unchanged frozen census
+4=1/2/0/0/1 and production. D4 itself is outside those prior receipt/anchor counts.
+
+A synchronization/coverage/exchange producer and B present-vestigial/current-
+image all-name rebase remain OPEN; C0, no D5 bridge/retry. All41 retained source
+declarations are within the parent's read-only review scope ≤be6addfb. Human
+review is being launched by the parent, NOT claimed finished. D4 adds no source,
+native invocation, new proof claim, archive rewrite or clock extension. D4/4;
+stand down cleanly. Any further proof work requires a separate owner task.
