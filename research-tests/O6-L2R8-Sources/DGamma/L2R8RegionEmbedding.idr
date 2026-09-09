@@ -26,3 +26,19 @@ prependOccurrence beforeRegion region occurrence = MkLocatedActionOccurrence
   (trans (appendTransitionsAssociative beforeRegion (beforeActionOccurrence occurrence)
     (MoreTransitions (locatedTransition occurrence) (afterActionOccurrence occurrence)))
     (cong (appendTransitions beforeRegion) (actionOccurrenceDecomposition occurrence)))
+
+||| GENERAL suffix extension preserving the very same occurrence source and
+||| step. Only the after-occurrence trail changes; no replay theorem is used.
+export
+0 extendOccurrence : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  {action : Action name key value world error} ->
+  (region : Transitions first middle) -> (afterRegion : Transitions middle finalState) ->
+  LocatedActionOccurrence action region -> LocatedActionOccurrence action (appendTransitions region afterRegion)
+extendOccurrence region afterRegion occurrence = MkLocatedActionOccurrence
+  (actionBeforeState occurrence) (actionAfterState occurrence) (beforeActionOccurrence occurrence)
+  (locatedTransition occurrence) (appendTransitions (afterActionOccurrence occurrence) afterRegion)
+  (locatedAction occurrence)
+  (trans (sym (appendTransitionsAssociative (beforeActionOccurrence occurrence)
+    (MoreTransitions (locatedTransition occurrence) (afterActionOccurrence occurrence)) afterRegion))
+    (cong (\trace => appendTransitions trace afterRegion) (actionOccurrenceDecomposition occurrence)))
