@@ -70,3 +70,19 @@ ordinalAtAction nameEq keyEq component source (LAdvance actor) = []
 ordinalAtAction nameEq keyEq component source (LDivert actor) = []
 ordinalAtAction nameEq keyEq component source (LUnload actor) = []
 ordinalAtAction nameEq keyEq component source (LLeave actor) = []
+
+||| Unrestricted executable release ORDINAL scan. The source/action come
+||| from the native availability trail. Relative ordinals are shifted through
+||| each head. This is a NEW omega definition, not the erased L2R8 scan.
+||| Agreement with the old Bool scan and phase production are separate debt.
+public export
+releaseOrdinalScan : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {0 first, finalState : SystemState name key value world error} ->
+  {0 trace : Transitions first finalState} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (component : Component key value world error) ->
+  AvailabilityTrace name key world error value trace -> List Nat
+releaseOrdinalScan nameEq keyEq component (AvailabilityEnd state) = []
+releaseOrdinalScan nameEq keyEq component (AvailabilityStep source (Fired ne ke action tag checked) rest later) =
+  ordinalAtAction nameEq keyEq component source action ++
+  map S (releaseOrdinalScan nameEq keyEq component later)
