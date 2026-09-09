@@ -40,3 +40,21 @@ o20LivePredicatePutAtDecision nameEq predicate actor newStamp live inserted prev
   selected stamp (No different) observed found =
     previous selected stamp
       (trans (sym (lookupPutCurrentOther nameEq selected actor different newStamp live)) found)
+
+||| Observe the ACTUAL library decider, then preserve a pointwise stamp
+||| predicate through the same native generation-environment put.
+export
+0 o20LivePredicatePut :
+  {name : Type} -> (nameEq : DecEq name) ->
+  (predicate : RegistrationGeneration name -> Type) ->
+  (actor : name) -> (newStamp : RegistrationGeneration name) ->
+  (live : GenerationEnvironment name) ->
+  predicate newStamp ->
+  ((selected : name) -> (stamp : RegistrationGeneration name) ->
+    (lookupCurrentGeneration @{nameEq} selected live = Just stamp) -> predicate stamp) ->
+  (selected : name) -> (stamp : RegistrationGeneration name) ->
+  (lookupCurrentGeneration @{nameEq} selected (putCurrentGeneration @{nameEq} actor newStamp live) = Just stamp) ->
+  predicate stamp
+o20LivePredicatePut nameEq predicate actor newStamp live inserted previous selected stamp found =
+  o20LivePredicatePutAtDecision nameEq predicate actor newStamp live inserted previous
+    selected stamp (decEq @{nameEq} selected actor) Refl found
