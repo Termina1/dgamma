@@ -63,3 +63,21 @@ o20IndexDiscardedAdvance name key world error value nameEq ordinal (LLeave actor
   (MkRegistrationIndexState live activations counts deleted) = Refl
 o20IndexDiscardedAdvance name key world error value nameEq ordinal (LUnload actor)
   (MkRegistrationIndexState live activations counts deleted) = Refl
+
+||| Observed surviving-Insert activation leaves discarded history unchanged.
+export
+0 o20SurvivingDiscardedObserved :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) ->
+  (ordinal : Nat) -> (child, parent : name) -> (component : Component key value world error) ->
+  (live : GenerationEnvironment name) ->
+  (activations : List (name, RegistrationActivation name)) ->
+  (counts : List (RegistrationActivation name, Nat)) -> (deleted : List (RegistrationGeneration name)) ->
+  (observed : Maybe (RegistrationActivation name)) ->
+  (lookupParentActivation @{nameEq} parent activations = observed) ->
+  (indexedDeletedGenerations (advanceSurvivingRegistrationIndex @{nameEq} ordinal child parent component
+    (MkRegistrationIndexState live activations counts deleted)) =
+    deleted)
+o20SurvivingDiscardedObserved name key world error value nameEq ordinal child parent component live activations counts deleted Nothing exact =
+  rewrite exact in Refl
+o20SurvivingDiscardedObserved name key world error value nameEq ordinal child parent component live activations counts deleted (Just activation) exact =
+  rewrite exact in Refl
