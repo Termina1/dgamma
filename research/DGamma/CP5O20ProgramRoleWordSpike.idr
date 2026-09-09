@@ -12,6 +12,7 @@ import DGamma.CP5ConfluenceLocalDiamondSpike
 import DGamma.CP5O20BeginObservationSpike
 import DGamma.CP5O20CanonicalActionCompletenessSpike
 import DGamma.CP5O19AdvanceObservationSpike
+import DGamma.CP5O19AdjacentReplayProducerSpike
 import DGamma.CP5O20NativeAdvanceAttachmentSpike
 import DGamma.CP5O20SingleRoleAdvanceExtractionSpike
 import DGamma.CP5O20PairedAdvanceSpike
@@ -401,3 +402,41 @@ o20YieldedInsertRoleFrame {name} {key} {value} {world} {error}
         (the (Transitions before before) NoTransitions) (InstalledEnd installed)))
       (presentFound (o20InstalledEndPresentLookup nameEq keyEq selected
         (the (Transitions before before) NoTransitions) (InstalledEnd installed)))
+
+||| Whole actual installed actor-body induction: its native lifecycle word
+||| followed by its ACTUAL endpoint remainder equals its source remainder.
+||| Each head is handled simultaneously with the certificates of that same
+||| native node. Lifecycle consumption and yielded-insert frames are produced
+||| internally; no successor word/equation or arbitrary skip is assumed.
+export
+0 o20ActorRoleWordInvariant :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  {first, finalState : SystemState name key value world error} ->
+  (trace : Transitions first finalState) ->
+  (actors : ActorLifecycleOnly selected trace) ->
+  O20CanonicalTraceRoles trace ->
+  InstalledTrace name key world error value nameEq keyEq selected trace ->
+  (o20FiberRoleRemainder
+    (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected (registry first)) =
+   o20ActorLifecycleRoleWord actors ++ o20FiberRoleRemainder
+    (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected (registry finalState)))
+o20ActorRoleWordInvariant nameEq keyEq selected _ ActorLifecycleEnd O20RolesEnd (InstalledEnd installed) = Refl
+o20ActorRoleWordInvariant {name} {key} {value} {world} {error} {first}
+  nameEq keyEq selected _ (ActorLifecycleStep _ _ lifecycle owner actorLater)
+  (O20RolesStep role roleLater)
+  (InstalledStep {middle} action tag checked rest installed installedLater) =
+    trans
+      (replace {p = \actor =>
+        (o20FiberRoleRemainder (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor (registry first)) =
+         tag :: o20FiberRoleRemainder (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor (registry middle)))}
+        (trans (sym (o19TransitionActorOwner (Fired {name} {key} {value} {world} {error}
+          {before = first} {afterState = middle} nameEq keyEq action tag checked))) owner)
+        (o20CanonicalLifecycleRoleConsumption nameEq keyEq first middle action tag checked role lifecycle))
+      (cong (tag ::) (o20ActorRoleWordInvariant nameEq keyEq selected rest actorLater roleLater installedLater))
+o20ActorRoleWordInvariant {first}
+  nameEq keyEq selected _ (ActorYieldedRegistrationStep {child} {childComponent} _ _ inserted actorLater)
+  (O20RolesStep role roleLater)
+  (InstalledStep {middle} action tag checked rest installed installedLater) =
+    trans (o20YieldedInsertRoleFrame nameEq keyEq selected child childComponent first middle action tag checked inserted installed)
+      (o20ActorRoleWordInvariant nameEq keyEq selected rest actorLater roleLater installedLater)
