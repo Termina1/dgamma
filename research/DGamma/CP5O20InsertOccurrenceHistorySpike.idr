@@ -164,3 +164,53 @@ o20LabelledInsertAtCheckedStates nameEq keyEq renaming actor component leftParen
       (foreignInsertPlanView nameEq keyEq actor leftParent component leftWorld leftRegistry
         leftTag leftAfter (checkedActionProjects nameEq keyEq (OInsert actor leftParent component)
           (MkSystemState leftWorld leftRegistry) leftAfter leftTag leftChecked))
+
+||| Bind the labelled native stage to TWO actual supplied-word Insert cuts.
+||| Both native dictionaries, input tags and source/target states are produced
+||| from those very occurrences and their whole-trace alignment.
+export
+0 o20LocatedLabelledInsertStage :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (renaming : NameBijection name) ->
+  {mapping : RegistrationGenerationBijection name} -> {leftLive, rightLive : GenerationEnvironment name} ->
+  {leftFirst, leftFinal, rightFirst, rightFinal : SystemState name key value world error} ->
+  (left : Transitions leftFirst leftFinal) -> (right : Transitions rightFirst rightFinal) ->
+  AlignedTransitions name key world error value nameEq keyEq left ->
+  AlignedTransitions name key world error value nameEq keyEq right ->
+  (actor : name) -> (component : Component key value world error) ->
+  (leftParent, rightParent : Parent name) -> ParentRelatedBy renaming leftParent rightParent ->
+  (leftBirth : LocatedActionOccurrence (OInsert actor leftParent component) left) ->
+  (rightBirth : LocatedActionOccurrence (OInsert (renameForward renaming actor) rightParent component) right) ->
+  (generationForward mapping (MkRegistrationGeneration actor (locatedActionOrdinal leftBirth)) =
+    MkRegistrationGeneration (renameForward renaming actor) (locatedActionOrdinal rightBirth)) ->
+  (stage : O20StampedStage name key world error value nameEq keyEq mapping renaming
+    (locatedActionOrdinal leftBirth) (locatedActionOrdinal rightBirth) leftLive rightLive
+    (putCurrentGeneration @{nameEq} actor (MkRegistrationGeneration actor (locatedActionOrdinal leftBirth)) leftLive)
+    (putCurrentGeneration @{nameEq} (renameForward renaming actor)
+      (MkRegistrationGeneration (renameForward renaming actor) (locatedActionOrdinal rightBirth)) rightLive)
+    (actionBeforeState leftBirth) (actionBeforeState rightBirth) (actionAfterState leftBirth) (actionAfterState rightBirth) **
+    (transitionAction (o20StampedLeftTransition stage) = OInsert actor leftParent component,
+     transitionAction (o20StampedRightTransition stage) = OInsert (renameForward renaming actor) rightParent component,
+     transitionTag (o20StampedLeftTransition stage) = transitionTag (locatedTransition leftBirth),
+     transitionTag (o20StampedRightTransition stage) = transitionTag (locatedTransition rightBirth)))
+o20LocatedLabelledInsertStage {name} {key} {world} {error} {value}
+  nameEq keyEq renaming left right leftAligned rightAligned actor component leftParent rightParent parents leftBirth rightBirth matched =
+    o20LabelledInsertAtCheckedStates nameEq keyEq renaming actor component leftParent rightParent parents
+      (actionBeforeState leftBirth) (actionBeforeState rightBirth)
+      (transitionTag (locatedTransition leftBirth)) (actionAfterState leftBirth)
+      (o20CheckedInsertFromActionEquation nameEq keyEq actor leftParent component (transitionAction (locatedTransition leftBirth))
+        (actionBeforeState leftBirth) (actionAfterState leftBirth) (transitionTag (locatedTransition leftBirth))
+        (o20AlignedPhysicalHeadChecked nameEq keyEq (locatedTransition leftBirth) (afterActionOccurrence leftBirth)
+          (snd (alignedAppendSplit (beforeActionOccurrence leftBirth)
+            (MoreTransitions (locatedTransition leftBirth) (afterActionOccurrence leftBirth))
+            (replace {p = AlignedTransitions name key world error value nameEq keyEq}
+              (sym (actionOccurrenceDecomposition leftBirth)) leftAligned)))) (locatedAction leftBirth))
+      (transitionTag (locatedTransition rightBirth)) (actionAfterState rightBirth)
+      (o20CheckedInsertFromActionEquation nameEq keyEq (renameForward renaming actor) rightParent component
+        (transitionAction (locatedTransition rightBirth)) (actionBeforeState rightBirth) (actionAfterState rightBirth)
+        (transitionTag (locatedTransition rightBirth))
+        (o20AlignedPhysicalHeadChecked nameEq keyEq (locatedTransition rightBirth) (afterActionOccurrence rightBirth)
+          (snd (alignedAppendSplit (beforeActionOccurrence rightBirth)
+            (MoreTransitions (locatedTransition rightBirth) (afterActionOccurrence rightBirth))
+            (replace {p = AlignedTransitions name key world error value nameEq keyEq}
+              (sym (actionOccurrenceDecomposition rightBirth)) rightAligned)))) (locatedAction rightBirth)) matched
