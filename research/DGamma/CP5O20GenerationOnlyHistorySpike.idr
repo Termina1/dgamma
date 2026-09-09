@@ -206,3 +206,19 @@ record O20GenerationOnlyHistory
     (selected, parent : name) -> (component : Component key value world error) ->
     (birth : LocatedGeneratedRegistration selected parent component left) ->
     O20GenerationOnlyDisposition name key world error value mapping left right (registrationGeneration birth)
+
+||| The accepted original scanners produce the WHOLE immutable birth history.
+||| This is occurrence coverage, not alignment of the two canonical words.
+export
+0 o20WholeOriginalGenerationHistory :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {leftFirst, leftFinal, rightFirst, rightFinal : SystemState name key value world error} ->
+  (left : Transitions leftFirst leftFinal) -> (right : Transitions rightFirst rightFinal) ->
+  (mapping : RegistrationGenerationBijection name) ->
+  (registrations : RegistrationCorrespondenceByGeneration nameEq mapping left right) ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq left ->
+  O20GenerationOnlyHistory name key world error value mapping left right
+o20WholeOriginalGenerationHistory nameEq keyEq left right mapping registrations unique =
+  MkO20GenerationOnlyHistory
+    (o20OriginalGenerationDisposition nameEq keyEq left right mapping registrations unique)
