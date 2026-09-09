@@ -1,0 +1,128 @@
+{
+  "status": "PASS",
+  "timestampUTC": "2026-09-09T13:01:44.704568+00:00",
+  "head": "223c805d8da54f0735e12b487d47b4fd4aef3dd6",
+  "invocations": 211,
+  "expectedPASS": 204,
+  "rejected": [
+    "A13-1",
+    "A15-1",
+    "A15-2",
+    "A21-1",
+    "A26-1",
+    "B6-1",
+    "B12-1"
+  ],
+  "sourceReceipts": 44,
+  "artifactReceipts": 2,
+  "finalCompleted": 158,
+  "finalTotal": 158,
+  "finalPlanSHA256": "cd367286435987976d77d3ce7b44eee67caa127ac5b6a915deaf206138678503",
+  "inheritedApplicableSources": 150,
+  "newSources": 7,
+  "sourceSnapshotsAuthenticated": true,
+  "sourceReceiptsAuthenticated": true,
+  "allSourceCommitsReceipted": true,
+  "oneDeclarationPerRetainedCommit": true,
+  "allPriorCommittedCodeLinesRetained": true,
+  "DDocumentationCommits": [
+    "R199 D1: freeze precise partial claims and complete 158-check evidence protocol"
+  ],
+  "allChangedSourcesChecked": true,
+  "allPlannedTargetImportsTopological": true,
+  "compilerOverlap": false,
+  "resourceStops": [],
+  "mutations": [],
+  "historicalHeavyLockAcquisitionAndReleaseAuthenticated": true,
+  "ownerPolicySHA256": "020d0da1d5a1fb22ba044350f830101bbe133903ad7834b618ff5337732ac412",
+  "ownerPolicyBoundary": "V11",
+  "newPolicyChecks": 147,
+  "crossLaneOverlapTimestampsUTC": {
+    "V73": [
+      "2026-09-09T12:42:35.995619+00:00"
+    ],
+    "V83": [
+      "2026-09-09T12:43:18.455533+00:00"
+    ],
+    "V100": [
+      "2026-09-09T12:44:37.590866+00:00",
+      "2026-09-09T12:46:16.471297+00:00",
+      "2026-09-09T12:47:19.887481+00:00"
+    ],
+    "V129": [
+      "2026-09-09T12:55:31.019431+00:00"
+    ],
+    "V130": [
+      "2026-09-09T12:55:31.241621+00:00"
+    ],
+    "V141": [
+      "2026-09-09T12:56:23.215155+00:00"
+    ],
+    "V153": [
+      "2026-09-09T12:57:42.423599+00:00"
+    ],
+    "V156": [
+      "2026-09-09T12:58:58.934873+00:00"
+    ]
+  },
+  "microUnitAttempts": {
+    "A1": 1,
+    "A2": 1,
+    "A3": 1,
+    "A4": 1,
+    "A5": 1,
+    "A6": 1,
+    "A7": 1,
+    "A8": 1,
+    "A9": 1,
+    "A10": 1,
+    "A11": 1,
+    "A12": 1,
+    "A13": 2,
+    "A14": 1,
+    "A15": 3,
+    "A16": 1,
+    "A17": 1,
+    "A18": 1,
+    "A19": 1,
+    "A20": 1,
+    "A21": 2,
+    "A22": 1,
+    "A23": 1,
+    "A24": 1,
+    "A25": 1,
+    "A26": 2,
+    "B1": 1,
+    "B2": 1,
+    "B3": 2,
+    "B4": 1,
+    "B5": 1,
+    "B6": 2,
+    "B7": 1,
+    "B8": 1,
+    "B9": 1,
+    "B10": 1,
+    "B11": 1,
+    "B12": 2,
+    "B13": 1,
+    "B14": 1,
+    "B15": 1,
+    "B16": 1,
+    "B17": 1,
+    "B18": 1
+  },
+  "AUnits": 26,
+  "AInvocations": 31,
+  "ARetained": 26,
+  "BUnits": 18,
+  "BInvocations": 21,
+  "BRetained": 18,
+  "exhaustedAndReverted": [],
+  "inheritedExhaustedUnchanged": [
+    "R197 D5"
+  ],
+  "CProofAttempts": 0,
+  "DProofAttempts": 0,
+  "noStagedFiles": true,
+  "qualification": "Read-only machine authentication, NOT independent human proof review. Seeded direct targets, not cold. RSS sample0 means no live capture, not zero peak. B3 includes a real compiler PASS rejected by whitespace commit guard, followed only by a fresh whitespace recheck. No synchronization/all-name producer or convergence closure is claimed."
+}

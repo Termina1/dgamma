@@ -3,9 +3,7 @@
 No TTC is deleted. JSON/log/source snapshots live under /tmp/dgamma-r199.
 Usage: run-r199-check.py UNIT PATH [DIAGNOSTIC [SYMBOL]]; PATH=package for build.
 """
-import atexit
 import datetime
-import shutil
 import hashlib
 import json
 import os
@@ -56,8 +54,7 @@ cutoff = datetime.datetime(2026,9,9,14,41,0,tzinfo=datetime.timezone.utc) if pla
 assert datetime.datetime.now(datetime.timezone.utc) < cutoff, 'R199 attempt14:26:00 / frozen-validation14:41:00 start guard'
 owned_compilers, lane2_compilers, unknown_compilers = compiler_scopes()
 assert not owned_compilers and not unknown_compilers, 'Own/unknown compiler active; never kill lane2'
-if lane2_compilers:
-    print('lane-2 compiler (separate worktree)', lane2_compilers, flush=True)
+# Owner permits cross-lane overlap; record timestamps only, never foreign commands.
 command = ['idris2', '--source-dir', str(ROOT/'src'), '--source-dir', str(ROOT/'research')]
 if path == 'package':
     command = ['idris2', '--build', str(ROOT/'dgamma.ipkg')]
@@ -85,9 +82,15 @@ else:
         command += ['--show-implicits']
     command += ['--check', str(target)]
 (OUT/(unit+'.source')).write_bytes(snapshot)
-# Supervisor-approved worktree-scoped concurrency and shared heavy lock.
-# Conservatively serialize ALL checks, including unknown costs, under the shared lock.
-heavy = True
+# Owner-authorized policy change: no cross-lane lock operations of any kind.
+policy_bytes = (OUT/'execution-policy-change.json').read_bytes()
+policy = json.loads(policy_bytes)
+assert policy['authorization'] == 'SUPERVISOR RULE CHANGE: CROSS-LANE HEAVY LOCK ABOLISHED'
+assert hashlib.sha256(pathlib.Path(__file__).read_bytes()).hexdigest() == policy['runnerAfterSHA256']
+assert planned_validation, 'Policy continuation is final validation only; proof caps remain closed'
+assert int(unit[1:]) > int(policy['effectiveAfterUnit'][1:])
+policy_sha = hashlib.sha256(policy_bytes).hexdigest()
+lock_events = []
 assert not subprocess.check_output(['git','diff','34b21c9','--','src/','dgamma.ipkg'],cwd=ROOT)
 for frozen in ['CP5ConfluenceLocalDiamondSpike','CP5ConfluenceDeletionChainSpike','CP5O19SurfaceSpike','CP5ConfluenceCrossTraceSpike','CP5ConfluenceCanonicalSortSpike','CP5ConfluenceRenamingCompositionSpike']:
     fp='research/DGamma/'+frozen+'.idr'
@@ -96,60 +99,12 @@ if path=='research/DGamma/CP5UniqueRawNameOrdinalCapital.idr':
     assert planned_validation and snapshot==subprocess.check_output(['git','show','fdf96f9a:'+path],cwd=ROOT)
     assert json.loads((OUT/'shift.json').read_text())['uniqueOrdinalGate'].startswith('APPROVED')
 if path == 'research/DGamma/CP5ConfluenceLocalDiamondSpike.idr':
-    assert heavy and planned_validation
+    assert planned_validation
     assert snapshot == subprocess.check_output(['git','show','fdf96f9a:'+path],cwd=ROOT), 'Changed LocalDiamond requires prior gate'
     rss_limit_kib = 52*1024*1024
 if planned_validation:
     assert rss_limit_kib == items[0]['rssLimitKiB']
-lock = pathlib.Path('/tmp/dgamma-heavy.lock')
-lock_owner = dict(lane='R199-main',pid=os.getpid(),timestampUTC=datetime.datetime.now(datetime.timezone.utc).isoformat(),unit=unit,path=path)
-lock_acquired = False
-lock_events = []
-def release_lock():
-    if lock_acquired and lock.is_dir():
-        observed = (lock/'owner').read_text()
-        if observed == json.dumps(lock_owner):
-            shutil.rmtree(lock)
-            event=dict(event='released',timestampUTC=datetime.datetime.now(datetime.timezone.utc).isoformat(),unit=unit,owner=lock_owner)
-            with (OUT/'lock-events.jsonl').open('a') as f:f.write(json.dumps(event)+'\n')
-            print('HEAVY LOCK RELEASE',unit,flush=True)
-atexit.register(release_lock)
-if heavy:
-    lock_started = time.monotonic()
-    while not lock_acquired:
-        try:
-            lock.mkdir()
-            (lock/'owner').write_text(json.dumps(lock_owner))
-            lock_acquired = True
-            lock_events.append(dict(event='acquired',**lock_owner))
-            with (OUT/'lock-events.jsonl').open('a') as f:f.write(json.dumps(lock_events[-1])+'\n')
-        except FileExistsError:
-            age = time.time()-lock.stat().st_mtime
-            owner_text = (lock/'owner').read_text() if (lock/'owner').exists() else ''
-            owner_pid = None
-            try:
-                owner_pid = int(json.loads(owner_text)['pid'])
-            except (ValueError,KeyError,TypeError):
-                match = re.search(r'pid[=: ]+(\d+)',owner_text)
-                if match: owner_pid = int(match[1])
-            owner_dead = False
-            if owner_pid:
-                try: os.kill(owner_pid,0)
-                except ProcessLookupError: owner_dead = True
-            if age > 25*60 and owner_dead:
-                event=dict(event='removed-stale-dead-owner-lock',age=age,owner=owner_text)
-                lock_events.append(event)
-                print(event,flush=True)
-                shutil.rmtree(lock)
-                continue
-            assert time.monotonic()-lock_started < 20*60, 'Heavy-lock wait exceeded20min; no compiler launched'
-            wait_event=dict(event='waiting',unit=unit,timestampUTC=datetime.datetime.now(datetime.timezone.utc).isoformat(),waitSeconds=time.monotonic()-lock_started,observedOwner=owner_text)
-            with (OUT/'lock-events.jsonl').open('a') as f:f.write(json.dumps(wait_event)+'\n')
-            print('HEAVY LOCK WAIT',unit,owner_text,flush=True)
-            time.sleep(10)
-    assert datetime.datetime.now(datetime.timezone.utc) < cutoff, 'Cutoff passed while awaiting heavy lock'
-    owned_compilers, lane2_compilers, unknown_compilers = compiler_scopes()
-    assert not owned_compilers and not unknown_compilers
+# Deliberately never acquire, inspect, poll or remove any shared lock path.
 started = datetime.datetime.now(datetime.timezone.utc).isoformat()
 clock = time.monotonic()
 maximum = 0
@@ -157,6 +112,7 @@ interrupted = False
 mutation_detected = False
 resource_stopped = False
 samples = []
+overlap_timestamps = [started] if lane2_compilers else []
 print('START', unit, started, ' '.join(command), flush=True)
 with (OUT/(unit+'.log')).open('w') as log:
     process = subprocess.Popen(command, cwd=ROOT, stdout=log, stderr=subprocess.STDOUT, start_new_session=True)
@@ -175,10 +131,15 @@ with (OUT/(unit+'.log')).open('w') as log:
             mutation_detected = True
             stop(signal.SIGTERM, None)
         sample_max = 0
+        foreign_active = False
         for row in subprocess.check_output(['ps', '-axo', 'pid,ppid,rss,command'], text=True).splitlines():
             cells = row.strip().split(None, 3)
             if len(cells) == 4 and cells[0].isdigit() and '/idris2_app/idris2' in cells[3] and str(ROOT)+'/' in cells[3]:
                 sample_max = max(sample_max, int(cells[2]))
+            if len(cells) == 4 and cells[0].isdigit() and re.search(r'/idris2_app/idris2(?:\.so)?(?:\s|$)', cells[3]) and '/Users/vyacheslavshebanov/Work/dgamma-lane2/' in cells[3]:
+                foreign_active = True
+        if foreign_active:
+            overlap_timestamps.append(datetime.datetime.now(datetime.timezone.utc).isoformat())
         maximum = max(maximum, sample_max)
         samples.append(dict(timestampUTC=datetime.datetime.now(datetime.timezone.utc).isoformat(),rssKiB=sample_max))
         if maximum > rss_limit_kib and not interrupted:
@@ -198,7 +159,9 @@ record = dict(unit=unit,path=path,command=command,start=started,
               targetMutationDetected=mutation_detected, resourceStopped=resource_stopped, unexpectedBuilding=unexpected_builds, buildingLines=building_lines, rssSamples=samples, maxSampleRSSKiB=maximum,rssLimitKiB=rss_limit_kib,validationContinuationSHA256=continuation_sha,
               sourceSHA256=hashlib.sha256(snapshot).hexdigest(),runnerSHA256=hashlib.sha256(pathlib.Path(__file__).read_bytes()).hexdigest(),
               expectedDiagnostic=diagnostic,symbol=symbol,transcript=text,
-              compilerScope='main worktree only', lane2Compilers=lane2_compilers, heavyLock=lock_events)
+              compilerScope='main worktree only', lane2Compilers=[], heavyLock=lock_events,
+              executionPolicySHA256=policy_sha, crossLaneHeavyChecksPermitted=True,
+              crossLaneOverlapTimestampsUTC=overlap_timestamps)
 (OUT/(unit+'.json')).write_text(json.dumps(record,indent=2)+'\n')
 with (OUT/'ledger.jsonl').open('a') as ledger:
     ledger.write(json.dumps(record)+'\n')

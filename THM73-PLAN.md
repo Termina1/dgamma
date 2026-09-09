@@ -3956,3 +3956,37 @@ Conservative deadlines remain14:26Z proof cutoff,14:41Z validation-start cutoff,
 14:51Z gate/15:06Z timeout, Sep9. No new proof attempts are authorized by this
 protocol note. Parent owns review; native/source/receipt authentication is not a
 human mathematical acceptance. Archive anchor excludes publication/future gates.
+
+### R199 owner override: no cross-lane lock
+
+During final validation the owner ABOLISHED the cross-lane heavy lock. From the
+next safe boundary after V11, continue the SAME immutable plan at V12 with no
+shared-lock acquisition/polling/inspection/removal and no rebuild-window files.
+Keep ONE native compiler per lane, worktree-scoped handling,52GiB unchanged
+LocalDiamond/48GiB other RSS guards, per-module evidence; cross-lane heavy checks
+are permitted and overlap samples contain timestamps only. Old lock records and
+the immutable plan's historical lock annotation are not rewritten. No proof
+restart, source/plan change or clock extension. See the verbatim R199 owner-policy
+artifact and machine policy boundary; this overrides D1's earlier lock protocol.
+
+
+### R199 final validation complete — D2 checked PARTIAL
+
+158/158 planned outcomes PASS by13:01:05Z: ALL150 inherited sources +7 new +
+seeded package (7 exact expected negatives).211 total invocations,204 expected
+PASS,7 retained failed attempts;44 guarded source commits;28 distinct guard/
+policy tests. Independent machine source/log/receipt/plan/frozen/resource checks
+PASS. Production/frozen bytes and4=1/2/0/0/1 frontier unchanged. No new holes,
+unsafe escapes or source changes after the a240d372 proof freeze.
+
+Owner abolished the cross-lane lock mid-validation: V11 finished/released its
+old lock normally, then the SAME immutable plan continued at V12 with no shared
+lock operations or repeated checks. One compiler per lane and52/48GiB own RSS
+guards remain; overlap observations are timestamps only. This was an authorized
+scheduler-policy continuation, not a task/proof restart or clock extension.
+
+A's universal occurrence synchronization and B's exhaustive vestigial selection/
+all-name rebase remain OPEN; new word equality retains end remainders, and B's
+head-selection membership remains explicit. D5 bridge uncalled; C0/ineligible.
+D3 archive and D4 owner/clean close remain; required human review is parent-owned
+and NOT claimed complete. See the R199 audit, verification and owner-policy files.

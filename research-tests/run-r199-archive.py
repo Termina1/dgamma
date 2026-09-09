@@ -10,6 +10,7 @@ assert json.loads((OUT/'final-validation-result.json').read_text())['status']=='
 assert len(records)==211 and sum(r['passed'] for r in records)==204
 assert all(any(r['unit']==item['unit'] and r['passed'] and r['sourceSHA256']==item['sourceHash'] for r in records) for item in plan)
 source_receipts=[r for r in receipts if r['event']=='GUARDED COMMIT'];assert len(source_receipts)==44
+policy_bytes=(OUT/'execution-policy-change.json').read_bytes();policy=json.loads(policy_bytes)
 anchor=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip();now=datetime.datetime.now(datetime.timezone.utc).isoformat()
 cost=json.loads((ART/'O6-R198-ROOT-CONTRACT-COSTS.json').read_text());entries=cost['entries'];assert len(entries)==259
 new=scope['newPaths'];assert len(new)==7
@@ -21,8 +22,11 @@ for item in entries:
     path=item['path'];actual=sha((ROOT/path).read_bytes())
     own=[r for r in records if r['path']==path and r['passed'] and r['sourceSHA256']==actual]
     item['historicalR198Cost']=dict(estimatedSeconds=item.get('estimatedSeconds'),estimatedSampleRSSKiB=item.get('estimatedSampleRSSKiB'),estimateBasis=item.get('estimateBasis'))
+    item['historicalCrossLaneLockRequiredBeforeOwnerChange']=item.get('heavyLock')
+    item['heavyLock']=False
+    item['futureExecutionPolicy']='Cross-lane heavy lock abolished by owner; one check per lane, unchanged own RSS limits'
     item['sourceSHA256']=actual
-    item['r199Checks']=[dict(unit=r['unit'],seconds=r['seconds'],maxSampleRSSKiB=r['maxSampleRSSKiB'],rssLimitKiB=r['rssLimitKiB'],expectedDiagnostic=r['expectedDiagnostic']) for r in own]
+    item['r199Checks']=[dict(unit=r['unit'],seconds=r['seconds'],maxSampleRSSKiB=r['maxSampleRSSKiB'],rssLimitKiB=r['rssLimitKiB'],expectedDiagnostic=r['expectedDiagnostic'],startUTC=r['start'],endUTC=r['end'],historicalHeavyLockUsed=bool(r['heavyLock']),executionPolicySHA256=r.get('executionPolicySHA256')) for r in own]
     if own:
         measured+=1;item['r199Status']='Current-source direct checked expected outcome';item['estimatedSeconds']=max(r['seconds'] for r in own);item['estimatedSampleRSSKiB']=max(r['maxSampleRSSKiB'] for r in own);item['estimateBasis']='R199 current-source direct one-second samples; not OS high-water; zero means no live sample'
     else:item['r199Status']='NOT re-checked in R199; inherited excluded stale/unclassified/legacy TTC, not fresh PASS'
@@ -30,10 +34,10 @@ for item in entries:
     item['ttcPresentAtR199Publication']=(ROOT/'build/ttc/2025081600'/pathlib.Path(item['module'].replace('.','/')+'.ttc')).exists()
 assert len(entries)==266 and measured==155
 inventory_paths={x['path'] for x in entries};auxiliary=[item for item in plan if item['path']!='package' and item['path'] not in inventory_paths];assert len(auxiliary)==2
-cost.update(status='R199 complete measured refresh; seeded, NOT cold',preparedUTC=now,sourceFreezeHead=anchor,inheritedR198InventoryCount=259,currentCount=266,r199MeasuredInventoryEntries=155,r199DirectSourceTargets=157,r199AuxiliaryInheritedTargetsOutsideInventory=auxiliary,r199UnvalidatedInventoryEntries=111,r199NewPaths=new,qualification='259 inherited inventory +7 new=266;155 directly rechecked inventory entries plus2 unchanged inherited main baseline variants outside inventory=157 source targets. ALL150 inherited current applicable paths +7 new + seeded package checked.100 unclassified+11 legacy excluded inventory paths remain NOT rechecked. No lane2/cold certification. Historical r198 fields are retained as historical, not current claims.')
+cost.update(status='R199 complete measured refresh; seeded, NOT cold',preparedUTC=now,sourceFreezeHead=scope['sourceFreezeHead'],publicationAnchorCommit=anchor,inheritedR198InventoryCount=259,currentCount=266,r199MeasuredInventoryEntries=155,r199DirectSourceTargets=157,r199AuxiliaryInheritedTargetsOutsideInventory=auxiliary,r199UnvalidatedInventoryEntries=111,r199NewPaths=new,qualification='259 inherited inventory +7 new=266;155 directly rechecked inventory entries plus2 unchanged inherited main baseline variants outside inventory=157 source targets. ALL150 inherited current applicable paths +7 new + seeded package checked.100 unclassified+11 legacy excluded inventory paths remain NOT rechecked. No lane2/cold certification. Historical r198 fields are retained as historical, not current claims.')
 (ART/'O6-R199-ROOT-CONTRACT-COSTS.json').write_text(json.dumps(cost,indent=2)+'\n')
-keys=['unit','path','command','start','end','seconds','exit','fresh','passed','interrupted','targetMutationDetected','resourceStopped','sourceSHA256','maxSampleRSSKiB','rssLimitKiB','expectedDiagnostic','symbol','unexpectedBuilding','validationContinuationSHA256']
-(ART/'O6-R199-COMPILER-LEDGER.json').write_text(json.dumps(dict(anchorCommit=anchor,preparedUTC=now,records=[{k:r[k] for k in keys} for r in records]),indent=2)+'\n')
+keys=['unit','path','command','start','end','seconds','exit','fresh','passed','interrupted','targetMutationDetected','resourceStopped','sourceSHA256','maxSampleRSSKiB','rssLimitKiB','expectedDiagnostic','symbol','unexpectedBuilding','validationContinuationSHA256','runnerSHA256','heavyLock','executionPolicySHA256','crossLaneHeavyChecksPermitted','crossLaneOverlapTimestampsUTC']
+(ART/'O6-R199-COMPILER-LEDGER.json').write_text(json.dumps(dict(anchorCommit=anchor,preparedUTC=now,executionPolicyChange=policy,records=[{k:r.get(k) for k in keys} for r in records]),indent=2)+'\n')
 rows=['# R199 per-module direct measurements','','One-second own-worktree samples, NOT OS high-water. Zero means no captured live sample. All7 rejected attempts remain listed; none is PASS. B3-1 really compiled PASS but its whitespace-rejected commit was not made.','','| Invocation | Target | Seconds | Sample KiB | Limit KiB | Outcome |','|---|---|---:|---:|---:|---|']
 for r in records:
     outcome='expected-negative PASS' if r['passed'] and r['expectedDiagnostic'] else 'PASS; whitespace commit guard rejected' if r['unit']=='B3-1' else 'PASS' if r['passed'] else 'RESOURCE STOP' if r['resourceStopped'] else 'REJECTED'
@@ -54,5 +58,5 @@ info=dict(anchorCommit=anchor,preparedUTC=now,qualification='Anchor PRECEDES thi
 (OUT/'archive-anchor.json').write_text(json.dumps(info,indent=2)+'\n')
 with tarfile.open(archive,'w:gz') as tar:
     for p in files+[OUT/'archive-anchor.json']:tar.add(p,arcname='dgamma-r199/'+str(p.relative_to(OUT)))
-verification=dict(anchorCommit=anchor,preparedUTC=now,archiveSHA256=sha(archive.read_bytes()),archiveBytes=archive.stat().st_size,archiveFiles=len(files)+1,invocations=211,expectedPASS=204,rejections=7,sourceReceipts=44,finalChecks=158,finalSourceTargets=157,finalExpectedNegatives=7,seededPackageBuild=True,coldBuild=False,inventoryRechecked=155,inventoryTotal=266,auxiliarySourceTargets=2,unvalidatedInventoryEntries=111,resourceStops=[r['unit'] for r in records if r['resourceStopped']],currentSourceHashes={item['path']:item['sourceHash'] for item in plan},receiptQualification=info['qualification'])
+verification=dict(anchorCommit=anchor,preparedUTC=now,archiveSHA256=sha(archive.read_bytes()),archiveBytes=archive.stat().st_size,archiveFiles=len(files)+1,invocations=211,expectedPASS=204,rejections=7,sourceReceipts=44,finalChecks=158,finalSourceTargets=157,finalExpectedNegatives=7,seededPackageBuild=True,coldBuild=False,executionPolicySHA256=sha(policy_bytes),ownerPolicyBoundary=policy['effectiveAfterUnit'],crossLaneHeavyChecksPermitted=True,inventoryRechecked=155,inventoryTotal=266,auxiliarySourceTargets=2,unvalidatedInventoryEntries=111,resourceStops=[r['unit'] for r in records if r['resourceStopped']],currentSourceHashes={item['path']:item['sourceHash'] for item in plan},receiptQualification=info['qualification'])
 (ART/'O6-R199-EVIDENCE-VERIFICATION.json').write_text(json.dumps(verification,indent=2)+'\n');print(json.dumps({k:v for k,v in verification.items() if k!='currentSourceHashes'},indent=2))

@@ -39,7 +39,7 @@ assert not subprocess.check_output(['git','diff','--cached','--name-only'],cwd=R
 assert not subprocess.check_output(['git','diff','--name-only','--','src/','research/','research-tests/DGamma/','dgamma.ipkg'],cwd=ROOT,text=True).strip()
 owned_compilers, lane2_compilers, unknown_compilers = compiler_scopes()
 assert not owned_compilers and not unknown_compilers, 'Own/unknown compiler active; lane2 is not an orphan'
-if lane2_compilers: print('lane-2 compiler (separate worktree)',lane2_compilers,flush=True)
+if lane2_compilers: print('Foreign-lane compiler observed; no main native compiler',datetime.datetime.now(datetime.timezone.utc).isoformat(),flush=True)
 subprocess.run(['git','diff','--check'],cwd=ROOT,check=True)
 subprocess.run(['git','add','--',*paths],cwd=ROOT,check=True)
 subprocess.run(['git','commit','-m',message],cwd=ROOT,check=True)

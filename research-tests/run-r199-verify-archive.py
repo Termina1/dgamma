@@ -17,6 +17,7 @@ with tarfile.open(archive,'r:gz') as tar:
         member=tar.extractfile('dgamma-r199/'+path);assert member is not None
         return member.read()
     anchor=json.loads(data('archive-anchor.json'))
+    archived_policy=data('execution-policy-change.json')
     assert anchor['anchorCommit']==metadata['anchorCommit']
     assert set(names)=={'dgamma-r199/'+p for p in anchor['filesSHA256']}|{'dgamma-r199/archive-anchor.json'}
     for path,digest in anchor['filesSHA256'].items():assert sha(data(path))==digest, path
@@ -26,6 +27,7 @@ with tarfile.open(archive,'r:gz') as tar:
     for r in records:
         assert json.loads(data(r['unit']+'.json'))==r
         c.validate_record(r,data(r['unit']+'.source'),data(r['unit']+'.log').decode(),ROOT)
+        c.validate_execution_policy(r,data('execution-policy-change.json'))
     receipts=[json.loads(s) for s in data('commit-receipts.jsonl').decode().splitlines()]
     source_receipts=[r for r in receipts if r['event']=='GUARDED COMMIT'];assert len(source_receipts)==44
     for receipt in receipts:
@@ -42,6 +44,6 @@ with tarfile.open(archive,'r:gz') as tar:
         assert r['passed'] and r['sourceSHA256']==item['sourceHash']
         path='dgamma.ipkg' if item['path']=='package' else item['path']
         assert sha(subprocess.check_output(['git','show',anchor['anchorCommit']+':'+path],cwd=ROOT))==item['sourceHash']
-report=dict(status='PASS',anchorCommit=metadata['anchorCommit'],archiveSHA256=metadata['archiveSHA256'],allArchiveFilesVerified=len(members),nativeRecordsVerified=211,sourceSnapshotsVerified=211,rawLogsVerified=211,sourceReceiptsArchived=44,artifactReceiptsArchived=len(receipts)-44,expectedPASS=204,rejectedSnapshotsRetained=7,finalChecksVerified=158,qualification='Read-only post-creation verification; not claimed inside its own archive or as parent/reviewer acceptance. Anchor deliberately excludes future publication/gate receipts.')
+report=dict(status='PASS',anchorCommit=metadata['anchorCommit'],archiveSHA256=metadata['archiveSHA256'],allArchiveFilesVerified=len(members),nativeRecordsVerified=211,sourceSnapshotsVerified=211,rawLogsVerified=211,sourceReceiptsArchived=44,artifactReceiptsArchived=len(receipts)-44,expectedPASS=204,rejectedSnapshotsRetained=7,finalChecksVerified=158,executionPolicySHA256=sha(archived_policy),ownerPolicyAuthenticated=True,qualification='Read-only post-creation verification; not claimed inside its own archive or as parent/reviewer acceptance. Anchor deliberately excludes future publication/gate receipts.')
 (OUT/'archive-verification.json').write_text(json.dumps(report,indent=2)+'\n')
 print(json.dumps(report,indent=2))

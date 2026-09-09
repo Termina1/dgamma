@@ -946,3 +946,25 @@ producers and convergence remain OPEN. See `research-tests/O6-R198-GRIND-SHIFT-A
 ALL150 inherited +7 new sources + seeded package; validation pending here.
 21 evidence tests and pre-validation source/receipt audits pass. Exact limits,
 failed attempts and next obligations: `research-tests/O6-R199-GRIND-SHIFT-AUDIT.md`.
+
+
+### R199 final validation complete — D2 checked PARTIAL
+
+158/158 planned outcomes PASS by13:01:05Z: ALL150 inherited sources +7 new +
+seeded package (7 exact expected negatives).211 total invocations,204 expected
+PASS,7 retained failed attempts;44 guarded source commits;28 distinct guard/
+policy tests. Independent machine source/log/receipt/plan/frozen/resource checks
+PASS. Production/frozen bytes and4=1/2/0/0/1 frontier unchanged. No new holes,
+unsafe escapes or source changes after the a240d372 proof freeze.
+
+Owner abolished the cross-lane lock mid-validation: V11 finished/released its
+old lock normally, then the SAME immutable plan continued at V12 with no shared
+lock operations or repeated checks. One compiler per lane and52/48GiB own RSS
+guards remain; overlap observations are timestamps only. This was an authorized
+scheduler-policy continuation, not a task/proof restart or clock extension.
+
+A's universal occurrence synchronization and B's exhaustive vestigial selection/
+all-name rebase remain OPEN; new word equality retains end remainders, and B's
+head-selection membership remains explicit. D5 bridge uncalled; C0/ineligible.
+D3 archive and D4 owner/clean close remain; required human review is parent-owned
+and NOT claimed complete. See the R199 audit, verification and owner-policy files.

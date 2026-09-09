@@ -40,3 +40,22 @@ def validate_plan(plan, read_source, module_paths, invalidation_paths):
         assert set(item['dependencies'])<=seen, 'Not topological/import closed'
         seen.add(path)
     return seen
+
+def validate_execution_policy(record, policy_bytes):
+    """Authenticate the owner's mid-run lock abolition without rewriting old evidence."""
+    import json
+    policy=json.loads(policy_bytes)
+    assert policy['authorization']=='SUPERVISOR RULE CHANGE: CROSS-LANE HEAVY LOCK ABOLISHED'
+    cut=int(policy['effectiveAfterUnit'][1:])
+    assert policy['completedAtBoundary']==['V'+str(i) for i in range(1,cut+1)]
+    if record['start'] < policy['effectiveUTC']:
+        assert record['end'] <= policy['effectiveUTC']
+        assert record['runnerSHA256']==policy['runnerBeforeSHA256']
+        assert record['heavyLock']
+    else:
+        assert re.fullmatch(r'V\d+',record['unit']) and int(record['unit'][1:])>cut
+        assert record['runnerSHA256']==policy['runnerAfterSHA256']
+        assert record['executionPolicySHA256']==hashlib.sha256(policy_bytes).hexdigest()
+        assert record['crossLaneHeavyChecksPermitted'] is True
+        assert record['heavyLock']==[] and record['lane2Compilers']==[]
+        assert all(isinstance(t,str) and record['start']<=t<=record['end'] for t in record['crossLaneOverlapTimestampsUTC'])

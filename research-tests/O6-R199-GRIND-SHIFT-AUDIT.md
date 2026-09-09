@@ -159,3 +159,55 @@ rebase/bridge remain OPEN; C not eligible. No new merely-stated theorem/hole.
 D1 prepares immutable final validation; D2 closes validation, D3 publishes and
 verifies archive, D4 records owner gate/clean close. Independent human review is
 parent-owned and pending. No scope/clock extension or further proof work.
+
+## Owner mid-validation policy override — after V11
+
+**CROSS-LANE HEAVY LOCK ABOLISHED.** This supersedes the historical D1 lock
+protocol above; one compiler per lane and52/48GiB own RSS guards remain. Verbatim
+ruling/implementation: `O6-R199-OWNER-POLICY-CHANGE.md`. V11 finished and released
+its old own lock normally; only the Python driver was paused/replaced to cross
+its pinned-runner-hash boundary. No compiler signal, source/plan change, repeated
+check, proof-budget reopening, task restart or clock extension.
+
+The immutable158-target plan continues at V12 under a recorded new runner hash.
+Post-boundary checks never access shared-lock paths and log cross-lane overlap
+as sampled timestamps only. Previous lock evidence stays historical; no lane2
+lock is inspected or removed.28 distinct evidence/policy tests pass (21 base
+rechecked +7 policy). Final validation is continuing; completion not yet claimed.
+
+
+## D2 final validated boundary — 2026-09-09T13:01:05.524119+00:00
+
+158/158 immutable planned outcomes PASS: ALL150 inherited applicable sources,
+7 new sources and seeded package,7 exact expected negatives, no exclusions.
+211 total native invocations:204 expected PASS (197 exit0 +7 exact negatives),
+7 rejected development snapshots.44 source receipts, no exhausted unit. Source
+HEAD remains a240d372; A26/31/26, B18/21/18, C0/ineligible. Native final sum
+2319.161s; wall 2445.591s including the explicitly
+owner-authorized scheduler policy continuation. No source/plan/repeated check
+change, native compiler signal, resource stop, mutation or extra Building.
+
+Independent machine source/log/receipt/plan/frozen/resource/policy authentication
+PASS. All44 source commits retain prior committed code and add one declaration.
+28 distinct evidence/policy tests PASS. Historical first64 invocations (53 dev
++V1–V11) have authenticated own lock acquisition/release; later147 final checks
+never access shared-lock paths.10 foreign-overlap timestamp observations across
+8 guarded check intervals are retained (sample observations, not OS-scheduler
+completeness). One compiler per MAIN lane is verified across BOTH phases.
+
+Peak observed samples: LocalDiamond50,612,064KiB <52GiB; other/UniqueOrdinal
+44,800,976KiB <48GiB. Zero samples mean no live capture, NOT zero actual memory;
+samples are NOT OS high-water. No historical wait/stale-lock-removal event.
+No lane2 worktree operation or compiler signal; no shared-lock inspection after
+the owner policy boundary. Production==34b21c9 and all frozen source/body hashes
+remain unchanged; census4=1/2/0/0/1. Not a cold build, no new claim for111 excluded
+legacy/unclassified inventory paths. Independent human review is still pending
+and parent-owned, not replaced by this machine audit.
+
+A remains augmented-word/own-order capital, NOT universal occurrence-labelled
+modulo synchronization. B proves a head-selected construction-owned subset and
+mixed vestigial/absent class, NOT exhaustive discarded-to-selection disappearance
+or universal all-name current rebasing. The conditional fixture does not own
+independent canonical capital. D5 bridge uncalled; separate R197 provider-D5
+remains exhausted/frozen; C0. D2/4 closes validation. Next: D3 append-only archive
+and full archive verification, then owner D4 gate/clean close; no proof restart.

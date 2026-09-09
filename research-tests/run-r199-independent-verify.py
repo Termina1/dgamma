@@ -7,12 +7,25 @@ spec=importlib.util.spec_from_file_location('contract',ART/'r199_evidence_contra
 sha=lambda b:hashlib.sha256(b).hexdigest()
 def git(*args):return subprocess.check_output(['git',*args],cwd=ROOT,text=True)
 records=[json.loads(s) for s in (OUT/'ledger.jsonl').read_text().splitlines()]
+policy_bytes=(OUT/'execution-policy-change.json').read_bytes()
+policy=json.loads(policy_bytes)
+assert policy['planSHA256']==(OUT/'final-validation-plan.sha256').read_text().strip()
+initial_launch=json.loads((OUT/'final-validation-launched.json').read_text())
+assert sha(subprocess.check_output(['git','show',initial_launch['head']+':research-tests/run-r199-check.py'],cwd=ROOT))==policy['runnerBeforeSHA256']
+assert sha(subprocess.check_output(['git','show',initial_launch['head']+':research-tests/run-r199-final-validation.py'],cwd=ROOT))==policy['driverBeforeSHA256']
+assert sha((ART/'run-r199-check.py').read_bytes())==policy['runnerAfterSHA256']
+assert sha((ART/'run-r199-final-validation.py').read_bytes())==policy['driverAfterSHA256']
+continuation=json.loads((OUT/'final-validation-continuation-1.json').read_text())
+assert continuation['executionPolicySHA256']==sha(policy_bytes) and continuation['continuationAfter']==policy['effectiveAfterUnit']
+
 assert len({r['unit'] for r in records})==len(records)
 for i,r in enumerate(records):
     assert json.loads((OUT/(r['unit']+'.json')).read_text())==r
     c.validate_record(r,(OUT/(r['unit']+'.source')).read_bytes(),(OUT/(r['unit']+'.log')).read_text(),ROOT)
     assert not i or records[i-1]['end']<=r['start'], 'Own compiler overlap'
-    assert r['heavyLock'] and r['heavyLock'][0]['event']=='acquired' and r['heavyLock'][0]['lane']=='R199-main'
+    c.validate_execution_policy(r,policy_bytes)
+    if r['start']<policy['effectiveUTC']:
+        assert r['heavyLock'][0]['event']=='acquired' and r['heavyLock'][0]['lane']=='R199-main'
     assert r['rssLimitKiB']==(52 if r['path'].endswith('CP5ConfluenceLocalDiamondSpike.idr') else 48)*1024*1024
     assert r['start']<('2026-09-09T14:41:00' if re.fullmatch(r'V\d+',r['unit']) else '2026-09-09T14:26:00')
 receipts=[json.loads(s) for s in (OUT/'commit-receipts.jsonl').read_text().splitlines()]
@@ -93,10 +106,13 @@ for path in changed:assert any(r['path']==path and r['passed'] and r['sourceSHA2
 locks=[json.loads(s) for s in (OUT/'lock-events.jsonl').read_text().splitlines()]
 for r in records:
     acquired=[x for x in locks if x['event']=='acquired' and x['unit']==r['unit']];released=[x for x in locks if x['event']=='released' and x['unit']==r['unit']]
-    assert len(acquired)==len(released)==1 and acquired[0]==r['heavyLock'][0]
-    assert acquired[0]['timestampUTC']<=r['start']<=r['end']<=released[0]['timestampUTC']
+    if r['start']<policy['effectiveUTC']:
+        assert len(acquired)==len(released)==1 and acquired[0]==r['heavyLock'][0]
+        assert acquired[0]['timestampUTC']<=r['start']<=r['end']<=released[0]['timestampUTC']
+    else:assert not acquired and not released, 'Lock operation after owner abolition'
 assert json.loads((OUT/'contract-tests.json').read_text())['tests']==21
+assert json.loads((OUT/'policy-contract-tests.json').read_text())['tests']==7
 D_docs=[git('show','-s','--format=%s',r['resultingCommitHash']).strip() for r in receipts if r['event']=='GUARDED ARTIFACT COMMIT' and re.match(r'R199 D[1-4]:',git('show','-s','--format=%s',r['resultingCommitHash']))]
 assert len(D_docs)<=4 and len({x.split(':',1)[0] for x in D_docs})==len(D_docs)
-report=dict(status='PASS',timestampUTC=datetime.datetime.now(datetime.timezone.utc).isoformat(),head=git('rev-parse','HEAD').strip(),invocations=len(records),expectedPASS=sum(r['passed'] for r in records),rejected=[r['unit'] for r in records if not r['passed']],sourceReceipts=len(source_receipts),artifactReceipts=len(receipts)-len(source_receipts),finalCompleted=len(completed),finalTotal=158,finalPlanSHA256=sha(plan_bytes),inheritedApplicableSources=150,newSources=7,sourceSnapshotsAuthenticated=True,sourceReceiptsAuthenticated=True,allSourceCommitsReceipted=True,oneDeclarationPerRetainedCommit=True,allPriorCommittedCodeLinesRetained=True,DDocumentationCommits=D_docs,allChangedSourcesChecked=True,allPlannedTargetImportsTopological=True,compilerOverlap=False,resourceStops=[r['unit'] for r in records if r['resourceStopped']],mutations=[r['unit'] for r in records if r['targetMutationDetected']],heavyLockAcquisitionAndReleaseAuthenticated=True,microUnitAttempts={u:len(v) for u,v in attempts.items()},AUnits=26,AInvocations=31,ARetained=26,BUnits=18,BInvocations=21,BRetained=18,exhaustedAndReverted=[],inheritedExhaustedUnchanged=['R197 D5'],CProofAttempts=0,DProofAttempts=0,noStagedFiles=not git('diff','--cached','--name-only').strip(),qualification='Read-only machine authentication, NOT independent human proof review. Seeded direct targets, not cold. RSS sample0 means no live capture, not zero peak. B3 includes a real compiler PASS rejected by whitespace commit guard, followed only by a fresh whitespace recheck. No synchronization/all-name producer or convergence closure is claimed.')
+report=dict(status='PASS',timestampUTC=datetime.datetime.now(datetime.timezone.utc).isoformat(),head=git('rev-parse','HEAD').strip(),invocations=len(records),expectedPASS=sum(r['passed'] for r in records),rejected=[r['unit'] for r in records if not r['passed']],sourceReceipts=len(source_receipts),artifactReceipts=len(receipts)-len(source_receipts),finalCompleted=len(completed),finalTotal=158,finalPlanSHA256=sha(plan_bytes),inheritedApplicableSources=150,newSources=7,sourceSnapshotsAuthenticated=True,sourceReceiptsAuthenticated=True,allSourceCommitsReceipted=True,oneDeclarationPerRetainedCommit=True,allPriorCommittedCodeLinesRetained=True,DDocumentationCommits=D_docs,allChangedSourcesChecked=True,allPlannedTargetImportsTopological=True,compilerOverlap=False,resourceStops=[r['unit'] for r in records if r['resourceStopped']],mutations=[r['unit'] for r in records if r['targetMutationDetected']],historicalHeavyLockAcquisitionAndReleaseAuthenticated=True,ownerPolicySHA256=sha(policy_bytes),ownerPolicyBoundary=policy['effectiveAfterUnit'],newPolicyChecks=sum(r['start']>=policy['effectiveUTC'] for r in records),crossLaneOverlapTimestampsUTC={r['unit']:r.get('crossLaneOverlapTimestampsUTC',[]) for r in records if r.get('crossLaneOverlapTimestampsUTC')},microUnitAttempts={u:len(v) for u,v in attempts.items()},AUnits=26,AInvocations=31,ARetained=26,BUnits=18,BInvocations=21,BRetained=18,exhaustedAndReverted=[],inheritedExhaustedUnchanged=['R197 D5'],CProofAttempts=0,DProofAttempts=0,noStagedFiles=not git('diff','--cached','--name-only').strip(),qualification='Read-only machine authentication, NOT independent human proof review. Seeded direct targets, not cold. RSS sample0 means no live capture, not zero peak. B3 includes a real compiler PASS rejected by whitespace commit guard, followed only by a fresh whitespace recheck. No synchronization/all-name producer or convergence closure is claimed.')
 output=pathlib.Path(next((s for s in sys.argv[1:] if s.startswith('/tmp/')),str(OUT/'independent.json')));output.write_text(json.dumps(report,indent=2)+'\n');print(json.dumps(report,indent=2))

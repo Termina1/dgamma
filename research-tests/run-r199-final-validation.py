@@ -10,13 +10,25 @@ scope=json.loads((ROOT/'research-tests/O6-R199-VALIDATION-SCOPE.json').read_text
 assert len(plan)==scope['checksIncludingPackage'] and len({x['path'] for x in plan})==len(plan)
 assert scope['inheritedSources']==150 and not scope['excludedInheritedApplicablePaths']
 assert json.loads((OUT/'contract-tests.json').read_text())['status']=='PASS'
-assert not (OUT/'final-validation-launched.json').exists(), 'Append-only launch; gate any continuation'
-launch=dict(startUTC=datetime.datetime.now(datetime.timezone.utc).isoformat(),head=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(),planSHA256=sha(data),runnerSHA256=sha((ROOT/'research-tests/run-r199-check.py').read_bytes()),count=len(plan))
-(OUT/'final-validation-launched.json').write_text(json.dumps(launch,indent=2)+'\n')
-completed=[]
-for item in plan:
+assert not (OUT/'final-validation-continuation-1.json').exists(), 'Owner continuation already launched; no silent restart'
+policy_bytes=(OUT/'execution-policy-change.json').read_bytes();policy=json.loads(policy_bytes)
+assert policy['authorization']=='SUPERVISOR RULE CHANGE: CROSS-LANE HEAVY LOCK ABOLISHED'
+original_launch=json.loads((OUT/'final-validation-launched.json').read_text())
+assert original_launch['planSHA256']==sha(data) and original_launch['runnerSHA256']==policy['runnerBeforeSHA256']
+assert sha((ROOT/'research-tests/run-r199-check.py').read_bytes())==policy['runnerAfterSHA256']
+launch=dict(startUTC=datetime.datetime.now(datetime.timezone.utc).isoformat(),head=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(),planSHA256=sha(data),runnerSHA256=sha((ROOT/'research-tests/run-r199-check.py').read_bytes()),count=len(plan),originalLaunch=original_launch,executionPolicySHA256=sha(policy_bytes),continuationAfter=policy['effectiveAfterUnit'])
+(OUT/'final-validation-continuation-1.json').write_text(json.dumps(launch,indent=2)+'\n')
+records=[json.loads(x) for x in (OUT/'ledger.jsonl').read_text().splitlines()]
+prior=[r for r in records if r['unit'].startswith('V')]
+assert [r['unit'] for r in prior]==[item['unit'] for item in plan[:int(policy['effectiveAfterUnit'][1:])]]
+for item,r in zip(plan,prior):
+    assert r['passed'] and r['sourceSHA256']==item['sourceHash'] and r['path']==item['path'] and r['validationContinuationSHA256']==sha(data)
+completed=[r['unit'] for r in prior]
+print('OWNER POLICY CONTINUATION; preserving prior completed units',completed,flush=True)
+for item in plan[len(completed):]:
     assert sha((ROOT/'research-tests/run-r199-check.py').read_bytes())==launch['runnerSHA256'], 'Runner mutated'
     assert sha((OUT/'final-validation-plan.json').read_bytes())==launch['planSHA256'], 'Plan mutated'
+    assert sha((OUT/'execution-policy-change.json').read_bytes())==launch['executionPolicySHA256'], 'Owner policy mutated'
     for frozen in plan:
         assert sha((ROOT/('dgamma.ipkg' if frozen['path']=='package' else frozen['path'])).read_bytes())==frozen['sourceHash'], 'Frozen source mutated: '+frozen['path']
     command=[sys.executable,'-I',str(ROOT/'research-tests/run-r199-check.py'),item['unit'],item['path']]
@@ -32,6 +44,6 @@ for item in plan:
         print(json.dumps(report),flush=True);sys.exit(1)
     assert record['sourceSHA256']==item['sourceHash'] and record['validationContinuationSHA256']==launch['planSHA256']
     completed.append(item['unit']);print('FINAL PASS',item['unit'],record['seconds'],record['maxSampleRSSKiB'],flush=True)
-report=dict(status='PASS',completed=completed,total=len(plan),sourceTargets=scope['sourceTargets'],packageBuild='seeded PASS; not cold',endUTC=datetime.datetime.now(datetime.timezone.utc).isoformat(),planSHA256=launch['planSHA256'])
+report=dict(status='PASS',completed=completed,total=len(plan),sourceTargets=scope['sourceTargets'],packageBuild='seeded PASS; not cold',endUTC=datetime.datetime.now(datetime.timezone.utc).isoformat(),planSHA256=launch['planSHA256'],executionPolicySHA256=launch['executionPolicySHA256'],continuationAfter=policy['effectiveAfterUnit'])
 (OUT/'final-validation-result.json').write_text(json.dumps(report,indent=2)+'\n')
 print(json.dumps(report),flush=True)

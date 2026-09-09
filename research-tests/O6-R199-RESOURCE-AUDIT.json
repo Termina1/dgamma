@@ -1,0 +1,1360 @@
+{
+  "status": "PASS",
+  "timestampUTC": "2026-09-09T13:01:44.764384+00:00",
+  "head": "223c805d8da54f0735e12b487d47b4fd4aef3dd6",
+  "invocations": 211,
+  "allCompilerLifetimesCovered": true,
+  "historicalLockIntervalsNonoverlapping": true,
+  "ownerPolicyBoundary": "V11",
+  "sameLaneCompilerIntervalsNonoverlapping": true,
+  "crossLaneOverlapTimestampsUTC": {
+    "V73": [
+      "2026-09-09T12:42:35.995619+00:00"
+    ],
+    "V83": [
+      "2026-09-09T12:43:18.455533+00:00"
+    ],
+    "V100": [
+      "2026-09-09T12:44:37.590866+00:00",
+      "2026-09-09T12:46:16.471297+00:00",
+      "2026-09-09T12:47:19.887481+00:00"
+    ],
+    "V129": [
+      "2026-09-09T12:55:31.019431+00:00"
+    ],
+    "V130": [
+      "2026-09-09T12:55:31.241621+00:00"
+    ],
+    "V141": [
+      "2026-09-09T12:56:23.215155+00:00"
+    ],
+    "V153": [
+      "2026-09-09T12:57:42.423599+00:00"
+    ],
+    "V156": [
+      "2026-09-09T12:58:58.934873+00:00"
+    ]
+  },
+  "lockEvents": [
+    {
+      "event": "acquired",
+      "lane": "R199-main",
+      "pid": 45308,
+      "timestampUTC": "2026-09-09T11:09:04.771865+00:00",
+      "unit": "S0-1",
+      "path": "research/DGamma/CP5O20CanonicalSynchronizationModuloSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T11:09:07.948569+00:00",
+      "unit": "S0-1",
+      "owner": {
+        "lane": "R199-main",
+        "pid": 45308,
+        "timestampUTC": "2026-09-09T11:09:04.771865+00:00",
+        "unit": "S0-1",
+        "path": "research/DGamma/CP5O20CanonicalSynchronizationModuloSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R199-main",
+      "pid": 58561,
+      "timestampUTC": "2026-09-09T11:10:58.467412+00:00",
+      "unit": "A1-1",
+      "path": "research/DGamma/CP5O20CanonicalWordCoverageSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T11:11:01.614206+00:00",
+      "unit": "A1-1",
+      "owner": {
+        "lane": "R199-main",
+        "pid": 58561,
+        "timestampUTC": "2026-09-09T11:10:58.467412+00:00",
+        "unit": "A1-1",
+        "path": "research/DGamma/CP5O20CanonicalWordCoverageSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R199-main",
+      "pid": 73778,
+      "timestampUTC": "2026-09-09T11:13:23.633755+00:00",
+      "unit": "A2-1",
+      "path": "research/DGamma/CP5O20CanonicalWordCoverageSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T11:13:26.807090+00:00",
+      "unit": "A2-1",
+      "owner": {
+        "lane": "R199-main",
+        "pid": 73778,
+        "timestampUTC": "2026-09-09T11:13:23.633755+00:00",
+        "unit": "A2-1",
+        "path": "research/DGamma/CP5O20CanonicalWordCoverageSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R199-main",
+      "pid": 89428,
+      "timestampUTC": "2026-09-09T11:16:28.203893+00:00",
+      "unit": "A3-1",
+      "path": "research/DGamma/CP5O20CanonicalBlockComponentSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T11:16:31.353943+00:00",
+      "unit": "A3-1",
+      "owner": {
+        "lane": "R199-main",
+        "pid": 89428,
+        "timestampUTC": "2026-09-09T11:16:28.203893+00:00",
+        "unit": "A3-1",
+        "path": "research/DGamma/CP5O20CanonicalBlockComponentSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R199-main",
+      "pid": 92808,
+      "timestampUTC": "2026-09-09T11:17:22.853163+00:00",
+      "unit": "A4-1",
+      "path": "research/DGamma/CP5O20CanonicalBlockComponentSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T11:17:27.077457+00:00",
+      "unit": "A4-1",
+      "owner": {
+        "lane": "R199-main",
+        "pid": 92808,
+        "timestampUTC": "2026-09-09T11:17:22.853163+00:00",
+        "unit": "A4-1",
+        "path": "research/DGamma/CP5O20CanonicalBlockComponentSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R199-main",
+      "pid": 95768,
+      "timestampUTC": "2026-09-09T11:18:06.901744+00:00",
+      "unit": "A5-1",
+      "path": "research/DGamma/CP5O20CanonicalBlockComponentSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T11:18:11.115715+00:00",
+      "unit": "A5-1",
+      "owner": {
+        "lane": "R199-main",
+        "pid": 95768,
+        "timestampUTC": "2026-09-09T11:18:06.901744+00:00",
+        "unit": "A5-1",
+        "path": "research/DGamma/CP5O20CanonicalBlockComponentSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R199-main",
+      "pid": 4026,
+      "timestampUTC": "2026-09-09T11:19:22.101841+00:00",
+      "unit": "A6-1",
+      "path": "research/DGamma/CP5O20CanonicalBlockComponentSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T11:19:26.278334+00:00",
+      "unit": "A6-1",
+      "owner": {
+        "lane": "R199-main",
+        "pid": 4026,
+        "timestampUTC": "2026-09-09T11:19:22.101841+00:00",
+        "unit": "A6-1",
+        "path": "research/DGamma/CP5O20CanonicalBlockComponentSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R199-main",
+      "pid": 12398,
+      "timestampUTC": "2026-09-09T11:20:42.938645+00:00",
+      "unit": "A7-1",
+      "path": "research/DGamma/CP5O20ProgramRoleWordSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T11:20:46.101439+00:00",
+      "unit": "A7-1",
+      "owner": {
+        "lane": "R199-main",
+        "pid": 12398,
+        "timestampUTC": "2026-09-09T11:20:42.938645+00:00",
+        "unit": "A7-1",
+        "path": "research/DGamma/CP5O20ProgramRoleWordSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R199-main",
+      "pid": 20312,
+      "timestampUTC": "2026-09-09T11:22:03.506038+00:00",
+      "unit": "A8-1",
+      "path": "research/DGamma/CP5O20ProgramRoleWordSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T11:22:06.680055+00:00",
+      "unit": "A8-1",
+      "owner": {
+        "lane": "R199-main",
+        "pid": 20312,
+        "timestampUTC": "2026-09-09T11:22:03.506038+00:00",
+        "unit": "A8-1",
+        "path": "research/DGamma/CP5O20ProgramRoleWordSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R199-main",
+      "pid": 23744,
+      "timestampUTC": "2026-09-09T11:22:57.713185+00:00",
+      "unit": "A9-1",
+      "path": "research/DGamma/CP5O20ProgramRoleWordSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T11:23:00.895596+00:00",
+      "unit": "A9-1",
+      "owner": {
+        "lane": "R199-main",
+        "pid": 23744,
+        "timestampUTC": "2026-09-09T11:22:57.713185+00:00",
+        "unit": "A9-1",
+        "path": "research/DGamma/CP5O20ProgramRoleWordSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R199-main",
+      "pid": 30680,
+      "timestampUTC": "2026-09-09T11:23:39.638427+00:00",
+      "unit": "A10-1",
+      "path": "research/DGamma/CP5O20ProgramRoleWordSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T11:23:42.779199+00:00",
+      "unit": "A10-1",
+      "owner": {
+        "lane": "R199-main",
+        "pid": 30680,
+        "timestampUTC": "2026-09-09T11:23:39.638427+00:00",
+        "unit": "A10-1",
+        "path": "research/DGamma/CP5O20ProgramRoleWordSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R199-main",
+      "pid": 33756,
+      "timestampUTC": "2026-09-09T11:24:32.676314+00:00",
+      "unit": "A11-1",
+      "path": "research/DGamma/CP5O20ProgramRoleWordSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T11:24:35.817960+00:00",
+      "unit": "A11-1",
+      "owner": {
+        "lane": "R199-main",
+        "pid": 33756,
+        "timestampUTC": "2026-09-09T11:24:32.676314+00:00",
+        "unit": "A11-1",
+        "path": "research/DGamma/CP5O20ProgramRoleWordSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R199-main",
+      "pid": 39663,
+      "timestampUTC": "2026-09-09T11:26:04.009639+00:00",
+      "unit": "A12-1",
+      "path": "research/DGamma/CP5O20ProgramRoleWordSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T11:26:07.201432+00:00",
+      "unit": "A12-1",
+      "owner": {
+        "lane": "R199-main",
+        "pid": 39663,
+        "timestampUTC": "2026-09-09T11:26:04.009639+00:00",
+        "unit": "A12-1",
+        "path": "research/DGamma/CP5O20ProgramRoleWordSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R199-main",
+      "pid": 48890,
+      "timestampUTC": "2026-09-09T11:27:19.171853+00:00",
+      "unit": "A13-1",
+      "path": "research/DGamma/CP5O20ProgramRoleWordSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T11:27:22.347970+00:00",
+      "unit": "A13-1",
+      "owner": {
+        "lane": "R199-main",
+        "pid": 48890,
+        "timestampUTC": "2026-09-09T11:27:19.171853+00:00",
+        "unit": "A13-1",
+        "path": "research/DGamma/CP5O20ProgramRoleWordSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R199-main",
+      "pid": 55194,
+      "timestampUTC": "2026-09-09T11:28:13.549218+00:00",
+      "unit": "A13-2",
+      "path": "research/DGamma/CP5O20ProgramRoleWordSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T11:28:16.691748+00:00",
+      "unit": "A13-2",
+      "owner": {
+        "lane": "R199-main",
+        "pid": 55194,
+        "timestampUTC": "2026-09-09T11:28:13.549218+00:00",
+        "unit": "A13-2",
+        "path": "research/DGamma/CP5O20ProgramRoleWordSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R199-main",
+      "pid": 64036,
+      "timestampUTC": "2026-09-09T11:29:03.996958+00:00",
+      "unit": "A14-1",
+      "path": "research/DGamma/CP5O20ProgramRoleWordSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T11:29:07.142393+00:00",
+      "unit": "A14-1",
+      "owner": {
+        "lane": "R199-main",
+        "pid": 64036,
+        "timestampUTC": "2026-09-09T11:29:03.996958+00:00",
+        "unit": "A14-1",
+        "path": "research/DGamma/CP5O20ProgramRoleWordSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R199-main",
+      "pid": 72900,
+      "timestampUTC": "2026-09-09T11:29:55.809215+00:00",
+      "unit": "A15-1",
+      "path": "research/DGamma/CP5O20ProgramRoleWordSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T11:29:58.993713+00:00",
+      "unit": "A15-1",
+      "owner": {
+        "lane": "R199-main",
+        "pid": 72900,
+        "timestampUTC": "2026-09-09T11:29:55.809215+00:00",
+        "unit": "A15-1",
+        "path": "research/DGamma/CP5O20ProgramRoleWordSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R199-main",
+      "pid": 92128,
+      "timestampUTC": "2026-09-09T11:32:13.680234+00:00",
+      "unit": "A15-2",
+      "path": "research/DGamma/CP5O20ProgramRoleWordSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T11:32:15.804852+00:00",
+      "unit": "A15-2",
+      "owner": {
+        "lane": "R199-main",
+        "pid": 92128,
+        "timestampUTC": "2026-09-09T11:32:13.680234+00:00",
+        "unit": "A15-2",
+        "path": "research/DGamma/CP5O20ProgramRoleWordSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R199-main",
+      "pid": 95503,
+      "timestampUTC": "2026-09-09T11:33:05.093955+00:00",
+      "unit": "A15-3",
+      "path": "research/DGamma/CP5O20ProgramRoleWordSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T11:33:08.235679+00:00",
+      "unit": "A15-3",
+      "owner": {
+        "lane": "R199-main",
+        "pid": 95503,
+        "timestampUTC": "2026-09-09T11:33:05.093955+00:00",
+        "unit": "A15-3",
+        "path": "research/DGamma/CP5O20ProgramRoleWordSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R199-main",
+      "pid": 99501,
+      "timestampUTC": "2026-09-09T11:33:47.085323+00:00",
+      "unit": "A16-1",
+      "path": "research/DGamma/CP5O20ProgramRoleWordSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T11:33:50.227355+00:00",
+      "unit": "A16-1",
+      "owner": {
+        "lane": "R199-main",
+        "pid": 99501,
+        "timestampUTC": "2026-09-09T11:33:47.085323+00:00",
+        "unit": "A16-1",
+        "path": "research/DGamma/CP5O20ProgramRoleWordSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R199-main",
+      "pid": 7757,
+      "timestampUTC": "2026-09-09T11:35:05.195982+00:00",
+      "unit": "A17-1",
+      "path": "research/DGamma/CP5O20ProgramRoleWordSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T11:35:08.344878+00:00",
+      "unit": "A17-1",
+      "owner": {
+        "lane": "R199-main",
+        "pid": 7757,
+        "timestampUTC": "2026-09-09T11:35:05.195982+00:00",
+        "unit": "A17-1",
+        "path": "research/DGamma/CP5O20ProgramRoleWordSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R199-main",
+      "pid": 10533,
+      "timestampUTC": "2026-09-09T11:35:51.921255+00:00",
+      "unit": "A18-1",
+      "path": "research/DGamma/CP5O20ProgramRoleWordSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T11:35:55.074254+00:00",
+      "unit": "A18-1",
+      "owner": {
+        "lane": "R199-main",
+        "pid": 10533,
+        "timestampUTC": "2026-09-09T11:35:51.921255+00:00",
+        "unit": "A18-1",
+        "path": "research/DGamma/CP5O20ProgramRoleWordSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R199-main",
+      "pid": 16213,
+      "timestampUTC": "2026-09-09T11:36:42.672421+00:00",
+      "unit": "A19-1",
+      "path": "research/DGamma/CP5O20ProgramRoleWordSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T11:36:46.886802+00:00",
+      "unit": "A19-1",
+      "owner": {
+        "lane": "R199-main",
+        "pid": 16213,
+        "timestampUTC": "2026-09-09T11:36:42.672421+00:00",
+        "unit": "A19-1",
+        "path": "research/DGamma/CP5O20ProgramRoleWordSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R199-main",
+      "pid": 21351,
+      "timestampUTC": "2026-09-09T11:37:27.043611+00:00",
+      "unit": "A20-1",
+      "path": "research/DGamma/CP5O20ProgramRoleWordSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T11:37:31.301257+00:00",
+      "unit": "A20-1",
+      "owner": {
+        "lane": "R199-main",
+        "pid": 21351,
+        "timestampUTC": "2026-09-09T11:37:27.043611+00:00",
+        "unit": "A20-1",
+        "path": "research/DGamma/CP5O20ProgramRoleWordSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R199-main",
+      "pid": 25744,
+      "timestampUTC": "2026-09-09T11:38:35.893435+00:00",
+      "unit": "A21-1",
+      "path": "research/DGamma/CP5O20ProgramRoleWordSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T11:38:38.003635+00:00",
+      "unit": "A21-1",
+      "owner": {
+        "lane": "R199-main",
+        "pid": 25744,
+        "timestampUTC": "2026-09-09T11:38:35.893435+00:00",
+        "unit": "A21-1",
+        "path": "research/DGamma/CP5O20ProgramRoleWordSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R199-main",
+      "pid": 30856,
+      "timestampUTC": "2026-09-09T11:39:44.508616+00:00",
+      "unit": "A21-2",
+      "path": "research/DGamma/CP5O20ProgramRoleWordSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T11:39:48.697362+00:00",
+      "unit": "A21-2",
+      "owner": {
+        "lane": "R199-main",
+        "pid": 30856,
+        "timestampUTC": "2026-09-09T11:39:44.508616+00:00",
+        "unit": "A21-2",
+        "path": "research/DGamma/CP5O20ProgramRoleWordSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R199-main",
+      "pid": 38410,
+      "timestampUTC": "2026-09-09T11:41:33.213468+00:00",
+      "unit": "A22-1",
+      "path": "research/DGamma/CP5O20ProgramRoleWordSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T11:41:37.429308+00:00",
+      "unit": "A22-1",
+      "owner": {
+        "lane": "R199-main",
+        "pid": 38410,
+        "timestampUTC": "2026-09-09T11:41:33.213468+00:00",
+        "unit": "A22-1",
+        "path": "research/DGamma/CP5O20ProgramRoleWordSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R199-main",
+      "pid": 41567,
+      "timestampUTC": "2026-09-09T11:42:23.872024+00:00",
+      "unit": "A23-1",
+      "path": "research/DGamma/CP5O20ProgramRoleWordSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T11:42:28.089633+00:00",
+      "unit": "A23-1",
+      "owner": {
+        "lane": "R199-main",
+        "pid": 41567,
+        "timestampUTC": "2026-09-09T11:42:23.872024+00:00",
+        "unit": "A23-1",
+        "path": "research/DGamma/CP5O20ProgramRoleWordSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R199-main",
+      "pid": 47418,
+      "timestampUTC": "2026-09-09T11:43:41.560051+00:00",
+      "unit": "A24-1",
+      "path": "research/DGamma/CP5O20CanonicalBlockWordAgreementSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T11:43:44.724751+00:00",
+      "unit": "A24-1",
+      "owner": {
+        "lane": "R199-main",
+        "pid": 47418,
+        "timestampUTC": "2026-09-09T11:43:41.560051+00:00",
+        "unit": "A24-1",
+        "path": "research/DGamma/CP5O20CanonicalBlockWordAgreementSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R199-main",
+      "pid": 52955,
+      "timestampUTC": "2026-09-09T11:44:52.376128+00:00",
+      "unit": "A25-1",
+      "path": "research/DGamma/CP5O20CanonicalBlockWordAgreementSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T11:44:55.527866+00:00",
+      "unit": "A25-1",
+      "owner": {
+        "lane": "R199-main",
+        "pid": 52955,
+        "timestampUTC": "2026-09-09T11:44:52.376128+00:00",
+        "unit": "A25-1",
+        "path": "research/DGamma/CP5O20CanonicalBlockWordAgreementSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R199-main",
+      "pid": 68643,
+      "timestampUTC": "2026-09-09T11:48:36.411415+00:00",
+      "unit": "A26-1",
+      "path": "research-tests/DGamma/R199NativeActorRoleWordPositive.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T11:48:38.524639+00:00",
+      "unit": "A26-1",
+      "owner": {
+        "lane": "R199-main",
+        "pid": 68643,
+        "timestampUTC": "2026-09-09T11:48:36.411415+00:00",
+        "unit": "A26-1",
+        "path": "research-tests/DGamma/R199NativeActorRoleWordPositive.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R199-main",
+      "pid": 75066,
+      "timestampUTC": "2026-09-09T11:49:54.858828+00:00",
+      "unit": "A26-2",
+      "path": "research-tests/DGamma/R199NativeActorRoleWordPositive.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T11:49:58.045861+00:00",
+      "unit": "A26-2",
+      "owner": {
+        "lane": "R199-main",
+        "pid": 75066,
+        "timestampUTC": "2026-09-09T11:49:54.858828+00:00",
+        "unit": "A26-2",
+        "path": "research-tests/DGamma/R199NativeActorRoleWordPositive.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R199-main",
+      "pid": 92977,
+      "timestampUTC": "2026-09-09T11:53:53.889918+00:00",
+      "unit": "B1-1",
+      "path": "research/DGamma/CP5O20DeletionDisappearanceSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T11:53:57.058676+00:00",
+      "unit": "B1-1",
+      "owner": {
+        "lane": "R199-main",
+        "pid": 92977,
+        "timestampUTC": "2026-09-09T11:53:53.889918+00:00",
+        "unit": "B1-1",
+        "path": "research/DGamma/CP5O20DeletionDisappearanceSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R199-main",
+      "pid": 841,
+      "timestampUTC": "2026-09-09T11:55:10.112654+00:00",
+      "unit": "B2-1",
+      "path": "research/DGamma/CP5O20DeletionDisappearanceSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T11:55:13.270645+00:00",
+      "unit": "B2-1",
+      "owner": {
+        "lane": "R199-main",
+        "pid": 841,
+        "timestampUTC": "2026-09-09T11:55:10.112654+00:00",
+        "unit": "B2-1",
+        "path": "research/DGamma/CP5O20DeletionDisappearanceSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R199-main",
+      "pid": 4501,
+      "timestampUTC": "2026-09-09T11:55:54.982392+00:00",
+      "unit": "B3-1",
+      "path": "research/DGamma/CP5O20DeletionDisappearanceSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T11:55:58.145708+00:00",
+      "unit": "B3-1",
+      "owner": {
+        "lane": "R199-main",
+        "pid": 4501,
+        "timestampUTC": "2026-09-09T11:55:54.982392+00:00",
+        "unit": "B3-1",
+        "path": "research/DGamma/CP5O20DeletionDisappearanceSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R199-main",
+      "pid": 7032,
+      "timestampUTC": "2026-09-09T11:56:28.564103+00:00",
+      "unit": "B3-2",
+      "path": "research/DGamma/CP5O20DeletionDisappearanceSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T11:56:31.733402+00:00",
+      "unit": "B3-2",
+      "owner": {
+        "lane": "R199-main",
+        "pid": 7032,
+        "timestampUTC": "2026-09-09T11:56:28.564103+00:00",
+        "unit": "B3-2",
+        "path": "research/DGamma/CP5O20DeletionDisappearanceSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R199-main",
+      "pid": 9877,
+      "timestampUTC": "2026-09-09T11:56:58.903040+00:00",
+      "unit": "B4-1",
+      "path": "research/DGamma/CP5O20DeletionDisappearanceSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T11:57:02.035702+00:00",
+      "unit": "B4-1",
+      "owner": {
+        "lane": "R199-main",
+        "pid": 9877,
+        "timestampUTC": "2026-09-09T11:56:58.903040+00:00",
+        "unit": "B4-1",
+        "path": "research/DGamma/CP5O20DeletionDisappearanceSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R199-main",
+      "pid": 13190,
+      "timestampUTC": "2026-09-09T11:57:45.030028+00:00",
+      "unit": "B5-1",
+      "path": "research/DGamma/CP5O20DeletionDisappearanceSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T11:57:48.200598+00:00",
+      "unit": "B5-1",
+      "owner": {
+        "lane": "R199-main",
+        "pid": 13190,
+        "timestampUTC": "2026-09-09T11:57:45.030028+00:00",
+        "unit": "B5-1",
+        "path": "research/DGamma/CP5O20DeletionDisappearanceSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R199-main",
+      "pid": 18836,
+      "timestampUTC": "2026-09-09T11:58:49.820536+00:00",
+      "unit": "B6-1",
+      "path": "research/DGamma/CP5O20DeletionDisappearanceSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T11:58:54.047071+00:00",
+      "unit": "B6-1",
+      "owner": {
+        "lane": "R199-main",
+        "pid": 18836,
+        "timestampUTC": "2026-09-09T11:58:49.820536+00:00",
+        "unit": "B6-1",
+        "path": "research/DGamma/CP5O20DeletionDisappearanceSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R199-main",
+      "pid": 29847,
+      "timestampUTC": "2026-09-09T12:00:51.015323+00:00",
+      "unit": "B6-2",
+      "path": "research/DGamma/CP5O20DeletionDisappearanceSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T12:00:54.159127+00:00",
+      "unit": "B6-2",
+      "owner": {
+        "lane": "R199-main",
+        "pid": 29847,
+        "timestampUTC": "2026-09-09T12:00:51.015323+00:00",
+        "unit": "B6-2",
+        "path": "research/DGamma/CP5O20DeletionDisappearanceSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R199-main",
+      "pid": 32381,
+      "timestampUTC": "2026-09-09T12:01:32.547715+00:00",
+      "unit": "B7-1",
+      "path": "research/DGamma/CP5O20DeletionDisappearanceSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T12:01:35.696814+00:00",
+      "unit": "B7-1",
+      "owner": {
+        "lane": "R199-main",
+        "pid": 32381,
+        "timestampUTC": "2026-09-09T12:01:32.547715+00:00",
+        "unit": "B7-1",
+        "path": "research/DGamma/CP5O20DeletionDisappearanceSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R199-main",
+      "pid": 36571,
+      "timestampUTC": "2026-09-09T12:02:28.681951+00:00",
+      "unit": "B8-1",
+      "path": "research/DGamma/CP5O20DeletionDisappearanceSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T12:02:31.829238+00:00",
+      "unit": "B8-1",
+      "owner": {
+        "lane": "R199-main",
+        "pid": 36571,
+        "timestampUTC": "2026-09-09T12:02:28.681951+00:00",
+        "unit": "B8-1",
+        "path": "research/DGamma/CP5O20DeletionDisappearanceSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R199-main",
+      "pid": 44099,
+      "timestampUTC": "2026-09-09T12:03:45.363292+00:00",
+      "unit": "B9-1",
+      "path": "research/DGamma/CP5O20DeletionDisappearanceSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T12:03:49.582976+00:00",
+      "unit": "B9-1",
+      "owner": {
+        "lane": "R199-main",
+        "pid": 44099,
+        "timestampUTC": "2026-09-09T12:03:45.363292+00:00",
+        "unit": "B9-1",
+        "path": "research/DGamma/CP5O20DeletionDisappearanceSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R199-main",
+      "pid": 51833,
+      "timestampUTC": "2026-09-09T12:05:15.627046+00:00",
+      "unit": "B10-1",
+      "path": "research/DGamma/CP5O20DeletionDisappearanceSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T12:05:18.786001+00:00",
+      "unit": "B10-1",
+      "owner": {
+        "lane": "R199-main",
+        "pid": 51833,
+        "timestampUTC": "2026-09-09T12:05:15.627046+00:00",
+        "unit": "B10-1",
+        "path": "research/DGamma/CP5O20DeletionDisappearanceSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R199-main",
+      "pid": 58588,
+      "timestampUTC": "2026-09-09T12:06:32.175615+00:00",
+      "unit": "B11-1",
+      "path": "research/DGamma/CP5O20DeletionDisappearanceSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T12:06:35.330941+00:00",
+      "unit": "B11-1",
+      "owner": {
+        "lane": "R199-main",
+        "pid": 58588,
+        "timestampUTC": "2026-09-09T12:06:32.175615+00:00",
+        "unit": "B11-1",
+        "path": "research/DGamma/CP5O20DeletionDisappearanceSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R199-main",
+      "pid": 62433,
+      "timestampUTC": "2026-09-09T12:07:13.854440+00:00",
+      "unit": "B12-1",
+      "path": "research/DGamma/CP5O20DeletionDisappearanceSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T12:07:15.960128+00:00",
+      "unit": "B12-1",
+      "owner": {
+        "lane": "R199-main",
+        "pid": 62433,
+        "timestampUTC": "2026-09-09T12:07:13.854440+00:00",
+        "unit": "B12-1",
+        "path": "research/DGamma/CP5O20DeletionDisappearanceSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R199-main",
+      "pid": 66329,
+      "timestampUTC": "2026-09-09T12:08:08.066850+00:00",
+      "unit": "B12-2",
+      "path": "research/DGamma/CP5O20DeletionDisappearanceSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T12:08:12.252061+00:00",
+      "unit": "B12-2",
+      "owner": {
+        "lane": "R199-main",
+        "pid": 66329,
+        "timestampUTC": "2026-09-09T12:08:08.066850+00:00",
+        "unit": "B12-2",
+        "path": "research/DGamma/CP5O20DeletionDisappearanceSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R199-main",
+      "pid": 69745,
+      "timestampUTC": "2026-09-09T12:08:49.103486+00:00",
+      "unit": "B13-1",
+      "path": "research/DGamma/CP5O20DeletionDisappearanceSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T12:08:53.370108+00:00",
+      "unit": "B13-1",
+      "owner": {
+        "lane": "R199-main",
+        "pid": 69745,
+        "timestampUTC": "2026-09-09T12:08:49.103486+00:00",
+        "unit": "B13-1",
+        "path": "research/DGamma/CP5O20DeletionDisappearanceSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R199-main",
+      "pid": 73535,
+      "timestampUTC": "2026-09-09T12:09:38.476296+00:00",
+      "unit": "B14-1",
+      "path": "research/DGamma/CP5O20DeletionDisappearanceSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T12:09:42.675738+00:00",
+      "unit": "B14-1",
+      "owner": {
+        "lane": "R199-main",
+        "pid": 73535,
+        "timestampUTC": "2026-09-09T12:09:38.476296+00:00",
+        "unit": "B14-1",
+        "path": "research/DGamma/CP5O20DeletionDisappearanceSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R199-main",
+      "pid": 78361,
+      "timestampUTC": "2026-09-09T12:10:24.176660+00:00",
+      "unit": "B15-1",
+      "path": "research/DGamma/CP5O20DeletionDisappearanceSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T12:10:28.378213+00:00",
+      "unit": "B15-1",
+      "owner": {
+        "lane": "R199-main",
+        "pid": 78361,
+        "timestampUTC": "2026-09-09T12:10:24.176660+00:00",
+        "unit": "B15-1",
+        "path": "research/DGamma/CP5O20DeletionDisappearanceSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R199-main",
+      "pid": 84448,
+      "timestampUTC": "2026-09-09T12:11:30.224298+00:00",
+      "unit": "B16-1",
+      "path": "research/DGamma/CP5O20DeletionDisappearanceSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T12:11:34.431381+00:00",
+      "unit": "B16-1",
+      "owner": {
+        "lane": "R199-main",
+        "pid": 84448,
+        "timestampUTC": "2026-09-09T12:11:30.224298+00:00",
+        "unit": "B16-1",
+        "path": "research/DGamma/CP5O20DeletionDisappearanceSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R199-main",
+      "pid": 89045,
+      "timestampUTC": "2026-09-09T12:12:23.230077+00:00",
+      "unit": "B17-1",
+      "path": "research-tests/DGamma/R199DeletionDisappearanceBoundaryPositive.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T12:12:25.338261+00:00",
+      "unit": "B17-1",
+      "owner": {
+        "lane": "R199-main",
+        "pid": 89045,
+        "timestampUTC": "2026-09-09T12:12:23.230077+00:00",
+        "unit": "B17-1",
+        "path": "research-tests/DGamma/R199DeletionDisappearanceBoundaryPositive.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R199-main",
+      "pid": 92718,
+      "timestampUTC": "2026-09-09T12:13:16.220329+00:00",
+      "unit": "B18-1",
+      "path": "research-tests/DGamma/R199DeletionDisappearanceBoundaryPositive.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T12:13:18.328873+00:00",
+      "unit": "B18-1",
+      "owner": {
+        "lane": "R199-main",
+        "pid": 92718,
+        "timestampUTC": "2026-09-09T12:13:16.220329+00:00",
+        "unit": "B18-1",
+        "path": "research-tests/DGamma/R199DeletionDisappearanceBoundaryPositive.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R199-main",
+      "pid": 30155,
+      "timestampUTC": "2026-09-09T12:20:20.190967+00:00",
+      "unit": "V1",
+      "path": "research/DGamma/CP5ActorLifecycleOnlyExtended.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T12:20:21.323661+00:00",
+      "unit": "V1",
+      "owner": {
+        "lane": "R199-main",
+        "pid": 30155,
+        "timestampUTC": "2026-09-09T12:20:20.190967+00:00",
+        "unit": "V1",
+        "path": "research/DGamma/CP5ActorLifecycleOnlyExtended.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R199-main",
+      "pid": 30209,
+      "timestampUTC": "2026-09-09T12:20:21.495671+00:00",
+      "unit": "V2",
+      "path": "research/DGamma/CP5AvailabilityAwarePlacement.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T12:20:22.574921+00:00",
+      "unit": "V2",
+      "owner": {
+        "lane": "R199-main",
+        "pid": 30209,
+        "timestampUTC": "2026-09-09T12:20:21.495671+00:00",
+        "unit": "V2",
+        "path": "research/DGamma/CP5AvailabilityAwarePlacement.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R199-main",
+      "pid": 30339,
+      "timestampUTC": "2026-09-09T12:20:22.755829+00:00",
+      "unit": "V3",
+      "path": "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T12:28:35.389716+00:00",
+      "unit": "V3",
+      "owner": {
+        "lane": "R199-main",
+        "pid": 30339,
+        "timestampUTC": "2026-09-09T12:20:22.755829+00:00",
+        "unit": "V3",
+        "path": "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R199-main",
+      "pid": 79778,
+      "timestampUTC": "2026-09-09T12:28:35.567944+00:00",
+      "unit": "V4",
+      "path": "research/DGamma/CP5ProviderHeadObservedSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T12:28:36.635529+00:00",
+      "unit": "V4",
+      "owner": {
+        "lane": "R199-main",
+        "pid": 79778,
+        "timestampUTC": "2026-09-09T12:28:35.567944+00:00",
+        "unit": "V4",
+        "path": "research/DGamma/CP5ProviderHeadObservedSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R199-main",
+      "pid": 79922,
+      "timestampUTC": "2026-09-09T12:28:36.818989+00:00",
+      "unit": "V5",
+      "path": "research-tests/DGamma/R174O17ProvisionCollisionCandidate.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T12:28:43.076716+00:00",
+      "unit": "V5",
+      "owner": {
+        "lane": "R199-main",
+        "pid": 79922,
+        "timestampUTC": "2026-09-09T12:28:36.818989+00:00",
+        "unit": "V5",
+        "path": "research-tests/DGamma/R174O17ProvisionCollisionCandidate.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R199-main",
+      "pid": 80397,
+      "timestampUTC": "2026-09-09T12:28:43.238474+00:00",
+      "unit": "V6",
+      "path": "research-tests/DGamma/R197ProviderHeadObservedPositive.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T12:28:44.337666+00:00",
+      "unit": "V6",
+      "owner": {
+        "lane": "R199-main",
+        "pid": 80397,
+        "timestampUTC": "2026-09-09T12:28:43.238474+00:00",
+        "unit": "V6",
+        "path": "research-tests/DGamma/R197ProviderHeadObservedPositive.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R199-main",
+      "pid": 80447,
+      "timestampUTC": "2026-09-09T12:28:44.503870+00:00",
+      "unit": "V7",
+      "path": "research-tests/DGamma/R39RelationalMapAlgebraPositive.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T12:28:45.572807+00:00",
+      "unit": "V7",
+      "owner": {
+        "lane": "R199-main",
+        "pid": 80447,
+        "timestampUTC": "2026-09-09T12:28:44.503870+00:00",
+        "unit": "V7",
+        "path": "research-tests/DGamma/R39RelationalMapAlgebraPositive.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R199-main",
+      "pid": 81168,
+      "timestampUTC": "2026-09-09T12:28:45.743526+00:00",
+      "unit": "V8",
+      "path": "research-tests/DGamma/R45BareDiamondDisciplineCounterexamplePositive.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T12:28:49.929480+00:00",
+      "unit": "V8",
+      "owner": {
+        "lane": "R199-main",
+        "pid": 81168,
+        "timestampUTC": "2026-09-09T12:28:45.743526+00:00",
+        "unit": "V8",
+        "path": "research-tests/DGamma/R45BareDiamondDisciplineCounterexamplePositive.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R199-main",
+      "pid": 81526,
+      "timestampUTC": "2026-09-09T12:28:50.095325+00:00",
+      "unit": "V9",
+      "path": "research/DGamma/CP5ConfluenceDeletionChainSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T12:30:07.943093+00:00",
+      "unit": "V9",
+      "owner": {
+        "lane": "R199-main",
+        "pid": 81526,
+        "timestampUTC": "2026-09-09T12:28:50.095325+00:00",
+        "unit": "V9",
+        "path": "research/DGamma/CP5ConfluenceDeletionChainSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R199-main",
+      "pid": 90352,
+      "timestampUTC": "2026-09-09T12:30:08.101732+00:00",
+      "unit": "V10",
+      "path": "research/DGamma/CP5O20NativeTargetAttachmentSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T12:30:10.223991+00:00",
+      "unit": "V10",
+      "owner": {
+        "lane": "R199-main",
+        "pid": 90352,
+        "timestampUTC": "2026-09-09T12:30:08.101732+00:00",
+        "unit": "V10",
+        "path": "research/DGamma/CP5O20NativeTargetAttachmentSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R199-main",
+      "pid": 90478,
+      "timestampUTC": "2026-09-09T12:30:10.410929+00:00",
+      "unit": "V11",
+      "path": "research/DGamma/CP5UniqueRawNameOrdinalCapital.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T12:35:17.405344+00:00",
+      "unit": "V11",
+      "owner": {
+        "lane": "R199-main",
+        "pid": 90478,
+        "timestampUTC": "2026-09-09T12:30:10.410929+00:00",
+        "unit": "V11",
+        "path": "research/DGamma/CP5UniqueRawNameOrdinalCapital.idr"
+      }
+    }
+  ],
+  "resourceStops": [],
+  "sourceMutations": [],
+  "extraBuildingRejectedUnits": [],
+  "zeroSampleUnits": [
+    "V1",
+    "V2",
+    "V4",
+    "V6",
+    "V7",
+    "V12",
+    "V13",
+    "V23",
+    "V25",
+    "V33",
+    "V106",
+    "V108",
+    "V111"
+  ],
+  "sampleQualification": "Own-worktree one-second RSS samples are NOT OS high-water; zero means no live sample captured, not zero actual peak",
+  "maxLocalDiamondSampleRSSKiB": 50612064,
+  "maxOtherSampleRSSKiB": 44800976,
+  "maxUniqueOrdinalSampleRSSKiB": 44800976,
+  "staleLockRemovals": [],
+  "waitEvents": [],
+  "historicalOwnLocksReleased": true,
+  "sharedLockPathNotInspected": "NOT INSPECTED: cross-lane lock abolished by owner",
+  "lane2CompilerObservations": [
+    {
+      "unit": "B13-1",
+      "processes": [
+        "69207 69197 /opt/homebrew/opt/chezscheme/bin/chez --program /opt/homebrew/Cellar/idris2/0.8.0_2/libexec/bin/idris2_app/idris2.so --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/src --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/research --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R10-Sources --check /Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R10-Sources/DGamma/L2R10AdvanceReplay.idr"
+      ]
+    },
+    {
+      "unit": "V1",
+      "processes": [
+        "24663 24653 /opt/homebrew/opt/chezscheme/bin/chez --program /opt/homebrew/Cellar/idris2/0.8.0_2/libexec/bin/idris2_app/idris2.so --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/src --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/research --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R10-Sources --check /Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R10-Sources/DGamma/L2R10SplitEdges.idr"
+      ]
+    }
+  ]
+}
