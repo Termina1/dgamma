@@ -31,3 +31,19 @@ record BundlePhaseNative where
   0 sAfterRBegin : checkedApplyAction @{%search} @{%search} (OInsert 4 Root (smallComponent False)) (bundlePhaseState 5) = Just (OInsertTag, bundlePhaseState 6)
   0 firstMoveSnapshot : runtimeSnapshot (bundlePhaseState 3) = runtimeSnapshot (bundlePhaseState 6)
   0 secondMoveSnapshot : runtimeSnapshot (bundlePhaseState 6) = runtimeSnapshot (bundlePhaseState 8)
+
+||| Authenticate both S edges by the native raw evaluator plus inherited
+||| Preservation. Exact snapshots are simultaneous observations of explicit
+||| state expressions, not reconstructed literal SystemState equality.
+public export
+0 bundlePhaseNative : BundlePhaseNative
+bundlePhaseNative = MkBundlePhaseNative
+  (checkedFromRaw %search %search (OInsert 4 Root (smallComponent False))
+    (bundlePhaseState 2) (bundlePhaseState 3) OInsertTag
+    (checkedActionTargetValid %search %search (OInsert 3 Root (smallComponent True))
+      (smallState 8) (smallState 9) OInsertTag (smallLateInsert3 smallNativeExecution)) Refl)
+  (checkedFromRaw %search %search (OInsert 4 Root (smallComponent False))
+    (bundlePhaseState 5) (bundlePhaseState 6) OInsertTag
+    (checkedActionTargetValid %search %search (LBegin 2)
+      (smallState 5) (smallState 6) LBeginTag (smallBegin2 smallNativeExecution)) Refl)
+  Refl Refl
