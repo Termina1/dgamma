@@ -54,3 +54,43 @@ positiveFloorAtGuard ordinal target True seen equation positive floor =
   absurd (transitive positive
     (replace {p = \n => LTE (minus ordinal target) n} (sym (minusZeroN target))
       (minusLteMonotone {m = ordinal} {n = target} {p = target} floor)))
+
+||| FULL native root-BIRTH forbidden case UNDER the stated external-order
+||| floor: an adjacent earlier native root cannot precede a positive-distance
+||| selected catalog birth when its ending cut is at/below the actual target.
+||| Front/never/phase premises retain the authorized domain; arithmetic is
+||| stronger and does not need to inspect them. Deriving this floor from the
+||| catalog maximum/rank remains separate, as does global control-head
+||| extraction. attachedC forced controls need the earlier-placed-bundle lift.
+||| Pass the ACTUAL isJust(anchorOf ...) value and Refl at the call site.
+export
+0 rootBirthPredecessorExcluded :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, finalState : SystemState name key value world error} ->
+  {trace : Transitions first finalState} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (trail : AvailabilityTrace name key world error value trace) ->
+  (entry : RootCatalogEntry name key world error value) ->
+  (0 member : Elem entry (scanRootCatalog 0 trail)) ->
+  (previousRoot : name) -> (previousComponent : Component key value world error) ->
+  (previousBirth : LocatedActionOccurrence (OInsert previousRoot Root previousComponent) trace) ->
+  (0 adjacent : catalogOrdinal entry = S (locatedActionOrdinal previousBirth)) ->
+  (0 front : FrontNormal name key world error value nameEq keyEq trail) ->
+  (0 never : ForcedRootNeverRetired name key world error value nameEq keyEq trail) ->
+  (0 phase : ForcedRootPhase name key world error value nameEq keyEq trail entry) ->
+  (0 externalFloor : LTE (S (locatedActionOrdinal previousBirth)) (targetPosition nameEq keyEq trail (catalogOrdinal entry))) ->
+  (seen : Bool) -> (0 equation : isJust (anchorOf nameEq keyEq trail (catalogOrdinal entry)) = seen) ->
+  (0 positive : LT 0 (rootDistance nameEq keyEq trail (catalogOrdinal entry))) -> Void
+rootBirthPredecessorExcluded nameEq keyEq trail entry member previousRoot previousComponent previousBirth
+  adjacent front never phase externalFloor False equation positive =
+  absurd (replace {p = \n => LT 0 n}
+    (the (rootDistance nameEq keyEq trail (catalogOrdinal entry) = 0) (rewrite equation in Refl)) positive)
+rootBirthPredecessorExcluded nameEq keyEq trail entry member previousRoot previousComponent previousBirth
+  adjacent front never phase externalFloor True equation positive =
+  positiveFloorAtGuard (catalogOrdinal entry) (targetPosition nameEq keyEq trail (catalogOrdinal entry)) True True Refl
+    (replace {p = \n => LT 0 n}
+      (the (rootDistance nameEq keyEq trail (catalogOrdinal entry) =
+        minus (catalogOrdinal entry) (targetPosition nameEq keyEq trail (catalogOrdinal entry)))
+        (rewrite equation in Refl)) positive)
+    (replace {p = \n => LTE n (targetPosition nameEq keyEq trail (catalogOrdinal entry))}
+      (sym adjacent) externalFloor)
