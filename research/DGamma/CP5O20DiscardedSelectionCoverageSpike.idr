@@ -198,3 +198,26 @@ o20ClosingFreeRejectsUnloadSplit name key world error value nameEq keyEq selecte
           (InstalledEnd (fst (snd (lUnloadBoundary nameEq keyEq selected before afterState LUnloadTag
             (checkedActionProjects nameEq keyEq (LUnload selected) before afterState LUnloadTag checked)))))
           (MkUnloadStep checked) later Refl))
+
+||| The actual native action equation selects Unload. Its checked evaluator
+||| supplies the tag equation used by the preceding closed-episode producer.
+export
+0 o20ClosingFreeRejectsCheckedAction :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  {initial, before, afterState, finalState : SystemState name key value world error} ->
+  (global : Transitions initial finalState) -> (earlier : Transitions initial before) ->
+  (action : Action name key value world error) -> (tag : RuleTag) ->
+  (checked : (checkedApplyAction @{nameEq} @{keyEq} action before = Just (tag, afterState))) ->
+  (later : Transitions afterState finalState) ->
+  (appendTransitions earlier (MoreTransitions (Fired {before} {afterState} nameEq keyEq action tag checked) later) = global) ->
+  AlignedTransitions name key world error value nameEq keyEq global ->
+  (bindings (registry initial) = []) ->
+  NoClosingEpisodes name key world error value nameEq keyEq global ->
+  (action = LUnload selected) -> Void
+o20ClosingFreeRejectsCheckedAction name key world error value nameEq keyEq selected
+  {before} {afterState} global earlier _ tag checked later decomposition aligned empty noClosing Refl =
+    o20ClosingFreeRejectsUnloadSplit name key world error value nameEq keyEq selected
+      global earlier tag checked later decomposition aligned empty noClosing
+      (fst (lUnloadBoundary nameEq keyEq selected before afterState tag
+        (checkedActionProjects nameEq keyEq (LUnload selected) before afterState tag checked)))
