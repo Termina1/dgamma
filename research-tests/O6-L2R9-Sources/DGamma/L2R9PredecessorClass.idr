@@ -63,3 +63,19 @@ data PredecessorClass :
     {nameEq : DecEq name} -> {root, child : name} ->
     {0 source : SystemState name key value world error} ->
     ControlClass nameEq root child source -> PredecessorClass nameEq root source (ORemove child)
+
+||| Native lifecycle kind plus one observed owner/root Dec. A local actor
+||| is returned explicitly, never silently coerced to a foreign crossing.
+public export
+lifecycleAtDifference : {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (root : name) ->
+  (source : SystemState name key value world error) ->
+  (action : Action name key value world error) ->
+  (seen : Bool) -> (0 lifeEquation : isLifecycleAction action = seen) -> (0 lifeAccepted : seen = True) ->
+  (decision : Dec (actionOwner action = root)) ->
+  (0 equation : decEq @{nameEq} (actionOwner action) root = decision) ->
+  PredecessorClass nameEq root source action
+lifecycleAtDifference nameEq root source action seen lifeEquation lifeAccepted (Yes same) equation =
+  LocalLifecyclePredecessor seen lifeEquation lifeAccepted same
+lifecycleAtDifference nameEq root source action seen lifeEquation lifeAccepted (No foreign) equation =
+  ForeignPredecessor (CrossLifecycle seen lifeEquation lifeAccepted foreign)
