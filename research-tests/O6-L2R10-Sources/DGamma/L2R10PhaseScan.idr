@@ -38,3 +38,23 @@ phaseControlOwner : {name, key, world, error : Type} -> {value : key -> Type} ->
     child (registry source) = found) -> Maybe name
 phaseControlOwner nameEq child source Nothing equation = Nothing
 phaseControlOwner nameEq child source (Just fiber) equation = phaseParentOwner (fiberParent fiber)
+
+||| Exhaustive executable actor-core classifier, authentic to each source.
+||| Lifecycle ownership, yielded child inserts, and installed child controls
+||| qualify. A root birth/control or missing control fiber breaks the core.
+public export
+phaseActionOwner : {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (source : SystemState name key value world error) ->
+  Action name key value world error -> Maybe name
+phaseActionOwner nameEq source (OInsert child parent component) = phaseParentOwner parent
+phaseActionOwner {name} {key} {world} {error} {value} nameEq source (ORetire child) =
+  phaseControlOwner nameEq child source
+    (lookupFiber {name} {key} {value} {world} {error} @{nameEq} child (registry source)) Refl
+phaseActionOwner {name} {key} {world} {error} {value} nameEq source (ORemove child) =
+  phaseControlOwner nameEq child source
+    (lookupFiber {name} {key} {value} {world} {error} @{nameEq} child (registry source)) Refl
+phaseActionOwner nameEq source (LBegin actor) = Just actor
+phaseActionOwner nameEq source (LAdvance actor) = Just actor
+phaseActionOwner nameEq source (LDivert actor) = Just actor
+phaseActionOwner nameEq source (LUnload actor) = Just actor
+phaseActionOwner nameEq source (LLeave actor) = Just actor
