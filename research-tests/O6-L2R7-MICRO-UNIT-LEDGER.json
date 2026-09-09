@@ -1,0 +1,1312 @@
+{
+  "base": "87e9fb20",
+  "sourceBoundary": "435bd364",
+  "archiveBoundary": "630c0bb57b2f93963ec4361e0e0504091a16cb89",
+  "caps": {
+    "A": 22,
+    "B": 16,
+    "C": 12,
+    "D": 8,
+    "E": 3
+  },
+  "attemptedSlots": {
+    "A": 22,
+    "B": 16,
+    "C": 12,
+    "D": 8
+  },
+  "retainedDeclarations": 57,
+  "stoppedUnits": [
+    "A8"
+  ],
+  "records": [
+    {
+      "unit": "A1",
+      "status": "checked record/family; producer separate",
+      "declarations": [
+        "AnyHit"
+      ],
+      "path": "research-tests/O6-L2R7-Sources/DGamma/L2R7ObservedAny.idr",
+      "commit": "c6ab90430d33b2972a2f854587faf5335bbfae5d",
+      "validation": null,
+      "attempts": [
+        {
+          "unit": "A1-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "sourceSHA256": "cab0e5db85023872721963c28f4052dfa4dccee8c1aa69930cda068fb1da4df0",
+          "maxSampleRSSKiB": 198752,
+          "seconds": 0.5839837910607457
+        }
+      ]
+    },
+    {
+      "unit": "A2",
+      "status": "checked total definition/proof; exact scope in audit",
+      "declarations": [
+        "anyHitThere"
+      ],
+      "path": "research-tests/O6-L2R7-Sources/DGamma/L2R7ObservedAny.idr",
+      "commit": "30283f733c407b292b2639e9a379d11255d6ee0c",
+      "validation": null,
+      "attempts": [
+        {
+          "unit": "A2-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "sourceSHA256": "817edd20a085f48d260a97b73504015fe01a18654dec5fe44e6fcc580e18794e",
+          "maxSampleRSSKiB": 198832,
+          "seconds": 0.5793276662006974
+        }
+      ]
+    },
+    {
+      "unit": "A3",
+      "status": "checked total definition/proof; exact scope in audit",
+      "declarations": [
+        "anyHitConsObserved"
+      ],
+      "path": "research-tests/O6-L2R7-Sources/DGamma/L2R7ObservedAny.idr",
+      "commit": "7cd5e14d3b9a0e65e7ecd775c83a6197f58cab8a",
+      "validation": null,
+      "attempts": [
+        {
+          "unit": "A3-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "sourceSHA256": "fc70754f34ae0fe4991953abde861fa6cd2f3b94a5f75d6661199e263a5f47f2",
+          "maxSampleRSSKiB": 196544,
+          "seconds": 0.5802917080000043
+        }
+      ]
+    },
+    {
+      "unit": "A4",
+      "status": "checked total definition/proof; exact scope in audit",
+      "declarations": [
+        "anyHitObserved"
+      ],
+      "path": "research-tests/O6-L2R7-Sources/DGamma/L2R7ObservedAny.idr",
+      "commit": "d34e2f6eca6da3c9571f81df2b7b32cdaf3d9162",
+      "validation": null,
+      "attempts": [
+        {
+          "unit": "A4-1",
+          "passed": false,
+          "fresh": true,
+          "exit": 1,
+          "sourceSHA256": "286ec31da170dd464ff41c116145ec255e69cfb21e08e5da8d9f6b7c297ccf59",
+          "maxSampleRSSKiB": 0,
+          "seconds": 0.2951662503182888
+        },
+        {
+          "unit": "A4-2",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "sourceSHA256": "cfb7c3002daca90542ef2f00cac0f9db7b1e091af7cf146d177acc36295f5df7",
+          "maxSampleRSSKiB": 192288,
+          "seconds": 0.5747692915610969
+        }
+      ]
+    },
+    {
+      "unit": "A5",
+      "status": "checked total definition/proof; exact scope in audit",
+      "declarations": [
+        "anyFoldTrue"
+      ],
+      "path": "research-tests/O6-L2R7-Sources/DGamma/L2R7ObservedAny.idr",
+      "commit": "b38323a07ab4790f446673b61c6987923bbac563",
+      "validation": null,
+      "attempts": [
+        {
+          "unit": "A5-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "sourceSHA256": "be773c1929b7a82c73d28b1d1f974cb1a0346093efa32ac523e8e6745e419cf2",
+          "maxSampleRSSKiB": 194384,
+          "seconds": 0.5860157497227192
+        }
+      ]
+    },
+    {
+      "unit": "A6",
+      "status": "checked total definition/proof; exact scope in audit",
+      "declarations": [
+        "anyFoldObserved"
+      ],
+      "path": "research-tests/O6-L2R7-Sources/DGamma/L2R7ObservedAny.idr",
+      "commit": "ab7e32c760995f2eebe25ec412f913fa708a9121",
+      "validation": null,
+      "attempts": [
+        {
+          "unit": "A6-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "sourceSHA256": "b9d3ece640cfd441cca674275a4eaee2d1cd3ca709c33ffefa795d1934bc3b1c",
+          "maxSampleRSSKiB": 194416,
+          "seconds": 0.5774385826662183
+        }
+      ]
+    },
+    {
+      "unit": "A7",
+      "status": "checked record/family; producer separate",
+      "declarations": [
+        "SharedKey"
+      ],
+      "path": "research-tests/O6-L2R7-Sources/DGamma/L2R7ReleaseDecode.idr",
+      "commit": "3ad23bd06870936e8a763a923dc7e7cfa063ee30",
+      "validation": null,
+      "attempts": [
+        {
+          "unit": "A7-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "sourceSHA256": "e32da08475bfd1bdafea514f044725f368a1ebf799b38100bf1b8a517f042682",
+          "maxSampleRSSKiB": 206432,
+          "seconds": 0.5839609582908452
+        }
+      ]
+    },
+    {
+      "unit": "A8",
+      "status": "EXHAUSTED 3/3; ratified FULL REVERT; no restatement",
+      "declarations": [],
+      "path": "research-tests/O6-L2R7-Sources/DGamma/L2R7ReleaseDecode.idr",
+      "commit": null,
+      "validation": null,
+      "attempts": [
+        {
+          "unit": "A8-1",
+          "passed": false,
+          "fresh": true,
+          "exit": 1,
+          "sourceSHA256": "7083fd34ec8e9ecd133b4c1b99cf40002c6c2e9284984916d3a150f8f69bd0c8",
+          "maxSampleRSSKiB": 198416,
+          "seconds": 0.5814255410805345
+        },
+        {
+          "unit": "A8-2",
+          "passed": false,
+          "fresh": true,
+          "exit": 1,
+          "sourceSHA256": "39038e95bba4131dda6a04a4619b6b5960530aa594b77cf331d2b37150d9e581",
+          "maxSampleRSSKiB": 198448,
+          "seconds": 0.5955164590850472
+        },
+        {
+          "unit": "A8-3",
+          "passed": false,
+          "fresh": true,
+          "exit": 1,
+          "sourceSHA256": "0b2ff15c2181e76bc41db8f157bcd60391ee9f72481a702f3461d668dc5e6d57",
+          "maxSampleRSSKiB": 206656,
+          "seconds": 0.5840955418534577
+        }
+      ]
+    },
+    {
+      "unit": "A9",
+      "status": "checked total definition/proof; exact scope in audit",
+      "declarations": [
+        "acceptedConjunction"
+      ],
+      "path": "research-tests/O6-L2R7-Sources/DGamma/L2R7Classifier.idr",
+      "commit": "9173d084e13ce8eb25ce5ae7c4a0c25b81a8d998",
+      "validation": null,
+      "attempts": [
+        {
+          "unit": "A9-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "sourceSHA256": "b8b517516c169a47834f5dd283ea0830bd204405b5b6dd8b327a3a5967ec0c8f",
+          "maxSampleRSSKiB": 210384,
+          "seconds": 0.576596416067332
+        }
+      ]
+    },
+    {
+      "unit": "A10",
+      "status": "checked total definition/proof; exact scope in audit",
+      "declarations": [
+        "leZero"
+      ],
+      "path": "research-tests/O6-L2R7-Sources/DGamma/L2R7Classifier.idr",
+      "commit": "c3dc3e4b710907b876e5669dd593dc43dd7492d1",
+      "validation": null,
+      "attempts": [
+        {
+          "unit": "A10-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "sourceSHA256": "f2f44387cb0ff2e47072c30b62e567a6e54d15456037384ef10e772b67604479",
+          "maxSampleRSSKiB": 201552,
+          "seconds": 0.5865370412357152
+        }
+      ]
+    },
+    {
+      "unit": "A11",
+      "status": "checked total definition/proof; exact scope in audit",
+      "declarations": [
+        "leSuccessorBridge"
+      ],
+      "path": "research-tests/O6-L2R7-Sources/DGamma/L2R7Classifier.idr",
+      "commit": "6c0cf580aa264c550cc7d2d3e829b279d6596a7f",
+      "validation": null,
+      "attempts": [
+        {
+          "unit": "A11-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "sourceSHA256": "74029c0989cf3c68c0a99016481c9aced6e3e037950a0fe18bd56073794bebd5",
+          "maxSampleRSSKiB": 207248,
+          "seconds": 0.584428499918431
+        }
+      ]
+    },
+    {
+      "unit": "A12",
+      "status": "checked total definition/proof; exact scope in audit",
+      "declarations": [
+        "leToLte"
+      ],
+      "path": "research-tests/O6-L2R7-Sources/DGamma/L2R7Classifier.idr",
+      "commit": "3b6dd0deba08574a41e3eb053975e4b88a99252d",
+      "validation": null,
+      "attempts": [
+        {
+          "unit": "A12-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "sourceSHA256": "d709c02a67228342bc7e308fbe69d34ac84c3324afd047a410b8abc15ca400e0",
+          "maxSampleRSSKiB": 189536,
+          "seconds": 0.5765188331715763
+        }
+      ]
+    },
+    {
+      "unit": "A13",
+      "status": "checked total definition/proof; exact scope in audit",
+      "declarations": [
+        "forcedSeedBeforeObserved"
+      ],
+      "path": "research-tests/O6-L2R7-Sources/DGamma/L2R7Classifier.idr",
+      "commit": "220a560def2bd4ef826d6dae5e4298c908a99f73",
+      "validation": null,
+      "attempts": [
+        {
+          "unit": "A13-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "sourceSHA256": "e5252be81ad82b5bd5208ec7058631571f4b20a533e67886d66c14e3fba4a09d",
+          "maxSampleRSSKiB": 204016,
+          "seconds": 0.5827474999241531
+        }
+      ]
+    },
+    {
+      "unit": "A14",
+      "status": "checked total definition/proof; exact scope in audit",
+      "declarations": [
+        "classifyForcedHitSound"
+      ],
+      "path": "research-tests/O6-L2R7-Sources/DGamma/L2R7Classifier.idr",
+      "commit": "fd4e992473face5410b366713dcc7cdc7c518893",
+      "validation": null,
+      "attempts": [
+        {
+          "unit": "A14-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "sourceSHA256": "d805affd2a44cc38a95ee2d09eb4748aa3bb0b09605b087c3e7231ae3df3c6a3",
+          "maxSampleRSSKiB": 279472,
+          "seconds": 0.8775358339771628
+        }
+      ]
+    },
+    {
+      "unit": "A15",
+      "status": "checked total definition/proof; exact scope in audit",
+      "declarations": [
+        "classifyForcedSound"
+      ],
+      "path": "research-tests/O6-L2R7-Sources/DGamma/L2R7Classifier.idr",
+      "commit": "190703a3acdb1e8e4a2f8eaf4bb9705cd8284f98",
+      "validation": null,
+      "attempts": [
+        {
+          "unit": "A15-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "sourceSHA256": "88027799fbb2d40e0d0bf8226e98d0f81deddcf15ee15855d7b0d4caca6a2404",
+          "maxSampleRSSKiB": 265952,
+          "seconds": 0.8789999592117965
+        }
+      ]
+    },
+    {
+      "unit": "A16",
+      "status": "checked record/family; producer separate",
+      "declarations": [
+        "ForcedSeedBasis"
+      ],
+      "path": "research-tests/O6-L2R7-Sources/DGamma/L2R7Classifier.idr",
+      "commit": "abe0865749a72f403a8b2fe214e766af94563860",
+      "validation": null,
+      "attempts": [
+        {
+          "unit": "A16-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "sourceSHA256": "41bbb9bd70c90ca18f11075f536e4fa48c28a98cc0ec08f585c6fedc18b166fa",
+          "maxSampleRSSKiB": 265648,
+          "seconds": 0.8749912916682661
+        }
+      ]
+    },
+    {
+      "unit": "A17",
+      "status": "checked total definition/proof; exact scope in audit",
+      "declarations": [
+        "forcedSeedBasis"
+      ],
+      "path": "research-tests/O6-L2R7-Sources/DGamma/L2R7Classifier.idr",
+      "commit": "fe533a13b811cbdb9e62e44c2e994d80dd1f95f9",
+      "validation": null,
+      "attempts": [
+        {
+          "unit": "A17-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "sourceSHA256": "44038c397345fb568bf47a52327a5f609dfd70ec04ef5fa997cca4731423a94d",
+          "maxSampleRSSKiB": 274720,
+          "seconds": 0.8669948340393603
+        }
+      ]
+    },
+    {
+      "unit": "A18",
+      "status": "checked total definition/proof; exact scope in audit",
+      "declarations": [
+        "anyMappedCons"
+      ],
+      "path": "research-tests/O6-L2R7-Sources/DGamma/L2R7Classifier.idr",
+      "commit": "fe4cb47e1f1b514fc49a64e1e590bd1811bcd2aa",
+      "validation": null,
+      "attempts": [
+        {
+          "unit": "A18-1",
+          "passed": false,
+          "fresh": true,
+          "exit": 1,
+          "sourceSHA256": "660b27f804a52770271ff1b35157f91384fa5cae12bc86aa04b7aafb1da0f663",
+          "maxSampleRSSKiB": 192640,
+          "seconds": 0.5791240413673222
+        },
+        {
+          "unit": "A18-2",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "sourceSHA256": "35dac16642a33e28ec7a0b73f70dd4671d3932a6f52a2063f3213bb8746f0d39",
+          "maxSampleRSSKiB": 291552,
+          "seconds": 0.865541665814817
+        }
+      ]
+    },
+    {
+      "unit": "A19",
+      "status": "checked total definition/proof; exact scope in audit",
+      "declarations": [
+        "anyMappedMember"
+      ],
+      "path": "research-tests/O6-L2R7-Sources/DGamma/L2R7Classifier.idr",
+      "commit": "33c34d8af5e3ca7c5154cf5460c29ad7611849a5",
+      "validation": null,
+      "attempts": [
+        {
+          "unit": "A19-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "sourceSHA256": "72d005cf13751d1c6a6b4ff81d00c9b0f13a0dd7f01a3de6d801a9a4d2cff89e",
+          "maxSampleRSSKiB": 271600,
+          "seconds": 0.8673897911794484
+        }
+      ]
+    },
+    {
+      "unit": "A20",
+      "status": "checked total definition/proof; exact scope in audit",
+      "declarations": [
+        "lteToLeTrue"
+      ],
+      "path": "research-tests/O6-L2R7-Sources/DGamma/L2R7Classifier.idr",
+      "commit": "46045c0efdc5e80c4782cd98668bb56dbaa8ae4e",
+      "validation": null,
+      "attempts": [
+        {
+          "unit": "A20-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "sourceSHA256": "146f2fef86bfcec6e31623f9c44f0621594cb5c71fa7f1db15719b9c7e47d695",
+          "maxSampleRSSKiB": 281600,
+          "seconds": 0.8792116669937968
+        }
+      ]
+    },
+    {
+      "unit": "A21",
+      "status": "checked total definition/proof; exact scope in audit",
+      "declarations": [
+        "classifyForcedComplete"
+      ],
+      "path": "research-tests/O6-L2R7-Sources/DGamma/L2R7Classifier.idr",
+      "commit": "e353c4ccec499b63d9d07469bac3ef61d620efd4",
+      "validation": null,
+      "attempts": [
+        {
+          "unit": "A21-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "sourceSHA256": "2781db374d807441a0bd9bc847a09408764a506a12ba5014e715166ddb1e8bf6",
+          "maxSampleRSSKiB": 288576,
+          "seconds": 0.8624363332055509
+        }
+      ]
+    },
+    {
+      "unit": "A22",
+      "status": "checked record/family; producer separate",
+      "declarations": [
+        "ForcedClassificationAt"
+      ],
+      "path": "research-tests/O6-L2R7-Sources/DGamma/L2R7Classifier.idr",
+      "commit": "c4821dbe7a11972a305526f4f921d8832e10dabd",
+      "validation": null,
+      "attempts": [
+        {
+          "unit": "A22-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "sourceSHA256": "4efd600f78d4a466d8abd75f1a4d171a33a0cde1000df68ba4755da5610b5192",
+          "maxSampleRSSKiB": 262528,
+          "seconds": 0.8811504170298576
+        }
+      ]
+    },
+    {
+      "unit": "B1",
+      "status": "checked record/family; producer separate",
+      "declarations": [
+        "OrderedForcedRootBundleC"
+      ],
+      "path": "research-tests/O6-L2R7-Sources/DGamma/L2R7AttachedC.idr",
+      "commit": "a79d8557eeba5d55640c2d8744ee048452d99142",
+      "validation": null,
+      "attempts": [
+        {
+          "unit": "B1-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "sourceSHA256": "bbc87f95578abb63c3f2b07d406139bbb2898b86bebcd16fc2dbd684013a12b4",
+          "maxSampleRSSKiB": 286304,
+          "seconds": 0.8697517910040915
+        }
+      ]
+    },
+    {
+      "unit": "B2",
+      "status": "checked record/family; producer separate",
+      "declarations": [
+        "ActorLifecycleOnlyAttachedC"
+      ],
+      "path": "research-tests/O6-L2R7-Sources/DGamma/L2R7AttachedC.idr",
+      "commit": "b3746a68e2a578600e0217afe958317fd4f9530b",
+      "validation": "V1",
+      "attempts": [
+        {
+          "unit": "B2-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "sourceSHA256": "15c0ffaa68d57a56bf4ba291a45d95555cfa5aa43d64feda08f231560200f4fc",
+          "maxSampleRSSKiB": 300880,
+          "seconds": 0.8934870418161154
+        }
+      ]
+    },
+    {
+      "unit": "B3",
+      "status": "checked total definition/proof; exact scope in audit",
+      "declarations": [
+        "bundleIntoC"
+      ],
+      "path": "research-tests/O6-L2R7-Sources/DGamma/L2R7AttachedC.idr",
+      "commit": "f5fe40c53fb9fa063311eb4807b4ccc3e5e1191a",
+      "validation": null,
+      "attempts": [
+        {
+          "unit": "B3-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "sourceSHA256": "ffe72f3ea31485aed6b8027ca046cdbc83fa9222c9c5d0b313b0e82d070ed074",
+          "maxSampleRSSKiB": 288160,
+          "seconds": 0.8828928750008345
+        }
+      ]
+    },
+    {
+      "unit": "B4",
+      "status": "checked total definition/proof; exact scope in audit",
+      "declarations": [
+        "attachedIntoC"
+      ],
+      "path": "research-tests/O6-L2R7-Sources/DGamma/L2R7AttachedC.idr",
+      "commit": "60130345e8dad8ef25b79ba6fe46f85600172055",
+      "validation": null,
+      "attempts": [
+        {
+          "unit": "B4-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "sourceSHA256": "0fd33b7d2dd0ed3f7201e7a5bf39809f4dd69487a65e9ec10a40ec1c6741cb34",
+          "maxSampleRSSKiB": 272848,
+          "seconds": 0.8724531251937151
+        }
+      ]
+    },
+    {
+      "unit": "B5",
+      "status": "checked total definition/proof; exact scope in audit",
+      "declarations": [
+        "controlState"
+      ],
+      "path": "research-tests/O6-L2R7-Sources/DGamma/L2R7ControlStates.idr",
+      "commit": "df6c787eaee90e5dee89230ea92548193df8a9e0",
+      "validation": null,
+      "attempts": [
+        {
+          "unit": "B5-1",
+          "passed": false,
+          "fresh": true,
+          "exit": 1,
+          "sourceSHA256": "7487a8601b2b0d96d3fac8a9d2be4ce6a39bde686e1f5e774e14ec7857f8023e",
+          "maxSampleRSSKiB": 184000,
+          "seconds": 0.5844615828245878
+        },
+        {
+          "unit": "B5-2",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "sourceSHA256": "62ca8663dbebf15d219b6e5f51b8489929c34b29dda05a24cd1a79f14ef1db48",
+          "maxSampleRSSKiB": 291120,
+          "seconds": 0.8708557076752186
+        }
+      ]
+    },
+    {
+      "unit": "B6",
+      "status": "checked record/family; producer separate",
+      "declarations": [
+        "ControlNativeExecution"
+      ],
+      "path": "research-tests/O6-L2R7-Sources/DGamma/L2R7ControlExecution.idr",
+      "commit": "0cc147457e95c404c475c78f5ae2073cff9bfb25",
+      "validation": null,
+      "attempts": [
+        {
+          "unit": "B6-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "sourceSHA256": "b678b7201b49e62d45d5d6a96203719a07b7f2e3110a50cffc693348c78aa277",
+          "maxSampleRSSKiB": 1188800,
+          "seconds": 40.12763570807874
+        }
+      ]
+    },
+    {
+      "unit": "B7",
+      "status": "checked total definition/proof; exact scope in audit",
+      "declarations": [
+        "controlNativeExecution"
+      ],
+      "path": "research-tests/O6-L2R7-Sources/DGamma/L2R7ControlExecution.idr",
+      "commit": "cd09eb33b7d5f538e52ac5a6a4f10abbfc673eb4",
+      "validation": null,
+      "attempts": [
+        {
+          "unit": "B7-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "sourceSHA256": "97b78d6c9b45269d0a3b453762cefbef1101e6264b0397484cc37063723402a6",
+          "maxSampleRSSKiB": 1409984,
+          "seconds": 67.48438008269295
+        }
+      ]
+    },
+    {
+      "unit": "B8",
+      "status": "checked total definition/proof; exact scope in audit",
+      "declarations": [
+        "controlTrace"
+      ],
+      "path": "research-tests/O6-L2R7-Sources/DGamma/L2R7ControlTrace.idr",
+      "commit": "28acd03f45a8c5d75b2023d2d7d2b57d6e779bff",
+      "validation": null,
+      "attempts": [
+        {
+          "unit": "B8-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "sourceSHA256": "a10d49766b8275a39bb9f41fe275cdc40e7dab8c21068def2942a4d02589daa2",
+          "maxSampleRSSKiB": 264256,
+          "seconds": 0.8784551247954369
+        }
+      ]
+    },
+    {
+      "unit": "B9",
+      "status": "checked record/family; producer separate",
+      "declarations": [
+        "LocatedOpenEpisodeBlockAttachedC"
+      ],
+      "path": "research-tests/O6-L2R7-Sources/DGamma/L2R7AttachedC.idr",
+      "commit": "0926cd844be328d0c224708e59a78e969a073eb1",
+      "validation": null,
+      "attempts": [
+        {
+          "unit": "B9-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "sourceSHA256": "082f097db927f04d03a3d017b27d39e357ac295fa5e75114ecb55442879bee2b",
+          "maxSampleRSSKiB": 269536,
+          "seconds": 0.8658989169634879
+        }
+      ]
+    },
+    {
+      "unit": "B10",
+      "status": "checked record/family; producer separate",
+      "declarations": [
+        "BlockBeforeAttachedC"
+      ],
+      "path": "research-tests/O6-L2R7-Sources/DGamma/L2R7AttachedC.idr",
+      "commit": "35d5f5dcd3ad28844191f475cdd691926f82d070",
+      "validation": null,
+      "attempts": [
+        {
+          "unit": "B10-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "sourceSHA256": "3c0a424a96b95700eda6dac12cf911f29bc8602e6dd1153c8eddd1eddf0e6818",
+          "maxSampleRSSKiB": 261696,
+          "seconds": 0.8721937080845237
+        }
+      ]
+    },
+    {
+      "unit": "B11",
+      "status": "checked record/family; producer separate",
+      "declarations": [
+        "ForcedRootControlInBundle"
+      ],
+      "path": "research-tests/O6-L2R7-Sources/DGamma/L2R7ControlDisposition.idr",
+      "commit": "e6e75654a6fadc198c95443034cb179138868a3a",
+      "validation": null,
+      "attempts": [
+        {
+          "unit": "B11-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "sourceSHA256": "fcda730bbd99e49f9e0fdef247e8228bd096afe832d44666d8a38e602db7951a",
+          "maxSampleRSSKiB": 270400,
+          "seconds": 1.164587500039488
+        }
+      ]
+    },
+    {
+      "unit": "B12",
+      "status": "checked record/family; producer separate",
+      "declarations": [
+        "ControlFixture"
+      ],
+      "path": "research-tests/O6-L2R7-Sources/DGamma/L2R7ControlFixture.idr",
+      "commit": "ced91e55e866b5530665e9e3970bee95a7db78b8",
+      "validation": null,
+      "attempts": [
+        {
+          "unit": "B12-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "sourceSHA256": "ef26288a30d48cf4e2ad654d6b14e300bded92f6e8311413cc5bc762dbd88837",
+          "maxSampleRSSKiB": 584336,
+          "seconds": 5.504609374795109
+        }
+      ]
+    },
+    {
+      "unit": "B13",
+      "status": "checked total definition/proof; exact scope in audit",
+      "declarations": [
+        "controlFixture"
+      ],
+      "path": "research-tests/O6-L2R7-Sources/DGamma/L2R7ControlFixture.idr",
+      "commit": "28c7cc15315ad28dd897d48e5730e495a647c9f5",
+      "validation": null,
+      "attempts": [
+        {
+          "unit": "B13-1",
+          "passed": false,
+          "fresh": true,
+          "exit": 1,
+          "sourceSHA256": "7e6b449e84ff29fc4c1758a59b98b1653df58a3c9e1b79e5fe2cb21266a82531",
+          "maxSampleRSSKiB": 709936,
+          "seconds": 7.801034333650023
+        },
+        {
+          "unit": "B13-2",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "sourceSHA256": "93f966e2cd74d2b685a2588f661bf73a3a2d53486e278da72479b6036267dc9d",
+          "maxSampleRSSKiB": 737520,
+          "seconds": 8.34316883282736
+        }
+      ]
+    },
+    {
+      "unit": "B14",
+      "status": "checked record/family; producer separate",
+      "declarations": [
+        "AttachedBundleOccurrenceC"
+      ],
+      "path": "research-tests/O6-L2R7-Sources/DGamma/L2R7AttachedCGap.idr",
+      "commit": "f5e5f87e0bd105ba0be4c9e1d2c8233596c64135",
+      "validation": null,
+      "attempts": [
+        {
+          "unit": "B14-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "sourceSHA256": "7f458d8a7d36c99169a713a4f1c61de18eb0b92bfedc1a8a3a0fcc8f91b058d4",
+          "maxSampleRSSKiB": 253808,
+          "seconds": 0.8718908750452101
+        }
+      ]
+    },
+    {
+      "unit": "B15",
+      "status": "checked record/family; producer separate",
+      "declarations": [
+        "AttachedNormalFormC"
+      ],
+      "path": "research-tests/O6-L2R7-Sources/DGamma/L2R7AttachedCGap.idr",
+      "commit": "1441c559c663cc309419958e1919d55ab2a57141",
+      "validation": null,
+      "attempts": [
+        {
+          "unit": "B15-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "sourceSHA256": "b46c068d864d64163366ccea5e6d34582435dcfe73dffac1af1571001dbc0698",
+          "maxSampleRSSKiB": 257488,
+          "seconds": 0.8673264998942614
+        }
+      ]
+    },
+    {
+      "unit": "B16",
+      "status": "checked total definition/proof; exact scope in audit",
+      "declarations": [
+        "attachedCZeroGapInNormalForm"
+      ],
+      "path": "research-tests/O6-L2R7-Sources/DGamma/L2R7AttachedCGap.idr",
+      "commit": "cbc6d783e0574e705cb5c9d429436dc2af7181d5",
+      "validation": null,
+      "attempts": [
+        {
+          "unit": "B16-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "sourceSHA256": "0381e702f6add1b83887d51e025f887e7f0c3a5597cd9e65bf9da14ad04b45c7",
+          "maxSampleRSSKiB": 286528,
+          "seconds": 1.1692274170927703
+        }
+      ]
+    },
+    {
+      "unit": "C1",
+      "status": "checked total definition/proof; exact scope in audit",
+      "declarations": [
+        "observeForcedClassification"
+      ],
+      "path": "research-tests/O6-L2R7-Sources/DGamma/L2R7Classifier.idr",
+      "commit": "52a22cb34d67beba5595de98de9a5f73288db66f",
+      "validation": null,
+      "attempts": [
+        {
+          "unit": "C1-1",
+          "passed": false,
+          "fresh": true,
+          "exit": 1,
+          "sourceSHA256": "1a0988ba6672f2a34bf99f20bf419c628686da46050e007bac0960aa16d31448",
+          "maxSampleRSSKiB": 268528,
+          "seconds": 0.874397334177047
+        },
+        {
+          "unit": "C1-2",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "sourceSHA256": "0bca395543114e1120cf1e6d61fff98bda69c28bd2451655f2d9de4a6b74e003",
+          "maxSampleRSSKiB": 268704,
+          "seconds": 0.8674132912419736
+        }
+      ]
+    },
+    {
+      "unit": "C2",
+      "status": "checked record/family; producer separate",
+      "declarations": [
+        "ClassifierCorrespondenceFixtures"
+      ],
+      "path": "research-tests/O6-L2R7-Sources/DGamma/L2R7ClassifierFixtures.idr",
+      "commit": "167cb09a4f2073d7835dc34a4778da6fc5d064dd",
+      "validation": null,
+      "attempts": [
+        {
+          "unit": "C2-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "sourceSHA256": "6e7c0ff138dadd46eb4c983666165d8c13440dd781efb7bfc80736601c394c6a",
+          "maxSampleRSSKiB": 748768,
+          "seconds": 5.774926458019763
+        }
+      ]
+    },
+    {
+      "unit": "C3",
+      "status": "checked total definition/proof; exact scope in audit",
+      "declarations": [
+        "classifierCorrespondenceFixtures"
+      ],
+      "path": "research-tests/O6-L2R7-Sources/DGamma/L2R7ClassifierFixtures.idr",
+      "commit": "54545866bd8648845ab820805ad0ca24472086cc",
+      "validation": null,
+      "attempts": [
+        {
+          "unit": "C3-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "sourceSHA256": "58d219255e9e218cc27a65bb9daa20ce7ceaec4a0a675f938f4c5e924204ecfc",
+          "maxSampleRSSKiB": 747568,
+          "seconds": 5.765101666096598
+        }
+      ]
+    },
+    {
+      "unit": "C4",
+      "status": "checked total definition/proof; exact scope in audit",
+      "declarations": [
+        "adjacentOrdinalMap"
+      ],
+      "path": "research-tests/O6-L2R7-Sources/DGamma/L2R7AnchorTransport.idr",
+      "commit": "2d0db779cc213b8258659195d34a171366070d43",
+      "validation": null,
+      "attempts": [
+        {
+          "unit": "C4-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "sourceSHA256": "ca1fee0165153348ea80673870bbf8ef9fd1ff406b2735789ad48afdfb4a2f41",
+          "maxSampleRSSKiB": 206160,
+          "seconds": 0.5892524160444736
+        }
+      ]
+    },
+    {
+      "unit": "C5",
+      "status": "checked record/family; producer separate",
+      "declarations": [
+        "AnchorTransport"
+      ],
+      "path": "research-tests/O6-L2R7-Sources/DGamma/L2R7AnchorTransport.idr",
+      "commit": "99c3a794161a51745e554077ae37af84f7a0f8cc",
+      "validation": null,
+      "attempts": [
+        {
+          "unit": "C5-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "sourceSHA256": "ebd79b66846ed59ba54012ca734d5f17dcdfb9c443c72451d786d0605518f88d",
+          "maxSampleRSSKiB": 364480,
+          "seconds": 2.067447999957949
+        }
+      ]
+    },
+    {
+      "unit": "C6",
+      "status": "checked total definition/proof; exact scope in audit",
+      "declarations": [
+        "anchorTransportFixture"
+      ],
+      "path": "research-tests/O6-L2R7-Sources/DGamma/L2R7AnchorFixture.idr",
+      "commit": "4db206f113a65c138ef1ee93c2f0323871e1ec51",
+      "validation": null,
+      "attempts": [
+        {
+          "unit": "C6-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "sourceSHA256": "750dbe3a89ef4d060eb15f03e1d1fdd11b385ca2d9fe657404d6d61425007f64",
+          "maxSampleRSSKiB": 2397632,
+          "seconds": 4.619131207931787
+        }
+      ]
+    },
+    {
+      "unit": "C7",
+      "status": "checked record/family; producer separate",
+      "declarations": [
+        "CatalogBirthAt"
+      ],
+      "path": "research-tests/O6-L2R7-Sources/DGamma/L2R7CatalogBirth.idr",
+      "commit": "8bf3807bc03dea2558f48bf94e377ec73b3ed3f9",
+      "validation": null,
+      "attempts": [
+        {
+          "unit": "C7-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "sourceSHA256": "982c7df01d42224e7379b539d2a9ba75b7b9dd45248799af8b423f58d4b6fa12",
+          "maxSampleRSSKiB": 198384,
+          "seconds": 0.5817270837724209
+        }
+      ]
+    },
+    {
+      "unit": "C8",
+      "status": "checked total definition/proof; exact scope in audit",
+      "declarations": [
+        "catalogBirthTail"
+      ],
+      "path": "research-tests/O6-L2R7-Sources/DGamma/L2R7CatalogBirth.idr",
+      "commit": "c6989eb7beb9ead36f0115cb3e55fd27b0a91a75",
+      "validation": null,
+      "attempts": [
+        {
+          "unit": "C8-1",
+          "passed": false,
+          "fresh": true,
+          "exit": 1,
+          "sourceSHA256": "f55f066ffd2178b939b890f5a148f508616a51623885b75b77afa97f58efcfc4",
+          "maxSampleRSSKiB": 192000,
+          "seconds": 0.5836981669999659
+        },
+        {
+          "unit": "C8-2",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "sourceSHA256": "11b87a59967253608aab0416ecba165d1df59678ffc97b65e14969a022634700",
+          "maxSampleRSSKiB": 196224,
+          "seconds": 0.5884556248784065
+        }
+      ]
+    },
+    {
+      "unit": "C9",
+      "status": "checked total definition/proof; exact scope in audit",
+      "declarations": [
+        "catalogBirthInsertMember"
+      ],
+      "path": "research-tests/O6-L2R7-Sources/DGamma/L2R7CatalogBirth.idr",
+      "commit": "43a5726799f595fed6945b14c2858c8db392dcd8",
+      "validation": null,
+      "attempts": [
+        {
+          "unit": "C9-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "sourceSHA256": "54fa0c745884b212efe4d90fcd1e07f10813e1a78956745d3324a220a3818887",
+          "maxSampleRSSKiB": 301856,
+          "seconds": 0.8765872498042881
+        }
+      ]
+    },
+    {
+      "unit": "C10",
+      "status": "checked total definition/proof; exact scope in audit",
+      "declarations": [
+        "catalogBirthAction"
+      ],
+      "path": "research-tests/O6-L2R7-Sources/DGamma/L2R7CatalogBirth.idr",
+      "commit": "dc747b003af2663cf5c4c5ebb1cc61531696ee3a",
+      "validation": null,
+      "attempts": [
+        {
+          "unit": "C10-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "sourceSHA256": "9f38cc38b088e5ff2ed4607dd951418bc7fe9eec6e9be59c36326814ed35aa9c",
+          "maxSampleRSSKiB": 263696,
+          "seconds": 0.8638545419089496
+        }
+      ]
+    },
+    {
+      "unit": "C11",
+      "status": "checked total definition/proof; exact scope in audit",
+      "declarations": [
+        "scanCatalogBirth"
+      ],
+      "path": "research-tests/O6-L2R7-Sources/DGamma/L2R7CatalogBirth.idr",
+      "commit": "8d57950137ded7d40bc561b8f1e2621e4195cfec",
+      "validation": null,
+      "attempts": [
+        {
+          "unit": "C11-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "sourceSHA256": "a5dbe781f56e0ad136b31877680151dfb36f78ffce0c4ae5f6ee3e3297486b27",
+          "maxSampleRSSKiB": 281376,
+          "seconds": 0.8621193747967482
+        }
+      ]
+    },
+    {
+      "unit": "C12",
+      "status": "checked total definition/proof; exact scope in audit",
+      "declarations": [
+        "locatedBirthBound"
+      ],
+      "path": "research-tests/O6-L2R7-Sources/DGamma/L2R7CatalogBirth.idr",
+      "commit": "94273eaab85e4edf0145027418fb0f1c387bb824",
+      "validation": null,
+      "attempts": [
+        {
+          "unit": "C12-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "sourceSHA256": "2fcc2281759d14fb0caca58aa74e09f47f40385e0371468a14c8c71679108554",
+          "maxSampleRSSKiB": 299824,
+          "seconds": 0.8793904171325266
+        }
+      ]
+    },
+    {
+      "unit": "D1",
+      "status": "checked total definition/proof; exact scope in audit",
+      "declarations": [
+        "placedBirthFromDecoded"
+      ],
+      "path": "research-tests/O6-L2R7-Sources/DGamma/L2R7PlacedCoverage.idr",
+      "commit": "3739b52e442c094a7a62f43e352c1829a0adaa37",
+      "validation": null,
+      "attempts": [
+        {
+          "unit": "D1-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "sourceSHA256": "f6c75126bab588147eb0d168c20c40ae40241ef861a70ef3a2a8c08d19ab5973",
+          "maxSampleRSSKiB": 294688,
+          "seconds": 0.8669611671939492
+        }
+      ]
+    },
+    {
+      "unit": "D2",
+      "status": "checked total definition/proof; exact scope in audit",
+      "declarations": [
+        "placedCatalogCoverage"
+      ],
+      "path": "research-tests/O6-L2R7-Sources/DGamma/L2R7PlacedCoverage.idr",
+      "commit": "fabb56e11a04ac53256d0b50d4259656309624f7",
+      "validation": null,
+      "attempts": [
+        {
+          "unit": "D2-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "sourceSHA256": "76aa9ae9dd63654556b021f422251e34defe0de4a67b203de6f4bdaa4e49056e",
+          "maxSampleRSSKiB": 278080,
+          "seconds": 0.8669820828363299
+        }
+      ]
+    },
+    {
+      "unit": "D3",
+      "status": "checked total definition/proof; exact scope in audit",
+      "declarations": [
+        "filterTailObserved"
+      ],
+      "path": "research-tests/O6-L2R7-Sources/DGamma/L2R7PlacedCoverage.idr",
+      "commit": "d5b98100da7f7adeba175c1ab4700ddb44dddbb2",
+      "validation": null,
+      "attempts": [
+        {
+          "unit": "D3-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "sourceSHA256": "a78d3b3fab69197d534a02aa563e10e74c350be0f4f97419ea79240f331d8430",
+          "maxSampleRSSKiB": 274208,
+          "seconds": 0.858070292044431
+        }
+      ]
+    },
+    {
+      "unit": "D4",
+      "status": "checked total definition/proof; exact scope in audit",
+      "declarations": [
+        "filterMemberObserved"
+      ],
+      "path": "research-tests/O6-L2R7-Sources/DGamma/L2R7PlacedCoverage.idr",
+      "commit": "0d7792645139ed7d3eb3b68d81130745ad8e73c1",
+      "validation": null,
+      "attempts": [
+        {
+          "unit": "D4-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "sourceSHA256": "22dcea8703144ef14066b5a6ca23420f20bd804f46456b415b4c3ada5e3a297e",
+          "maxSampleRSSKiB": 265280,
+          "seconds": 0.8730176668614149
+        }
+      ]
+    },
+    {
+      "unit": "D5",
+      "status": "checked total definition/proof; exact scope in audit",
+      "declarations": [
+        "placedRootCoverage"
+      ],
+      "path": "research-tests/O6-L2R7-Sources/DGamma/L2R7PlacedCoverage.idr",
+      "commit": "8c3b1141b49f1c71ecf9e2f2796f391f9e21dcdd",
+      "validation": null,
+      "attempts": [
+        {
+          "unit": "D5-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "sourceSHA256": "335a0726a876fc1c36ea7c73f178a4578b7d7336e302114e2bbf081f6b6e0c01",
+          "maxSampleRSSKiB": 267808,
+          "seconds": 0.8726575002074242
+        }
+      ]
+    },
+    {
+      "unit": "D6",
+      "status": "checked record/family; producer separate",
+      "declarations": [
+        "PlacedCoverageFixtures"
+      ],
+      "path": "research-tests/O6-L2R7-Sources/DGamma/L2R7CoverageFixtures.idr",
+      "commit": "0a0cc6ebb17d579b3072c3bce9cd734de926b0a3",
+      "validation": null,
+      "attempts": [
+        {
+          "unit": "D6-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "sourceSHA256": "8a245b56ef540e9d514ae1f107ad73a4535ca1f5d64c0802b69334e7379f7b66",
+          "maxSampleRSSKiB": 936112,
+          "seconds": 1.7209600419737399
+        }
+      ]
+    },
+    {
+      "unit": "D7",
+      "status": "checked total definition/proof; exact scope in audit",
+      "declarations": [
+        "placedCoverageFixtures"
+      ],
+      "path": "research-tests/O6-L2R7-Sources/DGamma/L2R7CoverageFixtures.idr",
+      "commit": "c390795b32c728c67859704cec88857793ffcbc2",
+      "validation": null,
+      "attempts": [
+        {
+          "unit": "D7-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "sourceSHA256": "517a603ecaa12fa1c08dd7a0ecb236d421af6ec291ae8bbe728f26ad0ca46dd2",
+          "maxSampleRSSKiB": 939168,
+          "seconds": 1.7300708750262856
+        }
+      ]
+    },
+    {
+      "unit": "D8",
+      "status": "TYPE ONLY; general producer OPEN",
+      "declarations": [
+        "GeneralAttachedNormalForm"
+      ],
+      "path": "research-tests/O6-L2R7-Sources/DGamma/L2R7NFObligation.idr",
+      "commit": "435bd3646de26c1414d4753e31223362bfb4dd52",
+      "validation": null,
+      "attempts": [
+        {
+          "unit": "D8-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "sourceSHA256": "1b5f804a6272e52b8ebf32b8907307a9affa099971cc6427792e9deee5ef9d44",
+          "maxSampleRSSKiB": 1260704,
+          "seconds": 1.1568835829384625
+        }
+      ]
+    }
+  ]
+}

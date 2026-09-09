@@ -1,0 +1,133 @@
+{
+  "status": "PREPUBLICATION_PASS",
+  "head": "630c0bb57b2f93963ec4361e0e0504091a16cb89",
+  "timestampUTC": "2026-09-09T06:54:25.466245+00:00",
+  "invocationCount": 85,
+  "passedCount": 76,
+  "failedCount": 9,
+  "finalCheckCount": 17,
+  "newDeclarationCount": 57,
+  "newDeclarations": {
+    "research-tests/O6-L2R7-Sources/DGamma/L2R7AnchorFixture.idr": [
+      "anchorTransportFixture"
+    ],
+    "research-tests/O6-L2R7-Sources/DGamma/L2R7AnchorTransport.idr": [
+      "AnchorTransport",
+      "adjacentOrdinalMap"
+    ],
+    "research-tests/O6-L2R7-Sources/DGamma/L2R7AttachedC.idr": [
+      "ActorLifecycleOnlyAttachedC",
+      "BlockBeforeAttachedC",
+      "LocatedOpenEpisodeBlockAttachedC",
+      "OrderedForcedRootBundleC",
+      "attachedIntoC",
+      "bundleIntoC"
+    ],
+    "research-tests/O6-L2R7-Sources/DGamma/L2R7AttachedCGap.idr": [
+      "AttachedBundleOccurrenceC",
+      "AttachedNormalFormC",
+      "attachedCZeroGapInNormalForm"
+    ],
+    "research-tests/O6-L2R7-Sources/DGamma/L2R7CatalogBirth.idr": [
+      "CatalogBirthAt",
+      "catalogBirthAction",
+      "catalogBirthInsertMember",
+      "catalogBirthTail",
+      "locatedBirthBound",
+      "scanCatalogBirth"
+    ],
+    "research-tests/O6-L2R7-Sources/DGamma/L2R7Classifier.idr": [
+      "ForcedClassificationAt",
+      "ForcedSeedBasis",
+      "acceptedConjunction",
+      "anyMappedCons",
+      "anyMappedMember",
+      "classifyForcedComplete",
+      "classifyForcedHitSound",
+      "classifyForcedSound",
+      "forcedSeedBasis",
+      "forcedSeedBeforeObserved",
+      "leSuccessorBridge",
+      "leToLte",
+      "leZero",
+      "lteToLeTrue",
+      "observeForcedClassification"
+    ],
+    "research-tests/O6-L2R7-Sources/DGamma/L2R7ClassifierFixtures.idr": [
+      "ClassifierCorrespondenceFixtures",
+      "classifierCorrespondenceFixtures"
+    ],
+    "research-tests/O6-L2R7-Sources/DGamma/L2R7ControlDisposition.idr": [
+      "ForcedRootControlInBundle"
+    ],
+    "research-tests/O6-L2R7-Sources/DGamma/L2R7ControlExecution.idr": [
+      "ControlNativeExecution",
+      "controlNativeExecution"
+    ],
+    "research-tests/O6-L2R7-Sources/DGamma/L2R7ControlFixture.idr": [
+      "ControlFixture",
+      "controlFixture"
+    ],
+    "research-tests/O6-L2R7-Sources/DGamma/L2R7ControlStates.idr": [
+      "controlState"
+    ],
+    "research-tests/O6-L2R7-Sources/DGamma/L2R7ControlTrace.idr": [
+      "controlTrace"
+    ],
+    "research-tests/O6-L2R7-Sources/DGamma/L2R7CoverageFixtures.idr": [
+      "PlacedCoverageFixtures",
+      "placedCoverageFixtures"
+    ],
+    "research-tests/O6-L2R7-Sources/DGamma/L2R7NFObligation.idr": [
+      "GeneralAttachedNormalForm"
+    ],
+    "research-tests/O6-L2R7-Sources/DGamma/L2R7ObservedAny.idr": [
+      "AnyHit",
+      "anyFoldObserved",
+      "anyFoldTrue",
+      "anyHitConsObserved",
+      "anyHitObserved",
+      "anyHitThere"
+    ],
+    "research-tests/O6-L2R7-Sources/DGamma/L2R7PlacedCoverage.idr": [
+      "filterMemberObserved",
+      "filterTailObserved",
+      "placedBirthFromDecoded",
+      "placedCatalogCoverage",
+      "placedRootCoverage"
+    ],
+    "research-tests/O6-L2R7-Sources/DGamma/L2R7ReleaseDecode.idr": [
+      "SharedKey"
+    ]
+  },
+  "proofCommitCount": 57,
+  "allCommitsReceiptAuthenticated": true,
+  "allSourceHashesAndLogsAuthenticated": true,
+  "A8StoppedAndReverted": true,
+  "B2WhitespaceV1ReceiptAuthenticated": true,
+  "headerOnlyRepairsAuthenticated": true,
+  "immutableFinalPlanPublishedBeforeChecks": true,
+  "finalPlanLeafBeforeDependent": true,
+  "allFinalSourcesFreshlyChecked": true,
+  "allInvocationsSerialized": true,
+  "maxSampleRSSKiB": 2397632,
+  "RSSQualification": "250ms sampled, not continuous peak",
+  "archiveSHA256": "30d204f665426b31e2867566921fd88c00480dc1f38aa51006173b0eaf3b560c",
+  "predecessorProofSourcesUntouched": true,
+  "authorizedPredecessorDocsOnly": [
+    "research-tests/O6-L2R5-CP3-DIFF-DRAFT.md",
+    "research-tests/O6-L2R5-CP3-REHOME-MANIFEST.json",
+    "research-tests/run-l2r6-artifact-commit.py",
+    "research-tests/run-l2r6-check.py",
+    "research-tests/run-l2r6-commit.py"
+  ],
+  "originalTier1CodeHashesUnchanged": true,
+  "sameBundleCandidateHashVerified": true,
+  "all30RenamingsSerialized": true,
+  "productionAndFrozenResearchUntouched": true,
+  "sharedLockAndWindowNotInspected": true,
+  "noOwnCompiler": true,
+  "noStagedFiles": true,
+  "cleanTrackedTree": false,
+  "independentHumanProofReviewRequired": true
+}
