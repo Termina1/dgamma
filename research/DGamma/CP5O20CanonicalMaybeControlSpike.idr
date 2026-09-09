@@ -27,3 +27,13 @@ export
   (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected (registry canonicalFinal) = Nothing)
 o20WithdrawnNameActuallyAbsent (VestigialNameWithdrawn fiber found retiredFlag inactive empty absent) = absent
 o20WithdrawnNameActuallyAbsent (NameAlreadyAbsent originalAbsent canonicalAbsent) = canonicalAbsent
+
+||| The primitive control relation preserves observed absence. The equivalent
+||| frozen helper is private; this standalone eliminator changes no visibility.
+export
+0 o20AbsentControlTarget :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {observed : Maybe (Fiber name key value world error)} ->
+  FiberControlMaybeRelated (the (Maybe (Fiber name key value world error)) Nothing) observed ->
+  (observed = Nothing)
+o20AbsentControlTarget NoControlFibers = Refl
