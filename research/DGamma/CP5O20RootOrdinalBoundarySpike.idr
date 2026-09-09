@@ -26,3 +26,14 @@ record O20RootReplayOrdinals
     (generationForward (replayGenerationRenaming correspondence)
       (MkRegistrationGeneration root (locatedActionOrdinal (replayActionOrigin correspondence occurrence))) =
       MkRegistrationGeneration root (locatedActionOrdinal occurrence))
+
+||| The literal identity replay owns its root equation on every occurrence.
+||| No root correspondence or occurrence-count equality is an input.
+export
+0 o20IdentityRootReplayOrdinals :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, finalState : SystemState name key value world error} ->
+  (trace : Transitions first finalState) ->
+  O20RootReplayOrdinals name key world error value
+    (identityActionRegistrationReplayCorrespondence trace)
+o20IdentityRootReplayOrdinals trace = MkO20RootReplayOrdinals (\occurrence => Refl)
