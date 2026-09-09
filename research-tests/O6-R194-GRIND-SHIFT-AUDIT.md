@@ -185,3 +185,35 @@ and only at their frozen baseline bytes. No ongoing lane2-created result is
 certified. Source freeze408bd21e and binding A30/B16 caps are unchanged.
 The corrected ten-test suite distinguishes inherited main baseline targets from
 sibling-worktree paths; original preflight test logs remain historical evidence.
+
+### C3 final validation and committed evidence
+
+All59 frozen final validations PASS (52 positive/7 expected-negative), completed
+01:43:03.270848Z. All7 changed Idris targets, all5 protected spikes, the seeded
+package, all inherited main fixtures, R8/R16 boundaries and O19 crossings have
+their required checks. Total111 compiler/build invocations:107 matched outcomes
+(including7 expected negatives),4 rejected proof attempts. No interruptions,
+target mutation, retry, source edit during checks or stale-lock cleanup.
+
+V2 LocalDiamond: first planned52GiB run, unchanged baseline bytes, fresh PASS
+491.187s; sampled50,461,904KiB=48.12422GiB. Other checks48GiB. All11 known-or-
+observed heavy checks held/released the shared lock; resource audit PASS.
+Retained1s RSS samples are not OS high-water marks. Zero-sample units are listed
+explicitly in O6-R194-RESOURCE-AUDIT.json; zero is not claimed actual zero memory.
+
+Post-final frozen audit PASS at86b7424a: production/package diff versus34b21c9
+empty, CP3 blob unchanged, all5 protected spike files/O19Surface/A11 record
+unchanged, census4=1/2/0/0/1,207/207 seeds. LocalDiamond TTC125,368,223 bytes,
+refreshed01:29:13Z, never deleted. No unsafe new code, main compiler or staged
+files; only the two baseline untracked paths. Independent audit authenticates
+all46 immediate source receipts, all111 raw logs/snapshots/samples, serialization,
+A30/B16 caps, all59 immutable planned results and the preflight ruling boundary.
+The corrected10 noncompiler evidence-contract tests PASS.
+
+Evidence anchor86b7424a, source freeze408bd21e. Consolidated ledger, frozen,
+resource and independent reports, verification and exact source/log/receipt
+archive are published together. Archive SHA256:
+`b5333f87231d3afbec52bb7ac802292e741e1875c7f4f2d381d6367e77e58d8d`.
+The archive does not claim to contain the receipt for its own later artifact
+commit. C uses3 preparation/publication units so far (cap8); no new proof unit.
+Supervisor final gate and independent reviewer remain pending at this entry.

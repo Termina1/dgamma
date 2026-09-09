@@ -788,6 +788,12 @@ This advances Theorem73 auxiliaries, **not** Theorem73 or its selector body.
 
 A30/B16 caps respected. No new proof hole or unsafe escape. No A12-variant,
 root-relocation, unconditional zero-gap or sibling selector-body claim.
-Final validation/evidence is pending at this source-freeze entry; see the
-[R194 audit](research-tests/O6-R194-GRIND-SHIFT-AUDIT.md) and
+All **59 final checks passed** (52 positives/7 expected negatives), including
+all7 changed targets, all5 protected spikes, seeded package and inherited main
+fixtures. LocalDiamond passed unchanged under the standing52GiB limit; sampled
+peak48.12422GiB. The frozen census remains **4=1/2/0/0/1**, with207/207 seeds.
+Ten evidence-contract regressions and all independent automated audits PASS.
+Supervisor/reviewer final gate is pending. See the
+[R194 verification and evidence](research-tests/O6-R194-VERIFICATION.md),
+[audit](research-tests/O6-R194-GRIND-SHIFT-AUDIT.md) and
 [findings qualifications](research-tests/O6-R194-FINDINGS.md).

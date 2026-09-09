@@ -3580,6 +3580,44 @@ hash and scope are retained as explicitly withdrawn, unrun preflight evidence.
 Exact ruling: research-tests/O6-R194-PREFLIGHT-RULING.md. No Idris edit, retry or
 budget extension; source freeze408bd21e remains unchanged.
 
+## Status — R194 checked final PARTIAL milestone
+
+A30/B16:46 retained total declarations,46 authenticated one-declaration source
+commits; no cap extension or3/3 exhaustion. Source freeze408bd21e. All59 final
+checks PASS (52 positive/7 expected-negative), complete01:43:03Z. All7 changed
+Idris targets,5 protected spikes, inherited main fixtures and seeded package
+are covered. Across the shift:111 compiler/build invocations,107 matched
+outcomes (including7 expected negatives),4 rejected proof attempts. All earlier
+snapshots are retained. The ten corrected noncompiler guard regressions PASS.
+
+Final frozen/independent/resource audits PASS at86b7424a. Production/package
+remain byte-identical to34b21c9; CP3 blob and all protected files/statements,
+O19 and A11 field are unchanged. Census4=1/2/0/0/1;207/207 seeds retained.
+LocalDiamond's first planned unchanged-source52GiB validation passed491.187s,
+sampled50,461,904KiB (48.12422GiB). Every other check48GiB; all11 known/observed
+heavy checks acquired/released the shared lock. No interruption, mutation,
+retry, stale-lock cleanup, cold build, seed deletion or orphan kill. Samples
+are1s observations, not OS high-water; zero means no live sample captured.
+
+**Fully proved:** the local canonical-ordinal/supported-birth and actual checked
+Iter successor results above, both endpoint/reference attachments, and native
+own-cut safety under literal gap0. **Conditional, not unconditional:** actual
+stoppedOrder=goalOrder under quantified ZeroGapPending at native inversions.
+**Still partial/open:** whole canonical pairing (including unsupported/root
+births), generic last-Finish extraction ownership, all-name endpoint rebasing
+and vestigial remainder, D5 bridge production and the protected convergence
+body. No selector body, O17/O21 body work, A12-variant result or new escape hatch.
+
+The original56-slot plan is preserved as withdrawn-unrun; the restored59-slot
+plan includes every inherited main-baseline target under the verbatim owner
+clarification. No ongoing lane2-created result is certified. Evidence archive
+SHA256 b5333f87231d3afbec52bb7ac802292e741e1875c7f4f2d381d6367e77e58d8d,
+plus consolidated ledger and reports, is linked from O6-R194-VERIFICATION.md.
+Its anchor precedes its own artifact commit; no self-referential receipt claim.
+Supervisor final gate and independent reviewer are pending. Next main proof
+frontier remains whole paired execution and exact all-name endpoint ownership;
+no additional source/compiler work is planned in this bounded shift.
+
 This addendum is artifact-only. No further Idris/compiler or implementation
 source work followed the ruling. Independent review remains parent-owned
 and pending; neither ratification nor the52-slot final validation closes
