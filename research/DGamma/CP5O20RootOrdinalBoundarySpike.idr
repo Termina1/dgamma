@@ -37,3 +37,25 @@ export
   O20RootReplayOrdinals name key world error value
     (identityActionRegistrationReplayCorrespondence trace)
 o20IdentityRootReplayOrdinals trace = MkO20RootReplayOrdinals (\occurrence => Refl)
+
+||| Root laws compose at the SAME intermediate occurrence selected by the
+||| right replay. The two input laws remain explicit; no law is extracted
+||| from the generated-only field of the correspondence.
+export
+0 o20ComposeRootReplayOrdinals :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {sourceFirst, sourceFinal, middleFirst, middleFinal, targetFirst, targetFinal : SystemState name key value world error} ->
+  {source : Transitions sourceFirst sourceFinal} ->
+  {middle : Transitions middleFirst middleFinal} ->
+  {target : Transitions targetFirst targetFinal} ->
+  (left : ActionRegistrationReplayCorrespondence name key world error value source middle) ->
+  (right : ActionRegistrationReplayCorrespondence name key world error value middle target) ->
+  O20RootReplayOrdinals name key world error value left ->
+  O20RootReplayOrdinals name key world error value right ->
+  O20RootReplayOrdinals name key world error value
+    (composeActionRegistrationReplayCorrespondence left right)
+o20ComposeRootReplayOrdinals left right leftLaw rightLaw =
+  MkO20RootReplayOrdinals (\occurrence =>
+    trans (cong (generationForward (replayGenerationRenaming right))
+      (rootReplayOrdinal leftLaw (replayActionOrigin right occurrence)))
+      (rootReplayOrdinal rightLaw occurrence))
