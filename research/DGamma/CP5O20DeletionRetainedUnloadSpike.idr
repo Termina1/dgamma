@@ -212,3 +212,19 @@ o20UnloadOccursThroughKeptHead actor _ _ kept later same continue (ActionOccursH
   ActionOccursHere kept later (trans (sym same) exact)
 o20UnloadOccursThroughKeptHead actor _ _ kept later same continue (ActionOccursLater step rest occurs) =
   ActionOccursLater kept later (continue occurs)
+
+||| A genuinely deleted non-Unload head cannot consume the given Unload
+||| occurrence. Only the occurrence is eliminated; its later case is retained.
+export
+0 o20UnloadOccursPastDeletedHead :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, middle, finalState, otherFirst, otherFinal : SystemState name key value world error} ->
+  (actor : name) -> (step : Transition first middle) -> (rest : Transitions middle finalState) ->
+  (later : Transitions otherFirst otherFinal) ->
+  Not (transitionAction step = LUnload actor) ->
+  (ActionOccurs (LUnload actor) rest -> ActionOccurs (LUnload actor) later) ->
+  ActionOccurs (LUnload actor) (MoreTransitions step rest) -> ActionOccurs (LUnload actor) later
+o20UnloadOccursPastDeletedHead actor _ _ later excludes continue (ActionOccursHere step rest exact) =
+  void (excludes exact)
+o20UnloadOccursPastDeletedHead actor _ _ later excludes continue (ActionOccursLater step rest occurs) =
+  continue occurs
