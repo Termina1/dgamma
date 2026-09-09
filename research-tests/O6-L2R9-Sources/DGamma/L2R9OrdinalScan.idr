@@ -24,3 +24,18 @@ overlapOrdinals : {key : Type} -> (keyEq : DecEq key) ->
   (0 equation : any (\item => isYes (isElem @{keyEq} item right)) left = seen) -> List Nat
 overlapOrdinals keyEq left right True equation = [0]
 overlapOrdinals keyEq left right False equation = []
+
+||| A release may only be an own-child removal. The overlap Bool belongs to
+||| the actual isElem scan at this call site, not a recased library decider.
+public export
+ordinalAtParent : {name, key, world, error : Type} -> {value : key -> Type} ->
+  (keyEq : DecEq key) -> (component : Component key value world error) ->
+  (fiber : Fiber name key value world error) -> (parent : Parent name) ->
+  (0 equation : fiberParent fiber = parent) -> List Nat
+ordinalAtParent keyEq component fiber Root equation = []
+ordinalAtParent keyEq component fiber (ChildOf actor) equation =
+  overlapOrdinals keyEq
+    (dependencies (componentProvisions (fiberComponent fiber)))
+    (dependencies (componentProvisions component))
+    (any (\item => isYes (isElem @{keyEq} item (dependencies (componentProvisions component))))
+      (dependencies (componentProvisions (fiberComponent fiber)))) Refl
