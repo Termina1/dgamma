@@ -1,0 +1,24 @@
+{
+  "passed": true,
+  "checkedHead": "d0e2f9150cfebd9d2474e87c1b0726079901e29e",
+  "records": 65,
+  "proofAttempts": 48,
+  "retainedDeclarations": 42,
+  "failedAttempts": [
+    "A13-1",
+    "A13-2",
+    "C3-1",
+    "C3-2",
+    "C3-3",
+    "D7-1"
+  ],
+  "guardedSourceCommits": 42,
+  "guardedReceipts": 54,
+  "finalValidations": 12,
+  "archiveFiles": 404,
+  "archiveSHA256": "817eec160ca6021f8139b9330551b719caa59be780a1719932723bb49d4e2d25",
+  "noStagedFiles": true,
+  "ownCompilerRunning": false,
+  "humanMathematicalReview": "parent-owned, not performed by this script",
+  "scope": "PARTIAL; no full single/R191 replay, phases, contiguity instance, admitted moves or normalizer"
+}
