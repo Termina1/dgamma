@@ -50,3 +50,40 @@ nativePairTrail nameEq keyEq first middle last leftAction rightAction leftTag ri
     (MoreTransitions (Fired {before = middle} {afterState = last} nameEq keyEq rightAction rightTag right) NoTransitions)
     (AvailabilityStep middle (Fired {before = middle} {afterState = last} nameEq keyEq rightAction rightTag right)
       NoTransitions (AvailabilityEnd last))
+
+||| GENUINE local terminal-square move producer. Both whole native traces,
+||| physical occurrences/adjacency, action words, current cuts, endpoint and
+||| exact decrement are DERIVED from the square and native scan frames.
+||| This local theorem has NO suffix. It is not GeneralAdmittedMoveExistence:
+||| phase/NeverRetired/uniqueness and global frame existence remain its domain
+||| obligations; none is silently dropped from that unchanged global type.
+export
+0 terminalSquareAdmittedMove : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {initial : SystemState name key value world error} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (root : name) ->
+  (component : Component key value world error) ->
+  (source, oldMiddle, oldFinal : SystemState name key value world error) ->
+  (action : Action name key value world error) -> (crossTag : RuleTag) ->
+  (before : Transitions initial source) ->
+  (prefixTrail : AvailabilityTrace name key world error value before) ->
+  (0 oldChecked : checkedApplyAction @{nameEq} @{keyEq} action source = Just (crossTag, oldMiddle)) ->
+  (0 oldRoot : checkedApplyAction @{nameEq} @{keyEq} (OInsert root Root component) oldMiddle = Just (OInsertTag, oldFinal)) ->
+  (square : ClassifierSquare name key world error value nameEq keyEq root component source action crossTag oldFinal) ->
+  (0 forced : ForcedOnTrace nameEq keyEq (appendAvailability prefixTrail (nativePairTrail nameEq keyEq source oldMiddle oldFinal action (OInsert root Root component) crossTag OInsertTag oldChecked oldRoot)) (S (length (nativeActionWord prefixTrail)))) ->
+  (target, untouched : Nat) -> (0 bounded : LTE target (length (nativeActionWord prefixTrail))) ->
+  (0 oldFrame : totalDistance nameEq keyEq (appendAvailability prefixTrail (nativePairTrail nameEq keyEq source oldMiddle oldFinal action (OInsert root Root component) crossTag OInsertTag oldChecked oldRoot)) = minus (S (length (nativeActionWord prefixTrail))) target + untouched) ->
+  (0 newFrame : totalDistance nameEq keyEq (appendAvailability prefixTrail (nativePairTrail nameEq keyEq source (squareMiddle square) (squareFinal square) (OInsert root Root component) action OInsertTag crossTag (earlyChecked square) (laterChecked square))) = minus (length (nativeActionWord prefixTrail)) target + untouched) ->
+  AdmittedDistanceMove name key world error value nameEq keyEq (appendAvailability prefixTrail (nativePairTrail nameEq keyEq source oldMiddle oldFinal action (OInsert root Root component) crossTag OInsertTag oldChecked oldRoot)) (appendAvailability prefixTrail (nativePairTrail nameEq keyEq source (squareMiddle square) (squareFinal square) (OInsert root Root component) action OInsertTag crossTag (earlyChecked square) (laterChecked square)))
+terminalSquareAdmittedMove nameEq keyEq root component source oldMiddle oldFinal action crossTag
+  before prefixTrail oldChecked oldRoot square forced target untouched bounded oldFrame newFrame =
+  MkAdmittedDistanceMove root component (nativeActionWord prefixTrail) action []
+    (MkLocatedActionOccurrence source oldMiddle before (Fired {before = source} {afterState = oldMiddle} nameEq keyEq action crossTag oldChecked) (MoreTransitions (Fired {before = oldMiddle} {afterState = oldFinal} nameEq keyEq (OInsert root Root component) OInsertTag oldRoot) NoTransitions) Refl Refl)
+    (MkLocatedActionOccurrence source (squareMiddle square) before (Fired {before = source} {afterState = squareMiddle square} nameEq keyEq (OInsert root Root component) OInsertTag (earlyChecked square)) (MoreTransitions (Fired {before = squareMiddle square} {afterState = squareFinal square} nameEq keyEq action crossTag (laterChecked square)) NoTransitions) Refl Refl)
+    (sym (nativeWordCount prefixTrail)) (sym (nativeWordCount prefixTrail)) (squareAdmitted square)
+    forced (nativeWordAppend prefixTrail (nativePairTrail nameEq keyEq source oldMiddle oldFinal action (OInsert root Root component) crossTag OInsertTag oldChecked oldRoot)) (nativeWordAppend prefixTrail (nativePairTrail nameEq keyEq source (squareMiddle square) (squareFinal square) (OInsert root Root component) action OInsertTag crossTag (earlyChecked square) (laterChecked square)))
+    (checkedRootCurrentAvailable nameEq keyEq root component oldMiddle oldFinal OInsertTag oldRoot)
+    (squareCurrentCut square)
+    (totalDistance nameEq keyEq (appendAvailability prefixTrail (nativePairTrail nameEq keyEq source oldMiddle oldFinal action (OInsert root Root component) crossTag OInsertTag oldChecked oldRoot))) (totalDistance nameEq keyEq (appendAvailability prefixTrail (nativePairTrail nameEq keyEq source (squareMiddle square) (squareFinal square) (OInsert root Root component) action OInsertTag crossTag (earlyChecked square) (laterChecked square)))) Refl Refl
+    (totalDistanceOneLeftFromFrame nameEq keyEq (appendAvailability prefixTrail (nativePairTrail nameEq keyEq source oldMiddle oldFinal action (OInsert root Root component) crossTag OInsertTag oldChecked oldRoot)) (appendAvailability prefixTrail (nativePairTrail nameEq keyEq source (squareMiddle square) (squareFinal square) (OInsert root Root component) action OInsertTag crossTag (earlyChecked square) (laterChecked square)))
+      (length (nativeActionWord prefixTrail)) target untouched bounded oldFrame newFrame)
+    (squareEndpoint square)
