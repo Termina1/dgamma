@@ -36,3 +36,126 @@ A universal modulo synchronization, B present-vestigial disappearance and
 all-name rebase/bridge, C convergence remain OPEN at this initial checkpoint.
 Final inherited150-source+package validation, ledger/archive/verification and
 independent human review remain pending.
+
+## Source freeze / D1 — 12:14:08Z
+
+Proof HEADa240d3726ccfa36988562791fcb6fd1e76564f02. Exactly44 retained
+new declarations,7 new modules: A26/26 micro-units,31 actual invocations;
+B18/18 micro-units,21 invocations. Plus S0-1:53 development invocations,
+46 compiler PASS and7 bounded failed attempts. B3-1 PASS was NOT committed;
+git diff --check rejected one trailing blank line. Only EOF whitespace changed
+before fresh B3-2 PASS. No guard exemption. No exhausted/reverted unit.
+All44 source commits add exactly one declaration and remove no prior committed
+code line. Receipt/record/source/log/plan/lock checks are independently repeated
+by a read-only Python verifier; this is NOT an independent human proof review.
+
+### A — exact checked claims
+
+- A1 whole actual operational-left canonical role coverage; A2 corresponding
+  operational-left/right canonical blocks are ordered at their OWN native cuts.
+- A3–A6 selected canonical opening components and initial programs are shared,
+  produced from original supported metadata and authentic replay origins.
+  Neither component equality nor a complete pre-cut relation is a premise.
+- A7/A8 pure program role word and actual-fiber remainder observers; A9–A15
+  native Begin/Iter/empty-or-singleton Finish consume the actual owner's role.
+  Actual evaluator observation owns both the Advance tag and endpoint.
+- A16–A20 lifecycle projection, orchestration exclusion, complete actual
+  canonical role consumption, and genuine yielded-Insert frame. Projection
+  omits Insert from lifecycle tags, NEVER from the native physical trace.
+- A21 completes whole actor-body induction. A22 splits complete roles at
+  actual cuts; A23 extracts each located block's roles from whole-word capital.
+- A24/A25 shared native Begin + complete actual body invariants produce
+  accepted-input equality of AUGMENTED lifecycle words:
+  `leftWord ++ leftEndRemainder = rightWord ++ rightEndRemainder`.
+  The end remainders are not assumed empty. This is not plain word equality.
+- A26 applies the native body fold at unchanged two-edge parent-body cuts from
+  R191's11-edge history and R193/R195's8-edge history. It does NOT instantiate
+  an accepted canonical schedule or the missing universal modulo producer.
+
+`o20SynchronizeCanonicalHistoriesModulo` remains UNPRODUCED. Remaining A debt:
+prove actual block-end remainder elimination, align generated Insert positions,
+then synthesize occurrence-labelled ordered whole-word coverage and exchange,
+using the existing authentic root/generated attachments. Existing attachment
+capital is not a completed global attachment/synchronization proof. The old
+lockstep candidate is still superseded and byte-unchanged. No skipped edge was
+assumed zero. The earlier frozen modulo goal TYPE is unchanged; no new hole.
+
+### B — construction-owned subset, not universal disappearance
+
+B1/B2 join the native deletion result's before/episode/after generation scans.
+B3–B6 project the LEFT actual scan directly from the PUBLIC asynchronous
+bilateral correspondence, including its real pending, surviving and discarded
+branches. Private frozen helpers/types were not made public. B7 proves equality
+of the accepted/deletion plain current tables by their own deterministic scans,
+not equality of independently reconstructed dependent records.
+
+B8/B9 derive survivor absence for a FULL original present-vestigial packet whose
+generation belongs to this ACTUAL candidate's selected births. Both current and
+discarded environments in the packet come from the SAME accepted original
+surviving-tree scan; not arbitrary lists or unsupportedness alone. B10 proves
+whole native deletion-chain absence preservation. B11 observes only the first
+actual deletion node's selected births. B12–B15 carry head-selected vestigial
+disappearance through the whole remaining chain, its own sorting endpoint, and
+the actual operational permutation execution. No final absence/cut oracle.
+
+**Explicit remaining premise:** membership in the first node's actual selected
+births. Global accepted `vestigialBirthDiscarded` does NOT establish that
+membership here. In particular later-node selection/rebased generation transport
+and exhaustive discarded-to-deletion coverage are still OPEN. B14 is therefore
+a construction-owned SUBSET theorem, NOT universal canonical disappearance.
+B16 proves the mixed head-vestigial/originally-absent name class at the EXACT
+accepted current map, with opposite original Nothing explicit. B17 runs the
+public scan producer on the authentic8-edge R193 present-vestigial and6-edge R192
+removed traces. B18 is a CONDITIONAL R193 current-map canonical boundary: real
+full vestigial packet and opposite original absence are supplied by the fixture;
+independent canonical/permutation capital and its first-node membership remain
+inputs. It does not fabricate canonical capital.
+
+Universal cross-trace ALL-name current rebase remains OPEN. The D5 bridge
+consumer `o20SupportedBridgeFromOwnedCut` is not applied; no
+`ReplayedCanonicalEndpointBridge` or C convergence body is produced. Distinct
+historical R197 provider-D5 STOP3/3 boundary remains untouched. C0/ineligible.
+
+### Bounded repair history
+
+- A13-1: missing defining `DGamma.CP4ProgressPotential` import; A13-2 PASS.
+- A15-1: explicit Fired hidden indices required; A15-2: action/tag Refl patterns
+  caused coverage failure; A15-3 retains native equations and transports them.
+- A21-1: native actor/action-owner observation stuck; A21-2 applies the existing
+  `o19TransitionActorOwner` with a DIRECT defining import and full indices.
+- A26-1: hidden lookup universes unresolved; A26-2 supplies all explicit types.
+- B3-1: native PASS, whitespace guard refusal; B3-2 only EOF whitespace repair.
+- B6-1: frozen `RegistrationSideScan` is PRIVATE, so the attempted signature
+  could not exist. B6-2 directly eliminates the public bilateral correspondence
+  instead (same actual left scan, no private-type visibility change).
+- B12-1: duplicated names at indices/constructor patterns; B12-2 uses wildcards,
+  not the suggested prohibited nonlinear patterns. No fourth attempt anywhere.
+
+## D1 validation/protocol freeze
+
+Immutable plan SHA256cd367286435987976d77d3ce7b44eee67caa127ac5b6a915deaf206138678503:
+ALL150 inherited applicable main sources +7 new sources + seeded production
+package =158 checks.7 exact expected negatives; no path exclusion. Import-closed
+within the inherited259-path invalidation domain plus changes, and topological
+for EVERY planned dependency, including2 inherited auxiliary paths outside that
+inventory. Unchanged out-of-plan prerequisites are pinned seeds, not fresh PASS.
+Final validation is NOT launched at this D1 text; estimate ~38min, not measured.
+
+21 adversarial evidence tests,53-record pre-validation independent audit and
+source-frozen census PASS. Source freeze has production==34b21c9, CP3 blob pinned,
+all five frozen main surfaces/O19/old candidates unchanged,4=1/2/0/0/1 census,
+207 package TTC seeds present (not yet a fresh package-build claim). No unsafe
+escape/partial/with/let/prefix or new hole. All retained research sources use
+%default total. No lane2 worktree operation; foreign compiler sightings are
+recorded, never killed. Resource claims are sampled KiB, NOT OS high-water.
+
+## Status
+
+Checked PARTIAL source milestone. Fully proved: native whole role consumption,
+accepted augmented per-actor agreement, actual scan reconciliation, construction-
+owned head-selected vestigial disappearance through deletion/sort/replay, and the
+explicit mixed name-class theorem. Universal A synchronization and B all-name
+rebase/bridge remain OPEN; C not eligible. No new merely-stated theorem/hole.
+D1 prepares immutable final validation; D2 closes validation, D3 publishes and
+verifies archive, D4 records owner gate/clean close. Independent human review is
+parent-owned and pending. No scope/clock extension or further proof work.

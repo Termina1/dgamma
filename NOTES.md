@@ -4154,3 +4154,42 @@ declarations are within the parent's read-only review scope ≤be6addfb. Human
 review is being launched by the parent, NOT claimed finished. D4 adds no source,
 native invocation, new proof claim, archive rewrite or clock extension. D4/4;
 stand down cleanly. Any further proof work requires a separate owner task.
+
+## Status
+
+### R199 source-frozen checked PARTIAL (D1)
+
+44 new declarations/7 new modules; A26 units/31 calls, B18 units/21 calls,
+C0/ineligible. All proofs typechecked before guarded commits;7 failed snapshots
+retained. B3 has an additional genuine PASS rejected by EOF-whitespace guard,
+then a fresh whitespace-only check. No exhausted/reverted micro-unit. No new
+hole/postulate/unsafe/partial/with/let/prefix, no production/frozen-source edit.
+
+Fully proved: own-trace canonical role coverage/order; accepted shared Begin
+component/program; whole actor-body consumption/frame invariant; accepted
+AUGMENTED per-actor word equality. Not proved: actual end remainders empty,
+generated Insert alignment, ordered occurrence-labelled whole histories and
+exchange. The requested universal modulo synchronization remains unimplemented.
+
+B proves exact accepted/deletion current-table agreement using PUBLIC bilateral
+scanner induction. Frozen private helpers required standalone public counterparts;
+B6's private-type attempt failed, repaired by direct public-constructor induction.
+Full present-vestigial packets have BOTH current/discarded environments from one
+accepted original scan. For generations selected at the ACTUAL first deletion
+node, native deletion owns disappearance and its whole remaining chain, sorting
+and operational replay preserve it. **Head selection membership remains a premise**;
+global discarded-to-selection coverage and later-node transport are not supplied.
+The mixed head-vestigial/original-absent current-map class is proved. Universal
+all-name rebase/bridge remains open; D5 bridge not applied; C unchanged.
+
+Fixtures apply the native actor fold to unchanged R191/R193 cuts and produce full
+actual R193/R192 generation scans. R193's canonical current-map boundary still
+requires independent capital/permutation and head membership; it is NOT fabricated
+canonical capital or an unconditional convergence instance. Existing four-hole
+census4=1/2/0/0/1 unchanged. No new merely-stated theorem/hole introduced.
+
+21 evidence tests and53-record source/receipt/lock audits pass. Final158-check
+plan =150 inherited +7 new sources + seeded package,7 exact expected negatives,
+no exclusions; validation pending at D1. Next: validation/archive/owner/reviewer
+closure, then separately authorized proof work on the exact A/B debts. No scope
+or clock extension. Machine verification is not independent human proof review.

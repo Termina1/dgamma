@@ -927,3 +927,22 @@ production unchanged.21 guard tests and all151 final expected outcomes PASS
 (143 inherited +7 new sources + seeded package;7 expected negatives). A/B main
 producers and convergence remain OPEN. See `research-tests/O6-R198-GRIND-SHIFT-AUDIT.md` and
 `O6-R198-CANONICAL-CONTROLS-ANALYSIS.md` for exact partial claims and limitations.
+
+### R199 research correspondence (Thm73; checked PARTIAL)
+
+| Paper target | Idris file:name | Status |
+|---|---|---|
+| Thm73 actual canonical roles/order | `CP5O20CanonicalWordCoverageSpike:o20WholePermutedCanonicalRoles`, `o20CanonicalMappedBlocksOrdered` | Proved at each word's own native cuts; not paired whole-word coverage |
+| Thm73 shared canonical initial program | `CP5O20CanonicalBlockComponentSpike:o20SelectedCanonicalSharedBegins` | Proved from accepted supported metadata and authentic replay origins |
+| Thm73 native actor word | `CP5O20ProgramRoleWordSpike:o20ActorRoleWordInvariant`, `o20LocatedBlockRoleWordInvariant` | Whole-body consumption/frame induction proved, actual endpoint remainder retained |
+| Thm73 corresponding words | `CP5O20CanonicalBlockWordAgreementSpike:o20SelectedCanonicalAugmentedRoleWords` | Proved equality of **augmented** words; endpoint-remainder elimination and ordered occurrence pairing OPEN |
+| Lemma57/Thm73 deletion controls | `CP5O20DeletionDisappearanceSpike:o20CanonicalHeadVestigialDisappears`, `o20PermutedHeadVestigialDisappears` | Proved for full accepted vestigial generations selected at the actual **first** deletion node; global selection coverage OPEN |
+| Thm73 current-map controls | `CP5O20DeletionDisappearanceSpike:o20SelectedVestigialAbsentReplayedControls` | Mixed head-vestigial/original-absent class proved; universal ALL-name rebase OPEN |
+| Native regression/boundary fixtures | `R199NativeActorRoleWordPositive`, `R199DeletionDisappearanceBoundaryPositive` | Genuine body folds and full accepted scans; R193 canonical boundary explicitly conditional on capital/head membership |
+| Thm73 universal modulo synchronization / convergence | existing modulo goal / `canonicalSchedulesConvergeSpike` | Universal producer unimplemented; convergence hole unchanged, C0 |
+
+44 checked declarations in7 new research/test modules. Production and frozen
+4=1/2/0/0/1 census unchanged. No new holes or unsafe escapes. D1 final plan158 =
+ALL150 inherited +7 new sources + seeded package; validation pending here.
+21 evidence tests and pre-validation source/receipt audits pass. Exact limits,
+failed attempts and next obligations: `research-tests/O6-R199-GRIND-SHIFT-AUDIT.md`.

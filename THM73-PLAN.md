@@ -3927,3 +3927,32 @@ declarations are within the parent's read-only review scope ≤be6addfb. Human
 review is being launched by the parent, NOT claimed finished. D4 adds no source,
 native invocation, new proof claim, archive rewrite or clock extension. D4/4;
 stand down cleanly. Any further proof work requires a separate owner task.
+
+## R199 bounded proof/protocol frontier — D1
+
+Source freeze a240d372: A26/31/26 retained, B18/21/18 retained,44 declarations,
+7 new modules; C0. Old lockstep candidates remain superseded/unchanged. Continue
+against the modulo specification ONLY; physical skipped edges are never zero
+by assumption. A now owns shared native initial programs and whole actor-body
+consumption, plus **augmented** word agreement. Next proof units must discharge
+actual block-end residuals, generated-Insert pairing, ordered occurrence coverage
+and exchange/whole-history attachment before claiming universal synchronization.
+
+B's native public bilateral scanner reconciles accepted/deletion current tables.
+An actual first-node selected full vestigial generation disappears through the
+whole deletion chain, sorting and actual permutation. The global scanner's
+`vestigialBirthDiscarded` does NOT supply head membership: exhaustive selected
+node discovery, generation transport to later deletion nodes, and current-map
+all-name case coverage remain required. The new mixed vestigial/absent class and
+conditional R193 fixture are not universal rebase or D5 bridge proofs. C stays
+ineligible; no convergence body/native attempt until BOTH complete A/B producers.
+Distinct exhausted R197 provider-D5 stays frozen, no retry.
+
+A/B caps now frozen; D<=4 compiler-free documentation/artifact commits. Immutable
+158-check plan (ALL150 inherited +7 new +seeded package,7 exact negatives) uses
+one main compiler, exact own-target Building, no extra builds, source snapshots,
+48GiB main/52GiB frozen LocalDiamond shared lock, no lane2 operations/cold build.
+Conservative deadlines remain14:26Z proof cutoff,14:41Z validation-start cutoff,
+14:51Z gate/15:06Z timeout, Sep9. No new proof attempts are authorized by this
+protocol note. Parent owns review; native/source/receipt authentication is not a
+human mathematical acceptance. Archive anchor excludes publication/future gates.
