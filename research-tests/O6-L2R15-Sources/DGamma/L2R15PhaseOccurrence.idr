@@ -45,3 +45,21 @@ export
 phaseEventThroughNativeHead nameEq _ _
   (AvailabilityStep source (Fired ne ke action tag checked) rest later) ordinal event tailProof =
   tailProof later
+
+||| Any native physical prefix places the next event at its exact COUNT.
+||| The only recursion is on that prefix, never on a reconstructed event word.
+export
+0 phaseEventAtNativePrefix : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, source, target, finalState : SystemState name key value world error} ->
+  (nameEq : DecEq name) -> (before : Transitions first source) ->
+  (step : Transition source target) -> (rest : Transitions target finalState) ->
+  (trail : AvailabilityTrace name key world error value
+    (appendTransitions before (MoreTransitions step rest))) ->
+  head' (drop (transitionCount before) (phaseEvents nameEq trail)) =
+    Just (phaseActionOwner nameEq source (transitionAction step), isLifecycleAction (transitionAction step))
+phaseEventAtNativePrefix nameEq NoTransitions step rest trail =
+  phaseEventAtNativeHead nameEq step rest trail
+phaseEventAtNativePrefix {source} nameEq (MoreTransitions head before) step rest trail =
+  phaseEventThroughNativeHead nameEq head (appendTransitions before (MoreTransitions step rest)) trail
+    (transitionCount before) (phaseActionOwner nameEq source (transitionAction step), isLifecycleAction (transitionAction step))
+    (phaseEventAtNativePrefix nameEq before step rest)
