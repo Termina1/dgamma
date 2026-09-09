@@ -37,3 +37,12 @@ contiguityRestoredFirst = MkRestoredFirstPacket {states = contiguityState}
   (smallInsert3 smallNativeExecution)
   (checkedFromRaw %search %search (OInsert 5 (ChildOf 2) (smallComponent False)) (contiguityState 11) (contiguityState 12) OInsertTag (checkedActionTargetValid %search %search (OInsert 3 Root (smallComponent True)) (contiguityState 0) (contiguityState 11) OInsertTag (smallInsert3 smallNativeExecution)) Refl)
   (checkedFromRaw %search %search (LBegin 2) (contiguityState 12) (contiguityState 13) LBeginTag (checkedActionTargetValid %search %search (OInsert 5 (ChildOf 2) (smallComponent False)) (contiguityState 11) (contiguityState 12) OInsertTag (checkedFromRaw %search %search (OInsert 5 (ChildOf 2) (smallComponent False)) (contiguityState 11) (contiguityState 12) OInsertTag (checkedActionTargetValid %search %search (OInsert 3 Root (smallComponent True)) (contiguityState 0) (contiguityState 11) OInsertTag (smallInsert3 smallNativeExecution)) Refl)) Refl)
+
+||| Restored-path last FOUR native equations, not the split-path packet.
+public export
+record RestoredLastPacket (states : Nat -> SystemState Nat Bool (\key => Unit) Unit String) where
+  constructor MkRestoredLastPacket
+  0 restoredEdge13 : checkedApplyAction @{%search} @{%search} (LAdvance 2) (states 13) = Just (LFinishTag, states 14)
+  0 restoredEdge14 : checkedApplyAction @{%search} @{%search} (ORetire 5) (states 14) = Just (ORetireTag, states 15)
+  0 restoredEdge15 : checkedApplyAction @{%search} @{%search} (ORemove 5) (states 15) = Just (ORemoveTag, states 16)
+  0 restoredEdge16 : checkedApplyAction @{%search} @{%search} (OInsert 4 Root (smallComponent False)) (states 16) = Just (OInsertTag, states 17)
