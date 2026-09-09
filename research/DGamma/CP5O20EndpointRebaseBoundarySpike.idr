@@ -5,6 +5,7 @@ import DGamma.Coeffects
 import DGamma.Metatheory
 import DGamma.CP3
 import DGamma.CP5O20AllNameSynchronizationSpike
+import DGamma.CP5O20EpisodeSynchronizationSpike
 import DGamma.CP5O20HistoryNameTransportSpike
 import DGamma.CP5ConfluenceRenamingCompositionSpike
 import DGamma.CP5CurrentGenerationBirthSpike
@@ -70,3 +71,15 @@ export
   MaybeFiberRelatedBy identityNameBijection observed observed
 o20IdentityMaybeFiber Nothing = RenamedAbsent
 o20IdentityMaybeFiber (Just fiber) = RenamedPresent (o20IdentityFiber fiber)
+
+||| ANY single runtime state owns its identity ALL-name cut, not merely
+||| supported or present entries. Both endpoints are the SAME state value.
+export
+0 o20IdentityAllNameCut :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (state : SystemState name key value world error) ->
+  O20AllNameCut name key world error value nameEq identityNameBijection state state
+o20IdentityAllNameCut {name} {key} {world} {error} {value} nameEq state =
+  MkO20AllNameCut (MkRenamedRuntimeEffects Refl (\selected => Refl))
+    (\selected => o20IdentityMaybeFiber
+      (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected (registry state)))
