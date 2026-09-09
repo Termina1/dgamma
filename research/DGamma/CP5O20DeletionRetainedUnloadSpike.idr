@@ -237,3 +237,32 @@ export
   ActionOccurs (LUnload actor) (the (Transitions state state) NoTransitions) -> Void
 o20EmptyUnloadImpossible (ActionOccursHere step rest exact) impossible
 o20EmptyUnloadImpossible (ActionOccursLater step rest occurs) impossible
+
+||| Registered-generation filtering retains every REAL source Unload when
+||| the source's native no-registered-Unload certificate is supplied. This is
+||| physical occurrence retention, not merely endpoint presence preservation.
+export
+0 o20RegisteredSubsequenceRetainsUnload :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (registered : List (RegistrationGeneration name)) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  {first, finalState, otherFirst, otherFinal : SystemState name key value world error} ->
+  {trace : Transitions first finalState} -> {survivor : Transitions otherFirst otherFinal} ->
+  GenerationActionSubsequence nameEq (GenerationOwnedActor nameEq registered) ordinal live trace survivor ->
+  O20RegisteredUnloadFree name key world error value nameEq registered ordinal live trace ->
+  (actor : name) -> ActionOccurs (LUnload actor) trace -> ActionOccurs (LUnload actor) survivor
+o20RegisteredSubsequenceRetainsUnload nameEq registered ordinal live GenerationActionSubsequenceEnd free actor occurs =
+  void (o20EmptyUnloadImpossible occurs)
+o20RegisteredSubsequenceRetainsUnload nameEq registered ordinal live
+  (KeepGenerationAction step rest kept later outside same tail) free actor occurs =
+    o20UnloadOccursThroughKeptHead actor step rest kept later same
+      (o20RegisteredSubsequenceRetainsUnload nameEq registered (S ordinal)
+        (advanceGenerationEnvironment @{nameEq} ordinal (transitionAction step) live)
+        tail (o20RegisteredUnloadFreeTail free) actor) occurs
+o20RegisteredSubsequenceRetainsUnload nameEq registered ordinal live
+  (DeleteGenerationAction step rest deleted tail) free actor occurs =
+    o20UnloadOccursPastDeletedHead actor step rest _
+      (\exact => o20RegisteredUnloadHeadExcludes free actor exact deleted)
+      (o20RegisteredSubsequenceRetainsUnload nameEq registered (S ordinal)
+        (advanceGenerationEnvironment @{nameEq} ordinal (transitionAction step) live)
+        tail (o20RegisteredUnloadFreeTail free) actor) occurs
