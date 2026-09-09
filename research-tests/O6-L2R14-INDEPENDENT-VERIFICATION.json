@@ -1,0 +1,27 @@
+{
+  "passed": true,
+  "checkedHead": "64dabedecfccab42c0a18a4186df97a5c5185006",
+  "verifierSHA256": "b31f6f4c120757949cc65246b1a79338957e3cf2cfd1235ec575e845aac88943",
+  "archiveBoundaryHead": "64dabedecfccab42c0a18a4186df97a5c5185006",
+  "derivedLedgersVerified": true,
+  "focusedEvidenceTests": 53,
+  "records": 59,
+  "proofAttempts": 45,
+  "retainedDeclarations": 40,
+  "failedAttempts": [
+    "A2-1",
+    "A3-1",
+    "A6-1",
+    "A7-1",
+    "A8-1"
+  ],
+  "guardedSourceCommits": 40,
+  "guardedReceipts": 46,
+  "finalValidations": 13,
+  "archiveFiles": 368,
+  "archiveSHA256": "91e338689ca3cefd25f42e3cfbe62b2cc979a389a59eca51c8416afa9dc9b493",
+  "noStagedFiles": true,
+  "ownCompilerRunning": false,
+  "humanMathematicalReview": "parent-owned, not performed by this script",
+  "scope": "PARTIAL bounded A14/B16/C10 milestone. General phases and normalizer OPEN; C LOCAL square conditional on explicit raw per-action shapes, discharged only on fixture. NOT SIGNABLE / Owner Option A."
+}

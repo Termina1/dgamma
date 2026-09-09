@@ -1,0 +1,31 @@
+PRE-PUBLICATION boundary 64dabedecfccab42c0a18a4186df97a5c5185006; not the later evidence commit.
+Command: git diff --stat 574a8098 64dabedecfccab42c0a18a4186df97a5c5185006
+UTC: 2026-09-09T20:10:59.947448+00:00
+All changed paths are L2R14 lane-owned. The final gate separately runs the actual BASE..HEAD stat including D3 publication.
+
+ research-tests/O6-L2R14-CP3-DIFF-DRAFT-OVERLAY.md  |  31 +++
+ research-tests/O6-L2R14-FINAL-VALIDATION-PLAN.json | 111 ++++++++++
+ research-tests/O6-L2R14-GRIND-SHIFT-AUDIT.md       |  49 +++++
+ .../O6-L2R14-Sources/DGamma/L2R14ActionShapes.idr  | 107 ++++++++++
+ .../DGamma/L2R14AdjacentNative.idr                 | 226 ++++++++++++++++++++
+ .../O6-L2R14-Sources/DGamma/L2R14CatalogQuery.idr  | 103 +++++++++
+ .../O6-L2R14-Sources/DGamma/L2R14CoreShapeFold.idr |  59 ++++++
+ .../DGamma/L2R14IterationFixtures.idr              | 110 ++++++++++
+ .../DGamma/L2R14IterationFromMoves.idr             |  32 +++
+ .../DGamma/L2R14LocalOperations.idr                |  56 +++++
+ .../DGamma/L2R14LocalShapeFixture.idr              |  54 +++++
+ .../DGamma/L2R14LocalSquareFixture.idr             |  57 +++++
+ .../DGamma/L2R14LocalSquareProduction.idr          |  65 ++++++
+ .../O6-L2R14-Sources/DGamma/L2R14PhaseOrigins.idr  | 101 +++++++++
+ .../O6-L2R14-Sources/DGamma/L2R14PhaseRelease.idr  | 131 ++++++++++++
+ .../O6-L2R14-Sources/DGamma/L2R14PhaseSeed.idr     | 101 +++++++++
+ research-tests/run-l2r14-artifact-commit.py        |  67 ++++++
+ research-tests/run-l2r14-check.py                  | 119 +++++++++++
+ research-tests/run-l2r14-commit.py                 |  49 +++++
+ research-tests/run-l2r14-evidence-tests.py         | 123 +++++++++++
+ research-tests/run-l2r14-final-validation.py       |  26 +++
+ research-tests/run-l2r14-independent-verify.py     | 232 +++++++++++++++++++++
+ research-tests/run-l2r14-launch.py                 |  14 ++
+ research-tests/run-l2r14-publish-evidence.py       |  75 +++++++
+ research-tests/run-l2r14-visibility-commit.py      |  56 +++++
+ 25 files changed, 2154 insertions(+)

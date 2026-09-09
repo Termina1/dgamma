@@ -1,0 +1,541 @@
+{
+  "timestampObservations": [
+    {
+      "invocation": "A2-1",
+      "firstObservedUTC": "2026-09-09T18:45:57.862774+00:00",
+      "lastObservedUTC": "2026-09-09T18:45:58.449292+00:00"
+    },
+    {
+      "invocation": "A3-2",
+      "firstObservedUTC": "2026-09-09T18:47:36.661981+00:00",
+      "lastObservedUTC": "2026-09-09T18:47:37.531147+00:00"
+    },
+    {
+      "invocation": "A5-1",
+      "firstObservedUTC": "2026-09-09T18:49:36.057078+00:00",
+      "lastObservedUTC": "2026-09-09T18:49:36.665476+00:00"
+    },
+    {
+      "invocation": "A7-1",
+      "firstObservedUTC": "2026-09-09T18:52:04.940298+00:00",
+      "lastObservedUTC": "2026-09-09T18:52:05.514550+00:00"
+    },
+    {
+      "invocation": "A11-1",
+      "firstObservedUTC": "2026-09-09T18:56:32.733643+00:00",
+      "lastObservedUTC": "2026-09-09T18:56:33.606713+00:00"
+    },
+    {
+      "invocation": "C10-1",
+      "firstObservedUTC": "2026-09-09T19:43:45.760254+00:00",
+      "lastObservedUTC": "2026-09-09T19:43:46.052652+00:00"
+    },
+    {
+      "invocation": "C10-1",
+      "firstObservedUTC": "2026-09-09T19:43:47.213979+00:00",
+      "lastObservedUTC": "2026-09-09T19:43:47.509093+00:00"
+    },
+    {
+      "invocation": "C10-1",
+      "firstObservedUTC": "2026-09-09T19:43:48.370341+00:00",
+      "lastObservedUTC": "2026-09-09T19:52:05.539432+00:00"
+    },
+    {
+      "invocation": "C10-1",
+      "firstObservedUTC": "2026-09-09T19:52:07.559488+00:00",
+      "lastObservedUTC": "2026-09-09T19:52:08.139886+00:00"
+    },
+    {
+      "invocation": "C10-1",
+      "firstObservedUTC": "2026-09-09T19:52:09.006751+00:00",
+      "lastObservedUTC": "2026-09-09T19:52:09.291176+00:00"
+    },
+    {
+      "invocation": "C10-1",
+      "firstObservedUTC": "2026-09-09T19:52:10.161163+00:00",
+      "lastObservedUTC": "2026-09-09T19:52:15.652317+00:00"
+    },
+    {
+      "invocation": "C10-1",
+      "firstObservedUTC": "2026-09-09T19:52:16.800249+00:00",
+      "lastObservedUTC": "2026-09-09T19:52:16.800249+00:00"
+    },
+    {
+      "invocation": "C10-1",
+      "firstObservedUTC": "2026-09-09T19:52:17.965686+00:00",
+      "lastObservedUTC": "2026-09-09T19:52:18.544861+00:00"
+    },
+    {
+      "invocation": "C10-1",
+      "firstObservedUTC": "2026-09-09T19:52:19.129103+00:00",
+      "lastObservedUTC": "2026-09-09T19:52:22.888133+00:00"
+    },
+    {
+      "invocation": "C10-1",
+      "firstObservedUTC": "2026-09-09T19:52:23.464735+00:00",
+      "lastObservedUTC": "2026-09-09T19:53:43.399472+00:00"
+    },
+    {
+      "invocation": "C10-1",
+      "firstObservedUTC": "2026-09-09T19:53:44.846673+00:00",
+      "lastObservedUTC": "2026-09-09T19:53:46.005934+00:00"
+    },
+    {
+      "invocation": "C10-1",
+      "firstObservedUTC": "2026-09-09T19:53:47.157127+00:00",
+      "lastObservedUTC": "2026-09-09T19:53:48.019364+00:00"
+    },
+    {
+      "invocation": "C10-1",
+      "firstObservedUTC": "2026-09-09T19:53:49.448058+00:00",
+      "lastObservedUTC": "2026-09-09T19:58:58.262815+00:00"
+    },
+    {
+      "invocation": "C10-1",
+      "firstObservedUTC": "2026-09-09T19:58:59.722865+00:00",
+      "lastObservedUTC": "2026-09-09T19:59:00.311781+00:00"
+    },
+    {
+      "invocation": "C10-1",
+      "firstObservedUTC": "2026-09-09T19:59:00.891093+00:00",
+      "lastObservedUTC": "2026-09-09T19:59:01.479681+00:00"
+    },
+    {
+      "invocation": "C10-1",
+      "firstObservedUTC": "2026-09-09T19:59:02.353850+00:00",
+      "lastObservedUTC": "2026-09-09T19:59:04.102378+00:00"
+    },
+    {
+      "invocation": "C10-1",
+      "firstObservedUTC": "2026-09-09T19:59:05.562414+00:00",
+      "lastObservedUTC": "2026-09-09T20:00:00.371062+00:00"
+    },
+    {
+      "invocation": "C10-1",
+      "firstObservedUTC": "2026-09-09T20:00:02.104980+00:00",
+      "lastObservedUTC": "2026-09-09T20:00:02.975203+00:00"
+    },
+    {
+      "invocation": "V1",
+      "firstObservedUTC": "2026-09-09T20:07:12.840733+00:00",
+      "lastObservedUTC": "2026-09-09T20:07:13.702274+00:00"
+    },
+    {
+      "invocation": "V2",
+      "firstObservedUTC": "2026-09-09T20:07:13.880583+00:00",
+      "lastObservedUTC": "2026-09-09T20:07:14.458737+00:00"
+    },
+    {
+      "invocation": "V3",
+      "firstObservedUTC": "2026-09-09T20:07:14.916876+00:00",
+      "lastObservedUTC": "2026-09-09T20:07:15.499549+00:00"
+    },
+    {
+      "invocation": "V4",
+      "firstObservedUTC": "2026-09-09T20:07:15.951332+00:00",
+      "lastObservedUTC": "2026-09-09T20:07:16.829557+00:00"
+    },
+    {
+      "invocation": "V5",
+      "firstObservedUTC": "2026-09-09T20:07:16.982820+00:00",
+      "lastObservedUTC": "2026-09-09T20:07:18.440475+00:00"
+    },
+    {
+      "invocation": "V6",
+      "firstObservedUTC": "2026-09-09T20:07:19.040021+00:00",
+      "lastObservedUTC": "2026-09-09T20:07:20.197659+00:00"
+    },
+    {
+      "invocation": "V7",
+      "firstObservedUTC": "2026-09-09T20:07:21.078827+00:00",
+      "lastObservedUTC": "2026-09-09T20:07:22.528582+00:00"
+    },
+    {
+      "invocation": "V8",
+      "firstObservedUTC": "2026-09-09T20:07:23.121944+00:00",
+      "lastObservedUTC": "2026-09-09T20:07:23.989005+00:00"
+    },
+    {
+      "invocation": "V9",
+      "firstObservedUTC": "2026-09-09T20:07:24.160853+00:00",
+      "lastObservedUTC": "2026-09-09T20:07:25.026053+00:00"
+    },
+    {
+      "invocation": "V10",
+      "firstObservedUTC": "2026-09-09T20:07:25.193406+00:00",
+      "lastObservedUTC": "2026-09-09T20:10:25.703021+00:00"
+    },
+    {
+      "invocation": "V10",
+      "firstObservedUTC": "2026-09-09T20:10:27.139455+00:00",
+      "lastObservedUTC": "2026-09-09T20:10:29.730299+00:00"
+    },
+    {
+      "invocation": "V10",
+      "firstObservedUTC": "2026-09-09T20:10:30.586445+00:00",
+      "lastObservedUTC": "2026-09-09T20:10:33.192359+00:00"
+    },
+    {
+      "invocation": "V10",
+      "firstObservedUTC": "2026-09-09T20:10:34.044909+00:00",
+      "lastObservedUTC": "2026-09-09T20:10:36.342538+00:00"
+    },
+    {
+      "invocation": "V10",
+      "firstObservedUTC": "2026-09-09T20:10:37.209266+00:00",
+      "lastObservedUTC": "2026-09-09T20:10:40.378164+00:00"
+    },
+    {
+      "invocation": "V11",
+      "firstObservedUTC": "2026-09-09T20:10:41.641337+00:00",
+      "lastObservedUTC": "2026-09-09T20:10:42.515670+00:00"
+    },
+    {
+      "invocation": "V12",
+      "firstObservedUTC": "2026-09-09T20:10:43.401881+00:00",
+      "lastObservedUTC": "2026-09-09T20:10:43.983597+00:00"
+    },
+    {
+      "invocation": "V13",
+      "firstObservedUTC": "2026-09-09T20:10:46.010368+00:00",
+      "lastObservedUTC": "2026-09-09T20:11:56.131118+00:00"
+    },
+    {
+      "invocation": "V13",
+      "firstObservedUTC": "2026-09-09T20:11:56.993374+00:00",
+      "lastObservedUTC": "2026-09-09T20:11:56.993374+00:00"
+    },
+    {
+      "invocation": "V13",
+      "firstObservedUTC": "2026-09-09T20:11:58.160216+00:00",
+      "lastObservedUTC": "2026-09-09T20:11:59.599751+00:00"
+    },
+    {
+      "invocation": "V13",
+      "firstObservedUTC": "2026-09-09T20:12:00.483701+00:00",
+      "lastObservedUTC": "2026-09-09T20:13:42.283965+00:00"
+    },
+    {
+      "invocation": "V13",
+      "firstObservedUTC": "2026-09-09T20:13:42.864028+00:00",
+      "lastObservedUTC": "2026-09-09T20:13:42.864028+00:00"
+    },
+    {
+      "invocation": "V13",
+      "firstObservedUTC": "2026-09-09T20:13:44.028996+00:00",
+      "lastObservedUTC": "2026-09-09T20:13:46.357461+00:00"
+    },
+    {
+      "invocation": "V13",
+      "firstObservedUTC": "2026-09-09T20:13:47.226405+00:00",
+      "lastObservedUTC": "2026-09-09T20:13:49.554910+00:00"
+    },
+    {
+      "invocation": "V13",
+      "firstObservedUTC": "2026-09-09T20:13:50.708647+00:00",
+      "lastObservedUTC": "2026-09-09T20:13:53.018480+00:00"
+    },
+    {
+      "invocation": "V13",
+      "firstObservedUTC": "2026-09-09T20:13:53.889581+00:00",
+      "lastObservedUTC": "2026-09-09T20:13:56.496085+00:00"
+    },
+    {
+      "invocation": "V13",
+      "firstObservedUTC": "2026-09-09T20:13:57.360778+00:00",
+      "lastObservedUTC": "2026-09-09T20:14:06.935563+00:00"
+    },
+    {
+      "invocation": "V13",
+      "firstObservedUTC": "2026-09-09T20:14:07.806518+00:00",
+      "lastObservedUTC": "2026-09-09T20:14:10.126334+00:00"
+    },
+    {
+      "invocation": "V13",
+      "firstObservedUTC": "2026-09-09T20:14:11.281401+00:00",
+      "lastObservedUTC": "2026-09-09T20:14:12.728853+00:00"
+    },
+    {
+      "invocation": "V13",
+      "firstObservedUTC": "2026-09-09T20:14:13.604372+00:00",
+      "lastObservedUTC": "2026-09-09T20:14:15.630765+00:00"
+    },
+    {
+      "invocation": "V13",
+      "firstObservedUTC": "2026-09-09T20:14:16.792412+00:00",
+      "lastObservedUTC": "2026-09-09T20:14:18.512675+00:00"
+    },
+    {
+      "invocation": "V13",
+      "firstObservedUTC": "2026-09-09T20:14:19.093768+00:00",
+      "lastObservedUTC": "2026-09-09T20:14:22.285132+00:00"
+    },
+    {
+      "invocation": "V13",
+      "firstObservedUTC": "2026-09-09T20:14:23.440784+00:00",
+      "lastObservedUTC": "2026-09-09T20:14:26.061028+00:00"
+    },
+    {
+      "invocation": "V13",
+      "firstObservedUTC": "2026-09-09T20:14:26.919614+00:00",
+      "lastObservedUTC": "2026-09-09T20:14:29.535128+00:00"
+    },
+    {
+      "invocation": "V13",
+      "firstObservedUTC": "2026-09-09T20:14:30.103211+00:00",
+      "lastObservedUTC": "2026-09-09T20:14:47.731161+00:00"
+    },
+    {
+      "invocation": "V13",
+      "firstObservedUTC": "2026-09-09T20:14:49.183548+00:00",
+      "lastObservedUTC": "2026-09-09T20:14:50.626614+00:00"
+    },
+    {
+      "invocation": "V13",
+      "firstObservedUTC": "2026-09-09T20:14:51.499658+00:00",
+      "lastObservedUTC": "2026-09-09T20:14:53.225731+00:00"
+    },
+    {
+      "invocation": "V13",
+      "firstObservedUTC": "2026-09-09T20:14:54.677672+00:00",
+      "lastObservedUTC": "2026-09-09T20:14:56.725000+00:00"
+    },
+    {
+      "invocation": "V13",
+      "firstObservedUTC": "2026-09-09T20:14:58.170616+00:00",
+      "lastObservedUTC": "2026-09-09T20:15:00.780702+00:00"
+    },
+    {
+      "invocation": "V13",
+      "firstObservedUTC": "2026-09-09T20:15:01.351568+00:00",
+      "lastObservedUTC": "2026-09-09T20:15:04.243844+00:00"
+    },
+    {
+      "invocation": "V13",
+      "firstObservedUTC": "2026-09-09T20:15:05.683316+00:00",
+      "lastObservedUTC": "2026-09-09T20:18:09.890862+00:00"
+    },
+    {
+      "invocation": "V13",
+      "firstObservedUTC": "2026-09-09T20:18:11.347957+00:00",
+      "lastObservedUTC": "2026-09-09T20:18:15.726834+00:00"
+    },
+    {
+      "invocation": "V13",
+      "firstObservedUTC": "2026-09-09T20:18:16.596613+00:00",
+      "lastObservedUTC": "2026-09-09T20:18:18.927663+00:00"
+    },
+    {
+      "invocation": "V13",
+      "firstObservedUTC": "2026-09-09T20:18:20.100513+00:00",
+      "lastObservedUTC": "2026-09-09T20:18:22.737583+00:00"
+    },
+    {
+      "invocation": "V13",
+      "firstObservedUTC": "2026-09-09T20:18:23.315476+00:00",
+      "lastObservedUTC": "2026-09-09T20:18:25.632792+00:00"
+    },
+    {
+      "invocation": "V13",
+      "firstObservedUTC": "2026-09-09T20:18:26.507061+00:00",
+      "lastObservedUTC": "2026-09-09T20:18:28.839721+00:00"
+    },
+    {
+      "invocation": "V13",
+      "firstObservedUTC": "2026-09-09T20:18:30.003757+00:00",
+      "lastObservedUTC": "2026-09-09T20:18:32.886831+00:00"
+    },
+    {
+      "invocation": "V13",
+      "firstObservedUTC": "2026-09-09T20:18:34.335381+00:00",
+      "lastObservedUTC": "2026-09-09T20:18:36.087065+00:00"
+    },
+    {
+      "invocation": "V13",
+      "firstObservedUTC": "2026-09-09T20:18:37.838976+00:00",
+      "lastObservedUTC": "2026-09-09T20:18:40.474229+00:00"
+    },
+    {
+      "invocation": "V13",
+      "firstObservedUTC": "2026-09-09T20:18:42.228803+00:00",
+      "lastObservedUTC": "2026-09-09T20:18:46.309245+00:00"
+    },
+    {
+      "invocation": "V13",
+      "firstObservedUTC": "2026-09-09T20:18:47.472399+00:00",
+      "lastObservedUTC": "2026-09-09T20:18:49.798255+00:00"
+    },
+    {
+      "invocation": "V13",
+      "firstObservedUTC": "2026-09-09T20:18:50.965013+00:00",
+      "lastObservedUTC": "2026-09-09T20:18:53.286575+00:00"
+    },
+    {
+      "invocation": "V13",
+      "firstObservedUTC": "2026-09-09T20:18:54.153498+00:00",
+      "lastObservedUTC": "2026-09-09T20:18:57.059704+00:00"
+    },
+    {
+      "invocation": "V13",
+      "firstObservedUTC": "2026-09-09T20:18:57.639427+00:00",
+      "lastObservedUTC": "2026-09-09T20:19:01.131721+00:00"
+    },
+    {
+      "invocation": "V13",
+      "firstObservedUTC": "2026-09-09T20:19:02.004944+00:00",
+      "lastObservedUTC": "2026-09-09T20:19:15.053062+00:00"
+    },
+    {
+      "invocation": "V13",
+      "firstObservedUTC": "2026-09-09T20:19:16.779909+00:00",
+      "lastObservedUTC": "2026-09-09T20:19:18.539046+00:00"
+    },
+    {
+      "invocation": "V13",
+      "firstObservedUTC": "2026-09-09T20:19:19.994340+00:00",
+      "lastObservedUTC": "2026-09-09T20:19:22.893127+00:00"
+    },
+    {
+      "invocation": "V13",
+      "firstObservedUTC": "2026-09-09T20:19:24.329092+00:00",
+      "lastObservedUTC": "2026-09-09T20:19:27.811583+00:00"
+    },
+    {
+      "invocation": "V13",
+      "firstObservedUTC": "2026-09-09T20:19:28.693162+00:00",
+      "lastObservedUTC": "2026-09-09T20:19:36.829198+00:00"
+    },
+    {
+      "invocation": "V13",
+      "firstObservedUTC": "2026-09-09T20:19:37.414338+00:00",
+      "lastObservedUTC": "2026-09-09T20:19:38.569339+00:00"
+    },
+    {
+      "invocation": "V13",
+      "firstObservedUTC": "2026-09-09T20:19:39.724936+00:00",
+      "lastObservedUTC": "2026-09-09T20:19:42.049177+00:00"
+    },
+    {
+      "invocation": "V13",
+      "firstObservedUTC": "2026-09-09T20:19:42.917263+00:00",
+      "lastObservedUTC": "2026-09-09T20:19:45.523200+00:00"
+    },
+    {
+      "invocation": "V13",
+      "firstObservedUTC": "2026-09-09T20:19:46.387478+00:00",
+      "lastObservedUTC": "2026-09-09T20:20:02.878355+00:00"
+    },
+    {
+      "invocation": "V13",
+      "firstObservedUTC": "2026-09-09T20:20:04.322176+00:00",
+      "lastObservedUTC": "2026-09-09T20:20:14.750045+00:00"
+    },
+    {
+      "invocation": "V13",
+      "firstObservedUTC": "2026-09-09T20:20:15.902026+00:00",
+      "lastObservedUTC": "2026-09-09T20:20:19.098217+00:00"
+    },
+    {
+      "invocation": "V13",
+      "firstObservedUTC": "2026-09-09T20:20:20.246848+00:00",
+      "lastObservedUTC": "2026-09-09T20:20:23.439966+00:00"
+    },
+    {
+      "invocation": "V13",
+      "firstObservedUTC": "2026-09-09T20:20:24.605372+00:00",
+      "lastObservedUTC": "2026-09-09T20:20:27.529007+00:00"
+    },
+    {
+      "invocation": "V13",
+      "firstObservedUTC": "2026-09-09T20:20:29.039336+00:00",
+      "lastObservedUTC": "2026-09-09T20:20:32.290263+00:00"
+    },
+    {
+      "invocation": "V13",
+      "firstObservedUTC": "2026-09-09T20:20:33.441874+00:00",
+      "lastObservedUTC": "2026-09-09T20:20:36.056711+00:00"
+    },
+    {
+      "invocation": "V13",
+      "firstObservedUTC": "2026-09-09T20:20:36.641899+00:00",
+      "lastObservedUTC": "2026-09-09T20:21:17.018944+00:00"
+    },
+    {
+      "invocation": "V13",
+      "firstObservedUTC": "2026-09-09T20:21:18.453589+00:00",
+      "lastObservedUTC": "2026-09-09T20:21:20.505083+00:00"
+    },
+    {
+      "invocation": "V13",
+      "firstObservedUTC": "2026-09-09T20:21:21.952563+00:00",
+      "lastObservedUTC": "2026-09-09T20:21:24.558979+00:00"
+    },
+    {
+      "invocation": "V13",
+      "firstObservedUTC": "2026-09-09T20:21:25.136503+00:00",
+      "lastObservedUTC": "2026-09-09T20:21:28.313815+00:00"
+    },
+    {
+      "invocation": "V13",
+      "firstObservedUTC": "2026-09-09T20:21:29.756187+00:00",
+      "lastObservedUTC": "2026-09-09T20:23:30.138901+00:00"
+    },
+    {
+      "invocation": "V13",
+      "firstObservedUTC": "2026-09-09T20:23:31.582963+00:00",
+      "lastObservedUTC": "2026-09-09T20:23:33.615613+00:00"
+    },
+    {
+      "invocation": "V13",
+      "firstObservedUTC": "2026-09-09T20:23:35.065107+00:00",
+      "lastObservedUTC": "2026-09-09T20:23:37.690394+00:00"
+    },
+    {
+      "invocation": "V13",
+      "firstObservedUTC": "2026-09-09T20:23:38.271961+00:00",
+      "lastObservedUTC": "2026-09-09T20:23:41.746107+00:00"
+    },
+    {
+      "invocation": "V13",
+      "firstObservedUTC": "2026-09-09T20:23:42.621799+00:00",
+      "lastObservedUTC": "2026-09-09T20:24:10.555008+00:00"
+    },
+    {
+      "invocation": "V13",
+      "firstObservedUTC": "2026-09-09T20:24:12.014085+00:00",
+      "lastObservedUTC": "2026-09-09T20:24:14.052893+00:00"
+    },
+    {
+      "invocation": "V13",
+      "firstObservedUTC": "2026-09-09T20:24:15.513777+00:00",
+      "lastObservedUTC": "2026-09-09T20:24:17.263778+00:00"
+    },
+    {
+      "invocation": "V13",
+      "firstObservedUTC": "2026-09-09T20:24:18.717371+00:00",
+      "lastObservedUTC": "2026-09-09T20:24:21.339160+00:00"
+    },
+    {
+      "invocation": "V13",
+      "firstObservedUTC": "2026-09-09T20:24:22.215367+00:00",
+      "lastObservedUTC": "2026-09-09T20:24:37.909135+00:00"
+    },
+    {
+      "invocation": "V13",
+      "firstObservedUTC": "2026-09-09T20:24:39.064534+00:00",
+      "lastObservedUTC": "2026-09-09T20:24:42.263025+00:00"
+    },
+    {
+      "invocation": "V13",
+      "firstObservedUTC": "2026-09-09T20:24:43.428079+00:00",
+      "lastObservedUTC": "2026-09-09T20:24:45.160865+00:00"
+    },
+    {
+      "invocation": "V13",
+      "firstObservedUTC": "2026-09-09T20:24:46.904887+00:00",
+      "lastObservedUTC": "2026-09-09T20:25:02.603357+00:00"
+    }
+  ],
+  "foreignCompilersNeverSignalled": true,
+  "format": "timestamp-only observations throughout L2R14; no foreign PID/RSS/command metadata persisted"
+}
