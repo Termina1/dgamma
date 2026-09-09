@@ -255,3 +255,24 @@ o20SelectedVestigialDisappears {name} {key} {value} {world} {error}
         (trans (cong (\live => lookupCurrentGeneration @{nameEq} selected live)
           (sym (o20DeletionAcceptedOriginalLive nameEq keyEq left right mapping registrations candidate result)))
           (vestigialGenerationCurrent packet))))
+
+||| Whole native deletion-chain induction: an actually absent original name
+||| remains absent after every producer-owned deletion endpoint, without a
+||| caller-provided endpoint relation for the chain's final state.
+export
+0 o20DeletionChainPreservesAbsence :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {protocol : RegistrationProtocol key value world error} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, sourceFinal, targetFinal : SystemState name key value world error} ->
+  {source : Transitions initial sourceFinal} -> {target : Transitions initial targetFinal} ->
+  ClosingFreeDeletionDerivation name key world error value protocol nameEq keyEq source target ->
+  (selected : name) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected (registry sourceFinal) = Nothing) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected (registry targetFinal) = Nothing)
+o20DeletionChainPreservesAbsence nameEq keyEq (ClosingFreeDeletionDone trace) selected absent = absent
+o20DeletionChainPreservesAbsence {sourceFinal} nameEq keyEq
+  (ClosingFreeDeletionStep trace premises candidate step target rest) selected absent =
+  o20DeletionChainPreservesAbsence nameEq keyEq rest selected
+    (o20CanonicalEndpointPreservesAbsence nameEq keyEq sourceFinal (survivingFinal (deletionResult step))
+      (deletionEndpoint step) selected absent)
