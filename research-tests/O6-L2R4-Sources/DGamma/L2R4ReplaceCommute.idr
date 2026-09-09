@@ -52,3 +52,18 @@ replaceCommuteLeftObserved keyEq left right _ nextLeft nextRight old rest distin
 replaceCommuteLeftObserved keyEq left right current nextLeft nextRight old rest distinct tail (No leftMisses) exact =
   replaceCommuteRightObserved keyEq left right current nextLeft nextRight old rest leftMisses tail
     (decEq @{keyEq} right current) Refl
+
+||| Distinct replacements commute on the EXACT ordered runtime binding list.
+||| Structural list induction, no uniqueness-proof equality or postulate.
+export
+0 replaceEntriesCommute :
+  {key, item : Type} -> (keyEq : DecEq key) -> (left, right : key) ->
+  (nextLeft, nextRight : item) -> (entries : List (Binding key (\k => item))) ->
+  (0 distinct : Not (left = right)) ->
+  replaceEntries @{keyEq} left nextLeft (replaceEntries @{keyEq} right nextRight entries) =
+    replaceEntries @{keyEq} right nextRight (replaceEntries @{keyEq} left nextLeft entries)
+replaceEntriesCommute keyEq left right nextLeft nextRight [] distinct = Refl
+replaceEntriesCommute keyEq left right nextLeft nextRight (Bind current old :: rest) distinct =
+  replaceCommuteLeftObserved keyEq left right current nextLeft nextRight old rest distinct
+    (replaceEntriesCommute keyEq left right nextLeft nextRight rest distinct)
+    (decEq @{keyEq} left current) Refl
