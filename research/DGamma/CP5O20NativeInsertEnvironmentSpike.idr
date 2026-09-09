@@ -97,3 +97,31 @@ record O20PrefixScannedInsertAttachment
       (o20ScannedFinalLive nameEq Z [] (beforeRegistration (attachedRightBirth (physicalBirths nativeInsertPositions)))))
     (registrationBefore leftBirth) (registrationBefore (attachedRightBirth (physicalBirths nativeInsertPositions)))
     (registrationAfter leftBirth) (registrationAfter (attachedRightBirth (physicalBirths nativeInsertPositions)))
+
+||| Construct both prefix-scanned environments, certificates and the stage
+||| from the SAME attached physical births. No environment choice is exposed.
+export
+0 o20PrefixScannedInsertFromOrigins :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {leftFirst, leftFinal, rightFirst, rightFinal, leftNowFirst, leftNowFinal, rightNowFirst, rightNowFinal : SystemState name key value world error} ->
+  {left : Transitions leftFirst leftFinal} -> {right : Transitions rightFirst rightFinal} ->
+  {leftNow : Transitions leftNowFirst leftNowFinal} -> {rightNow : Transitions rightNowFirst rightNowFinal} ->
+  (leftReplay : ActionRegistrationReplayCorrespondence name key world error value left leftNow) ->
+  (rightReplay : ActionRegistrationReplayCorrespondence name key world error value right rightNow) ->
+  (mapping : RegistrationGenerationBijection name) -> (renaming : NameBijection name) ->
+  AlignedTransitions name key world error value nameEq keyEq leftNow ->
+  AlignedTransitions name key world error value nameEq keyEq rightNow ->
+  (child, parent : name) -> (component : Component key value world error) ->
+  (leftBirth : LocatedGeneratedRegistration child parent component leftNow) ->
+  (positions : O20PhysicalInsertOriginPositions name key world error value leftReplay rightReplay mapping renaming
+    child parent component leftBirth) ->
+  O20PrefixScannedInsertAttachment name key world error value nameEq keyEq leftReplay rightReplay mapping renaming
+    child parent component leftBirth
+o20PrefixScannedInsertFromOrigins nameEq keyEq leftReplay rightReplay mapping renaming
+  leftAligned rightAligned child parent component leftBirth positions =
+    MkO20PrefixScannedInsertAttachment positions
+      (o20NativePrefixScan nameEq (beforeRegistration leftBirth))
+      (o20NativePrefixScan nameEq (beforeRegistration (attachedRightBirth (physicalBirths positions))))
+      (o20AttachedGeneratedInsertStage nameEq keyEq leftReplay rightReplay mapping renaming
+        leftAligned rightAligned child parent component leftBirth (physicalBirths positions))
