@@ -130,3 +130,26 @@ export
 o20CutRejectsPresentAbsent nameEq renaming left right selected fiber present absent cut =
   o20PresentAbsentImpossible {renaming} {fiber}
     (rewrite (sym present) in rewrite (sym absent) in allNameControls cut selected)
+
+||| Observe the accepted endpoint partition. A genuine history/current name
+||| disagreement forces its FULL original vestigial packet; unsupportedness
+||| or discarded-generation membership alone is not substituted for its fields.
+export
+0 o20DisagreementVestigialChoice :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {leftFirst, leftFinal, rightFirst, rightFinal : SystemState name key value world error} ->
+  {left : Transitions leftFirst leftFinal} -> {right : Transitions rightFirst rightFinal} ->
+  (mapping : RegistrationGenerationBijection name) ->
+  (registrations : RegistrationCorrespondenceByGeneration nameEq mapping left right) ->
+  (current : CurrentEndpointRenaming nameEq keyEq mapping left right registrations) ->
+  (selected : name) -> (stamp : RegistrationGeneration name) ->
+  Not (o20HistoricalTarget mapping stamp = renameForward (currentNameBijection current) selected) ->
+  Either
+    (VestigialEndpointGeneration name key world error value nameEq keyEq
+      (leftFinalGenerations registrations) (leftDeletedGenerations registrations) selected leftFinal)
+    (o20HistoricalTarget mapping stamp = renameForward (currentNameBijection current) selected) ->
+  VestigialEndpointGeneration name key world error value nameEq keyEq
+    (leftFinalGenerations registrations) (leftDeletedGenerations registrations) selected leftFinal
+o20DisagreementVestigialChoice mapping registrations current selected stamp different (Left vestigial) = vestigial
+o20DisagreementVestigialChoice mapping registrations current selected stamp different (Right same) = void (different same)
