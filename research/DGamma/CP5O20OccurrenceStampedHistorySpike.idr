@@ -256,3 +256,27 @@ o20OccurrenceHistoryRightPath OccurrenceHistoryEnd = NoTransitions
 o20OccurrenceHistoryRightPath
   (OccurrenceHistoryMore stage leftOccurrence rightOccurrence leftStampExact rightStampExact leftTagExact rightTagExact later) =
     MoreTransitions (o20StampedRightTransition stage) (o20OccurrenceHistoryRightPath later)
+
+||| The two constructed paired NATIVE paths have the same number of stages.
+||| This is NOT equality of physical original-word counts or insertion stamps:
+||| occurrence labels are independent, and original words are not identified
+||| with either constructed path. No skipped original edge is called epsilon.
+export
+0 o20OccurrenceNativePathCounts :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {mapping : RegistrationGenerationBijection name} -> {renaming : NameBijection name} ->
+  {wordInitial, leftWordFinal, rightWordFinal : SystemState name key value world error} ->
+  {leftWord : Transitions wordInitial leftWordFinal} ->
+  {rightWord : Transitions wordInitial rightWordFinal} ->
+  {leftLive, rightLive, leftFinalLive, rightFinalLive : GenerationEnvironment name} ->
+  {leftBefore, rightBefore, leftAfter, rightAfter : SystemState name key value world error} ->
+  (history : O20OccurrenceStampedHistory name key world error value nameEq keyEq mapping renaming
+    leftWord rightWord leftLive rightLive leftFinalLive rightFinalLive
+    leftBefore rightBefore leftAfter rightAfter) ->
+  (transitionCount (o20OccurrenceHistoryLeftPath history) =
+    transitionCount (o20OccurrenceHistoryRightPath history))
+o20OccurrenceNativePathCounts OccurrenceHistoryEnd = Refl
+o20OccurrenceNativePathCounts
+  (OccurrenceHistoryMore stage leftOccurrence rightOccurrence leftStampExact rightStampExact leftTagExact rightTagExact later) =
+    cong S (o20OccurrenceNativePathCounts later)
