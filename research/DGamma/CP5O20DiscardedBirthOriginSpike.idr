@@ -89,3 +89,26 @@ o20DiscardedNewHeadOrigin name key world error value {first} {middle} ordinal in
     (cong (MkRegistrationGeneration child) (sym (plusZeroRightNeutral ordinal))) closing
 o20DiscardedNewHeadOrigin name key world error value ordinal incoming generation child parent component step rest actionExact closing (There member) =
   O20DiscardedBefore member
+
+||| Lift the tail packet through the ACTUAL discard constructor. A previous
+||| index member is resolved against that same head; a later birth keeps its
+||| own suffix and count. No selection or withdrawal inference is performed.
+export
+0 o20DiscardedOriginAfterDiscard :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (ordinal : Nat) -> (incoming : List (RegistrationGeneration name)) ->
+  (generation : RegistrationGeneration name) -> (child, parent : name) ->
+  (component : Component key value world error) ->
+  (step : Transition first middle) -> (rest : Transitions middle finalState) ->
+  (transitionAction step = OInsert child (ChildOf parent) component) ->
+  ActionOccurs (LUnload parent) rest ->
+  O20DiscardedTraceOrigin name key world error value (S ordinal)
+    (MkRegistrationGeneration child ordinal :: incoming) generation rest ->
+  O20DiscardedTraceOrigin name key world error value ordinal incoming generation (MoreTransitions step rest)
+o20DiscardedOriginAfterDiscard name key world error value ordinal incoming generation child parent component step rest actionExact closing (O20DiscardedBefore member) =
+  o20DiscardedNewHeadOrigin name key world error value ordinal incoming generation child parent component step rest actionExact closing member
+o20DiscardedOriginAfterDiscard name key world error value ordinal incoming generation child parent component step rest actionExact closing
+  (O20DiscardedWithin laterChild laterParent laterComponent birth exact laterClosing) =
+    o20DiscardedOriginPrepend name key world error value ordinal incoming incoming generation step rest Refl
+      (O20DiscardedWithin laterChild laterParent laterComponent birth exact laterClosing)
