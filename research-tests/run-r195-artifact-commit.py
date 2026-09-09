@@ -34,7 +34,7 @@ assert record['passed'] and record['fresh'] and not record['interrupted']
 assert record['exit'] == 0 and not record['expectedDiagnostic']
 source = ROOT/('dgamma.ipkg' if record['path'] == 'package' else record['path'])
 assert hashlib.sha256(source.read_bytes()).hexdigest() == record['sourceSHA256']
-assert paths and all((p.startswith('research-tests/') and not p.endswith('.idr')) or p in ['README.md','NOTES.md'] for p in paths)
+assert paths and all((p.startswith('research-tests/') and not p.endswith('.idr')) or p in ['README.md','NOTES.md','THM73-PLAN.md'] for p in paths)
 assert not subprocess.check_output(['git','diff','--cached','--name-only'],cwd=ROOT,text=True).strip()
 assert not subprocess.check_output(['git','diff','--name-only','--','src/','research/','research-tests/DGamma/','dgamma.ipkg'],cwd=ROOT,text=True).strip()
 owned_compilers, lane2_compilers, unknown_compilers = compiler_scopes()

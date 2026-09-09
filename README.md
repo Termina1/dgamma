@@ -797,3 +797,21 @@ The owner ratified the checked partial at52e1d308; independent reviewer pending.
 [R194 verification and evidence](research-tests/O6-R194-VERIFICATION.md),
 [audit](research-tests/O6-R194-GRIND-SHIFT-AUDIT.md) and
 [findings qualifications](research-tests/O6-R194-FINDINGS.md).
+
+### R195 checked source frontier (final validation pending)
+
+42 new research declarations, A26/B16; no convergence-body attempt. Supporting
+Theorem73 correspondence, not additional closed paper theorems:
+
+| Paper boundary | Idris declaration | Status |
+| --- | --- | --- |
+| Thm73 root replay ordinals | `CP5O20RootOrdinalBoundarySpike.o20ComposeRootReplayOrdinals` / `o20RootOrdinalsAttached` | proved composition / conditional attachment; accepted producer law open |
+| Thm73 historical births | `CP5O20GenerationOnlyHistorySpike.o20WholeOriginalGenerationHistory` / `o20HistoryReplayAttachment` | proved original coverage/retention; whole paired alignment open |
+| Thm73 endpoint rebasing | `R195EndpointRebaseBoundaryPositive.r195OriginalEndpointRebaseObstruction` | proved ORIGINAL-scope obstruction, not a canonical counterexample |
+| Thm73 vestigial remainder | `CP5O20EndpointRebaseBoundarySpike.o20DisagreementVestigial` | proved original packet; canonical remainder/bridge open |
+
+[Audit](research-tests/O6-R195-GRIND-SHIFT-AUDIT.md),
+[findings](research-tests/O6-R195-FINDINGS.md),
+[receipts](research-tests/O6-R195-MICRO-UNITS.md), and
+[R196 root-contract plan](research-tests/O6-R195-ROOT-CONTRACT-MANIFEST.md).
+Production, all four hole statements, O19/LocalDiamond and A11 remain frozen.

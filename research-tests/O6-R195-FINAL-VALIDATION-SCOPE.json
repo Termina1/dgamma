@@ -1,0 +1,25 @@
+{
+  "sourceFreezeHead": "3bd991710c76170d358dd5dadc07c676dfdb21f0",
+  "baselineCommit": "981e613795ddb04306a8009b6707defa76f9c8a7",
+  "timestampUTC": "2026-09-09T03:08:05.670226+00:00",
+  "finalChecks": 65,
+  "inheritedChecks": 59,
+  "positiveChecks": 58,
+  "expectedNegatives": 7,
+  "changedIdrisTargets": [
+    "research-tests/DGamma/R195ClosingHistoryRetentionPositive.idr",
+    "research-tests/DGamma/R195EndpointRebaseBoundaryPositive.idr",
+    "research-tests/DGamma/R195RootOrdinalBoundaryPositive.idr",
+    "research/DGamma/CP5O20EndpointRebaseBoundarySpike.idr",
+    "research/DGamma/CP5O20GenerationOnlyHistorySpike.idr",
+    "research/DGamma/CP5O20RootOrdinalBoundarySpike.idr"
+  ],
+  "planSHA256": "fc07cde4ebb74c8a4dd40916f8d8d5f36ad0d5cf7a75feab947a73d983d52738",
+  "exclusions": [],
+  "baselineQualification": "All inherited main-tree baseline targets included at981e6137 bytes. This never certifies ongoing lane2-created results.",
+  "ownerRuling": "R195 user scope and R194 preflight inclusion ruling; no preflight exclusion or withdrawn plan this shift.",
+  "defaultRSSGiB": 48,
+  "pinnedUnchangedLocalDiamondRSSGiB": 52,
+  "sharedHeavyLock": "/tmp/dgamma-heavy.lock",
+  "substitutions": {}
+}

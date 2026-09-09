@@ -3637,3 +3637,66 @@ source work followed the ruling. Independent review remains parent-owned
 and pending; neither ratification nor the52-slot final validation closes
 Theorem73 or changes any producer/consumer qualification above. The evidence
 archive remains pinned to its documented pre-artifact anchor.
+
+## Status — R195 source milestone (final validation pending)
+
+Source freeze `3bd991710c76170d358dd5dadc07c676dfdb21f0`:42 checked research
+proof/specification declarations (A26/B16), each immediately guarded committed.
+See [R195 findings](research-tests/O6-R195-FINDINGS.md) and
+[micro-unit receipts](research-tests/O6-R195-MICRO-UNITS.md).
+
+Fully proved locally: identity/composition root laws and conditional conjugation;
+constructive generic-replay root-law necessity fixture; exact original E8
+closing/matched disposition for every actual generated birth, immutable replay-
+origin retention and physical generated ordinal attachment; full native identity
+all-name/history cuts; constructive ORIGINAL-endpoint rebasing obstruction with
+full accepted inputs/internal cut; disagreement-derived original vestigial packet
+and actual removed-child absence. None is a whole canonical paired execution.
+
+Partial/open: producer-owned root law for canonical/operational stored maps;
+all-stage accepted alignment, whole initial-to-endpoint history fold, actual
+canonical all-name rebasing/vestigial absence and opposite image control,
+D5 bridge producer, convergence body and unchanged O21 endpoint assembly.
+The existing `O20PairedExecutionWithRemoval` is an endpoint-indexed local family,
+not a producer on both accepted actual words. C had0 body attempts; all protected
+statements/bodies remain frozen. No new escape hatch, postulate, partial, unsafe
+cast or named hole. Four rejected compiler snapshots are preserved, not proofs.
+
+Next: the owner-DEFERRED [root storing-contract plan](research-tests/O6-R195-ROOT-CONTRACT-MANIFEST.md)
+for R196, not the insufficient three-keyword visibility plan. Strengthen the
+adjacent fold and deletion operational capital with erased all-root laws, fill
+every actual constructor site and project through the exact canonical/operational
+producer chain. It changes no production API or frozen O19/adjacent body; if
+that changes during implementation, STOP for an owner-level exception.
+
+### R195 findings decisions synchronized
+
+A11 remains exactly its approved supported-only fourth field; the first three
+bridge clauses are still ALL-name. A8/A10 OPTION A stays research-first and
+production-frozen until the owner signs the exact CP3 diff. A12 is DECIDED:
+ATTACH after the LAST freeing release, with ordered trailing root bundles and
+the LEAST key-/barrier-forced closure; roots following a forced root cannot
+silently pass it just because their provisions were already available.
+
+The supervisor's recorded paper reading (quoted in R195-FINDINGS, pinned L2R3
+main-Git-object inspection) distinguishes Theorem73(1)'s (a) original orchestration
+order, (b) all external-root orchestration before lifecycle, and (c) generated
+orchestration after registration. A key-forced root exposes tension among these;
+Lemma71(2) exchanges lifecycle/orchestration, not two orchestration inputs, and
+its smaller-registry premise argument does not justify enlarging a registry by
+moving Root Insert backwards past Remove. This is the supervisor's paper-level
+A8/A12 diagnosis, not a new R195 formal refutation under every metatheorem premise.
+Main paper2170–2399 was re-inspected; no new full-paper-rereading claim.
+
+The selector is one hypothesis from the CP3 diff: R194 already proves the actual
+stopped-order result under quantified literal `ZeroGapPending`; selector body
+stays untouched. No separate A12Pending is necessary inside that exact-zero
+frozen theorem. No lane-owned module or ongoing lane result is changed/certified.
+
+Unchanged LocalDiamond has standing52GiB validation; default48GiB otherwise.
+Owner extends52GiB to future prior-gated KEYWORD/FIELD-only root strengthening;
+R196 must explicitly settle the necessary new-helper check's classification.
+There is no blanket52GiB authorization for arbitrary changed mathematical code.
+The244-module conservative invalidation inventory includes UNKNOWN costs and
+non-runnable legacy/diagnostic-unclassified fixtures explicitly; it is not a cold
+rebuild command or a claim that a lane2 rebuild window has been reserved.

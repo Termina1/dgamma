@@ -3708,3 +3708,45 @@ granted, no more proof/source edits. Artifact-only gate addendum records the
 verbatim ruling and subsequent read-only PASS audits. Independent reviewer
 is parent-owned/read-only and pending at this handoff. Remaining proof/fixture
 debts and the deferred production-unfreeze requirement are unchanged.
+
+## R195 source milestone and R196 root contract (final validation pending)
+
+Source freeze3bd99171, A26/B16:42 immediate receipt-authenticated declarations.
+Root generic ARRC→root-law extraction is constructively impossible and owner-
+parked (actual singleton necessity witness, NOT canonical counterexample).
+Identity/composition/conditional conjugation are proved. E8 now yields flat
+whole ORIGINAL generated-birth history, retaining genuine closing suffixes;
+actual replay origins preserve it with physical generated-ordinal attachment.
+No whole canonical paired-stage alignment is produced.
+
+An actual ORIGINAL current-name rebasing obstruction now includes full accepted
+same-input capital AND an owned internal all-name history cut. Full original
+vestigial fields can be extracted from current-history disagreement; removed
+names have actual absence. The missing canonical endpoint absence/current-map
+control lemma cannot be replaced with that original packet. D5 consumes the
+still-missing ALL-name endpoint cut. No convergence/selector/O17/O21 body attempt.
+
+A11's supported-only fourth clause remains exact, all first-three clauses frozen.
+A8/A10 OPTION A is research-first and production-frozen pending owner signature.
+A12 is DECIDED ATTACH+last-release placement+ordered barrier closure: forcedness
+is the least set containing key-forced roots and all later root inputs, and only
+roots before the first forced root retain unconditional input-first placement.
+The supervisor's paper-level reading of73(1)(a/b/c) versus71(2), recorded verbatim
+in research-tests/O6-R195-FINDINGS.md, explains why swapping a forced Root Insert
+backwards past Remove is not justified by the smaller-registry argument. This
+reading is attributed; scoped fixtures are not full metatheorem counterexamples.
+
+R194 selector remains one hypothesis from the CP3 diff (literal quantified gap0),
+not an untouched collection of four safety oracles. Its body remains untouched.
+Future work must derive actual physical normalization on lane2's variants rather
+than assuming gap0 or casting a scoped result to raw production.
+
+R196 begins, AFTER owner approval, with O6-R195-ROOT-CONTRACT-MANIFEST.md: erased
+all-root laws in the actual adjacent-fold and deletion storing records, all
+constructor sites, exact consumer chain, no frozen O19/adjacent body delta, and
+seeded serialized dependent checks. The three visibility-only changes were
+explicitly deferred as insufficient. LocalDiamond remains unchanged in R195;
+52GiB applies to its unchanged check and future explicitly gated keyword/FIELD-
+only strengthening,48GiB otherwise. Resolve the helper-check exception explicitly
+and reserve any R196 heavy rebuild window through the supervisor with lane2.
+No production edit, cold build, TTC deletion or sibling-worktree operation.

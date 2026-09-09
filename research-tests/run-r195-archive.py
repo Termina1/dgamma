@@ -60,7 +60,7 @@ ledger = dict(shift='R195', generatedUTC=datetime.datetime.now(datetime.timezone
     commitReceipts=receipts, commitReceiptStatus='recorded at each guarded commit; archive-own receipt necessarily excluded',
     evidenceArchive=archive.name, evidenceArchiveSHA256=sha(archive.read_bytes()),
     memoryMonitoringQualifications='1s sampled RSS, not OS high-water. Zero means no live sample captured. Samples retained in normalized and raw records.',
-    successfulRecheckQualification='A8-1 and A8-2 both PASS; exact archived code unchanged, docstring correction only. Independently authenticated.',
+    successfulRecheckQualification='No successful proof recheck exception; every rejected snapshot retained.',
     matchingSourceCommitsMeaning='Baseline plus target-changing commits in (start,end], matched by SHA256. Empty for rejected/uncommitted bytes; matching is not immediate-commit attestation.',
     packageFreshMeaning='Successful seeded --build, not a forced/cold source rebuild. Source checks require their own Building line.',
     records=normalized)

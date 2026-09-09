@@ -101,3 +101,55 @@ construction is claimed. The11-edge R191 paired execution remains inherited
 capital scheduled for fresh final validation, not a new accepted-pair instance.
 A(c) is structurally parked behind the missing all-root producer contract and
 actual stage-by-stage alignment. Moving to pre-authorized B, not extending A.
+
+## B16 cap: stronger original-endpoint obstruction; no bridge by fiat
+
+B1--B7 prove complete native identity provider/parent/lifecycle/fiber/Maybe-
+fiber controls, ordered table/effect cut at one literal state, and internal
+history compatibility at both authentic final scanner environments. B8--B12
+upgrade R193's real present-vestigial example: FULL SameOrchestrationModuloGenerated,
+an OWNED internal ALL-name history cut, and impossibility of the supplied-current
+ALL-name cut coexist at the ACTUAL ORIGINAL endpoint. There is no independently
+constructed state equality or control oracle. This refutes generic original-
+endpoint rebasing from those inputs, NOT protected canonical convergence.
+
+B13--B15 extract the FULL original VestigialEndpointGeneration from an authentic
+current-generation lookup and history/current disagreement; every field is
+retained. B16 supplies real absence for the unchanged R192 native removed-child
+endpoint using the finite deletion theorem, not a scalar Refl observation or
+invented present vestigial packet. Original retention/disposition is not an
+actual canonical absence theorem or a canonical-to-original O21 assembly.
+
+Source freeze3bd991710c76170d358dd5dadc07c676dfdb21f0.42 retained declarations/
+42 immediate guarded source receipts (A26/B16),46 proof invocations=42PASS/4
+rejected; plus S0 makes47 pre-final checks. B3-1 had an unresolved implicit error
+index; B3-2PASS binds it explicitly. B6-1 lacked the direct effect-cut defining
+import; B6-2 supplied a per-key lambda where ORDERED binding equality was required;
+B6-3PASS supplies the actual one-argument ordered-table equality. Third-attempt
+PASS is not a3/3 exhausted unit. No fourth attempt, interruption or mutation.
+Full micro-unit receipts/declarations/timings are in O6-R195-MICRO-UNITS.md.
+
+Missing B(d/e) lemma: an ALL-name cut at the ACTUAL replayed/canonical endpoints
+under expectedBridgeBijection. It needs canonical absence for genuinely original
+vestigial/withdrawn births, absence at the opposite current image, and exact
+current-map controls for every remaining present name (not just supported ones).
+The whole actual pairing/history fold is also absent. Neither the original
+obstruction nor full original vestigial fields prove a statement-level failure
+of canonical convergence. D5 remains a consumer, no new bridge producer.
+
+## C outcome and D1 findings/evidence preparation
+
+C: ZERO body invocations; ineligible and explicitly prohibited by root ruling.
+No selector, convergence, O17, O19 or O21 body change. Last audited census4;
+a fresh final census follows the frozen validations. A26/B16 caps are binding;
+no new proof unit is launched. Ordered scope is structurally parked/at cap.
+
+D1 synchronizes NOTES/THM73-PLAN/README, A11, decided A12 ATTACH+barrier closure,
+the supervisor's Theorem73(1)(a/b/c) vs Lemma71(2) reading, selector's one gap
+hypothesis, and52GiB rules. L2R3 audit was read via MAIN Git objects at pinned
+commitd39d786a (no lane worktree/source operation); no L2R3/L2R4 certification.
+Only main paper2170--2399 was visibly re-inspected this shift; no full-rereading
+attestation is made. Root-contract manifest and244-module conservative cost
+inventory are DOCS ONLY for R196;182 modules have honestly UNKNOWN direct cost.
+Legacy R11 inventory entries are explicitly NOT runnable.12 noncompiler evidence-
+contract tests PASS; no successful-recheck exception is inherited from R194.
