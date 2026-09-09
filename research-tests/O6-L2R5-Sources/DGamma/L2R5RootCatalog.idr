@@ -134,3 +134,21 @@ rootCatalogConsComplete {name} {key} {world} {error} {value} step rest later off
     (plusSuccRightSucc offset n)
     (rootCatalogTailComplete offset (transitionAction step) (scanRootCatalog (S offset) later)
       (S offset + n) (OInsert root Root component) (tail n root component exact))
+
+||| GENERAL lookup completeness of the catalog GENERATED FROM the trace.
+||| Every native root insertion lookup appears with the same ordinal/action;
+||| no caller-supplied catalog or completeness callback. This is NOT bundle
+||| assignment, front-normal placement, or AttachedNormalForm coverage.
+export
+0 scanRootLookupComplete :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, finalState : SystemState name key value world error} ->
+  {trace : Transitions first finalState} ->
+  (offset : Nat) -> (trail : AvailabilityTrace name key world error value trace) ->
+  (ordinal : Nat) -> (root : name) -> (component : Component key value world error) ->
+  nativeActionAt trace ordinal = Just (OInsert root Root component) ->
+  RootCatalogContains name key world error value (scanRootCatalog offset trail) (offset + ordinal) (OInsert root Root component)
+scanRootLookupComplete offset (AvailabilityEnd state) ordinal root component exact = void (nothingIsNotJust exact)
+scanRootLookupComplete offset (AvailabilityStep first (Fired nameEq keyEq action tag checked) rest later) ordinal root component exact =
+  rootCatalogConsComplete (Fired nameEq keyEq action tag checked) rest later offset
+    (scanRootLookupComplete (S offset) later) ordinal root component exact
