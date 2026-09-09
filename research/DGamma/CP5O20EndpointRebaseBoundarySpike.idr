@@ -83,3 +83,24 @@ o20IdentityAllNameCut {name} {key} {world} {error} {value} nameEq state =
   MkO20AllNameCut (MkRenamedRuntimeEffects Refl (\selected => Refl))
     (\selected => o20IdentityMaybeFiber
       (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected (registry state)))
+
+||| An actual trace scanned against itself owns an internal identity history
+||| cut at BOTH authentic final generation environments. This is not a cut
+||| at the supplied current endpoint bijection; that rebasing is separate.
+export
+0 o20IdentityHistoryCut :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (trace : Transitions initial finalState) ->
+  (registrations : RegistrationCorrespondenceByGeneration nameEq identityRegistrationGenerationBijection trace trace) ->
+  O20HistoryCut name key world error value nameEq identityRegistrationGenerationBijection
+    (leftFinalGenerations registrations) (rightFinalGenerations registrations) finalState finalState
+o20IdentityHistoryCut {name} {key} {world} {error} {value} {finalState} nameEq trace registrations =
+  MkO20HistoryCut identityNameBijection (o20IdentityAllNameCut nameEq finalState)
+    (\selected, stamp, found => sym (cong generationName (currentBirthStampExact
+      (acceptedLeftCurrentBirth name key world error value nameEq trace trace identityRegistrationGenerationBijection
+        registrations selected stamp found))))
+    (\selected, stamp, found => sym (cong generationName (currentBirthStampExact
+      (acceptedRightCurrentBirth name key world error value nameEq trace trace identityRegistrationGenerationBijection
+        registrations selected stamp found))))
