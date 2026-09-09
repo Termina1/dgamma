@@ -80,3 +80,37 @@ o20RegisteredActionNotUnload name key world error value nameEq keyEq registered 
   _ before afterState tag raw inactive actor Refl owned =
     o20RegisteredUnloadImpossible name key world error value nameEq keyEq registered ordinal live
       actor before afterState tag raw inactive owned
+
+||| One aligned source edge produces Unload exclusion and advances both
+||| unique generation state and the native registered-Inactive invariant.
+export
+0 o20RegisteredUnloadFreeHead :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  GenerationEnvironmentNamesUnique live ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (step : Transition first middle) -> (rest : Transitions middle finalState) ->
+  (IsBeginAction (transitionAction step) ->
+    GenerationOwnedActor nameEq registered ordinal live (transitionAction step) -> Void) ->
+  CurrentRegisteredInactiveFibers name key world error value nameEq registered live first ->
+  (AlignedTransitions name key world error value nameEq keyEq rest ->
+    GenerationEnvironmentNamesUnique
+      (advanceGenerationEnvironment @{nameEq} ordinal (transitionAction step) live) ->
+    CurrentRegisteredInactiveFibers name key world error value nameEq registered
+      (advanceGenerationEnvironment @{nameEq} ordinal (transitionAction step) live) middle ->
+    O20RegisteredUnloadFree name key world error value nameEq registered (S ordinal)
+      (advanceGenerationEnvironment @{nameEq} ordinal (transitionAction step) live) rest) ->
+  AlignedTransitions name key world error value nameEq keyEq (MoreTransitions step rest) ->
+  O20RegisteredUnloadFree name key world error value nameEq registered ordinal live
+    (MoreTransitions step rest)
+o20RegisteredUnloadFreeHead name key world error value nameEq keyEq registered ordinal live unique
+  {first} {middle} _ _ noBegin inactive continue (AlignedStep action tag checked rest alignedRest) =
+    O20RegisteredUnloadStep (Fired nameEq keyEq action tag checked) rest
+      (o20RegisteredActionNotUnload name key world error value nameEq keyEq registered ordinal live
+        action first middle tag (checkedActionProjects nameEq keyEq action first middle tag checked) inactive)
+      (continue alignedRest
+        (advanceGenerationEnvironmentPreservesUnique nameEq ordinal action live unique)
+        (currentRegisteredInactiveStep nameEq keyEq registered ordinal live unique action first middle tag
+          (checkedActionProjects nameEq keyEq action first middle tag checked) noBegin inactive))
