@@ -91,3 +91,25 @@ providerHeadPacketAtGuard nameEq keyEq wanted actor component parent flag table 
       (MkFiber component parent flag table lifecycle) rest False equation)
     (providerInHeadObserved nameEq keyEq wanted actor
       (MkFiber component parent True table lifecycle) rest False equation)
+
+||| Executable single-constructor producer of the observed guard and BOTH
+||| provider equations. The primitive native head guard is observed by its
+||| own equation at this call site, BEFORE the helper constructs the record.
+||| No provider equality or successful guard is an input.
+public export
+providerHeadObserved :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (wanted : key) -> (actor : name) ->
+  (component : Component key value world error) ->
+  (parent : Parent name) -> (flag : Bool) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (lifecycle : Lifecycle key value world error name
+    (dependencies (componentDependencies component)) (componentProvisions component)) ->
+  (rest : List (Binding name (FiberAt name key value world error))) ->
+  ProviderHeadObserved name key world error value nameEq keyEq wanted actor
+    component parent flag table lifecycle rest
+providerHeadObserved nameEq keyEq wanted actor component parent flag table lifecycle rest =
+  providerHeadPacketAtGuard nameEq keyEq wanted actor component parent flag table lifecycle rest
+    (isActive (fiberLifecycle (MkFiber component parent flag table lifecycle)) &&
+      memberKey @{keyEq} wanted (ownedValues (fiberTable (MkFiber component parent flag table lifecycle)))) Refl
