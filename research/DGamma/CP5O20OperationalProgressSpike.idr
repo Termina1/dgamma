@@ -87,3 +87,21 @@ export
 o20SelectOperationalProgress nameEq keyEq protocol sourceOrder goalOrder goalUnique trace blocks premises unique =
   map (\choice => o20RealizeOrientedProgress nameEq keyEq protocol trace blocks premises choice)
     (o20SelectOrientedSafeBlocks nameEq keyEq protocol sourceOrder goalOrder goalUnique trace blocks premises unique)
+
+||| Producer-owned defining map equation. This observes no nested builder's
+||| proof fields and exposes no guessed progress payload; consumers transport
+||| only Maybe presence through this exact definition.
+export
+0 o20OperationalSelectorMapEquation :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) -> (sourceOrder, goalOrder : List name) ->
+  (goalUnique : UniqueKeys goalOrder) ->
+  {initial, finalState : SystemState name key value world error} -> (trace : Transitions initial finalState) ->
+  (blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder trace) ->
+  (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq trace) ->
+  (unique : UniqueRawNameInsertions name key world error value nameEq keyEq trace) ->
+  (o20SelectOperationalProgress nameEq keyEq protocol sourceOrder goalOrder goalUnique trace blocks premises unique =
+    map (\choice => o20RealizeOrientedProgress nameEq keyEq protocol trace blocks premises choice)
+      (o20SelectOrientedSafeBlocks nameEq keyEq protocol sourceOrder goalOrder goalUnique trace blocks premises unique))
+o20OperationalSelectorMapEquation nameEq keyEq protocol sourceOrder goalOrder goalUnique trace blocks premises unique = Refl
