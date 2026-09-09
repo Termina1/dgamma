@@ -100,3 +100,19 @@ locateSourceAction (AvailabilityStep before (Fired ne ke head tag checked) rest 
   ordinal source action equation =
   locateSourceAtStep (Fired ne ke head tag checked) rest later (locateSourceAction later)
     ordinal source action equation
+
+||| The ACTUAL selected-square request now produces its native located
+||| predecessor, not merely a source/action list observation. This does not
+||| yet prove adjacency to the catalog birth or existence of a crossing square.
+export
+0 selectedCutLocated : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, finalState : SystemState name key value world error} ->
+  {trace : Transitions first finalState} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (trail : AvailabilityTrace name key world error value trace) ->
+  (cut : SelectedSquareCut name key world error value nameEq keyEq trail) ->
+  LocatedSourceAction name key world error value trace (cutSource cut) (cutAction cut)
+    (pred (catalogOrdinal (cutEntry cut)))
+selectedCutLocated nameEq keyEq trail cut =
+  locateSourceAction trail (pred (catalogOrdinal (cutEntry cut))) (cutSource cut) (cutAction cut)
+    (predecessorSourceEquation cut)
