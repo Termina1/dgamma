@@ -6,6 +6,8 @@ import DGamma.Metatheory
 import DGamma.CP3
 import DGamma.CP5AvailabilityAwarePlacement
 import DGamma.L2R5RootCatalog
+import DGamma.CP5L2R1ExtendedZeroGap
+import DGamma.L2R3AttachedGap
 import Data.List
 import Data.List.Elem
 import Data.Nat
@@ -112,3 +114,17 @@ scanCatalogBirth offset (AvailabilityEnd state) entry member = absurd member
 scanCatalogBirth offset (AvailabilityStep source (Fired ne ke action tag checked) rest later) entry member =
   catalogBirthAction action (Fired ne ke action tag checked) rest offset Refl (scanRootCatalog (S offset) later)
     (\item, present => scanCatalogBirth (S offset) later item present) entry member
+
+||| Every decoded native occurrence lies strictly inside its trace. This
+||| general count bound is needed when upgrading catalog placement to the
+||| full AttachedBundleOccurrence interval certificate.
+export
+0 locatedBirthBound : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, finalState : SystemState name key value world error} ->
+  {trace : Transitions first finalState} -> {action : Action name key value world error} ->
+  (occurrence : LocatedActionOccurrence action trace) -> LT (locatedActionOrdinal occurrence) (transitionCount trace)
+locatedBirthBound occurrence = replace {p = \extent => LT (locatedActionOrdinal occurrence) extent}
+  (trans (sym (extendedCountAppend (beforeActionOccurrence occurrence)
+    (MoreTransitions (locatedTransition occurrence) (afterActionOccurrence occurrence))))
+    (cong transitionCount (actionOccurrenceDecomposition occurrence)))
+  (gapHeadPositive (transitionCount (beforeActionOccurrence occurrence)) (transitionCount (afterActionOccurrence occurrence)))
