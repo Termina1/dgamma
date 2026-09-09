@@ -50,3 +50,16 @@ scanRootCatalog : {name, key, world, error : Type} -> {value : key -> Type} ->
 scanRootCatalog offset (AvailabilityEnd state) = []
 scanRootCatalog offset (AvailabilityStep first (Fired nameEq keyEq action tag checked) rest later) =
   rootCatalogStep offset action (scanRootCatalog (S offset) later)
+
+||| A catalog member with producer-owned action and ordinal equations. This
+||| authenticates a raw birth catalog only, NOT an AttachedBundleOccurrence.
+public export
+record RootCatalogContains
+  (name, key, world, error : Type) (value : key -> Type)
+  (0 entries : List (RootCatalogEntry name key world error value))
+  (ordinal : Nat) (action : Action name key value world error) where
+  constructor MkRootCatalogContains
+  catalogItem : RootCatalogEntry name key world error value
+  0 itemPresent : Elem catalogItem entries
+  0 itemOrdinal : catalogOrdinal catalogItem = ordinal
+  0 itemAction : OInsert (catalogRoot catalogItem) Root (catalogComponent catalogItem) = action
