@@ -287,3 +287,18 @@ o20ActualPaperRoleConsumption {name} {key} {value} {world} {error}
         (paperAdvanceSource nameEq keyEq actor LFinishTag
           (checkedActionProjects nameEq keyEq (LAdvance actor) before afterState LFinishTag (trans (sym (cong (\observedAction => checkedApplyAction {name} {key} {value} {world} {error} @{nameEq} @{keyEq} observedAction before) actionExact))
           (trans checked (cong (\observedTag => Just (observedTag, afterState)) tagExact)))) (Right Refl))))
+
+||| The complete lifecycle-tag subsequence of ONE actual actor-only body.
+||| Genuine yielded Insert edges are omitted from this projection, NOT from
+||| the native trace and NOT declared zero transitions. No decider is used.
+public export
+0 o20ActorLifecycleRoleWord :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, finalState : SystemState name key value world error} ->
+  {selected : name} -> {trace : Transitions first finalState} ->
+  ActorLifecycleOnly selected trace -> List RuleTag
+o20ActorLifecycleRoleWord ActorLifecycleEnd = []
+o20ActorLifecycleRoleWord (ActorLifecycleStep step rest lifecycle owner later) =
+  transitionTag step :: o20ActorLifecycleRoleWord later
+o20ActorLifecycleRoleWord (ActorYieldedRegistrationStep step rest inserted later) =
+  o20ActorLifecycleRoleWord later
