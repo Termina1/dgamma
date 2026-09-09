@@ -4,6 +4,8 @@ import DGamma.Calculus
 import DGamma.Coeffects
 import DGamma.Metatheory
 import DGamma.CP3
+import DGamma.CP4DeletionSelectedForeignLifecycleAnchorClassify
+import DGamma.CP5RetirementHistorySpike
 import DGamma.CP5ConfluenceLocalDiamondSpike
 import DGamma.CP5ConfluenceDeletionChainSpike
 import DGamma.CP5ConfluenceCanonicalSortSpike
@@ -163,3 +165,36 @@ o20AcceptedNoUnloadDiscardedEmpty name key world error value nameEq left right m
   o20NoUnloadDiscardedScan name key world error value nameEq mapping Z emptyRegistrationIndex Z emptyRegistrationIndex
     left right (leftFinalIndex registrations) (rightFinalIndex registrations)
     (generationTraceCorrespondence registrations) noUnload
+
+||| A checked Unload at an authentic split supplies a located closed episode.
+||| Eliminate only its observed native tag equation; the installed anchor and
+||| first-close result are built at this very edge, not independently replayed.
+export
+0 o20ClosingFreeRejectsUnloadSplit :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  {initial, before, afterState, finalState : SystemState name key value world error} ->
+  (global : Transitions initial finalState) -> (earlier : Transitions initial before) ->
+  (tag : RuleTag) ->
+  (checked : (checkedApplyAction @{nameEq} @{keyEq} (LUnload selected) before = Just (tag, afterState))) ->
+  (later : Transitions afterState finalState) ->
+  (appendTransitions earlier (MoreTransitions (Fired {before} {afterState} nameEq keyEq (LUnload selected) tag checked) later) = global) ->
+  AlignedTransitions name key world error value nameEq keyEq global ->
+  (bindings (registry initial) = []) ->
+  NoClosingEpisodes name key world error value nameEq keyEq global ->
+  (tag = LUnloadTag) -> Void
+o20ClosingFreeRejectsUnloadSplit name key world error value nameEq keyEq selected
+  {before} {afterState} global earlier _ checked later decomposition aligned empty noClosing Refl =
+    noClosing selected
+      (closingOccurrenceGivesLocatedEpisode nameEq keyEq selected
+        (Fired {before} {afterState} nameEq keyEq (LUnload selected) LUnloadTag checked)
+        global aligned empty
+        (MkForeignLifecycleInstalledAnchor before earlier
+          (MoreTransitions (Fired {before} {afterState} nameEq keyEq (LUnload selected) LUnloadTag checked) later)
+          (fst (snd (lUnloadBoundary nameEq keyEq selected before afterState LUnloadTag
+            (checkedActionProjects nameEq keyEq (LUnload selected) before afterState LUnloadTag checked))))
+          Refl decomposition)
+        (MkFirstClosingResult before afterState NoTransitions
+          (InstalledEnd (fst (snd (lUnloadBoundary nameEq keyEq selected before afterState LUnloadTag
+            (checkedActionProjects nameEq keyEq (LUnload selected) before afterState LUnloadTag checked)))))
+          (MkUnloadStep checked) later Refl))
