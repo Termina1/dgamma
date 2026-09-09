@@ -319,3 +319,27 @@ o20EpisodeSubsequenceRetainsForeignUnload nameEq selected registered ordinal liv
       (o20EpisodeSubsequenceRetainsForeignUnload nameEq selected registered (S ordinal)
         (advanceGenerationEnvironment @{nameEq} ordinal (transitionAction step) live)
         tail (o20RegisteredUnloadFreeTail free) actor distinct) occurs
+
+||| Reattach the original head after splitting its exclusion tail. Both
+||| outputs retain the SAME fixed native scanner boundary and physical traces.
+export
+0 o20RegisteredUnloadSplitHead :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (registered : List (RegistrationGeneration name)) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  {first, next, middle, finalState : SystemState name key value world error} ->
+  (step : Transition first next) -> (tail : Transitions next middle) ->
+  (right : Transitions middle finalState) ->
+  (middleOrdinal : Nat) -> (middleLive : GenerationEnvironment name) ->
+  (O20RegisteredUnloadFree name key world error value nameEq registered (S ordinal)
+      (advanceGenerationEnvironment @{nameEq} ordinal (transitionAction step) live) (appendTransitions tail right) ->
+    (O20RegisteredUnloadFree name key world error value nameEq registered (S ordinal)
+       (advanceGenerationEnvironment @{nameEq} ordinal (transitionAction step) live) tail,
+     O20RegisteredUnloadFree name key world error value nameEq registered middleOrdinal middleLive right)) ->
+  O20RegisteredUnloadFree name key world error value nameEq registered ordinal live
+    (MoreTransitions step (appendTransitions tail right)) ->
+  (O20RegisteredUnloadFree name key world error value nameEq registered ordinal live (MoreTransitions step tail),
+   O20RegisteredUnloadFree name key world error value nameEq registered middleOrdinal middleLive right)
+o20RegisteredUnloadSplitHead nameEq registered ordinal live step tail right middleOrdinal middleLive continue
+  (O20RegisteredUnloadStep _ _ excludes restFree) =
+    (O20RegisteredUnloadStep step tail excludes (fst (continue restFree)), snd (continue restFree))
