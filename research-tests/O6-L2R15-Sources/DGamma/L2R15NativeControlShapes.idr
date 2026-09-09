@@ -40,3 +40,20 @@ nativeRetireShapeFromView nameEq keyEq actor fiber ambient source _ _ found chec
     (trans (nativeReplaceSnapshot nameEq actor (retireFiber observed) ambient source)
       (cong (\owner => MkRuntimeSnapshot ambient (replaceEntries @{nameEq} actor (retireFiber owner) (bindings source)))
         (injective (trans (sym nativeFound) found))))
+
+||| GENERAL retirement-shape producer at arbitrary state/payload, from the
+||| actual native edge and its installed-fiber lookup. The abstract packet
+||| already supplies that lookup for both old/new fresh-child retirements.
+export
+0 nativeRetireShape : {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (fiber : Fiber name key value world error) ->
+  (source, target : SystemState name key value world error) -> (tag : RuleTag) ->
+  (0 found : lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor (registry source) = Just fiber) ->
+  (0 checked : checkedApplyAction @{nameEq} @{keyEq} (ORetire actor) source = Just (tag, target)) ->
+  NativeActionShape name key world error value nameEq keyEq (ORetire actor) source tag
+    (MkRuntimeSnapshot (worldState source) (replaceEntries @{nameEq} actor (retireFiber fiber) (bindings (registry source))))
+nativeRetireShape nameEq keyEq actor fiber (MkSystemState ambient source) target tag found checked =
+  nativeRetireShapeFromView nameEq keyEq actor fiber ambient source target tag found checked
+    (retireSuccessView nameEq keyEq actor ambient source tag target
+      (checkedActionProjects nameEq keyEq (ORetire actor) (MkSystemState ambient source) target tag checked))
