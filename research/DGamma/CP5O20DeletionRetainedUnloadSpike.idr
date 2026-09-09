@@ -392,3 +392,50 @@ record O20DeletionRetainedUnloads
   0 retainedAfterUnloads : (actor : name) ->
     ActionOccurs (LUnload actor) (traceAfterClosing (selectedEpisode candidate)) ->
     ActionOccurs (LUnload actor) (survivingAfter result)
+
+||| The actual candidate/result produces all three native Unload retention
+||| functions from its own scans and subsequences. No per-action exclusion or
+||| target occurrence is a caller premise. Selected-parent closing and
+||| birth-relative order are still separate obligations.
+export
+0 o20DeletionRetainedUnloads :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (trace : Transitions initial finalState) ->
+  (premises : CanonicalizationPremises name key world error value protocol nameEq keyEq trace) ->
+  (candidate : DeletableClosingEpisode name key world error value nameEq keyEq trace) ->
+  (result : DeletionResult name key world error value nameEq keyEq trace
+    (selectedActor candidate) (selectedEpisode candidate) (selectedRegistrations candidate)
+    (selectedStartOrdinal candidate) (selectedStartLive candidate)) ->
+  O20DeletionRetainedUnloads name key world error value nameEq keyEq trace candidate result
+o20DeletionRetainedUnloads name key world error value protocol nameEq keyEq trace premises candidate result =
+  MkO20DeletionRetainedUnloads
+    (o20RegisteredSubsequenceRetainsUnload nameEq (selectedRegistrations candidate) Z []
+      (beforeDeletion result) (fst (o20RegisteredUnloadSplit nameEq (selectedRegistrations candidate) Z []
+        (traceBeforeOpening (selectedEpisode candidate)) (appendTransitions (MoreTransitions (beginTransition (closedOpening (locatedEpisode (selectedEpisode candidate)))) (closedTransitions (locatedEpisode (selectedEpisode candidate)))) (traceAfterClosing (selectedEpisode candidate)))
+        (selectedStartOrdinal candidate) (selectedStartLive candidate) (beforeGenerationScan result)
+        (replace {p = O20RegisteredUnloadFree name key world error value nameEq (selectedRegistrations candidate) Z []}
+          (sym (locatedDecomposition (selectedEpisode candidate)))
+          (o20DeletionRegisteredUnloadFree name key world error value protocol nameEq keyEq trace premises candidate)))))
+    (o20EpisodeSubsequenceRetainsForeignUnload nameEq (selectedActor candidate) (selectedRegistrations candidate)
+      (selectedStartOrdinal candidate) (selectedStartLive candidate) (episodeDeletion result) (fst (o20RegisteredUnloadSplit nameEq (selectedRegistrations candidate)
+        (selectedStartOrdinal candidate) (selectedStartLive candidate) (MoreTransitions (beginTransition (closedOpening (locatedEpisode (selectedEpisode candidate)))) (closedTransitions (locatedEpisode (selectedEpisode candidate)))) (traceAfterClosing (selectedEpisode candidate))
+        (episodeEndOrdinal result) (episodeEndLive result) (episodeGenerationScan result)
+        (snd (o20RegisteredUnloadSplit nameEq (selectedRegistrations candidate) Z []
+        (traceBeforeOpening (selectedEpisode candidate)) (appendTransitions (MoreTransitions (beginTransition (closedOpening (locatedEpisode (selectedEpisode candidate)))) (closedTransitions (locatedEpisode (selectedEpisode candidate)))) (traceAfterClosing (selectedEpisode candidate)))
+        (selectedStartOrdinal candidate) (selectedStartLive candidate) (beforeGenerationScan result)
+        (replace {p = O20RegisteredUnloadFree name key world error value nameEq (selectedRegistrations candidate) Z []}
+          (sym (locatedDecomposition (selectedEpisode candidate)))
+          (o20DeletionRegisteredUnloadFree name key world error value protocol nameEq keyEq trace premises candidate)))))))
+    (o20RegisteredSubsequenceRetainsUnload nameEq (selectedRegistrations candidate)
+      (episodeEndOrdinal result) (episodeEndLive result) (afterDeletion result) (snd (o20RegisteredUnloadSplit nameEq (selectedRegistrations candidate)
+        (selectedStartOrdinal candidate) (selectedStartLive candidate) (MoreTransitions (beginTransition (closedOpening (locatedEpisode (selectedEpisode candidate)))) (closedTransitions (locatedEpisode (selectedEpisode candidate)))) (traceAfterClosing (selectedEpisode candidate))
+        (episodeEndOrdinal result) (episodeEndLive result) (episodeGenerationScan result)
+        (snd (o20RegisteredUnloadSplit nameEq (selectedRegistrations candidate) Z []
+        (traceBeforeOpening (selectedEpisode candidate)) (appendTransitions (MoreTransitions (beginTransition (closedOpening (locatedEpisode (selectedEpisode candidate)))) (closedTransitions (locatedEpisode (selectedEpisode candidate)))) (traceAfterClosing (selectedEpisode candidate)))
+        (selectedStartOrdinal candidate) (selectedStartLive candidate) (beforeGenerationScan result)
+        (replace {p = O20RegisteredUnloadFree name key world error value nameEq (selectedRegistrations candidate) Z []}
+          (sym (locatedDecomposition (selectedEpisode candidate)))
+          (o20DeletionRegisteredUnloadFree name key world error value protocol nameEq keyEq trace premises candidate)))))))
