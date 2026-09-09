@@ -112,3 +112,15 @@ actionOrdinalLink nameEq keyEq component step rest (LAdvance actor) equation = R
 actionOrdinalLink nameEq keyEq component step rest (LDivert actor) equation = Refl
 actionOrdinalLink nameEq keyEq component step rest (LUnload actor) equation = Refl
 actionOrdinalLink nameEq keyEq component step rest (LLeave actor) equation = Refl
+
+||| Shifting a native release through one head adds exactly one physical
+||| ordinal and preserves its child/source witness. Single packet elimination.
+export
+0 releaseShiftOrdinal : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  {nameEq : DecEq name} -> {component : Component key value world error} ->
+  (step : Transition first middle) -> (rest : Transitions middle finalState) ->
+  (release : (actor : name ** AttachedRelease name key world error value nameEq actor rest component)) ->
+  locatedActionOrdinal (releaseOccurrence (snd (releaseThroughHead step rest release))) =
+    S (locatedActionOrdinal (releaseOccurrence (snd release)))
+releaseShiftOrdinal step rest (actor ** release) = Refl
