@@ -4509,3 +4509,19 @@ The complete extracted paper text was read in eight consecutive tool ranges to
 EOF (3882 lines,301314 bytes), SHA256
 9b40364ab67f944406c6f40980cdc78dbba044d6eb3125aa1087f2ffdfc9a78b.
 See `O6-R201-PAPER-READ.json`; this is not PDF typography verification.
+
+
+### R201 D4 — owner-accepted checked partial seal
+
+Owner accepted the EXACT partial boundary and authorized D4 after independently
+checking D3's48 commits, scope, clean tree, production/frozen identity, census
+and no main compiler. The owner pushed D3 and is launching the separate
+read-only reviewer; that review is not claimed complete here. See
+`O6-R201-SUPERVISOR-GATE.md` and the three post-publication verification artifacts.
+The archive is1,247,702bytes/1135files atD2, SHA256
+1ea37aa6e459a35cc96ebcbb3c792e7f487786da01addec6e74f1cedc96bb9ec;
+all220 native records authenticated,45 source+2 prior artifact receipts inside,
+D3/D4 receipts outside by construction. No new compiler/source attempt followed
+V172. D4's resulting receipt is delivered in the structured completion report;
+no cyclic self-containing receipt is claimed. Stand down after final read-only
+checks. No headline closure or cold build is asserted.
