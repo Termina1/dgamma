@@ -122,3 +122,16 @@ forcedSeedBasis (OrderForces prior root ordered) = MkForcedSeedBasis
   (basisOrdinal (forcedSeedBasis prior)) (basisRoot (forcedSeedBasis prior))
   (basisKey (forcedSeedBasis prior))
   (transitive (basisBefore (forcedSeedBasis prior)) (lteSuccLeft ordered))
+
+||| Single membership elimination for any over mapped ordinal membership.
+export
+0 anyMappedCons : {a, b : Type} -> (f : a -> b) -> (predicate : b -> Bool) ->
+  (head : a) -> (items : List a) -> (wanted : b) ->
+  (0 tail : Elem wanted (map f items) -> any (\item => predicate (f item)) items = True) ->
+  (0 member : Elem wanted (f head :: map f items)) -> (0 accepted : predicate wanted = True) ->
+  any (\item => predicate (f item)) (head :: items) = True
+anyMappedCons f predicate head items _ tail Here accepted =
+  rewrite accepted in anyFoldTrue (\item => predicate (f item)) items
+anyMappedCons f predicate head items wanted tail (There later) accepted =
+  trans (anyFoldObserved (\item => predicate (f item)) items (predicate (f head)))
+    (trans (cong (\flag => predicate (f head) || flag) (tail later)) (orTrueTrue (predicate (f head))))
