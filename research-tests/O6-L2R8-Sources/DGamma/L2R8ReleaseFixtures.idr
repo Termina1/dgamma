@@ -20,8 +20,9 @@ import Decidable.Equality
 %unbound_implicits off
 
 ||| Concrete comparison over the isElem release scan; agreement with
-||| scanReleaseOrdinals open GENERALLY. Both full native fixtures compute the
-||| same exact filtered release list, not just equal nonempty flags. The new
+||| scanReleaseOrdinals open GENERALLY. Contract requiring both native fixtures to
+||| compute the same exact filtered release list; TYPE ONLY — producer OPEN
+||| (L2R8 A10 3/3). The new
 ||| lists contain decoded actual occurrences with parent and shared key.
 public export
 record ObservedReleaseFixtures where
