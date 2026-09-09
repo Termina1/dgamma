@@ -67,3 +67,22 @@ parentOrdinalLink {name} {key} {world} {error} {value} {trace}
       (dependencies (componentProvisions component))
       (any (\item => isYes (isElem @{keyEq} item (dependencies (componentProvisions component))))
         (dependencies (componentProvisions (fiberComponent fiber)))) Refl)
+
+||| Lookup linkage eliminates the SAME observed source lookup exactly once.
+export
+0 lookupOrdinalLink : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, finalState : SystemState name key value world error} ->
+  {trace : Transitions first finalState} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (component : Component key value world error) -> (child : name) ->
+  (occurrence : LocatedActionOccurrence (ORemove child) trace) ->
+  (0 atHead : locatedActionOrdinal occurrence = Z) ->
+  (found : Maybe (Fiber name key value world error)) ->
+  (0 equation : lookupFiber {name} {key} {value} {world} {error} @{nameEq}
+    child (registry (actionBeforeState occurrence)) = found) ->
+  map (\release => locatedActionOrdinal (releaseOccurrence (snd release)))
+    (releaseAtLookup nameEq keyEq component child occurrence found equation) =
+  ordinalAtLookup nameEq keyEq component child (actionBeforeState occurrence) found equation
+lookupOrdinalLink nameEq keyEq component child occurrence atHead Nothing equation = Refl
+lookupOrdinalLink nameEq keyEq component child occurrence atHead (Just fiber) equation =
+  parentOrdinalLink nameEq keyEq component child fiber occurrence atHead equation (fiberParent fiber) Refl
