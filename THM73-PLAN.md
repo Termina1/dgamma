@@ -2,6 +2,35 @@
 
 Branch: `cp5-thm73-scoping`
 
+
+## Current main checkpoint — R200 source-frozen PARTIAL
+
+B24/24, then A20/20:44 new total erased declarations, all PASS1 with immediate
+GUARDED COMMIT receipts. Source freeze5ca8e587; production and protected
+surfaces unchanged, census4=1/2/0/0/1. Main performs NO lane-2/O17 work.
+
+1. B has the actual closing-free empty discarded base, whole-scanner reverse
+   discarded-birth classifier, and real nonselecting-node presence/controls.
+   NEXT `o20DeletionRetainedClosingBirth`: transport exact deleted birth plus
+   later parent Unload through nonselecting actual deletion in its forward
+   generation coordinates. Then derive some-node selection in
+   `closingFreeDeletionGenerations`, both-side ALL-NAME cut, and apply D5.
+2. A has universal actual block-end remainder emptiness and accepted PLAIN
+   paired lifecycle-role-word equality. Original supported Insert positions
+   now retain both real scanned births and exact mapped generations. NEXT
+   transport those positions to actual exchanged canonical Inserts, preserve
+   actual one-sided skips, and fold whole occurrence-stamped orchestration
+   histories into `o20SynchronizeCanonicalHistoriesModulo`.
+3. C0/ineligible: only try `canonicalSchedulesConvergeSpike` once A AND B have
+   producer-owned outputs. No claimed bridge from controls-only persistence,
+   original-position metadata, or equality of lifecycle projections.
+4. D1 authorized comment-only correction done/fresh PASS. Immutable validation
+   plan ALL157 inherited+8 new=165 sources plus seeded package166, no path
+   exclusion; full validation/archive/reviewer gate pending at this checkpoint.
+
+The modulo goal remains the accepted target; old lockstep and exhausted
+scalar/one-origin seams remain untouched. See R200 audit and latest NOTES Status.
+
 ## R174 owner reclassification — 2026-09-06
 
 **Global name freshness is a missing hypothesis of Theorem 73, not a paper or
@@ -20,7 +49,7 @@ protocol ranks; this does not alter or call the frozen deletion theorem. No prod
 cast follows from this reclassification. Historical audits and the R146 memo
 are preserved; read their reuse/defect terminology subject to this dated note.
 
-## Current checkpoint — R173 globally fresh-name premise; O17 still OPEN
+## Historical checkpoint — R173 globally fresh-name premise; O17 then OPEN
 
 R173 applies the owner's premise revision to RESEARCH ONLY. The strong
 `UniqueRawNameInsertions` predicate quantifies every root/generated `OInsert`

@@ -4260,3 +4260,82 @@ owner's cross-lane lock abolition remains effective. Required independent read-
 only human review is being launched by the parent scoped to ≤a7e44e75 and is
 NOT claimed complete. All44 source additions are already within that scope.
 D4/4; stand down cleanly. Any further proof work requires a separate owner task.
+
+## Status — R200 checked PARTIAL (source freeze; validation pending)
+
+R200 main baseline `60869648`, source freeze `5ca8e587`; **B24/24 then A20/20**,
+all44 native micro-units PASS on attempt1, each immediately guarded-committed.
+No failed/exhausted micro-unit or new hole/escape hatch. All new modules use
+`%default total`; theorem fields and occurrence certificates are erased.
+Production `src/` and `dgamma.ipkg` remain byte-identical to `34b21c9`.
+The frozen five-module census is still **4 = 1/2/0/0/1**. No O17/O21 work or
+frozen deletion theorem call; lane-owned sources and all protected declarations
+remain byte-identical to the accepted baseline.
+
+### Fully proved capital (not the whole O20 theorem)
+
+- B: `o20ClosingFreeDiscardedEmpty` and `o20ClosingFreeNoPresentVestigial`
+  establish the actual accepted scanner's closing-free empty-origin base.
+  `o20AcceptedDiscardedBirthClassified` reverses the entire bilateral scanner:
+  every discarded generation has its exact original birth and a later parent
+  Unload. `o20UnselectedVestigialStillPresent` derives actual-node target presence
+  and controls for an unselected current vestigial packet. The R193/R195 native
+  eight-edge fixture authenticates the base contradiction and reverse classifier.
+- A: `o20LocatedBlockEndRemainderEmpty` applies to EVERY actual aligned located
+  open block, using its own final Active field and no-later-lifecycle suffix.
+  The induction handles real owner Insert/Retire/Remove and foreign actions;
+  it does not assume an empty suffix. `o20SelectedCanonicalRoleWords` consequently
+  removes both residuals from R199's accepted paired-block equation, yielding
+  plain lifecycle-role-word equality. All three actual R191 blocks instantiate
+  the endpoint theorem, including nonempty later suffixes.
+- A: `o20SupportedCanonicalInsertPositions` produces both authentic ORIGINAL
+  scanner Insert occurrences, their exact mapped generation and per-parent-
+  activation position equality for a canonical birth supported at its original
+  endpoint. These positions are NOT exchanged-canonical trace positions, and
+  the erased packet does not itself assert a runtime cut or support predicate.
+
+### Partial / merely requested next
+
+B is NOT global discarded-to-selected coverage. The exact missing semantic
+transport is **`o20DeletionRetainedClosingBirth`**: an original deleted-birth
+classification must survive a nonselecting actual deletion, in that result's
+`generationForward` coordinates, retaining a genuine later parent Unload.
+Present controls alone do not transport current/discarded generation indices
+or that history. Only after this can induction prove membership in the actual
+`closingFreeDeletionGenerations` (head selections plus backward-rebased tail).
+Thus global `everyPresentVestigialSelected`, both-sided supported/present-
+unsupported/removed ALL-NAME rebase, endpoint `O20AllNameCut`, and the D5
+`ReplayedCanonicalEndpointBridge` producer remain OPEN. Existing first-selected
+R199 disappearance is not misrepresented as global some-node coverage.
+
+A is NOT occurrence-stamped history synchronization. Lifecycle words omit
+physical yielded Inserts. Original E8 positions still need transport/attachment
+to real exchanged canonical Insert occurrences, with true one-sided occurrence
+witnesses for skips; paired blocks then need whole orchestration-order histories.
+`o20SynchronizeCanonicalHistoriesModulo` remains OPEN. No new source theorem
+statement or hole was added for these missing producers. C has **zero attempts**:
+`canonicalSchedulesConvergeSpike` cannot be attempted until BOTH A and B close.
+The old lockstep goal and old scalar/one-origin exhausted seams were not retried.
+
+### Authorized comment correction and validation discipline
+
+R199 ACCEPT-WITH-NOTES P2 authorized only the docstring of
+`o20SelectedVestigialDisappears`: it CONSUMES the actual deletion result and
+produces table reconciliation and absence. Its signature/body and the chain's
+construction-owned result claim are unchanged. Whole-file SHA256 before:
+`ee4f73c2427bdca5b34e266710660c8a0c3daa9c6a5283f00c3c0dc59aa4152c`;
+after: `550fa9472bdf9b1366d59e8417ee26821e4d61fd2a1b926ea40857c1124b9315`.
+Fresh own-target `D1-COMMENT` PASS4.174s, one Building line, sampled4,253,664KiB,
+no mutation/resource stop; guarded commit `5ca8e587` checks the exact authorized
+replacement and non-doc identity. See `O6-R200-COMMENT-CORRECTION.json`.
+
+The immutable final plan covers **ALL157 inherited R199 sources +8 new =165
+sources, plus seeded package =166 checks**, including the changed inherited
+comment target, seven exact expected negatives, R8/R16 and R191/R193/R195
+fixtures. No inherited source is excluded by path. Validation is pending here,
+not a claimed PASS. It is seeded/import-closed, NOT a cold build or certification
+of all274 inventory entries. No lock paths are inspected, acquired or removed;
+only one main compiler runs, with timestamp-only cross-lane overlaps and own
+RSS guards (48GiB, byte-frozen LocalDiamond52GiB). Evidence tests21+7 PASS.
+Next after validation/audit: reviewer gate for PARTIAL capital, then producer-
+owned historical transport in B and physical Insert attachment/whole folds in A.

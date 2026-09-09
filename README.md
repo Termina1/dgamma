@@ -988,3 +988,24 @@ owner's cross-lane lock abolition remains effective. Required independent read-
 only human review is being launched by the parent scoped to ≤a7e44e75 and is
 NOT claimed complete. All44 source additions are already within that scope.
 D4/4; stand down cleanly. Any further proof work requires a separate owner task.
+
+
+### R200 research correspondence (Thm73 frontier; checked PARTIAL)
+
+| Paper / frontier | Idris file:name | Status |
+|---|---|---|
+| Thm73 deletion base | `CP5O20DiscardedSelectionCoverageSpike:o20ClosingFreeDiscardedEmpty`, `o20ClosingFreeNoPresentVestigial` | Proved for the actual aligned empty-origin accepted scanner |
+| Thm73 discarded origin | `CP5O20DiscardedBirthOriginSpike:o20AcceptedDiscardedBirthClassified` | Proved: native birth plus later parent Unload; NOT selection coverage |
+| Thm73 actual nonselecting node | `CP5O20UnselectedVestigialPersistenceSpike:o20UnselectedVestigialStillPresent` | Proved presence/controls; current/discarded historical transport remains open |
+| Thm73 block-end residual | `CP5O20BlockEndRemainderSpike:o20LocatedBlockEndRemainderEmpty` | Proved universally for actual aligned located blocks |
+| Thm73 canonical lifecycle words | `CP5O20CanonicalRoleWordEqualitySpike:o20SelectedCanonicalRoleWords` | Proved plain words under accepted selected-pair capital, no residual assumption |
+| Thm73 generated Insert positions | `CP5O20SupportedInsertPositionSpike:o20SupportedCanonicalInsertPositions` | Proved ORIGINAL scan position pairing for originally-supported canonical births; canonical physical position transport open |
+| Native fixtures | `R200DiscardedCoverageBasePositive`, `R200CanonicalBlockRemainderPositive` | R193/R195 reverse-classification/base contradiction; all3 real R191 block remainders |
+
+44 new declarations, B24/A20 PASS1 and guarded commits, no new hole/escape.
+Global some-node discarded selection, ALL-NAME endpoint bridge, whole modulo
+synchronization and convergence remain **OPEN**; C0. Authorized D1 changes
+only the helper docstring (consumed deletion result versus produced absence).
+Production unchanged; census4. Final165-source+seeded-package validation is
+**pending at this source-freeze checkpoint**. See `NOTES.md` and
+`research-tests/O6-R200-GRIND-SHIFT-AUDIT.md` for exact boundaries and receipts.

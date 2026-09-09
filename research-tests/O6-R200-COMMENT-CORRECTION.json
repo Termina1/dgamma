@@ -1,0 +1,9 @@
+{
+  "authorization": "Supervisor R199 ACCEPT-WITH-NOTES P2, R200 Unit D: comment-only correction; helper consumes actual DeletionResult and produces table reconciliation and absence. Chain construction-owned result claim remains valid.",
+  "path": "research/DGamma/CP5O20DeletionDisappearanceSpike.idr",
+  "beforeSHA256": "ee4f73c2427bdca5b34e266710660c8a0c3daa9c6a5283f00c3c0dc59aa4152c",
+  "afterSHA256": "550fa9472bdf9b1366d59e8417ee26821e4d61fd2a1b926ea40857c1124b9315",
+  "beforeComment": "||| The result, current table reconciliation and actual absence are produced.",
+  "afterComment": "||| It consumes the actual deletion result and produces current-table\n||| reconciliation and actual absence.",
+  "nonDocBytesIdentical": true
+}
