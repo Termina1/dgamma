@@ -45,3 +45,16 @@ export
   (0 member : Elem item (head :: left)) -> Elem item (head :: right)
 phaseConsInclusion _ item left right inclusion Here = Here
 phaseConsInclusion head item left right inclusion (There later) = There (inclusion later)
+
+||| Remove one observed filter guard, preserving genuine source membership.
+||| The tail continuation is structural recursion, not a membership oracle.
+export
+0 phaseFilterAtBool : {a : Type} -> (predicate : a -> Bool) ->
+  (head, item : a) -> (rest : List a) -> (seen : Bool) ->
+  (0 equation : predicate head = seen) ->
+  (0 inclusion : Elem item (filter predicate rest) -> Elem item rest) ->
+  (0 member : Elem item (filter predicate (head :: rest))) -> Elem item (head :: rest)
+phaseFilterAtBool predicate head item rest True equation inclusion =
+  rewrite equation in phaseConsInclusion head item (filter predicate rest) rest inclusion
+phaseFilterAtBool predicate head item rest False equation inclusion =
+  rewrite equation in \member => There (inclusion member)
