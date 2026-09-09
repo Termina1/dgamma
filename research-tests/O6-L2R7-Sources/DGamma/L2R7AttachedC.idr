@@ -146,3 +146,24 @@ record LocatedOpenEpisodeBlockAttachedC
   0 attachedCDecomposition : appendTransitions attachedCBefore
     (MoreTransitions (beginTransition attachedCOpening)
       (appendTransitions attachedCBody attachedCAfter)) = global
+
+||| Physical order for complete attachedC bodies. The residual gap is an
+||| actual native trace and is NOT defined or required to be empty.
+public export
+record BlockBeforeAttachedC
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (keyEq : DecEq key)
+  {initial, finalState : SystemState name key value world error}
+  (global : Transitions initial finalState) (earlierName, laterName : name)
+  (earlier : LocatedOpenEpisodeBlockAttachedC name key world error value nameEq keyEq earlierName global)
+  (later : LocatedOpenEpisodeBlockAttachedC name key world error value nameEq keyEq laterName global) where
+  constructor MkBlockBeforeAttachedC
+  attachedCBetweenBlocks : Transitions (attachedCEnd earlier) (attachedCPreStart later)
+  0 attachedCBlocksOrdered :
+    appendTransitions (attachedCBefore later)
+      (MoreTransitions (beginTransition (attachedCOpening later)) NoTransitions) =
+    appendTransitions
+      (appendTransitions (attachedCBefore earlier)
+        (MoreTransitions (beginTransition (attachedCOpening earlier)) (attachedCBody earlier)))
+      (appendTransitions attachedCBetweenBlocks
+        (MoreTransitions (beginTransition (attachedCOpening later)) NoTransitions))
