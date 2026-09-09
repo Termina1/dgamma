@@ -216,3 +216,37 @@ o20ReplayEndpointPreservesAbsence {name} {key} {world} {error} {value}
       (replace {p = \observed => FiberControlMaybeRelated observed
         (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected (registry replayedFinal))}
         absent (controlPointwise (replayedControls endpoint) selected))
+
+||| Actual original absence survives canonicalization AND the supplied actual
+||| operational permutation execution. Both endpoint relations are projected
+||| from their producer-owned capital; no replayed absence is an input.
+export
+0 o20PermutedAbsentFromOriginal :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {protocol : RegistrationProtocol key value world error} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {initial, leftFinal, rightFinal : SystemState name key value world error} ->
+  {leftTrace : Transitions initial leftFinal} ->
+  {rightTrace : Transitions initial rightFinal} ->
+  {sameInputs : SameOrchestrationModuloGenerated nameEq keyEq leftTrace rightTrace} ->
+  {leftCapital : IndependentCanonicalSchedule name key world error value protocol
+    nameEq keyEq leftTrace} ->
+  {rightCapital : IndependentCanonicalSchedule name key world error value protocol
+    nameEq keyEq rightTrace} ->
+  {matching : MappedCanonicalSupportOrders name key world error value protocol
+    nameEq keyEq leftTrace rightTrace
+    (currentNameBijection (endpointRenaming sameInputs))
+    (canonicalSchedule leftCapital) (canonicalSchedule rightCapital)} ->
+  {operational : CertifiedOperationalCanonicalPermutation name key world error value
+    protocol nameEq keyEq leftTrace rightTrace sameInputs leftCapital rightCapital matching} ->
+  (execution : PermutedCanonicalExecution name key world error value protocol
+    nameEq keyEq leftTrace rightTrace sameInputs leftCapital rightCapital operational) ->
+  (selected : name) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected (registry leftFinal) = Nothing) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected (registry (operationalTargetFinal operational)) = Nothing)
+o20PermutedAbsentFromOriginal {nameEq} {keyEq} {protocol} {leftTrace} {leftCapital} {operational}
+  execution selected absent =
+    o20ReplayEndpointPreservesAbsence nameEq keyEq
+      (canonicalFinal (canonicalSchedule leftCapital)) (operationalTargetFinal operational)
+      (composedPermutationEndpoint execution) selected
+      (o20CanonicalAbsentFromOriginal nameEq keyEq protocol leftTrace leftCapital selected absent)
