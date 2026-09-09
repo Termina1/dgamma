@@ -168,3 +168,34 @@ o20OperationalRootReplayOrdinals
     (o20FiniteAdjacentRootReplayOrdinals
       (wholeBlockFiniteDerivation (blockSwapWholeDerivation step)))
     (o20OperationalRootReplayOrdinals rest)
+
+||| Compose the canonical law with the root law of an ACTUAL operational
+||| derivation starting at that same canonical trace, with no supplied map law.
+export
+0 o20CanonicalOperationalRootReplayOrdinals :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {protocol : RegistrationProtocol key value world error} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {initial, originalFinal, targetFinal : SystemState name key value world error} ->
+  {original : Transitions initial originalFinal} ->
+  (capital : IndependentCanonicalSchedule name key world error value protocol
+    nameEq keyEq original) ->
+  {sourceOrder, targetOrder : List name} ->
+  {certificate : CertifiedActorPermutation name sourceOrder targetOrder} ->
+  {sourceBlocks : ActorBlockDecomposition name key world error value nameEq keyEq
+    sourceOrder (canonicalTrace (canonicalSchedule capital))} ->
+  {sourcePremises : ReplayInvariantBundle name key world error value protocol
+    nameEq keyEq (canonicalTrace (canonicalSchedule capital))} ->
+  {targetTrace : Transitions initial targetFinal} ->
+  (replay : OperationalActorPermutation name key world error value protocol
+    nameEq keyEq certificate (canonicalTrace (canonicalSchedule capital))
+    sourceBlocks sourcePremises targetTrace) ->
+  O20RootReplayOrdinals name key world error value
+    (composeActionRegistrationReplayCorrespondence
+      (canonicalOccurrenceCorrespondence capital)
+      (operationalPermutationOccurrenceCorrespondence replay))
+o20CanonicalOperationalRootReplayOrdinals capital replay =
+  o20ComposeRootReplayOrdinals (canonicalOccurrenceCorrespondence capital)
+    (operationalPermutationOccurrenceCorrespondence replay)
+    (o20CanonicalRootReplayOrdinals capital)
+    (o20OperationalRootReplayOrdinals replay)
