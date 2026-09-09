@@ -80,7 +80,8 @@ laneProviderHeadObserved nameEq keyEq wanted actor component parent flag table l
   laneHeadAtGuard nameEq keyEq wanted actor component parent flag table lifecycle rest
     (isActive lifecycle && memberKey @{keyEq} wanted (ownedValues table)) Refl
 
-||| Explicit observed-Bool eliminator used by the native-head consumer.
+||| Generic conditional-equality lemma; its attempted native splice failed
+||| (D5-1); the consumer uses laneObservedBoolEliminate.
 ||| There is no projected if-guard, and transitivity is applied only after
 ||| the condition has become a constructor (both endpoints share a value).
 export
