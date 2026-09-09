@@ -82,3 +82,24 @@ phaseMapMember function (head :: rest) wanted (There later) =
   (fst (phaseMapMember function rest wanted later) **
     (There (fst (snd (phaseMapMember function rest wanted later))),
      snd (snd (phaseMapMember function rest wanted later))))
+
+||| Produce the actual own-child ORemove, source fiber, parent and shared
+||| provision at an accepted ordinal by inverting releaseOrdinalLink.
+||| The occurrence is GLOBAL; localization inside the phase core is separate.
+export
+0 phaseReleaseAtOrdinal : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, finalState : SystemState name key value world error} ->
+  {trace : Transitions first finalState} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (component : Component key value world error) ->
+  (trail : AvailabilityTrace name key world error value trace) -> (ordinal : Nat) ->
+  (0 member : Elem ordinal (releaseOrdinalScan nameEq keyEq component trail)) ->
+  (packet : (actor : name ** AttachedRelease name key world error value nameEq actor trace component) **
+    locatedActionOrdinal (releaseOccurrence (snd packet)) = ordinal)
+phaseReleaseAtOrdinal nameEq keyEq component trail ordinal member =
+  (fst (phaseMapMember (\packet => locatedActionOrdinal (releaseOccurrence (snd packet)))
+    (scanObservedReleases nameEq keyEq component trail) ordinal
+    (replace {p = Elem ordinal} (sym (releaseOrdinalLink nameEq keyEq component trail)) member)) **
+   snd (snd (phaseMapMember (\packet => locatedActionOrdinal (releaseOccurrence (snd packet)))
+    (scanObservedReleases nameEq keyEq component trail) ordinal
+    (replace {p = Elem ordinal} (sym (releaseOrdinalLink nameEq keyEq component trail)) member))))
