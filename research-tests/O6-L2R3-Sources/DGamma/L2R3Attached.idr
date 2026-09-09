@@ -33,3 +33,30 @@ record AttachedRelease
   sharedProvision : key
   0 childDeclares : Elem sharedProvision (dependencies (componentProvisions (fiberComponent releasedFiber)))
   0 rootDeclares : Elem sharedProvision (dependencies (componentProvisions component))
+
+||| Key-forced locally, or barrier-forced by a root already consumed by the
+||| same ordered bundle. The initially empty history is supplied only by the
+||| attached wrapper; arbitrary prior roots cannot seed an attached body.
+public export
+data AttachedReason :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (selected : name) ->
+  {first, coreEnd : SystemState name key value world error} ->
+  (core : Transitions first coreEnd) -> (priorRoots : List name) ->
+  (component : Component key value world error) -> Type where
+  KeyReleased :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {nameEq : DecEq name} -> {selected : name} ->
+    {first, coreEnd : SystemState name key value world error} ->
+    {core : Transitions first coreEnd} -> {priorRoots : List name} ->
+    {component : Component key value world error} ->
+    AttachedRelease name key world error value nameEq selected core component ->
+    AttachedReason nameEq selected core priorRoots component
+  EarlierForcedRoot :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {nameEq : DecEq name} -> {selected, earlier : name} ->
+    {first, coreEnd : SystemState name key value world error} ->
+    {core : Transitions first coreEnd} -> {priorRoots : List name} ->
+    {component : Component key value world error} ->
+    (0 earlierInBundle : Elem earlier priorRoots) ->
+    AttachedReason nameEq selected core priorRoots component
