@@ -4525,3 +4525,99 @@ D3/D4 receipts outside by construction. No new compiler/source attempt followed
 V172. D4's resulting receipt is delivered in the structured completion report;
 no cyclic self-containing receipt is claimed. Stand down after final read-only
 checks. No headline closure or cold build is asserted.
+
+
+## Status
+
+### R202 D2 — checked PARTIAL, native prefix scans and local own-suffix joins
+
+Source freeze `2a28e44e058ecf30a587c9151fc5de0bf52254c6`, baseline `bc791641`.
+Thirty guarded declarations (29 quantity-zero proof/fixture functions and one
+new erased record) in five new sources. No inherited Idris file or production
+API changed. All new proof modules are total; no new escape hatch, postulate,
+partial function or hole. Existing protected census remains4=1/2/0/0/1.
+
+**Fully proved supporting B statements:** a deleted classification supplies its
+actual birth-relative original close; exact source-index preserving Unload
+transport through registered/foreign filters; strict subsequence order
+reflection; the retained close lies in that SAME retained birth's own suffix
+when both live in ONE shared segment/subsequence; and actual step accounting
+produces a retained birth with the original parent/component in its result type
+and exact forward generation stamp. B2 derives nonselection contradiction only
+from an explicitly located selected-center birth and exact stamp equation.
+
+**B remains partial:** joining the three physical deletion segments and deriving
+the selected-center birth location from the selected-parent removed-center close
+are still open. `o20DeletionRetainedClosingBirth`, global actual-chain discarded
+coverage, current-coordinate/all-name rebase and D5 are NOT produced or applied.
+B11/B12 still take a retained birth and its exact native source-index equation.
+B14's genuine R193 eight-edge history has birth2/close7/suffix4, but target
+subsequence, Unload exclusion and retained-birth origin remain conditional. No
+insufficiency of stored capital has been established; no new field manifest.
+
+**Fully proved supporting A statements:** native final scan ordinal equals the
+starting ordinal plus actual trace count. The new supported physical Insert
+attachment computes BOTH native environments and scan certificates from the
+actual attached births' preceding traces. A18-style arbitrary `leftLive` and
+`rightLive` arguments are removed in the new producer, without editing A18.
+`o20PrefixScannedInsertCut` derives the successor all-name cut only conditional
+on its genuine native scanned predecessor. Local native registration-index
+laws prove deleted classifications consume zero surviving positions, while a
+retained classification consumes exactly one within the observed SAME complete
+parent activation (generation and L-Begin stamps retained). Typed explicit
+observation/equation pairs are used, never inferred case views or let aliases.
+
+**A remains partial:** these positions are local classifier laws, NOT whole
+canonical per-activation count/order preservation. The attached existing
+position metadata remains ORIGINAL scanner positions. Accepted-input all-name
+predecessor production, actual root/unsupported/closing skips, complete ordered
+paired histories and `o20SynchronizeCanonicalHistoriesModulo` remain OPEN at
+unchanged specifications. A7 checks real R191/R193 prefix outputs; A16 checks
+local classifier algebra, not two accepted classifications of one birth. No
+arbitrary native edge is declared epsilon. **C0/ineligible**: neither headline
+A nor B closes, so no convergence-body attempt is authorized or performed.
+
+**Evidence:** final native validation ended 2026-09-09T18:19:31.367209+00:00, with all171 inherited
+applicable main sources +5 new =176 direct source targets plus seeded package,
+177 planned expected outcomes, including seven diagnostic-AND-symbol negative
+fixtures.211 total invocations,207 expected outcomes and four retained rejected
+snapshots: B2-1 missing direct import; A8-1 opaque event-position motive; A13-1
+second Boolean test exposed after update reduction; A16-1 missing explicit
+LBegin action family. Each passed attempt2. A8's honest field-input statement
+was followed by actual observed-position transport in A9/A10. No rejection is
+laundered, no exhausted retry, B15 or A17. Caps B14/A16 reached; D≤4.
+
+Immutable import-closed plan SHA256:
+`e0f83271b9b493b3f602771c8c300a3e0fc4c06891e1967a7efa80f7302abb34`.
+All171 inherited applicable paths included, no exclusions. Source-pinned
+unchanged dependencies outside the inherited280-source inventory/plan remain
+reused seeds, not fresh-PASS claims.21 evidence-contract and10 policy-contract
+tests PASS. Read-only machine authentication verifies source snapshots, logs,
+every immediate source receipt/commit, one declaration per proof commit, plan
+closure/topological order, runner/driver hashes and unchanged frozen sources.
+This is NOT independent human review or a cold package build.
+
+One main compiler at a time, no lock operations, foreign overlap timestamps
+only. One-second samples: LocalDiamond 50,506,768KiB under52GiB; UniqueOrdinal
+44,779,824KiB and all other checks at most 44,779,824KiB under48GiB. No resource
+stop, source mutation or unexpected prerequisite build. Samples are NOT OS
+high-water; zero-sample short checks are explicitly unmeasured. Production and
+package remain byte-identical to34b21c9; five protected contracts, named bodies,
+O19 and superseded synchronization/stamped-history surfaces remain unchanged.
+
+**Evidence metadata deviation:** the inherited policy label erroneously said
+R201 through A6 while its actual enforcement/runner fields already implemented
+R202. Only `shift` was corrected at the recorded timestamp; prior bytes and
+all prior invocation hashes remain unchanged. Independent authentication proves
+the label-only difference, exact before/after hash and affected prefix. Tests
+reject unapproved old labels and changed enforcement. The pinned runner's old
+explanatory timing comment is nonexecuting; actual guards are R20220:22/20:37.
+This is catalogued in O6-R202-POLICY-LABEL-CORRECTION, not silently relabeled.
+
+**Next:** derive exact three-segment birth/close origin compatibility and the
+selected-parent center contradiction, then global coverage/all-name rebase.
+For A, transport whole canonical activation counts/order and build the actual
+predecessor/skips/ordered occurrence synchronization using the now-computed
+prefix environments. Only after BOTH headline producers close may C proceed.
+Review/owner gate is parent-owned and remains unclaimed here. Archive publication
+is append-only; its anchor deliberately predates later publication/gate receipts.

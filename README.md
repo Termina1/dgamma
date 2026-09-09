@@ -1048,3 +1048,27 @@ package,172 checks including7 exact expected negatives. No cold-build claim.
 | Thm73 physical supported Insert attachment | `CP5O20PhysicalInsertStageSpike:o20PermutedCanonicalPhysicalInsertAttachment` | proved native paired Insert stage + original positions at actual replay origins; whole histories open |
 | Thm73 canonical synchronization | `CP5O20CanonicalSynchronizationModuloSpike:o20CanonicalSynchronizationGoalModulo` | goal unchanged; `o20SynchronizeCanonicalHistoriesModulo` not produced |
 | Thm73 global vestigial coverage / D5 bridge / convergence | `everyPresentVestigialSelected` / `o20SupportedBridgeFromOwnedCut` / `canonicalSchedulesConvergeSpike` | open; existing bridge consumer not applied; C0 |
+
+
+### R202 checked partial milestone — native prefixes and local retained-close joins
+
+30 new supporting declarations (five new sources), no production/frozen change,
+new hole or escape. Final validation completed 2026-09-09T18:19:31.367209+00:00: all171 inherited
+applicable sources +5 new =176 direct source targets and seeded package,177
+expected outcomes (including seven exact negatives). Not a cold build.
+
+| Paper obligation | Idris correspondence | Status |
+|---|---|---|
+| Lemma72/O20 retained birth-owned suffix close | `CP5O20RetainedClosingIndexSpike:o20ForeignSegmentRetainedClosingBirth`, `o20RegisteredSegmentRetainedClosingBirth` | proved within ONE shared native subsequence; whole three-segment join open |
+| Lemma72/O20 exact retained parent/component | `CP5O20RetainedClosingIndexSpike:o20DeletionRetainedNamedBirth` | proved actual deletion-accounting birth + forward stamp; exact segment/subsequence-origin glue open |
+| Thm73 supported physical Insert native environments | `CP5O20NativeInsertEnvironmentSpike:o20PermutedCanonicalPrefixScannedInsert` | produces BOTH actual preceding-trace live tables/scans; no arbitrary live parameters |
+| Thm73 native Insert successor relation | `CP5O20NativeInsertEnvironmentSpike:o20PrefixScannedInsertCut` | proved CONDITIONAL on the actual scanned predecessor all-name cut; its producer open |
+| Thm73 local activation positions | `CP5O20ActivationPositionStepSpike:o20DeletedBirthPreservesObservedPosition`, `o20SurvivingBirthAdvancesObservedPosition` | proved local classified step laws: zero/one position consumption; whole canonical transport open |
+| Native regressions | `R202RetainedClosingIndexPositive`, `R202NativeInsertScansPositive` | conditional R193 own-suffix join; actual R191/R193 prefix scans; local classifier-branch counters |
+| Thm73 global coverage / rebase / synchronization / convergence | existing unchanged goals | OPEN; C0/ineligible; census1/2/0/0/1 |
+
+B14/A16 caps reached;30 guarded source commits.211 total invocations,207
+expected outcomes, four rejected development snapshots retained.31 compiler-free
+contract tests and machine source/log/receipt/plan/resource/frozen authentication
+PASS. Separate reviewer/owner acceptance is not claimed. Exact boundaries and
+archive-anchor qualifications: `research-tests/O6-R202-SELF-REVIEW.md` and audit.

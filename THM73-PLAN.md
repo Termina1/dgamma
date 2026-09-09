@@ -4086,3 +4086,17 @@ C remains barred. Frozen census4=1/2/0/0/1. R201 audits/ledger/archive are under
 `research-tests/`; final172-check validation PASS at2026-09-09T16:54:11Z.
 A18 incoming live environments remain arbitrary explicit parameters, not
 produced prefix-scanned environments or an all-name cut.
+
+
+## R202 — source freeze and checked partial producer boundary
+
+Thirty supporting declarations at `2a28e44e`, B14/A16 caps reached. Local shared-
+segment birth-owned closing joins and exact retained parent/component birth
+production are checked; full three-segment/selected-parent-center join and
+coverage/all-name rebase/D5 remain open. New A18-style attachment computes both
+actual native prefix environments/scans. Local deleted=0/retained=1 activation
+position laws are checked, but full canonical position transport, all-name
+predecessors, genuine skips and complete modulo histories remain open. C0.
+Final all171 inherited+5 new=176 source checks+seeded package177 expected outcomes
+complete; protected census1/2/0/0/1, no new hole/escape or frozen-source edit.
+See R202 DECLARATIONS, SELF-REVIEW and GRIND-SHIFT-AUDIT for exact conditional types.
