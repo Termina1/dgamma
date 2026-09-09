@@ -40,3 +40,16 @@ foldMaximumMember universe (head :: items) accumulator initialMember inclusion =
   foldMaximumMember universe items (max accumulator head)
     (maxMemberObserved universe accumulator head initialMember (inclusion head Here) (accumulator > head) Refl)
     (\item, present => inclusion item (There present))
+
+||| Decode the exact lastReleaseCut/pred origin computation into membership
+||| of its input ordinals. This is an observed result, not a repeated case of
+||| the library maximum. Root identity and native birth decoding are separate.
+export
+0 originMaximumMember : (items : List Nat) -> (observed : Maybe Nat) ->
+  (0 equation : map pred (lastReleaseCut items) = observed) -> (ordinal : Nat) ->
+  (0 accepted : observed = Just ordinal) -> Elem ordinal items
+originMaximumMember [] observed equation ordinal accepted = absurd (trans equation accepted)
+originMaximumMember (head :: items) observed equation ordinal accepted =
+  replace {p = \n => Elem n (head :: items)}
+    (cong (fromMaybe 0) (trans equation accepted))
+    (foldMaximumMember (head :: items) items head Here (\item, present => There present))
