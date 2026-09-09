@@ -228,3 +228,12 @@ o20UnloadOccursPastDeletedHead actor _ _ later excludes continue (ActionOccursHe
   void (excludes exact)
 o20UnloadOccursPastDeletedHead actor _ _ later excludes continue (ActionOccursLater step rest occurs) =
   continue occurs
+
+||| Empty physical traces have no Unload occurrence, independently of state.
+export
+0 o20EmptyUnloadImpossible :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {state : SystemState name key value world error} -> {actor : name} ->
+  ActionOccurs (LUnload actor) (the (Transitions state state) NoTransitions) -> Void
+o20EmptyUnloadImpossible (ActionOccursHere step rest exact) impossible
+o20EmptyUnloadImpossible (ActionOccursLater step rest occurs) impossible
