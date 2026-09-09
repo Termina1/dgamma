@@ -37,3 +37,36 @@ retireTagNormalize nameEq keyEq child fiber before afterState tag found valid or
   trans original (cong (\selectedTag => Just (selectedTag, afterState))
     (cong fst (justInjective (trans (sym original)
       (childRetireAtFound nameEq keyEq child fiber before found valid)))))
+
+||| The selected classifier square now obtains its ORIGINAL Retire edge,
+||| tag and target FROM the aligned source-query decoder. Only the following
+||| root edge at that target is still explicit; transporting the catalog
+||| birth to that successor state remains open despite ordinal adjacency.
+export
+0 selectedRetireFromAligned : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, finalState : SystemState name key value world error} ->
+  {trace : Transitions first finalState} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (trail : AvailabilityTrace name key world error value trace) ->
+  (aligned : AlignedTransitions name key world error value nameEq keyEq trace) ->
+  (cut : SelectedSquareCut name key world error value nameEq keyEq trail) ->
+  (child : name) -> (fiber : Fiber name key value world error) ->
+  (0 selectedAction : cutAction cut = ORetire child) ->
+  (oldFinal, earlyRoot : SystemState name key value world error) ->
+  (0 accepted : earlyRootResult cut = Just (OInsertTag, earlyRoot)) ->
+  (0 valid : registryWellFormed @{nameEq} @{keyEq} (cutSource cut) = True) ->
+  (0 found : lookupFiber {name} {key} {value} {world} {error} @{nameEq} child (registry (cutSource cut)) = Just fiber) ->
+  (0 oldRoot : checkedApplyAction @{nameEq} @{keyEq}
+    (OInsert (catalogRoot (cutEntry cut)) Root (catalogComponent (cutEntry cut)))
+    (edgeTarget (selectedCutAlignedEdge nameEq keyEq trail aligned cut)) = Just (OInsertTag, oldFinal)) ->
+  Maybe (ClassifierSquare name key world error value nameEq keyEq
+    (catalogRoot (cutEntry cut)) (catalogComponent (cutEntry cut)) (cutSource cut) (cutAction cut) ORetireTag oldFinal)
+selectedRetireFromAligned {name} {key} {world} {error} {value}
+  nameEq keyEq trail aligned cut child fiber selectedAction oldFinal earlyRoot accepted valid found oldRoot =
+  selectedRetireSquare nameEq keyEq trail cut child selectedAction
+    (edgeTarget (selectedCutAlignedEdge nameEq keyEq trail aligned cut)) oldFinal earlyRoot accepted valid
+    (retireTagNormalize nameEq keyEq child fiber (cutSource cut)
+      (edgeTarget (selectedCutAlignedEdge nameEq keyEq trail aligned cut))
+      (edgeTag (selectedCutAlignedEdge nameEq keyEq trail aligned cut)) found valid
+      (trans (cong (\action => checkedApplyAction {name} {key} {value} {world} {error} @{nameEq} @{keyEq} action (cutSource cut))
+        (sym selectedAction)) (edgeChecked (selectedCutAlignedEdge nameEq keyEq trail aligned cut)))) oldRoot
