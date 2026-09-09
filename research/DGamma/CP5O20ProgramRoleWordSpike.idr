@@ -5,6 +5,8 @@ import DGamma.Calculus
 import DGamma.Coeffects
 import DGamma.Metatheory
 import DGamma.CP3
+import DGamma.CP4DeletionSelectedForeignOrchestration
+import DGamma.CP5O20OwnCutSafetySpike
 import DGamma.CP4ProgressPotential
 import DGamma.CP5ConfluenceLocalDiamondSpike
 import DGamma.CP5O20BeginObservationSpike
@@ -342,3 +344,33 @@ o20CanonicalLifecycleRoleConsumption nameEq keyEq before afterState action tag c
   o20ActualPaperRoleConsumption nameEq keyEq before afterState action tag checked paperRole
 o20CanonicalLifecycleRoleConsumption nameEq keyEq before afterState action tag checked (Right orchestrationRole) lifecycle =
   absurd (trans (sym (o20OrchestrationRoleNonLifecycle orchestrationRole)) lifecycle)
+
+||| An ACTUAL Insert preserves every already-present fiber's role remainder.
+||| Freshness produces distinctness internally, then the native local-update
+||| frame produces the target lookup. The insertion is a genuine edge.
+export
+0 o20InsertPreservesPresentRole :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected, child : name) ->
+  (parent : Parent name) -> (component : Component key value world error) ->
+  (before, afterState : SystemState name key value world error) -> (tag : RuleTag) ->
+  (checkedApplyAction {name} {key} {value} {world} {error} @{nameEq} @{keyEq}
+    (OInsert child parent component) before = Just (tag, afterState)) ->
+  (fiber : Fiber name key value world error) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected (registry before) = Just fiber) ->
+  (o20FiberRoleRemainder
+    (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected (registry before)) =
+   o20FiberRoleRemainder
+    (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected (registry afterState)))
+o20InsertPreservesPresentRole {name} {key} {value} {world} {error}
+  nameEq keyEq selected child parent component (MkSystemState ambient fibers) afterState tag checked fiber found =
+    sym (cong o20FiberRoleRemainder
+      (systemLocalUpdateForeign nameEq selected child
+        (\same => nothingIsNotJust (trans
+          (sym (foreignInsertViewAbsent (foreignInsertPlanView nameEq keyEq child parent component ambient fibers tag afterState
+            (checkedActionProjects nameEq keyEq (OInsert child parent component) (MkSystemState ambient fibers) afterState tag checked))))
+          (trans (cong (\actor => lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor fibers) (sym same)) found)))
+        (MkSystemState ambient fibers) afterState
+        (applyActionLocalUpdate nameEq keyEq (OInsert child parent component)
+          (MkSystemState ambient fibers) afterState tag
+          (checkedActionProjects nameEq keyEq (OInsert child parent component) (MkSystemState ambient fibers) afterState tag checked))))
