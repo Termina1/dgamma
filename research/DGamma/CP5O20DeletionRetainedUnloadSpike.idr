@@ -6,6 +6,8 @@ import DGamma.Metatheory
 import DGamma.CP3
 import DGamma.CP4DeletionInactiveInvariant
 import DGamma.CP4DeletionGenerationUnique
+import DGamma.CP5ConfluenceLocalDiamondSpike
+import DGamma.CP5ConfluenceDeletionChainSpike
 import Data.List
 import Data.List.Elem
 import Data.Maybe
@@ -140,3 +142,25 @@ o20RegisteredUnloadFreeTrace name key world error value nameEq keyEq registered 
         o20RegisteredUnloadFreeTrace name key world error value nameEq keyEq registered (S ordinal)
           (advanceGenerationEnvironment @{nameEq} ordinal (transitionAction step) live)
           nextUnique rest alignedRest tail nextInactive) aligned
+
+||| The actual deletable candidate owns whole-source registered-Unload
+||| exclusion. The initial invariant is produced at the empty generation scan;
+||| no future-Unload retention or per-action exclusion is supplied by the caller.
+export
+0 o20DeletionRegisteredUnloadFree :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (trace : Transitions initial finalState) ->
+  (premises : CanonicalizationPremises name key world error value protocol nameEq keyEq trace) ->
+  (candidate : DeletableClosingEpisode name key world error value nameEq keyEq trace) ->
+  O20RegisteredUnloadFree name key world error value nameEq (selectedRegistrations candidate) Z [] trace
+o20DeletionRegisteredUnloadFree name key world error value protocol nameEq keyEq {initial}
+  trace premises candidate =
+    o20RegisteredUnloadFreeTrace name key world error value nameEq keyEq
+      (selectedRegistrations candidate) Z [] UniqueNil trace (replayAligned (chainReplayCapital premises))
+      (selectedChildrenHaveNoEpisode candidate)
+      (reachedCurrentRegisteredInactive {name} {key} {world} {error} {value}
+        nameEq keyEq (selectedRegistrations candidate)
+        (the (Transitions initial initial) NoTransitions) Z [] GenerationTraceScanEnd AlignedEnd NoRegisteredEpisodeEnd)
