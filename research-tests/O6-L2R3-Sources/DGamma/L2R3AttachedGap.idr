@@ -63,3 +63,15 @@ export
 0 gapHeadPositive : (offset, remaining : Nat) -> LT offset (offset + S remaining)
 gapHeadPositive offset remaining = rewrite sym (plusSuccRightSucc offset remaining) in
   LTESucc (lteAddRight offset)
+
+||| Disjoint physical intervals cannot put the gap's first edge in a bundle.
+||| This eliminates only a numeric left/right interval separation, not an
+||| action-role callback, dependent observation or computed existential.
+export
+0 bundleOutsideHead : (offset, remaining, start, width : Nat) ->
+  (0 lower : LTE start offset) -> (0 upper : LT offset (start + width)) ->
+  Either (LTE (start + width) offset) (LTE (offset + S remaining) start) -> Void
+bundleOutsideHead offset remaining start width lower upper (Left before) =
+  succNotLTEpred (transitive upper before)
+bundleOutsideHead offset remaining start width lower upper (Right after) =
+  succNotLTEpred (transitive (gapHeadPositive offset remaining) (transitive after lower))
