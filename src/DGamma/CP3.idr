@@ -1778,30 +1778,213 @@ supportedActiveAt n state = case lookupFiber n (registry state) of
   Nothing => False
   Just fiber => isActive (fiberLifecycle fiber)
 
-||| Every transition of a contiguous canonical episode block is either a
-||| lifecycle action of its selected actor or an explicit child registration
-||| yielded within that actor's Reloading phase. The schedule-wide discipline
-||| supplies the tag/catalog provenance for the latter.
+public export
+transitionCount : Transitions first finalState -> Nat
+transitionCount NoTransitions = 0
+transitionCount (MoreTransitions transition rest) = S (transitionCount rest)
+
+||| One action occurrence located by its dependent prefix. Canonical placement
+||| uses these locations rather than raw action membership so two births of the
+||| same raw name remain distinct.
+public export
+record LocatedActionOccurrence
+  {initial, finalState : SystemState name key value world error}
+  (action : Action name key value world error)
+  (global : Transitions initial finalState) where
+  constructor MkLocatedActionOccurrence
+  actionBeforeState : SystemState name key value world error
+  actionAfterState : SystemState name key value world error
+  beforeActionOccurrence : Transitions initial actionBeforeState
+  locatedTransition : Transition actionBeforeState actionAfterState
+  afterActionOccurrence : Transitions actionAfterState finalState
+  0 locatedAction : transitionAction locatedTransition = action
+  0 actionOccurrenceDecomposition :
+    appendTransitions beforeActionOccurrence
+      (MoreTransitions locatedTransition afterActionOccurrence) = global
+
+public export
+locatedActionOrdinal : LocatedActionOccurrence action global -> Nat
+locatedActionOrdinal occurrence = transitionCount (beforeActionOccurrence occurrence)
+
+
+public export
+data ActorLifecycleCore :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (selected : name) ->
+  {first, finalState : SystemState name key value world error} ->
+  Transitions first finalState -> Type where
+  CoreLifecycleEnd :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {nameEq : DecEq name} -> {selected : name} -> {state : SystemState name key value world error} ->
+    ActorLifecycleCore nameEq selected (NoTransitions {state})
+  CoreLifecycleStep :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {nameEq : DecEq name} -> {selected : name} ->
+    {first, middle, finalState : SystemState name key value world error} ->
+    (step : Transition first middle) -> (rest : Transitions middle finalState) ->
+    (0 lifecycle : isLifecycleAction (transitionAction step) = True) ->
+    (0 owned : transitionActor step = selected) ->
+    (0 only : ActorLifecycleCore nameEq selected rest) ->
+    ActorLifecycleCore nameEq selected (MoreTransitions step rest)
+  CoreYieldedRegistrationStep :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {nameEq : DecEq name} -> {selected, child : name} ->
+    {component : Component key value world error} ->
+    {first, middle, finalState : SystemState name key value world error} ->
+    (step : Transition first middle) -> (rest : Transitions middle finalState) ->
+    (0 yielded : transitionAction step = OInsert child (ChildOf selected) component) ->
+    (0 only : ActorLifecycleCore nameEq selected rest) ->
+    ActorLifecycleCore nameEq selected (MoreTransitions step rest)
+  CoreChildRetireStep :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {nameEq : DecEq name} -> {selected : name} ->
+    {first, middle, finalState : SystemState name key value world error} ->
+    (step : Transition first middle) -> (rest : Transitions middle finalState) ->
+    (child : name) -> (fiber : Fiber name key value world error) ->
+    (0 found : lookupFiber {name} {key} {value} {world} {error} @{nameEq} child (registry first) = Just fiber) ->
+    (0 parent : fiberParent fiber = ChildOf selected) ->
+    (0 action : transitionAction step = ORetire child) ->
+    (0 only : ActorLifecycleCore nameEq selected rest) ->
+    ActorLifecycleCore nameEq selected (MoreTransitions step rest)
+  CoreChildRemoveStep :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {nameEq : DecEq name} -> {selected : name} ->
+    {first, middle, finalState : SystemState name key value world error} ->
+    (step : Transition first middle) -> (rest : Transitions middle finalState) ->
+    (child : name) -> (fiber : Fiber name key value world error) ->
+    (0 found : lookupFiber {name} {key} {value} {world} {error} @{nameEq} child (registry first) = Just fiber) ->
+    (0 parent : fiberParent fiber = ChildOf selected) ->
+    (0 action : transitionAction step = ORemove child) ->
+    (0 only : ActorLifecycleCore nameEq selected rest) ->
+    ActorLifecycleCore nameEq selected (MoreTransitions step rest)
+
+public export
+record AttachedRelease
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (selected : name)
+  {first, coreEnd : SystemState name key value world error}
+  (core : Transitions first coreEnd)
+  (component : Component key value world error) where
+  constructor MkAttachedRelease
+  releasedChild : name
+  releasedFiber : Fiber name key value world error
+  releaseOccurrence : LocatedActionOccurrence (ORemove releasedChild) core
+  0 releaseFound : lookupFiber {name} {key} {value} {world} {error} @{nameEq}
+    releasedChild (registry (actionBeforeState releaseOccurrence)) = Just releasedFiber
+  0 releaseParent : fiberParent releasedFiber = ChildOf selected
+  sharedProvision : key
+  0 childDeclares : Elem sharedProvision (dependencies (componentProvisions (fiberComponent releasedFiber)))
+  0 rootDeclares : Elem sharedProvision (dependencies (componentProvisions component))
+
+||| Key-forced locally, or barrier-forced by a root already consumed by the
+||| same ordered bundle. The initially empty history is supplied only by the
+||| attached wrapper; arbitrary prior roots cannot seed an attached body.
+public export
+data AttachedReason :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (selected : name) ->
+  {first, coreEnd : SystemState name key value world error} ->
+  (core : Transitions first coreEnd) -> (priorRoots : List name) ->
+  (component : Component key value world error) -> Type where
+  KeyReleased :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {nameEq : DecEq name} -> {selected : name} ->
+    {first, coreEnd : SystemState name key value world error} ->
+    {core : Transitions first coreEnd} -> {priorRoots : List name} ->
+    {component : Component key value world error} ->
+    AttachedRelease name key world error value nameEq selected core component ->
+    AttachedReason nameEq selected core priorRoots component
+  EarlierForcedRoot :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {nameEq : DecEq name} -> {selected, earlier : name} ->
+    {first, coreEnd : SystemState name key value world error} ->
+    {core : Transitions first coreEnd} -> {priorRoots : List name} ->
+    {component : Component key value world error} ->
+    (0 earlierInBundle : Elem earlier priorRoots) ->
+    AttachedReason nameEq selected core priorRoots component
+
+||| New SAME-BUNDLE controls grammar. Native edges retain orchestration order.
+||| The wrapper starts EMPTY; no arbitrary earlier-bundle history is trusted.
+||| Cross-bundle authenticated prefix/generation history is an open research
+||| obligation, not a blocker for this SAME-BUNDLE definition. Local control
+||| witnesses also check actual source roots.
+public export
+data OrderedForcedRootBundle :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (selected : name) ->
+  {first, coreEnd : SystemState name key value world error} ->
+  (core : Transitions first coreEnd) -> (priorRoots : List name) ->
+  {bundleStart, finalState : SystemState name key value world error} ->
+  Transitions bundleStart finalState -> Type where
+  ForcedBundleEnd :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {nameEq : DecEq name} -> {selected : name} ->
+    {first, coreEnd, state : SystemState name key value world error} ->
+    {core : Transitions first coreEnd} -> {priorRoots : List name} ->
+    OrderedForcedRootBundle nameEq selected core priorRoots (NoTransitions {state})
+  ForcedBundleInsert :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {nameEq : DecEq name} -> {selected : name} ->
+    {first, coreEnd, before, middle, finalState : SystemState name key value world error} ->
+    {core : Transitions first coreEnd} -> {priorRoots : List name} ->
+    (root : name) -> (component : Component key value world error) ->
+    (step : Transition before middle) -> (rest : Transitions middle finalState) ->
+    (0 inserted : transitionAction step = OInsert root Root component) ->
+    (0 forced : AttachedReason nameEq selected core priorRoots component) ->
+    (0 tail : OrderedForcedRootBundle nameEq selected core (root :: priorRoots) rest) ->
+    OrderedForcedRootBundle nameEq selected core priorRoots (MoreTransitions step rest)
+
+  ForcedBundleRetire :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {nameEq : DecEq name} -> {selected : name} ->
+    {first, coreEnd, before, middle, finalState : SystemState name key value world error} ->
+    {core : Transitions first coreEnd} -> {priorRoots : List name} ->
+    (root : name) -> (fiber : Fiber name key value world error) ->
+    (step : Transition before middle) -> (rest : Transitions middle finalState) ->
+    (0 alreadyBundled : Elem root priorRoots) ->
+    (0 found : lookupFiber {name} {key} {value} {world} {error} @{nameEq} root (registry before) = Just fiber) ->
+    (0 rootParent : fiberParent fiber = Root) ->
+    (0 controlled : transitionAction step = ORetire root) ->
+    (0 tail : OrderedForcedRootBundle nameEq selected core priorRoots rest) ->
+    OrderedForcedRootBundle nameEq selected core priorRoots (MoreTransitions step rest)
+  ForcedBundleRemove :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {nameEq : DecEq name} -> {selected : name} ->
+    {first, coreEnd, before, middle, finalState : SystemState name key value world error} ->
+    {core : Transitions first coreEnd} -> {priorRoots : List name} ->
+    (root : name) -> (fiber : Fiber name key value world error) ->
+    (step : Transition before middle) -> (rest : Transitions middle finalState) ->
+    (0 alreadyBundled : Elem root priorRoots) ->
+    (0 found : lookupFiber {name} {key} {value} {world} {error} @{nameEq} root (registry before) = Just fiber) ->
+    (0 rootParent : fiberParent fiber = Root) ->
+    (0 controlled : transitionAction step = ORemove root) ->
+    (0 tail : OrderedForcedRootBundle nameEq selected core priorRoots rest) ->
+    OrderedForcedRootBundle nameEq selected core priorRoots (MoreTransitions step rest)
+
+||| The enlarged body is core ++ bundle-with-controls. EMPTY local history
+||| prevents an arbitrary caller from inventing prior bundled roots.
 public export
 data ActorLifecycleOnly :
   {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (selected : name) ->
   {first, finalState : SystemState name key value world error} ->
-  (selected : name) -> Transitions first finalState -> Type where
-  ActorLifecycleEnd : ActorLifecycleOnly selected NoTransitions
-  ActorLifecycleStep :
-    (transition : Transition first middle) ->
-    (rest : Transitions middle finalState) ->
-    isLifecycleAction (transitionAction transition) = True ->
-    transitionActor transition = selected ->
-    ActorLifecycleOnly selected rest ->
-    ActorLifecycleOnly selected (MoreTransitions transition rest)
-  ActorYieldedRegistrationStep :
-    (transition : Transition first middle) ->
-    (rest : Transitions middle finalState) ->
-    transitionAction transition =
-      OInsert child (ChildOf selected) childComponent ->
-    ActorLifecycleOnly selected rest ->
-    ActorLifecycleOnly selected (MoreTransitions transition rest)
+  Transitions first finalState -> Type where
+  ActorWithoutForcedRoots :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {nameEq : DecEq name} -> {selected : name} ->
+    {first, finalState : SystemState name key value world error} ->
+    (core : Transitions first finalState) ->
+    (0 extended : ActorLifecycleCore nameEq selected core) ->
+    ActorLifecycleOnly nameEq selected core
+  ActorWithForcedRoots :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {nameEq : DecEq name} -> {selected : name} ->
+    {first, coreEnd, finalState : SystemState name key value world error} ->
+    (core : Transitions first coreEnd) ->
+    (0 extended : ActorLifecycleCore nameEq selected core) ->
+    (bundle : Transitions coreEnd finalState) ->
+    (0 orderedForced : OrderedForcedRootBundle nameEq selected core [] bundle) ->
+    ActorLifecycleOnly nameEq selected (appendTransitions core bundle)
 
 ||| No lifecycle step of the selected actor occurs in a trace segment.
 public export
@@ -1818,8 +2001,9 @@ data NoLifecycleBy :
     NoLifecycleBy selected rest ->
     NoLifecycleBy selected (MoreTransitions transition rest)
 
-||| A single open final episode represented as one contiguous actor-only block.
-||| The no-earlier/no-later fields exclude a second episode of the same fiber.
+||| Full located block for the NEW controls grammar. All installedness,
+||| episode uniqueness, final activity and physical decomposition fields
+||| retain their strength; controls are inside the body, not in the gap.
 public export
 record LocatedOpenEpisodeBlock
   (name, key, world, error : Type) (value : key -> Type)
@@ -1833,13 +2017,12 @@ record LocatedOpenEpisodeBlock
   traceBeforeBlock : Transitions initial blockPreStart
   blockOpening : BeginStep nameEq keyEq selected blockPreStart blockStart
   blockBody : Transitions blockStart blockEnd
-  blockBodyInstalled : InstalledTrace name key world error value nameEq keyEq
-    selected blockBody
-  blockActorOnly : ActorLifecycleOnly selected blockBody
+  0 blockBodyInstalled : InstalledTrace name key world error value nameEq keyEq selected blockBody
+  0 blockActorOnly : ActorLifecycleOnly nameEq selected blockBody
   traceAfterBlock : Transitions blockEnd finalState
-  noEarlierLifecycle : NoLifecycleBy selected traceBeforeBlock
-  noLaterLifecycle : NoLifecycleBy selected traceAfterBlock
-  blockActiveAtFinal : supportedActiveAt @{nameEq} selected finalState = True
+  0 noEarlierLifecycle : NoLifecycleBy selected traceBeforeBlock
+  0 noLaterLifecycle : NoLifecycleBy selected traceAfterBlock
+  0 blockActiveAtFinal : supportedActiveAt @{nameEq} selected finalState = True
   0 blockDecomposition : appendTransitions traceBeforeBlock
     (MoreTransitions (beginTransition blockOpening)
       (appendTransitions blockBody traceAfterBlock)) = global
@@ -1868,22 +2051,24 @@ prefixThroughBlock :
 prefixThroughBlock {initial} block = appendTransitions (prefixToBlockOpening block)
   (blockBody block)
 
-||| Same-trace ordering of two contiguous blocks.
+||| Physical order for complete attached bodies. The residual gap is an
+||| actual native trace and is NOT defined or required to be empty.
 public export
 record BlockBefore
   (name, key, world, error : Type) (value : key -> Type)
   (nameEq : DecEq name) (keyEq : DecEq key)
   {initial, finalState : SystemState name key value world error}
-  (global : Transitions initial finalState)
-  (earlierName, laterName : name)
-  (earlier : LocatedOpenEpisodeBlock name key world error value nameEq keyEq
-    earlierName global)
-  (later : LocatedOpenEpisodeBlock name key world error value nameEq keyEq
-    laterName global) where
+  (global : Transitions initial finalState) (earlierName, laterName : name)
+  (earlier : LocatedOpenEpisodeBlock name key world error value nameEq keyEq earlierName global)
+  (later : LocatedOpenEpisodeBlock name key world error value nameEq keyEq laterName global) where
   constructor MkBlockBefore
   betweenBlocks : Transitions (blockEnd earlier) (blockPreStart later)
-  0 blocksOrderedInGlobal : prefixToBlockOpening later =
-    appendTransitions (prefixThroughBlock earlier)
+  0 blocksOrderedInGlobal :
+    appendTransitions (traceBeforeBlock later)
+      (MoreTransitions (beginTransition (blockOpening later)) NoTransitions) =
+    appendTransitions
+      (appendTransitions (traceBeforeBlock earlier)
+        (MoreTransitions (beginTransition (blockOpening earlier)) (blockBody earlier)))
       (appendTransitions betweenBlocks
         (MoreTransitions (beginTransition (blockOpening later)) NoTransitions))
 
@@ -2089,34 +2274,6 @@ data SameExternalOrchestration :
     SameExternalOrchestration nameEq
       (MoreTransitions leftTransition leftRest)
       (MoreTransitions rightTransition rightRest)
-
-public export
-transitionCount : Transitions first finalState -> Nat
-transitionCount NoTransitions = 0
-transitionCount (MoreTransitions transition rest) = S (transitionCount rest)
-
-||| One action occurrence located by its dependent prefix. Canonical placement
-||| uses these locations rather than raw action membership so two births of the
-||| same raw name remain distinct.
-public export
-record LocatedActionOccurrence
-  {initial, finalState : SystemState name key value world error}
-  (action : Action name key value world error)
-  (global : Transitions initial finalState) where
-  constructor MkLocatedActionOccurrence
-  actionBeforeState : SystemState name key value world error
-  actionAfterState : SystemState name key value world error
-  beforeActionOccurrence : Transitions initial actionBeforeState
-  locatedTransition : Transition actionBeforeState actionAfterState
-  afterActionOccurrence : Transitions actionAfterState finalState
-  0 locatedAction : transitionAction locatedTransition = action
-  0 actionOccurrenceDecomposition :
-    appendTransitions beforeActionOccurrence
-      (MoreTransitions locatedTransition afterActionOccurrence) = global
-
-public export
-locatedActionOrdinal : LocatedActionOccurrence action global -> Nat
-locatedActionOrdinal occurrence = transitionCount (beforeActionOccurrence occurrence)
 
 ||| One occurrence/generation of an explicit child registration, identified by
 ||| its dependent prefix rather than only by its raw action value.
@@ -3149,37 +3306,184 @@ record CanonicalRegistrationCorrespondence
       registrationGeneration (canonicalToOriginal canonicalOccurrence) =
         generation -> Void))
 
-||| Paper Theorem 73's placement rule for inputs. All root orchestration steps
-||| precede all lifecycle steps, while each explicit child registration precedes
-||| the lifecycle block of the child it created.
+public export
+data ForcedRootInput : (rootInput, keyForced : Nat -> Type) -> Nat -> Type where
+  KeyForces : {rootInput, keyForced : Nat -> Type} -> {ordinal : Nat} ->
+    (0 root : rootInput ordinal) -> (0 released : keyForced ordinal) ->
+    ForcedRootInput rootInput keyForced ordinal
+  OrderForces : {rootInput, keyForced : Nat -> Type} -> {earlier, later : Nat} ->
+    (0 prior : ForcedRootInput rootInput keyForced earlier) ->
+    (0 root : rootInput later) -> (0 ordered : LT earlier later) ->
+    ForcedRootInput rootInput keyForced later
+
+||| Leastness: every set containing key-forced actual roots and closed under
+||| strictly later actual roots contains ForcedRootInput. Instantiate rootInput
+||| with native root OInsert occurrences, not lifecycle positions or raw names.
+export
+0 forcedRootLeast : {rootInput, keyForced : Nat -> Type} ->
+  (candidate : Nat -> Type) ->
+  (0 seeds : (n : Nat) -> rootInput n -> keyForced n -> candidate n) ->
+  (0 closed : (earlier, later : Nat) -> candidate earlier -> rootInput later ->
+    LT earlier later -> candidate later) ->
+  {ordinal : Nat} -> ForcedRootInput rootInput keyForced ordinal -> candidate ordinal
+forcedRootLeast candidate seeds closed (KeyForces {ordinal} root released) = seeds ordinal root released
+forcedRootLeast candidate seeds closed (OrderForces {earlier} {later} prior root ordered) =
+  closed earlier later (forcedRootLeast candidate seeds closed prior) root ordered
+
+||| Authenticated membership in an actual controls bundle, including local
+||| root Retire/Remove. Exact source, body decomposition and bounds retained.
+public export
+record AttachedBundleOccurrence
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (keyEq : DecEq key)
+  {initial, finalState : SystemState name key value world error}
+  (global : Transitions initial finalState)
+  (action : Action name key value world error) (ordinal : Nat) where
+  constructor MkAttachedBundleOccurrence
+  bundleActor : name
+  containingBlock : LocatedOpenEpisodeBlock name key world error value nameEq keyEq bundleActor global
+  coreEnd : SystemState name key value world error
+  memberCore : Transitions (blockStart containingBlock) coreEnd
+  0 memberExtended : ActorLifecycleCore nameEq bundleActor memberCore
+  memberBundle : Transitions coreEnd (blockEnd containingBlock)
+  0 memberForced : OrderedForcedRootBundle nameEq bundleActor memberCore [] memberBundle
+  0 memberSplit : appendTransitions memberCore memberBundle = blockBody containingBlock
+  bundleOccurrence : LocatedActionOccurrence action memberBundle
+  bundleOffset : Nat
+  0 offsetExact : bundleOffset = transitionCount (traceBeforeBlock containingBlock) + S (transitionCount memberCore)
+  0 memberOrdinal : ordinal = bundleOffset + locatedActionOrdinal bundleOccurrence
+  0 memberLowerBound : LTE bundleOffset ordinal
+  0 memberUpperBound : LT ordinal (bundleOffset + transitionCount memberBundle)
+
+||| Coverage for the enlarged grammar; this is a specification, not a general
+||| producer. Universal interval separation remains a separate obligation.
+public export
+record AttachedNormalForm
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (keyEq : DecEq key)
+  {initial, finalState, gapFirst, gapFinal : SystemState name key value world error}
+  (global : Transitions initial finalState)
+  (gap : Transitions gapFirst gapFinal) (gapOffset : Nat) where
+  constructor MkAttachedNormalForm
+  0 rootInBundle : (action : Action name key value world error) ->
+    (occurrence : LocatedActionOccurrence action gap) ->
+    RootOrchestrationStep nameEq (locatedTransition occurrence) ->
+    AttachedBundleOccurrence name key world error value nameEq keyEq global action
+      (gapOffset + locatedActionOrdinal occurrence)
+
+public export
+rootDeclaredProvisionsFree :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (keyEq : DecEq key) ->
+  Component key value world error -> SystemState name key value world error -> Bool
+rootDeclaredProvisionsFree name key world error value keyEq component state =
+  provisionsDisjointFrom {name = name} {key = key} {value = value} {world = world} {error = error} @{keyEq}
+    (componentProvisions component)
+    (registryFibers {name = name} {key = key} {value = value} {world = world} {error = error} (registry state))
+
+||| Root classification uses the ACTUAL source state for retire/remove.
+public export
+rootInputAtSource :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) ->
+  Action name key value world error -> SystemState name key value world error -> Bool
+rootInputAtSource name key world error value nameEq (OInsert actor Root component) state = True
+rootInputAtSource name key world error value nameEq (OInsert actor (ChildOf parent) component) state = False
+rootInputAtSource name key world error value nameEq (ORetire actor) state =
+  case lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} actor (registry state) of
+    Nothing => False
+    Just fiber => case fiberParent fiber of Root => True; ChildOf parent => False
+rootInputAtSource name key world error value nameEq (ORemove actor) state =
+  case lookupFiber {name = name} {key = key} {value = value} {world = world} {error = error} @{nameEq} actor (registry state) of
+    Nothing => False
+    Just fiber => case fiberParent fiber of Root => True; ChildOf parent => False
+rootInputAtSource name key world error value nameEq (LBegin actor) state = False
+rootInputAtSource name key world error value nameEq (LAdvance actor) state = False
+rootInputAtSource name key world error value nameEq (LDivert actor) state = False
+rootInputAtSource name key world error value nameEq (LLeave actor) state = False
+rootInputAtSource name key world error value nameEq (LUnload actor) state = False
+
+||| Executable, proof-indexed snapshots. States/actions are runtime data; the
+||| exact trace index and duplicate tail token are erased. A false snapshot
+||| cannot be attached to a transition whose source has a different state.
+public export
+data AvailabilityTrace :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  {0 first, finalState : SystemState name key value world error} -> (0 trace : Transitions first finalState) -> Type where
+  AvailabilityEnd :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    (state : SystemState name key value world error) ->
+    AvailabilityTrace name key world error value (NoTransitions {state = state})
+  AvailabilityStep :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {0 middle, finalState : SystemState name key value world error} ->
+    (first : SystemState name key value world error) -> (step : Transition first middle) ->
+    (0 rest : Transitions middle finalState) -> AvailabilityTrace name key world error value rest ->
+    AvailabilityTrace name key world error value (MoreTransitions step rest)
+
+||| A compatible cut preserves declaration availability at EVERY crossed
+||| state and crosses NO root input. The endpoint state is checked too;
+||| off-end positions reject. This is stricter than a snapshot insertion guard.
+public export
+rootCutCompatible :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> Component key value world error -> Nat ->
+  {0 first, finalState : SystemState name key value world error} -> {0 trace : Transitions first finalState} ->
+  AvailabilityTrace name key world error value trace -> Bool
+rootCutCompatible name key world error value nameEq keyEq component Z (AvailabilityEnd state) =
+  rootDeclaredProvisionsFree name key world error value keyEq component state
+rootCutCompatible name key world error value nameEq keyEq component (S position) (AvailabilityEnd state) = False
+rootCutCompatible name key world error value nameEq keyEq component Z (AvailabilityStep first (Fired _ _ action _ _) rest later) =
+  rootDeclaredProvisionsFree name key world error value keyEq component first &&
+  not (rootInputAtSource name key world error value nameEq action first) &&
+  rootCutCompatible name key world error value nameEq keyEq component Z later
+rootCutCompatible name key world error value nameEq keyEq component (S position) (AvailabilityStep first step rest later) =
+  rootCutCompatible name key world error value nameEq keyEq component position later
+
+||| Earliest means admissible HERE and no strictly earlier compatible cut in
+||| this ACTUAL located birth's prefix, not an arbitrary executable schedule.
+public export
+record EarliestAvailableRootBirth
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (keyEq : DecEq key)
+  {0 initial, finalState : SystemState name key value world error}
+  (0 trace : Transitions initial finalState) (0 root : name)
+  (0 component : Component key value world error)
+  (0 birth : LocatedActionOccurrence (OInsert root Root component) trace) where
+  constructor MkEarliestAvailableRootBirth
+  rootAvailabilityTrail : AvailabilityTrace name key world error value (beforeActionOccurrence birth)
+  0 rootCurrentCutAvailable : rootCutCompatible name key world error value nameEq keyEq component
+    (locatedActionOrdinal birth) rootAvailabilityTrail = True
+  0 noEarlierCompatibleRootCut : (earlier : Nat) -> LT earlier (locatedActionOrdinal birth) ->
+    rootCutCompatible name key world error value nameEq keyEq component earlier rootAvailabilityTrail = False
+
+||| A8 availability-aware canonical placement, owner-signed 2026-09-09.
+||| Root inputs preserve external order and move only through compatible
+||| declaration-free cuts. This does not imply old strict root-first placement.
 public export
 record CanonicalInputPlacement
   (name, key, world, error : Type) (value : key -> Type)
   (nameEq : DecEq name) (keyEq : DecEq key)
-  (supportState : SystemState name key value world error)
-  (order : List name)
-  {initial, finalState : SystemState name key value world error}
-  (trace : Transitions initial finalState) where
+  (supportState : SystemState name key value world error) (order : List name)
+  {0 initial, originalFinal, finalState : SystemState name key value world error}
+  (0 original : Transitions initial originalFinal) (0 trace : Transitions initial finalState) where
   constructor MkCanonicalInputPlacement
-  0 allRootInputsFirst : RootInputsBeforeLifecycle nameEq trace
-  ||| Freshness and placement are stated for each located root birth, not for a
-  ||| raw name globally. A later root birth may therefore reuse the raw name of
-  ||| a withdrawn child generation.
+  0 placementExternalInputsSame : SameExternalOrchestration nameEq original trace
+  0 rootGenerationEarliestAvailable :
+    {root : name} -> {component : Component key value world error} ->
+    (birth : LocatedActionOccurrence (OInsert root Root component) trace) ->
+    EarliestAvailableRootBirth name key world error value nameEq keyEq trace root component birth
   0 rootGenerationFresh :
     {root : name} -> {component : Component key value world error} ->
     (birth : LocatedActionOccurrence (OInsert root Root component) trace) ->
     lookupFiber @{nameEq} {key = key} {value = value} {world = world}
       {error = error} root (registry (actionBeforeState birth)) = Nothing
-  0 rootGenerationBeforeLifecycle :
+  0 rootGenerationBeforeOwnLifecycle :
     {root : name} -> {component : Component key value world error} ->
     (birth : LocatedActionOccurrence (OInsert root Root component) trace) ->
     {action : Action name key value world error} ->
     (lifecycle : LocatedActionOccurrence action trace) ->
-    isLifecycleAction action = True ->
+    isLifecycleAction action = True -> actionOwner action = root ->
     LT (locatedActionOrdinal birth) (locatedActionOrdinal lifecycle)
-  ||| The surviving child is linked to one located birth generation. Its
-  ||| checked O-Insert is fresh at that birth state and precedes every located
-  ||| lifecycle occurrence of that child.
+  ||| The frozen child-generation clause is retained without strengthening.
   0 childGenerationBeforeOwnLifecycle :
     (n, parent : name) -> Elem n order ->
     (fiber : Fiber name key value world error) ->
@@ -3263,7 +3567,7 @@ record CanonicalSchedule
       earlier later (canonicalBlock earlier earlierIn) (canonicalBlock later laterIn)
   lifecycleCoverage : LifecycleActorsCovered supportOrder canonicalTrace
   inputPlacement : CanonicalInputPlacement name key world error value nameEq keyEq
-    originalFinal supportOrder canonicalTrace
+    originalFinal supportOrder original canonicalTrace
   canonicalEndpoint : CanonicalEndpointRelation name key world error value
     nameEq keyEq originalFinal canonicalFinal
   canonicalRegistrationTree : CanonicalRegistrationCorrespondence original
