@@ -91,3 +91,19 @@ phaseActionExtended nameEq actor step rest (LUnload selected) equation owner onl
 phaseActionExtended nameEq actor step rest (LLeave selected) equation owner only =
   ExtendedLifecycleStep step rest (rewrite equation in Refl)
     (rewrite equation in injective owner) only
+
+||| Decode an entire native event word into the extended actor grammar.
+||| Ownership is an explicit per-event premise; phaseScanOk-to-interval
+||| extraction and located lifecycle/release/maximality remain separate.
+export
+0 phaseEventsExtended : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, finalState : SystemState name key value world error} ->
+  {trace : Transitions first finalState} ->
+  (nameEq : DecEq name) -> (actor : name) ->
+  (trail : AvailabilityTrace name key world error value trace) ->
+  (0 owned : All (\event => fst event = Just actor) (phaseEvents nameEq trail)) ->
+  ActorLifecycleOnlyExtended nameEq actor trace
+phaseEventsExtended nameEq actor (AvailabilityEnd state) owned = ExtendedLifecycleEnd
+phaseEventsExtended nameEq actor (AvailabilityStep source (Fired ne ke action tag checked) rest later) owned =
+  phaseActionExtended nameEq actor (Fired ne ke action tag checked) rest action Refl
+    (All.head owned) (phaseEventsExtended nameEq actor later (All.tail owned))
