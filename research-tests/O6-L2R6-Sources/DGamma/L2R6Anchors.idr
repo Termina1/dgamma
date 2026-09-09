@@ -57,3 +57,20 @@ record AnchorAssignment
   assignedAnchorObserved : Maybe Nat
   0 assignedMaximumEquation : lastReleaseCut anchorReleaseOrdinals = assignedAnchorObserved
   0 assignedAnchorEquation : anchorOf nameEq keyEq trail (catalogOrdinal entry) = assignedAnchorObserved
+
+||| Single-constructor assignment observations from the actual trace. Key
+||| witness and maximum use the same catalog item and release-scan definition.
+public export
+anchorAssignment : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {0 first, finalState : SystemState name key value world error} ->
+  {0 trace : Transitions first finalState} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (trail : AvailabilityTrace name key world error value trace) ->
+  (entry : RootCatalogEntry name key world error value) ->
+  (0 member : Elem entry (scanRootCatalog 0 trail)) ->
+  AnchorAssignment name key world error value nameEq keyEq trail entry
+anchorAssignment nameEq keyEq trail entry member = MkAnchorAssignment
+  (keyForcedAt nameEq keyEq trail entry member)
+  (concatMap (\seed => scanReleaseOrdinals nameEq keyEq (catalogComponent seed) 0 (catalogOrdinal seed) trail)
+    (filter (\seed => catalogOrdinal seed <= catalogOrdinal entry) (scanRootCatalog 0 trail))) Refl
+  (anchorOf nameEq keyEq trail (catalogOrdinal entry)) Refl Refl
