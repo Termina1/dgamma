@@ -53,3 +53,10 @@ rootControlAction (LAdvance actor) = False
 rootControlAction (LDivert actor) = False
 rootControlAction (LUnload actor) = False
 rootControlAction (LLeave actor) = False
+
+||| Combine two head conditions with one observed tail result. Single tuple
+||| elimination avoids duplicating the recursive native scan.
+public export
+frontControlHead : Bool -> Bool -> (Bool, Bool) -> (Bool, Bool)
+frontControlHead frontOK controlOK (tailFront, tailControl) =
+  (frontOK && tailFront, controlOK && tailControl)
