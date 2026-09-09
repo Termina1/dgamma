@@ -23,3 +23,12 @@ childDeclaredOverlap : {name, key, world, error : Type} -> {value : key -> Type}
 childDeclaredOverlap keyEq root Root child = False
 childDeclaredOverlap keyEq root (ChildOf parent) child =
   provisionOverlap @{keyEq} (componentProvisions child) (componentProvisions root)
+
+||| An absent fiber cannot release a declaration. Present fibers delegate to
+||| the explicit parent classifier; no activity or retirement test is used.
+public export
+foundChildOverlap : {name, key, world, error : Type} -> {value : key -> Type} ->
+  DecEq key -> Component key value world error -> Maybe (Fiber name key value world error) -> Bool
+foundChildOverlap keyEq root Nothing = False
+foundChildOverlap keyEq root (Just fiber) =
+  childDeclaredOverlap keyEq root (fiberParent fiber) (fiberComponent fiber)
