@@ -110,3 +110,17 @@ checkedRetireAcrossExtensional nameEq keyEq actor (MkSystemState ambient source)
   retireExtensionalFromView nameEq keyEq actor ambient source afterState current tag same valid
     (retireSuccessView nameEq keyEq actor ambient source tag afterState
       (checkedActionProjects nameEq keyEq (ORetire actor) (MkSystemState ambient source) afterState tag checked))
+
+||| Endpoint relation composes for future native normalizer steps. No trace
+||| existence, descent, or normalization is inferred from this relational lemma.
+export
+0 extensionalTransitive :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} ->
+  {0 first, middle, last : SystemState name key value world error} ->
+  RegistryExtensional name key world error value nameEq first middle ->
+  RegistryExtensional name key world error value nameEq middle last ->
+  RegistryExtensional name key world error value nameEq first last
+extensionalTransitive left right = MkRegistryExtensional
+  (trans (extensionalWorld left) (extensionalWorld right))
+  (\wanted => trans (extensionalLookup left wanted) (extensionalLookup right wanted))
