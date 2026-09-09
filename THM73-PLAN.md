@@ -3,7 +3,46 @@
 Branch: `cp5-thm73-scoping`
 
 
-## Current main checkpoint — R200 source-frozen PARTIAL
+## Current main checkpoint — R204 source-frozen checked PARTIAL
+
+Source freeze `3e6d8ff0`; Unit0 repairs `af2df90b`/`c254d5a1` precede B1.
+B14/14 and A16/16 exhausted their authorized caps;29 new total erased support
+declarations. A15 STOP3/3 exact FULL revert; both literal native append-path
+statements (two-path and narrowed left-only) EXHAUSTED, not renamed/retried.
+Authorized V0-CACHE is unchanged-source validation, not a fourth proof attempt.
+
+1. **B proved:** actual-chain present-vestigial selected-list adapter; selected
+   and whole classified current-name disappearance through real chain nodes,
+   including non-head selections and both canonical schedules; any-present
+   original controls, both current-name directions, root/generated replay
+   insertion counts and exact current-stamp transport. **NEXT:** full controls
+   re-renaming and absent-domain transport under the conjugated internal map
+   into accepted current-name O20AllNameCut, then actual-chain D5. Do not retry
+   exhausted R197 generic if-projection consumer or replace required native
+   equations with observations assumed as conclusions.
+2. **A proved:** original occurrence-labelled paired Insert runtime histories
+   with exact action/tag equations and computed native prefix environments;
+   accepted supported/permuted original birth attachments; actual retained
+   birth/open-suffix producer in BOTH original chronologies; conditional pair
+   producer for chosen matching retained events (match + two local raw-name
+   equations explicit); exact-cut history concatenation (NOT path equality).
+   **NEXT:** genuine global event pairing/order/coverage, canonical-prefix
+   activation-position transport, unconditional predecessor ALL-name cut,
+   unsupported/closing skip integration with disappearance witnesses, whole
+   R198 folds, conditional then discharged synchronization. Original runtime
+   one-edge histories are NOT whole canonical histories; no skipped edge is
+   epsilon.
+3. **C INELIGIBLE**, unattempted. A/B partial; no macro body or statement changes.
+   Census remains **4=1/2/0/0/1**. All frozen hashes/bridge manifest exact.
+4. **D1:** immutable import-closed ALL181 inherited+8 new source targets +seeded
+   package=190 final checks, no exclusions.37 compiler-free adversarial tests
+   PASS; direct final validation/archive/owner+reviewer gate pending.
+
+Detailed proof correspondence, raw invocation accounting and open premises:
+`research-tests/O6-R204-DECLARATIONS.md`, `O6-R204-MICRO-UNITS.md`,
+`O6-R204-GRIND-SHIFT-AUDIT.md`. No main-lane lane2 edits/builds.
+
+## Historical main checkpoint — R200 source-frozen PARTIAL
 
 B24/24, then A20/20:44 new total erased declarations, all PASS1 with immediate
 GUARDED COMMIT receipts. Source freeze5ca8e587; production and protected

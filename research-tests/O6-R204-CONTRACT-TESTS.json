@@ -1,0 +1,12 @@
+{
+  "status": "PASS",
+  "tests": 27,
+  "command": [
+    "/opt/homebrew/opt/python@3.14/bin/python3.14",
+    "-I",
+    "/Users/vyacheslavshebanov/Work/dgamma/research-tests/test_r204_evidence_contract.py"
+  ],
+  "logSHA256": "71509f6f3d873d15117ddecd119aa93d4b4943efb295784a295eed4ebf1daf58",
+  "testSourceSHA256": "39d50044d6d26b5a9c657a8f56e5184ed03454bb0761e43faa3c043490d4bd2a",
+  "contractSourceSHA256": "c72cfd2ce035a71d538a1bc294310f69a4d4afce321104bdfae9ac243ea990bb"
+}

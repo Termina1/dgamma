@@ -1,0 +1,126 @@
+{
+  "status": "BOTH REPAIRS LANDED before B1; supervisor ratification condition fulfilled",
+  "P1": {
+    "receipt": {
+      "beforeSourceHash": "b05d2323fbec18160bc212a7ffa3270f0e28e7dc68cfaaa24b1c181f8e410068",
+      "beforeCommitHash": "9b53266688a8791a5afb28ad5cc4d53103de648c",
+      "message": "R204 Unit 0a: R203 review P1 (style: no let aliases)",
+      "event": "GUARDED COMMIT",
+      "unit": "U0a",
+      "attempt": "2",
+      "invocation": "U0a-2",
+      "sourceHash": "6946cbd30558b3013a418e0d3cb7ff85ef3698e3e7cd6555545079df6b596618",
+      "resultingCommitHash": "af2df90b1b5c870c6535b67dc62ee53d506bc387",
+      "timestampUTC": "2026-09-09T20:44:29.747964+00:00",
+      "guardChecksPassed": [
+        "fresh PASS",
+        "exit 0",
+        "not interrupted",
+        "no expected diagnostic",
+        "exact source SHA256",
+        "one declaration OR exact owner-gated field/constructor delta",
+        "no intervening compiler invocation",
+        "no pre-staged files",
+        "no own-worktree compiler (lane2 excluded)",
+        "git diff --check",
+        "git commit success",
+        "no post-staged files"
+      ]
+    },
+    "beforeSHA256": "b05d2323fbec18160bc212a7ffa3270f0e28e7dc68cfaaa24b1c181f8e410068",
+    "afterSHA256": "6946cbd30558b3013a418e0d3cb7ff85ef3698e3e7cd6555545079df6b596618",
+    "statementBeforeSHA256": "c19d98020076752137cae0def3822167e28c71e37ac5a8d7e4e056396850cec0",
+    "statementAfterSHA256": "c19d98020076752137cae0def3822167e28c71e37ac5a8d7e4e056396850cec0",
+    "statementByteIdentical": true,
+    "failedFirstAttemptRetained": true,
+    "oneOwnBuilding": [
+      "DGamma.R203NativeDisappearancePositive (/Users/vyacheslavshebanov/Work/dgamma/research-tests/DGamma/R203NativeDisappearancePositive.idr)"
+    ]
+  },
+  "P2": {
+    "receipt": {
+      "beforeCommitHash": "af2df90b1b5c870c6535b67dc62ee53d506bc387",
+      "artifactHashes": {
+        "research-tests/O6-R203-GRIND-SHIFT-AUDIT.md": {
+          "before": "3537f00773964ed2c13d1dd57e355ea155832b34397a300b560b03f95c401beb",
+          "after": "bc34ad5ab037f62b9ecbc792cd211eeb5e4e55ba7623775008a36fbc77666ff4"
+        },
+        "research-tests/O6-R203-RESOURCE-AUDIT.json": {
+          "before": "d5563fc7fb1a1bc5865cd65864628c2df5bde456120517dc0574a179b7da1a1e",
+          "after": "8d4a642ceb04893dc5b2786abc8be1660b937d6ac2b9fb9ef5cab9066fbe7492"
+        },
+        "research-tests/O6-R204-PREFLIGHT.md": {
+          "before": null,
+          "after": "e7137035d0cc1209200bd2eb66c70b160f33365b7d9507cbc5e13bc3b4a8f8c9"
+        },
+        "research-tests/O6-R204-GRIND-SHIFT-AUDIT.md": {
+          "before": null,
+          "after": "717c324203904e30bbfc3dd108e9659320cef35b537cfad5bc97cc8c135938c3"
+        },
+        "research-tests/O6-R204-MICRO-UNITS.md": {
+          "before": null,
+          "after": "6351a728bbf99690e3210c3d693e567f800cf1ec5ee5f2ff4031d5a4151a2d05"
+        },
+        "research-tests/O6-R204-EXECUTION-POLICY.json": {
+          "before": null,
+          "after": "d2140ff1c7ecbd2eb134b4203deb4338ff730f1f8c5f2e7c83e02918661b7660"
+        },
+        "research-tests/O6-R204-SHIFT.json": {
+          "before": null,
+          "after": "199685f51ac79a61b025803bce87e1f6d82f2c1c85110e1d79e62c5ee219c470"
+        },
+        "research-tests/run-r204-check.py": {
+          "before": null,
+          "after": "2982ab0c695977ca70d778f79493ddf8a2d623ad026a44fec07bbebbaac6285f"
+        },
+        "research-tests/run-r204-commit.py": {
+          "before": null,
+          "after": "2f399b768111d5f25870bce9371146e0e7f8fe43469439ce90d5960171eb7a18"
+        },
+        "research-tests/run-r204-artifact-commit.py": {
+          "before": null,
+          "after": "1755be6ef4bbe775a4a867e6224aff13d854b605349890c39537e07b3f8d8746"
+        }
+      },
+      "message": "R204 Unit 0b: R203 review P2 RSS measurement wording and repair receipts",
+      "event": "GUARDED ARTIFACT COMMIT",
+      "unit": "U0a-2",
+      "attempt": "not encoded (validation or compiler-free artifact)",
+      "invocation": "U0a-2",
+      "sourceInvocation": "U0a-2",
+      "sourceHash": "6946cbd30558b3013a418e0d3cb7ff85ef3698e3e7cd6555545079df6b596618",
+      "resultingCommitHash": "c254d5a1aabff86c6eda22eca33afba10859a944",
+      "timestampUTC": "2026-09-09T20:44:30.066203+00:00",
+      "paths": [
+        "research-tests/O6-R203-GRIND-SHIFT-AUDIT.md",
+        "research-tests/O6-R203-RESOURCE-AUDIT.json",
+        "research-tests/O6-R204-PREFLIGHT.md",
+        "research-tests/O6-R204-GRIND-SHIFT-AUDIT.md",
+        "research-tests/O6-R204-MICRO-UNITS.md",
+        "research-tests/O6-R204-EXECUTION-POLICY.json",
+        "research-tests/O6-R204-SHIFT.json",
+        "research-tests/run-r204-check.py",
+        "research-tests/run-r204-commit.py",
+        "research-tests/run-r204-artifact-commit.py"
+      ],
+      "guardChecksPassed": [
+        "fresh PASS",
+        "exit 0",
+        "not interrupted",
+        "no expected diagnostic",
+        "exact source SHA256",
+        "artifact paths only",
+        "no source delta",
+        "no pre-staged files",
+        "no own-worktree compiler (lane2 excluded)",
+        "git diff --check",
+        "git commit success",
+        "no post-staged files"
+      ]
+    },
+    "measurementProseOnly": true,
+    "numericAndOtherJSONFieldsUnchanged": true,
+    "verifiedBy": "test_p2_changes_only_exact_measurement_prose"
+  },
+  "R203A13Unchanged": true
+}

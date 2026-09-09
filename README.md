@@ -4,6 +4,25 @@
 Spatiotemporal Composability”** (Shi, Zhang, Cui). Runtime functions remain
 computational data; laws and witnesses are erased with quantity `0`.
 
+## Current research checkpoint — R204 (checked PARTIAL, source freeze)
+
+Source freeze `3e6d8ff0`: R203 review P1/P2 repairs landed first;29 new total
+quantity-0 support declarations, B14/A16 caps respected (A15 fully reverted).
+Paper **Thm 73 is NOT closed**; production remains frozen. C ineligible,
+macro census **4 = 1/2/0/0/1**. Final189-source+seeded-package validation pending.
+
+| Paper correspondence | Idris file : representative name | Status |
+|---|---|---|
+| Thm73 / O20 selected vestigial generation | `CP5O20PresentVestigialSelectionSpike:everyPresentVestigialSelected` | proved support over actual deletion chain |
+| Thm73 / O20 present-name and count rebase | `CP5O20CurrentNameRebaseSpike:o20CanonicalPresentCountRebase` | proved present-class support; FULL ALL-name cut/D5 open |
+| Thm73 / O20 paired runtime Insert | `CP5O20InsertOccurrenceHistorySpike:o20PermutedCanonicalInsertOccurrenceHistory` | proved two original occurrences, exact native stages and prefixes |
+| Thm73 / O20 original chronological runtime pairing | `CP5O20ChronologicalOccurrenceHistorySpike:o20AcceptedChronologicalOccurrencePairs` | proved conditional event-pair producer; match + local name equations explicit |
+| Thm73 / canonical synchronization and convergence | `CP5O20CanonicalSynchronizationModuloSpike:o20SynchronizeCanonicalHistoriesModulo` / `canonicalSchedulesConvergeSpike` | open; no full-history/canonical-cut producer; macro untouched |
+
+All29 declaration/commit correspondences and exact qualifications:
+[`O6-R204-DECLARATIONS.md`](research-tests/O6-R204-DECLARATIONS.md).
+No new postulates, holes, frozen fields or runtime API changes.
+
 ## Build
 
 ```sh

@@ -4752,3 +4752,83 @@ for R204 under gate; if genuinely necessary erased bindings, the audit wording
 stands. Successful erasure/typechecking does not decide that style question.
 R203 performs no speculative repair and no cap extension. Next work belongs to
 the supervisor's new allocation; stand down after this artifact seal.
+
+## Status
+
+### R204 D1 — checked PARTIAL source freeze (2026-09-09)
+
+Source freeze **3e6d8ff0** on cp5-thm73-scoping, baseline9b532666. Mandatory
+R203 P1 no-let fixture repair and P2 precise RSS wording landed FIRST at
+**af2df90b/c254d5a1**, with guarded before/after hashes, unchanged P1 statement,
+unchanged numeric R203 samples and required review receipt. R203 A13's erased
+structural `where rightHistory` stays byte-identical. Supervisor ratification
+condition fulfilled; no claim that partial downstream A/B results are closed.
+
+**Fully proved support:**29 new total quantity-0 declarations,14 B +15 A;
+B14/14 units (15 checks); A16/16 units (20 checks, A15 fully reverted). Actual
+present-vestigial selection and whole real-chain disappearance now include
+non-head selected nodes and both canonical sides. ANY canonical-present fiber,
+including unsupported present, yields original controls/current generation,
+accepted name-map agreement in both directions, exact root/generated replay
+insertion count and current-stamp transport. No strengthened macro premises.
+
+A produces genuine paired native Insert stages, own action/tag equations,
+original located occurrence labels and native prefix scans; the supported
+accepted/permuted producer attaches original insertion positions too. BOTH
+accepted original chronologies now yield every retained event's real birth,
+stamp and open-parent suffix. Chosen matching events can be paired into a
+runtime history; event match and child/parent raw-name equations remain
+explicit. Exact-cut typed history concatenation is structural and proved.
+Fixtures: eight actual discarded-birth edges (both reverse scans); eight-edge
+original traces with producer-generated paired Insert history; six native
+edges including child Retire/Remove deriving original birth ordinal2.
+
+**Partial/open B:** no full control re-renaming and absent-domain transport
+into O20AllNameCut; D5 unattempted. **Partial/open A:** no global zip/order or
+whole-word coverage; canonical-prefix position transport, unconditional
+predecessor ALL-name cut, real unsupported/closing skip integration, whole
+R198 trace folds and synchronization remain open. A one-edge original runtime
+history is NOT a whole canonical history. Runtime intermediate cuts cannot
+be invented; Unload/Retire/Remove are not epsilon.
+
+**A15 failure is NOT a proof:** full two-path native projection append equality
+failed conversion at End twice; direct defining imports/reordering and
+--show-implicits checked. Third attempt narrowed to left-only and also failed.
+STOP3/3, exact FULL source revert to d37e8d55 bytes SHA5967fa84…; both statements
+EXHAUSTED for this shift. No new theorem/hole retained. Supervisor authorized
+separate **V0-CACHE** unchanged-source target-only validation: PASS, pinned to
+restored bytes, before A16; not a fourth proof attempt or A16 charge. The cause
+is an unresolved elaboration/reduction limitation, NOT a claimed mathematical
+counterexample. A14's typed structural history concatenation remains proved;
+no literal path-concatenation equality is claimed.
+
+**Merely stated macro/theorem obligations:** unchanged four holes, census
+**4=1/2/0/0/1**. C explicitly **INELIGIBLE**, no body attempt. Production
+src/+dgamma.ipkg byte-identical to34b21c9; all frozen statements, O19 body,
+adjacent body, whole LocalDiamond/DeletionChain and bridge manifest exact.
+No new let aliases, with, postulates, believe_me, assert_total/assert_smaller,
+partial functions, TODO holes, deletionTheoremProof calls or stored fields.
+
+Evidence before final validation:38 invocations=32 PASS+6 failures (includes
+U0a2 checks,35 A/B checks and V0-CACHE). A3-2 was a genuine PASS rejected by the
+commit whitespace guard; only rstrip changed before A3-3's fresh PASS/commit.
+30 guarded source commits=29 new declarations+P1 repair; every retained source
+has own exact fresh Building and immediate receipt.37 compiler-free adversarial
+checks PASS (27 evidence including exact P1/P2/whitespace checks +10 policy).
+Immutable import-closed final plan:ALL181 inherited+8 new=189 source targets
+(182 positives,7 exact-diagnostic+symbol negatives)+seeded package=190 checks.
+No path exclusions; unchanged out-of-plan seeds are NOT fresh-PASS/cold claims.
+Final validation, anchored archive and independent machine/owner+human-review
+acceptance are pending at D1. Machine verifier is NOT an independent human.
+
+RSS everywhere in R204 means **maximum sampled RSS over command-matching idris2
+processes (single-process compiler; not an aggregate process-tree total; not OS
+high-water)**. One-second samples; zero means no live sample, not zero peak.
+One main compiler at a time, own guards52GiB unchanged LocalDiamond/48GiB others;
+no cross-lane locks/windows or lane2 actions, overlap timestamps only.
+
+Next work must start from the exact OPEN producer seams above, not relabel
+B work A, retry exhausted statements, add hidden ALL-name-cut premises or
+claim Thm73 from lifecycle role-word/activation chronology equality. Full29-name
+correspondence, failures, repair receipts and freeze hashes are in the R204
+research-tests artifacts.
