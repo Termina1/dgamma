@@ -28,7 +28,11 @@
     "attachedActiveAtFinal": "blockActiveAtFinal",
     "attachedDecomposition": "blockDecomposition",
     "attachedBetweenBlocks": "betweenBlocks",
-    "attachedBlocksOrdered": "blocksOrderedInGlobal"
+    "attachedBlocksOrdered": "blocksOrderedInGlobal",
+    "MkAvailabilityAwareCanonicalInputPlacement": "MkCanonicalInputPlacement",
+    "AvailabilityAwareCanonicalInputPlacement": "CanonicalInputPlacement",
+    "availableRootGenerationFresh": "rootGenerationFresh",
+    "availableChildGenerationBeforeOwnLifecycle": "childGenerationBeforeOwnLifecycle"
   },
   "movedOldRanges": [
     [

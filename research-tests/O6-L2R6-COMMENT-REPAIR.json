@@ -1,0 +1,6 @@
+{
+  "path": "research-tests/O6-L2R6-Sources/DGamma/L2R6Anchors.idr",
+  "old": "||| Forced-root target position: its release-ending anchor plus the number\n||| of earlier roots assigned that same anchor. This preserves bundle order;\n||| non-forced roots have no placement claim from this arithmetic definition.",
+  "new": "||| Forced-root target: max(anchor plus same-anchor rank, one past the latest\n||| earlier different-anchor/non-forced root birth). External order forbids\n||| crossing that earlier birth. In the phase/front/never-retired domain,\n||| controls are at the front; same-anchor roots use outer orchestration order.",
+  "authority": "Supervisor exact COMMENT-ONLY E repair; no declaration/type/body change; final Anchors fresh check mandatory"
+}

@@ -50,6 +50,11 @@ if re.fullmatch(r'[ABCD]\d+-\d+',unit):
  previous=[json.loads(s) for s in (OUT/'ledger.jsonl').read_text().splitlines()] if (OUT/'ledger.jsonl').exists() else []
  assert sum(r['unit'].rsplit('-',1)[0]==unit.rsplit('-',1)[0] for r in previous)<3
  assert not any(r['passed'] and r['unit'].rsplit('-',1)[0]==unit.rsplit('-',1)[0] for r in previous)
+def sources_unchanged(target, snapshot, bundle):
+ try:
+  return target.read_bytes()==snapshot and all(p.read_bytes()==data for p,data in bundle)
+ except OSError:
+  return False
 def compiler_processes():
  result=[]
  for row in subprocess.check_output(['ps','-axo','pid=,ppid=,rss=,command='],text=True).splitlines():
@@ -91,13 +96,15 @@ try:
   signal.signal(signal.SIGTERM,stop);signal.signal(signal.SIGINT,stop)
   while process.poll() is None:
    time.sleep(0.25)
-   if (target.read_bytes()!=snapshot or any(p.read_bytes()!=data for p,data in bundle)) and not interrupted:
+   if not sources_unchanged(target,snapshot,bundle) and not interrupted:
     source_mutation=True
     stop(signal.SIGTERM,None)
    for p in compiler_processes():
     if p['classification']=='lane2':maximum=max(maximum,p['rssKiB'])
     else:foreign[p['pid']]=p
    if maximum>18*1024*1024 and not interrupted:stop(signal.SIGTERM,None)
+ if not sources_unchanged(target,snapshot,bundle):
+  source_mutation=True;interrupted=True
  text=(OUT/(unit+'.log')).read_text()
  fresh=bool(re.search(r'^\d+/\d+: Building DGamma\.'+re.escape(target.stem)+r' \((?:'+re.escape(str(ROOT))+r'/)?'+re.escape(path)+r'\)$',text,re.M))
  bundle_fresh=all(bool(re.search(r'^\d+/\d+: Building DGamma\.'+re.escape(p.stem)+r' \('+re.escape(str(p))+r'\)$',text,re.M)) for p,data in bundle)

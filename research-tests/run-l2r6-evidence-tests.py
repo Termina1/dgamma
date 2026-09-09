@@ -66,11 +66,11 @@ class EvidenceTests(unittest.TestCase):
    self.assertTrue(self.assert_expression('target.is_file()', scope))
    self.assertFalse(self.assert_expression('target.is_file()', {'target':target, 'ROOT':root/'other'}))
  def test_exact_bootstrap_exception_not_predecessor_authority(self):
-  old='research-tests/O6-L2R4-Sources/DGamma/L2R4AnchorMeasure.idr'
+  old='research-tests/O6-L2R5-Sources/DGamma/L2R5RootCatalog.idr'
   for unit,path,ok in [('V0',old,True),('V1',old,False),('A1-1',old,False),('V0','research-tests/O6-L2R4-Sources/DGamma/Other.idr',False),('A1-1','research-tests/O6-L2R6-Sources/DGamma/Owned.idr',True)]:
    self.assertEqual(self.assert_expression("path.startswith('research-tests/O6-L2R6-Sources/')",{'unit':unit,'path':path}),ok)
  def test_actual_caps_no_self_extension(self):
-  for unit, expected in [('A20-1',True),('A21-1',False),('B16-1',True),('B17-1',False),('C10-1',True),('C11-1',False)]:
+  for unit, expected in [('A14-1',True),('A15-1',False),('B14-1',True),('B15-1',False),('C10-1',True),('C11-1',False),('D12-1',True),('D13-1',False)]:
    self.assertEqual(self.assert_expression('int(unit.split', {'unit':unit}), expected)
  def test_actual_attempt_identifiers_bounded(self):
   for unit, expected in [('A1-3',True),('A1-4',False),('B0-1',False),('A-1',False),('V00',True),('V12',True),('freeform',False)]:
@@ -95,10 +95,42 @@ class EvidenceTests(unittest.TestCase):
   self.assertFalse(self.actual_pass_expression(interrupted=True))
   self.assertFalse(self.actual_pass_expression(fresh=False))
   self.assertFalse(self.actual_pass_expression(process=types.SimpleNamespace(returncode=1)))
- def test_no_companion_bundle_authority(self):
+ def test_default_bundle_empty_outside_D9_gate(self):
   tree=ast.parse((ROOT/'research-tests/run-l2r6-check.py').read_text())
   node=next(n for n in tree.body if isinstance(n,ast.Assign) and any(isinstance(t,ast.Name) and t.id=='bundle' for t in n.targets))
   self.assertEqual(ast.literal_eval(node.value),[])
+ def test_runtime_mutation_guard_handles_missing_and_changed_target(self):
+  unchanged=helper('research-tests/run-l2r6-check.py','sources_unchanged',{})
+  with tempfile.TemporaryDirectory(prefix='l2r6-mutation-test-') as folder:
+   path=pathlib.Path(folder)/'target.idr';other=pathlib.Path(folder)/'companion.idr'
+   path.write_bytes(b'original');other.write_bytes(b'companion')
+   self.assertTrue(unchanged(path,b'original',[(other,b'companion')]))
+   path.write_bytes(b'changed');self.assertFalse(unchanged(path,b'original',[]))
+   path.unlink();self.assertFalse(unchanged(path,b'original',[]))
+   path.write_bytes(b'original');other.unlink();self.assertFalse(unchanged(path,b'original',[(other,b'companion')]))
+ def test_shared_lock_and_window_never_accessed(self):
+  for path in ['research-tests/run-l2r6-check.py','research-tests/run-l2r6-independent-verify.py','research-tests/run-l2r6-archive.py']:
+   source=(ROOT/path).read_text()
+   self.assertNotIn("Path('/tmp/dgamma-heavy.lock",source)
+   self.assertNotIn('LOCK.',source)
+   self.assertNotIn('dgamma-rebuild-window.json',source)
+ def test_d9_only_bundle_authority_and_exact_paths(self):
+  source=(ROOT/'research-tests/run-l2r6-check.py').read_text()
+  self.assertIn("if unit.startswith('D9-'):",source)
+  self.assertIn("assert path == 'research-tests/O6-L2R6-Sources/DGamma/L2R6Phase.idr'",source)
+  self.assertIn('Fixture bytes unchanged; fresh check verifies 0/0/1/2 drift',source)
+ def test_d9_correction_and_comment_repair_preserve_declarations(self):
+  correction=json.loads((OUT/'target-correction.json').read_text())
+  self.assertEqual(self.declarations(correction['old'].encode()),self.declarations(correction['new'].encode()))
+  repair=json.loads((ROOT/'research-tests/O6-L2R6-COMMENT-REPAIR.json').read_text())
+  self.assertTrue(all(line.startswith('|||') for line in repair['old'].splitlines()+repair['new'].splitlines()))
+ def test_manifest_has_all_generator_renamings(self):
+  tree=ast.parse((ROOT/'research-tests/run-l2r5-draft.py').read_text())
+  mapping=ast.literal_eval(next(n.value for n in tree.body if isinstance(n,ast.Assign) and any(isinstance(t,ast.Name) and t.id=='mapping' for t in n.targets)))
+  for node in tree.body:
+   if isinstance(node,ast.For) and isinstance(node.target,ast.Tuple) and [ast.unparse(t) for t in node.target.elts]==['a','b']:
+    mapping.update(dict(ast.literal_eval(node.iter)))
+  self.assertEqual(mapping,json.loads((ROOT/'research-tests/O6-L2R5-CP3-REHOME-MANIFEST.json').read_text())['renamings'])
  def test_all_runner_files_parse_without_execution(self):
   for path in sorted((ROOT/'research-tests').glob('run-l2r6-*.py')):
    compile(path.read_bytes(), str(path), 'exec')

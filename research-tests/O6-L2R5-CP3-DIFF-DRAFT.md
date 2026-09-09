@@ -1,8 +1,8 @@
-# L2R5 — CP3 DIFF DRAFT for owner signature
+# L2R5 — CP3 DIFF DRAFT for owner signature (L2R6 research sync)
 
 ## Signature status (one-page decision table)
 
-**NO production edit authorized or performed. NOT YET SIGNABLE AS A COMPLETE CURE.** Tier 1 below is exact proposed text obtained from checked research declarations by the disclosed renamings; it has NOT been compiled in CP3. Tier 2 is explicitly UNCHECKED specification text with unresolved connector parameters. A signature today could approve the Tier-1 candidate design and rebuild plan, **not** certify a normalizer, all-role retirement replay, general gap coverage, O19 adjacency or Theorem 73.
+**NO production edit authorized or performed. NOT YET SIGNABLE AS A COMPLETE CURE.** Tier 1 below is exact proposed text obtained from checked research declarations by the disclosed renamings; it has NOT been compiled in CP3. Tier 2 is PARTIALLY CHECKED research code, with the exact limits below. The original proposed record fragments remain uncompiled, not drop-in CP3 definitions. A signature today could approve the Tier-1 candidate design and rebuild plan, **not** certify a normalizer, all-role retirement replay, general gap coverage, O19 adjacency or Theorem 73.
 
 | Proposed CP3 change | Checked backing | Unchecked / blocked by |
 |---|---|---|
@@ -11,12 +11,12 @@
 | Own-child Retire/Remove in core | R192 971fedfc (grammar); block-copy file later changed d3e6d73e; source lookup + parent witnesses | L2R5 B5 provider wall prevents lifecycle/full R191 replay |
 | Full LocatedOpenEpisodeBlock / BlockBefore rehome | L2R3 a7799047 / ce0c13bd; real small/barrier blocks 1b7e1eeb / 224988a1 | Maximal nonoverlap/decomposition globally; quantities change explicitly listed |
 | CanonicalInputPlacement inherited availability-aware clauses | R178 4e1043fe; L2R2 smallRootEarliest; L2R5 5822f06e / cb60b7d7 current-cut facts | Terminal earliest on all births, front-normal and last-release connectors below |
-| Least forced set, trace-linked classifier, anchor assignment | Generic leastness 7737a019; local KeyReleased / EarlierForcedRoot | TIER 2: no compiled global classifier/assignment |
+| Least forced set, trace-linked classifier, anchor assignment | L2R6 KeyForcedAt/keyForcedAt 4327be06/2b5609fd; ForcedOnTrace/leastness 6c0cccc4/abface27; classifyForced c05ff425; anchorAssignment d616fc24 | PARTIAL: release-ordinal scan witnesses and all three fixtures checked; general scan decoder, classifier soundness/completeness, max/stable-release proofs OPEN |
 | CanonicalSchedule.inputPlacement original-trace index | Inherited research placement record shape | In-file constructor and all callers must be adapted/rechecked; no constructor proof here |
-| RootInputsBeforeLifecycle replacement scope | Barrier-order impossibility 9c7c0a7c; old strict reading cannot hold | TIER 2 front-normal; non-insert root-action/generation disposition remains explicit |
+| RootInputsBeforeLifecycle replacement scope | L2R6 FrontNormal 71155c8e, ForcedRootNeverRetired 1eb6d5ed, actual full fixture scans 0cd3f374 | PARTIAL: accepted-scan Bools; generation/least-forcing correspondence and general scoped NF OPEN; richer controls-in-bundle grammar reserved for L2R7 |
 | O19 safetyBlocksAdjacent over full attached blocks | L2R4 exact unchanged fixture applications 58b71b4f / b042b76e | General selector zero-gap still open; do not remove/assume this field |
-| Normalizer endpoint relation and iteration | RegistryExtensional 0fbc3d33, snapshot embedding 21453f7c, two-insert endpoint algebra 71f6de67, Retire transport c60f315a | Native Insert/Insert applicability, remaining action transport, swap existence/distance iteration OPEN |
-| Raw catalog generated from actual traces | L2R5 ef9b9f9b; both full fixtures 8c603e3b | NOT AttachedNormalForm; catalog→placed-bundle assignment still open |
+| Normalizer endpoint relation and iteration | L2R5 extensional algebra; L2R6 actual moves bc32a5a3, one-/two-step iterations 21df2ce5, iterationEndpoint a4be84aa | Concrete 1→0 / 2→1→0 CLOSED. General existence/iteration TYPES 84b38628/98c51dd6 under ForcedRootPhase 8024d764; producers, all-kind applicability/transport OPEN |
+| Raw catalog and placed bundle linkage | L2R5 raw scan completeness; L2R6 PlacedBundle 77fcf3a6 and literal L2R3 fixture bundles 6a7d0ada | Same-anchor complete catalog→ONE actual bundle checked on both fixtures at anchor4; general placement/NF/selector producers OPEN |
 
 ## Frozen baseline and exact edit coordinates
 
@@ -483,12 +483,16 @@ record AttachedNormalForm
 
 ---
 
-# Tier 2 — UNCHECKED specification clauses
+# Tier 2 — partially checked connectors; remaining specification clauses
 
-**NOT YET SIGNABLE — no compiled definition exists for the connectors below.**
-These are proposed Idris record/field TEXT, not checked source, not postulates, and not replacements for a frozen hole. Names introduced here are proposed API names. The generic predicate parameters deliberately expose unresolved links instead of pretending that the current research variants already define them. The owner must sign both their eventual precise instantiation and the producers. No such instantiation/producer is claimed here.
+**NOT YET SIGNABLE AS A COMPLETE CURE.** L2R6 checked research declarations are listed per connector below; NONE of these global connector rows is moved to Tier 1. Actual executable scans, least closure, observed anchors/distance and concrete iterations exist, but the general correspondence/placement/existence producers do not. The old Idris fragments below are retained as **L2R5 proposed API TEXT**, not as definitions of the new modules or already compiled production signatures. Where their generic names differ from the concrete L2R6 records, the source declarations and this status table are authoritative. No assumed square oracle, supplied zero result, or generic fold is counted as a normalizer.
+
+Source inventory, exact declaration origins/commits/checks, body-only D9 correction and final hashes: `O6-L2R6-DECLARATION-ORIGINS.md`, `O6-L2R6-MICRO-UNIT-LEDGER.json`, `O6-L2R6-GRIND-SHIFT-AUDIT.md`. All sources are under `O6-L2R6-Sources/DGamma/`; production CP3 is untouched.
 
 ## T2.1 Trace-linked least forced set
+
+**PARTIALLY CHECKED — L2R6ForcedScan.** `scanReleaseOrdinals` (86da71ec) computes actual earlier own-child ORemove declaration-overlap ordinals; `KeyForcedAt`/`keyForcedAt` (4327be06/2b5609fd) own an explicit Bool/equation and a conditional runtime `ReleaseWitness` in that computed list. This is NOT yet a decoded LocatedActionOccurrence/shared-key/parent proof. `ForcedOnTrace` (6c0cccc4) instantiates the independent least family with generated catalog membership and computed key seeds; `forcedOnTraceLeast` (abface27) proves leastness. `classifyForced` (c05ff425) executes prefix closure; GENERAL soundness/completeness against the inductive relation remains OPEN. `forcedClassifierFixtures` (6b40802d) checks C12 [(3,True)], barrier [(3,True),(4,True)] with S keyFalse and a genuine OrderForces derivation, and a one-origin root-before-Begin2 trace [(3,False)]. Current ordinal observations are not stable original-generation transport.
+
 
 `ForcedRootInput` and `forcedRootLeast` are checked in L2R3, but their two predicates are generic. The root predicate must be inhabited only by actual native births, not arbitrary ordinals or raw names. Proposed connector:
 
@@ -525,6 +529,11 @@ record ForcedTraceClassification
 **Unresolved parameter, not a hidden assumption:** `KeyForcedAt` must be instantiated with actual declaration-occupancy/release evidence plus orchestration-order constraints. It cannot be the predicate `forcedAt n = True`, an arbitrary supplied seed set, or the raw catalog membership predicate. L2R5 C8 supplies raw birth lookup completeness; it does not compute `KeyForcedAt`. L2R3 leastness supplies minimality only AFTER this predicate linkage. Stable original occurrence/generation identities must survive the outer normalizer. A classifier indexed by CURRENT ordinals must be transported, not recomputed and silently treated as the original classifier.
 
 ## T2.2 Last-release/anchor assignment (key roots and barriers)
+
+**PARTIALLY CHECKED — L2R6Anchors.** `lastReleaseCut`/`anchorOf` (d3441e72/bb7da4ee), `AnchorAssignment`/`anchorAssignment` (2a992e14/d616fc24) compute and observe the maximum actual release-ending cut across earlier/current key roots; barriers inherit, later key release raises. Equations own the exact scan and maximum input; a GENERAL maximal-element/located-release decoder and stable anchor transport remain OPEN. `placementDistanceFixtures` (6a7d0ada, rechecked in D9 8024d764) observes R/S anchors4 and original/alternate totals0/0/1/2.
+
+`targetPosition` now has the OWNER-GATED D9 external-order correction (8024d764): max(anchor + same-anchor rank, one past the latest earlier different-anchor/non-forced root birth). **External order forbids crossing an earlier root birth, so the target must not lie before it; in the phase + FrontNormal + NeverRetired domain non-forced controls are at the front and same-anchor roots are ordered by the outer induction.** `rootDistance`/`totalDistance` are executable current-trace arithmetic; saturating Nat zero is not structural placement. `distanceOneLeft` (858d4b1b) proves exact-one arithmetic for a fixed non-crossed target; native all-root target/anchor transport is separate.
+
 
 The following proposed certificate shape separates the already checked local `AttachedRelease` from the missing global last-release proof. `FreeAtCut` is an **unimplemented executable cut observation** which must be defined by a total scan of the supplied actual AvailabilityTrace (including its endpoint); its correctness is owed. It must test declaration occupancy, not activity or current owned values.
 
@@ -582,6 +591,13 @@ record ForcedAnchorAssignment
 
 ## T2.3 Front-normal form, including non-insert root orchestration
 
+**PARTIALLY CHECKED — L2R6FrontNormal.** `rootOriginAt` (eeb49fbe) selects the latest matching birth ordinal, not the first raw name. `scanFrontDisposition` (f4a65df6) inspects actual source state for root Retire/Remove as well as Insert, returning front/no-forced-control Bools. `FrontNormal` (71155c8e) and `ForcedRootNeverRetired` (1eb6d5ed) retain observed values/equations plus acceptance. `frontDispositionFixtures` (0cd3f374) proves both full original traces satisfy both scans. GENERAL latest-birth agreement with the accepted generation scanner and originForced↔ForcedOnTrace remain OPEN.
+
+**Disposition is NOT chosen by fiat.** `ForcedRootRetireInBlock` (1211f6f5) is the explicit per-located-control TYPE for being inside the releasing attached body AFTER its bundle; current core++insertion-bundle grammar has no remaining interval. Supervisor's provisional **L2R7-only** options: (1) richer ordered bundle grammar admitting root Insert with release/barrier witness, then root Retire/Remove with an already-bundled witness (this or earlier bundle); attached body remains core++bundle-with-controls, gap statement unchanged. Fixture first: barrier extended by Retire3/Remove3 after S. NO implementation here. (2) interim `ForcedRootNeverRetired` scope; the quiescent open-set/lifecycle argument must PRODUCE it, not assume it universally.
+
+`ForcedRootPhase` (8024d764, L2R6Phase) makes the separate phase premise precise: the assigned anchor is the ending own-child Remove of a globally located extended actor core, after a located lifecycle of that actor; key seed/barrier linkage uses a real AttachedRelease. Pre-lifecycle removal of an initially retired child is explicitly excluded. General producer **produceForcedRootPhases OPEN**; no new phase-fixture producer was within D12 cap.
+
+
 The front predicate cannot just quantify over OInsert. RootOrchestrationStep also classifies root Retire/Remove. Associate every root action with its actual birth GENERATION through the accepted scanner/origin correspondence; raw-name equality is insufficient after reuse. That association is not implemented by the root-insert catalog.
 
 ```idris
@@ -611,7 +627,10 @@ record FrontNormalClassification
 
 ## T2.4 Bundle-placement linkage and selector projection
 
-Do not redefine RootInputsBeforeLifecycle to mean 'zero gap'. Replace its old unqualified use by front-normal classification plus trace-authenticated assignment/placement. Proposed field extensions to the Tier-1 availability-aware CanonicalInputPlacement (all referenced connectors here remain UNCHECKED):
+**PARTIALLY CHECKED — L2R6Anchors/PlacementFixtures.** `placedRootsAt` (84b31a51) computes the complete same-anchor catalog in order. `PlacedBundle` (77fcf3a6) ties its equality to the catalog of ONE actual OrderedForcedRootBundle, with its offset exactly at release-ending anchor after the actor core. `placementDistanceFixtures` (6a7d0ada) literally uses L2R3 c12CatalogR/barrierCatalogR, not reconstructed dependent-record equalities; inherited offset equations are the L2R4 catalog anchors4. Both concrete connectors close. GENERAL PlacedBundle production and FrontNormal+NeverRetired+placed bundles→inter-block AttachedNormalForm remain OPEN: generation/forcing correspondence, all-occurrence root-control exclusion, actual region embedding and catalog-member→bundle-occurrence decoding are not produced. L2R6's residual fixture NF fields merely reuse the exact inherited EMPTY-gap proofs; they do not close this general connector or selector zero-gap.
+
+
+Do not redefine RootInputsBeforeLifecycle to mean 'zero gap'. Replace its old unqualified use by front-normal classification plus trace-authenticated assignment/placement. Proposed field extensions to the Tier-1 availability-aware CanonicalInputPlacement (this original L2R5 field fragment remains UNCOMPILED; partial L2R6 counterparts are itemized above):
 
 ```idris
   -- Existing original/trace indices and all Tier-1 clauses retained.
@@ -651,6 +670,17 @@ Additional proposed selector input shape, separate from CanonicalInputPlacement 
 This is precisely the missing all-occurrence assignment obligation, not a produced field in L2R5. It must follow from front-normal form, non-insert-root disposition, actual placed bundles and authenticated gap embedding; it cannot be justified by C8's raw catalog alone. Then use unchanged L2R3 `attachedZeroGapInNormalForm` with residual-head coverage, physical/offset equations, AttachedNormalForm and UNIVERSAL interval separation. L2R4 discharges those premises only for the two specified fixture gaps. No general selector zero-gap theorem closes here.
 
 ## Iteration type/measure status
+
+**L2R6 status: concrete iteration CLOSED; GENERAL TYPES ONLY.** `AdmittedCrossing` (2e60fc22) names foreign lifecycle and foreign own-child Insert/Retire/Remove shapes at actual source states. `AdmittedDistanceMove` (1fef241c) jointly owns located adjacency, exact full action-word interchange, trace-forcing, both declaration-free current cuts, observed exact-one total distance and RegistryExtensional endpoints. `iterationFixtures` (bc32a5a3) produces three real native moves (R over Begin2; then R/S over Begin2 in order, including actual S suffix replay). `fixtureIterations` (21df2ce5) closes actual six-edge 1→0 and seven-edge 2→1→0 chains on one-origin middle trails and applies `iterationEndpoint` (a4be84aa). No Finish2 suffix is added. Full-word adjacency is not advertised as a proof of frozen SameExternalOrchestration.
+
+Checked obligation types in **L2R6IterationObligations**:
+- `GeneralAdmittedMoveExistence` (84b38628): valid initial registry + FrontNormal + NeverRetired + all genuine ForcedRootPhase witnesses; selected authentic forced catalog root at positive distance; all earlier forced roots placed. Result owns a native selected-root adjacent move and transported front/control/phase invariants. Producer **produceAdmittedDistanceMove OPEN**.
+- `GeneralDistanceIteration` (98c51dd6): same valid/front/control/phase input and `Accessible LT (totalDistance nameEq keyEq trail)` → `PhaseIterationResult` (52c83a64), owning actual output trace, finite DistanceIteration, zero distance, RegistryExtensional endpoint and invariants. Producer **normalizePhaseDistance OPEN**, no assumed per-step oracle.
+
+The phase premise is necessary: an initially retired child may be removed before any lifecycle, followed by a non-forced front input and a key-forced input. Unrestricted front/never alone does not justify the old target or crossing that earlier root input. D9's floor preserves external order; phase additionally authenticates the intended actor core. Neither premise is silently declared true for all traces.
+
+General move existence, all-kind native alternate applicability (including Insert/Insert), extensional replay and stable target/phase transport are unresolved. The two-observed-Dec insertion endpoint algebra remains L2R5 capital, not a newly produced native Insert/Insert square; no applicability attempt was made within D12 cap. Terminal earliest, general output placed/NF and zero⇔NF remain OPEN. The following older undefined normalizeAttached fragment is historical L2R5 proposal text, not the checked L2R6 type above.
+
 
 There is **NO compiled iteration theorem** in L2R5. Proposed obligation shape, not a declaration or an assumed callback:
 
@@ -706,4 +736,4 @@ Before owner-signed production change: refresh the import/signature inventory at
 
 ## Review/owner decision
 
-Tier 1 is proposed exact syntax backed by the cited variant declarations, not a fresh CP3 PASS. Tier 2 remains a design/specification debt. Do not sign this as a complete production unfreeze until native normalizer existence/transport, trace-linked classification/assignment, lifecycle replay, full front-normal/placed-gap coverage and general selector zero-gap are resolved or the owner explicitly narrows what the production specification promises. No frozen theorem or conclusion is silently weakened in this draft.
+Tier 1 is proposed exact syntax backed by the cited variant declarations, not a fresh CP3 PASS. Tier 2 remains PARTIALLY CHECKED with the exact L2R6 limits above; concrete classifier/anchor/placement/front observations and iteration instances are not the missing general producer proofs. Do not sign this as a complete production unfreeze until native normalizer existence/transport, trace-linked classification/assignment, lifecycle replay, full front-normal/placed-gap coverage and general selector zero-gap are resolved or the owner explicitly narrows what the production specification promises. No frozen theorem or conclusion is silently weakened in this draft.

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Archive a completed shift's exact invocation records without invoking Idris.
-Usage: python3 -I research-tests/run-l2r6-archive.py L2R6 769d332d FINAL_HEAD
+Usage: python3 -I research-tests/run-l2r6-archive.py L2R6 c09c0da2 FINAL_HEAD
 matchingSourceCommits lists baseline/change commits whose target bytes match;
 it is not a claim that every matching commit was made immediately after this run.
 """
@@ -41,7 +41,7 @@ for r in records:
     assert (OUT/(r['unit']+'.log')).read_text() == r['transcript']
     for extra in r.get('bundleSources', []):
         assert sha((OUT/extra['sourceFile']).read_bytes()) == extra['sourceSHA256']
-    assert r['path'].startswith('research-tests/O6-L2R6-Sources/') or (r['unit']=='V0' and r['path']=='research-tests/O6-L2R4-Sources/DGamma/L2R4AnchorMeasure.idr'), 'Lane-owned or exact bootstrap target only'
+    assert r['path'].startswith('research-tests/O6-L2R6-Sources/') or (r['unit']=='V0' and r['path']=='research-tests/O6-L2R5-Sources/DGamma/L2R5RootCatalog.idr'), 'Lane-owned or exact bootstrap target only'
     target = r['path']
     if target not in commits:
         candidates = [start]+git('log','--format=%H',start+'..'+end,'--',target).decode().splitlines()
@@ -70,7 +70,7 @@ def declared(data):
     return set(re.findall(r'^(?:[01] )?([A-Za-z_]\w*)\s*:',text,re.M)+re.findall(r'^(?:record|data)\s+([A-Za-z_]\w*)',text,re.M))
 groups={}
 for r in records:
-    if re.fullmatch(r'[ABC]\d+-[1-3]',r['unit']):
+    if re.fullmatch(r'[ABCD]\d+-[1-3]',r['unit']):
         groups.setdefault(r['unit'].rsplit('-',1)[0],[]).append(r)
 micro=[]
 for unit, attempts in groups.items():
@@ -83,12 +83,9 @@ for unit, attempts in groups.items():
         names=sorted(declared((OUT/(last['unit']+'.source')).read_bytes())-declared(old))
         assert len(names)==1
     else:
-        assert unit in {'A11','B5'} and len(attempts)==3
-        stopped={'A11':'twoHeadLookupRightObserved','B5':'providerHeadObservation'}[unit]
-        assert not (ROOT/last['path']).exists() or stopped not in declared((ROOT/last['path']).read_bytes())
-        names=[stopped+' (REVERTED, NOT retained)']
+        raise AssertionError('Unexpected exhausted micro-unit: requires an explicit stop/revert audit')
     micro.append(dict(unit=unit,status='retained PASS' if successes else 'EXHAUSTED 3/3; fully reverted',declarations=names,path=last['path'],commit=receipt['resultingCommitHash'] if receipt else None,attempts=[{k:r[k] for k in ['unit','passed','fresh','exit','sourceSHA256','maxSampleRSSKiB','seconds']} for r in attempts]))
-(ROOT/'research-tests/O6-L2R6-MICRO-UNIT-LEDGER.json').write_text(json.dumps(dict(base=start,sourceBoundary=end,caps={'A':20,'B':16,'C':10,'D':6},attemptedSlots={'A':20,'B':5,'C':10},retainedDeclarations=33,unusedSlots={'B':list(range(6,17))},unusedAuthority='Supervisor-ratified provider UNIT STOP after L2R4 B7 and L2R6 B5; no deletion-square relabeling',records=micro),indent=2)+'\n')
+(ROOT/'research-tests/O6-L2R6-MICRO-UNIT-LEDGER.json').write_text(json.dumps(dict(base=start,sourceBoundary=end,caps={'A':14,'B':14,'C':10,'D':12,'E':3},attemptedSlots={'A':14,'B':14,'C':10,'D':12},retainedDeclarations=50,unusedSlots={},status='All ordered proof units capped; no exhausted 3/3 unit; B13 passed on attempt3. D9 is the sole explicitly gated body-only companion.',records=micro),indent=2)+'\n')
 archive = ROOT/('research-tests/O6-'+shift+publication+'-COMPILER-EVIDENCE.tar.gz')
 assert not archive.exists(), 'Published evidence archives are immutable; use a new gated publication name'
 with tarfile.open(archive,'w:gz') as tar:
@@ -115,7 +112,7 @@ ledger = dict(monitorQualifications=json.loads((OUT/'monitor-qualifications.json
     rawPassMeaning='passedCount preserves the runner outcome; qualifiedPassedCount excludes explicitly invalidated validation invocations without rewriting their exact records.',
     commitReceipts=receipts, commitReceiptStatus='recorded at commit' if receipts else 'not recorded; historical guarded commits are audit-asserted, not receipt-authenticated', shift=shift,generatedUTC=datetime.datetime.now(datetime.timezone.utc).isoformat(),startCommit=git('rev-parse',start).decode().strip(),
     endCommit=git('rev-parse',end).decode().strip(),recordCount=len(normalized),passedCount=sum(r['passed'] for r in records),
-    unitCaps={'A':20, 'B':16, 'C':10, 'D':6},
+    unitCaps={'A':14, 'B':14, 'C':10, 'D':12, 'E':3},
     publicationBoundary='The archive contains all source-commit receipts. Its own publication and later report-only commit receipts cannot be inside the archive without recursion; the independent verifier authenticates those from the append-only live receipt ledger.',
     failedCount=sum(not r['passed'] for r in records),interruptedCount=sum(r['interrupted'] for r in records),
     evidenceArchive=archive.name,evidenceArchiveSHA256=sha(archive.read_bytes()),

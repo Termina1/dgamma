@@ -7,7 +7,8 @@ import datetime, hashlib, json, pathlib, re, subprocess, sys
 ROOT = pathlib.Path('/Users/vyacheslavshebanov/Work/dgamma-lane2')
 OUT = pathlib.Path('/tmp/dgamma-l2r6')
 BASE = 'c09c0da2'
-REPAIRS = {}
+REPAIR = json.loads((ROOT/'research-tests/O6-L2R6-COMMENT-REPAIR.json').read_text())
+REPAIRS = {REPAIR['path']: (REPAIR['old'].encode(), REPAIR['new'].encode())}
 
 def git(*args):
  return subprocess.check_output(['git', *args], cwd=ROOT)
@@ -23,13 +24,16 @@ assert sha((ROOT/record['path']).read_bytes()) == record['sourceSHA256']
 assert paths and len(paths) == len(set(paths))
 repair_checks = []
 for path in paths:
- assert path == 'research-tests/O6-L2R5-CP3-DIFF-DRAFT.md' or path in REPAIRS or (path.startswith(('research-tests/O6-L2R6-', 'research-tests/run-l2r6-')) and not path.endswith('.idr'))
+ assert path in {'research-tests/O6-L2R5-CP3-DIFF-DRAFT.md','research-tests/O6-L2R5-CP3-REHOME-MANIFEST.json','research-tests/run-l2r5-draft.py'} or path in REPAIRS or (path.startswith(('research-tests/O6-L2R6-', 'research-tests/run-l2r6-')) and not path.endswith('.idr'))
  assert (ROOT/path).is_file() and (ROOT/path).stat().st_size > 0
  if path in REPAIRS:
-  before = git('show', BASE+':'+path)
+  before = git('show', 'HEAD:'+path)
   old, new = REPAIRS[path]
   assert before.count(old) == 1 and (ROOT/path).read_bytes() == before.replace(old, new)
-  repair_checks.append(dict(path=path, baseSHA256=sha(before), repairedSHA256=sha((ROOT/path).read_bytes()), authority='Explicit supervisor docs-only repair ruling; exact byte replacement'))
+  currentHash=sha((ROOT/path).read_bytes())
+  validations=[json.loads(line) for line in (OUT/'ledger.jsonl').read_text().splitlines()]
+  assert any(r['unit'].startswith('V') and r['path']==path and r['passed'] and r['fresh'] and r['sourceSHA256']==currentHash for r in validations), 'Comment repair needs exact final source fresh PASS'
+  repair_checks.append(dict(path=path, beforeSHA256=sha(before), repairedSHA256=currentHash, authority=REPAIR['authority']))
 assert not git('diff', '--cached', '--name-only').strip()
 dirty = git('diff', '--name-only').decode().splitlines()
 assert set(dirty) <= set(paths), 'Unlisted tracked changes'

@@ -1,0 +1,103 @@
+[
+  {
+    "unit": "V10",
+    "path": "research-tests/O6-L2R6-Sources/DGamma/L2R6DistanceDecrease.idr",
+    "sourceHash": "1fdaad4f33083f6c8bcdb93678f96b4f558f0e1cb67abd1321b7453cc545e141",
+    "dependsOn": []
+  },
+  {
+    "unit": "V11",
+    "path": "research-tests/O6-L2R6-Sources/DGamma/L2R6ForcedScan.idr",
+    "sourceHash": "d80dc960ccad90e2d60cd05c217505618331e91a362867c719c471a8d69c4b73",
+    "dependsOn": []
+  },
+  {
+    "unit": "V12",
+    "path": "research-tests/O6-L2R6-Sources/DGamma/L2R6Anchors.idr",
+    "sourceHash": "2a3ab1c54d8a5972ace411f4e45bca6e98dc68a3a9fd4d958b489b7c05dcd6fa",
+    "dependsOn": [
+      "research-tests/O6-L2R6-Sources/DGamma/L2R6ForcedScan.idr"
+    ],
+    "authorizedPendingCommentOnlyRepair": true,
+    "beforeCommentSHA256": "38ed3b3445e8fd4b1b474a84304334f768349733def1f4984530025ebbbf7777"
+  },
+  {
+    "unit": "V13",
+    "path": "research-tests/O6-L2R6-Sources/DGamma/L2R6ForcedFixtures.idr",
+    "sourceHash": "fb00e5e0be73260406bb54f4adc8964ed9c91f4bb95bf712890052a561f4c6b9",
+    "dependsOn": [
+      "research-tests/O6-L2R6-Sources/DGamma/L2R6ForcedScan.idr"
+    ]
+  },
+  {
+    "unit": "V14",
+    "path": "research-tests/O6-L2R6-Sources/DGamma/L2R6FrontNormal.idr",
+    "sourceHash": "16071e78f9a8ca1c57c3af935426efc8a4ae9ecff8a41845bc23e9b6b273ce3c",
+    "dependsOn": [
+      "research-tests/O6-L2R6-Sources/DGamma/L2R6Anchors.idr",
+      "research-tests/O6-L2R6-Sources/DGamma/L2R6ForcedScan.idr"
+    ]
+  },
+  {
+    "unit": "V15",
+    "path": "research-tests/O6-L2R6-Sources/DGamma/L2R6PlacementFixtures.idr",
+    "sourceHash": "348c0e9b8b2d8524c2dbac51141673d32622d3c96ee5d9fe3266c8098aecc5e5",
+    "dependsOn": [
+      "research-tests/O6-L2R6-Sources/DGamma/L2R6Anchors.idr",
+      "research-tests/O6-L2R6-Sources/DGamma/L2R6ForcedScan.idr"
+    ]
+  },
+  {
+    "unit": "V16",
+    "path": "research-tests/O6-L2R6-Sources/DGamma/L2R6FrontFixtures.idr",
+    "sourceHash": "de2775d91813617ce581f5e7748e00b6be0755fa421f13ac3a0187c39a285757",
+    "dependsOn": [
+      "research-tests/O6-L2R6-Sources/DGamma/L2R6Anchors.idr",
+      "research-tests/O6-L2R6-Sources/DGamma/L2R6ForcedScan.idr",
+      "research-tests/O6-L2R6-Sources/DGamma/L2R6FrontNormal.idr"
+    ]
+  },
+  {
+    "unit": "V17",
+    "path": "research-tests/O6-L2R6-Sources/DGamma/L2R6Iteration.idr",
+    "sourceHash": "aca874d4941588aff84af38db57a9eabfaced1a0135cec5aacd83e4839b9e922",
+    "dependsOn": [
+      "research-tests/O6-L2R6-Sources/DGamma/L2R6Anchors.idr",
+      "research-tests/O6-L2R6-Sources/DGamma/L2R6ForcedScan.idr",
+      "research-tests/O6-L2R6-Sources/DGamma/L2R6FrontNormal.idr"
+    ]
+  },
+  {
+    "unit": "V18",
+    "path": "research-tests/O6-L2R6-Sources/DGamma/L2R6Phase.idr",
+    "sourceHash": "c4e85183062602ef432dca4f555ac023c57345f79ad7b42dccdf849c56dade79",
+    "dependsOn": [
+      "research-tests/O6-L2R6-Sources/DGamma/L2R6Anchors.idr",
+      "research-tests/O6-L2R6-Sources/DGamma/L2R6ForcedScan.idr",
+      "research-tests/O6-L2R6-Sources/DGamma/L2R6PlacementFixtures.idr"
+    ]
+  },
+  {
+    "unit": "V19",
+    "path": "research-tests/O6-L2R6-Sources/DGamma/L2R6IterationFixtures.idr",
+    "sourceHash": "f4670387cd88ec4215a2cb016447aba68283429c2607881eebcca69c9313afa4",
+    "dependsOn": [
+      "research-tests/O6-L2R6-Sources/DGamma/L2R6Anchors.idr",
+      "research-tests/O6-L2R6-Sources/DGamma/L2R6ForcedScan.idr",
+      "research-tests/O6-L2R6-Sources/DGamma/L2R6FrontNormal.idr",
+      "research-tests/O6-L2R6-Sources/DGamma/L2R6Iteration.idr"
+    ]
+  },
+  {
+    "unit": "V20",
+    "path": "research-tests/O6-L2R6-Sources/DGamma/L2R6IterationObligations.idr",
+    "sourceHash": "784e43e7b616b923599500881194539026a86d63b21b7b5eff406be82cf46424",
+    "dependsOn": [
+      "research-tests/O6-L2R6-Sources/DGamma/L2R6Anchors.idr",
+      "research-tests/O6-L2R6-Sources/DGamma/L2R6ForcedScan.idr",
+      "research-tests/O6-L2R6-Sources/DGamma/L2R6FrontNormal.idr",
+      "research-tests/O6-L2R6-Sources/DGamma/L2R6Iteration.idr",
+      "research-tests/O6-L2R6-Sources/DGamma/L2R6Phase.idr"
+    ]
+  }
+]

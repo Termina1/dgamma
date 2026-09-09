@@ -23,6 +23,8 @@ def rename(s):
  return s
 placement=cut('research/DGamma/CP5AvailabilityAwarePlacement.idr','public export\nrootDeclaredProvisionsFree')
 for a,b in [('MkAvailabilityAwareCanonicalInputPlacement','MkCanonicalInputPlacement'),('AvailabilityAwareCanonicalInputPlacement','CanonicalInputPlacement'),('availableRootGenerationFresh','rootGenerationFresh'),('availableChildGenerationBeforeOwnLifecycle','childGenerationBeforeOwnLifecycle')]: placement=placement.replace(a,b)
+# L2R6 reviewer P2: serialize every renaming actually applied above.
+mapping.update(dict([('MkAvailabilityAwareCanonicalInputPlacement', 'MkCanonicalInputPlacement'), ('AvailabilityAwareCanonicalInputPlacement', 'CanonicalInputPlacement'), ('availableRootGenerationFresh', 'rootGenerationFresh'), ('availableChildGenerationBeforeOwnLifecycle', 'childGenerationBeforeOwnLifecycle')]))
 closure=cut('research-tests/O6-L2R3-Sources/DGamma/L2R3ForcedClosure.idr','public export\ndata ForcedRootInput')
 coverage=rename(cut('research-tests/O6-L2R3-Sources/DGamma/L2R3AttachedGap.idr','public export\nrecord AttachedBundleOccurrence','||| A nonempty gap'))
 moved='\n'.join(old.splitlines()[2092:2120])+'\n'
