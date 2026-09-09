@@ -46,3 +46,10 @@ restoredCorePacket = MkCoreNativePacket
   (restoredEdge13 contiguityRestoredLast)
   (restoredEdge14 contiguityRestoredLast)
   (restoredEdge15 contiguityRestoredLast) Refl Refl
+
+||| Executable original core instance of the opaque assembler. All native
+||| edges, actor grammar and exact core word/count are inherited from its
+||| checked simultaneous construction, not assembled from grammar assumptions.
+public export
+originalCoreNative : CoreNativeRun contiguityState
+originalCoreNative = assembleCoreNative contiguityState originalCorePacket
