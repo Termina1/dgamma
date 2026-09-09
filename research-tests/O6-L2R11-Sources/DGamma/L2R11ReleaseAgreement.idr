@@ -81,3 +81,25 @@ export
 lookupOrdinalsAgrees nameEq keyEq component child source Nothing equation = Refl
 lookupOrdinalsAgrees nameEq keyEq component child source (Just fiber) equation =
   parentOrdinalsAgrees keyEq component fiber (fiberParent fiber) Refl
+
+||| Exhaustive per-action agreement over the whole component declaration.
+||| The Remove branch supplies the native lookup observation itself.
+export
+0 actionOrdinalsAgrees : {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (component : Component key value world error) ->
+  (source : SystemState name key value world error) ->
+  (action : Action name key value world error) ->
+  ordinalAtAction nameEq keyEq component source action =
+    (if ownChildReleaseStep nameEq keyEq component source action then [0] else [])
+actionOrdinalsAgrees nameEq keyEq component source (OInsert child parent inserted) = Refl
+actionOrdinalsAgrees nameEq keyEq component source (ORetire child) = Refl
+actionOrdinalsAgrees {name} {key} {world} {error} {value}
+  nameEq keyEq component source (ORemove child) =
+  lookupOrdinalsAgrees nameEq keyEq component child source
+    (lookupFiber {name} {key} {value} {world} {error} @{nameEq} child (registry source)) Refl
+actionOrdinalsAgrees nameEq keyEq component source (LBegin actor) = Refl
+actionOrdinalsAgrees nameEq keyEq component source (LAdvance actor) = Refl
+actionOrdinalsAgrees nameEq keyEq component source (LDivert actor) = Refl
+actionOrdinalsAgrees nameEq keyEq component source (LUnload actor) = Refl
+actionOrdinalsAgrees nameEq keyEq component source (LLeave actor) = Refl
