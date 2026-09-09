@@ -102,3 +102,23 @@ releaseThroughHead step rest (actor ** release) = (actor ** MkAttachedRelease
     (cong (MoreTransitions step) (actionOccurrenceDecomposition (releaseOccurrence release))))
   (releaseFound release) (releaseParent release) (sharedProvision release)
   (childDeclares release) (rootDeclares release))
+
+||| GENERAL proof-carrying release enumeration over the isElem release scan;
+||| agreement with scanReleaseOrdinals open (releaseScanAgrees). Enumerates
+||| the entire native trail; compare filtered ordinals below a cut to the old
+||| bounded scan. Actual occurrences, own-child parents, and shared keys are
+||| constructed by structural trail recursion, never supplied as a decoder.
+||| Quantity zero: constructive proof extraction, not a runtime scan export.
+public export
+0 scanObservedReleases : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, finalState : SystemState name key value world error} ->
+  {trace : Transitions first finalState} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (component : Component key value world error) ->
+  AvailabilityTrace name key world error value trace ->
+  List (actor : name ** AttachedRelease name key world error value nameEq actor trace component)
+scanObservedReleases nameEq keyEq component (AvailabilityEnd state) = []
+scanObservedReleases nameEq keyEq component (AvailabilityStep source (Fired ne ke action tag checked) rest later) =
+  releaseAtAction nameEq keyEq component (Fired ne ke action tag checked) rest action Refl ++
+  map (releaseThroughHead (Fired ne ke action tag checked) rest)
+    (scanObservedReleases nameEq keyEq component later)
