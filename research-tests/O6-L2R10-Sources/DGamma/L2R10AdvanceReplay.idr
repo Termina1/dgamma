@@ -325,3 +325,41 @@ advanceAtRemaining {name} {key} {world} {error} {value}
   nameEq keyEq child parent actor childFiber actorFiber ambient source frame distinct (step :: rest) accumulator view lifeEquation =
   advanceAtCapability nameEq keyEq child parent actor childFiber actorFiber ambient source frame distinct step rest accumulator view lifeEquation
     (resolveCommittedValues {name} {key} {value} {world} {error} @{nameEq} @{keyEq} (dependencies (componentDependencies (fiberComponent actorFiber))) view source) Refl
+
+||| Single native lifecycle elimination. Non-reloading actions remain
+||| undefined on BOTH sides; reloading is handled by the observed pipeline.
+export
+0 advanceAtLifecycle :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (child, parent, actor : name) ->
+  (childFiber, actorFiber : Fiber name key value world error) ->
+  (ambient : world) -> (source : Registry name key value world error) ->
+  (frame : RetirementProviderFrame name key world error value nameEq keyEq child parent actor childFiber actorFiber source) ->
+  (0 distinct : Not (child = actor)) ->
+  (lifecycle : Lifecycle key value world error name (dependencies (componentDependencies (fiberComponent actorFiber))) (componentProvisions (fiberComponent actorFiber))) ->
+  (0 lifeEquation : fiberLifecycle actorFiber = lifecycle) ->
+  RetirementAdvanceEquation nameEq keyEq child actor childFiber ambient source
+advanceAtLifecycle {name} {key} {world} {error} {value}
+  nameEq keyEq child parent actor childFiber actorFiber ambient source frame distinct (Inactive outcome) lifeEquation =
+  rewrite lookupReplaceOther {key = name} {value = FiberAt name key value world error} @{nameEq}
+    actor child (\same => distinct (sym same)) (retireFiber childFiber) source in
+  rewrite frameActorFound frame in
+  rewrite lifeEquation in
+  Refl
+advanceAtLifecycle {name} {key} {world} {error} {value}
+  nameEq keyEq child parent actor childFiber actorFiber ambient source frame distinct (Active accumulator view) lifeEquation =
+  rewrite lookupReplaceOther {key = name} {value = FiberAt name key value world error} @{nameEq}
+    actor child (\same => distinct (sym same)) (retireFiber childFiber) source in
+  rewrite frameActorFound frame in
+  rewrite lifeEquation in
+  Refl
+advanceAtLifecycle {name} {key} {world} {error} {value}
+  nameEq keyEq child parent actor childFiber actorFiber ambient source frame distinct (Unloading accumulator view outcome) lifeEquation =
+  rewrite lookupReplaceOther {key = name} {value = FiberAt name key value world error} @{nameEq}
+    actor child (\same => distinct (sym same)) (retireFiber childFiber) source in
+  rewrite frameActorFound frame in
+  rewrite lifeEquation in
+  Refl
+advanceAtLifecycle {name} {key} {world} {error} {value}
+  nameEq keyEq child parent actor childFiber actorFiber ambient source frame distinct (Reloading remaining accumulator view) lifeEquation =
+  advanceAtRemaining nameEq keyEq child parent actor childFiber actorFiber ambient source frame distinct remaining accumulator view lifeEquation
