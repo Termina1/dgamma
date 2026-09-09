@@ -4,6 +4,11 @@ import DGamma.Calculus
 import DGamma.Metatheory
 import DGamma.CP3
 import DGamma.CP5ConfluenceLocalDiamondSpike
+import DGamma.CP5ConfluenceCanonicalSortSpike
+import DGamma.CP5ConfluenceRenamingCompositionSpike
+import DGamma.CP5O20SupportedBirthBridgeSpike
+import DGamma.CP5UniqueRawNameInsertions
+import DGamma.CP5GeneratedOrchestrationMatched
 import Decidable.Equality
 
 %default total
@@ -76,3 +81,26 @@ o20GeneratedOrdinalsAttached leftReplay rightReplay original leftBirth rightBirt
     (registrationGeneration (replayGeneratedRegistrationOrigin rightReplay rightBirth))
     (registrationGeneration leftBirth) (registrationGeneration rightBirth)
     (replayGeneratedOrdinalPreserved leftReplay leftBirth) (replayGeneratedOrdinalPreserved rightReplay rightBirth) matched
+
+||| One fixed-name generated birth attachment with BOTH original-origin and
+||| physical replay-stamp equations. All three proof fields are erased.
+||| This record does not contain a whole paired execution or an endpoint cut.
+public export
+record O20AttachedGeneratedBirth
+  (name, key, world, error : Type) (value : key -> Type)
+  {leftFirst, leftFinal, rightFirst, rightFinal, leftNowFirst, leftNowFinal, rightNowFirst, rightNowFinal : SystemState name key value world error}
+  {left : Transitions leftFirst leftFinal} {right : Transitions rightFirst rightFinal}
+  {leftNow : Transitions leftNowFirst leftNowFinal} {rightNow : Transitions rightNowFirst rightNowFinal}
+  (leftReplay : ActionRegistrationReplayCorrespondence name key world error value left leftNow)
+  (rightReplay : ActionRegistrationReplayCorrespondence name key world error value right rightNow)
+  (original : RegistrationGenerationBijection name) (renaming : NameBijection name)
+  (child, parent : name) (component : Component key value world error)
+  (leftBirth : LocatedGeneratedRegistration child parent component leftNow) where
+  constructor MkO20AttachedGeneratedBirth
+  0 attachedRightBirth : LocatedGeneratedRegistration (renameForward renaming child) (renameForward renaming parent) component rightNow
+  0 attachedOriginalEquation :
+    (generationForward original (registrationGeneration (replayGeneratedRegistrationOrigin leftReplay leftBirth)) =
+      registrationGeneration (replayGeneratedRegistrationOrigin rightReplay attachedRightBirth))
+  0 attachedPhysicalEquation :
+    (generationForward (o20ReplayOrdinalBijection (replayGenerationRenaming leftReplay) original (replayGenerationRenaming rightReplay))
+      (registrationGeneration leftBirth) = registrationGeneration attachedRightBirth)
