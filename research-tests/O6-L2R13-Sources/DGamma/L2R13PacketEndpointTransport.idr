@@ -48,3 +48,17 @@ record PacketWholeEndpointTransport
     (fst fixtureDictionaries) lateRootState (newStates 5)
   0 suffixNativeFrames : NativeSuffixFrames (fst fixtureDictionaries) (snd fixtureDictionaries)
     oldRemainder (passageNewSuffix passage)
+
+||| WHOLE endpoints derived from the LOCAL core/root square and native
+||| per-edge suffix transport. Works over arbitrary packet state families and
+||| any finite Root/Retire suffix; neither whole endpoint is assumed equal.
+export
+0 packetWholeEndpointsFromLocalSquare :
+  (oldStates, newStates : Nat -> SystemState Nat Bool (\key => Unit) Unit String) ->
+  {initial, oldFinal, newFinal : SystemState Nat Bool (\key => Unit) Unit String} ->
+  (passage : PacketPassage oldStates newStates initial oldFinal newFinal) ->
+  PacketWholeEndpointTransport oldStates newStates passage ->
+  RegistryExtensional Nat Bool Unit String (\key => Unit) (fst fixtureDictionaries) oldFinal newFinal
+packetWholeEndpointsFromLocalSquare oldStates newStates passage hypotheses =
+  nativeSuffixEndpoints (fst fixtureDictionaries) (snd fixtureDictionaries)
+    (suffixNativeFrames hypotheses) (localCoreRootSquare hypotheses)
