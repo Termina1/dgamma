@@ -43,3 +43,19 @@ export
   rootDistance nameEq keyEq trail 0 = 0
 rootDistanceAtZero nameEq keyEq trail False equation = rewrite equation in Refl
 rootDistanceAtZero nameEq keyEq trail True equation = rewrite equation in Refl
+
+||| A genuinely selected positive-distance root cannot occur at cut zero.
+||| The library anchor Bool is observed at this call site with its equation.
+export
+0 selectedBirthNotZero : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, finalState : SystemState name key value world error} ->
+  {trace : Transitions first finalState} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (trail : AvailabilityTrace name key world error value trace) ->
+  (cut : SelectedSquareCut name key world error value nameEq keyEq trail) ->
+  catalogOrdinal (cutEntry cut) = 0 -> Void
+selectedBirthNotZero nameEq keyEq trail cut equation =
+  SIsNotZ {x = positivePredecessor cut}
+    (trans (sym (selectedDistanceEquation cut))
+      (trans (cong (rootDistance nameEq keyEq trail) equation)
+        (rootDistanceAtZero nameEq keyEq trail (isJust (anchorOf nameEq keyEq trail 0)) Refl)))
