@@ -20,3 +20,14 @@ data DistanceSearch : {a : Type} -> (distance : a -> Nat) -> List a -> Type wher
     (0 member : Elem item items) -> (0 split : items = before ++ item :: after) ->
     (0 earlierZero : All (\earlier => distance earlier = 0) before) ->
     (0 positiveEquation : distance item = S predecessor) -> DistanceSearch distance items
+
+||| A verified zero head preserves the first positive result in the tail.
+||| Only the typed search result is eliminated; no inferred dependent view.
+public export
+distanceSearchThere : {a : Type} -> {distance : a -> Nat} -> {items : List a} ->
+  (head : a) -> (0 zero : distance head = 0) ->
+  DistanceSearch distance items -> DistanceSearch distance (head :: items)
+distanceSearchThere head zero (AllDistancesZero zeros) = AllDistancesZero (zero :: zeros)
+distanceSearchThere head zero (FoundFirstPositive item before after predecessor member split zeros equation) =
+  FoundFirstPositive item (head :: before) after predecessor (There member)
+    (cong (head ::) split) (zero :: zeros) equation
