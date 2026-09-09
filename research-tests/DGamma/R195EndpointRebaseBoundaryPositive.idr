@@ -7,9 +7,12 @@ import DGamma.CP3
 import DGamma.CP5O20AllNameSynchronizationSpike
 import DGamma.CP5O20HistoryNameTransportSpike
 import DGamma.CP5O20EndpointRebaseBoundarySpike
+import DGamma.CP5O20PairedRemovalSpike
 import DGamma.CP5ConfluenceRenamingCompositionSpike
 import DGamma.R45BareDiamondDisciplineCounterexamplePositive
 import DGamma.R193VestigialHistoryTransportPositive
+import DGamma.R192RemovedBirthCurrentNameProbe
+import DGamma.R178GeneratedOrchestrationFixtures
 
 %default total
 %unbound_implicits off
@@ -65,3 +68,13 @@ r195MismatchOwnsVestigialRemainder =
   o20DisagreementVestigial r45NameEq r45KeyEq r193HistoricalClosedTrace r193HistoricalClosedTrace
     identityRegistrationGenerationBijection r193HistoricalTree r193HistoricalCurrent 1 (MkRegistrationGeneration 1 2)
     (vestigialGenerationCurrent r193HistoricalVestigial) r193VestigialHistoryMismatch
+
+||| The native six-edge REMOVED child case supplies actual lookup absence,
+||| not a fabricated present vestigial packet. Its final state is the exact
+||| R192 checked Remove endpoint and the finite deletion theorem owns absence.
+export
+0 r195RemovedRemainderActuallyAbsent :
+  (lookupFiber {name = Nat} {key = R45Key} {value = R45Value} {world = Unit} {error = String} @{r45NameEq}
+    1 (registry r192RemovedBirthFinal) = Nothing)
+r195RemovedRemainderActuallyAbsent =
+  o20DeletedLookupAbsent r45NameEq 1 (registry r178RightFinal)
