@@ -42,15 +42,25 @@ def record_valid(r,data,log):
  assert r['targetMtimeTouch']['path']==str(ROOT/r['path']) and not r['bundleSources']
  assert not r['heavyLockAcquired'] and not r['heavyLockEvents']
  assert not r.get('declaredHeavy'), 'No heavy check declared this shift'
+ assert r.get('overlapTimestampsOnly') is True
  for p in r['separateCompilerObservations']:
-  if r.get('overlapTimestampsOnly'):
-   assert set(p)=={'firstObservedUTC','lastObservedUTC'}
-   assert r['start']<=p['firstObservedUTC']<=p['lastObservedUTC']<=r['end']
-  else:assert p['classification']!='lane2' and str(ROOT)+'/' not in p['command']
+  assert set(p)=={'firstObservedUTC','lastObservedUTC'}
+  assert r['start']<=p['firstObservedUTC']<=p['lastObservedUTC']<=r['end']
  guard=18
  if r['maxSampleRSSKiB']>guard*1024*1024:assert r['interrupted'] and not passed
  assert r['start']<=r['end']
  return passed
+
+def rstrip_validation_valid(prior, validation, before, after, authority):
+ assert prior['unit']=='B3-1' and validation['unit']=='V1'
+ assert authority['sourceAttempt']=='B3-1' and authority['validation']=='V1'
+ assert prior['path']==validation['path']==authority['path']
+ assert prior['passed'] and validation['passed'] and prior['end']<=validation['start']
+ assert before!=after and before.rstrip()+b'\n'==after
+ assert sha(before)==prior['sourceSHA256']==authority['beforeSHA256']
+ assert sha(after)==validation['sourceSHA256']==authority['afterSHA256']
+ assert decls(before)==decls(after)
+ return True
 
 def verify(use_archive=True):
  assert Path.cwd()==ROOT
@@ -82,11 +92,22 @@ def verify(use_archive=True):
    before=retained.get(r['path'],b'')
    assert len(decls(data)-decls(before))==1 and not decls(before)-decls(data)
    if r['passed']:retained[r['path']]=data
-  else:assert re.fullmatch(r'V\d+',unit)
+  else:
+   assert re.fullmatch(r'V\d+',unit)
+   if unit=='V1':
+    authority=json.loads(stored['B3-rstrip-authority.json'])
+    rstrip_validation_valid(byid['B3-1'],r,stored['B3-1.source'],data,authority)
+    assert retained[r['path']]==stored['B3-1.source']
+    retained[r['path']]=data
  successful=[r for r in receipts if r['event']=='GUARDED COMMIT']
  assert len(successful)==sum(r['passed'] for rows in groups.values() for r in rows)
  assert len({r['invocation'] for r in successful})==len(successful)
- assert {r['invocation'] for r in successful}=={r['unit'] for rows in groups.values() for r in rows if r['passed']}
+ assert {r.get('sourceAttempt',r['invocation']) for r in successful}=={r['unit'] for rows in groups.values() for r in rows if r['passed']}
+ for receipt in successful:
+  origin=receipt.get('sourceAttempt',receipt['invocation'])
+  assert origin==receipt['unit']+'-'+receipt['attempt']
+  if receipt['invocation']=='V1':assert origin=='B3-1' and receipt['rstripOnlyRevalidation']
+  else:assert origin==receipt['invocation'] and not receipt.get('rstripOnlyRevalidation',False)
  for rows in groups.values():assert [int(r['unit'].rsplit('-',1)[1]) for r in rows]==list(range(1,len(rows)+1))
  order=[(r['unit'][0],int(r['unit'].split('-')[0][1:])) for r in records if not r['unit'].startswith('V')]
  assert order==sorted(order), 'Ordered A then B then C then D'
@@ -114,8 +135,9 @@ def verify(use_archive=True):
  assert {k:sum(r['unit'].startswith(k) for r in successful) for k in CAPS}==closed['retainedByUnit']
  for path,data in retained.items():assert (ROOT/path).read_bytes()==data
  assert git('show',BASE+':'+BOOTSTRAP)==stored['V0.source']==(ROOT/BOOTSTRAP).read_bytes()
- for group in ['A7','C14']:
-  assert len(groups[group])==3 and not any(x['passed'] for x in groups[group])
+ stopped=[g for g,rows in groups.items() if len(rows)==3 and not any(x['passed'] for x in rows)]
+ assert stopped==closed['stoppedGroups']
+ assert git('branch','--show-current').decode().strip()=='cp5-thm73-lane-a8a10'
  changed=git('diff','--name-only',BASE,'HEAD').decode().splitlines()
  untracked=git('ls-files','--others','--exclude-standard').decode().splitlines()
  assert all(p.startswith((PREFIX,'research-tests/run-l2r12-')) for p in changed+untracked)
@@ -150,6 +172,7 @@ def verify(use_archive=True):
  overlaps=json.loads((ROOT/(PREFIX+'OVERLAP-LOG.json')).read_text())
  assert overlaps['timestampObservations']==[dict(invocation=r['unit'],firstObservedUTC=p.get('firstObservedUTC',r['start']),lastObservedUTC=p.get('lastObservedUTC',r['start'])) for r in records for p in r['separateCompilerObservations']]
  assert not git('diff','--cached','--name-only').strip()
+ assert not git('diff','--name-only','--',PREFIX+'Sources/').strip()
  processes=subprocess.check_output(['ps','-axo','pid,ppid,command'],text=True)
  assert not any('/idris2_app/idris2' in row and str(ROOT)+'/' in row and re.match(r'^\s*\d+\s+\d+\s+(?:\S*/)?(?:chez|scheme|chezscheme|idris2(?:\.so)?)(?:\s|$)',row) for row in processes.splitlines())
  return dict(passed=True,checkedHead=git('rev-parse','HEAD').decode().strip(),verifierSHA256=sha(Path(__file__).read_bytes()),archiveBoundaryHead=manifest['boundaryHead'],derivedLedgersVerified=True,records=len(records),proofAttempts=sum(len(v) for v in groups.values()),retainedDeclarations=len(successful),failedAttempts=[r['unit'] for r in records if not r['passed']],guardedSourceCommits=len(successful),guardedReceipts=len(receipts),finalValidations=len(retained),archiveFiles=len(stored),archiveSHA256=manifest['archiveSHA256'],noStagedFiles=True,ownCompilerRunning=False,humanMathematicalReview='parent-owned, not performed by this script',scope=closed['scope'])

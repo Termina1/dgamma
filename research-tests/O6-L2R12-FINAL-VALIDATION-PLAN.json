@@ -1,0 +1,98 @@
+{
+  "base": "a23a6d54",
+  "sourceBoundary": "1251199e64af8741df22fae24bf6979d91b29884",
+  "createdUTC": "2026-09-09T16:51:50.096804+00:00",
+  "authority": "L2R12 E2 committed plan before all final validations; target-only touch, light18GiB, no source edits, no companion bundles",
+  "validations": [
+    {
+      "unit": "V2",
+      "path": "research-tests/O6-L2R12-Sources/DGamma/L2R12PhaseContract.idr",
+      "sourceSHA256": "3a05bc80580eaa99566a995b87cd6cc53038dc1df4f46f0bc708b662706e7f89"
+    },
+    {
+      "unit": "V3",
+      "path": "research-tests/O6-L2R12-Sources/DGamma/L2R12PhaseAgreement.idr",
+      "sourceSHA256": "fd616682a5c4bac16ce35128fcdaf06e0b9ef1d17571baa7d6f257a9f97f3214"
+    },
+    {
+      "unit": "V4",
+      "path": "research-tests/O6-L2R12-Sources/DGamma/L2R12PhaseAccepted.idr",
+      "sourceSHA256": "0d504ff23e6c6cd11fab63ef9c5069d6e900e0c6ff832350bff330f2c0ca9b38"
+    },
+    {
+      "unit": "V5",
+      "path": "research-tests/O6-L2R12-Sources/DGamma/L2R12PhaseNativeFixtures.idr",
+      "sourceSHA256": "8a551333c51a002428ac1c846cf205fbffc53ee20f2dbe1ff762ab8122375324"
+    },
+    {
+      "unit": "V6",
+      "path": "research-tests/O6-L2R12-Sources/DGamma/L2R12AdvanceDispatch.idr",
+      "sourceSHA256": "287655298de4316c3a113e5168efd5dfb289f10718bcfc8cfff0061a52b55e62"
+    },
+    {
+      "unit": "V7",
+      "path": "research-tests/O6-L2R12-Sources/DGamma/L2R12KindDispatch.idr",
+      "sourceSHA256": "4929703d135f1657442874f1192a5192833e9da48b42b80dbc3fae65acb6ce4c"
+    },
+    {
+      "unit": "V8",
+      "path": "research-tests/O6-L2R12-Sources/DGamma/L2R12InventoryDomain.idr",
+      "sourceSHA256": "4b5b2883a90f329583d377fd176fb21e1aeecbc56052fd5388a664ba62d230ee"
+    },
+    {
+      "unit": "V9",
+      "path": "research-tests/O6-L2R12-Sources/DGamma/L2R12ClosedFold.idr",
+      "sourceSHA256": "4538668d179718bf17a92edf76193cb0b4b86dc7dff32e37038238215dba28be"
+    },
+    {
+      "unit": "V10",
+      "path": "research-tests/O6-L2R12-Sources/DGamma/L2R12SnapshotSuffix.idr",
+      "sourceSHA256": "2a70e7a1a29814f435af2a92d1a6807ff163ec5057ebc3e5953ab75539fd0aba"
+    },
+    {
+      "unit": "V11",
+      "path": "research-tests/O6-L2R12-Sources/DGamma/L2R12ValidWordFold.idr",
+      "sourceSHA256": "b3a5ee3937065fb99e8531d48d87922cbe0f56557ee76cb0c62dda81596c1d35"
+    },
+    {
+      "unit": "V12",
+      "path": "research-tests/O6-L2R12-Sources/DGamma/L2R12R191Segments.idr",
+      "sourceSHA256": "d7f81f76c0174cab917f6443d8b98d3a2168e805f0010661b36a0fca109b9520"
+    },
+    {
+      "unit": "V13",
+      "path": "research-tests/O6-L2R12-Sources/DGamma/L2R12R191Whole.idr",
+      "sourceSHA256": "6634eaafc61efa060f65f2e83c8c869fb0b4feb5678e753de34304dcd2999a26"
+    },
+    {
+      "unit": "V14",
+      "path": "research-tests/O6-L2R12-Sources/DGamma/L2R12SelectedAdjacency.idr",
+      "sourceSHA256": "fcf476dfdc22486dd363dfbd832fa1ce9756c737e71df3709ef050a30668b974"
+    },
+    {
+      "unit": "V15",
+      "path": "research-tests/O6-L2R12-Sources/DGamma/L2R12AlignedCut.idr",
+      "sourceSHA256": "4eb3c70e6ca8c757c6282fa14da13e799e8c7ac49ce317c0be42296fcbd0806b"
+    },
+    {
+      "unit": "V16",
+      "path": "research-tests/O6-L2R12-Sources/DGamma/L2R12ClassifierNative.idr",
+      "sourceSHA256": "fe0cddc7a5d8f9fa2935e12ceffb823c9accb12233411e49c78e1b15adb86b89"
+    },
+    {
+      "unit": "V17",
+      "path": "research-tests/O6-L2R12-Sources/DGamma/L2R12DistanceFrame.idr",
+      "sourceSHA256": "25d11ac0bd94255846beedbb0af9905aa0da1ea5aa899342dc00bb5685e1bf28"
+    },
+    {
+      "unit": "V18",
+      "path": "research-tests/O6-L2R12-Sources/DGamma/L2R12PacketContiguity.idr",
+      "sourceSHA256": "808cf7fcab8353593f8d815c27c1dd6b9440ae905722a7ecc2d33459b0292c79"
+    },
+    {
+      "unit": "V19",
+      "path": "research-tests/O6-L2R12-Sources/DGamma/L2R12PacketFixture.idr",
+      "sourceSHA256": "c71d28a5c90bdbeab5bbb0091bb78cdcbec2b5eab3284c02db5572d108f3431b"
+    }
+  ]
+}

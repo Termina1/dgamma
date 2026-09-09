@@ -26,6 +26,7 @@ cutoff = plan['validationCutoff'] if re.fullmatch(r'V\d+',unit) else plan['attem
 assert datetime.datetime.now(datetime.timezone.utc).isoformat() < cutoff
 snapshot = target.read_bytes()
 assert all(line.rstrip() == line for line in snapshot.decode().splitlines()), 'Trailing whitespace: rstrip-only and fresh retry required'
+assert snapshot == snapshot.rstrip()+b'\n', 'EOF whitespace: rstrip-only and fresh validation required'
 assert '%default total' in snapshot.decode()
 assert not re.search(r'\b(?:believe_me|assert_total|postulate|partial|with|let)\b|\?[A-Za-z_]', '\n'.join(line.split('--')[0] for line in snapshot.decode().splitlines() if not line.lstrip().startswith('|||'))), 'Forbidden source shape or hole'
 bundle=[]
@@ -73,12 +74,12 @@ bundle_records=[]
 for i,(extra,data) in enumerate(bundle):
  old=extra.stat().st_mtime_ns;extra.touch()
  sourcefile=unit+'.bundle-'+str(i)+'.source';(OUT/sourcefile).write_bytes(data)
- bundle_records.append(dict(path=str(extra.relative_to(ROOT)),sourceSHA256=hashlib.sha256(data).hexdigest(),sourceFile=sourcefile,targetMtimeTouch=dict(path=str(extra),oldMtimeNs=old,newMtimeNs=extra.stat().st_mtime_ns,authority='Explicit supervisor D9 phase + body-only target correction + unchanged fixture recheck ruling')))
+ bundle_records.append(dict(path=str(extra.relative_to(ROOT)),sourceSHA256=hashlib.sha256(data).hexdigest(),sourceFile=sourcefile,targetMtimeTouch=dict(path=str(extra),oldMtimeNs=old,newMtimeNs=extra.stat().st_mtime_ns,authority='No companion bundle is authorized in L2R12')))
 
 started=datetime.datetime.now(datetime.timezone.utc).isoformat();clock=time.monotonic()
 maximum=0;interrupted=False;source_mutation=False
-# E2 correction: only overlap timestamps are persisted. Earlier raw receipts
-# remain immutable and their extra process metadata is disclosed in the audit.
+# L2R12 persists ONLY overlap timestamps from its first invocation.
+# No foreign PID, RSS or command metadata is ever written to evidence.
 foreign={p['pid']:dict(firstObservedUTC=started,lastObservedUTC=started) for p in initial_procs if p['classification']!='lane2'}
 print('START',unit,started,' '.join(command),flush=True)
 try:
