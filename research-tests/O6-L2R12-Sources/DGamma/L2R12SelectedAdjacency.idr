@@ -59,3 +59,10 @@ selectedBirthNotZero nameEq keyEq trail cut equation =
     (trans (sym (selectedDistanceEquation cut))
       (trans (cong (rootDistance nameEq keyEq trail) equation)
         (rootDistanceAtZero nameEq keyEq trail (isJust (anchorOf nameEq keyEq trail 0)) Refl)))
+
+||| Exact successor/predecessor cancellation, with zero explicitly excluded.
+export
+0 successorPredPositive : (ordinal : Nat) -> (0 positive : ordinal = 0 -> Void) ->
+  S (pred ordinal) = ordinal
+successorPredPositive Z positive = absurd (positive Refl)
+successorPredPositive (S ordinal) positive = Refl
