@@ -4,10 +4,13 @@ import DGamma.Calculus
 import DGamma.Metatheory
 import DGamma.CP3
 import Prelude.Types
+import Prelude.Basics
+import Prelude.EqOrd
 import Data.List
 import Data.Maybe
 import Data.Nat
 import Decidable.Equality
+import Decidable.Decidable
 
 %default total
 %unbound_implicits off
@@ -74,3 +77,17 @@ export
 0 o20ActivationOrdinalSelf : (ordinal : Nat) -> (ordinal == ordinal = True)
 o20ActivationOrdinalSelf Z = Refl
 o20ActivationOrdinalSelf (S ordinal) = o20ActivationOrdinalSelf ordinal
+
+||| The executable compound activation key recognizes itself, with both
+||| generation and L-Begin ordinals retained. The decision view is fully typed.
+export
+0 o20ActivationKeySelf :
+  {name : Type} -> (nameEq : DecEq name) -> (activation : RegistrationActivation name) ->
+  (sameRegistrationActivation @{nameEq} activation activation = True)
+o20ActivationKeySelf nameEq (MkRegistrationActivation (MkRegistrationGeneration parent birthOrdinal) beginOrdinal) =
+  case the (decision : Dec (parent = parent) ** (decEq @{nameEq} parent parent = decision))
+    (decEq @{nameEq} parent parent ** Refl) of
+      (Yes Refl ** observed) => rewrite observed in
+        rewrite o20ActivationOrdinalSelf birthOrdinal in
+          rewrite o20ActivationOrdinalSelf beginOrdinal in Refl
+      (No different ** observed) => void (different Refl)
