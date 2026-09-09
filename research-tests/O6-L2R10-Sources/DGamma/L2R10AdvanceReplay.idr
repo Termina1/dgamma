@@ -126,3 +126,43 @@ advanceYieldAtRest {name} {key} {world} {error} {value}
   cong (\snapshot => Just (LIterTag, snapshot))
     (retirementUpdateSnapshot nameEq child actor childFiber
       (setFiberRuntime actorFiber (localTable localAfter) (Reloading (next :: later) (pushLocalUndo @{keyEq} (componentProvisions (fiberComponent actorFiber)) accumulator undo) view)) (localWorld localAfter) source distinct)
+
+||| Consume the explicitly observed native target Bool after a successful
+||| yield. False is LDivert; True delegates to the checked remaining-list step.
+export
+0 advanceYieldAtMatch :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (child, parent, actor : name) ->
+  (childFiber, actorFiber : Fiber name key value world error) ->
+  (ambient : world) -> (source : Registry name key value world error) ->
+  (frame : RetirementProviderFrame name key world error value nameEq keyEq child parent actor childFiber actorFiber source) ->
+  (0 distinct : Not (child = actor)) ->
+  (step : (StepEffect key value world error (dependencies (componentDependencies (fiberComponent actorFiber))) (componentProvisions (fiberComponent actorFiber)))) -> (rest : List (StepEffect key value world error (dependencies (componentDependencies (fiberComponent actorFiber))) (componentProvisions (fiberComponent actorFiber)))) ->
+  (accumulator : (LocalState key value world (componentProvisions (fiberComponent actorFiber))) -> (LocalState key value world (componentProvisions (fiberComponent actorFiber)))) -> (view : View name (dependencies (componentDependencies (fiberComponent actorFiber)))) ->
+  (0 lifeEquation : fiberLifecycle actorFiber = Reloading (step :: rest) accumulator view) ->
+  (capability : DepValues key value (dependencies (componentDependencies (fiberComponent actorFiber)))) ->
+  (0 capEquation : resolveCommittedValues {name} {key} {value} {world} {error} @{nameEq} @{keyEq} (dependencies (componentDependencies (fiberComponent actorFiber))) view source = Just capability) ->
+  (localAfter : (LocalState key value world (componentProvisions (fiberComponent actorFiber)))) -> (undo : (LocalState key value world (componentProvisions (fiberComponent actorFiber))) -> (LocalState key value world (componentProvisions (fiberComponent actorFiber)))) ->
+  (0 outcomeEquation : runStepEffect step capability (MkLocalState ambient (restrictOwnedPreservingOrder (componentProvisions (fiberComponent actorFiber)) (ownedValues (fiberTable actorFiber)))) = Right (localAfter, undo)) ->
+  (seen : Bool) -> (0 matchEquation : targetMatches @{nameEq} (targetFiber {name} {key} {value} {world} {error} @{nameEq} @{keyEq} actorFiber source) view = seen) ->
+  RetirementAdvanceEquation nameEq keyEq child actor childFiber ambient source
+advanceYieldAtMatch {name} {key} {world} {error} {value}
+  nameEq keyEq child parent actor childFiber actorFiber ambient source frame distinct
+  step rest accumulator view lifeEquation capability capEquation localAfter undo outcomeEquation False matchEquation =
+  rewrite lookupReplaceOther {key = name} {value = FiberAt name key value world error} @{nameEq}
+    actor child (\same => distinct (sym same)) (retireFiber childFiber) source in
+  rewrite frameActorFound frame in
+  rewrite lifeEquation in
+  rewrite resolveCommittedValuesRetireRegistry {name} {key} {value} {world} {error} nameEq keyEq (dependencies (componentDependencies (fiberComponent actorFiber))) view
+    child childFiber source (frameChildFound frame) in
+  rewrite capEquation in
+  rewrite outcomeEquation in
+  rewrite retirementTargetSame nameEq keyEq child parent actor childFiber actorFiber source frame in
+  rewrite matchEquation in
+  cong (\snapshot => Just (LDivertTag, snapshot))
+    (retirementUpdateSnapshot nameEq child actor childFiber
+      (setFiberRuntime actorFiber (localTable localAfter) (Unloading (pushLocalUndo @{keyEq} (componentProvisions (fiberComponent actorFiber)) accumulator undo) view Nothing)) (localWorld localAfter) source distinct)
+advanceYieldAtMatch {name} {key} {world} {error} {value}
+  nameEq keyEq child parent actor childFiber actorFiber ambient source frame distinct
+  step rest accumulator view lifeEquation capability capEquation localAfter undo outcomeEquation True matchEquation =
+  advanceYieldAtRest nameEq keyEq child parent actor childFiber actorFiber ambient source frame distinct step rest accumulator view lifeEquation capability capEquation localAfter undo outcomeEquation matchEquation
