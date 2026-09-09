@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """Guarded artifact commit after an independently inspected exact-source PASS.
-Only lane-owned L2R7 non-Idris artifacts are accepted.
+Accept lane-owned L2R7 non-Idris artifacts, the predecessor CP3 draft/manifest,
+and the three exact supervisor-authorized L2R6 header-only repairs. No Idris
+source/body/comment repair is authorized.
 Usage: python3 -I research-tests/run-l2r7-artifact-commit.py UNIT MESSAGE PATH...
 """
 import datetime, hashlib, json, pathlib, re, subprocess, sys
@@ -8,6 +10,7 @@ ROOT = pathlib.Path('/Users/vyacheslavshebanov/Work/dgamma-lane2')
 OUT = pathlib.Path('/tmp/dgamma-l2r7')
 BASE = '87e9fb20'
 REPAIRS = {}
+HEADER_REPAIRS = {r["path"]: r for r in json.loads((ROOT/"research-tests/O6-L2R7-HEADER-REPAIRS.json").read_text())}
 
 def git(*args):
  return subprocess.check_output(['git', *args], cwd=ROOT)
@@ -23,8 +26,14 @@ assert sha((ROOT/record['path']).read_bytes()) == record['sourceSHA256']
 assert paths and len(paths) == len(set(paths))
 repair_checks = []
 for path in paths:
- assert path in {'research-tests/O6-L2R5-CP3-DIFF-DRAFT.md','research-tests/O6-L2R5-CP3-REHOME-MANIFEST.json'} or path in REPAIRS or (path.startswith(('research-tests/O6-L2R7-', 'research-tests/run-l2r7-')) and not path.endswith('.idr'))
+ assert path in {'research-tests/O6-L2R5-CP3-DIFF-DRAFT.md','research-tests/O6-L2R5-CP3-REHOME-MANIFEST.json'} or path in REPAIRS or path in HEADER_REPAIRS or (path.startswith(('research-tests/O6-L2R7-', 'research-tests/run-l2r7-')) and not path.endswith('.idr'))
  assert (ROOT/path).is_file() and (ROOT/path).stat().st_size > 0
+ if path in HEADER_REPAIRS:
+  repair = HEADER_REPAIRS[path]
+  before = git('show', 'HEAD:'+path)
+  assert sha(before) == repair['beforeSHA256']
+  assert before.count(repair['old'].encode()) == 1
+  assert (ROOT/path).read_bytes() == before.replace(repair['old'].encode(),repair['new'].encode())
  if path in REPAIRS:
   before = git('show', 'HEAD:'+path)
   old, new = REPAIRS[path]

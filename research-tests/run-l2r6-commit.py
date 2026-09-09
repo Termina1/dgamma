@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""Commit one declaration after fresh PASS; no companion bundle is currently authorized.
+"""Commit one declaration after fresh PASS; the sole companion exception is D9
+(Phase plus the body-only Anchors correction and unchanged PlacementFixtures).
 Usage: python3 -I research-tests/run-l2r6-commit.py UNIT MESSAGE
 All checks and git commands share one exception-stopping process.
 """

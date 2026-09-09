@@ -1,0 +1,26 @@
+[
+  {
+    "path": "research-tests/run-l2r6-check.py",
+    "old": " data. Performs target-only mtime touch; no companion bundle is currently authorized.",
+    "new": " data. Target-only mtime touch, except the supervisor-authorized D9 phase check\n also freshly checks the body-only Anchors correction and byte-unchanged PlacementFixtures.",
+    "beforeSHA256": "a9288a48ac3520cbaf9198c86d921046140c14b106c586abedeaef6adf90d592",
+    "afterSHA256": "fab9b38ee1f62952d7111791a937f74158d299724a357ad44f513b336018a67a",
+    "authority": "Supervisor independent-review P2 steering, L2R7 Unit E; header-only exact exceptions"
+  },
+  {
+    "path": "research-tests/run-l2r6-commit.py",
+    "old": "Commit one declaration after fresh PASS; no companion bundle is currently authorized.",
+    "new": "Commit one declaration after fresh PASS; the sole companion exception is D9\n(Phase plus the body-only Anchors correction and unchanged PlacementFixtures).",
+    "beforeSHA256": "f444508f009e6868fb135d61a9fa200e11f01828e3d3bd0d19f87f53a34ff6f6",
+    "afterSHA256": "58d0b58b9d877096b082d69f85c933bd26f0b1d51947ac56b4dd0a6dd5b767a8",
+    "authority": "Supervisor independent-review P2 steering, L2R7 Unit E; header-only exact exceptions"
+  },
+  {
+    "path": "research-tests/run-l2r6-artifact-commit.py",
+    "old": "Only lane-owned L2R6 non-Idris artifacts are accepted.",
+    "new": "Accept lane-owned L2R6 non-Idris artifacts, the predecessor CP3 draft/manifest\nand docs-only run-l2r5-draft.py, plus the exact authorized Idris comment repair.",
+    "beforeSHA256": "de9c69075c3ec60cbf16bd7e8657059843adbe2485bb6ccfa8b9ad060f648374",
+    "afterSHA256": "401157cfe25d6924f055805ea3ad726fbb544346a139d14d59348fb0a8c8ffb9",
+    "authority": "Supervisor independent-review P2 steering, L2R7 Unit E; header-only exact exceptions"
+  }
+]

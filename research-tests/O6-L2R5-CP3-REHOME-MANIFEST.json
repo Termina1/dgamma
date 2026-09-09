@@ -90,5 +90,24 @@
     "research/DGamma/CP5AvailabilityAwarePlacement.idr": "0e62fa35c396e9f26465c07dd24aab2e14d25c7d5c5980c28d5d313c63869c26",
     "research-tests/O6-L2R3-Sources/DGamma/L2R3ForcedClosure.idr": "3a969ef6e366a656adcd4938ba59bb971dad227b8479ec192b36b3999d2efd21",
     "research-tests/O6-L2R3-Sources/DGamma/L2R3AttachedGap.idr": "cf4c148ea6effb932b7c16589a0d8cd7d3e782db5d79691920d05d671018f841"
+  },
+  "l2r7SameBundleControlsCandidate": {
+    "status": "checked research same-bundle candidate only; cross-bundle connector OPEN; not production rehome",
+    "source": "research-tests/O6-L2R7-Sources/DGamma/L2R7AttachedC.idr",
+    "sourceSHA256": "3c0a424a96b95700eda6dac12cf911f29bc8602e6dd1153c8eddd1eddf0e6818",
+    "fragmentSHA256": "82b6b284c905ff2666b683f6e582de7f810bc675eb65996fb0fb855dbf1c2ace",
+    "appliedProductionRenamings": false,
+    "fixtureCommit": "28c7cc15",
+    "conditionalZeroGapCommit": "cbc6d783"
+  },
+  "l2r7ResearchStatus": {
+    "classifierCorrespondence": "GENERAL checked",
+    "catalogLocatedBirth": "GENERAL checked",
+    "placedCatalogOccurrence": "GENERAL checked",
+    "releaseScanSharedKeyDecoder": "OPEN: A8 3/3 fully reverted",
+    "generalPhaseMoveIteration": "OPEN",
+    "generalScopedNF": "TYPE ONLY; producer OPEN",
+    "allPremisesZeroGap": "OPEN",
+    "predecessorProofSourcesUntouched": true
   }
 }

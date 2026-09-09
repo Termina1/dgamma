@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """Adapted from run-r192-check.py: detached lane2-only seeded single check.
 Uses absolute compiler arguments; never changes source contents or deletes build
- data. Performs target-only mtime touch; no companion bundle is currently authorized.
+ data. Target-only mtime touch, except the supervisor-authorized D9 phase check
+ also freshly checks the body-only Anchors correction and byte-unchanged PlacementFixtures.
 Usage: python3 -I run-l2r6-check.py UNIT PATH [DIAGNOSTIC [SYMBOL]].
 """
 import datetime, hashlib, json, os, pathlib, re, signal, subprocess, sys, time

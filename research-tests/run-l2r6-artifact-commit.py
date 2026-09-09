@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Guarded artifact commit after an independently inspected exact-source PASS.
-Only lane-owned L2R6 non-Idris artifacts are accepted.
+Accept lane-owned L2R6 non-Idris artifacts, the predecessor CP3 draft/manifest
+and docs-only run-l2r5-draft.py, plus the exact authorized Idris comment repair.
 Usage: python3 -I research-tests/run-l2r6-artifact-commit.py UNIT MESSAGE PATH...
 """
 import datetime, hashlib, json, pathlib, re, subprocess, sys

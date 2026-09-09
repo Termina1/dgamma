@@ -1,0 +1,134 @@
+[
+  {
+    "unit": "V10",
+    "path": "research-tests/O6-L2R7-Sources/DGamma/L2R7AnchorTransport.idr",
+    "sourceHash": "ebd79b66846ed59ba54012ca734d5f17dcdfb9c443c72451d786d0605518f88d",
+    "dependsOn": []
+  },
+  {
+    "unit": "V11",
+    "path": "research-tests/O6-L2R7-Sources/DGamma/L2R7AttachedC.idr",
+    "sourceHash": "3c0a424a96b95700eda6dac12cf911f29bc8602e6dd1153c8eddd1eddf0e6818",
+    "dependsOn": []
+  },
+  {
+    "unit": "V12",
+    "path": "research-tests/O6-L2R7-Sources/DGamma/L2R7CatalogBirth.idr",
+    "sourceHash": "2fcc2281759d14fb0caca58aa74e09f47f40385e0371468a14c8c71679108554",
+    "dependsOn": []
+  },
+  {
+    "unit": "V13",
+    "path": "research-tests/O6-L2R7-Sources/DGamma/L2R7ControlStates.idr",
+    "sourceHash": "62ca8663dbebf15d219b6e5f51b8489929c34b29dda05a24cd1a79f14ef1db48",
+    "dependsOn": []
+  },
+  {
+    "unit": "V14",
+    "path": "research-tests/O6-L2R7-Sources/DGamma/L2R7ObservedAny.idr",
+    "sourceHash": "cfb7c3002daca90542ef2f00cac0f9db7b1e091af7cf146d177acc36295f5df7",
+    "dependsOn": []
+  },
+  {
+    "unit": "V15",
+    "path": "research-tests/O6-L2R7-Sources/DGamma/L2R7AnchorFixture.idr",
+    "sourceHash": "750dbe3a89ef4d060eb15f03e1d1fdd11b385ca2d9fe657404d6d61425007f64",
+    "dependsOn": [
+      "research-tests/O6-L2R7-Sources/DGamma/L2R7AnchorTransport.idr"
+    ]
+  },
+  {
+    "unit": "V16",
+    "path": "research-tests/O6-L2R7-Sources/DGamma/L2R7AttachedCGap.idr",
+    "sourceHash": "0381e702f6add1b83887d51e025f887e7f0c3a5597cd9e65bf9da14ad04b45c7",
+    "dependsOn": [
+      "research-tests/O6-L2R7-Sources/DGamma/L2R7AttachedC.idr"
+    ]
+  },
+  {
+    "unit": "V17",
+    "path": "research-tests/O6-L2R7-Sources/DGamma/L2R7Classifier.idr",
+    "sourceHash": "0bca395543114e1120cf1e6d61fff98bda69c28bd2451655f2d9de4a6b74e003",
+    "dependsOn": [
+      "research-tests/O6-L2R7-Sources/DGamma/L2R7ObservedAny.idr"
+    ]
+  },
+  {
+    "unit": "V18",
+    "path": "research-tests/O6-L2R7-Sources/DGamma/L2R7ControlDisposition.idr",
+    "sourceHash": "fcda730bbd99e49f9e0fdef247e8228bd096afe832d44666d8a38e602db7951a",
+    "dependsOn": [
+      "research-tests/O6-L2R7-Sources/DGamma/L2R7AttachedC.idr"
+    ]
+  },
+  {
+    "unit": "V19",
+    "path": "research-tests/O6-L2R7-Sources/DGamma/L2R7ControlExecution.idr",
+    "sourceHash": "97b78d6c9b45269d0a3b453762cefbef1101e6264b0397484cc37063723402a6",
+    "dependsOn": [
+      "research-tests/O6-L2R7-Sources/DGamma/L2R7ControlStates.idr"
+    ]
+  },
+  {
+    "unit": "V20",
+    "path": "research-tests/O6-L2R7-Sources/DGamma/L2R7PlacedCoverage.idr",
+    "sourceHash": "335a0726a876fc1c36ea7c73f178a4578b7d7336e302114e2bbf081f6b6e0c01",
+    "dependsOn": [
+      "research-tests/O6-L2R7-Sources/DGamma/L2R7CatalogBirth.idr"
+    ]
+  },
+  {
+    "unit": "V21",
+    "path": "research-tests/O6-L2R7-Sources/DGamma/L2R7ReleaseDecode.idr",
+    "sourceHash": "e32da08475bfd1bdafea514f044725f368a1ebf799b38100bf1b8a517f042682",
+    "dependsOn": [
+      "research-tests/O6-L2R7-Sources/DGamma/L2R7ObservedAny.idr"
+    ]
+  },
+  {
+    "unit": "V22",
+    "path": "research-tests/O6-L2R7-Sources/DGamma/L2R7ClassifierFixtures.idr",
+    "sourceHash": "58d219255e9e218cc27a65bb9daa20ce7ceaec4a0a675f938f4c5e924204ecfc",
+    "dependsOn": [
+      "research-tests/O6-L2R7-Sources/DGamma/L2R7Classifier.idr"
+    ]
+  },
+  {
+    "unit": "V23",
+    "path": "research-tests/O6-L2R7-Sources/DGamma/L2R7ControlTrace.idr",
+    "sourceHash": "a10d49766b8275a39bb9f41fe275cdc40e7dab8c21068def2942a4d02589daa2",
+    "dependsOn": [
+      "research-tests/O6-L2R7-Sources/DGamma/L2R7AttachedC.idr",
+      "research-tests/O6-L2R7-Sources/DGamma/L2R7ControlStates.idr",
+      "research-tests/O6-L2R7-Sources/DGamma/L2R7ControlExecution.idr"
+    ]
+  },
+  {
+    "unit": "V24",
+    "path": "research-tests/O6-L2R7-Sources/DGamma/L2R7CoverageFixtures.idr",
+    "sourceHash": "517a603ecaa12fa1c08dd7a0ecb236d421af6ec291ae8bbe728f26ad0ca46dd2",
+    "dependsOn": [
+      "research-tests/O6-L2R7-Sources/DGamma/L2R7PlacedCoverage.idr"
+    ]
+  },
+  {
+    "unit": "V25",
+    "path": "research-tests/O6-L2R7-Sources/DGamma/L2R7NFObligation.idr",
+    "sourceHash": "1b5f804a6272e52b8ebf32b8907307a9affa099971cc6427792e9deee5ef9d44",
+    "dependsOn": [
+      "research-tests/O6-L2R7-Sources/DGamma/L2R7PlacedCoverage.idr"
+    ]
+  },
+  {
+    "unit": "V26",
+    "path": "research-tests/O6-L2R7-Sources/DGamma/L2R7ControlFixture.idr",
+    "sourceHash": "93f966e2cd74d2b685a2588f661bf73a3a2d53486e278da72479b6036267dc9d",
+    "dependsOn": [
+      "research-tests/O6-L2R7-Sources/DGamma/L2R7AttachedC.idr",
+      "research-tests/O6-L2R7-Sources/DGamma/L2R7ControlStates.idr",
+      "research-tests/O6-L2R7-Sources/DGamma/L2R7ControlExecution.idr",
+      "research-tests/O6-L2R7-Sources/DGamma/L2R7ControlTrace.idr",
+      "research-tests/O6-L2R7-Sources/DGamma/L2R7ControlDisposition.idr"
+    ]
+  }
+]
