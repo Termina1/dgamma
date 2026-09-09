@@ -1,0 +1,15 @@
+{
+  "base": "769d332dd520c494fff7ffbf2d4e8c9f43c72e7d",
+  "startUTC": "2026-09-09T03:06:20.945073+00:00",
+  "shiftEnd": "2026-09-09T07:06:20.945073+00:00",
+  "attemptCutoff": "2026-09-09T06:26:20.945073+00:00",
+  "validationCutoff": "2026-09-09T06:41:20.945073+00:00",
+  "gateCutoff": "2026-09-09T06:51:20.945073+00:00",
+  "caps": {
+    "A": 20,
+    "B": 16,
+    "C": 10,
+    "D": 6
+  },
+  "bootstrapTarget": "research-tests/O6-L2R4-Sources/DGamma/L2R4AnchorMeasure.idr"
+}
