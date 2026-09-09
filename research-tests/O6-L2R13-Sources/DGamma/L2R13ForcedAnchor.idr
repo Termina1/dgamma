@@ -128,3 +128,12 @@ phaseForcedHitNonempty nameEq keyEq trail cut hit =
       (scanRootCatalog 0 trail) (keyForcedOrdinal nameEq keyEq trail (catalogOrdinal (hitItem hit))) Refl
       (boolAndRight (catalogOrdinal (hitItem hit) <= cut)
         (keyForcedOrdinal nameEq keyEq trail (catalogOrdinal (hitItem hit))) (hitAccepted hit)))
+
+||| Observed-value maximum decoder: a native nonempty scan produces Just.
+||| The maximum ordinal is computed, never given as a successful result.
+public export
+phaseNonemptyAnchor : (items : List Nat) -> (seen : Bool) ->
+  (0 equation : not (null items) = seen) -> (0 accepted : seen = True) ->
+  (anchor : Nat ** lastReleaseCut items = Just anchor)
+phaseNonemptyAnchor [] seen equation accepted = absurd (trans equation accepted)
+phaseNonemptyAnchor (head :: rest) seen equation accepted = (S (foldl max head rest) ** Refl)
