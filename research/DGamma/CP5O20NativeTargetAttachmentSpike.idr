@@ -73,3 +73,26 @@ export
   (targetFiber {name} {key} {value} {world} {error} @{nameEq} @{keyEq}
     (MkFiber component parent retiredFlag table (Reloading remaining older view)) fibers = Just view)
 o20NativeReloadingTargetEquation (O20TargetReloading resolved) = resolved
+
+||| Actual checked Iter produces its target guard at a known source lookup.
+||| This single-role target theorem neither accepts nor produces a callback
+||| domain adapter; source inversion is supplied by the existing native engine.
+export
+0 o20CheckedIterTarget :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (before, afterState : SystemState name key value world error) ->
+  (component : Component key value world error) -> (parent : Parent name) -> (retiredFlag : Bool) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (remaining : List (StepEffect key value world error (dependencies (componentDependencies component)) (componentProvisions component))) ->
+  (older : LocalState key value world (componentProvisions component) -> LocalState key value world (componentProvisions component)) ->
+  (view : View name (dependencies (componentDependencies component))) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor (registry before) = Just (MkFiber component parent retiredFlag table (Reloading remaining older view))) ->
+  (checkedApplyAction {name} {key} {value} {world} {error} @{nameEq} @{keyEq} (LAdvance actor) before = Just (LIterTag, afterState)) ->
+  (targetFiber {name} {key} {value} {world} {error} @{nameEq} @{keyEq}
+    (MkFiber component parent retiredFlag table (Reloading remaining older view)) (registry before) = Just view)
+o20CheckedIterTarget nameEq keyEq actor before afterState component parent retiredFlag table remaining older view found checked =
+  o20NativeReloadingTargetEquation
+    (o20PaperSourceTargetAtFiber
+      (paperAdvanceSource nameEq keyEq actor LIterTag (checkedActionProjects nameEq keyEq (LAdvance actor) before afterState LIterTag checked) (Left Refl))
+      (MkFiber component parent retiredFlag table (Reloading remaining older view)) found)
