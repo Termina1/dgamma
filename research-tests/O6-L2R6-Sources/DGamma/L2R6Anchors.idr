@@ -24,3 +24,15 @@ public export
 lastReleaseCut : List Nat -> Maybe Nat
 lastReleaseCut [] = Nothing
 lastReleaseCut (ordinal :: later) = Just (S (foldl max ordinal later))
+
+||| Maximum of actual key-release scans for catalog roots at or before this
+||| root in orchestration order. An unseeded barrier inherits earlier releases;
+||| a later key release raises the anchor. Non-forced prefixes return Nothing.
+public export
+anchorOf : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {0 first, finalState : SystemState name key value world error} ->
+  {0 trace : Transitions first finalState} ->
+  DecEq name -> DecEq key -> AvailabilityTrace name key world error value trace -> Nat -> Maybe Nat
+anchorOf nameEq keyEq trail ordinal = lastReleaseCut (concatMap
+  (\entry => scanReleaseOrdinals nameEq keyEq (catalogComponent entry) 0 (catalogOrdinal entry) trail)
+  (filter (\entry => catalogOrdinal entry <= ordinal) (scanRootCatalog 0 trail)))
