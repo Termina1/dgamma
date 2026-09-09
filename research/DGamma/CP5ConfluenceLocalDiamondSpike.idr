@@ -2874,6 +2874,13 @@ record AdjacentSwapOperationalOccurrenceFold
       (locatedActionOrdinal occurrence)
       (locatedActionOrdinal
         (replayActionOrigin operationalOccurrenceCorrespondence occurrence))
+  0 operationalRootOrdinalPreserved :
+    {root : name} -> {component : Component key value world error} ->
+    (occurrence : LocatedActionOccurrence (OInsert root Root component) swappedTrace) ->
+    (generationForward (replayGenerationRenaming operationalOccurrenceCorrespondence)
+      (MkRegistrationGeneration root
+        (locatedActionOrdinal (replayActionOrigin operationalOccurrenceCorrespondence occurrence))) =
+      MkRegistrationGeneration root (locatedActionOrdinal occurrence))
 
 ||| Producer-sealed recursive suffix replay.  Every node owns its exact checked
 ||| source and target heads and their relational/occurrence capital.  It carries
@@ -27386,6 +27393,7 @@ buildAdjacentOperationalOccurrenceFold origin =
   MkAdjacentSwapOperationalOccurrenceFold Refl Refl
     (buildAdjacentActionRegistrationCorrespondence origin)
     (adjacentOriginOrdinalRelation origin)
+    (adjacentOriginRootOrdinal origin)
 
 private
 0 produceAdjacentOperationalOccurrenceFold :
