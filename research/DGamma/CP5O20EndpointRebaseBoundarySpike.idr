@@ -50,3 +50,14 @@ o20IdentityLifecycle {error} (Active accumulator view) =
 o20IdentityLifecycle (Unloading accumulator view outcome) =
   RenamedUnloading (\input => localStateRuntimeReflexive (accumulator input))
     (o20IdentityProviderWord (viewProviders view)) Refl
+
+||| Full identity-renamed fiber control at one ACTUAL fiber value; no
+||| independently reconstructed registry or erased uniqueness proof occurs.
+export
+0 o20IdentityFiber :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (fiber : Fiber name key value world error) ->
+  FiberRelatedBy identityNameBijection fiber fiber
+o20IdentityFiber (MkFiber component parent retiredFlag table lifecycle) =
+  RenamedFibers parent parent retiredFlag retiredFlag table table lifecycle lifecycle
+    (o20IdentityParent parent) Refl (o20IdentityLifecycle lifecycle)
