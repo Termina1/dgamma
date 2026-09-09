@@ -8,7 +8,7 @@ Each row adds ONE declaration; no predecessor bodies/comments were changed.
 
 | Unit | File:line / name | Kind/status | Fresh invocation | Guarded commit |
 |---|---|---|---|---|
-| A1 | `L2R12PhaseContract.idr:29` / `ForcedRootPhaseFromObservedAgreement` | type: checked type; inhabitance at exact declared scope | A1-1 | `fc95f4d4` |
+| A1 | `L2R12PhaseContract.idr:29` / `ForcedRootPhaseFromObservedAgreement` | type: checked TYPE declaration; NOT inhabited | A1-1 | `fc95f4d4` |
 | A2 | `L2R12PhaseAgreement.idr:33` / `phaseFixtureBoundedAgreement` | proof: proved at exact documented scope | A2-1 | `6123399a` |
 | A3 | `L2R12PhaseAccepted.idr:28` / `phaseAllFoldFalse` | proof: proved at exact documented scope | A3-1 | `65b4b4e9` |
 | A4 | `L2R12PhaseAccepted.idr:35` / `phaseAllFoldObserved` | proof: proved at exact documented scope | A4-1 | `e69960e8` |
@@ -30,9 +30,9 @@ Each row adds ONE declaration; no predecessor bodies/comments were changed.
 | B6 | `L2R12ClosedFold.idr:29` / `replayRestrictedRetirement` | proof: proved at exact documented scope | B6-1 | `c348b1cb` |
 | B7 | `L2R12SnapshotSuffix.idr:23` / `replaySnapshotSuffixCPS` | proof: proved at exact documented scope | B7-1 | `79c23fb4` |
 | B8 | `L2R12ValidWordFold.idr:25` / `replayActualWordValidCPS` | proof: proved at exact documented scope | B8-1 | `8156cb67` |
-| B9 | `L2R12R191Segments.idr:33` / `R191RetirementSegments` | type: checked type; inhabitance at exact declared scope | B9-1 | `f80bd0f8` |
+| B9 | `L2R12R191Segments.idr:33` / `R191RetirementSegments` | type: checked TYPE declaration; NOT inhabited | B9-1 | `f80bd0f8` |
 | B10 | `L2R12R191Segments.idr:61` / `r191RetirementSegments` | executable: checked total executable definition | B10-3 | `17f08f7d` |
-| B11 | `L2R12R191Whole.idr:37` / `R191FoldReplay` | type: checked type; inhabitance at exact declared scope | B11-1 | `cb52e8d5` |
+| B11 | `L2R12R191Whole.idr:37` / `R191FoldReplay` | type: checked TYPE declaration; NOT inhabited | B11-1 | `cb52e8d5` |
 | B12 | `L2R12R191Whole.idr:49` / `spliceR191FoldedSpan` | proof: proved at exact documented scope | B12-1 | `3a947bdf` |
 | B13 | `L2R12R191Whole.idr:76` / `r191WholeFromFold` | proof: proved at exact documented scope | B13-2 | `c41745f1` |
 | B14 | `L2R12R191Whole.idr:96` / `r191WholeReplayFromFold` | proof: proved at exact documented scope | B14-1 | `d8cbc49b` |
@@ -41,7 +41,7 @@ Each row adds ONE declaration; no predecessor bodies/comments were changed.
 | C3 | `L2R12SelectedAdjacency.idr:50` / `selectedBirthNotZero` | proof: proved at exact documented scope | C3-1 | `b08be844` |
 | C4 | `L2R12SelectedAdjacency.idr:65` / `successorPredPositive` | proof: proved at exact documented scope | C4-1 | `24b9cfea` |
 | C5 | `L2R12SelectedAdjacency.idr:74` / `selectedLocatedAdjacentOrdinals` | proof: proved at exact documented scope | C5-1 | `e5c3b2b4` |
-| C6 | `L2R12AlignedCut.idr:27` / `AlignedSourceAction` | type: checked type; inhabitance at exact declared scope | C6-1 | `5c9466db` |
+| C6 | `L2R12AlignedCut.idr:27` / `AlignedSourceAction` | type: checked TYPE declaration; NOT inhabited | C6-1 | `5c9466db` |
 | C7 | `L2R12AlignedCut.idr:46` / `alignedSourceThroughHead` | proof: proved at exact documented scope | C7-1 | `83adb9d2` |
 | C8 | `L2R12AlignedCut.idr:66` / `alignedSourceAtOrdinal` | proof: proved at exact documented scope | C8-1 | `ea9352c6` |
 | C9 | `L2R12AlignedCut.idr:101` / `alignedSourceAtStep` | proof: proved at exact documented scope | C9-1 | `6540df8b` |
@@ -51,8 +51,8 @@ Each row adds ONE declaration; no predecessor bodies/comments were changed.
 | C13 | `L2R12ClassifierNative.idr:46` / `selectedRetireFromAligned` | proof: proved at exact documented scope | C13-1 | `e7cd65c5` |
 | C14 | `L2R12DistanceFrame.idr:26` / `totalDistanceOneLeftFromFrame` | proof: proved at exact documented scope | C14-1 | `315f885b` |
 | D1 | `L2R12PacketContiguity.idr:35` / `packetCoreWords` | proof: proved at exact documented scope | D1-1 | `2cbcfe59` |
-| D2 | `L2R12PacketContiguity.idr:53` / `PacketPassage` | type: checked type; inhabitance at exact declared scope | D2-1 | `8e0e7e3a` |
-| D3 | `L2R12PacketContiguity.idr:81` / `PacketContiguityResult` | type: checked type; inhabitance at exact declared scope | D3-1 | `1f10e006` |
+| D2 | `L2R12PacketContiguity.idr:53` / `PacketPassage` | type: checked TYPE declaration; NOT inhabited | D2-1 | `8e0e7e3a` |
+| D3 | `L2R12PacketContiguity.idr:81` / `PacketContiguityResult` | type: checked TYPE declaration; NOT inhabited | D3-1 | `1f10e006` |
 | D4 | `L2R12PacketContiguity.idr:107` / `locatePacketCore` | proof: proved at exact documented scope | D4-1 | `62b0d858` |
 | D5 | `L2R12PacketContiguity.idr:124` / `packetPrefixShift` | proof: proved at exact documented scope | D5-1 | `ea383be8` |
 | D6 | `L2R12PacketContiguity.idr:137` / `coreContiguityFromPackets` | proof: proved at exact documented scope | D6-1 | `7557734d` |

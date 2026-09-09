@@ -43,7 +43,7 @@ for receipt in source_receipts:
  name=names.pop();current=(ROOT/path).read_text();match=re.search(r'^(?:[01] )?'+re.escape(name)+r'\s*:|^(?:record|data)\s+'+re.escape(name)+r'\b',current,re.M);assert match
  line=current[:match.start()].count('\n')+1
  kind='type' if name=='ForcedRootPhaseFromObservedAgreement' or re.search(r'^(?:record|data)\s+'+re.escape(name)+r'\b',current,re.M) else ('proof' if re.search(r'^0 '+re.escape(name)+r'\s*:',current,re.M) else 'executable')
- status='checked type; inhabitance at exact declared scope' if kind=='type' else ('proved at exact documented scope' if kind=='proof' else 'checked total executable definition')
+ status='checked TYPE declaration; NOT inhabited' if kind=='type' else ('proved at exact documented scope' if kind=='proof' else 'checked total executable definition')
  origins.append(dict(unit=receipt['unit'],name=name,path=path,line=line,kind=kind,status=status,invocation=receipt['invocation'],commit=commit,checkedSourceSHA256=r['sourceSHA256'],currentSourceSHA256=sha((ROOT/path).read_bytes())))
 groups={}
 for r in records:
