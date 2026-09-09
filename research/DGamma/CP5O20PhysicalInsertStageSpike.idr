@@ -210,3 +210,16 @@ o20CheckedInsertFromActionEquation {name} {key} {world} {error} {value}
   nameEq keyEq actor parent component action before afterState tag checked exact =
     trans (cong (\operation => checkedApplyAction {name} {key} {value} {world} {error} @{nameEq} @{keyEq} operation before)
       (sym exact)) checked
+
+||| Alignment exposes the checked equation of the exact physical head,
+||| including its own tag and actual target. Only alignment is eliminated.
+export
+0 o20AlignedPhysicalHeadChecked :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {before, afterState, finalState : SystemState name key value world error} ->
+  (step : Transition before afterState) -> (rest : Transitions afterState finalState) ->
+  AlignedTransitions name key world error value nameEq keyEq (MoreTransitions step rest) ->
+  (checkedApplyAction {name} {key} {value} {world} {error} @{nameEq} @{keyEq}
+    (transitionAction step) before = Just (transitionTag step, afterState))
+o20AlignedPhysicalHeadChecked nameEq keyEq _ _ (AlignedStep action tag checked rest alignedRest) = checked
