@@ -145,3 +145,25 @@ o20CanonicalGenerationDisposition {name} {key} {world} {error} {value} nameEq ke
         left right (generatedGenerationBijection inputs) (generatedRegistrationTree inputs))) selected
       (registrationGeneration (replayGeneratedRegistrationOrigin (canonicalOccurrenceCorrespondence capital) birth))
       (o20CanonicalOriginMatchOrClosing nameEq keyEq protocol left right inputs capital unique selected parent component birth)
+
+||| An authentic original birth and its scanner coverage determine the flat
+||| generation-only disposition. Raw uniqueness owns the exact stamp; the
+||| accepted matching, not current endpoint names, owns the opposite branch.
+export
+0 o20CoveredGenerationDisposition :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {leftFirst, leftFinal, rightFirst, rightFinal : SystemState name key value world error} ->
+  (left : Transitions leftFirst leftFinal) -> (right : Transitions rightFirst rightFinal) ->
+  (mapping : RegistrationGenerationBijection name) ->
+  (matching : AuthenticatedRegistrationMatching name key world error value mapping left right) ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq left ->
+  (selected, parent : name) -> (component : Component key value world error) ->
+  (birth : LocatedGeneratedRegistration selected parent component left) ->
+  (coverage : ClassifiedGeneratedBirth name key world error value Z left (leftScannedEvents matching) selected) ->
+  O20GenerationOnlyDisposition name key world error value mapping left right (registrationGeneration birth)
+o20CoveredGenerationDisposition {nameEq} {keyEq} left right mapping matching unique selected parent component birth coverage =
+  o20DispositionChoice mapping (registrationGeneration birth) (coveredEvent coverage) (coveredBirth coverage)
+    (o20CoveredOriginStamp {nameEq} {keyEq} left unique (leftScannedEvents matching) selected parent component birth coverage)
+    (o20MatchClassifiedOrigin mapping matching selected (registrationGeneration birth) coverage
+      (o20CoveredOriginStamp {nameEq} {keyEq} left unique (leftScannedEvents matching) selected parent component birth coverage))
