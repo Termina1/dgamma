@@ -3858,3 +3858,16 @@ Validation finished08:15:37Z. Provider limit interrupted interaction; E3 and
 final gate resumed only by explicit supervisor follow-up closing proof work, with
 NO proof/source/native work. Independent human review is parent-owned. See
 O6-R197-VERIFICATION.md, full ledger/archive, frozen and resource audits.
+
+
+## R197 owner gate — clean close
+
+Owner ACCEPTED checked PARTIAL at3a42d1f2 and authorized this E4 artifact-only
+note/clean close; E3 was pushed by the supervisor. Exact ruling is preserved
+in `research-tests/O6-R197-OWNER-FINAL-GATE.md`. A remains conditional, B's two
+named producers/bridge OPEN, C0/ineligible, D5 generic consumer STOP3/3/reverted.
+144/144 expected validation outcomes and unchanged4=1/2/0/0/1 census stand.
+Independent human review is parent-owned and begins after E4; it is not
+claimed complete. No further source/native work, clock extension or archive
+rewrite. The revival proof window was closed by ruling, not a proved missed
+UTC deadline. E4 closes this authorized shift cleanly.

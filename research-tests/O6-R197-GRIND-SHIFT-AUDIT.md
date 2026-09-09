@@ -182,3 +182,16 @@ holes/production/frozen/lane edits. Fresh census4=1/2/0/0/1 and all frozen hashe
 pass. E3 publishes ledger/costs/resource/frozen/independent/archived evidence;
 archive anchor intentionally excludes its own/future artifact receipts. E4
 owner note reserved; final owner and independent human reviewer gate pending.
+
+
+## E4 — owner ratification and clean close
+
+Owner ACCEPTED checked PARTIAL at3a42d1f2 and authorized this E4 artifact-only
+note/clean close; E3 was pushed by the supervisor. Exact ruling is preserved
+in `research-tests/O6-R197-OWNER-FINAL-GATE.md`. A remains conditional, B's two
+named producers/bridge OPEN, C0/ineligible, D5 generic consumer STOP3/3/reverted.
+144/144 expected validation outcomes and unchanged4=1/2/0/0/1 census stand.
+Independent human review is parent-owned and begins after E4; it is not
+claimed complete. No further source/native work, clock extension or archive
+rewrite. The revival proof window was closed by ruling, not a proved missed
+UTC deadline. E4 closes this authorized shift cleanly.
