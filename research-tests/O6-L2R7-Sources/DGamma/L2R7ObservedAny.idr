@@ -31,3 +31,10 @@ anyHitConsObserved : {a : Type} -> (predicate : a -> Bool) ->
   (0 accepted : seen || any predicate items = True) -> AnyHit predicate (head :: items)
 anyHitConsObserved predicate head items True equation tailHit accepted = MkAnyHit head Here equation
 anyHitConsObserved predicate head items False equation tailHit accepted = anyHitThere head (tailHit accepted)
+
+||| Prelude.any uses a left fold. A true accumulator remains true.
+export
+0 anyFoldTrue : {a : Type} -> (predicate : a -> Bool) -> (items : List a) ->
+  foldl (\acc, item => acc || predicate item) True items = True
+anyFoldTrue predicate [] = Refl
+anyFoldTrue predicate (head :: items) = anyFoldTrue predicate items
