@@ -206,3 +206,41 @@ o20HistoryIterAtMatchingSource nameEq keyEq mapping actor leftOrdinal rightOrdin
       (o20CheckedIterTarget nameEq keyEq (renameForward (historyCutBijection paired) actor) (MkSystemState rightWorld rightRegistry) rightAfter
         component rightParent rightRetired rightTable (step :: next :: more) rightOlder rightView rightFound rightChecked)
       leftChecked rightChecked
+
+||| The pre-cut PRODUCES the indexed opposite source; both actual Iter edges
+||| produce target guards, callbacks and final cuts. Only ONE left source
+||| lookup remains explicit, not a right lookup, shared-program or success oracle.
+export
+0 o20HistoryIterKnownLeft :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (mapping : RegistrationGenerationBijection name) -> (actor : name) ->
+  (leftOrdinal, rightOrdinal : Nat) -> (leftLive, rightLive : GenerationEnvironment name) ->
+  (component : Component key value world error) ->
+  (step, next : StepEffect key value world error (dependencies (componentDependencies component)) (componentProvisions component)) ->
+  (more : List (StepEffect key value world error (dependencies (componentDependencies component)) (componentProvisions component))) ->
+  (leftParent : Parent name) -> (leftRetired : Bool) ->
+  (leftTable : OwnedTable key value (componentProvisions component)) ->
+  (leftOlder : LocalState key value world (componentProvisions component) -> LocalState key value world (componentProvisions component)) ->
+  (leftView : View name (dependencies (componentDependencies component))) ->
+  (leftWorld, rightWorld : world) -> (leftRegistry, rightRegistry : Registry name key value world error) ->
+  (leftAfter, rightAfter : SystemState name key value world error) ->
+  (paired : O20HistoryCut name key world error value nameEq mapping leftLive rightLive
+    (MkSystemState leftWorld leftRegistry) (MkSystemState rightWorld rightRegistry)) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor leftRegistry = Just (MkFiber component leftParent leftRetired leftTable (Reloading (step :: next :: more) leftOlder leftView))) ->
+  (checkedApplyAction {name} {key} {value} {world} {error} @{nameEq} @{keyEq} (LAdvance actor) (MkSystemState leftWorld leftRegistry) = Just (LIterTag, leftAfter)) ->
+  (checkedApplyAction {name} {key} {value} {world} {error} @{nameEq} @{keyEq} (LAdvance (renameForward (historyCutBijection paired) actor)) (MkSystemState rightWorld rightRegistry) = Just (LIterTag, rightAfter)) ->
+  O20HistoryCut name key world error value nameEq mapping
+    (advanceGenerationEnvironment {name} {key} {value} {world} {error} @{nameEq} leftOrdinal (LAdvance actor) leftLive)
+    (advanceGenerationEnvironment {name} {key} {value} {world} {error} @{nameEq} rightOrdinal (LAdvance (renameForward (historyCutBijection paired) actor)) rightLive)
+    leftAfter rightAfter
+o20HistoryIterKnownLeft {name} {key} {world} {error} {value} nameEq keyEq mapping actor leftOrdinal rightOrdinal leftLive rightLive
+  component step next more leftParent leftRetired leftTable leftOlder leftView
+  leftWorld rightWorld leftRegistry rightRegistry leftAfter rightAfter paired leftFound leftChecked rightChecked =
+    o20HistoryIterAtMatchingSource nameEq keyEq mapping actor leftOrdinal rightOrdinal leftLive rightLive
+      component step next more leftParent leftRetired leftTable leftOlder leftView
+      leftWorld rightWorld leftRegistry rightRegistry leftAfter rightAfter paired leftFound leftChecked rightChecked
+      (o20MatchingReloadingFromCut {name} {key} {world} {error} {value} {nameEq}
+        {renaming = historyCutBijection paired} {actor}
+        {left = MkSystemState leftWorld leftRegistry} {right = MkSystemState rightWorld rightRegistry}
+        component (step :: next :: more) leftParent leftRetired leftTable leftOlder leftView leftFound (historyCutRuntime paired))
