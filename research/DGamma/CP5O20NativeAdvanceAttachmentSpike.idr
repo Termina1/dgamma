@@ -36,3 +36,25 @@ record O20EffectStepValues
     (MkLocalState (effectAmbient (projectEffectState {name} {key} {value} {world} {error} @{nameEq} before))
       (restrictOwnedPreservingOrder {key} {value} @{keyEq} (componentProvisions component)
         (effectTables (projectEffectState {name} {key} {value} {world} {error} @{nameEq} before) actor)))
+
+||| Rebase one observed native packet to the projected resolver and table.
+||| The exact owner lookup supplies table identity; the producer preserves
+||| the SAME callback outputs rather than comparing dependent projections.
+export
+0 o20NativeValuesAtEffectSource :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (before : SystemState name key value world error) ->
+  (component : Component key value world error) -> (parent : Parent name) -> (retiredFlag : Bool) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (lifecycle : Lifecycle key value world error name (dependencies (componentDependencies component)) (componentProvisions component)) ->
+  (step : StepEffect key value world error (dependencies (componentDependencies component)) (componentProvisions component)) ->
+  (view : View name (dependencies (componentDependencies component))) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor (registry before) = Just (MkFiber component parent retiredFlag table lifecycle)) ->
+  O20NativeStepValues name key world error value nameEq keyEq before component table step view ->
+  O20EffectStepValues name key world error value nameEq keyEq actor before component step view
+o20NativeValuesAtEffectSource nameEq keyEq actor (MkSystemState ambient fibers) component parent retiredFlag table lifecycle step view found
+  (MkO20NativeStepValues capability resolved callback) =
+    MkO20EffectStepValues capability
+      (trans (resolveEffectValuesProjected nameEq keyEq (dependencies (componentDependencies component)) view (MkSystemState ambient fibers)) resolved)
+      (rewrite projectedActorTable nameEq actor (MkSystemState ambient fibers) (MkFiber component parent retiredFlag table lifecycle) found in callback)
