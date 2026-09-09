@@ -125,3 +125,17 @@ data DistanceIteration :
     (0 move : AdmittedDistanceMove name key world error value nameEq keyEq oldTrail middleTrail) ->
     (0 later : DistanceIteration nameEq keyEq middleTrail newTrail) ->
     DistanceIteration nameEq keyEq oldTrail newTrail
+
+||| Every finite produced iteration has RegistryExtensional endpoints.
+||| This composes concrete move endpoints; it is NOT move existence or a
+||| terminating normalizer from an oracle-free arbitrary input trace.
+export
+0 iterationEndpoint : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {initial, oldFinal, newFinal : SystemState name key value world error} ->
+  {oldTrace : Transitions initial oldFinal} -> {newTrace : Transitions initial newFinal} ->
+  {oldTrail : AvailabilityTrace name key world error value oldTrace} ->
+  {newTrail : AvailabilityTrace name key world error value newTrace} ->
+  DistanceIteration nameEq keyEq oldTrail newTrail -> RegistryExtensional name key world error value nameEq oldFinal newFinal
+iterationEndpoint (IterationDone trail) = MkRegistryExtensional Refl (\wanted => Refl)
+iterationEndpoint (IterationMove move later) = extensionalTransitive (moveEndpoints move) (iterationEndpoint later)
