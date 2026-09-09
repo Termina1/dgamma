@@ -169,3 +169,23 @@ o20InstalledEndPresentLookup {name} {key} {world} {error} {value} {finalState} n
     (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor (registry finalState)) Refl
     (\absent => absurd (trans (sym (the (installedAt {name} {key} {value} {world} {error} @{nameEq} actor finalState = False)
       (rewrite absent in Refl))) (o20InstalledTraceEnd trace installed)))
+
+||| Original supportedness produces the fixed-reference lookup by the accepted
+||| support/Active theorem. No original fiber or presence premise is supplied.
+export
+0 o20OriginalSupportedLookup :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {initial, originalFinal : SystemState name key value world error} ->
+  (original : Transitions initial originalFinal) ->
+  (capital : IndependentCanonicalSchedule name key world error value protocol nameEq keyEq original) ->
+  (actor : name) ->
+  (isSupported {name} {key} {value} {world} {error} @{nameEq} @{keyEq} actor originalFinal = True) ->
+  O20PresentLookup name key world error value nameEq actor originalFinal
+o20OriginalSupportedLookup {name} {key} {world} {error} {value} {originalFinal} nameEq keyEq protocol original capital actor supported =
+  o20PresentLookupObserved nameEq actor originalFinal
+    (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor (registry originalFinal)) Refl
+    (\absent => absurd (trans (sym (the (supportedActiveAt {name} {key} {value} {world} {error} @{nameEq} actor originalFinal = False)
+      (rewrite absent in Refl)))
+      (trans (sym (replaySupportMatchesActive (chainReplayCapital (capitalPremises capital)) actor)) supported)))
