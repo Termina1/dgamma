@@ -99,3 +99,18 @@ barrierSuccessorPhaseDecoded = MkForcedRootPhase
   smallRelease (LAdvance 0) phaseFixtureLife True Refl Refl
   (phaseLifeOwnerDecoded (fst fixtureDictionaries) 0 (smallState 1) (LAdvance 0) Refl Refl)
   (LTESucc LTEZero) Refl Refl (LTESucc (LTESucc (LTESucc (LTESucc LTEZero))))
+
+||| Actual located root births accompany all three new phase certificates.
+||| Constructed by the catalog decoder, not supplied fixture occurrences.
+export
+0 phaseFixtureBirths :
+  (CatalogBirthAt Nat Bool Unit String (\key => Unit)
+    (MkRootCatalogEntry 4 3 (smallComponent True)) 0 smallTrace,
+   CatalogBirthAt Nat Bool Unit String (\key => Unit)
+    (MkRootCatalogEntry 4 3 (smallComponent True)) 0 barrierTrace,
+   CatalogBirthAt Nat Bool Unit String (\key => Unit)
+    (MkRootCatalogEntry 5 4 (smallComponent False)) 0 barrierTrace)
+phaseFixtureBirths =
+  (scanCatalogBirth 0 (fst ordinalFixtureTrails) (MkRootCatalogEntry 4 3 (smallComponent True)) Here,
+   scanCatalogBirth 0 (snd ordinalFixtureTrails) (MkRootCatalogEntry 4 3 (smallComponent True)) Here,
+   scanCatalogBirth 0 (snd ordinalFixtureTrails) (MkRootCatalogEntry 5 4 (smallComponent False)) (There Here))
