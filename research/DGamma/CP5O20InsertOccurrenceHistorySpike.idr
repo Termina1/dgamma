@@ -214,3 +214,41 @@ o20LocatedLabelledInsertStage {name} {key} {world} {error} {value}
             (MoreTransitions (locatedTransition rightBirth) (afterActionOccurrence rightBirth))
             (replace {p = AlignedTransitions name key world error value nameEq keyEq}
               (sym (actionOccurrenceDecomposition rightBirth)) rightAligned)))) (locatedAction rightBirth)) matched
+
+||| A genuine paired RUNTIME occurrence history at two actual native Insert
+||| cuts, with the TWO authentic supplied-word action/tag/ordinal labels.
+||| The successor environments are computed. This is a one-edge history,
+||| not the missing whole-word chronology or an initial-cut producer.
+export
+0 o20LocatedInsertOccurrenceHistory :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (renaming : NameBijection name) ->
+  {mapping : RegistrationGenerationBijection name} -> {leftLive, rightLive : GenerationEnvironment name} ->
+  {initial, leftFinal, rightFinal : SystemState name key value world error} ->
+  (left : Transitions initial leftFinal) -> (right : Transitions initial rightFinal) ->
+  AlignedTransitions name key world error value nameEq keyEq left ->
+  AlignedTransitions name key world error value nameEq keyEq right ->
+  (actor : name) -> (component : Component key value world error) ->
+  (leftParent, rightParent : Parent name) -> ParentRelatedBy renaming leftParent rightParent ->
+  (leftBirth : LocatedActionOccurrence (OInsert actor leftParent component) left) ->
+  (rightBirth : LocatedActionOccurrence (OInsert (renameForward renaming actor) rightParent component) right) ->
+  (generationForward mapping (MkRegistrationGeneration actor (locatedActionOrdinal leftBirth)) =
+    MkRegistrationGeneration (renameForward renaming actor) (locatedActionOrdinal rightBirth)) ->
+  O20OccurrenceStampedHistory name key world error value nameEq keyEq mapping renaming left right leftLive rightLive
+    (putCurrentGeneration @{nameEq} actor (MkRegistrationGeneration actor (locatedActionOrdinal leftBirth)) leftLive)
+    (putCurrentGeneration @{nameEq} (renameForward renaming actor)
+      (MkRegistrationGeneration (renameForward renaming actor) (locatedActionOrdinal rightBirth)) rightLive)
+    (actionBeforeState leftBirth) (actionBeforeState rightBirth) (actionAfterState leftBirth) (actionAfterState rightBirth)
+o20LocatedInsertOccurrenceHistory nameEq keyEq renaming left right leftAligned rightAligned
+  actor component leftParent rightParent parents leftBirth rightBirth matched =
+    case o20LocatedLabelledInsertStage nameEq keyEq renaming left right leftAligned rightAligned
+      actor component leftParent rightParent parents leftBirth rightBirth matched of
+      (stage ** (leftAction, rightAction, leftTag, rightTag)) =>
+        OccurrenceHistoryMore stage
+          (MkLocatedActionOccurrence (actionBeforeState leftBirth) (actionAfterState leftBirth)
+            (beforeActionOccurrence leftBirth) (locatedTransition leftBirth) (afterActionOccurrence leftBirth)
+            (trans (locatedAction leftBirth) (sym leftAction)) (actionOccurrenceDecomposition leftBirth))
+          (MkLocatedActionOccurrence (actionBeforeState rightBirth) (actionAfterState rightBirth)
+            (beforeActionOccurrence rightBirth) (locatedTransition rightBirth) (afterActionOccurrence rightBirth)
+            (trans (locatedAction rightBirth) (sym rightAction)) (actionOccurrenceDecomposition rightBirth))
+          Refl Refl (sym leftTag) (sym rightTag) OccurrenceHistoryEnd
