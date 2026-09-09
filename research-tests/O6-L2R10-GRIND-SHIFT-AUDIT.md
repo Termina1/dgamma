@@ -35,3 +35,9 @@ retirementTargetAtFlag/retirementTargetSame consume the actual Bool/equation and
 | whole old L2R2 ForeignReplay / R191 endpoint | NOT RUN / OPEN |
 
 Supervisor CONFIRMED B cap16 and exact callback fidelity after inspection: L2R2 single quantifies ALL8 Actions/all tags, not just the three requested roles plus orchestration. Never weaken it or supply a role oracle. R191's actual word uses only Begin/Advance(Iter,Finish)/Insert/Retire/Remove; a NEW observed-action-inventory restricted replay is a legitimate FUTURE target, not silently the old callback. No slots remain for that extension. Main tree/lock/window untouched.
+
+## C UNIT STOP — two light-guard trips
+
+C1 SplitNativeEdge 3b57a7bc is a NEW abstract-state SINGLE-native-equation family. C2 splitRootEdge 72d9d446 checks actual4→8 root insertion first attempt in0.87s/280032KiB. C3 Remove8→9 failed BOTH attempts at18GiB: direct Refl56.80s/18883056KiB; checkedFromRaw + actual C2 target validity81.9997s/18885568KiB. No target Building line survived buffering; both are FAIL, never accepted. This isolates the native Remove equation as the costly boundary even when isolated from the exhausted three-equation packet. Not semantic falsity.
+
+SECOND light stop mandates C UNIT STOP. C3 fully reverted to exact C2 source bytes; third attempt UNUSED, not exhausted3/3. C4–C10 unattempted, no cap extension or independent core-source attempt after stop. Split Remove/barrier and old SplitPathPacket assembly OPEN; new per-path core assembly/CoreRestorationFixture/GeneralCoreContiguityRestored instance OPEN. Existing L2R9 original/restored paths remain separately proved, unchanged. A compiler-free unused per-path recipe was archived under raw records and removed from the worktree (never a checked producer). Fresh reverted-source validation follows before the stop-audit commit.
