@@ -31,3 +31,23 @@ export
     head' (drop position (head :: word)) = Just (OInsert (catalogRoot entry) Root (catalogComponent entry))))
 catalogQueryThroughHead head word entry offset (position ** (ordinal, action)) =
   (S position ** (trans ordinal (plusSuccRightSucc offset position), action))
+
+||| The catalog's actual root cons either supplies the head query or lifts
+||| the structurally obtained tail query. Only membership is eliminated.
+export
+0 catalogQueryInsert : {name, key, world, error : Type} -> {value : key -> Type} ->
+  (root : name) -> (component : Component key value world error) -> (offset : Nat) ->
+  (word : List (Action name key value world error)) ->
+  (catalog : List (RootCatalogEntry name key world error value)) ->
+  (0 tail : (item : RootCatalogEntry name key world error value) -> Elem item catalog ->
+    (position : Nat ** (catalogOrdinal item = S offset + position,
+      head' (drop position word) = Just (OInsert (catalogRoot item) Root (catalogComponent item))))) ->
+  (entry : RootCatalogEntry name key world error value) ->
+  (0 member : Elem entry (MkRootCatalogEntry offset root component :: catalog)) ->
+  (position : Nat ** (catalogOrdinal entry = offset + position,
+    head' (drop position (OInsert root Root component :: word)) =
+      Just (OInsert (catalogRoot entry) Root (catalogComponent entry))))
+catalogQueryInsert root component offset word catalog tail _ Here =
+  (0 ** (sym (plusZeroRightNeutral offset), Refl))
+catalogQueryInsert root component offset word catalog tail entry (There later) =
+  catalogQueryThroughHead (OInsert root Root component) word entry offset (tail entry later)
