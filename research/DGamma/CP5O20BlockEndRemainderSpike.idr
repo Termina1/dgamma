@@ -251,3 +251,21 @@ o20LocatedBlockEndActive {name} {key} {value} {world} {error} {nameEq} {keyEq} {
             (MoreTransitions (beginTransition (blockOpening block)) NoTransitions)
             (appendTransitions (blockBody block) (traceAfterBlock block))) (blockDecomposition block)))) aligned)))
     (blockActiveAtFinal block)
+
+||| Endpoint residual elimination for EVERY actual aligned located block.
+||| Its own no-later-lifecycle suffix and final Active field produce body-end
+||| Active and hence an empty remainder; emptiness is not a new hypothesis.
+export
+0 o20LocatedBlockEndRemainderEmpty :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} -> {selected : name} ->
+  {initial, finalState : SystemState name key value world error} ->
+  {trace : Transitions initial finalState} ->
+  (block : LocatedOpenEpisodeBlock name key world error value nameEq keyEq selected trace) ->
+  AlignedTransitions name key world error value nameEq keyEq trace ->
+  (o20FiberRoleRemainder
+    (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected (registry (blockEnd block))) = [])
+o20LocatedBlockEndRemainderEmpty {name} {key} {value} {world} {error} {nameEq} {selected} block aligned =
+  o20ActiveRemainderObserved nameEq selected (blockEnd block)
+    (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected (registry (blockEnd block))) Refl
+    (o20LocatedBlockEndActive block aligned)
