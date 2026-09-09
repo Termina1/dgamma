@@ -105,3 +105,16 @@ record PlacedBundle
   placedBundleTrail : AvailabilityTrace name key world error value (memberBundle placedMember)
   0 placedImmediatelyAfterRelease : bundleOffset placedMember = anchor
   0 placedCatalogExact : scanRootCatalog (bundleOffset placedMember) placedBundleTrail = placedRootsAt nameEq keyEq trail anchor
+
+||| Forced-root target position: its release-ending anchor plus the number
+||| of earlier roots assigned that same anchor. This preserves bundle order;
+||| non-forced roots have no placement claim from this arithmetic definition.
+public export
+targetPosition : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {0 first, finalState : SystemState name key value world error} ->
+  {0 trace : Transitions first finalState} ->
+  DecEq name -> DecEq key -> AvailabilityTrace name key world error value trace -> Nat -> Nat
+targetPosition nameEq keyEq trail ordinal = fromMaybe 0 (anchorOf nameEq keyEq trail ordinal) +
+  length (filter (\earlier => catalogOrdinal earlier < ordinal &&
+    anchorOf nameEq keyEq trail (catalogOrdinal earlier) == anchorOf nameEq keyEq trail ordinal)
+    (scanRootCatalog 0 trail))
