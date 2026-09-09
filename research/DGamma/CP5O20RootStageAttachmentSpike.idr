@@ -258,3 +258,38 @@ record O20AttachedRootBirth
       original (replayGenerationRenaming rightReplay))
       (MkRegistrationGeneration root (locatedActionOrdinal leftBirth)) =
       MkRegistrationGeneration root (locatedActionOrdinal attachedRootRightBirth))
+
+||| Internal assembly at one retained right root. Right-original uniqueness
+||| identifies its replay origin by ordinal, never by dependent state equality.
+||| Both equations refer to the same explicit right replay occurrence.
+export
+0 o20AttachRootAtRetainedBirth :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {leftFirst, leftFinal, rightFirst, rightFinal, leftNowFirst, leftNowFinal, rightNowFirst, rightNowFinal : SystemState name key value world error} ->
+  {left : Transitions leftFirst leftFinal} -> {right : Transitions rightFirst rightFinal} ->
+  {leftNow : Transitions leftNowFirst leftNowFinal} -> {rightNow : Transitions rightNowFirst rightNowFinal} ->
+  (leftReplay : ActionRegistrationReplayCorrespondence name key world error value left leftNow) ->
+  (rightReplay : ActionRegistrationReplayCorrespondence name key world error value right rightNow) ->
+  O20RootReplayOrdinals name key world error value leftReplay ->
+  O20RootReplayOrdinals name key world error value rightReplay ->
+  (original : RegistrationGenerationBijection name) ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq right ->
+  (root : name) -> (component : Component key value world error) ->
+  (leftBirth : LocatedActionOccurrence (OInsert root Root component) leftNow) ->
+  (rightOriginalBirth : LocatedActionOccurrence (OInsert root Root component) right) ->
+  (generationForward original (MkRegistrationGeneration root
+    (locatedActionOrdinal (replayActionOrigin leftReplay leftBirth))) =
+    MkRegistrationGeneration root (locatedActionOrdinal rightOriginalBirth)) ->
+  (rightBirth : LocatedActionOccurrence (OInsert root Root component) rightNow) ->
+  O20AttachedRootBirth name key world error value leftReplay rightReplay original root component leftBirth
+o20AttachRootAtRetainedBirth leftReplay rightReplay leftLaw rightLaw original unique
+  root component leftBirth rightOriginalBirth matched rightBirth =
+  MkO20AttachedRootBirth rightBirth
+    (trans matched (cong (MkRegistrationGeneration root)
+      (uniqueInsertionPosition unique root Root Root component component
+        rightOriginalBirth (replayActionOrigin rightReplay rightBirth))))
+    (o20RootOrdinalsAttached leftReplay rightReplay leftLaw rightLaw original leftBirth rightBirth
+      (trans matched (cong (MkRegistrationGeneration root)
+        (uniqueInsertionPosition unique root Root Root component component
+          rightOriginalBirth (replayActionOrigin rightReplay rightBirth)))))
