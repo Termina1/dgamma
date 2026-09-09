@@ -61,3 +61,12 @@ export
 o20IdentityFiber (MkFiber component parent retiredFlag table lifecycle) =
   RenamedFibers parent parent retiredFlag retiredFlag table table lifecycle lifecycle
     (o20IdentityParent parent) Refl (o20IdentityLifecycle lifecycle)
+
+||| Both actual lookup outcomes have full identity-renamed controls.
+export
+0 o20IdentityMaybeFiber :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (observed : Maybe (Fiber name key value world error)) ->
+  MaybeFiberRelatedBy identityNameBijection observed observed
+o20IdentityMaybeFiber Nothing = RenamedAbsent
+o20IdentityMaybeFiber (Just fiber) = RenamedPresent (o20IdentityFiber fiber)
