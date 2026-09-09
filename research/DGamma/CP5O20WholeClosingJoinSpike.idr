@@ -407,3 +407,18 @@ export
       (replace {p = LocatedActionOccurrence sourceAction} traceExact occurrence)) =
     locatedActionOrdinal occurrence)
 o20LocatedOrdinalTransport source _ sourceAction _ Refl Refl occurrence = Refl
+
+||| A successful physical action observation is strictly inside its trace.
+||| Used to rule out an after-segment birth preceding a center-segment close.
+export
+0 o20ClosingIndexInsideTrace :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  {first, finalState : SystemState name key value world error} ->
+  (trace : Transitions first finalState) -> (ordinal : Nat) ->
+  (action : Action name key value world error) ->
+  (rawClosingActionAt name key world error value ordinal trace = Just action) ->
+  LT ordinal (transitionCount trace)
+o20ClosingIndexInsideTrace name key world error value NoTransitions ordinal action exact = absurd exact
+o20ClosingIndexInsideTrace name key world error value (MoreTransitions step rest) Z action exact = LTESucc LTEZero
+o20ClosingIndexInsideTrace name key world error value (MoreTransitions step rest) (S ordinal) action exact =
+  LTESucc (o20ClosingIndexInsideTrace name key world error value rest ordinal action exact)
