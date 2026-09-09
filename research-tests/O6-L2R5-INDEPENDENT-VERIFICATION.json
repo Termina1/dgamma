@@ -1,0 +1,96 @@
+{
+  "status": "PASS",
+  "immutablePlanPublishedBeforeValidation": true,
+  "finalPlanLeafBeforeDependent": true,
+  "head": "b2b16fac5c17398c621c90d883bccf425b49d1f7",
+  "timestampUTC": "2026-09-09T04:02:34.972691+00:00",
+  "invocationCount": 55,
+  "passedCount": 46,
+  "failedCount": 9,
+  "interruptedCount": 0,
+  "finalCheckCount": 10,
+  "newDeclarationCount": 33,
+  "newDeclarations": {
+    "research-tests/O6-L2R5-Sources/DGamma/L2R5AnchorTransport.idr": [
+      "anchorBirths",
+      "anchorBirthsSwap"
+    ],
+    "research-tests/O6-L2R5-Sources/DGamma/L2R5CatalogFixtures.idr": [
+      "RuntimeCatalogFixtures",
+      "runtimeCatalogFixtures"
+    ],
+    "research-tests/O6-L2R5-Sources/DGamma/L2R5CurrentCut.idr": [
+      "admittedSwapCurrentCuts",
+      "checkedRootCurrentAvailable",
+      "rootCurrentFromView"
+    ],
+    "research-tests/O6-L2R5-Sources/DGamma/L2R5Extensional.idr": [
+      "DeclaredOccupancy",
+      "RegistryExtensional",
+      "extensionalDeclaredOccupancy",
+      "extensionalMemberKey",
+      "snapshotIntoExtensional"
+    ],
+    "research-tests/O6-L2R5-Sources/DGamma/L2R5ExtensionalFixtures.idr": [
+      "extensionalFixtureEndpoints"
+    ],
+    "research-tests/O6-L2R5-Sources/DGamma/L2R5ExtensionalRetire.idr": [
+      "CheckedExtensionalStep",
+      "checkedRetireAcrossExtensional",
+      "extensionalTransitive",
+      "replaceExtensional",
+      "replaceLookupExtensionalObserved",
+      "retireExtensionalFromView"
+    ],
+    "research-tests/O6-L2R5-Sources/DGamma/L2R5InsertObserved.idr": [
+      "freshInsertEndpointsExtensional",
+      "insertedLookupTwoObserved"
+    ],
+    "research-tests/O6-L2R5-Sources/DGamma/L2R5ProviderObservation.idr": [
+      "ProviderHeadObservation"
+    ],
+    "research-tests/O6-L2R5-Sources/DGamma/L2R5RetirementFrame.idr": [
+      "RetirementProviderFrame",
+      "retirementProviderFrame",
+      "sameOptionalView"
+    ],
+    "research-tests/O6-L2R5-Sources/DGamma/L2R5RootCatalog.idr": [
+      "RootCatalogContains",
+      "RootCatalogEntry",
+      "rootCatalogConsComplete",
+      "rootCatalogHeadComplete",
+      "rootCatalogStep",
+      "rootCatalogTailComplete",
+      "scanRootCatalog",
+      "scanRootLookupComplete"
+    ]
+  },
+  "sourceCommitCount": 33,
+  "allShiftCommitsReceiptAuthenticated": true,
+  "noUnapprovedBundles": true,
+  "noPredecessorEdits": true,
+  "allInvocationsSerialized": true,
+  "allRecordedSnapshotsAndLogsAuthenticated": true,
+  "protocolIncidents": [],
+  "allFinalCurrentSourcesAuthenticated": true,
+  "committedArchiveAndManifestAuthenticated": true,
+  "evidenceArchiveSHA256": "c68adad6c3ccaae43b698da6b2a0933ef4e61208ec4f9157e2553d0da4377cf0",
+  "productionAndFrozenResearchUntouched": true,
+  "maxSampleRSSKiB": 651440,
+  "RSSQualification": "250ms sampled RSS, not continuous peak; chez classified from the first L2R5 invocation",
+  "noUnsafeNewProofs": true,
+  "noOwnCompiler": true,
+  "noOwnHeavyLock": true,
+  "observedNonOwnedHeavyLock": {
+    "lane": "R196-main",
+    "pid": 86408,
+    "timestampUTC": "2026-09-09T03:51:48.540192+00:00",
+    "unit": "A1-through-B-package",
+    "path": "/Users/vyacheslavshebanov/Work/dgamma/"
+  },
+  "noStagedFiles": true,
+  "cleanTrackedTree": true,
+  "noUntrackedDeliverables": true,
+  "manualProofReviewStillRequired": true,
+  "humanProofReviewGateRequired": true
+}
