@@ -1,0 +1,79 @@
+{
+  "sourceBoundary": {
+    "head": "5e9c0f64e4bddb20159e7865b4949aa1307433ea",
+    "timestampUTC": "2026-09-09T14:50:57.962822+00:00",
+    "retainedDeclarations": 50,
+    "retainedModules": 12,
+    "retainedByUnit": {
+      "A": 13,
+      "B": 16,
+      "C": 13,
+      "D": 8
+    },
+    "newAttemptsForbidden": true,
+    "scope": "PARTIAL: actual-word restricted replay and fixed B-packet core-restoration contract instance proved; no produced ForcedRootPhases, full R191 relocated replay, AdmittedDistanceMove or normalizer"
+  },
+  "purpose": "Validation-only; unchanged source hashes; detached, sequential light18GiB; target-only mtime; exactly one Building line each",
+  "validations": [
+    {
+      "unit": "V3",
+      "path": "research-tests/O6-L2R11-Sources/DGamma/L2R11ReleaseAgreement.idr",
+      "sourceSHA256": "904bd9aea2ea7778c937c661af964262417d3f775a4f2a40ccf34fec6ddc8ae9"
+    },
+    {
+      "unit": "V4",
+      "path": "research-tests/O6-L2R11-Sources/DGamma/L2R11PhaseDecode.idr",
+      "sourceSHA256": "3a13ce06c073d3a285705ee7150d863dbfe29489a1fc8b3efc0f6285b1540a17"
+    },
+    {
+      "unit": "V5",
+      "path": "research-tests/O6-L2R11-Sources/DGamma/L2R11WordInventory.idr",
+      "sourceSHA256": "e02373384eb30e36ccd61d40d18a771ba94bff2de40756ca01173eab7fd140ae"
+    },
+    {
+      "unit": "V6",
+      "path": "research-tests/O6-L2R11-Sources/DGamma/L2R11ActualWordReplay.idr",
+      "sourceSHA256": "7d4528db425b9db4f6dfa904d30c925341d2fa48378f0108b1184a971e3bcb2e"
+    },
+    {
+      "unit": "V7",
+      "path": "research-tests/O6-L2R11-Sources/DGamma/L2R11LifecycleSnapshot.idr",
+      "sourceSHA256": "0b20e113c7c7ffcff867ae1b25377bef5ab7866aab8f075cf3c67d838f90986b"
+    },
+    {
+      "unit": "V8",
+      "path": "research-tests/O6-L2R11-Sources/DGamma/L2R11LifecycleDispatch.idr",
+      "sourceSHA256": "d19819058ae14bbb0a987c51c51ee07da25643b056557bb9bcf748f59a33510b"
+    },
+    {
+      "unit": "V9",
+      "path": "research-tests/O6-L2R11-Sources/DGamma/L2R11R191Inventory.idr",
+      "sourceSHA256": "d01775f4d58083b10774273c4efbb491aebc2e7586c927108b48c9549bb6be4f"
+    },
+    {
+      "unit": "V10",
+      "path": "research-tests/O6-L2R11-Sources/DGamma/L2R11LocatedCut.idr",
+      "sourceSHA256": "583a023d510e4b1951a6f27a1e772d9574429b1e2759b47411c87157f980a595"
+    },
+    {
+      "unit": "V11",
+      "path": "research-tests/O6-L2R11-Sources/DGamma/L2R11ClassifierSquare.idr",
+      "sourceSHA256": "739a280dd6574a03d2290837b4b543d8ab0d9efeb366e82c18aed45a747e084b"
+    },
+    {
+      "unit": "V12",
+      "path": "research-tests/O6-L2R11-Sources/DGamma/L2R11OpaqueCore.idr",
+      "sourceSHA256": "0fbbc712bea296c5a13c3e4cc757e71d344b67bd903efedc52bbfe5f85d6a755"
+    },
+    {
+      "unit": "V13",
+      "path": "research-tests/O6-L2R11-Sources/DGamma/L2R11CorePackets.idr",
+      "sourceSHA256": "55ecc62ef740ac142efd20de81986d268234aad6fecb1adddf91430b18265677"
+    },
+    {
+      "unit": "V14",
+      "path": "research-tests/O6-L2R11-Sources/DGamma/L2R11CoreFixture.idr",
+      "sourceSHA256": "e20671a8bdfe8aeefe08df87d2c4063b0801fb3199ba59f9dd87cf36f96c7d7a"
+    }
+  ]
+}

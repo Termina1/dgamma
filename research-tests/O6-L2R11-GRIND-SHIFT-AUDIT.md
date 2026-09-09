@@ -46,3 +46,9 @@ SOURCE PHASE CLOSED at5e9c0f64,14:50:57Z:50 retained declarations in12 modules; 
 ## E1 overlay synchronization
 
 Lane-owned overlay now names every new connector and its exact residue, including the fixed CoreRestorationFixture. Original L2R5 draft, all L2R1–L2R10 sources, every src/ file and protected root document remain byte-unchanged. COMPLETE CURE NOT SIGNABLE; Owner Option A retained. Source types are not existence claims, conditional folds are not native full callback integration, and a local classifier square is not an admitted distance move. Parent owns independent mathematical review.
+
+## E2 committed final plan and evidence tools
+
+Final validation plan V3–V14 covers all12 byte-frozen retained modules in dependency order. Plan must be committed before the coordinator launches any check. No source attempts, body changes, dependency mass-touch, cold/package build or heavy mode. D8 is expected to remain CPU-slow (~21min) but light-RSS; one own detached monitored check at a time, unchanged deadlines.37 compiler-free validator tests PASS on the lane-owned scripts; these are mechanical evidence tests, not human theorem review.
+
+Operational disclosure/correction: the copied early runner and some diagnostic ps outputs retained foreign PID/RSS/command metadata alongside overlap timestamps. This exceeded the strict timestamp-only logging preference; immutable historical evidence is NOT rewritten. No foreign compiler was ever signalled, locked or treated as owned, and no main filesystem was accessed. Before final validations, E2 changes future persisted overlap observations to ONLY first/last UTC timestamps; independent validation accepts the explicitly identified historical format and checks the new format strictly. Also strengthens the source-shape guard to reject explicit ?holes (none exist in any retained or failed source snapshot). These guard-only changes do not alter Idris sources or retrofit any failed result into a PASS.

@@ -27,7 +27,7 @@ assert datetime.datetime.now(datetime.timezone.utc).isoformat() < cutoff
 snapshot = target.read_bytes()
 assert all(line.rstrip() == line for line in snapshot.decode().splitlines()), 'Trailing whitespace: rstrip-only and fresh retry required'
 assert '%default total' in snapshot.decode()
-assert not re.search(r'\b(?:believe_me|assert_total|postulate|partial|with|let)\b', '\n'.join(line.split('--')[0] for line in snapshot.decode().splitlines() if not line.lstrip().startswith('|||'))), 'Forbidden source shape'
+assert not re.search(r'\b(?:believe_me|assert_total|postulate|partial|with|let)\b|\?[A-Za-z_]', '\n'.join(line.split('--')[0] for line in snapshot.decode().splitlines() if not line.lstrip().startswith('|||'))), 'Forbidden source shape or hole'
 bundle=[]
 
 
@@ -76,7 +76,10 @@ for i,(extra,data) in enumerate(bundle):
  bundle_records.append(dict(path=str(extra.relative_to(ROOT)),sourceSHA256=hashlib.sha256(data).hexdigest(),sourceFile=sourcefile,targetMtimeTouch=dict(path=str(extra),oldMtimeNs=old,newMtimeNs=extra.stat().st_mtime_ns,authority='Explicit supervisor D9 phase + body-only target correction + unchanged fixture recheck ruling')))
 
 started=datetime.datetime.now(datetime.timezone.utc).isoformat();clock=time.monotonic()
-maximum=0;interrupted=False;source_mutation=False;foreign={p['pid']:p for p in initial_procs if p['classification']!='lane2'}
+maximum=0;interrupted=False;source_mutation=False
+# E2 correction: only overlap timestamps are persisted. Earlier raw receipts
+# remain immutable and their extra process metadata is disclosed in the audit.
+foreign={p['pid']:dict(firstObservedUTC=started,lastObservedUTC=started) for p in initial_procs if p['classification']!='lane2'}
 print('START',unit,started,' '.join(command),flush=True)
 try:
  with (OUT/(unit+'.log')).open('w') as log:
@@ -97,9 +100,7 @@ try:
     if p['classification']=='lane2':maximum=max(maximum,p['rssKiB'])
     else:
      stamp=datetime.datetime.now(datetime.timezone.utc).isoformat()
-     p['firstObservedUTC']=foreign.get(p['pid'],{}).get('firstObservedUTC',stamp)
-     p['lastObservedUTC']=stamp
-     foreign[p['pid']]=p
+     foreign[p['pid']]=dict(firstObservedUTC=foreign.get(p['pid'],{}).get('firstObservedUTC',stamp),lastObservedUTC=stamp)
    if maximum>18*1024*1024 and not interrupted:stop(signal.SIGTERM,None)
  if not sources_unchanged(target,snapshot,bundle):
   source_mutation=True;interrupted=True
@@ -108,7 +109,7 @@ try:
  bundle_fresh=all(bool(re.search(r'^\d+/\d+: Building DGamma\.'+re.escape(p.stem)+r' \('+re.escape(str(p))+r'\)$',text,re.M)) for p,data in bundle)
  buildingLines=re.findall(r'^\d+/\d+: Building .+$',text,re.M)
  passed=fresh and len(buildingLines)==1 and bundle_fresh and not interrupted and (process.returncode==0 and 'Error:' not in text if not diagnostic else process.returncode!=0 and diagnostic in text and bool(symbol) and symbol in text)
- record=dict(buildingLines=buildingLines,buildingCount=len(buildingLines),bundleSources=bundle_records,bundleFresh=bundle_fresh,unit=unit,path=path,command=command,start=started,end=datetime.datetime.now(datetime.timezone.utc).isoformat(),seconds=time.monotonic()-clock,exit=process.returncode,fresh=fresh,passed=passed,interrupted=interrupted,maxSampleRSSKiB=maximum,sourceSHA256=hashlib.sha256(snapshot).hexdigest(),expectedDiagnostic=diagnostic,symbol=symbol,transcript=text,separateCompilerObservations=list(foreign.values()),heavyLockAcquired=heavy,heavyLockEvents=lock_events,targetMtimeTouch=touch_record,sourceMutationObserved=source_mutation)
+ record=dict(buildingLines=buildingLines,buildingCount=len(buildingLines),bundleSources=bundle_records,bundleFresh=bundle_fresh,unit=unit,path=path,command=command,start=started,end=datetime.datetime.now(datetime.timezone.utc).isoformat(),seconds=time.monotonic()-clock,exit=process.returncode,fresh=fresh,passed=passed,interrupted=interrupted,maxSampleRSSKiB=maximum,sourceSHA256=hashlib.sha256(snapshot).hexdigest(),expectedDiagnostic=diagnostic,symbol=symbol,transcript=text,overlapTimestampsOnly=True,separateCompilerObservations=list(foreign.values()),heavyLockAcquired=heavy,heavyLockEvents=lock_events,targetMtimeTouch=touch_record,sourceMutationObserved=source_mutation)
  (OUT/(unit+'.json')).write_text(json.dumps(record,indent=2)+'\n')
  with (OUT/'ledger.jsonl').open('a') as ledger:ledger.write(json.dumps(record)+'\n')
  print(text,flush=True);print('RESULT',json.dumps({k:v for k,v in record.items() if k!='transcript'}),flush=True)
