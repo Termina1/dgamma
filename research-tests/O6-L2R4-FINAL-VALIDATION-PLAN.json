@@ -1,0 +1,118 @@
+[
+  {
+    "unit": "V1",
+    "path": "research-tests/O6-L2R4-Sources/DGamma/L2R4AnchorMeasure.idr",
+    "sourceHash": "3419e8fa0ad67a6aa42f5765fd382b6e4faf6426c6d24fd11c30b3c2e21f3ef7",
+    "dependsOn": []
+  },
+  {
+    "unit": "V2",
+    "path": "research-tests/O6-L2R4-Sources/DGamma/L2R4InsertReplay.idr",
+    "sourceHash": "c83a6adc123f46fc26af0050327660bb1f899fdfe692d8e809902282c7094ae0",
+    "dependsOn": []
+  },
+  {
+    "unit": "V3",
+    "path": "research-tests/O6-L2R4-Sources/DGamma/L2R4Localization.idr",
+    "sourceHash": "58671f151bfabb0cd4ced7200fee38a9ea9703c5af27dc3eef99f023a7edd861",
+    "dependsOn": []
+  },
+  {
+    "unit": "V4",
+    "path": "research-tests/O6-L2R4-Sources/DGamma/L2R4OrdinalObservation.idr",
+    "sourceHash": "2f334637fb875a5fc77fd260a2275014f7917acbe5d28ebbc7a10a837ab1788f",
+    "dependsOn": []
+  },
+  {
+    "unit": "V5",
+    "path": "research-tests/O6-L2R4-Sources/DGamma/L2R4ReplaceCommute.idr",
+    "sourceHash": "06a2945163a2936dac730cee408029c7eb287a8e287d3cb6704df29a6ccc9af7",
+    "dependsOn": []
+  },
+  {
+    "unit": "V6",
+    "path": "research-tests/O6-L2R4-Sources/DGamma/L2R4AnchorDecrease.idr",
+    "sourceHash": "a7468f9e5328750e56d3ff94c7994b576a9acad6ec193dc6ca6789b5657c1ca8",
+    "dependsOn": [
+      "research-tests/O6-L2R4-Sources/DGamma/L2R4AnchorMeasure.idr"
+    ]
+  },
+  {
+    "unit": "V7",
+    "path": "research-tests/O6-L2R4-Sources/DGamma/L2R4AnchorNative.idr",
+    "sourceHash": "817d7d039d8af851708fec367e48b1e3655dd8f304afc1647c8d36dc11b565e2",
+    "dependsOn": [
+      "research-tests/O6-L2R4-Sources/DGamma/L2R4AnchorMeasure.idr"
+    ]
+  },
+  {
+    "unit": "V8",
+    "path": "research-tests/O6-L2R4-Sources/DGamma/L2R4CatalogCoverage.idr",
+    "sourceHash": "b47ae3158397937bb98eb110c465b8091c0106ee84bd966ea3c35e0a62c6cf42",
+    "dependsOn": [
+      "research-tests/O6-L2R4-Sources/DGamma/L2R4OrdinalObservation.idr"
+    ]
+  },
+  {
+    "unit": "V9",
+    "path": "research-tests/O6-L2R4-Sources/DGamma/L2R4NoStraddling.idr",
+    "sourceHash": "c007ec5f4e49316bcfcd50f3ae56e26b3c678bfce5cb2f2253d86c36712a40dd",
+    "dependsOn": [
+      "research-tests/O6-L2R4-Sources/DGamma/L2R4Localization.idr",
+      "research-tests/O6-L2R4-Sources/DGamma/L2R4OrdinalObservation.idr"
+    ]
+  },
+  {
+    "unit": "V10",
+    "path": "research-tests/O6-L2R4-Sources/DGamma/L2R4RetireReplay.idr",
+    "sourceHash": "5a48068e8328584bd43f9e218a25e9229120176197961bf653ba8bbd345185f8",
+    "dependsOn": [
+      "research-tests/O6-L2R4-Sources/DGamma/L2R4ReplaceCommute.idr"
+    ]
+  },
+  {
+    "unit": "V11",
+    "path": "research-tests/O6-L2R4-Sources/DGamma/L2R4AnchorFixtures.idr",
+    "sourceHash": "f8e4ad029fd163fdb6f1fa156a7c519a232b5267cb146bd5389720cef6246a56",
+    "dependsOn": [
+      "research-tests/O6-L2R4-Sources/DGamma/L2R4AnchorDecrease.idr",
+      "research-tests/O6-L2R4-Sources/DGamma/L2R4AnchorMeasure.idr",
+      "research-tests/O6-L2R4-Sources/DGamma/L2R4AnchorNative.idr"
+    ]
+  },
+  {
+    "unit": "V12",
+    "path": "research-tests/O6-L2R4-Sources/DGamma/L2R4FixtureCoverage.idr",
+    "sourceHash": "065f0b1e99f8c15d260d74b5a0de219df497db907bd7f1ee6b1db37585e47ba1",
+    "dependsOn": [
+      "research-tests/O6-L2R4-Sources/DGamma/L2R4CatalogCoverage.idr",
+      "research-tests/O6-L2R4-Sources/DGamma/L2R4OrdinalObservation.idr"
+    ]
+  },
+  {
+    "unit": "V13",
+    "path": "research-tests/O6-L2R4-Sources/DGamma/L2R4FixtureSeparation.idr",
+    "sourceHash": "0ee67b66a7513e69b8c295595aadba2919e304b7c83ecbee2c2f3b0b9d0e7b92",
+    "dependsOn": [
+      "research-tests/O6-L2R4-Sources/DGamma/L2R4NoStraddling.idr",
+      "research-tests/O6-L2R4-Sources/DGamma/L2R4OrdinalObservation.idr"
+    ]
+  },
+  {
+    "unit": "V14",
+    "path": "research-tests/O6-L2R4-Sources/DGamma/L2R4OrchestrationDispatcher.idr",
+    "sourceHash": "3524afd6eb91b5f26913d9410b5662e9e3393c5a349ef07c184307250773c515",
+    "dependsOn": [
+      "research-tests/O6-L2R4-Sources/DGamma/L2R4InsertReplay.idr",
+      "research-tests/O6-L2R4-Sources/DGamma/L2R4RetireReplay.idr"
+    ]
+  },
+  {
+    "unit": "V15",
+    "path": "research-tests/O6-L2R4-Sources/DGamma/L2R4GapApplications.idr",
+    "sourceHash": "06289ebf5c5056fb69a2ea6135cacbcc54ad1d33011ea28812300946943cbdb0",
+    "dependsOn": [
+      "research-tests/O6-L2R4-Sources/DGamma/L2R4FixtureSeparation.idr"
+    ]
+  }
+]
