@@ -3,7 +3,7 @@
 Branch: `cp5-thm73-scoping`
 
 
-## Current main checkpoint — R204 source-frozen checked PARTIAL
+## Current main checkpoint — R204 final validated checked PARTIAL
 
 Source freeze `3e6d8ff0`; Unit0 repairs `af2df90b`/`c254d5a1` precede B1.
 B14/14 and A16/16 exhausted their authorized caps;29 new total erased support
@@ -34,9 +34,10 @@ Authorized V0-CACHE is unchanged-source validation, not a fourth proof attempt.
    epsilon.
 3. **C INELIGIBLE**, unattempted. A/B partial; no macro body or statement changes.
    Census remains **4=1/2/0/0/1**. All frozen hashes/bridge manifest exact.
-4. **D1:** immutable import-closed ALL181 inherited+8 new source targets +seeded
-   package=190 final checks, no exclusions.37 compiler-free adversarial tests
-   PASS; direct final validation/archive/owner+reviewer gate pending.
+4. **D2:** import-closed ALL181 inherited+8 new source targets +seeded
+   package=190/190 final expected outcomes PASS, no exclusions.37 compiler-free
+   adversarial tests PASS; raw archive/independent machine reports published.
+   Owner+reviewer gate pending; no human approval inferred from machine checks.
 
 Detailed proof correspondence, raw invocation accounting and open premises:
 `research-tests/O6-R204-DECLARATIONS.md`, `O6-R204-MICRO-UNITS.md`,
@@ -4180,3 +4181,27 @@ R203 D4: owner ACCEPTED a1abf6d1 as checked partial and authorized artifact-only
 seal. Independent read-only review launched; standing no-let-alias style review
 of A5 bindings/A13 helper may schedule an R204 gated body-only repair. No current
 source repair, compiler recheck, macro-closure claim or proof-budget extension.
+
+## A15 exhausted — probable cause
+
+Source-level inspection finds that the whole-path projections
+`o20OccurrenceHistoryLeftPath` and `o20OccurrenceHistoryRightPath` in
+`CP5O20OccurrenceStampedHistorySpike` are `export` (approximately218/241),
+whereas the stamped-edge projections are `public export`. This opacity
+boundary is consistent with End conversion staying stuck despite direct
+imports; the parent accepts it as a **source-level diagnosis only**, not a
+new successful proof or an independently tested compiler result. No current
+source/type/body/visibility change and no fourth attempt.
+
+R205 handoff (parent steering): **visibility-only companion (export → public
+export, no type/body change) on those two projections is a candidate FIRST
+micro-unit for R205 under gate (recorded V on the module + import-closed
+re-validation of its dependents), after which the two-path append equality
+may be re-stated ONCE as a NEW micro-unit (different premises: reducible
+projections), not as a retry of the exhausted statement.** This means a
+changed elaboration/visibility context, not strengthened mathematical or
+runtime assumptions. It is a candidate for a future prior gate, NOT approval
+to edit/retry during R204. The current full and narrowed left-only statements
+remain exhausted and fully reverted. Exact hypothetical14-byte visibility
+delta and source-pinned dependent closure: O6-R204-R205-VISIBILITY-CANDIDATE.json.
+The candidate was computed in memory only; no Idris file was written.

@@ -4832,3 +4832,102 @@ B work A, retry exhausted statements, add hidden ALL-name-cut premises or
 claim Thm73 from lifecycle role-word/activation chronology equality. Full29-name
 correspondence, failures, repair receipts and freeze hashes are in the R204
 research-tests artifacts.
+
+#### R204 author review qualifications (D2 documentation, no source change)
+
+A8's output history is labelled by the actual **canonical/permuted physical
+words**, with both ORIGINAL insertion attachments also returned. A12/A13 are
+specifically ORIGINAL-chronology histories; A6 is generic over its actual
+supplied words. These are not interchangeable whole-word histories. The README
+A8 row is clarified accordingly. `o20SynchronizeCanonicalHistoriesModulo` is
+the desired producer name, NOT a declaration currently present; the actual
+stated goal is `o20CanonicalSynchronizationGoalModulo`. The table now points
+to that existing declaration, rather than a planned implementation.
+
+B4's only new local `where 0 atObservation` is a **structural recursive
+eliminator**, not a let alias: it observes the source lookup at an exact
+chain node, and its retained case calls the outer theorem on the structurally
+smaller real deletion derivation. Keeping it local exposes that size-decrease
+to totality checking and avoids introducing a separate recursion-callback API.
+No local constants/aliases or new caller-supplied induction hypothesis were
+added. R203 A13's independent structural local recursion was not edited.
+
+No escape hatch or new mathematical/paper inconsistency was discovered in
+this review. A15's failed conversion is explicitly unresolved elaboration,
+not proof that the path-append equation is false. Fixtures use real nonempty
+traces but identity matching; they do not by themselves exercise nontrivial
+alpha-renaming or fabricate an independent canonical schedule/deletion chain.
+Theorems about those arbitrary inputs are checked parametrically; end-to-end
+full-cut/D5/convergence construction still needs its missing producers.
+
+## A15 exhausted — probable cause
+
+Source-level inspection finds that the whole-path projections
+`o20OccurrenceHistoryLeftPath` and `o20OccurrenceHistoryRightPath` in
+`CP5O20OccurrenceStampedHistorySpike` are `export` (approximately218/241),
+whereas the stamped-edge projections are `public export`. This opacity
+boundary is consistent with End conversion staying stuck despite direct
+imports; the parent accepts it as a **source-level diagnosis only**, not a
+new successful proof or an independently tested compiler result. No current
+source/type/body/visibility change and no fourth attempt.
+
+R205 handoff (parent steering): **visibility-only companion (export → public
+export, no type/body change) on those two projections is a candidate FIRST
+micro-unit for R205 under gate (recorded V on the module + import-closed
+re-validation of its dependents), after which the two-path append equality
+may be re-stated ONCE as a NEW micro-unit (different premises: reducible
+projections), not as a retry of the exhausted statement.** This means a
+changed elaboration/visibility context, not strengthened mathematical or
+runtime assumptions. It is a candidate for a future prior gate, NOT approval
+to edit/retry during R204. The current full and narrowed left-only statements
+remain exhausted and fully reverted. Exact hypothetical14-byte visibility
+delta and source-pinned dependent closure: O6-R204-R205-VISIBILITY-CANDIDATE.json.
+The candidate was computed in memory only; no Idris file was written.
+
+## Status
+
+### R204 D2 — final validated checked PARTIAL
+
+## D2 — final validation complete, checked PARTIAL
+
+**190/190 final expected outcomes PASS**: ALL181 inherited main sources +8 new
+=189 source targets (182 positives,7 exact-diagnostic+symbol negatives), plus
+seeded package. Zero path exclusions; every invalidated/planned import checked
+in topological order. PlanSHA0ecb6cf829d07bc1a172eb5d0746fc6d1910e7ad8582f0390e559a6a540041ab.
+Validation began21:39:30Z, completed 2026-09-09T22:21:11.007075+00:00; well before the shift
+cutoffs. This is seeded, NOT cold; unvalidated source-pinned seeds are not
+fresh-PASS claims. All9 changed Idris files have a final exact-source check.
+
+All native evidence: **228 invocations =222 expected PASS +6 rejected
+snapshots**. This includes35 A/B proof checks,2 P1 repair checks,1 authorized
+unchanged-source V0-CACHE and190 final checks. A3-2 is a genuine PASS superseded
+only by rstrip; A15 remains three failures, fully reverted.29 retained new
+declarations +1 style-only source repair =30 guarded source commits.37
+compiler-free adversarial tests PASS. Final independent machine authentication,
+frozen audit and resource audit PASS; no new proof or macro closure follows
+from these metadata checks. Author review is separate from independent human
+review; owner/reviewer gate still pending at D2 publication.
+
+RSS: maximum sampled RSS over command-matching idris2 processes (single-process compiler; not an aggregate process-tree total; not OS high-water).
+LocalDiamond maximum 50,540,272KiB <52GiB;
+other/UniqueOrdinal maximum 44,805,616KiB <48GiB.
+No source mutation, resource stop, same-lane compiler overlap or unexpected
+dependency Building. 123 invocations
+observed cross-lane overlap, logged by UTC timestamps ONLY; no lane2 actions
+or shared lock/window operations. Zero samples mean no live sample, not zero
+actual peak. Final native compiler has exited; no staged files.
+
+A/B remain PARTIAL at their caps, C **INELIGIBLE** and unattempted; unchanged
+census **4=1/2/0/0/1**. Production/frozen hashes and bridge manifest remain
+exact. B still needs full controls/absent-domain ALL-name rebase and actual-chain
+D5. A still needs canonical-prefix activation-position transport, unconditional
+predecessor cut, genuine skip integration, whole histories and synchronization.
+No global zip/whole-word coverage or whole canonical history is claimed.
+
+D2 publishes the anchored raw archive, per-module measurements, exact compiler
+ledger, reviewed source/repair correspondence and machine reports. Its anchor
+precedes publication/final-gate receipts; those future receipts are explicitly
+not claimed inside that archive. The inventory has298 entries:187 rechecked
++2 auxiliary inherited source targets =189 direct sources;111 other inventory
+entries remain NOT rechecked. R205 visibility companion is a future-gated
+candidate ONLY; no current Idris visibility/type/body change.

@@ -63,4 +63,48 @@ The R203 milestone is ratified by the supervisor AFTER these two repairs land. B
 - C:0/6, INELIGIBLE; body and statements unchanged, census4=1/2/0/0/1.
 - D1: source freeze, repair hashes, compiler-free contracts, immutable ALL181+8+package plan, final-validation tools. D2–D4 reserved evidence publication, owner/reviewer gate and seal; no proof work.
 
-Full declaration correspondence: O6-R204-DECLARATIONS.md. Raw snapshots/logs/receipts: /tmp/dgamma-r204 (final archive pending).
+Full declaration correspondence: O6-R204-DECLARATIONS.md. Raw snapshots/logs/receipts: O6-R204-COMPILER-EVIDENCE.tar.gz (pre-publication anchor; later artifact receipts follow).
+
+## D2 — final validation complete, checked PARTIAL
+
+**190/190 final expected outcomes PASS**: ALL181 inherited main sources +8 new
+=189 source targets (182 positives,7 exact-diagnostic+symbol negatives), plus
+seeded package. Zero path exclusions; every invalidated/planned import checked
+in topological order. PlanSHA0ecb6cf829d07bc1a172eb5d0746fc6d1910e7ad8582f0390e559a6a540041ab.
+Validation began21:39:30Z, completed 2026-09-09T22:21:11.007075+00:00; well before the shift
+cutoffs. This is seeded, NOT cold; unvalidated source-pinned seeds are not
+fresh-PASS claims. All9 changed Idris files have a final exact-source check.
+
+All native evidence: **228 invocations =222 expected PASS +6 rejected
+snapshots**. This includes35 A/B proof checks,2 P1 repair checks,1 authorized
+unchanged-source V0-CACHE and190 final checks. A3-2 is a genuine PASS superseded
+only by rstrip; A15 remains three failures, fully reverted.29 retained new
+declarations +1 style-only source repair =30 guarded source commits.37
+compiler-free adversarial tests PASS. Final independent machine authentication,
+frozen audit and resource audit PASS; no new proof or macro closure follows
+from these metadata checks. Author review is separate from independent human
+review; owner/reviewer gate still pending at D2 publication.
+
+RSS: maximum sampled RSS over command-matching idris2 processes (single-process compiler; not an aggregate process-tree total; not OS high-water).
+LocalDiamond maximum 50,540,272KiB <52GiB;
+other/UniqueOrdinal maximum 44,805,616KiB <48GiB.
+No source mutation, resource stop, same-lane compiler overlap or unexpected
+dependency Building. 123 invocations
+observed cross-lane overlap, logged by UTC timestamps ONLY; no lane2 actions
+or shared lock/window operations. Zero samples mean no live sample, not zero
+actual peak. Final native compiler has exited; no staged files.
+
+A/B remain PARTIAL at their caps, C **INELIGIBLE** and unattempted; unchanged
+census **4=1/2/0/0/1**. Production/frozen hashes and bridge manifest remain
+exact. B still needs full controls/absent-domain ALL-name rebase and actual-chain
+D5. A still needs canonical-prefix activation-position transport, unconditional
+predecessor cut, genuine skip integration, whole histories and synchronization.
+No global zip/whole-word coverage or whole canonical history is claimed.
+
+D2 publishes the anchored raw archive, per-module measurements, exact compiler
+ledger, reviewed source/repair correspondence and machine reports. Its anchor
+precedes publication/final-gate receipts; those future receipts are explicitly
+not claimed inside that archive. The inventory has298 entries:187 rechecked
++2 auxiliary inherited source targets =189 direct sources;111 other inventory
+entries remain NOT rechecked. R205 visibility companion is a future-gated
+candidate ONLY; no current Idris visibility/type/body change.
