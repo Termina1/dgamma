@@ -40,9 +40,58 @@ one-origin two-step parent fixture is proposed; NOT the excluded R178 mismatch
 or the exhausted R192 retirement relocation. No counterexample/full capital or
 synchronization producer is yet claimed. A analysis commit1/2; D unused.
 
+## Source freeze / D1 (the initial checkpoint above is historical)
+
+Proof-source HEADae510d70, analysis/ruling HEADb4bf9249. Exactly7 new modules,
+41 retained declarations: A25 of26 attempted micro-units; B16 of16. A has33
+actual compiler invocations (26 PASS,7 rejected), B16 first-attempt PASS.
+S0-1/SV1-1 add2 fresh baseline/revert checks:51 development invocations,
+44 compiler PASS,7 rejected. Caps count MICRO-UNITS, not native invocations;
+both figures are explicit. A3 alone STOP3/3, fully reverted; no fourth/reframed
+attempt. A20-1 really typechecked, but the guard refused an EOF blank line;
+only whitespace changed before A20-2 fresh PASS. No earlier PASS was laundered
+as a committed proof. A analysis docs2/2; mandatory stop audit separate; D1/4.
+
+A proves old-goal birth-ordinal necessity, the owner-approved occurrence path
+family/finite cut folds, exact-conjugated conditional history-cut consumer,
+R191 eleven-edge identity path+scans, terminal zero-edge R193/R195 retention,
+and equal counts of the TWO PROJECTED native paths only. New goal is a TYPE;
+accepted-input synchronization producer, supplied-word ordered coverage and
+exchange remain OPEN. Old goal/fold unchanged, now superseded candidates.
+
+B produces an executable one-trace ALL-name original/canonical MaybeFiber
+observer at both actual lookups and library Dec/equation, accepted canonical
+and operational-replay absence from original Nothing, and exact-current-map
+controls CONDITIONAL on BOTH original absences. Native removed fixture is
+conditional on canonical capital. Raw closing identity relation+observer is
+NOT accepted independent canonical capital. Present-vestigial disappearance
+and opposite current-image canonical absence remain OPEN. No D5 application
+or retry. C0/ineligible; no convergence proof or protected statement change.
+
+Full plan frozen SHA256
+ad788a9f9391bd9998c2987d07d7aa42857cc79fd286ed4a2a180ddbf2477ec0:
+143 inherited sources (136+7 R197),7 new, seeded package =151 checks,150 source
+targets,7 exact expected negatives. No inherited applicable path excluded;
+all planned imports ordered, including2 historical variants outside inventory.
+252 inherited inventory paths remain the invalidation domain; untouched seeds
+outside the plan are pinned, not falsely called fresh PASS. Final validation
+NOT YET launched at D1. Prior direct final total~2259s is an estimate, not a
+current measurement or a cold-build claim.
+
+21 compiler-free adversarial guard tests PASS. Pre-validation independent
+machine authentication checks all51 native records,41 source receipts, all
+prior committed code lines retained, A3 full revert, A20 whitespace-only repair,
+all planned source hashes, topo closure and actual lock intervals. It is NOT
+independent human proof review. All native resource/mutation/extra-Building
+stops are empty. Source-freeze production/frozen/census audit PASS; census
+4=1/2/0/0/1;207 seeded package TTCs retained. LocalDiamond/DeletionChain whole
+bytes, adjacent1470/1154 bytes, O191286 bytes, A11/four protected declarations,
+selector, production and old superseded candidates unchanged. All seven new
+sources total, no holes/escapes/with/let/prefix/frozen deletion proof calls.
+
 ## Status
 
-Analysis in progress; zero new proof declarations. A synchronization OPEN,
-B original->canonical/replayed all-name controls OPEN, C0/ineligible. Final
-inherited143-source+package validation, fresh hashes/census, ledger/archive/
-verification and owner/reviewer gates pending. No changed frozen/source bytes.
+Checked PARTIAL; no extension requested. A/B proof work frozen at caps,
+C untouched. D1 prepares complete inherited validation, documentation and
+machine auditors; D2 validation close, D3 archive, D4 independent archive/final
+gate remain. Required independent human review is parent-owned and pending.

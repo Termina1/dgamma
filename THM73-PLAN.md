@@ -3871,3 +3871,29 @@ Independent human review is parent-owned and begins after E4; it is not
 claimed complete. No further source/native work, clock extension or archive
 rewrite. The revival proof window was closed by ruling, not a proved missed
 UTC deadline. E4 closes this authorized shift cleanly.
+
+
+## R198 source freeze — same four-hole frontier, new bounded partial results
+
+A capped:26 attempted units/33 actual invocations,25 retained; A3 native
+repeated-tag trace STOP3/3 fully reverted. Owner-approved occurrence goal repair
+is justified by a proved old-goal final-live birth-ordinal necessity, NOT a
+compiled accepted shuffle countermodel. New exact-conjugated goal is a TYPE;
+finite fold/conditional history-cut consumer and R19111-edge identity+scan
+fixture are proved. Closing R193/R195 fixture is zero-edge terminal retention,
+not full canonical synchronization. Projected native-path count equality does
+not equate supplied words. Whole-word/per-actor coverage/exchange remain OPEN.
+
+B capped:16 first-attempt PASS. Executable one-trace all-name MaybeFiber
+observations own primitive lookups/Dec/equations; actual original absence now
+survives canonicalization and operational permutation. Both-original-absent
+controls at exact expectedBridgeBijection are conditional on BOTH absences.
+Present-vestigial canonical disappearance and opposite current-image absence
+remain OPEN. Raw identity CanonicalEndpointRelation fixture is not independent
+canonical capital and proves why the endpoint predicate alone is insufficient.
+
+C0/ineligible. R197 D5 generic consumer remains exhausted; no new application or
+retry. Old goal/fold, all frozen contracts/holes/proof bodies and production
+unchanged. No new hole/escape. Source-freeze audits and21 guard tests PASS;
+final151-check validation (143 inherited +7 new sources + seeded package) pending
+at D1. D1/4 docs; required human review remains parent-owned. No extension.

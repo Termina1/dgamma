@@ -908,3 +908,21 @@ Independent human review is parent-owned and begins after E4; it is not
 claimed complete. No further source/native work, clock extension or archive
 rewrite. The revival proof window was closed by ruling, not a proved missed
 UTC deadline. E4 closes this authorized shift cleanly.
+
+
+### R198 research correspondence (Thm 73 frontier; production unchanged)
+
+| Paper target | Idris file:name | Status |
+|---|---|---|
+| Thm73 synchronization specification | `CP5O20StampedOrdinalNecessitySpike:o20SynchronizedScanForwardOrdinalFixed` | Proved necessary birth-ordinal law for the old superseded candidate; no accepted countermodel |
+| Thm73 internal history synchronization | `CP5O20OccurrenceStampedHistorySpike:O20OccurrenceStampedHistory`, `o20OccurrenceStampedHistoryCut` | Actual occurrence-attached native family and finite cut fold proved; whole-word ordered coverage unproduced |
+| Thm73 actual conjugated maps | `CP5O20CanonicalSynchronizationModuloSpike:o20CanonicalSynchronizationGoalModulo`, `o20CanonicalModuloHistoryCut` | Goal TYPE and conditional cut consumer; synchronization producer OPEN |
+| Thm73 original/canonical/replayed controls | `CP5O20CanonicalMaybeControlSpike:o20ObserveCanonicalControls`, `o20CanonicalAbsentFromOriginal`, `o20PermutedAbsentFromOriginal` | Executable one-trace all-name observation and actual absence transport proved; cross-trace all-name rebase PARTIAL |
+| Thm73 removed class | `CP5O20CanonicalMaybeControlSpike:o20BothOriginalAbsentReplayedControls` | Exact current-map controls proved conditional on BOTH original absences |
+| Thm73 regression fixtures | `R198OccurrenceStampedHistoryPositive`, `R198CanonicalMaybeControlPositive` | R191 native11-edge identity+scans; terminal closing retention; conditional removed and raw-identity present-vestigial boundary (not independent canonical capital) |
+| Thm73 convergence | `CP5ConfluenceCrossTraceSpike:canonicalSchedulesConvergeSpike` | Unchanged hole; C not attempted because A/B producers remain OPEN |
+
+R198 source freeze:41 new research declarations, no new holes/escapes,
+production unchanged.21 guard tests PASS; complete151-check inherited+new seeded
+validation pending at D1. See `research-tests/O6-R198-GRIND-SHIFT-AUDIT.md` and
+`O6-R198-CANONICAL-CONTROLS-ANALYSIS.md` for exact partial claims and limitations.
