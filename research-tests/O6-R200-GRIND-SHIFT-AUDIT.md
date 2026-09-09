@@ -123,3 +123,49 @@ Requested but not newly stated as source holes: global some-node coverage,
 ALL-NAME cut/bridge, whole modulo synchronization and convergence. No escape
 hatch introduced. Next semantic work is the exact historical deletion transport
 and actual canonical Insert position/occurrence attachment, after reviewer gate.
+
+## D3 —full validation and append-only evidence complete
+
+At **2026-09-09T14:53:22Z**, ALL **165 source targets + seeded package =166**
+planned checks achieved the expected outcome, including seven exact expected
+negatives. No inherited path excluded. Across the shift: **212 invocations,
+212 expected outcomes, zero rejected attempts**; B24/A20 all PASS1. The165 source
+checks are not165 positive declarations: seven are diagnostic-negative fixtures.
+Seeded package V166 PASS46.974s with no Building lines; this is NOT a cold or
+207-fresh-production-module claim. Final native checks consumed2397.122s.
+
+Read-only machine source/log/receipt/plan authentication PASS; this is not
+independent human review.45 source receipts=44 one-declaration commits+one
+exact authorized D1 comment commit. Both documentation/artifact receipts before
+publication are authenticated. Evidence contracts21+7 PASS.
+
+Resource audit: LocalDiamond sampled50,540,832KiB under52GiB; unchanged approved
+UniqueRawNameOrdinalCapital sampled44,809,632KiB under48GiB; all other main checks
+under48GiB.13 invocations had no live RSS capture (zero is NOT a zero peak).
+No own-compiler overlap, resource stop, source mutation, interruption or extra
+Building lines. Timestamp-only foreign overlaps:153 invocations/1468 samples;
+full timestamp log in `O6-R200-RESOURCE-AUDIT.json`. No lock-path operations or
+foreign compiler signals, no lane-2 worktree access.
+
+Fresh source freeze audit: production byte-identical to34b21c9; CP3 blob
+2c697e532e83989de8591fa6a4378747c6a501c0; census4=1/2/0/0/1. All five protected
+modules, O19 closed body1286 bytes and adjacent suffix1470/statement1154 bytes
+match their frozen hashes. ReplayedCanonicalEndpointBridge3243 bytes hashes
+ac5304c1a6a6e0cea988eac4b0dcdb5756fcf1b67ede7d0db6a4d723c73b695d,
+exactly the R192 A11 surface manifest. No production/API or protected statement
+change was used to obtain these supporting proofs.
+
+Archive `O6-R200-COMPILER-EVIDENCE.tar.gz` SHA256
+`e14a7c174edd9e086f1e92da4f7e4063e7191ecda17e411caafebf8391834d9f`; 1086 files verified byte-for-byte,
+including212 raw logs/source snapshots/records and45 source receipts. Its anchor
+is `63011ee17572018ce36b4a505d062135b5e9697c`, deliberately BEFORE publication and final-gate commits;
+those future receipts and post-creation verification are not claimed inside it.
+Consolidated root inventory274=266 inherited+8 new:163 directly checked entries
+plus2 auxiliary inherited targets=165 sources;111 legacy/unclassified inventory
+entries remain NOT rechecked. Historical cost fields are explicitly historical.
+
+**Milestone remains checked PARTIAL.** Universal block-end residual elimination
+is closed; global discarded-selection/all-name bridge and physical Insert/whole
+modulo history synchronization are not. C0/ineligible. No new hole/escape,
+42 proved functions +2 indexed-family declarations. Final owner/reviewer gate
+follows post-publication clean-tree authentication; no new proof attempts.

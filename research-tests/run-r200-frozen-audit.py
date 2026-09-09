@@ -25,6 +25,12 @@ paths={p:'research/DGamma/CP5Confluence'+p+'Spike.idr' for p in parts}
 contract_states={path:sha((ROOT/path).read_bytes()) for path in paths.values()}
 for part,path in paths.items():
     assert (ROOT/path).read_bytes()==subprocess.check_output(['git','show',START+':'+path],cwd=ROOT), part
+bridge_manifest=json.loads((ROOT/'research-tests/O6-R192-A11-SURFACE-MANIFEST.json').read_text())
+bridge_text=(ROOT/paths['RenamingComposition']).read_text()
+bridge_record='record ReplayedCanonicalEndpointBridge\n'+bridge_text.split('record ReplayedCanonicalEndpointBridge\n',1)[1].split('\n\n||| Record-style compatibility eliminator',1)[0]
+assert len(bridge_record.encode())==bridge_manifest['newRecordBytes'] and sha(bridge_record.encode())==bridge_manifest['newRecordSHA256']
+assert sha(bridge_record[:bridge_record.index('  0 replayedGeneratedBirthMatched :')].encode())==bridge_manifest['unchangedFirstThreeFieldsSHA256']
+assert bridge_manifest['items'][0]['replacements'][0]['newText'] in bridge_record
 old_frozen=json.loads((ROOT/'research-tests/O6-R199-FROZEN-AUDIT.json').read_text())
 for part in ['LocalDiamond','DeletionChain']:
     assert contract_states[paths[part]]==old_frozen['authorizedContractSourceSHA256'][paths[part]]
@@ -72,6 +78,7 @@ allowed=all(p.startswith('paper/') or p=='review-o6-body-adversarial.md' for p i
 clean=not git('diff','--name-only')
 if '--allow-artifacts' not in sys.argv: assert allowed and clean
 record=dict(timestampUTC=datetime.datetime.now(datetime.timezone.utc).isoformat(),head=git('rev-parse','HEAD').strip(),baseline=START,productionDiffVs34b21c9='empty',CP3Blob='2c697e532e83989de8591fa6a4378747c6a501c0',authorizedContractSourceSHA256=contract_states,O19BodyBytes=len(body.encode()),O19BodySHA256=sha(body.encode()),adjacentFullBytes=1470,adjacentFullSHA256=full,adjacentStatementBytes=1154,adjacentStatementSHA256=statement,holes=holes,census=[len(holes[p]) for p in parts],seeds='207/207 retained (presence, not a fresh package PASS)',protectedDeclarations=protected,prohibitedAdditions=prohibited,changedIdrisFiles=changed,noMainCompiler=True,lane2Compilers=[],foreignCompilerObservedAtUTC=([datetime.datetime.now(datetime.timezone.utc).isoformat()] if lane2 else []),noStagedFiles=True,cleanTrackedTree=clean,allowedUntrackedOnly=allowed,untracked=untracked,reviewSHA256=review)
+record['ReplayedCanonicalEndpointBridge']=dict(recordBytes=len(bridge_record.encode()),recordSHA256=sha(bridge_record.encode()),R192ManifestExact=True)
 record['supersededCandidateSourceSHA256']={p:sha((ROOT/p).read_bytes()) for p in ['research/DGamma/CP5O20CanonicalSynchronizationGoalSpike.idr','research/DGamma/CP5O20StampedHistoryFoldSpike.idr']}
 def declarations(source):
     return set(re.findall(r'^(?:[01] )?([A-Za-z_]\w*)\s*:',source,re.M)+re.findall(r'^(?:record|data)\s+([A-Za-z_]\w*)',source,re.M))

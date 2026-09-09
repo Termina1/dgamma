@@ -4039,3 +4039,16 @@ owner's cross-lane lock abolition remains effective. Required independent read-
 only human review is being launched by the parent scoped to ≤a7e44e75 and is
 NOT claimed complete. All44 source additions are already within that scope.
 D4/4; stand down cleanly. Any further proof work requires a separate owner task.
+
+
+## R200 D3 —validation completed, producer frontier unchanged
+
+ALL165 planned source checks+seeded package166 PASS (seven exact negatives),
+212 expected outcomes overall.42 functions+2 indexed families; production and
+protected statements unchanged, census4. New A block-end residual elimination
+is fully proved; B global selection/ALL-NAME bridge and A physical canonical
+Insert/whole-history producers remain open. C0 remains ineligible. Next B work
+is o20DeletionRetainedClosingBirth, then actual-chain selection; next A work is
+canonical physical Insert position/origin attachment and whole modulo folds.
+No re-budget, no hidden new hole or exhausted-statement retry. Evidence and
+review gate are recorded in research-tests/O6-R200-*.

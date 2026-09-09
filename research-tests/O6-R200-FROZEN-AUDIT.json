@@ -1,0 +1,172 @@
+{
+  "timestampUTC": "2026-09-09T14:53:51.272431+00:00",
+  "head": "63011ee17572018ce36b4a505d062135b5e9697c",
+  "baseline": "60869648",
+  "productionDiffVs34b21c9": "empty",
+  "CP3Blob": "2c697e532e83989de8591fa6a4378747c6a501c0",
+  "authorizedContractSourceSHA256": {
+    "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr": "3b62ba1c3bc88503116ed22d82c667043f7f41dd483fb093cc25b677a55245cc",
+    "research/DGamma/CP5ConfluenceCrossTraceSpike.idr": "666d18626e49cbb0d6ac2f7624fe9f6b3519d539dbb574670f420bacd9fc69bb",
+    "research/DGamma/CP5ConfluenceDeletionChainSpike.idr": "91e8fd290cc4fedae9656ce5b4ae3ea0b38509f6e0250f51b4a7aa2aea09067b",
+    "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr": "9f9216170853624cff30449696f2540da0ed48e0b42504533aa587cb70dfc037",
+    "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr": "833bd3450bc8a4214e0334fd2ad95d7f837bc636f40f2e33c408333395602713"
+  },
+  "O19BodyBytes": 1286,
+  "O19BodySHA256": "cbd0954303c35141af0309e515bdb9e98e988e7c23be70b9764d8c1ce18fd396",
+  "adjacentFullBytes": 1470,
+  "adjacentFullSHA256": "2d01486bf953f11191b758ac3cfb5722d1d02b1a192b6e552adc8a3f58199ecf",
+  "adjacentStatementBytes": 1154,
+  "adjacentStatementSHA256": "3aae5a9fbc5b14e0411b4a91e557a6f3dc68c9a6282b9ec2b3fc658cec337adf",
+  "holes": {
+    "CanonicalSort": [
+      "?sortClosingFreeTraceSpike_rhs"
+    ],
+    "CrossTrace": [
+      "?selectOperationalCanonicalPermutationSpike_rhs",
+      "?canonicalSchedulesConvergeSpike_rhs"
+    ],
+    "DeletionChain": [],
+    "LocalDiamond": [],
+    "RenamingComposition": [
+      "?replayedCanonicalToOriginalEndpointSpike_rhs"
+    ]
+  },
+  "census": [
+    1,
+    2,
+    0,
+    0,
+    1
+  ],
+  "seeds": "207/207 retained (presence, not a fresh package PASS)",
+  "protectedDeclarations": {
+    "sortClosingFreeTraceSpike": "1df8d174b9a4f119a5a52e2073a72907bdb890413f877d55886e905e1d0279d1",
+    "selectOperationalCanonicalPermutationSpike": "b00063eacf339b58828eac5829cebc66fc7265f3518be459af0602463b6fbae7",
+    "canonicalSchedulesConvergeSpike": "0e8a177ea7bb4807cb77680cde29e75f7d37224711cc51cf7bf6636426690dd9",
+    "replayedCanonicalToOriginalEndpointSpike": "377b08ff82e1e4212738bb00a45a088b1f0d8fd8bc8b54bf061c96f2f4891681"
+  },
+  "prohibitedAdditions": {
+    "\\bbelieve_me\\b": [],
+    "\\bassert_total\\b": [],
+    "^\\s*partial\\b": [],
+    "\\?\\w+": [],
+    "\\blet\\b": [],
+    "\\bwith\\b": [],
+    "\\bprefix\\b": [],
+    "\\bdeletionTheoremProof\\b": [],
+    "\\bpostulate\\b": []
+  },
+  "changedIdrisFiles": [
+    "research-tests/DGamma/R200CanonicalBlockRemainderPositive.idr",
+    "research-tests/DGamma/R200DiscardedCoverageBasePositive.idr",
+    "research/DGamma/CP5O20BlockEndRemainderSpike.idr",
+    "research/DGamma/CP5O20CanonicalRoleWordEqualitySpike.idr",
+    "research/DGamma/CP5O20DeletionDisappearanceSpike.idr",
+    "research/DGamma/CP5O20DiscardedBirthOriginSpike.idr",
+    "research/DGamma/CP5O20DiscardedSelectionCoverageSpike.idr",
+    "research/DGamma/CP5O20SupportedInsertPositionSpike.idr",
+    "research/DGamma/CP5O20UnselectedVestigialPersistenceSpike.idr"
+  ],
+  "noMainCompiler": true,
+  "lane2Compilers": [],
+  "foreignCompilerObservedAtUTC": [
+    "2026-09-09T14:53:51.283716+00:00"
+  ],
+  "noStagedFiles": true,
+  "cleanTrackedTree": false,
+  "allowedUntrackedOnly": false,
+  "untracked": [
+    "paper/cordis-paper.pdf",
+    "paper/cordis-paper.txt",
+    "research-tests/O6-R200-AUTHOR-REVIEW.md",
+    "research-tests/O6-R200-SOURCE-CORRESPONDENCE.json",
+    "research-tests/run-r200-archive.py",
+    "research-tests/run-r200-independent-verify.py",
+    "research-tests/run-r200-resource-audit.py",
+    "research-tests/run-r200-verify-archive.py",
+    "review-o6-body-adversarial.md"
+  ],
+  "reviewSHA256": "61fc23ae4cea4565b442c840be39c41746ecbac73b8c2f73d04f1e3b4f4681e8",
+  "ReplayedCanonicalEndpointBridge": {
+    "recordBytes": 3243,
+    "recordSHA256": "ac5304c1a6a6e0cea988eac4b0dcdb5756fcf1b67ede7d0db6a4d723c73b695d",
+    "R192ManifestExact": true
+  },
+  "supersededCandidateSourceSHA256": {
+    "research/DGamma/CP5O20CanonicalSynchronizationGoalSpike.idr": "36cdc8db587a43193dacda173f46f3a40b524a6f31786f8fb57978729457e583",
+    "research/DGamma/CP5O20StampedHistoryFoldSpike.idr": "e3f44d6e995f02bbc826d076960d01ef175031d8b9d0c85b8e806fecd9538d55"
+  },
+  "declaredNewSourceNames": {
+    "research-tests/DGamma/R200CanonicalBlockRemainderPositive.idr": [
+      "r200R191AllBlockRemainders"
+    ],
+    "research-tests/DGamma/R200DiscardedCoverageBasePositive.idr": [
+      "r200HistoricalAligned",
+      "r200HistoricalDiscardedBirthClassified",
+      "r200HistoricalNotClosingFree"
+    ],
+    "research/DGamma/CP5O20BlockEndRemainderSpike.idr": [
+      "o20ActiveLookupFrame",
+      "o20ActiveRemainderObserved",
+      "o20EraseEmptyAugmentation",
+      "o20InsertViewNotActive",
+      "o20LocatedBlockEndActive",
+      "o20LocatedBlockEndRemainderEmpty",
+      "o20NoLifecycleActiveAtOwnerDecision",
+      "o20NoLifecycleActiveBackward",
+      "o20NoLifecycleTraceActiveBackward",
+      "o20NonLifecycleOwnerActiveBackward",
+      "o20OwnerActiveAtLifecycleBool",
+      "o20RemoveViewNotActive",
+      "o20RetireFiberActive",
+      "o20RetireViewActive"
+    ],
+    "research/DGamma/CP5O20CanonicalRoleWordEqualitySpike.idr": [
+      "o20SelectedCanonicalRoleWords"
+    ],
+    "research/DGamma/CP5O20DeletionDisappearanceSpike.idr": [],
+    "research/DGamma/CP5O20DiscardedBirthOriginSpike.idr": [
+      "O20DiscardedTraceOrigin",
+      "o20AcceptedDiscardedBirthClassified",
+      "o20DiscardedNewHeadOrigin",
+      "o20DiscardedOriginAfterDiscard",
+      "o20DiscardedOriginClassified",
+      "o20DiscardedOriginPrepend",
+      "o20DiscardedOriginScan"
+    ],
+    "research/DGamma/CP5O20DiscardedSelectionCoverageSpike.idr": [
+      "o20AcceptedNoUnloadDiscardedEmpty",
+      "o20BeginDiscardedObserved",
+      "o20ClosingFreeDiscardedEmpty",
+      "o20ClosingFreeNoPresentVestigial",
+      "o20ClosingFreeRejectsAlignedUnload",
+      "o20ClosingFreeRejectsCheckedAction",
+      "o20ClosingFreeRejectsLocatedUnload",
+      "o20ClosingFreeRejectsUnloadSplit",
+      "o20IndexDiscardedAdvance",
+      "o20NoUnloadDiscardedScan",
+      "o20SurvivingDiscardedObserved"
+    ],
+    "research/DGamma/CP5O20SupportedInsertPositionSpike.idr": [
+      "O20SupportedInsertPositionPair",
+      "o20InsertPositionAtMatchedPacket",
+      "o20SupportedCanonicalInsertPositions",
+      "o20SupportedClassifiedInsertPositions"
+    ],
+    "research/DGamma/CP5O20UnselectedVestigialPersistenceSpike.idr": [
+      "o20PresentControlsNotAbsent",
+      "o20UnselectedVestigialControls",
+      "o20UnselectedVestigialStillPresent"
+    ]
+  },
+  "retainedNewDeclarations": 44,
+  "commentCorrection": {
+    "authorization": "Supervisor R199 ACCEPT-WITH-NOTES P2, R200 Unit D: comment-only correction; helper consumes actual DeletionResult and produces table reconciliation and absence. Chain construction-owned result claim remains valid.",
+    "path": "research/DGamma/CP5O20DeletionDisappearanceSpike.idr",
+    "beforeSHA256": "ee4f73c2427bdca5b34e266710660c8a0c3daa9c6a5283f00c3c0dc59aa4152c",
+    "afterSHA256": "550fa9472bdf9b1366d59e8417ee26821e4d61fd2a1b926ea40857c1124b9315",
+    "beforeComment": "||| The result, current table reconciliation and actual absence are produced.",
+    "afterComment": "||| It consumes the actual deletion result and produces current-table\n||| reconciliation and actual absence.",
+    "nonDocBytesIdentical": true
+  }
+}

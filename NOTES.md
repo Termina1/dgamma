@@ -4339,3 +4339,32 @@ only one main compiler runs, with timestamp-only cross-lane overlaps and own
 RSS guards (48GiB, byte-frozen LocalDiamond52GiB). Evidence tests21+7 PASS.
 Next after validation/audit: reviewer gate for PARTIAL capital, then producer-
 owned historical transport in B and physical Insert attachment/whole folds in A.
+
+
+## Status
+
+### R200 D3 final checked PARTIAL
+
+Full validation completed14:53:22Z: ALL157 inherited+8 new=165 source checks plus
+seeded package166, seven exact expected negatives;212/212 shift invocations met
+expectations.42 proved functions+2 indexed families, no failed micro-unit, no
+new hole/escape. The sole inherited Idris change is the exact authorized
+comment correction, not a theorem/body revision. Source/log/commit/immutable-
+plan/resource/frozen and archive machine authentication PASS; independent human
+review remains required. Full statistics and archive hash are in the R200 audit.
+
+Proved: actual closing-free scanner base, reverse discarded-birth origin,
+nonselecting-node presence/controls, universal actual block-end residual
+elimination, plain selected-pair lifecycle words, and supported ORIGINAL Insert
+position packets. Partial/open: historical deletion transport to the tail,
+global some-node selected coverage/ALL-NAME rebase/D5 bridge, actual canonical
+Insert position/occurrence pairing and whole modulo synchronization. C0 remains
+ineligible; convergence is not proved. Next work remains exactly those producer
+seams after reviewer gate, not retrying exhausted scalar/one-origin statements.
+
+Production and all protected surfaces remain frozen; census4. No lock or lane-2
+worktree access; timestamp-only overlaps, own resource guards, no interruption
+or mutation. Archive anchor precedes publication/gate receipts by design.
+274 inventory entries include111 NOT rechecked;165 source targets plus seeded
+package is not a cold-build/all-inventory certification. Zero RSS samples in13
+checks mean no captured live peak, not zero memory. See O6-R200-* evidence.

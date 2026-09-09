@@ -1,0 +1,142 @@
+{
+  "sourceFreezeHead": "5ca8e5878201bb54decc498d3ad07b0504c737e5",
+  "preparedUTC": "2026-09-09T14:32:18.858709+00:00",
+  "scope": "Research-only checked partial frontier; no whole-theorem completion",
+  "newDeclarations": 44,
+  "proofFunctions": 42,
+  "indexedFamilies": 2,
+  "items": [
+    {
+      "path": "research-tests/DGamma/R200CanonicalBlockRemainderPositive.idr",
+      "totalityDefault": "total",
+      "proofFunctions": [
+        "r200R191AllBlockRemainders"
+      ],
+      "indexedFamilies": []
+    },
+    {
+      "path": "research-tests/DGamma/R200DiscardedCoverageBasePositive.idr",
+      "totalityDefault": "total",
+      "proofFunctions": [
+        "r200HistoricalAligned",
+        "r200HistoricalNotClosingFree",
+        "r200HistoricalDiscardedBirthClassified"
+      ],
+      "indexedFamilies": []
+    },
+    {
+      "path": "research/DGamma/CP5O20BlockEndRemainderSpike.idr",
+      "totalityDefault": "total",
+      "proofFunctions": [
+        "o20ActiveLookupFrame",
+        "o20ActiveRemainderObserved",
+        "o20InsertViewNotActive",
+        "o20RetireFiberActive",
+        "o20RetireViewActive",
+        "o20RemoveViewNotActive",
+        "o20NonLifecycleOwnerActiveBackward",
+        "o20OwnerActiveAtLifecycleBool",
+        "o20NoLifecycleActiveAtOwnerDecision",
+        "o20NoLifecycleActiveBackward",
+        "o20NoLifecycleTraceActiveBackward",
+        "o20LocatedBlockEndActive",
+        "o20LocatedBlockEndRemainderEmpty",
+        "o20EraseEmptyAugmentation"
+      ],
+      "indexedFamilies": []
+    },
+    {
+      "path": "research/DGamma/CP5O20CanonicalRoleWordEqualitySpike.idr",
+      "totalityDefault": "total",
+      "proofFunctions": [
+        "o20SelectedCanonicalRoleWords"
+      ],
+      "indexedFamilies": []
+    },
+    {
+      "path": "research/DGamma/CP5O20DiscardedBirthOriginSpike.idr",
+      "totalityDefault": "total",
+      "proofFunctions": [
+        "o20DiscardedOriginPrepend",
+        "o20DiscardedNewHeadOrigin",
+        "o20DiscardedOriginAfterDiscard",
+        "o20DiscardedOriginScan",
+        "o20DiscardedOriginClassified",
+        "o20AcceptedDiscardedBirthClassified"
+      ],
+      "indexedFamilies": [
+        {
+          "kind": "data",
+          "name": "O20DiscardedTraceOrigin"
+        }
+      ]
+    },
+    {
+      "path": "research/DGamma/CP5O20DiscardedSelectionCoverageSpike.idr",
+      "totalityDefault": "total",
+      "proofFunctions": [
+        "o20BeginDiscardedObserved",
+        "o20IndexDiscardedAdvance",
+        "o20SurvivingDiscardedObserved",
+        "o20NoUnloadDiscardedScan",
+        "o20AcceptedNoUnloadDiscardedEmpty",
+        "o20ClosingFreeRejectsUnloadSplit",
+        "o20ClosingFreeRejectsCheckedAction",
+        "o20ClosingFreeRejectsAlignedUnload",
+        "o20ClosingFreeRejectsLocatedUnload",
+        "o20ClosingFreeDiscardedEmpty",
+        "o20ClosingFreeNoPresentVestigial"
+      ],
+      "indexedFamilies": []
+    },
+    {
+      "path": "research/DGamma/CP5O20SupportedInsertPositionSpike.idr",
+      "totalityDefault": "total",
+      "proofFunctions": [
+        "o20InsertPositionAtMatchedPacket",
+        "o20SupportedClassifiedInsertPositions",
+        "o20SupportedCanonicalInsertPositions"
+      ],
+      "indexedFamilies": [
+        {
+          "kind": "record",
+          "name": "O20SupportedInsertPositionPair"
+        }
+      ]
+    },
+    {
+      "path": "research/DGamma/CP5O20UnselectedVestigialPersistenceSpike.idr",
+      "totalityDefault": "total",
+      "proofFunctions": [
+        "o20UnselectedVestigialControls",
+        "o20PresentControlsNotAbsent",
+        "o20UnselectedVestigialStillPresent"
+      ],
+      "indexedFamilies": []
+    }
+  ],
+  "goalStatus": {
+    "actualClosingFreeBase": "proved",
+    "acceptedDiscardedBirthClassification": "proved",
+    "unselectedNodePresenceAndControls": "proved",
+    "actualBlockEndResidualElimination": "proved",
+    "acceptedPlainLifecycleWordEquality": "proved",
+    "supportedOriginalInsertPositionPair": "proved; ORIGINAL coordinates only",
+    "globalSomeNodeSelectedCoverage": "open",
+    "allNameEndpointRebaseAndD5Bridge": "open",
+    "physicalCanonicalInsertPairing": "open",
+    "wholeModuloHistorySynchronization": "open",
+    "convergence": "open; C0 ineligible"
+  },
+  "remainingFirstBTransport": "o20DeletionRetainedClosingBirth: exact original deleted birth and a real later parent Unload through an actual nonselecting deletion, in that producer generation map coordinates",
+  "commentOnlyCorrection": {
+    "authorization": "Supervisor R199 ACCEPT-WITH-NOTES P2, R200 Unit D: comment-only correction; helper consumes actual DeletionResult and produces table reconciliation and absence. Chain construction-owned result claim remains valid.",
+    "path": "research/DGamma/CP5O20DeletionDisappearanceSpike.idr",
+    "beforeSHA256": "ee4f73c2427bdca5b34e266710660c8a0c3daa9c6a5283f00c3c0dc59aa4152c",
+    "afterSHA256": "550fa9472bdf9b1366d59e8417ee26821e4d61fd2a1b926ea40857c1124b9315",
+    "beforeComment": "||| The result, current table reconciliation and actual absence are produced.",
+    "afterComment": "||| It consumes the actual deletion result and produces current-table\n||| reconciliation and actual absence.",
+    "nonDocBytesIdentical": true
+  },
+  "independentReviewerAccepted": false
+}

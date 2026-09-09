@@ -1009,3 +1009,15 @@ only the helper docstring (consumed deletion result versus produced absence).
 Production unchanged; census4. Final165-source+seeded-package validation is
 **pending at this source-freeze checkpoint**. See `NOTES.md` and
 `research-tests/O6-R200-GRIND-SHIFT-AUDIT.md` for exact boundaries and receipts.
+
+
+### R200 D3 final validation complete — checked PARTIAL
+
+ALL157 inherited+8 new=165 source checks plus seeded package166 completed;
+seven exact expected-negative fixtures included.212/212 shift invocations met
+expected outcomes;42 proof functions+2 indexed families, no new hole/escape.
+Source/log/receipt/plan/frozen/resource/archive machine verification PASS.
+Production unchanged, protected census4. Global some-node coverage/ALL-NAME
+bridge, physical Insert/whole modulo histories and convergence remain OPEN;
+C0/ineligible. This is not a cold build or full confluence theorem. Independent
+review/owner gate follows; exact limits and evidence are in the R200 audit.
