@@ -17,7 +17,13 @@ assert not (OUT/(unit+'.json')).exists(), 'Append-only invocation IDs'
 assert path != 'package', 'Whole package and cold rebuild forbidden in this lane'
 target = ROOT/path
 assert target.is_file() and target.stat().st_size > 0 and target.resolve().is_relative_to(ROOT)
-assert path.startswith('research-tests/O6-L2R10-Sources/') or (unit == 'V0' and path == 'research-tests/O6-L2R9-Sources/DGamma/L2R9OrdinalScan.idr'), 'Lane-owned targets or exact unchanged bootstrap only'
+repair_allowed=False
+if re.fullmatch(r'V\d+',unit) and path == 'research-tests/O6-L2R9-Sources/DGamma/L2R9ProviderHead.idr':
+ authority=(ROOT/'research-tests/O6-L2R10-COMMENT-REPAIR.json').read_bytes()
+ assert hashlib.sha256(authority).hexdigest()=='f7259b538458348c7ccb9ec7c5efef3482c15307008b21ac88a2c6f6c04d7ad0', 'Exact authorized comment-repair manifest only'
+ repair=json.loads(authority);assert repair['path']==path
+ repair_allowed=hashlib.sha256(target.read_bytes()).hexdigest()==repair['afterSHA256']
+assert path.startswith('research-tests/O6-L2R10-Sources/') or (unit == 'V0' and path == 'research-tests/O6-L2R9-Sources/DGamma/L2R9OrdinalScan.idr') or repair_allowed, 'Lane-owned targets, exact unchanged bootstrap, or exact authorized comment repair only'
 assert not path.startswith('src/')
 assert not any(x in target.name for x in ['CP5O20', 'LocalDiamond']), 'Frozen target forbidden'
 plan = json.loads((OUT/'shift.json').read_text())

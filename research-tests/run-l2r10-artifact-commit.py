@@ -1,14 +1,18 @@
 #!/usr/bin/env python3
 """Guarded artifact commit after an independently inspected exact-source PASS.
-Accept ONLY lane-owned L2R10 non-Idris artifacts. No predecessor edit authority.
-No predecessor runner/body/statement repair or other source edit is authorized.
+Accept lane-owned L2R10 non-Idris artifacts plus ONE exact authorized D4
+predecessor COMMENT repair (immutable manifest). No body/type/quantity repairs.
 Usage: python3 -I research-tests/run-l2r10-artifact-commit.py UNIT MESSAGE PATH...
 """
 import datetime, hashlib, json, pathlib, re, subprocess, sys
 ROOT = pathlib.Path('/Users/vyacheslavshebanov/Work/dgamma-lane2')
 OUT = pathlib.Path('/tmp/dgamma-l2r10')
 BASE = 'a4c9f506'
-REPAIRS = {}
+REPAIR_PATH='research-tests/O6-L2R9-Sources/DGamma/L2R9ProviderHead.idr'
+repair_authority=(ROOT/'research-tests/O6-L2R10-COMMENT-REPAIR.json').read_bytes()
+assert hashlib.sha256(repair_authority).hexdigest()=='f7259b538458348c7ccb9ec7c5efef3482c15307008b21ac88a2c6f6c04d7ad0'
+repair=json.loads(repair_authority);assert repair['path']==REPAIR_PATH
+REPAIRS={REPAIR_PATH:repair}
 
 def git(*args):
  return subprocess.check_output(['git', *args], cwd=ROOT)
@@ -24,12 +28,13 @@ assert sha((ROOT/record['path']).read_bytes()) == record['sourceSHA256']
 assert paths and len(paths) == len(set(paths))
 repair_checks = []
 for path in paths:
- assert (path.startswith(('research-tests/O6-L2R10-', 'research-tests/run-l2r10-')) and not path.endswith('.idr'))
+ assert path in REPAIRS or (path.startswith(('research-tests/O6-L2R10-', 'research-tests/run-l2r10-')) and not path.endswith('.idr'))
  assert (ROOT/path).is_file() and (ROOT/path).stat().st_size > 0
  if path in REPAIRS:
   before = git('show', 'HEAD:'+path)
   repair = REPAIRS[path]
   old, new = repair['old'].encode(), repair['new'].encode()
+  assert all(line.startswith(b'|||') for line in old.splitlines()+new.splitlines()), 'Comment-only exact repair'
   assert sha(before) == repair['beforeSHA256']
   assert before.count(old) == 1 and (ROOT/path).read_bytes() == before.replace(old, new)
   assert sha((ROOT/path).read_bytes()) == repair['afterSHA256']

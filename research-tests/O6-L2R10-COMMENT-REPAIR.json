@@ -1,0 +1,8 @@
+{
+  "path": "research-tests/O6-L2R9-Sources/DGamma/L2R9ProviderHead.idr",
+  "old": "||| Explicit observed-Bool eliminator used by the native-head consumer.\n",
+  "new": "||| Generic conditional-equality lemma; its attempted native splice failed\n||| (D5-1); the consumer uses laneObservedBoolEliminate.\n",
+  "beforeSHA256": "77423f6231bdb2d0dcca855f286323961fd0ba207d7ff1268641ebbb150f8d5d",
+  "afterSHA256": "a9957234ccedef97aa9437b25e4cf07d1a3a4e34e834e77a4d34936824657142",
+  "authority": "Supervisor authorized E-only D4 docstring correction after L2R9 independent ACCEPT-WITH-NOTES. Bodies, types, quantities and all other predecessor text unchanged."
+}
