@@ -125,3 +125,19 @@ phaseHistoryAtNativePosition nameEq actor offset release seen owner flag rest ta
   rewrite position in phaseHistoryAtPositionGuard nameEq actor offset release seen owner flag rest tailDecoder True position
 phaseHistoryAtNativePosition nameEq actor offset release seen owner flag rest tailDecoder False position =
   rewrite position in phaseHistoryAtPositionGuard nameEq actor offset release seen owner flag rest tailDecoder False position
+
+||| GENERAL decoder of the ACTUAL phaseReleaseCheck, through A13's native
+||| guard bridge. Produces exact release distance and owner-contiguous
+||| history. Feed phaseSeedNativeHistory for the actual release actor; the
+||| physical core/lifecycle occurrence and local release still need assembly.
+export
+0 phaseReleaseHistoryDecoded : {name : Type} -> (nameEq : DecEq name) ->
+  (actor : name) -> (events : List (Maybe name, Bool)) ->
+  (offset, release : Nat) -> (seen : Bool) ->
+  (0 accepted : phaseReleaseCheck nameEq actor offset release seen events = True) ->
+  (distance : Nat ** (offset + distance = release, PhaseHistoryPath actor seen distance events))
+phaseReleaseHistoryDecoded nameEq actor [] offset release seen accepted = absurd accepted
+phaseReleaseHistoryDecoded nameEq actor ((owner, flag) :: rest) offset release seen accepted =
+  phaseHistoryAtNativePosition nameEq actor offset release seen owner flag rest
+    (\nextSeen, tailAccepted => phaseReleaseHistoryDecoded nameEq actor rest (S offset) release nextSeen tailAccepted)
+    (offset == release) Refl accepted
