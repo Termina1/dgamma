@@ -337,3 +337,28 @@ o20ReducedAbsenceSurvivesSorting nameEq keyEq original
   selected absent =
   o20CanonicalEndpointPreservesAbsence nameEq keyEq (reducedFinal reduction) (sortedFinal sorted)
     (sortedEndpoint sorted) selected absent
+
+||| Canonical disappearance from the actual accepted deletion+sorting
+||| construction, for FULL vestigial generations selected at its first node.
+||| The head-selection membership remains explicit. This is not the universal
+||| theorem that every accepted globally discarded present birth is selected.
+export
+0 o20CanonicalHeadVestigialDisappears :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {protocol : RegistrationProtocol key value world error} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {leftFirst, leftFinal, rightFirst, rightFinal : SystemState name key value world error} ->
+  (left : Transitions leftFirst leftFinal) -> (right : Transitions rightFirst rightFinal) ->
+  (mapping : RegistrationGenerationBijection name) ->
+  (registrations : RegistrationCorrespondenceByGeneration nameEq mapping left right) ->
+  (capital : IndependentCanonicalSchedule name key world error value protocol nameEq keyEq left) ->
+  (selected : name) ->
+  (packet : VestigialEndpointGeneration name key world error value nameEq keyEq
+    (leftFinalGenerations registrations) (leftDeletedGenerations registrations) selected leftFinal) ->
+  Elem (vestigialGeneration packet)
+    (o20DeletionHeadGenerations (reductionDeletionDerivation (capitalReduction capital))) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected (registry (canonicalFinal (canonicalSchedule capital))) = Nothing)
+o20CanonicalHeadVestigialDisappears nameEq keyEq left right mapping registrations capital selected packet member =
+  o20ReducedAbsenceSurvivesSorting nameEq keyEq left capital selected
+    (o20VestigialHeadDisappearsThroughChain nameEq keyEq left right (reducedTrace (capitalReduction capital))
+      mapping registrations (reductionDeletionDerivation (capitalReduction capital)) selected packet member)
