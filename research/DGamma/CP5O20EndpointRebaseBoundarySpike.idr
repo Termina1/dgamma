@@ -31,3 +31,22 @@ export
   ParentRelatedBy identityNameBijection parent parent
 o20IdentityParent Root = RootsRelated
 o20IdentityParent (ChildOf selected) = ChildrenRelated Refl
+
+||| Exact identity-renamed lifecycle relation for every native constructor,
+||| including the real accumulator's runtime observations and committed view.
+export
+0 o20IdentityLifecycle :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {deps : List key} -> {provision : CoeffectSpec key} ->
+  (lifecycle : Lifecycle key value world error name deps provision) ->
+  LifecycleRelatedBy identityNameBijection lifecycle lifecycle
+o20IdentityLifecycle (Inactive outcome) = RenamedInactive Refl
+o20IdentityLifecycle (Reloading remaining accumulator view) =
+  RenamedReloading Refl (\input => localStateRuntimeReflexive (accumulator input))
+    (o20IdentityProviderWord (viewProviders view))
+o20IdentityLifecycle {error} (Active accumulator view) =
+  RenamedActive {error} (\input => localStateRuntimeReflexive (accumulator input))
+    (o20IdentityProviderWord (viewProviders view))
+o20IdentityLifecycle (Unloading accumulator view outcome) =
+  RenamedUnloading (\input => localStateRuntimeReflexive (accumulator input))
+    (o20IdentityProviderWord (viewProviders view)) Refl
