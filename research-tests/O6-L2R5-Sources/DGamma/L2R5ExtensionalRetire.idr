@@ -37,3 +37,21 @@ replaceLookupExtensionalObserved nameEq wanted selected old next left right same
   trans (lookupReplaceOther @{nameEq} wanted selected different next (registry left))
     (trans (extensionalLookup same wanted)
       (sym (lookupReplaceOther @{nameEq} wanted selected different next (registry right))))
+
+||| Replacement by the SAME fiber respects extensional states. This is the
+||| per-lookup frame used for Retire and other native single-fiber updates.
+export
+0 replaceExtensional :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (selected : name) ->
+  (old, next : Fiber name key value world error) ->
+  (left, right : SystemState name key value world error) ->
+  (0 same : RegistryExtensional name key world error value nameEq left right) ->
+  (0 found : lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected (registry left) = Just old) ->
+  RegistryExtensional name key world error value nameEq
+    (MkSystemState (worldState left) (replaceBinding @{nameEq} selected next (registry left)))
+    (MkSystemState (worldState right) (replaceBinding @{nameEq} selected next (registry right)))
+replaceExtensional nameEq selected old next left right same found =
+  MkRegistryExtensional (extensionalWorld same)
+    (\wanted => replaceLookupExtensionalObserved nameEq wanted selected old next left right same found
+      (decEq @{nameEq} wanted selected) Refl)
