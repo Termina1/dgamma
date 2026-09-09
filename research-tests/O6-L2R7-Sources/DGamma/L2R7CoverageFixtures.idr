@@ -34,3 +34,13 @@ record PlacedCoverageFixtures where
   coveredSingleR : AttachedBundleOccurrence Nat Bool Unit String (\key => Unit) %search %search smallTrace (OInsert 3 Root (smallComponent True)) 4
   coveredBarrierR : AttachedBundleOccurrence Nat Bool Unit String (\key => Unit) %search %search barrierTrace (OInsert 3 Root (smallComponent True)) 4
   coveredBarrierS : AttachedBundleOccurrence Nat Bool Unit String (\key => Unit) %search %search barrierTrace (OInsert 4 Root (smallComponent False)) 5
+
+||| All three actual native occurrences come from the GENERAL catalog
+||| equality/decoder theorem, with exact original ordinals4/4/5. No fixture
+||| AttachedNormalForm is used or silently promoted to a general NF proof.
+public export
+0 placedCoverageFixtures : PlacedCoverageFixtures
+placedCoverageFixtures = MkPlacedCoverageFixtures
+  (placedCatalogCoverage (singlePlaced placementDistanceFixtures) (MkRootCatalogEntry 4 3 (smallComponent True)) Here)
+  (placedCatalogCoverage (barrierPlaced placementDistanceFixtures) (MkRootCatalogEntry 4 3 (smallComponent True)) Here)
+  (placedCatalogCoverage (barrierPlaced placementDistanceFixtures) (MkRootCatalogEntry 5 4 (smallComponent False)) (There Here))
