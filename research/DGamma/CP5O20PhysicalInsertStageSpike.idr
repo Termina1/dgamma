@@ -192,3 +192,21 @@ o20InsertStageAtCheckedStates nameEq keyEq renaming actor component leftParent r
   (MkSystemState leftWorld leftRegistry) rightBefore leftTag leftAfter leftChecked rightTag rightAfter rightChecked matched =
     o20InsertStageAtRightState nameEq keyEq renaming actor component leftParent rightParent parents
       leftWorld leftRegistry rightBefore leftTag leftAfter leftChecked rightTag rightAfter rightChecked matched
+
+||| Transport a checked evaluator equation along the actual Insert action
+||| equation. No native state, tag or checked result is reconstructed.
+export
+0 o20CheckedInsertFromActionEquation :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (actor : name) -> (parent : Parent name) -> (component : Component key value world error) ->
+  (action : Action name key value world error) ->
+  (before, afterState : SystemState name key value world error) -> (tag : RuleTag) ->
+  (checkedApplyAction {name} {key} {value} {world} {error} @{nameEq} @{keyEq} action before = Just (tag, afterState)) ->
+  (action = OInsert actor parent component) ->
+  (checkedApplyAction {name} {key} {value} {world} {error} @{nameEq} @{keyEq}
+    (OInsert actor parent component) before = Just (tag, afterState))
+o20CheckedInsertFromActionEquation {name} {key} {world} {error} {value}
+  nameEq keyEq actor parent component action before afterState tag checked exact =
+    trans (cong (\operation => checkedApplyAction {name} {key} {value} {world} {error} @{nameEq} @{keyEq} operation before)
+      (sym exact)) checked
