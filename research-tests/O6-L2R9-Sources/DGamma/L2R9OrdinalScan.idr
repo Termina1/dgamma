@@ -39,3 +39,16 @@ ordinalAtParent keyEq component fiber (ChildOf actor) equation =
     (dependencies (componentProvisions component))
     (any (\item => isYes (isElem @{keyEq} item (dependencies (componentProvisions component))))
       (dependencies (componentProvisions (fiberComponent fiber)))) Refl
+
+||| Observe the fully indexed source lookup once. Absent fibers emit nothing.
+public export
+ordinalAtLookup : {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (component : Component key value world error) -> (child : name) ->
+  (source : SystemState name key value world error) ->
+  (found : Maybe (Fiber name key value world error)) ->
+  (0 equation : lookupFiber {name} {key} {value} {world} {error} @{nameEq}
+    child (registry source) = found) -> List Nat
+ordinalAtLookup nameEq keyEq component child source Nothing equation = []
+ordinalAtLookup nameEq keyEq component child source (Just fiber) equation =
+  ordinalAtParent keyEq component fiber (fiberParent fiber) Refl
