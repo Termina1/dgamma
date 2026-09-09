@@ -28,3 +28,19 @@ o20ProgramRoleWord : {step : Type} -> List step -> List RuleTag
 o20ProgramRoleWord [] = [LFinishTag]
 o20ProgramRoleWord [current] = [LFinishTag]
 o20ProgramRoleWord (current :: next :: later) = LIterTag :: o20ProgramRoleWord (next :: later)
+
+||| Executable per-fiber successful-activation remainder. Inactive includes
+||| its next Begin, Reloading includes its remaining Advances, and all other
+||| phases/absence give the empty word. Applicability is not asserted by this
+||| observer (in particular an inactive failure need not admit Begin).
+public export
+o20FiberRoleRemainder :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  Maybe (Fiber name key value world error) -> List RuleTag
+o20FiberRoleRemainder Nothing = []
+o20FiberRoleRemainder (Just (MkFiber component parent retiredFlag table (Inactive outcome))) =
+  LBeginTag :: o20ProgramRoleWord (componentProgram component)
+o20FiberRoleRemainder (Just (MkFiber component parent retiredFlag table (Reloading remaining accumulator view))) =
+  o20ProgramRoleWord remaining
+o20FiberRoleRemainder (Just (MkFiber component parent retiredFlag table (Active accumulator view))) = []
+o20FiberRoleRemainder (Just (MkFiber component parent retiredFlag table (Unloading accumulator view outcome))) = []
