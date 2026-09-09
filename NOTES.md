@@ -4123,3 +4123,16 @@ producer or bridge. C0; D5 still exhausted; all four frozen holes unchanged.
 D2/4 closes validation. Next D3 archive and D4 verification/owner/reviewer gate;
 no further source/native work or self-extension. Machine authentication is
 not independent human review.
+
+
+### R198 archive published/verified — D3
+
+Append-only archive anchored at5887867f:SHA256
+05e1fef0ec134fb00b1235dc237864b2314baf433b3865d2031e90d9cc9abc51,
+1,162,349 bytes/1042 files. Read-only full-byte/native-record/receipt verification
+PASS;202 snapshots+logs,41 source/5 pre-publication artifact receipts,151 final
+checks, all7 rejections retained. Complete259-entry cost inventory honestly
+marks148 directly checked entries +2 auxiliary paths and111 unvalidated legacy/
+unclassified entries. Archive anchor excludes its own/future publication/gate
+receipts; no circular attestation. Main A/B debts and C0 unchanged. D3/4;
+D4 final machine/owner/reviewer gate only. No further source/native work.

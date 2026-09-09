@@ -89,3 +89,21 @@ inherited unclassified/legacy inventory entries are NOT rechecked and will not
 be relabelled fresh PASS. D4 will verify archive bytes and final receipts.
 Archive anchors precede their own publication and later gate receipts, avoiding
 circular self-attestation. Required human review remains parent-owned/pending.
+
+
+## D3 append-only archive publication
+
+Archive anchor5887867fe2133e9a443f625f84f2ae3318230813 PRECEDES publication
+and future gate receipts. Archive SHA256
+05e1fef0ec134fb00b1235dc237864b2314baf433b3865d2031e90d9cc9abc51;
+1,162,349 bytes,1042 files. Read-only verification authenticates every file,
+202 records/source snapshots/raw logs,41 source receipts and5 pre-publication
+artifact receipts, all151 final checks,7 rejected snapshots. Its own verification
+and future publication/gate receipts are not falsely claimed inside the archive.
+
+Complete measured inventory252 inherited +7 new=259:148 directly rechecked
+inventory entries plus2 unchanged inherited auxiliary variants=150 source
+targets.111 inherited unclassified/legacy entries are NOT rechecked. Full
+202-invocation and micro-unit ledgers retain A3 exhaustion and A20's genuine
+PASS/whitespace-guard refusal. No artifact replacement, source/native change,
+clock extension or independent human review claim. D3/4; final gate/D4 remains.
