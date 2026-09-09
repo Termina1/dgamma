@@ -211,3 +211,28 @@ or universal all-name current rebasing. The conditional fixture does not own
 independent canonical capital. D5 bridge uncalled; separate R197 provider-D5
 remains exhausted/frozen; C0. D2/4 closes validation. Next: D3 append-only archive
 and full archive verification, then owner D4 gate/clean close; no proof restart.
+
+
+## R199 D3 — append-only archive published and verified
+
+Archive anchor `4987a366df85a9d33e89c8e4baaed62ac129a150`; SHA256
+`b10faf5e75b57f53dd7f17d6f287c2a4df461e6c4dc072f29941f990a1c9dd8a`; 1,229,236 bytes,
+1104 regular files. Full read-only archive authentication PASS:
+211 native records/source snapshots/raw logs,44 source receipts,3 historical
+artifact receipts,158 final outcomes and all7 rejected snapshots. The archive
+also authenticates the explicit owner policy transition and old/new runner
+boundary. Its own/future publication and gate receipts are intentionally outside
+its anchor, not circularly asserted inside it.
+
+The refreshed266-entry inventory marks155 directly checked inventory entries
+plus2 auxiliary inherited sources =157 source targets.111 excluded legacy/
+unclassified inventory entries remain NOT rechecked. Future cross-lane heavy-
+lock flags are false under the owner ruling; older per-check lock use is retained
+as historical, not rewritten. No archive replacement, source/native work or
+clock extension. D3/4; final owner D4 gate/clean close remains. Independent human
+review is parent-owned and not claimed complete.
+
+Mathematical status remains checked PARTIAL: A universal ordered occurrence
+synchronization, B exhaustive vestigial selection/all-name rebase and bridge
+remain OPEN. Head-selection membership and augmented-word end remainders remain
+explicit; conditional canonical fixtures are not fabricated capital. C0.
