@@ -233,3 +233,57 @@ o20FinishRoleAtSource nameEq keyEq actor _ afterState checked
       component parent retiredFlag table step [] accumulator view found target checked
       (o20FinishOneNativeValues nameEq keyEq actor (MkSystemState ambient fibers) afterState
         component parent retiredFlag table step accumulator view found checked)
+
+||| EVERY actual paper activation consumes its own native tag from the
+||| owner's remainder. Native source and callback observations are produced
+||| internally; neither a pre-cut relation nor successor word is assumed.
+export
+0 o20ActualPaperRoleConsumption :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (before, afterState : SystemState name key value world error) ->
+  (action : Action name key value world error) -> (tag : RuleTag) ->
+  (checked : (checkedApplyAction {name} {key} {value} {world} {error} @{nameEq} @{keyEq}
+    action before = Just (tag, afterState))) ->
+  PaperActivationStep (Fired {name} {key} {value} {world} {error}
+    {before} {afterState} nameEq keyEq action tag checked) ->
+  (o20FiberRoleRemainder
+    (lookupFiber {name} {key} {value} {world} {error} @{nameEq} (actionOwner action) (registry before)) =
+   tag :: o20FiberRoleRemainder
+    (lookupFiber {name} {key} {value} {world} {error} @{nameEq} (actionOwner action) (registry afterState)))
+o20ActualPaperRoleConsumption {name} {key} {value} {world} {error}
+  nameEq keyEq before afterState action tag checked
+  (PaperBeginStep {actor} actionExact tagExact) =
+    replace {p = \selected => (o20FiberRoleRemainder (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected (registry before)) = tag :: o20FiberRoleRemainder (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected (registry afterState)))}
+      (sym (cong actionOwner actionExact))
+      (replace {p = \observedTag => (o20FiberRoleRemainder (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor (registry before)) = observedTag :: o20FiberRoleRemainder (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor (registry afterState)))}
+        (sym tagExact)
+        (o20ObservedBeginRoleConsumption nameEq keyEq actor before afterState
+        (o20ObserveActualBegin nameEq keyEq actor before afterState (MkBeginStep (trans (sym (cong (\observedAction => checkedApplyAction {name} {key} {value} {world} {error} @{nameEq} @{keyEq} observedAction before) actionExact))
+          (trans checked (cong (\observedTag => Just (observedTag, afterState)) tagExact)))))))
+
+o20ActualPaperRoleConsumption {name} {key} {value} {world} {error}
+  nameEq keyEq before afterState action tag checked
+  (PaperIterStep {actor} actionExact tagExact) =
+    replace {p = \selected => (o20FiberRoleRemainder (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected (registry before)) = tag :: o20FiberRoleRemainder (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected (registry afterState)))}
+      (sym (cong actionOwner actionExact))
+      (replace {p = \observedTag => (o20FiberRoleRemainder (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor (registry before)) = observedTag :: o20FiberRoleRemainder (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor (registry afterState)))}
+        (sym tagExact)
+        (o20IterRoleAtSource nameEq keyEq actor before afterState (trans (sym (cong (\observedAction => checkedApplyAction {name} {key} {value} {world} {error} @{nameEq} @{keyEq} observedAction before) actionExact))
+          (trans checked (cong (\observedTag => Just (observedTag, afterState)) tagExact)))
+        (paperAdvanceSource nameEq keyEq actor LIterTag
+          (checkedActionProjects nameEq keyEq (LAdvance actor) before afterState LIterTag (trans (sym (cong (\observedAction => checkedApplyAction {name} {key} {value} {world} {error} @{nameEq} @{keyEq} observedAction before) actionExact))
+          (trans checked (cong (\observedTag => Just (observedTag, afterState)) tagExact)))) (Left Refl))))
+
+o20ActualPaperRoleConsumption {name} {key} {value} {world} {error}
+  nameEq keyEq before afterState action tag checked
+  (PaperFinishStep {actor} actionExact tagExact) =
+    replace {p = \selected => (o20FiberRoleRemainder (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected (registry before)) = tag :: o20FiberRoleRemainder (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected (registry afterState)))}
+      (sym (cong actionOwner actionExact))
+      (replace {p = \observedTag => (o20FiberRoleRemainder (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor (registry before)) = observedTag :: o20FiberRoleRemainder (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor (registry afterState)))}
+        (sym tagExact)
+        (o20FinishRoleAtSource nameEq keyEq actor before afterState (trans (sym (cong (\observedAction => checkedApplyAction {name} {key} {value} {world} {error} @{nameEq} @{keyEq} observedAction before) actionExact))
+          (trans checked (cong (\observedTag => Just (observedTag, afterState)) tagExact)))
+        (paperAdvanceSource nameEq keyEq actor LFinishTag
+          (checkedActionProjects nameEq keyEq (LAdvance actor) before afterState LFinishTag (trans (sym (cong (\observedAction => checkedApplyAction {name} {key} {value} {world} {error} @{nameEq} @{keyEq} observedAction before) actionExact))
+          (trans checked (cong (\observedTag => Just (observedTag, afterState)) tagExact)))) (Right Refl))))
