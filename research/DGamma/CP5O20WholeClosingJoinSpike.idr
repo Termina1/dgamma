@@ -8,6 +8,7 @@ import DGamma.CP5RawClosingRankSpike
 import DGamma.CP5ConfluenceLocalDiamondSpike
 import DGamma.CP5O20DeletionRetainedUnloadSpike
 import DGamma.CP5O20DeletionRetainedBirthSpike
+import DGamma.CP5O20NativeInsertEnvironmentSpike
 import DGamma.CP5ConfluenceDeletionChainSpike
 import DGamma.CP5O20RetainedClosingIndexSpike
 import Data.List
@@ -422,3 +423,45 @@ o20ClosingIndexInsideTrace name key world error value NoTransitions ordinal acti
 o20ClosingIndexInsideTrace name key world error value (MoreTransitions step rest) Z action exact = LTESucc LTEZero
 o20ClosingIndexInsideTrace name key world error value (MoreTransitions step rest) (S ordinal) action exact =
   LTESucc (o20ClosingIndexInsideTrace name key world error value rest ordinal action exact)
+
+||| The removed-center exception LOCATES the nonselected birth in BEFORE.
+||| Center is impossible by registered-during completeness (R202 B2); after
+||| is impossible by the actual center closing bound. No location is assumed.
+export
+0 o20SelectedCenterCloseBirthBefore :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (trace : Transitions initial finalState) ->
+  (candidate : DeletableClosingEpisode name key world error value nameEq keyEq trace) ->
+  (generation : RegistrationGeneration name) ->
+  (classified : DeletedGenerationClassification name key world error value nameEq trace generation) ->
+  Not (Elem generation (selectedRegistrations candidate)) ->
+  (deletedParent classified = selectedActor candidate) ->
+  (centerIndex : Nat) ->
+  LT (registrationOrdinal (deletedOccurrence classified)) (transitionCount (traceBeforeOpening (selectedEpisode candidate)) + centerIndex) ->
+  (rawClosingActionAt name key world error value centerIndex (MoreTransitions (beginTransition (closedOpening (locatedEpisode (selectedEpisode candidate)))) (closedTransitions (locatedEpisode (selectedEpisode candidate)))) = Just (LUnload (deletedParent classified))) ->
+  (localBirth : LocatedActionOccurrence (OInsert (generationName generation) (ChildOf (deletedParent classified)) (deletedComponent classified)) (traceBeforeOpening (selectedEpisode candidate)) **
+    (registrationOrdinal (deletedOccurrence classified) = locatedActionOrdinal localBirth))
+o20SelectedCenterCloseBirthBefore name key world error value nameEq keyEq trace candidate generation classified outside parentExact centerIndex ordered centerExact =
+  case deletionWholeTraceOccurrenceClassification (traceBeforeOpening (selectedEpisode candidate)) (MoreTransitions (beginTransition (closedOpening (locatedEpisode (selectedEpisode candidate)))) (closedTransitions (locatedEpisode (selectedEpisode candidate)))) (traceAfterClosing (selectedEpisode candidate))
+    (replace {p = LocatedActionOccurrence (OInsert (generationName generation) (ChildOf (deletedParent classified)) (deletedComponent classified))} (sym (locatedDecomposition (selectedEpisode candidate))) (generatedRegistrationActionOccurrence (deletedOccurrence classified))) of
+    DeletionWholeBefore localBirth exactOrdinal =>
+      (localBirth ** trans (sym (o20LocatedOrdinalTransport trace (appendTransitions (traceBeforeOpening (selectedEpisode candidate)) (appendTransitions (MoreTransitions (beginTransition (closedOpening (locatedEpisode (selectedEpisode candidate)))) (closedTransitions (locatedEpisode (selectedEpisode candidate)))) (traceAfterClosing (selectedEpisode candidate)))) (OInsert (generationName generation) (ChildOf (deletedParent classified)) (deletedComponent classified)) (OInsert (generationName generation) (ChildOf (deletedParent classified)) (deletedComponent classified)) (sym (locatedDecomposition (selectedEpisode candidate))) Refl (generatedRegistrationActionOccurrence (deletedOccurrence classified)))) exactOrdinal)
+    DeletionWholeEpisode localBirth exactOrdinal =>
+      void (o20SelectedCenterBirthContradictsNonselection trace candidate generation classified outside
+        (replace {p = \action => LocatedActionOccurrence action (MoreTransitions (beginTransition (closedOpening (locatedEpisode (selectedEpisode candidate)))) (closedTransitions (locatedEpisode (selectedEpisode candidate))))} (cong (\parent => OInsert (generationName generation) (ChildOf parent) (deletedComponent classified)) parentExact) localBirth)
+        (cong (MkRegistrationGeneration (generationName generation))
+          (trans (sym (o20LocatedOrdinalTransport trace (appendTransitions (traceBeforeOpening (selectedEpisode candidate)) (appendTransitions (MoreTransitions (beginTransition (closedOpening (locatedEpisode (selectedEpisode candidate)))) (closedTransitions (locatedEpisode (selectedEpisode candidate)))) (traceAfterClosing (selectedEpisode candidate)))) (OInsert (generationName generation) (ChildOf (deletedParent classified)) (deletedComponent classified)) (OInsert (generationName generation) (ChildOf (deletedParent classified)) (deletedComponent classified)) (sym (locatedDecomposition (selectedEpisode candidate))) Refl (generatedRegistrationActionOccurrence (deletedOccurrence classified))))
+            (trans exactOrdinal
+              (trans (cong (\count => count + locatedActionOrdinal localBirth)
+                (sym (o20NativeScanCount (selectedBeforeScan candidate))))
+                (cong ((selectedStartOrdinal candidate) +) (sym (o20LocatedOrdinalTransport (MoreTransitions (beginTransition (closedOpening (locatedEpisode (selectedEpisode candidate)))) (closedTransitions (locatedEpisode (selectedEpisode candidate)))) (MoreTransitions (beginTransition (closedOpening (locatedEpisode (selectedEpisode candidate)))) (closedTransitions (locatedEpisode (selectedEpisode candidate)))) (OInsert (generationName generation) (ChildOf (deletedParent classified)) (deletedComponent classified)) (OInsert (generationName generation) (ChildOf (selectedActor candidate)) (deletedComponent classified)) Refl (cong (\parent => OInsert (generationName generation) (ChildOf parent) (deletedComponent classified)) parentExact) localBirth))))))))
+    DeletionWholeAfter localBirth exactOrdinal =>
+      void (succNotLTEpred (transitive
+        (transitive
+          (replace {p = \index => LT index (transitionCount (traceBeforeOpening (selectedEpisode candidate)) + centerIndex)}
+            (trans (sym (o20LocatedOrdinalTransport trace (appendTransitions (traceBeforeOpening (selectedEpisode candidate)) (appendTransitions (MoreTransitions (beginTransition (closedOpening (locatedEpisode (selectedEpisode candidate)))) (closedTransitions (locatedEpisode (selectedEpisode candidate)))) (traceAfterClosing (selectedEpisode candidate)))) (OInsert (generationName generation) (ChildOf (deletedParent classified)) (deletedComponent classified)) (OInsert (generationName generation) (ChildOf (deletedParent classified)) (deletedComponent classified)) (sym (locatedDecomposition (selectedEpisode candidate))) Refl (generatedRegistrationActionOccurrence (deletedOccurrence classified)))) exactOrdinal) ordered)
+          (lteSuccLeft (fst (o20OffsetStrictOrder (transitionCount (traceBeforeOpening (selectedEpisode candidate))) centerIndex (transitionCount (MoreTransitions (beginTransition (closedOpening (locatedEpisode (selectedEpisode candidate)))) (closedTransitions (locatedEpisode (selectedEpisode candidate))))))
+            (o20ClosingIndexInsideTrace name key world error value (MoreTransitions (beginTransition (closedOpening (locatedEpisode (selectedEpisode candidate)))) (closedTransitions (locatedEpisode (selectedEpisode candidate)))) centerIndex (LUnload (deletedParent classified)) centerExact))))
+        (lteAddRight (transitionCount (traceBeforeOpening (selectedEpisode candidate)) + transitionCount (MoreTransitions (beginTransition (closedOpening (locatedEpisode (selectedEpisode candidate)))) (closedTransitions (locatedEpisode (selectedEpisode candidate))))))))
