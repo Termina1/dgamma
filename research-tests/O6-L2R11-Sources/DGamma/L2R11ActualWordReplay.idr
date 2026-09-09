@@ -80,3 +80,46 @@ replayActualWordCPS nameEq keyEq child fiber first finalState _
           (snapshotChecked (single first middle current action tag (wordInventoryHead action (replayActionWord rest)) checked distinct found originalValid currentValid currentSame))) replayed)
         (cong S count) same)
 
+
+||| NEW whole-run replay with actual-word-restricted single. The unchanged
+||| L2R2 RetirementReplay conclusion includes early retirement, exact native
+||| count and snapshot-equal endpoint. This is a PROVED fold, conditional on
+||| the displayed per-kind dispatcher, not its lifecycle/frame construction.
+export
+0 replayOverActualWord :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (child : name) ->
+  (fiber : Fiber name key value world error) ->
+  (first, finalState : SystemState name key value world error) ->
+  (trace : Transitions first finalState) -> (foreign : ForeignChildRun nameEq keyEq child trace) ->
+  (0 foundFinal : lookupFiber {name} {key} {value} {world} {error} @{nameEq} child (registry finalState) = Just fiber) ->
+  (0 valid : registryWellFormed @{nameEq} @{keyEq} first = True) ->
+  (0 single : (before, afterState, replaySource : SystemState name key value world error) ->
+    (action : Action name key value world error) -> (tag : RuleTag) ->
+    (0 inActualWord : wordActionInventory (replayActionWord trace) (actionKindCode action) = True) ->
+    checkedApplyAction @{nameEq} @{keyEq} action before = Just (tag, afterState) ->
+    Not (child = actionOwner action) ->
+    lookupFiber {name} {key} {value} {world} {error} @{nameEq} child (registry before) = Just fiber ->
+    registryWellFormed @{nameEq} @{keyEq} before = True ->
+    registryWellFormed @{nameEq} @{keyEq} replaySource = True ->
+    runtimeSnapshot replaySource = runtimeSnapshot {name} {key} {value} {world} {error}
+      (MkSystemState (worldState before) (replaceBinding @{nameEq} child (retireFiber fiber) (registry before))) ->
+    CheckedSnapshotStep name key world error value nameEq keyEq action replaySource tag
+      (runtimeSnapshot {name} {key} {value} {world} {error}
+        (MkSystemState (worldState afterState) (replaceBinding @{nameEq} child (retireFiber fiber) (registry afterState))))) ->
+  RetirementReplay name key world error value nameEq child fiber trace
+replayOverActualWord {name} {key} {world} {error} {value}
+  nameEq keyEq child fiber first finalState trace foreign foundFinal valid single =
+  replayActualWordCPS nameEq keyEq child fiber first finalState trace foreign
+    (trans (sym (foreignChildRunLookup nameEq keyEq child trace foreign)) foundFinal) valid
+    (MkSystemState (worldState first) (replaceBinding @{nameEq} child (retireFiber fiber) (registry first)))
+    (checkedActionTargetValid nameEq keyEq (ORetire child) first
+      (MkSystemState (worldState first) (replaceBinding @{nameEq} child (retireFiber fiber) (registry first))) ORetireTag
+      (childRetireBeforeForeignRun nameEq keyEq child fiber first finalState trace foreign foundFinal valid))
+    Refl single (RetirementReplay name key world error value nameEq child fiber trace)
+    (\target, replayed, count, same => MkRetirementReplay target
+      (MoreTransitions (Fired {before = first}
+        {afterState = MkSystemState (worldState first) (replaceBinding @{nameEq} child (retireFiber fiber) (registry first))}
+        nameEq keyEq (ORetire child) ORetireTag
+        (childRetireBeforeForeignRun nameEq keyEq child fiber first finalState trace foreign foundFinal valid)) replayed)
+      (cong S count) same)
