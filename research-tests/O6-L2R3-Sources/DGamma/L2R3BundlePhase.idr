@@ -59,3 +59,35 @@ public export
 sRootSnapshotSquare = MkAvailabilityRootSnapshotExchange
   (\same => case same of Refl impossible) Refl Refl (barrierState 6) (barrierState 7)
   (insertS barrierNativeExecution) (beginFollowing barrierNativeExecution) (secondMoveSnapshot bundlePhaseNative)
+
+||| Two actual availability-aware phase calls, in original R/S bundle order,
+||| plus the native old/middle runs and the second call's OWN moved trail.
+||| Inversion counts are LOCAL to the post-release cut4: 2 -> 1 -> 0.
+||| The single-R moved trail also has count0. Full pre-release prefixes retain
+||| blocked inversions (2 for R, 4 for R/S); no global raw-count-zero claim.
+public export
+record BundlePhaseEvidence where
+  constructor MkBundlePhaseEvidence
+  rPhase : SnapshotRootPhaseStep Nat Bool Unit String (\key => Unit) %search %search
+    2 3 (smallComponent True) (NoTransitions {state = smallState 4})
+    (smallEarlyBegin2 smallNativeExecution) (smallLateInsert3 smallNativeExecution)
+  sPhase : SnapshotRootPhaseStep Nat Bool Unit String (\key => Unit) %search %search
+    2 4 (smallComponent False) (MoreTransitions (Fired {before = bundlePhaseState 0} {afterState = bundlePhaseState 4} %search %search (OInsert 3 Root (smallComponent True)) OInsertTag (smallInsert3 smallNativeExecution)) NoTransitions)
+    (smallBegin2 smallNativeExecution) (sAfterRBegin bundlePhaseNative)
+  originalRun : Transitions (bundlePhaseState 0) (bundlePhaseState 3)
+  middleRun : Transitions (bundlePhaseState 0) (bundlePhaseState 6)
+  originalTrail : AvailabilityTrace Nat Bool Unit String (\key => Unit) originalRun
+  middleTrail : AvailabilityTrace Nat Bool Unit String (\key => Unit) middleRun
+  singleMovedTrail : AvailabilityTrace Nat Bool Unit String (\key => Unit) (rootPhaseTrace rPhase)
+  movedTrail : AvailabilityTrace Nat Bool Unit String (\key => Unit) (rootPhaseTrace sPhase)
+  0 originalPhysical : originalRun = (MoreTransitions (Fired {before = bundlePhaseState 0} {afterState = bundlePhaseState 1} %search %search (LBegin 2) LBeginTag (smallEarlyBegin2 smallNativeExecution)) (MoreTransitions (Fired {before = bundlePhaseState 1} {afterState = bundlePhaseState 2} %search %search (OInsert 3 Root (smallComponent True)) OInsertTag (smallLateInsert3 smallNativeExecution)) (MoreTransitions (Fired {before = bundlePhaseState 2} {afterState = bundlePhaseState 3} %search %search (OInsert 4 Root (smallComponent False)) OInsertTag (sAfterBeginR bundlePhaseNative)) NoTransitions)))
+  0 middlePhysical : middleRun = (MoreTransitions (Fired {before = bundlePhaseState 0} {afterState = bundlePhaseState 4} %search %search (OInsert 3 Root (smallComponent True)) OInsertTag (smallInsert3 smallNativeExecution)) (MoreTransitions (Fired {before = bundlePhaseState 4} {afterState = bundlePhaseState 5} %search %search (LBegin 2) LBeginTag (smallBegin2 smallNativeExecution)) (MoreTransitions (Fired {before = bundlePhaseState 5} {afterState = bundlePhaseState 6} %search %search (OInsert 4 Root (smallComponent False)) OInsertTag (sAfterRBegin bundlePhaseNative)) NoTransitions)))
+  0 originalCount : rootBirthInversions 0 originalTrail = 2
+  0 middleCount : rootBirthInversions 0 middleTrail = 1
+  0 singleMovedCount : rootBirthInversions 0 singleMovedTrail = 0
+  0 movedCount : rootBirthInversions 0 movedTrail = 0
+  0 firstExactlyOne : rootBirthInversions 0 originalTrail = S (rootBirthInversions 0 middleTrail)
+  0 secondExactlyOne : rootBirthInversions 0 middleTrail = S (rootBirthInversions 0 movedTrail)
+  0 firstPrefixRuntime : runtimeSnapshot (snapshotRootFinal (rootPhaseSquare rPhase)) = runtimeSnapshot (bundlePhaseState 5)
+  0 originalToMovedRuntime : runtimeSnapshot (bundlePhaseState 3) = runtimeSnapshot (snapshotRootFinal (rootPhaseSquare sPhase))
+  0 originalToMovedSupport : supportSet @{%search} @{%search} (bundlePhaseState 3) = supportSet @{%search} @{%search} (snapshotRootFinal (rootPhaseSquare sPhase))
