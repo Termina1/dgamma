@@ -121,3 +121,50 @@ o20SelectedLifecycleTargetAbsent name key world error value nameEq selected regi
   (DeleteGenerationAction step rest deleted tail) (S source) action exact owner lifecycle =
     o20SelectedLifecycleTargetAbsent name key world error value nameEq selected registered
       tail source action exact owner lifecycle
+
+||| WHOLE before/center/after disappearance of every actually observed
+||| selected-center lifecycle slot. The foreign segments cannot supply that
+||| physical source coordinate, even when identical raw actions recur there.
+||| This refutes a target occurrence embedding, NOT the existence of a native
+||| source step (the observation and its bound witness that real source step).
+export
+0 o20WholeSelectedLifecycleDisappears :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {initial, finalState : SystemState name key value world error} ->
+  {trace : Transitions initial finalState} -> {selected : name} ->
+  {episode : LocatedClosedEpisode name key world error value nameEq keyEq selected trace} ->
+  {registered : List (RegistrationGeneration name)} -> {startOrdinal : Nat} ->
+  {startLive : GenerationEnvironment name} ->
+  (result : DeletionResult name key world error value nameEq keyEq trace selected episode registered startOrdinal startLive) ->
+  (centerIndex : Nat) -> (action : Action name key value world error) ->
+  (rawClosingActionAt name key world error value centerIndex
+    (MoreTransitions (beginTransition (closedOpening (locatedEpisode episode))) (closedTransitions (locatedEpisode episode))) = Just action) ->
+  (actionOwner action = selected) -> (isLifecycleAction action = True) ->
+  (source, target : Nat) -> (source = deletionOriginalBeforeCount result + centerIndex) ->
+  Not (DeletionSurvivingOrdinalEmbedding result target source)
+o20WholeSelectedLifecycleDisappears name key world error value result centerIndex action exact owner lifecycle _ _ sourceExact
+  (DeletionBeforeEmbedding {survivingOrdinal} {originalOrdinal} origin) =
+    succNotLTEpred (transitive (snd (o20SubsequenceOrdinalBounds (beforeDeletion result) survivingOrdinal originalOrdinal origin))
+      (replace {p = LTE (deletionOriginalBeforeCount result)} (sym sourceExact)
+        (lteAddRight (deletionOriginalBeforeCount result))))
+o20WholeSelectedLifecycleDisappears name key world error value {nameEq} {selected} {registered}
+  result centerIndex action exact owner lifecycle _ _ sourceExact
+  (DeletionEpisodeEmbedding {survivingOrdinal} {originalOrdinal} origin) =
+    absurd (trans (sym (trans
+      (cong (o20SubsequenceTargetOrdinal (episodeDeletion result))
+        (plusLeftCancel (deletionOriginalBeforeCount result) originalOrdinal centerIndex sourceExact))
+      (o20SelectedLifecycleTargetAbsent name key world error value nameEq selected registered
+        (episodeDeletion result) centerIndex action exact owner lifecycle)))
+      (fst (o20SubsequenceOrdinalsInverse (episodeDeletion result) originalOrdinal survivingOrdinal) origin))
+o20WholeSelectedLifecycleDisappears name key world error value {episode}
+  result centerIndex action exact owner lifecycle _ _ sourceExact
+  (DeletionAfterEmbedding {survivingOrdinal} {originalOrdinal} origin) =
+    succNotLTEpred (transitive
+      (replace {p = \source => LT source (deletionOriginalBeforeCount result + deletionOriginalEpisodeCount result)}
+        (sym sourceExact)
+        (fst (o20OffsetStrictOrder (deletionOriginalBeforeCount result) centerIndex (deletionOriginalEpisodeCount result))
+          (o20ClosingIndexInsideTrace name key world error value
+            (MoreTransitions (beginTransition (closedOpening (locatedEpisode episode))) (closedTransitions (locatedEpisode episode)))
+            centerIndex action exact)))
+      (lteAddRight (deletionOriginalBeforeCount result + deletionOriginalEpisodeCount result)))
