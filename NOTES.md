@@ -4931,3 +4931,21 @@ not claimed inside that archive. The inventory has298 entries:187 rechecked
 +2 auxiliary inherited source targets =189 direct sources;111 other inventory
 entries remain NOT rechecked. R205 visibility companion is a future-gated
 candidate ONLY; no current Idris visibility/type/body change.
+
+## Status
+
+### R204 D3 — post-publication gate readiness
+
+## D3 — post-publication checks and gate readiness
+
+D2 publication `ee37c24a` is followed by read-only independent, frozen and
+archive verification: all PASS. Post-publication snapshots and U0b/D1/D2
+artifact before/after hash receipts are now published separately from the
+append-only raw archive. Archive anchor56d1269b intentionally excludes later
+publication/gate receipts; no archive was rewritten. Source freeze3e6d8ff0,
+190/190 final expected outcomes,29 new declarations, P1/P2 repairs, A/B partial,
+A15 full revert and C ineligibility are unchanged. D1/D2/D3 are artifact units;
+D4 alone remains reserved for the owner/reviewer disposition seal. No extra
+native check, source edit, new proof or visibility companion was attempted.
+The tracked tree was clean with only allowed paper/ and adversarial-review
+untracked inputs at the post-publication audit; no own compiler or staged files.
