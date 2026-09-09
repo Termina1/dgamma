@@ -13,6 +13,7 @@ import DGamma.CP5UniqueRawNameInsertions
 import DGamma.CP5CurrentGenerationBirthSpike
 import DGamma.CP5O20SupportedEndpointCapitalSpike
 import DGamma.CP5O20HistoryNameTransportSpike
+import DGamma.CP5O20RootOrdinalBoundarySpike
 import DGamma.CP5O20ChainCurrentDisappearanceSpike
 import Data.List
 import Data.List.Elem
@@ -124,3 +125,29 @@ o20CanonicalPresentBackwardName name key world error value protocol nameEq keyEq
                   (cong generationName (currentBirthStampExact
                     (acceptedLeftCurrentBirth name key world error value nameEq left right mapping registrations
                       (renameBackward (currentNameBijection current) selected) opposite oppositeCurrent)))))
+
+||| One actual replay's insertion-count law for BOTH parent classes. Root
+||| law is explicit; generated law comes from this correspondence's coherent
+||| generated origin. No scoped-to-raw bridge or new stored field is used.
+export
+0 o20ReplayInsertionOrdinals :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {sourceFirst, sourceFinal, targetFirst, targetFinal : SystemState name key value world error} ->
+  {source : Transitions sourceFirst sourceFinal} -> {target : Transitions targetFirst targetFinal} ->
+  (correspondence : ActionRegistrationReplayCorrespondence name key world error value source target) ->
+  O20RootReplayOrdinals name key world error value correspondence ->
+  (selected : name) -> (parent : Parent name) -> (component : Component key value world error) ->
+  (birth : LocatedActionOccurrence (OInsert selected parent component) target) ->
+  (generationForward (replayGenerationRenaming correspondence)
+    (MkRegistrationGeneration selected (locatedActionOrdinal (replayActionOrigin correspondence birth))) =
+    MkRegistrationGeneration selected (locatedActionOrdinal birth))
+o20ReplayInsertionOrdinals correspondence roots selected Root component birth = rootReplayOrdinal roots birth
+o20ReplayInsertionOrdinals correspondence roots selected (ChildOf parent) component
+  (MkLocatedActionOccurrence before afterState earlier edge later shape decomposition) =
+    trans (cong (generationForward (replayGenerationRenaming correspondence))
+      (cong (MkRegistrationGeneration selected)
+        (sym (cong locatedActionOrdinal
+          (replayGeneratedActionOriginCoherent correspondence
+            (MkLocatedGeneratedRegistration before afterState earlier edge later shape decomposition))))))
+      (replayGeneratedOrdinalPreserved correspondence
+        (MkLocatedGeneratedRegistration before afterState earlier edge later shape decomposition))
