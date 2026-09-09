@@ -52,3 +52,23 @@ data O20GenerationOnlyDisposition :
     (0 matched : RegistrationEventMatch mapping event opposite) ->
     (0 stampMatched : (generationForward mapping stamp = eventChildGeneration opposite)) ->
     O20GenerationOnlyDisposition name key world error value mapping left right stamp
+
+||| Eliminate the one authentic opposite ORIGINAL birth packet, retaining
+||| its very same event and scanned occurrence in the matched constructor.
+export
+0 o20MatchedDispositionPacket :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {leftFirst, leftFinal, rightFirst, rightFinal : SystemState name key value world error} ->
+  {left : Transitions leftFirst leftFinal} -> {right : Transitions rightFirst rightFinal} ->
+  (mapping : RegistrationGenerationBijection name) ->
+  (stamp : RegistrationGeneration name) ->
+  (event : RegistrationEvent name key world error value) ->
+  (birth : ScannedRegistrationBirth name key world error value Z left event) ->
+  (eventChildGeneration event = stamp) ->
+  (opposite : RegistrationEvent name key world error value **
+    (RegistrationEventMatch mapping event opposite,
+     ScannedRegistrationBirth name key world error value Z right opposite,
+     (generationForward mapping stamp = eventChildGeneration opposite))) ->
+  O20GenerationOnlyDisposition name key world error value mapping left right stamp
+o20MatchedDispositionPacket mapping stamp event birth exact (opposite ** (matched, rightBirth, stampMatched)) =
+  O20OriginalMatchedBirth event opposite birth rightBirth exact matched stampMatched
