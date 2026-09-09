@@ -31,3 +31,11 @@ r195RootOnlyNoChildBirth
 r195RootOnlyNoChildBirth
   (MkLocatedGeneratedRegistration _ _ (MoreTransitions head (MoreTransitions next rest)) step tail action decomposition) =
     case cong transitionCount decomposition of Refl impossible
+
+||| A total executable swap of ordinals zero and one, preserving every raw
+||| name. It deliberately moves the fixture's root stamp (0,0).
+public export
+r195SwapRootOrdinals : RegistrationGeneration Nat -> RegistrationGeneration Nat
+r195SwapRootOrdinals (MkRegistrationGeneration selected Z) = MkRegistrationGeneration selected 1
+r195SwapRootOrdinals (MkRegistrationGeneration selected (S Z)) = MkRegistrationGeneration selected 0
+r195SwapRootOrdinals (MkRegistrationGeneration selected (S (S later))) = MkRegistrationGeneration selected (S (S later))
