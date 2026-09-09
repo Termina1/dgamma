@@ -69,3 +69,29 @@ record SelectedSquareCut
   0 selectedDistanceEquation : rootDistance nameEq keyEq trail (catalogOrdinal cutEntry) = S positivePredecessor
   0 predecessorSourceEquation : head' (drop (pred (catalogOrdinal cutEntry)) (trailSourceActions trail)) = Just (cutSource, cutAction)
   0 selectedNativeBirth : CatalogBirthAt name key world error value cutEntry 0 trace
+
+||| Eliminate the already observed source/action PAIR once. Source classifier,
+||| native early-root evaluator, and catalog-birth decoding are computed HERE.
+public export
+selectedCutAtPair :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {0 initial, finalState : SystemState name key value world error} ->
+  {0 trace : Transitions initial finalState} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (trail : AvailabilityTrace name key world error value trace) ->
+  (entry : RootCatalogEntry name key world error value) ->
+  (before, after : List (RootCatalogEntry name key world error value)) ->
+  (predecessor : Nat) ->
+  (0 member : Elem entry (scanRootCatalog 0 trail)) ->
+  (0 split : scanRootCatalog 0 trail = before ++ entry :: after) ->
+  (0 zeros : All (\item => rootDistance nameEq keyEq trail (catalogOrdinal item) = 0) before) ->
+  (0 positive : rootDistance nameEq keyEq trail (catalogOrdinal entry) = S predecessor) ->
+  (observed : (SystemState name key value world error, Action name key value world error)) ->
+  (0 equation : head' (drop (pred (catalogOrdinal entry)) (trailSourceActions trail)) = Just observed) ->
+  Maybe (SelectedSquareCut name key world error value nameEq keyEq trail)
+selectedCutAtPair {name} {key} {world} {error} {value} nameEq keyEq trail entry before after predecessor member split zeros positive (source, action) equation =
+  Just (MkSelectedSquareCut entry before after predecessor source action
+    (classifyPredecessor nameEq (catalogRoot entry) source action)
+    (checkedApplyAction {name} {key} {value} {world} {error} @{nameEq} @{keyEq}
+      (OInsert (catalogRoot entry) Root (catalogComponent entry)) source)
+    Refl member split zeros positive equation (scanCatalogBirth 0 trail entry member))
