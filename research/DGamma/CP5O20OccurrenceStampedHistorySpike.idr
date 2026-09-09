@@ -81,3 +81,58 @@ o20StampedRightTransition
   (StampedRemoveStage nameEq keyEq renaming actor leftUnique rightUnique
     leftWorld rightWorld leftRegistry rightRegistry leftChecked rightChecked) =
     Fired nameEq keyEq (ORemove (renameForward renaming actor)) ORemoveTag rightChecked
+
+||| Finite actual paired native path with each stage labelled by TWO genuine
+||| supplied-word occurrences (same action/tag and their physical ordinals).
+||| Unlike the superseded-candidate lockstep family, these occurrence ordinals
+||| need not increment together; A8's o20SynchronizationForwardOrdinalFixed
+||| explains why that old restriction is inappropriate for a modulo-map goal.
+||| Each insertion still owns its generation-map equation; no successor cut
+||| or preservation callback is an input. No original-word equality is claimed.
+||| whole-word / per-actor ordering and coverage producer remains to prove; arbitrary skips are NOT asserted to be zero native edges
+public export
+data O20OccurrenceStampedHistory :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (mapping : RegistrationGenerationBijection name) -> (renaming : NameBijection name) ->
+  {wordInitial, leftWordFinal, rightWordFinal : SystemState name key value world error} ->
+  (leftWord : Transitions wordInitial leftWordFinal) ->
+  (rightWord : Transitions wordInitial rightWordFinal) ->
+  (leftLive, rightLive, leftFinalLive, rightFinalLive : GenerationEnvironment name) ->
+  (leftBefore, rightBefore, leftAfter, rightAfter : SystemState name key value world error) -> Type where
+  OccurrenceHistoryEnd :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+    {mapping : RegistrationGenerationBijection name} -> {renaming : NameBijection name} ->
+    {wordInitial, leftWordFinal, rightWordFinal : SystemState name key value world error} ->
+    {leftWord : Transitions wordInitial leftWordFinal} ->
+    {rightWord : Transitions wordInitial rightWordFinal} ->
+    {leftLive, rightLive : GenerationEnvironment name} ->
+    {left, right : SystemState name key value world error} ->
+    O20OccurrenceStampedHistory name key world error value nameEq keyEq mapping renaming
+      leftWord rightWord leftLive rightLive leftLive rightLive left right left right
+  OccurrenceHistoryMore :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+    {mapping : RegistrationGenerationBijection name} -> {renaming : NameBijection name} ->
+    {wordInitial, leftWordFinal, rightWordFinal : SystemState name key value world error} ->
+    {leftWord : Transitions wordInitial leftWordFinal} ->
+    {rightWord : Transitions wordInitial rightWordFinal} ->
+    {leftOrdinal, rightOrdinal : Nat} ->
+    {leftLive, rightLive, leftNext, rightNext, leftFinalLive, rightFinalLive : GenerationEnvironment name} ->
+    {leftBefore, rightBefore, leftMiddle, rightMiddle, leftAfter, rightAfter : SystemState name key value world error} ->
+    (0 stage : O20StampedStage name key world error value nameEq keyEq mapping renaming
+      leftOrdinal rightOrdinal leftLive rightLive leftNext rightNext
+      leftBefore rightBefore leftMiddle rightMiddle) ->
+    (0 leftOccurrence : LocatedActionOccurrence (transitionAction (o20StampedLeftTransition stage)) leftWord) ->
+    (0 rightOccurrence : LocatedActionOccurrence (transitionAction (o20StampedRightTransition stage)) rightWord) ->
+    (0 leftStampExact : (locatedActionOrdinal leftOccurrence = leftOrdinal)) ->
+    (0 rightStampExact : (locatedActionOrdinal rightOccurrence = rightOrdinal)) ->
+    (0 leftTagExact : (transitionTag (locatedTransition leftOccurrence) = transitionTag (o20StampedLeftTransition stage))) ->
+    (0 rightTagExact : (transitionTag (locatedTransition rightOccurrence) = transitionTag (o20StampedRightTransition stage))) ->
+    (0 later : O20OccurrenceStampedHistory name key world error value nameEq keyEq mapping renaming
+      leftWord rightWord leftNext rightNext leftFinalLive rightFinalLive
+      leftMiddle rightMiddle leftAfter rightAfter) ->
+    O20OccurrenceStampedHistory name key world error value nameEq keyEq mapping renaming
+      leftWord rightWord leftLive rightLive leftFinalLive rightFinalLive
+      leftBefore rightBefore leftAfter rightAfter
