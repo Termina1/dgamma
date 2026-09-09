@@ -13,6 +13,7 @@ import DGamma.L2R5RootCatalog
 import DGamma.L2R6ForcedScan
 import DGamma.L2R6Anchors
 import DGamma.L2R7ObservedAny
+import DGamma.L2R7Classifier
 import DGamma.L2R9OrdinalScan
 import DGamma.L2R10PhaseScan
 import DGamma.L2R12PhaseAccepted
@@ -58,3 +59,25 @@ phaseActorAtEvent nameEq events ordinal (Just (owner, flag)) equation accepted =
    (flag ** (trans equation (cong (\selected => Just (selected, flag))
       (fst (snd (phaseActorAtOwner nameEq events ordinal owner accepted)))),
     snd (snd (phaseActorAtOwner nameEq events ordinal owner accepted)))))
+
+||| Split the authentic seed predicate, preserving all FOUR native tests.
+||| No release identity or interval is inferred merely from scan acceptance.
+export
+0 phaseSeedAcceptedParts : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, finalState : SystemState name key value world error} ->
+  {trace : Transitions first finalState} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (trail : AvailabilityTrace name key world error value trace) ->
+  (entry, seed : RootCatalogEntry name key world error value) -> (anchor : Nat) ->
+  (0 accepted : phaseAnchorSeedCheck nameEq keyEq trail entry anchor seed = True) ->
+  (LTE (catalogOrdinal seed) (catalogOrdinal entry),
+   keyForcedOrdinal nameEq keyEq trail (catalogOrdinal seed) = True,
+   elemDec (pred anchor) (filter (\ordinal => ordinal < catalogOrdinal seed) (releaseOrdinalScan nameEq keyEq (catalogComponent seed) trail)) = True,
+   maybe False (\item => maybe False (\actor => phaseReleaseCheck nameEq actor 0 (pred anchor) False (phaseEvents nameEq trail)) (fst item)) (head' (drop (pred anchor) (phaseEvents nameEq trail))) = True)
+phaseSeedAcceptedParts nameEq keyEq trail entry seed anchor accepted =
+  (lteReflectsLTE (catalogOrdinal seed) (catalogOrdinal entry)
+    (trans (sym (leToLte (catalogOrdinal seed) (catalogOrdinal entry)))
+      (boolAndLeft (catalogOrdinal seed <= catalogOrdinal entry) (keyForcedOrdinal nameEq keyEq trail (catalogOrdinal seed) && elemDec (pred anchor) (filter (\ordinal => ordinal < catalogOrdinal seed) (releaseOrdinalScan nameEq keyEq (catalogComponent seed) trail)) && maybe False (\item => maybe False (\actor => phaseReleaseCheck nameEq actor 0 (pred anchor) False (phaseEvents nameEq trail)) (fst item)) (head' (drop (pred anchor) (phaseEvents nameEq trail)))) (accepted))),
+   boolAndLeft (keyForcedOrdinal nameEq keyEq trail (catalogOrdinal seed)) (elemDec (pred anchor) (filter (\ordinal => ordinal < catalogOrdinal seed) (releaseOrdinalScan nameEq keyEq (catalogComponent seed) trail)) && maybe False (\item => maybe False (\actor => phaseReleaseCheck nameEq actor 0 (pred anchor) False (phaseEvents nameEq trail)) (fst item)) (head' (drop (pred anchor) (phaseEvents nameEq trail)))) (boolAndRight (catalogOrdinal seed <= catalogOrdinal entry) (keyForcedOrdinal nameEq keyEq trail (catalogOrdinal seed) && elemDec (pred anchor) (filter (\ordinal => ordinal < catalogOrdinal seed) (releaseOrdinalScan nameEq keyEq (catalogComponent seed) trail)) && maybe False (\item => maybe False (\actor => phaseReleaseCheck nameEq actor 0 (pred anchor) False (phaseEvents nameEq trail)) (fst item)) (head' (drop (pred anchor) (phaseEvents nameEq trail)))) (accepted)),
+   boolAndLeft (elemDec (pred anchor) (filter (\ordinal => ordinal < catalogOrdinal seed) (releaseOrdinalScan nameEq keyEq (catalogComponent seed) trail))) (maybe False (\item => maybe False (\actor => phaseReleaseCheck nameEq actor 0 (pred anchor) False (phaseEvents nameEq trail)) (fst item)) (head' (drop (pred anchor) (phaseEvents nameEq trail)))) (boolAndRight (keyForcedOrdinal nameEq keyEq trail (catalogOrdinal seed)) (elemDec (pred anchor) (filter (\ordinal => ordinal < catalogOrdinal seed) (releaseOrdinalScan nameEq keyEq (catalogComponent seed) trail)) && maybe False (\item => maybe False (\actor => phaseReleaseCheck nameEq actor 0 (pred anchor) False (phaseEvents nameEq trail)) (fst item)) (head' (drop (pred anchor) (phaseEvents nameEq trail)))) (boolAndRight (catalogOrdinal seed <= catalogOrdinal entry) (keyForcedOrdinal nameEq keyEq trail (catalogOrdinal seed) && elemDec (pred anchor) (filter (\ordinal => ordinal < catalogOrdinal seed) (releaseOrdinalScan nameEq keyEq (catalogComponent seed) trail)) && maybe False (\item => maybe False (\actor => phaseReleaseCheck nameEq actor 0 (pred anchor) False (phaseEvents nameEq trail)) (fst item)) (head' (drop (pred anchor) (phaseEvents nameEq trail)))) (accepted))),
+   boolAndRight (elemDec (pred anchor) (filter (\ordinal => ordinal < catalogOrdinal seed) (releaseOrdinalScan nameEq keyEq (catalogComponent seed) trail))) (maybe False (\item => maybe False (\actor => phaseReleaseCheck nameEq actor 0 (pred anchor) False (phaseEvents nameEq trail)) (fst item)) (head' (drop (pred anchor) (phaseEvents nameEq trail)))) (boolAndRight (keyForcedOrdinal nameEq keyEq trail (catalogOrdinal seed)) (elemDec (pred anchor) (filter (\ordinal => ordinal < catalogOrdinal seed) (releaseOrdinalScan nameEq keyEq (catalogComponent seed) trail)) && maybe False (\item => maybe False (\actor => phaseReleaseCheck nameEq actor 0 (pred anchor) False (phaseEvents nameEq trail)) (fst item)) (head' (drop (pred anchor) (phaseEvents nameEq trail)))) (boolAndRight (catalogOrdinal seed <= catalogOrdinal entry) (keyForcedOrdinal nameEq keyEq trail (catalogOrdinal seed) && elemDec (pred anchor) (filter (\ordinal => ordinal < catalogOrdinal seed) (releaseOrdinalScan nameEq keyEq (catalogComponent seed) trail)) && maybe False (\item => maybe False (\actor => phaseReleaseCheck nameEq actor 0 (pred anchor) False (phaseEvents nameEq trail)) (fst item)) (head' (drop (pred anchor) (phaseEvents nameEq trail)))) (accepted))))
