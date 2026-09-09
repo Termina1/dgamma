@@ -141,3 +141,21 @@ export
 phaseEventsCount nameEq (AvailabilityEnd state) = Refl
 phaseEventsCount nameEq (AvailabilityStep source (Fired ne ke action tag checked) rest later) =
   cong S (phaseEventsCount nameEq later)
+
+||| Native lifecycle owner field decoded from phaseEvents' classifier.
+||| Orchestration cases cannot masquerade as the strictly earlier lifecycle.
+export
+0 phaseLifeOwnerDecoded : {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (actor : name) ->
+  (source : SystemState name key value world error) ->
+  (action : Action name key value world error) ->
+  (0 owner : phaseActionOwner nameEq source action = Just actor) ->
+  (0 life : isLifecycleAction action = True) -> actionOwner action = actor
+phaseLifeOwnerDecoded nameEq actor source (OInsert child parent component) owner life = absurd life
+phaseLifeOwnerDecoded nameEq actor source (ORetire child) owner life = absurd life
+phaseLifeOwnerDecoded nameEq actor source (ORemove child) owner life = absurd life
+phaseLifeOwnerDecoded nameEq actor source (LBegin selected) owner life = injective owner
+phaseLifeOwnerDecoded nameEq actor source (LAdvance selected) owner life = injective owner
+phaseLifeOwnerDecoded nameEq actor source (LDivert selected) owner life = injective owner
+phaseLifeOwnerDecoded nameEq actor source (LUnload selected) owner life = injective owner
+phaseLifeOwnerDecoded nameEq actor source (LLeave selected) owner life = injective owner
