@@ -191,3 +191,23 @@ record ForcedClassificationAt
     (classifyForced nameEq keyEq trail (scanRootCatalog 0 trail) Refl)
   0 classifierSound : classifierObserved = True -> ForcedOnTrace nameEq keyEq trail (catalogOrdinal entry)
   0 classifierComplete : ForcedOnTrace nameEq keyEq trail (catalogOrdinal entry) -> classifierObserved = True
+
+||| Executable SINGLE-CONSTRUCTOR classifier correspondence producer. Both
+||| directions and membership in the unchanged classifier output accompany
+||| the SAME computed observation; no assumed completeness/soundness callback.
+public export
+observeForcedClassification : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {0 first, finalState : SystemState name key value world error} ->
+  {0 trace : Transitions first finalState} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (trail : AvailabilityTrace name key world error value trace) ->
+  (entry : RootCatalogEntry name key world error value) ->
+  (0 member : Elem entry (scanRootCatalog 0 trail)) ->
+  ForcedClassificationAt name key world error value nameEq keyEq trail entry
+observeForcedClassification nameEq keyEq trail entry member = MkForcedClassificationAt member
+  (any (\seed => catalogOrdinal seed <= catalogOrdinal entry && keyForcedOrdinal nameEq keyEq trail (catalogOrdinal seed)) (scanRootCatalog 0 trail)) Refl
+  (elemMap (\item => (catalogRoot item, any (\seed => catalogOrdinal seed <= catalogOrdinal item && keyForcedOrdinal nameEq keyEq trail (catalogOrdinal seed)) (scanRootCatalog 0 trail))) member)
+  (\accepted => classifyForcedSound nameEq keyEq trail entry member
+    (any (\seed => catalogOrdinal seed <= catalogOrdinal entry && keyForcedOrdinal nameEq keyEq trail (catalogOrdinal seed)) (scanRootCatalog 0 trail)) Refl accepted)
+  (\forced => classifyForcedComplete nameEq keyEq trail entry
+    (any (\seed => catalogOrdinal seed <= catalogOrdinal entry && keyForcedOrdinal nameEq keyEq trail (catalogOrdinal seed)) (scanRootCatalog 0 trail)) Refl forced)
