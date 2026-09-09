@@ -51,3 +51,10 @@ locatedSourceThroughHead step rest source action ordinal (MkLocatedSourceAction 
       (afterActionOccurrence located) (locatedAction located)
       (cong (MoreTransitions step) (actionOccurrenceDecomposition located)))
     (cong S exactOrdinal) exactSource
+
+||| An empty physical source/action word has no located query at any index.
+export
+0 sourceQueryEmpty : {item : Type} -> (ordinal : Nat) -> (wanted : item) ->
+  (0 equation : head' (drop ordinal []) = Just wanted) -> Void
+sourceQueryEmpty Z wanted equation = absurd equation
+sourceQueryEmpty (S ordinal) wanted equation = absurd equation
