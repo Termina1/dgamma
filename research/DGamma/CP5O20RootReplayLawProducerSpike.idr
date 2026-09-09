@@ -199,3 +199,34 @@ o20CanonicalOperationalRootReplayOrdinals capital replay =
     (operationalPermutationOccurrenceCorrespondence replay)
     (o20CanonicalRootReplayOrdinals capital)
     (o20OperationalRootReplayOrdinals replay)
+
+||| The exact convergence-facing left occurrence composition owns root ordinals.
+||| Its realized permutation is projected from the SAME operational package.
+export
+0 o20PermutedCanonicalRootReplayOrdinals :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {protocol : RegistrationProtocol key value world error} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {initial, leftFinal, rightFinal : SystemState name key value world error} ->
+  {leftTrace : Transitions initial leftFinal} ->
+  {rightTrace : Transitions initial rightFinal} ->
+  {sameInputs : SameOrchestrationModuloGenerated nameEq keyEq leftTrace rightTrace} ->
+  {leftCapital : IndependentCanonicalSchedule name key world error value protocol
+    nameEq keyEq leftTrace} ->
+  {rightCapital : IndependentCanonicalSchedule name key world error value protocol
+    nameEq keyEq rightTrace} ->
+  {matching : MappedCanonicalSupportOrders name key world error value protocol
+    nameEq keyEq leftTrace rightTrace
+    (currentNameBijection (endpointRenaming sameInputs))
+    (canonicalSchedule leftCapital) (canonicalSchedule rightCapital)} ->
+  {operational : CertifiedOperationalCanonicalPermutation name key world error value
+    protocol nameEq keyEq leftTrace rightTrace sameInputs leftCapital rightCapital matching} ->
+  (execution : PermutedCanonicalExecution name key world error value protocol
+    nameEq keyEq leftTrace rightTrace sameInputs leftCapital rightCapital operational) ->
+  O20RootReplayOrdinals name key world error value
+    (composeActionRegistrationReplayCorrespondence
+      (canonicalOccurrenceCorrespondence leftCapital)
+      (permutationOccurrenceCorrespondence execution))
+o20PermutedCanonicalRootReplayOrdinals {leftCapital} {operational} execution =
+  o20CanonicalOperationalRootReplayOrdinals leftCapital
+    (selectedPermutationRealized operational)
