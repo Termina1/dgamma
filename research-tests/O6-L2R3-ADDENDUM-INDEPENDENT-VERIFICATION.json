@@ -1,0 +1,122 @@
+{
+  "status": "PASS",
+  "immutablePlanPublishedBeforeValidation": true,
+  "finalPlanLeafBeforeDependent": true,
+  "head": "7a026b39432bc8e2ff5980aede245b4e35e94c94",
+  "timestampUTC": "2026-09-09T01:41:57.588805+00:00",
+  "invocationCount": 73,
+  "passedCount": 65,
+  "failedCount": 8,
+  "interruptedCount": 0,
+  "finalCheckCount": 14,
+  "newDeclarationCount": 50,
+  "newDeclarations": {
+    "research-tests/O6-L2R3-Sources/DGamma/L2R3Attached.idr": [
+      "ActorLifecycleOnlyAttached",
+      "AttachedReason",
+      "AttachedRelease",
+      "BlockBeforeAttached",
+      "LocatedOpenEpisodeBlockAttached",
+      "OrderedForcedRootBundle",
+      "extendedIntoAttached",
+      "oldIntoAttached"
+    ],
+    "research-tests/O6-L2R3-Sources/DGamma/L2R3AttachedGap.idr": [
+      "AttachedBundleOccurrence",
+      "AttachedNormalForm",
+      "attachedGapCount",
+      "attachedZeroGapInNormalForm",
+      "bundleOutsideHead",
+      "gapHeadPositive",
+      "rootHeadCannotBeBundled"
+    ],
+    "research-tests/O6-L2R3-Sources/DGamma/L2R3BarrierBlocks.idr": [
+      "BarrierAttachedBlocks",
+      "barrierAttachedBlocks"
+    ],
+    "research-tests/O6-L2R3-Sources/DGamma/L2R3BarrierExecution.idr": [
+      "BarrierNativeExecution",
+      "barrierNativeExecution",
+      "barrierTrace"
+    ],
+    "research-tests/O6-L2R3-Sources/DGamma/L2R3BarrierOrder.idr": [
+      "BarrierOrderEvidence",
+      "barrierOrderEvidence",
+      "externalRootHeadsMatch",
+      "rThenSCannotReverse"
+    ],
+    "research-tests/O6-L2R3-Sources/DGamma/L2R3BarrierStates.idr": [
+      "barrierState"
+    ],
+    "research-tests/O6-L2R3-Sources/DGamma/L2R3BundlePhase.idr": [
+      "BundlePhaseEvidence",
+      "BundlePhaseNative",
+      "bundlePhaseEvidence",
+      "bundlePhaseNative",
+      "sRootSnapshotSquare"
+    ],
+    "research-tests/O6-L2R3-Sources/DGamma/L2R3BundlePhaseStates.idr": [
+      "bundlePhaseState"
+    ],
+    "research-tests/O6-L2R3-Sources/DGamma/L2R3FixtureCoverage.idr": [
+      "FixtureCoverage",
+      "NoBundleStraddlesCut",
+      "emptyGapHasNoOccurrence",
+      "fixtureCoverage"
+    ],
+    "research-tests/O6-L2R3-Sources/DGamma/L2R3ForcedClosure.idr": [
+      "ForcedRootInput",
+      "forcedRootLeast"
+    ],
+    "research-tests/O6-L2R3-Sources/DGamma/L2R3RemoveDispatch.idr": [
+      "removeAfterRetirementRaw",
+      "replayRemoveAfterRetirement",
+      "replayRemoveAtObservedSource",
+      "replayRemoveFromView",
+      "retireRemoveSnapshot",
+      "retirementKeepsParent"
+    ],
+    "research-tests/O6-L2R3-Sources/DGamma/L2R3RetireDispatch.idr": [
+      "replayRootAfterRetirement",
+      "retireSquareReplayObserved"
+    ],
+    "research-tests/O6-L2R3-Sources/DGamma/L2R3Separation.idr": [
+      "separateBundleObserved"
+    ],
+    "research-tests/O6-L2R3-Sources/DGamma/L2R3SmallAttached.idr": [
+      "SmallAttachedBlocks",
+      "smallAttachedBlocks",
+      "smallInsertedBundleMember",
+      "smallRelease"
+    ]
+  },
+  "sourceCommitCount": 50,
+  "allShiftCommitsReceiptAuthenticated": true,
+  "noUnapprovedBundles": true,
+  "approvedPredecessorCommentRepairsAuthenticated": true,
+  "allInvocationsSerialized": true,
+  "allRecordedSnapshotsAndLogsAuthenticated": true,
+  "protocolIncidents": [],
+  "allFinalCurrentSourcesAuthenticated": true,
+  "committedArchiveAndManifestAuthenticated": true,
+  "evidenceArchiveSHA256": "5ba490b38af974efb022a53375d55681f39b13dbd7406c941074c92a8b094bfe",
+  "productionAndFrozenResearchUntouched": true,
+  "maxSampleRSSKiB": 5883536,
+  "RSSQualification": "250ms sampled RSS, not continuous peak; chez classified from the first L2R3 invocation",
+  "noUnsafeNewProofs": true,
+  "noOwnCompiler": true,
+  "noOwnHeavyLock": true,
+  "observedNonOwnedHeavyLock": {
+    "lane": "R194-main",
+    "pid": 47734,
+    "timestampUTC": "2026-09-09T01:40:00.856114+00:00",
+    "unit": "V51",
+    "path": "research-tests/DGamma/R182O19FourCrossingsPositive.idr"
+  },
+  "noStagedFiles": true,
+  "cleanTrackedTree": true,
+  "noUntrackedDeliverables": true,
+  "manualProofReviewStillRequired": true,
+  "paperTextPresentInWorktree": false,
+  "supervisorPaperRulingRecorded": true
+}
