@@ -212,3 +212,25 @@ o20ModuloSynchronizationHistoryCut {nameEq} {initial} mapping synchronization em
     (MkO20StampedCut
       (o20AllNameEmptyOrigin nameEq (moduloBijection synchronization) initial empty)
       (\selected, stamp, found => absurd found) (\selected, stamp, found => absurd found))
+
+||| The actual LEFT native path contained in an occurrence-stamped history.
+||| No equation to the supplied-word trace token is claimed; that word supplies
+||| original action/tag/ordinal labels, not a freely asserted replay equality.
+export
+0 o20OccurrenceHistoryLeftPath :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {mapping : RegistrationGenerationBijection name} -> {renaming : NameBijection name} ->
+  {wordInitial, leftWordFinal, rightWordFinal : SystemState name key value world error} ->
+  {leftWord : Transitions wordInitial leftWordFinal} ->
+  {rightWord : Transitions wordInitial rightWordFinal} ->
+  {leftLive, rightLive, leftFinalLive, rightFinalLive : GenerationEnvironment name} ->
+  {leftBefore, rightBefore, leftAfter, rightAfter : SystemState name key value world error} ->
+  O20OccurrenceStampedHistory name key world error value nameEq keyEq mapping renaming
+    leftWord rightWord leftLive rightLive leftFinalLive rightFinalLive
+    leftBefore rightBefore leftAfter rightAfter ->
+  Transitions leftBefore leftAfter
+o20OccurrenceHistoryLeftPath OccurrenceHistoryEnd = NoTransitions
+o20OccurrenceHistoryLeftPath
+  (OccurrenceHistoryMore stage leftOccurrence rightOccurrence leftStampExact rightStampExact leftTagExact rightTagExact later) =
+    MoreTransitions (o20StampedLeftTransition stage) (o20OccurrenceHistoryLeftPath later)
