@@ -1,0 +1,68 @@
+{
+  "writtenAtUTC": "2026-09-09T13:06:14.343143+00:00",
+  "sourceHead": "637c0ca10ba43f3fb310e93148a3fbe643ae85ff",
+  "planningHead": "0a0392cd0258671b6b44e6bc32ec6de9623b21b6",
+  "policy": "Seeded, target-only fresh touch, one own Building,18GiB guard, one own check at a time; no source attempts/lock/window operations",
+  "validations": [
+    {
+      "unit": "V5",
+      "path": "research-tests/O6-L2R10-Sources/DGamma/L2R10AdvanceReplay.idr",
+      "sourceSHA256": "f1aa794a48ac969796e426e28d406a300798af7a9e99453c902ec196a865e6f5"
+    },
+    {
+      "unit": "V6",
+      "path": "research-tests/O6-L2R10-Sources/DGamma/L2R10BeginAdapter.idr",
+      "sourceSHA256": "82974845054cf6178e69082cee286acc1cc3a88c76755129cc3c9337396352a9"
+    },
+    {
+      "unit": "V7",
+      "path": "research-tests/O6-L2R10-Sources/DGamma/L2R10LifecycleRoles.idr",
+      "sourceSHA256": "2fd7985e35474ac662662db4b5939900223b104dc34270d18a27d4edc97d62ea"
+    },
+    {
+      "unit": "V8",
+      "path": "research-tests/O6-L2R10-Sources/DGamma/L2R10MoveCutObservation.idr",
+      "sourceSHA256": "b932f2265d3ba2d7fd213ce405201e13856f63121a517002e39cff34a7926a09"
+    },
+    {
+      "unit": "V9",
+      "path": "research-tests/O6-L2R10-Sources/DGamma/L2R10OrdinalData.idr",
+      "sourceSHA256": "701b8df1fbf0c6fd16b0d4aceea8792f59499243c09a075c0173ff55cbc01813"
+    },
+    {
+      "unit": "V10",
+      "path": "research-tests/O6-L2R10-Sources/DGamma/L2R10PhaseScan.idr",
+      "sourceSHA256": "3ba86e5a2414d3aba27c3f8d78b7e31bdb8afa2029b073d3cda8268143e49d39"
+    },
+    {
+      "unit": "V11",
+      "path": "research-tests/O6-L2R10-Sources/DGamma/L2R10ReleaseAgreement.idr",
+      "sourceSHA256": "3f2ffbc9dcc4bee8860ff761038135e597ece6e8bcb20f9202c48e8d5d34f754"
+    },
+    {
+      "unit": "V12",
+      "path": "research-tests/O6-L2R10-Sources/DGamma/L2R10SplitEdges.idr",
+      "sourceSHA256": "a4e872076511a84945cba8d6f39fdc8549b56dd85842d97307751555bb388541"
+    },
+    {
+      "unit": "V13",
+      "path": "research-tests/O6-L2R10-Sources/DGamma/L2R10UniqueMoveDomain.idr",
+      "sourceSHA256": "a97c3866762f7a8d7d852a5cbaf1d151b33d8165144b51ba0429afcac3480ead"
+    },
+    {
+      "unit": "V14",
+      "path": "research-tests/O6-L2R10-Sources/DGamma/L2R10MoveCutFixtures.idr",
+      "sourceSHA256": "ac91a7d3a51d2fdd2cbb21754e6aebd0832eae9e10e5146fd59a73e7aa7e2cd4"
+    },
+    {
+      "unit": "V15",
+      "path": "research-tests/O6-L2R10-Sources/DGamma/L2R10PhaseFixtures.idr",
+      "sourceSHA256": "e244bdfb6f02c09ae776a80898c6b16819060f7aee463935888bade0115c5bba"
+    },
+    {
+      "unit": "V16",
+      "path": "research-tests/O6-L2R9-Sources/DGamma/L2R9ProviderHead.idr",
+      "sourceSHA256": "a9957234ccedef97aa9437b25e4cf07d1a3a4e34e834e77a4d34936824657142"
+    }
+  ]
+}

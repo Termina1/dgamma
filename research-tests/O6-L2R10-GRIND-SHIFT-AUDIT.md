@@ -69,3 +69,7 @@ All new proof attempts are now closed, after A14/B16/C2/D10 retained declaration
 ## E1 exact comment-repair authority
 
 L2R9 independent review was ACCEPT-WITH-NOTES, no proof blocker. D4 docstring in L2R9ProviderHead is the only authorized predecessor delta: generic conditional equality; attempted native splice failed D5-1; retained consumer uses laneObservedBoolEliminate. Manifest SHA256 f7259b538458348c7ccb9ec7c5efef3482c15307008b21ac88a2c6f6c04d7ad0; before 77423f6231bdb2d0dcca855f286323961fd0ba207d7ff1268641ebbb150f8d5d; after a9957234ccedef97aa9437b25e4cf07d1a3a4e34e834e77a4d34936824657142. Guard authority is committed before applying the exact comment-only change. Fresh own-target V4 follows. No bodies/types/quantities are repaired. Historical L2R9 final plan preceded V6, not earlier V1.
+
+## E3 final validation plan
+
+The committed final plan precedes V5 (not earlier bootstrap/revert/comment validations V0–V4). It lists eleven owned modules in dependency order plus the exact authorized predecessor comment target, V5–V16. All are unchanged-source, seeded, target-only-touch LIGHT18GiB checks, one own compiler at a time. The source phase was closed at637c0ca1; no new proof attempt may launch. Evidence-only work may proceed while this single-file sequential coordinator runs.
