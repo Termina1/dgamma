@@ -47,3 +47,40 @@ o20CanonicalPresentOriginalControl name key world error value nameEq keyEq proto
       (fiberControlMaybeSymmetric (endpointControlsOutside (canonicalEndpoint (canonicalSchedule capital)) selected
         (canonicalPresentOutsideWithdrawals name key world error value nameEq keyEq finalState
           (canonicalFinal (canonicalSchedule capital)) (canonicalEndpoint (canonicalSchedule capital)) selected fiber present)))
+
+||| Retained-present name rebase, including unsupported fibers: produce the
+||| ORIGINAL current generation and authenticate the supplied current image.
+||| The full vestigial alternative now contradicts B5's actual canonical
+||| disappearance. No original-current lookup, support or agreement is input.
+export
+0 o20CanonicalPresentForwardName :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (generationEq : DecEq (RegistrationGeneration name)) ->
+  {leftFirst, leftFinal, rightFirst, rightFinal : SystemState name key value world error} ->
+  (left : Transitions leftFirst leftFinal) -> (right : Transitions rightFirst rightFinal) ->
+  (mapping : RegistrationGenerationBijection name) ->
+  (registrations : RegistrationCorrespondenceByGeneration nameEq mapping left right) ->
+  (current : CurrentEndpointRenaming nameEq keyEq mapping left right registrations) ->
+  (capital : IndependentCanonicalSchedule name key world error value protocol nameEq keyEq left) ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq left ->
+  (selected : name) -> (fiber : Fiber name key value world error) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected
+    (registry (canonicalFinal (canonicalSchedule capital))) = Just fiber) ->
+  (generation : RegistrationGeneration name **
+    (lookupCurrentGeneration @{nameEq} selected (leftFinalGenerations registrations) = Just generation,
+     o20HistoricalTarget mapping generation = renameForward (currentNameBijection current) selected))
+o20CanonicalPresentForwardName name key world error value protocol nameEq keyEq generationEq
+  left right mapping registrations current capital unique selected fiber present =
+    case o20CanonicalPresentOriginalControl name key world error value nameEq keyEq protocol left capital selected fiber present of
+      MkForeignRelatedFiberFound originalFiber originalPresent controls =>
+        case acceptedLeftEndpointCurrent name key world error value nameEq keyEq left right mapping registrations
+          (replayAligned (chainReplayCapital (capitalPremises capital)))
+          (replayInitialEmpty (chainReplayCapital (capitalPremises capital))) selected originalFiber originalPresent of
+          (generation ** found) =>
+            (generation ** (found, o20HistoryNonVestigialEndpoint nameEq keyEq left right mapping registrations current
+              selected generation found
+              (\packet => absurd (trans (sym present)
+                (o20CanonicalVestigialDisappears name key world error value protocol nameEq keyEq generationEq
+                  left right mapping registrations capital unique selected packet)))))
