@@ -54,3 +54,33 @@ o20ReplayCutReferenceComponent {name} {key} {world} {error} {value} nameEq keyEq
       earlier later exact (chainReplayCapital (capitalPremises capital)) premises unique
       (composeActionRegistrationReplayCorrespondence (canonicalOccurrenceCorrespondence capital) occurrences)
       actor referenceFiber currentFiber referenceFound currentFound))
+
+||| First missing E60 attachment: the ACTUAL block-end fiber's component is
+||| the original reference component. The block owns its exact physical cut
+||| decomposition; no per-cut metadata equality is assumed.
+export
+0 o20BlockEndReferenceComponent :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {initial, originalFinal, reachedFinal : SystemState name key value world error} ->
+  (original : Transitions initial originalFinal) ->
+  (capital : IndependentCanonicalSchedule name key world error value protocol nameEq keyEq original) ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq original ->
+  (replayed : Transitions initial reachedFinal) ->
+  ReplayInvariantBundle name key world error value protocol nameEq keyEq replayed ->
+  ActionRegistrationReplayCorrespondence name key world error value (canonicalTrace (canonicalSchedule capital)) replayed ->
+  (actor : name) ->
+  (block : LocatedOpenEpisodeBlock name key world error value nameEq keyEq actor replayed) ->
+  (referenceFiber, lastFiber : Fiber name key value world error) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor (registry originalFinal) = Just referenceFiber) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor (registry (blockEnd block)) = Just lastFiber) ->
+  (fiberComponent lastFiber = fiberComponent referenceFiber)
+o20BlockEndReferenceComponent nameEq keyEq protocol original capital unique replayed premises occurrences actor block
+  referenceFiber lastFiber referenceFound lastFound =
+    o20ReplayCutReferenceComponent nameEq keyEq protocol original capital unique replayed premises occurrences
+      (prefixThroughBlock block) (traceAfterBlock block)
+      (trans (appendTransitionsAssociative (prefixToBlockOpening block) (blockBody block) (traceAfterBlock block))
+        (trans (appendTransitionsAssociative (traceBeforeBlock block) (MoreTransitions (beginTransition (blockOpening block)) NoTransitions)
+          (appendTransitions (blockBody block) (traceAfterBlock block))) (blockDecomposition block)))
+      actor referenceFiber lastFiber referenceFound lastFound
