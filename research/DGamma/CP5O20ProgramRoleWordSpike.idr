@@ -5,6 +5,7 @@ import DGamma.Calculus
 import DGamma.Coeffects
 import DGamma.Metatheory
 import DGamma.CP3
+import DGamma.CP4ProgressPotential
 import DGamma.CP5ConfluenceLocalDiamondSpike
 import DGamma.CP5O20BeginObservationSpike
 import DGamma.CP5O20CanonicalActionCompletenessSpike
@@ -165,3 +166,42 @@ o20IterRoleAtSource nameEq keyEq actor _ afterState checked
       component parent retiredFlag table step (next :: more) accumulator view found target checked
       (o20IterNativeValues nameEq keyEq actor (MkSystemState ambient fibers) afterState
         component parent retiredFlag table step next more accumulator view found checked)
+
+||| Empty-program Finish consumes its single Finish role. Its actual target
+||| is attached by native evaluator determinism, and its actual lookup comes
+||| from replacement. There is no callback in this branch.
+export
+0 o20EmptyFinishRoleConsumption :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (ambient : world) -> (fibers : Registry name key value world error) ->
+  (afterState : SystemState name key value world error) ->
+  (component : Component key value world error) -> (parent : Parent name) ->
+  (retiredFlag : Bool) -> (table : OwnedTable key value (componentProvisions component)) ->
+  (older : LocalState key value world (componentProvisions component) -> LocalState key value world (componentProvisions component)) ->
+  (view : View name (dependencies (componentDependencies component))) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor fibers =
+    Just (MkFiber component parent retiredFlag table (Reloading [] older view))) ->
+  (targetFiber {name} {key} {value} {world} {error} @{nameEq} @{keyEq}
+    (MkFiber component parent retiredFlag table (Reloading [] older view)) fibers = Just view) ->
+  (checkedApplyAction {name} {key} {value} {world} {error} @{nameEq} @{keyEq}
+    (LAdvance actor) (MkSystemState ambient fibers) = Just (LFinishTag, afterState)) ->
+  (o20FiberRoleRemainder
+    (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor fibers) =
+   LFinishTag :: o20FiberRoleRemainder
+    (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor (registry afterState)))
+o20EmptyFinishRoleConsumption nameEq keyEq actor ambient fibers afterState
+  component parent retiredFlag table older view found target checked =
+    rewrite cong snd (justInjective (trans
+      (sym (checkedActionProjects nameEq keyEq (LAdvance actor)
+        (MkSystemState ambient fibers) afterState LFinishTag checked))
+      (the (applyAction @{nameEq} @{keyEq} (LAdvance actor) (MkSystemState ambient fibers) =
+        Just (LFinishTag, MkSystemState ambient (replaceBinding @{nameEq} actor
+          (MkFiber component parent retiredFlag table (Active older view)) fibers)))
+        (rewrite found in rewrite target in
+          rewrite trans (viewEqSameNameList nameEq view view)
+            (sameNameListReflexive nameEq (DGamma.Calculus.viewProviders view)) in Refl)))) in
+    rewrite lookupReplacedFiber @{nameEq} actor
+      (MkFiber component parent retiredFlag table (Reloading [] older view))
+      (MkFiber component parent retiredFlag table (Active older view)) fibers found in
+    rewrite found in Refl
