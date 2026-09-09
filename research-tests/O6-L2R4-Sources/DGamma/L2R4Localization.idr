@@ -140,3 +140,26 @@ attachedRootAtOffset member local upper =
               (memberSplit member)
               (rootInsertionAfterPrefix (memberCore member) (memberBundle member)
                 (orderedBundleRootAt (memberForced member) local upper)))))))
+
+||| Universal ordinal-in-interval localization for ANY attached occurrence,
+||| not only catalog entries: a strictly interior global cut is an actual
+||| checked root OInsert step. Subtraction and exact count equations select
+||| its local index; orderedBundleRootAt supplies the structural induction.
+export
+0 attachedInteriorRoot :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {first, finalState : SystemState name key value world error} ->
+  {global : Transitions first finalState} ->
+  {action : Action name key value world error} -> {ordinal : Nat} ->
+  (member : AttachedBundleOccurrence name key world error value nameEq keyEq global action ordinal) ->
+  (cut : Nat) -> LT (bundleOffset member) cut ->
+  LT cut (bundleOffset member + transitionCount (memberBundle member)) ->
+  RootInsertionAt name key world error value global cut
+attachedInteriorRoot member cut lower upper =
+  replace {p = RootInsertionAt _ _ _ _ _ _}
+    (trans (plusCommutative (bundleOffset member) (minus cut (bundleOffset member)))
+      (plusMinusLte (bundleOffset member) cut (lteSuccLeft lower)))
+    (attachedRootAtOffset member (minus cut (bundleOffset member))
+      (replace {p = LT (minus cut (bundleOffset member))}
+        (minusPlus (bundleOffset member)) (minusLtMonotone upper (transitive lower (lteSuccLeft upper)))))
