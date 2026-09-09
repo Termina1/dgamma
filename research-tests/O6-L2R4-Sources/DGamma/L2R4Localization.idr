@@ -70,3 +70,23 @@ rootInsertionBeforeSuffix trace back found =
         (MoreTransitions (locatedTransition (rootOccurrence found)) (afterActionOccurrence (rootOccurrence found))) back))
         (cong (\part => appendTransitions part back) (actionOccurrenceDecomposition (rootOccurrence found)))))
     (rootOrdinal found)
+
+||| Select zero or successor in one root-headed trail. The successor premise
+||| is the induction hypothesis, not an alternate operational edge oracle.
+export
+0 rootHeadOrdinal :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (root : name) -> (component : Component key value world error) ->
+  (step : Transition first middle) -> (rest : Transitions middle finalState) ->
+  (0 inserted : transitionAction step = OInsert root Root component) ->
+  (0 later : (n : Nat) -> LT n (transitionCount rest) ->
+    RootInsertionAt name key world error value rest n) ->
+  (ordinal : Nat) -> LT ordinal (S (transitionCount rest)) ->
+  RootInsertionAt name key world error value (MoreTransitions step rest) ordinal
+rootHeadOrdinal {first} {middle} root component step rest inserted later Z upper =
+  MkRootInsertionAt root component
+    (MkLocatedActionOccurrence first middle NoTransitions step rest inserted Refl) Refl
+rootHeadOrdinal root component step rest inserted later (S n) upper =
+  rootInsertionAfterPrefix (MoreTransitions step NoTransitions) rest
+    (later n (fromLteSucc upper))
