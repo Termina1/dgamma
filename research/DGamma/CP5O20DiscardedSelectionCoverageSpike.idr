@@ -242,3 +242,24 @@ o20ClosingFreeRejectsAlignedUnload name key world error value nameEq keyEq selec
   (AlignedStep action tag checked rest alignedRest) =
     o20ClosingFreeRejectsCheckedAction name key world error value nameEq keyEq selected
       global earlier action tag checked rest decomposition aligned empty noClosing actionExact
+
+||| Every actual located Unload contradicts closing-freeness of an aligned
+||| empty-origin trace. The occurrence owns the split used to obtain alignment.
+export
+0 o20ClosingFreeRejectsLocatedUnload :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (global : Transitions initial finalState) ->
+  AlignedTransitions name key world error value nameEq keyEq global ->
+  (bindings (registry initial) = []) ->
+  NoClosingEpisodes name key world error value nameEq keyEq global ->
+  (selected : name) -> LocatedActionOccurrence (LUnload selected) global -> Void
+o20ClosingFreeRejectsLocatedUnload name key world error value nameEq keyEq global aligned empty noClosing selected occurrence =
+  o20ClosingFreeRejectsAlignedUnload name key world error value nameEq keyEq selected
+    global (beforeActionOccurrence occurrence) (locatedTransition occurrence) (afterActionOccurrence occurrence)
+    (actionOccurrenceDecomposition occurrence) aligned empty noClosing (locatedAction occurrence)
+    (snd (alignedAppendSplit (beforeActionOccurrence occurrence)
+      (MoreTransitions (locatedTransition occurrence) (afterActionOccurrence occurrence))
+      (replace {p = AlignedTransitions name key world error value nameEq keyEq}
+        (sym (actionOccurrenceDecomposition occurrence)) aligned)))
