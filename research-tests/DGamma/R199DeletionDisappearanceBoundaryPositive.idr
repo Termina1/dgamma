@@ -43,3 +43,32 @@ r199ActualAcceptedGenerationScans =
    o20DeletionSideGenerationScan Nat R45Key Unit String R45Value r45NameEq identityRegistrationGenerationBijection
     Z emptyRegistrationIndex Z emptyRegistrationIndex r192RemovedBirthTrace r192RemovedBirthTrace
     (leftFinalIndex r192RemovedBirthTree) (rightFinalIndex r192RemovedBirthTree) (generationTraceCorrespondence r192RemovedBirthTree))
+
+||| CONDITIONAL canonical boundary for the genuine R193/R195 name1->2
+||| obstruction. The FULL original vestigial packet and opposite original
+||| absence are fixture-produced. Accepted canonical/permutation capital and
+||| membership in its own first deletion node remain explicit inputs. This
+||| does NOT claim that the fixture now owns independent canonical capital.
+export
+0 r199SelectedVestigialCurrentBoundary :
+  (leftCapital, rightCapital : IndependentCanonicalSchedule Nat R45Key Unit String R45Value
+    r45Protocol r45NameEq r45KeyEq r193HistoricalClosedTrace) ->
+  (matching : MappedCanonicalSupportOrders Nat R45Key Unit String R45Value r45Protocol r45NameEq r45KeyEq
+    r193HistoricalClosedTrace r193HistoricalClosedTrace (expectedBridgeBijection r193HistoricalSameInputs)
+    (canonicalSchedule leftCapital) (canonicalSchedule rightCapital)) ->
+  (operational : CertifiedOperationalCanonicalPermutation Nat R45Key Unit String R45Value
+    r45Protocol r45NameEq r45KeyEq r193HistoricalClosedTrace r193HistoricalClosedTrace
+    r193HistoricalSameInputs leftCapital rightCapital matching) ->
+  (execution : PermutedCanonicalExecution Nat R45Key Unit String R45Value r45Protocol r45NameEq r45KeyEq
+    r193HistoricalClosedTrace r193HistoricalClosedTrace r193HistoricalSameInputs leftCapital rightCapital operational) ->
+  Elem (vestigialGeneration r193HistoricalVestigial)
+    (o20DeletionHeadGenerations (reductionDeletionDerivation (capitalReduction leftCapital))) ->
+  MaybeFiberRelatedBy (expectedBridgeBijection r193HistoricalSameInputs)
+    (lookupFiber {name = Nat} {key = R45Key} {value = R45Value} {world = Unit} {error = String} @{r45NameEq}
+      1 (registry (operationalTargetFinal operational)))
+    (lookupFiber {name = Nat} {key = R45Key} {value = R45Value} {world = Unit} {error = String} @{r45NameEq}
+      (renameForward (expectedBridgeBijection r193HistoricalSameInputs) 1) (registry (canonicalFinal (canonicalSchedule rightCapital))))
+r199SelectedVestigialCurrentBoundary leftCapital rightCapital matching operational execution member =
+  o20SelectedVestigialAbsentReplayedControls {sameInputs = r193HistoricalSameInputs}
+    {leftCapital} {rightCapital} {operational} execution 1 r193HistoricalVestigial member
+    (snd r193VestigialCurrentPresence)
