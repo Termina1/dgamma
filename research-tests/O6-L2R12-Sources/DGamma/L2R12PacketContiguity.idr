@@ -117,3 +117,13 @@ locatePacketCore states packet before after beforeTrail afterTrail =
   MkLocatedExtendedCore (states 0) (states 5) before (assembledTrace (assembleCoreNative states packet)) after
     beforeTrail (assembledTrail (assembleCoreNative states packet)) afterTrail
     (assembledActorOnly (assembleCoreNative states packet)) Refl
+
+||| The restored prefix gains exactly its single native root edge. This is
+||| structural physical count, not an assumed ordinal annotation.
+export
+0 packetPrefixShift : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (before : Transitions first middle) -> (step : Transition middle finalState) ->
+  transitionCount (appendTransitions before (MoreTransitions step NoTransitions)) = S (transitionCount before)
+packetPrefixShift NoTransitions step = Refl
+packetPrefixShift (MoreTransitions head rest) step = cong S (packetPrefixShift rest step)
