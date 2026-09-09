@@ -5,6 +5,7 @@ import DGamma.Coeffects
 import DGamma.Metatheory
 import DGamma.CP3
 import DGamma.CP4RuntimeBindings
+import DGamma.CP4DeletionCommuteCore
 import DGamma.CP4DeletionSelectedForeignOrchestration
 import DGamma.CP5L2R1ChildRelocation
 import DGamma.L2R2CheckedSnapshot
@@ -104,3 +105,39 @@ replayInsertObserved nameEq keyEq child actor parent fiber component ambient sou
     (checkedAcrossSnapshot nameEq keyEq (OInsert actor parent component) OInsertTag
       (MkSystemState ambient (replaceBinding @{nameEq} child (retireFiber fiber) source))
       (snapshotAfter replay) current (snapshotChecked replay) (sym currentSame) currentValid)
+
+||| Eliminate the original single-constructor insertion view. Native parent
+||| presence and declared-provision guards survive retirement; B9 PRODUCES
+||| the alternate checked insertion. Root and child-parent cases are uniform.
+export
+0 replayInsertFromView :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (child, actor : name) -> (parent : Parent name) ->
+  (fiber : Fiber name key value world error) -> (component : Component key value world error) ->
+  (ambient : world) -> (source : Registry name key value world error) ->
+  (afterState, current : SystemState name key value world error) -> (tag : RuleTag) ->
+  (0 distinct : Not (child = actor)) ->
+  (0 found : lookupFiber {name} {key} {value} {world} {error} @{nameEq} child source = Just fiber) ->
+  (0 valid : registryWellFormed {name} {key} {value} {world} {error} @{nameEq} @{keyEq} (MkSystemState ambient source) = True) ->
+  (0 currentValid : registryWellFormed @{nameEq} @{keyEq} current = True) ->
+  (0 currentSame : runtimeSnapshot current = runtimeSnapshot {name} {key} {value} {world} {error}
+    (MkSystemState ambient (replaceBinding @{nameEq} child (retireFiber fiber) source))) ->
+  ForeignInsertPlanView name key world error value nameEq keyEq actor parent component ambient source tag afterState ->
+  CheckedSnapshotStep name key world error value nameEq keyEq (OInsert actor parent component) current tag
+    (runtimeSnapshot {name} {key} {value} {world} {error}
+      (MkSystemState (worldState afterState) (replaceBinding @{nameEq} child (retireFiber fiber) (registry afterState))))
+replayInsertFromView nameEq keyEq child actor parent fiber component ambient source _ current _
+  distinct found valid currentValid currentSame (MkForeignInsertPlanView absent guards) =
+    replayInsertObserved nameEq keyEq child actor parent fiber component ambient source current absent distinct currentValid currentSame
+      (checkedInsertAtNativeGuards nameEq keyEq actor parent component ambient
+        (replaceBinding @{nameEq} child (retireFiber fiber) source)
+        (trans (lookupReplaceOther @{nameEq} actor child (\same => distinct (sym same)) (retireFiber fiber) source) absent)
+        (trans (boolAndCong
+          (trans (parentPresentIsInvariant nameEq parent (replaceBinding @{nameEq} child (retireFiber fiber) source))
+            (trans (parentInvariantRetireRegistry nameEq parent child fiber source found)
+              (sym (parentPresentIsInvariant nameEq parent source))))
+          (trans (cong (provisionsDisjointFrom {name} {key} {value} {world} {error} @{keyEq} (componentProvisions component))
+            (replaceBindingRuntimeBindings nameEq child (retireFiber fiber) source))
+            (provisionsDisjointRetireEntries nameEq keyEq (componentProvisions component) (bindings source)
+              child fiber (lookupFiberEntries nameEq child fiber source found)))) guards)
+        (registryWellFormedRetire nameEq keyEq ambient child fiber source found valid))
