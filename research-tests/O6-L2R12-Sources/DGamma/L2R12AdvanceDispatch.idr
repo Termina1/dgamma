@@ -70,3 +70,31 @@ advanceMissingImpossible nameEq keyEq actor before afterState tag missing origin
   absurd (replace {p = \observed => observed = Just (tag, afterState)}
     (the (applyAction @{nameEq} @{keyEq} (LAdvance actor) before = Nothing) (rewrite missing in Refl))
     (checkedActionProjects nameEq keyEq (LAdvance actor) before afterState tag original))
+
+||| Observe the actual source actor once and produce all-tag replay.
+export
+0 replayAdvanceAtLookup : {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (child, parent, actor : name) ->
+  (childFiber : Fiber name key value world error) ->
+  (before, afterState, current : SystemState name key value world error) ->
+  (tag : RuleTag) ->
+  (0 original : checkedApplyAction @{nameEq} @{keyEq} (LAdvance actor) before = Just (tag, afterState)) ->
+  (0 distinct : Not (child = actor)) ->
+  (0 childFound : lookupFiber {name} {key} {value} {world} {error} @{nameEq} child (registry before) = Just childFiber) ->
+  (0 ownChild : fiberParent childFiber = ChildOf parent) ->
+  (observed : Maybe (Fiber name key value world error)) ->
+  (0 actorEquation : lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor (registry before) = observed) ->
+  (0 valid : registryWellFormed @{nameEq} @{keyEq} before = True) ->
+  (0 currentValid : registryWellFormed @{nameEq} @{keyEq} current = True) ->
+  (0 currentSame : runtimeSnapshot current = runtimeSnapshot {name} {key} {value} {world} {error}
+    (MkSystemState (worldState before) (replaceBinding @{nameEq} child (retireFiber childFiber) (registry before)))) ->
+  CheckedSnapshotStep name key world error value nameEq keyEq (LAdvance actor) current tag
+    (runtimeSnapshot {name} {key} {value} {world} {error}
+      (MkSystemState (worldState afterState) (replaceBinding @{nameEq} child (retireFiber childFiber) (registry afterState))))
+replayAdvanceAtLookup nameEq keyEq child parent actor childFiber before afterState current
+  tag original distinct childFound ownChild Nothing actorEquation valid currentValid currentSame =
+  absurd (advanceMissingImpossible nameEq keyEq actor before afterState tag actorEquation original)
+replayAdvanceAtLookup nameEq keyEq child parent actor childFiber before afterState current
+  tag original distinct childFound ownChild (Just actorFiber) actorEquation valid currentValid currentSame =
+  replayAdvanceAtFound nameEq keyEq child parent actor childFiber actorFiber before afterState current
+    tag original distinct childFound ownChild actorEquation valid currentValid currentSame
