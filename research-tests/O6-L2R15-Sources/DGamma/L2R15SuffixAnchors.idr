@@ -101,3 +101,31 @@ nativeDistanceAtAnchorGuard nameEq keyEq oldTrail newTrail ordinal True oldGuard
   rewrite oldGuard in rewrite newGuard in cong (minus ordinal) target
 nativeDistanceAtAnchorGuard nameEq keyEq oldTrail newTrail ordinal False oldGuard newGuard target =
   rewrite oldGuard in rewrite newGuard in Refl
+
+||| Per-root and TOTAL native suffix distances transported from the
+||| authentic catalog/release/anchor/rank/floor proofs. These are suffix-only
+||| scans; prefixed crossing frames must account for pre-existing releases.
+||| The scalar provision frame alone does not entail those global frames.
+export
+0 nativeSuffixDistances : {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {oldFirst, oldFinal, newFirst, newFinal : SystemState name key value world error} ->
+  {oldTrace : Transitions oldFirst oldFinal} -> {newTrace : Transitions newFirst newFinal} ->
+  (frames : NativeSuffixFrames nameEq keyEq oldTrace newTrace) ->
+  (oldTrail : AvailabilityTrace name key world error value oldTrace) ->
+  (newTrail : AvailabilityTrace name key world error value newTrace) ->
+  ((ordinal : Nat) -> rootDistance nameEq keyEq oldTrail ordinal = rootDistance nameEq keyEq newTrail ordinal,
+   totalDistance nameEq keyEq oldTrail = totalDistance nameEq keyEq newTrail)
+nativeSuffixDistances nameEq keyEq frames oldTrail newTrail =
+  (\ordinal => nativeDistanceAtAnchorGuard nameEq keyEq oldTrail newTrail ordinal
+      (isJust (anchorOf nameEq keyEq newTrail ordinal))
+      (cong isJust (fst (nativeSuffixAnchorKey nameEq keyEq frames oldTrail newTrail ordinal))) Refl
+      (nativeSuffixTarget nameEq keyEq frames oldTrail newTrail ordinal),
+   trans (cong (\items => sum (map (\entry => rootDistance nameEq keyEq oldTrail (catalogOrdinal entry)) items))
+      (nativeSuffixCatalog nameEq keyEq frames oldTrail newTrail 0))
+    (cong sum (scanMapPointwise (\entry => rootDistance nameEq keyEq oldTrail (catalogOrdinal entry))
+      (\entry => rootDistance nameEq keyEq newTrail (catalogOrdinal entry))
+      (\entry => nativeDistanceAtAnchorGuard nameEq keyEq oldTrail newTrail (catalogOrdinal entry)
+      (isJust (anchorOf nameEq keyEq newTrail (catalogOrdinal entry)))
+      (cong isJust (fst (nativeSuffixAnchorKey nameEq keyEq frames oldTrail newTrail (catalogOrdinal entry)))) Refl
+      (nativeSuffixTarget nameEq keyEq frames oldTrail newTrail (catalogOrdinal entry))) (scanRootCatalog 0 newTrail))))
