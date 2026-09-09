@@ -93,3 +93,26 @@ export
   O20MatchingReloadingSource name key world error value nameEq (renameForward renaming actor) right component remaining
 o20MatchingSourceObserved component remaining leftParent leftRetired leftTable leftOlder leftView (Just rightFiber) (RenamedPresent related) rightFound =
   o20MatchingSourceFromFibers component remaining leftParent leftRetired leftTable leftOlder leftView rightFiber related rightFound
+
+||| Produce the opposite source with the GIVEN left component/program indices.
+||| No right lookup or shared-program equation is input: the all-name cut and
+||| the primitive right lookup produce every field at those exact indices.
+export
+0 o20MatchingReloadingFromCut :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {renaming : NameBijection name} -> {actor : name} ->
+  {left, right : SystemState name key value world error} ->
+  (component : Component key value world error) ->
+  (remaining : List (StepEffect key value world error (dependencies (componentDependencies component)) (componentProvisions component))) ->
+  (leftParent : Parent name) -> (leftRetired : Bool) ->
+  (leftTable : OwnedTable key value (componentProvisions component)) ->
+  (leftOlder : LocalState key value world (componentProvisions component) -> LocalState key value world (componentProvisions component)) ->
+  (leftView : View name (dependencies (componentDependencies component))) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor (registry left) = Just (MkFiber component leftParent leftRetired leftTable (Reloading remaining leftOlder leftView))) ->
+  O20AllNameCut name key world error value nameEq renaming left right ->
+  O20MatchingReloadingSource name key world error value nameEq (renameForward renaming actor) right component remaining
+o20MatchingReloadingFromCut {name} {key} {world} {error} {value} {nameEq} {renaming} {actor} {right}
+  component remaining leftParent leftRetired leftTable leftOlder leftView leftFound paired =
+    o20MatchingSourceObserved component remaining leftParent leftRetired leftTable leftOlder leftView
+      (lookupFiber {name} {key} {value} {world} {error} @{nameEq} (renameForward renaming actor) (registry right))
+      (rewrite sym leftFound in allNameControls paired actor) Refl
