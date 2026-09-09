@@ -23,3 +23,11 @@ export
   (map (renameForward (identityNameBijection {name})) providers = providers)
 o20IdentityProviderWord [] = Refl
 o20IdentityProviderWord (provider :: rest) = cong (provider ::) (o20IdentityProviderWord rest)
+
+||| Both native parent constructors are related by the literal identity map.
+export
+0 o20IdentityParent :
+  {name : Type} -> (parent : Parent name) ->
+  ParentRelatedBy identityNameBijection parent parent
+o20IdentityParent Root = RootsRelated
+o20IdentityParent (ChildOf selected) = ChildrenRelated Refl
