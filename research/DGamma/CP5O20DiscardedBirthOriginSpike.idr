@@ -68,3 +68,24 @@ o20DiscardedOriginPrepend name key world error value ordinal incoming observed g
         (afterRegistration birth) (registrationAction birth)
         (cong (MoreTransitions step) (registrationDecomposition birth)))
       (trans exact (cong (MkRegistrationGeneration child) (plusSuccRightSucc ordinal (registrationOrdinal birth)))) closing
+
+||| A member of the actual newly-prepended discarded list is either this
+||| checked birth or a previous discarded stamp. Only membership is eliminated.
+export
+0 o20DiscardedNewHeadOrigin :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (ordinal : Nat) -> (incoming : List (RegistrationGeneration name)) ->
+  (generation : RegistrationGeneration name) -> (child, parent : name) ->
+  (component : Component key value world error) ->
+  (step : Transition first middle) -> (rest : Transitions middle finalState) ->
+  (transitionAction step = OInsert child (ChildOf parent) component) ->
+  ActionOccurs (LUnload parent) rest ->
+  Elem generation (MkRegistrationGeneration child ordinal :: incoming) ->
+  O20DiscardedTraceOrigin name key world error value ordinal incoming generation (MoreTransitions step rest)
+o20DiscardedNewHeadOrigin name key world error value {first} {middle} ordinal incoming _ child parent component step rest actionExact closing Here =
+  O20DiscardedWithin child parent component
+    (MkLocatedGeneratedRegistration first middle NoTransitions step rest actionExact Refl)
+    (cong (MkRegistrationGeneration child) (sym (plusZeroRightNeutral ordinal))) closing
+o20DiscardedNewHeadOrigin name key world error value ordinal incoming generation child parent component step rest actionExact closing (There member) =
+  O20DiscardedBefore member
