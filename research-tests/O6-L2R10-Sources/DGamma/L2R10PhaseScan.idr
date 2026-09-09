@@ -58,3 +58,15 @@ phaseActionOwner nameEq source (LAdvance actor) = Just actor
 phaseActionOwner nameEq source (LDivert actor) = Just actor
 phaseActionOwner nameEq source (LUnload actor) = Just actor
 phaseActionOwner nameEq source (LLeave actor) = Just actor
+
+||| Data word from the native source-aware trail. Positions remain physical
+||| transition ordinals; the lifecycle flag is the actual action classifier.
+public export
+phaseEvents : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {0 first, finalState : SystemState name key value world error} ->
+  {0 trace : Transitions first finalState} ->
+  (nameEq : DecEq name) -> AvailabilityTrace name key world error value trace ->
+  List (Maybe name, Bool)
+phaseEvents nameEq (AvailabilityEnd state) = []
+phaseEvents nameEq (AvailabilityStep source (Fired ne ke action tag checked) rest later) =
+  (phaseActionOwner nameEq source action, isLifecycleAction action) :: phaseEvents nameEq later
