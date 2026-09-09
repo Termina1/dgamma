@@ -84,3 +84,21 @@ classifyForcedHitSound nameEq keyEq trail entry member hit =
       (snd (acceptedConjunction (catalogOrdinal (hitItem hit) <= catalogOrdinal entry)
         (keyForcedOrdinal nameEq keyEq trail (catalogOrdinal (hitItem hit))) (hitAccepted hit))))
     (elemMap catalogOrdinal member)
+
+||| GENERAL soundness of the precise per-entry Boolean used by classifyForced.
+||| Entries are indexed by actual occurrence, never a potentially reused name.
+export
+0 classifyForcedSound : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {0 first, finalState : SystemState name key value world error} ->
+  {0 trace : Transitions first finalState} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (trail : AvailabilityTrace name key world error value trace) ->
+  (entry : RootCatalogEntry name key world error value) ->
+  (0 member : Elem entry (scanRootCatalog 0 trail)) -> (observed : Bool) ->
+  (0 equation : any (\seed => catalogOrdinal seed <= catalogOrdinal entry &&
+    keyForcedOrdinal nameEq keyEq trail (catalogOrdinal seed)) (scanRootCatalog 0 trail) = observed) ->
+  (0 accepted : observed = True) -> ForcedOnTrace nameEq keyEq trail (catalogOrdinal entry)
+classifyForcedSound nameEq keyEq trail entry member observed equation accepted =
+  classifyForcedHitSound nameEq keyEq trail entry member
+    (anyHitObserved (\seed => catalogOrdinal seed <= catalogOrdinal entry &&
+      keyForcedOrdinal nameEq keyEq trail (catalogOrdinal seed)) (scanRootCatalog 0 trail) observed equation accepted)
