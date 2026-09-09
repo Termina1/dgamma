@@ -1,0 +1,9 @@
+{
+  "unit": "C3-3",
+  "path": "research-tests/O6-L2R10-Sources/DGamma/L2R10SplitEdges.idr",
+  "sourceSHA256": "4d82c88da00b833414a80e66e36a9a76f042b5f0e158453cd102b92762c760bb",
+  "maxRSSKiB": 50331648,
+  "lock": "/tmp/dgamma-heavy.lock",
+  "pollSeconds": 1200,
+  "authority": "Supervisor 2026-09-09: exception for UNUSED C3 third attempt, exact C3-2 bytes, shared atomic mkdir heavy lock plus lane2 JSON owner, no active rebuild window per supervisor; 48GiB guard; cleanup own lock after. If PASS continue C4 under light where possible. No other exception."
+}

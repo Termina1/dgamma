@@ -19,6 +19,10 @@ assert json.loads(pathlib.Path('/tmp/dgamma-l2r10/ledger.jsonl').read_text().spl
 # No validation-based declaration publication exception has been invoked this shift.
 assert not unit.startswith('V'), 'Source commit requires bounded proof PASS'
 assert record['buildingCount'] == 1
+if record['heavyLockAcquired']:
+    lock_receipt = json.loads((pathlib.Path('/tmp/dgamma-l2r10')/(unit+'.lock.json')).read_text())
+    assert unit == 'C3-3' and lock_receipt['released'] and not lock_receipt['windowInteraction']
+    assert lock_receipt['owner'] == record['heavyLockEvents'][0]['owner']
 old = subprocess.run(['git','show','HEAD:'+record['path']],cwd=ROOT,capture_output=True)
 def declarations(data):
     text = data.decode()
