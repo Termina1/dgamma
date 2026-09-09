@@ -124,3 +124,17 @@ export
   locatedActionOrdinal (releaseOccurrence (snd (releaseThroughHead step rest release))) =
     S (locatedActionOrdinal (releaseOccurrence (snd release)))
 releaseShiftOrdinal step rest (actor ** release) = Refl
+
+||| List lifting of the one-head native shift, with only list elimination.
+export
+0 releaseShiftList : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  {nameEq : DecEq name} -> {component : Component key value world error} ->
+  (step : Transition first middle) -> (rest : Transitions middle finalState) ->
+  (releases : List (actor : name ** AttachedRelease name key world error value nameEq actor rest component)) ->
+  map (\release => locatedActionOrdinal (releaseOccurrence (snd release)))
+    (map (releaseThroughHead step rest) releases) =
+  map S (map (\release => locatedActionOrdinal (releaseOccurrence (snd release))) releases)
+releaseShiftList step rest [] = Refl
+releaseShiftList step rest (release :: releases) =
+  cong2 (::) (releaseShiftOrdinal step rest release) (releaseShiftList step rest releases)
