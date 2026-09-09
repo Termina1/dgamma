@@ -189,3 +189,50 @@ o20OriginalSupportedLookup {name} {key} {world} {error} {value} {originalFinal} 
     (\absent => absurd (trans (sym (the (supportedActiveAt {name} {key} {value} {world} {error} @{nameEq} actor originalFinal = False)
       (rewrite absent in Refl)))
       (trans (sym (replaySupportMatchesActive (chainReplayCapital (capitalPremises capital)) actor)) supported)))
+
+||| Actual earlier right Begin with BOTH former endpoint attachments produced.
+||| The three lookup packets are explicit observations at this helper boundary;
+||| B7/B8 produce them. Zero gap and child exclusion remain physical inputs.
+export
+0 o20ReferenceEarlierBeginObserved :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {initial, originalFinal, reachedFinal : SystemState name key value world error} ->
+  (original : Transitions initial originalFinal) ->
+  (capital : IndependentCanonicalSchedule name key world error value protocol nameEq keyEq original) ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq original ->
+  (replayed : Transitions initial reachedFinal) ->
+  (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq replayed) ->
+  (occurrences : ActionRegistrationReplayCorrespondence name key world error value (canonicalTrace (canonicalSchedule capital)) replayed) ->
+  (left, right : name) -> Not (right = left) ->
+  (leftBlock : LocatedOpenEpisodeBlock name key world error value nameEq keyEq left replayed) ->
+  (rightBlock : LocatedOpenEpisodeBlock name key world error value nameEq keyEq right replayed) ->
+  (ordered : BlockBefore name key world error value nameEq keyEq replayed left right leftBlock rightBlock) ->
+  NoGeneratedChild right (blockBody leftBlock) ->
+  (isSupported {name} {key} {value} {world} {error} @{nameEq} @{keyEq} left originalFinal = True) ->
+  (isSupported {name} {key} {value} {world} {error} @{nameEq} @{keyEq} right originalFinal = True) ->
+  Not (O20SupportedPath name key world error value nameEq keyEq originalFinal left right) ->
+  ZeroGapPending (betweenBlocks ordered) ->
+  (leftSeen : O20PresentLookup name key world error value nameEq left originalFinal) ->
+  (rightSeen : O20PresentLookup name key world error value nameEq right originalFinal) ->
+  (lastSeen : O20PresentLookup name key world error value nameEq left (blockEnd leftBlock)) ->
+  CheckedEarlyApplication name key world error value nameEq keyEq (blockPreStart leftBlock) (LBegin right) LBeginTag
+o20ReferenceEarlierBeginObserved {name} {key} {world} {error} {value} {originalFinal} nameEq keyEq protocol original capital unique replayed premises occurrences
+  left right distinct leftBlock rightBlock ordered excluded leftSupported rightSupported noPath empty leftSeen rightSeen lastSeen =
+    o20IncomparableInstalledEarlierBegin nameEq keyEq left right distinct originalFinal (presentFiber leftSeen) (presentFiber rightSeen)
+      (blockPreStart leftBlock) (blockStart leftBlock) (blockEnd leftBlock) (blockPreStart rightBlock) (blockStart rightBlock)
+      (blockOpening leftBlock) (blockOpening rightBlock) (blockBody leftBlock) (blockBodyInstalled leftBlock) (blockActorOnly leftBlock)
+      excluded (betweenBlocks ordered) empty
+      (alignedTraceWellFormedEnd nameEq keyEq (traceBeforeBlock leftBlock)
+        (fst (alignedAppendSplit (traceBeforeBlock leftBlock)
+          (MoreTransitions (beginTransition (blockOpening leftBlock)) (appendTransitions (blockBody leftBlock) (traceAfterBlock leftBlock)))
+          (replace {p = AlignedTransitions name key world error value nameEq keyEq} (sym (blockDecomposition leftBlock)) (replayAligned premises))))
+        (replayInitialWellFormed premises))
+      (presentFiber lastSeen) (presentFound lastSeen)
+      (o20BlockEndReferenceComponent nameEq keyEq protocol original capital unique replayed premises occurrences left leftBlock
+        (presentFiber leftSeen) (presentFiber lastSeen) (presentFound leftSeen) (presentFound lastSeen))
+      (o20BlockOpeningReferenceComponent nameEq keyEq protocol original capital unique replayed premises occurrences right rightBlock
+        (presentFiber rightSeen) (presentFound rightSeen)
+        (o20ObserveActualBegin nameEq keyEq right (blockPreStart rightBlock) (blockStart rightBlock) (blockOpening rightBlock)))
+      (presentFound leftSeen) (presentFound rightSeen) leftSupported rightSupported noPath
