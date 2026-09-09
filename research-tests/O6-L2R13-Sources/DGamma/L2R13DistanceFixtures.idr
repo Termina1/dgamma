@@ -37,6 +37,8 @@ import DGamma.L2R6Iteration
 import DGamma.L2R6IterationFixtures
 import DGamma.L2R8NativeWords
 import DGamma.L2R11ClassifierSquare
+import DGamma.L2R13ExtendMove
+import DGamma.L2R13InsertExtensional
 import DGamma.L2R13TerminalMove
 import DGamma.L2R5Extensional
 import DGamma.L2R5CurrentCut
@@ -93,3 +95,16 @@ terminalFixtureMoves =
     (smallBegin2 smallNativeExecution) (sAfterRBegin bundlePhaseNative)
     (snd distanceFixtureSquares)
     (OrderForces (KeyForces Here Refl) (There Here) (LTESucc (LTESucc (LTESucc (LTESucc (LTESucc LTEZero)))))) 5 0 (LTESucc (LTESucc (LTESucc (LTESucc (LTESucc LTEZero))))) Refl Refl)
+
+||| D8 bundle FIRST 2->1 move FROM the general terminal producer followed
+||| by the native root-extension producer. Its following S endpoint relation
+||| comes from B7, not firstMoveSnapshot or firstBundleAdmitted projections.
+export
+0 firstBundleFromProducer : AdmittedDistanceMove Nat Bool Unit String (\key => Unit)
+  (fst fixtureDictionaries) (snd fixtureDictionaries)
+  (bundleBeforeTrail iterationFixtures) (bundleMiddleTrail iterationFixtures)
+firstBundleFromProducer = extendAdmittedMoveByRoot (fst fixtureDictionaries) (snd fixtureDictionaries)
+  (singleBeforeTrail iterationFixtures) (singleAfterTrail iterationFixtures) (fst terminalFixtureMoves)
+  4 (smallComponent False) (bundlePhaseState 3) (bundlePhaseState 6)
+  (sAfterBeginR bundlePhaseNative) (sAfterRBegin bundlePhaseNative) Refl Refl
+  (KeyForces Here Refl) 4 1 (LTESucc (LTESucc (LTESucc (LTESucc LTEZero)))) Refl Refl
