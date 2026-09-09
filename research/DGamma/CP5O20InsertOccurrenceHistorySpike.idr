@@ -15,6 +15,8 @@ import DGamma.CP5UniqueRawNameInsertions
 import DGamma.CP5O20StampedHistoryFoldSpike
 import DGamma.CP5O20OccurrenceStampedHistorySpike
 import DGamma.CP5O20PhysicalInsertStageSpike
+import DGamma.CP5O20NativeInsertEnvironmentSpike
+import DGamma.CP5O20StampedOrdinalNecessitySpike
 import DGamma.CP5O20CanonicalOrdinalAttachmentSpike
 import DGamma.CP5O20PhysicalInsertPositionSpike
 import Data.List
@@ -252,3 +254,49 @@ o20LocatedInsertOccurrenceHistory nameEq keyEq renaming left right leftAligned r
             (beforeActionOccurrence rightBirth) (locatedTransition rightBirth) (afterActionOccurrence rightBirth)
             (trans (locatedAction rightBirth) (sym rightAction)) (actionOccurrenceDecomposition rightBirth))
           Refl Refl (sym leftTag) (sym rightTag) OccurrenceHistoryEnd
+
+||| Attach an original-position packet to an actual one-edge runtime history
+||| and BOTH computed native prefix scans. No runtime environments, stage,
+||| source/target state equations or prefix-cut relation are input. Whole
+||| chronological coverage and predecessor ALL-name cuts remain separate.
+export
+0 o20PrefixInsertOccurrenceHistory :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {leftFirst, leftFinal, rightFirst, rightFinal, nowInitial, leftNowFinal, rightNowFinal : SystemState name key value world error} ->
+  {left : Transitions leftFirst leftFinal} -> {right : Transitions rightFirst rightFinal} ->
+  {leftNow : Transitions nowInitial leftNowFinal} -> {rightNow : Transitions nowInitial rightNowFinal} ->
+  (leftReplay : ActionRegistrationReplayCorrespondence name key world error value left leftNow) ->
+  (rightReplay : ActionRegistrationReplayCorrespondence name key world error value right rightNow) ->
+  (mapping : RegistrationGenerationBijection name) -> (renaming : NameBijection name) ->
+  AlignedTransitions name key world error value nameEq keyEq leftNow ->
+  AlignedTransitions name key world error value nameEq keyEq rightNow ->
+  (child, parent : name) -> (component : Component key value world error) ->
+  (leftBirth : LocatedGeneratedRegistration child parent component leftNow) ->
+  (positions : O20PhysicalInsertOriginPositions name key world error value leftReplay rightReplay mapping renaming
+    child parent component leftBirth) ->
+  (GenerationTraceScan nameEq Z [] (beforeRegistration leftBirth) (registrationOrdinal leftBirth)
+     (o20ScannedFinalLive nameEq Z [] (beforeRegistration leftBirth)),
+   GenerationTraceScan nameEq Z [] (beforeRegistration (attachedRightBirth (physicalBirths positions)))
+     (registrationOrdinal (attachedRightBirth (physicalBirths positions)))
+     (o20ScannedFinalLive nameEq Z [] (beforeRegistration (attachedRightBirth (physicalBirths positions)))),
+   O20OccurrenceStampedHistory name key world error value nameEq keyEq
+     (o20ReplayOrdinalBijection (replayGenerationRenaming leftReplay) mapping (replayGenerationRenaming rightReplay)) renaming
+     leftNow rightNow
+     (o20ScannedFinalLive nameEq Z [] (beforeRegistration leftBirth))
+     (o20ScannedFinalLive nameEq Z [] (beforeRegistration (attachedRightBirth (physicalBirths positions))))
+     (putCurrentGeneration @{nameEq} child (registrationGeneration leftBirth)
+       (o20ScannedFinalLive nameEq Z [] (beforeRegistration leftBirth)))
+     (putCurrentGeneration @{nameEq} (renameForward renaming child) (registrationGeneration (attachedRightBirth (physicalBirths positions)))
+       (o20ScannedFinalLive nameEq Z [] (beforeRegistration (attachedRightBirth (physicalBirths positions)))))
+     (registrationBefore leftBirth) (registrationBefore (attachedRightBirth (physicalBirths positions)))
+     (registrationAfter leftBirth) (registrationAfter (attachedRightBirth (physicalBirths positions))))
+o20PrefixInsertOccurrenceHistory {leftNow} {rightNow} nameEq keyEq leftReplay rightReplay mapping renaming
+  leftAligned rightAligned child parent component leftBirth positions =
+    (o20NativePrefixScan nameEq (beforeRegistration leftBirth),
+     o20NativePrefixScan nameEq (beforeRegistration (attachedRightBirth (physicalBirths positions))),
+     o20LocatedInsertOccurrenceHistory nameEq keyEq renaming leftNow rightNow leftAligned rightAligned
+       child component (ChildOf parent) (ChildOf (renameForward renaming parent)) (ChildrenRelated Refl)
+       (generatedRegistrationActionOccurrence leftBirth)
+       (generatedRegistrationActionOccurrence (attachedRightBirth (physicalBirths positions)))
+       (attachedPhysicalEquation (physicalBirths positions)))
