@@ -67,3 +67,24 @@ spliceR191FoldedSpan segments current spanRun count same valid =
             (cong2 (+) (trans count (r191SpanCount segments))
               (trans suffixCount (r191SuffixCount segments)))))))
       endpoint targetValid)
+
+||| Whole R191 retirement relocation FROM the validity-strengthened actual
+||| word fold. The kind-only callback is discharged, original source child
+||| provenance produces every retirement frame, and suffix edges are replayed.
+||| Quantifies authentic packets, not assumed local commutation squares.
+export
+0 r191WholeFromFold : (segments : R191RetirementSegments) -> R191FoldReplay
+r191WholeFromFold segments =
+  replayActualWordValidCPS r45NameEq r45KeyEq 3 r45ChildFresh
+    (r191ChildGapState 6) (r191ChildGapState 8) (r191Span segments) (r191Foreign segments)
+    (trans (sym (foreignChildRunLookup r45NameEq r45KeyEq 3 (r191Span segments) (r191Foreign segments)))
+      (r191ChildFound segments)) (r191SourceValid segments)
+    (MkSystemState (worldState (r191ChildGapState 6)) (replaceBinding @{r45NameEq} 3 (retireFiber r45ChildFresh) (registry (r191ChildGapState 6))))
+    (checkedActionTargetValid r45NameEq r45KeyEq (ORetire 3)
+      (r191ChildGapState 6) (MkSystemState (worldState (r191ChildGapState 6)) (replaceBinding @{r45NameEq} 3 (retireFiber r45ChildFresh) (registry (r191ChildGapState 6)))) ORetireTag (childRetireBeforeForeignRun r45NameEq r45KeyEq 3 r45ChildFresh (r191ChildGapState 6) (r191ChildGapState 8) (r191Span segments) (r191Foreign segments) (r191ChildFound segments) (r191SourceValid segments))) Refl
+    (\before, afterState, current, action, tag, present, original, distinct, found, originalValid, currentValid, same =>
+      replayAdmittedRetirementKind r45NameEq r45KeyEq 3 0 r45ChildFresh before afterState current action tag
+        (inventoryAdmittedKind (replayActionWord (r191Span segments)) action (r191SpanRestricted segments) present)
+        original distinct found (r191OwnChild segments) originalValid currentValid same)
+    R191FoldReplay (\target, replayed, count, same, valid =>
+      spliceR191FoldedSpan segments target replayed count same valid)
