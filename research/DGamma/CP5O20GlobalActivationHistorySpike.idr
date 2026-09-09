@@ -106,3 +106,46 @@ data O20NativeActivationScan :
       (advanceSurvivingRegistrationIndex @{nameEq} ordinal child parent component index) rest finalIndex events) ->
     O20NativeActivationScan nameEq ordinal index (MoreTransitions edge rest) finalIndex
       (registrationEventAt @{nameEq} ordinal index child parent component :: events)
+
+||| PRODUCE the complete left native event history from the actual accepted
+||| asynchronous correspondence. No history, target position, prefix cut or
+||| event equality is supplied. Both queue/matching directions and each real
+||| deleted birth are traversed, retaining exact physical source coordinates.
+public export
+0 o20LeftNativeActivationHistory :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {mapping : RegistrationGenerationBijection name} ->
+  {leftOrdinal, rightOrdinal : Nat} ->
+  {leftIndex, rightIndex, leftFinalIndex, rightFinalIndex : RegistrationIndexState name} ->
+  {leftFirst, leftFinal, rightFirst, rightFinal : SystemState name key value world error} ->
+  {left : Transitions leftFirst leftFinal} -> {right : Transitions rightFirst rightFinal} ->
+  {pendingLeft, pendingRight : List (RegistrationEvent name key world error value)} ->
+  RegistrationTraceCorrespondence nameEq mapping leftOrdinal leftIndex left leftFinalIndex
+    rightOrdinal rightIndex right rightFinalIndex pendingLeft pendingRight ->
+  (events : List (RegistrationEvent name key world error value) **
+    O20NativeActivationScan nameEq leftOrdinal leftIndex left leftFinalIndex events)
+o20LeftNativeActivationHistory RegistrationCorrespondenceEnd = ([] ** O20ActivationScanEnd)
+o20LeftNativeActivationHistory (SkipLeftNonRegistration action edge rest shape ordinary later) =
+  case o20LeftNativeActivationHistory later of
+    (events ** scan) => (events ** O20ActivationScanOrdinary action edge rest shape ordinary scan)
+o20LeftNativeActivationHistory (DiscardLeftDeletedRegistration edge rest shape deleted later) =
+  case o20LeftNativeActivationHistory later of
+    (events ** scan) => (events ** O20ActivationScanDeleted edge rest shape deleted scan)
+o20LeftNativeActivationHistory {nameEq} {leftOrdinal} {leftIndex}
+  (QueueLeftGeneratedRegistration {child} {parent} {component} edge rest shape retained later) =
+    case o20LeftNativeActivationHistory later of
+      (events ** scan) => (registrationEventAt @{nameEq} leftOrdinal leftIndex child parent component :: events **
+        O20ActivationScanRetained edge rest shape retained scan)
+o20LeftNativeActivationHistory {nameEq} {leftOrdinal} {leftIndex}
+  (MatchLeftWithPendingRight {child} {parent} {component} edge rest shape retained earlierEvents event laterEvents matched later) =
+    case o20LeftNativeActivationHistory later of
+      (events ** scan) => (registrationEventAt @{nameEq} leftOrdinal leftIndex child parent component :: events **
+        O20ActivationScanRetained edge rest shape retained scan)
+o20LeftNativeActivationHistory (SkipRightNonRegistration action edge rest shape ordinary later) =
+  o20LeftNativeActivationHistory later
+o20LeftNativeActivationHistory (DiscardRightDeletedRegistration edge rest shape deleted later) =
+  o20LeftNativeActivationHistory later
+o20LeftNativeActivationHistory (QueueRightGeneratedRegistration edge rest shape retained later) =
+  o20LeftNativeActivationHistory later
+o20LeftNativeActivationHistory (MatchRightWithPendingLeft edge rest shape retained earlierEvents event laterEvents matched later) =
+  o20LeftNativeActivationHistory later
