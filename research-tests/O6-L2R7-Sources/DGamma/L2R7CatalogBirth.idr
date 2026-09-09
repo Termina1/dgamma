@@ -62,3 +62,36 @@ catalogBirthInsertMember {first} {middle} step rest root component offset insert
     (sym (plusZeroRightNeutral offset))
 catalogBirthInsertMember step rest root component offset inserted tailCatalog tail entry (There later) =
   catalogBirthTail step rest entry offset (tail entry later)
+
+||| Exhaustive head Action classification; no root-retire/remove occurrence
+||| is fabricated as a birth. Nonbirth branches lift the same decoded tail.
+export
+0 catalogBirthAction : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (action : Action name key value world error) ->
+  (step : Transition first middle) -> (rest : Transitions middle finalState) ->
+  (offset : Nat) -> (0 exact : transitionAction step = action) ->
+  (tailCatalog : List (RootCatalogEntry name key world error value)) ->
+  (0 tail : (item : RootCatalogEntry name key world error value) -> Elem item tailCatalog ->
+    CatalogBirthAt name key world error value item (S offset) rest) ->
+  (entry : RootCatalogEntry name key world error value) ->
+  (0 member : Elem entry (rootCatalogStep offset action tailCatalog)) ->
+  CatalogBirthAt name key world error value entry offset (MoreTransitions step rest)
+catalogBirthAction (OInsert root Root component) step rest offset exact tailCatalog tail entry member =
+  catalogBirthInsertMember step rest root component offset exact tailCatalog tail entry member
+catalogBirthAction (OInsert child (ChildOf parent) component) step rest offset exact tailCatalog tail entry member =
+  catalogBirthTail step rest entry offset (tail entry member)
+catalogBirthAction (ORetire actor) step rest offset exact tailCatalog tail entry member =
+  catalogBirthTail step rest entry offset (tail entry member)
+catalogBirthAction (ORemove actor) step rest offset exact tailCatalog tail entry member =
+  catalogBirthTail step rest entry offset (tail entry member)
+catalogBirthAction (LBegin actor) step rest offset exact tailCatalog tail entry member =
+  catalogBirthTail step rest entry offset (tail entry member)
+catalogBirthAction (LAdvance actor) step rest offset exact tailCatalog tail entry member =
+  catalogBirthTail step rest entry offset (tail entry member)
+catalogBirthAction (LDivert actor) step rest offset exact tailCatalog tail entry member =
+  catalogBirthTail step rest entry offset (tail entry member)
+catalogBirthAction (LUnload actor) step rest offset exact tailCatalog tail entry member =
+  catalogBirthTail step rest entry offset (tail entry member)
+catalogBirthAction (LLeave actor) step rest offset exact tailCatalog tail entry member =
+  catalogBirthTail step rest entry offset (tail entry member)
