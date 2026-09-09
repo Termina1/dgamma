@@ -318,3 +318,22 @@ o20VestigialHeadDisappearsThroughChain nameEq keyEq left right _ mapping registr
   o20DeletionChainPreservesAbsence nameEq keyEq rest selected
     (o20SelectedVestigialDisappears nameEq keyEq left right mapping registrations candidate
       (deletionResult step) selected packet member)
+
+||| The SAME accepted construction's sorting endpoint preserves reduced
+||| lookup absence. It is projected from capital, not taken as a new relation.
+export
+0 o20ReducedAbsenceSurvivesSorting :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {protocol : RegistrationProtocol key value world error} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, originalFinal : SystemState name key value world error} ->
+  (original : Transitions initial originalFinal) ->
+  (capital : IndependentCanonicalSchedule name key world error value protocol nameEq keyEq original) ->
+  (selected : name) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected (registry (reducedFinal (capitalReduction capital))) = Nothing) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected (registry (canonicalFinal (canonicalSchedule capital))) = Nothing)
+o20ReducedAbsenceSurvivesSorting nameEq keyEq original
+  (MkIndependentCanonicalSchedule premises reduction ordering sorted supportTransport accounting _ Refl classified)
+  selected absent =
+  o20CanonicalEndpointPreservesAbsence nameEq keyEq (reducedFinal reduction) (sortedFinal sorted)
+    (sortedEndpoint sorted) selected absent
