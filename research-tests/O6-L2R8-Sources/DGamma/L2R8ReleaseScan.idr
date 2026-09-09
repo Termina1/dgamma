@@ -82,3 +82,23 @@ releaseAtAction nameEq keyEq component step rest (LAdvance actor) equation = []
 releaseAtAction nameEq keyEq component step rest (LDivert actor) equation = []
 releaseAtAction nameEq keyEq component step rest (LUnload actor) equation = []
 releaseAtAction nameEq keyEq component step rest (LLeave actor) equation = []
+
+||| Exact native occurrence embedding over the isElem release scan; agreement
+||| with scanReleaseOrdinals open. Child/source/parent/key remain the SAME.
+public export
+0 releaseThroughHead : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  {nameEq : DecEq name} -> {component : Component key value world error} ->
+  (step : Transition first middle) -> (rest : Transitions middle finalState) ->
+  (actor : name ** AttachedRelease name key world error value nameEq actor rest component) ->
+  (actor : name ** AttachedRelease name key world error value nameEq actor (MoreTransitions step rest) component)
+releaseThroughHead step rest (actor ** release) = (actor ** MkAttachedRelease
+  (releasedChild release) (releasedFiber release)
+  (MkLocatedActionOccurrence
+    (actionBeforeState (releaseOccurrence release)) (actionAfterState (releaseOccurrence release))
+    (MoreTransitions step (beforeActionOccurrence (releaseOccurrence release)))
+    (locatedTransition (releaseOccurrence release)) (afterActionOccurrence (releaseOccurrence release))
+    (locatedAction (releaseOccurrence release))
+    (cong (MoreTransitions step) (actionOccurrenceDecomposition (releaseOccurrence release))))
+  (releaseFound release) (releaseParent release) (sharedProvision release)
+  (childDeclares release) (rootDeclares release))
