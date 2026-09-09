@@ -52,3 +52,21 @@ ordinalAtLookup : {name, key, world, error : Type} -> {value : key -> Type} ->
 ordinalAtLookup nameEq keyEq component child source Nothing equation = []
 ordinalAtLookup nameEq keyEq component child source (Just fiber) equation =
   ordinalAtParent keyEq component fiber (fiberParent fiber) Refl
+
+||| Only the actual native ORemove action can emit a release ordinal.
+public export
+ordinalAtAction : {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (component : Component key value world error) ->
+  (source : SystemState name key value world error) ->
+  Action name key value world error -> List Nat
+ordinalAtAction nameEq keyEq component source (OInsert child parent inserted) = []
+ordinalAtAction nameEq keyEq component source (ORetire child) = []
+ordinalAtAction {name} {key} {world} {error} {value} nameEq keyEq component source (ORemove child) =
+  ordinalAtLookup nameEq keyEq component child source
+    (lookupFiber {name} {key} {value} {world} {error} @{nameEq} child (registry source)) Refl
+ordinalAtAction nameEq keyEq component source (LBegin actor) = []
+ordinalAtAction nameEq keyEq component source (LAdvance actor) = []
+ordinalAtAction nameEq keyEq component source (LDivert actor) = []
+ordinalAtAction nameEq keyEq component source (LUnload actor) = []
+ordinalAtAction nameEq keyEq component source (LLeave actor) = []
