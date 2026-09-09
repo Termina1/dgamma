@@ -49,3 +49,19 @@ overlapOrdinalsAgrees keyEq left right True equation =
   rewrite trans (sym (releaseOverlapAgrees keyEq left right False)) equation in Refl
 overlapOrdinalsAgrees keyEq left right False equation =
   rewrite trans (sym (releaseOverlapAgrees keyEq left right False)) equation in Refl
+
+||| Parent-level agreement: root controls cannot emit a release ordinal.
+export
+0 parentOrdinalsAgrees : {name, key, world, error : Type} -> {value : key -> Type} ->
+  (keyEq : DecEq key) -> (component : Component key value world error) ->
+  (fiber : Fiber name key value world error) -> (parent : Parent name) ->
+  (0 equation : fiberParent fiber = parent) ->
+  ordinalAtParent keyEq component fiber parent equation =
+    (if childDeclaredOverlap keyEq component parent (fiberComponent fiber) then [0] else [])
+parentOrdinalsAgrees keyEq component fiber Root equation = Refl
+parentOrdinalsAgrees keyEq component fiber (ChildOf actor) equation =
+  overlapOrdinalsAgrees keyEq
+    (dependencies (componentProvisions (fiberComponent fiber)))
+    (dependencies (componentProvisions component))
+    (any (\item => isYes (isElem @{keyEq} item (dependencies (componentProvisions component))))
+      (dependencies (componentProvisions (fiberComponent fiber)))) Refl
