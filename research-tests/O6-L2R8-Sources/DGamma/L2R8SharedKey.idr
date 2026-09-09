@@ -34,3 +34,16 @@ public export
 sharedKeyFromAnyHit keyEq left right hit =
   sharedKeyDecision keyEq left right (hitItem hit) (hitMember hit)
     (isElem @{keyEq} (hitItem hit) right) Refl (hitAccepted hit)
+
+||| Produce zero or one shared witness from the observed overlap scan, with
+||| no success premise. Over the isElem release scan; agreement with
+||| scanReleaseOrdinals open. The branch is the EXPLICIT observed Bool.
+public export
+0 sharedKeysObserved : {key : Type} -> (keyEq : DecEq key) ->
+  (left, right : List key) -> (seen : Bool) ->
+  (0 equation : any (\item => isYes (isElem @{keyEq} item right)) left = seen) ->
+  List (SharedKey left right)
+sharedKeysObserved keyEq left right True equation =
+  [sharedKeyFromAnyHit keyEq left right
+    (anyHitObserved (\item => isYes (isElem @{keyEq} item right)) left True equation Refl)]
+sharedKeysObserved keyEq left right False equation = []
