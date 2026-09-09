@@ -85,3 +85,32 @@ phaseReleaseCheck nameEq actor offset release seenLife (event :: rest) =
     else phaseReleaseCheck nameEq actor (S offset) release
       (maybe False (\owner => isYes (decEq @{nameEq} actor owner)) (fst event) &&
         (seenLife || snd event)) rest
+
+||| Executable phase acceptance over the ACTUAL catalog and last OLD anchor.
+||| The anchor must be a NEW omega-scanned earlier own-child release for an
+||| authentic earlier key seed, and its source-aware contiguous core must
+||| contain a strictly preceding lifecycle of the same actor. Barriers use
+||| the inherited maximum. This BOOL is not yet a ForcedRootPhase decoder:
+||| located catalog/core/maximum extraction and completeness remain open.
+public export
+phaseScanOk : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {0 first, finalState : SystemState name key value world error} ->
+  {0 trace : Transitions first finalState} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  AvailabilityTrace name key world error value trace -> Bool
+phaseScanOk nameEq keyEq trail = all
+  (\entry => maybe True
+    (\anchor => anchor <= catalogOrdinal entry && any
+      (\seed => catalogOrdinal seed <= catalogOrdinal entry &&
+        keyForcedOrdinal nameEq keyEq trail (catalogOrdinal seed) &&
+        elemDec (pred anchor)
+          (filter (\ordinal => ordinal < catalogOrdinal seed)
+            (releaseOrdinalScan nameEq keyEq (catalogComponent seed) trail)) &&
+        maybe False
+          (\event => maybe False
+            (\actor => phaseReleaseCheck nameEq actor 0 (pred anchor) False (phaseEvents nameEq trail))
+            (fst event))
+          (head' (drop (pred anchor) (phaseEvents nameEq trail))))
+      (scanRootCatalog 0 trail))
+    (anchorOf nameEq keyEq trail (catalogOrdinal entry)))
+  (scanRootCatalog 0 trail)
