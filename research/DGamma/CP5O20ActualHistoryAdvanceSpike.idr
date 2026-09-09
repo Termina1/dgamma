@@ -272,3 +272,28 @@ o20HistoryIterFromPaperSource nameEq keyEq mapping actor leftOrdinal rightOrdina
     o20HistoryIterKnownLeft nameEq keyEq mapping actor leftOrdinal rightOrdinal leftLive rightLive
       component step next more parent retiredFlag table accumulator view ambient rightWorld fibers rightRegistry
       leftAfter rightAfter paired found leftChecked rightChecked
+
+||| Closed local Iter successor: input cut plus TWO ACTUAL checked Iter edges
+||| suffice. All source/program/target/resolver/callback and native endpoint
+||| attachment data are producer-owned. Arbitrary whole canonical edge pairing
+||| and endpoint rebasing are NOT consequences of this one-step theorem.
+export
+0 o20HistoryCheckedIterCut :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (mapping : RegistrationGenerationBijection name) -> (actor : name) ->
+  (leftOrdinal, rightOrdinal : Nat) -> (leftLive, rightLive : GenerationEnvironment name) ->
+  (leftBefore, leftAfter, rightBefore, rightAfter : SystemState name key value world error) ->
+  (paired : O20HistoryCut name key world error value nameEq mapping leftLive rightLive leftBefore rightBefore) ->
+  (checkedApplyAction {name} {key} {value} {world} {error} @{nameEq} @{keyEq} (LAdvance actor) leftBefore = Just (LIterTag, leftAfter)) ->
+  (checkedApplyAction {name} {key} {value} {world} {error} @{nameEq} @{keyEq} (LAdvance (renameForward (historyCutBijection paired) actor)) rightBefore = Just (LIterTag, rightAfter)) ->
+  O20HistoryCut name key world error value nameEq mapping
+    (advanceGenerationEnvironment {name} {key} {value} {world} {error} @{nameEq} leftOrdinal (LAdvance actor) leftLive)
+    (advanceGenerationEnvironment {name} {key} {value} {world} {error} @{nameEq} rightOrdinal (LAdvance (renameForward (historyCutBijection paired) actor)) rightLive)
+    leftAfter rightAfter
+o20HistoryCheckedIterCut nameEq keyEq mapping actor leftOrdinal rightOrdinal leftLive rightLive
+  leftBefore leftAfter (MkSystemState rightWorld rightRegistry) rightAfter paired leftChecked rightChecked =
+    o20HistoryIterFromPaperSource nameEq keyEq mapping actor leftOrdinal rightOrdinal leftLive rightLive
+      leftBefore leftAfter rightAfter rightWorld rightRegistry paired leftChecked rightChecked
+      (paperAdvanceSource nameEq keyEq actor LIterTag
+        (checkedActionProjects nameEq keyEq (LAdvance actor) leftBefore leftAfter LIterTag leftChecked) (Left Refl))
