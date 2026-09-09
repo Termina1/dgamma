@@ -9,6 +9,9 @@ import DGamma.CP5ConfluenceLocalDiamondSpike
 import DGamma.CP5O20DeletionRetainedUnloadSpike
 import DGamma.CP5O20DeletionRetainedBirthSpike
 import DGamma.CP5O20NativeInsertEnvironmentSpike
+import DGamma.CP5O20DiscardedSelectionCoverageSpike
+import DGamma.CP5RetirementHistorySpike
+import DGamma.CP5O19GridCertificationSpike
 import DGamma.CP5ConfluenceDeletionChainSpike
 import DGamma.CP5O20RetainedClosingIndexSpike
 import Data.List
@@ -604,3 +607,56 @@ o20DeletionRetainedClosingBirth name key world error value protocol nameEq keyEq
                                  (o20ClosingActionAtAppendLeft name key world error value (survivingBefore (deletionResult step))
                                    (appendTransitions (survivingEpisode (deletionResult step)) (survivingAfter (deletionResult step)))
                                    targetClose (deletedParent classified) targetExact))))
+
+||| Stronger-than-present coverage over the ACTUAL recursive deletion list:
+||| EVERY source deleted classification is selected somewhere in the chain.
+||| The induction rebases each retained birth by that node's own bijection;
+||| the closing-free base has no Unload and therefore no such classification.
+export
+0 o20EveryDeletedGenerationSelected :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (generationEq : DecEq (RegistrationGeneration name)) ->
+  {initial, sourceFinal, targetFinal : SystemState name key value world error} ->
+  (source : Transitions initial sourceFinal) -> (target : Transitions initial targetFinal) ->
+  (premises : CanonicalizationPremises name key world error value protocol nameEq keyEq source) ->
+  (derivation : ClosingFreeDeletionDerivation name key world error value protocol nameEq keyEq source target) ->
+  NoClosingEpisodes name key world error value nameEq keyEq target ->
+  (generation : RegistrationGeneration name) ->
+  DeletedGenerationClassification name key world error value nameEq source generation ->
+  Elem generation (closingFreeDeletionGenerations derivation)
+o20EveryDeletedGenerationSelected name key world error value protocol nameEq keyEq generationEq _ _ premises
+  (ClosingFreeDeletionDone source) noClosing generation classified =
+    case o20DeletedBirthClosingIndex name key world error value nameEq source generation classified of
+      (ordinal ** (ordered, exact)) =>
+        void (o20ClosingFreeRejectsLocatedUnload name key world error value nameEq keyEq source
+          (replayAligned (chainReplayCapital premises)) (replayInitialEmpty (chainReplayCapital premises))
+          noClosing (deletedParent classified)
+          (retirementOccurrenceLocated name key world error value source (LUnload (deletedParent classified))
+            (o20IndexedUnloadOccurs name key world error value source ordinal (deletedParent classified) exact)))
+o20EveryDeletedGenerationSelected name key world error value protocol nameEq keyEq generationEq _ _ sourcePremises
+  (ClosingFreeDeletionStep source premises candidate step target rest) noClosing generation classified =
+    case isElem @{generationEq} generation (selectedRegistrations candidate) of
+      Yes selected =>
+        fst (o19ElemAppendInjections (selectedRegistrations candidate)
+          (map (generationBackward (deletionProducerGenerationRenaming (deletionProducerCapital step)))
+            (closingFreeDeletionGenerations rest))) selected
+      No outside =>
+        case o20DeletionRetainedClosingBirth name key world error value protocol nameEq keyEq
+          source premises candidate step generation classified outside of
+          (birth ** (stamp, closing)) =>
+            snd (o19ElemAppendInjections (selectedRegistrations candidate)
+              (map (generationBackward (deletionProducerGenerationRenaming (deletionProducerCapital step)))
+                (closingFreeDeletionGenerations rest)))
+              (replace {p = \current => Elem current
+                (map (generationBackward (deletionProducerGenerationRenaming (deletionProducerCapital step)))
+                  (closingFreeDeletionGenerations rest))}
+                (generationLeftInverse (deletionProducerGenerationRenaming (deletionProducerCapital step)) generation)
+                (elemMap (generationBackward (deletionProducerGenerationRenaming (deletionProducerCapital step)))
+                  (o20EveryDeletedGenerationSelected name key world error value protocol nameEq keyEq generationEq
+                    (survivingTrace (deletionResult step)) target (nextPremises step) rest noClosing
+                    (generationForward (deletionProducerGenerationRenaming (deletionProducerCapital step)) generation)
+                    (o20RetainedBirthClassified nameEq (survivingTrace (deletionResult step))
+                      (deletionProducerGenerationRenaming (deletionProducerCapital step)) generation
+                      (MkO20RetainedGenerationBirth (deletedParent classified) (deletedComponent classified) birth stamp) closing))))
