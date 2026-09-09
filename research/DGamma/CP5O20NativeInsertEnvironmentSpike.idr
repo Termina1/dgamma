@@ -176,3 +176,33 @@ o20PermutedCanonicalPrefixScannedInsert {name} {key} {world} {error} {value} {pr
       (o20PermutedCanonicalInsertOrigins {name} {key} {world} {error} {value} {protocol} {nameEq} {keyEq}
         {initial} {leftFinal} {rightFinal} {leftTrace} {rightTrace} {sameInputs} {leftCapital} {rightCapital} {matching} {operational}
         execution leftUnique rightUnique generatedMatched child parent component supported birth)
+
+||| Conditional ALL-NAME successor at the native scanned coordinates. Only
+||| the actual predecessor cut is a premise; the stage derives its successor.
+||| The accepted-input predecessor producer remains OPEN, not assumed closed.
+export
+0 o20PrefixScannedInsertCut :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {leftFirst, leftFinal, rightFirst, rightFinal, leftNowFirst, leftNowFinal, rightNowFirst, rightNowFinal : SystemState name key value world error} ->
+  {left : Transitions leftFirst leftFinal} -> {right : Transitions rightFirst rightFinal} ->
+  {leftNow : Transitions leftNowFirst leftNowFinal} -> {rightNow : Transitions rightNowFirst rightNowFinal} ->
+  (leftReplay : ActionRegistrationReplayCorrespondence name key world error value left leftNow) ->
+  (rightReplay : ActionRegistrationReplayCorrespondence name key world error value right rightNow) ->
+  (mapping : RegistrationGenerationBijection name) -> (renaming : NameBijection name) ->
+  (child, parent : name) -> (component : Component key value world error) ->
+  (leftBirth : LocatedGeneratedRegistration child parent component leftNow) ->
+  (attached : O20PrefixScannedInsertAttachment name key world error value nameEq keyEq leftReplay rightReplay mapping renaming
+    child parent component leftBirth) ->
+  O20StampedCut name key world error value nameEq
+    (o20ReplayOrdinalBijection (replayGenerationRenaming leftReplay) mapping (replayGenerationRenaming rightReplay)) renaming
+    (o20ScannedFinalLive nameEq Z [] (beforeRegistration leftBirth))
+    (o20ScannedFinalLive nameEq Z [] (beforeRegistration (attachedRightBirth (physicalBirths (nativeInsertPositions attached)))))
+    (registrationBefore leftBirth) (registrationBefore (attachedRightBirth (physicalBirths (nativeInsertPositions attached)))) ->
+  O20StampedCut name key world error value nameEq
+    (o20ReplayOrdinalBijection (replayGenerationRenaming leftReplay) mapping (replayGenerationRenaming rightReplay)) renaming
+    (putCurrentGeneration @{nameEq} child (registrationGeneration leftBirth) (o20ScannedFinalLive nameEq Z [] (beforeRegistration leftBirth)))
+    (putCurrentGeneration @{nameEq} (renameForward renaming child) (registrationGeneration (attachedRightBirth (physicalBirths (nativeInsertPositions attached)))) (o20ScannedFinalLive nameEq Z [] (beforeRegistration (attachedRightBirth (physicalBirths (nativeInsertPositions attached))))))
+    (registrationAfter leftBirth) (registrationAfter (attachedRightBirth (physicalBirths (nativeInsertPositions attached))))
+o20PrefixScannedInsertCut nameEq keyEq leftReplay rightReplay mapping renaming child parent component leftBirth attached predecessor =
+  o20StampedStageCut (nativeInsertStage attached) predecessor
