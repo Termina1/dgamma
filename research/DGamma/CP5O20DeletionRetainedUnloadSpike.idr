@@ -366,3 +366,29 @@ o20RegisteredUnloadSplit nameEq registered ordinal live _ right middleOrdinal mi
       (o20RegisteredUnloadSplit nameEq registered (S ordinal)
         (advanceGenerationEnvironment @{nameEq} ordinal (transitionAction step) live)
         tail right middleOrdinal middleLive scan) free
+
+||| Physical Unload retention at all THREE actual deletion segments. The
+||| center excludes the selected actor explicitly; no birth-relative suffix
+||| ordering or retained selected-parent closing is asserted by this record.
+public export
+record O20DeletionRetainedUnloads
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (keyEq : DecEq key)
+  {initial, finalState : SystemState name key value world error}
+  (trace : Transitions initial finalState)
+  (candidate : DeletableClosingEpisode name key world error value nameEq keyEq trace)
+  (result : DeletionResult name key world error value nameEq keyEq trace
+    (selectedActor candidate) (selectedEpisode candidate) (selectedRegistrations candidate)
+    (selectedStartOrdinal candidate) (selectedStartLive candidate)) where
+  constructor MkO20DeletionRetainedUnloads
+  0 retainedBeforeUnloads : (actor : name) ->
+    ActionOccurs (LUnload actor) (traceBeforeOpening (selectedEpisode candidate)) ->
+    ActionOccurs (LUnload actor) (survivingBefore result)
+  0 retainedForeignEpisodeUnloads : (actor : name) -> Not (actor = selectedActor candidate) ->
+    ActionOccurs (LUnload actor)
+      (MoreTransitions (beginTransition (closedOpening (locatedEpisode (selectedEpisode candidate))))
+        (closedTransitions (locatedEpisode (selectedEpisode candidate)))) ->
+    ActionOccurs (LUnload actor) (survivingEpisode result)
+  0 retainedAfterUnloads : (actor : name) ->
+    ActionOccurs (LUnload actor) (traceAfterClosing (selectedEpisode candidate)) ->
+    ActionOccurs (LUnload actor) (survivingAfter result)
