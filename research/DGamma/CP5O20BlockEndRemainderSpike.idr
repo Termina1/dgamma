@@ -78,3 +78,11 @@ export
   (supportedActiveAt {name} {key} {value} {world} {error} @{nameEq} selected afterState = False)
 o20InsertViewNotActive nameEq keyEq selected parent component ambient fibers (MkForeignInsertPlanView absent guards) =
   rewrite lookupInserted @{nameEq} selected (freshFiber component parent) fibers absent in Refl
+
+||| Retiring a fiber changes its flag, never its lifecycle Active bit.
+export
+0 o20RetireFiberActive :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (fiber : Fiber name key value world error) ->
+  (isActive (fiberLifecycle (retireFiber fiber)) = isActive (fiberLifecycle fiber))
+o20RetireFiberActive (MkFiber component parent retiredFlag table lifecycle) = Refl
