@@ -72,3 +72,28 @@ export
   O20GenerationOnlyDisposition name key world error value mapping left right stamp
 o20MatchedDispositionPacket mapping stamp event birth exact (opposite ** (matched, rightBirth, stampMatched)) =
   O20OriginalMatchedBirth event opposite birth rightBirth exact matched stampMatched
+
+||| Eliminate E8's observed closing-or-original-match choice without losing
+||| its closing branch. No right retained occurrence or raw-name equation
+||| is manufactured by either constructor.
+export
+0 o20DispositionChoice :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {leftFirst, leftFinal, rightFirst, rightFinal : SystemState name key value world error} ->
+  {left : Transitions leftFirst leftFinal} -> {right : Transitions rightFirst rightFinal} ->
+  (mapping : RegistrationGenerationBijection name) ->
+  (stamp : RegistrationGeneration name) ->
+  (event : RegistrationEvent name key world error value) ->
+  (birth : ScannedRegistrationBirth name key world error value Z left event) ->
+  (eventChildGeneration event = stamp) ->
+  Either
+    (DeletedClosingRegistration event (afterActionOccurrence (scannedLocatedBirth birth)))
+    (opposite : RegistrationEvent name key world error value **
+      (RegistrationEventMatch mapping event opposite,
+       ScannedRegistrationBirth name key world error value Z right opposite,
+       (generationForward mapping stamp = eventChildGeneration opposite))) ->
+  O20GenerationOnlyDisposition name key world error value mapping left right stamp
+o20DispositionChoice mapping stamp event birth exact (Left closing) =
+  O20OriginalClosingBirth event birth exact closing
+o20DispositionChoice mapping stamp event birth exact (Right matched) =
+  o20MatchedDispositionPacket mapping stamp event birth exact matched
