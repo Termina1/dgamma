@@ -1,0 +1,63 @@
+{
+  "status": "PROPOSED ONLY; NOT APPLIED; visibility-only consumer path still blocked",
+  "preparedUTC": "2026-09-09T02:19:42.814320+00:00",
+  "baselineCommit": "981e613795ddb04306a8009b6707defa76f9c8a7",
+  "sourcePath": "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+  "beforeBytes": 1559150,
+  "afterBytes": 1559161,
+  "beforeSHA256": "f77f66a3e3a62f2ff757709f08d1488a25d54d425af74dcec4c2c0f0ed28c6fd",
+  "afterSHA256": "81ae06a8e96670138d485c3a623b82d6fbb0f40755998d2eb0d67ecf4edee9fb",
+  "items": [
+    {
+      "name": "adjacentOrdinalRelationForward",
+      "path": "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+      "visibilityLine": 26669,
+      "startLine": 26669,
+      "endLine": 26683,
+      "currentType": "0 adjacentOrdinalRelationForward :\n  (point, targetOrdinal, sourceOrdinal : Nat) ->\n  AdjacentSwapOrdinalRelation point targetOrdinal sourceOrdinal ->\n  (adjacentOrdinalSwap point sourceOrdinal = targetOrdinal)",
+      "oldKeyword": "private",
+      "newKeyword": "export",
+      "justification": "Opaque proof: consumes the all-action ordinal relation; its proof body need not reduce.",
+      "declarationSHA256": "7a0255b6764eaa98ea4100936cb7303ffb745adb991e948b8a9477db956319ce"
+    },
+    {
+      "name": "adjacentGenerationSwap",
+      "path": "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+      "visibilityLine": 26685,
+      "startLine": 26685,
+      "endLine": 26689,
+      "currentType": "adjacentGenerationSwap : Nat -> RegistrationGeneration name ->\n  RegistrationGeneration name",
+      "oldKeyword": "private",
+      "newKeyword": "public export",
+      "justification": "Consumer must reduce generationForward on a concrete MkRegistrationGeneration to the ordinal expression; export-only leaves this computational boundary opaque.",
+      "declarationSHA256": "d4ecd966cf6b410ec7d4b4a72e465a389267ecffe9fc7200a9b54a20d7db0363"
+    },
+    {
+      "name": "adjacentGenerationBijection",
+      "path": "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+      "visibilityLine": 26701,
+      "startLine": 26701,
+      "endLine": 26706,
+      "currentType": "adjacentGenerationBijection : Nat -> RegistrationGenerationBijection name",
+      "oldKeyword": "private",
+      "newKeyword": "public export",
+      "justification": "Consumer must project generationForward to the producer map, requiring reduction of the record constructor.",
+      "declarationSHA256": "c889092a2c792090ff4a326b300bcf448c903b3c2027c6137e3f5dd7cb190aa0"
+    }
+  ],
+  "consumerImmediate": "For the explicit adjacentGenerationBijection only: cong (MkRegistrationGeneration root) (adjacentOrdinalRelationForward point targetOrdinal sourceOrdinal relation). No caller equality may be used to identify a sealed result map with this map.",
+  "consumerTarget": "O20RootReplayOrdinals ... (canonicalOccurrenceCorrespondence capital); then composition with actual operational occurrence correspondence.",
+  "blocker": "AdjacentSwapOperationalOccurrenceFold.operationalOrdinalRelation constrains action-origin counts, but has no equation identifying replayGenerationRenaming operationalOccurrenceCorrespondence with adjacentGenerationBijection. AdjacentSwapResult stores the fold without a defining-builder equality. DeletionProducerOperationalCapital similarly stores a generated-only ordinal field. The three visibility changes alone do NOT close this producer attachment.",
+  "costPlan": {
+    "sharedLock": "/tmp/dgamma-heavy.lock",
+    "keywordOnlyLocalDiamondRSSGiB": 52,
+    "allOtherRSSGiB": 48,
+    "oneKeywordPerInvocation": true,
+    "minimumMinutesBeforeAttemptCutoff": 90,
+    "conservativeInvalidatedModules": 241,
+    "serializedOrder": "O6-R195-ROOT-VISIBILITY-DEPENDENTS.json",
+    "orderNotes": "One keyword change, then LocalDiamond own Building PASS before any consumer. Remaining keyword checks same ordering. All other conservative dependents topo order, one source check at a time; never delete TTCs or cold build. Missing known heavy estimates require lock conservatively. No execution is authorized by this proposed manifest."
+  },
+  "protectedSurfaceDiff": "No proposed type/body edit; exactly three visibility lines. No actual delta.",
+  "ownerRuling": "2026-09-09 root seam ruling: keyword-only LocalDiamond changes may use52GiB, subject to exact manifest approval and >=90min remaining before attempt cutoff."
+}
