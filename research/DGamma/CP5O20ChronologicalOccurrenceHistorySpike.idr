@@ -42,3 +42,42 @@ o20ChronologicalBirthPrepend name key world error value ordinal edge rest event
         (cong (MoreTransitions edge) decomposition))
       (trans stamp (cong (MkRegistrationGeneration (eventChild event))
         (plusSuccRightSucc ordinal (transitionCount earlier)))) ** retained)
+
+||| Every retained event in either R203 native ORIGINAL chronology yields
+||| its real occurrence, exact original stamp and its OWN open parent suffix.
+||| The proof follows actual ordinary/deleted/retained edges; it never zips
+||| arbitrary event lists or substitutes iterator position for physical count.
+export
+0 o20NativeChronologicalBirth :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (ordinal : Nat) -> (index : RegistrationIndexState name) ->
+  {first, finalState : SystemState name key value world error} ->
+  (trace : Transitions first finalState) -> (finalIndex : RegistrationIndexState name) ->
+  (events : List (RegistrationEvent name key world error value)) ->
+  O20NativeActivationScan nameEq ordinal index trace finalIndex events ->
+  (event : RegistrationEvent name key world error value) -> Elem event events ->
+  (birth : ScannedRegistrationBirth name key world error value ordinal trace event **
+    SurvivingRegistration event (afterActionOccurrence (scannedLocatedBirth birth)))
+o20NativeChronologicalBirth name key world error value nameEq ordinal
+  (MkRegistrationIndexState live activations counts discarded) trace finalIndex events scan event member =
+    case scan of
+      O20ActivationScanEnd => absurd member
+      O20ActivationScanOrdinary action edge rest shape ordinary later =>
+        o20ChronologicalBirthPrepend name key world error value ordinal edge rest event
+          (o20NativeChronologicalBirth name key world error value nameEq (S ordinal)
+            (advanceRegistrationIndex @{nameEq} ordinal action (MkRegistrationIndexState live activations counts discarded))
+            rest finalIndex events later event member)
+      O20ActivationScanDeleted {child} {parent} {component} edge rest shape closed later =>
+        o20ChronologicalBirthPrepend name key world error value ordinal edge rest event
+          (o20NativeChronologicalBirth name key world error value nameEq (S ordinal)
+            (advanceDeletedRegistrationIndex @{nameEq} ordinal child parent component (MkRegistrationIndexState live activations counts discarded))
+            rest finalIndex events later event member)
+      O20ActivationScanRetained {child} {parent} {component} {events = laterEvents} edge rest shape retained later =>
+        case member of
+          Here => (scannedRegistrationBirthHead name key world error value nameEq ordinal
+            (MkRegistrationIndexState live activations counts discarded) child parent component edge rest shape ** retained)
+          There remaining =>
+            o20ChronologicalBirthPrepend name key world error value ordinal edge rest event
+              (o20NativeChronologicalBirth name key world error value nameEq (S ordinal)
+                (advanceSurvivingRegistrationIndex @{nameEq} ordinal child parent component (MkRegistrationIndexState live activations counts discarded))
+                rest finalIndex laterEvents later event remaining)
