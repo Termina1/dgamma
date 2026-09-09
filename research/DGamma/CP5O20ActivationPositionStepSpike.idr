@@ -107,3 +107,20 @@ o20IncrementActivationCount nameEq activation ((candidate, count) :: rest) =
     (sameRegistrationActivation @{nameEq} activation candidate ** Refl) of
       (True ** observed) => rewrite observed in rewrite observed in Refl
       (False ** observed) => rewrite observed in rewrite observed in o20IncrementActivationCount nameEq activation rest
+
+||| The retained-birth classifier keeps the actual parent activation and
+||| updates precisely that activation's surviving counter. Its observed
+||| activation is input; the counter update equation is output.
+export
+0 o20SurvivingBirthActivationUpdate :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (ordinal : Nat) ->
+  (child, parent : name) -> (component : Component key value world error) ->
+  (index : RegistrationIndexState name) -> (activation : RegistrationActivation name) ->
+  (lookupParentActivation @{nameEq} parent (indexedParentActivations index) = Just activation) ->
+  (indexedParentActivations (advanceSurvivingRegistrationIndex @{nameEq} ordinal child parent component index) =
+    indexedParentActivations index,
+   indexedSurvivingChildCounts (advanceSurvivingRegistrationIndex @{nameEq} ordinal child parent component index) =
+    incrementChildrenBornInActivation @{nameEq} activation (indexedSurvivingChildCounts index))
+o20SurvivingBirthActivationUpdate nameEq ordinal child parent component
+  (MkRegistrationIndexState live activations counts deleted) activation observed = rewrite observed in (Refl, Refl)
