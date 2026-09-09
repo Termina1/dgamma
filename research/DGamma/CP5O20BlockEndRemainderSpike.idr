@@ -86,3 +86,18 @@ export
   (fiber : Fiber name key value world error) ->
   (isActive (fiberLifecycle (retireFiber fiber)) = isActive (fiberLifecycle fiber))
 o20RetireFiberActive (MkFiber component parent retiredFlag table lifecycle) = Refl
+
+||| The actual native Retire observation preserves its owner's Active bit.
+||| Both primitive lookups belong to the same replaced fiber and target.
+export
+0 o20RetireViewActive :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (selected : name) ->
+  (ambient : world) -> (fibers : Registry name key value world error) ->
+  {tag : RuleTag} -> {afterState : SystemState name key value world error} ->
+  RetireSuccessView name key world error value nameEq selected ambient fibers tag afterState ->
+  (supportedActiveAt {name} {key} {value} {world} {error} @{nameEq} selected (MkSystemState ambient fibers) =
+   supportedActiveAt {name} {key} {value} {world} {error} @{nameEq} selected afterState)
+o20RetireViewActive nameEq selected ambient fibers (MkRetireSuccessView fiber found) =
+  rewrite lookupReplacedFiber @{nameEq} selected fiber (retireFiber fiber) fibers found in
+  rewrite found in sym (o20RetireFiberActive fiber)
