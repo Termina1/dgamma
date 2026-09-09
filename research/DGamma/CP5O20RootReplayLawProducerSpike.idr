@@ -41,3 +41,31 @@ o20FiniteAdjacentRootReplayOrdinals
     (MkO20RootReplayOrdinals
       (operationalRootOrdinalPreserved (swappedOccurrenceFold result)))
     (o20FiniteAdjacentRootReplayOrdinals rest)
+
+||| The actual deletion occurrence builder inherits the root law of its SAME
+||| supplied operational capital, not a separately reconstructed generation map.
+export
+0 o20DeletionProducerRootReplayOrdinals :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {protocol : RegistrationProtocol key value world error} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {initial, finalState : SystemState name key value world error} ->
+  (trace : Transitions initial finalState) ->
+  (premises : CanonicalizationPremises name key world error value protocol
+    nameEq keyEq trace) ->
+  (candidate : DeletableClosingEpisode name key world error value nameEq keyEq trace) ->
+  (result : DeletionResult name key world error value nameEq keyEq trace
+    (selectedActor candidate) (selectedEpisode candidate)
+    (selectedRegistrations candidate) (selectedStartOrdinal candidate)
+    (selectedStartLive candidate)) ->
+  (capital : DeletionProducerOperationalCapital name key world error value
+    nameEq keyEq trace (selectedActor candidate) (selectedEpisode candidate)
+    (selectedRegistrations candidate) (selectedStartOrdinal candidate)
+    (selectedStartLive candidate) result) ->
+  O20RootReplayOrdinals name key world error value
+    (deletionOperationalCorrespondence
+      (deletionStepOperationalOccurrenceFoldSpike nameEq keyEq protocol trace
+        premises candidate result capital))
+o20DeletionProducerRootReplayOrdinals trace premises candidate result capital =
+  MkO20RootReplayOrdinals
+    (deletionBuiltRootOrdinalPreserved trace premises candidate result capital)
