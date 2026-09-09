@@ -1,0 +1,87 @@
+[
+  {
+    "unit": "V6",
+    "path": "research-tests/O6-L2R9-Sources/DGamma/L2R9ContiguityEndpoints.idr",
+    "sourceHash": "f94c9de1dcce2c4c04820f9f7c81c18a4df51312ad258bf6abd5a5889b7e4080"
+  },
+  {
+    "unit": "V7",
+    "path": "research-tests/O6-L2R9-Sources/DGamma/L2R9ContiguityPackets.idr",
+    "sourceHash": "53569c687e50ef7c816eddf58a4537e4af8e4fd2b18333174bcc462f3feaabfa"
+  },
+  {
+    "unit": "V8",
+    "path": "research-tests/O6-L2R9-Sources/DGamma/L2R9ControlClass.idr",
+    "sourceHash": "ae367c28168b895c4309a05b39b872cc3b3d6958413020dde8e2ac961ec497aa"
+  },
+  {
+    "unit": "V9",
+    "path": "research-tests/O6-L2R9-Sources/DGamma/L2R9RestoredPackets.idr",
+    "sourceHash": "1d3a3398f85884537ab3d8983e844f71add7dab50f56ac58d21dcf15be3383d9"
+  },
+  {
+    "unit": "V10",
+    "path": "research-tests/O6-L2R9-Sources/DGamma/L2R9CoreRestoration.idr",
+    "sourceHash": "aaebbe466879b6412fee61580940e00250da2c6b0ca0a8c671f611a35c80b83b"
+  },
+  {
+    "unit": "V11",
+    "path": "research-tests/O6-L2R9-Sources/DGamma/L2R9ProviderHead.idr",
+    "sourceHash": "77423f6231bdb2d0dcca855f286323961fd0ba207d7ff1268641ebbb150f8d5d"
+  },
+  {
+    "unit": "V12",
+    "path": "research-tests/O6-L2R9-Sources/DGamma/L2R9ProviderRetirement.idr",
+    "sourceHash": "e54c2988ddfe1b777be139944bbadbb7d519105b861a2ebe1c4af28a8aa80a7a"
+  },
+  {
+    "unit": "V13",
+    "path": "research-tests/O6-L2R9-Sources/DGamma/L2R9ResolverRetirement.idr",
+    "sourceHash": "744b5e612c14c511cb57f1870ec1b43c1c2df80dc21bf7a7d5a87d9e6df4116e"
+  },
+  {
+    "unit": "V14",
+    "path": "research-tests/O6-L2R9-Sources/DGamma/L2R9LifecycleRoles.idr",
+    "sourceHash": "fed18eebf2a88619ba82ae99fcb64f13442b6891c98847b85abfd8a886f45d76"
+  },
+  {
+    "unit": "V15",
+    "path": "research-tests/O6-L2R9-Sources/DGamma/L2R9NativeSelection.idr",
+    "sourceHash": "50dac868447dbf171af580759be250289d9febc4a59a06adf3a7ab8f2b487774"
+  },
+  {
+    "unit": "V16",
+    "path": "research-tests/O6-L2R9-Sources/DGamma/L2R9OrdinalScan.idr",
+    "sourceHash": "a796168b998dae282da12337fc68bc70c5e72d0cdc5aa2941f002fe773bf221b"
+  },
+  {
+    "unit": "V17",
+    "path": "research-tests/O6-L2R9-Sources/DGamma/L2R9OrdinalFixtures.idr",
+    "sourceHash": "f5c7d96b52001814059b449f8dd4e13861c8e776ab144f7137f05a7d305cd967"
+  },
+  {
+    "unit": "V18",
+    "path": "research-tests/O6-L2R9-Sources/DGamma/L2R9OrdinalLink.idr",
+    "sourceHash": "23ba52baf7aa846beb2cba0a8337307afb83ab5ff4652e43b2644ad1414600b0"
+  },
+  {
+    "unit": "V19",
+    "path": "research-tests/O6-L2R9-Sources/DGamma/L2R9OrdinalTrails.idr",
+    "sourceHash": "935b1b4fb524980bca18c1bc9f2e9de892423dbaf356f32d1105cb672b88c090"
+  },
+  {
+    "unit": "V20",
+    "path": "research-tests/O6-L2R9-Sources/DGamma/L2R9PredecessorClass.idr",
+    "sourceHash": "2224abc2ccb764f3ba7578e33251c07875d21099844736633401928bf16a84fa"
+  },
+  {
+    "unit": "V21",
+    "path": "research-tests/O6-L2R9-Sources/DGamma/L2R9PredecessorExclusion.idr",
+    "sourceHash": "abe1e48438b86f12bc8db3f1f7ce77f6b642837353b1fb052339b3e0c0127e25"
+  },
+  {
+    "unit": "V22",
+    "path": "research-tests/O6-L2R9-Sources/DGamma/L2R9SplitPacket.idr",
+    "sourceHash": "ba2c4f8672dbf2594e25b8ff01e4ba4cf39c8e780e5a57eb738347516fd02309"
+  }
+]
