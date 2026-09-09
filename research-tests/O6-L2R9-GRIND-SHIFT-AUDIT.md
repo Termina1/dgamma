@@ -39,3 +39,19 @@ An early B4-1 commit-runner call before its JSON publication failed at the missi
 ## B4 stop gate
 
 B4 STOPPED3/3/full revert to B2 source bytes. Abstract-state packet attempt3 still reached18,951,360KiB sampled and was interrupted after146.68s. B8 SplitPathPacket remains TYPE ONLY; no fourth attempt/restatement. All three B4 checks are FAIL, never evidence of a native split-path producer. B3 assembly is NOT attempted: its retained third attempt requires all native packet producers. Independent restored-path/core work may continue within B cap12; no cap extension.
+
+## B final gate — partial native paths, restoration producer stopped
+
+Native ORIGINAL and RESTORED paths are fully checked separately: original5+2 B1/B2 (56b61fed/a4fabf60); restored3+4 B5/B6 (788e27f5/85c665de), backed by abstract-state RestoredFirstPacket/RestoredLastPacket TYPES (3de54eff/48e62c7a). B6 chained checkedFromRaw was proactively CPU-stopped after4min; direct Refl in the unchanged abstract-state4-field contract passed2/3 in3.51s at268464KiB. B7 contiguityEndpoints (4046363f) gives exact ordered runtime snapshot equalities, including original/restored; the split endpoint is only a state-recipe equality, NOT native execution.
+
+B7 passed2/3 after DIRECT imports SmallStates, Data.List.Elem, Data.Maybe and Decidable.Equality. The same Refl previously had stuck deleteBinding/insertBinding expressions. Direct-import reduction is binding going forward. A14's omitted direct isYes/helper modules are a plausible future diagnostic avenue, NOT tested, not a re-entry or proof promotion.
+
+B11 CoreRestorationFixture (3e8c5109) is TYPE ONLY: exact concrete premise/conclusion shape of GeneralCoreContiguityRestored, authentic located source-aware old/new cores, action-word equality, physical4->5 positions, whole-run RegistryExtensional endpoints. B12 coreContiguityRestored producer STOPPED3/3 and fully reverted to B11 bytes. All3 attempts were CPU-bound at~0.4GiB and proactively stopped after4/6+/4+minutes; explicit full constructor/type/state/trace parameters and direct packet reduction imports did not complete. This is a bounded elaboration-cost failure, NOT semantic falsity. No checked core-contiguity instance or general theorem is claimed. The failed recipe and raw snapshots/logs remain available for review.
+
+Two B micro-units now stopped3/3 (B4, B12): B unit STOP -> C. **9 retained B declarations.** B3 full17-edge assembly NOT launched; its inherited third attempt remains unspent because the split-path producer is missing. No exhausted statement is restated.
+
+## C supervisor revised branch and premise ruling
+
+Explicit branch(A) AUTHORIZED: prioritize a general executable source/action admitted-predecessor classifier and genuine native-catalog first-positive selection; prove forbidden root-birth case under the external-order floor. Move existence, D8-from-producer and normalization remain explicitly OPEN; no Insert/Insert connector attempt is authorized in this revised branch. Remaining slots, if any, may lift Retire/Remove squares.
+
+Supervisor CONFIRMED retaining the original ForcedRootNeverRetired premise alongside FrontNormal, phase and external floor. FrontNormal alone accepts forced controls after lifecycle; the target floor scans birth catalog ordinals, not controls. This is a source-level premise gap/candidate obstruction, NOT a checked counterexample. For attachedC, a forced control must belong to an earlier placed bundle and be handled by bundle-with-controls placement: that lift is OPEN, not this shift's move producer.
