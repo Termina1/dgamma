@@ -40,3 +40,14 @@ data PhaseHistoryPath : {name : Type} -> (actor : name) -> Bool -> Nat -> List (
   HistoryReset : {name : Type} -> {actor : name} -> {event : (Maybe name, Bool)} ->
     {seen : Bool} -> {distance : Nat} -> {rest : List (Maybe name, Bool)} ->
     PhaseHistoryPath actor False distance rest -> PhaseHistoryPath actor seen (S distance) (event :: rest)
+
+||| Reflect the actual library owner decision. Its observed equation is
+||| supplied at the native call site; no reconstructed equality test is used.
+export
+0 phaseOwnerAtDecision : {name : Type} -> (nameEq : DecEq name) ->
+  (actor, owner : name) -> (decision : Dec (actor = owner)) ->
+  (0 equation : decEq @{nameEq} actor owner = decision) ->
+  (0 accepted : isYes (decEq @{nameEq} actor owner) = True) -> owner = actor
+phaseOwnerAtDecision nameEq actor owner (Yes equal) equation accepted = sym equal
+phaseOwnerAtDecision nameEq actor owner (No different) equation accepted =
+  absurd (trans (sym (cong isYes equation)) accepted)
