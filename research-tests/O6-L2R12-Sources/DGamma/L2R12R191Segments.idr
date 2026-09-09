@@ -53,3 +53,19 @@ record R191RetirementSegments where
     (MkSystemState (worldState (r191ChildGapState 8))
       (replaceBinding @{r45NameEq} 3 (retireFiber r45ChildFresh) (registry (r191ChildGapState 8)))) =
     runtimeSnapshot (r191ChildGapState 9)
+
+||| Simultaneously decode the ACTUAL source prefix/span/suffix, child3's
+||| own-parent provenance, finite inventory and native retirement endpoint.
+||| No previous relocated trace or local exchange fixture is projected.
+public export
+r191RetirementSegments : R191RetirementSegments
+r191RetirementSegments = MkR191RetirementSegments
+  (MoreTransitions (Fired {before = r191ChildGapState 0} {afterState = r191ChildGapState 1} r45NameEq r45KeyEq (OInsert 0 Root r45Parent) OInsertTag (nativeCheckedAt 0 r191ChildGapTrace)) (MoreTransitions (Fired {before = r191ChildGapState 1} {afterState = r191ChildGapState 2} r45NameEq r45KeyEq (OInsert 1 Root r45Child) OInsertTag (nativeCheckedAt 1 r191ChildGapTrace)) (MoreTransitions (Fired {before = r191ChildGapState 2} {afterState = r191ChildGapState 3} r45NameEq r45KeyEq (OInsert 2 Root r45Child) OInsertTag (nativeCheckedAt 2 r191ChildGapTrace)) (MoreTransitions (Fired {before = r191ChildGapState 3} {afterState = r191ChildGapState 4} r45NameEq r45KeyEq (LBegin 0) LBeginTag (nativeCheckedAt 3 r191ChildGapTrace)) (MoreTransitions (Fired {before = r191ChildGapState 4} {afterState = r191ChildGapState 5} r45NameEq r45KeyEq (OInsert 3 (ChildOf 0) r45Child) OInsertTag (nativeCheckedAt 4 r191ChildGapTrace)) (MoreTransitions (Fired {before = r191ChildGapState 5} {afterState = r191ChildGapState 6} r45NameEq r45KeyEq (LAdvance 0) LFinishTag (nativeCheckedAt 5 r191ChildGapTrace)) NoTransitions))))))
+  (MoreTransitions (Fired {before = r191ChildGapState 6} {afterState = r191ChildGapState 7} r45NameEq r45KeyEq (LBegin 1) LBeginTag (nativeCheckedAt 6 r191ChildGapTrace)) (MoreTransitions (Fired {before = r191ChildGapState 7} {afterState = r191ChildGapState 8} r45NameEq r45KeyEq (LAdvance 1) LFinishTag (nativeCheckedAt 7 r191ChildGapTrace)) NoTransitions))
+  (ForeignChildStep {child = 3} (LBegin 1) LBeginTag (nativeCheckedAt 6 r191ChildGapTrace) (MoreTransitions (Fired {before = r191ChildGapState 7} {afterState = r191ChildGapState 8} r45NameEq r45KeyEq (LAdvance 1) LFinishTag (nativeCheckedAt 7 r191ChildGapTrace)) NoTransitions) (\same => SIsNotZ {x = 1} (cong pred same)) (ForeignChildStep {child = 3} (LAdvance 1) LFinishTag (nativeCheckedAt 7 r191ChildGapTrace) NoTransitions (\same => SIsNotZ {x = 1} (cong pred same)) ForeignChildEnd))
+  (MoreTransitions (Fired {before = r191ChildGapState 9} {afterState = r191ChildGapState 10} r45NameEq r45KeyEq (LBegin 2) LBeginTag (nativeCheckedAt 9 r191ChildGapTrace)) (MoreTransitions (Fired {before = r191ChildGapState 10} {afterState = r191ChildGapState 11} r45NameEq r45KeyEq (LAdvance 2) LFinishTag (nativeCheckedAt 10 r191ChildGapTrace)) NoTransitions))
+  (AlignedStep (LBegin 2) LBeginTag (nativeCheckedAt 9 r191ChildGapTrace) (MoreTransitions (Fired {before = r191ChildGapState 10} {afterState = r191ChildGapState 11} r45NameEq r45KeyEq (LAdvance 2) LFinishTag (nativeCheckedAt 10 r191ChildGapTrace)) NoTransitions) (AlignedStep (LAdvance 2) LFinishTag (nativeCheckedAt 10 r191ChildGapTrace) NoTransitions AlignedEnd))
+  Refl Refl Refl Refl
+  (checkedActionTargetValid r45NameEq r45KeyEq (LAdvance 0)
+    (r191ChildGapState 5) (r191ChildGapState 6) LFinishTag (nativeCheckedAt 5 r191ChildGapTrace))
+  Refl Refl Refl Refl
