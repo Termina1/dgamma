@@ -12,6 +12,7 @@ import DGamma.CP5AvailabilityAwarePlacement
 import DGamma.L2R5RootCatalog
 import DGamma.L2R6ForcedScan
 import DGamma.L2R6Anchors
+import DGamma.L2R7Classifier
 import DGamma.L2R7ObservedAny
 import DGamma.L2R7PlacedCoverage
 import DGamma.L2R12PhaseAccepted
@@ -64,3 +65,14 @@ phaseFlattenNonempty scan (head :: rest) accumulator =
   trans (phaseFlattenNonempty scan rest (accumulator ++ scan head))
     (cong (\seen => foldl (\acc, item => acc || not (null (scan item))) seen rest)
       (phaseAppendNonempty accumulator (scan head)))
+
+||| A selected genuine nonempty release scan makes the native flatten nonempty.
+export
+0 phaseConcatNonempty : {a, b : Type} -> (scan : a -> List b) ->
+  (item : a) -> (items : List a) -> (0 member : Elem item items) ->
+  (0 present : not (null (scan item)) = True) ->
+  not (null (concatMap scan items)) = True
+phaseConcatNonempty scan item items member present =
+  trans (phaseFlattenNonempty scan items [])
+    (anyMappedMember id (\selected => not (null (scan selected))) items item
+      (elemMap id member) present)
