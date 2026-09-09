@@ -125,3 +125,33 @@ export
 o20AttachGeneratedBirthPacket leftReplay rightReplay original renaming child parent component leftBirth (rightBirth ** matched) =
   MkO20AttachedGeneratedBirth rightBirth matched
     (o20GeneratedOrdinalsAttached leftReplay rightReplay original leftBirth rightBirth matched)
+
+||| Accepted supported-birth capital produces the opposite canonical birth and
+||| BOTH original and actual canonical-ordinal equations. The supported scope
+||| remains explicit; unsupported histories and whole stage alignment are not
+||| asserted by this single-occurrence producer.
+export
+0 o20SupportedCanonicalOrdinalAttachment :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {initial, leftFinal, rightFinal : SystemState name key value world error} ->
+  (left : Transitions initial leftFinal) -> (right : Transitions initial rightFinal) ->
+  (inputs : SameOrchestrationModuloGenerated nameEq keyEq left right) ->
+  (leftCapital : IndependentCanonicalSchedule name key world error value protocol nameEq keyEq left) ->
+  (rightCapital : IndependentCanonicalSchedule name key world error value protocol nameEq keyEq right) ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq left ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq right ->
+  GeneratedOrchestrationMatched name key world error value nameEq left right (generatedGenerationBijection inputs) ->
+  (child, parent : name) -> (component : Component key value world error) ->
+  (isSupported {name} {key} {value} {world} {error} @{nameEq} @{keyEq} child leftFinal = True) ->
+  (leftBirth : LocatedGeneratedRegistration child parent component (canonicalTrace (canonicalSchedule leftCapital))) ->
+  O20AttachedGeneratedBirth name key world error value
+    (canonicalOccurrenceCorrespondence leftCapital) (canonicalOccurrenceCorrespondence rightCapital)
+    (generatedGenerationBijection inputs) (expectedBridgeBijection inputs) child parent component leftBirth
+o20SupportedCanonicalOrdinalAttachment name key world error value nameEq keyEq protocol left right inputs leftCapital rightCapital
+  leftUnique rightUnique matched child parent component supported leftBirth =
+    o20AttachGeneratedBirthPacket (canonicalOccurrenceCorrespondence leftCapital) (canonicalOccurrenceCorrespondence rightCapital)
+      (generatedGenerationBijection inputs) (expectedBridgeBijection inputs) child parent component leftBirth
+      (supportedCanonicalBirthBridge name key world error value nameEq keyEq protocol left right inputs leftCapital rightCapital
+        leftUnique rightUnique matched child parent component supported leftBirth)
