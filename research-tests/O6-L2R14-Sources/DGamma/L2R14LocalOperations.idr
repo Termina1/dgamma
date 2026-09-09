@@ -28,3 +28,16 @@ export
 localReplaceFreshHead dictionary selected fresh next inserted entries distinct (Yes same) equation = absurd (distinct same)
 localReplaceFreshHead dictionary selected fresh next inserted entries distinct (No different) equation =
   rewrite equation in Refl
+
+||| Deletion commutes through a distinct inserted head. The native library
+||| decider is observed by its own equation; no checked Remove is evaluated.
+export
+0 localDeleteFreshHead : {a : Type} -> (dictionary : DecEq Nat) ->
+  (removed, fresh : Nat) -> (inserted : a) -> (entries : List (Binding Nat (\_ => a))) ->
+  (0 distinct : removed = fresh -> Void) -> (decision : Dec (removed = fresh)) ->
+  (0 equation : decEq @{dictionary} removed fresh = decision) ->
+  deleteEntries @{dictionary} removed (Bind fresh inserted :: entries) =
+    Bind fresh inserted :: deleteEntries @{dictionary} removed entries
+localDeleteFreshHead dictionary removed fresh inserted entries distinct (Yes same) equation = absurd (distinct same)
+localDeleteFreshHead dictionary removed fresh inserted entries distinct (No different) equation =
+  rewrite equation in Refl
