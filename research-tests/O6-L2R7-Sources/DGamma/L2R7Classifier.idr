@@ -46,3 +46,16 @@ export
 0 leToLte : (n, m : Nat) -> (n <= m) = lte n m
 leToLte Z m = leZero m
 leToLte (S n) m = leSuccessorBridge n (leToLte n) m
+
+||| Close a non-strict seed bound by observing the strict-order decider.
+||| Equality is obtained by antisymmetry, not a nonlinear two-index pattern.
+export
+0 forcedSeedBeforeObserved : {rootInput, keyForced : Nat -> Type} ->
+  (seed, target : Nat) -> (observed : Dec (LT seed target)) ->
+  (0 equation : isLT seed target = observed) -> (0 ordered : LTE seed target) ->
+  (0 prior : ForcedRootInput rootInput keyForced seed) -> (0 root : rootInput target) ->
+  ForcedRootInput rootInput keyForced target
+forcedSeedBeforeObserved seed target (Yes earlier) equation ordered prior root = OrderForces prior root earlier
+forcedSeedBeforeObserved {rootInput} {keyForced} seed target (No notEarlier) equation ordered prior root =
+  replace {p = ForcedRootInput rootInput keyForced}
+    (antisymmetric ordered (notLTImpliesGTE notEarlier)) prior
