@@ -80,3 +80,16 @@ controlAtParent nameEq root child source fiber found Root equation = RootControl
 controlAtParent nameEq root child source fiber found (ChildOf parent) equation =
   controlAtDifference nameEq root child parent source fiber found equation
     (decEq @{nameEq} parent root) Refl
+
+||| The ACTUAL fully indexed source lookup is observed once, retaining its
+||| equation even on a missing binding. Missing is never declared admissible.
+public export
+controlAtLookup : {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (root, child : name) ->
+  (source : SystemState name key value world error) ->
+  (found : Maybe (Fiber name key value world error)) ->
+  (0 equation : lookupFiber {name} {key} {value} {world} {error} @{nameEq} child (registry source) = found) ->
+  ControlClass nameEq root child source
+controlAtLookup nameEq root child source Nothing equation = MissingControl equation
+controlAtLookup nameEq root child source (Just fiber) equation =
+  controlAtParent nameEq root child source fiber equation (fiberParent fiber) Refl
