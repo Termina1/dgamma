@@ -139,3 +139,29 @@ export
   {trace : Transitions first finalState} ->
   ActorLifecycleOnly selected trace -> ActorLifecycleOnlyAttached nameEq selected trace
 oldIntoAttached nameEq old = extendedIntoAttached (actorLifecycleOnlyIntoExtended nameEq old)
+
+||| CP3:1824 via Extended:94, with only body grammar changed to Attached.
+||| Physical body and endpoint include the full trailing bundle. All installed,
+||| decomposition, no-other-episode and final-active obligations are retained.
+public export
+record LocatedOpenEpisodeBlockAttached
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (keyEq : DecEq key) (selected : name)
+  {initial, finalState : SystemState name key value world error}
+  (global : Transitions initial finalState) where
+  constructor MkLocatedOpenEpisodeBlockAttached
+  attachedPreStart : SystemState name key value world error
+  attachedStart : SystemState name key value world error
+  attachedEnd : SystemState name key value world error
+  attachedBefore : Transitions initial attachedPreStart
+  attachedOpening : BeginStep nameEq keyEq selected attachedPreStart attachedStart
+  attachedBody : Transitions attachedStart attachedEnd
+  0 attachedInstalled : InstalledTrace name key world error value nameEq keyEq selected attachedBody
+  0 attachedActorOnly : ActorLifecycleOnlyAttached nameEq selected attachedBody
+  attachedAfter : Transitions attachedEnd finalState
+  0 attachedNoEarlier : NoLifecycleBy selected attachedBefore
+  0 attachedNoLater : NoLifecycleBy selected attachedAfter
+  0 attachedActiveAtFinal : supportedActiveAt @{nameEq} selected finalState = True
+  0 attachedDecomposition : appendTransitions attachedBefore
+    (MoreTransitions (beginTransition attachedOpening)
+      (appendTransitions attachedBody attachedAfter)) = global
