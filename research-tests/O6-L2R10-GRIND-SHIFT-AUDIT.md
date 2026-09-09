@@ -17,3 +17,21 @@ L2R9 independent review ACCEPT-WITH-NOTES (no blocker) received. Exact D4 generi
 14 retained declarations. A2 omega + old native fixture equations CLOSED; A7 general single-key releaseScanAgrees CLOSED. A8–A13 executable source-aware phase scanner checks the actual old maximum anchor, membership in omega earlier-release data of an authentic earlier key seed, and strict preceding lifecycle within its contiguous actor-core word. A14 phaseScanFixtureObservations produces BOTH native Bool/equation/True observations. General sound decoding to ForcedRootPhase, maximal located seed/core decomposition and the scanCatalogBirth linkage are OPEN; produceForcedRootPhases NOT implemented/claimed, neither native fixture is a phase certificate. No extra slot/self-extension.
 
 A13 passed3/3: first two attempts transcribed Data.List.index' incorrectly (Nat then wrong Fin API); corrected to verified head'(drop ordinal events). No conversion/proof-budget failure. One early commit-runner call on A13-1 was rejected at its first PASS guard BEFORE staging; no commit occurred. All retained declarations have guarded fresh source receipts; failed sources/logs retained under /tmp/dgamma-l2r10. Proceed to B.
+
+## B final boundary — cap16
+
+ALL16 declarations passed FIRST attempt. B16 required93.14s, sampled713872KiB; it was allowed to finish, no interruption. retirementBeginPlanAdapter c6ee9eb9 rewrites the native resolver at the original ForeignBeginPlanView, after exposing ownerShape; retirementUpdateSnapshot proves ordered update commutation. replayRetirementBegin 982aec58 is original-edge-only alternate checked edge + retired-child snapshot.
+
+retirementTargetAtFlag/retirementTargetSame consume the actual Bool/equation and frame resolver equality. The remaining/capability/outcome/yield/target helpers each eliminate ONE explicitly observed value; the native Calculus committed-value retirement theorem supplies capability invariance. retirementAdvanceNative 862cab09 proves the stronger ALL-TAG LAdvance observation, including Iter/Finish/Raise/Divert/undefined. replayRetirementAdvance 7d53bc29 constructs the actual alternate checked edge/snapshot for any original successful tag. replayRetirementLifecycle inhabits the exact retained NativeLifecycleRetirementRole three-role contract. No alternate edge, unchanged target or successful iterator outcome is an input to the final producers.
+
+| role | checked status |
+|---|---|
+| LBegin | general original-edge-only producer, canonical early-retirement source |
+| LAdvance / LIter | general original-edge-only producer |
+| LAdvance / LFinish (empty and yielded) | general original-edge-only producer |
+| LAdvance / LRaise and LDivert | also covered by all-tag producer |
+| standalone LDivert / LLeave / LUnload | OPEN |
+| full universally quantified single | OPEN: missing standalone roles, actor/frame production, arbitrary snapshot-source transport assembly |
+| whole old L2R2 ForeignReplay / R191 endpoint | NOT RUN / OPEN |
+
+Supervisor CONFIRMED B cap16 and exact callback fidelity after inspection: L2R2 single quantifies ALL8 Actions/all tags, not just the three requested roles plus orchestration. Never weaken it or supply a role oracle. R191's actual word uses only Begin/Advance(Iter,Finish)/Insert/Retire/Remove; a NEW observed-action-inventory restricted replay is a legitimate FUTURE target, not silently the old callback. No slots remain for that extension. Main tree/lock/window untouched.

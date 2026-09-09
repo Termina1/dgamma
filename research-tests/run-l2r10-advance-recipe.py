@@ -73,6 +73,129 @@ export
  for pat,tag,life in [('[]','LFinishTag',f'(Active {nextAcc} view)'),('(next :: later)','LIterTag',f'(Reloading (next :: later) {nextAcc} view)')]:
   text+=f'{name} {imp}\n  {args}\n  step {pat} accumulator view lifeEquation capability capEquation localAfter undo outcomeEquation matchEquation =\n'
   text+=rewrites(cap=True,outcome=True,match=True)+snapshot(tag,f'(setFiberRuntime actorFiber (localTable localAfter) {life})','(localWorld localAfter)')
+elif unit=='B7':
+ name='advanceYieldAtMatch'
+ text='''\n||| Consume the explicitly observed native target Bool after a successful
+||| yield. False is LDivert; True delegates to the checked remaining-list step.
+export
+0 advanceYieldAtMatch :
+'''+base+stepArgs+capArgs+yieldArgs+f'  (seen : Bool) -> (0 matchEquation : {matchNative} = seen) ->\n'+result
+ text+=f'{name} {imp}\n  {args}\n  step rest accumulator view lifeEquation capability capEquation localAfter undo outcomeEquation False matchEquation =\n'
+ text+=rewrites(cap=True,outcome=True,match=True)+snapshot('LDivertTag',f'(setFiberRuntime actorFiber (localTable localAfter) (Unloading {nextAcc} view Nothing))','(localWorld localAfter)')
+ text+=f'''{name} {imp}
+  {args}
+  step rest accumulator view lifeEquation capability capEquation localAfter undo outcomeEquation True matchEquation =
+  advanceYieldAtRest {args} step rest accumulator view lifeEquation capability capEquation localAfter undo outcomeEquation matchEquation
+'''
+elif unit=='B8':
+ name='advanceEmptyAtMatch'
+ text='''\n||| Empty-program native Finish/Divert observation, with the Bool explicitly
+||| supplied at its own equation. No iterator outcome or late edge is assumed.
+export
+0 advanceEmptyAtMatch :
+'''+base+f'''  (accumulator : {local} -> {local}) -> (view : View name {deps}) ->
+  (0 lifeEquation : fiberLifecycle actorFiber = Reloading [] accumulator view) ->
+  (seen : Bool) -> (0 matchEquation : {matchNative} = seen) ->
+'''+result
+ for seen,tag,life in [('False','LDivertTag','(Unloading accumulator view Nothing)'),('True','LFinishTag','(Active accumulator view)')]:
+  text+=f'{name} {imp}\n  {args}\n  accumulator view lifeEquation {seen} matchEquation =\n'
+  text+=rewrites(match=True)+snapshot(tag,f'(setFiberLifecycle actorFiber {life})')
+elif unit=='B9':
+ name='advanceAtYield'
+ text='''\n||| Split ONLY the already observed yielded pair, then observe the native
+||| target-match Bool at its actual call site. No inferred local view.
+export
+0 advanceAtYield :
+'''+base+stepArgs+capArgs+f'''  (yielded : ({local}, {local} -> {local})) ->
+  (0 outcomeEquation : runStepEffect step capability {oldLocal} = Right yielded) ->
+'''+result
+ text+=f'''{name} {imp}
+  {args}
+  step rest accumulator view lifeEquation capability capEquation (localAfter, undo) outcomeEquation =
+  advanceYieldAtMatch {args}
+    step rest accumulator view lifeEquation capability capEquation localAfter undo outcomeEquation
+    ({matchNative}) Refl
+'''
+elif unit=='B10':
+ name='advanceAtOutcome'
+ text='''\n||| Eliminate the observed native iterator Either once. Failure reproduces
+||| LRaise; success uses a separate yielded-pair consumer.
+export
+0 advanceAtOutcome :
+'''+base+stepArgs+capArgs+f'''  (outcome : Either error ({local}, {local} -> {local})) ->
+  (0 outcomeEquation : runStepEffect step capability {oldLocal} = outcome) ->
+'''+result
+ text+=f'{name} {imp}\n  {args}\n  step rest accumulator view lifeEquation capability capEquation (Left failure) outcomeEquation =\n'
+ text+=rewrites(cap=True,outcome=True)+snapshot('LRaiseTag','(setFiberLifecycle actorFiber (Unloading accumulator view (Just failure)))')
+ text+=f'''{name} {imp}
+  {args}
+  step rest accumulator view lifeEquation capability capEquation (Right yielded) outcomeEquation =
+  advanceAtYield {args}
+    step rest accumulator view lifeEquation capability capEquation yielded outcomeEquation
+'''
+elif unit=='B11':
+ name='advanceAtCapability'
+ text='''\n||| Observe the native committed-capability Maybe, whose retirement
+||| invariance is the existing Calculus theorem. Nothing remains undefined.
+export
+0 advanceAtCapability :
+'''+base+stepArgs+f'''  (capability : Maybe (DepValues key value {deps})) ->
+  (0 capEquation : {capNative} = capability) ->
+'''+result
+ text+=f'{name} {imp}\n  {args}\n  step rest accumulator view lifeEquation Nothing capEquation =\n'+rewrites(cap=True)+'  Refl\n'
+ text+=f'''{name} {imp}
+  {args}
+  step rest accumulator view lifeEquation (Just capability) capEquation =
+  advanceAtOutcome {args}
+    step rest accumulator view lifeEquation capability capEquation
+    (runStepEffect step capability {oldLocal}) Refl
+'''
+elif unit=='B12':
+ name='advanceAtRemaining'
+ text='''\n||| Eliminate only the actual reloading program list. Library resolver and
+||| target Bool are observed HERE with equations, never reconstructed views.
+export
+0 advanceAtRemaining :
+'''+base+f'''  (remaining : List {stepType}) ->
+  (accumulator : {local} -> {local}) -> (view : View name {deps}) ->
+  (0 lifeEquation : fiberLifecycle actorFiber = Reloading remaining accumulator view) ->
+'''+result
+ text+=f'''{name} {imp}
+  {args} [] accumulator view lifeEquation =
+  advanceEmptyAtMatch {args} accumulator view lifeEquation
+    ({matchNative}) Refl
+{name} {imp}
+  {args} (step :: rest) accumulator view lifeEquation =
+  advanceAtCapability {args} step rest accumulator view lifeEquation
+    ({capNative}) Refl
+'''
+elif unit=='B13':
+ name='advanceAtLifecycle'
+ text='''\n||| Single native lifecycle elimination. Non-reloading actions remain
+||| undefined on BOTH sides; reloading is handled by the observed pipeline.
+export
+0 advanceAtLifecycle :
+'''+base+f'''  (lifecycle : Lifecycle key value world error name {deps} {provision}) ->
+  (0 lifeEquation : fiberLifecycle actorFiber = lifecycle) ->
+'''+result
+ for pat in ['(Inactive outcome)','(Active accumulator view)','(Unloading accumulator view outcome)']:
+  text+=f'{name} {imp}\n  {args} {pat} lifeEquation =\n'+rewrites()+'  Refl\n'
+ text+=f'''{name} {imp}
+  {args} (Reloading remaining accumulator view) lifeEquation =
+  advanceAtRemaining {args} remaining accumulator view lifeEquation
+'''
+elif unit=='B14':
+ name='retirementAdvanceNative'
+ text='''\n||| GENERAL all-tag native LAdvance observation producer from the ACTUAL
+||| frame. Iter, Finish, Raise, Divert and undefined results are all covered.
+||| No iterator outcome, target truth, or alternate edge is a premise.
+export
+0 retirementAdvanceNative :
+'''+base+result
+ text+=f'''{name} {imp}
+  {args} =
+  advanceAtLifecycle {args} (fiberLifecycle actorFiber) Refl
+'''
 else:
  raise SystemExit('Unknown recipe unit')
 s=p.read_text()
