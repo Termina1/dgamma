@@ -2,11 +2,11 @@
 """Adapted from run-r192-check.py: detached lane2-only seeded single check.
 Uses absolute compiler arguments; never changes source contents or deletes build
  data. Performs target-only mtime touch; authorized C4 two-file bundles are the exception.
-Usage: python3 -I run-l2r2-check.py UNIT PATH [DIAGNOSTIC [SYMBOL]].
+Usage: python3 -I run-l2r3-check.py UNIT PATH [DIAGNOSTIC [SYMBOL]].
 """
 import datetime, hashlib, json, os, pathlib, re, signal, subprocess, sys, time
 ROOT = pathlib.Path('/Users/vyacheslavshebanov/Work/dgamma-lane2')
-OUT = pathlib.Path('/tmp/dgamma-l2r2')
+OUT = pathlib.Path('/tmp/dgamma-l2r3')
 LOCK = pathlib.Path('/tmp/dgamma-heavy.lock')
 unit, path = sys.argv[1:3]
 diagnostic = sys.argv[3] if len(sys.argv)>3 else None
@@ -23,15 +23,12 @@ plan = json.loads((OUT/'shift.json').read_text())
 cutoff = plan['validationCutoff'] if re.fullmatch(r'V\d+',unit) else plan['attemptCutoff']
 assert datetime.datetime.now(datetime.timezone.utc).isoformat() < cutoff
 snapshot = target.read_bytes()
-bundle=[]
-if unit in {'C4-2','C4-3'}:
- extra=ROOT/'research-tests/O6-L2R2-Sources/DGamma/L2R2SmallStates.idr'
- bundle=[(extra,extra.read_bytes())]
- assert path=='research-tests/O6-L2R2-Sources/DGamma/L2R2SmallExecution.idr'
+bundle=[]  # A new bundle requires a separately gated runner change.
 
 def declarations(data):
  text=data.decode();return set(re.findall(r'^(?:[01] )?([A-Za-z_]\w*)\s*:',text,re.M)+re.findall(r'^(?:record|data)\s+([A-Za-z_]\w*)',text,re.M))
-if re.fullmatch(r'[BC]\d+-\d+',unit):
+if re.fullmatch(r'[ABC]\d+-\d+',unit):
+ assert int(unit.split('-')[0][1:]) <= {'A':24,'B':12,'C':14}[unit[0]]
  old=subprocess.run(['git','show','HEAD:'+path],cwd=ROOT,capture_output=True)
  assert len(declarations(snapshot)-declarations(old.stdout if old.returncode==0 else b''))==1
  for extra,data in bundle:
@@ -51,7 +48,7 @@ def compiler_processes():
  return result
 initial_procs=compiler_processes()
 assert not any(p['classification']=='lane2' for p in initial_procs),'Own compiler already running'
-heavy=os.environ.get('L2R2_HEAVY')=='1' or any(k in path for k in ['CanonicalSort','R8FullPipeline','ReachedBlocks','AllFour','LocalDiamond','L2R2AvailabilityCollision'])
+heavy=os.environ.get('L2R3_HEAVY')=='1' or any(k in path for k in ['CanonicalSort','R8FullPipeline','ReachedBlocks','AllFour','LocalDiamond','L2R3AvailabilityCollision'])
 assert 'LocalDiamond' not in path,'LocalDiamond needs prior supervisor gate'
 lock_events=[];locked=False
 if heavy:
@@ -74,10 +71,11 @@ if heavy:
    time.sleep(5)
 command=['idris2','--source-dir',str(ROOT/'src'),'--source-dir',str(ROOT/'research')]
 if path.startswith('research-tests/'):command+=['--source-dir',str(ROOT/'research-tests')]
-command+=['--source-dir',str(ROOT/'research-tests/O6-L2R2-Sources'),'--check',str(target)]
+source_root = target.parent.parent
+command+=['--source-dir',str(source_root),'--check',str(target)]
 old_mtime=target.stat().st_mtime_ns
 target.touch()  # Supervisor-approved TARGET-only fresh validation exception.
-touch_record=dict(path=str(target),oldMtimeNs=old_mtime,newMtimeNs=target.stat().st_mtime_ns,authority='L2R2 task BUILD SEED; target only, dependency rebuilds acknowledged')
+touch_record=dict(path=str(target),oldMtimeNs=old_mtime,newMtimeNs=target.stat().st_mtime_ns,authority='L2R3 task BUILD SEED; target only, dependency rebuilds acknowledged')
 (OUT/(unit+'.source')).write_bytes(snapshot)
 bundle_records=[]
 for i,(extra,data) in enumerate(bundle):
