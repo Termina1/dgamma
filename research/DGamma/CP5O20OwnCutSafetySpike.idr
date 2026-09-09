@@ -20,6 +20,10 @@ import DGamma.CP5O20InversionChildSafetySpike
 import DGamma.CP5O20ReferenceDescentSpike
 import DGamma.CP5O20SafeBlockSelectionSpike
 import DGamma.CP5O20SelectionCompletenessSpike
+import DGamma.CP5O20LinearExtensionSpike
+import DGamma.CP5O20FiniteInversionSpike
+import DGamma.CP5O20OperationalProgressSpike
+import DGamma.CP5O20OperationalDescentSpike
 import DGamma.CP5RankedEarlyApplicabilitySpike
 import Data.List.Elem
 import Data.Maybe
@@ -319,4 +323,41 @@ o20ReachedInversionOwnCutSafe {reachedOrder} {swappedOrder} nameEq keyEq protoco
       (fst (o20ReachedInversionChildSafety nameEq keyEq protocol original capital unique originalReference reachedReference replayed operational blocks swap reverseGoal))
       (snd (o20ReachedInversionChildSafety nameEq keyEq protocol original capital unique originalReference reachedReference replayed operational blocks swap reverseGoal))
       (o20ReachedInversionEarlierBegin nameEq keyEq protocol original capital unique originalReference reachedReference replayed operational blocks premises swap reverseGoal empty)
+      empty
+
+||| An enumerated inversion cannot be missed by the WHOLE native safe search,
+||| conditionally only on its own literal ZeroGapPending. E28/E31 owns packet
+||| membership; no premise supplies any safe-check success or safety record.
+export
+0 o20ReachedEnumeratedSelectionPresent :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {initial, originalFinal, reachedFinal : SystemState name key value world error} ->
+  (original : Transitions initial originalFinal) ->
+  (capital : IndependentCanonicalSchedule name key world error value protocol nameEq keyEq original) ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq original ->
+  {reachedOrder, goalOrder : List name} ->
+  O20SupportedReferenceOrders name key world error value nameEq keyEq originalFinal (supportOrder (canonicalSchedule capital)) goalOrder ->
+  O20SupportedReferenceOrders name key world error value nameEq keyEq originalFinal reachedOrder goalOrder ->
+  (goalUnique : UniqueKeys goalOrder) ->
+  (replayed : Transitions initial reachedFinal) ->
+  {certificate : CertifiedActorPermutation name (supportOrder (canonicalSchedule capital)) reachedOrder} ->
+  (operational : OperationalActorPermutation name key world error value protocol nameEq keyEq certificate
+    (canonicalTrace (canonicalSchedule capital)) (canonicalActorBlockDecomposition capital) (canonicalReplayPremises capital) replayed) ->
+  (blocks : ActorBlockDecomposition name key world error value nameEq keyEq reachedOrder replayed) ->
+  (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq replayed) ->
+  (replayedUnique : UniqueRawNameInsertions name key world error value nameEq keyEq replayed) ->
+  {left, right : name} ->
+  (packet : O20EnumeratedPair name reachedOrder (o20AdjacentCandidates nameEq reachedOrder [] reachedOrder Refl) left right) ->
+  BeforeIn (actorRight (enumeratedSwap packet)) (actorLeft (enumeratedSwap packet)) goalOrder ->
+  ZeroGapPending (betweenBlocks (decomposedBlocksFollowOrder blocks (actorLeft (enumeratedSwap packet)) (actorRight (enumeratedSwap packet))
+    (fst (o20ChosenActorFacts (enumeratedSwap packet))) (fst (snd (o20ChosenActorFacts (enumeratedSwap packet)))) (snd (snd (o20ChosenActorFacts (enumeratedSwap packet)))))) ->
+  (isJust (o20SelectOrientedSafeBlocks nameEq keyEq protocol reachedOrder goalOrder goalUnique replayed blocks premises replayedUnique) = True)
+o20ReachedEnumeratedSelectionPresent {reachedOrder} {goalOrder} nameEq keyEq protocol original capital unique originalReference reachedReference goalUnique
+  replayed operational blocks premises replayedUnique packet reverseGoal empty =
+    o20SelectEnumeratedComplete nameEq keyEq protocol reachedOrder goalOrder goalUnique replayed blocks premises replayedUnique packet reverseGoal
+      (fst (o20ReachedInversionChildSafety nameEq keyEq protocol original capital unique originalReference reachedReference replayed operational blocks (enumeratedSwap packet) reverseGoal))
+      (snd (o20ReachedInversionChildSafety nameEq keyEq protocol original capital unique originalReference reachedReference replayed operational blocks (enumeratedSwap packet) reverseGoal))
+      (o20ReachedInversionEarlierBegin nameEq keyEq protocol original capital unique originalReference reachedReference replayed operational blocks premises (enumeratedSwap packet) reverseGoal empty)
       empty
