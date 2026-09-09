@@ -104,3 +104,24 @@ record O20AttachedGeneratedBirth
   0 attachedPhysicalEquation :
     (generationForward (o20ReplayOrdinalBijection (replayGenerationRenaming leftReplay) original (replayGenerationRenaming rightReplay))
       (registrationGeneration leftBirth) = registrationGeneration attachedRightBirth)
+
+||| Eliminate one authentic opposite-birth packet and construct both equations
+||| simultaneously, using that SAME occurrence in the two dependent fields.
+export
+0 o20AttachGeneratedBirthPacket :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {leftFirst, leftFinal, rightFirst, rightFinal, leftNowFirst, leftNowFinal, rightNowFirst, rightNowFinal : SystemState name key value world error} ->
+  {left : Transitions leftFirst leftFinal} -> {right : Transitions rightFirst rightFinal} ->
+  {leftNow : Transitions leftNowFirst leftNowFinal} -> {rightNow : Transitions rightNowFirst rightNowFinal} ->
+  (leftReplay : ActionRegistrationReplayCorrespondence name key world error value left leftNow) ->
+  (rightReplay : ActionRegistrationReplayCorrespondence name key world error value right rightNow) ->
+  (original : RegistrationGenerationBijection name) -> (renaming : NameBijection name) ->
+  (child, parent : name) -> (component : Component key value world error) ->
+  (leftBirth : LocatedGeneratedRegistration child parent component leftNow) ->
+  (rightBirth : LocatedGeneratedRegistration (renameForward renaming child) (renameForward renaming parent) component rightNow **
+    (generationForward original (registrationGeneration (replayGeneratedRegistrationOrigin leftReplay leftBirth)) =
+      registrationGeneration (replayGeneratedRegistrationOrigin rightReplay rightBirth))) ->
+  O20AttachedGeneratedBirth name key world error value leftReplay rightReplay original renaming child parent component leftBirth
+o20AttachGeneratedBirthPacket leftReplay rightReplay original renaming child parent component leftBirth (rightBirth ** matched) =
+  MkO20AttachedGeneratedBirth rightBirth matched
+    (o20GeneratedOrdinalsAttached leftReplay rightReplay original leftBirth rightBirth matched)
