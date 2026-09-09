@@ -163,3 +163,19 @@ o20CanonicalObservationAbsent observation originalAbsent =
   trans (canonicalFiberObserved observation)
     (o20DispositionPreservesAbsence (canonicalControlDisposition observation)
       (trans (sym (originalFiberObserved observation)) originalAbsent))
+
+||| Actual ORIGINAL absence survives ANY supplied canonical endpoint relation.
+||| The all-name observation and its branch are produced, not input. No
+||| canonical absence, membership, supportedness or vestigial packet is assumed.
+export
+0 o20CanonicalEndpointPreservesAbsence :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (originalFinal, canonicalFinal : SystemState name key value world error) ->
+  (endpoint : CanonicalEndpointRelation name key world error value nameEq keyEq originalFinal canonicalFinal) ->
+  (selected : name) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected (registry originalFinal) = Nothing) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected (registry canonicalFinal) = Nothing)
+o20CanonicalEndpointPreservesAbsence nameEq keyEq originalFinal canonicalFinal endpoint selected absent =
+  o20CanonicalObservationAbsent
+    (o20ObserveCanonicalControls nameEq keyEq originalFinal canonicalFinal endpoint selected) absent
