@@ -1,0 +1,1344 @@
+{
+  "base": "769d332dd520c494fff7ffbf2d4e8c9f43c72e7d",
+  "cp3Blob": "2c697e532e83989de8591fa6a4378747c6a501c0",
+  "status": "READ-ONLY statement inventory, not compiler evidence or exhaustive transitive closure",
+  "method": "top-level record/data statement or function signature lexical reference; body-only references excluded",
+  "scope": "lane worktree snapshot only; concurrent main/R196 not read",
+  "count": 118,
+  "declarations": [
+    {
+      "path": "research/DGamma/CP5ActorLifecycleOnlyExtended.idr",
+      "declaration": "actorLifecycleOnlyIntoExtended",
+      "line": 70,
+      "directCanonicalNames": [
+        "ActorLifecycleOnly"
+      ],
+      "statementSHA256": "481b3f8993fe7f6be8461edd61ee7bfa0c335673a017dda41f024b4846621f01",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+      "declaration": "CanonicalSupportTransport",
+      "line": 93,
+      "directCanonicalNames": [
+        "CanonicalInputPlacement"
+      ],
+      "statementSHA256": "2218e20136098f311176ca2d4eed4411c5f46983bfc7c8397d2a0893a1037dab",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+      "declaration": "SortedClosingFreeTrace",
+      "line": 118,
+      "directCanonicalNames": [
+        "CanonicalInputPlacement",
+        "LocatedOpenEpisodeBlock",
+        "BlockBefore"
+      ],
+      "statementSHA256": "bf012ea0a17c8621e0d66c33adc76918e32140bad3f02ab282df09258f3f9df4",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+      "declaration": "canonicalSortedIdentity",
+      "line": 1263,
+      "directCanonicalNames": [
+        "CanonicalInputPlacement",
+        "LocatedOpenEpisodeBlock",
+        "BlockBefore"
+      ],
+      "statementSHA256": "fd26815b5e6e2562a8c684c53312799b447248584ccb3d186cc048983f79c811",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+      "declaration": "CanonicalWorkActorPrefix",
+      "line": 2019,
+      "directCanonicalNames": [
+        "ActorLifecycleOnly"
+      ],
+      "statementSHA256": "b0bff67c88cd5ba7a23196f74923d4b3c00d63a01e1f380ca77d411a411b09a6",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+      "declaration": "canonicalWorkBlockFromPrefix",
+      "line": 2110,
+      "directCanonicalNames": [
+        "LocatedOpenEpisodeBlock"
+      ],
+      "statementSHA256": "af24cd7f1c56c9ea0576d37d8feb0c948393a5f790dfdb9689257f71522a210b",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+      "declaration": "CanonicalWorkCompletedBlock",
+      "line": 2185,
+      "directCanonicalNames": [
+        "LocatedOpenEpisodeBlock"
+      ],
+      "statementSHA256": "cbc0db012c4da532ad0e0b7e568dac7ec68ebc4bdf1226d4512742f184e625a0",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+      "declaration": "canonicalChildPlacementFromForward",
+      "line": 4178,
+      "directCanonicalNames": [
+        "CanonicalInputPlacement"
+      ],
+      "statementSHA256": "6b3656b82a91a5effb2711cee598687fbae61d08bdec3569d49ca915b1cbeebf",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+      "declaration": "canonicalChildPlacementToOriginal",
+      "line": 4211,
+      "directCanonicalNames": [
+        "CanonicalInputPlacement"
+      ],
+      "statementSHA256": "e19b5385ef6b6a63ca93584fce6233d49931db32d106e1bc0b93197dafd9fa6f",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+      "declaration": "canonicalInputPlacementToOriginal",
+      "line": 4246,
+      "directCanonicalNames": [
+        "CanonicalInputPlacement"
+      ],
+      "statementSHA256": "ba1fc273c58e3aa33af1c5f56aa137253fab359ad8b6d4c1a2cf1170b01e66e1",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+      "declaration": "producerCanonicalSchedule",
+      "line": 4773,
+      "directCanonicalNames": [
+        "CanonicalSchedule"
+      ],
+      "statementSHA256": "7089967f68bf395beed00255f233f1829159b9f1a6e153cf7c72a4414abcf931",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+      "declaration": "IndependentCanonicalSchedule",
+      "line": 4811,
+      "directCanonicalNames": [
+        "CanonicalSchedule"
+      ],
+      "statementSHA256": "3105b4f07fa8dcfc897847e87ee6322883f391adab73f2b4b28b4aa774bb9361",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+      "declaration": "canonicalSchedule",
+      "line": 4848,
+      "directCanonicalNames": [
+        "CanonicalSchedule"
+      ],
+      "statementSHA256": "4b2b1e4b122db10361475d122a555416daa7f077f6a4f73ad1dfd093161b7d5e",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
+      "declaration": "canonicalSupportOrderForwardFromTruth",
+      "line": 152,
+      "directCanonicalNames": [
+        "CanonicalSchedule"
+      ],
+      "statementSHA256": "fa221f5eaa0931efde6c2bf464e9a11fa43b0df5e937b30eeeb12bd914c61400",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
+      "declaration": "canonicalSupportOrderBackwardFromTruth",
+      "line": 179,
+      "directCanonicalNames": [
+        "CanonicalSchedule"
+      ],
+      "statementSHA256": "474dfe9ab11698154386a7ea2006b403c6e57e702e05d5d5decaa943a2f8ad48",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
+      "declaration": "canonicalSupportOrdersFromTruth",
+      "line": 207,
+      "directCanonicalNames": [
+        "CanonicalSchedule"
+      ],
+      "statementSHA256": "a267f1838bedf752bfaf821848afb977794305bd9f33905fe835495119e52fcb",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
+      "declaration": "confluenceResultFromCanonicalCapital",
+      "line": 608,
+      "directCanonicalNames": [
+        "CanonicalSchedule"
+      ],
+      "statementSHA256": "c79fba44651f2542c139c58bf7f0af312de5d2a1c23330d78c6e1154fbc7fe9e",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "research/DGamma/CP5O19ActualCartesianSpike.idr",
+      "declaration": "o19ActualBlockSpines",
+      "line": 69,
+      "directCanonicalNames": [
+        "LocatedOpenEpisodeBlock",
+        "BlockBefore"
+      ],
+      "statementSHA256": "e47eaa53bb99cd6564e9f27b241fa13e20e7e752107bf43edbda1a79a3f1a383",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "research/DGamma/CP5O19ActualCartesianSpike.idr",
+      "declaration": "o19AdjacentBlockStartCount",
+      "line": 284,
+      "directCanonicalNames": [
+        "LocatedOpenEpisodeBlock",
+        "BlockBefore"
+      ],
+      "statementSHA256": "6590c8116cebfb7bdce0c0c0fc3820287500a3cd80486560d6d8f5b3d96693e9",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "research/DGamma/CP5O19OrdinalPlanSpike.idr",
+      "declaration": "o19LocalizeGlobalPlan",
+      "line": 210,
+      "directCanonicalNames": [
+        "LocatedOpenEpisodeBlock"
+      ],
+      "statementSHA256": "72a696dafdc8a6ff9a1762b8f14c0dcef33db3ec1d8fe9209d2ad611cc8f04f2",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "research/DGamma/CP5O19OriginalBlockClassSpike.idr",
+      "declaration": "o19OwnedSafeWord",
+      "line": 48,
+      "directCanonicalNames": [
+        "ActorLifecycleOnly"
+      ],
+      "statementSHA256": "2fbcd4a9e7edce811e94d8f4ad0c47e2568ad0a59684bd09fa2e8cafcf5f84ca",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "research/DGamma/CP5O19OriginalBlockClassSpike.idr",
+      "declaration": "o19OriginalBlockWord",
+      "line": 73,
+      "directCanonicalNames": [
+        "LocatedOpenEpisodeBlock"
+      ],
+      "statementSHA256": "bd2e797cd106c2693f025b4f50fadf63444a1191a74ad907ef7d8840c8580c2a",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "research/DGamma/CP5O19PaperBranchCompletenessSpike.idr",
+      "declaration": "o19OriginalBlockNoUnload",
+      "line": 207,
+      "directCanonicalNames": [
+        "LocatedOpenEpisodeBlock"
+      ],
+      "statementSHA256": "6d521b9f077f5dcff4ecb78c41b5633f1717f1d296378451a677d232b321d0e6",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "research/DGamma/CP5O19PaperBranchCompletenessSpike.idr",
+      "declaration": "o19OriginalPaperBranch",
+      "line": 304,
+      "directCanonicalNames": [
+        "LocatedOpenEpisodeBlock"
+      ],
+      "statementSHA256": "6b5c9e6597c2d623c7c4f127968afb36a9e20c172ffd1ad0503edeed6e512349",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "research/DGamma/CP5O19ReachedBlocksSpike.idr",
+      "declaration": "o19ActorOnlyPrependObserved",
+      "line": 356,
+      "directCanonicalNames": [
+        "ActorLifecycleOnly"
+      ],
+      "statementSHA256": "8b2efd86265ef347552a8faa1c98c977ccf8d67a115bee3d3e67343d2c7cac4b",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "research/DGamma/CP5O19ReachedBlocksSpike.idr",
+      "declaration": "o19ActorOnlyFromWord",
+      "line": 372,
+      "directCanonicalNames": [
+        "ActorLifecycleOnly"
+      ],
+      "statementSHA256": "a481d541078ef3f5383c668920ba55419bf5eae7fc12513891cfacbe37d3d947",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "research/DGamma/CP5O19ReachedBlocksSpike.idr",
+      "declaration": "o19OrderedBeforeWord",
+      "line": 489,
+      "directCanonicalNames": [
+        "LocatedOpenEpisodeBlock",
+        "BlockBefore"
+      ],
+      "statementSHA256": "c6cd06db3f6522aeb5858f247023f05d29f10060873d10ce3e0b1aed49fb093a",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "research/DGamma/CP5O19ReachedBlocksSpike.idr",
+      "declaration": "o19OrderedAfterWord",
+      "line": 519,
+      "directCanonicalNames": [
+        "LocatedOpenEpisodeBlock",
+        "BlockBefore"
+      ],
+      "statementSHA256": "56db6c8a7644cbc1ffd8b47e06828a16c9439b032d2c9d1d262695512c76361b",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "research/DGamma/CP5O19ReachedBlocksSpike.idr",
+      "declaration": "o19OrderedOuterNoLifecycle",
+      "line": 553,
+      "directCanonicalNames": [
+        "LocatedOpenEpisodeBlock",
+        "BlockBefore"
+      ],
+      "statementSHA256": "4fa93752d0be315594f995ddd5b4d78a411a75d7b3ff8b45815f6f306f8eeabc",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "research/DGamma/CP5O19ReachedBlocksSpike.idr",
+      "declaration": "o19ActualMovedBodiesActorOnly",
+      "line": 623,
+      "directCanonicalNames": [
+        "ActorLifecycleOnly"
+      ],
+      "statementSHA256": "446cded279571d6715901931cf2357499386f6b59c5a68fdd64b5a17a82c0ad0",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "research/DGamma/CP5O19ReachedBlocksSpike.idr",
+      "declaration": "o19ActualRightLocatedBlock",
+      "line": 646,
+      "directCanonicalNames": [
+        "LocatedOpenEpisodeBlock"
+      ],
+      "statementSHA256": "0f7d4c8aede885892dada37a57b0f2cc15ffa0ec2d8101d13e520cea1c61cc99",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "research/DGamma/CP5O19ReachedBlocksSpike.idr",
+      "declaration": "o19ActualLeftLocatedBlock",
+      "line": 669,
+      "directCanonicalNames": [
+        "LocatedOpenEpisodeBlock"
+      ],
+      "statementSHA256": "1f45b8af1569bd706337381ff1c20ddef34c3326c90ed7f8b08ef8346ee11932",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "research/DGamma/CP5O19ReachedBlocksSpike.idr",
+      "declaration": "o19ActualMovedBlocksOrdered",
+      "line": 693,
+      "directCanonicalNames": [
+        "BlockBefore"
+      ],
+      "statementSHA256": "3396ea4b4bed1230ce99601c648bd205c71a912af2fbf9ca91a8a3a0894f174a",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "research/DGamma/CP5O19ReachedBlocksSpike.idr",
+      "declaration": "o19ActorOnlySameWord",
+      "line": 714,
+      "directCanonicalNames": [
+        "ActorLifecycleOnly"
+      ],
+      "statementSHA256": "37733c32502b32804e463ba76245422b228646fff6f1b13db611299045e5ec53",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "research/DGamma/CP5O19ReachedBlocksSpike.idr",
+      "declaration": "o19LocatedFromActualSegments",
+      "line": 738,
+      "directCanonicalNames": [
+        "LocatedOpenEpisodeBlock"
+      ],
+      "statementSHA256": "46d9f5f269451560f7ed5c0aee7ca4aa8439c86179aecfb4d128d6c4108275af",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "research/DGamma/CP5O19ReachedBlocksSpike.idr",
+      "declaration": "o19LocatedFromWordCuts",
+      "line": 767,
+      "directCanonicalNames": [
+        "LocatedOpenEpisodeBlock"
+      ],
+      "statementSHA256": "c8e50a83d56f9ea48f6a7437ce53ff03c602ed93f232eb675b689c80512665c5",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "research/DGamma/CP5O19ReachedBlocksSpike.idr",
+      "declaration": "o19LocatedAfterFirstCut",
+      "line": 803,
+      "directCanonicalNames": [
+        "LocatedOpenEpisodeBlock"
+      ],
+      "statementSHA256": "2759d4c1752ee3edfbcaab7aa04ae4a4987bc6da4c77ec9c758230a4cd8dde87",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "research/DGamma/CP5O19ReachedBlocksSpike.idr",
+      "declaration": "o19LocatedByWord",
+      "line": 828,
+      "directCanonicalNames": [
+        "LocatedOpenEpisodeBlock"
+      ],
+      "statementSHA256": "a079819d5b51696d456f938e2fb0f8fa50291e989fb5f68099ad662d6e288538",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "research/DGamma/CP5O19ReachedBlocksSpike.idr",
+      "declaration": "o19PrefixThroughWord",
+      "line": 852,
+      "directCanonicalNames": [
+        "LocatedOpenEpisodeBlock"
+      ],
+      "statementSHA256": "e48e3498cce2ac35e6ae1cc29e68eb5792330f0bd141e580bdc96f3b9acadf4c",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "research/DGamma/CP5O19ReachedBlocksSpike.idr",
+      "declaration": "o19UntouchedBeforePlacement",
+      "line": 888,
+      "directCanonicalNames": [
+        "LocatedOpenEpisodeBlock",
+        "BlockBefore"
+      ],
+      "statementSHA256": "9e9d9f1e25ae9345611fbd25db69f172d8c1f1a07f0a8fa3735876766b4f57ce",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "research/DGamma/CP5O19ReachedBlocksSpike.idr",
+      "declaration": "o19UntouchedAfterPlacement",
+      "line": 912,
+      "directCanonicalNames": [
+        "LocatedOpenEpisodeBlock",
+        "BlockBefore"
+      ],
+      "statementSHA256": "25f69ee12356e2d27aed34660589b10859712fcef6cf38ea94b80aacecfb87ba",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "research/DGamma/CP5O19ReachedBlocksSpike.idr",
+      "declaration": "o19ActualUntouchedBeforeBlock",
+      "line": 936,
+      "directCanonicalNames": [
+        "LocatedOpenEpisodeBlock",
+        "BlockBefore"
+      ],
+      "statementSHA256": "65966a49749d40f97f17c4a04f6a17d9faa74e6f33dcd4a83b467ac2d20331d5",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "research/DGamma/CP5O19ReachedBlocksSpike.idr",
+      "declaration": "o19ActualUntouchedAfterBlock",
+      "line": 971,
+      "directCanonicalNames": [
+        "LocatedOpenEpisodeBlock",
+        "BlockBefore"
+      ],
+      "statementSHA256": "64a74eac8eed3f813e0f395d87e678c791c197c449ee10ab3188200a8bc28a14",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "research/DGamma/CP5O19ReachedBlocksSpike.idr",
+      "declaration": "o19ActualBlockAtSite",
+      "line": 1057,
+      "directCanonicalNames": [
+        "LocatedOpenEpisodeBlock"
+      ],
+      "statementSHA256": "51db0a1d147b9ea1173604848f8411a8efef4205482dbcb896e4fa0b845b0292",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "research/DGamma/CP5O19ReachedBlocksSpike.idr",
+      "declaration": "o19ActualTargetBlock",
+      "line": 1081,
+      "directCanonicalNames": [
+        "LocatedOpenEpisodeBlock"
+      ],
+      "statementSHA256": "8801e3347bcc0d5e13eadf3ea28b8802c3d48432804f5aaf3fa0385c038b8713",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "research/DGamma/CP5O19ReachedBlocksSpike.idr",
+      "declaration": "o19LocatedBlockPrefixes",
+      "line": 1162,
+      "directCanonicalNames": [
+        "LocatedOpenEpisodeBlock"
+      ],
+      "statementSHA256": "1da8ae88296f9f3d2d6db36c62030d9f9b486b8182974581ec4222ddddd58a3b",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "research/DGamma/CP5O19ReachedBlocksSpike.idr",
+      "declaration": "o19BlockBeforeFromGap",
+      "line": 1180,
+      "directCanonicalNames": [
+        "LocatedOpenEpisodeBlock",
+        "BlockBefore"
+      ],
+      "statementSHA256": "ca7b0ce419af369c7a0cab814b332861c44086a4bc3351b63645a2f623e996c1",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "research/DGamma/CP5O19ReachedBlocksSpike.idr",
+      "declaration": "o19BlockBeforeByCount",
+      "line": 1198,
+      "directCanonicalNames": [
+        "LocatedOpenEpisodeBlock",
+        "BlockBefore"
+      ],
+      "statementSHA256": "758b37c98a23ca43f8158983096e8f98c373d7344e21467d2dd236de85bcc357",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "research/DGamma/CP5O19ReachedBlocksSpike.idr",
+      "declaration": "o19BlockBeforeNotSame",
+      "line": 1214,
+      "directCanonicalNames": [
+        "LocatedOpenEpisodeBlock",
+        "BlockBefore"
+      ],
+      "statementSHA256": "863fd46ee74eebb7c465862c5b81774bb1f5c64f167c3f604c90962cfe96fe1c",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "research/DGamma/CP5O19ReachedBlocksSpike.idr",
+      "declaration": "o19LocatedFromSegmentsWords",
+      "line": 1316,
+      "directCanonicalNames": [
+        "LocatedOpenEpisodeBlock"
+      ],
+      "statementSHA256": "5f918a4384c172aac5e083817550f9c677e79fd1da1e5af2ea61f22129f6d622",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "research/DGamma/CP5O19ReachedBlocksSpike.idr",
+      "declaration": "o19LocatedFromWordCutsWords",
+      "line": 1336,
+      "directCanonicalNames": [
+        "LocatedOpenEpisodeBlock"
+      ],
+      "statementSHA256": "99a2d1618b5d10724e996f5fb12d274eb0306894be542a3861f81714a33a466f",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "research/DGamma/CP5O19ReachedBlocksSpike.idr",
+      "declaration": "o19LocatedAfterFirstCutWords",
+      "line": 1386,
+      "directCanonicalNames": [
+        "LocatedOpenEpisodeBlock"
+      ],
+      "statementSHA256": "a2453ddbef5e142ed51cd0b27e12d57503b4409af1a46406a2b5fd9be30fee08",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "research/DGamma/CP5O19ReachedBlocksSpike.idr",
+      "declaration": "o19LocatedByWordWords",
+      "line": 1411,
+      "directCanonicalNames": [
+        "LocatedOpenEpisodeBlock"
+      ],
+      "statementSHA256": "f5c6b3ea60f6510451ab0a3ba7988230e757b2a2e9dae92a3dc7446777bc00c7",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "research/DGamma/CP5O19ReachedBlocksSpike.idr",
+      "declaration": "o19PrefixThroughCount",
+      "line": 1436,
+      "directCanonicalNames": [
+        "LocatedOpenEpisodeBlock"
+      ],
+      "statementSHA256": "80e3e25b18e03b9a0322b6b06c579a1bd84dcf0ee1ac7297adb0415794dffbd6",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "research/DGamma/CP5O19ReachedBlocksSpike.idr",
+      "declaration": "o19LocatedByWordCounts",
+      "line": 1451,
+      "directCanonicalNames": [
+        "LocatedOpenEpisodeBlock"
+      ],
+      "statementSHA256": "bc39c8c0c698b56f8a70e1b23c7721cff334f2ed8bf2841ad45fa0c528f7b02e",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "research/DGamma/CP5O19ReachedBlocksSpike.idr",
+      "declaration": "o19OrderedBeforeCount",
+      "line": 1500,
+      "directCanonicalNames": [
+        "LocatedOpenEpisodeBlock",
+        "BlockBefore"
+      ],
+      "statementSHA256": "8bc2d3bdffc6c49f473a03af73f01c5efe5b820850e3084b78cb6ced3cfd2fa6",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "research/DGamma/CP5O19ReachedBlocksSpike.idr",
+      "declaration": "o19PreserveAbsoluteCounts",
+      "line": 1541,
+      "directCanonicalNames": [
+        "LocatedOpenEpisodeBlock"
+      ],
+      "statementSHA256": "d2432957f7dd511304b7a146d383a5500397dbf2e0c59991deffa86aef209903",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "research/DGamma/CP5O19ReachedBlocksSpike.idr",
+      "declaration": "o19ActualUntouchedBeforeCounts",
+      "line": 1563,
+      "directCanonicalNames": [
+        "LocatedOpenEpisodeBlock",
+        "BlockBefore"
+      ],
+      "statementSHA256": "ccf699bbff129fe8a1b135fc37599ead906e994942ca0d131c896729962a9323",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "research/DGamma/CP5O19ReachedBlocksSpike.idr",
+      "declaration": "o19ActualUntouchedAfterCounts",
+      "line": 1601,
+      "directCanonicalNames": [
+        "LocatedOpenEpisodeBlock",
+        "BlockBefore"
+      ],
+      "statementSHA256": "b4233d4d3405f5b08ef2ccae2768eab11df2939b234e4f5a454595ed639196a7",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "research/DGamma/CP5O19ReachedBlocksSpike.idr",
+      "declaration": "o19OrderedBoundaryLTE",
+      "line": 1714,
+      "directCanonicalNames": [
+        "LocatedOpenEpisodeBlock",
+        "BlockBefore"
+      ],
+      "statementSHA256": "1f7eed4a709a91a7dc61b561fca5dfb215d82856ea094f93813505412cac7012",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "research/DGamma/CP5O19ReachedBlocksSpike.idr",
+      "declaration": "o19ActualBeforeSiteOrder",
+      "line": 1730,
+      "directCanonicalNames": [
+        "BlockBefore"
+      ],
+      "statementSHA256": "a521325267efc89a0f6c74da5675a445e5f8ab42c24209a1c27876b86e7372bb",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "research/DGamma/CP5O19ReachedBlocksSpike.idr",
+      "declaration": "o19ActualRightSiteOrder",
+      "line": 1759,
+      "directCanonicalNames": [
+        "BlockBefore"
+      ],
+      "statementSHA256": "778c993102712013bec34f8d8ac8d3b8b7cc380b3fc347a5ad47fd3bdce9e174",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "research/DGamma/CP5O19ReachedBlocksSpike.idr",
+      "declaration": "o19ActualSitesFollowOrder",
+      "line": 1783,
+      "directCanonicalNames": [
+        "BlockBefore"
+      ],
+      "statementSHA256": "daa130d142f9a99937f8a250f303519ff0054965b977eea632911d345c139e30",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "research/DGamma/CP5O19ReachedBlocksSpike.idr",
+      "declaration": "o19ActualTargetBlocksFollowOrder",
+      "line": 1819,
+      "directCanonicalNames": [
+        "BlockBefore"
+      ],
+      "statementSHA256": "113b7419945be2bd2805c21fb839d0beb18c65f6370be4aee844b551374f98e9",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "research/DGamma/CP5O19ReachedDecompositionSpike.idr",
+      "declaration": "o19OrderedBlockRangesDisjoint",
+      "line": 55,
+      "directCanonicalNames": [
+        "LocatedOpenEpisodeBlock",
+        "BlockBefore"
+      ],
+      "statementSHA256": "bd2d2b2e8b8a81c2d4bcdda00b02b5f50b6dd512c5b8b43daa81f4fddd54a692",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "research/DGamma/CP5O19SurfaceSpike.idr",
+      "declaration": "ActorBlockDecomposition",
+      "line": 42,
+      "directCanonicalNames": [
+        "LocatedOpenEpisodeBlock",
+        "BlockBefore"
+      ],
+      "statementSHA256": "5dd9ed952e4d853c2ebebbbec5ddaa9ed884e27dafa8a60496ea734a7ea918c6",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "research/DGamma/CP5O19SurfaceSpike.idr",
+      "declaration": "AdjacentActorSwapSafety",
+      "line": 113,
+      "directCanonicalNames": [
+        "BlockBefore"
+      ],
+      "statementSHA256": "1caa47fe304bfa0366b18fd94de062b68198d2c5ff77c2e87c59991ad7abc906",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "research/DGamma/CP5O19SurfaceSpike.idr",
+      "declaration": "actorBlockTrace",
+      "line": 148,
+      "directCanonicalNames": [
+        "LocatedOpenEpisodeBlock"
+      ],
+      "statementSHA256": "a41d1074044f9fe62ce578ab87e21ee5d5d0de291de1cee65e0c18aa8da52acb",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "research/DGamma/CP5O19SurfaceSpike.idr",
+      "declaration": "actorBlockTransitionCount",
+      "line": 156,
+      "directCanonicalNames": [
+        "LocatedOpenEpisodeBlock"
+      ],
+      "statementSHA256": "df4ebdf12896e3e3cb0c775d041a0e6a0df91cfdd7c5c55bf319bbc38c885ab0",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "research/DGamma/CP5O19SurfaceSpike.idr",
+      "declaration": "NodeCrossesSourceBlockPosition",
+      "line": 251,
+      "directCanonicalNames": [
+        "LocatedOpenEpisodeBlock"
+      ],
+      "statementSHA256": "e44f51acef51419f4de4a31a419b8729ab053143268e630f8d352cc3e1d6f914",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "research/DGamma/CP5O19SurfaceSpike.idr",
+      "declaration": "leftNodeSourceBlockLabel",
+      "line": 332,
+      "directCanonicalNames": [
+        "LocatedOpenEpisodeBlock"
+      ],
+      "statementSHA256": "c834004dc755dbdd82e3960ce167903e15b6a12437d60c9db111a2346c86aa06",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "research/DGamma/CP5O19SurfaceSpike.idr",
+      "declaration": "rightNodeSourceBlockLabel",
+      "line": 360,
+      "directCanonicalNames": [
+        "LocatedOpenEpisodeBlock"
+      ],
+      "statementSHA256": "ba313227fc047d6c5caa3afcb0552fbf30356feed0afa658f7a6256a3c8286b1",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "research/DGamma/CP5O19SurfaceSpike.idr",
+      "declaration": "DerivationCrossesBlockPositions",
+      "line": 394,
+      "directCanonicalNames": [
+        "LocatedOpenEpisodeBlock"
+      ],
+      "statementSHA256": "c3e5f65ec822fd1e89126f292c55d622ddd5ffecfcec143a59a6e50f1292454d",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "research/DGamma/CP5O19SurfaceSpike.idr",
+      "declaration": "BlockCrossingOriginPlan",
+      "line": 457,
+      "directCanonicalNames": [
+        "LocatedOpenEpisodeBlock"
+      ],
+      "statementSHA256": "0eeb449459ca7d3887e8be67d39a665d8f33c2d88e0d12a93913cf85f26437cc",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "research/DGamma/CP5O19SurfaceSpike.idr",
+      "declaration": "MappedCanonicalSupportOrders",
+      "line": 743,
+      "directCanonicalNames": [
+        "CanonicalSchedule"
+      ],
+      "statementSHA256": "fac2bd89ec2329915d0c4d7da37130bd485961fdafe01869a91f3feed55e662b",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "research/DGamma/CP5O20CanonicalPairSelectionSpike.idr",
+      "declaration": "SelectedCanonicalBlockPair",
+      "line": 64,
+      "directCanonicalNames": [
+        "LocatedOpenEpisodeBlock"
+      ],
+      "statementSHA256": "c9706b67fa7e35e70678ec16eb02596c7eaa9144ce71e73de3604153f05cb3e3",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "research/DGamma/CP5O20CanonicalPairSelectionSpike.idr",
+      "declaration": "canonicalPairOpeningOccurrence",
+      "line": 132,
+      "directCanonicalNames": [
+        "LocatedOpenEpisodeBlock"
+      ],
+      "statementSHA256": "ec2f14202e670b61c71e8682616821502a0261f92cc7a2a213a37357ab087123",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "research/DGamma/CP5O20InversionChildSafetySpike.idr",
+      "declaration": "o20GeneratedBirthInBlock",
+      "line": 149,
+      "directCanonicalNames": [
+        "LocatedOpenEpisodeBlock"
+      ],
+      "statementSHA256": "f87c862a5b36541b18e4c31f4ccd49008a3dcd0c4dab4f5b4a1a7aae8507ac42",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "research/DGamma/CP5O20InversionChildSafetySpike.idr",
+      "declaration": "o20NoGeneratedFromActorBirth",
+      "line": 168,
+      "directCanonicalNames": [
+        "ActorLifecycleOnly"
+      ],
+      "statementSHA256": "6c87a770cbf4794377960cb4d60a07d46f7e2210a536b8302bbbb83bd30df341",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "research/DGamma/CP5O20InversionChildSafetySpike.idr",
+      "declaration": "o20IncomparableBlockChildSafety",
+      "line": 190,
+      "directCanonicalNames": [
+        "LocatedOpenEpisodeBlock"
+      ],
+      "statementSHA256": "0236f3266972cadfce0f186e0ae5651c1ac379246c7b6994992bd87db0611fb4",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "research/DGamma/CP5O20RightOpeningTransportSpike.idr",
+      "declaration": "o20ActorBodyForeignOwners",
+      "line": 71,
+      "directCanonicalNames": [
+        "ActorLifecycleOnly"
+      ],
+      "statementSHA256": "8e617699cac30a95c438f6acd406650f6c6c6f29bd94393fc1d116fe7b0648e1",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "research/DGamma/CP5O20RightOpeningTransportSpike.idr",
+      "declaration": "o20PhysicalLeftBlockOwnerFrame",
+      "line": 121,
+      "directCanonicalNames": [
+        "ActorLifecycleOnly"
+      ],
+      "statementSHA256": "02750855e20c051b7f8f5351c80d274670f87bd54e2b47f93321b94aa181e945",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "research/DGamma/CP5O20RightOpeningTransportSpike.idr",
+      "declaration": "o20RightBeginAcrossActualLeftBlock",
+      "line": 145,
+      "directCanonicalNames": [
+        "ActorLifecycleOnly"
+      ],
+      "statementSHA256": "45f92df4ef46ebf046d4248a2dbe826e696cb65d8b75d64e5bbe0703b2d90df8",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "research/DGamma/CP5O20SafeBlockSelectionSpike.idr",
+      "declaration": "o20CheckRightAtLeftOpening",
+      "line": 104,
+      "directCanonicalNames": [
+        "LocatedOpenEpisodeBlock"
+      ],
+      "statementSHA256": "f3822c8f2a9d73926248112e57c7c0fee43b675e07f9d3980624864a0533b158",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "research/DGamma/CP5O20SafeBlockSelectionSpike.idr",
+      "declaration": "o20CheckRightAtLeftOpeningComplete",
+      "line": 318,
+      "directCanonicalNames": [
+        "LocatedOpenEpisodeBlock"
+      ],
+      "statementSHA256": "028b6a1373afb3ecd45c38aab24d4073efad971677cc291863954f1027afa5d8",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "research-tests/O6-L2R2-Sources/DGamma/L2R2ConditionalGap.idr",
+      "declaration": "extendedZeroGapWithoutRoot",
+      "line": 35,
+      "directCanonicalNames": [
+        "NoRootOrchestration"
+      ],
+      "statementSHA256": "3a3512fe243f0c898b4f9e46192435173bb8e46781df72114605fc997bf9a9f5",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "research-tests/O6-L2R2-Sources/DGamma/L2R2SmallPlacement.idr",
+      "declaration": "smallStrictPlacementRejected",
+      "line": 77,
+      "directCanonicalNames": [
+        "CanonicalInputPlacement"
+      ],
+      "statementSHA256": "804e9b9b0c96a482fae0f322c3dc0b998d79c23e7e86cab691dd8c539951d6e5",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "research-tests/O6-L2R3-Sources/DGamma/L2R3Attached.idr",
+      "declaration": "oldIntoAttached",
+      "line": 135,
+      "directCanonicalNames": [
+        "ActorLifecycleOnly"
+      ],
+      "statementSHA256": "0e581857e8f139b86708362a5c5dddd95bd7190874c7d1755043aa3afcb48e02",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "research-tests/O6-L2R3-Sources/DGamma/L2R3BarrierOrder.idr",
+      "declaration": "BarrierOrderEvidence",
+      "line": 47,
+      "directCanonicalNames": [
+        "CanonicalInputPlacement"
+      ],
+      "statementSHA256": "884284c5b0787a61dc2e0ccbc0abb5a2263e90965af69b343f76342caa093bd2",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "src/DGamma/CP3.idr",
+      "declaration": "ActorLifecycleOnly",
+      "line": 1786,
+      "directCanonicalNames": [
+        "ActorLifecycleOnly"
+      ],
+      "statementSHA256": "ddf9527ca679cf9c8b3884c2e758088e73a4db304bb7ba5df65ccdffa9d7f51b",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "src/DGamma/CP3.idr",
+      "declaration": "LocatedOpenEpisodeBlock",
+      "line": 1824,
+      "directCanonicalNames": [
+        "ActorLifecycleOnly",
+        "LocatedOpenEpisodeBlock"
+      ],
+      "statementSHA256": "ed0060bb60de06de2322bd7337590c9d7966873c1fe2198bf30916f1f35cec24",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "src/DGamma/CP3.idr",
+      "declaration": "prefixToBlockOpening",
+      "line": 1848,
+      "directCanonicalNames": [
+        "LocatedOpenEpisodeBlock"
+      ],
+      "statementSHA256": "182300067a2fa538e013a2c53598177eb71303c6c0e6336b28b7dcc74975da2d",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "src/DGamma/CP3.idr",
+      "declaration": "prefixThroughBlock",
+      "line": 1860,
+      "directCanonicalNames": [
+        "LocatedOpenEpisodeBlock"
+      ],
+      "statementSHA256": "02517ef20d72816fde0c5a4fa12dcc9c633a6ccf5aae65e49b403a714f991ca4",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "src/DGamma/CP3.idr",
+      "declaration": "BlockBefore",
+      "line": 1873,
+      "directCanonicalNames": [
+        "LocatedOpenEpisodeBlock",
+        "BlockBefore"
+      ],
+      "statementSHA256": "c5efe862b48e92b170bbc9e7014f273a52cb01d372635cc39931e5cd8553b6f6",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "src/DGamma/CP3.idr",
+      "declaration": "NoRootOrchestration",
+      "line": 2021,
+      "directCanonicalNames": [
+        "NoRootOrchestration"
+      ],
+      "statementSHA256": "ecb7418851a2f249db030834e3476cc88d9c10ccc44b88b432164a22087f88af",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "src/DGamma/CP3.idr",
+      "declaration": "RootInputsBeforeLifecycle",
+      "line": 2037,
+      "directCanonicalNames": [
+        "RootInputsBeforeLifecycle",
+        "NoRootOrchestration"
+      ],
+      "statementSHA256": "63a500a4c1b5d70d0a47acc06540741feea09bb02a4046953b192806222c7926",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "src/DGamma/CP3.idr",
+      "declaration": "CanonicalInputPlacement",
+      "line": 3156,
+      "directCanonicalNames": [
+        "RootInputsBeforeLifecycle",
+        "CanonicalInputPlacement"
+      ],
+      "statementSHA256": "309fe1e817a972b7e661acaff557145081a212c9be5c3a4c07dfc48ed2ce1067",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "src/DGamma/CP3.idr",
+      "declaration": "CanonicalSchedule",
+      "line": 3240,
+      "directCanonicalNames": [
+        "CanonicalInputPlacement",
+        "LocatedOpenEpisodeBlock",
+        "BlockBefore",
+        "CanonicalSchedule"
+      ],
+      "statementSHA256": "facb7fa8442519dac6663b7044f870e1fa874ec476c6ddc4353990473f47c0b2",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "src/DGamma/CP3.idr",
+      "declaration": "ConfluenceResult",
+      "line": 3756,
+      "directCanonicalNames": [
+        "CanonicalSchedule"
+      ],
+      "statementSHA256": "1d36421fcd51ef4a633753205e842d9584e784cc75713c80a9ce8b19a65bfdad",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "src/DGamma/CP3StatementChecks.idr",
+      "declaration": "roleChangingFullCanonicalScheduleStatementCheck",
+      "line": 3398,
+      "directCanonicalNames": [
+        "CanonicalInputPlacement",
+        "LocatedOpenEpisodeBlock",
+        "BlockBefore",
+        "CanonicalSchedule"
+      ],
+      "statementSHA256": "2f7cfaa08f9a1be79438788087dfa5728d518a5c33ca8d02cbf7d4db37fafdda",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "src/DGamma/CP3StatementChecks.idr",
+      "declaration": "canonicalBlockRegistrationGuard",
+      "line": 3543,
+      "directCanonicalNames": [
+        "ActorLifecycleOnly"
+      ],
+      "statementSHA256": "cd8dbe6ff64fcab4e3a390467ce78221036f55e94b2b9f530f1b05aa38875de1",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "src/DGamma/CP3StatementChecks.idr",
+      "declaration": "canonicalOrderUniqueGuard",
+      "line": 3554,
+      "directCanonicalNames": [
+        "CanonicalSchedule"
+      ],
+      "statementSHA256": "a74b0bfab68fbaded9e2c8e3d3609c5d8be15d2397e8e3c7e6cc0795793e671f",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "src/DGamma/CP3StatementChecks.idr",
+      "declaration": "canonicalCombinedOrderGuard",
+      "line": 3562,
+      "directCanonicalNames": [
+        "CanonicalSchedule"
+      ],
+      "statementSHA256": "b7610b8e68cf9bb6210d01022ac3c1fb87ff12c198b79cf665ecb14b5bfe3683",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "src/DGamma/CP3StatementChecks.idr",
+      "declaration": "canonicalCoverageGuard",
+      "line": 3574,
+      "directCanonicalNames": [
+        "CanonicalSchedule"
+      ],
+      "statementSHA256": "9711e306e4b8992daf7bc1ac0fcd947bd7b39d68aec16a099bb722306456f197",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "src/DGamma/CP3StatementChecks.idr",
+      "declaration": "canonicalInputPlacementGuard",
+      "line": 3582,
+      "directCanonicalNames": [
+        "CanonicalInputPlacement",
+        "CanonicalSchedule"
+      ],
+      "statementSHA256": "7ce664be82e23d7b3953132f794cf0c0bb9c27ac1c796ee70a865c100f4b2e32",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "src/DGamma/CP3StatementChecks.idr",
+      "declaration": "canonicalAllRootInputsGuard",
+      "line": 3591,
+      "directCanonicalNames": [
+        "RootInputsBeforeLifecycle",
+        "CanonicalSchedule"
+      ],
+      "statementSHA256": "3e83ee70197fb251ec2732ba6c504ca9f29b2aa9a251cf70b80ea0f3aca6864c",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "src/DGamma/CP3StatementChecks.idr",
+      "declaration": "canonicalRootGenerationFreshGuard",
+      "line": 3600,
+      "directCanonicalNames": [
+        "CanonicalSchedule"
+      ],
+      "statementSHA256": "8ecfa38ce8505876856b13cbdb7ae11b97edf5049e98687f56173f05b2321460",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "src/DGamma/CP3StatementChecks.idr",
+      "declaration": "canonicalRootGenerationPlacementGuard",
+      "line": 3614,
+      "directCanonicalNames": [
+        "CanonicalSchedule"
+      ],
+      "statementSHA256": "2719fc7cd07640b25b3841e04261b70415d4d1245d61385117287e6c1995ef6d",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "src/DGamma/CP3StatementChecks.idr",
+      "declaration": "canonicalExternalInputsGuard",
+      "line": 3630,
+      "directCanonicalNames": [
+        "CanonicalSchedule"
+      ],
+      "statementSHA256": "7e9870aa01c204c652f49481989ad4d6c6158fb2ee33fe010a6818321964924f",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "src/DGamma/CP3StatementChecks.idr",
+      "declaration": "canonicalRegistrationDisciplineGuard",
+      "line": 3638,
+      "directCanonicalNames": [
+        "CanonicalSchedule"
+      ],
+      "statementSHA256": "98fdd2504962e94c4395c7da346de71d1fb40d6102b95e801905c09149b317d4",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "src/DGamma/CP3StatementChecks.idr",
+      "declaration": "canonicalRegistrationTreeGuard",
+      "line": 3648,
+      "directCanonicalNames": [
+        "CanonicalSchedule"
+      ],
+      "statementSHA256": "993f1a074808cad89c900218ea8826393b021ce07c406a336c12f93a219b746a",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "src/DGamma/CP3StatementChecks.idr",
+      "declaration": "canonicalWithdrawnRegistrationGuard",
+      "line": 3658,
+      "directCanonicalNames": [
+        "CanonicalSchedule"
+      ],
+      "statementSHA256": "6ec47bf935fdea85e52b7623d908c6f8e9f75fd13b9ce32554ca73b6b7adb62c",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "src/DGamma/CP3StatementChecks.idr",
+      "declaration": "canonicalBlockGuard",
+      "line": 3698,
+      "directCanonicalNames": [
+        "LocatedOpenEpisodeBlock",
+        "CanonicalSchedule"
+      ],
+      "statementSHA256": "b926b2df0c63102f63e91c5383af144bab7d21cfc501b289e5d1d7a23d53fab0",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "src/DGamma/CP3StatementChecks.idr",
+      "declaration": "canonicalBlockOrderGuard",
+      "line": 3708,
+      "directCanonicalNames": [
+        "BlockBefore",
+        "CanonicalSchedule"
+      ],
+      "statementSHA256": "e2010afcb373ef9e26db8bec11c9bf67a6c2d9716146c23e35bc22f3df5939ab",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "src/DGamma/CP3StatementChecks.idr",
+      "declaration": "canonicalFullControlGuard",
+      "line": 3724,
+      "directCanonicalNames": [
+        "CanonicalSchedule"
+      ],
+      "statementSHA256": "601ef324d76f8e48300dfed5999507701a566cec6f7b29fbbb74cd7c2d4f2f9e",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "src/DGamma/CP3StatementChecks.idr",
+      "declaration": "canonicalWithdrawalGuard",
+      "line": 3735,
+      "directCanonicalNames": [
+        "CanonicalSchedule"
+      ],
+      "statementSHA256": "1f8348830e564516061399f8a6c4ecebae7e27d7660437bf63a08c2b2d6a0853",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "src/DGamma/CP3Support.idr",
+      "declaration": "canonicalEndpointsEquivalent",
+      "line": 226,
+      "directCanonicalNames": [
+        "CanonicalSchedule"
+      ],
+      "statementSHA256": "30bd3320404f9194689580967108522b4316917cc68957457cb8dd698b2f154c",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    },
+    {
+      "path": "src/DGamma/CP3Support.idr",
+      "declaration": "confluenceFromCanonicalSchedules",
+      "line": 253,
+      "directCanonicalNames": [
+        "CanonicalSchedule"
+      ],
+      "statementSHA256": "d9c7449016d485f0148f848301a1ab617da8403ac6c76727a97c67372395feb2",
+      "classification": "direct signature dependency; semantic obligations require human review",
+      "frozen": true
+    }
+  ]
+}

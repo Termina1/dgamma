@@ -1,0 +1,90 @@
+{
+  "base": "769d332dd520c494fff7ffbf2d4e8c9f43c72e7d",
+  "cp3Blob": "2c697e532e83989de8591fa6a4378747c6a501c0",
+  "status": "PROPOSED DOC TEXT ONLY; CP3 not edited/compiled",
+  "renamings": {
+    "ActorLifecycleOnlyExtended": "ActorLifecycleCore",
+    "ExtendedLifecycleEnd": "CoreLifecycleEnd",
+    "ExtendedLifecycleStep": "CoreLifecycleStep",
+    "ExtendedYieldedRegistrationStep": "CoreYieldedRegistrationStep",
+    "ExtendedChildRetireStep": "CoreChildRetireStep",
+    "ExtendedChildRemoveStep": "CoreChildRemoveStep",
+    "ActorLifecycleOnlyAttached": "ActorLifecycleOnly",
+    "AttachedWithoutRoots": "ActorWithoutForcedRoots",
+    "AttachedWithRoots": "ActorWithForcedRoots",
+    "LocatedOpenEpisodeBlockAttached": "LocatedOpenEpisodeBlock",
+    "BlockBeforeAttached": "BlockBefore",
+    "attachedPreStart": "blockPreStart",
+    "attachedStart": "blockStart",
+    "attachedEnd": "blockEnd",
+    "attachedBefore": "traceBeforeBlock",
+    "attachedOpening": "blockOpening",
+    "attachedBody": "blockBody",
+    "attachedInstalled": "blockBodyInstalled",
+    "attachedActorOnly": "blockActorOnly",
+    "attachedAfter": "traceAfterBlock",
+    "attachedNoEarlier": "noEarlierLifecycle",
+    "attachedNoLater": "noLaterLifecycle",
+    "attachedActiveAtFinal": "blockActiveAtFinal",
+    "attachedDecomposition": "blockDecomposition",
+    "attachedBetweenBlocks": "betweenBlocks",
+    "attachedBlocksOrdered": "blocksOrderedInGlobal"
+  },
+  "movedOldRanges": [
+    [
+      2093,
+      2096
+    ],
+    [
+      2098,
+      2115
+    ],
+    [
+      2117,
+      2119
+    ]
+  ],
+  "movedCombinedSHA256": "deb8053c64f04d0949c37b8e34d2a1c246cdb714658f9f63fc543f5383382b65",
+  "tier1Sections": [
+    {
+      "title": "T1.0 \u2014 unchanged forward dependency relocation (CP3:2093\u20132120)",
+      "sha256": "deb8053c64f04d0949c37b8e34d2a1c246cdb714658f9f63fc543f5383382b65",
+      "lines": 28
+    },
+    {
+      "title": "T1.1 \u2014 actor core + attached grammar (replace CP3:1781\u20131804)",
+      "sha256": "00f35a6ec39df77eaf3896e17d597c49f8ed2684879aca2a9de29d9a164f7c8c",
+      "lines": 152
+    },
+    {
+      "title": "T1.2 \u2014 full located/order records (replace CP3:1821\u20131846 and 1871\u20131889)",
+      "sha256": "4bf0a642bd483388e32f6258f30b62ac0080b181f7f8ec195a3e90d489351a65",
+      "lines": 44
+    },
+    {
+      "title": "T1.3 \u2014 availability-aware predicates and placement (replace CP3:3152\u20133195; helpers before record)",
+      "sha256": "acd9a3908a8b1cbba180a54475e8a6029163d6adb5102da2cd1fc6f098e68a29",
+      "lines": 126
+    },
+    {
+      "title": "T1.4 \u2014 generic least closure and bundle-membership support types (new canonical-definition support)",
+      "sha256": "6254e8cca3be7f563c629ffcc864c97eaf34f686eedece65f6e0847038ccd430",
+      "lines": 64
+    }
+  ],
+  "directStatementInventoryCount": 118,
+  "checkedSourcePaths": [
+    "research/DGamma/CP5ActorLifecycleOnlyExtended.idr",
+    "research-tests/O6-L2R3-Sources/DGamma/L2R3Attached.idr",
+    "research/DGamma/CP5AvailabilityAwarePlacement.idr",
+    "research-tests/O6-L2R3-Sources/DGamma/L2R3ForcedClosure.idr",
+    "research-tests/O6-L2R3-Sources/DGamma/L2R3AttachedGap.idr"
+  ],
+  "checkedSourceSHA256": {
+    "research/DGamma/CP5ActorLifecycleOnlyExtended.idr": "259bbb336aab6a3babcec41ccba9fc2eca5299422a3a8e5443715f004365b380",
+    "research-tests/O6-L2R3-Sources/DGamma/L2R3Attached.idr": "32a742cf8a7dbfbe75bffc3f972f686e138155c9cebf709d1a0cfd444636f0b3",
+    "research/DGamma/CP5AvailabilityAwarePlacement.idr": "0e62fa35c396e9f26465c07dd24aab2e14d25c7d5c5980c28d5d313c63869c26",
+    "research-tests/O6-L2R3-Sources/DGamma/L2R3ForcedClosure.idr": "3a969ef6e366a656adcd4938ba59bb971dad227b8479ec192b36b3999d2efd21",
+    "research-tests/O6-L2R3-Sources/DGamma/L2R3AttachedGap.idr": "cf4c148ea6effb932b7c16589a0d8cd7d3e782db5d79691920d05d671018f841"
+  }
+}
