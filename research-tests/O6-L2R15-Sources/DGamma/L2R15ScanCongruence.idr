@@ -43,3 +43,14 @@ scanFilterAtGuard oldTest newTest entry items True oldHead newHead tail =
   rewrite oldHead in rewrite newHead in cong (entry ::) tail
 scanFilterAtGuard oldTest newTest entry items False oldHead newHead tail =
   rewrite oldHead in rewrite newHead in tail
+
+||| Pointwise native filter transport via the observed-head bridge. The
+||| parent proof recurses only on the list and supplies the guard equation.
+export
+0 scanFilterPointwise : {item : Type} -> (oldTest, newTest : item -> Bool) ->
+  (0 same : (entry : item) -> oldTest entry = newTest entry) -> (items : List item) ->
+  filter oldTest items = filter newTest items
+scanFilterPointwise oldTest newTest same [] = Refl
+scanFilterPointwise oldTest newTest same (entry :: items) =
+  scanFilterAtGuard oldTest newTest entry items (newTest entry) (same entry) Refl
+    (scanFilterPointwise oldTest newTest same items)
