@@ -84,3 +84,43 @@ o20CanonicalPresentForwardName name key world error value protocol nameEq keyEq 
               (\packet => absurd (trans (sym present)
                 (o20CanonicalVestigialDisappears name key world error value protocol nameEq keyEq generationEq
                   left right mapping registrations capital unique selected packet)))))
+
+||| Symmetric retained-present rebase at the right canonical endpoint.
+||| B7 excludes its FULL right vestigial alternative. The accepted left
+||| native birth authenticates the backward target name, not a guessed map.
+export
+0 o20CanonicalPresentBackwardName :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (generationEq : DecEq (RegistrationGeneration name)) ->
+  {leftFirst, leftFinal, rightFirst, rightFinal : SystemState name key value world error} ->
+  (left : Transitions leftFirst leftFinal) -> (right : Transitions rightFirst rightFinal) ->
+  (mapping : RegistrationGenerationBijection name) ->
+  (registrations : RegistrationCorrespondenceByGeneration nameEq mapping left right) ->
+  (current : CurrentEndpointRenaming nameEq keyEq mapping left right registrations) ->
+  (capital : IndependentCanonicalSchedule name key world error value protocol nameEq keyEq right) ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq right ->
+  (selected : name) -> (fiber : Fiber name key value world error) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected
+    (registry (canonicalFinal (canonicalSchedule capital))) = Just fiber) ->
+  (generation : RegistrationGeneration name **
+    (lookupCurrentGeneration @{nameEq} selected (rightFinalGenerations registrations) = Just generation,
+     generationName (generationBackward mapping generation) = renameBackward (currentNameBijection current) selected))
+o20CanonicalPresentBackwardName name key world error value protocol nameEq keyEq generationEq
+  left right mapping registrations current capital unique selected fiber present =
+    case o20CanonicalPresentOriginalControl name key world error value nameEq keyEq protocol right capital selected fiber present of
+      MkForeignRelatedFiberFound originalFiber originalPresent controls =>
+        case acceptedRightEndpointCurrent name key world error value nameEq keyEq left right mapping registrations
+          (replayAligned (chainReplayCapital (capitalPremises capital)))
+          (replayInitialEmpty (chainReplayCapital (capitalPremises capital))) selected originalFiber originalPresent of
+          (generation ** found) =>
+            case rightCurrentGenerationMapped current selected generation found of
+              Left packet => absurd (trans (sym present)
+                (o20RightCanonicalVestigialDisappears name key world error value protocol nameEq keyEq generationEq
+                  left right mapping registrations capital unique selected packet))
+              Right (opposite ** (matched, oppositeCurrent)) =>
+                (generation ** (found, trans (cong generationName matched)
+                  (cong generationName (currentBirthStampExact
+                    (acceptedLeftCurrentBirth name key world error value nameEq left right mapping registrations
+                      (renameBackward (currentNameBijection current) selected) opposite oppositeCurrent)))))
