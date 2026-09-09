@@ -144,3 +144,34 @@ rootInsertExtensionalFromView nameEq keyEq actor component ambient currentAmbien
     (checkedInsertAtNativeGuards nameEq keyEq actor Root component currentAmbient currentSource
       (trans (sym (extensionalLookup same actor)) absent)
       (trans frame (trans (sym observed) guards)) valid)
+
+||| Actual next ROOT edge transported to an extensionally equal registry.
+||| The original tag and successor relation are produced from its native
+||| view. Only the finite provision-scan frame remains explicitly assumed.
+export
+0 checkedRootAcrossExtensional : {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (component : Component key value world error) ->
+  (first, afterState, current : SystemState name key value world error) -> (tag : RuleTag) ->
+  (0 original : checkedApplyAction @{nameEq} @{keyEq} (OInsert actor Root component) first = Just (tag, afterState)) ->
+  (0 same : RegistryExtensional name key world error value nameEq first current) ->
+  (0 valid : registryWellFormed @{nameEq} @{keyEq} current = True) ->
+  (seen : Bool) ->
+  (0 observed : provisionsDisjointFrom {name} {key} {world} {error} {value} @{keyEq}
+    (componentProvisions component) (bindings (registry first)) = seen) ->
+  (0 frame : provisionsDisjointFrom {name} {key} {world} {error} {value} @{keyEq}
+    (componentProvisions component) (bindings (registry current)) = seen) ->
+  CheckedExtensionalStep name key world error value nameEq keyEq (OInsert actor Root component) current tag afterState
+checkedRootAcrossExtensional {name} {key} {world} {error} {value}
+  nameEq keyEq actor component (MkSystemState ambient source) afterState current tag original same valid seen observed frame =
+  replace {p = \state => CheckedExtensionalStep name key world error value nameEq keyEq
+    (OInsert actor Root component) state tag afterState} (insertionStateEta current)
+    (rootInsertExtensionalFromView nameEq keyEq actor component ambient (worldState current) source (registry current)
+      afterState tag
+      (replace {p = \state => RegistryExtensional name key world error value nameEq (MkSystemState ambient source) state}
+        (sym (insertionStateEta current)) same)
+      (replace {p = \state => registryWellFormed {name} {key} {world} {error} {value} @{nameEq} @{keyEq} state = True}
+        (sym (insertionStateEta current)) valid)
+      seen observed frame
+      (foreignInsertPlanView nameEq keyEq actor Root component ambient source tag afterState
+        (checkedActionProjects nameEq keyEq (OInsert actor Root component) (MkSystemState ambient source) afterState tag original)))
