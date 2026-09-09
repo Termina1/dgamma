@@ -84,3 +84,33 @@ o20BlockEndReferenceComponent nameEq keyEq protocol original capital unique repl
         (trans (appendTransitionsAssociative (traceBeforeBlock block) (MoreTransitions (beginTransition (blockOpening block)) NoTransitions)
           (appendTransitions (blockBody block) (traceAfterBlock block))) (blockDecomposition block)))
       actor referenceFiber lastFiber referenceFound lastFound
+
+||| Second missing E60 attachment: the actual right opening observation has
+||| the original reference component. Its primitive source lookup and the
+||| block's exact preceding trace own the proof; no resolver frame is input.
+export
+0 o20BlockOpeningReferenceComponent :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {initial, originalFinal, reachedFinal : SystemState name key value world error} ->
+  (original : Transitions initial originalFinal) ->
+  (capital : IndependentCanonicalSchedule name key world error value protocol nameEq keyEq original) ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq original ->
+  (replayed : Transitions initial reachedFinal) ->
+  ReplayInvariantBundle name key world error value protocol nameEq keyEq replayed ->
+  ActionRegistrationReplayCorrespondence name key world error value (canonicalTrace (canonicalSchedule capital)) replayed ->
+  (actor : name) ->
+  (block : LocatedOpenEpisodeBlock name key world error value nameEq keyEq actor replayed) ->
+  (referenceFiber : Fiber name key value world error) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor (registry originalFinal) = Just referenceFiber) ->
+  (observed : O20BeginObservation name key world error value nameEq keyEq actor (blockPreStart block) (blockStart block)) ->
+  (beginObservedComponent observed = fiberComponent referenceFiber)
+o20BlockOpeningReferenceComponent nameEq keyEq protocol original capital unique replayed premises occurrences actor block
+  referenceFiber referenceFound observed =
+    o20ReplayCutReferenceComponent nameEq keyEq protocol original capital unique replayed premises occurrences
+      (traceBeforeBlock block)
+      (MoreTransitions (beginTransition (blockOpening block)) (appendTransitions (blockBody block) (traceAfterBlock block)))
+      (blockDecomposition block) actor referenceFiber
+      (MkFiber (beginObservedComponent observed) (beginObservedParent observed) False (beginObservedTable observed) (Inactive Nothing))
+      referenceFound (beginObservedFound observed)
