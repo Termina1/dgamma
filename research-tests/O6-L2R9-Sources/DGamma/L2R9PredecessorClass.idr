@@ -91,3 +91,15 @@ insertAtDifference : {name, key, world, error : Type} -> {value : key -> Type} -
 insertAtDifference nameEq root child parent source component (Yes same) equation = LocalInsertPredecessor same
 insertAtDifference nameEq root child parent source component (No foreign) equation =
   ForeignPredecessor (CrossChildInsert foreign)
+
+||| Root insertions remain explicit forbidden-candidate results; no function
+||| manufactures a foreign owner for them. Child parents use observed DecEq.
+public export
+insertAtParent : {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (root, child : name) ->
+  (source : SystemState name key value world error) ->
+  (component : Component key value world error) -> (parent : Parent name) ->
+  PredecessorClass nameEq root source (OInsert child parent component)
+insertAtParent nameEq root child source component Root = RootInsertPredecessor
+insertAtParent nameEq root child source component (ChildOf parent) =
+  insertAtDifference nameEq root child parent source component (decEq @{nameEq} parent root) Refl
