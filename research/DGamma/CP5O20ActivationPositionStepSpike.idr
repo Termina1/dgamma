@@ -124,3 +124,31 @@ export
     incrementChildrenBornInActivation @{nameEq} activation (indexedSurvivingChildCounts index))
 o20SurvivingBirthActivationUpdate nameEq ordinal child parent component
   (MkRegistrationIndexState live activations counts deleted) activation observed = rewrite observed in (Refl, Refl)
+
+||| An actual retained classification consumes exactly ONE next child
+||| position within the observed SAME parent activation, not one global
+||| physical ordinal. Combined with A10 this separates retained and deleted
+||| index steps; transporting a whole canonical prefix remains OPEN.
+export
+0 o20SurvivingBirthAdvancesObservedPosition :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (ordinal, nextOrdinal : Nat) ->
+  (child, parent, nextChild : name) ->
+  (component, nextComponent : Component key value world error) ->
+  (index : RegistrationIndexState name) -> (activation : RegistrationActivation name) ->
+  (lookupParentActivation @{nameEq} parent (indexedParentActivations index) = Just activation) ->
+  (eventChildPosition (registrationEventAt @{nameEq} nextOrdinal
+      (advanceSurvivingRegistrationIndex @{nameEq} ordinal child parent component index)
+      nextChild parent nextComponent) =
+    S (eventChildPosition (registrationEventAt @{nameEq} nextOrdinal index nextChild parent nextComponent)))
+o20SurvivingBirthAdvancesObservedPosition nameEq ordinal nextOrdinal child parent nextChild component nextComponent
+  index activation observed =
+    trans
+      (o20EventActivationPositionKnown nameEq nextOrdinal nextChild parent nextComponent
+        (advanceSurvivingRegistrationIndex @{nameEq} ordinal child parent component index) activation
+        (trans (cong (lookupParentActivation @{nameEq} parent)
+          (fst (o20SurvivingBirthActivationUpdate nameEq ordinal child parent component index activation observed))) observed))
+      (trans (cong (childrenBornInActivation @{nameEq} activation)
+        (snd (o20SurvivingBirthActivationUpdate nameEq ordinal child parent component index activation observed)))
+        (trans (o20IncrementActivationCount nameEq activation (indexedSurvivingChildCounts index))
+          (cong S (sym (o20EventActivationPositionKnown nameEq nextOrdinal nextChild parent nextComponent index activation observed)))))
