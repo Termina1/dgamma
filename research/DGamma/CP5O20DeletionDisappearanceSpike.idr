@@ -37,3 +37,22 @@ export
 o20AppendGenerationScans GenerationTraceScanEnd right = right
 o20AppendGenerationScans (GenerationTraceScanStep step rest left) right =
   GenerationTraceScanStep step _ (o20AppendGenerationScans left right)
+
+||| The actual deletion construction owns a whole ORIGINAL generation scan
+||| by joining its before/episode/after scans at this episode's decomposition.
+export
+0 o20DeletionOriginalScan :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {initial, finalState : SystemState name key value world error} ->
+  {original : Transitions initial finalState} ->
+  (candidate : DeletableClosingEpisode name key world error value nameEq keyEq original) ->
+  (result : DeletionResult name key world error value nameEq keyEq original
+    (selectedActor candidate) (selectedEpisode candidate) (selectedRegistrations candidate)
+    (selectedStartOrdinal candidate) (selectedStartLive candidate)) ->
+  GenerationTraceScan nameEq Z [] original (originalFinalOrdinal result) (originalFinalLive result)
+o20DeletionOriginalScan {nameEq} candidate result =
+  replace {p = \trace => GenerationTraceScan nameEq Z [] trace (originalFinalOrdinal result) (originalFinalLive result)}
+    (locatedDecomposition (selectedEpisode candidate))
+    (o20AppendGenerationScans (beforeGenerationScan result)
+      (o20AppendGenerationScans (episodeGenerationScan result) (afterGenerationScan result)))
