@@ -27294,6 +27294,40 @@ buildAdjacentActionRegistrationCorrespondence origin =
     (adjacentOriginGeneratedCoherent origin)
     (adjacentOriginGeneratedOrdinal origin)
 
+||| Root ordinal preservation for the same adjacent action-origin producer and map.
+private
+0 adjacentOriginRootOrdinal :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {initial, pairFirst, sourceMiddle, sourceSuffixFirst, sourceFinal,
+    targetMiddle, targetSuffixFirst, targetFinal :
+    SystemState name key value world error} ->
+  {prefixTrace : Transitions initial pairFirst} ->
+  {sourceFirst : Transition pairFirst sourceMiddle} ->
+  {sourceSecond : Transition sourceMiddle sourceSuffixFirst} ->
+  {sourceSuffix : Transitions sourceSuffixFirst sourceFinal} ->
+  {targetFirst : Transition pairFirst targetMiddle} ->
+  {targetSecond : Transition targetMiddle targetSuffixFirst} ->
+  {targetSuffix : Transitions targetSuffixFirst targetFinal} ->
+  (origin : AdjacentActionOriginProducer name key world error value prefixTrace
+    sourceFirst sourceSecond sourceSuffix targetFirst targetSecond targetSuffix) ->
+  {root : name} -> {component : Component key value world error} ->
+  (occurrence : LocatedActionOccurrence (OInsert root Root component)
+    (appendTransitions prefixTrace
+      (MoreTransitions targetFirst (MoreTransitions targetSecond targetSuffix)))) ->
+  (generationForward
+    (replayGenerationRenaming (buildAdjacentActionRegistrationCorrespondence origin))
+    (MkRegistrationGeneration root
+      (locatedActionOrdinal
+        (replayActionOrigin (buildAdjacentActionRegistrationCorrespondence origin)
+          occurrence))) =
+    MkRegistrationGeneration root (locatedActionOrdinal occurrence))
+adjacentOriginRootOrdinal {prefixTrace} origin {root} occurrence =
+  cong (MkRegistrationGeneration root)
+    (adjacentOrdinalRelationForward (transitionCount prefixTrace)
+      (locatedActionOrdinal occurrence)
+      (locatedActionOrdinal (adjacentOriginOccurrence origin occurrence))
+      (adjacentOriginOrdinalRelation origin occurrence))
+
 private
 0 adjacentActionRegistrationCorrespondence :
   (name, key, world, error : Type) -> (value : key -> Type) ->
