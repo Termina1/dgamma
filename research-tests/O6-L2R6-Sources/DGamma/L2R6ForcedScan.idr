@@ -48,3 +48,18 @@ ownChildReleaseStep nameEq keyEq root source (LAdvance actor) = False
 ownChildReleaseStep nameEq keyEq root source (LDivert actor) = False
 ownChildReleaseStep nameEq keyEq root source (LUnload actor) = False
 ownChildReleaseStep nameEq keyEq root source (LLeave actor) = False
+
+||| Compute precisely the own-child release ordinals STRICTLY before the
+||| supplied root cut, from actual checked source/action pairs. The state just
+||| before each Remove witnesses earlier declaration occupancy, even retired.
+public export
+scanReleaseOrdinals : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {0 first, finalState : SystemState name key value world error} ->
+  {0 trace : Transitions first finalState} ->
+  DecEq name -> DecEq key -> Component key value world error -> Nat -> Nat ->
+  AvailabilityTrace name key world error value trace -> List Nat
+scanReleaseOrdinals nameEq keyEq root offset cut (AvailabilityEnd state) = []
+scanReleaseOrdinals nameEq keyEq root offset cut (AvailabilityStep source (Fired ne ke action tag checked) rest later) =
+  if offset < cut && ownChildReleaseStep nameEq keyEq root source action
+     then offset :: scanReleaseOrdinals nameEq keyEq root (S offset) cut later
+     else scanReleaseOrdinals nameEq keyEq root (S offset) cut later
