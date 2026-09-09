@@ -63,3 +63,12 @@ r195RootLawFreeCorrespondence = MkActionRegistrationReplayCorrespondence
     r195SwapRootOrdinalsInvolutive r195SwapRootOrdinalsInvolutive)
   id (\occurrence => Refl) id (\occurrence => Refl)
   (\occurrence => void (r195RootOnlyNoChildBirth occurrence))
+
+||| The precise actual root occurrence in the checked singleton, with its
+||| own native source/target states and literal decomposition.
+public export
+0 r195ActualRootOccurrence :
+  LocatedActionOccurrence (OInsert 0 Root r45Parent)
+    (MoreTransitions r45ParentInsert NoTransitions)
+r195ActualRootOccurrence = MkLocatedActionOccurrence r45Initial r45AfterParent
+  NoTransitions r45ParentInsert NoTransitions Refl Refl
