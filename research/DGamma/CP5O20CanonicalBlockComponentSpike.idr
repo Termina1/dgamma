@@ -1,0 +1,80 @@
+module DGamma.CP5O20CanonicalBlockComponentSpike
+
+import DGamma.Calculus
+import DGamma.Coeffects
+import DGamma.Metatheory
+import DGamma.CP3
+import DGamma.CP5ConfluenceLocalDiamondSpike
+import DGamma.CP5ConfluenceCanonicalSortSpike
+import DGamma.CP5ConfluenceRenamingCompositionSpike
+import DGamma.CP5ConfluenceCrossTraceSpike
+import DGamma.CP5UniqueRawNameInsertions
+import DGamma.CP5O19SurfaceSpike
+import DGamma.CP5O20SupportedReferenceSpike
+import DGamma.CP5O20CanonicalPairSelectionSpike
+import DGamma.CP5O20OwnCutSafetySpike
+import Data.List
+import Data.List.Elem
+import Data.Maybe
+import Decidable.Equality
+import Decidable.Decidable
+
+%default total
+%unbound_implicits off
+
+||| The components at both selected ACTUAL opening cuts agree, from original
+||| supported metadata and the two authentic replay origins. The two fibers
+||| and primitive lookup equations are explicit observations. No pre-cut
+||| effects/control relation or component-equality premise is assumed.
+export
+0 o20SelectedOpeningComponents :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {protocol : RegistrationProtocol key value world error} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {initial, leftFinal, rightFinal : SystemState name key value world error} ->
+  {leftTrace : Transitions initial leftFinal} ->
+  {rightTrace : Transitions initial rightFinal} ->
+  {sameInputs : SameOrchestrationModuloGenerated nameEq keyEq leftTrace rightTrace} ->
+  {leftCapital : IndependentCanonicalSchedule name key world error value protocol
+    nameEq keyEq leftTrace} ->
+  {rightCapital : IndependentCanonicalSchedule name key world error value protocol
+    nameEq keyEq rightTrace} ->
+  {matching : MappedCanonicalSupportOrders name key world error value protocol
+    nameEq keyEq leftTrace rightTrace
+    (currentNameBijection (endpointRenaming sameInputs))
+    (canonicalSchedule leftCapital) (canonicalSchedule rightCapital)} ->
+  {operational : CertifiedOperationalCanonicalPermutation name key world error value
+    protocol nameEq keyEq leftTrace rightTrace sameInputs leftCapital rightCapital matching} ->
+  (execution : PermutedCanonicalExecution name key world error value protocol
+    nameEq keyEq leftTrace rightTrace sameInputs leftCapital rightCapital operational) ->
+  (0 leftUnique : UniqueRawNameInsertions name key world error value nameEq keyEq leftTrace) ->
+  (0 rightUnique : UniqueRawNameInsertions name key world error value nameEq keyEq rightTrace) ->
+  {selected : name} ->
+  (pair : SelectedCanonicalBlockPair name key world error value protocol nameEq keyEq
+    leftTrace rightTrace sameInputs leftCapital rightCapital matching operational selected) ->
+  (leftFiber, rightFiber : Fiber name key value world error) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected (registry (blockPreStart (pairLeftBlock pair))) = Just leftFiber) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} (renameForward (expectedBridgeBijection sameInputs) selected) (registry (blockPreStart (pairRightBlock pair))) = Just rightFiber) ->
+  (fiberComponent leftFiber = fiberComponent rightFiber)
+o20SelectedOpeningComponents {nameEq} {keyEq} {protocol} {leftTrace} {rightTrace}
+  {sameInputs} {leftCapital} {rightCapital} {operational} {selected}
+  execution leftUnique rightUnique pair leftFiber rightFiber leftFound rightFound =
+    trans (o20ReplayCutReferenceComponent nameEq keyEq protocol leftTrace leftCapital leftUnique
+      (operationalTargetTrace operational) (operationalTargetPremises operational)
+      (permutationOccurrenceCorrespondence execution)
+      (traceBeforeBlock (pairLeftBlock pair))
+      (MoreTransitions (beginTransition (blockOpening (pairLeftBlock pair)))
+        (appendTransitions (blockBody (pairLeftBlock pair)) (traceAfterBlock (pairLeftBlock pair))))
+      (blockDecomposition (pairLeftBlock pair)) selected
+      (presentFiber (o20OriginalSupportedLookup nameEq keyEq protocol leftTrace leftCapital selected (pairSelectedSupported pair))) leftFiber
+      (presentFound (o20OriginalSupportedLookup nameEq keyEq protocol leftTrace leftCapital selected (pairSelectedSupported pair))) leftFound)
+      (sym (trans (o20ReplayCutReferenceComponent nameEq keyEq protocol rightTrace rightCapital rightUnique
+      (canonicalTrace (canonicalSchedule rightCapital)) (canonicalReplayPremises rightCapital)
+      (identityActionRegistrationReplayCorrespondence (canonicalTrace (canonicalSchedule rightCapital)))
+      (traceBeforeBlock (pairRightBlock pair))
+      (MoreTransitions (beginTransition (blockOpening (pairRightBlock pair)))
+        (appendTransitions (blockBody (pairRightBlock pair)) (traceAfterBlock (pairRightBlock pair))))
+      (blockDecomposition (pairRightBlock pair)) (renameForward (expectedBridgeBijection sameInputs) selected)
+      (imageFiber (o20OriginalSupportedImageForward nameEq keyEq protocol leftTrace rightTrace sameInputs leftCapital rightCapital leftUnique rightUnique selected (presentFiber (o20OriginalSupportedLookup nameEq keyEq protocol leftTrace leftCapital selected (pairSelectedSupported pair))) (presentFound (o20OriginalSupportedLookup nameEq keyEq protocol leftTrace leftCapital selected (pairSelectedSupported pair))) (pairSelectedSupported pair))) rightFiber
+      (imageFound (o20OriginalSupportedImageForward nameEq keyEq protocol leftTrace rightTrace sameInputs leftCapital rightCapital leftUnique rightUnique selected (presentFiber (o20OriginalSupportedLookup nameEq keyEq protocol leftTrace leftCapital selected (pairSelectedSupported pair))) (presentFound (o20OriginalSupportedLookup nameEq keyEq protocol leftTrace leftCapital selected (pairSelectedSupported pair))) (pairSelectedSupported pair))) rightFound)
+        (imageComponent (o20OriginalSupportedImageForward nameEq keyEq protocol leftTrace rightTrace sameInputs leftCapital rightCapital leftUnique rightUnique selected (presentFiber (o20OriginalSupportedLookup nameEq keyEq protocol leftTrace leftCapital selected (pairSelectedSupported pair))) (presentFound (o20OriginalSupportedLookup nameEq keyEq protocol leftTrace leftCapital selected (pairSelectedSupported pair))) (pairSelectedSupported pair)))))
