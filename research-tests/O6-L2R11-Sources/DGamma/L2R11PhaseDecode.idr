@@ -28,3 +28,22 @@ export
   (0 equation : phaseParentOwner parent = Just actor) -> parent = ChildOf actor
 phaseParentDecoded Root actor equation = absurd equation
 phaseParentDecoded (ChildOf owner) actor equation = cong ChildOf (injective equation)
+
+||| Decode a control event's observed lookup into the SAME installed fiber
+||| and own-child parent. The continuation receives data, not a semantic oracle.
+export
+0 phaseControlDecoded : {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (child, actor : name) ->
+  (source : SystemState name key value world error) ->
+  (found : Maybe (Fiber name key value world error)) ->
+  (0 equation : lookupFiber {name} {key} {value} {world} {error} @{nameEq}
+    child (registry source) = found) ->
+  (0 owner : phaseControlOwner nameEq child source found equation = Just actor) ->
+  (0 result : Type) ->
+  (0 done : (fiber : Fiber name key value world error) ->
+    (0 nativeFound : lookupFiber {name} {key} {value} {world} {error} @{nameEq}
+      child (registry source) = Just fiber) ->
+    (0 nativeParent : fiberParent fiber = ChildOf actor) -> result) -> result
+phaseControlDecoded nameEq child actor source Nothing equation owner result done = absurd owner
+phaseControlDecoded nameEq child actor source (Just fiber) equation owner result done =
+  done fiber equation (phaseParentDecoded (fiberParent fiber) actor owner)
