@@ -113,3 +113,16 @@ providerHeadObserved nameEq keyEq wanted actor component parent flag table lifec
   providerHeadPacketAtGuard nameEq keyEq wanted actor component parent flag table lifecycle rest
     (isActive (fiberLifecycle (MkFiber component parent flag table lifecycle)) &&
       memberKey @{keyEq} wanted (ownedValues (fiberTable (MkFiber component parent flag table lifecycle)))) Refl
+
+||| Generic consumer-side Bool elimination for two already-owned branch
+||| equations. No library decider is called or re-cased by this helper.
+export
+0 providerObservedBranchEqual :
+  {result : Type} -> (observed : Bool) ->
+  (onTrue, onFalse, left, right : result) ->
+  (left = (if observed then onTrue else onFalse)) ->
+  (right = (if observed then onTrue else onFalse)) -> (left = right)
+providerObservedBranchEqual True onTrue onFalse left right leftEquation rightEquation =
+  trans leftEquation (sym rightEquation)
+providerObservedBranchEqual False onTrue onFalse left right leftEquation rightEquation =
+  trans leftEquation (sym rightEquation)
