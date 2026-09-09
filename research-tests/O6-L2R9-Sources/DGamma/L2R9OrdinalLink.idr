@@ -86,3 +86,29 @@ export
 lookupOrdinalLink nameEq keyEq component child occurrence atHead Nothing equation = Refl
 lookupOrdinalLink nameEq keyEq component child occurrence atHead (Just fiber) equation =
   parentOrdinalLink nameEq keyEq component child fiber occurrence atHead equation (fiberParent fiber) Refl
+
+||| The head action's runtime ordinal list is exactly the projection of its
+||| native located release packets. The action carries its own equation.
+export
+0 actionOrdinalLink : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (component : Component key value world error) ->
+  (step : Transition first middle) -> (rest : Transitions middle finalState) ->
+  (action : Action name key value world error) ->
+  (0 equation : transitionAction step = action) ->
+  map (\release => locatedActionOrdinal (releaseOccurrence (snd release)))
+    (releaseAtAction nameEq keyEq component step rest action equation) =
+  ordinalAtAction nameEq keyEq component first action
+actionOrdinalLink nameEq keyEq component step rest (OInsert child parent inserted) equation = Refl
+actionOrdinalLink nameEq keyEq component step rest (ORetire child) equation = Refl
+actionOrdinalLink {name} {key} {world} {error} {value} {first} {middle}
+  nameEq keyEq component step rest (ORemove child) equation =
+  lookupOrdinalLink nameEq keyEq component child
+    (MkLocatedActionOccurrence first middle NoTransitions step rest equation Refl) Refl
+    (lookupFiber {name} {key} {value} {world} {error} @{nameEq} child (registry first)) Refl
+actionOrdinalLink nameEq keyEq component step rest (LBegin actor) equation = Refl
+actionOrdinalLink nameEq keyEq component step rest (LAdvance actor) equation = Refl
+actionOrdinalLink nameEq keyEq component step rest (LDivert actor) equation = Refl
+actionOrdinalLink nameEq keyEq component step rest (LUnload actor) equation = Refl
+actionOrdinalLink nameEq keyEq component step rest (LLeave actor) equation = Refl
