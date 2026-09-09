@@ -54,3 +54,24 @@ checkedInsertAtNativeGuards nameEq keyEq actor parent component ambient source a
     OInsertTag (MkRuntimeSnapshot ambient (Bind actor (freshFiber component parent) :: bindings source))
     (applyAction @{nameEq} @{keyEq} (OInsert actor parent component) (MkSystemState ambient source)) Refl
     (insertAtNativeGuards nameEq keyEq actor parent component ambient source absent guards) valid
+
+||| General-parent counterpart of retireInsertedSnapshot: early retirement
+||| cannot alter a distinct freshly inserted head in the ordered runtime list.
+export
+0 retireAnyInsertedSnapshot :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (child, actor : name) -> (parent : Parent name) ->
+  (fiber : Fiber name key value world error) ->
+  (component : Component key value world error) -> (ambient : world) ->
+  (source : Registry name key value world error) ->
+  (0 absent : lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor source = Nothing) ->
+  (0 distinct : Not (child = actor)) ->
+  runtimeSnapshot {name} {key} {value} {world} {error}
+    (MkSystemState ambient (replaceBinding @{nameEq} child (retireFiber fiber)
+      (insertBinding @{nameEq} actor (freshFiber component parent) source absent))) =
+  MkRuntimeSnapshot ambient (Bind actor (freshFiber component parent) ::
+    bindings (replaceBinding @{nameEq} child (retireFiber fiber) source))
+retireAnyInsertedSnapshot nameEq child actor parent fiber component ambient (MkCoeffectContext entries unique) absent distinct =
+  cong (MkRuntimeSnapshot ambient)
+    (replaceOtherHeadObserved nameEq child actor (retireFiber fiber) (freshFiber component parent)
+      entries (decEq @{nameEq} child actor) Refl distinct)
