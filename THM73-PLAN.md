@@ -37,7 +37,9 @@ Authorized V0-CACHE is unchanged-source validation, not a fourth proof attempt.
 4. **D2:** import-closed ALL181 inherited+8 new source targets +seeded
    package=190/190 final expected outcomes PASS, no exclusions.37 compiler-free
    adversarial tests PASS; raw archive/independent machine reports published.
-   Owner+reviewer gate pending; no human approval inferred from machine checks.
+   Supervisor ACCEPTED69c90a21; D4 artifact seal. Owner-approved cadence uses
+   R204 supervisor spot-check instead of external review; no human proof
+   approval inferred from machine checks.
 
 Detailed proof correspondence, raw invocation accounting and open premises:
 `research-tests/O6-R204-DECLARATIONS.md`, `O6-R204-MICRO-UNITS.md`,
@@ -4205,3 +4207,31 @@ to edit/retry during R204. The current full and narrowed left-only statements
 remain exhausted and fully reverted. Exact hypothetical14-byte visibility
 delta and source-pinned dependent closure: O6-R204-R205-VISIBILITY-CANDIDATE.json.
 The candidate was computed in memory only; no Idris file was written.
+
+## D4 — owner-accepted checked PARTIAL seal; stand down
+
+Supervisor accepted69c90a21 and authorized this artifact-only D4 seal, after
+independent spot-check of34 commits,59 files(+64756/−13), clean allowed tree,
+production/six protected modules, census4 and zero fixture lets. **R203 is
+RATIFIED.** Under the new owner-approved every-second-shift review cadence,
+R204 receives **SUPERVISOR SPOT-CHECK instead of external review**. No external
+review or independent human proof approval is claimed. Exact ruling is in
+O6-R204-OWNER-FINAL-GATE.md.
+
+Final proof status stays:29 new erased total support declarations; B14/A16
+caps reached, A15 fully reverted/exhausted, A/B partial and C INELIGIBLE;
+190/190 final expected outcomes and37 compiler-free tests PASS. Full ALL-name
+rebase/D5 and canonical transport/cut/skips/whole histories/synchronization
+remain OPEN. No new source or native compiler invocation follows V190.
+All four D units are now used for artifacts; no fifth unit or proof retry.
+
+**R205 is PRODUCTION UNFREEZE, not a proof shift.** Its owner-signed lane patch
+is origin/cp5-thm73-lane-a8a10:research-tests/O6-L2R15-CP3-TIER1-SIGNED-DIFF.patch
+(7 hunks, CP3.idr only; owner apply-check PASS on56d1269b; SHA42d957748fcc67ff534c33a6c369eded4bad65e0f37e5c72e4539b737a68fb8a).
+R204 only inspected local git-object bytes; no lane2 worktree/apply/rebuild.
+Complete the owner-required unfreeze/rebuild and new baseline FIRST. A15's
+visibility companion is the first **proof** micro-unit AFTER that rebuild,
+under its prior gate/V+dependent-revalidation requirements. Only then may
+one new two-path equality micro-unit be considered under R205 scope/budget.
+The raw R204 archive is not rewritten; D4 records the superseding ordering.
+Stand down after the D4 receipt; no R205 work is started in this shift.

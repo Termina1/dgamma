@@ -1,5 +1,5 @@
 {
-  "status": "CANDIDATE ONLY; NO Idris bytes edited; future R205 prior gate REQUIRED",
+  "status": "FUTURE CANDIDATE FIRST PROOF MICRO-UNIT AFTER R205 PRODUCTION UNFREEZE + REQUIRED REBUILD; separate prior gate required; NO Idris bytes edited",
   "recordedUTC": "2026-09-09T21:47:10.592203+00:00",
   "r204SourceFreeze": "3e6d8ff0f539ecb0425fc19b496995b4a97d6e67",
   "authorization": "Parent mid-run steering: source-level probable opacity diagnosis only; prepare R205 visibility-only companion as candidate FIRST micro-unit under gate; recorded V on defining module plus import-closed re-validation of dependents; then at most ONE new two-path append equality micro-unit with reducible projections, not an R204 exhausted-statement retry.",
@@ -61,5 +61,8 @@
       "currentSHA256": "8fda11ccd281eed876d83849734d79059c63e54dde9946182866699dacb71b87"
     }
   ],
-  "qualification": "This is a read-only candidate manifest, not an authorized source patch or scheduled compiler invocation. Reducible projections change the elaboration context, not paper/runtime hypotheses. Recompute closure and baseline hashes at R205 start; preserve one-compiler evidence/RSS rules. R204 A15 remains STOP3/3 fully reverted. No current visibility edit, source timestamp manipulation or reattempt."
+  "qualification": "This is a read-only candidate manifest, not an authorized source patch or scheduled compiler invocation. Reducible projections change the elaboration context, not paper/runtime hypotheses. Recompute closure and baseline hashes at R205 start; preserve one-compiler evidence/RSS rules. R204 A15 remains STOP3/3 fully reverted. No current visibility edit, source timestamp manipulation or reattempt.",
+  "R205Precedence": "R205 is production-unfreeze, not a proof shift. Follow owner-signed CP3-only7-hunk patch first, complete owner-required rebuild and new baseline, then visibility companion as first proof micro-unit under separate gate.",
+  "productionUnfreezeAuthority": "O6-R204-R205-PRODUCTION-UNFREEZE.json",
+  "D4SupersedesEarlierFirstMicroUnitShorthand": true
 }

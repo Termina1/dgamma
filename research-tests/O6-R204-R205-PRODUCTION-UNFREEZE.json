@@ -1,0 +1,22 @@
+{
+  "recordedUTC": "2026-09-09T22:29:34.611026+00:00",
+  "ref": "origin/cp5-thm73-lane-a8a10",
+  "refCommit": "6f85af32e54d5c2709c6b76d2cdda833ea362ec1",
+  "path": "research-tests/O6-L2R15-CP3-TIER1-SIGNED-DIFF.patch",
+  "patchSHA256": "42d957748fcc67ff534c33a6c369eded4bad65e0f37e5c72e4539b737a68fb8a",
+  "patchBytes": 31798,
+  "hunks": 7,
+  "changedPaths": [
+    "src/DGamma/CP3.idr"
+  ],
+  "ownerProvenance": "Identified as owner-signed by R204 FINAL GATE ruling; no independent cryptographic signature claim.",
+  "ownerApplyCheck": "Owner reports git apply --check passes on56d1269b; R204 does not apply or rebuild this patch.",
+  "R204Actions": "Read-only git show from local main repository object database only; no lane2 worktree access, no file copied as patch, no source edit or compiler launch. Initial parser expected a diff --git header; corrected to the actual unified ---/+++ headers.",
+  "R205Ordering": [
+    "Production-unfreeze shift, not a proof shift",
+    "Read owner-signed lane Tier1 patch and obtain/use owner scope for CP3-only7-hunk apply",
+    "Complete owner-required rebuild and establish new production/source baseline",
+    "A15 visibility companion is the FIRST proof micro-unit AFTER the rebuild, under its separate prior gate",
+    "Then at most one new two-path equality micro-unit after successful companion+dependent revalidation and only under R205 authorized scope/budget"
+  ]
+}

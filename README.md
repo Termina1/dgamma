@@ -12,7 +12,10 @@ Paper **Thm 73 is NOT closed**; production remains frozen. C ineligible,
 macro census **4 = 1/2/0/0/1**. All189 source targets +seeded package passed
 190/190 final expected outcomes;37 evidence/policy tests pass. Raw archive,
 audits and independent machine verification are published in `research-tests/`
-(R204). Owner/reviewer gate pending; machine verification is not human review.
+(R204). Supervisor ACCEPTED69c90a21; D4 seal. Owner-approved review cadence
+uses R204 supervisor spot-check instead of external review. R205 is production
+unfreeze +required rebuild first; the gated visibility companion comes after
+rebuild as the first proof micro-unit. See the R204 owner gate/handoff artifacts.
 
 | Paper correspondence | Idris file : representative name | Status |
 |---|---|---|

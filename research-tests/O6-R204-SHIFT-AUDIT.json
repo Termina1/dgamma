@@ -1,5 +1,5 @@
 {
-  "status": "FINAL VALIDATED CHECKED PARTIAL; owner/reviewer gate pending",
+  "status": "OWNER ACCEPTED CHECKED PARTIAL at69c90a21; D4 artifact-only seal",
   "preparedUTC": "2026-09-09T22:21:50.646407+00:00",
   "baseline": "9b53266688a8791a5afb28ad5cc4d53103de648c",
   "sourceFreeze": "3e6d8ff0f539ecb0425fc19b496995b4a97d6e67",
@@ -38,7 +38,8 @@
     "D": {
       "usedBeforePublication": 1,
       "maximum": 4,
-      "status": "evidence publication then owner/reviewer gate and seal"
+      "status": "D1\u2013D4 artifact units complete; stand down",
+      "usedAtSeal": 4
     }
   },
   "retainedNewDeclarations": 29,
@@ -118,5 +119,11 @@
   ],
   "A15Cause": "parent-accepted probable export-vs-public-export opacity diagnosis; source-level only, no new check or source edit",
   "R205Candidate": "O6-R204-R205-VISIBILITY-CANDIDATE.json; future prior gate, defining-module V+dependent closure, then at most one NEW two-path micro-unit with reducible projections",
-  "qualification": "All reported fresh source checks require exactly one own Building; expected-negative outcomes include exact diagnostic+symbol. Existing macro holes are not closed by typechecking. Independent machine authentication and author review are NOT independent human approval. The archived anchor excludes future publication/gate receipts."
+  "qualification": "All reported fresh source checks require exactly one own Building; expected-negative outcomes include exact diagnostic+symbol. Existing macro holes are not closed by typechecking. Independent machine authentication and author review are NOT independent human approval. The archived anchor excludes future publication/gate receipts.",
+  "ownerAcceptedHead": "69c90a2101461b15b5256bacc1c336b18007e055",
+  "ownerRuling": "O6-R204-OWNER-FINAL-GATE.md",
+  "reviewDisposition": "SUPERVISOR SPOT-CHECK replaces external reviewer under owner-approved every-second-shift policy; no external review this shift",
+  "R203Ratification": "Explicitly RATIFIED by final owner ruling after both verified repairs",
+  "R205Precedence": "Production-unfreeze signed CP3-only7-hunk lane patch +owner-required rebuild/new baseline BEFORE first proof micro-unit (gated A15 visibility companion)",
+  "R205PatchAuthority": "O6-R204-R205-PRODUCTION-UNFREEZE.json"
 }

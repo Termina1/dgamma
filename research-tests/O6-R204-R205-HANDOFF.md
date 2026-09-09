@@ -5,7 +5,26 @@ declarations, B14/A16 caps reached; A15 STOP3/3 fully reverted. Both mandatory
 R203 P1/P2 repairs landed before B1 (af2df90b/c254d5a1). C INELIGIBLE;
 full O20/Thm73 closure and census4=1/2/0/0/1 unchanged.
 
-## Candidate FIRST micro-unit: visibility companion, PRIOR GATE REQUIRED
+## FIRST: R205 production unfreeze and required rebuild
+
+The final owner ruling designates R205 the **PRODUCTION-UNFREEZE shift, not a
+proof shift**. Use the owner-signed patch at
+`origin/cp5-thm73-lane-a8a10:research-tests/O6-L2R15-CP3-TIER1-SIGNED-DIFF.patch`:
+7 hunks, `src/DGamma/CP3.idr` only,31,798 bytes, SHA256
+`42d957748fcc67ff534c33a6c369eded4bad65e0f37e5c72e4539b737a68fb8a`.
+Pinned ref snapshot6f85af32e54d5c2709c6b76d2cdda833ea362ec1. The owner reports
+apply-check PASS on56d1269b; R204 performed read-only git-object inspection,
+not apply/rebuild and not lane2 worktree access. Authority:
+O6-R204-R205-PRODUCTION-UNFREEZE.json and O6-R204-OWNER-FINAL-GATE.md.
+
+Follow the signed patch scope, finish the owner-required rebuild and establish
+the new production/source baseline BEFORE proof work. Do not run unchanged
+R204 freeze guards after unfreezing CP3. The following visibility candidate
+is the **first PROOF micro-unit AFTER the rebuild**, under its separate prior
+gate. Earlier “FIRST micro-unit” wording below is historical parent steering,
+not permission to bypass production unfreeze/rebuild or R205 scope/budget.
+
+## Candidate FIRST PROOF micro-unit AFTER rebuild: visibility companion, PRIOR GATE REQUIRED
 
 Parent steering: **visibility-only companion (export → public export, no
 type/body change) on those two projections is a candidate FIRST micro-unit
