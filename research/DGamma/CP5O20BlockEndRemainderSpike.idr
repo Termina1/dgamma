@@ -101,3 +101,17 @@ export
 o20RetireViewActive nameEq selected ambient fibers (MkRetireSuccessView fiber found) =
   rewrite lookupReplacedFiber @{nameEq} selected fiber (retireFiber fiber) fibers found in
   rewrite found in sym (o20RetireFiberActive fiber)
+
+||| The actual native Remove observation makes its owner's Active bit false.
+||| Absence is obtained by finite deletion lookup, not scalar normalization of
+||| an independently reconstructed evaluator endpoint.
+export
+0 o20RemoveViewNotActive :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (selected : name) ->
+  (ambient : world) -> (fibers : Registry name key value world error) ->
+  {tag : RuleTag} -> {afterState : SystemState name key value world error} ->
+  RemoveSuccessView name key world error value nameEq selected ambient fibers tag afterState ->
+  (supportedActiveAt {name} {key} {value} {world} {error} @{nameEq} selected afterState = False)
+o20RemoveViewNotActive nameEq selected ambient fibers (MkRemoveSuccessView fiber found guards childless) =
+  rewrite o20DeletedLookupAbsent nameEq selected fibers in Refl
