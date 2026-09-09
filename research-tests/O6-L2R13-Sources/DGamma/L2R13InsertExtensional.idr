@@ -82,3 +82,28 @@ export
     (MkSystemState ambient (insertBinding @{nameEq} actor fiber source absent)) =
   MkRuntimeSnapshot ambient (Bind actor fiber :: bindings source)
 freshInsertSnapshot nameEq actor fiber ambient (MkCoeffectContext entries unique) absent = Refl
+
+||| Upgrade a PRODUCED canonical insertion snapshot to a genuinely native
+||| extensional successor. The old binding insertion algebra is B2, not a
+||| supplied endpoint relation or successful next edge.
+export
+0 rootInsertPacketExtensional : {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (component : Component key value world error) ->
+  (left, current : SystemState name key value world error) ->
+  (0 same : RegistryExtensional name key world error value nameEq left current) ->
+  (0 absent : lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor (registry left) = Nothing) ->
+  (packet : CheckedSnapshotStep name key world error value nameEq keyEq (OInsert actor Root component)
+    current OInsertTag (MkRuntimeSnapshot (worldState current)
+      (Bind actor (freshFiber component Root) :: bindings (registry current)))) ->
+  CheckedExtensionalStep name key world error value nameEq keyEq (OInsert actor Root component)
+    current OInsertTag (MkSystemState (worldState left)
+      (insertBinding @{nameEq} actor (freshFiber component Root) (registry left) absent))
+rootInsertPacketExtensional nameEq keyEq actor component left current same absent packet =
+  MkCheckedExtensionalStep (snapshotAfter packet) (snapshotChecked packet)
+    (extensionalTransitive (freshInsertExtensional nameEq actor (freshFiber component Root) left current same absent)
+      (snapshotIntoExtensional nameEq
+        (MkSystemState (worldState current) (insertBinding @{nameEq} actor (freshFiber component Root) (registry current)
+          (trans (sym (extensionalLookup same actor)) absent))) (snapshotAfter packet)
+        (trans (freshInsertSnapshot nameEq actor (freshFiber component Root) (worldState current) (registry current)
+          (trans (sym (extensionalLookup same actor)) absent)) (sym (snapshotExact packet)))))
