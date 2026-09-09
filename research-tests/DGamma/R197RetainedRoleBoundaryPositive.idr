@@ -5,6 +5,10 @@ import DGamma.Metatheory
 import DGamma.CP3
 import DGamma.CP5ConfluenceLocalDiamondSpike
 import DGamma.CP5O20CanonicalActionCompletenessSpike
+import DGamma.CP5O20RootStageAttachmentSpike
+import DGamma.CP5O20GenerationOnlyHistorySpike
+import DGamma.R193VestigialHistoryTransportPositive
+import DGamma.R195ClosingHistoryRetentionPositive
 import DGamma.CP5GeneratedOrchestrationMatched
 import DGamma.R45BareDiamondDisciplineCounterexamplePositive
 import DGamma.R178GeneratedOrchestrationFixtures
@@ -46,3 +50,20 @@ export
 r197RoleMismatchFailsAcceptedE9 =
   (fst r197OneOriginRoleWords, snd r197OneOriginRoleWords,
    r178QuietPairRejectsGeneratedMatching)
+
+||| One actual R193 origin supplies BOTH its matched root/stamp and the R195
+||| child closing disposition. Root matching does not discard that child
+||| alternative or produce an opposite retained canonical child by fiat.
+export
+0 r197RootAndClosingBoundary :
+  (O20RootBirthMatch Nat R45Key Unit String R45Value identityRegistrationGenerationBijection
+    0 r45Parent 0 0 r193HistoricalClosedTrace,
+   O20GenerationOnlyDisposition Nat R45Key Unit String R45Value identityRegistrationGenerationBijection
+    r193HistoricalClosedTrace r193HistoricalClosedTrace (MkRegistrationGeneration 1 2))
+r197RootAndClosingBoundary =
+  (o20RootBirthMatchLocated identityRegistrationGenerationBijection
+    r193HistoricalClosedTrace r193HistoricalClosedTrace
+    (externalRootGenerationsCoupled r193HistoricalSameInputs) 0 r45Parent
+    (MkLocatedActionOccurrence r45Initial r45AfterParent NoTransitions r45ParentInsert
+      (MoreTransitions r45Begin (MoreTransitions r45ChildInsert r193HistoricalContinuation)) Refl Refl),
+   r195ClosingHistoryRetained)
