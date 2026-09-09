@@ -9,6 +9,7 @@ import DGamma.Metatheory
 import DGamma.CP3
 import DGamma.CP5AvailabilityAwarePlacement
 import DGamma.CP5ActorLifecycleOnlyExtended
+import DGamma.L2R8CoreContract
 import DGamma.L2R10PhaseScan
 import Data.List
 import Data.List.Elem
@@ -107,3 +108,24 @@ phaseEventsExtended nameEq actor (AvailabilityEnd state) owned = ExtendedLifecyc
 phaseEventsExtended nameEq actor (AvailabilityStep source (Fired ne ke action tag checked) rest later) owned =
   phaseActionExtended nameEq actor (Fired ne ke action tag checked) rest action Refl
     (All.head owned) (phaseEventsExtended nameEq actor later (All.tail owned))
+
+||| Produce the located extended-core record from an authentic physical
+||| interval and its decoded event owners. The grammar field is derived.
+||| Choosing the interval from phaseScanOk is NOT an input silently solved.
+export
+0 locatePhaseEventCore : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {initial, finalState : SystemState name key value world error} ->
+  {global : Transitions initial finalState} ->
+  (nameEq : DecEq name) -> (actor : name) ->
+  (start, end : SystemState name key value world error) ->
+  (before : Transitions initial start) -> (core : Transitions start end) ->
+  (suffix : Transitions end finalState) ->
+  (prefixTrail : AvailabilityTrace name key world error value before) ->
+  (coreTrail : AvailabilityTrace name key world error value core) ->
+  (suffixTrail : AvailabilityTrace name key world error value suffix) ->
+  (0 physical : appendTransitions before (appendTransitions core suffix) = global) ->
+  (0 owned : All (\event => fst event = Just actor) (phaseEvents nameEq coreTrail)) ->
+  LocatedExtendedCore name key world error value nameEq actor global
+locatePhaseEventCore nameEq actor start end before core suffix prefixTrail coreTrail suffixTrail physical owned =
+  MkLocatedExtendedCore start end before core suffix prefixTrail coreTrail suffixTrail
+    (phaseEventsExtended nameEq actor coreTrail owned) physical
