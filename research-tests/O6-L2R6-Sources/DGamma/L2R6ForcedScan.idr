@@ -63,3 +63,12 @@ scanReleaseOrdinals nameEq keyEq root offset cut (AvailabilityStep source (Fired
   if offset < cut && ownChildReleaseStep nameEq keyEq root source action
      then offset :: scanReleaseOrdinals nameEq keyEq root (S offset) cut later
      else scanReleaseOrdinals nameEq keyEq root (S offset) cut later
+
+||| A runtime ordinal with erased membership in the actual computed release
+||| scan. This is a scan-membership witness, not yet a LocatedActionOccurrence
+||| decoder with explicit child/key/parent projections.
+public export
+record ReleaseWitness (0 releases : List Nat) where
+  constructor MkReleaseWitness
+  releaseOrdinal : Nat
+  0 releaseScanned : Elem releaseOrdinal releases
