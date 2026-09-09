@@ -78,3 +78,29 @@ record O20RetainedGenerationBirth
     retainedParent retainedComponent trace
   0 retainedGenerationExact :
     (generationForward mapping generation = registrationGeneration retainedBirth)
+
+||| Unpack only the actual accounting witness, preserving its birth rather
+||| than reconstructing a trace or a registration occurrence independently.
+export
+0 o20DeletionRetainedBirthFromAccount :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {protocol : RegistrationProtocol key value world error} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {initial, finalState : SystemState name key value world error} ->
+  (trace : Transitions initial finalState) ->
+  (premises : CanonicalizationPremises name key world error value protocol nameEq keyEq trace) ->
+  (candidate : DeletableClosingEpisode name key world error value nameEq keyEq trace) ->
+  (step : DeletionChainStep name key world error value protocol nameEq keyEq trace premises candidate) ->
+  (generation : RegistrationGeneration name) ->
+  (classified : DeletedGenerationClassification name key world error value nameEq trace generation) ->
+  (birth : LocatedGeneratedRegistration (generationName generation)
+    (deletedParent classified) (deletedComponent classified) (survivingTrace (deletionResult step)) **
+    (registrationGeneration (canonicalToOriginal (deletionRegistrationAccounting step) birth) =
+      registrationGeneration (deletedOccurrence classified))) ->
+  O20RetainedGenerationBirth name key world error value
+    (deletionProducerGenerationRenaming (deletionProducerCapital step)) generation
+    (survivingTrace (deletionResult step))
+o20DeletionRetainedBirthFromAccount trace premises candidate step generation classified (birth ** exact) =
+  MkO20RetainedGenerationBirth (deletedParent classified) (deletedComponent classified) birth
+    (o20DeletionRetainedBirthGeneration trace premises candidate step birth generation
+      (trans exact (deletedOccurrenceGeneration classified)))
