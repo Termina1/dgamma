@@ -61,3 +61,22 @@ data O20RegisteredUnloadFree :
       (advanceGenerationEnvironment @{nameEq} ordinal (transitionAction step) live) rest) ->
     O20RegisteredUnloadFree name key world error value nameEq registered ordinal live
       (MoreTransitions step rest)
+
+||| Specialize a raw action only along its explicit Unload equation; the
+||| registered exclusion remains generation-scoped at the same native cut.
+export
+0 o20RegisteredActionNotUnload :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (action : Action name key value world error) ->
+  (before, afterState : SystemState name key value world error) -> (tag : RuleTag) ->
+  (applyAction @{nameEq} @{keyEq} action before = Just (tag, afterState)) ->
+  CurrentRegisteredInactiveFibers name key world error value nameEq registered live before ->
+  (actor : name) -> (action = LUnload actor) ->
+  GenerationOwnedActor nameEq registered ordinal live action -> Void
+o20RegisteredActionNotUnload name key world error value nameEq keyEq registered ordinal live
+  _ before afterState tag raw inactive actor Refl owned =
+    o20RegisteredUnloadImpossible name key world error value nameEq keyEq registered ordinal live
+      actor before afterState tag raw inactive owned
