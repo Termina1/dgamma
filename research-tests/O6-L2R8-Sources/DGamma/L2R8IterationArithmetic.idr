@@ -61,3 +61,19 @@ export
 iterationStepsAtZero iteration zero = sym
   (trans (iterationDistanceBalance iteration)
     (trans (cong (iterationSteps iteration +) zero) (plusZeroRightNeutral (iterationSteps iteration))))
+
+||| Every given finite iteration is bounded by its initial physical distance.
+||| Not normalization; move/phase producers open. No accessibility recursion
+||| or chain-existence claim is smuggled into this arithmetic consequence.
+export
+0 iterationLengthBound : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {initial, oldFinal, newFinal : SystemState name key value world error} ->
+  {oldTrace : Transitions initial oldFinal} -> {newTrace : Transitions initial newFinal} ->
+  {oldTrail : AvailabilityTrace name key world error value oldTrace} ->
+  {newTrail : AvailabilityTrace name key world error value newTrace} ->
+  (iteration : DistanceIteration nameEq keyEq oldTrail newTrail) ->
+  LTE (iterationSteps iteration) (totalDistance nameEq keyEq oldTrail)
+iterationLengthBound {nameEq} {keyEq} {newTrail} iteration =
+  replace {p = \n => LTE (iterationSteps iteration) n} (sym (iterationDistanceBalance iteration))
+    (lteAddRight {m = totalDistance nameEq keyEq newTrail} (iterationSteps iteration))
