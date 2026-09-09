@@ -241,3 +241,25 @@ export
     (registrationGeneration (replayGeneratedRegistrationOrigin occurrences birth))
 o20HistoryThroughReplay mapping history occurrences selected parent component birth =
   originalBirthDisposition history selected parent component (replayGeneratedRegistrationOrigin occurrences birth)
+
+||| Simultaneously retain the original disposition AND its actual replayed
+||| ordinal equation at the SAME birth. Closing histories stay generation-
+||| only; this attaches no right retained occurrence or endpoint raw image.
+export
+0 o20HistoryReplayAttachment :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {leftFirst, leftFinal, rightFirst, rightFinal, replayedFirst, replayedFinal : SystemState name key value world error} ->
+  {left : Transitions leftFirst leftFinal} -> {right : Transitions rightFirst rightFinal} ->
+  {replayed : Transitions replayedFirst replayedFinal} ->
+  (mapping : RegistrationGenerationBijection name) ->
+  (occurrences : ActionRegistrationReplayCorrespondence name key world error value left replayed) ->
+  (selected, parent : name) -> (component : Component key value world error) ->
+  (birth : LocatedGeneratedRegistration selected parent component replayed) ->
+  O20GenerationOnlyDisposition name key world error value mapping left right
+    (registrationGeneration (replayGeneratedRegistrationOrigin occurrences birth)) ->
+  (O20GenerationOnlyDisposition name key world error value mapping left right
+     (registrationGeneration (replayGeneratedRegistrationOrigin occurrences birth)),
+   (generationForward (replayGenerationRenaming occurrences)
+     (registrationGeneration (replayGeneratedRegistrationOrigin occurrences birth)) = registrationGeneration birth))
+o20HistoryReplayAttachment mapping occurrences selected parent component birth disposition =
+  (disposition, replayGeneratedOrdinalPreserved occurrences birth)
