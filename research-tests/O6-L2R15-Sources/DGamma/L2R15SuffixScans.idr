@@ -42,3 +42,22 @@ nativeSuffixAligned nameEq keyEq
   (SuffixFramesRetire {oldRest} {newRest} actor tag oldChecked newChecked valid later) =
   (AlignedStep (ORetire actor) tag oldChecked oldRest (fst (nativeSuffixAligned nameEq keyEq later)),
    AlignedStep (ORetire actor) tag newChecked newRest (snd (nativeSuffixAligned nameEq keyEq later)))
+
+||| One observed native head yields its ACTUAL tail and exact catalog
+||| equation at arbitrary offsets. Eliminating the trail authenticates the
+||| forced transition index; native release guards need separate decoding.
+export
+0 nativeHeadScanEquations : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (action : Action name key value world error) -> (tag : RuleTag) ->
+  (0 checked : checkedApplyAction @{nameEq} @{keyEq} action first = Just (tag, middle)) ->
+  (rest : Transitions middle finalState) ->
+  (trail : AvailabilityTrace name key world error value
+    (MoreTransitions (Fired {before = first} {afterState = middle} nameEq keyEq action tag checked) rest)) ->
+  (later : AvailabilityTrace name key world error value rest **
+    ((offset : Nat) -> scanRootCatalog offset trail =
+       rootCatalogStep offset action (scanRootCatalog (S offset) later)))
+nativeHeadScanEquations nameEq keyEq _ _ _ _
+  (AvailabilityStep source (Fired _ _ action tag checked) rest later) =
+  (later ** (\offset => Refl))
