@@ -104,3 +104,19 @@ o20DeletedBirthClosingIndex name key world error value nameEq trace generation c
                (beforeRegistration (deletedOccurrence classified))
                (MoreTransitions (registrationTransition (deletedOccurrence classified))
                  (afterRegistration (deletedOccurrence classified))) (S ordinal)) exact)))
+
+||| An observed physical Unload index contains a real occurrence, including
+||| under an arbitrary finite preceding trace. No trace is reconstructed.
+export
+0 o20IndexedUnloadOccurs :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  {first, finalState : SystemState name key value world error} ->
+  (trace : Transitions first finalState) -> (ordinal : Nat) -> (actor : name) ->
+  (rawClosingActionAt name key world error value ordinal trace = Just (LUnload actor)) ->
+  ActionOccurs (LUnload actor) trace
+o20IndexedUnloadOccurs name key world error value NoTransitions ordinal actor exact = absurd exact
+o20IndexedUnloadOccurs name key world error value
+  (MoreTransitions (Fired nameEq keyEq action tag checked) rest) Z actor exact =
+    ActionOccursHere (Fired nameEq keyEq action tag checked) rest (justInjective exact)
+o20IndexedUnloadOccurs name key world error value (MoreTransitions step rest) (S ordinal) actor exact =
+  ActionOccursLater step rest (o20IndexedUnloadOccurs name key world error value rest ordinal actor exact)
