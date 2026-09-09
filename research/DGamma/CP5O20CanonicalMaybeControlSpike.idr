@@ -145,3 +145,21 @@ o20DispositionPreservesAbsence (CanonicalControlWithdrawn member absent) origina
 o20DispositionPreservesAbsence {canonical} (CanonicalControlKept outside controls) originalAbsent =
   o20AbsentControlTarget
     (replace {p = \observed => FiberControlMaybeRelated observed canonical} originalAbsent controls)
+
+||| Consume ONE observation packet to turn actual original lookup absence
+||| into actual canonical lookup absence. Equations refer to that same packet;
+||| no projected guard or equality of separately reconstructed observations.
+export
+0 o20CanonicalObservationAbsent :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {originalFinal, canonicalFinal : SystemState name key value world error} ->
+  {endpoint : CanonicalEndpointRelation name key world error value nameEq keyEq originalFinal canonicalFinal} ->
+  {selected : name} ->
+  (observation : O20CanonicalControlObservation name key world error value nameEq keyEq originalFinal canonicalFinal endpoint selected) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected (registry originalFinal) = Nothing) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected (registry canonicalFinal) = Nothing)
+o20CanonicalObservationAbsent observation originalAbsent =
+  trans (canonicalFiberObserved observation)
+    (o20DispositionPreservesAbsence (canonicalControlDisposition observation)
+      (trans (sym (originalFiberObserved observation)) originalAbsent))
