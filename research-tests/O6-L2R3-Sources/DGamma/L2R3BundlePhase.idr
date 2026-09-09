@@ -60,8 +60,8 @@ sRootSnapshotSquare = MkAvailabilityRootSnapshotExchange
   (\same => case same of Refl impossible) Refl Refl (barrierState 6) (barrierState 7)
   (insertS barrierNativeExecution) (beginFollowing barrierNativeExecution) (secondMoveSnapshot bundlePhaseNative)
 
-||| Two actual availability-aware phase calls, in original R/S bundle order,
-||| plus the native old/middle runs and the second call's OWN moved trail.
+||| Two actual availability-aware phase steps, in original R/S bundle order,
+||| plus the native old/middle runs and the second step's OWN moved trail.
 ||| Inversion counts are LOCAL to the post-release cut4: 2 -> 1 -> 0.
 ||| The single-R moved trail also has count0. Full pre-release prefixes retain
 ||| blocked inversions (2 for R, 4 for R/S); no global raw-count-zero claim.
@@ -91,3 +91,36 @@ record BundlePhaseEvidence where
   0 firstPrefixRuntime : runtimeSnapshot (snapshotRootFinal (rootPhaseSquare rPhase)) = runtimeSnapshot (bundlePhaseState 5)
   0 originalToMovedRuntime : runtimeSnapshot (bundlePhaseState 3) = runtimeSnapshot (snapshotRootFinal (rootPhaseSquare sPhase))
   0 originalToMovedSupport : supportSet @{%search} @{%search} (bundlePhaseState 3) = supportSet @{%search} @{%search} (snapshotRootFinal (rootPhaseSquare sPhase))
+
+||| Construct two SnapshotRootPhaseSteps, first R then S, using the exact
+||| constructor recipe of L2R2RootPhase.rootPhaseFromSnapshot (its function
+||| body is export-opaque here). Squares and decreasing proofs are reused.
+||| The original and middle suffix S edges are both native checked edges, so
+||| the first move is physically replayed through S rather than just counted.
+||| The second phase owns the final moved trail. Runtime/support preservation
+||| is exact; the zero is post-release-local, not a rewritten global measure.
+public export
+0 bundlePhaseEvidence : BundlePhaseEvidence
+bundlePhaseEvidence = MkBundlePhaseEvidence
+  (MkSnapshotRootPhaseStep smallRootSnapshotSquare
+    (MoreTransitions (Fired {before = bundlePhaseState 0} {afterState = bundlePhaseState 4} %search %search (OInsert 3 Root (smallComponent True)) OInsertTag (smallInsert3 smallNativeExecution)) (MoreTransitions (Fired {before = bundlePhaseState 4} {afterState = bundlePhaseState 5} %search %search (LBegin 2) LBeginTag (smallBegin2 smallNativeExecution)) NoTransitions))
+    Refl (smallAlternateSnapshot smallNativeExecution)
+    (supportSetAcrossSnapshot %search %search (smallState 9) (smallState 6) (smallAlternateSnapshot smallNativeExecution))
+    (beginSnapshotRootDecreases %search %search 2 3 (smallComponent True)
+      (smallEarlyBegin2 smallNativeExecution) (smallLateInsert3 smallNativeExecution) smallRootSnapshotSquare))
+  (MkSnapshotRootPhaseStep sRootSnapshotSquare
+    (MoreTransitions (Fired {before = bundlePhaseState 0} {afterState = bundlePhaseState 4} %search %search (OInsert 3 Root (smallComponent True)) OInsertTag (smallInsert3 smallNativeExecution)) (MoreTransitions (Fired {before = bundlePhaseState 4} {afterState = bundlePhaseState 7} %search %search (OInsert 4 Root (smallComponent False)) OInsertTag (insertS barrierNativeExecution)) (MoreTransitions (Fired {before = bundlePhaseState 7} {afterState = bundlePhaseState 8} %search %search (LBegin 2) LBeginTag (beginFollowing barrierNativeExecution)) NoTransitions)))
+    Refl (secondMoveSnapshot bundlePhaseNative)
+    (supportSetAcrossSnapshot %search %search (bundlePhaseState 6) (bundlePhaseState 8) (secondMoveSnapshot bundlePhaseNative))
+    (beginSnapshotRootDecreases %search %search 2 4 (smallComponent False)
+      (smallBegin2 smallNativeExecution) (sAfterRBegin bundlePhaseNative) sRootSnapshotSquare))
+  (MoreTransitions (Fired {before = bundlePhaseState 0} {afterState = bundlePhaseState 1} %search %search (LBegin 2) LBeginTag (smallEarlyBegin2 smallNativeExecution)) (MoreTransitions (Fired {before = bundlePhaseState 1} {afterState = bundlePhaseState 2} %search %search (OInsert 3 Root (smallComponent True)) OInsertTag (smallLateInsert3 smallNativeExecution)) (MoreTransitions (Fired {before = bundlePhaseState 2} {afterState = bundlePhaseState 3} %search %search (OInsert 4 Root (smallComponent False)) OInsertTag (sAfterBeginR bundlePhaseNative)) NoTransitions)))
+  (MoreTransitions (Fired {before = bundlePhaseState 0} {afterState = bundlePhaseState 4} %search %search (OInsert 3 Root (smallComponent True)) OInsertTag (smallInsert3 smallNativeExecution)) (MoreTransitions (Fired {before = bundlePhaseState 4} {afterState = bundlePhaseState 5} %search %search (LBegin 2) LBeginTag (smallBegin2 smallNativeExecution)) (MoreTransitions (Fired {before = bundlePhaseState 5} {afterState = bundlePhaseState 6} %search %search (OInsert 4 Root (smallComponent False)) OInsertTag (sAfterRBegin bundlePhaseNative)) NoTransitions)))
+  (AvailabilityStep (bundlePhaseState 0) (Fired {before = bundlePhaseState 0} {afterState = bundlePhaseState 1} %search %search (LBegin 2) LBeginTag (smallEarlyBegin2 smallNativeExecution)) (MoreTransitions (Fired {before = bundlePhaseState 1} {afterState = bundlePhaseState 2} %search %search (OInsert 3 Root (smallComponent True)) OInsertTag (smallLateInsert3 smallNativeExecution)) (MoreTransitions (Fired {before = bundlePhaseState 2} {afterState = bundlePhaseState 3} %search %search (OInsert 4 Root (smallComponent False)) OInsertTag (sAfterBeginR bundlePhaseNative)) NoTransitions)) (AvailabilityStep (bundlePhaseState 1) (Fired {before = bundlePhaseState 1} {afterState = bundlePhaseState 2} %search %search (OInsert 3 Root (smallComponent True)) OInsertTag (smallLateInsert3 smallNativeExecution)) (MoreTransitions (Fired {before = bundlePhaseState 2} {afterState = bundlePhaseState 3} %search %search (OInsert 4 Root (smallComponent False)) OInsertTag (sAfterBeginR bundlePhaseNative)) NoTransitions) (AvailabilityStep (bundlePhaseState 2) (Fired {before = bundlePhaseState 2} {afterState = bundlePhaseState 3} %search %search (OInsert 4 Root (smallComponent False)) OInsertTag (sAfterBeginR bundlePhaseNative)) NoTransitions (AvailabilityEnd (bundlePhaseState 3)))))
+  (AvailabilityStep (bundlePhaseState 0) (Fired {before = bundlePhaseState 0} {afterState = bundlePhaseState 4} %search %search (OInsert 3 Root (smallComponent True)) OInsertTag (smallInsert3 smallNativeExecution)) (MoreTransitions (Fired {before = bundlePhaseState 4} {afterState = bundlePhaseState 5} %search %search (LBegin 2) LBeginTag (smallBegin2 smallNativeExecution)) (MoreTransitions (Fired {before = bundlePhaseState 5} {afterState = bundlePhaseState 6} %search %search (OInsert 4 Root (smallComponent False)) OInsertTag (sAfterRBegin bundlePhaseNative)) NoTransitions)) (AvailabilityStep (bundlePhaseState 4) (Fired {before = bundlePhaseState 4} {afterState = bundlePhaseState 5} %search %search (LBegin 2) LBeginTag (smallBegin2 smallNativeExecution)) (MoreTransitions (Fired {before = bundlePhaseState 5} {afterState = bundlePhaseState 6} %search %search (OInsert 4 Root (smallComponent False)) OInsertTag (sAfterRBegin bundlePhaseNative)) NoTransitions) (AvailabilityStep (bundlePhaseState 5) (Fired {before = bundlePhaseState 5} {afterState = bundlePhaseState 6} %search %search (OInsert 4 Root (smallComponent False)) OInsertTag (sAfterRBegin bundlePhaseNative)) NoTransitions (AvailabilityEnd (bundlePhaseState 6)))))
+  (AvailabilityStep (bundlePhaseState 0) (Fired {before = bundlePhaseState 0} {afterState = bundlePhaseState 4} %search %search (OInsert 3 Root (smallComponent True)) OInsertTag (smallInsert3 smallNativeExecution)) (MoreTransitions (Fired {before = bundlePhaseState 4} {afterState = bundlePhaseState 5} %search %search (LBegin 2) LBeginTag (smallBegin2 smallNativeExecution)) NoTransitions) (AvailabilityStep (bundlePhaseState 4) (Fired {before = bundlePhaseState 4} {afterState = bundlePhaseState 5} %search %search (LBegin 2) LBeginTag (smallBegin2 smallNativeExecution)) NoTransitions (AvailabilityEnd (bundlePhaseState 5))))
+  (AvailabilityStep (bundlePhaseState 0) (Fired {before = bundlePhaseState 0} {afterState = bundlePhaseState 4} %search %search (OInsert 3 Root (smallComponent True)) OInsertTag (smallInsert3 smallNativeExecution)) (MoreTransitions (Fired {before = bundlePhaseState 4} {afterState = bundlePhaseState 7} %search %search (OInsert 4 Root (smallComponent False)) OInsertTag (insertS barrierNativeExecution)) (MoreTransitions (Fired {before = bundlePhaseState 7} {afterState = bundlePhaseState 8} %search %search (LBegin 2) LBeginTag (beginFollowing barrierNativeExecution)) NoTransitions)) (AvailabilityStep (bundlePhaseState 4) (Fired {before = bundlePhaseState 4} {afterState = bundlePhaseState 7} %search %search (OInsert 4 Root (smallComponent False)) OInsertTag (insertS barrierNativeExecution)) (MoreTransitions (Fired {before = bundlePhaseState 7} {afterState = bundlePhaseState 8} %search %search (LBegin 2) LBeginTag (beginFollowing barrierNativeExecution)) NoTransitions) (AvailabilityStep (bundlePhaseState 7) (Fired {before = bundlePhaseState 7} {afterState = bundlePhaseState 8} %search %search (LBegin 2) LBeginTag (beginFollowing barrierNativeExecution)) NoTransitions (AvailabilityEnd (bundlePhaseState 8)))))
+  Refl Refl Refl Refl Refl Refl Refl Refl Refl
+  (trans (firstMoveSnapshot bundlePhaseNative) (secondMoveSnapshot bundlePhaseNative))
+  (supportSetAcrossSnapshot %search %search (bundlePhaseState 3) (bundlePhaseState 8)
+    (trans (firstMoveSnapshot bundlePhaseNative) (secondMoveSnapshot bundlePhaseNative)))
