@@ -70,3 +70,15 @@ wordInventoryHead action word =
   trans (anyFoldObserved (\item => actionKindCode item == actionKindCode action) word
     (actionKindCode action == actionKindCode action))
     (rewrite actionKindSelf action in Refl)
+
+||| Tail-domain inclusion is proved, not given to the replay fold as an
+||| inventory oracle. This allows precisely the encountered suffix roles.
+export
+0 wordInventoryTail : {name, key, world, error : Type} -> {value : key -> Type} ->
+  (head : Action name key value world error) ->
+  (word : List (Action name key value world error)) -> (code : Nat) ->
+  (0 accepted : wordActionInventory word code = True) ->
+  wordActionInventory (head :: word) code = True
+wordInventoryTail head word code accepted =
+  trans (anyFoldObserved (\item => actionKindCode item == code) word (actionKindCode head == code))
+    (rewrite accepted in orTrueTrue (actionKindCode head == code))
