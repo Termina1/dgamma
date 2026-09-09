@@ -18,3 +18,11 @@ all source and other documents still pass the normal whitespace guard. No git
 configuration change. This preserves the required signed bytes.
 
 P1 resource-stopped22:50:18Z, peak100669328KiB vs100663296KiB (96GiB),369.549s,exit−15. Native stdout buffered/no Building lines: no fresh PASS. No mutation/overlap. Parent AUTHORIZED per-module production import-order rebuild:64GiB CP3/CP3StatementChecks/CP4*,48GiB other production; then seeded P2 must do NO Building. Remaining research52GiB LocalDiamond/48GiB others. Partially written TTCs are not receipts.
+
+S1 did not elaborate CP3: runner mistakenly supplied research-tests as its last
+--source-dir (Idris treats the LAST as the target source root). Exact native
+error: Source file src/DGamma/CP3.idr is not in source directory research-tests.
+1.063s,exit1,0 Building/0 sampled RSS; no type/proof failure. Runner corrected
+to src-only production, src+research research, and all three for fixtures,
+matching inherited successful runners. S1-2 is one unchanged-source CLI repair;
+S1 retained in immutable ledger. No source/guard change.

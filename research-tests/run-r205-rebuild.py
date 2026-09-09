@@ -24,7 +24,10 @@ blocked={}
 for item in targets:
     path=item['path'];unit=item.get('unit',item.get('plannedUnit'))
     previous=[r for r in records() if r['path']==path]
-    if previous:continue
+    if previous:
+        if len(previous)==1 and previous[0]['unit']=='S1' and 'is not in the source directory' in previous[0]['transcript'] and not previous[0]['fresh']:
+            unit='S1-2' # authenticated CLI-root correction, unchanged source; not a proof retry
+        else:continue
     if item.get('validationMode')=='gate-historical-R11-restriction':
         blocked[path]='legacy, not re-checked (standing classification)';continue
     status=current_status()
@@ -36,7 +39,8 @@ for item in targets:
     if (OUT/'pause-request.json').exists():
         print('PAUSE requested between invocations',flush=True);break
     print('DRIVER',mode,unit,path,utc(),flush=True)
-    result=subprocess.run(['python3','-I',str(ROOT/'research-tests/run-r205-check.py'),unit,path],cwd=ROOT,stdout=subprocess.DEVNULL,stderr=subprocess.STDOUT)
+    with (OUT/(unit+'.launch.log')).open('w') as launch_log:
+        result=subprocess.run(['python3','-I',str(ROOT/'research-tests/run-r205-check.py'),unit,path],cwd=ROOT,stdout=launch_log,stderr=subprocess.STDOUT)
     record_path=OUT/(unit+'.json')
     if not record_path.exists():
         print('RUNNER failed before receipt',unit,result.returncode,flush=True);break

@@ -2507,6 +2507,56 @@
       "commonSHA256": "5220f707db8ebde81468b851f26d48209d8732206d89910159f5c2dd81b08bab",
       "crossLaneOverlapTimestampsUTC": [],
       "transcript": ""
+    },
+    {
+      "unit": "S1",
+      "path": "src/DGamma/CP3.idr",
+      "command": [
+        "idris2",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma/src",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma/research",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma/research-tests",
+        "--check",
+        "/Users/vyacheslavshebanov/Work/dgamma/src/DGamma/CP3.idr"
+      ],
+      "start": "2026-09-09T22:54:16.172635+00:00",
+      "end": "2026-09-09T22:54:17.235623+00:00",
+      "seconds": 1.0628040004521608,
+      "exit": 1,
+      "passed": false,
+      "fresh": false,
+      "seededPackageNoBuilding": false,
+      "policySHA256": "406c5b0a53eb8e012dce34ad297f6cdb40aa18ecfbdf4c54a05db063a0613987",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "buildingLines": [],
+      "unexpectedBuilding": [],
+      "targetMutationDetected": false,
+      "mutatedPaths": [],
+      "interrupted": false,
+      "resourceStopped": false,
+      "multipleOwnedCompilers": false,
+      "maxSampleRSSKiB": 0,
+      "rssLimitKiB": 67108864,
+      "rssSamples": [
+        {
+          "timestampUTC": "2026-09-09T22:54:17.217640+00:00",
+          "rssKiB": 0,
+          "ownedPids": []
+        }
+      ],
+      "sourceSHA256": "0aa65041e36342a831b24a231e4d68eb74ffa17cf93e56e84b668ae4f19b95ba",
+      "productionManifestSHA256": "07d41fa57ede130a7c38bbfb1126c92d91c1a8c1e474c63fd3173d448ac11525",
+      "sourceManifestSHA256": "2ef2706efe0b95e9e106293f2fcf6aa91fbdca64b10df0ab374d2c25596ee11e",
+      "headAtEnd": "e0a34f8f14a7fc6c44187b1125e2f9de3e8229aa",
+      "CP3Blob": "eeaa70aa4414648bb2a1173d58244267997d16d7",
+      "runnerSHA256": "301a264fab036c373dfddbfe2e683cfd1a6dcb06b9d98028e79a8d1a9e2d2abd",
+      "commonSHA256": "5220f707db8ebde81468b851f26d48209d8732206d89910159f5c2dd81b08bab",
+      "crossLaneOverlapTimestampsUTC": [],
+      "transcript": "Error: Source file \"/Users/vyacheslavshebanov/Work/dgamma/src/DGamma/CP3.idr\" is not in the source directory \"/Users/vyacheslavshebanov/Work/dgamma/research-tests\"\n"
     }
   ]
 }

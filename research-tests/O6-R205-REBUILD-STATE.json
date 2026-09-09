@@ -1,20 +1,22 @@
 {
-  "timestampUTC": "2026-09-09T22:54:15.381308+00:00",
+  "timestampUTC": "2026-09-09T22:54:17.466237+00:00",
   "status": "INCOMPLETE",
-  "head": "ceecde24b1b0fdd29e796d3f59cbdd8fe0668a56",
+  "head": "e0a34f8f14a7fc6c44187b1125e2f9de3e8229aa",
   "CP3Blob": "eeaa70aa4414648bb2a1173d58244267997d16d7",
   "patchSHA256": "42d957748fcc67ff534c33a6c369eded4bad65e0f37e5c72e4539b737a68fb8a",
   "lane2CompilerRelease": "NOT RELEASED: remain idle until supervisor confirms COMPLETE",
   "counts": {
-    "unchecked": 488,
+    "unchecked": 325,
     "unchanged production prerequisite; seeded (not freshly checked)": 44,
+    "FAILED — lexical/semantic classification required": 1,
+    "unchecked — blocked dependency": 162,
     "legacy, not re-checked (standing classification)": 11
   },
-  "checked": 0,
+  "checked": 1,
   "passed": 0,
   "lexicallyRepaired": 0,
-  "broken": 0,
-  "unchecked": 488,
+  "broken": 1,
+  "unchecked": 487,
   "legacyNotApplicable": 11,
   "unaffectedProductionSeeds": 44,
   "packageInvocations": [
@@ -406,11 +408,11 @@
       "module": "DGamma.CP3",
       "sourceSHA256": "0aa65041e36342a831b24a231e4d68eb74ffa17cf93e56e84b668ae4f19b95ba",
       "plannedSHA256": "0aa65041e36342a831b24a231e4d68eb74ffa17cf93e56e84b668ae4f19b95ba",
-      "status": "unchecked",
+      "status": "FAILED — lexical/semantic classification required",
       "reason": null,
-      "invocation": null,
-      "peakRSSKiB": null,
-      "exactErrors": null,
+      "invocation": "S1",
+      "peakRSSKiB": 0,
+      "exactErrors": "Error: Source file \"/Users/vyacheslavshebanov/Work/dgamma/src/DGamma/CP3.idr\" is not in the source directory \"/Users/vyacheslavshebanov/Work/dgamma/research-tests\"",
       "protected": false
     },
     {
@@ -646,8 +648,13 @@
       "module": "DGamma.CP4AccumulatorControlChecks",
       "sourceSHA256": "59c370f3618de4c473f1a07d9f374f907564575ae61c22d7ada645ef8aeae8b1",
       "plannedSHA256": "59c370f3618de4c473f1a07d9f374f907564575ae61c22d7ada645ef8aeae8b1",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -658,8 +665,13 @@
       "module": "DGamma.CP4DeletionCommittedProviderPersistence",
       "sourceSHA256": "ff3b1e16e9b937aeb1b8e6dccac482c732bb67c5832897d31ce77761276dd71f",
       "plannedSHA256": "ff3b1e16e9b937aeb1b8e6dccac482c732bb67c5832897d31ce77761276dd71f",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -802,8 +814,13 @@
       "module": "DGamma.CP4DeletionGenerationBounds",
       "sourceSHA256": "390d4adcaf51409e177dac9041049ccaeb4ccaba582dd962b1a60146002853e8",
       "plannedSHA256": "390d4adcaf51409e177dac9041049ccaeb4ccaba582dd962b1a60146002853e8",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -814,8 +831,13 @@
       "module": "DGamma.CP4DeletionGenerationChecks",
       "sourceSHA256": "475aa6b7c5e985779b78aeececd061e58bba20e03fa41d150f649b82f9087ecf",
       "plannedSHA256": "475aa6b7c5e985779b78aeececd061e58bba20e03fa41d150f649b82f9087ecf",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -826,8 +848,13 @@
       "module": "DGamma.CP4DeletionGenerationFilter",
       "sourceSHA256": "dbbd9d3592f05ccdf6dbff7dcfa52b53519406f93f6881b52c81fcbe3453066a",
       "plannedSHA256": "dbbd9d3592f05ccdf6dbff7dcfa52b53519406f93f6881b52c81fcbe3453066a",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -838,8 +865,13 @@
       "module": "DGamma.CP4DeletionGenerationScan",
       "sourceSHA256": "11d27d9b26a2ab4c5b2fbc8ba980fa239d629cdd6e4f562da627ee728c0ecd0d",
       "plannedSHA256": "11d27d9b26a2ab4c5b2fbc8ba980fa239d629cdd6e4f562da627ee728c0ecd0d",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -850,8 +882,13 @@
       "module": "DGamma.CP4DeletionGenerationStamped",
       "sourceSHA256": "10652b1fad98788cd966812dd4ed23820808ed3448116ac59b49b02a168d6ef7",
       "plannedSHA256": "10652b1fad98788cd966812dd4ed23820808ed3448116ac59b49b02a168d6ef7",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -862,8 +899,13 @@
       "module": "DGamma.CP4DeletionSelectedForeignLifecycleAnchorCore",
       "sourceSHA256": "26ffb8f5b50ef14368050dc78b91923d1af77d1a0ef9d4c4e60615ef94af2cd2",
       "plannedSHA256": "26ffb8f5b50ef14368050dc78b91923d1af77d1a0ef9d4c4e60615ef94af2cd2",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -874,8 +916,13 @@
       "module": "DGamma.CP4DeletionSelectedForeignLifecycleAnchorRelianceResolved",
       "sourceSHA256": "369acd8bc5221c2a5993b2e3c46c11c3178d14bb9199958bc77d751f3933bf3f",
       "plannedSHA256": "369acd8bc5221c2a5993b2e3c46c11c3178d14bb9199958bc77d751f3933bf3f",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -886,8 +933,13 @@
       "module": "DGamma.CP4ParentSafety",
       "sourceSHA256": "0e8f9570a68275c5959bc6fd2021c1117830482adbf8d9a9caeaccfcf73cc0a8",
       "plannedSHA256": "0e8f9570a68275c5959bc6fd2021c1117830482adbf8d9a9caeaccfcf73cc0a8",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -898,8 +950,13 @@
       "module": "DGamma.CP4ProgressBound",
       "sourceSHA256": "16d6ea674d7070c7ce84d42d45e915f3952876af6d7b7c2145d53a92cb27fe5c",
       "plannedSHA256": "16d6ea674d7070c7ce84d42d45e915f3952876af6d7b7c2145d53a92cb27fe5c",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -910,8 +967,13 @@
       "module": "DGamma.CP4ProgressFinite",
       "sourceSHA256": "25fe7f56dea9e9319cb0c7b7e90bea9a6fbc62caff45383cd933227071749d31",
       "plannedSHA256": "25fe7f56dea9e9319cb0c7b7e90bea9a6fbc62caff45383cd933227071749d31",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -922,8 +984,13 @@
       "module": "DGamma.CP4ProgressProgramBound",
       "sourceSHA256": "5f676cd1ec3426c3b3b891192b4024c877b1cd00e136a74bb1ac6057a307cbeb",
       "plannedSHA256": "5f676cd1ec3426c3b3b891192b4024c877b1cd00e136a74bb1ac6057a307cbeb",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -934,8 +1001,13 @@
       "module": "DGamma.CP4ProgressUnloadingShape",
       "sourceSHA256": "0314dfa71ec9d638f10614a396fe18cd3eb34182ce3df94a61b7068487bfa602",
       "plannedSHA256": "0314dfa71ec9d638f10614a396fe18cd3eb34182ce3df94a61b7068487bfa602",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -994,8 +1066,13 @@
       "module": "DGamma.CP4Support",
       "sourceSHA256": "98d18b6935b00bc5bd1621e5a9a9b08e41081e21bbad4a449dd7d6ade767fa8e",
       "plannedSHA256": "98d18b6935b00bc5bd1621e5a9a9b08e41081e21bbad4a449dd7d6ade767fa8e",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -1006,8 +1083,13 @@
       "module": "DGamma.CP4SupportQuiescence",
       "sourceSHA256": "4c5252dd2520bd150e242cef3c2881f4796095ebcad638862f5ef42ae5aab185",
       "plannedSHA256": "4c5252dd2520bd150e242cef3c2881f4796095ebcad638862f5ef42ae5aab185",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -1018,8 +1100,13 @@
       "module": "DGamma.CalculusChecks",
       "sourceSHA256": "3207a74add9b2a81724e5a1976211d7dd9cfbcb2586b203ad2ab4de898cefc03",
       "plannedSHA256": "3207a74add9b2a81724e5a1976211d7dd9cfbcb2586b203ad2ab4de898cefc03",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -1030,8 +1117,13 @@
       "module": "DGamma.Ordering",
       "sourceSHA256": "28b17d08b669abab39d39003e7583efec599b88444cfbb2d720cb67b9c3128b8",
       "plannedSHA256": "28b17d08b669abab39d39003e7583efec599b88444cfbb2d720cb67b9c3128b8",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -1102,8 +1194,14 @@
       "module": "DGamma.CP3Support",
       "sourceSHA256": "cc3ebec90ac1a3dd80b03fd75710ee346fa168a33c9f1fce932adef556bff47e",
       "plannedSHA256": "cc3ebec90ac1a3dd80b03fd75710ee346fa168a33c9f1fce932adef556bff47e",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/Ordering.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -1114,8 +1212,13 @@
       "module": "DGamma.CP4DeletionControl",
       "sourceSHA256": "9a70692d3083e26129aeb9d2255da2867e78c280ed6992a913008436df9ad818",
       "plannedSHA256": "9a70692d3083e26129aeb9d2255da2867e78c280ed6992a913008436df9ad818",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -1126,8 +1229,14 @@
       "module": "DGamma.CP4DeletionFilterSuccess",
       "sourceSHA256": "f294f449672441d20a258462c6962d71c3144c677c2df77ca9ccda84c02b43c4",
       "plannedSHA256": "f294f449672441d20a258462c6962d71c3144c677c2df77ca9ccda84c02b43c4",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4DeletionGenerationFilter.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -1162,8 +1271,14 @@
       "module": "DGamma.CP4DeletionPremiseSplit",
       "sourceSHA256": "8919e95c84bc580da5a875d0355c79d9846ab78171c125bed11035a9aa991987",
       "plannedSHA256": "8919e95c84bc580da5a875d0355c79d9846ab78171c125bed11035a9aa991987",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4DeletionGenerationScan.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -1174,8 +1289,14 @@
       "module": "DGamma.CP4DeletionSelectedForeignLifecycleAnchorTrace",
       "sourceSHA256": "99becf85d3ef74793f4fde4fe2138f277519066f3767c2a6fa13937d737e2d6f",
       "plannedSHA256": "99becf85d3ef74793f4fde4fe2138f277519066f3767c2a6fa13937d737e2d6f",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4DeletionSelectedForeignLifecycleAnchorCore.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -1186,8 +1307,14 @@
       "module": "DGamma.CP4ProgressChecks",
       "sourceSHA256": "82d8a552d42bfbb39e51943201d7a9b5cc96de24b3336d0bad23199b034bba78",
       "plannedSHA256": "82d8a552d42bfbb39e51943201d7a9b5cc96de24b3336d0bad23199b034bba78",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CalculusChecks.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -1198,8 +1325,14 @@
       "module": "DGamma.CP4ProgressPotential",
       "sourceSHA256": "8d30f7cfec01940eed5081d28ffc4a6f9fd15ac2e4707af5a3081189ff54d7a7",
       "plannedSHA256": "8d30f7cfec01940eed5081d28ffc4a6f9fd15ac2e4707af5a3081189ff54d7a7",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4ProgressBound.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -1210,8 +1343,14 @@
       "module": "DGamma.CP4ProgressPrecedence",
       "sourceSHA256": "fb019be2423fed4bcdae0ad1d06516491ee20cc0ce18513c0deee23d944b817c",
       "plannedSHA256": "fb019be2423fed4bcdae0ad1d06516491ee20cc0ce18513c0deee23d944b817c",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4ProgressProgramBound.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -1222,8 +1361,14 @@
       "module": "DGamma.CP4ProgressReliance",
       "sourceSHA256": "30a245afef0dfb9cb4a76e01722e77c126a942dfc056d97ffe33ffa741a7cf98",
       "plannedSHA256": "30a245afef0dfb9cb4a76e01722e77c126a942dfc056d97ffe33ffa741a7cf98",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4ProgressFinite.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -1270,8 +1415,13 @@
       "module": "DGamma.CP4RestrictionChecks",
       "sourceSHA256": "fc8c1f6f4a90e46419a2c4b082e02597070f9db70cb644672bc69029a96d7454",
       "plannedSHA256": "fc8c1f6f4a90e46419a2c4b082e02597070f9db70cb644672bc69029a96d7454",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CalculusChecks.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -1282,8 +1432,15 @@
       "module": "DGamma.CP4SupportActive",
       "sourceSHA256": "2ce7e7def1010e54784db5d0041af667b3d01b6cd68c37560ad6729fa819fd7b",
       "plannedSHA256": "2ce7e7def1010e54784db5d0041af667b3d01b6cd68c37560ad6729fa819fd7b",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4ParentSafety.idr",
+          "src/DGamma/CP4SupportQuiescence.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -1294,8 +1451,14 @@
       "module": "DGamma.CP4SupportSolution",
       "sourceSHA256": "812d874baff27ce025c17ad09527e285079b6ee26a50fec2c4b231723593fda0",
       "plannedSHA256": "812d874baff27ce025c17ad09527e285079b6ee26a50fec2c4b231723593fda0",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4Support.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -1306,8 +1469,14 @@
       "module": "DGamma.CP4TotalityChecks",
       "sourceSHA256": "2ec3ef48228981f3c15a0f57752e1fa8737e0eee675e6ad25aa5ad58451d8a9e",
       "plannedSHA256": "2ec3ef48228981f3c15a0f57752e1fa8737e0eee675e6ad25aa5ad58451d8a9e",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4SupportQuiescence.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -1330,8 +1499,15 @@
       "module": "DGamma.CP3StatementChecks",
       "sourceSHA256": "aa7b71a88c1e16304c0247880403ee68c776a5b43683759cdeffc750623d33e9",
       "plannedSHA256": "aa7b71a88c1e16304c0247880403ee68c776a5b43683759cdeffc750623d33e9",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4SupportSolution.idr",
+          "src/DGamma/CalculusChecks.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -1342,8 +1518,14 @@
       "module": "DGamma.CP4DeletionControlPlan",
       "sourceSHA256": "b1115b2f2598501ed2202c964da798ce036e2e16c6ab5afd37f3cb607fd89793",
       "plannedSHA256": "b1115b2f2598501ed2202c964da798ce036e2e16c6ab5afd37f3cb607fd89793",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4DeletionControl.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -1366,8 +1548,15 @@
       "module": "DGamma.CP4DeletionReadiness",
       "sourceSHA256": "5e3d54d0d09d99fb37ad04451b40376d9302cc4e6a7258cb022e0fb7d175be43",
       "plannedSHA256": "5e3d54d0d09d99fb37ad04451b40376d9302cc4e6a7258cb022e0fb7d175be43",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4DeletionFilterSuccess.idr",
+          "src/DGamma/CP4DeletionGenerationFilter.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -1378,8 +1567,14 @@
       "module": "DGamma.CP4DeletionSelectedForeignLifecycleAnchorClassify",
       "sourceSHA256": "a2072f1bd72d5d9837e6f88bad54000cf5043c11aa94d321da9f4b7af58a0194",
       "plannedSHA256": "a2072f1bd72d5d9837e6f88bad54000cf5043c11aa94d321da9f4b7af58a0194",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4DeletionSelectedForeignLifecycleAnchorTrace.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -1390,8 +1585,16 @@
       "module": "DGamma.CP4DeletionSkeleton",
       "sourceSHA256": "e8bad60fb98bb9857a20fef0d560fa0eb005ac0f1d0032aff09b02e034d8d3d6",
       "plannedSHA256": "e8bad60fb98bb9857a20fef0d560fa0eb005ac0f1d0032aff09b02e034d8d3d6",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4DeletionGenerationBounds.idr",
+          "src/DGamma/CP4DeletionGenerationFilter.idr",
+          "src/DGamma/CP4DeletionPremiseSplit.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -1402,8 +1605,14 @@
       "module": "DGamma.CP4FailureOutcomeChecks",
       "sourceSHA256": "8cd12b60c3eb0976a23d6536b11d9b987eaff25bf93eeef3d8e89bcede010786",
       "plannedSHA256": "8cd12b60c3eb0976a23d6536b11d9b987eaff25bf93eeef3d8e89bcede010786",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4RestrictionChecks.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -1414,8 +1623,16 @@
       "module": "DGamma.CP4Lemma70",
       "sourceSHA256": "24e143d981985d6002ccbcf04e9f925c81bfc37062e1943e5e4ec6f369ff4e35",
       "plannedSHA256": "24e143d981985d6002ccbcf04e9f925c81bfc37062e1943e5e4ec6f369ff4e35",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4SupportActive.idr",
+          "src/DGamma/CP4SupportQuiescence.idr",
+          "src/DGamma/CP4SupportSolution.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -1426,8 +1643,15 @@
       "module": "DGamma.CP4ProgressNoDeadlock",
       "sourceSHA256": "17ca7db7f71b7c92565a76542638d48cd4827bcf937d62642803cdd5522aba09",
       "plannedSHA256": "17ca7db7f71b7c92565a76542638d48cd4827bcf937d62642803cdd5522aba09",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4ProgressFinite.idr",
+          "src/DGamma/CP4ProgressReliance.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -1438,8 +1662,14 @@
       "module": "DGamma.CP4ProgressStepCore",
       "sourceSHA256": "929789a729f25e3bf29e1637d8b0c4300d6cf1682b07d13c18335ffa59d19b34",
       "plannedSHA256": "929789a729f25e3bf29e1637d8b0c4300d6cf1682b07d13c18335ffa59d19b34",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4ProgressPotential.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -1450,8 +1680,15 @@
       "module": "DGamma.CP4ProgressUnloadingActive",
       "sourceSHA256": "7535ab2c438e42fa36556bab537cae915c7de4eb09c5bbd6247c6811e9c30cf1",
       "plannedSHA256": "7535ab2c438e42fa36556bab537cae915c7de4eb09c5bbd6247c6811e9c30cf1",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4ProgressReliance.idr",
+          "src/DGamma/CP4ProgressUnloadingShape.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -1486,8 +1723,15 @@
       "module": "DGamma.CP3VestigialChecks",
       "sourceSHA256": "eb6a051193fb07c04fba6f5fc39cea6eac29e918ed5cc88916b954bc72d8077f",
       "plannedSHA256": "eb6a051193fb07c04fba6f5fc39cea6eac29e918ed5cc88916b954bc72d8077f",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP3StatementChecks.idr",
+          "src/DGamma/CalculusChecks.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -1498,8 +1742,15 @@
       "module": "DGamma.CP4DeletionControlChecks",
       "sourceSHA256": "75d1cea2a0b18a8406305b97c99f2b4108dad231580a4222cfa82e10b59bf30e",
       "plannedSHA256": "75d1cea2a0b18a8406305b97c99f2b4108dad231580a4222cfa82e10b59bf30e",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4DeletionControlPlan.idr",
+          "src/DGamma/CalculusChecks.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -1510,8 +1761,14 @@
       "module": "DGamma.CP4DeletionPlanBuilder",
       "sourceSHA256": "a795492b947d171d55db20c716e3f8e8789f3c78b5206d1f08ba1063195e2d26",
       "plannedSHA256": "a795492b947d171d55db20c716e3f8e8789f3c78b5206d1f08ba1063195e2d26",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4DeletionControlPlan.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -1522,8 +1779,13 @@
       "module": "DGamma.CP4DeletionPlanEffects",
       "sourceSHA256": "27ceda55403f9097ac9999b0dca0044a053a76cdde2219fa0daf77dc26a90efe",
       "plannedSHA256": "27ceda55403f9097ac9999b0dca0044a053a76cdde2219fa0daf77dc26a90efe",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP4DeletionControlPlan.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -1534,8 +1796,17 @@
       "module": "DGamma.CP4DeletionSelectedForeignLifecycleAnchorEndpoint",
       "sourceSHA256": "92517b0406b2e723b9483947e019eb35a0785fd0749993c4cdddccc57603b9ea",
       "plannedSHA256": "92517b0406b2e723b9483947e019eb35a0785fd0749993c4cdddccc57603b9ea",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4DeletionSelectedForeignLifecycleAnchorCore.idr",
+          "src/DGamma/CP4Lemma70.idr",
+          "src/DGamma/CP4Support.idr",
+          "src/DGamma/CP4SupportSolution.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -1546,8 +1817,18 @@
       "module": "DGamma.CP4DeletionSkeletonSuccess",
       "sourceSHA256": "e20d7f3b52aa794528c6a068768f62853ab10b89799f89681e1a8abe29f90cd8",
       "plannedSHA256": "e20d7f3b52aa794528c6a068768f62853ab10b89799f89681e1a8abe29f90cd8",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4DeletionFilterSuccess.idr",
+          "src/DGamma/CP4DeletionGenerationBounds.idr",
+          "src/DGamma/CP4DeletionGenerationFilter.idr",
+          "src/DGamma/CP4DeletionPremiseSplit.idr",
+          "src/DGamma/CP4DeletionSkeleton.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -1558,8 +1839,15 @@
       "module": "DGamma.CP4ProgressStepAdvanceExit",
       "sourceSHA256": "c5db0b59f66910e4e6f4236b46395fc3918bf0a7e9f379c633852955d0cda3f1",
       "plannedSHA256": "c5db0b59f66910e4e6f4236b46395fc3918bf0a7e9f379c633852955d0cda3f1",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4ProgressPotential.idr",
+          "src/DGamma/CP4ProgressStepCore.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -1570,8 +1858,15 @@
       "module": "DGamma.CP4ProgressStepAdvanceStable",
       "sourceSHA256": "4a0f28a4e389524d19108b66f3d425ad3b7f69d80dde05b69a7463a2c0014870",
       "plannedSHA256": "4a0f28a4e389524d19108b66f3d425ad3b7f69d80dde05b69a7463a2c0014870",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4ProgressPotential.idr",
+          "src/DGamma/CP4ProgressStepCore.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -1582,8 +1877,16 @@
       "module": "DGamma.CP4ProgressStepBegin",
       "sourceSHA256": "785f49575f862d266b9d8eb35a9ed557a9d9e72042d1fbfb7b0876b9270afb4e",
       "plannedSHA256": "785f49575f862d266b9d8eb35a9ed557a9d9e72042d1fbfb7b0876b9270afb4e",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4ProgressBound.idr",
+          "src/DGamma/CP4ProgressPotential.idr",
+          "src/DGamma/CP4ProgressStepCore.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -1594,8 +1897,15 @@
       "module": "DGamma.CP4ProgressStepDivert",
       "sourceSHA256": "b6065df69d95ee7554f8a323447f2e945a84facae5bea43760964e22ee90a04d",
       "plannedSHA256": "b6065df69d95ee7554f8a323447f2e945a84facae5bea43760964e22ee90a04d",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4ProgressPotential.idr",
+          "src/DGamma/CP4ProgressStepCore.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -1606,8 +1916,15 @@
       "module": "DGamma.CP4ProgressStepLeave",
       "sourceSHA256": "f513f904ca24c205edfa5a66a4b6ed2bef33424c4e87082abc5a6f95963b5c8f",
       "plannedSHA256": "f513f904ca24c205edfa5a66a4b6ed2bef33424c4e87082abc5a6f95963b5c8f",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4ProgressPotential.idr",
+          "src/DGamma/CP4ProgressStepCore.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -1618,8 +1935,15 @@
       "module": "DGamma.CP4ProgressStepUnload",
       "sourceSHA256": "335b6f1e1f9df55fb1b0ef5d11db3b61e9c8e6310567b1b7eb3a3ba2b7a0a943",
       "plannedSHA256": "335b6f1e1f9df55fb1b0ef5d11db3b61e9c8e6310567b1b7eb3a3ba2b7a0a943",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4ProgressPotential.idr",
+          "src/DGamma/CP4ProgressStepCore.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -1630,8 +1954,15 @@
       "module": "DGamma.CP4ProgressUnloadingActiveStep",
       "sourceSHA256": "3924771c1c00e453157ecab60fcbc8b5fffc5ccf7e070d93bfc21c5abe8f5dc8",
       "plannedSHA256": "3924771c1c00e453157ecab60fcbc8b5fffc5ccf7e070d93bfc21c5abe8f5dc8",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4ProgressUnloadingActive.idr",
+          "src/DGamma/CP4ProgressUnloadingShape.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -1642,8 +1973,15 @@
       "module": "DGamma.CP4ProgressUnloadingReloading",
       "sourceSHA256": "149e257b312d39dc7d9a52411a400e4576ca380e5b07025304b3ff494022c745",
       "plannedSHA256": "149e257b312d39dc7d9a52411a400e4576ca380e5b07025304b3ff494022c745",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4ProgressNoDeadlock.idr",
+          "src/DGamma/CP4ProgressUnloadingShape.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -1690,8 +2028,15 @@
       "module": "DGamma.CP4DeletionGenerationUnique",
       "sourceSHA256": "ceca0ad4327409f01af57ba2817d1bddade6b80c74585119c7624969dc628df3",
       "plannedSHA256": "ceca0ad4327409f01af57ba2817d1bddade6b80c74585119c7624969dc628df3",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4DeletionControlPlan.idr",
+          "src/DGamma/CP4DeletionPlanBuilder.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -1702,8 +2047,16 @@
       "module": "DGamma.CP4ProgressStepAdvance",
       "sourceSHA256": "8ebf72822560dcddeb4357cdddf62ca29fe0a4e299ad43386881106919772280",
       "plannedSHA256": "8ebf72822560dcddeb4357cdddf62ca29fe0a4e299ad43386881106919772280",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4ProgressStepAdvanceExit.idr",
+          "src/DGamma/CP4ProgressStepAdvanceStable.idr",
+          "src/DGamma/CP4ProgressStepCore.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -1714,8 +2067,18 @@
       "module": "DGamma.CP4ProgressUnloadingClassify",
       "sourceSHA256": "380e6d10deb34744dff879af27cdb3ef21e4f71b6b133292de0c7586234b818f",
       "plannedSHA256": "380e6d10deb34744dff879af27cdb3ef21e4f71b6b133292de0c7586234b818f",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4ProgressReliance.idr",
+          "src/DGamma/CP4ProgressUnloadingActive.idr",
+          "src/DGamma/CP4ProgressUnloadingActiveStep.idr",
+          "src/DGamma/CP4ProgressUnloadingReloading.idr",
+          "src/DGamma/CP4ProgressUnloadingShape.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -1738,8 +2101,14 @@
       "module": "DGamma.CP4DeletionInactiveInvariant",
       "sourceSHA256": "50b9525f2ca58a73bfd1e8582b4735dd24c30b401bd1a8d89dfb9cece629552c",
       "plannedSHA256": "50b9525f2ca58a73bfd1e8582b4735dd24c30b401bd1a8d89dfb9cece629552c",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4DeletionGenerationUnique.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -1750,8 +2119,16 @@
       "module": "DGamma.CP4DeletionPlanSuccess",
       "sourceSHA256": "4032e689121a69f522404f1e939d65ed6b96b85cd198246902699c576f0c2268",
       "plannedSHA256": "4032e689121a69f522404f1e939d65ed6b96b85cd198246902699c576f0c2268",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4DeletionControlPlan.idr",
+          "src/DGamma/CP4DeletionGenerationUnique.idr",
+          "src/DGamma/CP4DeletionPlanBuilder.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -1762,8 +2139,19 @@
       "module": "DGamma.CP4ProgressStep",
       "sourceSHA256": "18a074465a8d9f3f0e5cecf2a9251be5897fa6139af4862626eaf441bcc0c0f5",
       "plannedSHA256": "18a074465a8d9f3f0e5cecf2a9251be5897fa6139af4862626eaf441bcc0c0f5",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4ProgressStepAdvance.idr",
+          "src/DGamma/CP4ProgressStepBegin.idr",
+          "src/DGamma/CP4ProgressStepCore.idr",
+          "src/DGamma/CP4ProgressStepDivert.idr",
+          "src/DGamma/CP4ProgressStepLeave.idr",
+          "src/DGamma/CP4ProgressStepUnload.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -1774,8 +2162,19 @@
       "module": "DGamma.CP4ProgressUnloadingDescent",
       "sourceSHA256": "01b652da5e204225277b7a55f0212cffe2a30803ca11572172e4ff74ce788065",
       "plannedSHA256": "01b652da5e204225277b7a55f0212cffe2a30803ca11572172e4ff74ce788065",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4ProgressFinite.idr",
+          "src/DGamma/CP4ProgressNoDeadlock.idr",
+          "src/DGamma/CP4ProgressReliance.idr",
+          "src/DGamma/CP4ProgressUnloadingActive.idr",
+          "src/DGamma/CP4ProgressUnloadingClassify.idr",
+          "src/DGamma/CP4ProgressUnloadingShape.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -1798,8 +2197,13 @@
       "module": "DGamma.CP4RecoverySelectedReplayStep",
       "sourceSHA256": "45c277ef8ce022bbe7a007b74554679d0483a014f669c746266c986d93a41678",
       "plannedSHA256": "45c277ef8ce022bbe7a007b74554679d0483a014f669c746266c986d93a41678",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -1810,8 +2214,16 @@
       "module": "DGamma.CP4DeletionControlOrchestration",
       "sourceSHA256": "702723b16978e30599f0e626f8f97ba31485743fd9cadb5b0b6425d7de867dfe",
       "plannedSHA256": "702723b16978e30599f0e626f8f97ba31485743fd9cadb5b0b6425d7de867dfe",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4DeletionControl.idr",
+          "src/DGamma/CP4DeletionControlPlan.idr",
+          "src/DGamma/CP4DeletionPlanSuccess.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -1822,8 +2234,15 @@
       "module": "DGamma.CP4DeletionEmptyTableInvariant",
       "sourceSHA256": "ee66e1daeb5f7b1ae11996d4b35ae0ed4a6fe035786ea2ca976c618a8d35efc2",
       "plannedSHA256": "ee66e1daeb5f7b1ae11996d4b35ae0ed4a6fe035786ea2ca976c618a8d35efc2",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4DeletionGenerationUnique.idr",
+          "src/DGamma/CP4DeletionInactiveInvariant.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -1846,8 +2265,17 @@
       "module": "DGamma.CP4DeletionPlanBoundary",
       "sourceSHA256": "d5ed0f54fe8a540c88eb3a99c3d2015b54d3ebe9e48a23e88b17139bfd958fae",
       "plannedSHA256": "d5ed0f54fe8a540c88eb3a99c3d2015b54d3ebe9e48a23e88b17139bfd958fae",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4DeletionGenerationUnique.idr",
+          "src/DGamma/CP4DeletionInactiveInvariant.idr",
+          "src/DGamma/CP4DeletionPlanBuilder.idr",
+          "src/DGamma/CP4DeletionPlanSuccess.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -1858,8 +2286,15 @@
       "module": "DGamma.CP4DeletionWithdrawalCurrent",
       "sourceSHA256": "d10ff2a8494dd5e69dbf0695bec75cd336d975888c165020d94f300939e8a2da",
       "plannedSHA256": "d10ff2a8494dd5e69dbf0695bec75cd336d975888c165020d94f300939e8a2da",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4DeletionGenerationUnique.idr",
+          "src/DGamma/CP4DeletionInactiveInvariant.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -1870,8 +2305,18 @@
       "module": "DGamma.CP4ProgressNoDeadlockFinal",
       "sourceSHA256": "92653f274b48797fbeb3d2c6517b595a2a6129e501e511b1f09efe44b73dd264",
       "plannedSHA256": "92653f274b48797fbeb3d2c6517b595a2a6129e501e511b1f09efe44b73dd264",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4ProgressFinite.idr",
+          "src/DGamma/CP4ProgressNoDeadlock.idr",
+          "src/DGamma/CP4ProgressReliance.idr",
+          "src/DGamma/CP4ProgressUnloadingDescent.idr",
+          "src/DGamma/CP4ProgressUnloadingShape.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -1882,8 +2327,18 @@
       "module": "DGamma.CP4ProgressNumeric",
       "sourceSHA256": "ecb3c7bfb4682082fd341c53ed094386a08d619485a8b89ada8df959f9a1e949",
       "plannedSHA256": "ecb3c7bfb4682082fd341c53ed094386a08d619485a8b89ada8df959f9a1e949",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4ProgressBound.idr",
+          "src/DGamma/CP4ProgressPotential.idr",
+          "src/DGamma/CP4ProgressProgramBound.idr",
+          "src/DGamma/CP4ProgressStep.idr",
+          "src/DGamma/CP4ProgressStepCore.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -1894,8 +2349,13 @@
       "module": "DGamma.CP4RecoveryReplay",
       "sourceSHA256": "8c7329438eed506929289bc5bc9235ac7852bf037638e562cfece6972f308ae4",
       "plannedSHA256": "8c7329438eed506929289bc5bc9235ac7852bf037638e562cfece6972f308ae4",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP4RecoverySelectedReplayStep.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -1906,8 +2366,18 @@
       "module": "DGamma.CP4DeletionChildlessInvariant",
       "sourceSHA256": "c7b5539e8adf095911a83add90a841415280d254e88f7c2c52bc6a33ad2fce8b",
       "plannedSHA256": "c7b5539e8adf095911a83add90a841415280d254e88f7c2c52bc6a33ad2fce8b",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4DeletionGenerationUnique.idr",
+          "src/DGamma/CP4DeletionInactiveInvariant.idr",
+          "src/DGamma/CP4DeletionPlanBoundary.idr",
+          "src/DGamma/CP4DeletionPlanBuilder.idr",
+          "src/DGamma/CP4DeletionPlanSuccess.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -1918,8 +2388,17 @@
       "module": "DGamma.CP4DeletionRetainedAction",
       "sourceSHA256": "7540b16cb066233c7385628025ee2537a99d966fc8d14f77a88d2a9d3ab8fcf5",
       "plannedSHA256": "7540b16cb066233c7385628025ee2537a99d966fc8d14f77a88d2a9d3ab8fcf5",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4DeletionControlOrchestration.idr",
+          "src/DGamma/CP4DeletionControlPlan.idr",
+          "src/DGamma/CP4DeletionGenerationUnique.idr",
+          "src/DGamma/CP4DeletionPlanBuilder.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -1930,8 +2409,14 @@
       "module": "DGamma.CP4DeletionSelectedEffectCore",
       "sourceSHA256": "b04963d4fad41cf1446732f7b04d8da4ec484863ff327a387db042c7d6ec529d",
       "plannedSHA256": "b04963d4fad41cf1446732f7b04d8da4ec484863ff327a387db042c7d6ec529d",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP4RecoveryReplay.idr",
+          "src/DGamma/CP4RecoverySelectedReplayStep.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -1942,8 +2427,16 @@
       "module": "DGamma.CP4ProgressProof",
       "sourceSHA256": "cee374bbb01ac0d993b28dd9f22b48b7172a9312b0b12ee00426fac5a4c2e2ad",
       "plannedSHA256": "cee374bbb01ac0d993b28dd9f22b48b7172a9312b0b12ee00426fac5a4c2e2ad",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4ProgressNoDeadlockFinal.idr",
+          "src/DGamma/CP4ProgressNumeric.idr",
+          "src/DGamma/CP4ProgressPrecedence.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -1954,8 +2447,13 @@
       "module": "DGamma.CP4TerminalRecovery",
       "sourceSHA256": "71a8e2e2f0621a5c6e7edaf757cde9990edd97991c8a2930916e0a9bb594aefc",
       "plannedSHA256": "71a8e2e2f0621a5c6e7edaf757cde9990edd97991c8a2930916e0a9bb594aefc",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP4RecoveryReplay.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -1966,8 +2464,20 @@
       "module": "DGamma.CP4DeletionPlanComplete",
       "sourceSHA256": "b860ebd473fb235977f6f28b07a4a0f5a2e8284534b64cb82c68d9dccfe960de",
       "plannedSHA256": "b860ebd473fb235977f6f28b07a4a0f5a2e8284534b64cb82c68d9dccfe960de",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4DeletionChildlessInvariant.idr",
+          "src/DGamma/CP4DeletionControlPlan.idr",
+          "src/DGamma/CP4DeletionGenerationUnique.idr",
+          "src/DGamma/CP4DeletionInactiveInvariant.idr",
+          "src/DGamma/CP4DeletionPlanBoundary.idr",
+          "src/DGamma/CP4DeletionPlanBuilder.idr",
+          "src/DGamma/CP4DeletionPlanSuccess.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -1978,8 +2488,14 @@
       "module": "DGamma.CP4DeletionSelectedCloseEffect",
       "sourceSHA256": "2ad36745ce67482b27f8a747758d37925edbc182ce2f2ee0795c277499a425e2",
       "plannedSHA256": "2ad36745ce67482b27f8a747758d37925edbc182ce2f2ee0795c277499a425e2",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP4DeletionSelectedEffectCore.idr",
+          "src/DGamma/CP4TerminalRecovery.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -1990,8 +2506,13 @@
       "module": "DGamma.CP4DeletionSelectedEffectForeign",
       "sourceSHA256": "b0bc0edd573fefdb15cec07a386d4800e9435ab01a6676bdf54eb3645b10453f",
       "plannedSHA256": "b0bc0edd573fefdb15cec07a386d4800e9435ab01a6676bdf54eb3645b10453f",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP4DeletionSelectedEffectCore.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -2002,8 +2523,14 @@
       "module": "DGamma.CP4DeletionSelectedForeignLifecycleAdvanceOutcome",
       "sourceSHA256": "dd728311c1787d39e689a1744e4d51a377a8c7d327c3e336dde0d6ddaa8c7bca",
       "plannedSHA256": "dd728311c1787d39e689a1744e4d51a377a8c7d327c3e336dde0d6ddaa8c7bca",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4DeletionSelectedEffectCore.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -2014,8 +2541,14 @@
       "module": "DGamma.CP4ResolutionCoherence",
       "sourceSHA256": "1f03a5262e174573e5b871943614b90de82fbec044739005e3a4bcae8f83ec19",
       "plannedSHA256": "1f03a5262e174573e5b871943614b90de82fbec044739005e3a4bcae8f83ec19",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3Support.idr",
+          "src/DGamma/CP4TerminalRecovery.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -2026,8 +2559,22 @@
       "module": "DGamma.CP4DeletionNoEpisodeReplay",
       "sourceSHA256": "09cdf7407e291018abcdfad66ecfa1b5a8ddfe20d5cd16fdb010e34f580b7bdc",
       "plannedSHA256": "09cdf7407e291018abcdfad66ecfa1b5a8ddfe20d5cd16fdb010e34f580b7bdc",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4DeletionControl.idr",
+          "src/DGamma/CP4DeletionControlOrchestration.idr",
+          "src/DGamma/CP4DeletionControlPlan.idr",
+          "src/DGamma/CP4DeletionGenerationFilter.idr",
+          "src/DGamma/CP4DeletionGenerationUnique.idr",
+          "src/DGamma/CP4DeletionPlanBuilder.idr",
+          "src/DGamma/CP4DeletionPlanComplete.idr",
+          "src/DGamma/CP4DeletionReadiness.idr",
+          "src/DGamma/CP4DeletionRetainedAction.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -2038,8 +2585,19 @@
       "module": "DGamma.CP4DeletionPlanEmpty",
       "sourceSHA256": "50e3fc3319de80286991130ef4c9a1dc0595910d00acd810159fdf7549ddf285",
       "plannedSHA256": "50e3fc3319de80286991130ef4c9a1dc0595910d00acd810159fdf7549ddf285",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4DeletionControlPlan.idr",
+          "src/DGamma/CP4DeletionEmptyTableInvariant.idr",
+          "src/DGamma/CP4DeletionGenerationUnique.idr",
+          "src/DGamma/CP4DeletionPlanBuilder.idr",
+          "src/DGamma/CP4DeletionPlanComplete.idr",
+          "src/DGamma/CP4DeletionPlanEffects.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -2050,8 +2608,14 @@
       "module": "DGamma.CP4DeletionPlanRuntime",
       "sourceSHA256": "2518f0a20b9c2d7ccda4b22473688deaf5ed4784fd560fbfb34e3a19a58c4880",
       "plannedSHA256": "2518f0a20b9c2d7ccda4b22473688deaf5ed4784fd560fbfb34e3a19a58c4880",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP4DeletionControlPlan.idr",
+          "src/DGamma/CP4DeletionPlanComplete.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -2062,8 +2626,18 @@
       "module": "DGamma.CP4DeletionSelectedBoundary",
       "sourceSHA256": "070d1a12babe6e2207fc6eab6def4f5d84d86afd3275f928da501487638f061c",
       "plannedSHA256": "070d1a12babe6e2207fc6eab6def4f5d84d86afd3275f928da501487638f061c",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4DeletionControlPlan.idr",
+          "src/DGamma/CP4DeletionGenerationUnique.idr",
+          "src/DGamma/CP4DeletionPlanBuilder.idr",
+          "src/DGamma/CP4DeletionPlanComplete.idr",
+          "src/DGamma/CP4DeletionSelectedEffectCore.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -2074,8 +2648,18 @@
       "module": "DGamma.CP4DeletionPlanCommute",
       "sourceSHA256": "1c6fb891c47a5d4ff7c85420011c5479f4cb92dd11a470a459a40835b794880a",
       "plannedSHA256": "1c6fb891c47a5d4ff7c85420011c5479f4cb92dd11a470a459a40835b794880a",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP4DeletionChildlessInvariant.idr",
+          "src/DGamma/CP4DeletionControlOrchestration.idr",
+          "src/DGamma/CP4DeletionControlPlan.idr",
+          "src/DGamma/CP4DeletionPlanComplete.idr",
+          "src/DGamma/CP4DeletionPlanRuntime.idr",
+          "src/DGamma/CP4DeletionPlanSuccess.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -2086,8 +2670,16 @@
       "module": "DGamma.CP4DeletionRelationalBoundary",
       "sourceSHA256": "d80a0b0c645cff74b363a14095d5edefb8aa9318786f86add273dae83bc90ba4",
       "plannedSHA256": "d80a0b0c645cff74b363a14095d5edefb8aa9318786f86add273dae83bc90ba4",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4DeletionNoEpisodeReplay.idr",
+          "src/DGamma/CP4DeletionPlanBuilder.idr",
+          "src/DGamma/CP4DeletionPlanComplete.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -2098,8 +2690,24 @@
       "module": "DGamma.CP4DeletionSelectedEpisodeFoldCore",
       "sourceSHA256": "76586d0ebdf648043114b884d4c5a2a958a98779ff68b24a9803c9a5c1f7c223",
       "plannedSHA256": "76586d0ebdf648043114b884d4c5a2a958a98779ff68b24a9803c9a5c1f7c223",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4DeletionEmptyTableInvariant.idr",
+          "src/DGamma/CP4DeletionFilterSuccess.idr",
+          "src/DGamma/CP4DeletionGenerationFilter.idr",
+          "src/DGamma/CP4DeletionGenerationStamped.idr",
+          "src/DGamma/CP4DeletionGenerationUnique.idr",
+          "src/DGamma/CP4DeletionInactiveInvariant.idr",
+          "src/DGamma/CP4DeletionPlanBuilder.idr",
+          "src/DGamma/CP4DeletionPlanComplete.idr",
+          "src/DGamma/CP4DeletionPlanEffects.idr",
+          "src/DGamma/CP4DeletionPlanEmpty.idr",
+          "src/DGamma/CP4DeletionSelectedBoundary.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -2110,8 +2718,14 @@
       "module": "DGamma.CP4DeletionSelectedForeignControlCore",
       "sourceSHA256": "7b94c8ad959a0553221b774fd8320f9de2293262d3727bbc55bac6d479039c63",
       "plannedSHA256": "7b94c8ad959a0553221b774fd8320f9de2293262d3727bbc55bac6d479039c63",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4DeletionSelectedBoundary.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -2122,8 +2736,18 @@
       "module": "DGamma.CP4DeletionSelectedForeignTables",
       "sourceSHA256": "8961617651afffa0caee633e5aba029243d6188ce9176c33df6e5fbb167c9779",
       "plannedSHA256": "8961617651afffa0caee633e5aba029243d6188ce9176c33df6e5fbb167c9779",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4DeletionControlPlan.idr",
+          "src/DGamma/CP4DeletionPlanBuilder.idr",
+          "src/DGamma/CP4DeletionPlanComplete.idr",
+          "src/DGamma/CP4DeletionSelectedBoundary.idr",
+          "src/DGamma/CP4DeletionSelectedEffectCore.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -2134,8 +2758,18 @@
       "module": "DGamma.CP4DeletionSelectedStart",
       "sourceSHA256": "ed5dd8db39c743b7be799eca007d1f3ac789223f20b40d2038459e944e0de666",
       "plannedSHA256": "ed5dd8db39c743b7be799eca007d1f3ac789223f20b40d2038459e944e0de666",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4DeletionControlPlan.idr",
+          "src/DGamma/CP4DeletionGenerationBounds.idr",
+          "src/DGamma/CP4DeletionPlanBuilder.idr",
+          "src/DGamma/CP4DeletionPlanComplete.idr",
+          "src/DGamma/CP4DeletionSelectedBoundary.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -2146,8 +2780,19 @@
       "module": "DGamma.CP4DeletionBoundaryLifecycleCore",
       "sourceSHA256": "ed6b67de5234571c73731f48dc3be15c9bc7030732cb56c102af9c88f71380d3",
       "plannedSHA256": "ed6b67de5234571c73731f48dc3be15c9bc7030732cb56c102af9c88f71380d3",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4DeletionChildlessInvariant.idr",
+          "src/DGamma/CP4DeletionControlPlan.idr",
+          "src/DGamma/CP4DeletionPlanCommute.idr",
+          "src/DGamma/CP4DeletionPlanComplete.idr",
+          "src/DGamma/CP4DeletionPlanRuntime.idr",
+          "src/DGamma/CP4DeletionPlanSuccess.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -2158,8 +2803,18 @@
       "module": "DGamma.CP4DeletionBoundaryPlan",
       "sourceSHA256": "c1674fba761bd05729925f9adc93556d01456560bdc1c80bea9f2ba23605a847",
       "plannedSHA256": "c1674fba761bd05729925f9adc93556d01456560bdc1c80bea9f2ba23605a847",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4DeletionControlPlan.idr",
+          "src/DGamma/CP4DeletionGenerationUnique.idr",
+          "src/DGamma/CP4DeletionPlanBuilder.idr",
+          "src/DGamma/CP4DeletionPlanCommute.idr",
+          "src/DGamma/CP4DeletionPlanComplete.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -2170,8 +2825,15 @@
       "module": "DGamma.CP4DeletionPostCloseUpgrade",
       "sourceSHA256": "54db382d8b4bd8600913566c8296210dd8caa87c7443ba922ac6b624e621a107",
       "plannedSHA256": "54db382d8b4bd8600913566c8296210dd8caa87c7443ba922ac6b624e621a107",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4DeletionRelationalBoundary.idr",
+          "src/DGamma/CP4DeletionSelectedBoundary.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -2182,8 +2844,16 @@
       "module": "DGamma.CP4DeletionRelationalActionCore",
       "sourceSHA256": "3cfee531c00122090044eeb4355c8b018ab152a6eb0df82730f65adc8aa7cf3e",
       "plannedSHA256": "3cfee531c00122090044eeb4355c8b018ab152a6eb0df82730f65adc8aa7cf3e",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4DeletionRelationalBoundary.idr",
+          "src/DGamma/CP4DeletionSelectedBoundary.idr",
+          "src/DGamma/CP4DeletionSelectedForeignControlCore.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -2194,8 +2864,15 @@
       "module": "DGamma.CP4DeletionSelectedForeignLifecycleCore",
       "sourceSHA256": "3160adef6379f4c01bc6663b8b95a26fb9048baf1ce182cab0fe6e1a3a354654",
       "plannedSHA256": "3160adef6379f4c01bc6663b8b95a26fb9048baf1ce182cab0fe6e1a3a354654",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4DeletionSelectedBoundary.idr",
+          "src/DGamma/CP4DeletionSelectedForeignControlCore.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -2206,8 +2883,21 @@
       "module": "DGamma.CP4DeletionBoundaryDeleted",
       "sourceSHA256": "bfe283bb54fd081751aeb23524ecdcd1ac66dc330b09452befddf509caa9c14a",
       "plannedSHA256": "bfe283bb54fd081751aeb23524ecdcd1ac66dc330b09452befddf509caa9c14a",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4DeletionBoundaryPlan.idr",
+          "src/DGamma/CP4DeletionControlPlan.idr",
+          "src/DGamma/CP4DeletionGenerationUnique.idr",
+          "src/DGamma/CP4DeletionInactiveInvariant.idr",
+          "src/DGamma/CP4DeletionNoEpisodeReplay.idr",
+          "src/DGamma/CP4DeletionPlanBuilder.idr",
+          "src/DGamma/CP4DeletionPlanCommute.idr",
+          "src/DGamma/CP4DeletionPlanComplete.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -2218,8 +2908,13 @@
       "module": "DGamma.CP4DeletionBoundaryLifecycleAdvance",
       "sourceSHA256": "3a1da3e43217ae90ebf8b4afe082abb6fc192f577b49582e7d9b0510bc2e4d6d",
       "plannedSHA256": "3a1da3e43217ae90ebf8b4afe082abb6fc192f577b49582e7d9b0510bc2e4d6d",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP4DeletionBoundaryLifecycleCore.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -2230,8 +2925,13 @@
       "module": "DGamma.CP4DeletionBoundaryLifecycleBegin",
       "sourceSHA256": "e21d572e0273100692adff4491d7411fc0de00067e91c9fd3bbe7b8b1bcf1689",
       "plannedSHA256": "e21d572e0273100692adff4491d7411fc0de00067e91c9fd3bbe7b8b1bcf1689",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP4DeletionBoundaryLifecycleCore.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -2242,8 +2942,13 @@
       "module": "DGamma.CP4DeletionBoundaryLifecycleDivert",
       "sourceSHA256": "ce891bfd628c7cfffa1e970298f941e57b9bba5e830693afb49c23cc4debbcfc",
       "plannedSHA256": "ce891bfd628c7cfffa1e970298f941e57b9bba5e830693afb49c23cc4debbcfc",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP4DeletionBoundaryLifecycleCore.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -2254,8 +2959,13 @@
       "module": "DGamma.CP4DeletionBoundaryLifecycleLeave",
       "sourceSHA256": "b571a793affc8e62bdfdc9972be346383ace82edf20abe45d350524fd14e49d0",
       "plannedSHA256": "b571a793affc8e62bdfdc9972be346383ace82edf20abe45d350524fd14e49d0",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP4DeletionBoundaryLifecycleCore.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -2266,8 +2976,13 @@
       "module": "DGamma.CP4DeletionBoundaryLifecycleUnload",
       "sourceSHA256": "2777269fa7274c17bc70de8fda72bea9051bfd817c861c7df7cf36aecb3c5859",
       "plannedSHA256": "2777269fa7274c17bc70de8fda72bea9051bfd817c861c7df7cf36aecb3c5859",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP4DeletionBoundaryLifecycleCore.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -2278,8 +2993,14 @@
       "module": "DGamma.CP4DeletionRelatedLifecycleEffectMap",
       "sourceSHA256": "30c457467b2074bf26bea952b4ef9494d794dcacfb052fef573aad95f7605ef0",
       "plannedSHA256": "30c457467b2074bf26bea952b4ef9494d794dcacfb052fef573aad95f7605ef0",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4DeletionRelationalActionCore.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -2290,8 +3011,25 @@
       "module": "DGamma.CP4DeletionSelectedDeletedPlan",
       "sourceSHA256": "9c6ce64575dd7e4ba2834d1289223812885acc71ee8d4229148ee0e5c2b4a5b2",
       "plannedSHA256": "9c6ce64575dd7e4ba2834d1289223812885acc71ee8d4229148ee0e5c2b4a5b2",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4DeletionBoundaryPlan.idr",
+          "src/DGamma/CP4DeletionChildlessInvariant.idr",
+          "src/DGamma/CP4DeletionControlPlan.idr",
+          "src/DGamma/CP4DeletionEmptyTableInvariant.idr",
+          "src/DGamma/CP4DeletionGenerationUnique.idr",
+          "src/DGamma/CP4DeletionInactiveInvariant.idr",
+          "src/DGamma/CP4DeletionPlanBuilder.idr",
+          "src/DGamma/CP4DeletionPlanCommute.idr",
+          "src/DGamma/CP4DeletionPlanComplete.idr",
+          "src/DGamma/CP4DeletionPlanEffects.idr",
+          "src/DGamma/CP4DeletionPlanRuntime.idr",
+          "src/DGamma/CP4DeletionRetainedAction.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -2302,8 +3040,17 @@
       "module": "DGamma.CP4DeletionSelectedForeignLifecycleAnchorOpen",
       "sourceSHA256": "7c91f977093424bd1eedbc413f0edaef45fdf91c708502a8f499b82a9096dc74",
       "plannedSHA256": "7c91f977093424bd1eedbc413f0edaef45fdf91c708502a8f499b82a9096dc74",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4DeletionSelectedForeignLifecycleAnchorCore.idr",
+          "src/DGamma/CP4DeletionSelectedForeignLifecycleCore.idr",
+          "src/DGamma/CP4SupportQuiescence.idr",
+          "src/DGamma/CP4SupportSolution.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -2314,8 +3061,13 @@
       "module": "DGamma.CP4DeletionSelectedForeignLifecycleAnchorRelianceSelected",
       "sourceSHA256": "1c76d8bdaf016ba1fa4f65309d4b6a536c37b19795faa889e94a92940173a08d",
       "plannedSHA256": "1c76d8bdaf016ba1fa4f65309d4b6a536c37b19795faa889e94a92940173a08d",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP4DeletionSelectedForeignLifecycleCore.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -2326,8 +3078,15 @@
       "module": "DGamma.CP4DeletionSelectedForeignLifecycleReplayCore",
       "sourceSHA256": "f474808ac9c91f32d680243ed1b3a9ce10061c44ba4cb7f6f7e2ebec59ffa447",
       "plannedSHA256": "f474808ac9c91f32d680243ed1b3a9ce10061c44ba4cb7f6f7e2ebec59ffa447",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4DeletionSelectedBoundary.idr",
+          "src/DGamma/CP4DeletionSelectedForeignLifecycleCore.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -2338,8 +3097,22 @@
       "module": "DGamma.CP4DeletionSelectedOwn",
       "sourceSHA256": "4295584a57ce547c66c3779aeeb346930a9221cd4eb66cbeff5087fb332fd4fe",
       "plannedSHA256": "4295584a57ce547c66c3779aeeb346930a9221cd4eb66cbeff5087fb332fd4fe",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4DeletionBoundaryPlan.idr",
+          "src/DGamma/CP4DeletionControlPlan.idr",
+          "src/DGamma/CP4DeletionGenerationStamped.idr",
+          "src/DGamma/CP4DeletionPlanBuilder.idr",
+          "src/DGamma/CP4DeletionPlanCommute.idr",
+          "src/DGamma/CP4DeletionPlanComplete.idr",
+          "src/DGamma/CP4DeletionSelectedBoundary.idr",
+          "src/DGamma/CP4DeletionSelectedEffectCore.idr",
+          "src/DGamma/CP4RecoverySelectedReplayStep.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -2362,8 +3135,32 @@
       "module": "DGamma.CP4DeletionBoundaryRetained",
       "sourceSHA256": "ff3798fc4cf58360b40adaefa2f05bdce38ce1a4199d895c1b1236473e914cd3",
       "plannedSHA256": "ff3798fc4cf58360b40adaefa2f05bdce38ce1a4199d895c1b1236473e914cd3",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4DeletionBoundaryDeleted.idr",
+          "src/DGamma/CP4DeletionBoundaryLifecycleAdvance.idr",
+          "src/DGamma/CP4DeletionBoundaryLifecycleBegin.idr",
+          "src/DGamma/CP4DeletionBoundaryLifecycleCore.idr",
+          "src/DGamma/CP4DeletionBoundaryLifecycleDivert.idr",
+          "src/DGamma/CP4DeletionBoundaryLifecycleLeave.idr",
+          "src/DGamma/CP4DeletionBoundaryLifecycleUnload.idr",
+          "src/DGamma/CP4DeletionBoundaryPlan.idr",
+          "src/DGamma/CP4DeletionChildlessInvariant.idr",
+          "src/DGamma/CP4DeletionControlOrchestration.idr",
+          "src/DGamma/CP4DeletionControlPlan.idr",
+          "src/DGamma/CP4DeletionGenerationFilter.idr",
+          "src/DGamma/CP4DeletionGenerationUnique.idr",
+          "src/DGamma/CP4DeletionNoEpisodeReplay.idr",
+          "src/DGamma/CP4DeletionPlanBuilder.idr",
+          "src/DGamma/CP4DeletionPlanCommute.idr",
+          "src/DGamma/CP4DeletionPlanComplete.idr",
+          "src/DGamma/CP4DeletionPlanSuccess.idr",
+          "src/DGamma/CP4DeletionRetainedAction.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -2374,8 +3171,25 @@
       "module": "DGamma.CP4DeletionEndpoint",
       "sourceSHA256": "a14d5b1bb8ded0512035c954cb72447c90d38342f27526a70946d4fea4366724",
       "plannedSHA256": "a14d5b1bb8ded0512035c954cb72447c90d38342f27526a70946d4fea4366724",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4DeletionBoundaryDeleted.idr",
+          "src/DGamma/CP4DeletionBoundaryPlan.idr",
+          "src/DGamma/CP4DeletionControlPlan.idr",
+          "src/DGamma/CP4DeletionGenerationUnique.idr",
+          "src/DGamma/CP4DeletionPlanBuilder.idr",
+          "src/DGamma/CP4DeletionPlanComplete.idr",
+          "src/DGamma/CP4DeletionPlanEffects.idr",
+          "src/DGamma/CP4DeletionRelationalActionCore.idr",
+          "src/DGamma/CP4DeletionRelationalBoundary.idr",
+          "src/DGamma/CP4DeletionSelectedBoundary.idr",
+          "src/DGamma/CP4DeletionSelectedOwn.idr",
+          "src/DGamma/CP4DeletionSkeleton.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -2386,8 +3200,14 @@
       "module": "DGamma.CP4DeletionPostCloseEffectReplay",
       "sourceSHA256": "0107858e7463ce6d38905a539e73a54e822a7fcaee0cb71417a5afe1ef309f76",
       "plannedSHA256": "0107858e7463ce6d38905a539e73a54e822a7fcaee0cb71417a5afe1ef309f76",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4DeletionRelatedLifecycleEffectMap.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -2398,8 +3218,23 @@
       "module": "DGamma.CP4DeletionSelectedDeletedCore",
       "sourceSHA256": "ec46e9c555a6e70e0403b4c8c42b5a40e6676e530fd6eb4ca9464cfaa090efc3",
       "plannedSHA256": "ec46e9c555a6e70e0403b4c8c42b5a40e6676e530fd6eb4ca9464cfaa090efc3",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4DeletionEmptyTableInvariant.idr",
+          "src/DGamma/CP4DeletionGenerationUnique.idr",
+          "src/DGamma/CP4DeletionInactiveInvariant.idr",
+          "src/DGamma/CP4DeletionPlanBuilder.idr",
+          "src/DGamma/CP4DeletionPlanComplete.idr",
+          "src/DGamma/CP4DeletionPlanEffects.idr",
+          "src/DGamma/CP4DeletionPlanEmpty.idr",
+          "src/DGamma/CP4DeletionSelectedBoundary.idr",
+          "src/DGamma/CP4DeletionSelectedDeletedPlan.idr",
+          "src/DGamma/CP4DeletionSelectedEffectCore.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -2410,8 +3245,16 @@
       "module": "DGamma.CP4DeletionSelectedForeignLifecycleAdvance",
       "sourceSHA256": "10f562a9991f9761990046bb1a78b42d88be66c5f8179339ebae134c342d2621",
       "plannedSHA256": "10f562a9991f9761990046bb1a78b42d88be66c5f8179339ebae134c342d2621",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4DeletionSelectedBoundary.idr",
+          "src/DGamma/CP4DeletionSelectedForeignLifecycleAdvanceOutcome.idr",
+          "src/DGamma/CP4DeletionSelectedForeignLifecycleReplayCore.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -2422,8 +3265,17 @@
       "module": "DGamma.CP4DeletionSelectedForeignLifecycleAnchorRelianceCurrent",
       "sourceSHA256": "180230248972beeb630ad04e995cb197edb31d504e5daf41849399f8955c6cfb",
       "plannedSHA256": "180230248972beeb630ad04e995cb197edb31d504e5daf41849399f8955c6cfb",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4DeletionSelectedForeignLifecycleAnchorOpen.idr",
+          "src/DGamma/CP4DeletionSelectedForeignLifecycleAnchorRelianceResolved.idr",
+          "src/DGamma/CP4DeletionSelectedForeignLifecycleAnchorRelianceSelected.idr",
+          "src/DGamma/CP4DeletionSelectedForeignLifecycleCore.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -2434,8 +3286,18 @@
       "module": "DGamma.CP4DeletionSelectedForeignLifecycleFrame",
       "sourceSHA256": "c4c62f09e612b4a3fa50b5750af0db9247b9bfcbd6cc1539d795966d159c2771",
       "plannedSHA256": "c4c62f09e612b4a3fa50b5750af0db9247b9bfcbd6cc1539d795966d159c2771",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4DeletionSelectedBoundary.idr",
+          "src/DGamma/CP4DeletionSelectedForeignControlCore.idr",
+          "src/DGamma/CP4DeletionSelectedForeignLifecycleAnchorCore.idr",
+          "src/DGamma/CP4DeletionSelectedForeignLifecycleAnchorOpen.idr",
+          "src/DGamma/CP4DeletionSelectedForeignLifecycleCore.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -2446,8 +3308,16 @@
       "module": "DGamma.CP4DeletionSelectedForeignLifecycleUnload",
       "sourceSHA256": "a9b1aff23c8918516db71f89b9397ac8036e95f94790e35434e5c58f9dd342d3",
       "plannedSHA256": "a9b1aff23c8918516db71f89b9397ac8036e95f94790e35434e5c58f9dd342d3",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4DeletionSelectedBoundary.idr",
+          "src/DGamma/CP4DeletionSelectedForeignLifecycleCore.idr",
+          "src/DGamma/CP4DeletionSelectedForeignLifecycleReplayCore.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -2458,8 +3328,18 @@
       "module": "DGamma.CP4DeletionSelectedForeignOrchestration",
       "sourceSHA256": "cdb5c543a67682fbcc050b91d5bbe2ad4e420e4949d66d471496afdaa519feb2",
       "plannedSHA256": "cdb5c543a67682fbcc050b91d5bbe2ad4e420e4949d66d471496afdaa519feb2",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4DeletionBoundaryDeleted.idr",
+          "src/DGamma/CP4DeletionSelectedBoundary.idr",
+          "src/DGamma/CP4DeletionSelectedEffectCore.idr",
+          "src/DGamma/CP4DeletionSelectedEffectForeign.idr",
+          "src/DGamma/CP4DeletionSelectedForeignControlCore.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -2470,8 +3350,18 @@
       "module": "DGamma.CP4DeletionSelectedOwnDispatch",
       "sourceSHA256": "acb07aac94eab857d7feb3ed34fca6f4e682cbf1d63921d0e4137ea979f93f2e",
       "plannedSHA256": "acb07aac94eab857d7feb3ed34fca6f4e682cbf1d63921d0e4137ea979f93f2e",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4DeletionGenerationStamped.idr",
+          "src/DGamma/CP4DeletionSelectedBoundary.idr",
+          "src/DGamma/CP4DeletionSelectedEffectCore.idr",
+          "src/DGamma/CP4DeletionSelectedOwn.idr",
+          "src/DGamma/CP4RecoverySelectedReplayStep.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -2494,8 +3384,17 @@
       "module": "DGamma.CP4DeletionRelationalLifecycleSources",
       "sourceSHA256": "fa8ae708add9b29a17ea1b7afc0ad9ff20ec13fd1ca5f1b3c9cb5c1cb2eb5bab",
       "plannedSHA256": "fa8ae708add9b29a17ea1b7afc0ad9ff20ec13fd1ca5f1b3c9cb5c1cb2eb5bab",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4DeletionRelationalActionCore.idr",
+          "src/DGamma/CP4DeletionRelationalBoundary.idr",
+          "src/DGamma/CP4DeletionSelectedBoundary.idr",
+          "src/DGamma/CP4DeletionSelectedForeignLifecycleFrame.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -2506,8 +3405,26 @@
       "module": "DGamma.CP4DeletionSelectedCloseBoundary",
       "sourceSHA256": "7142e921d736c7eaf91a77a67ee2159dae6167261eea76bd64a4bde327767fa0",
       "plannedSHA256": "7142e921d736c7eaf91a77a67ee2159dae6167261eea76bd64a4bde327767fa0",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4DeletionControlPlan.idr",
+          "src/DGamma/CP4DeletionEmptyTableInvariant.idr",
+          "src/DGamma/CP4DeletionGenerationStamped.idr",
+          "src/DGamma/CP4DeletionGenerationUnique.idr",
+          "src/DGamma/CP4DeletionInactiveInvariant.idr",
+          "src/DGamma/CP4DeletionPlanBuilder.idr",
+          "src/DGamma/CP4DeletionPlanComplete.idr",
+          "src/DGamma/CP4DeletionPlanEffects.idr",
+          "src/DGamma/CP4DeletionPlanEmpty.idr",
+          "src/DGamma/CP4DeletionSelectedBoundary.idr",
+          "src/DGamma/CP4DeletionSelectedCloseEffect.idr",
+          "src/DGamma/CP4DeletionSelectedForeignLifecycleUnload.idr",
+          "src/DGamma/CP4DeletionSelectedOwn.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -2518,8 +3435,31 @@
       "module": "DGamma.CP4DeletionSelectedDeletedOrchestration",
       "sourceSHA256": "a13f86e26497161b332ff8586a71739df0220c50a2bc24b0ba42a47ee1d96da6",
       "plannedSHA256": "a13f86e26497161b332ff8586a71739df0220c50a2bc24b0ba42a47ee1d96da6",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4DeletionBoundaryDeleted.idr",
+          "src/DGamma/CP4DeletionBoundaryPlan.idr",
+          "src/DGamma/CP4DeletionBoundaryRetained.idr",
+          "src/DGamma/CP4DeletionChildlessInvariant.idr",
+          "src/DGamma/CP4DeletionControlPlan.idr",
+          "src/DGamma/CP4DeletionEmptyTableInvariant.idr",
+          "src/DGamma/CP4DeletionGenerationStamped.idr",
+          "src/DGamma/CP4DeletionGenerationUnique.idr",
+          "src/DGamma/CP4DeletionInactiveInvariant.idr",
+          "src/DGamma/CP4DeletionPlanBuilder.idr",
+          "src/DGamma/CP4DeletionPlanCommute.idr",
+          "src/DGamma/CP4DeletionPlanComplete.idr",
+          "src/DGamma/CP4DeletionPlanEffects.idr",
+          "src/DGamma/CP4DeletionPlanEmpty.idr",
+          "src/DGamma/CP4DeletionRetainedAction.idr",
+          "src/DGamma/CP4DeletionSelectedBoundary.idr",
+          "src/DGamma/CP4DeletionSelectedDeletedCore.idr",
+          "src/DGamma/CP4DeletionSelectedDeletedPlan.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -2530,8 +3470,15 @@
       "module": "DGamma.CP4DeletionSelectedForeignLifecycleAnchorRelianceClose",
       "sourceSHA256": "8b87b01a97030e91ccd379f5940e3a95aadc8ef259a4205b7e6bcc8d4142c00c",
       "plannedSHA256": "8b87b01a97030e91ccd379f5940e3a95aadc8ef259a4205b7e6bcc8d4142c00c",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4DeletionSelectedForeignLifecycleAnchorClassify.idr",
+          "src/DGamma/CP4DeletionSelectedForeignLifecycleAnchorRelianceCurrent.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -2542,8 +3489,20 @@
       "module": "DGamma.CP4DeletionSelectedForeignLifecycleCrossing",
       "sourceSHA256": "0b7a31477719f9af657a2785c33f8d867ff7790eea485c0b336435f6f5120ca7",
       "plannedSHA256": "0b7a31477719f9af657a2785c33f8d867ff7790eea485c0b336435f6f5120ca7",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4DeletionCommittedProviderPersistence.idr",
+          "src/DGamma/CP4DeletionSelectedForeignLifecycleAnchorRelianceCurrent.idr",
+          "src/DGamma/CP4DeletionSelectedForeignLifecycleAnchorRelianceResolved.idr",
+          "src/DGamma/CP4DeletionSelectedForeignLifecycleAnchorRelianceSelected.idr",
+          "src/DGamma/CP4DeletionSelectedForeignLifecycleAnchorTrace.idr",
+          "src/DGamma/CP4DeletionSelectedForeignLifecycleCore.idr",
+          "src/DGamma/Ordering.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -2554,8 +3513,15 @@
       "module": "DGamma.CP4DeletionSelectedForeignLifecycleGuards",
       "sourceSHA256": "348b8ca1e5f236f8cc0c97b5e04f2beffa3eee70e98d266695e1b4e4005c3564",
       "plannedSHA256": "348b8ca1e5f236f8cc0c97b5e04f2beffa3eee70e98d266695e1b4e4005c3564",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4DeletionSelectedForeignLifecycleCore.idr",
+          "src/DGamma/CP4DeletionSelectedForeignLifecycleFrame.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -2566,8 +3532,22 @@
       "module": "DGamma.CP4DeletionSelectedRetire",
       "sourceSHA256": "135c732861d16cf173211c2277511a83421a7a9cd988a974bf01b4a0bda63bd0",
       "plannedSHA256": "135c732861d16cf173211c2277511a83421a7a9cd988a974bf01b4a0bda63bd0",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4DeletionBoundaryDeleted.idr",
+          "src/DGamma/CP4DeletionBoundaryRetained.idr",
+          "src/DGamma/CP4DeletionGenerationFilter.idr",
+          "src/DGamma/CP4DeletionNoEpisodeReplay.idr",
+          "src/DGamma/CP4DeletionPlanBuilder.idr",
+          "src/DGamma/CP4DeletionPlanComplete.idr",
+          "src/DGamma/CP4DeletionSelectedBoundary.idr",
+          "src/DGamma/CP4DeletionSelectedEffectCore.idr",
+          "src/DGamma/CP4RecoverySelectedReplayStep.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -2578,8 +3558,19 @@
       "module": "DGamma.CP4DeletionSuffixFold",
       "sourceSHA256": "d15364c708d7cbcfe027bc455b19f169b91c6ec8988744ed724745b846338e07",
       "plannedSHA256": "d15364c708d7cbcfe027bc455b19f169b91c6ec8988744ed724745b846338e07",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4DeletionBoundaryDeleted.idr",
+          "src/DGamma/CP4DeletionBoundaryPlan.idr",
+          "src/DGamma/CP4DeletionBoundaryRetained.idr",
+          "src/DGamma/CP4DeletionFilterSuccess.idr",
+          "src/DGamma/CP4DeletionGenerationFilter.idr",
+          "src/DGamma/CP4DeletionNoEpisodeReplay.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -2614,8 +3605,25 @@
       "module": "DGamma.CP4DeletionPostCloseFinal",
       "sourceSHA256": "a88baeb384f2048a435042a2935c6bbc3d5f53cad448e97818af5c52285e40b7",
       "plannedSHA256": "a88baeb384f2048a435042a2935c6bbc3d5f53cad448e97818af5c52285e40b7",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4DeletionBoundaryPlan.idr",
+          "src/DGamma/CP4DeletionGenerationStamped.idr",
+          "src/DGamma/CP4DeletionGenerationUnique.idr",
+          "src/DGamma/CP4DeletionInactiveInvariant.idr",
+          "src/DGamma/CP4DeletionPlanBuilder.idr",
+          "src/DGamma/CP4DeletionPlanComplete.idr",
+          "src/DGamma/CP4DeletionPostCloseUpgrade.idr",
+          "src/DGamma/CP4DeletionRelationalBoundary.idr",
+          "src/DGamma/CP4DeletionSelectedBoundary.idr",
+          "src/DGamma/CP4DeletionSelectedCloseBoundary.idr",
+          "src/DGamma/CP4DeletionSelectedForeignTables.idr",
+          "src/DGamma/CP4DeletionSelectedRetire.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -2626,8 +3634,19 @@
       "module": "DGamma.CP4DeletionRelationalLifecycleCore",
       "sourceSHA256": "f9d6effac9cd45e1753c7f2355b8772b4d0c09e2c9257b93b4f73c548cd4fc0b",
       "plannedSHA256": "f9d6effac9cd45e1753c7f2355b8772b4d0c09e2c9257b93b4f73c548cd4fc0b",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4DeletionBoundaryLifecycleCore.idr",
+          "src/DGamma/CP4DeletionGenerationFilter.idr",
+          "src/DGamma/CP4DeletionRelationalActionCore.idr",
+          "src/DGamma/CP4DeletionRelationalBoundary.idr",
+          "src/DGamma/CP4DeletionRelationalLifecycleSources.idr",
+          "src/DGamma/CP4DeletionSelectedForeignControlCore.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -2638,8 +3657,24 @@
       "module": "DGamma.CP4DeletionRelationalSuffixFold",
       "sourceSHA256": "975fe6eda5b27209f3b54ccf22cdefc4ed45e7a822e6338792ea1ed969984897",
       "plannedSHA256": "975fe6eda5b27209f3b54ccf22cdefc4ed45e7a822e6338792ea1ed969984897",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4DeletionBoundaryDeleted.idr",
+          "src/DGamma/CP4DeletionBoundaryPlan.idr",
+          "src/DGamma/CP4DeletionBoundaryRetained.idr",
+          "src/DGamma/CP4DeletionFilterSuccess.idr",
+          "src/DGamma/CP4DeletionGenerationFilter.idr",
+          "src/DGamma/CP4DeletionGenerationUnique.idr",
+          "src/DGamma/CP4DeletionNoEpisodeReplay.idr",
+          "src/DGamma/CP4DeletionPlanBuilder.idr",
+          "src/DGamma/CP4DeletionPlanComplete.idr",
+          "src/DGamma/CP4DeletionRelationalBoundary.idr",
+          "src/DGamma/CP4DeletionSuffixFold.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -2650,8 +3685,18 @@
       "module": "DGamma.CP4DeletionRetirementPersistence",
       "sourceSHA256": "6c3a4c8303a36d1fdda0a8f6d28f98e38109d8972c5cf037c090a214a6f56f8f",
       "plannedSHA256": "6c3a4c8303a36d1fdda0a8f6d28f98e38109d8972c5cf037c090a214a6f56f8f",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4DeletionBoundaryDeleted.idr",
+          "src/DGamma/CP4DeletionGenerationUnique.idr",
+          "src/DGamma/CP4DeletionInactiveInvariant.idr",
+          "src/DGamma/CP4DeletionSelectedRetire.idr",
+          "src/DGamma/CP4DeletionWithdrawalCurrent.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -2662,8 +3707,20 @@
       "module": "DGamma.CP4DeletionSelectedDeletedDispatch",
       "sourceSHA256": "fe077219ef5be131437d65a1517893f7a74394b93878256809bf0d09a816496b",
       "plannedSHA256": "fe077219ef5be131437d65a1517893f7a74394b93878256809bf0d09a816496b",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4DeletionGenerationStamped.idr",
+          "src/DGamma/CP4DeletionGenerationUnique.idr",
+          "src/DGamma/CP4DeletionPlanBuilder.idr",
+          "src/DGamma/CP4DeletionPlanComplete.idr",
+          "src/DGamma/CP4DeletionPlanEffects.idr",
+          "src/DGamma/CP4DeletionSelectedBoundary.idr",
+          "src/DGamma/CP4DeletionSelectedDeletedOrchestration.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -2674,8 +3731,18 @@
       "module": "DGamma.CP4DeletionSelectedForeignLifecycleAdvanceDispatchCore",
       "sourceSHA256": "37e1ec8e3a4ea4d0f37c35d89528d95248ad3004569be74c10cf4c61a4a2df6a",
       "plannedSHA256": "37e1ec8e3a4ea4d0f37c35d89528d95248ad3004569be74c10cf4c61a4a2df6a",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4DeletionSelectedBoundary.idr",
+          "src/DGamma/CP4DeletionSelectedForeignLifecycleAdvance.idr",
+          "src/DGamma/CP4DeletionSelectedForeignLifecycleCore.idr",
+          "src/DGamma/CP4DeletionSelectedForeignLifecycleGuards.idr",
+          "src/DGamma/CP4DeletionSelectedForeignLifecycleReplayCore.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -2686,8 +3753,16 @@
       "module": "DGamma.CP4DeletionSelectedForeignLifecycleAnchorReliance",
       "sourceSHA256": "1ba4b931d3f6ae07e2604fc86c6ce5e365efcb2da1bdc9826bd7e77616c30bbc",
       "plannedSHA256": "1ba4b931d3f6ae07e2604fc86c6ce5e365efcb2da1bdc9826bd7e77616c30bbc",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP4DeletionSelectedForeignLifecycleAnchorClassify.idr",
+          "src/DGamma/CP4DeletionSelectedForeignLifecycleAnchorRelianceClose.idr",
+          "src/DGamma/CP4DeletionSelectedForeignLifecycleAnchorRelianceCurrent.idr",
+          "src/DGamma/CP4DeletionSelectedForeignLifecycleCore.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -2698,8 +3773,17 @@
       "module": "DGamma.CP4DeletionSelectedForeignLifecycleBegin",
       "sourceSHA256": "41b753d97cd4926abe30b84f0f1cdfed02336672dfc03b1b8ea1c27c47089ec9",
       "plannedSHA256": "41b753d97cd4926abe30b84f0f1cdfed02336672dfc03b1b8ea1c27c47089ec9",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4DeletionSelectedBoundary.idr",
+          "src/DGamma/CP4DeletionSelectedForeignLifecycleCore.idr",
+          "src/DGamma/CP4DeletionSelectedForeignLifecycleGuards.idr",
+          "src/DGamma/CP4DeletionSelectedForeignLifecycleReplayCore.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -2710,8 +3794,17 @@
       "module": "DGamma.CP4DeletionSelectedForeignLifecycleDivert",
       "sourceSHA256": "e7c19e989e63e14ededf247574336676d2dbbcd7a3ecf5478edecadbc76aba7d",
       "plannedSHA256": "e7c19e989e63e14ededf247574336676d2dbbcd7a3ecf5478edecadbc76aba7d",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4DeletionSelectedBoundary.idr",
+          "src/DGamma/CP4DeletionSelectedForeignLifecycleCore.idr",
+          "src/DGamma/CP4DeletionSelectedForeignLifecycleGuards.idr",
+          "src/DGamma/CP4DeletionSelectedForeignLifecycleReplayCore.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -2722,8 +3815,17 @@
       "module": "DGamma.CP4DeletionSelectedForeignLifecycleLeave",
       "sourceSHA256": "2a234af0b7f40b7d75bddc7f1f5449d8eafd23186f4f761a0543f688cf862b66",
       "plannedSHA256": "2a234af0b7f40b7d75bddc7f1f5449d8eafd23186f4f761a0543f688cf862b66",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4DeletionSelectedBoundary.idr",
+          "src/DGamma/CP4DeletionSelectedForeignLifecycleCore.idr",
+          "src/DGamma/CP4DeletionSelectedForeignLifecycleGuards.idr",
+          "src/DGamma/CP4DeletionSelectedForeignLifecycleReplayCore.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -2734,8 +3836,24 @@
       "module": "DGamma.CP4DeletionSelectedForeignOrchestrationStep",
       "sourceSHA256": "4502a50f729a84fa9360545408168d904776c8b29506fc9eba63a4cb1304d848",
       "plannedSHA256": "4502a50f729a84fa9360545408168d904776c8b29506fc9eba63a4cb1304d848",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4DeletionBoundaryDeleted.idr",
+          "src/DGamma/CP4DeletionBoundaryRetained.idr",
+          "src/DGamma/CP4DeletionGenerationFilter.idr",
+          "src/DGamma/CP4DeletionNoEpisodeReplay.idr",
+          "src/DGamma/CP4DeletionPlanBuilder.idr",
+          "src/DGamma/CP4DeletionPlanComplete.idr",
+          "src/DGamma/CP4DeletionSelectedBoundary.idr",
+          "src/DGamma/CP4DeletionSelectedEffectCore.idr",
+          "src/DGamma/CP4DeletionSelectedEffectForeign.idr",
+          "src/DGamma/CP4DeletionSelectedForeignOrchestration.idr",
+          "src/DGamma/CP4DeletionSelectedRetire.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -2770,8 +3888,33 @@
       "module": "DGamma.CP4DeletionPostCloseOrchestration",
       "sourceSHA256": "d30c99ac2f83db7e8796a57aad47f5051d6936cf44bf8739f2edb77574c1b642",
       "plannedSHA256": "d30c99ac2f83db7e8796a57aad47f5051d6936cf44bf8739f2edb77574c1b642",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4DeletionBoundaryRetained.idr",
+          "src/DGamma/CP4DeletionControlPlan.idr",
+          "src/DGamma/CP4DeletionEmptyTableInvariant.idr",
+          "src/DGamma/CP4DeletionGenerationFilter.idr",
+          "src/DGamma/CP4DeletionGenerationUnique.idr",
+          "src/DGamma/CP4DeletionInactiveInvariant.idr",
+          "src/DGamma/CP4DeletionNoEpisodeReplay.idr",
+          "src/DGamma/CP4DeletionPlanBuilder.idr",
+          "src/DGamma/CP4DeletionPlanComplete.idr",
+          "src/DGamma/CP4DeletionPlanEffects.idr",
+          "src/DGamma/CP4DeletionPlanEmpty.idr",
+          "src/DGamma/CP4DeletionPostCloseEffectReplay.idr",
+          "src/DGamma/CP4DeletionRelationalActionCore.idr",
+          "src/DGamma/CP4DeletionRelationalBoundary.idr",
+          "src/DGamma/CP4DeletionRelationalSuffixFold.idr",
+          "src/DGamma/CP4DeletionSelectedBoundary.idr",
+          "src/DGamma/CP4DeletionSelectedCloseBoundary.idr",
+          "src/DGamma/CP4DeletionSelectedForeignOrchestration.idr",
+          "src/DGamma/CP4DeletionSelectedForeignOrchestrationStep.idr",
+          "src/DGamma/CP4DeletionSelectedRetire.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -2782,8 +3925,24 @@
       "module": "DGamma.CP4DeletionRelationalActionOrchestration",
       "sourceSHA256": "506816c8a8ca6c4017c970e92d108c63a5b87f1efc01a38ee4897ee2a79e38e4",
       "plannedSHA256": "506816c8a8ca6c4017c970e92d108c63a5b87f1efc01a38ee4897ee2a79e38e4",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4DeletionBoundaryDeleted.idr",
+          "src/DGamma/CP4DeletionBoundaryRetained.idr",
+          "src/DGamma/CP4DeletionFilterSuccess.idr",
+          "src/DGamma/CP4DeletionGenerationFilter.idr",
+          "src/DGamma/CP4DeletionNoEpisodeReplay.idr",
+          "src/DGamma/CP4DeletionRelationalActionCore.idr",
+          "src/DGamma/CP4DeletionRelationalBoundary.idr",
+          "src/DGamma/CP4DeletionRelationalSuffixFold.idr",
+          "src/DGamma/CP4DeletionSelectedDeletedOrchestration.idr",
+          "src/DGamma/CP4DeletionSelectedForeignControlCore.idr",
+          "src/DGamma/CP4DeletionSelectedForeignOrchestration.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -2794,8 +3953,17 @@
       "module": "DGamma.CP4DeletionRelationalLifecycleAdvanceCases",
       "sourceSHA256": "37d40dc577965e9f1487f18e73cee8df53210eb5b5dbc7a3f54deacb18619cdb",
       "plannedSHA256": "37d40dc577965e9f1487f18e73cee8df53210eb5b5dbc7a3f54deacb18619cdb",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4DeletionRelationalBoundary.idr",
+          "src/DGamma/CP4DeletionRelationalLifecycleCore.idr",
+          "src/DGamma/CP4DeletionSelectedForeignLifecycleAdvanceOutcome.idr",
+          "src/DGamma/CP4DeletionSelectedForeignLifecycleReplayCore.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -2806,8 +3974,20 @@
       "module": "DGamma.CP4DeletionSelectedForeignAdvanceAgreement",
       "sourceSHA256": "62827c96e660e3d5729d0c409c625e7b8707e5951f1aa27fd0e67b765a6448fb",
       "plannedSHA256": "62827c96e660e3d5729d0c409c625e7b8707e5951f1aa27fd0e67b765a6448fb",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4DeletionControlPlan.idr",
+          "src/DGamma/CP4DeletionPlanBuilder.idr",
+          "src/DGamma/CP4DeletionPlanComplete.idr",
+          "src/DGamma/CP4DeletionPlanEffects.idr",
+          "src/DGamma/CP4DeletionSelectedBoundary.idr",
+          "src/DGamma/CP4DeletionSelectedForeignLifecycleAdvanceDispatchCore.idr",
+          "src/DGamma/CP4DeletionSelectedForeignLifecycleAdvanceOutcome.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -2818,8 +3998,19 @@
       "module": "DGamma.CP4DeletionSelectedForeignLifecycleAdvanceDispatch",
       "sourceSHA256": "7028d306f658c31a0fe4b583e60b657a6be787192c2b37ed854305e68437ef11",
       "plannedSHA256": "7028d306f658c31a0fe4b583e60b657a6be787192c2b37ed854305e68437ef11",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4DeletionSelectedBoundary.idr",
+          "src/DGamma/CP4DeletionSelectedForeignLifecycleAdvance.idr",
+          "src/DGamma/CP4DeletionSelectedForeignLifecycleAdvanceDispatchCore.idr",
+          "src/DGamma/CP4DeletionSelectedForeignLifecycleCore.idr",
+          "src/DGamma/CP4DeletionSelectedForeignLifecycleGuards.idr",
+          "src/DGamma/CP4DeletionSelectedForeignLifecycleReplayCore.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -2830,8 +4021,20 @@
       "module": "DGamma.CP4DeletionSelectedForeignLifecycleProviderFrame",
       "sourceSHA256": "08365772e5daf5d9be21ab75eabc005665de62bc93dd76caaf8a132b54c39af1",
       "plannedSHA256": "08365772e5daf5d9be21ab75eabc005665de62bc93dd76caaf8a132b54c39af1",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4DeletionSelectedBoundary.idr",
+          "src/DGamma/CP4DeletionSelectedForeignControlCore.idr",
+          "src/DGamma/CP4DeletionSelectedForeignLifecycleAnchorClassify.idr",
+          "src/DGamma/CP4DeletionSelectedForeignLifecycleAnchorCore.idr",
+          "src/DGamma/CP4DeletionSelectedForeignLifecycleAnchorReliance.idr",
+          "src/DGamma/CP4DeletionSelectedForeignLifecycleCore.idr",
+          "src/DGamma/CP4DeletionSelectedForeignLifecycleFrame.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -2842,8 +4045,25 @@
       "module": "DGamma.CP4DeletionSelectedForeignLifecycleStep",
       "sourceSHA256": "cd2d1e960b2bcfb4ea97a484e38ec62e768dff0095364de4c858e5d81c162f68",
       "plannedSHA256": "cd2d1e960b2bcfb4ea97a484e38ec62e768dff0095364de4c858e5d81c162f68",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4DeletionBoundaryRetained.idr",
+          "src/DGamma/CP4DeletionGenerationFilter.idr",
+          "src/DGamma/CP4DeletionNoEpisodeReplay.idr",
+          "src/DGamma/CP4DeletionPlanBuilder.idr",
+          "src/DGamma/CP4DeletionPlanComplete.idr",
+          "src/DGamma/CP4DeletionRelatedLifecycleEffectMap.idr",
+          "src/DGamma/CP4DeletionSelectedBoundary.idr",
+          "src/DGamma/CP4DeletionSelectedEffectCore.idr",
+          "src/DGamma/CP4DeletionSelectedEffectForeign.idr",
+          "src/DGamma/CP4DeletionSelectedForeignLifecycleReplayCore.idr",
+          "src/DGamma/CP4DeletionSelectedForeignOrchestrationStep.idr",
+          "src/DGamma/CP4DeletionSelectedRetire.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -2878,8 +4098,30 @@
       "module": "DGamma.CP4DeletionPostCloseDeleted",
       "sourceSHA256": "e8b77d37fe807cc0bd0789959f47e41bbe9389b3a97f84c0ffc467740dfb8144",
       "plannedSHA256": "e8b77d37fe807cc0bd0789959f47e41bbe9389b3a97f84c0ffc467740dfb8144",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4DeletionBoundaryDeleted.idr",
+          "src/DGamma/CP4DeletionBoundaryPlan.idr",
+          "src/DGamma/CP4DeletionEmptyTableInvariant.idr",
+          "src/DGamma/CP4DeletionGenerationBounds.idr",
+          "src/DGamma/CP4DeletionGenerationUnique.idr",
+          "src/DGamma/CP4DeletionInactiveInvariant.idr",
+          "src/DGamma/CP4DeletionNoEpisodeReplay.idr",
+          "src/DGamma/CP4DeletionPlanBuilder.idr",
+          "src/DGamma/CP4DeletionPlanComplete.idr",
+          "src/DGamma/CP4DeletionPlanEffects.idr",
+          "src/DGamma/CP4DeletionPlanEmpty.idr",
+          "src/DGamma/CP4DeletionPostCloseOrchestration.idr",
+          "src/DGamma/CP4DeletionRelationalBoundary.idr",
+          "src/DGamma/CP4DeletionRelationalSuffixFold.idr",
+          "src/DGamma/CP4DeletionSelectedBoundary.idr",
+          "src/DGamma/CP4DeletionSelectedCloseBoundary.idr",
+          "src/DGamma/CP4DeletionSelectedDeletedCore.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -2890,8 +4132,34 @@
       "module": "DGamma.CP4DeletionPostCloseRemove",
       "sourceSHA256": "3941c87fe51f7a49efdf6ffc2a8e5aaed330def45c96918d70d20238f33a89fa",
       "plannedSHA256": "3941c87fe51f7a49efdf6ffc2a8e5aaed330def45c96918d70d20238f33a89fa",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4DeletionBoundaryDeleted.idr",
+          "src/DGamma/CP4DeletionBoundaryRetained.idr",
+          "src/DGamma/CP4DeletionGenerationFilter.idr",
+          "src/DGamma/CP4DeletionGenerationUnique.idr",
+          "src/DGamma/CP4DeletionNoEpisodeReplay.idr",
+          "src/DGamma/CP4DeletionPlanBuilder.idr",
+          "src/DGamma/CP4DeletionPlanComplete.idr",
+          "src/DGamma/CP4DeletionPostCloseEffectReplay.idr",
+          "src/DGamma/CP4DeletionPostCloseOrchestration.idr",
+          "src/DGamma/CP4DeletionPostCloseUpgrade.idr",
+          "src/DGamma/CP4DeletionRelationalActionCore.idr",
+          "src/DGamma/CP4DeletionRelationalBoundary.idr",
+          "src/DGamma/CP4DeletionRelationalSuffixFold.idr",
+          "src/DGamma/CP4DeletionSelectedBoundary.idr",
+          "src/DGamma/CP4DeletionSelectedCloseBoundary.idr",
+          "src/DGamma/CP4DeletionSelectedForeignControlCore.idr",
+          "src/DGamma/CP4DeletionSelectedForeignOrchestration.idr",
+          "src/DGamma/CP4DeletionSelectedForeignOrchestrationStep.idr",
+          "src/DGamma/CP4DeletionSelectedOwn.idr",
+          "src/DGamma/CP4DeletionSelectedRetire.idr",
+          "src/DGamma/CP4ParentSafety.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -2902,8 +4170,28 @@
       "module": "DGamma.CP4DeletionPostCloseSelectedRetire",
       "sourceSHA256": "14cb11d575ea735e69fd14e0ca612a86281953b8370a622a1ee93109c07e3b0f",
       "plannedSHA256": "14cb11d575ea735e69fd14e0ca612a86281953b8370a622a1ee93109c07e3b0f",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4DeletionBoundaryDeleted.idr",
+          "src/DGamma/CP4DeletionBoundaryRetained.idr",
+          "src/DGamma/CP4DeletionGenerationFilter.idr",
+          "src/DGamma/CP4DeletionGenerationUnique.idr",
+          "src/DGamma/CP4DeletionInactiveInvariant.idr",
+          "src/DGamma/CP4DeletionNoEpisodeReplay.idr",
+          "src/DGamma/CP4DeletionPlanBuilder.idr",
+          "src/DGamma/CP4DeletionPlanComplete.idr",
+          "src/DGamma/CP4DeletionPostCloseEffectReplay.idr",
+          "src/DGamma/CP4DeletionPostCloseOrchestration.idr",
+          "src/DGamma/CP4DeletionRelationalBoundary.idr",
+          "src/DGamma/CP4DeletionSelectedBoundary.idr",
+          "src/DGamma/CP4DeletionSelectedCloseBoundary.idr",
+          "src/DGamma/CP4DeletionSelectedForeignOrchestration.idr",
+          "src/DGamma/CP4DeletionSelectedRetire.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -2914,8 +4202,22 @@
       "module": "DGamma.CP4DeletionRelationalLifecycleAdvanceDispatch",
       "sourceSHA256": "083812d4d1d31969fb0f7e05e23af6993370b6b15947d7b36cd2d981388bc533",
       "plannedSHA256": "083812d4d1d31969fb0f7e05e23af6993370b6b15947d7b36cd2d981388bc533",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4DeletionRelationalBoundary.idr",
+          "src/DGamma/CP4DeletionRelationalLifecycleAdvanceCases.idr",
+          "src/DGamma/CP4DeletionRelationalLifecycleCore.idr",
+          "src/DGamma/CP4DeletionRelationalLifecycleSources.idr",
+          "src/DGamma/CP4DeletionSelectedForeignLifecycleAdvance.idr",
+          "src/DGamma/CP4DeletionSelectedForeignLifecycleAdvanceDispatchCore.idr",
+          "src/DGamma/CP4DeletionSelectedForeignLifecycleCore.idr",
+          "src/DGamma/CP4DeletionSelectedForeignLifecycleGuards.idr",
+          "src/DGamma/CP4DeletionSelectedForeignLifecycleReplayCore.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -2926,8 +4228,23 @@
       "module": "DGamma.CP4DeletionRelationalLifecycleBegin",
       "sourceSHA256": "c278ba673b1aff0a65aa36bc468a017606f1f47af36206ab770356d75599dc79",
       "plannedSHA256": "c278ba673b1aff0a65aa36bc468a017606f1f47af36206ab770356d75599dc79",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4DeletionGenerationFilter.idr",
+          "src/DGamma/CP4DeletionRelationalActionCore.idr",
+          "src/DGamma/CP4DeletionRelationalActionOrchestration.idr",
+          "src/DGamma/CP4DeletionRelationalBoundary.idr",
+          "src/DGamma/CP4DeletionRelationalLifecycleCore.idr",
+          "src/DGamma/CP4DeletionRelationalLifecycleSources.idr",
+          "src/DGamma/CP4DeletionRelationalSuffixFold.idr",
+          "src/DGamma/CP4DeletionSelectedBoundary.idr",
+          "src/DGamma/CP4DeletionSelectedForeignLifecycleBegin.idr",
+          "src/DGamma/CP4DeletionSelectedForeignLifecycleCore.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -2938,8 +4255,22 @@
       "module": "DGamma.CP4DeletionRelationalLifecycleDivert",
       "sourceSHA256": "0dc729046d2d3b6b2bad5e632c9ab58d28481880063a43144b5f580feb30d12d",
       "plannedSHA256": "0dc729046d2d3b6b2bad5e632c9ab58d28481880063a43144b5f580feb30d12d",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4DeletionGenerationFilter.idr",
+          "src/DGamma/CP4DeletionRelationalActionCore.idr",
+          "src/DGamma/CP4DeletionRelationalActionOrchestration.idr",
+          "src/DGamma/CP4DeletionRelationalBoundary.idr",
+          "src/DGamma/CP4DeletionRelationalLifecycleCore.idr",
+          "src/DGamma/CP4DeletionRelationalLifecycleSources.idr",
+          "src/DGamma/CP4DeletionRelationalSuffixFold.idr",
+          "src/DGamma/CP4DeletionSelectedForeignLifecycleCore.idr",
+          "src/DGamma/CP4DeletionSelectedForeignLifecycleDivert.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -2950,8 +4281,21 @@
       "module": "DGamma.CP4DeletionRelationalLifecycleLeave",
       "sourceSHA256": "da1349734d7b79ec7af5eea991098c72a38e4ec3fa578ee8c68d8f98c5103846",
       "plannedSHA256": "da1349734d7b79ec7af5eea991098c72a38e4ec3fa578ee8c68d8f98c5103846",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4DeletionGenerationFilter.idr",
+          "src/DGamma/CP4DeletionRelationalActionOrchestration.idr",
+          "src/DGamma/CP4DeletionRelationalBoundary.idr",
+          "src/DGamma/CP4DeletionRelationalLifecycleCore.idr",
+          "src/DGamma/CP4DeletionRelationalLifecycleSources.idr",
+          "src/DGamma/CP4DeletionRelationalSuffixFold.idr",
+          "src/DGamma/CP4DeletionSelectedForeignLifecycleCore.idr",
+          "src/DGamma/CP4DeletionSelectedForeignLifecycleLeave.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -2962,8 +4306,22 @@
       "module": "DGamma.CP4DeletionRelationalLifecycleUnload",
       "sourceSHA256": "4940f415dbe876e8d86fa87322306cb22e31b6ff09a67452e304081606f8080c",
       "plannedSHA256": "4940f415dbe876e8d86fa87322306cb22e31b6ff09a67452e304081606f8080c",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4DeletionGenerationFilter.idr",
+          "src/DGamma/CP4DeletionRelationalActionCore.idr",
+          "src/DGamma/CP4DeletionRelationalActionOrchestration.idr",
+          "src/DGamma/CP4DeletionRelationalBoundary.idr",
+          "src/DGamma/CP4DeletionRelationalLifecycleCore.idr",
+          "src/DGamma/CP4DeletionRelationalLifecycleSources.idr",
+          "src/DGamma/CP4DeletionRelationalSuffixFold.idr",
+          "src/DGamma/CP4DeletionSelectedForeignLifecycleCore.idr",
+          "src/DGamma/CP4DeletionSelectedForeignLifecycleUnload.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -2974,8 +4332,23 @@
       "module": "DGamma.CP4DeletionSelectedForeignLifecycleDispatch",
       "sourceSHA256": "de843b6374add77f250fc7c50f1bbbc9a4f2be0b2e06eddf86fe65bc9ecb109a",
       "plannedSHA256": "de843b6374add77f250fc7c50f1bbbc9a4f2be0b2e06eddf86fe65bc9ecb109a",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4DeletionSelectedBoundary.idr",
+          "src/DGamma/CP4DeletionSelectedForeignLifecycleAdvanceDispatch.idr",
+          "src/DGamma/CP4DeletionSelectedForeignLifecycleAdvanceDispatchCore.idr",
+          "src/DGamma/CP4DeletionSelectedForeignLifecycleBegin.idr",
+          "src/DGamma/CP4DeletionSelectedForeignLifecycleCore.idr",
+          "src/DGamma/CP4DeletionSelectedForeignLifecycleDivert.idr",
+          "src/DGamma/CP4DeletionSelectedForeignLifecycleLeave.idr",
+          "src/DGamma/CP4DeletionSelectedForeignLifecycleProviderFrame.idr",
+          "src/DGamma/CP4DeletionSelectedForeignLifecycleReplayCore.idr",
+          "src/DGamma/CP4DeletionSelectedForeignLifecycleUnload.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -2986,8 +4359,24 @@
       "module": "DGamma.CP4DeletionRelationalLifecycleAdvance",
       "sourceSHA256": "09948ad65b097509b991c4ce59d300ad209b41f0188c6897b4e7a49ddf01a339",
       "plannedSHA256": "09948ad65b097509b991c4ce59d300ad209b41f0188c6897b4e7a49ddf01a339",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4DeletionGenerationFilter.idr",
+          "src/DGamma/CP4DeletionRelationalActionCore.idr",
+          "src/DGamma/CP4DeletionRelationalActionOrchestration.idr",
+          "src/DGamma/CP4DeletionRelationalBoundary.idr",
+          "src/DGamma/CP4DeletionRelationalLifecycleAdvanceCases.idr",
+          "src/DGamma/CP4DeletionRelationalLifecycleAdvanceDispatch.idr",
+          "src/DGamma/CP4DeletionRelationalLifecycleCore.idr",
+          "src/DGamma/CP4DeletionRelationalLifecycleSources.idr",
+          "src/DGamma/CP4DeletionRelationalSuffixFold.idr",
+          "src/DGamma/CP4DeletionSelectedForeignLifecycleAdvanceDispatchCore.idr",
+          "src/DGamma/CP4DeletionSelectedForeignLifecycleCore.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -2998,8 +4387,31 @@
       "module": "DGamma.CP4DeletionSelectedForeignLifecycleReplay",
       "sourceSHA256": "d073f4464843c8fa384f7e2010ec093c886f455227e859102d5d294baec374e9",
       "plannedSHA256": "d073f4464843c8fa384f7e2010ec093c886f455227e859102d5d294baec374e9",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4DeletionBoundaryLifecycleCore.idr",
+          "src/DGamma/CP4DeletionBoundaryRetained.idr",
+          "src/DGamma/CP4DeletionControlPlan.idr",
+          "src/DGamma/CP4DeletionGenerationFilter.idr",
+          "src/DGamma/CP4DeletionNoEpisodeReplay.idr",
+          "src/DGamma/CP4DeletionPlanBuilder.idr",
+          "src/DGamma/CP4DeletionPlanComplete.idr",
+          "src/DGamma/CP4DeletionPlanEffects.idr",
+          "src/DGamma/CP4DeletionSelectedBoundary.idr",
+          "src/DGamma/CP4DeletionSelectedEffectCore.idr",
+          "src/DGamma/CP4DeletionSelectedForeignAdvanceAgreement.idr",
+          "src/DGamma/CP4DeletionSelectedForeignControlCore.idr",
+          "src/DGamma/CP4DeletionSelectedForeignLifecycleDispatch.idr",
+          "src/DGamma/CP4DeletionSelectedForeignLifecycleProviderFrame.idr",
+          "src/DGamma/CP4DeletionSelectedForeignLifecycleReplayCore.idr",
+          "src/DGamma/CP4DeletionSelectedForeignLifecycleStep.idr",
+          "src/DGamma/CP4DeletionSelectedForeignOrchestrationStep.idr",
+          "src/DGamma/CP4DeletionSelectedForeignTables.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -3022,8 +4434,37 @@
       "module": "DGamma.CP4DeletionPostCloseLifecycle",
       "sourceSHA256": "9cccc82de609e8c24a1ee3fa1758febc87bc61f9be9a5f3c5ea89f21aef4a7cc",
       "plannedSHA256": "9cccc82de609e8c24a1ee3fa1758febc87bc61f9be9a5f3c5ea89f21aef4a7cc",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4DeletionBoundaryLifecycleCore.idr",
+          "src/DGamma/CP4DeletionBoundaryRetained.idr",
+          "src/DGamma/CP4DeletionGenerationFilter.idr",
+          "src/DGamma/CP4DeletionGenerationUnique.idr",
+          "src/DGamma/CP4DeletionInactiveInvariant.idr",
+          "src/DGamma/CP4DeletionNoEpisodeReplay.idr",
+          "src/DGamma/CP4DeletionPlanBuilder.idr",
+          "src/DGamma/CP4DeletionPlanComplete.idr",
+          "src/DGamma/CP4DeletionPostCloseEffectReplay.idr",
+          "src/DGamma/CP4DeletionPostCloseOrchestration.idr",
+          "src/DGamma/CP4DeletionRelationalBoundary.idr",
+          "src/DGamma/CP4DeletionRelationalLifecycleAdvance.idr",
+          "src/DGamma/CP4DeletionRelationalLifecycleCore.idr",
+          "src/DGamma/CP4DeletionSelectedBoundary.idr",
+          "src/DGamma/CP4DeletionSelectedCloseBoundary.idr",
+          "src/DGamma/CP4DeletionSelectedForeignControlCore.idr",
+          "src/DGamma/CP4DeletionSelectedForeignLifecycleAdvanceDispatchCore.idr",
+          "src/DGamma/CP4DeletionSelectedForeignLifecycleCore.idr",
+          "src/DGamma/CP4DeletionSelectedForeignLifecycleDispatch.idr",
+          "src/DGamma/CP4DeletionSelectedForeignLifecycleProviderFrame.idr",
+          "src/DGamma/CP4DeletionSelectedForeignLifecycleReplayCore.idr",
+          "src/DGamma/CP4DeletionSelectedForeignOrchestration.idr",
+          "src/DGamma/CP4DeletionSelectedForeignOrchestrationStep.idr",
+          "src/DGamma/CP4DeletionSelectedForeignTables.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -3034,8 +4475,20 @@
       "module": "DGamma.CP4DeletionRelationalActionReplay",
       "sourceSHA256": "903f73834b5a6ede4b66a284a6d249ed9634702494ff76e65a8b877c770ae69c",
       "plannedSHA256": "903f73834b5a6ede4b66a284a6d249ed9634702494ff76e65a8b877c770ae69c",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4DeletionRelationalActionOrchestration.idr",
+          "src/DGamma/CP4DeletionRelationalLifecycleAdvance.idr",
+          "src/DGamma/CP4DeletionRelationalLifecycleBegin.idr",
+          "src/DGamma/CP4DeletionRelationalLifecycleDivert.idr",
+          "src/DGamma/CP4DeletionRelationalLifecycleLeave.idr",
+          "src/DGamma/CP4DeletionRelationalLifecycleUnload.idr",
+          "src/DGamma/CP4DeletionRelationalSuffixFold.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -3046,8 +4499,37 @@
       "module": "DGamma.CP4DeletionSelectedEpisodeReplay",
       "sourceSHA256": "2f63211302cecb338dad5fdd509b02cac56e1af285288bc730e7ca75bd733532",
       "plannedSHA256": "2f63211302cecb338dad5fdd509b02cac56e1af285288bc730e7ca75bd733532",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4DeletionBoundaryDeleted.idr",
+          "src/DGamma/CP4DeletionBoundaryPlan.idr",
+          "src/DGamma/CP4DeletionBoundaryRetained.idr",
+          "src/DGamma/CP4DeletionControlPlan.idr",
+          "src/DGamma/CP4DeletionGenerationFilter.idr",
+          "src/DGamma/CP4DeletionGenerationStamped.idr",
+          "src/DGamma/CP4DeletionGenerationUnique.idr",
+          "src/DGamma/CP4DeletionInactiveInvariant.idr",
+          "src/DGamma/CP4DeletionNoEpisodeReplay.idr",
+          "src/DGamma/CP4DeletionPlanBuilder.idr",
+          "src/DGamma/CP4DeletionPlanComplete.idr",
+          "src/DGamma/CP4DeletionPlanEffects.idr",
+          "src/DGamma/CP4DeletionRetainedAction.idr",
+          "src/DGamma/CP4DeletionSelectedBoundary.idr",
+          "src/DGamma/CP4DeletionSelectedDeletedDispatch.idr",
+          "src/DGamma/CP4DeletionSelectedDeletedOrchestration.idr",
+          "src/DGamma/CP4DeletionSelectedEpisodeFoldCore.idr",
+          "src/DGamma/CP4DeletionSelectedForeignLifecycleProviderFrame.idr",
+          "src/DGamma/CP4DeletionSelectedForeignLifecycleReplay.idr",
+          "src/DGamma/CP4DeletionSelectedForeignOrchestration.idr",
+          "src/DGamma/CP4DeletionSelectedForeignOrchestrationStep.idr",
+          "src/DGamma/CP4DeletionSelectedOwn.idr",
+          "src/DGamma/CP4DeletionSelectedOwnDispatch.idr",
+          "src/DGamma/CP4DeletionSelectedRetire.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -3406,8 +4888,32 @@
       "module": "DGamma.CP4DeletionPostCloseFold",
       "sourceSHA256": "81f213faee24aba2d2756b1c7f32bf83cd87c342205cc48b704e91188d37318f",
       "plannedSHA256": "81f213faee24aba2d2756b1c7f32bf83cd87c342205cc48b704e91188d37318f",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4DeletionBoundaryDeleted.idr",
+          "src/DGamma/CP4DeletionBoundaryPlan.idr",
+          "src/DGamma/CP4DeletionFilterSuccess.idr",
+          "src/DGamma/CP4DeletionGenerationFilter.idr",
+          "src/DGamma/CP4DeletionGenerationStamped.idr",
+          "src/DGamma/CP4DeletionGenerationUnique.idr",
+          "src/DGamma/CP4DeletionInactiveInvariant.idr",
+          "src/DGamma/CP4DeletionPostCloseDeleted.idr",
+          "src/DGamma/CP4DeletionPostCloseFinal.idr",
+          "src/DGamma/CP4DeletionPostCloseLifecycle.idr",
+          "src/DGamma/CP4DeletionPostCloseOrchestration.idr",
+          "src/DGamma/CP4DeletionPostCloseRemove.idr",
+          "src/DGamma/CP4DeletionPostCloseSelectedRetire.idr",
+          "src/DGamma/CP4DeletionRelationalActionReplay.idr",
+          "src/DGamma/CP4DeletionRelationalSuffixFold.idr",
+          "src/DGamma/CP4DeletionSelectedBoundary.idr",
+          "src/DGamma/CP4DeletionSelectedCloseBoundary.idr",
+          "src/DGamma/CP4DeletionSelectedForeignOrchestration.idr",
+          "src/DGamma/CP4DeletionSuffixFold.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -3418,8 +4924,24 @@
       "module": "DGamma.CP4DeletionSelectedEpisodeAnchors",
       "sourceSHA256": "1554a82b1386abc02784a33d734c91bea214df6dbb9bc6ef5448fed7361b3c1b",
       "plannedSHA256": "1554a82b1386abc02784a33d734c91bea214df6dbb9bc6ef5448fed7361b3c1b",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4DeletionCommittedProviderPersistence.idr",
+          "src/DGamma/CP4DeletionPlanBuilder.idr",
+          "src/DGamma/CP4DeletionPlanComplete.idr",
+          "src/DGamma/CP4DeletionSelectedBoundary.idr",
+          "src/DGamma/CP4DeletionSelectedEpisodeReplay.idr",
+          "src/DGamma/CP4DeletionSelectedForeignLifecycleAnchorClassify.idr",
+          "src/DGamma/CP4DeletionSelectedForeignLifecycleAnchorReliance.idr",
+          "src/DGamma/CP4DeletionSelectedForeignLifecycleAnchorTrace.idr",
+          "src/DGamma/CP4DeletionSelectedForeignLifecycleCore.idr",
+          "src/DGamma/CP4DeletionSelectedForeignLifecycleCrossing.idr",
+          "src/DGamma/CP4DeletionSelectedForeignLifecycleProviderFrame.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -3562,8 +5084,33 @@
       "module": "DGamma.CP4DeletionSelectedEpisodeFold",
       "sourceSHA256": "b63a6a4ab3f7c0da64bf4f788c54707a0ca8b2147972ddef8a92ae6301774dce",
       "plannedSHA256": "b63a6a4ab3f7c0da64bf4f788c54707a0ca8b2147972ddef8a92ae6301774dce",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4DeletionBoundaryPlan.idr",
+          "src/DGamma/CP4DeletionControlPlan.idr",
+          "src/DGamma/CP4DeletionEmptyTableInvariant.idr",
+          "src/DGamma/CP4DeletionFilterSuccess.idr",
+          "src/DGamma/CP4DeletionGenerationBounds.idr",
+          "src/DGamma/CP4DeletionGenerationFilter.idr",
+          "src/DGamma/CP4DeletionGenerationStamped.idr",
+          "src/DGamma/CP4DeletionGenerationUnique.idr",
+          "src/DGamma/CP4DeletionInactiveInvariant.idr",
+          "src/DGamma/CP4DeletionPlanBuilder.idr",
+          "src/DGamma/CP4DeletionPlanComplete.idr",
+          "src/DGamma/CP4DeletionPlanEffects.idr",
+          "src/DGamma/CP4DeletionPlanEmpty.idr",
+          "src/DGamma/CP4DeletionPremiseSplit.idr",
+          "src/DGamma/CP4DeletionSelectedBoundary.idr",
+          "src/DGamma/CP4DeletionSelectedCloseBoundary.idr",
+          "src/DGamma/CP4DeletionSelectedEpisodeAnchors.idr",
+          "src/DGamma/CP4DeletionSelectedEpisodeFoldCore.idr",
+          "src/DGamma/CP4DeletionSelectedEpisodeReplay.idr",
+          "src/DGamma/CP4DeletionSelectedStart.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -3598,8 +5145,25 @@
       "module": "DGamma.CP4DeletionWithdrawalJoin",
       "sourceSHA256": "c620bc74888ea28fbe52fd2feaf31f577c1f0f9af12eed4d5fcdf8ac025c646c",
       "plannedSHA256": "c620bc74888ea28fbe52fd2feaf31f577c1f0f9af12eed4d5fcdf8ac025c646c",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4DeletionBoundaryPlan.idr",
+          "src/DGamma/CP4DeletionEmptyTableInvariant.idr",
+          "src/DGamma/CP4DeletionEndpoint.idr",
+          "src/DGamma/CP4DeletionGenerationBounds.idr",
+          "src/DGamma/CP4DeletionGenerationStamped.idr",
+          "src/DGamma/CP4DeletionGenerationUnique.idr",
+          "src/DGamma/CP4DeletionInactiveInvariant.idr",
+          "src/DGamma/CP4DeletionPostCloseFold.idr",
+          "src/DGamma/CP4DeletionRetirementPersistence.idr",
+          "src/DGamma/CP4DeletionSelectedEpisodeFold.idr",
+          "src/DGamma/CP4DeletionSelectedForeignOrchestration.idr",
+          "src/DGamma/CP4DeletionWithdrawalCurrent.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,
@@ -3622,8 +5186,35 @@
       "module": "DGamma.CP4DeletionTheorem",
       "sourceSHA256": "b77582d9762f2eb09083a6d87bfa87a4e2455b395fc4e64543e41debbd800eb0",
       "plannedSHA256": "b77582d9762f2eb09083a6d87bfa87a4e2455b395fc4e64543e41debbd800eb0",
-      "status": "unchecked",
-      "reason": null,
+      "status": "unchecked — blocked dependency",
+      "reason": {
+        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
+        "dependencies": [
+          "src/DGamma/CP3.idr",
+          "src/DGamma/CP4DeletionBoundaryPlan.idr",
+          "src/DGamma/CP4DeletionEmptyTableInvariant.idr",
+          "src/DGamma/CP4DeletionEndpoint.idr",
+          "src/DGamma/CP4DeletionFilterSuccess.idr",
+          "src/DGamma/CP4DeletionGenerationBounds.idr",
+          "src/DGamma/CP4DeletionGenerationFilter.idr",
+          "src/DGamma/CP4DeletionGenerationStamped.idr",
+          "src/DGamma/CP4DeletionGenerationUnique.idr",
+          "src/DGamma/CP4DeletionInactiveInvariant.idr",
+          "src/DGamma/CP4DeletionPlanBuilder.idr",
+          "src/DGamma/CP4DeletionPlanComplete.idr",
+          "src/DGamma/CP4DeletionPlanEffects.idr",
+          "src/DGamma/CP4DeletionPlanEmpty.idr",
+          "src/DGamma/CP4DeletionPostCloseFold.idr",
+          "src/DGamma/CP4DeletionPremiseSplit.idr",
+          "src/DGamma/CP4DeletionRelationalBoundary.idr",
+          "src/DGamma/CP4DeletionRelationalSuffixFold.idr",
+          "src/DGamma/CP4DeletionSelectedCloseBoundary.idr",
+          "src/DGamma/CP4DeletionSelectedEpisodeFold.idr",
+          "src/DGamma/CP4DeletionSkeleton.idr",
+          "src/DGamma/CP4DeletionWithdrawalJoin.idr",
+          "src/DGamma/Ordering.idr"
+        ]
+      },
       "invocation": null,
       "peakRSSKiB": null,
       "exactErrors": null,

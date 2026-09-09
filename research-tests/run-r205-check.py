@@ -25,7 +25,8 @@ source_manifest={p:sha((ROOT/p).read_bytes()) for p in current_paths}
 source=ROOT/('dgamma.ipkg' if path=='package' else path)
 assert source.is_file() and source.stat().st_size>0
 snapshot=source.read_bytes()
-command=['idris2','--build',str(source)] if path=='package' else ['idris2','--source-dir',str(ROOT/'src'),'--source-dir',str(ROOT/'research'),'--source-dir',str(ROOT/'research-tests'),'--check',str(source)]
+source_dirs=['src'] if path.startswith('src/') else ['src','research'] if path.startswith('research/') else ['src','research','research-tests']
+command=['idris2','--build',str(source)] if path=='package' else ['idris2']+[arg for directory in source_dirs for arg in ['--source-dir',str(ROOT/directory)]]+['--check',str(source)]
 expected=None; symbol=None
 plan_path=ROOT/'research-tests/O6-R205-VALIDATION-PLAN.json'
 if path!='package':
