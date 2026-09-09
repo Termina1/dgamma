@@ -194,3 +194,21 @@ export
   O20RegisteredUnloadFree name key world error value nameEq registered (S ordinal)
     (advanceGenerationEnvironment @{nameEq} ordinal (transitionAction step) live) rest
 o20RegisteredUnloadFreeTail (O20RegisteredUnloadStep step rest excludes tail) = tail
+
+||| Keep an actual Unload occurrence across a retained physical head.
+||| Head equality is the subsequence producer's equation; tail retention is
+||| the structural induction result, not an assumed zero edge.
+export
+0 o20UnloadOccursThroughKeptHead :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, middle, finalState, otherFirst, otherMiddle, otherFinal : SystemState name key value world error} ->
+  (actor : name) -> (step : Transition first middle) -> (rest : Transitions middle finalState) ->
+  (kept : Transition otherFirst otherMiddle) -> (later : Transitions otherMiddle otherFinal) ->
+  (transitionAction step = transitionAction kept) ->
+  (ActionOccurs (LUnload actor) rest -> ActionOccurs (LUnload actor) later) ->
+  ActionOccurs (LUnload actor) (MoreTransitions step rest) ->
+  ActionOccurs (LUnload actor) (MoreTransitions kept later)
+o20UnloadOccursThroughKeptHead actor _ _ kept later same continue (ActionOccursHere step rest exact) =
+  ActionOccursHere kept later (trans (sym same) exact)
+o20UnloadOccursThroughKeptHead actor _ _ kept later same continue (ActionOccursLater step rest occurs) =
+  ActionOccursLater kept later (continue occurs)
