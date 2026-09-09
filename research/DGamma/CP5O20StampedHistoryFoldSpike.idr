@@ -310,3 +310,29 @@ data O20StampedHistory :
     O20StampedHistory name key world error value nameEq keyEq mapping renaming
       leftOrdinal rightOrdinal leftLive rightLive leftFinalLive rightFinalLive
       leftBefore rightBefore leftAfter rightAfter
+
+||| Total finite history-cut induction through actual paired native stages.
+||| The endpoint is the existing O20HistoryCut, including ALL-name runtime
+||| control and both live-generation clauses, not a supplied postcondition.
+||| This is conditional on a supplied stage synchronization; not universal pairing.
+export
+0 o20StampedHistoryCut :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {mapping : RegistrationGenerationBijection name} -> {renaming : NameBijection name} ->
+  {leftOrdinal, rightOrdinal : Nat} ->
+  {leftLive, rightLive, leftFinalLive, rightFinalLive : GenerationEnvironment name} ->
+  {leftBefore, rightBefore, leftAfter, rightAfter : SystemState name key value world error} ->
+  O20StampedHistory name key world error value nameEq keyEq mapping renaming
+    leftOrdinal rightOrdinal leftLive rightLive leftFinalLive rightFinalLive
+    leftBefore rightBefore leftAfter rightAfter ->
+  O20StampedCut name key world error value nameEq mapping renaming
+    leftLive rightLive leftBefore rightBefore ->
+  O20HistoryCut name key world error value nameEq mapping
+    leftFinalLive rightFinalLive leftAfter rightAfter
+o20StampedHistoryCut {renaming} StampedHistoryEnd paired =
+  MkO20HistoryCut renaming (stampedRuntime paired) (stampedForward paired) (stampedBackward paired)
+o20StampedHistoryCut (StampedHistoryMore stage later) paired =
+  o20StampedHistoryCut later (o20StampedStageCut stage paired)
+o20StampedHistoryCut (StampedHistoryEpsilon leftIdle leftZero rightIdle rightZero later) paired =
+  o20StampedHistoryCut later paired
