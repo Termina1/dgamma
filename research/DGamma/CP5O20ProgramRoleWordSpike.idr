@@ -302,3 +302,19 @@ o20ActorLifecycleRoleWord (ActorLifecycleStep step rest lifecycle owner later) =
   transitionTag step :: o20ActorLifecycleRoleWord later
 o20ActorLifecycleRoleWord (ActorYieldedRegistrationStep step rest inserted later) =
   o20ActorLifecycleRoleWord later
+
+||| Native orchestration role evidence determines the primitive lifecycle
+||| discriminator. No action/tag equality is eliminated in the patterns.
+export
+0 o20OrchestrationRoleNonLifecycle :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {before, afterState : SystemState name key value world error} ->
+  {step : Transition before afterState} ->
+  PaperOrchestrationStep step ->
+  (isLifecycleAction (transitionAction step) = False)
+o20OrchestrationRoleNonLifecycle (PaperInsertStep exact) =
+  trans (cong isLifecycleAction exact) Refl
+o20OrchestrationRoleNonLifecycle (PaperRetireStep exact) =
+  trans (cong isLifecycleAction exact) Refl
+o20OrchestrationRoleNonLifecycle (PaperRemoveStep exact) =
+  trans (cong isLifecycleAction exact) Refl
