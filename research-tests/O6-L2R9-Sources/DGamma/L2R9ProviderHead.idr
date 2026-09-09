@@ -61,3 +61,21 @@ laneHeadAtGuard nameEq keyEq wanted actor component parent flag table lifecycle 
   MkLaneProviderHeadObserved False equation (rewrite equation in Refl) (rewrite equation in Refl)
 laneHeadAtGuard nameEq keyEq wanted actor component parent flag table lifecycle rest True equation =
   MkLaneProviderHeadObserved True equation (rewrite equation in Refl) (rewrite equation in Refl)
+
+||| GENERAL unrestricted observed-head producer; no supplied guard/native
+||| head proof premise. The own call-site equation is generated here.
+public export
+laneProviderHeadObserved :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (wanted : key) -> (actor : name) ->
+  (component : Component key value world error) ->
+  (parent : Parent name) -> (flag : Bool) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (lifecycle : Lifecycle key value world error name
+    (dependencies (componentDependencies component)) (componentProvisions component)) ->
+  (rest : List (Binding name (FiberAt name key value world error))) ->
+  LaneProviderHeadObserved name key world error value nameEq keyEq wanted actor component parent flag table lifecycle rest
+laneProviderHeadObserved nameEq keyEq wanted actor component parent flag table lifecycle rest =
+  laneHeadAtGuard nameEq keyEq wanted actor component parent flag table lifecycle rest
+    (isActive lifecycle && memberKey @{keyEq} wanted (ownedValues table)) Refl
