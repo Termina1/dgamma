@@ -74,3 +74,33 @@ export
 o20ClosingActionAtAppend name key world error value NoTransitions later ordinal = Refl
 o20ClosingActionAtAppend name key world error value (MoreTransitions step rest) later ordinal =
   o20ClosingActionAtAppend name key world error value rest later ordinal
+
+||| The closing witness stored in a deleted classification lies STRICTLY
+||| after its actual birth in the ORIGINAL scan. The returned equation uses
+||| physical transitionCount, not a canonical or externally chosen ordinal.
+export
+0 o20DeletedBirthClosingIndex :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) ->
+  {first, finalState : SystemState name key value world error} ->
+  (trace : Transitions first finalState) ->
+  (generation : RegistrationGeneration name) ->
+  (classified : DeletedGenerationClassification name key world error value nameEq trace generation) ->
+  (ordinal : Nat ** (LT (registrationOrdinal (deletedOccurrence classified)) ordinal,
+    rawClosingActionAt name key world error value ordinal trace = Just (LUnload (deletedParent classified))))
+o20DeletedBirthClosingIndex name key world error value nameEq trace generation classified =
+  case o20UnloadOccurrenceIndex name key world error value
+    (afterRegistration (deletedOccurrence classified)) (deletedParent classified)
+    (deletedParentEpisodeCloses classified) of
+      (ordinal ** exact) =>
+        (transitionCount (beforeRegistration (deletedOccurrence classified)) + S ordinal **
+          (replace {p = LT (registrationOrdinal (deletedOccurrence classified))}
+            (plusSuccRightSucc (registrationOrdinal (deletedOccurrence classified)) ordinal)
+            (LTESucc (lteAddRight {m = ordinal} (registrationOrdinal (deletedOccurrence classified)))),
+           trans (cong (rawClosingActionAt name key world error value
+               (transitionCount (beforeRegistration (deletedOccurrence classified)) + S ordinal))
+             (sym (registrationDecomposition (deletedOccurrence classified))))
+             (trans (o20ClosingActionAtAppend name key world error value
+               (beforeRegistration (deletedOccurrence classified))
+               (MoreTransitions (registrationTransition (deletedOccurrence classified))
+                 (afterRegistration (deletedOccurrence classified))) (S ordinal)) exact)))
