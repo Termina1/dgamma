@@ -94,3 +94,28 @@ phaseScanEntryAccepted nameEq keyEq trail entry member accepted =
     (\item => maybe True (\anchor => anchor <= catalogOrdinal item &&
       any (phaseAnchorSeedCheck nameEq keyEq trail item anchor) (scanRootCatalog 0 trail))
       (anchorOf nameEq keyEq trail (catalogOrdinal item))) member accepted
+
+||| Produce an authentic accepted seed from the scanner at an OBSERVED Just
+||| anchor. The seed is computed by the library any decoder, not supplied.
+||| Forcing-to-Just and event interval extraction remain separate obligations.
+export
+0 phaseSeedAtAnchor : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, finalState : SystemState name key value world error} ->
+  {trace : Transitions first finalState} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (trail : AvailabilityTrace name key world error value trace) ->
+  (entry : RootCatalogEntry name key world error value) ->
+  (anchor : Nat) ->
+  (0 equation : anchorOf nameEq keyEq trail (catalogOrdinal entry) = Just anchor) ->
+  (0 member : Elem entry (scanRootCatalog 0 trail)) ->
+  (0 accepted : phaseScanOk nameEq keyEq trail = True) ->
+  AnyHit (phaseAnchorSeedCheck nameEq keyEq trail entry anchor) (scanRootCatalog 0 trail)
+phaseSeedAtAnchor nameEq keyEq trail entry anchor equation member accepted =
+  anyHitObserved (phaseAnchorSeedCheck nameEq keyEq trail entry anchor)
+    (scanRootCatalog 0 trail)
+    (any (phaseAnchorSeedCheck nameEq keyEq trail entry anchor) (scanRootCatalog 0 trail)) Refl
+    (boolAndRight (anchor <= catalogOrdinal entry)
+      (any (phaseAnchorSeedCheck nameEq keyEq trail entry anchor) (scanRootCatalog 0 trail))
+      (replace {p = \observed => maybe True (\cut => cut <= catalogOrdinal entry &&
+        any (phaseAnchorSeedCheck nameEq keyEq trail entry cut) (scanRootCatalog 0 trail)) observed = True}
+        equation (phaseScanEntryAccepted nameEq keyEq trail entry member accepted)))
