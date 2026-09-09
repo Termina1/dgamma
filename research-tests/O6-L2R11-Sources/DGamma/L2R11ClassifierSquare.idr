@@ -16,6 +16,8 @@ import DGamma.L2R4InsertReplay
 import DGamma.L2R5Extensional
 import DGamma.L2R5CurrentCut
 import DGamma.L2R6Iteration
+import DGamma.L2R5RootCatalog
+import DGamma.L2R10MoveCutObservation
 import DGamma.L2R9ControlClass
 import Data.List
 import Data.List.Elem
@@ -157,3 +159,34 @@ retireSquareOnClassifier nameEq keyEq child root component before retiredState o
   Just (produceRetireClassifierSquare nameEq keyEq child parent root fiber component before retiredState oldFinal earlyRoot
     found own foreign (earlyRootDistinctFromChild nameEq keyEq child root fiber component before earlyRoot found early)
     valid retired oldRoot early)
+
+||| Retire branch of the ACTUAL selected request. Native early applicability
+||| is recovered by trans from its producer-owned observed result equation.
+||| The original two edges at this source are still explicit: linking their
+||| adjacency/dictionaries to selectedCutLocated is a separate obligation.
+export
+0 selectedRetireSquare : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, finalState : SystemState name key value world error} ->
+  {trace : Transitions first finalState} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (trail : AvailabilityTrace name key world error value trace) ->
+  (cut : SelectedSquareCut name key world error value nameEq keyEq trail) -> (child : name) ->
+  (0 selectedAction : cutAction cut = ORetire child) ->
+  (retiredState, oldFinal, earlyRoot : SystemState name key value world error) ->
+  (0 accepted : earlyRootResult cut = Just (OInsertTag, earlyRoot)) ->
+  (0 valid : registryWellFormed @{nameEq} @{keyEq} (cutSource cut) = True) ->
+  (0 retired : checkedApplyAction @{nameEq} @{keyEq} (ORetire child) (cutSource cut) = Just (ORetireTag, retiredState)) ->
+  (0 oldRoot : checkedApplyAction @{nameEq} @{keyEq}
+    (OInsert (catalogRoot (cutEntry cut)) Root (catalogComponent (cutEntry cut))) retiredState = Just (OInsertTag, oldFinal)) ->
+  Maybe (ClassifierSquare name key world error value nameEq keyEq
+    (catalogRoot (cutEntry cut)) (catalogComponent (cutEntry cut)) (cutSource cut) (cutAction cut) ORetireTag oldFinal)
+selectedRetireSquare {name} {key} {world} {error} {value}
+  nameEq keyEq trail cut child selectedAction retiredState oldFinal earlyRoot accepted valid retired oldRoot =
+  replace {p = \action => Maybe (ClassifierSquare name key world error value nameEq keyEq
+      (catalogRoot (cutEntry cut)) (catalogComponent (cutEntry cut)) (cutSource cut) action ORetireTag oldFinal)}
+    (sym selectedAction)
+    (retireSquareOnClassifier nameEq keyEq child (catalogRoot (cutEntry cut)) (catalogComponent (cutEntry cut))
+      (cutSource cut) retiredState oldFinal earlyRoot
+      (controlAtLookup nameEq (catalogRoot (cutEntry cut)) child (cutSource cut)
+        (lookupFiber {name} {key} {value} {world} {error} @{nameEq} child (registry (cutSource cut))) Refl)
+      valid retired oldRoot (trans (earlyRootEquation cut) accepted))
