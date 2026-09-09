@@ -150,3 +150,38 @@ o20RootMatchMatchedLeft {name} {key} {world} {error} {value} mapping leftOrdinal
     root component ordinal rightOrdinal (MoreTransitions rightStep rightRest)}
     (plusSuccRightSucc leftOrdinal position)
     (o20RootMatchPrepend rightOrdinal rightStep rightRest (recurse position observed))
+
+||| Structural recursion over the actual external-root correspondence emits
+||| an opposite birth and its exact stamp simultaneously. The left action is
+||| explicitly observed; no opposite occurrence or matching oracle is input.
+export
+0 o20RootBirthMatchObserved :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (mapping : RegistrationGenerationBijection name) ->
+  (leftOrdinal, rightOrdinal : Nat) ->
+  {leftFirst, leftFinal, rightFirst, rightFinal : SystemState name key value world error} ->
+  (left : Transitions leftFirst leftFinal) -> (right : Transitions rightFirst rightFinal) ->
+  ExternalRootBirthCorrespondence mapping leftOrdinal left rightOrdinal right ->
+  (root : name) -> (component : Component key value world error) ->
+  (position : Nat) ->
+  (rawClosingActionAt name key world error value position left = Just (OInsert root Root component)) ->
+  O20RootBirthMatch name key world error value mapping root component
+    (leftOrdinal + position) rightOrdinal right
+o20RootBirthMatchObserved mapping leftOrdinal rightOrdinal _ _
+  ExternalRootBirthCorrespondenceEnd root component position observed = absurd observed
+o20RootBirthMatchObserved mapping leftOrdinal rightOrdinal _ right
+  (SkipLeftNonExternalRootBirth action step rest exact nonRoot later) root component position observed =
+  o20RootMatchSkipLeft mapping leftOrdinal rightOrdinal step rest right action exact nonRoot root component
+    (o20RootBirthMatchObserved mapping (S leftOrdinal) rightOrdinal rest right later root component)
+    position observed
+o20RootBirthMatchObserved mapping leftOrdinal rightOrdinal left _
+  (SkipRightNonExternalRootBirth action step rest exact nonRoot later) root component position observed =
+  o20RootMatchPrepend rightOrdinal step rest
+    (o20RootBirthMatchObserved mapping leftOrdinal (S rightOrdinal) left rest later root component position observed)
+o20RootBirthMatchObserved mapping leftOrdinal rightOrdinal _ _
+  (MatchExternalRootBirth {root = actual} {component = actualComponent}
+    leftStep leftRest rightStep rightRest leftExact rightExact matched later) root component position observed =
+  o20RootMatchMatchedLeft mapping leftOrdinal rightOrdinal leftStep leftRest rightStep rightRest
+    actual actualComponent leftExact rightExact matched root component
+    (o20RootBirthMatchObserved mapping (S leftOrdinal) (S rightOrdinal) leftRest rightRest later root component)
+    position observed
