@@ -118,3 +118,14 @@ targetPosition nameEq keyEq trail ordinal = fromMaybe 0 (anchorOf nameEq keyEq t
   length (filter (\earlier => catalogOrdinal earlier < ordinal &&
     anchorOf nameEq keyEq trail (catalogOrdinal earlier) == anchorOf nameEq keyEq trail ordinal)
     (scanRootCatalog 0 trail))
+
+||| Physical cut minus ordered target, charging only anchored roots. Nat
+||| subtraction saturates: zero alone is NOT a placement theorem without
+||| the separate current-cut/target-order and structural coverage invariants.
+public export
+rootDistance : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {0 first, finalState : SystemState name key value world error} ->
+  {0 trace : Transitions first finalState} ->
+  DecEq name -> DecEq key -> AvailabilityTrace name key world error value trace -> Nat -> Nat
+rootDistance nameEq keyEq trail ordinal = if isJust (anchorOf nameEq keyEq trail ordinal)
+  then minus ordinal (targetPosition nameEq keyEq trail ordinal) else 0
