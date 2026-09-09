@@ -93,3 +93,26 @@ o20DeletionStepRootReplayOrdinals {name} {key} {world} {error} {value}
     (sym (deletionOccurrenceCorrespondenceExact step))
     (o20DeletionProducerRootReplayOrdinals trace premises candidate
       (deletionResult step) (deletionProducerCapital step))
+
+||| The whole actual deletion derivation owns root ordinals by identity and
+||| composition of its exact stored step correspondences.
+export
+0 o20ClosingFreeDeletionRootReplayOrdinals :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {protocol : RegistrationProtocol key value world error} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {initial, sourceFinal, targetFinal : SystemState name key value world error} ->
+  {source : Transitions initial sourceFinal} ->
+  {target : Transitions initial targetFinal} ->
+  (derivation : ClosingFreeDeletionDerivation name key world error value protocol
+    nameEq keyEq source target) ->
+  O20RootReplayOrdinals name key world error value
+    (closingFreeDeletionOccurrenceFold derivation)
+o20ClosingFreeDeletionRootReplayOrdinals (ClosingFreeDeletionDone trace) =
+  o20IdentityRootReplayOrdinals trace
+o20ClosingFreeDeletionRootReplayOrdinals
+  (ClosingFreeDeletionStep trace premises candidate step target rest) =
+  o20ComposeRootReplayOrdinals (deletionOccurrenceCorrespondence step)
+    (closingFreeDeletionOccurrenceFold rest)
+    (o20DeletionStepRootReplayOrdinals trace premises candidate step)
+    (o20ClosingFreeDeletionRootReplayOrdinals rest)
