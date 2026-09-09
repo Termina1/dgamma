@@ -4,6 +4,7 @@ PRODUCTION is intentionally committed before checking to keep the authorized pat
 Usage: python3 -I research-tests/run-r205-commit.py KIND MESSAGE PATH...
 """
 import sys, pathlib, subprocess, json, re
+sys.dont_write_bytecode=True
 sys.path.insert(0,str(pathlib.Path(__file__).resolve().parent))
 from r205_common import *
 kind,message,*paths=sys.argv[1:]

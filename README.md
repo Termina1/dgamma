@@ -4,7 +4,33 @@
 Spatiotemporal Composability”** (Shi, Zhang, Cui). Runtime functions remain
 computational data; laws and witnesses are erased with quantity `0`.
 
-## Current research checkpoint — R204 (final validated checked PARTIAL)
+## Current integration checkpoint — R205 production unfreeze (rebuild in progress)
+
+Production unfrozen on **2026-09-09** by owner decision (verbatim):
+**"Давайттак размораживай то что нужно я же все разрешил"**.
+A8/A10/A12 are now in production **Tier 1**, CP3-only signed patch committed
+`ceecde24`; CP3 blob `eeaa70aa4414648bb2a1173d58244267997d16d7`.
+This is specification integration, **not a new proof or full-package PASS**.
+Rebuild status and exact checked/unchecked/broken paths are tracked in
+`research-tests/O6-R205-REBUILD-STATE.json`; do not reuse old TTC presence as
+post-unfreeze proof evidence. Census remains **4 = 1/2/0/0/1**.
+
+| Paper correspondence | Idris file : representative name | Status |
+|---|---|---|
+| Thm73 revised canonical input placement (A8/A12) | `src/DGamma/CP3.idr:CanonicalInputPlacement` | production definition integrated; current-cut availability and terminal earliest, not strict all-root-first; dependent revalidation pending |
+| Thm73 canonical actor block (A10/A12) | `src/DGamma/CP3.idr:ActorLifecycleCore` / `ActorLifecycleOnly` | production source-aware own-child controls plus attached same-bundle forced-root controls; dependent revalidation pending |
+| Thm73 forced/barrier least closure | `src/DGamma/CP3.idr:ForcedRootInput` / `forcedRootLeast` | existing lane-backed generic kernel rehomed by signed patch; not a global phase producer |
+
+**Tier 2 residues = research obligations:** physical native forced-phase interval
+producer; general move/invariant and global distance-frame transport; accessibility
+normalizer and outer core restoration; four common-payload lifecycle shapes;
+whole replay; authenticated cross-bundle generation/control history; global
+front-normal/placed-bundle coverage and selector zero-gap production. None was
+proved by this unfreeze. O19 exact physical adjacency and Thm73 endpoint
+conclusions are not weakened. Historical frozen-language below describes its
+then-current checkpoint, not the current production specification.
+
+## Previous research checkpoint — R204 (final validated checked PARTIAL)
 
 Source freeze `3e6d8ff0`: R203 review P1/P2 repairs landed first;29 new total
 quantity-0 support declarations, B14/A16 caps respected (A15 fully reverted).
@@ -516,7 +542,7 @@ pending owner override, not implemented or assumed. See the
 |---|---|---|
 | Thm73 support comparison, explicit A9 + original uniqueness | `CP5AcceptedSupportTruthSpike.acceptedSupportedTruthForward/Backward` | proved, conditional |
 | O18 canonical support-order matching | `CP5ConfluenceCrossTraceSpike.canonicalSupportOrdersMatchSpike` | proved, conditional |
-| Revised root placement (A8) | `CP5AvailabilityAwarePlacement.AvailabilityAwareCanonicalInputPlacement` | checked replacement type; R174 scalar shape proved; integration open |
+| Revised root placement (A8/A12) | `CP3.CanonicalInputPlacement` (formerly research `CP5AvailabilityAwarePlacement.AvailabilityAwareCanonicalInputPlacement`) | R205 owner-signed production Tier 1 integration; downstream rebuild pending; general placement/normalization producers open |
 
 Five research holes remain. A8/A9 are delegated supervisor decisions pending
 owner override; production stays frozen. See the [R178 audit](research-tests/O6-R178-GRIND-SHIFT-AUDIT.md) for exact scope and remaining owner decisions.

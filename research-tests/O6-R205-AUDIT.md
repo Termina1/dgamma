@@ -16,3 +16,5 @@ apply occurred; explicitly unstaged all paths. Guard now authenticates those
 TWO copied artifacts by SHA256 and excludes ONLY them from whitespace checking;
 all source and other documents still pass the normal whitespace guard. No git
 configuration change. This preserves the required signed bytes.
+
+P1 resource-stopped22:50:18Z, peak100669328KiB vs100663296KiB (96GiB),369.549s,exit−15. Native stdout buffered/no Building lines: no fresh PASS. No mutation/overlap. Parent AUTHORIZED per-module production import-order rebuild:64GiB CP3/CP3StatementChecks/CP4*,48GiB other production; then seeded P2 must do NO Building. Remaining research52GiB LocalDiamond/48GiB others. Partially written TTCs are not receipts.

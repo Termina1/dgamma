@@ -4990,3 +4990,43 @@ Owner decision 21:55 UTC (verbatim): "Давайттак разморажива�
 R204 FINAL GATE at 69c90a21 ACCEPTED (supervisor spot-check); D4 sealed at ba880886; R203 ratified. R205 = production unfreeze authorized by the owner (verbatim above).
 
 This shift applies the signed Tier 1 CP3 patch and validates/re-baselines; it is not a proof shift. Tier 2 remains research work.
+
+## R205 Tier 1 production baseline and erratum disposition
+
+Production unfrozen on 2026-09-09 by owner decision (verbatim):
+"Давайттак размораживай то что нужно я же все разрешил".
+A8/A10/A12 now in production (Tier 1), commit ceecde24, exact signed patch
+SHA25642d957748fcc67ff534c33a6c369eded4bad65e0f37e5c72e4539b737a68fb8a;
+CP3 blob eeaa70aa4414648bb2a1173d58244267997d16d7. Package rebuild is IN
+PROGRESS, not yet certified. No R205 proof units are authorized.
+
+**Erratum update:** the old unconditional all-root-before-any-lifecycle rule is
+not retained as canonical placement: native provision occupancy can require an
+own-child release first. CanonicalInputPlacement instead requires actual-cut
+availability, terminal earliest compatible cuts, unchanged external root order,
+and the revised own-root lifecycle clause. ActorLifecycleCore includes actual
+own-child Retire/Remove; ActorLifecycleOnly includes trailing ordered forced
+roots and SAME-BUNDLE controls, starting with empty authenticated history.
+The old strict RootInputsBeforeLifecycle predicate remains for explicitly strict
+domains; there is no coercion from the new canonical placement to that predicate.
+Physical gaps start after the full attached bundle; gap zero is not definitional.
+The five located-block specification fields are explicitly quantity0. No runtime
+evaluator/guard, registration provenance, endpoint relation or confluence
+conclusion text changed. This repairs the specification scope, not the missing
+normalization proof or unconditional Theorem73.
+
+**Tier 2 residues = research obligations:** physical native contiguous forced
+phase/produceForcedRootPhases; move existence and phase/front/uniqueness/release
+identity transport; prefixed global scan/distance frames; accessibility
+normalizePhaseDistance and outer-round core restoration; four common-payload
+lifecycle shapes; unconditional local/whole replay; authenticated cross-bundle
+generation/control history; global front-normal/placed-bundle coverage and
+all-premises-produced selector zero-gap. Checked lane suffix/control kernels
+retain only their exact conditional scopes. Tier2 no longer blocks Tier1.
+
+Parent patch review: PATCH FAITHFUL-WITH-NOTES, no transcription defect in seven
+hunks; ceecde24 stands. Nine omitted rename-map entries are recorded in
+O6-R205-REPAIR-MAP.json. Standing11 R11 legacy fixtures are not applicable and
+will not be run. Frozen modules and all four hole declarations remain byte-exact
+unless separately gated. Census4=1/2/0/0/1 is a hole count, NOT proof certification
+for broken consumers. No escape hatch/new hole was added.

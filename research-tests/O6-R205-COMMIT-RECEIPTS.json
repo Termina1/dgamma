@@ -1,0 +1,74 @@
+[
+  {
+    "kind": "PRESTATE",
+    "message": "R205: record owner signature, authenticated patch and complete pre-state",
+    "ownerDecisionVerbatim": null,
+    "beforeCommit": "ba88088626a3a497db76df811c2ac08acde9c7bc",
+    "afterCommit": "b4d9296c299a9f6ddc4db8eb5d30ab92f57c43b5",
+    "timestampUTC": "2026-09-09T22:42:55.590884+00:00",
+    "hashes": {
+      "NOTES.md": {
+        "before": "bc076ba77c687122b9e793b76a272d1e94caa3d35260a6500d91d9f86d2129ef",
+        "after": "ee55ecded30f526436995a8d8f4f927e9c055130bd6f5e576a8460a5fc473942"
+      },
+      "research-tests/O6-R205-AUDIT.md": {
+        "before": null,
+        "after": "fa646d622b3d25635a86055f63fea542d56eb5b41dc1f91258eddeaa6274183e"
+      },
+      "research-tests/O6-R205-INPUTS.json": {
+        "before": null,
+        "after": "bb8c8b1b108dc9c121625cdbbeaf87d5e29113ccde61ff580b343c1ae0f745a7"
+      },
+      "research-tests/O6-R205-PRE-STATE.json": {
+        "before": null,
+        "after": "b71c30e378f8211ce7a4fd4290c5a40898a3dc170f183ee4196a3721f82bfc29"
+      },
+      "research-tests/O6-R205-CP3-TIER1-SIGNED-DIFF.patch": {
+        "before": null,
+        "after": "42d957748fcc67ff534c33a6c369eded4bad65e0f37e5c72e4539b737a68fb8a"
+      },
+      "research-tests/O6-R205-CP3-TIER1-OVERLAY-COPY.md": {
+        "before": null,
+        "after": "602f1b4ce16684c49afb5bac134ce23bff91ac179dbbc0c0615626777c410d91"
+      },
+      "research-tests/O6-R205-LANE-INVENTORY-COPY.json": {
+        "before": null,
+        "after": "0226ceaacb43403cd57c0a942fe62f1fb4abe89003e553df32fb79b4c634d5ec"
+      },
+      "research-tests/O6-R205-L2R5-FIDELITY-COPY.md": {
+        "before": null,
+        "after": "6b13cc1acb1c27047cfddfa21dfac26ac1f04d46568105f06f3e589b62c9e13c"
+      },
+      "research-tests/r205_common.py": {
+        "before": null,
+        "after": "5220f707db8ebde81468b851f26d48209d8732206d89910159f5c2dd81b08bab"
+      },
+      "research-tests/run-r205-commit.py": {
+        "before": null,
+        "after": "99d4bece28bb303283601fb5c535acc083fb0c656abe21de57c8fbbb9bcaae9c"
+      }
+    },
+    "guardSHA256": "99d4bece28bb303283601fb5c535acc083fb0c656abe21de57c8fbbb9bcaae9c",
+    "noStagedFiles": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true
+  },
+  {
+    "kind": "PRODUCTION",
+    "message": "R205 PRODUCTION: execute signed Tier 1 CP3 unfreeze; owner: Давайттак размораживай то что нужно я же все разрешил",
+    "ownerDecisionVerbatim": "Давайттак размораживай то что нужно я же все разрешил",
+    "beforeCommit": "b4d9296c299a9f6ddc4db8eb5d30ab92f57c43b5",
+    "afterCommit": "ceecde24b1b0fdd29e796d3f59cbdd8fe0668a56",
+    "timestampUTC": "2026-09-09T22:42:55.886035+00:00",
+    "hashes": {
+      "src/DGamma/CP3.idr": {
+        "before": "23a9a0d3c8e4475f40ee4c85227683ecea51cc8f94bffc9f001e058f9b54e2ec",
+        "after": "0aa65041e36342a831b24a231e4d68eb74ffa17cf93e56e84b668ae4f19b95ba"
+      }
+    },
+    "guardSHA256": "99d4bece28bb303283601fb5c535acc083fb0c656abe21de57c8fbbb9bcaae9c",
+    "noStagedFiles": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true
+  }
+]
