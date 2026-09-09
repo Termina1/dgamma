@@ -167,3 +167,19 @@ o20ScannedFinalLive nameEq ordinal live NoTransitions = live
 o20ScannedFinalLive nameEq ordinal live (MoreTransitions transition rest) =
   o20ScannedFinalLive nameEq (S ordinal)
     (advanceGenerationEnvironment @{nameEq} ordinal (transitionAction transition) live) rest
+
+||| Every genuine GenerationTraceScan ends in the live table produced by the
+||| SAME deterministic scan. Eliminate only this scan certificate, not two
+||| independently built dependent records or transition witnesses.
+export
+0 o20GenerationScanFinalLiveExact :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} ->
+  {first, finalState : SystemState name key value world error} ->
+  {ordinal, finalOrdinal : Nat} -> {live, finalLive : GenerationEnvironment name} ->
+  {trace : Transitions first finalState} ->
+  GenerationTraceScan nameEq ordinal live trace finalOrdinal finalLive ->
+  (finalLive = o20ScannedFinalLive nameEq ordinal live trace)
+o20GenerationScanFinalLiveExact GenerationTraceScanEnd = Refl
+o20GenerationScanFinalLiveExact (GenerationTraceScanStep transition rest later) =
+  o20GenerationScanFinalLiveExact later
