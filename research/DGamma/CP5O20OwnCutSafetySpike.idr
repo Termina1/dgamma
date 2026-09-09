@@ -128,3 +128,14 @@ export
 o20InstalledTraceEnd NoTransitions (InstalledEnd installed) = installed
 o20InstalledTraceEnd _ (InstalledStep action tag checked rest installed tailInstalled) =
   o20InstalledTraceEnd rest tailInstalled
+
+||| One primitive present-fiber observation, with its fiber erased because
+||| only erased safety proofs consume it. It stores no component attachment,
+||| target guard or resolver preservation conclusion.
+public export
+record O20PresentLookup
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (actor : name) (state : SystemState name key value world error) where
+  constructor MkO20PresentLookup
+  0 presentFiber : Fiber name key value world error
+  0 presentFound : (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor (registry state) = Just presentFiber)
