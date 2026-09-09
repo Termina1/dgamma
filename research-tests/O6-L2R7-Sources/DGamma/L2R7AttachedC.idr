@@ -94,3 +94,17 @@ data ActorLifecycleOnlyAttachedC :
     (bundle : Transitions coreEnd finalState) ->
     (0 orderedForced : OrderedForcedRootBundleC nameEq selected core [] bundle) ->
     ActorLifecycleOnlyAttachedC nameEq selected (appendTransitions core bundle)
+
+||| Sound forward inclusion: every original insertion-only bundle has the
+||| new grammar, with identical edges and local history. No reverse coercion.
+export
+0 bundleIntoC : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {selected : name} ->
+  {first, coreEnd, bundleStart, finalState : SystemState name key value world error} ->
+  {core : Transitions first coreEnd} -> {priorRoots : List name} ->
+  {bundle : Transitions bundleStart finalState} ->
+  OrderedForcedRootBundle nameEq selected core priorRoots bundle ->
+  OrderedForcedRootBundleC nameEq selected core priorRoots bundle
+bundleIntoC ForcedBundleEnd = ForcedBundleEndC
+bundleIntoC (ForcedBundleStep root component step rest inserted forced tail) =
+  ForcedBundleInsertC root component step rest inserted forced (bundleIntoC tail)
