@@ -141,3 +141,29 @@ replayInsertFromView nameEq keyEq child actor parent fiber component ambient sou
             (provisionsDisjointRetireEntries nameEq keyEq (componentProvisions component) (bindings source)
               child fiber (lookupFiberEntries nameEq child fiber source found)))) guards)
         (registryWellFormedRetire nameEq keyEq ambient child fiber source found valid))
+
+||| ALL-parent OInsert role from ONLY its original checked edge. Includes
+||| other-parent children, Root, and even a child of the early-retired actor
+||| (retirement preserves native parent presence). No new ownership premise.
+export
+0 replayInsertAfterRetirement :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (child, actor : name) -> (parent : Parent name) ->
+  (fiber : Fiber name key value world error) -> (component : Component key value world error) ->
+  (first, afterState, current : SystemState name key value world error) -> (tag : RuleTag) ->
+  (0 checked : checkedApplyAction @{nameEq} @{keyEq} (OInsert actor parent component) first = Just (tag, afterState)) ->
+  (0 distinct : Not (child = actor)) ->
+  (0 found : lookupFiber {name} {key} {value} {world} {error} @{nameEq} child (registry first) = Just fiber) ->
+  (0 valid : registryWellFormed @{nameEq} @{keyEq} first = True) ->
+  (0 currentValid : registryWellFormed @{nameEq} @{keyEq} current = True) ->
+  (0 currentSame : runtimeSnapshot current = runtimeSnapshot {name} {key} {value} {world} {error}
+    (MkSystemState (worldState first) (replaceBinding @{nameEq} child (retireFiber fiber) (registry first)))) ->
+  CheckedSnapshotStep name key world error value nameEq keyEq (OInsert actor parent component) current tag
+    (runtimeSnapshot {name} {key} {value} {world} {error}
+      (MkSystemState (worldState afterState) (replaceBinding @{nameEq} child (retireFiber fiber) (registry afterState))))
+replayInsertAfterRetirement nameEq keyEq child actor parent fiber component (MkSystemState ambient source) afterState current tag
+  checked distinct found valid currentValid currentSame =
+    replayInsertFromView nameEq keyEq child actor parent fiber component ambient source afterState current tag
+      distinct found valid currentValid currentSame
+      (foreignInsertPlanView nameEq keyEq actor parent component ambient source tag afterState
+        (checkedActionProjects nameEq keyEq (OInsert actor parent component) (MkSystemState ambient source) afterState tag checked))
