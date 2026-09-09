@@ -131,3 +131,17 @@ o20ObserveCanonicalControls {name} {key} {world} {error} {value}
       (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected (registry originalFinal))
       (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected (registry canonicalFinal))
       Refl Refl (isElem @{nameEq} selected (endpointWithdrawnNames endpoint)) Refl
+
+||| Both exact observed control alternatives preserve an original Nothing.
+||| No choice of withdrawal membership or present-vestigial evidence enters.
+export
+0 o20DispositionPreservesAbsence :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {selected : name} -> {withdrawn : List name} ->
+  {original, canonical : Maybe (Fiber name key value world error)} ->
+  O20CanonicalControlDisposition selected withdrawn original canonical ->
+  (original = Nothing) -> (canonical = Nothing)
+o20DispositionPreservesAbsence (CanonicalControlWithdrawn member absent) originalAbsent = absent
+o20DispositionPreservesAbsence {canonical} (CanonicalControlKept outside controls) originalAbsent =
+  o20AbsentControlTarget
+    (replace {p = \observed => FiberControlMaybeRelated observed canonical} originalAbsent controls)
