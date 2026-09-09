@@ -86,3 +86,24 @@ rootCatalogHeadComplete offset (LAdvance actor) later root component Refl imposs
 rootCatalogHeadComplete offset (LDivert actor) later root component Refl impossible
 rootCatalogHeadComplete offset (LUnload actor) later root component Refl impossible
 rootCatalogHeadComplete offset (LLeave actor) later root component Refl impossible
+
+||| Membership from the scanned tail survives EVERY head action, whether or
+||| not the head contributes an entry. Exact item action/ordinal are retained.
+export
+0 rootCatalogTailComplete :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (offset : Nat) -> (action : Action name key value world error) ->
+  (later : List (RootCatalogEntry name key world error value)) ->
+  (ordinal : Nat) -> (wanted : Action name key value world error) ->
+  RootCatalogContains name key world error value later ordinal wanted ->
+  RootCatalogContains name key world error value (rootCatalogStep offset action later) ordinal wanted
+rootCatalogTailComplete offset (OInsert root Root component) later ordinal wanted member =
+  MkRootCatalogContains (catalogItem member) (There (itemPresent member)) (itemOrdinal member) (itemAction member)
+rootCatalogTailComplete offset (OInsert actor (ChildOf parent) component) later ordinal wanted member = member
+rootCatalogTailComplete offset (ORetire actor) later ordinal wanted member = member
+rootCatalogTailComplete offset (ORemove actor) later ordinal wanted member = member
+rootCatalogTailComplete offset (LBegin actor) later ordinal wanted member = member
+rootCatalogTailComplete offset (LAdvance actor) later ordinal wanted member = member
+rootCatalogTailComplete offset (LDivert actor) later ordinal wanted member = member
+rootCatalogTailComplete offset (LUnload actor) later ordinal wanted member = member
+rootCatalogTailComplete offset (LLeave actor) later ordinal wanted member = member
