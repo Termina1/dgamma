@@ -107,3 +107,11 @@ rootInsertPacketExtensional nameEq keyEq actor component left current same absen
           (trans (sym (extensionalLookup same actor)) absent))) (snapshotAfter packet)
         (trans (freshInsertSnapshot nameEq actor (freshFiber component Root) (worldState current) (registry current)
           (trans (sym (extensionalLookup same actor)) absent)) (sym (snapshotExact packet)))))
+
+||| Explicit state eta, used only for transporting native source indices.
+||| No two independently constructed registry certificates are equated.
+export
+0 insertionStateEta : {name, key, world, error : Type} -> {value : key -> Type} ->
+  (state : SystemState name key value world error) ->
+  MkSystemState (worldState state) (registry state) = state
+insertionStateEta (MkSystemState ambient source) = Refl
