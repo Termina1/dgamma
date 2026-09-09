@@ -58,3 +58,25 @@ o20NativeValuesAtEffectSource nameEq keyEq actor (MkSystemState ambient fibers) 
     MkO20EffectStepValues capability
       (trans (resolveEffectValuesProjected nameEq keyEq (dependencies (componentDependencies component)) view (MkSystemState ambient fibers)) resolved)
       (rewrite projectedActorTable nameEq actor (MkSystemState ambient fibers) (MkFiber component parent retiredFlag table lifecycle) found in callback)
+
+||| An actual checked Iter supplies the exact effect-level resolver and
+||| callback packet demanded by the history successor. Only the native source
+||| lookup remains explicit, not domain, callback success or output equality.
+export
+0 o20IterEffectValues :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (before, afterState : SystemState name key value world error) ->
+  (component : Component key value world error) -> (parent : Parent name) -> (retiredFlag : Bool) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (step, next : StepEffect key value world error (dependencies (componentDependencies component)) (componentProvisions component)) ->
+  (more : List (StepEffect key value world error (dependencies (componentDependencies component)) (componentProvisions component))) ->
+  (older : LocalState key value world (componentProvisions component) -> LocalState key value world (componentProvisions component)) ->
+  (view : View name (dependencies (componentDependencies component))) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor (registry before) = Just (MkFiber component parent retiredFlag table (Reloading (step :: next :: more) older view))) ->
+  (checkedApplyAction {name} {key} {value} {world} {error} @{nameEq} @{keyEq} (LAdvance actor) before = Just (LIterTag, afterState)) ->
+  O20EffectStepValues name key world error value nameEq keyEq actor before component step view
+o20IterEffectValues nameEq keyEq actor before afterState component parent retiredFlag table step next more older view found checked =
+  o20NativeValuesAtEffectSource nameEq keyEq actor before component parent retiredFlag table
+    (Reloading (step :: next :: more) older view) step view found
+    (o20IterNativeValues nameEq keyEq actor before afterState component parent retiredFlag table step next more older view found checked)
