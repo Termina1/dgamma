@@ -16,6 +16,7 @@ import DGamma.L2R7Classifier
 import DGamma.L2R7ObservedAny
 import DGamma.L2R7PlacedCoverage
 import DGamma.L2R13ForcedAnchor
+import DGamma.L2R8OriginMembership
 import DGamma.L2R7CatalogBirth
 import DGamma.L2R10PhaseScan
 import DGamma.L2R12PhaseAccepted
@@ -53,3 +54,16 @@ produceForcedPhaseEntry nameEq keyEq trail entry member accepted classified =
        (fst (forcedAnchorJust nameEq keyEq trail (catalogOrdinal entry) True classified Refl))
        (snd (forcedAnchorJust nameEq keyEq trail (catalogOrdinal entry) True classified Refl)) member accepted,
      scanCatalogBirth 0 trail entry member))
+
+||| An observed maximum anchor carries its actual scan index and is one
+||| past that index. This exposes physical-count arithmetic, NOT a located
+||| core or a proof that every release is below the folded maximum.
+export
+0 phaseMaximumIndex : (items : List Nat) -> (anchor : Nat) ->
+  (0 equation : lastReleaseCut items = Just anchor) ->
+  (Elem (pred anchor) items, S (pred anchor) = anchor)
+phaseMaximumIndex [] anchor equation = absurd equation
+phaseMaximumIndex (head :: rest) anchor equation =
+  (originMaximumMember (head :: rest) (Just (pred anchor))
+     (cong (map pred) equation) (pred anchor) Refl,
+   replace {p = \cut => S (pred cut) = cut} (injective equation) Refl)
