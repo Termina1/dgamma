@@ -1,0 +1,296 @@
+{
+  "status": "PASS",
+  "timestampUTC": "2026-09-09T05:59:49.599050+00:00",
+  "head": "1fd9bbcb60bfb3168ebc001d33d908377268fbd2",
+  "invocations": 276,
+  "allCompilerLifetimesCovered": true,
+  "windowEvents": [
+    {
+      "event": "acquired",
+      "timestampUTC": "2026-09-09T03:51:48.540837+00:00",
+      "owner": {
+        "lane": "R196-main",
+        "pid": 86408,
+        "timestampUTC": "2026-09-09T03:51:48.540192+00:00",
+        "unit": "A1-through-B-package",
+        "path": "/Users/vyacheslavshebanov/Work/dgamma/"
+      },
+      "window": {
+        "lane": "R196-main",
+        "pid": 86408,
+        "start": "2026-09-09T03:51:48.540192+00:00",
+        "expectedEnd": "2026-09-09T07:19:35Z",
+        "note": "LocalDiamond contract rebuild; lane 2 must not run heavy checks"
+      }
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T04:50:50.603541+00:00",
+      "owner": {
+        "lane": "R196-main",
+        "pid": 86408,
+        "timestampUTC": "2026-09-09T03:51:48.540192+00:00",
+        "unit": "A1-through-B-package",
+        "path": "/Users/vyacheslavshebanov/Work/dgamma/"
+      }
+    },
+    {
+      "event": "acquired",
+      "timestampUTC": "2026-09-09T05:00:13.971020+00:00",
+      "owner": {
+        "lane": "R196-main",
+        "pid": 6642,
+        "timestampUTC": "2026-09-09T05:00:13.970278+00:00",
+        "unit": "C3-through-W-package",
+        "path": "/Users/vyacheslavshebanov/Work/dgamma/"
+      },
+      "window": {
+        "lane": "R196-main",
+        "pid": 6642,
+        "start": "2026-09-09T05:00:13.970278+00:00",
+        "expectedEnd": "2026-09-09T07:19:35Z",
+        "note": "DeletionChain helper rebuild; lane 2 light only"
+      }
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T05:26:32.249669+00:00",
+      "owner": {
+        "lane": "R196-main",
+        "pid": 6642,
+        "timestampUTC": "2026-09-09T05:00:13.970278+00:00",
+        "unit": "C3-through-W-package",
+        "path": "/Users/vyacheslavshebanov/Work/dgamma/"
+      }
+    }
+  ],
+  "consumerLockEvents": [
+    {
+      "event": "acquired",
+      "timestampUTC": "2026-09-09T04:52:51.850451+00:00",
+      "owner": {
+        "lane": "R196-main",
+        "pid": 63710,
+        "timestampUTC": "2026-09-09T04:52:51.850262+00:00",
+        "unit": "C1-1",
+        "path": "research/DGamma/CP5O20RootReplayLawProducerSpike.idr"
+      }
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T04:52:55.006582+00:00",
+      "owner": {
+        "lane": "R196-main",
+        "pid": 63710,
+        "timestampUTC": "2026-09-09T04:52:51.850262+00:00",
+        "unit": "C1-1",
+        "path": "research/DGamma/CP5O20RootReplayLawProducerSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "timestampUTC": "2026-09-09T04:53:52.388918+00:00",
+      "owner": {
+        "lane": "R196-main",
+        "pid": 69742,
+        "timestampUTC": "2026-09-09T04:53:52.388734+00:00",
+        "unit": "C2-1",
+        "path": "research/DGamma/CP5O20RootReplayLawProducerSpike.idr"
+      }
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T04:53:54.507399+00:00",
+      "owner": {
+        "lane": "R196-main",
+        "pid": 69742,
+        "timestampUTC": "2026-09-09T04:53:52.388734+00:00",
+        "unit": "C2-1",
+        "path": "research/DGamma/CP5O20RootReplayLawProducerSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "timestampUTC": "2026-09-09T05:27:07.507182+00:00",
+      "owner": {
+        "lane": "R196-main",
+        "pid": 23931,
+        "timestampUTC": "2026-09-09T05:27:07.507002+00:00",
+        "unit": "C2-2",
+        "path": "research/DGamma/CP5O20RootReplayLawProducerSpike.idr"
+      }
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T05:27:10.671674+00:00",
+      "owner": {
+        "lane": "R196-main",
+        "pid": 23931,
+        "timestampUTC": "2026-09-09T05:27:07.507002+00:00",
+        "unit": "C2-2",
+        "path": "research/DGamma/CP5O20RootReplayLawProducerSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "timestampUTC": "2026-09-09T05:28:13.357469+00:00",
+      "owner": {
+        "lane": "R196-main",
+        "pid": 28027,
+        "timestampUTC": "2026-09-09T05:28:13.357233+00:00",
+        "unit": "C4-1",
+        "path": "research/DGamma/CP5O20RootReplayLawProducerSpike.idr"
+      }
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T05:28:16.537372+00:00",
+      "owner": {
+        "lane": "R196-main",
+        "pid": 28027,
+        "timestampUTC": "2026-09-09T05:28:13.357233+00:00",
+        "unit": "C4-1",
+        "path": "research/DGamma/CP5O20RootReplayLawProducerSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "timestampUTC": "2026-09-09T05:29:15.842554+00:00",
+      "owner": {
+        "lane": "R196-main",
+        "pid": 32006,
+        "timestampUTC": "2026-09-09T05:29:15.842341+00:00",
+        "unit": "C5-1",
+        "path": "research/DGamma/CP5O20RootReplayLawProducerSpike.idr"
+      }
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T05:29:19.018352+00:00",
+      "owner": {
+        "lane": "R196-main",
+        "pid": 32006,
+        "timestampUTC": "2026-09-09T05:29:15.842341+00:00",
+        "unit": "C5-1",
+        "path": "research/DGamma/CP5O20RootReplayLawProducerSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "timestampUTC": "2026-09-09T05:30:38.714846+00:00",
+      "owner": {
+        "lane": "R196-main",
+        "pid": 36932,
+        "timestampUTC": "2026-09-09T05:30:38.714557+00:00",
+        "unit": "C6-1",
+        "path": "research/DGamma/CP5O20RootReplayLawProducerSpike.idr"
+      }
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T05:30:41.875299+00:00",
+      "owner": {
+        "lane": "R196-main",
+        "pid": 36932,
+        "timestampUTC": "2026-09-09T05:30:38.714557+00:00",
+        "unit": "C6-1",
+        "path": "research/DGamma/CP5O20RootReplayLawProducerSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "timestampUTC": "2026-09-09T05:32:22.183747+00:00",
+      "owner": {
+        "lane": "R196-main",
+        "pid": 43988,
+        "timestampUTC": "2026-09-09T05:32:22.183558+00:00",
+        "unit": "C7-1",
+        "path": "research/DGamma/CP5O20RootReplayLawProducerSpike.idr"
+      }
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T05:32:25.354781+00:00",
+      "owner": {
+        "lane": "R196-main",
+        "pid": 43988,
+        "timestampUTC": "2026-09-09T05:32:22.183558+00:00",
+        "unit": "C7-1",
+        "path": "research/DGamma/CP5O20RootReplayLawProducerSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "timestampUTC": "2026-09-09T05:34:19.273290+00:00",
+      "owner": {
+        "lane": "R196-main",
+        "pid": 52351,
+        "timestampUTC": "2026-09-09T05:34:19.273099+00:00",
+        "unit": "C8-1",
+        "path": "research/DGamma/CP5O20RootReplayLawProducerSpike.idr"
+      }
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T05:34:22.418480+00:00",
+      "owner": {
+        "lane": "R196-main",
+        "pid": 52351,
+        "timestampUTC": "2026-09-09T05:34:19.273099+00:00",
+        "unit": "C8-1",
+        "path": "research/DGamma/CP5O20RootReplayLawProducerSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "timestampUTC": "2026-09-09T05:37:00.913769+00:00",
+      "owner": {
+        "lane": "R196-main",
+        "pid": 63405,
+        "timestampUTC": "2026-09-09T05:37:00.913577+00:00",
+        "unit": "C9-1",
+        "path": "research/DGamma/CP5O20RootReplayLawProducerSpike.idr"
+      }
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T05:37:04.052704+00:00",
+      "owner": {
+        "lane": "R196-main",
+        "pid": 63405,
+        "timestampUTC": "2026-09-09T05:37:00.913577+00:00",
+        "unit": "C9-1",
+        "path": "research/DGamma/CP5O20RootReplayLawProducerSpike.idr"
+      }
+    }
+  ],
+  "resourceStops": [],
+  "sourceMutations": [],
+  "extraBuildingRejectedUnits": [
+    "B1"
+  ],
+  "zeroSampleUnits": [
+    "B1R1",
+    "B2",
+    "B3",
+    "B14",
+    "B16",
+    "B24",
+    "BD12",
+    "B96",
+    "B98",
+    "B101",
+    "W10",
+    "W12",
+    "W20",
+    "W90",
+    "W92",
+    "W95"
+  ],
+  "sampleQualification": "Own-worktree one-second RSS samples are not OS high-water; zero means no live sample captured",
+  "maxLocalDiamondSampleRSSKiB": 50611312,
+  "maxOtherSampleRSSKiB": 44790080,
+  "staleLockRemovals": [],
+  "noMainLockOrWindow": true,
+  "currentForeignLock": null
+}

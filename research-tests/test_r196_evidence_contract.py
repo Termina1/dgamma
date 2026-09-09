@@ -46,6 +46,40 @@ class Contracts(unittest.TestCase):
         seen=contract.validate_topology(plan['items'],plan['unitAPaths'])
         self.assertEqual(len(seen),123)
         self.assertEqual(len(plan['excludedFromRunnableInventory']),124)
+    def test_original_plan_omits_required_invalidated_import(self):
+        plan=json.loads((ROOT/'research-tests/O6-R196-DEPENDENT-RECHECK-PLAN.json').read_text())
+        inventory=json.loads((ROOT/'research-tests/O6-R195-ROOT-CONTRACT-COSTS.json').read_text())
+        included={x['path'] for x in plan['items']}|set(plan['unitAPaths'])
+        modules={x['module']:x['path'] for x in inventory['entries']}
+        with self.assertRaises(AssertionError):
+            contract.validate_import_closed(included,modules,lambda p:(ROOT/p).read_text())
+    def test_continuation_is_import_closed_and_topological(self):
+        plan=json.loads((ROOT/'research-tests/O6-R196-DEPENDENT-RECHECK-CONTINUATION.json').read_text())
+        inventory=json.loads((ROOT/'research-tests/O6-R195-ROOT-CONTRACT-COSTS.json').read_text())
+        included=contract.validate_topology(plan['items'],plan['unitAPaths'])
+        self.assertEqual(len(included),136)
+        self.assertEqual(len(plan['excludedFromRunnableInventory']),111)
+        modules={x['module']:x['path'] for x in inventory['entries']}
+        contract.validate_import_closed(included,modules,lambda p:(ROOT/p).read_text())
+    def test_second_window_has_no_missing_invalidated_predecessor(self):
+        plan=json.loads((ROOT/'research-tests/O6-R196-SECOND-WINDOW-PLAN.json').read_text())
+        former=json.loads((ROOT/'research-tests/O6-R196-DEPENDENT-RECHECK-CONTINUATION.json').read_text())
+        affected={x['path'] for x in plan['items']}
+        unaffected=({x['path'] for x in former['items']}|set(former['unitAPaths']))-affected
+        unaffected.add(plan['helperPath'])
+        contract.validate_topology(plan['items'],unaffected)
+        self.assertEqual(len(plan['items']),127)
+        self.assertNotIn('research/DGamma/CP5ConfluenceLocalDiamondSpike.idr',affected)
+        self.assertNotIn('research/DGamma/CP5UniqueRawNameOrdinalCapital.idr',affected)
+    def test_helper_amendment_only_adds_the_approved_proof(self):
+        helper=json.loads((ROOT/'research-tests/O6-R196-C3-DELETION-HELPER-MANIFEST.json').read_text())
+        earlier=json.loads((ROOT/'research-tests/O6-R196-A4-SYNTAX-AMENDMENT.json').read_text())
+        base=subprocess.check_output(['git','show','58f88c63:'+helper['path']],cwd=ROOT,text=True)
+        before=contract.apply_manifest_diff(base,earlier['diff'])
+        after=contract.apply_manifest_diff(before,helper['diff'])
+        self.assertEqual(hashlib.sha256(before.encode()).hexdigest(),helper['beforeSHA256'])
+        self.assertEqual(hashlib.sha256(after.encode()).hexdigest(),helper['afterSHA256'])
+        self.assertEqual(after.replace(helper['helper'],''),before)
     def test_exact_approved_diffs(self):
         manifest=json.loads((ROOT/'research-tests/O6-R196-ROOT-CONTRACT-EXECUTION.json').read_text()); states={}
         for item in manifest['items']:

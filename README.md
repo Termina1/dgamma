@@ -824,3 +824,24 @@ is parent-owned and pending.
 
 Supervisor final gate RATIFIEDd7b2fc98 as checked PARTIAL; artifact-only gate
 note/clean close authorized. Independent reviewer remains parent-owned/pending.
+
+
+### R196 research milestone — actual root laws (overall checked PARTIAL)
+
+The producer contracts and their actual canonical/operational root-law consumers
+are checked. Production remains unchanged; the whole paired fold and endpoint
+bridge remain open (four inherited holes).
+
+| Paper correspondence | Idris declaration | Status |
+|---|---|---|
+| Thm73 auxiliary: adjacent root ordinals | `CP5ConfluenceLocalDiamondSpike.operationalRootOrdinalPreserved` / `adjacentOriginRootOrdinal` | proved, producer-filled |
+| Thm73 auxiliary: deletion root ordinals | `CP5ConfluenceDeletionChainSpike.deletionProducerRootOrdinalPreserved` / `deletionBuiltRootOrdinalPreserved` | proved, producer-filled |
+| Thm73 auxiliary: exact canonical root law | `CP5O20RootReplayLawProducerSpike.o20CanonicalRootReplayOrdinals` | proved |
+| Thm73 auxiliary: exact replayed-left composition | `CP5O20RootReplayLawProducerSpike.o20PermutedCanonicalRootReplayOrdinals` | proved |
+| Thm73 whole pairing / canonical endpoint bridge | existing protected obligations | open; not claimed by root laws |
+
+Evidence:13 guarded source commits; B133/133 and second-window127/127 expected
+validation outcomes, two seeded207/207 package checks,18 evidence-contract tests.
+All276 raw invocations retained, including3 rejected snapshots; no resource stop.
+See `research-tests/O6-R196-GRIND-SHIFT-AUDIT.md`, refreshed cost inventory and
+per-module table.111 excluded fixture/legacy paths are explicitly not re-checked.

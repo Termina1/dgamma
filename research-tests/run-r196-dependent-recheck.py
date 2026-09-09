@@ -3,10 +3,14 @@
 import datetime, hashlib, json, pathlib, subprocess, sys
 ROOT=pathlib.Path(__file__).resolve().parents[1]
 OUT=pathlib.Path('/tmp/dgamma-r196')
-plan_path=ROOT/'research-tests/O6-R196-DEPENDENT-RECHECK-PLAN.json'
+plan_path=ROOT/'research-tests/O6-R196-DEPENDENT-RECHECK-CONTINUATION.json'
 plan_bytes=plan_path.read_bytes()
-assert hashlib.sha256(plan_bytes).hexdigest()==(OUT/'dependent-plan.sha256').read_text().strip()
+assert hashlib.sha256(plan_bytes).hexdigest()==(OUT/'dependent-continuation.sha256').read_text().strip()
 plan=json.loads(plan_bytes)
+closure=json.loads((OUT/'closure-tests-pass.json').read_text())
+assert closure['status']=='PASS' and closure['tests']==16
+assert closure['continuationSHA256']==hashlib.sha256(plan_bytes).hexdigest()
+assert closure['logSHA256']==hashlib.sha256((OUT/'continuation-closure-tests.log').read_bytes()).hexdigest()
 for stage in ['A1','A2','A4','A3']:
     receipts=[json.loads(s) for s in (OUT/'commit-receipts.jsonl').read_text().splitlines()]
     assert any(r['unit']==stage and r['event']=='GUARDED COMMIT' for r in receipts), stage+' not committed'

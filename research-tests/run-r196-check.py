@@ -54,9 +54,27 @@ if unit=='A4-2':
     assert hashlib.sha256(amendment_bytes).hexdigest()==(pathlib.Path('/tmp/dgamma-r196')/'A4-syntax-amendment.sha256').read_text().strip()
     approved_edit=json.loads(amendment_bytes)
 
-if re.fullmatch(r'B\d+',unit):
-    plan_bytes=(ROOT/'research-tests/O6-R196-DEPENDENT-RECHECK-PLAN.json').read_bytes()
-    assert hashlib.sha256(plan_bytes).hexdigest()==(OUT/'dependent-plan.sha256').read_text().strip()
+if unit=='C3-1':
+    helper_bytes=(ROOT/'research-tests/O6-R196-C3-DELETION-HELPER-MANIFEST.json').read_bytes()
+    assert hashlib.sha256(helper_bytes).hexdigest()==(OUT/'C3-helper-manifest.sha256').read_text().strip()
+    approved_edit=json.loads(helper_bytes)
+if re.fullmatch(r'W\d+',unit):
+    plan_bytes=(ROOT/'research-tests/O6-R196-SECOND-WINDOW-PLAN.json').read_bytes()
+    assert hashlib.sha256(plan_bytes).hexdigest()==(OUT/'second-window-plan.sha256').read_text().strip()
+    items=[x for x in json.loads(plan_bytes)['items'] if x['unit']==unit]
+    assert len(items)==1 and items[0]['path']==path and items[0]['expectedDiagnostic']==diagnostic and items[0].get('symbol')==symbol
+    assert hashlib.sha256((ROOT/('dgamma.ipkg' if path=='package' else path)).read_bytes()).hexdigest()==items[0]['sourceHash']
+    done=[json.loads(s) for s in (OUT/'ledger.jsonl').read_text().splitlines()]
+    for dep in items[0]['dependencies']:
+        assert any(x['path']==dep and x['passed'] and x['sourceSHA256']==hashlib.sha256((ROOT/dep).read_bytes()).hexdigest() for x in done),dep+' not current-hash directly checked'
+    planned_validation=True
+if re.fullmatch(r'B(?:\d+(?:R1)?|D\d+)',unit):
+    plan_bytes=(ROOT/'research-tests/O6-R196-DEPENDENT-RECHECK-CONTINUATION.json').read_bytes()
+    assert hashlib.sha256(plan_bytes).hexdigest()==(OUT/'dependent-continuation.sha256').read_text().strip()
+    continuation=json.loads(plan_bytes)
+    assert hashlib.sha256((ROOT/'research-tests/O6-R196-DEPENDENT-RECHECK-PLAN.json').read_bytes()).hexdigest()==continuation['originalPlanSHA256']
+    assert hashlib.sha256((OUT/'B1.json').read_bytes()).hexdigest()==continuation['rejectedB1RecordSHA256']
+    if unit=='B1R1': assert hashlib.sha256((ROOT/path).read_bytes()).hexdigest()==continuation['rejectedB1SourceSHA256']
     items=[x for x in json.loads(plan_bytes)['items'] if x['unit']==unit]
     assert len(items)==1 and items[0]['path']==path and items[0]['expectedDiagnostic']==diagnostic and items[0].get('symbol')==symbol
     assert hashlib.sha256((ROOT/('dgamma.ipkg' if path=='package' else path)).read_bytes()).hexdigest()==items[0]['sourceHash']
@@ -105,12 +123,54 @@ else:
 heavy_paths=set(json.loads((ROOT/'research-tests/O6-R195-HEAVY-PATHS.json').read_text()))
 heavy=True
 lock=pathlib.Path('/tmp/dgamma-heavy.lock')
-lock_owner=json.loads((OUT/'window-owner.json').read_text())
-assert lock_owner['lane']=='R196-main' and (lock/'owner').read_text()==json.dumps(lock_owner)
-os.kill(lock_owner['pid'],0)
-window=json.loads(pathlib.Path('/tmp/dgamma-rebuild-window.json').read_text())
-assert window['pid']==lock_owner['pid'] and window['lane']=='R196-main'
-lock_events=[dict(event='continuous-window-owned',**lock_owner)]
+second_window=(unit=='C3-1' or bool(re.fullmatch(r'W\d+',unit)))
+consumer_check=(bool(re.fullmatch(r'C\d+-\d+',unit)) or unit.startswith('S')) and not second_window
+if consumer_check:
+    complete=json.loads((OUT/'B-complete.json').read_text())
+    assert complete['count']==133 and complete['planSHA256']==(OUT/'dependent-continuation.sha256').read_text().strip()
+    assert not pathlib.Path('/tmp/dgamma-rebuild-window.json').exists(), 'End rebuild window before C'
+    if (ROOT/'research-tests/O6-R196-SECOND-WINDOW-PLAN.json').exists():
+        complete2=json.loads((OUT/'W-complete.json').read_text())
+        assert complete2['count']==127 and complete2['planSHA256']==(OUT/'second-window-plan.sha256').read_text().strip()
+    lock_owner=dict(lane='R196-main',pid=os.getpid(),timestampUTC=datetime.datetime.now(datetime.timezone.utc).isoformat(),unit=unit,path=path)
+    lock_events=[]
+    acquired=False
+    def consumer_event(kind,**kwargs):
+        event=dict(event=kind,timestampUTC=datetime.datetime.now(datetime.timezone.utc).isoformat(),**kwargs)
+        with (OUT/'consumer-lock-events.jsonl').open('a') as f:f.write(json.dumps(event)+'\n')
+        print(event,flush=True)
+    def release_consumer_lock():
+        if acquired and lock.is_dir() and (lock/'owner').read_text()==json.dumps(lock_owner):
+            shutil.rmtree(lock);consumer_event('released',owner=lock_owner)
+    atexit.register(release_consumer_lock)
+    waiting=time.monotonic()
+    while not acquired:
+        try:
+            lock.mkdir();(lock/'owner').write_text(json.dumps(lock_owner));acquired=True
+            lock_events.append(dict(event='acquired',**lock_owner));consumer_event('acquired',owner=lock_owner)
+        except FileExistsError:
+            age=time.time()-lock.stat().st_mtime
+            text=(lock/'owner').read_text() if (lock/'owner').exists() else ''
+            dead=False
+            try:
+                pid=int(json.loads(text)['pid'])
+                try:os.kill(pid,0)
+                except ProcessLookupError:dead=True
+            except (KeyError,TypeError,ValueError):pass
+            if age>25*60 and dead:
+                consumer_event('removed-stale-dead-owner-lock',owner=text,age=age);shutil.rmtree(lock);continue
+            assert time.monotonic()-waiting<20*60,'Consumer shared-lock wait exceeded20min'
+            print('HEAVY LOCK WAIT',unit,text,flush=True);time.sleep(10)
+    assert datetime.datetime.now(datetime.timezone.utc)<cutoff
+    owned_compilers,lane2_compilers,unknown_compilers=compiler_scopes()
+    assert not owned_compilers and not unknown_compilers
+else:
+    lock_owner=json.loads((OUT/('window2-owner.json' if second_window else 'window-owner.json')).read_text())
+    assert lock_owner['lane']=='R196-main' and (lock/'owner').read_text()==json.dumps(lock_owner)
+    os.kill(lock_owner['pid'],0)
+    window=json.loads(pathlib.Path('/tmp/dgamma-rebuild-window.json').read_text())
+    assert window['pid']==lock_owner['pid'] and window['lane']=='R196-main'
+    lock_events=[dict(event='continuous-window-owned',**lock_owner)]
 if path=='research/DGamma/CP5ConfluenceLocalDiamondSpike.idr':
     assert approved_edit and stage in ['A1','A2'], 'LocalDiamond only exact owner-gated stages'
     rss_limit_kib=52*1024*1024

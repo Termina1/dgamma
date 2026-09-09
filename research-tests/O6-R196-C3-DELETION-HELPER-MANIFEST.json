@@ -1,0 +1,775 @@
+{
+  "status": "OWNER APPROVED exact defining-module opaque proof helper exception",
+  "path": "research/DGamma/CP5ConfluenceDeletionChainSpike.idr",
+  "beforeSHA256": "7fadaf6b3e71030290813393d8954afee0da79ec93b293fcfcd977deb4562578",
+  "afterSHA256": "91e8fd290cc4fedae9656ce5b4ae3ea0b38509f6e0250f51b4a7aa2aea09067b",
+  "helper": "||| The actual deletion occurrence builder preserves root ordinals using the\n||| SAME stored capital; its private action-origin definition is unfolded here.\nexport\n0 deletionBuiltRootOrdinalPreserved :\n  {name, key, world, error : Type} -> {value : key -> Type} ->\n  {protocol : RegistrationProtocol key value world error} ->\n  {nameEq : DecEq name} -> {keyEq : DecEq key} ->\n  {initial, finalState : SystemState name key value world error} ->\n  (trace : Transitions initial finalState) ->\n  (premises : CanonicalizationPremises name key world error value protocol\n    nameEq keyEq trace) ->\n  (candidate : DeletableClosingEpisode name key world error value nameEq keyEq trace) ->\n  (result : DeletionResult name key world error value nameEq keyEq trace\n    (selectedActor candidate) (selectedEpisode candidate)\n    (selectedRegistrations candidate) (selectedStartOrdinal candidate)\n    (selectedStartLive candidate)) ->\n  (capital : DeletionProducerOperationalCapital name key world error value\n    nameEq keyEq trace (selectedActor candidate) (selectedEpisode candidate)\n    (selectedRegistrations candidate) (selectedStartOrdinal candidate)\n    (selectedStartLive candidate) result) ->\n  {root : name} -> {component : Component key value world error} ->\n  (occurrence : LocatedActionOccurrence (OInsert root Root component)\n    (survivingTrace result)) ->\n  (generationForward\n    (replayGenerationRenaming (deletionOperationalCorrespondence\n      (deletionStepOperationalOccurrenceFoldSpike nameEq keyEq protocol trace\n        premises candidate result capital)))\n    (MkRegistrationGeneration root\n      (locatedActionOrdinal (replayActionOrigin (deletionOperationalCorrespondence\n        (deletionStepOperationalOccurrenceFoldSpike nameEq keyEq protocol trace\n          premises candidate result capital)) occurrence))) =\n    MkRegistrationGeneration root (locatedActionOrdinal occurrence))\ndeletionBuiltRootOrdinalPreserved trace premises candidate result capital occurrence =\n  deletionProducerRootOrdinalPreserved capital occurrence\n\n",
+  "diff": "--- a/research/DGamma/CP5ConfluenceDeletionChainSpike.idr\n+++ b/research/DGamma/CP5ConfluenceDeletionChainSpike.idr\n@@ -4857,6 +4857,41 @@\n         (selectedActor candidate) (selectedEpisode candidate)\n         (selectedRegistrations candidate) (selectedStartOrdinal candidate)\n         (selectedStartLive candidate) result capital)\n+\n+||| The actual deletion occurrence builder preserves root ordinals using the\n+||| SAME stored capital; its private action-origin definition is unfolded here.\n+export\n+0 deletionBuiltRootOrdinalPreserved :\n+  {name, key, world, error : Type} -> {value : key -> Type} ->\n+  {protocol : RegistrationProtocol key value world error} ->\n+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->\n+  {initial, finalState : SystemState name key value world error} ->\n+  (trace : Transitions initial finalState) ->\n+  (premises : CanonicalizationPremises name key world error value protocol\n+    nameEq keyEq trace) ->\n+  (candidate : DeletableClosingEpisode name key world error value nameEq keyEq trace) ->\n+  (result : DeletionResult name key world error value nameEq keyEq trace\n+    (selectedActor candidate) (selectedEpisode candidate)\n+    (selectedRegistrations candidate) (selectedStartOrdinal candidate)\n+    (selectedStartLive candidate)) ->\n+  (capital : DeletionProducerOperationalCapital name key world error value\n+    nameEq keyEq trace (selectedActor candidate) (selectedEpisode candidate)\n+    (selectedRegistrations candidate) (selectedStartOrdinal candidate)\n+    (selectedStartLive candidate) result) ->\n+  {root : name} -> {component : Component key value world error} ->\n+  (occurrence : LocatedActionOccurrence (OInsert root Root component)\n+    (survivingTrace result)) ->\n+  (generationForward\n+    (replayGenerationRenaming (deletionOperationalCorrespondence\n+      (deletionStepOperationalOccurrenceFoldSpike nameEq keyEq protocol trace\n+        premises candidate result capital)))\n+    (MkRegistrationGeneration root\n+      (locatedActionOrdinal (replayActionOrigin (deletionOperationalCorrespondence\n+        (deletionStepOperationalOccurrenceFoldSpike nameEq keyEq protocol trace\n+          premises candidate result capital)) occurrence))) =\n+    MkRegistrationGeneration root (locatedActionOrdinal occurrence))\n+deletionBuiltRootOrdinalPreserved trace premises candidate result capital occurrence =\n+  deletionProducerRootOrdinalPreserved capital occurrence\n \n ||| Internal enriched result of one D72 call.  The public `DeletionResult` stays\n ||| immutable, but the checked fold/adapter used by Path A must construct the\n",
+  "recheckOrder": [
+    {
+      "path": "research/DGamma/CP5ConfluenceDeletionChainSpike.idr",
+      "sourceHash": "7fadaf6b3e71030290813393d8954afee0da79ec93b293fcfcd977deb4562578",
+      "measuredSeconds": 77.838627750054,
+      "measuredSampleRSSKiB": 4830272
+    },
+    {
+      "path": "research-tests/DGamma/R19SuffixFreeFullAdjacentCertificatePositive.idr",
+      "sourceHash": "4f30ab58cae44bc89bf3c9cc940d3ab63bf1f0af99494cfd157d6db21617bd80",
+      "measuredSeconds": 2.089138917159289,
+      "measuredSampleRSSKiB": 727504
+    },
+    {
+      "path": "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+      "sourceHash": "3b62ba1c3bc88503116ed22d82c667043f7f41dd483fb093cc25b677a55245cc",
+      "measuredSeconds": 53.999528584070504,
+      "measuredSampleRSSKiB": 20121856
+    },
+    {
+      "path": "research/DGamma/CP5SupportedBirthCoverageSpike.idr",
+      "sourceHash": "f97d76d8e94cdf529995779becefec69bc19694217f732a5ef27bf0198473e6a",
+      "measuredSeconds": 2.0838503330014646,
+      "measuredSampleRSSKiB": 371264
+    },
+    {
+      "path": "research/DGamma/CP5UniqueRawNameDeletion.idr",
+      "sourceHash": "f8adb83a079e5345a7e4655a5f6c878756f16b76ddc7e7bb16156fc284506c50",
+      "measuredSeconds": 3.1684569590725005,
+      "measuredSampleRSSKiB": 776528
+    },
+    {
+      "path": "research-tests/DGamma/R172O17OpenParentRootReuseCandidate.idr",
+      "sourceHash": "5702a99c11b1025ff00250660cff7b5230556a1814b30e27fadfe9b113713ac4",
+      "measuredSeconds": 49.86872629215941,
+      "measuredSampleRSSKiB": 4526768
+    },
+    {
+      "path": "research-tests/DGamma/R4VestigialSimultaneous.idr",
+      "sourceHash": "04a1fee5b70d6a555b7d20bac2e88c9a10df85c4a9b9d1c53a7664fc01af5347",
+      "measuredSeconds": 2.0798710407689214,
+      "measuredSampleRSSKiB": 3952912
+    },
+    {
+      "path": "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr",
+      "sourceHash": "833bd3450bc8a4214e0334fd2ad95d7f837bc636f40f2e33c408333395602713",
+      "measuredSeconds": 9.355070583056659,
+      "measuredSampleRSSKiB": 2129840
+    },
+    {
+      "path": "research/DGamma/CP5RankedEarlyApplicabilitySpike.idr",
+      "sourceHash": "d54aefae02a4a03b1ea710cb79aaa224887eaec6bae7921203995238aa8e5e87",
+      "measuredSeconds": 2.0800767079927027,
+      "measuredSampleRSSKiB": 820416
+    },
+    {
+      "path": "research-tests/DGamma/R8BridgeAuthenticatedDirectionPositive.idr",
+      "sourceHash": "03c095c04ba02a43ccb1383c293e06834d93a4a1a6e0efe178430daa9b791196",
+      "measuredSeconds": 2.0944599169306457,
+      "measuredSampleRSSKiB": 2275888
+    },
+    {
+      "path": "research-tests/DGamma/R8BridgeWrongBirthNegative.idr",
+      "sourceHash": "8f1c1b789f927956a2f8f19c9d0e3f2961d5c94737d9a80a3e522d64b05894be",
+      "measuredSeconds": 1.0603914996609092,
+      "measuredSampleRSSKiB": 0
+    },
+    {
+      "path": "research-tests/DGamma/R8PublicScheduleCannotReachBridgeNegative.idr",
+      "sourceHash": "8ed4fd143d7839258695ca6562f037a6f13fb50ad7a73c8d180068e9825545c3",
+      "measuredSeconds": 3.1131928330287337,
+      "measuredSampleRSSKiB": 650000
+    },
+    {
+      "path": "research-tests/DGamma/R8WrongOccurrenceBridgeNegative.idr",
+      "sourceHash": "da7ed3cf2b884f39b4148c19cad4d759a9cd249c144cf6f608f1a7a84dd6f8cc",
+      "measuredSeconds": 1.0563717079348862,
+      "measuredSampleRSSKiB": 0
+    },
+    {
+      "path": "research/DGamma/CP5AcceptedRetirementTransportSpike.idr",
+      "sourceHash": "61425c3baa0d88cda8d907fed3131a8915a4e636788843e07b2efc58150686f4",
+      "measuredSeconds": 3.12140933284536,
+      "measuredSampleRSSKiB": 2951088
+    },
+    {
+      "path": "research/DGamma/CP5MatchedBirthMetadataSpike.idr",
+      "sourceHash": "2537e53d485e8834ec72c4086288a665f44d1b39def130e90f3c557e7695a68d",
+      "measuredSeconds": 4.167217249982059,
+      "measuredSampleRSSKiB": 3975200
+    },
+    {
+      "path": "research/DGamma/CP5O19AdjacentReplayProducerSpike.idr",
+      "sourceHash": "d07435985a00c7e49ebf0deca0325262249b4c0db80689c550ed4bb716e6690c",
+      "measuredSeconds": 3.1200757496990263,
+      "measuredSampleRSSKiB": 3004320
+    },
+    {
+      "path": "research/DGamma/CP5O20CanonicalBirthDispositionSpike.idr",
+      "sourceHash": "4d6ca33c7dc637e9cb95f63e0eefd1824a659f1b37311c4a9be2ecfc7b7f354a",
+      "measuredSeconds": 3.1166581250727177,
+      "measuredSampleRSSKiB": 3012848
+    },
+    {
+      "path": "research/DGamma/CP5O21EndpointIdentitySpike.idr",
+      "sourceHash": "5a1d3fe32fb110a905ad5d59885637710fc13fcccd81c1d6f9ad67472f515e38",
+      "measuredSeconds": 3.1164061659947038,
+      "measuredSampleRSSKiB": 2892832
+    },
+    {
+      "path": "research/DGamma/CP5RootBirthCoverageSpike.idr",
+      "sourceHash": "5a1c5367e25d51199623e9d4fb488995060db6a2bd447a04dfe0c2609f381592",
+      "measuredSeconds": 3.1272175419144332,
+      "measuredSampleRSSKiB": 2945008
+    },
+    {
+      "path": "research-tests/DGamma/R179O21CurrentBirthIdentityPositive.idr",
+      "sourceHash": "e8d1f64fdf8dab1b2af4dd76dc69f6138c45ad849cc64c14b1d46a030d34d901",
+      "measuredSeconds": 2.1018223338760436,
+      "measuredSampleRSSKiB": 2936640
+    },
+    {
+      "path": "research-tests/DGamma/R179O21WrongOriginalBirthNegative.idr",
+      "sourceHash": "f2d7e6825c7fece1c36787ba1f2d248a59197df7d94b1fece6b651714046055b",
+      "measuredSeconds": 1.066706916783005,
+      "measuredSampleRSSKiB": 0
+    },
+    {
+      "path": "research/DGamma/CP5AllSupportedMetadataSpike.idr",
+      "sourceHash": "b954d17f1e34052475d68abdeee9eb620f648ca2e02266485a1a865bf7ca54cc",
+      "measuredSeconds": 3.1110352077521384,
+      "measuredSampleRSSKiB": 2944208
+    },
+    {
+      "path": "research/DGamma/CP5O19OpeningPropagationSpike.idr",
+      "sourceHash": "4ff197170659e1936efec83cc84d55f01b584cf8aebb9b92fc3c7b975f384966",
+      "measuredSeconds": 2.0776157081127167,
+      "measuredSampleRSSKiB": 1353840
+    },
+    {
+      "path": "research/DGamma/CP5O19ReplayObservationSpike.idr",
+      "sourceHash": "37b28d64c25692733b7b9f3a99c71ca0cd8035e06b0d74746b28a2a9ed9a6c8a",
+      "measuredSeconds": 3.1373451249673963,
+      "measuredSampleRSSKiB": 2886992
+    },
+    {
+      "path": "research/DGamma/CP5O20GenerationOnlyHistorySpike.idr",
+      "sourceHash": "bb3b1e3c31c50d62a93eb3411224e17aaa71c483dd460ec91e32f3ab15fbf3a4",
+      "measuredSeconds": 3.152815666049719,
+      "measuredSampleRSSKiB": 3006112
+    },
+    {
+      "path": "research/DGamma/CP5O19AdvanceObservationSpike.idr",
+      "sourceHash": "ce984fd7e9a5166a11b8150a164d0a1699648a171845436d206e08d1a51b33f6",
+      "measuredSeconds": 3.1182743329554796,
+      "measuredSampleRSSKiB": 2522400
+    },
+    {
+      "path": "research/DGamma/CP5O19CartesianCursorSpike.idr",
+      "sourceHash": "e18c09da9ef390fc7324b2b1d1fe9e5015a09365f1b4755df7f7c55bef07324d",
+      "measuredSeconds": 2.073008832987398,
+      "measuredSampleRSSKiB": 677568
+    },
+    {
+      "path": "research/DGamma/CP5O19InsertObservationSpike.idr",
+      "sourceHash": "19d825b490b27545c77eb3846e9af46236f95eabcd632a1e143a4969a331dbc5",
+      "measuredSeconds": 2.072310124989599,
+      "measuredSampleRSSKiB": 1537040
+    },
+    {
+      "path": "research/DGamma/CP5SupportClauseTransportSpike.idr",
+      "sourceHash": "0819aed5a885a9645f84a7b6ccccd9e1f1e15576b901b6c96a699bd8dbc3141e",
+      "measuredSeconds": 3.138631667010486,
+      "measuredSampleRSSKiB": 3020112
+    },
+    {
+      "path": "research/DGamma/CP5AcceptedSupportTruthSpike.idr",
+      "sourceHash": "fb8f77b4bcb57375ce80c70c6462c0642765eb45d217d40d8ab71ad51941f60d",
+      "measuredSeconds": 2.077307708095759,
+      "measuredSampleRSSKiB": 253296
+    },
+    {
+      "path": "research/DGamma/CP5O19ActivationRowSpike.idr",
+      "sourceHash": "8a8b69c143a456967eccb6ebef741c2c6f38f9d8b1b77e0686744a2fd938b677",
+      "measuredSeconds": 3.126179332844913,
+      "measuredSampleRSSKiB": 2287056
+    },
+    {
+      "path": "research/DGamma/CP5O20SingleRoleAdvanceExtractionSpike.idr",
+      "sourceHash": "de5ecc4071e0a29d54611aa5ae4bb6d43d5aec45f5d822cd337112812ea2ab4f",
+      "measuredSeconds": 2.0828499170020223,
+      "measuredSampleRSSKiB": 413456
+    },
+    {
+      "path": "research/DGamma/CP5O19SurfaceSpike.idr",
+      "sourceHash": "da358a498847ed06b666c1e1d42fffed10afc7d6f699c94e4681d7b302ff5561",
+      "measuredSeconds": 5.212534749880433,
+      "measuredSampleRSSKiB": 3038096
+    },
+    {
+      "path": "research/DGamma/CP5O20SupportedBirthBridgeSpike.idr",
+      "sourceHash": "fb7bf6b4750d729da2794ff38bc1ec8d51cffbb838a24db8f7db822914b4e93a",
+      "measuredSeconds": 3.11868550023064,
+      "measuredSampleRSSKiB": 2543088
+    },
+    {
+      "path": "research/DGamma/CP5O19OrdinalPlanSpike.idr",
+      "sourceHash": "d41ea744af5a5efc99983ce29793493c9414c1fe17fa480b14ca3ff0ed9135b7",
+      "measuredSeconds": 46.68541037477553,
+      "measuredSampleRSSKiB": 21427008
+    },
+    {
+      "path": "research/DGamma/CP5O20BirthBridgeRemainderSpike.idr",
+      "sourceHash": "8a759194ca994ed430352eaafb738d03c99e0801d73744e0fd6c63c8974d123d",
+      "measuredSeconds": 3.131579583045095,
+      "measuredSampleRSSKiB": 3010848
+    },
+    {
+      "path": "research/DGamma/CP5O20CanonicalOrdinalAttachmentSpike.idr",
+      "sourceHash": "e66a3d751e914936d3db5ce0a9f3faf940b5f7a97af32108f048441a14f878d3",
+      "measuredSeconds": 3.1363258748315275,
+      "measuredSampleRSSKiB": 3006528
+    },
+    {
+      "path": "research/DGamma/CP5O20SupportedEndpointCapitalSpike.idr",
+      "sourceHash": "de506cd1e996c95c10c26e9bb21fc1f18d0210504bd614933e10caa0a8032aa6",
+      "measuredSeconds": 4.150025791954249,
+      "measuredSampleRSSKiB": 2887040
+    },
+    {
+      "path": "research/DGamma/CP5O19CartesianSitePlanSpike.idr",
+      "sourceHash": "e4f2918ecd0dfdd77d3c84d0762a127a28b233944b8960df54f51c86e9329ad3",
+      "measuredSeconds": 3.1398082091473043,
+      "measuredSampleRSSKiB": 2884320
+    },
+    {
+      "path": "research/DGamma/CP5O20EpisodeSynchronizationSpike.idr",
+      "sourceHash": "bfe759297ee32dbde9dc192b528b98854ce9bab474690f537f6aa4b2af9ff80c",
+      "measuredSeconds": 3.144701082725078,
+      "measuredSampleRSSKiB": 2884928
+    },
+    {
+      "path": "research/DGamma/CP5O20RootOrdinalBoundarySpike.idr",
+      "sourceHash": "bb9d8da6173b7e0bc2d4b770b3147ed3c01a9d8c7866dfeb2758facb3d5935ac",
+      "measuredSeconds": 3.1089685410261154,
+      "measuredSampleRSSKiB": 3008448
+    },
+    {
+      "path": "research-tests/DGamma/R195RootOrdinalBoundaryPositive.idr",
+      "sourceHash": "ea13e281a2f4d709db972da1bfb6012837c69bc78769ca179ece7dd3ada83295",
+      "measuredSeconds": 3.1158204171806574,
+      "measuredSampleRSSKiB": 2348208
+    },
+    {
+      "path": "research/DGamma/CP5O19CartesianNumericSpike.idr",
+      "sourceHash": "b499ed0c2b270eb9db3e9b85026103caa3b3773ffae653a4135eb38806a77e78",
+      "measuredSeconds": 3.1489533339627087,
+      "measuredSampleRSSKiB": 2891088
+    },
+    {
+      "path": "research/DGamma/CP5O20PairedPrefixProducerSpike.idr",
+      "sourceHash": "c57be81f7d44b33ab240a0f01b77a78aa2bf00e4adda57d609705d0151f05dd0",
+      "measuredSeconds": 3.106511333025992,
+      "measuredSampleRSSKiB": 3755760
+    },
+    {
+      "path": "research/DGamma/CP5O19GridCertificationSpike.idr",
+      "sourceHash": "73ce4aa48cba8b7508be08585d88fa2beae9d3730babcea9f7e044e9f37792ec",
+      "measuredSeconds": 2.0782611668109894,
+      "measuredSampleRSSKiB": 1328688
+    },
+    {
+      "path": "research/DGamma/CP5O20CanonicalPairSelectionSpike.idr",
+      "sourceHash": "12b232af559ebbbdb89d1a8efbeaa913afa8a80f90420aae49fb12faa28fb97e",
+      "measuredSeconds": 3.1113639581017196,
+      "measuredSampleRSSKiB": 2691664
+    },
+    {
+      "path": "research/DGamma/CP5O20BeginObservationSpike.idr",
+      "sourceHash": "4be19259b79e50c4366e5cc86f391f826f796b87eed8cda30ceec12f4bb3a777",
+      "measuredSeconds": 3.1288550002500415,
+      "measuredSampleRSSKiB": 3017360
+    },
+    {
+      "path": "research/DGamma/CP5O19ResolvedOpeningRowSpike.idr",
+      "sourceHash": "2e3108bae048b31c7acfb3998f4c1396b821789ba11753972cf09e3608724781",
+      "measuredSeconds": 4.148985415697098,
+      "measuredSampleRSSKiB": 2907120
+    },
+    {
+      "path": "research/DGamma/CP5O19SourceShapeSpike.idr",
+      "sourceHash": "b7ade648e85d35b309a086aa458000cca7646806a027bbd0a22e77d508273ce0",
+      "measuredSeconds": 3.127214999869466,
+      "measuredSampleRSSKiB": 2887024
+    },
+    {
+      "path": "research/DGamma/CP5O20AllNameSynchronizationSpike.idr",
+      "sourceHash": "eb34b80def8d87fb099c8a06d9836d33f27f6faa3bc47ca198c5b79275fdf2dd",
+      "measuredSeconds": 3.120284958742559,
+      "measuredSampleRSSKiB": 2942960
+    },
+    {
+      "path": "research/DGamma/CP5O20RightOpeningTransportSpike.idr",
+      "sourceHash": "f2da10325655665842f58cd43dd7b918aa1b3e888aa07a552a086ae79fdde8dd",
+      "measuredSeconds": 3.134087875019759,
+      "measuredSampleRSSKiB": 3414736
+    },
+    {
+      "path": "research/DGamma/CP5O19ActivationInsertionRowSpike.idr",
+      "sourceHash": "92182efb39ab89edde5663af0ad0aa4e9d00c6780c30a09c632740737ea0f625",
+      "measuredSeconds": 4.16225608298555,
+      "measuredSampleRSSKiB": 2884976
+    },
+    {
+      "path": "research/DGamma/CP5O19ActivationResolutionSpike.idr",
+      "sourceHash": "699caa76e3935afa24f43da04c07f8b1d5ae23603f6112e034c3888eefec8f46",
+      "measuredSeconds": 3.148059915751219,
+      "measuredSampleRSSKiB": 3870144
+    },
+    {
+      "path": "research/DGamma/CP5O20IndexedReloadingSourceSpike.idr",
+      "sourceHash": "8442fb2fafdce06376d9951569ba580563403f47a29b4eec79ba89f338611cdc",
+      "measuredSeconds": 2.0758883338421583,
+      "measuredSampleRSSKiB": 236128
+    },
+    {
+      "path": "research/DGamma/CP5O20SharedBeginAdapterSpike.idr",
+      "sourceHash": "a58a6442b7ea0189f1211b553e90910ae10f90d4176b3c6a243787c776559f0b",
+      "measuredSeconds": 3.116573290899396,
+      "measuredSampleRSSKiB": 2951920
+    },
+    {
+      "path": "research/DGamma/CP5O20SupportedBridgeAssemblySpike.idr",
+      "sourceHash": "7beda3aac1fa38d338e588fda5dd42c0a561d0018974a74920d2c3cef3eaf64a",
+      "measuredSeconds": 3.123664957936853,
+      "measuredSampleRSSKiB": 3006512
+    },
+    {
+      "path": "research/DGamma/CP5O19BodyMetadataSpike.idr",
+      "sourceHash": "31cab0146abc3bb241645ce8cc4124fc147ffa2da60acdc67413a19e424eea3e",
+      "measuredSeconds": 4.167324665933847,
+      "measuredSampleRSSKiB": 1919744
+    },
+    {
+      "path": "research/DGamma/CP5O19InsertionInsertionRowSpike.idr",
+      "sourceHash": "7b37cdd0c88f10d122b21d7e187e32ecc333b7d2f58d22577243e1666c1019a9",
+      "measuredSeconds": 3.1191056249663234,
+      "measuredSampleRSSKiB": 4307648
+    },
+    {
+      "path": "research/DGamma/CP5O20PairedAdvanceSpike.idr",
+      "sourceHash": "fdf25d8461cf9cdbc7dafdfa07da2d402f6b56dcbc53599422c850f641c69f7d",
+      "measuredSeconds": 3.12366958335042,
+      "measuredSampleRSSKiB": 2127456
+    },
+    {
+      "path": "research/DGamma/CP5O19CartesianInsertionSpike.idr",
+      "sourceHash": "930f87e85893a3589aef0dabf536727271efaed7ac9b3c074c51435be6b863e3",
+      "measuredSeconds": 5.182633708231151,
+      "measuredSampleRSSKiB": 2897440
+    },
+    {
+      "path": "research/DGamma/CP5O19MixedActivationRowSpike.idr",
+      "sourceHash": "86e87881c31d7c9de8dabd188ca5a9e0681e7f0b3ca33f459df1233d9a6bb154",
+      "measuredSeconds": 4.14717649994418,
+      "measuredSampleRSSKiB": 2530336
+    },
+    {
+      "path": "research/DGamma/CP5O20NativeAdvanceAttachmentSpike.idr",
+      "sourceHash": "830070d2b9d1ee560ebc5f421aeca83c8610cf47653e674658e322f3424e156e",
+      "measuredSeconds": 3.121820291969925,
+      "measuredSampleRSSKiB": 2956032
+    },
+    {
+      "path": "research/DGamma/CP5O20PairedExecutionSpike.idr",
+      "sourceHash": "d4170671fe9677cb6e44fda33b56a447c3c69f9f897ccea85757f18ed11fe02b",
+      "measuredSeconds": 3.1324685411527753,
+      "measuredSampleRSSKiB": 2951088
+    },
+    {
+      "path": "research/DGamma/CP5O19MixedRowDispatcherSpike.idr",
+      "sourceHash": "0e7b9bd94c16e63f6b43540b68cc96fec9c55be7b14a98b2c3167394bdfb1bc3",
+      "measuredSeconds": 3.112782625015825,
+      "measuredSampleRSSKiB": 2535424
+    },
+    {
+      "path": "research/DGamma/CP5O19PairObservationSpike.idr",
+      "sourceHash": "4b9a3683695048f358372686b0e9128f065481e709dfd1b6946b5c312ad70267",
+      "measuredSeconds": 3.1172961252741516,
+      "measuredSampleRSSKiB": 2404464
+    },
+    {
+      "path": "research/DGamma/CP5O20CanonicalPairedExtractionSpike.idr",
+      "sourceHash": "947c8fb7c2aba9cd88966051812042bb976d0003b6f1e97a35dc62e81c474c04",
+      "measuredSeconds": 3.130647333804518,
+      "measuredSampleRSSKiB": 2887040
+    },
+    {
+      "path": "research/DGamma/CP5O20PairedRemovalSpike.idr",
+      "sourceHash": "dd56deb5581b70101d86a698f0c1daecd6e071a9339a3b58150410378ff1734c",
+      "measuredSeconds": 2.0900514172390103,
+      "measuredSampleRSSKiB": 294448
+    },
+    {
+      "path": "research-tests/DGamma/R192RemovedBirthCurrentNameProbe.idr",
+      "sourceHash": "bf604f6695e9eda4f450dc05be35fbc2de7c53a8c04e0357b088c1f6888883f6",
+      "measuredSeconds": 12.500785207841545,
+      "measuredSampleRSSKiB": 1890160
+    },
+    {
+      "path": "research/DGamma/CP5O19CartesianLengthSpike.idr",
+      "sourceHash": "c4777415986740c0cc980650162ff2a657d9490d116499971dd6f1191146af4f",
+      "measuredSeconds": 3.1377952499315143,
+      "measuredSampleRSSKiB": 2884752
+    },
+    {
+      "path": "research/DGamma/CP5O19OriginalBlockClassSpike.idr",
+      "sourceHash": "bd28de8e4dafdd7a8e423d29ba136b8cbdd9b2fdb0f6249223a5b2629882645a",
+      "measuredSeconds": 3.14836945803836,
+      "measuredSampleRSSKiB": 4265200
+    },
+    {
+      "path": "research/DGamma/CP5O20HistoryNameTransportSpike.idr",
+      "sourceHash": "97cc59805856ae14c2727b3c869c6beb551ed24f2edd5bb25c07b03836fca30f",
+      "measuredSeconds": 3.135167666245252,
+      "measuredSampleRSSKiB": 2938576
+    },
+    {
+      "path": "research-tests/DGamma/R193HistoryNameTransportPositive.idr",
+      "sourceHash": "7ed322e1f411444b392f3c6a872dc411116b56b713b8b458e623f39edf4fd874",
+      "measuredSeconds": 2.0995549163781106,
+      "measuredSampleRSSKiB": 2459136
+    },
+    {
+      "path": "research-tests/DGamma/R193VestigialHistoryTransportPositive.idr",
+      "sourceHash": "ffa274f1b704b1fd214d63b953d6289cdd1bb323e7343e7510e4f3cb94786080",
+      "measuredSeconds": 3.119552541989833,
+      "measuredSampleRSSKiB": 4314528
+    },
+    {
+      "path": "research/DGamma/CP5O19CartesianWordRowSpike.idr",
+      "sourceHash": "ba318753411a59cbdf251401cd5482f06f3a2a074469b2ff2391e3616076b6b3",
+      "measuredSeconds": 5.1931859171018,
+      "measuredSampleRSSKiB": 3012384
+    },
+    {
+      "path": "research/DGamma/CP5O19PaperBranchCompletenessSpike.idr",
+      "sourceHash": "e19ba0492ac93363ca8964021b3dfb9046641883890f8e0b7f014a0b88f5eb58",
+      "measuredSeconds": 4.192895874846727,
+      "measuredSampleRSSKiB": 4261568
+    },
+    {
+      "path": "research/DGamma/CP5O20EndpointRebaseBoundarySpike.idr",
+      "sourceHash": "a33194709140d8ede3acf264e65a54d7c6d8b91d8c5eff113221b5ef1559c4ec",
+      "measuredSeconds": 3.1347360000945628,
+      "measuredSampleRSSKiB": 3020384
+    },
+    {
+      "path": "research/DGamma/CP5O20HistoryExecutionSpike.idr",
+      "sourceHash": "ab202644aea79d9eb4c96b3d1a765dafeef30221c53a0f3a12e2b53d0bb5328d",
+      "measuredSeconds": 3.1394303338602185,
+      "measuredSampleRSSKiB": 2344576
+    },
+    {
+      "path": "research-tests/DGamma/R195ClosingHistoryRetentionPositive.idr",
+      "sourceHash": "9a59d7a42e73257024bac9b784773e5dd8c21d58f16d5e0acffb90197506f36a",
+      "measuredSeconds": 2.081449208781123,
+      "measuredSampleRSSKiB": 2223280
+    },
+    {
+      "path": "research-tests/DGamma/R195EndpointRebaseBoundaryPositive.idr",
+      "sourceHash": "831eb3e4ccd8528945ed68cef9aa42c2351501c358c7e5167f4e42d01d2474ee",
+      "measuredSeconds": 2.105401874985546,
+      "measuredSampleRSSKiB": 2464736
+    },
+    {
+      "path": "research/DGamma/CP5O19CartesianColumnsSpike.idr",
+      "sourceHash": "68a586fa59d9103bd19902fe676f0f5bcd2daef8728163134ee03a9c004574c2",
+      "measuredSeconds": 8.326614667195827,
+      "measuredSampleRSSKiB": 2903840
+    },
+    {
+      "path": "research/DGamma/CP5O20ActualHistoryAdvanceSpike.idr",
+      "sourceHash": "e6e951d72f5df5d6c495797ed0c905a86282de955e85e78d89dcf6e5ce623a68",
+      "measuredSeconds": 3.12286675022915,
+      "measuredSampleRSSKiB": 743456
+    },
+    {
+      "path": "research/DGamma/CP5O19ActualCartesianSpike.idr",
+      "sourceHash": "f4461949739257d30d103bc30abdc7c756291cd5625126fe55764dc68536e863",
+      "measuredSeconds": 4.192255959380418,
+      "measuredSampleRSSKiB": 3012800
+    },
+    {
+      "path": "research/DGamma/CP5O19WholeBlockSpike.idr",
+      "sourceHash": "434bfe16afc9703a4309c28823a25313b8bad0bc4ffa0ffe5e4281c8bccfae2a",
+      "measuredSeconds": 3.1375217912718654,
+      "measuredSampleRSSKiB": 2873232
+    },
+    {
+      "path": "research/DGamma/CP5O19SameChainAssemblySpike.idr",
+      "sourceHash": "21d35a598e82475b86212dacba8603853807c7c1ce12e02147c9190be861ba9e",
+      "measuredSeconds": 3.113350708037615,
+      "measuredSampleRSSKiB": 2877840
+    },
+    {
+      "path": "research/DGamma/CP5O19ReachedBlocksSpike.idr",
+      "sourceHash": "c08eaaecb907453078cc51f3e5467b7ed5f505cfea2f56ac868674f3cce3dab5",
+      "measuredSeconds": 225.28352000005543,
+      "measuredSampleRSSKiB": 4472128
+    },
+    {
+      "path": "research/DGamma/CP5O19ReachedDecompositionSpike.idr",
+      "sourceHash": "0225f751cada40b3cae91466ae968ce77a0608dba3981e8e53ce7b509854673a",
+      "measuredSeconds": 3.1369811668992043,
+      "measuredSampleRSSKiB": 2548800
+    },
+    {
+      "path": "research/DGamma/CP5O19OperationalAssemblySpike.idr",
+      "sourceHash": "04d8d73abdb595ade4c62ef4d05a5804993100ebbe34b12ce35219447b424163",
+      "measuredSeconds": 3.115487167146057,
+      "measuredSampleRSSKiB": 2947472
+    },
+    {
+      "path": "research/DGamma/CP5O20CanonicalActionCompletenessSpike.idr",
+      "sourceHash": "85da29a33779216f7139b021814b19e2d3fded170ee98dac75c1bd8c21064b9e",
+      "measuredSeconds": 3.1331015420146286,
+      "measuredSampleRSSKiB": 2569664
+    },
+    {
+      "path": "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
+      "sourceHash": "666d18626e49cbb0d6ac2f7624fe9f6b3519d539dbb574670f420bacd9fc69bb",
+      "measuredSeconds": 4.176305250264704,
+      "measuredSampleRSSKiB": 3008784
+    },
+    {
+      "path": "research-tests/DGamma/R16EndpointControlsImpossibilityPositive.idr",
+      "sourceHash": "265f280458f3556074634c6d6b3ea2023bd00b259320ece83ba368a52a690d7d",
+      "measuredSeconds": 3.1390102496370673,
+      "measuredSampleRSSKiB": 3008080
+    },
+    {
+      "path": "research-tests/DGamma/R178WrongGenerationMatchingNegative.idr",
+      "sourceHash": "279dcbdf318c96e4db87e55e6a7386062e83c644adb50454fd20c45de9da2c76",
+      "measuredSeconds": 1.064848667010665,
+      "measuredSampleRSSKiB": 0
+    },
+    {
+      "path": "research-tests/DGamma/R181O19BundlePrerequisites.idr",
+      "sourceHash": "f50b7a6b2fb8d89e5b1f5ce7fcb3d6661510f8c57aa3c886ffcaa9570bdda8ee",
+      "measuredSeconds": 68.6246297499165,
+      "measuredSampleRSSKiB": 7215744
+    },
+    {
+      "path": "research-tests/DGamma/R6MixedScheduleNegative.idr",
+      "sourceHash": "a60281516ef822e049902ad41a5d592fdbe987394a510a470548d58d881cae9a",
+      "measuredSeconds": 1.0539562082849443,
+      "measuredSampleRSSKiB": 0
+    },
+    {
+      "path": "research-tests/DGamma/R6OuterSchedulesPositive.idr",
+      "sourceHash": "4249828c58bf3f69f9aabd36761481b916e01bdf69bf25dcdaa993599f11dffc",
+      "measuredSeconds": 2.08356074988842,
+      "measuredSampleRSSKiB": 2939152
+    },
+    {
+      "path": "research-tests/DGamma/R8FullPipeline.idr",
+      "sourceHash": "7583af47a1b91494f1b08858f0951792cf987ea3456146c25b0dc06800a28519",
+      "measuredSeconds": 99.7328976248391,
+      "measuredSampleRSSKiB": 40218064
+    },
+    {
+      "path": "research-tests/DGamma/R8WrongTraceBridgeNegative.idr",
+      "sourceHash": "b8b535d2b83971994e36d29f70eee7b38a37242b8b651e421023cb8d2df8a2a0",
+      "measuredSeconds": 1.0585607918910682,
+      "measuredSampleRSSKiB": 0
+    },
+    {
+      "path": "research/DGamma/CP5O20RootReplayLawProducerSpike.idr",
+      "sourceHash": "9ab8009be9ec23e3fd25ca4ad08f64c8d11a9eca06098b715895ed0dfe43a394",
+      "measuredSeconds": 3.1250291662290692,
+      "measuredSampleRSSKiB": 3059840
+    },
+    {
+      "path": "research/DGamma/CP5O20SafeBlockSelectionSpike.idr",
+      "sourceHash": "a1d77431b19b6734bb15c6f095bdc073d2953327cc9c1e88e7d0bc2a33266f3f",
+      "measuredSeconds": 10.374971250072122,
+      "measuredSampleRSSKiB": 4255584
+    },
+    {
+      "path": "research/DGamma/CP5UniqueRawNameCanonicalCapital.idr",
+      "sourceHash": "78aab87219d33aed1485ccd95c9a4d213704b542dbd7e549a7226b1381cb5559",
+      "measuredSeconds": 3.1186625831760466,
+      "measuredSampleRSSKiB": 2737472
+    },
+    {
+      "path": "research-tests/DGamma/R16ConfluenceTheoremAssemblyPositive.idr",
+      "sourceHash": "a023cef7449b651b5fbf8a488403a7c025f270e68baefd68275c25c65ea4bfa0",
+      "measuredSeconds": 2.0806919587776065,
+      "measuredSampleRSSKiB": 1045840
+    },
+    {
+      "path": "research-tests/DGamma/R182O19RevisedSafetyNegative.idr",
+      "sourceHash": "a78c28f3fe7a1b29900c6b3d0522f9a0c8e1476169867e964818b6a697d22e54",
+      "measuredSeconds": 3.1250773747451603,
+      "measuredSampleRSSKiB": 4684240
+    },
+    {
+      "path": "research/DGamma/CP5O20LinearExtensionSpike.idr",
+      "sourceHash": "9fe05758dae553bd0f7be5633007e3e0c8b520d4b8c5a7649372c19a1138d7cc",
+      "measuredSeconds": 3.125051375012845,
+      "measuredSampleRSSKiB": 2894784
+    },
+    {
+      "path": "research-tests/DGamma/R182O19RevisedSafetyPositive.idr",
+      "sourceHash": "a49817fc2666c8cef04fbff3c059ecfd421da3424c5ed20be010d9e132ff301f",
+      "measuredSeconds": 17.63465354219079,
+      "measuredSampleRSSKiB": 2810832
+    },
+    {
+      "path": "research/DGamma/CP5O20BlockMeasureSpike.idr",
+      "sourceHash": "868ccd417293ef6672ac9b11c913aa1b06efb07e287b5a085378372aa3e1714e",
+      "measuredSeconds": 3.1425803750753403,
+      "measuredSampleRSSKiB": 2958240
+    },
+    {
+      "path": "research/DGamma/CP5O20SupportedReferenceSpike.idr",
+      "sourceHash": "03a342e661c92658fc60ae28da49203063db74aaa3e5dc4df80b23701b7aad42",
+      "measuredSeconds": 3.123758291825652,
+      "measuredSampleRSSKiB": 2331776
+    },
+    {
+      "path": "research-tests/DGamma/R182O19ActualCrossingPositive.idr",
+      "sourceHash": "aaf2979e131a7d8c4a56f9368a0caea3245ddb5bf792d253c1800a2c9e82d40c",
+      "measuredSeconds": 177.48212358308956,
+      "measuredSampleRSSKiB": 8512256
+    },
+    {
+      "path": "research-tests/DGamma/R191CanonicalChildRetirementGap.idr",
+      "sourceHash": "316518f801b9e1067e483b2bc59717c4ce9a2acd35087d194220b64fbf5f5b06",
+      "measuredSeconds": 5.206917209085077,
+      "measuredSampleRSSKiB": 4404448
+    },
+    {
+      "path": "research/DGamma/CP5O20OperationalProgressSpike.idr",
+      "sourceHash": "82cbd1b7dbfa5a2d28a3fd77682a59171a30c552f5bac1341bf5c7c7cb5de2ff",
+      "measuredSeconds": 3.1482984158210456,
+      "measuredSampleRSSKiB": 2668208
+    },
+    {
+      "path": "research/DGamma/CP5O20SelectorResolverFrameSpike.idr",
+      "sourceHash": "d530fb03ec5bd27977fd7f6331e645d58e2ddbdff84a921df87b0979200280f8",
+      "measuredSeconds": 3.1466707503423095,
+      "measuredSampleRSSKiB": 2984320
+    },
+    {
+      "path": "research-tests/DGamma/R182O19SecondCrossingPositive.idr",
+      "sourceHash": "4b5a8bd07b4bb72b6a293ee8253c7a627c18365cec7f78131b3fc1ccd222be2e",
+      "measuredSeconds": 3.112055125180632,
+      "measuredSampleRSSKiB": 4564432
+    },
+    {
+      "path": "research-tests/DGamma/R192ExtendedChildBlockProbe.idr",
+      "sourceHash": "4b0ff1f9ad16b3031440e57f683eb3e7e5095b4a4191b6db97a0a1067dde4a6b",
+      "measuredSeconds": 3.1419934583827853,
+      "measuredSampleRSSKiB": 3669088
+    },
+    {
+      "path": "research/DGamma/CP5O20BlockResolverFrameSpike.idr",
+      "sourceHash": "0039c30f35235e6d13eb62a36d1451752838c416c31ae51716d905e1b6ff8276",
+      "measuredSeconds": 3.136045124847442,
+      "measuredSampleRSSKiB": 2889744
+    },
+    {
+      "path": "research/DGamma/CP5O20OperationalDescentSpike.idr",
+      "sourceHash": "e8569aa5bdd3af9b4e486dc75476891df18b25b67673080a54e79c948f904907",
+      "measuredSeconds": 3.1225640000775456,
+      "measuredSampleRSSKiB": 1033568
+    },
+    {
+      "path": "research-tests/DGamma/R182O19RemainingCrossingFacts.idr",
+      "sourceHash": "8e8c9cbfd1b9b23fe0f06a6c83394833503db795b9c5eb454d8654b98db50e6d",
+      "measuredSeconds": 4.170629959087819,
+      "measuredSampleRSSKiB": 4551216
+    },
+    {
+      "path": "research-tests/DGamma/R193InstalledBlockResolverPositive.idr",
+      "sourceHash": "e2979e5f087f37d4682d8e88ae2547e74db20cd27e7a902c410b376011383374",
+      "measuredSeconds": 13.495742500294,
+      "measuredSampleRSSKiB": 2144608
+    },
+    {
+      "path": "research/DGamma/CP5O20ReferenceDescentSpike.idr",
+      "sourceHash": "ed709dfc3f80f018433cc820d8d624a9039148c790a9c562251404a7826d7037",
+      "measuredSeconds": 3.1206655842252076,
+      "measuredSampleRSSKiB": 1698032
+    },
+    {
+      "path": "research/DGamma/CP5O20SelectionCompletenessSpike.idr",
+      "sourceHash": "0142151162552a06a25fc3bb90437c666e8bd1bbe3c7be24a629937d9d30f2e3",
+      "measuredSeconds": 4.178450583014637,
+      "measuredSampleRSSKiB": 3006544
+    },
+    {
+      "path": "research-tests/DGamma/R182O19ThirdCrossingConstruction.idr",
+      "sourceHash": "2b8061e171c818e1117078199b37e5f8e98a965cefe056f3861b99d68c0a6556",
+      "measuredSeconds": 8.312335166148841,
+      "measuredSampleRSSKiB": 4557184
+    },
+    {
+      "path": "research-tests/DGamma/R193CandidateEnumerationPositive.idr",
+      "sourceHash": "a558d70bdaab3ead135c9e02b496dcc383ec498757605c93ba091f5934a9d6b3",
+      "measuredSeconds": 2.0997703331522644,
+      "measuredSampleRSSKiB": 3965216
+    },
+    {
+      "path": "research/DGamma/CP5O20FiniteInversionSpike.idr",
+      "sourceHash": "ab10772adf34d8968086fba73732ec29bfa4943ecfa9ac667c4741564abd57c8",
+      "measuredSeconds": 3.146649083122611,
+      "measuredSampleRSSKiB": 2713760
+    },
+    {
+      "path": "research/DGamma/CP5O20InversionChildSafetySpike.idr",
+      "sourceHash": "1cd98e908f0328d60ba1db1be243f7e6d2f26e4efcf7b538fd548e4c7adbda10",
+      "measuredSeconds": 3.1386105832643807,
+      "measuredSampleRSSKiB": 2820064
+    },
+    {
+      "path": "research-tests/DGamma/R182O19ThirdCrossingPositive.idr",
+      "sourceHash": "d6ad60c9f2528c665185a1f86c945245392a7bdeffd9af1e41f1fece13c50ac2",
+      "measuredSeconds": 16.638052459340543,
+      "measuredSampleRSSKiB": 6136080
+    },
+    {
+      "path": "research/DGamma/CP5O20OwnCutSafetySpike.idr",
+      "sourceHash": "2a69531b2171beba161f006c2d57b7cfb7d4607cf3f169d2022df14fe9530cd4",
+      "measuredSeconds": 11.439452584367245,
+      "measuredSampleRSSKiB": 2926512
+    },
+    {
+      "path": "research-tests/DGamma/R182O19FourthCrossingFacts.idr",
+      "sourceHash": "a31711c68efefef45c55fd6a9e7af0e16a21ebee1aa4672fb8ed1579ffe88b5e",
+      "measuredSeconds": 4.146586791146547,
+      "measuredSampleRSSKiB": 3930048
+    },
+    {
+      "path": "research-tests/DGamma/R182O19FourthCrossingConstruction.idr",
+      "sourceHash": "4cf75f53ac1b9844f28dfc76032d14bcecc3444e04d2927186a75b02f52f26ef",
+      "measuredSeconds": 39.514606666751206,
+      "measuredSampleRSSKiB": 5516928
+    },
+    {
+      "path": "research-tests/DGamma/R182O19FourCrossingsPositive.idr",
+      "sourceHash": "ead634d2e10fe4a21a9ba505c2f9c2abc5ae4a640e40eac45f97d116349afb4e",
+      "measuredSeconds": 116.23296579206362,
+      "measuredSampleRSSKiB": 17793424
+    },
+    {
+      "path": "research-tests/DGamma/R182O19AllFourCrossingsPositive.idr",
+      "sourceHash": "1fd0c49cfeb33b053221efa3be78986740ec2b6bfb61dff34901babbe249cb22",
+      "measuredSeconds": 28.047335291747004,
+      "measuredSampleRSSKiB": 8600672
+    }
+  ],
+  "unit": "C3",
+  "invocation": "C3-1",
+  "ownerRuling": "APPROVED \u2014 exact defining-module proof-helper exception: add the opaque `export` erased helper `deletionBuiltRootOrdinalPreserved` in DeletionChain immediately after deletionStepOperationalOccurrenceFoldSpike and before DeletionChainStep, signature = the exact root equation for that actual builder, body ONLY `deletionProducerRootOrdinalPreserved capital occurrence` (unfolds the private action origin in its defining module; no visibility keyword change on private functions, no premise, no oracle). This is the visibility doctrine's \"research proof helper export\" case. DeletionChain 7fadaf6b\u2026 \u2192 91e8fd29\u2026 becomes the new frozen DeletionChain baseline once the helper check PASSES and is committed (48 GiB, its own peak 4.6 GiB). SECOND CONTINUOUS WINDOW approved: acquire the heavy lock + write the window file (expectedEnd \u2264 07:19:35Z; note \"DeletionChain helper rebuild; lane 2 light only\"), helper first, then the 126 dependency-first direct checks + seeded package; LocalDiamond and B6 correctly excluded (unaffected); append a separate hash-pinned recheck plan, original B records preserved. Then C2-2 (wrap the raw law in O20RootReplayOrdinals), then the exactness field/induction consumer. If time runs short, the window has priority over C2 (a consistent tree first); gate honestly at the boundary reached."
+}

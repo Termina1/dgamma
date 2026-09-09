@@ -39,8 +39,20 @@ assert sha(amendment_before.encode())==amendment['beforeSHA256']
 amendment_after=contract.apply_manifest_diff(amendment_before,amendment['diff'])
 assert sha(amendment_after.encode())==amendment['afterSHA256']=='7fadaf6b3e71030290813393d8954afee0da79ec93b293fcfcd977deb4562578'
 possible[amendment['path']].append(amendment['afterSHA256'])
+helper=json.loads((ROOT/'research-tests/O6-R196-C3-DELETION-HELPER-MANIFEST.json').read_text())
+assert helper['beforeSHA256']==amendment['afterSHA256']
+helper_after=contract.apply_manifest_diff(amendment_after,helper['diff'])
+assert sha(helper_after.encode())==helper['afterSHA256']=='91e8fd290cc4fedae9656ce5b4ae3ea0b38509f6e0250f51b4a7aa2aea09067b'
+possible[helper['path']].append(helper['afterSHA256'])
 contract_states={p:sha((ROOT/p).read_bytes()) for p in possible}
 assert all(contract_states[p] in possible[p] for p in possible)
+latest_checked={}
+for receipt in [json.loads(s) for s in (OUT/'commit-receipts.jsonl').read_text().splitlines()]:
+    if receipt['event']=='GUARDED COMMIT':
+        record=json.loads((OUT/(receipt['invocation']+'.json')).read_text())
+        latest_checked[record['path']]=receipt['sourceHash']
+for path in possible:
+    if path in latest_checked:assert contract_states[path]==latest_checked[path], 'Not the latest guarded frozen baseline: '+path
 parts=['CanonicalSort','CrossTrace','DeletionChain','LocalDiamond','RenamingComposition']
 paths={p:'research/DGamma/CP5Confluence'+p+'Spike.idr' for p in parts}
 for p in ['CanonicalSort','CrossTrace','RenamingComposition']:

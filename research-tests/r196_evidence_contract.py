@@ -41,6 +41,15 @@ def validate_record(record, source, log, root):
             assert record.get('symbol') and record['symbol'] in log
         else: assert record['exit']==0 and 'Error:' not in log
 
+def validate_import_closed(included, module_paths, read_source):
+    """Reject filtering an invalidated import out of an otherwise sorted plan."""
+    for path in included:
+        if path=='package': continue
+        imports=re.findall(r'^import\s+(?:public\s+)?([\w.]+)',read_source(path),re.M)
+        for module in imports:
+            if module in module_paths:
+                assert module_paths[module] in included, (path,module_paths[module])
+
 def validate_topology(plan, done):
     seen=set(done)
     for item in plan:

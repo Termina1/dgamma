@@ -3756,3 +3756,81 @@ Checked:42 source receipts,65/65 final expected validations,112 total records,
 Owner final gate ratifiedd7b2fc98. Next is parent-owned independent review and
 R196's explicit per-helper root-contract/resource gate, not an R195 extension.
 Standing down cleanly after this note; independent reviewer acceptance unclaimed.
+
+
+## Status — R196 checked root-contract and actual root-law milestone
+
+Source freeze1fd9bbcb60bfb3168ebc001d33d908377268fbd2. Research-only; production
+src/ + dgamma.ipkg remain byte-identical to34b21c9, CP3 blob
+2c697e532e83989de8591fa6a4378747c6a501c0. No new hole, unsafe escape, postulate,
+partial function, scoped-to-raw cast or frozen deletionTheoremProof call.
+
+**Fully proved:** both exact R195 proposed erased storing contracts and their
+ACTUAL producer fills. `adjacentOriginRootOrdinal` uses the existing all-action
+ordinal relation at the same origin. Deletion uses the same ordinal segments
+and spine witness. R19's empty root domain is discharged by its actual two
+Advance occurrences. The additional owner-gated opaque erased helper
+`deletionBuiltRootOrdinalPreserved` unfolds only the private action origin in
+its defining module and projects the same stored capital's root law.
+
+The new CP5O20RootReplayLawProducerSpike proves root laws for actual finite
+adjacent derivations, built/exact stored deletion correspondences, the whole
+deletion derivation, the EXACT `canonicalOccurrenceCorrespondence capital`,
+actual operational permutations and their canonical composition. The final
+`o20PermutedCanonicalRootReplayOrdinals` attaches the law to the literal
+composition of `canonicalOccurrenceCorrespondence leftCapital` with
+`permutationOccurrenceCorrespondence execution`. No new root-law hypothesis or
+freely supplied occurrence map enters these consumers. The generic ARRC record
+is unchanged; r195ReplayRecordDoesNotOwnRootLaw remains a checked necessity
+witness, not a protected-convergence counterexample.
+
+**Still partial/open:** whole accepted paired-stage/history extraction, actual
+root/opposite occurrence pairing, canonical vestigial/opposite-image absence,
+all-name endpoint rebasing under the expected/current bijection, the D5 bridge
+and O21 assembly. No whole paired-stage fold or bridge/body attempt occurred:
+C's ten invocation slots were used by the root-law chain, including its one
+private-definition rejection and the required defining-module helper check.
+R195's generation-only history disposition is available for that NEXT fold;
+root laws do not themselves produce paired stages or an all-name cut.
+Census remains4=1/2/0/0/1, with all four inherited hole statements unchanged.
+
+**New frozen baselines:** LocalDiamond
+9f9216170853624cff30449696f2540da0ed48e0b42504533aa587cb70dfc037;
+DeletionChain91e8fd290cc4fedae9656ce5b4ae3ea0b38509f6e0250f51b4a7aa2aea09067b
+(the earlier successful A4-only7fadaf6b baseline is superseded by the separately
+approved C3 helper). Every other byte is protected by the exact execution,
+syntax-amendment and C3 helper manifests. O19 closed declaration/body1286B SHA
+cbd0954303c35141af0309e515bdb9e98e988e7c23be70b9764d8c1ce18fd396 unchanged;
+adjacent1470B SHA2d01486bf953f11191b758ac3cfb5722d1d02b1a192b6e552adc8a3f58199ecf
+and1154B statement SHA3aae5a9fbc5b14e0411b4a91e557a6f3dc68c9a6282b9ec2b3fc658cec337adf
+unchanged. A11's R192 manifest and all other protected source bodies stay frozen.
+
+**Evidence/protocol:** Unit A:5 native invocations=4PASS/1 parser rejection;
+Unit C:10=9PASS/1 private-definition rejection. Thirteen immediate guarded source commits.
+B's corrected import-closed133/133 acceptance slots and the second helper
+window127/127 slots PASS. Together with A these cover all inherited65 targets,
+the five spikes, R8/R16, ReachedBlocks, both all-four fixtures and two
+seeded207/207 package checks. Original B1 is separately REJECTED because it also built an excluded
+R45 prerequisite: a planning/one-source contract defect, not a resource stop.
+Its same-hash B1R1 follows a direct R45 check under the explicit owner ruling.
+Total276 native invocations=273 expected PASS/3 preserved rejections, no RSS
+stop, source mutation or interruption. Eighteen noncompiler evidence tests PASS.
+Both continuous windows were released; C consumers used per-check shared locks.
+No lane2 compiler was killed and no lane worktree was entered/edited/built.
+
+The refreshed O6-R196-ROOT-CONTRACT-COSTS.json covers the inherited244 inventory
+entries plus the newly added root consumer.100 unclassified fixtures and11
+legacy R11 targets remain stale/not re-checked by explicit path; no245-PASS
+claim. Samples are not OS high-water; zero means no captured live sample.
+B6 CP5UniqueRawNameOrdinalCapital newly measured44,790,080KiB (~42.715GiB),
+so a future repeat needs its OWN >40GiB resource gate. LocalDiamond's approved
+52GiB checks peaked50,611,312KiB; all other checks stayed48GiB. No blanket52GiB
+exception and no from-scratch rebuild or seed deletion.
+
+**Later-shift lane2 candidate only:** "observed retired-head guard at the source".
+This owner-supplied lifecycle-replay note is recorded for later main-lane work;
+R196 did not implement it or certify lane2's ongoing results. Only unchanged
+inherited MAIN variant modules were validated. Next: use the now-owned root
+laws with actual original root correspondence and R195's generation-only
+history to build real paired stages, then resolve the canonical all-name cut.
+Owner final gate and parent-owned independent reviewer remain pending here.

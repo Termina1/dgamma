@@ -102,11 +102,121 @@ census4=1/2/0/0/1 and207/207 seeded TTCs retained. This is NOT yet a fresh packa
 PASS. Five A invocations=4PASS/1 parser rejection,0 interruption/mutation/resource
 stop, four immediate source receipts. D2 records amendment/A outcomes and guards.
 
+## Unit B topology-contract stop and approved import-closed continuation
+
+Original B1 at04:17:02Z returned exit0/own Building in5.183s, sample795,120KiB,
+but correctly FAILED the runner's one-source contract: it additionally built
+R45BareDiamondDisciplineCounterexamplePositive. This is a topology-contract
+stop, NOT a resource stop; resourceStopped/interrupted/mutation are all false.
+No B2 followed in that original batch. The planner had filtered unclassified
+fixtures before taking import closure; this was our planning defect. Original
+plan and B1 source/log/JSON remain unmodified; B1 is never relabelled PASS.
+
+Owner ACK approved an append-only import-closed continuation with13 mandatory
+positive imported fixture dependencies, one same-hash B1R1 retry and the original
+unrun slots dependency-first. It is O6-R196-DEPENDENT-RECHECK-CONTINUATION.json,
+SHAbcbc36528127e2291cc90bf37c86259a038499652646891dc1cbf1cbe08d6e7d. New applicable
+scope135 source modules+package,133 B acceptance slots;100 unclassified+11legacy
+remain stale/notchecked by explicit path. The13 additions include a constructive
+RevisedSafetyNegative module actually imported by the positive all-four fixture;
+it is not an expected compiler-failure target. Preflight records actual import
+edges, source hashes and no holes/unsafe/partial; all13 direct costs UNKNOWN and
+all checks48GiB under the same continuous window.
+
+Before the first continuation compiler,16 noncompiler tests PASS, INCLUDING an
+original-plan closure rejection and full corrected-plan import closure/topology
+PASS. The continuation runner requires that exact successful test receipt and
+plan hash. BD13 directly checked R45 PASS4.147s; B1R1 then PASS1.044s at the same
+pinned source. Both have ONLY their own Building line. Other targets proceed
+serially; no final completion claim at this entry.
+
+New measured cost: B6 CP5UniqueRawNameOrdinalCapital (47 source lines) fresh
+PASS300.121s, sampled44,790,080KiB (~42.715GiB) under48GiB. It was UNKNOWN in
+R195; source size is not a reliable cost estimate. This >40GiB measurement must
+be included in future per-target resource gates; no repeat is planned here.
+
+## Unit B complete; C privacy boundary and second reserved rebuild
+
+B133/133 continuation acceptance slots completed04:50:27Z (package16.668s).
+The original B1 remains rejected;133/244 inventoried entries and two inherited
+main baseline modules were rechecked, plus the package. All135 applicable source
+paths had current-hash direct checks. First continuous window released after
+its frozen/independent audits. No new C source existed before B completed.
+
+C1 actual finite-adjacent root law PASS/committed2172eef5. C2-1 direct deletion
+projection FAILED2.087s at the private action-origin alias: the stored field's
+whole-source expression cannot convert to deletionProducerActionOrigin in an
+importer. This is a privacy/elaboration boundary, NOT a false root law or RSS
+stop. The failed declaration was fully reverted to C1 before requesting a gate.
+No exhausted3/3 statement or unapproved source revision occurred.
+
+Owner separately approved exactly the opaque erased exported proof helper
+`deletionBuiltRootOrdinalPreserved` in the defining DeletionChain module, after
+the existing operational occurrence builder and before DeletionChainStep. Its
+body ONLY projects the same stored capital's root law; the private action-origin
+unfolding happens there. No private function keyword changed, no root premise
+or oracle was added. C3-1 fresh PASS77.924s/4,976,464KiB at48GiB, immediate
+commit30bd2a68. New final frozen DeletionChain SHA:
+`91e8fd290cc4fedae9656ce5b4ae3ea0b38509f6e0250f51b4a7aa2aea09067b`.
+Exact35-line exception and verbatim ruling are in
+O6-R196-C3-DELETION-HELPER-MANIFEST.json,
+SHA93ef4450009443c19cef8791b8ee6a91cd920da582d4f6f308df7e5f1b4c611a.
+
+The owner reserved a SECOND continuous heavy window with note
+"DeletionChain helper rebuild; lane 2 light only". The separate hash-pinned
+O6-R196-SECOND-WINDOW-PLAN.json,
+SHA062d5797604fbc3c232c42992b9e100ceb0619060e66bccbdbc83fa0dd364382,
+checks the126 affected source dependencies plus package after C3. LocalDiamond
+and B6 are unaffected and NOT rerun. All have measured costs below40GiB, so48GiB
+throughout. W127/127 expected outcomes completed; package16.583s. Second-window
+frozen/independent audits PASS; release requested05:26:32Z. Only then C2 retried.
+Both original B plans/records and both window logs remain append-only evidence.
+
+## Unit C root consumers complete to cap; whole pairing NOT claimed
+
+| Unit | Result | Guarded commit | Exact boundary |
+|---|---|---|---|
+| C1 | PASS1 |2172eef5|finite adjacent root law from actual enriched folds|
+| C2 | rejection1 / PASS2 |a3aec4f9|actual deletion builder root-law wrapper|
+| C3 | PASS1 |30bd2a68|owner-gated defining-module raw root proof|
+| C4 | PASS1 |530d759a|stored deletion correspondence's OWN exactness field|
+| C5 | PASS1 |eec98e47|whole actual deletion derivation identity/composition|
+| C6 | PASS1 |94a1268f|EXACT canonicalOccurrenceCorrespondence capital|
+| C7 | PASS1 |06e9c24c|actual operational permutation's finite block folds|
+| C8 | PASS1 |cc86171f|same canonical trace followed by actual operational replay|
+| C9 | PASS1 |1fd9bbcb|literal canonicalOccurrenceCorrespondence + permutationOccurrenceCorrespondence execution|
+
+C6 has EXACTLY `O20RootReplayOrdinals … (canonicalOccurrenceCorrespondence capital)`;
+C9 has that record for the literal composed convergence-facing occurrence map.
+All root laws are outputs from actual producer-owned capital, not hypotheses
+added to a protected consumer. Generic ARRC remains unchanged and R195's root
+necessity fixture freshly typechecks in both applicable validation windows.
+All four protected hole statements and all other frozen bodies are untouched.
+
+C source cap10 invocations=9PASS/1 preserved privacy rejection, nine immediate
+source receipts. No slots remain for the first whole paired-stage fold, which
+was NOT attempted. A full original-to-canonical/root-opposite occurrence pairing,
+whole accepted paired history, canonical vestigial/opposite-image absence,
+all-name endpoint cut and D5 bridge remain separate obligations. No O17/O21 or
+bridge/body attempt, freely supplied all-root oracle, postulate or new hole.
+Source freeze1fd9bbcb60bfb3168ebc001d33d908377268fbd2.
+
 ## Status
 
-A1/A2/A4/A3/A5 complete. Serialized B window is next; C has ZERO invocations and
-remains ineligible until B completes. No new convergence, canonical root consumer,
-whole paired fold, canonical all-name cut or bridge completion is claimed. The
-R195 necessity witness remains required: generic ActionRegistrationReplayCorrespondence
-still does not own an all-root law. Both ACTUAL storing producer contracts are
-now strengthened instead of assuming that false generic extraction.
+Checked PARTIAL overall: A contract execution complete; B133/133 and extra
+W127/127 complete; C root consumers complete to its10-invocation cap; whole
+paired-stage fold and endpoint bridge open. Total276 native invocations=
+273 expected PASS/3 preserved rejections, thirteen guarded source commits.
+No resource stop, mutation, interruption, cold build or seed deletion. The
+initial B1 extra Building is explicitly the sole one-source contract violation,
+caught/rejected and cured by the owner-approved import-closed continuation.
+Eighteen noncompiler evidence regressions PASS. Measurements are one-second
+samples, not OS high-water; zeros mean no live sample captured.
+
+D3 synchronizes NOTES/THM73-PLAN/README, the new frozen baselines, refreshed
+inherited244-entry inventory plus one new consumer, per-module measurements,
+compiler ledger/archive and independent verification.100 unclassified+11legacy
+paths remain explicitly stale/notchecked. Lane2 lifecycle-replay note is ONLY
+a future main candidate: "observed retired-head guard at the source". No lane2
+new-result certification or worktree/source operation. D1/D2 used; D4 reserved
+for the owner gate note. Owner final gate and parent-owned reviewer pending.

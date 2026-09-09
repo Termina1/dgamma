@@ -3774,3 +3774,36 @@ pairing/history fold and exact current-map endpoint/bridge/remainder debts
 remain. No widened52GiB exception; per-helper classification is mandatory.
 Independent reviewer is parent-owned/launched/pending; acceptance is not claimed.
 Archive remains at its documented pre-publication anchor; D4 unused.
+
+
+## R196 — root contracts and exact consumers checked; whole pairing next
+
+Source1fd9bbcb. Execute A complete (one explicit syntax amendment), B133/133
+import-closed validation complete, owner-approved defining-module C3 helper
+and its second127/127 rebuild complete, C10 invocation cap reached with9
+retained declarations and one preserved privacy rejection. No whole paired
+fold, canonical endpoint cut or protected body was attempted.
+
+Producer-owned root laws now reach the EXACT canonical correspondence and
+EXACT canonical-plus-permutation occurrence composition, through each stored
+adjacent/deletion boundary. See CP5O20RootReplayLawProducerSpike:
+`o20CanonicalRootReplayOrdinals`, `o20OperationalRootReplayOrdinals`,
+`o20CanonicalOperationalRootReplayOrdinals`,
+`o20PermutedCanonicalRootReplayOrdinals`. Generic ARRC still has no such law;
+R195's constructive necessity witness remains valid and freshly checked.
+
+Frozen LocalDiamond baseline is9f9216170853624cff30449696f2540da0ed48e0b42504533aa587cb70dfc037;
+DeletionChain baseline is91e8fd290cc4fedae9656ce5b4ae3ea0b38509f6e0250f51b4a7aa2aea09067b.
+No further byte changes without another exact gate. Production==34b21c9, CP3
+blob2c697e532e83989de8591fa6a4378747c6a501c0; O19/adjacent/A11 and four hole
+statements unchanged, census4. Both heavy windows closed;207/207 seeds retained
+and package checked twice. Raw276 records retain all3 rejected invocations.
+
+Next ordered debt: actual root/opposite occurrence correspondence and whole
+paired-stage extraction using R195's generated-history disposition plus these
+root laws; then canonical vestigial/opposite-image absence and ALL-name endpoint
+rebasing, then D5/bridge. No original-endpoint counterexample is silently promoted
+to a canonical-convergence counterexample. Lifecycle-replay candidate from lane2:
+"observed retired-head guard at the source" — later shift ONLY, not R196 work
+or main certification of lane2 results. Use the refreshed measured inventory;
+B6 is now >40GiB, and111 excluded fixture/legacy TTCs remain explicitly stale.

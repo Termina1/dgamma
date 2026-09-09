@@ -44,6 +44,7 @@ if unit=='A4-2':
     assert hashlib.sha256(amendment_bytes).hexdigest()==(pathlib.Path('/tmp/dgamma-r196')/'A4-syntax-amendment.sha256').read_text().strip()
     edit=json.loads(amendment_bytes)
 
+if unit=='C3-1': edit=json.loads((ROOT/'research-tests/O6-R196-C3-DELETION-HELPER-MANIFEST.json').read_text())
 if edit:
     assert edit['path']==record['path'] and edit['afterSHA256']==record['sourceSHA256']
     assert hashlib.sha256(old.stdout).hexdigest()==edit['beforeSHA256']
