@@ -31,3 +31,18 @@ r197OneOriginRoleWords =
       (O20RolesStep (Right (PaperInsertStep Refl))
         (O20RolesStep (Left (PaperFinishStep Refl Refl))
           (O20RolesStep (Right (PaperRetireStep Refl)) O20RolesEnd)))))
+
+||| The same actual role-word mismatch is excluded by the ACCEPTED E9
+||| generated-orchestration premise for every generation bijection. Thus
+||| unary closing-free roles do not supply synchronization, but this pair
+||| is not a counterexample to the protected accepted convergence statement.
+export
+0 r197RoleMismatchFailsAcceptedE9 :
+  (O20CanonicalTraceRoles r178LeftTrace,
+   O20CanonicalTraceRoles r178RightTrace,
+   (mapping : RegistrationGenerationBijection Nat) ->
+    (GeneratedOrchestrationMatched Nat R45Key Unit String R45Value r45NameEq
+      r178LeftTrace r178RightTrace mapping -> Void))
+r197RoleMismatchFailsAcceptedE9 =
+  (fst r197OneOriginRoleWords, snd r197OneOriginRoleWords,
+   r178QuietPairRejectsGeneratedMatching)
