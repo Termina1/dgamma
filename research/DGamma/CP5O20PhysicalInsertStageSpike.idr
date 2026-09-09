@@ -299,3 +299,37 @@ o20LocatedInsertStage {name} {key} {world} {error} {value}
         (MoreTransitions (locatedTransition rightBirth) (afterActionOccurrence rightBirth))
         (replace {p = AlignedTransitions name key world error value nameEq keyEq}
           (sym (actionOccurrenceDecomposition rightBirth)) rightAligned))) (locatedAction rightBirth) matched
+
+||| The genuine paired generated-birth attachment supplies the conjugated
+||| physical map equation. Both Insert checks are produced from the actual
+||| trace alignment, yielding a native stage at the attached births' own cuts.
+export
+0 o20AttachedGeneratedInsertStage :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {leftFirst, leftFinal, rightFirst, rightFinal, leftNowFirst, leftNowFinal, rightNowFirst, rightNowFinal : SystemState name key value world error} ->
+  {left : Transitions leftFirst leftFinal} -> {right : Transitions rightFirst rightFinal} ->
+  {leftNow : Transitions leftNowFirst leftNowFinal} -> {rightNow : Transitions rightNowFirst rightNowFinal} ->
+  (leftReplay : ActionRegistrationReplayCorrespondence name key world error value left leftNow) ->
+  (rightReplay : ActionRegistrationReplayCorrespondence name key world error value right rightNow) ->
+  (mapping : RegistrationGenerationBijection name) -> (renaming : NameBijection name) ->
+  {leftLive, rightLive : GenerationEnvironment name} ->
+  AlignedTransitions name key world error value nameEq keyEq leftNow ->
+  AlignedTransitions name key world error value nameEq keyEq rightNow ->
+  (child, parent : name) -> (component : Component key value world error) ->
+  (leftBirth : LocatedGeneratedRegistration child parent component leftNow) ->
+  (attached : O20AttachedGeneratedBirth name key world error value leftReplay rightReplay mapping renaming
+    child parent component leftBirth) ->
+  O20StampedStage name key world error value nameEq keyEq
+    (o20ReplayOrdinalBijection (replayGenerationRenaming leftReplay) mapping (replayGenerationRenaming rightReplay)) renaming
+    (registrationOrdinal leftBirth) (registrationOrdinal (attachedRightBirth attached)) leftLive rightLive
+    (putCurrentGeneration @{nameEq} child (registrationGeneration leftBirth) leftLive)
+    (putCurrentGeneration @{nameEq} (renameForward renaming child) (registrationGeneration (attachedRightBirth attached)) rightLive)
+    (registrationBefore leftBirth) (registrationBefore (attachedRightBirth attached))
+    (registrationAfter leftBirth) (registrationAfter (attachedRightBirth attached))
+o20AttachedGeneratedInsertStage {leftNow} {rightNow} nameEq keyEq leftReplay rightReplay mapping renaming
+  leftAligned rightAligned child parent component leftBirth attached =
+    o20LocatedInsertStage nameEq keyEq renaming leftNow rightNow leftAligned rightAligned child component
+      (ChildOf parent) (ChildOf (renameForward renaming parent)) (ChildrenRelated Refl)
+      (generatedRegistrationActionOccurrence leftBirth) (generatedRegistrationActionOccurrence (attachedRightBirth attached))
+      (attachedPhysicalEquation attached)
