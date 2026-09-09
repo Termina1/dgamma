@@ -181,3 +181,43 @@ o20RegisteredSubsequenceUnloadIndex name key world error value nameEq registered
       tail (o20RegisteredUnloadFreeTail free) actor sourceIndex exact of
         (targetIndex ** (targetExact, originExact)) =>
           (targetIndex ** (targetExact, cong (map S) originExact))
+
+||| FOREIGN-center analogue retaining the exact close origin. The selected
+||| parent is explicitly excluded; its removed center close is NOT retained.
+export
+0 o20ForeignSubsequenceUnloadIndex :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (selected : name) -> (registered : List (RegistrationGeneration name)) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  {first, finalState, otherFirst, otherFinal : SystemState name key value world error} ->
+  {trace : Transitions first finalState} -> {survivor : Transitions otherFirst otherFinal} ->
+  (kept : GenerationActionSubsequence nameEq (EpisodeGenerationDeletedActor nameEq selected registered) ordinal live trace survivor) ->
+  O20RegisteredUnloadFree name key world error value nameEq registered ordinal live trace ->
+  (actor : name) -> Not (actor = selected) -> (sourceIndex : Nat) ->
+  (rawClosingActionAt name key world error value sourceIndex trace = Just (LUnload actor)) ->
+  (targetIndex : Nat ** (rawClosingActionAt name key world error value targetIndex survivor = Just (LUnload actor),
+    generationSubsequenceSourceOrdinal kept targetIndex = Just sourceIndex))
+o20ForeignSubsequenceUnloadIndex name key world error value nameEq selected registered ordinal live
+  GenerationActionSubsequenceEnd free actor distinct sourceIndex exact = absurd exact
+o20ForeignSubsequenceUnloadIndex name key world error value nameEq selected registered ordinal live
+  (KeepGenerationAction (Fired sourceEq sourceKey action tag checked) rest
+    (Fired targetEq targetKey targetAction targetTag targetChecked) later outside same tail) free actor distinct Z exact =
+      (Z ** (trans (cong Just (sym same)) exact, Refl))
+o20ForeignSubsequenceUnloadIndex name key world error value nameEq selected registered ordinal live
+  (KeepGenerationAction step rest target later outside same tail) free actor distinct (S sourceIndex) exact =
+    case o20ForeignSubsequenceUnloadIndex name key world error value nameEq selected registered (S ordinal)
+      (advanceGenerationEnvironment @{nameEq} ordinal (transitionAction step) live)
+      tail (o20RegisteredUnloadFreeTail free) actor distinct sourceIndex exact of
+        (targetIndex ** (targetExact, originExact)) =>
+          (S targetIndex ** (targetExact, cong (map S) originExact))
+o20ForeignSubsequenceUnloadIndex name key world error value nameEq selected registered ordinal live
+  (DeleteGenerationAction (Fired sourceEq sourceKey action tag checked) rest deleted tail) free actor distinct Z exact =
+    void (o20EpisodeDeletedNotForeignUnload nameEq selected registered ordinal live action actor distinct
+      (o20RegisteredUnloadHeadExcludes free actor) deleted (justInjective exact))
+o20ForeignSubsequenceUnloadIndex name key world error value nameEq selected registered ordinal live
+  (DeleteGenerationAction step rest deleted tail) free actor distinct (S sourceIndex) exact =
+    case o20ForeignSubsequenceUnloadIndex name key world error value nameEq selected registered (S ordinal)
+      (advanceGenerationEnvironment @{nameEq} ordinal (transitionAction step) live)
+      tail (o20RegisteredUnloadFreeTail free) actor distinct sourceIndex exact of
+        (targetIndex ** (targetExact, originExact)) =>
+          (targetIndex ** (targetExact, cong (map S) originExact))
