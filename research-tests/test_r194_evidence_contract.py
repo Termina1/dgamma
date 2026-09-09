@@ -1,0 +1,72 @@
+"""Noncompiler regressions: no Idris invocation or source/cache mutation."""
+import hashlib
+import importlib.util
+import pathlib
+import unittest
+
+HERE = pathlib.Path(__file__).resolve().parent
+SPEC = importlib.util.spec_from_file_location('contract', HERE / 'r194_evidence_contract.py')
+contract = importlib.util.module_from_spec(SPEC)
+SPEC.loader.exec_module(contract)
+
+class EvidenceContractTests(unittest.TestCase):
+    def sample(self):
+        source = b'module DGamma.Example\n'
+        log = '1/1: Building DGamma.Example (research/DGamma/Example.idr)\n'
+        record = dict(unit='A1-1', path='research/DGamma/Example.idr', sourceSHA256=hashlib.sha256(source).hexdigest(),
+                      transcript=log, passed=True, fresh=True, interrupted=False, targetMutationDetected=False,
+                      rssSamples=[dict(rssKiB=42)], maxSampleRSSKiB=42, expectedDiagnostic=None, symbol=None, exit=0)
+        return record, source, log
+
+    def test_valid_fresh_source(self):
+        contract.validate_record(*self.sample(), pathlib.Path('/repo'))
+
+    def test_exit_zero_error_is_not_pass(self):
+        r, s, log = self.sample()
+        log += 'Error: missing defining import\n'
+        r['transcript'] = log
+        with self.assertRaises(AssertionError): contract.validate_record(r, s, log, pathlib.Path('/repo'))
+
+    def test_mutation_cannot_be_pass(self):
+        r, s, log = self.sample(); r['targetMutationDetected'] = True
+        with self.assertRaises(AssertionError): contract.validate_record(r, s, log, pathlib.Path('/repo'))
+
+    def test_peak_must_match_retained_samples(self):
+        r, s, log = self.sample(); r['maxSampleRSSKiB'] = 0
+        with self.assertRaises(AssertionError): contract.validate_record(r, s, log, pathlib.Path('/repo'))
+
+    def test_negative_needs_its_authenticated_symbol(self):
+        r, s, log = self.sample(); log += 'Error: Mismatch between\n'
+        r.update(transcript=log, exit=1, expectedDiagnostic='Mismatch between', symbol='wrongWitness')
+        with self.assertRaises(AssertionError): contract.validate_record(r, s, log, pathlib.Path('/repo'))
+        log += 'wrongWitness\n'; r['transcript'] = log
+        contract.validate_record(r, s, log, pathlib.Path('/repo'))
+
+    def test_no_target_building_is_not_fresh(self):
+        r, s, log = self.sample(); r['transcript'] = ''
+        with self.assertRaises(AssertionError): contract.validate_record(r, s, '', pathlib.Path('/repo'))
+
+    def test_no_fourth_attempt(self):
+        records = [dict(unit='A1-' + str(n), passed=False) for n in range(1, 5)]
+        with self.assertRaises(AssertionError): contract.validate_attempts(records, {})
+
+    def test_no_a_cap_extension(self):
+        records = [dict(unit='A' + str(n) + '-1', passed=True) for n in range(1, 32)]
+        with self.assertRaises(AssertionError): contract.validate_attempts(records, {})
+
+    def test_successful_recheck_exception_is_only_a8_comments(self):
+        records = [dict(unit='A' + str(n) + '-1', passed=True) for n in range(1, 9)]
+        records.append(dict(unit='A8-2', passed=True))
+        sources = {'A8-1': b'||| old wording\nx : Nat\nx = 0\n', 'A8-2': b'||| accurate wording\nx : Nat\nx = 0\n'}
+        contract.validate_attempts(records, sources)
+        sources['A8-2'] = b'||| accurate wording\nx : Nat\nx = 1\n'
+        with self.assertRaises(AssertionError): contract.validate_attempts(records, sources)
+
+    def test_lane_owned_variants_are_excluded(self):
+        for path in ('research/DGamma/CP5AvailabilityAwarePlacement.idr', 'research/DGamma/CP5ActorLifecycleOnlyExtended.idr',
+                     'research-tests/DGamma/R192ExtendedChildBlockProbe.idr', 'research/DGamma/CP5L2R3Example.idr'):
+            self.assertFalse(contract.owned_target(path))
+        self.assertTrue(contract.owned_target('research/DGamma/CP5O20OwnCutSafetySpike.idr'))
+
+if __name__ == '__main__':
+    unittest.main()

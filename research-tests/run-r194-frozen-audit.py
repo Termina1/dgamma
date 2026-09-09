@@ -86,7 +86,7 @@ for part, name in [('CanonicalSort','sortClosingFreeTraceSpike'),('CrossTrace','
         new_decl = new_decl.split('\n'+name+' ',1)[0]
     assert old_decl == new_decl, name
     protected[name] = sha(new_decl.encode())
-# R194 has no type rehome permission; only the exact A11 field is revised.
+# R194 has no type rehome permission; the prior R192 A11 revision is preserved.
 # CrossTrace and O19 Surface
 # remain byte-identical until a separately guarded/approved O20 body closure.
 assert not git('diff',START,'--',PATHS['CrossTrace'])
@@ -94,6 +94,10 @@ assert not git('diff',START,'--','research/DGamma/CP5O19SurfaceSpike.idr')
 names = []
 changed = [p for p in git('diff','--name-only',START,'--','research/','research-tests/DGamma/').splitlines() if p.endswith('.idr')]
 assert all('%default total' in text(p) for p in changed)
+# The sole pre-existing modified module only appends its defining-map lemma.
+progress_path = 'research/DGamma/CP5O20OperationalProgressSpike.idr'
+assert (ROOT/progress_path).read_bytes().startswith(subprocess.check_output(['git','show',START+':'+progress_path],cwd=ROOT))
+assert 'ZeroGapPending gap = transitionCount gap = 0' in text('research/DGamma/CP5O20RightOpeningTransportSpike.idr')
 assert not any(re.findall(r'\?\w+',text(p)) for p in changed if p not in PATHS.values())
 added = [l[1:] for l in git('diff',START,'--','research/','research-tests/DGamma/').splitlines() if l.startswith('+') and not l.startswith('+++')]
 code = '\n'.join(l for l in added if not l.lstrip().startswith(('--','|||')))

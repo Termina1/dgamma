@@ -1,0 +1,27 @@
+{
+  "sourceFreezeHead": "408bd21e832cd231a727dfb8347c9a15d019f4e0",
+  "timestampUTC": "2026-09-09T01:07:40.882596+00:00",
+  "finalChecks": 56,
+  "positiveChecks": 49,
+  "expectedNegatives": 7,
+  "changedIdrisTargets": [
+    "research/DGamma/CP5O20ActualHistoryAdvanceSpike.idr",
+    "research/DGamma/CP5O20CanonicalOrdinalAttachmentSpike.idr",
+    "research/DGamma/CP5O20IndexedReloadingSourceSpike.idr",
+    "research/DGamma/CP5O20NativeAdvanceAttachmentSpike.idr",
+    "research/DGamma/CP5O20NativeTargetAttachmentSpike.idr",
+    "research/DGamma/CP5O20OperationalProgressSpike.idr",
+    "research/DGamma/CP5O20OwnCutSafetySpike.idr"
+  ],
+  "planSHA256": "73ddfc58ea6e13473f31a61366fcbad931a18cc69b62b1de6ceb58985fa31bfe",
+  "excludedLaneOwnedTargets": [
+    "research/DGamma/CP5ActorLifecycleOnlyExtended.idr",
+    "research-tests/DGamma/R192ExtendedChildBlockProbe.idr",
+    "research/DGamma/CP5AvailabilityAwarePlacement.idr"
+  ],
+  "exclusionReason": "No main check of lane-owned source or extension-dependent probe. Main frozen fixtures remain; no claim to certify current lane2 variants.",
+  "defaultRSSGiB": 48,
+  "pinnedUnchangedLocalDiamondRSSGiB": 52,
+  "sharedHeavyLock": "/tmp/dgamma-heavy.lock",
+  "substitutions": {}
+}

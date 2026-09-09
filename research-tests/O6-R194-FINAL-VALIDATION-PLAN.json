@@ -1,0 +1,394 @@
+[
+  {
+    "unit": "V1",
+    "path": "package",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "sourceHash": "aee761a37757cb047ddbf0f846bc23ce830ed755422f96852d08eb435c368727"
+  },
+  {
+    "unit": "V2",
+    "path": "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "sourceHash": "f77f66a3e3a62f2ff757709f08d1488a25d54d425af74dcec4c2c0f0ed28c6fd"
+  },
+  {
+    "unit": "V3",
+    "path": "research/DGamma/CP5ConfluenceDeletionChainSpike.idr",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "sourceHash": "5ca243616ce40e65aaeed35318d96156e98370c4319859e63f18f7b178ffec88"
+  },
+  {
+    "unit": "V4",
+    "path": "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "sourceHash": "3b62ba1c3bc88503116ed22d82c667043f7f41dd483fb093cc25b677a55245cc"
+  },
+  {
+    "unit": "V5",
+    "path": "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "sourceHash": "833bd3450bc8a4214e0334fd2ad95d7f837bc636f40f2e33c408333395602713"
+  },
+  {
+    "unit": "V6",
+    "path": "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "sourceHash": "666d18626e49cbb0d6ac2f7624fe9f6b3519d539dbb574670f420bacd9fc69bb"
+  },
+  {
+    "unit": "V7",
+    "path": "research/DGamma/CP5O20AllNameSynchronizationSpike.idr",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "sourceHash": "eb34b80def8d87fb099c8a06d9836d33f27f6faa3bc47ca198c5b79275fdf2dd"
+  },
+  {
+    "unit": "V8",
+    "path": "research/DGamma/CP5O20PairedExecutionSpike.idr",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "sourceHash": "d4170671fe9677cb6e44fda33b56a447c3c69f9f897ccea85757f18ed11fe02b"
+  },
+  {
+    "unit": "V9",
+    "path": "research/DGamma/CP5O20CanonicalPairedExtractionSpike.idr",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "sourceHash": "947c8fb7c2aba9cd88966051812042bb976d0003b6f1e97a35dc62e81c474c04"
+  },
+  {
+    "unit": "V10",
+    "path": "research/DGamma/CP5O20PairedRemovalSpike.idr",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "sourceHash": "dd56deb5581b70101d86a698f0c1daecd6e071a9339a3b58150410378ff1734c"
+  },
+  {
+    "unit": "V11",
+    "path": "research/DGamma/CP5O20RightOpeningTransportSpike.idr",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "sourceHash": "f2da10325655665842f58cd43dd7b918aa1b3e888aa07a552a086ae79fdde8dd"
+  },
+  {
+    "unit": "V12",
+    "path": "research/DGamma/CP5O20LinearExtensionSpike.idr",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "sourceHash": "9fe05758dae553bd0f7be5633007e3e0c8b520d4b8c5a7649372c19a1138d7cc"
+  },
+  {
+    "unit": "V13",
+    "path": "research/DGamma/CP5O20SelectionCompletenessSpike.idr",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "sourceHash": "0142151162552a06a25fc3bb90437c666e8bd1bbe3c7be24a629937d9d30f2e3"
+  },
+  {
+    "unit": "V14",
+    "path": "research/DGamma/CP5O20SafeBlockSelectionSpike.idr",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "sourceHash": "a1d77431b19b6734bb15c6f095bdc073d2953327cc9c1e88e7d0bc2a33266f3f"
+  },
+  {
+    "unit": "V15",
+    "path": "research/DGamma/CP5O20SupportedBirthBridgeSpike.idr",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "sourceHash": "fb7bf6b4750d729da2794ff38bc1ec8d51cffbb838a24db8f7db822914b4e93a"
+  },
+  {
+    "unit": "V16",
+    "path": "research/DGamma/CP5O20SupportedBridgeAssemblySpike.idr",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "sourceHash": "7beda3aac1fa38d338e588fda5dd42c0a561d0018974a74920d2c3cef3eaf64a"
+  },
+  {
+    "unit": "V17",
+    "path": "research/DGamma/CP5O20BirthBridgeRemainderSpike.idr",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "sourceHash": "8a759194ca994ed430352eaafb738d03c99e0801d73744e0fd6c63c8974d123d"
+  },
+  {
+    "unit": "V18",
+    "path": "research-tests/DGamma/R192RemovedBirthCurrentNameProbe.idr",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "sourceHash": "bf604f6695e9eda4f450dc05be35fbc2de7c53a8c04e0357b088c1f6888883f6"
+  },
+  {
+    "unit": "V19",
+    "path": "research-tests/DGamma/R191CanonicalChildRetirementGap.idr",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "sourceHash": "316518f801b9e1067e483b2bc59717c4ce9a2acd35087d194220b64fbf5f5b06"
+  },
+  {
+    "unit": "V20",
+    "path": "research-tests/DGamma/R174O17ProvisionCollisionCandidate.idr",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "sourceHash": "85b616df762a4e210a9846ca2f91487082ac39d9eec648bdcd3fd6ac56c1fc4e"
+  },
+  {
+    "unit": "V21",
+    "path": "research-tests/DGamma/R178GeneratedOrchestrationFixtures.idr",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "sourceHash": "78487d0aa60f41e1a09dccb85c38d1b89c99c68be2b14de4b6b8540cdef9a4f1"
+  },
+  {
+    "unit": "V22",
+    "path": "research-tests/DGamma/R8BridgeAuthenticatedDirectionPositive.idr",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "sourceHash": "03c095c04ba02a43ccb1383c293e06834d93a4a1a6e0efe178430daa9b791196"
+  },
+  {
+    "unit": "V23",
+    "path": "research-tests/DGamma/R8BridgeWrongBirthNegative.idr",
+    "expectedDiagnostic": "Mismatch between",
+    "symbol": "replaceBridgeRightOccurrenceWithoutGenerationEquation",
+    "sourceHash": "8f1c1b789f927956a2f8f19c9d0e3f2961d5c94737d9a80a3e522d64b05894be"
+  },
+  {
+    "unit": "V24",
+    "path": "research-tests/DGamma/R8WrongOccurrenceBridgeNegative.idr",
+    "expectedDiagnostic": "first and second",
+    "symbol": "detachBridgeOccurrenceRelation",
+    "sourceHash": "da7ed3cf2b884f39b4148c19cad4d759a9cd249c144cf6f608f1a7a84dd6f8cc"
+  },
+  {
+    "unit": "V25",
+    "path": "research-tests/DGamma/R8WrongTraceBridgeNegative.idr",
+    "expectedDiagnostic": "operationalTargetFinal and otherFinal",
+    "symbol": "wrongTraceBridge",
+    "sourceHash": "b8b535d2b83971994e36d29f70eee7b38a37242b8b651e421023cb8d2df8a2a0"
+  },
+  {
+    "unit": "V26",
+    "path": "research-tests/DGamma/R8PublicScheduleCannotReachBridgeNegative.idr",
+    "expectedDiagnostic": "Mismatch between",
+    "symbol": "publicScheduleCannotEnterAuthenticatedBridge",
+    "sourceHash": "8ed4fd143d7839258695ca6562f037a6f13fb50ad7a73c8d180068e9825545c3"
+  },
+  {
+    "unit": "V27",
+    "path": "research-tests/DGamma/R4VestigialSimultaneous.idr",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "sourceHash": "04a1fee5b70d6a555b7d20bac2e88c9a10df85c4a9b9d1c53a7664fc01af5347"
+  },
+  {
+    "unit": "V28",
+    "path": "research-tests/DGamma/R6OuterSchedulesPositive.idr",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "sourceHash": "4249828c58bf3f69f9aabd36761481b916e01bdf69bf25dcdaa993599f11dffc"
+  },
+  {
+    "unit": "V29",
+    "path": "research-tests/DGamma/R6MixedScheduleNegative.idr",
+    "expectedDiagnostic": "Mismatch between: leftCapital and otherLeft.",
+    "symbol": "mixedLeftSchedule",
+    "sourceHash": "a60281516ef822e049902ad41a5d592fdbe987394a510a470548d58d881cae9a"
+  },
+  {
+    "unit": "V30",
+    "path": "research-tests/DGamma/R8FullPipeline.idr",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "sourceHash": "7583af47a1b91494f1b08858f0951792cf987ea3456146c25b0dc06800a28519"
+  },
+  {
+    "unit": "V31",
+    "path": "research-tests/DGamma/R178WrongGenerationMatchingNegative.idr",
+    "expectedDiagnostic": "otherRenaming and sameInputs .generatedGenerationBijection",
+    "symbol": "wrongGenerationMatching",
+    "sourceHash": "279dcbdf318c96e4db87e55e6a7386062e83c644adb50454fd20c45de9da2c76"
+  },
+  {
+    "unit": "V32",
+    "path": "research-tests/DGamma/R179O21CurrentBirthIdentityPositive.idr",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "sourceHash": "e8d1f64fdf8dab1b2af4dd76dc69f6138c45ad849cc64c14b1d46a030d34d901"
+  },
+  {
+    "unit": "V33",
+    "path": "research-tests/DGamma/R179O21WrongOriginalBirthNegative.idr",
+    "expectedDiagnostic": "Mismatch between: other and left.",
+    "symbol": "wrongOriginalBirth",
+    "sourceHash": "f2d7e6825c7fece1c36787ba1f2d248a59197df7d94b1fece6b651714046055b"
+  },
+  {
+    "unit": "V34",
+    "path": "research/DGamma/CP5O19SurfaceSpike.idr",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "sourceHash": "da358a498847ed06b666c1e1d42fffed10afc7d6f699c94e4681d7b302ff5561"
+  },
+  {
+    "unit": "V35",
+    "path": "research-tests/DGamma/R193CandidateEnumerationPositive.idr",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "sourceHash": "a558d70bdaab3ead135c9e02b496dcc383ec498757605c93ba091f5934a9d6b3"
+  },
+  {
+    "unit": "V36",
+    "path": "research-tests/DGamma/R193HistoryNameTransportPositive.idr",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "sourceHash": "7ed322e1f411444b392f3c6a872dc411116b56b713b8b458e623f39edf4fd874"
+  },
+  {
+    "unit": "V37",
+    "path": "research-tests/DGamma/R193InstalledBlockResolverPositive.idr",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "sourceHash": "e2979e5f087f37d4682d8e88ae2547e74db20cd27e7a902c410b376011383374"
+  },
+  {
+    "unit": "V38",
+    "path": "research-tests/DGamma/R193VestigialHistoryTransportPositive.idr",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "sourceHash": "ffa274f1b704b1fd214d63b953d6289cdd1bb323e7343e7510e4f3cb94786080"
+  },
+  {
+    "unit": "V39",
+    "path": "research/DGamma/CP5O20BlockResolverFrameSpike.idr",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "sourceHash": "0039c30f35235e6d13eb62a36d1451752838c416c31ae51716d905e1b6ff8276"
+  },
+  {
+    "unit": "V40",
+    "path": "research/DGamma/CP5O20CanonicalActionCompletenessSpike.idr",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "sourceHash": "85da29a33779216f7139b021814b19e2d3fded170ee98dac75c1bd8c21064b9e"
+  },
+  {
+    "unit": "V41",
+    "path": "research/DGamma/CP5O20HistoryExecutionSpike.idr",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "sourceHash": "ab202644aea79d9eb4c96b3d1a765dafeef30221c53a0f3a12e2b53d0bb5328d"
+  },
+  {
+    "unit": "V42",
+    "path": "research/DGamma/CP5O20HistoryNameTransportSpike.idr",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "sourceHash": "97cc59805856ae14c2727b3c869c6beb551ed24f2edd5bb25c07b03836fca30f"
+  },
+  {
+    "unit": "V43",
+    "path": "research/DGamma/CP5O20SelectorResolverFrameSpike.idr",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "sourceHash": "d530fb03ec5bd27977fd7f6331e645d58e2ddbdff84a921df87b0979200280f8"
+  },
+  {
+    "unit": "V44",
+    "path": "research/DGamma/CP5O20SingleRoleAdvanceExtractionSpike.idr",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "sourceHash": "de5ecc4071e0a29d54611aa5ae4bb6d43d5aec45f5d822cd337112812ea2ab4f"
+  },
+  {
+    "unit": "V45",
+    "path": "research/DGamma/CP5O19ReachedBlocksSpike.idr",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "sourceHash": "c08eaaecb907453078cc51f3e5467b7ed5f505cfea2f56ac868674f3cce3dab5"
+  },
+  {
+    "unit": "V46",
+    "path": "research-tests/DGamma/R16EndpointControlsImpossibilityPositive.idr",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "sourceHash": "265f280458f3556074634c6d6b3ea2023bd00b259320ece83ba368a52a690d7d"
+  },
+  {
+    "unit": "V47",
+    "path": "research-tests/DGamma/R16ConfluenceTheoremAssemblyPositive.idr",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "sourceHash": "a023cef7449b651b5fbf8a488403a7c025f270e68baefd68275c25c65ea4bfa0"
+  },
+  {
+    "unit": "V48",
+    "path": "research-tests/DGamma/R182O19FourCrossingsPositive.idr",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "sourceHash": "ead634d2e10fe4a21a9ba505c2f9c2abc5ae4a640e40eac45f97d116349afb4e"
+  },
+  {
+    "unit": "V49",
+    "path": "research-tests/DGamma/R182O19AllFourCrossingsPositive.idr",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "sourceHash": "1fd0c49cfeb33b053221efa3be78986740ec2b6bfb61dff34901babbe249cb22"
+  },
+  {
+    "path": "research/DGamma/CP5O20ActualHistoryAdvanceSpike.idr",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "unit": "V50",
+    "sourceHash": "e6e951d72f5df5d6c495797ed0c905a86282de955e85e78d89dcf6e5ce623a68"
+  },
+  {
+    "path": "research/DGamma/CP5O20CanonicalOrdinalAttachmentSpike.idr",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "unit": "V51",
+    "sourceHash": "e66a3d751e914936d3db5ce0a9f3faf940b5f7a97af32108f048441a14f878d3"
+  },
+  {
+    "path": "research/DGamma/CP5O20IndexedReloadingSourceSpike.idr",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "unit": "V52",
+    "sourceHash": "8442fb2fafdce06376d9951569ba580563403f47a29b4eec79ba89f338611cdc"
+  },
+  {
+    "path": "research/DGamma/CP5O20NativeAdvanceAttachmentSpike.idr",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "unit": "V53",
+    "sourceHash": "830070d2b9d1ee560ebc5f421aeca83c8610cf47653e674658e322f3424e156e"
+  },
+  {
+    "path": "research/DGamma/CP5O20NativeTargetAttachmentSpike.idr",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "unit": "V54",
+    "sourceHash": "5d3954c72a3e32c27a8292633a60c092510755e8c0c16f85dddb4226777fb4cb"
+  },
+  {
+    "path": "research/DGamma/CP5O20OperationalProgressSpike.idr",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "unit": "V55",
+    "sourceHash": "82cbd1b7dbfa5a2d28a3fd77682a59171a30c552f5bac1341bf5c7c7cb5de2ff"
+  },
+  {
+    "path": "research/DGamma/CP5O20OwnCutSafetySpike.idr",
+    "expectedDiagnostic": null,
+    "symbol": null,
+    "unit": "V56",
+    "sourceHash": "2a69531b2171beba161f006c2d57b7cfb7d4607cf3f169d2022df14fe9530cd4"
+  }
+]

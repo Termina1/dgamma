@@ -3509,6 +3509,65 @@ Verbatim supervisor ruling:
 
 > R193 FINAL GATE RULING: ACCEPTED — checked PARTIAL milestone RATIFIED at dd8fb9e9 (ACCEPT-WITH-NOTES pending the independent reviewer, who is now running read-only). Supervisor verified independently: HEAD dd8fb9e9, 130 commits over 77a9efe1, clean tree (baseline untracked only), production diff vs 34b21c9 empty, LocalDiamond/O19Surface/CrossTrace/RenamingComposition/CanonicalSort byte-identical to 77a9efe1, independent census 4 = 1/2/0/0/1, no idris2 running, 10 R193 artifacts present, pushed. Honest qualifications accepted as stated: A(i)/(ii) local successors and unilateral role completeness, not whole paired alignment; no bridge producer; D conditional on the four explicit clauses under the frozen grammar; V2 48 GiB stop preserved with the hash-pinned 52 GiB V2R1 continuation; lane-2 results integrated version-pinned only, not certified by main checks (correct — lane 2's own L2R2 gate and reviewer will certify them; any later update is artifact-only, as you say). The withdrawn-then-cured paper-visibility claim is noted as properly handled. Stand down cleanly; no further compiler or source work.
 
+## Status — R194 source-frozen main milestone (46 retained)
+
+Started exactly b81362d8; source freeze408bd21e. A30/B16 binding caps reached
+without extension or any 3/3 unit exhaustion. No production, package, O19,
+protected hole statement/body, LocalDiamond, A11 bridge-record or lane-owned
+source change. All46 new declarations are total and individually guarded
+committed. Interim independent audit authenticates52 compiler invocations,
+48 PASS/4 rejected, no interruption or target mutation. A8 has two PASSes for
+one comment-only precommit correction; exact code equality is independently
+checked rather than silently treating the first success as a failed attempt.
+
+**Fully proved locally:** canonical-coordinate conjugation and both bijection
+laws; supported generated births carry their authentic opposite occurrence and
+both original-origin/physical-ordinal equations, including operational replay.
+Native Iter callback/source/target extraction now feeds an actual checked local
+history successor with no source lookup/target guard oracle in its public type.
+Both former E60 endpoint/reference component attachments are now produced.
+Actual installedness and original supportedness produce the necessary native
+lookups; the selected reached inversion's earlier right Begin is derived at
+its own native left slot. Both child exclusions and native safe-check success
+follow from accepted/reached capital, conditional only on literal gap0.
+
+**Fully proved conditional theorem:** `o20StoppedOrderEqualsGoalZeroGap` uses the
+ACTUAL stopped reference search, authentic inversion enumeration and the native
+selector's own rejection. Its sole unresolved additional safety hypothesis is
+quantified `ZeroGapPending`, exactly `transitionCount gap = 0`, for each reached
+goal inversion at its native slots. This is not an assertion that arbitrary
+gaps are empty. No A12Pending is needed in this frozen exact-zero theorem,
+since zero actual transitions already excludes any intervening root. No lane2
+extended-grammar or root-availability result follows. No sibling selector body.
+
+**Partial/open:** arbitrary canonical/replayed whole pairing, unsupported
+retained/closing birth disposition, root replay ordinal attachment, generic
+last-Finish observation ownership, whole initial-to-endpoint cut fold, all-name
+rebasing to the supplied current-name map, exact present-vestigial treatment,
+and hence a producer-owned D5 endpoint bridge. D5 remains a consumer of its
+missing all-name cut. No canonicalSchedulesConvergeSpike body attempt.
+`replayGeneratedOrdinalPreserved` covers generated births, not root births.
+
+**Escape-hatch inventory:** none added. No postulate, unsafe primitive, hole,
+partial, local let/with, nonlinear state pattern, independent proof-carrying
+record equality or scoped-to-raw cast in retained additions. Earlier main and
+lane2 qualifications remain historical, not retroactively strengthened.
+
+**Findings sync:** canonicalBlock is CP3:3256–3257 (record starts3240,
+inputPlacement3265); R192's corrected memo is preserved. R193's two component
+attachment debts are now discharged; whole alignment/rebasing debts remain.
+The physically present-vestigial example is still not a convergence
+counterexample with both independent canonical capitals. No new paper erratum
+is promoted; relevant Theorem73 paragraphs were re-inspected, not a new full-
+paper reread. See research-tests/O6-R194-FINDINGS.md and the shift audit.
+
+**Next:** immutable56-check seeded final plan (49 positive/7 expected-negative),
+frozen207/207/cache and protected-surface checks, archive/ledger/verification,
+then supervisor/reviewer gate. Ten noncompiler evidence-contract regressions
+PASS. Main excludes lane-owned source targets and extension-dependent probes;
+no main check certifies ongoing lane2 variants. After acceptance, whole pairing
+and exact all-name endpoint ownership remain the next main proof frontier.
+
 This addendum is artifact-only. No further Idris/compiler or implementation
 source work followed the ruling. Independent review remains parent-owned
 and pending; neither ratification nor the52-slot final validation closes

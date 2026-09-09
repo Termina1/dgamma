@@ -771,3 +771,23 @@ seeded validation, not a cold rebuild. See the [R193 audit](research-tests/O6-R1
 and [lane2 integration boundary](research-tests/O6-R193-LANE2-INTEGRATION.md).
 Lane2 L2R1 reports 35 checked declarations and 15 final checks at its pinned
 artifact commit; L2R2 remains separately pending, and no source merge occurred.
+
+## R194 checked partial research milestone (46 retained)
+
+Source freeze `408bd21e`; production is still byte-frozen at `34b21c9`.
+This advances Theorem73 auxiliaries, **not** Theorem73 or its selector body.
+
+| Paper correspondence | Idris research declaration | Status |
+|---|---|---|
+| Thm73 replayed registration coordinates, auxiliary | `CP5O20CanonicalOrdinalAttachmentSpike.o20ReplayOrdinalBijection`, `o20SupportedReplayedOrdinalAttachment` | Proved canonical-coordinate bijection and actual supported-birth attachment; whole pairing open |
+| Thm73 paired execution, auxiliary | `CP5O20ActualHistoryAdvanceSpike.o20HistoryCheckedIterCut` | Proved local successor from two actual checked Iter edges and an input cut |
+| Thm73 transposition applicability, auxiliary | `CP5O20OwnCutSafetySpike.o20BlockEndReferenceComponent`, `o20BlockOpeningReferenceComponent` | Proved both formerly missing physical endpoint/reference attachments |
+| Thm73 operational selection, auxiliary | `CP5O20OwnCutSafetySpike.o20ReachedInversionOwnCutSafe` | Proved native own-cut candidate success, conditional only on literal ZeroGapPending beyond native capital |
+| Thm73 stopped order, auxiliary | `CP5O20OwnCutSafetySpike.o20StoppedOrderEqualsGoalZeroGap` | Proved conditional actual stoppedOrder=goalOrder; native inversion gaps must each have zero transitions |
+| Thm73 protected convergence | `CP5ConfluenceCrossTraceSpike.canonicalSchedulesConvergeSpike` | Open; whole pairing/all-name rebasing/vestigial remainder and D5 bridge producer remain missing |
+
+A30/B16 caps respected. No new proof hole or unsafe escape. No A12-variant,
+root-relocation, unconditional zero-gap or sibling selector-body claim.
+Final validation/evidence is pending at this source-freeze entry; see the
+[R194 audit](research-tests/O6-R194-GRIND-SHIFT-AUDIT.md) and
+[findings qualifications](research-tests/O6-R194-FINDINGS.md).

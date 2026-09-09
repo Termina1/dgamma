@@ -110,14 +110,61 @@ no protected-theorem counterexample is claimed.
 `canonicalSchedulesConvergeSpike` body attempt. Fresh final census pending;
 last audited4=1/2/0/0/1. Proceeding to pre-authorized Unit B, not extending A.
 
-## Unit B
+## Unit B cap:16/16 retained; requested conditional theorem proved
 
-Pending: both endpoint/reference attachments, own-cut safety and conditional
-stopped equality under the frozen grammar. ZeroGapPending remains literal
-gap-count0. A12Pending, if needed, will mean only no availability-forced root
-between the selected blocks; no safety oracle hidden under that label.
+B1–B3: original/canonical/operational occurrence origins plus raw uniqueness
+produce the two former E60 component attachments at the ACTUAL first block end
+and ACTUAL second opening. `o20BlockEndReferenceComponent` and
+`o20BlockOpeningReferenceComponent` need no component-equality hypothesis.
+B4–B8: the installed body owns endpoint installedness; an explicit primitive
+lookup observer yields present evidence; accepted original supportedness owns
+both reference lookups. These are erased packets, not assumed semantic frames.
 
-## Unit C
+B9–B10: the whole installed opening/body frame now derives the right Begin at
+the selected inversion's OWN native left cut. Child exclusion, original support,
+source well-formedness, all three lookups and both component attachments are
+produced. Only literal `ZeroGapPending` remains as a physical safety input.
+B11: `o20ReachedInversionOwnCutSafe` proves the native candidate check succeeds.
+B12–B13: authentic enumeration membership, primitive actor-name equalities and
+produced own-cut clauses imply whole finite safe-selector presence. No equation
+of independent dependent records, native memberships or swap proofs is used.
+B14: the existing operational progress producer exposes its own exact defining
+Maybe-map equation, without changing its existing body or choosing a payload.
+B15–B16: the actual stopped search's own rejection contradicts an actual finite
+inversion under quantified native-slot gap0. Thus
+`o20StoppedOrderEqualsGoalZeroGap` proves stoppedOrder=goalOrder, CONDITIONALLY
+on literal ZeroGapPending for each reached goal inversion. The total search and
+equality-or-inversion observation are authentic producers, not caller guesses.
 
-R192 memo P2 canonicalBlock citation already fixed to3256–3257 by R193.
-Findings-register sync and final verification/evidence are pending.
+All16 declarations immediately guarded committed;18 invocations=16 PASS/2
+rejected. B10-1 and B12-1 lacked direct defining imports; their second attempts
+passed. No exhausted unit. Last source408bd21e, B16-1 fresh PASS13.525s,
+3,818,528KiB. Across A/B:46 declarations/46 receipts,51 proof invocations,
+47 PASS/4 rejected; plus one baseline gives52 total pre-final invocations.
+
+**Exact scope:** the final theorem consumes base accepted original capital and
+an actual reached reference-search record. Its only UNDISCHARGED additional
+safety condition is quantified ZeroGapPending at native inversion slots,
+whose existing definition is exactly `transitionCount gap = 0`. It is not
+proved for arbitrary gaps. A12Pending is unnecessary in this frozen theorem:
+zero actual transitions excludes every intervening root step. No extended-
+grammar/A12-variant theorem, availability-root relocation, scoped-to-raw cast,
+or sibling selector body is claimed. The A and B caps are both binding/exhausted
+budgets, NOT proof-unit exhaustion; no additional source unit is launched.
+
+## Unit C: findings and evidence preparation
+
+C1 synchronizes README/NOTES and the findings register, retaining the corrected
+R192 memo P2 citation: CP3 CanonicalSchedule begins3240, canonicalBlock3256–3257,
+inputPlacement3265. Source citation re-inspected; no new paper erratum promoted.
+See O6-R194-FINDINGS.md for the exact resolved/open boundaries.
+
+Source freeze408bd21e. Interim independent audit PASS authenticates all46
+one-declaration source commits, all52 transcripts/snapshots/RSS samples, the
+A8 comment-only successful recheck, strict A30/B16 caps and main serialization.
+Ten noncompiler evidence-contract regressions PASS. The immutable final plan
+has56 checks (49 positives/7 expected negatives), including all7 changed targets,
+all5 protected spikes, seeded package, main fixtures and R8/R16 boundaries.
+It deliberately omits lane-owned ActorLifecycleOnlyExtended/AvailabilityAware
+source targets and the extension-dependent R192 probe; no lane2 certification
+is inferred. Final results and evidence archive remain pending at this entry.
