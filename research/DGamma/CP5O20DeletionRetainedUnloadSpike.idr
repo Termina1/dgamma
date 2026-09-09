@@ -266,3 +266,23 @@ o20RegisteredSubsequenceRetainsUnload nameEq registered ordinal live
       (o20RegisteredSubsequenceRetainsUnload nameEq registered (S ordinal)
         (advanceGenerationEnvironment @{nameEq} ordinal (transitionAction step) live)
         tail (o20RegisteredUnloadFreeTail free) actor) occurs
+
+||| The selected-episode deletion predicate cannot erase a FOREIGN Unload:
+||| selected-owner deletion contradicts actor inequality, and registered-owner
+||| deletion contradicts the authentic native registered-Unload exclusion.
+export
+0 o20EpisodeDeletedNotForeignUnload :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (selected : name) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (action : Action name key value world error) -> (actor : name) ->
+  Not (actor = selected) ->
+  ((action = LUnload actor) -> GenerationOwnedActor nameEq registered ordinal live action -> Void) ->
+  EpisodeGenerationDeletedActor nameEq selected registered ordinal live action ->
+  (action = LUnload actor) -> Void
+o20EpisodeDeletedNotForeignUnload nameEq selected registered ordinal live action actor distinct excludes
+  (DeleteEpisodeGenerationLifecycle owner lifecycle) exact =
+    distinct (trans (sym (cong actionOwner exact)) owner)
+o20EpisodeDeletedNotForeignUnload nameEq selected registered ordinal live action actor distinct excludes
+  (DeleteRegisteredGeneration owned) exact = excludes exact owned
