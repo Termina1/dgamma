@@ -374,3 +374,30 @@ o20InsertPreservesPresentRole {name} {key} {value} {world} {error}
         (applyActionLocalUpdate nameEq keyEq (OInsert child parent component)
           (MkSystemState ambient fibers) afterState tag
           (checkedActionProjects nameEq keyEq (OInsert child parent component) (MkSystemState ambient fibers) afterState tag checked))))
+
+||| A native actor-body yielded insertion leaves that installed actor's
+||| remainder unchanged. Source presence, child distinctness and the frame
+||| are all produced; no target lookup or role equation enters as a premise.
+export
+0 o20YieldedInsertRoleFrame :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected, child : name) ->
+  (component : Component key value world error) ->
+  (before, afterState : SystemState name key value world error) ->
+  (action : Action name key value world error) -> (tag : RuleTag) ->
+  (checkedApplyAction {name} {key} {value} {world} {error} @{nameEq} @{keyEq}
+    action before = Just (tag, afterState)) ->
+  (action = OInsert child (ChildOf selected) component) ->
+  (installedAt {name} {key} {value} {world} {error} @{nameEq} selected before = True) ->
+  (o20FiberRoleRemainder
+    (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected (registry before)) =
+   o20FiberRoleRemainder
+    (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected (registry afterState)))
+o20YieldedInsertRoleFrame {name} {key} {value} {world} {error}
+  nameEq keyEq selected child component before afterState action tag checked inserted installed =
+    o20InsertPreservesPresentRole nameEq keyEq selected child (ChildOf selected) component before afterState tag
+      (trans (sym (cong (\observedAction => checkedApplyAction {name} {key} {value} {world} {error} @{nameEq} @{keyEq} observedAction before) inserted)) checked)
+      (presentFiber (o20InstalledEndPresentLookup nameEq keyEq selected
+        (the (Transitions before before) NoTransitions) (InstalledEnd installed)))
+      (presentFound (o20InstalledEndPresentLookup nameEq keyEq selected
+        (the (Transitions before before) NoTransitions) (InstalledEnd installed)))
