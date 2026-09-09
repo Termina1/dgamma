@@ -36,3 +36,24 @@ anchorOf : {name, key, world, error : Type} -> {value : key -> Type} ->
 anchorOf nameEq keyEq trail ordinal = lastReleaseCut (concatMap
   (\entry => scanReleaseOrdinals nameEq keyEq (catalogComponent entry) 0 (catalogOrdinal entry) trail)
   (filter (\entry => catalogOrdinal entry <= ordinal) (scanRootCatalog 0 trail)))
+
+||| Observed anchor and its exact maximum input, alongside the SAME root's
+||| KeyForcedAt observation. No maximal-element/occurrence decoder or stable
+||| original-release transport theorem is hidden in these equations.
+public export
+record AnchorAssignment
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (keyEq : DecEq key)
+  {0 first, finalState : SystemState name key value world error}
+  {0 trace : Transitions first finalState}
+  (trail : AvailabilityTrace name key world error value trace)
+  (entry : RootCatalogEntry name key world error value) where
+  constructor MkAnchorAssignment
+  anchorKeyObservation : KeyForcedAt name key world error value nameEq keyEq trail entry
+  anchorReleaseOrdinals : List Nat
+  0 anchorReleaseEquation : anchorReleaseOrdinals = concatMap
+    (\seed => scanReleaseOrdinals nameEq keyEq (catalogComponent seed) 0 (catalogOrdinal seed) trail)
+    (filter (\seed => catalogOrdinal seed <= catalogOrdinal entry) (scanRootCatalog 0 trail))
+  assignedAnchorObserved : Maybe Nat
+  0 assignedMaximumEquation : lastReleaseCut anchorReleaseOrdinals = assignedAnchorObserved
+  0 assignedAnchorEquation : anchorOf nameEq keyEq trail (catalogOrdinal entry) = assignedAnchorObserved
