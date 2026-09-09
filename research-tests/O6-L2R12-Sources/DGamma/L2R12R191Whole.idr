@@ -88,3 +88,10 @@ r191WholeFromFold segments =
         original distinct found (r191OwnChild segments) originalValid currentValid same)
     R191FoldReplay (\target, replayed, count, same, valid =>
       spliceR191FoldedSpan segments target replayed count same valid)
+
+||| ACTUAL full eleven-edge R191 relocated replay, endpoint snapshot-equal
+||| to the original state11, FROM the closed native fold and authentic packet.
+||| This is not a projection of L2R1R191Relocation or its local exchanges.
+export
+0 r191WholeReplayFromFold : R191FoldReplay
+r191WholeReplayFromFold = r191WholeFromFold r191RetirementSegments
