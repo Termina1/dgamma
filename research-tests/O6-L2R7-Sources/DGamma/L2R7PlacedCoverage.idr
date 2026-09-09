@@ -85,3 +85,25 @@ filterMemberObserved predicate item Here observed equation accepted = rewrite tr
 filterMemberObserved predicate item (There {y} {xs} later) observed equation accepted =
   filterTailObserved predicate y xs (predicate y) Refl item
     (filterMemberObserved predicate item later observed equation accepted)
+
+||| GENERAL per-root occurrence coverage from PlacedBundle plus an observed
+||| exact anchor match for an authentic global catalog entry. The member of
+||| placedRootsAt and its located native birth are BOTH produced internally.
+||| Selecting all relevant gap roots/anchors and excluding controls are separate.
+export
+0 placedRootCoverage : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {first, finalState : SystemState name key value world error} ->
+  {trace : Transitions first finalState} ->
+  {trail : AvailabilityTrace name key world error value trace} -> {anchor : Nat} ->
+  (placed : PlacedBundle name key world error value nameEq keyEq trail anchor) ->
+  (entry : RootCatalogEntry name key world error value) ->
+  (0 member : Elem entry (scanRootCatalog 0 trail)) -> (observed : Bool) ->
+  (0 equation : (anchorOf nameEq keyEq trail (catalogOrdinal entry) == Just anchor) = observed) ->
+  (0 accepted : observed = True) ->
+  AttachedBundleOccurrence name key world error value nameEq keyEq trace
+    (OInsert (catalogRoot entry) Root (catalogComponent entry)) (catalogOrdinal entry)
+placedRootCoverage {nameEq} {keyEq} {trail} {anchor} placed entry member observed equation accepted =
+  placedCatalogCoverage placed entry
+    (filterMemberObserved (\item => anchorOf nameEq keyEq trail (catalogOrdinal item) == Just anchor)
+      entry member observed equation accepted)
