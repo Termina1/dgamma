@@ -59,3 +59,35 @@ providerInHeadObserved {name} {key} {world} {error} {value}
 providerInHeadObserved {name} {key} {world} {error} {value}
   nameEq keyEq wanted actor fiber rest False equation =
   rewrite equation in Refl
+
+||| Constructor assembly AFTER eliminating an explicit observed native guard.
+||| The equation belongs to the library guard at the concrete head fiber.
+||| This is the observed-value boundary, not an assumed provider equation.
+public export
+providerHeadPacketAtGuard :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (wanted : key) -> (actor : name) ->
+  (component : Component key value world error) ->
+  (parent : Parent name) -> (flag : Bool) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (lifecycle : Lifecycle key value world error name
+    (dependencies (componentDependencies component)) (componentProvisions component)) ->
+  (rest : List (Binding name (FiberAt name key value world error))) ->
+  (observed : Bool) ->
+  (0 equation : ((isActive (fiberLifecycle (MkFiber component parent flag table lifecycle)) &&
+    memberKey @{keyEq} wanted (ownedValues (fiberTable (MkFiber component parent flag table lifecycle)))) = observed)) ->
+  ProviderHeadObserved name key world error value nameEq keyEq wanted actor
+    component parent flag table lifecycle rest
+providerHeadPacketAtGuard nameEq keyEq wanted actor component parent flag table lifecycle rest True equation =
+  MkProviderHeadObserved True equation
+    (providerInHeadObserved nameEq keyEq wanted actor
+      (MkFiber component parent flag table lifecycle) rest True equation)
+    (providerInHeadObserved nameEq keyEq wanted actor
+      (MkFiber component parent True table lifecycle) rest True equation)
+providerHeadPacketAtGuard nameEq keyEq wanted actor component parent flag table lifecycle rest False equation =
+  MkProviderHeadObserved False equation
+    (providerInHeadObserved nameEq keyEq wanted actor
+      (MkFiber component parent flag table lifecycle) rest False equation)
+    (providerInHeadObserved nameEq keyEq wanted actor
+      (MkFiber component parent True table lifecycle) rest False equation)
