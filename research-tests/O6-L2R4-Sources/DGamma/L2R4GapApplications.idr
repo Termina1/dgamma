@@ -70,3 +70,25 @@ smallGapViaNormalForm = attachedZeroGapInNormalForm
     (smallGapObserved attachedFixtureObservations) (c12ResidualNF fixtureCoverage))
   (\action, ordinal, member => separateBundleObserved 5 action ordinal member smallNoBundleStraddles
     (isLTE (bundleOffset member + transitionCount (memberBundle member)) 5))
+
+||| Same non-conditional unchanged-theorem application for barrier R/S.
+||| Native residual gap/offset and residual coverage/NF are fixture data;
+||| the universal separated callback is derived from barrierNoBundleStraddles.
+||| This does not claim that the nonempty root region has count zero.
+export
+0 barrierGapViaNormalForm :
+  transitionCount (attachedBetweenBlocks
+    (DGamma.L2R3BarrierBlocks.BarrierAttachedBlocks.physicalOrder barrierAttachedBlocks)) = 0
+barrierGapViaNormalForm = attachedZeroGapInNormalForm
+  (DGamma.L2R3BarrierBlocks.BarrierAttachedBlocks.freeingBlock barrierAttachedBlocks)
+  (DGamma.L2R3BarrierBlocks.BarrierAttachedBlocks.followingBlock barrierAttachedBlocks)
+  (DGamma.L2R3BarrierBlocks.BarrierAttachedBlocks.physicalOrder barrierAttachedBlocks)
+  (NoTransitions {state = barrierState 6}) 6
+  (cong transitionCount (sym (barrierGapObserved attachedFixtureObservations)))
+  (barrierOffsetObserved attachedFixtureObservations)
+  (replace {p = RemainingGapHeadIsRoot %search} (barrierGapObserved attachedFixtureObservations)
+    (barrierResidualCovered fixtureCoverage))
+  (replace {p = \gap => AttachedNormalForm Nat Bool Unit String (\key => Unit) %search %search barrierTrace gap 6}
+    (barrierGapObserved attachedFixtureObservations) (barrierResidualNF fixtureCoverage))
+  (\action, ordinal, member => separateBundleObserved 6 action ordinal member barrierNoBundleStraddles
+    (isLTE (bundleOffset member + transitionCount (memberBundle member)) 6))
