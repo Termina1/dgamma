@@ -1,0 +1,114 @@
+{
+  "status": "PASS",
+  "immutablePlanPublishedBeforeValidation": true,
+  "finalPlanLeafBeforeDependent": true,
+  "head": "abb414033f5aced230f84753cd2f542fab5dba6f",
+  "timestampUTC": "2026-09-09T02:54:47.779184+00:00",
+  "invocationCount": 75,
+  "passedCount": 63,
+  "failedCount": 12,
+  "interruptedCount": 0,
+  "finalCheckCount": 15,
+  "newDeclarationCount": 47,
+  "newDeclarations": {
+    "research-tests/O6-L2R4-Sources/DGamma/L2R4AnchorDecrease.idr": [
+      "anchorStepPreservesOne",
+      "anchorSwapDecreases",
+      "anchorSwapObserved"
+    ],
+    "research-tests/O6-L2R4-Sources/DGamma/L2R4AnchorFixtures.idr": [
+      "AnchorFixtureEvidence",
+      "anchorFixtureEvidence"
+    ],
+    "research-tests/O6-L2R4-Sources/DGamma/L2R4AnchorMeasure.idr": [
+      "AnchorEvent",
+      "anchorHistoryCount",
+      "anchorHistoryStep",
+      "anchorInversions",
+      "anchorMeasureStep"
+    ],
+    "research-tests/O6-L2R4-Sources/DGamma/L2R4AnchorNative.idr": [
+      "annotateAnchors",
+      "nativeAnchorEvent"
+    ],
+    "research-tests/O6-L2R4-Sources/DGamma/L2R4CatalogCoverage.idr": [
+      "catalogConsObserved",
+      "catalogNormalForm"
+    ],
+    "research-tests/O6-L2R4-Sources/DGamma/L2R4FixtureCoverage.idr": [
+      "FixtureRootRegions",
+      "fixtureRootRegions"
+    ],
+    "research-tests/O6-L2R4-Sources/DGamma/L2R4FixtureSeparation.idr": [
+      "barrierNoBundleStraddles",
+      "smallNoBundleStraddles"
+    ],
+    "research-tests/O6-L2R4-Sources/DGamma/L2R4GapApplications.idr": [
+      "AttachedFixtureObservations",
+      "attachedFixtureObservations",
+      "barrierGapViaNormalForm",
+      "smallGapViaNormalForm"
+    ],
+    "research-tests/O6-L2R4-Sources/DGamma/L2R4InsertReplay.idr": [
+      "checkedInsertAtNativeGuards",
+      "insertAtNativeGuards",
+      "replayInsertAfterRetirement",
+      "replayInsertFromView",
+      "replayInsertObserved",
+      "retireAnyInsertedSnapshot"
+    ],
+    "research-tests/O6-L2R4-Sources/DGamma/L2R4Localization.idr": [
+      "RootInsertionAt",
+      "attachedInteriorRoot",
+      "attachedRootAtOffset",
+      "orderedBundleRootAt",
+      "rootHeadOrdinal",
+      "rootInsertionAfterPrefix",
+      "rootInsertionBeforeSuffix"
+    ],
+    "research-tests/O6-L2R4-Sources/DGamma/L2R4NoStraddling.idr": [
+      "beginCutNoStraddling"
+    ],
+    "research-tests/O6-L2R4-Sources/DGamma/L2R4OrchestrationDispatcher.idr": [
+      "replayOrchestrationAfterRetirement"
+    ],
+    "research-tests/O6-L2R4-Sources/DGamma/L2R4OrdinalObservation.idr": [
+      "nativeActionAfterPrefix",
+      "nativeActionAt",
+      "observeOrdinalHead",
+      "occurrenceObserved"
+    ],
+    "research-tests/O6-L2R4-Sources/DGamma/L2R4ReplaceCommute.idr": [
+      "replaceCommuteLeftObserved",
+      "replaceCommuteRightObserved",
+      "replaceEntriesCommute"
+    ],
+    "research-tests/O6-L2R4-Sources/DGamma/L2R4RetireReplay.idr": [
+      "replayRetireAfterRetirement",
+      "replayRetireFromView",
+      "retirementUpdateSnapshot"
+    ]
+  },
+  "sourceCommitCount": 47,
+  "allShiftCommitsReceiptAuthenticated": true,
+  "noUnapprovedBundles": true,
+  "noPredecessorEdits": true,
+  "allInvocationsSerialized": true,
+  "allRecordedSnapshotsAndLogsAuthenticated": true,
+  "protocolIncidents": [],
+  "allFinalCurrentSourcesAuthenticated": true,
+  "committedArchiveAndManifestAuthenticated": true,
+  "evidenceArchiveSHA256": "5d227400ee67795bc683b7335a15335dc411be3b07b56ae0cca978351b9a8267",
+  "productionAndFrozenResearchUntouched": true,
+  "maxSampleRSSKiB": 4870048,
+  "RSSQualification": "250ms sampled RSS, not continuous peak; chez classified from the first L2R4 invocation",
+  "noUnsafeNewProofs": true,
+  "noOwnCompiler": true,
+  "noOwnHeavyLock": true,
+  "observedNonOwnedHeavyLock": null,
+  "noStagedFiles": true,
+  "cleanTrackedTree": true,
+  "noUntrackedDeliverables": true,
+  "manualProofReviewStillRequired": true,
+  "humanProofReviewGateRequired": true
+}
