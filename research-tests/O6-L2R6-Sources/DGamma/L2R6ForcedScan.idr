@@ -98,3 +98,19 @@ record KeyForcedAt
   0 keyForcedEquation : not (null (scanReleaseOrdinals nameEq keyEq (catalogComponent entry) 0 (catalogOrdinal entry) trail)) = keyForcedObserved
   releaseWhenForced : (0 forced : keyForcedObserved = True) ->
     ReleaseWitness (scanReleaseOrdinals nameEq keyEq (catalogComponent entry) 0 (catalogOrdinal entry) trail)
+
+||| Single-constructor observation producer: both the Bool and conditional
+||| release witness come from the same computed native trace scan.
+public export
+keyForcedAt : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {0 first, finalState : SystemState name key value world error} ->
+  {0 trace : Transitions first finalState} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (trail : AvailabilityTrace name key world error value trace) ->
+  (entry : RootCatalogEntry name key world error value) ->
+  (0 member : Elem entry (scanRootCatalog 0 trail)) ->
+  KeyForcedAt name key world error value nameEq keyEq trail entry
+keyForcedAt nameEq keyEq trail entry member = MkKeyForcedAt member
+  (not (null (scanReleaseOrdinals nameEq keyEq (catalogComponent entry) 0 (catalogOrdinal entry) trail))) Refl
+  (releaseWitnessObserved (scanReleaseOrdinals nameEq keyEq (catalogComponent entry) 0 (catalogOrdinal entry) trail)
+    (not (null (scanReleaseOrdinals nameEq keyEq (catalogComponent entry) 0 (catalogOrdinal entry) trail))) Refl)
