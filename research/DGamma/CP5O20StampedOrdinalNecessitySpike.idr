@@ -134,3 +134,22 @@ o20StampedHistoryForwardOrdinalFixed (StampedHistoryMore stage later) equalCount
 o20StampedHistoryForwardOrdinalFixed (StampedHistoryEpsilon leftIdle leftZero rightIdle rightZero later)
   equalCounters previous selected stamp found =
     o20StampedHistoryForwardOrdinalFixed later equalCounters previous selected stamp found
+
+||| NECESSARY condition of R197's endpoint/scanner synchronization itself:
+||| every final left live stamp must have its birth ordinal FIXED by the map.
+||| The empty initial environment discharges the entire initial predicate.
+||| This result does not assert that accepted canonical inputs satisfy it.
+export
+0 o20SynchronizationForwardOrdinalFixed :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {initial, leftFinal, rightFinal : SystemState name key value world error} ->
+  {left : Transitions initial leftFinal} -> {right : Transitions initial rightFinal} ->
+  (mapping : RegistrationGenerationBijection name) ->
+  (synchronization : O20HistorySynchronization name key world error value nameEq keyEq mapping left right) ->
+  (selected : name) -> (stamp : RegistrationGeneration name) ->
+  (lookupCurrentGeneration @{nameEq} selected (synchronizationLeftLive synchronization) = Just stamp) ->
+  (generationBirthOrdinal (generationForward mapping stamp) = generationBirthOrdinal stamp)
+o20SynchronizationForwardOrdinalFixed mapping synchronization selected stamp found =
+  o20StampedHistoryForwardOrdinalFixed (synchronizationStages synchronization) Refl
+    (\query, candidate, absent => void (nothingIsNotJust absent)) selected stamp found
