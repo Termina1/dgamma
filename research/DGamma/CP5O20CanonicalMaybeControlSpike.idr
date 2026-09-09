@@ -198,3 +198,21 @@ export
 o20CanonicalAbsentFromOriginal {originalFinal} nameEq keyEq protocol original capital selected absent =
   o20CanonicalEndpointPreservesAbsence nameEq keyEq originalFinal
     (canonicalFinal (canonicalSchedule capital)) (canonicalEndpoint (canonicalSchedule capital)) selected absent
+
+||| The actual replay endpoint's own control field transports exact absence.
+||| This is a consumer of existing replay capital, not a new replay oracle.
+export
+0 o20ReplayEndpointPreservesAbsence :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (sourceFinal, replayedFinal : SystemState name key value world error) ->
+  (endpoint : RelationalReplayEndpoint name key world error value nameEq keyEq sourceFinal replayedFinal) ->
+  (selected : name) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected (registry sourceFinal) = Nothing) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected (registry replayedFinal) = Nothing)
+o20ReplayEndpointPreservesAbsence {name} {key} {world} {error} {value}
+  nameEq keyEq sourceFinal replayedFinal endpoint selected absent =
+    o20AbsentControlTarget
+      (replace {p = \observed => FiberControlMaybeRelated observed
+        (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected (registry replayedFinal))}
+        absent (controlPointwise (replayedControls endpoint) selected))
