@@ -4621,3 +4621,22 @@ predecessor/skips/ordered occurrence synchronization using the now-computed
 prefix environments. Only after BOTH headline producers close may C proceed.
 Review/owner gate is parent-owned and remains unclaimed here. Archive publication
 is append-only; its anchor deliberately predates later publication/gate receipts.
+
+
+### R202 D4 — owner-accepted checked partial seal
+
+Owner accepted the exact partial boundary atD3 `396e963d`, authorized artifact-
+only D4, and reports pushing D3. Verbatim ruling:
+`research-tests/O6-R202-OWNER-FINAL-GATE.md`. Post-D3 machine audits authenticate
+all211 native records,30 source+3 prior artifact receipts,177 final expected
+outcomes, frozen bytes/census and clean tracked/no-staged state. The1091-file
+archive is anchored atD2 `2dfd42bf`, SHA256
+`576461e728ee5ebad405c4319a24e4b7a3f8720649cb97515aa21c7225932701`;
+D3/D4 receipts deliberately follow that anchor. D4's own resulting receipt is
+supplied in the final structured response, not cyclically inside its commit.
+
+B whole-step/selected-center join, global coverage/rebase/D5 and A global
+position transport/predecessor/skips/synchronization remain OPEN; C0/ineligible.
+No new proof/native invocation afterV177, frozen-source change, new hole,
+archive replacement or self-extension. D4/4; stand down. The separate read-only
+reviewer is being launched by the parent and is NOT claimed complete here.

@@ -1072,3 +1072,22 @@ expected outcomes, four rejected development snapshots retained.31 compiler-free
 contract tests and machine source/log/receipt/plan/resource/frozen authentication
 PASS. Separate reviewer/owner acceptance is not claimed. Exact boundaries and
 archive-anchor qualifications: `research-tests/O6-R202-SELF-REVIEW.md` and audit.
+
+
+### R202 D4 — owner-accepted checked partial seal
+
+Owner accepted the exact partial boundary atD3 `396e963d`, authorized artifact-
+only D4, and reports pushing D3. Verbatim ruling:
+`research-tests/O6-R202-OWNER-FINAL-GATE.md`. Post-D3 machine audits authenticate
+all211 native records,30 source+3 prior artifact receipts,177 final expected
+outcomes, frozen bytes/census and clean tracked/no-staged state. The1091-file
+archive is anchored atD2 `2dfd42bf`, SHA256
+`576461e728ee5ebad405c4319a24e4b7a3f8720649cb97515aa21c7225932701`;
+D3/D4 receipts deliberately follow that anchor. D4's own resulting receipt is
+supplied in the final structured response, not cyclically inside its commit.
+
+B whole-step/selected-center join, global coverage/rebase/D5 and A global
+position transport/predecessor/skips/synchronization remain OPEN; C0/ineligible.
+No new proof/native invocation afterV177, frozen-source change, new hole,
+archive replacement or self-extension. D4/4; stand down. The separate read-only
+reviewer is being launched by the parent and is NOT claimed complete here.
