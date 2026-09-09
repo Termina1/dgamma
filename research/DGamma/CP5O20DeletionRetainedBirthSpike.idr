@@ -160,3 +160,22 @@ export
 o20DeletionRetainedBirth trace premises candidate step generation classified outside =
   o20DeletionRetainedBirthAccounted trace premises candidate step generation classified outside
     (originalRegistrationAccounted (deletionRegistrationAccounting step) (deletedOccurrence classified))
+
+||| An actual retained birth becomes a deleted classification ONLY when its
+||| own suffix supplies a real parent Unload. This is a sufficiency consumer,
+||| not a producer of the missing retained-closing fact.
+export
+0 o20RetainedBirthClassified :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (trace : Transitions initial finalState) ->
+  (mapping : RegistrationGenerationBijection name) ->
+  (generation : RegistrationGeneration name) ->
+  (retained : O20RetainedGenerationBirth name key world error value mapping generation trace) ->
+  ActionOccurs (LUnload (retainedParent retained)) (afterRegistration (retainedBirth retained)) ->
+  DeletedGenerationClassification name key world error value nameEq trace (generationForward mapping generation)
+o20RetainedBirthClassified {name} {key} {world} {error} {value}
+  nameEq trace mapping generation (MkO20RetainedGenerationBirth parent component birth exact) closing =
+    replace {p = DeletedGenerationClassification name key world error value nameEq trace}
+      (sym exact) (MkDeletedGenerationClassification parent component birth Refl closing)
