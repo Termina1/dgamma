@@ -127,3 +127,35 @@ export
   transitionCount (appendTransitions before (MoreTransitions step NoTransitions)) = S (transitionCount before)
 packetPrefixShift NoTransitions step = Refl
 packetPrefixShift (MoreTransitions head rest) step = cong S (packetPrefixShift rest step)
+
+||| CONDITIONAL general packet route, per explicit supervisor ruling(A).
+||| Original/restored state families and all surrounding traces are arbitrary.
+||| Core grammar, location, ACTION-WORD equality, count5 and +1 placement are
+||| PRODUCED. Whole endpoints are deliberately a SEPARATE EXPLICIT PREMISE;
+||| deriving that premise from native passage squares is the L2R13 residue.
+export
+0 coreContiguityFromPackets :
+  (oldStates, newStates : Nat -> SystemState Nat Bool (\key => Unit) Unit String) ->
+  {initial, oldFinal, newFinal : SystemState Nat Bool (\key => Unit) Unit String} ->
+  (passage : PacketPassage oldStates newStates initial oldFinal newFinal) ->
+  (0 endpoints : RegistryExtensional Nat Bool Unit String (\key => Unit)
+    (fst fixtureDictionaries) oldFinal newFinal) ->
+  PacketContiguityResult initial oldFinal newFinal
+    (passageRoot passage) (passageComponent passage) (passageSuffixWord passage)
+coreContiguityFromPackets oldStates newStates passage endpoints = MkPacketContiguityResult
+  (appendTransitions (passagePrefix passage) (appendTransitions (assembledTrace (assembleCoreNative oldStates (passageOldPacket passage))) (passageOldSuffix passage)))
+  (appendTransitions (appendTransitions (passagePrefix passage) (MoreTransitions (Fired {before = oldStates 0} {afterState = newStates 0} (fst fixtureDictionaries) (snd fixtureDictionaries) (OInsert (passageRoot passage) Root (passageComponent passage)) OInsertTag (passageEarlyRoot passage)) NoTransitions)) (appendTransitions (assembledTrace (assembleCoreNative newStates (passageNewPacket passage))) (passageNewSuffix passage)))
+  (appendAvailability (passagePrefixTrail passage) (appendAvailability (assembledTrail (assembleCoreNative oldStates (passageOldPacket passage))) (passageOldSuffixTrail passage)))
+  (appendAvailability (appendAvailability (passagePrefixTrail passage) (AvailabilityStep (oldStates 0) (Fired {before = oldStates 0} {afterState = newStates 0} (fst fixtureDictionaries) (snd fixtureDictionaries) (OInsert (passageRoot passage) Root (passageComponent passage)) OInsertTag (passageEarlyRoot passage)) NoTransitions (AvailabilityEnd (newStates 0)))) (appendAvailability (assembledTrail (assembleCoreNative newStates (passageNewPacket passage))) (passageNewSuffixTrail passage)))
+  (locatePacketCore oldStates (passageOldPacket passage) (passagePrefix passage) (passageOldSuffix passage) (passagePrefixTrail passage) (passageOldSuffixTrail passage))
+  (locatePacketCore newStates (passageNewPacket passage) (appendTransitions (passagePrefix passage) (MoreTransitions (Fired {before = oldStates 0} {afterState = newStates 0} (fst fixtureDictionaries) (snd fixtureDictionaries) (OInsert (passageRoot passage) Root (passageComponent passage)) OInsertTag (passageEarlyRoot passage)) NoTransitions)) (passageNewSuffix passage) (appendAvailability (passagePrefixTrail passage) (AvailabilityStep (oldStates 0) (Fired {before = oldStates 0} {afterState = newStates 0} (fst fixtureDictionaries) (snd fixtureDictionaries) (OInsert (passageRoot passage) Root (passageComponent passage)) OInsertTag (passageEarlyRoot passage)) NoTransitions (AvailabilityEnd (newStates 0)))) (passageNewSuffixTrail passage))
+  (passageSourceValid passage) (passageForeign passage) (passageOldAfterWord passage)
+  (trans (nativeWordAppend (appendAvailability (passagePrefixTrail passage) (AvailabilityStep (oldStates 0) (Fired {before = oldStates 0} {afterState = newStates 0} (fst fixtureDictionaries) (snd fixtureDictionaries) (OInsert (passageRoot passage) Root (passageComponent passage)) OInsertTag (passageEarlyRoot passage)) NoTransitions (AvailabilityEnd (newStates 0)))) (appendAvailability (assembledTrail (assembleCoreNative newStates (passageNewPacket passage))) (passageNewSuffixTrail passage)))
+    (trans (cong2 (++) (nativeWordAppend (passagePrefixTrail passage) (AvailabilityStep (oldStates 0) (Fired {before = oldStates 0} {afterState = newStates 0} (fst fixtureDictionaries) (snd fixtureDictionaries) (OInsert (passageRoot passage) Root (passageComponent passage)) OInsertTag (passageEarlyRoot passage)) NoTransitions (AvailabilityEnd (newStates 0))))
+      (trans (nativeWordAppend (assembledTrail (assembleCoreNative newStates (passageNewPacket passage))) (passageNewSuffixTrail passage))
+        (cong2 (++) (fst (packetCoreWords oldStates newStates (passageOldPacket passage) (passageNewPacket passage))) (passageNewAfterWord passage))))
+      (sym (appendAssociative (nativeActionWord (passagePrefixTrail passage)) [(OInsert (passageRoot passage) Root (passageComponent passage))]
+        (nativeActionWord (assembledTrail (assembleCoreNative oldStates (passageOldPacket passage))) ++ passageSuffixWord passage)))))
+  (fst (packetCoreWords oldStates newStates (passageOldPacket passage) (passageNewPacket passage)))
+  (assembledCount (assembleCoreNative oldStates (passageOldPacket passage))) (assembledCount (assembleCoreNative newStates (passageNewPacket passage)))
+  (packetPrefixShift (passagePrefix passage) (Fired {before = oldStates 0} {afterState = newStates 0} (fst fixtureDictionaries) (snd fixtureDictionaries) (OInsert (passageRoot passage) Root (passageComponent passage)) OInsertTag (passageEarlyRoot passage))) endpoints
