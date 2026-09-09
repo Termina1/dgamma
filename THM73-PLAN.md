@@ -4131,3 +4131,8 @@ transport, unconditional ALL-name predecessor cuts, paired runtime occurrence
 histories, synchronization and convergence. Do not promote scanner histories to
 runtime histories. D2 final182-check validation pending; proof caps will not be
 extended. See `research-tests/O6-R203-AUTHOR-REVIEW.md`.
+
+R203 D3 validation completed20:25:03Z:182/182 expected outcomes;32 guarded source
+commits/225 raw invocations authenticated, archive verified. No A/B/D5/convergence
+closure. Request checked-partial supervisor gate; D4 is artifact-only. A16/B16
+caps are exhausted and further proof work belongs to a new allocation.

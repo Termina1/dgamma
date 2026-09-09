@@ -1109,3 +1109,17 @@ Theorem73 is still open; production and frozen sources are unchanged.
 Nonempty regressions: `R203NativeDisappearancePositive` and
 `R203GlobalActivationHistoryPositive`. Full declaration/attempt correspondence:
 [`O6-R203-DECLARATIONS.md`](research-tests/O6-R203-DECLARATIONS.md).
+
+### R203 D3 — final evidence complete
+
+**182/182 final expected outcomes:** 174 positive source checks, seven exact
+expected negatives, and the seeded package build. All176 inherited applicable
+main sources plus five new ones were checked in import order. The225-record raw
+archive authenticates32 source commits,10 rejected snapshots and the genuine
+superseded B16-1 PASS; no resource stop or source mutation occurred. Frozen
+census remains4 =1/2/0/0/1. This is still a **partial** milestone, pending the
+supervisor/reviewer gate—not A/B/D5 or Theorem73 closure.
+
+[Final audit](research-tests/O6-R203-GRIND-SHIFT-AUDIT.md) ·
+[Machine verification](research-tests/O6-R203-INDEPENDENT-VERIFICATION.json) ·
+[Archive verification](research-tests/O6-R203-ARCHIVE-VERIFICATION.json)

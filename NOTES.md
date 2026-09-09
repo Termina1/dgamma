@@ -4696,3 +4696,37 @@ Next: complete that validation, publish raw snapshots/archive and independent
 machine authentication, then obtain the supervisor/reviewer gate. No further
 A/B proof work is authorized in this shift. Frozen census remains4 =1/2/0/0/1;
 production is identical to `34b21c9`, and all frozen statements/bodies are pinned.
+
+### R203 D3 — final validation/publication complete, gate pending
+
+Final validation finished20:25:03Z:182/182 expected outcomes, covering ALL176
+inherited applicable main sources +5 new=181 direct source checks (174 positive,
+7 exact diagnostic+symbol negatives) plus one seeded package PASS. No cold-build
+claim. Total225 invocations=215 expected outcomes+10 rejected snapshots; the215
+include the genuine B16-1 PASS superseded by B16-2. All32 source commits and the
+precise cleanup are authenticated.24+10 adversarial contract tests pass.
+
+Frozen and read-only independent machine/resource audits PASS. Frozen census
+remains4=1/2/0/0/1; whole protected sources, bridge manifest and named theorem
+statement/body hashes are unchanged. Production is identical to34b21c9. No
+compiler overlap within main, source mutation, resource stop, unexpected
+Building, new escape/hole or accepted-capital field change.96 invocations overlap
+another lane by timestamp only. Sampled peaks: LocalDiamond50,502,192KiB/52GiB;
+UniqueOrdinal (maximum other target)44,799,888KiB/48GiB. Samples are NOT OS high-water.
+
+The append-only raw archive has1170 files/1,382,914bytes and SHA256
+`344979cca8db95bb5510e9a8867cfc72309e6f869422fc86616858104103e985`.
+Its anchor is D2 `d50bd026`; it intentionally precedes D3/D4 artifact receipts.
+Post-creation archive verification PASS. Measured inventory refresh:290 entries,
+179 checked plus2 inherited auxiliary main variants=181 source targets;111
+inventory entries remain explicitly NOT rechecked. See the R203 final audit and
+ledger/archive verification artifacts; no snapshot or rejected attempt is hidden.
+
+**Proof status remains PARTIAL:** whole retained-close/actual selection coverage
+and original native chronology/prefix positions/physical disappearance are fully
+proved supporting facts. Present-vestigial adapter/per-class ALL-name rebase/D5,
+canonical-prefix transport, ALL-name predecessor cuts, paired runtime histories,
+synchronization and convergence remain open. Next proof work requires a NEW
+allocation; the A16/B16 caps will not be extended. D4 awaits the supervisor's
+checked-partial gate and independent reviewer coordination; machine authentication
+and author review do not replace independent human review.

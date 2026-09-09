@@ -81,3 +81,12 @@ remains4 = CanonicalSort1/CrossTrace2/DeletionChain0/LocalDiamond0/Renaming1.
 No author-discovered blocker in the retained typed statements. Substantial
 unproved macro obligations remain, and independent human review is REQUIRED
 before acceptance. Do not infer full Lemma72, D5 or Theorem73 from this milestone.
+
+## D3 evidence follow-through
+
+Final validation completed20:25:03Z:182/182 expected outcomes (174 positive source
+checks,7 exact expected negatives, seeded package). The complete225-record raw
+archive and all1170 files pass post-creation verification. Machine source/log/
+receipt, frozen and resource audits pass; no own compiler remains. Source
+statements and the author scope verdict above are unchanged. Independent human
+review and the supervisor gate are still required; A/B/D5/convergence stay open.
