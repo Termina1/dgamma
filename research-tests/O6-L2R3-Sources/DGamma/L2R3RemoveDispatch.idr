@@ -105,3 +105,28 @@ replayRemoveAtObservedSource nameEq keyEq child removed fiber removedFiber ambie
         (registryWellFormedRetire nameEq keyEq ambient child fiber source childFound valid)
         (removeAfterRetirementRaw nameEq keyEq child removed fiber removedFiber ambient source distinct childFound removedFound removable noChild))
       (sym currentSame) currentValid)
+
+||| Eliminate the original native RemoveSuccessView exactly once. Its actual
+||| guard, childlessness, tag and literal deletion endpoint determine replay;
+||| the view is a single-constructor producer, not an Either-role adapter.
+export
+0 replayRemoveFromView :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (child, removed : name) ->
+  (fiber : Fiber name key value world error) ->
+  (ambient : world) -> (source : Registry name key value world error) ->
+  (afterState, current : SystemState name key value world error) -> (tag : RuleTag) ->
+  (0 distinct : Not (child = removed)) ->
+  (0 childFound : lookupFiber {name} {key} {value} {world} {error} @{nameEq} child source = Just fiber) ->
+  (0 valid : registryWellFormed {name} {key} {value} {world} {error} @{nameEq} @{keyEq} (MkSystemState ambient source) = True) ->
+  (0 currentValid : registryWellFormed @{nameEq} @{keyEq} current = True) ->
+  (0 currentSame : runtimeSnapshot current = runtimeSnapshot {name} {key} {value} {world} {error}
+    (MkSystemState ambient (replaceBinding @{nameEq} child (retireFiber fiber) source))) ->
+  RemoveSuccessView name key world error value nameEq removed ambient source tag afterState ->
+  CheckedSnapshotStep name key world error value nameEq keyEq (ORemove removed) current tag
+    (runtimeSnapshot {name} {key} {value} {world} {error}
+      (MkSystemState (worldState afterState) (replaceBinding @{nameEq} child (retireFiber fiber) (registry afterState))))
+replayRemoveFromView nameEq keyEq child removed fiber ambient source _ current _
+  distinct childFound valid currentValid currentSame (MkRemoveSuccessView removedFiber removedFound removable noChild) =
+  replayRemoveAtObservedSource nameEq keyEq child removed fiber removedFiber ambient source current
+    distinct childFound removedFound removable noChild valid currentValid currentSame
