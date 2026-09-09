@@ -1,0 +1,97 @@
+[
+  {
+    "unit": "V1",
+    "path": "research-tests/O6-L2R3-Sources/DGamma/L2R3Attached.idr",
+    "sourceHash": "32a742cf8a7dbfbe75bffc3f972f686e138155c9cebf709d1a0cfd444636f0b3",
+    "dependsOn": []
+  },
+  {
+    "unit": "V2",
+    "path": "research-tests/O6-L2R3-Sources/DGamma/L2R3AttachedGap.idr",
+    "sourceHash": "cf4c148ea6effb932b7c16589a0d8cd7d3e782db5d79691920d05d671018f841",
+    "dependsOn": [
+      "research-tests/O6-L2R3-Sources/DGamma/L2R3Attached.idr"
+    ]
+  },
+  {
+    "unit": "V3",
+    "path": "research-tests/O6-L2R3-Sources/DGamma/L2R3SmallAttached.idr",
+    "sourceHash": "aa0b9619f0940ae634c5f5c934227c455af09d0d537a12c237a7ff1cc6e167f1",
+    "dependsOn": [
+      "research-tests/O6-L2R3-Sources/DGamma/L2R3Attached.idr",
+      "research-tests/O6-L2R3-Sources/DGamma/L2R3AttachedGap.idr"
+    ]
+  },
+  {
+    "unit": "V4",
+    "path": "research-tests/O6-L2R3-Sources/DGamma/L2R3ForcedClosure.idr",
+    "sourceHash": "3a969ef6e366a656adcd4938ba59bb971dad227b8479ec192b36b3999d2efd21",
+    "dependsOn": []
+  },
+  {
+    "unit": "V5",
+    "path": "research-tests/O6-L2R3-Sources/DGamma/L2R3BarrierStates.idr",
+    "sourceHash": "6cbf4320f00c217c3c94b548886a8a0241e40a55b97febd8053d5fc6715a7a32",
+    "dependsOn": []
+  },
+  {
+    "unit": "V6",
+    "path": "research-tests/O6-L2R3-Sources/DGamma/L2R3BarrierExecution.idr",
+    "sourceHash": "05ab1c90d0cd6b392ee382f5518b6b7d2ab440b8d6a20ae1c849dc27d85f5c13",
+    "dependsOn": [
+      "research-tests/O6-L2R3-Sources/DGamma/L2R3BarrierStates.idr"
+    ]
+  },
+  {
+    "unit": "V7",
+    "path": "research-tests/O6-L2R3-Sources/DGamma/L2R3BarrierBlocks.idr",
+    "sourceHash": "45e04429581d5941869739093cc77b6c9dd12cbdbc7b9088e670f45f856eef5f",
+    "dependsOn": [
+      "research-tests/O6-L2R3-Sources/DGamma/L2R3Attached.idr",
+      "research-tests/O6-L2R3-Sources/DGamma/L2R3SmallAttached.idr",
+      "research-tests/O6-L2R3-Sources/DGamma/L2R3BarrierStates.idr",
+      "research-tests/O6-L2R3-Sources/DGamma/L2R3BarrierExecution.idr"
+    ]
+  },
+  {
+    "unit": "V8",
+    "path": "research-tests/O6-L2R3-Sources/DGamma/L2R3BarrierOrder.idr",
+    "sourceHash": "ba8651f57df253c38e1ad2b8f6be6bc384ec2a544ef03b0ecbfadebbbdac6383",
+    "dependsOn": [
+      "research-tests/O6-L2R3-Sources/DGamma/L2R3Attached.idr",
+      "research-tests/O6-L2R3-Sources/DGamma/L2R3BarrierStates.idr",
+      "research-tests/O6-L2R3-Sources/DGamma/L2R3BarrierExecution.idr",
+      "research-tests/O6-L2R3-Sources/DGamma/L2R3ForcedClosure.idr"
+    ]
+  },
+  {
+    "unit": "V9",
+    "path": "research-tests/O6-L2R3-Sources/DGamma/L2R3RetireDispatch.idr",
+    "sourceHash": "e7de464108aa5b824db01c1f0eefbafcb2e91743fa13529d3b47502aea0f098c",
+    "dependsOn": []
+  },
+  {
+    "unit": "V10",
+    "path": "research-tests/O6-L2R3-Sources/DGamma/L2R3BundlePhaseStates.idr",
+    "sourceHash": "529531a6db2de2b68a55f0274ed293f8507a74c6b214f620abb5eb48d92285ed",
+    "dependsOn": [
+      "research-tests/O6-L2R3-Sources/DGamma/L2R3BarrierStates.idr"
+    ]
+  },
+  {
+    "unit": "V11",
+    "path": "research-tests/O6-L2R3-Sources/DGamma/L2R3BundlePhase.idr",
+    "sourceHash": "0647e6c60e080bada72725005b5a37223ead934f406bdb001dcf74eb67e4cd19",
+    "dependsOn": [
+      "research-tests/O6-L2R3-Sources/DGamma/L2R3BarrierStates.idr",
+      "research-tests/O6-L2R3-Sources/DGamma/L2R3BarrierExecution.idr",
+      "research-tests/O6-L2R3-Sources/DGamma/L2R3BundlePhaseStates.idr"
+    ]
+  },
+  {
+    "unit": "V12",
+    "path": "research-tests/O6-L2R3-Sources/DGamma/L2R3RemoveDispatch.idr",
+    "sourceHash": "c47e6b86b448edb13d6832064268d59079a48bcc9e152a17a77cf28b23dcd0ab",
+    "dependsOn": []
+  }
+]

@@ -9,6 +9,7 @@ ROOT = pathlib.Path('/Users/vyacheslavshebanov/Work/dgamma-lane2')
 OUT = pathlib.Path('/tmp/dgamma-l2r3')
 LOCK = pathlib.Path('/tmp/dgamma-heavy.lock')
 unit, path = sys.argv[1:3]
+assert re.fullmatch(r'(?:[ABC][1-9]\d*-[1-3]|V\d+)', unit), 'Bounded attempt or validation ID required'
 diagnostic = sys.argv[3] if len(sys.argv)>3 else None
 symbol = sys.argv[4] if len(sys.argv)>4 else None
 assert pathlib.Path.cwd() == ROOT
@@ -17,6 +18,7 @@ assert not (OUT/(unit+'.json')).exists(), 'Append-only invocation IDs'
 assert path != 'package', 'Whole package and cold rebuild forbidden in this lane'
 target = ROOT/path
 assert target.is_file() and target.stat().st_size > 0 and target.resolve().is_relative_to(ROOT)
+assert path.startswith('research-tests/O6-L2R3-Sources/') or (unit in {'V0','V00'} and path == 'research-tests/O6-L2R2-Sources/DGamma/L2R2SmallStates.idr'), 'Lane-owned targets, except exact Unit0 validation'
 assert not path.startswith('src/')
 assert not any(x in target.name for x in ['CP5O20', 'LocalDiamond']), 'Frozen target forbidden'
 plan = json.loads((OUT/'shift.json').read_text())

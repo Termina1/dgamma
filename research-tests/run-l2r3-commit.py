@@ -24,15 +24,7 @@ assert len(declarations((ROOT/record['path']).read_bytes())-declarations(old.std
 assert record['path'].startswith(('research-tests/O6-L2R3-Sources/',)), 'Lane-owned source only'
 source = ROOT/record['path']
 commitPaths=[record['path']]
-for extra in record.get('bundleSources',[]):
-    assert unit in {'C4-2','C4-3'} and record['bundleFresh']
-    assert extra['path']=='research-tests/O6-L2R3-Sources/DGamma/L2R3SmallStates.idr'
-    assert hashlib.sha256((ROOT/extra['path']).read_bytes()).hexdigest()==extra['sourceSHA256']
-    prior=subprocess.check_output(['git','show','HEAD:'+extra['path']],cwd=ROOT)
-    assert declarations(prior)==declarations((ROOT/extra['path']).read_bytes())
-    assert prior.split(b'||| Explicit small native states')[0]==(ROOT/extra['path']).read_bytes().split(b'||| Explicit small native states')[0]
-    assert b'smallState : Nat -> SystemState Nat Bool' in (ROOT/extra['path']).read_bytes()
-    commitPaths.append(extra['path'])
+assert not record.get('bundleSources'), 'No L2R3 two-file bundle gate exists; predecessor C4 exception is not reusable'
 assert hashlib.sha256(source.read_bytes()).hexdigest() == record['sourceSHA256']
 assert not subprocess.check_output(['git','diff','--cached','--name-only'],cwd=ROOT,text=True).strip()
 processes = subprocess.check_output(['ps','-axo','pid,ppid,command'],text=True)
