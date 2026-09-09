@@ -9,6 +9,7 @@ import DGamma.CP4ProgressNoDeadlock
 import DGamma.CP5ConfluenceDeletionChainSpike
 import DGamma.CP5ConfluenceRenamingCompositionSpike
 import DGamma.CP5O20DiscardedSelectionCoverageSpike
+import DGamma.CP5O20DiscardedBirthOriginSpike
 import DGamma.R45BareDiamondDisciplineCounterexamplePositive
 import DGamma.R178GeneratedOrchestrationFixtures
 import DGamma.R193VestigialHistoryTransportPositive
@@ -67,3 +68,15 @@ r200HistoricalNotClosingFree noClosing =
   o20ClosingFreeNoPresentVestigial Nat R45Key Unit String R45Value r45NameEq r45KeyEq
     r193HistoricalClosedTrace r193HistoricalClosedTrace identityRegistrationGenerationBijection
     r193HistoricalTree r200HistoricalAligned Refl noClosing 1 r195MismatchOwnsVestigialRemainder
+
+||| The authentic vestigial packet's discarded membership alone now produces
+||| its actual closing-birth classification through the WHOLE accepted scan.
+||| This tests the new converse direction, not a hand-supplied classification.
+export
+0 r200HistoricalDiscardedBirthClassified :
+  DeletedGenerationClassification Nat R45Key Unit String R45Value r45NameEq
+    r193HistoricalClosedTrace (vestigialGeneration r195MismatchOwnsVestigialRemainder)
+r200HistoricalDiscardedBirthClassified =
+  o20AcceptedDiscardedBirthClassified Nat R45Key Unit String R45Value r45NameEq
+    r193HistoricalClosedTrace r193HistoricalClosedTrace identityRegistrationGenerationBijection r193HistoricalTree
+    (vestigialGeneration r195MismatchOwnsVestigialRemainder) (vestigialBirthDiscarded r195MismatchOwnsVestigialRemainder)
