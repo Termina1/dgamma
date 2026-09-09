@@ -490,3 +490,57 @@ o20ParentInstalledAtRegistrationCut name key world error value protocol nameEq
   (MoreTransitions firstEdge rest) edge later child parent component exact
   (RegistrationDisciplineStep _ _ firstDiscipline tail) =
     o20ParentInstalledAtRegistrationCut name key world error value protocol nameEq rest edge later child parent component exact tail
+
+||| A genuine birth BEFORE the selected L-Begin has an EARLIER parent close
+||| in that same before segment. The native registration yield makes the
+||| parent installed at birth; the later L-Begin requires it inactive.
+||| extractFirstClosing produces the alternative, not an after-close premise.
+export
+0 o20BeforeBirthHasEarlierParentClose :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (trace : Transitions initial finalState) ->
+  (premises : CanonicalizationPremises name key world error value protocol nameEq keyEq trace) ->
+  (candidate : DeletableClosingEpisode name key world error value nameEq keyEq trace) ->
+  (child, parent : name) -> (component : Component key value world error) ->
+  (parent = selectedActor candidate) ->
+  (birth : LocatedActionOccurrence (OInsert child (ChildOf parent) component) (traceBeforeOpening (selectedEpisode candidate))) ->
+  (sourceClose : Nat ** (LT (locatedActionOrdinal birth) sourceClose,
+    rawClosingActionAt name key world error value sourceClose (traceBeforeOpening (selectedEpisode candidate)) = Just (LUnload parent)))
+o20BeforeBirthHasEarlierParentClose name key world error value protocol nameEq keyEq trace premises candidate child parent component parentExact
+  (MkLocatedActionOccurrence before afterState prior (Fired stepEq stepKey action tag checked) laterBirth birthShape birthSplit) =
+    case extractFirstClosing nameEq keyEq parent (MoreTransitions (Fired stepEq stepKey action tag checked) laterBirth)
+      (snd (alignedAppendSplit prior (MoreTransitions (Fired stepEq stepKey action tag checked) laterBirth)
+        (replace {p = AlignedTransitions name key world error value nameEq keyEq} (sym birthSplit)
+          (fst (alignedAppendSplit (traceBeforeOpening (selectedEpisode candidate)) (appendTransitions (MoreTransitions (beginTransition (closedOpening (locatedEpisode (selectedEpisode candidate)))) (closedTransitions (locatedEpisode (selectedEpisode candidate)))) (traceAfterClosing (selectedEpisode candidate)))
+            (replace {p = AlignedTransitions name key world error value nameEq keyEq}
+              (sym (locatedDecomposition (selectedEpisode candidate)))
+              (replayAligned (chainReplayCapital premises))))))))
+      (o20ParentInstalledAtRegistrationCut name key world error value protocol nameEq prior (Fired stepEq stepKey action tag checked)
+        (appendTransitions laterBirth (appendTransitions (MoreTransitions (beginTransition (closedOpening (locatedEpisode (selectedEpisode candidate)))) (closedTransitions (locatedEpisode (selectedEpisode candidate)))) (traceAfterClosing (selectedEpisode candidate)))) child parent component birthShape (replace {p = RegistrationDiscipline protocol nameEq}
+          (sym (trans (sym (appendTransitionsAssociative prior (MoreTransitions (Fired stepEq stepKey action tag checked) laterBirth) (appendTransitions (MoreTransitions (beginTransition (closedOpening (locatedEpisode (selectedEpisode candidate)))) (closedTransitions (locatedEpisode (selectedEpisode candidate)))) (traceAfterClosing (selectedEpisode candidate)))))
+            (trans (cong (\part => appendTransitions part (appendTransitions (MoreTransitions (beginTransition (closedOpening (locatedEpisode (selectedEpisode candidate)))) (closedTransitions (locatedEpisode (selectedEpisode candidate)))) (traceAfterClosing (selectedEpisode candidate)))) birthSplit)
+              (locatedDecomposition (selectedEpisode candidate)))))
+          (replayDiscipline (chainReplayCapital premises))))
+      (replace {p = \actor => installedAt {name} {key} {value} {world} {error} @{nameEq} actor (locatedPreStart (selectedEpisode candidate)) = False}
+        (sym parentExact)
+        (fst (snd (lBeginBoundary nameEq keyEq (selectedActor candidate)
+          (locatedPreStart (selectedEpisode candidate)) (closedStartState (locatedEpisode (selectedEpisode candidate)))
+          LBeginTag (beginEquation (closedOpening (locatedEpisode (selectedEpisode candidate)))))))) of
+      firstClose =>
+        case o20UnloadOccurrenceIndex name key world error value (MoreTransitions (Fired stepEq stepKey action tag checked) laterBirth) parent
+          (o20IndexedUnloadOccurs name key world error value (MoreTransitions (Fired stepEq stepKey action tag checked) laterBirth)
+            (transitionCount (traceBeforeFirstClosing firstClose)) parent
+            (trans (cong (rawClosingActionAt name key world error value (transitionCount (traceBeforeFirstClosing firstClose)))
+              (sym (closingSplit firstClose)))
+              (rawClosingActionAtSplit name key world error value (traceBeforeFirstClosing firstClose)
+                (unloadTransition (firstClosingStep firstClose)) (traceAfterFirstClosing firstClose)))) of
+          (Z ** closeExact) => case trans (sym birthShape) (justInjective closeExact) of Refl impossible
+          (S closeIndex ** closeExact) =>
+            (transitionCount prior + S closeIndex **
+              (replace {p = LT (transitionCount prior)} (plusSuccRightSucc (transitionCount prior) closeIndex)
+                (LTESucc (lteAddRight {m = closeIndex} (transitionCount prior))),
+               trans (cong (rawClosingActionAt name key world error value (transitionCount prior + S closeIndex)) (sym birthSplit))
+                 (trans (o20ClosingActionAtAppend name key world error value prior (MoreTransitions (Fired stepEq stepKey action tag checked) laterBirth) (S closeIndex)) closeExact)))
