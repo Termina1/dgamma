@@ -14,6 +14,9 @@ import DGamma.CP5CurrentGenerationBirthSpike
 import DGamma.CP5O20SupportedEndpointCapitalSpike
 import DGamma.CP5O20HistoryNameTransportSpike
 import DGamma.CP5O20RootOrdinalBoundarySpike
+import DGamma.CP5O20RootReplayLawProducerSpike
+import DGamma.CP5O20NativeInsertEnvironmentSpike
+import DGamma.CP5O20StampedOrdinalNecessitySpike
 import DGamma.CP5O20ChainCurrentDisappearanceSpike
 import Data.List
 import Data.List.Elem
@@ -178,3 +181,51 @@ o20ReplayCurrentBirthStamps correspondence roots unique selected sourceStamp tar
           sourceBirth (replayActionOrigin correspondence targetBirth)))))
       (trans (o20ReplayInsertionOrdinals correspondence roots selected targetParent targetComponent targetBirth)
         (sym targetExact))
+
+||| Actual retained-class current-coordinate rebase: compute the canonical
+||| native environment, produce BOTH current stamps, their exact replay-map
+||| equation, and agreement with the accepted current raw-name image. This
+||| includes unsupported present names. It does not yet rebase full parent/
+||| provider controls or the absent-domain class into an ALL-name cut.
+export
+0 o20CanonicalPresentCountRebase :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (generationEq : DecEq (RegistrationGeneration name)) ->
+  {leftFirst, leftFinal, rightFirst, rightFinal : SystemState name key value world error} ->
+  (left : Transitions leftFirst leftFinal) -> (right : Transitions rightFirst rightFinal) ->
+  (mapping : RegistrationGenerationBijection name) ->
+  (registrations : RegistrationCorrespondenceByGeneration nameEq mapping left right) ->
+  (current : CurrentEndpointRenaming nameEq keyEq mapping left right registrations) ->
+  (capital : IndependentCanonicalSchedule name key world error value protocol nameEq keyEq left) ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq left ->
+  (selected : name) -> (fiber : Fiber name key value world error) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected
+    (registry (canonicalFinal (canonicalSchedule capital))) = Just fiber) ->
+  (originalStamp : RegistrationGeneration name ** (canonicalStamp : RegistrationGeneration name **
+    (lookupCurrentGeneration @{nameEq} selected (leftFinalGenerations registrations) = Just originalStamp,
+     lookupCurrentGeneration @{nameEq} selected
+       (o20ScannedFinalLive nameEq Z [] (canonicalTrace (canonicalSchedule capital))) = Just canonicalStamp,
+     generationForward (replayGenerationRenaming (canonicalOccurrenceCorrespondence capital)) originalStamp = canonicalStamp,
+     o20HistoricalTarget mapping originalStamp = renameForward (currentNameBijection current) selected)))
+o20CanonicalPresentCountRebase name key world error value protocol nameEq keyEq generationEq
+  left right mapping registrations current capital unique selected fiber present =
+    case o20CanonicalPresentForwardName name key world error value protocol nameEq keyEq generationEq
+      left right mapping registrations current capital unique selected fiber present of
+      (originalStamp ** (originalCurrent, names)) =>
+        case currentDomainFromEmptyScan name key world error value nameEq keyEq
+          (canonicalTrace (canonicalSchedule capital)) (transitionCount (canonicalTrace (canonicalSchedule capital)))
+          (o20ScannedFinalLive nameEq Z [] (canonicalTrace (canonicalSchedule capital)))
+          (o20NativePrefixScan nameEq (canonicalTrace (canonicalSchedule capital)))
+          (replayAligned (canonicalReplayPremises capital)) (replayInitialEmpty (canonicalReplayPremises capital))
+          selected fiber present of
+          (canonicalStamp ** canonicalCurrent) =>
+            (originalStamp ** (canonicalStamp ** (originalCurrent, canonicalCurrent,
+              o20ReplayCurrentBirthStamps {nameEq} {keyEq} (canonicalOccurrenceCorrespondence capital)
+                (o20CanonicalRootReplayOrdinals capital) unique selected originalStamp canonicalStamp
+                (acceptedLeftCurrentBirth name key world error value nameEq left right mapping registrations selected originalStamp originalCurrent)
+                (currentBirthFromGenerationScan name key world error value nameEq
+                  (canonicalTrace (canonicalSchedule capital)) (transitionCount (canonicalTrace (canonicalSchedule capital)))
+                  (o20ScannedFinalLive nameEq Z [] (canonicalTrace (canonicalSchedule capital)))
+                  (o20NativePrefixScan nameEq (canonicalTrace (canonicalSchedule capital))) selected canonicalStamp canonicalCurrent), names)))
