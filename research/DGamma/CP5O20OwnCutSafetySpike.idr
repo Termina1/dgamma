@@ -19,6 +19,7 @@ import DGamma.CP5O20SupportedReferenceSpike
 import DGamma.CP5O20InversionChildSafetySpike
 import DGamma.CP5O20ReferenceDescentSpike
 import DGamma.CP5O20SafeBlockSelectionSpike
+import DGamma.CP5O20SelectionCompletenessSpike
 import DGamma.CP5RankedEarlyApplicabilitySpike
 import Data.List.Elem
 import Data.Maybe
@@ -284,3 +285,38 @@ o20ReachedInversionEarlierBegin nameEq keyEq protocol original capital unique or
     (o20InstalledEndPresentLookup nameEq keyEq (actorLeft swap)
       (blockBody (decomposedBlock blocks (actorLeft swap) (fst (o20ChosenActorFacts swap))))
       (blockBodyInstalled (decomposedBlock blocks (actorLeft swap) (fst (o20ChosenActorFacts swap)))))
+
+||| Full native OWN-CUT safety test for an actual selected reached inversion.
+||| All semantic clauses are produced; only literal ZeroGapPending remains.
+||| This proves the native check succeeds, without fabricating a chosen payload.
+export
+0 o20ReachedInversionOwnCutSafe :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {initial, originalFinal, reachedFinal : SystemState name key value world error} ->
+  (original : Transitions initial originalFinal) ->
+  (capital : IndependentCanonicalSchedule name key world error value protocol nameEq keyEq original) ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq original ->
+  {reachedOrder, goalOrder, swappedOrder : List name} ->
+  O20SupportedReferenceOrders name key world error value nameEq keyEq originalFinal (supportOrder (canonicalSchedule capital)) goalOrder ->
+  O20SupportedReferenceOrders name key world error value nameEq keyEq originalFinal reachedOrder goalOrder ->
+  (replayed : Transitions initial reachedFinal) ->
+  {certificate : CertifiedActorPermutation name (supportOrder (canonicalSchedule capital)) reachedOrder} ->
+  (operational : OperationalActorPermutation name key world error value protocol nameEq keyEq certificate
+    (canonicalTrace (canonicalSchedule capital)) (canonicalActorBlockDecomposition capital) (canonicalReplayPremises capital) replayed) ->
+  (blocks : ActorBlockDecomposition name key world error value nameEq keyEq reachedOrder replayed) ->
+  (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq replayed) ->
+  (replayedUnique : UniqueRawNameInsertions name key world error value nameEq keyEq replayed) ->
+  (swap : AdjacentActorOrderSwap name reachedOrder swappedOrder) ->
+  BeforeIn (actorRight swap) (actorLeft swap) goalOrder ->
+  ZeroGapPending (betweenBlocks (decomposedBlocksFollowOrder blocks (actorLeft swap) (actorRight swap)
+    (fst (o20ChosenActorFacts swap)) (fst (snd (o20ChosenActorFacts swap))) (snd (snd (o20ChosenActorFacts swap))))) ->
+  (isJust (o20CheckCandidate nameEq keyEq protocol reachedOrder replayed blocks premises replayedUnique (swappedOrder ** swap)) = True)
+o20ReachedInversionOwnCutSafe {reachedOrder} {swappedOrder} nameEq keyEq protocol original capital unique originalReference reachedReference
+  replayed operational blocks premises replayedUnique swap reverseGoal empty =
+    o20CandidateCompleteAtOwnSlots nameEq keyEq protocol reachedOrder swappedOrder swap replayed blocks premises replayedUnique
+      (fst (o20ReachedInversionChildSafety nameEq keyEq protocol original capital unique originalReference reachedReference replayed operational blocks swap reverseGoal))
+      (snd (o20ReachedInversionChildSafety nameEq keyEq protocol original capital unique originalReference reachedReference replayed operational blocks swap reverseGoal))
+      (o20ReachedInversionEarlierBegin nameEq keyEq protocol original capital unique originalReference reachedReference replayed operational blocks premises swap reverseGoal empty)
+      empty
