@@ -56,3 +56,29 @@ nativeSuffixAnchorKey nameEq keyEq frames oldTrail newTrail ordinal =
       (\acc, seed => cong (\scanned => acc || (catalogOrdinal seed == ordinal && not (null scanned)))
         (nativeSuffixReleases nameEq keyEq frames oldTrail newTrail (catalogComponent seed) 0 (catalogOrdinal seed)))
       (scanRootCatalog 0 newTrail) False))
+
+||| Exact suffix target transport includes BOTH same-anchor rank and the
+||| external-order floor. No anchor-only simplification drops the floor.
+||| The prefixed swapped-pair target transport is still a separate residue.
+export
+0 nativeSuffixTarget : {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {oldFirst, oldFinal, newFirst, newFinal : SystemState name key value world error} ->
+  {oldTrace : Transitions oldFirst oldFinal} -> {newTrace : Transitions newFirst newFinal} ->
+  (frames : NativeSuffixFrames nameEq keyEq oldTrace newTrace) ->
+  (oldTrail : AvailabilityTrace name key world error value oldTrace) ->
+  (newTrail : AvailabilityTrace name key world error value newTrace) -> (ordinal : Nat) ->
+  targetPosition nameEq keyEq oldTrail ordinal = targetPosition nameEq keyEq newTrail ordinal
+nativeSuffixTarget nameEq keyEq frames oldTrail newTrail ordinal =
+  cong2 max
+    (cong2 (+) (cong (fromMaybe 0) (fst (nativeSuffixAnchorKey nameEq keyEq frames oldTrail newTrail ordinal)))
+      (cong length (trans (cong (filter (\earlier => catalogOrdinal earlier < ordinal && anchorOf nameEq keyEq oldTrail (catalogOrdinal earlier) == anchorOf nameEq keyEq oldTrail ordinal)) (nativeSuffixCatalog nameEq keyEq frames oldTrail newTrail 0))
+          (scanFilterPointwise (\earlier => catalogOrdinal earlier < ordinal && anchorOf nameEq keyEq oldTrail (catalogOrdinal earlier) == anchorOf nameEq keyEq oldTrail ordinal) (\earlier => catalogOrdinal earlier < ordinal && anchorOf nameEq keyEq newTrail (catalogOrdinal earlier) == anchorOf nameEq keyEq newTrail ordinal)
+            (\earlier => cong2 (\left, right => catalogOrdinal earlier < ordinal && left == right)
+              (fst (nativeSuffixAnchorKey nameEq keyEq frames oldTrail newTrail (catalogOrdinal earlier))) (fst (nativeSuffixAnchorKey nameEq keyEq frames oldTrail newTrail ordinal)))
+            (scanRootCatalog 0 newTrail)))))
+    (cong (\items => fromMaybe 0 (lastReleaseCut (map catalogOrdinal items))) (trans (cong (filter (\earlier => catalogOrdinal earlier < ordinal && not (anchorOf nameEq keyEq oldTrail (catalogOrdinal earlier) == anchorOf nameEq keyEq oldTrail ordinal))) (nativeSuffixCatalog nameEq keyEq frames oldTrail newTrail 0))
+          (scanFilterPointwise (\earlier => catalogOrdinal earlier < ordinal && not (anchorOf nameEq keyEq oldTrail (catalogOrdinal earlier) == anchorOf nameEq keyEq oldTrail ordinal)) (\earlier => catalogOrdinal earlier < ordinal && not (anchorOf nameEq keyEq newTrail (catalogOrdinal earlier) == anchorOf nameEq keyEq newTrail ordinal))
+            (\earlier => cong2 (\left, right => catalogOrdinal earlier < ordinal && not (left == right))
+              (fst (nativeSuffixAnchorKey nameEq keyEq frames oldTrail newTrail (catalogOrdinal earlier))) (fst (nativeSuffixAnchorKey nameEq keyEq frames oldTrail newTrail ordinal)))
+            (scanRootCatalog 0 newTrail))))
