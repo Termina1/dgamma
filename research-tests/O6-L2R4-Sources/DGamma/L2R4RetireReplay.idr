@@ -32,3 +32,36 @@ export
 retirementUpdateSnapshot nameEq child actor fiber nextActor ambient (MkCoeffectContext entries unique) distinct =
   cong (MkRuntimeSnapshot ambient)
     (replaceEntriesCommute nameEq actor child nextActor (retireFiber fiber) entries (\same => distinct (sym same)))
+
+||| A single original RetireSuccessView supplies the actual actor fiber and
+||| endpoint. Native replay, validity and snapshot are all derived here.
+export
+0 replayRetireFromView :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (child, actor : name) ->
+  (fiber : Fiber name key value world error) -> (ambient : world) ->
+  (source : Registry name key value world error) ->
+  (afterState, current : SystemState name key value world error) -> (tag : RuleTag) ->
+  (0 distinct : Not (child = actor)) ->
+  (0 found : lookupFiber {name} {key} {value} {world} {error} @{nameEq} child source = Just fiber) ->
+  (0 valid : registryWellFormed {name} {key} {value} {world} {error} @{nameEq} @{keyEq} (MkSystemState ambient source) = True) ->
+  (0 currentValid : registryWellFormed @{nameEq} @{keyEq} current = True) ->
+  (0 currentSame : runtimeSnapshot current = runtimeSnapshot {name} {key} {value} {world} {error}
+    (MkSystemState ambient (replaceBinding @{nameEq} child (retireFiber fiber) source))) ->
+  RetireSuccessView name key world error value nameEq actor ambient source tag afterState ->
+  CheckedSnapshotStep name key world error value nameEq keyEq (ORetire actor) current tag
+    (runtimeSnapshot {name} {key} {value} {world} {error}
+      (MkSystemState (worldState afterState) (replaceBinding @{nameEq} child (retireFiber fiber) (registry afterState))))
+replayRetireFromView nameEq keyEq child actor fiber ambient source _ current _ distinct found valid currentValid currentSame
+  (MkRetireSuccessView actorFiber actorFound) =
+    replace {p = \expected => CheckedSnapshotStep name key world error value nameEq keyEq (ORetire actor) current ORetireTag expected}
+      (retirementUpdateSnapshot nameEq child actor fiber (retireFiber actorFiber) ambient source distinct)
+      (checkedAcrossSnapshot nameEq keyEq (ORetire actor) ORetireTag
+        (MkSystemState ambient (replaceBinding @{nameEq} child (retireFiber fiber) source))
+        (MkSystemState ambient (replaceBinding @{nameEq} actor (retireFiber actorFiber)
+          (replaceBinding @{nameEq} child (retireFiber fiber) source))) current
+        (childRetireAtFound nameEq keyEq actor actorFiber
+          (MkSystemState ambient (replaceBinding @{nameEq} child (retireFiber fiber) source))
+          (trans (lookupReplaceOther @{nameEq} actor child (\same => distinct (sym same)) (retireFiber fiber) source) actorFound)
+          (registryWellFormedRetire nameEq keyEq ambient child fiber source found valid))
+        (sym currentSame) currentValid)
