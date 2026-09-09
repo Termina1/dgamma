@@ -80,3 +80,24 @@ o20IterEffectValues nameEq keyEq actor before afterState component parent retire
   o20NativeValuesAtEffectSource nameEq keyEq actor before component parent retiredFlag table
     (Reloading (step :: next :: more) older view) step view found
     (o20IterNativeValues nameEq keyEq actor before afterState component parent retiredFlag table step next more older view found checked)
+
+||| Actual last-step Finish produces the same projected-source packet without
+||| an Either-role callback adapter. Empty Finish has no callback and is not
+||| claimed by this single-role theorem.
+export
+0 o20FinishOneEffectValues :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (before, afterState : SystemState name key value world error) ->
+  (component : Component key value world error) -> (parent : Parent name) -> (retiredFlag : Bool) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (step : StepEffect key value world error (dependencies (componentDependencies component)) (componentProvisions component)) ->
+  (older : LocalState key value world (componentProvisions component) -> LocalState key value world (componentProvisions component)) ->
+  (view : View name (dependencies (componentDependencies component))) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor (registry before) = Just (MkFiber component parent retiredFlag table (Reloading [step] older view))) ->
+  (checkedApplyAction {name} {key} {value} {world} {error} @{nameEq} @{keyEq} (LAdvance actor) before = Just (LFinishTag, afterState)) ->
+  O20EffectStepValues name key world error value nameEq keyEq actor before component step view
+o20FinishOneEffectValues nameEq keyEq actor before afterState component parent retiredFlag table step older view found checked =
+  o20NativeValuesAtEffectSource nameEq keyEq actor before component parent retiredFlag table
+    (Reloading [step] older view) step view found
+    (o20FinishOneNativeValues nameEq keyEq actor before afterState component parent retiredFlag table step older view found checked)
