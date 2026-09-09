@@ -286,3 +286,36 @@ o20EpisodeDeletedNotForeignUnload nameEq selected registered ordinal live action
     distinct (trans (sym (cong actionOwner exact)) owner)
 o20EpisodeDeletedNotForeignUnload nameEq selected registered ordinal live action actor distinct excludes
   (DeleteRegisteredGeneration owned) exact = excludes exact owned
+
+||| The actual selected-episode subsequence retains every FOREIGN parent
+||| Unload under the original scanner's registered exclusion. It does not
+||| assert preservation of the selected parent's removed closing occurrence.
+export
+0 o20EpisodeSubsequenceRetainsForeignUnload :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (selected : name) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  {first, finalState, otherFirst, otherFinal : SystemState name key value world error} ->
+  {trace : Transitions first finalState} -> {survivor : Transitions otherFirst otherFinal} ->
+  GenerationActionSubsequence nameEq (EpisodeGenerationDeletedActor nameEq selected registered)
+    ordinal live trace survivor ->
+  O20RegisteredUnloadFree name key world error value nameEq registered ordinal live trace ->
+  (actor : name) -> Not (actor = selected) ->
+  ActionOccurs (LUnload actor) trace -> ActionOccurs (LUnload actor) survivor
+o20EpisodeSubsequenceRetainsForeignUnload nameEq selected registered ordinal live
+  GenerationActionSubsequenceEnd free actor distinct occurs = void (o20EmptyUnloadImpossible occurs)
+o20EpisodeSubsequenceRetainsForeignUnload nameEq selected registered ordinal live
+  (KeepGenerationAction step rest kept later outside same tail) free actor distinct occurs =
+    o20UnloadOccursThroughKeptHead actor step rest kept later same
+      (o20EpisodeSubsequenceRetainsForeignUnload nameEq selected registered (S ordinal)
+        (advanceGenerationEnvironment @{nameEq} ordinal (transitionAction step) live)
+        tail (o20RegisteredUnloadFreeTail free) actor distinct) occurs
+o20EpisodeSubsequenceRetainsForeignUnload nameEq selected registered ordinal live
+  (DeleteGenerationAction step rest deleted tail) free actor distinct occurs =
+    o20UnloadOccursPastDeletedHead actor step rest _
+      (o20EpisodeDeletedNotForeignUnload nameEq selected registered ordinal live (transitionAction step)
+        actor distinct (o20RegisteredUnloadHeadExcludes free actor) deleted)
+      (o20EpisodeSubsequenceRetainsForeignUnload nameEq selected registered (S ordinal)
+        (advanceGenerationEnvironment @{nameEq} ordinal (transitionAction step) live)
+        tail (o20RegisteredUnloadFreeTail free) actor distinct) occurs
