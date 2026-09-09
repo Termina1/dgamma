@@ -28,6 +28,8 @@ snapshot=source.read_bytes()
 source_dirs=['src'] if path.startswith('src/') else ['src','research'] if path.startswith('research/') else ['src','research','research-tests']
 command=['idris2','--build',str(source)] if path=='package' else ['idris2']+[arg for directory in source_dirs for arg in ['--source-dir',str(ROOT/directory)]]+['--check',str(source)]
 expected=None; symbol=None
+policy=json.loads((ROOT/'research-tests/O6-R205-REBUILD-POLICY.json').read_text())
+negative_preflight=json.loads((ROOT/'research-tests/O6-R205-NEGATIVE-PREFLIGHT.json').read_text())
 plan_path=ROOT/'research-tests/O6-R205-VALIDATION-PLAN.json'
 if path!='package':
     plan=json.loads(plan_path.read_text())
@@ -35,9 +37,21 @@ if path!='package':
     item=next(i for i in targets if i['path']==path)
     assert item['sourceSHA256']==sha(snapshot), 'Changed target needs a new recorded lexical plan'
     expected=item.get('expectedDiagnostic'); symbol=item.get('symbol')
+    if not expected and path in negative_preflight['contracts']:
+        negative=negative_preflight['contracts'][path]
+        assert negative['sourceSHA256']==sha(snapshot)
+        expected=negative['expectedDiagnostic'];symbol=negative['symbol']
     source.touch()
 limit=(96 if path=='package' else 64 if path.startswith('src/') and (source.stem in ['CP3','CP3StatementChecks'] or source.stem.startswith('CP4')) else 52 if path.endswith('/CP5ConfluenceLocalDiamondSpike.idr') else 48)*1024*1024
+override=policy.get('resourceOverrides',{}).get(unit)
+if override:
+    assert unit=='S31-2' and path=='src/DGamma/CP4SupportSolution.idr'
+    assert override['path']==path and override['sourceSHA256']==sha(snapshot)
+    assert override['rssLimitKiB']==128*1024*1024
+    limit=override['rssLimitKiB']
 seeded_package=path=='package' and unit!='P1'
+(OUT/(unit+'.policy.json')).write_bytes((ROOT/'research-tests/O6-R205-REBUILD-POLICY.json').read_bytes())
+(OUT/(unit+'.negative-preflight.json')).write_bytes((ROOT/'research-tests/O6-R205-NEGATIVE-PREFLIGHT.json').read_bytes())
 (OUT/(unit+'.source')).write_bytes(snapshot)
 (OUT/(unit+'.runner.py')).write_bytes(pathlib.Path(__file__).read_bytes())
 (OUT/(unit+'.common.py')).write_bytes((ROOT/'research-tests/r205_common.py').read_bytes())

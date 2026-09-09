@@ -8488,5 +8488,15 @@
   ],
   "P2Expectation": "exit0; NO Building; only after current production closure complete",
   "R11Disposition": "legacy, not re-checked (standing classification)",
-  "patchReview": "PATCH FAITHFUL-WITH-NOTES; ceecde24 stands"
+  "patchReview": "PATCH FAITHFUL-WITH-NOTES; ceecde24 stands",
+  "resourceOverrides": {
+    "S31-2": {
+      "path": "src/DGamma/CP4SupportSolution.idr",
+      "sourceSHA256": "812d874baff27ce025c17ad09527e285079b6ee26a50fec2c4b231723593fda0",
+      "rssLimitKiB": 134217728,
+      "authority": "Supervisor explicit23:00Z gate:THIS module128GiB forONE attempt; all others48/64 unchanged; if exceeded STOP/skip dependencies and gate",
+      "priorIsolatedPeakKiB": 67128512,
+      "preUnfreezePeak": "UNKNOWN: previous seeded builds did not freshly elaborate this module; no CP3-caused-growth claim"
+    }
+  }
 }

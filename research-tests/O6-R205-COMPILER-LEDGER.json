@@ -2557,6 +2557,3069 @@
       "commonSHA256": "5220f707db8ebde81468b851f26d48209d8732206d89910159f5c2dd81b08bab",
       "crossLaneOverlapTimestampsUTC": [],
       "transcript": "Error: Source file \"/Users/vyacheslavshebanov/Work/dgamma/src/DGamma/CP3.idr\" is not in the source directory \"/Users/vyacheslavshebanov/Work/dgamma/research-tests\"\n"
+    },
+    {
+      "unit": "S1-2",
+      "path": "src/DGamma/CP3.idr",
+      "command": [
+        "idris2",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma/src",
+        "--check",
+        "/Users/vyacheslavshebanov/Work/dgamma/src/DGamma/CP3.idr"
+      ],
+      "start": "2026-09-09T22:55:23.859343+00:00",
+      "end": "2026-09-09T22:55:36.375020+00:00",
+      "seconds": 12.5154864997603,
+      "exit": 0,
+      "passed": true,
+      "fresh": true,
+      "seededPackageNoBuilding": false,
+      "policySHA256": "406c5b0a53eb8e012dce34ad297f6cdb40aa18ecfbdf4c54a05db063a0613987",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "buildingLines": [
+        "DGamma.CP3 (/Users/vyacheslavshebanov/Work/dgamma/src/DGamma/CP3.idr)"
+      ],
+      "unexpectedBuilding": [],
+      "targetMutationDetected": false,
+      "mutatedPaths": [],
+      "interrupted": false,
+      "resourceStopped": false,
+      "multipleOwnedCompilers": false,
+      "maxSampleRSSKiB": 871120,
+      "rssLimitKiB": 67108864,
+      "rssSamples": [
+        {
+          "timestampUTC": "2026-09-09T22:55:24.898351+00:00",
+          "rssKiB": 248880,
+          "ownedPids": [
+            91301
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:55:25.938773+00:00",
+          "rssKiB": 269136,
+          "ownedPids": [
+            91301
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:55:26.979205+00:00",
+          "rssKiB": 334464,
+          "ownedPids": [
+            91301
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:55:28.017041+00:00",
+          "rssKiB": 388384,
+          "ownedPids": [
+            91301
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:55:29.050356+00:00",
+          "rssKiB": 451808,
+          "ownedPids": [
+            91301
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:55:30.105296+00:00",
+          "rssKiB": 502208,
+          "ownedPids": [
+            91301
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:55:31.139263+00:00",
+          "rssKiB": 561264,
+          "ownedPids": [
+            91301
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:55:32.182274+00:00",
+          "rssKiB": 620096,
+          "ownedPids": [
+            91301
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:55:33.219538+00:00",
+          "rssKiB": 649664,
+          "ownedPids": [
+            91301
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:55:34.261602+00:00",
+          "rssKiB": 665824,
+          "ownedPids": [
+            91301
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:55:35.320197+00:00",
+          "rssKiB": 871120,
+          "ownedPids": [
+            91301
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:55:36.353913+00:00",
+          "rssKiB": 0,
+          "ownedPids": []
+        }
+      ],
+      "sourceSHA256": "0aa65041e36342a831b24a231e4d68eb74ffa17cf93e56e84b668ae4f19b95ba",
+      "productionManifestSHA256": "07d41fa57ede130a7c38bbfb1126c92d91c1a8c1e474c63fd3173d448ac11525",
+      "sourceManifestSHA256": "2ef2706efe0b95e9e106293f2fcf6aa91fbdca64b10df0ab374d2c25596ee11e",
+      "headAtEnd": "c82b32a3858a0344bc959c8bc2c5a03439e2f2ec",
+      "CP3Blob": "eeaa70aa4414648bb2a1173d58244267997d16d7",
+      "runnerSHA256": "6e241c3e67fb1b2942bf44397c3fa5efdd762f5e8f0da95d0d461dfd69efde1a",
+      "commonSHA256": "5220f707db8ebde81468b851f26d48209d8732206d89910159f5c2dd81b08bab",
+      "crossLaneOverlapTimestampsUTC": [],
+      "transcript": "7/7: Building DGamma.CP3 (/Users/vyacheslavshebanov/Work/dgamma/src/DGamma/CP3.idr)\n"
+    },
+    {
+      "unit": "S2",
+      "path": "src/DGamma/CP4AccumulatorControlChecks.idr",
+      "command": [
+        "idris2",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma/src",
+        "--check",
+        "/Users/vyacheslavshebanov/Work/dgamma/src/DGamma/CP4AccumulatorControlChecks.idr"
+      ],
+      "start": "2026-09-09T22:55:36.667561+00:00",
+      "end": "2026-09-09T22:55:37.728061+00:00",
+      "seconds": 1.0603322079405189,
+      "exit": 0,
+      "passed": true,
+      "fresh": true,
+      "seededPackageNoBuilding": false,
+      "policySHA256": "406c5b0a53eb8e012dce34ad297f6cdb40aa18ecfbdf4c54a05db063a0613987",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "buildingLines": [
+        "DGamma.CP4AccumulatorControlChecks (/Users/vyacheslavshebanov/Work/dgamma/src/DGamma/CP4AccumulatorControlChecks.idr)"
+      ],
+      "unexpectedBuilding": [],
+      "targetMutationDetected": false,
+      "mutatedPaths": [],
+      "interrupted": false,
+      "resourceStopped": false,
+      "multipleOwnedCompilers": false,
+      "maxSampleRSSKiB": 0,
+      "rssLimitKiB": 67108864,
+      "rssSamples": [
+        {
+          "timestampUTC": "2026-09-09T22:55:37.710548+00:00",
+          "rssKiB": 0,
+          "ownedPids": []
+        }
+      ],
+      "sourceSHA256": "59c370f3618de4c473f1a07d9f374f907564575ae61c22d7ada645ef8aeae8b1",
+      "productionManifestSHA256": "07d41fa57ede130a7c38bbfb1126c92d91c1a8c1e474c63fd3173d448ac11525",
+      "sourceManifestSHA256": "2ef2706efe0b95e9e106293f2fcf6aa91fbdca64b10df0ab374d2c25596ee11e",
+      "headAtEnd": "c82b32a3858a0344bc959c8bc2c5a03439e2f2ec",
+      "CP3Blob": "eeaa70aa4414648bb2a1173d58244267997d16d7",
+      "runnerSHA256": "6e241c3e67fb1b2942bf44397c3fa5efdd762f5e8f0da95d0d461dfd69efde1a",
+      "commonSHA256": "5220f707db8ebde81468b851f26d48209d8732206d89910159f5c2dd81b08bab",
+      "crossLaneOverlapTimestampsUTC": [],
+      "transcript": "8/8: Building DGamma.CP4AccumulatorControlChecks (/Users/vyacheslavshebanov/Work/dgamma/src/DGamma/CP4AccumulatorControlChecks.idr)\n"
+    },
+    {
+      "unit": "S3",
+      "path": "src/DGamma/CP4DeletionCommittedProviderPersistence.idr",
+      "command": [
+        "idris2",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma/src",
+        "--check",
+        "/Users/vyacheslavshebanov/Work/dgamma/src/DGamma/CP4DeletionCommittedProviderPersistence.idr"
+      ],
+      "start": "2026-09-09T22:55:38.004229+00:00",
+      "end": "2026-09-09T22:55:39.069755+00:00",
+      "seconds": 1.0653477078303695,
+      "exit": 0,
+      "passed": true,
+      "fresh": true,
+      "seededPackageNoBuilding": false,
+      "policySHA256": "406c5b0a53eb8e012dce34ad297f6cdb40aa18ecfbdf4c54a05db063a0613987",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "buildingLines": [
+        "DGamma.CP4DeletionCommittedProviderPersistence (/Users/vyacheslavshebanov/Work/dgamma/src/DGamma/CP4DeletionCommittedProviderPersistence.idr)"
+      ],
+      "unexpectedBuilding": [],
+      "targetMutationDetected": false,
+      "mutatedPaths": [],
+      "interrupted": false,
+      "resourceStopped": false,
+      "multipleOwnedCompilers": false,
+      "maxSampleRSSKiB": 0,
+      "rssLimitKiB": 67108864,
+      "rssSamples": [
+        {
+          "timestampUTC": "2026-09-09T22:55:39.048571+00:00",
+          "rssKiB": 0,
+          "ownedPids": []
+        }
+      ],
+      "sourceSHA256": "ff3b1e16e9b937aeb1b8e6dccac482c732bb67c5832897d31ce77761276dd71f",
+      "productionManifestSHA256": "07d41fa57ede130a7c38bbfb1126c92d91c1a8c1e474c63fd3173d448ac11525",
+      "sourceManifestSHA256": "2ef2706efe0b95e9e106293f2fcf6aa91fbdca64b10df0ab374d2c25596ee11e",
+      "headAtEnd": "c82b32a3858a0344bc959c8bc2c5a03439e2f2ec",
+      "CP3Blob": "eeaa70aa4414648bb2a1173d58244267997d16d7",
+      "runnerSHA256": "6e241c3e67fb1b2942bf44397c3fa5efdd762f5e8f0da95d0d461dfd69efde1a",
+      "commonSHA256": "5220f707db8ebde81468b851f26d48209d8732206d89910159f5c2dd81b08bab",
+      "crossLaneOverlapTimestampsUTC": [],
+      "transcript": "8/8: Building DGamma.CP4DeletionCommittedProviderPersistence (/Users/vyacheslavshebanov/Work/dgamma/src/DGamma/CP4DeletionCommittedProviderPersistence.idr)\n"
+    },
+    {
+      "unit": "S4",
+      "path": "src/DGamma/CP4DeletionGenerationBounds.idr",
+      "command": [
+        "idris2",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma/src",
+        "--check",
+        "/Users/vyacheslavshebanov/Work/dgamma/src/DGamma/CP4DeletionGenerationBounds.idr"
+      ],
+      "start": "2026-09-09T22:55:39.343316+00:00",
+      "end": "2026-09-09T22:55:40.403910+00:00",
+      "seconds": 1.0604262501001358,
+      "exit": 0,
+      "passed": true,
+      "fresh": true,
+      "seededPackageNoBuilding": false,
+      "policySHA256": "406c5b0a53eb8e012dce34ad297f6cdb40aa18ecfbdf4c54a05db063a0613987",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "buildingLines": [
+        "DGamma.CP4DeletionGenerationBounds (/Users/vyacheslavshebanov/Work/dgamma/src/DGamma/CP4DeletionGenerationBounds.idr)"
+      ],
+      "unexpectedBuilding": [],
+      "targetMutationDetected": false,
+      "mutatedPaths": [],
+      "interrupted": false,
+      "resourceStopped": false,
+      "multipleOwnedCompilers": false,
+      "maxSampleRSSKiB": 0,
+      "rssLimitKiB": 67108864,
+      "rssSamples": [
+        {
+          "timestampUTC": "2026-09-09T22:55:40.386049+00:00",
+          "rssKiB": 0,
+          "ownedPids": []
+        }
+      ],
+      "sourceSHA256": "390d4adcaf51409e177dac9041049ccaeb4ccaba582dd962b1a60146002853e8",
+      "productionManifestSHA256": "07d41fa57ede130a7c38bbfb1126c92d91c1a8c1e474c63fd3173d448ac11525",
+      "sourceManifestSHA256": "2ef2706efe0b95e9e106293f2fcf6aa91fbdca64b10df0ab374d2c25596ee11e",
+      "headAtEnd": "c82b32a3858a0344bc959c8bc2c5a03439e2f2ec",
+      "CP3Blob": "eeaa70aa4414648bb2a1173d58244267997d16d7",
+      "runnerSHA256": "6e241c3e67fb1b2942bf44397c3fa5efdd762f5e8f0da95d0d461dfd69efde1a",
+      "commonSHA256": "5220f707db8ebde81468b851f26d48209d8732206d89910159f5c2dd81b08bab",
+      "crossLaneOverlapTimestampsUTC": [],
+      "transcript": "8/8: Building DGamma.CP4DeletionGenerationBounds (/Users/vyacheslavshebanov/Work/dgamma/src/DGamma/CP4DeletionGenerationBounds.idr)\n"
+    },
+    {
+      "unit": "S5",
+      "path": "src/DGamma/CP4DeletionGenerationChecks.idr",
+      "command": [
+        "idris2",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma/src",
+        "--check",
+        "/Users/vyacheslavshebanov/Work/dgamma/src/DGamma/CP4DeletionGenerationChecks.idr"
+      ],
+      "start": "2026-09-09T22:55:40.675284+00:00",
+      "end": "2026-09-09T22:55:41.737244+00:00",
+      "seconds": 1.061778291594237,
+      "exit": 0,
+      "passed": true,
+      "fresh": true,
+      "seededPackageNoBuilding": false,
+      "policySHA256": "406c5b0a53eb8e012dce34ad297f6cdb40aa18ecfbdf4c54a05db063a0613987",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "buildingLines": [
+        "DGamma.CP4DeletionGenerationChecks (/Users/vyacheslavshebanov/Work/dgamma/src/DGamma/CP4DeletionGenerationChecks.idr)"
+      ],
+      "unexpectedBuilding": [],
+      "targetMutationDetected": false,
+      "mutatedPaths": [],
+      "interrupted": false,
+      "resourceStopped": false,
+      "multipleOwnedCompilers": false,
+      "maxSampleRSSKiB": 0,
+      "rssLimitKiB": 67108864,
+      "rssSamples": [
+        {
+          "timestampUTC": "2026-09-09T22:55:41.719205+00:00",
+          "rssKiB": 0,
+          "ownedPids": []
+        }
+      ],
+      "sourceSHA256": "475aa6b7c5e985779b78aeececd061e58bba20e03fa41d150f649b82f9087ecf",
+      "productionManifestSHA256": "07d41fa57ede130a7c38bbfb1126c92d91c1a8c1e474c63fd3173d448ac11525",
+      "sourceManifestSHA256": "2ef2706efe0b95e9e106293f2fcf6aa91fbdca64b10df0ab374d2c25596ee11e",
+      "headAtEnd": "c82b32a3858a0344bc959c8bc2c5a03439e2f2ec",
+      "CP3Blob": "eeaa70aa4414648bb2a1173d58244267997d16d7",
+      "runnerSHA256": "6e241c3e67fb1b2942bf44397c3fa5efdd762f5e8f0da95d0d461dfd69efde1a",
+      "commonSHA256": "5220f707db8ebde81468b851f26d48209d8732206d89910159f5c2dd81b08bab",
+      "crossLaneOverlapTimestampsUTC": [],
+      "transcript": "8/8: Building DGamma.CP4DeletionGenerationChecks (/Users/vyacheslavshebanov/Work/dgamma/src/DGamma/CP4DeletionGenerationChecks.idr)\n"
+    },
+    {
+      "unit": "S6",
+      "path": "src/DGamma/CP4DeletionGenerationFilter.idr",
+      "command": [
+        "idris2",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma/src",
+        "--check",
+        "/Users/vyacheslavshebanov/Work/dgamma/src/DGamma/CP4DeletionGenerationFilter.idr"
+      ],
+      "start": "2026-09-09T22:55:42.011733+00:00",
+      "end": "2026-09-09T22:55:43.079780+00:00",
+      "seconds": 1.067827207967639,
+      "exit": 0,
+      "passed": true,
+      "fresh": true,
+      "seededPackageNoBuilding": false,
+      "policySHA256": "406c5b0a53eb8e012dce34ad297f6cdb40aa18ecfbdf4c54a05db063a0613987",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "buildingLines": [
+        "DGamma.CP4DeletionGenerationFilter (/Users/vyacheslavshebanov/Work/dgamma/src/DGamma/CP4DeletionGenerationFilter.idr)"
+      ],
+      "unexpectedBuilding": [],
+      "targetMutationDetected": false,
+      "mutatedPaths": [],
+      "interrupted": false,
+      "resourceStopped": false,
+      "multipleOwnedCompilers": false,
+      "maxSampleRSSKiB": 0,
+      "rssLimitKiB": 67108864,
+      "rssSamples": [
+        {
+          "timestampUTC": "2026-09-09T22:55:43.061838+00:00",
+          "rssKiB": 0,
+          "ownedPids": []
+        }
+      ],
+      "sourceSHA256": "dbbd9d3592f05ccdf6dbff7dcfa52b53519406f93f6881b52c81fcbe3453066a",
+      "productionManifestSHA256": "07d41fa57ede130a7c38bbfb1126c92d91c1a8c1e474c63fd3173d448ac11525",
+      "sourceManifestSHA256": "2ef2706efe0b95e9e106293f2fcf6aa91fbdca64b10df0ab374d2c25596ee11e",
+      "headAtEnd": "c82b32a3858a0344bc959c8bc2c5a03439e2f2ec",
+      "CP3Blob": "eeaa70aa4414648bb2a1173d58244267997d16d7",
+      "runnerSHA256": "6e241c3e67fb1b2942bf44397c3fa5efdd762f5e8f0da95d0d461dfd69efde1a",
+      "commonSHA256": "5220f707db8ebde81468b851f26d48209d8732206d89910159f5c2dd81b08bab",
+      "crossLaneOverlapTimestampsUTC": [],
+      "transcript": "8/8: Building DGamma.CP4DeletionGenerationFilter (/Users/vyacheslavshebanov/Work/dgamma/src/DGamma/CP4DeletionGenerationFilter.idr)\n"
+    },
+    {
+      "unit": "S7",
+      "path": "src/DGamma/CP4DeletionGenerationScan.idr",
+      "command": [
+        "idris2",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma/src",
+        "--check",
+        "/Users/vyacheslavshebanov/Work/dgamma/src/DGamma/CP4DeletionGenerationScan.idr"
+      ],
+      "start": "2026-09-09T22:55:43.341269+00:00",
+      "end": "2026-09-09T22:55:44.397967+00:00",
+      "seconds": 1.0565557917580009,
+      "exit": 0,
+      "passed": true,
+      "fresh": true,
+      "seededPackageNoBuilding": false,
+      "policySHA256": "406c5b0a53eb8e012dce34ad297f6cdb40aa18ecfbdf4c54a05db063a0613987",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "buildingLines": [
+        "DGamma.CP4DeletionGenerationScan (/Users/vyacheslavshebanov/Work/dgamma/src/DGamma/CP4DeletionGenerationScan.idr)"
+      ],
+      "unexpectedBuilding": [],
+      "targetMutationDetected": false,
+      "mutatedPaths": [],
+      "interrupted": false,
+      "resourceStopped": false,
+      "multipleOwnedCompilers": false,
+      "maxSampleRSSKiB": 0,
+      "rssLimitKiB": 67108864,
+      "rssSamples": [
+        {
+          "timestampUTC": "2026-09-09T22:55:44.380581+00:00",
+          "rssKiB": 0,
+          "ownedPids": []
+        }
+      ],
+      "sourceSHA256": "11d27d9b26a2ab4c5b2fbc8ba980fa239d629cdd6e4f562da627ee728c0ecd0d",
+      "productionManifestSHA256": "07d41fa57ede130a7c38bbfb1126c92d91c1a8c1e474c63fd3173d448ac11525",
+      "sourceManifestSHA256": "2ef2706efe0b95e9e106293f2fcf6aa91fbdca64b10df0ab374d2c25596ee11e",
+      "headAtEnd": "c82b32a3858a0344bc959c8bc2c5a03439e2f2ec",
+      "CP3Blob": "eeaa70aa4414648bb2a1173d58244267997d16d7",
+      "runnerSHA256": "6e241c3e67fb1b2942bf44397c3fa5efdd762f5e8f0da95d0d461dfd69efde1a",
+      "commonSHA256": "5220f707db8ebde81468b851f26d48209d8732206d89910159f5c2dd81b08bab",
+      "crossLaneOverlapTimestampsUTC": [],
+      "transcript": "8/8: Building DGamma.CP4DeletionGenerationScan (/Users/vyacheslavshebanov/Work/dgamma/src/DGamma/CP4DeletionGenerationScan.idr)\n"
+    },
+    {
+      "unit": "S8",
+      "path": "src/DGamma/CP4DeletionGenerationStamped.idr",
+      "command": [
+        "idris2",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma/src",
+        "--check",
+        "/Users/vyacheslavshebanov/Work/dgamma/src/DGamma/CP4DeletionGenerationStamped.idr"
+      ],
+      "start": "2026-09-09T22:55:44.679449+00:00",
+      "end": "2026-09-09T22:55:45.749866+00:00",
+      "seconds": 1.070242458023131,
+      "exit": 0,
+      "passed": true,
+      "fresh": true,
+      "seededPackageNoBuilding": false,
+      "policySHA256": "406c5b0a53eb8e012dce34ad297f6cdb40aa18ecfbdf4c54a05db063a0613987",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "buildingLines": [
+        "DGamma.CP4DeletionGenerationStamped (/Users/vyacheslavshebanov/Work/dgamma/src/DGamma/CP4DeletionGenerationStamped.idr)"
+      ],
+      "unexpectedBuilding": [],
+      "targetMutationDetected": false,
+      "mutatedPaths": [],
+      "interrupted": false,
+      "resourceStopped": false,
+      "multipleOwnedCompilers": false,
+      "maxSampleRSSKiB": 0,
+      "rssLimitKiB": 67108864,
+      "rssSamples": [
+        {
+          "timestampUTC": "2026-09-09T22:55:45.732210+00:00",
+          "rssKiB": 0,
+          "ownedPids": []
+        }
+      ],
+      "sourceSHA256": "10652b1fad98788cd966812dd4ed23820808ed3448116ac59b49b02a168d6ef7",
+      "productionManifestSHA256": "07d41fa57ede130a7c38bbfb1126c92d91c1a8c1e474c63fd3173d448ac11525",
+      "sourceManifestSHA256": "2ef2706efe0b95e9e106293f2fcf6aa91fbdca64b10df0ab374d2c25596ee11e",
+      "headAtEnd": "c82b32a3858a0344bc959c8bc2c5a03439e2f2ec",
+      "CP3Blob": "eeaa70aa4414648bb2a1173d58244267997d16d7",
+      "runnerSHA256": "6e241c3e67fb1b2942bf44397c3fa5efdd762f5e8f0da95d0d461dfd69efde1a",
+      "commonSHA256": "5220f707db8ebde81468b851f26d48209d8732206d89910159f5c2dd81b08bab",
+      "crossLaneOverlapTimestampsUTC": [],
+      "transcript": "8/8: Building DGamma.CP4DeletionGenerationStamped (/Users/vyacheslavshebanov/Work/dgamma/src/DGamma/CP4DeletionGenerationStamped.idr)\n"
+    },
+    {
+      "unit": "S9",
+      "path": "src/DGamma/CP4DeletionSelectedForeignLifecycleAnchorCore.idr",
+      "command": [
+        "idris2",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma/src",
+        "--check",
+        "/Users/vyacheslavshebanov/Work/dgamma/src/DGamma/CP4DeletionSelectedForeignLifecycleAnchorCore.idr"
+      ],
+      "start": "2026-09-09T22:55:46.032156+00:00",
+      "end": "2026-09-09T22:55:47.099177+00:00",
+      "seconds": 1.0668290839530528,
+      "exit": 0,
+      "passed": true,
+      "fresh": true,
+      "seededPackageNoBuilding": false,
+      "policySHA256": "406c5b0a53eb8e012dce34ad297f6cdb40aa18ecfbdf4c54a05db063a0613987",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "buildingLines": [
+        "DGamma.CP4DeletionSelectedForeignLifecycleAnchorCore (/Users/vyacheslavshebanov/Work/dgamma/src/DGamma/CP4DeletionSelectedForeignLifecycleAnchorCore.idr)"
+      ],
+      "unexpectedBuilding": [],
+      "targetMutationDetected": false,
+      "mutatedPaths": [],
+      "interrupted": false,
+      "resourceStopped": false,
+      "multipleOwnedCompilers": false,
+      "maxSampleRSSKiB": 0,
+      "rssLimitKiB": 67108864,
+      "rssSamples": [
+        {
+          "timestampUTC": "2026-09-09T22:55:47.077910+00:00",
+          "rssKiB": 0,
+          "ownedPids": []
+        }
+      ],
+      "sourceSHA256": "26ffb8f5b50ef14368050dc78b91923d1af77d1a0ef9d4c4e60615ef94af2cd2",
+      "productionManifestSHA256": "07d41fa57ede130a7c38bbfb1126c92d91c1a8c1e474c63fd3173d448ac11525",
+      "sourceManifestSHA256": "2ef2706efe0b95e9e106293f2fcf6aa91fbdca64b10df0ab374d2c25596ee11e",
+      "headAtEnd": "c82b32a3858a0344bc959c8bc2c5a03439e2f2ec",
+      "CP3Blob": "eeaa70aa4414648bb2a1173d58244267997d16d7",
+      "runnerSHA256": "6e241c3e67fb1b2942bf44397c3fa5efdd762f5e8f0da95d0d461dfd69efde1a",
+      "commonSHA256": "5220f707db8ebde81468b851f26d48209d8732206d89910159f5c2dd81b08bab",
+      "crossLaneOverlapTimestampsUTC": [],
+      "transcript": "8/8: Building DGamma.CP4DeletionSelectedForeignLifecycleAnchorCore (/Users/vyacheslavshebanov/Work/dgamma/src/DGamma/CP4DeletionSelectedForeignLifecycleAnchorCore.idr)\n"
+    },
+    {
+      "unit": "S10",
+      "path": "src/DGamma/CP4DeletionSelectedForeignLifecycleAnchorRelianceResolved.idr",
+      "command": [
+        "idris2",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma/src",
+        "--check",
+        "/Users/vyacheslavshebanov/Work/dgamma/src/DGamma/CP4DeletionSelectedForeignLifecycleAnchorRelianceResolved.idr"
+      ],
+      "start": "2026-09-09T22:55:47.372358+00:00",
+      "end": "2026-09-09T22:55:48.434812+00:00",
+      "seconds": 1.0622869171202183,
+      "exit": 0,
+      "passed": true,
+      "fresh": true,
+      "seededPackageNoBuilding": false,
+      "policySHA256": "406c5b0a53eb8e012dce34ad297f6cdb40aa18ecfbdf4c54a05db063a0613987",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "buildingLines": [
+        "DGamma.CP4DeletionSelectedForeignLifecycleAnchorRelianceResolved (/Users/vyacheslavshebanov/Work/dgamma/src/DGamma/CP4DeletionSelectedForeignLifecycleAnchorRelianceResolved.idr)"
+      ],
+      "unexpectedBuilding": [],
+      "targetMutationDetected": false,
+      "mutatedPaths": [],
+      "interrupted": false,
+      "resourceStopped": false,
+      "multipleOwnedCompilers": false,
+      "maxSampleRSSKiB": 0,
+      "rssLimitKiB": 67108864,
+      "rssSamples": [
+        {
+          "timestampUTC": "2026-09-09T22:55:48.417276+00:00",
+          "rssKiB": 0,
+          "ownedPids": []
+        }
+      ],
+      "sourceSHA256": "369acd8bc5221c2a5993b2e3c46c11c3178d14bb9199958bc77d751f3933bf3f",
+      "productionManifestSHA256": "07d41fa57ede130a7c38bbfb1126c92d91c1a8c1e474c63fd3173d448ac11525",
+      "sourceManifestSHA256": "2ef2706efe0b95e9e106293f2fcf6aa91fbdca64b10df0ab374d2c25596ee11e",
+      "headAtEnd": "c82b32a3858a0344bc959c8bc2c5a03439e2f2ec",
+      "CP3Blob": "eeaa70aa4414648bb2a1173d58244267997d16d7",
+      "runnerSHA256": "6e241c3e67fb1b2942bf44397c3fa5efdd762f5e8f0da95d0d461dfd69efde1a",
+      "commonSHA256": "5220f707db8ebde81468b851f26d48209d8732206d89910159f5c2dd81b08bab",
+      "crossLaneOverlapTimestampsUTC": [],
+      "transcript": "8/8: Building DGamma.CP4DeletionSelectedForeignLifecycleAnchorRelianceResolved (/Users/vyacheslavshebanov/Work/dgamma/src/DGamma/CP4DeletionSelectedForeignLifecycleAnchorRelianceResolved.idr)\n"
+    },
+    {
+      "unit": "S11",
+      "path": "src/DGamma/CP4ParentSafety.idr",
+      "command": [
+        "idris2",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma/src",
+        "--check",
+        "/Users/vyacheslavshebanov/Work/dgamma/src/DGamma/CP4ParentSafety.idr"
+      ],
+      "start": "2026-09-09T22:55:48.713568+00:00",
+      "end": "2026-09-09T22:55:50.814159+00:00",
+      "seconds": 2.1004291670396924,
+      "exit": 0,
+      "passed": true,
+      "fresh": true,
+      "seededPackageNoBuilding": false,
+      "policySHA256": "406c5b0a53eb8e012dce34ad297f6cdb40aa18ecfbdf4c54a05db063a0613987",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "buildingLines": [
+        "DGamma.CP4ParentSafety (/Users/vyacheslavshebanov/Work/dgamma/src/DGamma/CP4ParentSafety.idr)"
+      ],
+      "unexpectedBuilding": [],
+      "targetMutationDetected": false,
+      "mutatedPaths": [],
+      "interrupted": false,
+      "resourceStopped": false,
+      "multipleOwnedCompilers": false,
+      "maxSampleRSSKiB": 227696,
+      "rssLimitKiB": 67108864,
+      "rssSamples": [
+        {
+          "timestampUTC": "2026-09-09T22:55:49.758021+00:00",
+          "rssKiB": 227696,
+          "ownedPids": [
+            95124
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:55:50.792776+00:00",
+          "rssKiB": 0,
+          "ownedPids": []
+        }
+      ],
+      "sourceSHA256": "0e8f9570a68275c5959bc6fd2021c1117830482adbf8d9a9caeaccfcf73cc0a8",
+      "productionManifestSHA256": "07d41fa57ede130a7c38bbfb1126c92d91c1a8c1e474c63fd3173d448ac11525",
+      "sourceManifestSHA256": "2ef2706efe0b95e9e106293f2fcf6aa91fbdca64b10df0ab374d2c25596ee11e",
+      "headAtEnd": "c82b32a3858a0344bc959c8bc2c5a03439e2f2ec",
+      "CP3Blob": "eeaa70aa4414648bb2a1173d58244267997d16d7",
+      "runnerSHA256": "6e241c3e67fb1b2942bf44397c3fa5efdd762f5e8f0da95d0d461dfd69efde1a",
+      "commonSHA256": "5220f707db8ebde81468b851f26d48209d8732206d89910159f5c2dd81b08bab",
+      "crossLaneOverlapTimestampsUTC": [],
+      "transcript": "8/8: Building DGamma.CP4ParentSafety (/Users/vyacheslavshebanov/Work/dgamma/src/DGamma/CP4ParentSafety.idr)\n"
+    },
+    {
+      "unit": "S12",
+      "path": "src/DGamma/CP4ProgressBound.idr",
+      "command": [
+        "idris2",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma/src",
+        "--check",
+        "/Users/vyacheslavshebanov/Work/dgamma/src/DGamma/CP4ProgressBound.idr"
+      ],
+      "start": "2026-09-09T22:55:51.090363+00:00",
+      "end": "2026-09-09T22:55:52.155588+00:00",
+      "seconds": 1.0650309580378234,
+      "exit": 0,
+      "passed": true,
+      "fresh": true,
+      "seededPackageNoBuilding": false,
+      "policySHA256": "406c5b0a53eb8e012dce34ad297f6cdb40aa18ecfbdf4c54a05db063a0613987",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "buildingLines": [
+        "DGamma.CP4ProgressBound (/Users/vyacheslavshebanov/Work/dgamma/src/DGamma/CP4ProgressBound.idr)"
+      ],
+      "unexpectedBuilding": [],
+      "targetMutationDetected": false,
+      "mutatedPaths": [],
+      "interrupted": false,
+      "resourceStopped": false,
+      "multipleOwnedCompilers": false,
+      "maxSampleRSSKiB": 0,
+      "rssLimitKiB": 67108864,
+      "rssSamples": [
+        {
+          "timestampUTC": "2026-09-09T22:55:52.134851+00:00",
+          "rssKiB": 0,
+          "ownedPids": []
+        }
+      ],
+      "sourceSHA256": "16d6ea674d7070c7ce84d42d45e915f3952876af6d7b7c2145d53a92cb27fe5c",
+      "productionManifestSHA256": "07d41fa57ede130a7c38bbfb1126c92d91c1a8c1e474c63fd3173d448ac11525",
+      "sourceManifestSHA256": "2ef2706efe0b95e9e106293f2fcf6aa91fbdca64b10df0ab374d2c25596ee11e",
+      "headAtEnd": "c82b32a3858a0344bc959c8bc2c5a03439e2f2ec",
+      "CP3Blob": "eeaa70aa4414648bb2a1173d58244267997d16d7",
+      "runnerSHA256": "6e241c3e67fb1b2942bf44397c3fa5efdd762f5e8f0da95d0d461dfd69efde1a",
+      "commonSHA256": "5220f707db8ebde81468b851f26d48209d8732206d89910159f5c2dd81b08bab",
+      "crossLaneOverlapTimestampsUTC": [],
+      "transcript": "8/8: Building DGamma.CP4ProgressBound (/Users/vyacheslavshebanov/Work/dgamma/src/DGamma/CP4ProgressBound.idr)\n"
+    },
+    {
+      "unit": "S13",
+      "path": "src/DGamma/CP4ProgressFinite.idr",
+      "command": [
+        "idris2",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma/src",
+        "--check",
+        "/Users/vyacheslavshebanov/Work/dgamma/src/DGamma/CP4ProgressFinite.idr"
+      ],
+      "start": "2026-09-09T22:55:52.418027+00:00",
+      "end": "2026-09-09T22:55:53.473940+00:00",
+      "seconds": 1.055769792292267,
+      "exit": 0,
+      "passed": true,
+      "fresh": true,
+      "seededPackageNoBuilding": false,
+      "policySHA256": "406c5b0a53eb8e012dce34ad297f6cdb40aa18ecfbdf4c54a05db063a0613987",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "buildingLines": [
+        "DGamma.CP4ProgressFinite (/Users/vyacheslavshebanov/Work/dgamma/src/DGamma/CP4ProgressFinite.idr)"
+      ],
+      "unexpectedBuilding": [],
+      "targetMutationDetected": false,
+      "mutatedPaths": [],
+      "interrupted": false,
+      "resourceStopped": false,
+      "multipleOwnedCompilers": false,
+      "maxSampleRSSKiB": 0,
+      "rssLimitKiB": 67108864,
+      "rssSamples": [
+        {
+          "timestampUTC": "2026-09-09T22:55:53.457146+00:00",
+          "rssKiB": 0,
+          "ownedPids": []
+        }
+      ],
+      "sourceSHA256": "25fe7f56dea9e9319cb0c7b7e90bea9a6fbc62caff45383cd933227071749d31",
+      "productionManifestSHA256": "07d41fa57ede130a7c38bbfb1126c92d91c1a8c1e474c63fd3173d448ac11525",
+      "sourceManifestSHA256": "2ef2706efe0b95e9e106293f2fcf6aa91fbdca64b10df0ab374d2c25596ee11e",
+      "headAtEnd": "c82b32a3858a0344bc959c8bc2c5a03439e2f2ec",
+      "CP3Blob": "eeaa70aa4414648bb2a1173d58244267997d16d7",
+      "runnerSHA256": "6e241c3e67fb1b2942bf44397c3fa5efdd762f5e8f0da95d0d461dfd69efde1a",
+      "commonSHA256": "5220f707db8ebde81468b851f26d48209d8732206d89910159f5c2dd81b08bab",
+      "crossLaneOverlapTimestampsUTC": [],
+      "transcript": "8/8: Building DGamma.CP4ProgressFinite (/Users/vyacheslavshebanov/Work/dgamma/src/DGamma/CP4ProgressFinite.idr)\n"
+    },
+    {
+      "unit": "S14",
+      "path": "src/DGamma/CP4ProgressProgramBound.idr",
+      "command": [
+        "idris2",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma/src",
+        "--check",
+        "/Users/vyacheslavshebanov/Work/dgamma/src/DGamma/CP4ProgressProgramBound.idr"
+      ],
+      "start": "2026-09-09T22:55:53.729532+00:00",
+      "end": "2026-09-09T22:55:54.785457+00:00",
+      "seconds": 1.0557752079330385,
+      "exit": 0,
+      "passed": true,
+      "fresh": true,
+      "seededPackageNoBuilding": false,
+      "policySHA256": "406c5b0a53eb8e012dce34ad297f6cdb40aa18ecfbdf4c54a05db063a0613987",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "buildingLines": [
+        "DGamma.CP4ProgressProgramBound (/Users/vyacheslavshebanov/Work/dgamma/src/DGamma/CP4ProgressProgramBound.idr)"
+      ],
+      "unexpectedBuilding": [],
+      "targetMutationDetected": false,
+      "mutatedPaths": [],
+      "interrupted": false,
+      "resourceStopped": false,
+      "multipleOwnedCompilers": false,
+      "maxSampleRSSKiB": 0,
+      "rssLimitKiB": 67108864,
+      "rssSamples": [
+        {
+          "timestampUTC": "2026-09-09T22:55:54.767872+00:00",
+          "rssKiB": 0,
+          "ownedPids": []
+        }
+      ],
+      "sourceSHA256": "5f676cd1ec3426c3b3b891192b4024c877b1cd00e136a74bb1ac6057a307cbeb",
+      "productionManifestSHA256": "07d41fa57ede130a7c38bbfb1126c92d91c1a8c1e474c63fd3173d448ac11525",
+      "sourceManifestSHA256": "2ef2706efe0b95e9e106293f2fcf6aa91fbdca64b10df0ab374d2c25596ee11e",
+      "headAtEnd": "c82b32a3858a0344bc959c8bc2c5a03439e2f2ec",
+      "CP3Blob": "eeaa70aa4414648bb2a1173d58244267997d16d7",
+      "runnerSHA256": "6e241c3e67fb1b2942bf44397c3fa5efdd762f5e8f0da95d0d461dfd69efde1a",
+      "commonSHA256": "5220f707db8ebde81468b851f26d48209d8732206d89910159f5c2dd81b08bab",
+      "crossLaneOverlapTimestampsUTC": [],
+      "transcript": "8/8: Building DGamma.CP4ProgressProgramBound (/Users/vyacheslavshebanov/Work/dgamma/src/DGamma/CP4ProgressProgramBound.idr)\n"
+    },
+    {
+      "unit": "S15",
+      "path": "src/DGamma/CP4ProgressUnloadingShape.idr",
+      "command": [
+        "idris2",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma/src",
+        "--check",
+        "/Users/vyacheslavshebanov/Work/dgamma/src/DGamma/CP4ProgressUnloadingShape.idr"
+      ],
+      "start": "2026-09-09T22:55:55.052901+00:00",
+      "end": "2026-09-09T22:55:56.110318+00:00",
+      "seconds": 1.0572417080402374,
+      "exit": 0,
+      "passed": true,
+      "fresh": true,
+      "seededPackageNoBuilding": false,
+      "policySHA256": "406c5b0a53eb8e012dce34ad297f6cdb40aa18ecfbdf4c54a05db063a0613987",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "buildingLines": [
+        "DGamma.CP4ProgressUnloadingShape (/Users/vyacheslavshebanov/Work/dgamma/src/DGamma/CP4ProgressUnloadingShape.idr)"
+      ],
+      "unexpectedBuilding": [],
+      "targetMutationDetected": false,
+      "mutatedPaths": [],
+      "interrupted": false,
+      "resourceStopped": false,
+      "multipleOwnedCompilers": false,
+      "maxSampleRSSKiB": 0,
+      "rssLimitKiB": 67108864,
+      "rssSamples": [
+        {
+          "timestampUTC": "2026-09-09T22:55:56.092471+00:00",
+          "rssKiB": 0,
+          "ownedPids": []
+        }
+      ],
+      "sourceSHA256": "0314dfa71ec9d638f10614a396fe18cd3eb34182ce3df94a61b7068487bfa602",
+      "productionManifestSHA256": "07d41fa57ede130a7c38bbfb1126c92d91c1a8c1e474c63fd3173d448ac11525",
+      "sourceManifestSHA256": "2ef2706efe0b95e9e106293f2fcf6aa91fbdca64b10df0ab374d2c25596ee11e",
+      "headAtEnd": "c82b32a3858a0344bc959c8bc2c5a03439e2f2ec",
+      "CP3Blob": "eeaa70aa4414648bb2a1173d58244267997d16d7",
+      "runnerSHA256": "6e241c3e67fb1b2942bf44397c3fa5efdd762f5e8f0da95d0d461dfd69efde1a",
+      "commonSHA256": "5220f707db8ebde81468b851f26d48209d8732206d89910159f5c2dd81b08bab",
+      "crossLaneOverlapTimestampsUTC": [],
+      "transcript": "8/8: Building DGamma.CP4ProgressUnloadingShape (/Users/vyacheslavshebanov/Work/dgamma/src/DGamma/CP4ProgressUnloadingShape.idr)\n"
+    },
+    {
+      "unit": "S16",
+      "path": "src/DGamma/CP4Support.idr",
+      "command": [
+        "idris2",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma/src",
+        "--check",
+        "/Users/vyacheslavshebanov/Work/dgamma/src/DGamma/CP4Support.idr"
+      ],
+      "start": "2026-09-09T22:55:56.390509+00:00",
+      "end": "2026-09-09T22:55:58.501783+00:00",
+      "seconds": 2.1111340411007404,
+      "exit": 0,
+      "passed": true,
+      "fresh": true,
+      "seededPackageNoBuilding": false,
+      "policySHA256": "406c5b0a53eb8e012dce34ad297f6cdb40aa18ecfbdf4c54a05db063a0613987",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "buildingLines": [
+        "DGamma.CP4Support (/Users/vyacheslavshebanov/Work/dgamma/src/DGamma/CP4Support.idr)"
+      ],
+      "unexpectedBuilding": [],
+      "targetMutationDetected": false,
+      "mutatedPaths": [],
+      "interrupted": false,
+      "resourceStopped": false,
+      "multipleOwnedCompilers": false,
+      "maxSampleRSSKiB": 225872,
+      "rssLimitKiB": 67108864,
+      "rssSamples": [
+        {
+          "timestampUTC": "2026-09-09T22:55:57.433394+00:00",
+          "rssKiB": 225872,
+          "ownedPids": [
+            95986
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:55:58.476215+00:00",
+          "rssKiB": 0,
+          "ownedPids": []
+        }
+      ],
+      "sourceSHA256": "98d18b6935b00bc5bd1621e5a9a9b08e41081e21bbad4a449dd7d6ade767fa8e",
+      "productionManifestSHA256": "07d41fa57ede130a7c38bbfb1126c92d91c1a8c1e474c63fd3173d448ac11525",
+      "sourceManifestSHA256": "2ef2706efe0b95e9e106293f2fcf6aa91fbdca64b10df0ab374d2c25596ee11e",
+      "headAtEnd": "c82b32a3858a0344bc959c8bc2c5a03439e2f2ec",
+      "CP3Blob": "eeaa70aa4414648bb2a1173d58244267997d16d7",
+      "runnerSHA256": "6e241c3e67fb1b2942bf44397c3fa5efdd762f5e8f0da95d0d461dfd69efde1a",
+      "commonSHA256": "5220f707db8ebde81468b851f26d48209d8732206d89910159f5c2dd81b08bab",
+      "crossLaneOverlapTimestampsUTC": [],
+      "transcript": "8/8: Building DGamma.CP4Support (/Users/vyacheslavshebanov/Work/dgamma/src/DGamma/CP4Support.idr)\n"
+    },
+    {
+      "unit": "S17",
+      "path": "src/DGamma/CP4SupportQuiescence.idr",
+      "command": [
+        "idris2",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma/src",
+        "--check",
+        "/Users/vyacheslavshebanov/Work/dgamma/src/DGamma/CP4SupportQuiescence.idr"
+      ],
+      "start": "2026-09-09T22:55:58.781029+00:00",
+      "end": "2026-09-09T22:56:00.878935+00:00",
+      "seconds": 2.097761500161141,
+      "exit": 0,
+      "passed": true,
+      "fresh": true,
+      "seededPackageNoBuilding": false,
+      "policySHA256": "406c5b0a53eb8e012dce34ad297f6cdb40aa18ecfbdf4c54a05db063a0613987",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "buildingLines": [
+        "DGamma.CP4SupportQuiescence (/Users/vyacheslavshebanov/Work/dgamma/src/DGamma/CP4SupportQuiescence.idr)"
+      ],
+      "unexpectedBuilding": [],
+      "targetMutationDetected": false,
+      "mutatedPaths": [],
+      "interrupted": false,
+      "resourceStopped": false,
+      "multipleOwnedCompilers": false,
+      "maxSampleRSSKiB": 239088,
+      "rssLimitKiB": 67108864,
+      "rssSamples": [
+        {
+          "timestampUTC": "2026-09-09T22:55:59.824192+00:00",
+          "rssKiB": 239088,
+          "ownedPids": [
+            96129
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:56:00.857881+00:00",
+          "rssKiB": 0,
+          "ownedPids": []
+        }
+      ],
+      "sourceSHA256": "4c5252dd2520bd150e242cef3c2881f4796095ebcad638862f5ef42ae5aab185",
+      "productionManifestSHA256": "07d41fa57ede130a7c38bbfb1126c92d91c1a8c1e474c63fd3173d448ac11525",
+      "sourceManifestSHA256": "2ef2706efe0b95e9e106293f2fcf6aa91fbdca64b10df0ab374d2c25596ee11e",
+      "headAtEnd": "c82b32a3858a0344bc959c8bc2c5a03439e2f2ec",
+      "CP3Blob": "eeaa70aa4414648bb2a1173d58244267997d16d7",
+      "runnerSHA256": "6e241c3e67fb1b2942bf44397c3fa5efdd762f5e8f0da95d0d461dfd69efde1a",
+      "commonSHA256": "5220f707db8ebde81468b851f26d48209d8732206d89910159f5c2dd81b08bab",
+      "crossLaneOverlapTimestampsUTC": [],
+      "transcript": "8/8: Building DGamma.CP4SupportQuiescence (/Users/vyacheslavshebanov/Work/dgamma/src/DGamma/CP4SupportQuiescence.idr)\n"
+    },
+    {
+      "unit": "S18",
+      "path": "src/DGamma/CalculusChecks.idr",
+      "command": [
+        "idris2",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma/src",
+        "--check",
+        "/Users/vyacheslavshebanov/Work/dgamma/src/DGamma/CalculusChecks.idr"
+      ],
+      "start": "2026-09-09T22:56:01.151381+00:00",
+      "end": "2026-09-09T22:56:02.217429+00:00",
+      "seconds": 1.0658760420046747,
+      "exit": 0,
+      "passed": true,
+      "fresh": true,
+      "seededPackageNoBuilding": false,
+      "policySHA256": "406c5b0a53eb8e012dce34ad297f6cdb40aa18ecfbdf4c54a05db063a0613987",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "buildingLines": [
+        "DGamma.CalculusChecks (/Users/vyacheslavshebanov/Work/dgamma/src/DGamma/CalculusChecks.idr)"
+      ],
+      "unexpectedBuilding": [],
+      "targetMutationDetected": false,
+      "mutatedPaths": [],
+      "interrupted": false,
+      "resourceStopped": false,
+      "multipleOwnedCompilers": false,
+      "maxSampleRSSKiB": 0,
+      "rssLimitKiB": 50331648,
+      "rssSamples": [
+        {
+          "timestampUTC": "2026-09-09T22:56:02.195590+00:00",
+          "rssKiB": 0,
+          "ownedPids": []
+        }
+      ],
+      "sourceSHA256": "3207a74add9b2a81724e5a1976211d7dd9cfbcb2586b203ad2ab4de898cefc03",
+      "productionManifestSHA256": "07d41fa57ede130a7c38bbfb1126c92d91c1a8c1e474c63fd3173d448ac11525",
+      "sourceManifestSHA256": "2ef2706efe0b95e9e106293f2fcf6aa91fbdca64b10df0ab374d2c25596ee11e",
+      "headAtEnd": "c82b32a3858a0344bc959c8bc2c5a03439e2f2ec",
+      "CP3Blob": "eeaa70aa4414648bb2a1173d58244267997d16d7",
+      "runnerSHA256": "6e241c3e67fb1b2942bf44397c3fa5efdd762f5e8f0da95d0d461dfd69efde1a",
+      "commonSHA256": "5220f707db8ebde81468b851f26d48209d8732206d89910159f5c2dd81b08bab",
+      "crossLaneOverlapTimestampsUTC": [],
+      "transcript": "9/9: Building DGamma.CalculusChecks (/Users/vyacheslavshebanov/Work/dgamma/src/DGamma/CalculusChecks.idr)\n"
+    },
+    {
+      "unit": "S19",
+      "path": "src/DGamma/Ordering.idr",
+      "command": [
+        "idris2",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma/src",
+        "--check",
+        "/Users/vyacheslavshebanov/Work/dgamma/src/DGamma/Ordering.idr"
+      ],
+      "start": "2026-09-09T22:56:02.493749+00:00",
+      "end": "2026-09-09T22:56:11.895044+00:00",
+      "seconds": 9.401089624967426,
+      "exit": 0,
+      "passed": true,
+      "fresh": true,
+      "seededPackageNoBuilding": false,
+      "policySHA256": "406c5b0a53eb8e012dce34ad297f6cdb40aa18ecfbdf4c54a05db063a0613987",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "buildingLines": [
+        "DGamma.Ordering (/Users/vyacheslavshebanov/Work/dgamma/src/DGamma/Ordering.idr)"
+      ],
+      "unexpectedBuilding": [],
+      "targetMutationDetected": false,
+      "mutatedPaths": [],
+      "interrupted": false,
+      "resourceStopped": false,
+      "multipleOwnedCompilers": false,
+      "maxSampleRSSKiB": 2101280,
+      "rssLimitKiB": 50331648,
+      "rssSamples": [
+        {
+          "timestampUTC": "2026-09-09T22:56:03.539391+00:00",
+          "rssKiB": 252448,
+          "ownedPids": [
+            96414
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:56:04.572861+00:00",
+          "rssKiB": 543888,
+          "ownedPids": [
+            96414
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:56:05.607729+00:00",
+          "rssKiB": 849744,
+          "ownedPids": [
+            96414
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:56:06.644153+00:00",
+          "rssKiB": 1412672,
+          "ownedPids": [
+            96414
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:56:07.688051+00:00",
+          "rssKiB": 1580384,
+          "ownedPids": [
+            96414
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:56:08.742265+00:00",
+          "rssKiB": 1767840,
+          "ownedPids": [
+            96414
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:56:09.786318+00:00",
+          "rssKiB": 2101280,
+          "ownedPids": [
+            96414
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:56:10.831741+00:00",
+          "rssKiB": 1609824,
+          "ownedPids": [
+            96414
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:56:11.871281+00:00",
+          "rssKiB": 0,
+          "ownedPids": []
+        }
+      ],
+      "sourceSHA256": "28b17d08b669abab39d39003e7583efec599b88444cfbb2d720cb67b9c3128b8",
+      "productionManifestSHA256": "07d41fa57ede130a7c38bbfb1126c92d91c1a8c1e474c63fd3173d448ac11525",
+      "sourceManifestSHA256": "2ef2706efe0b95e9e106293f2fcf6aa91fbdca64b10df0ab374d2c25596ee11e",
+      "headAtEnd": "c82b32a3858a0344bc959c8bc2c5a03439e2f2ec",
+      "CP3Blob": "eeaa70aa4414648bb2a1173d58244267997d16d7",
+      "runnerSHA256": "6e241c3e67fb1b2942bf44397c3fa5efdd762f5e8f0da95d0d461dfd69efde1a",
+      "commonSHA256": "5220f707db8ebde81468b851f26d48209d8732206d89910159f5c2dd81b08bab",
+      "crossLaneOverlapTimestampsUTC": [],
+      "transcript": "8/8: Building DGamma.Ordering (/Users/vyacheslavshebanov/Work/dgamma/src/DGamma/Ordering.idr)\n"
+    },
+    {
+      "unit": "S20",
+      "path": "src/DGamma/CP3Support.idr",
+      "command": [
+        "idris2",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma/src",
+        "--check",
+        "/Users/vyacheslavshebanov/Work/dgamma/src/DGamma/CP3Support.idr"
+      ],
+      "start": "2026-09-09T22:56:12.173407+00:00",
+      "end": "2026-09-09T22:56:14.281251+00:00",
+      "seconds": 2.10767470812425,
+      "exit": 0,
+      "passed": true,
+      "fresh": true,
+      "seededPackageNoBuilding": false,
+      "policySHA256": "406c5b0a53eb8e012dce34ad297f6cdb40aa18ecfbdf4c54a05db063a0613987",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "buildingLines": [
+        "DGamma.CP3Support (/Users/vyacheslavshebanov/Work/dgamma/src/DGamma/CP3Support.idr)"
+      ],
+      "unexpectedBuilding": [],
+      "targetMutationDetected": false,
+      "mutatedPaths": [],
+      "interrupted": false,
+      "resourceStopped": false,
+      "multipleOwnedCompilers": false,
+      "maxSampleRSSKiB": 332112,
+      "rssLimitKiB": 50331648,
+      "rssSamples": [
+        {
+          "timestampUTC": "2026-09-09T22:56:13.220713+00:00",
+          "rssKiB": 332112,
+          "ownedPids": [
+            97247
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:56:14.263985+00:00",
+          "rssKiB": 0,
+          "ownedPids": []
+        }
+      ],
+      "sourceSHA256": "cc3ebec90ac1a3dd80b03fd75710ee346fa168a33c9f1fce932adef556bff47e",
+      "productionManifestSHA256": "07d41fa57ede130a7c38bbfb1126c92d91c1a8c1e474c63fd3173d448ac11525",
+      "sourceManifestSHA256": "2ef2706efe0b95e9e106293f2fcf6aa91fbdca64b10df0ab374d2c25596ee11e",
+      "headAtEnd": "c82b32a3858a0344bc959c8bc2c5a03439e2f2ec",
+      "CP3Blob": "eeaa70aa4414648bb2a1173d58244267997d16d7",
+      "runnerSHA256": "6e241c3e67fb1b2942bf44397c3fa5efdd762f5e8f0da95d0d461dfd69efde1a",
+      "commonSHA256": "5220f707db8ebde81468b851f26d48209d8732206d89910159f5c2dd81b08bab",
+      "crossLaneOverlapTimestampsUTC": [],
+      "transcript": "9/9: Building DGamma.CP3Support (/Users/vyacheslavshebanov/Work/dgamma/src/DGamma/CP3Support.idr)\n"
+    },
+    {
+      "unit": "S21",
+      "path": "src/DGamma/CP4DeletionControl.idr",
+      "command": [
+        "idris2",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma/src",
+        "--check",
+        "/Users/vyacheslavshebanov/Work/dgamma/src/DGamma/CP4DeletionControl.idr"
+      ],
+      "start": "2026-09-09T22:56:14.561329+00:00",
+      "end": "2026-09-09T22:56:15.626871+00:00",
+      "seconds": 1.065387916751206,
+      "exit": 0,
+      "passed": true,
+      "fresh": true,
+      "seededPackageNoBuilding": false,
+      "policySHA256": "406c5b0a53eb8e012dce34ad297f6cdb40aa18ecfbdf4c54a05db063a0613987",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "buildingLines": [
+        "DGamma.CP4DeletionControl (/Users/vyacheslavshebanov/Work/dgamma/src/DGamma/CP4DeletionControl.idr)"
+      ],
+      "unexpectedBuilding": [],
+      "targetMutationDetected": false,
+      "mutatedPaths": [],
+      "interrupted": false,
+      "resourceStopped": false,
+      "multipleOwnedCompilers": false,
+      "maxSampleRSSKiB": 0,
+      "rssLimitKiB": 67108864,
+      "rssSamples": [
+        {
+          "timestampUTC": "2026-09-09T22:56:15.605765+00:00",
+          "rssKiB": 0,
+          "ownedPids": []
+        }
+      ],
+      "sourceSHA256": "9a70692d3083e26129aeb9d2255da2867e78c280ed6992a913008436df9ad818",
+      "productionManifestSHA256": "07d41fa57ede130a7c38bbfb1126c92d91c1a8c1e474c63fd3173d448ac11525",
+      "sourceManifestSHA256": "2ef2706efe0b95e9e106293f2fcf6aa91fbdca64b10df0ab374d2c25596ee11e",
+      "headAtEnd": "c82b32a3858a0344bc959c8bc2c5a03439e2f2ec",
+      "CP3Blob": "eeaa70aa4414648bb2a1173d58244267997d16d7",
+      "runnerSHA256": "6e241c3e67fb1b2942bf44397c3fa5efdd762f5e8f0da95d0d461dfd69efde1a",
+      "commonSHA256": "5220f707db8ebde81468b851f26d48209d8732206d89910159f5c2dd81b08bab",
+      "crossLaneOverlapTimestampsUTC": [],
+      "transcript": "13/13: Building DGamma.CP4DeletionControl (/Users/vyacheslavshebanov/Work/dgamma/src/DGamma/CP4DeletionControl.idr)\n"
+    },
+    {
+      "unit": "S22",
+      "path": "src/DGamma/CP4DeletionFilterSuccess.idr",
+      "command": [
+        "idris2",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma/src",
+        "--check",
+        "/Users/vyacheslavshebanov/Work/dgamma/src/DGamma/CP4DeletionFilterSuccess.idr"
+      ],
+      "start": "2026-09-09T22:56:15.903613+00:00",
+      "end": "2026-09-09T22:56:16.969686+00:00",
+      "seconds": 1.0659000826999545,
+      "exit": 0,
+      "passed": true,
+      "fresh": true,
+      "seededPackageNoBuilding": false,
+      "policySHA256": "406c5b0a53eb8e012dce34ad297f6cdb40aa18ecfbdf4c54a05db063a0613987",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "buildingLines": [
+        "DGamma.CP4DeletionFilterSuccess (/Users/vyacheslavshebanov/Work/dgamma/src/DGamma/CP4DeletionFilterSuccess.idr)"
+      ],
+      "unexpectedBuilding": [],
+      "targetMutationDetected": false,
+      "mutatedPaths": [],
+      "interrupted": false,
+      "resourceStopped": false,
+      "multipleOwnedCompilers": false,
+      "maxSampleRSSKiB": 0,
+      "rssLimitKiB": 67108864,
+      "rssSamples": [
+        {
+          "timestampUTC": "2026-09-09T22:56:16.948925+00:00",
+          "rssKiB": 0,
+          "ownedPids": []
+        }
+      ],
+      "sourceSHA256": "f294f449672441d20a258462c6962d71c3144c677c2df77ca9ccda84c02b43c4",
+      "productionManifestSHA256": "07d41fa57ede130a7c38bbfb1126c92d91c1a8c1e474c63fd3173d448ac11525",
+      "sourceManifestSHA256": "2ef2706efe0b95e9e106293f2fcf6aa91fbdca64b10df0ab374d2c25596ee11e",
+      "headAtEnd": "c82b32a3858a0344bc959c8bc2c5a03439e2f2ec",
+      "CP3Blob": "eeaa70aa4414648bb2a1173d58244267997d16d7",
+      "runnerSHA256": "6e241c3e67fb1b2942bf44397c3fa5efdd762f5e8f0da95d0d461dfd69efde1a",
+      "commonSHA256": "5220f707db8ebde81468b851f26d48209d8732206d89910159f5c2dd81b08bab",
+      "crossLaneOverlapTimestampsUTC": [],
+      "transcript": "9/9: Building DGamma.CP4DeletionFilterSuccess (/Users/vyacheslavshebanov/Work/dgamma/src/DGamma/CP4DeletionFilterSuccess.idr)\n"
+    },
+    {
+      "unit": "S23",
+      "path": "src/DGamma/CP4DeletionPremiseSplit.idr",
+      "command": [
+        "idris2",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma/src",
+        "--check",
+        "/Users/vyacheslavshebanov/Work/dgamma/src/DGamma/CP4DeletionPremiseSplit.idr"
+      ],
+      "start": "2026-09-09T22:56:17.248777+00:00",
+      "end": "2026-09-09T22:56:19.358939+00:00",
+      "seconds": 2.1099948748014867,
+      "exit": 0,
+      "passed": true,
+      "fresh": true,
+      "seededPackageNoBuilding": false,
+      "policySHA256": "406c5b0a53eb8e012dce34ad297f6cdb40aa18ecfbdf4c54a05db063a0613987",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "buildingLines": [
+        "DGamma.CP4DeletionPremiseSplit (/Users/vyacheslavshebanov/Work/dgamma/src/DGamma/CP4DeletionPremiseSplit.idr)"
+      ],
+      "unexpectedBuilding": [],
+      "targetMutationDetected": false,
+      "mutatedPaths": [],
+      "interrupted": false,
+      "resourceStopped": false,
+      "multipleOwnedCompilers": false,
+      "maxSampleRSSKiB": 249296,
+      "rssLimitKiB": 67108864,
+      "rssSamples": [
+        {
+          "timestampUTC": "2026-09-09T22:56:18.295941+00:00",
+          "rssKiB": 249296,
+          "ownedPids": [
+            97787
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:56:19.341380+00:00",
+          "rssKiB": 0,
+          "ownedPids": []
+        }
+      ],
+      "sourceSHA256": "8919e95c84bc580da5a875d0355c79d9846ab78171c125bed11035a9aa991987",
+      "productionManifestSHA256": "07d41fa57ede130a7c38bbfb1126c92d91c1a8c1e474c63fd3173d448ac11525",
+      "sourceManifestSHA256": "2ef2706efe0b95e9e106293f2fcf6aa91fbdca64b10df0ab374d2c25596ee11e",
+      "headAtEnd": "c82b32a3858a0344bc959c8bc2c5a03439e2f2ec",
+      "CP3Blob": "eeaa70aa4414648bb2a1173d58244267997d16d7",
+      "runnerSHA256": "6e241c3e67fb1b2942bf44397c3fa5efdd762f5e8f0da95d0d461dfd69efde1a",
+      "commonSHA256": "5220f707db8ebde81468b851f26d48209d8732206d89910159f5c2dd81b08bab",
+      "crossLaneOverlapTimestampsUTC": [],
+      "transcript": "9/9: Building DGamma.CP4DeletionPremiseSplit (/Users/vyacheslavshebanov/Work/dgamma/src/DGamma/CP4DeletionPremiseSplit.idr)\n"
+    },
+    {
+      "unit": "S24",
+      "path": "src/DGamma/CP4DeletionSelectedForeignLifecycleAnchorTrace.idr",
+      "command": [
+        "idris2",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma/src",
+        "--check",
+        "/Users/vyacheslavshebanov/Work/dgamma/src/DGamma/CP4DeletionSelectedForeignLifecycleAnchorTrace.idr"
+      ],
+      "start": "2026-09-09T22:56:19.636912+00:00",
+      "end": "2026-09-09T22:56:20.699383+00:00",
+      "seconds": 1.0623182500712574,
+      "exit": 0,
+      "passed": true,
+      "fresh": true,
+      "seededPackageNoBuilding": false,
+      "policySHA256": "406c5b0a53eb8e012dce34ad297f6cdb40aa18ecfbdf4c54a05db063a0613987",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "buildingLines": [
+        "DGamma.CP4DeletionSelectedForeignLifecycleAnchorTrace (/Users/vyacheslavshebanov/Work/dgamma/src/DGamma/CP4DeletionSelectedForeignLifecycleAnchorTrace.idr)"
+      ],
+      "unexpectedBuilding": [],
+      "targetMutationDetected": false,
+      "mutatedPaths": [],
+      "interrupted": false,
+      "resourceStopped": false,
+      "multipleOwnedCompilers": false,
+      "maxSampleRSSKiB": 0,
+      "rssLimitKiB": 67108864,
+      "rssSamples": [
+        {
+          "timestampUTC": "2026-09-09T22:56:20.678440+00:00",
+          "rssKiB": 0,
+          "ownedPids": []
+        }
+      ],
+      "sourceSHA256": "99becf85d3ef74793f4fde4fe2138f277519066f3767c2a6fa13937d737e2d6f",
+      "productionManifestSHA256": "07d41fa57ede130a7c38bbfb1126c92d91c1a8c1e474c63fd3173d448ac11525",
+      "sourceManifestSHA256": "2ef2706efe0b95e9e106293f2fcf6aa91fbdca64b10df0ab374d2c25596ee11e",
+      "headAtEnd": "c82b32a3858a0344bc959c8bc2c5a03439e2f2ec",
+      "CP3Blob": "eeaa70aa4414648bb2a1173d58244267997d16d7",
+      "runnerSHA256": "6e241c3e67fb1b2942bf44397c3fa5efdd762f5e8f0da95d0d461dfd69efde1a",
+      "commonSHA256": "5220f707db8ebde81468b851f26d48209d8732206d89910159f5c2dd81b08bab",
+      "crossLaneOverlapTimestampsUTC": [],
+      "transcript": "9/9: Building DGamma.CP4DeletionSelectedForeignLifecycleAnchorTrace (/Users/vyacheslavshebanov/Work/dgamma/src/DGamma/CP4DeletionSelectedForeignLifecycleAnchorTrace.idr)\n"
+    },
+    {
+      "unit": "S25",
+      "path": "src/DGamma/CP4ProgressChecks.idr",
+      "command": [
+        "idris2",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma/src",
+        "--check",
+        "/Users/vyacheslavshebanov/Work/dgamma/src/DGamma/CP4ProgressChecks.idr"
+      ],
+      "start": "2026-09-09T22:56:20.962178+00:00",
+      "end": "2026-09-09T22:56:23.066633+00:00",
+      "seconds": 2.1042840420268476,
+      "exit": 0,
+      "passed": true,
+      "fresh": true,
+      "seededPackageNoBuilding": false,
+      "policySHA256": "406c5b0a53eb8e012dce34ad297f6cdb40aa18ecfbdf4c54a05db063a0613987",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "buildingLines": [
+        "DGamma.CP4ProgressChecks (/Users/vyacheslavshebanov/Work/dgamma/src/DGamma/CP4ProgressChecks.idr)"
+      ],
+      "unexpectedBuilding": [],
+      "targetMutationDetected": false,
+      "mutatedPaths": [],
+      "interrupted": false,
+      "resourceStopped": false,
+      "multipleOwnedCompilers": false,
+      "maxSampleRSSKiB": 243584,
+      "rssLimitKiB": 67108864,
+      "rssSamples": [
+        {
+          "timestampUTC": "2026-09-09T22:56:22.006537+00:00",
+          "rssKiB": 243584,
+          "ownedPids": [
+            98065
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:56:23.049314+00:00",
+          "rssKiB": 0,
+          "ownedPids": []
+        }
+      ],
+      "sourceSHA256": "82d8a552d42bfbb39e51943201d7a9b5cc96de24b3336d0bad23199b034bba78",
+      "productionManifestSHA256": "07d41fa57ede130a7c38bbfb1126c92d91c1a8c1e474c63fd3173d448ac11525",
+      "sourceManifestSHA256": "2ef2706efe0b95e9e106293f2fcf6aa91fbdca64b10df0ab374d2c25596ee11e",
+      "headAtEnd": "c82b32a3858a0344bc959c8bc2c5a03439e2f2ec",
+      "CP3Blob": "eeaa70aa4414648bb2a1173d58244267997d16d7",
+      "runnerSHA256": "6e241c3e67fb1b2942bf44397c3fa5efdd762f5e8f0da95d0d461dfd69efde1a",
+      "commonSHA256": "5220f707db8ebde81468b851f26d48209d8732206d89910159f5c2dd81b08bab",
+      "crossLaneOverlapTimestampsUTC": [],
+      "transcript": "10/10: Building DGamma.CP4ProgressChecks (/Users/vyacheslavshebanov/Work/dgamma/src/DGamma/CP4ProgressChecks.idr)\n"
+    },
+    {
+      "unit": "S26",
+      "path": "src/DGamma/CP4ProgressPotential.idr",
+      "command": [
+        "idris2",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma/src",
+        "--check",
+        "/Users/vyacheslavshebanov/Work/dgamma/src/DGamma/CP4ProgressPotential.idr"
+      ],
+      "start": "2026-09-09T22:56:23.354160+00:00",
+      "end": "2026-09-09T22:56:24.412515+00:00",
+      "seconds": 1.0581847499124706,
+      "exit": 0,
+      "passed": true,
+      "fresh": true,
+      "seededPackageNoBuilding": false,
+      "policySHA256": "406c5b0a53eb8e012dce34ad297f6cdb40aa18ecfbdf4c54a05db063a0613987",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "buildingLines": [
+        "DGamma.CP4ProgressPotential (/Users/vyacheslavshebanov/Work/dgamma/src/DGamma/CP4ProgressPotential.idr)"
+      ],
+      "unexpectedBuilding": [],
+      "targetMutationDetected": false,
+      "mutatedPaths": [],
+      "interrupted": false,
+      "resourceStopped": false,
+      "multipleOwnedCompilers": false,
+      "maxSampleRSSKiB": 0,
+      "rssLimitKiB": 67108864,
+      "rssSamples": [
+        {
+          "timestampUTC": "2026-09-09T22:56:24.394899+00:00",
+          "rssKiB": 0,
+          "ownedPids": []
+        }
+      ],
+      "sourceSHA256": "8d30f7cfec01940eed5081d28ffc4a6f9fd15ac2e4707af5a3081189ff54d7a7",
+      "productionManifestSHA256": "07d41fa57ede130a7c38bbfb1126c92d91c1a8c1e474c63fd3173d448ac11525",
+      "sourceManifestSHA256": "2ef2706efe0b95e9e106293f2fcf6aa91fbdca64b10df0ab374d2c25596ee11e",
+      "headAtEnd": "c82b32a3858a0344bc959c8bc2c5a03439e2f2ec",
+      "CP3Blob": "eeaa70aa4414648bb2a1173d58244267997d16d7",
+      "runnerSHA256": "6e241c3e67fb1b2942bf44397c3fa5efdd762f5e8f0da95d0d461dfd69efde1a",
+      "commonSHA256": "5220f707db8ebde81468b851f26d48209d8732206d89910159f5c2dd81b08bab",
+      "crossLaneOverlapTimestampsUTC": [],
+      "transcript": "9/9: Building DGamma.CP4ProgressPotential (/Users/vyacheslavshebanov/Work/dgamma/src/DGamma/CP4ProgressPotential.idr)\n"
+    },
+    {
+      "unit": "S27",
+      "path": "src/DGamma/CP4ProgressPrecedence.idr",
+      "command": [
+        "idris2",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma/src",
+        "--check",
+        "/Users/vyacheslavshebanov/Work/dgamma/src/DGamma/CP4ProgressPrecedence.idr"
+      ],
+      "start": "2026-09-09T22:56:24.697310+00:00",
+      "end": "2026-09-09T22:56:25.758748+00:00",
+      "seconds": 1.0612810826860368,
+      "exit": 0,
+      "passed": true,
+      "fresh": true,
+      "seededPackageNoBuilding": false,
+      "policySHA256": "406c5b0a53eb8e012dce34ad297f6cdb40aa18ecfbdf4c54a05db063a0613987",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "buildingLines": [
+        "DGamma.CP4ProgressPrecedence (/Users/vyacheslavshebanov/Work/dgamma/src/DGamma/CP4ProgressPrecedence.idr)"
+      ],
+      "unexpectedBuilding": [],
+      "targetMutationDetected": false,
+      "mutatedPaths": [],
+      "interrupted": false,
+      "resourceStopped": false,
+      "multipleOwnedCompilers": false,
+      "maxSampleRSSKiB": 0,
+      "rssLimitKiB": 67108864,
+      "rssSamples": [
+        {
+          "timestampUTC": "2026-09-09T22:56:25.741357+00:00",
+          "rssKiB": 0,
+          "ownedPids": []
+        }
+      ],
+      "sourceSHA256": "fb019be2423fed4bcdae0ad1d06516491ee20cc0ce18513c0deee23d944b817c",
+      "productionManifestSHA256": "07d41fa57ede130a7c38bbfb1126c92d91c1a8c1e474c63fd3173d448ac11525",
+      "sourceManifestSHA256": "2ef2706efe0b95e9e106293f2fcf6aa91fbdca64b10df0ab374d2c25596ee11e",
+      "headAtEnd": "c82b32a3858a0344bc959c8bc2c5a03439e2f2ec",
+      "CP3Blob": "eeaa70aa4414648bb2a1173d58244267997d16d7",
+      "runnerSHA256": "6e241c3e67fb1b2942bf44397c3fa5efdd762f5e8f0da95d0d461dfd69efde1a",
+      "commonSHA256": "5220f707db8ebde81468b851f26d48209d8732206d89910159f5c2dd81b08bab",
+      "crossLaneOverlapTimestampsUTC": [],
+      "transcript": "9/9: Building DGamma.CP4ProgressPrecedence (/Users/vyacheslavshebanov/Work/dgamma/src/DGamma/CP4ProgressPrecedence.idr)\n"
+    },
+    {
+      "unit": "S28",
+      "path": "src/DGamma/CP4ProgressReliance.idr",
+      "command": [
+        "idris2",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma/src",
+        "--check",
+        "/Users/vyacheslavshebanov/Work/dgamma/src/DGamma/CP4ProgressReliance.idr"
+      ],
+      "start": "2026-09-09T22:56:26.031038+00:00",
+      "end": "2026-09-09T22:56:28.132964+00:00",
+      "seconds": 2.1017459998838603,
+      "exit": 0,
+      "passed": true,
+      "fresh": true,
+      "seededPackageNoBuilding": false,
+      "policySHA256": "406c5b0a53eb8e012dce34ad297f6cdb40aa18ecfbdf4c54a05db063a0613987",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "buildingLines": [
+        "DGamma.CP4ProgressReliance (/Users/vyacheslavshebanov/Work/dgamma/src/DGamma/CP4ProgressReliance.idr)"
+      ],
+      "unexpectedBuilding": [],
+      "targetMutationDetected": false,
+      "mutatedPaths": [],
+      "interrupted": false,
+      "resourceStopped": false,
+      "multipleOwnedCompilers": false,
+      "maxSampleRSSKiB": 243024,
+      "rssLimitKiB": 67108864,
+      "rssSamples": [
+        {
+          "timestampUTC": "2026-09-09T22:56:27.074688+00:00",
+          "rssKiB": 243024,
+          "ownedPids": [
+            98678
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:56:28.111295+00:00",
+          "rssKiB": 0,
+          "ownedPids": []
+        }
+      ],
+      "sourceSHA256": "30a245afef0dfb9cb4a76e01722e77c126a942dfc056d97ffe33ffa741a7cf98",
+      "productionManifestSHA256": "07d41fa57ede130a7c38bbfb1126c92d91c1a8c1e474c63fd3173d448ac11525",
+      "sourceManifestSHA256": "2ef2706efe0b95e9e106293f2fcf6aa91fbdca64b10df0ab374d2c25596ee11e",
+      "headAtEnd": "c82b32a3858a0344bc959c8bc2c5a03439e2f2ec",
+      "CP3Blob": "eeaa70aa4414648bb2a1173d58244267997d16d7",
+      "runnerSHA256": "6e241c3e67fb1b2942bf44397c3fa5efdd762f5e8f0da95d0d461dfd69efde1a",
+      "commonSHA256": "5220f707db8ebde81468b851f26d48209d8732206d89910159f5c2dd81b08bab",
+      "crossLaneOverlapTimestampsUTC": [],
+      "transcript": "9/9: Building DGamma.CP4ProgressReliance (/Users/vyacheslavshebanov/Work/dgamma/src/DGamma/CP4ProgressReliance.idr)\n"
+    },
+    {
+      "unit": "S29",
+      "path": "src/DGamma/CP4RestrictionChecks.idr",
+      "command": [
+        "idris2",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma/src",
+        "--check",
+        "/Users/vyacheslavshebanov/Work/dgamma/src/DGamma/CP4RestrictionChecks.idr"
+      ],
+      "start": "2026-09-09T22:56:28.416833+00:00",
+      "end": "2026-09-09T22:56:29.477331+00:00",
+      "seconds": 1.0603044172748923,
+      "exit": 0,
+      "passed": true,
+      "fresh": true,
+      "seededPackageNoBuilding": false,
+      "policySHA256": "406c5b0a53eb8e012dce34ad297f6cdb40aa18ecfbdf4c54a05db063a0613987",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "buildingLines": [
+        "DGamma.CP4RestrictionChecks (/Users/vyacheslavshebanov/Work/dgamma/src/DGamma/CP4RestrictionChecks.idr)"
+      ],
+      "unexpectedBuilding": [],
+      "targetMutationDetected": false,
+      "mutatedPaths": [],
+      "interrupted": false,
+      "resourceStopped": false,
+      "multipleOwnedCompilers": false,
+      "maxSampleRSSKiB": 0,
+      "rssLimitKiB": 67108864,
+      "rssSamples": [
+        {
+          "timestampUTC": "2026-09-09T22:56:29.460125+00:00",
+          "rssKiB": 0,
+          "ownedPids": []
+        }
+      ],
+      "sourceSHA256": "fc8c1f6f4a90e46419a2c4b082e02597070f9db70cb644672bc69029a96d7454",
+      "productionManifestSHA256": "07d41fa57ede130a7c38bbfb1126c92d91c1a8c1e474c63fd3173d448ac11525",
+      "sourceManifestSHA256": "2ef2706efe0b95e9e106293f2fcf6aa91fbdca64b10df0ab374d2c25596ee11e",
+      "headAtEnd": "c82b32a3858a0344bc959c8bc2c5a03439e2f2ec",
+      "CP3Blob": "eeaa70aa4414648bb2a1173d58244267997d16d7",
+      "runnerSHA256": "6e241c3e67fb1b2942bf44397c3fa5efdd762f5e8f0da95d0d461dfd69efde1a",
+      "commonSHA256": "5220f707db8ebde81468b851f26d48209d8732206d89910159f5c2dd81b08bab",
+      "crossLaneOverlapTimestampsUTC": [],
+      "transcript": "11/11: Building DGamma.CP4RestrictionChecks (/Users/vyacheslavshebanov/Work/dgamma/src/DGamma/CP4RestrictionChecks.idr)\n"
+    },
+    {
+      "unit": "S30",
+      "path": "src/DGamma/CP4SupportActive.idr",
+      "command": [
+        "idris2",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma/src",
+        "--check",
+        "/Users/vyacheslavshebanov/Work/dgamma/src/DGamma/CP4SupportActive.idr"
+      ],
+      "start": "2026-09-09T22:56:29.743482+00:00",
+      "end": "2026-09-09T22:56:30.807346+00:00",
+      "seconds": 1.063705625012517,
+      "exit": 0,
+      "passed": true,
+      "fresh": true,
+      "seededPackageNoBuilding": false,
+      "policySHA256": "406c5b0a53eb8e012dce34ad297f6cdb40aa18ecfbdf4c54a05db063a0613987",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "buildingLines": [
+        "DGamma.CP4SupportActive (/Users/vyacheslavshebanov/Work/dgamma/src/DGamma/CP4SupportActive.idr)"
+      ],
+      "unexpectedBuilding": [],
+      "targetMutationDetected": false,
+      "mutatedPaths": [],
+      "interrupted": false,
+      "resourceStopped": false,
+      "multipleOwnedCompilers": false,
+      "maxSampleRSSKiB": 0,
+      "rssLimitKiB": 67108864,
+      "rssSamples": [
+        {
+          "timestampUTC": "2026-09-09T22:56:30.790086+00:00",
+          "rssKiB": 0,
+          "ownedPids": []
+        }
+      ],
+      "sourceSHA256": "2ce7e7def1010e54784db5d0041af667b3d01b6cd68c37560ad6729fa819fd7b",
+      "productionManifestSHA256": "07d41fa57ede130a7c38bbfb1126c92d91c1a8c1e474c63fd3173d448ac11525",
+      "sourceManifestSHA256": "2ef2706efe0b95e9e106293f2fcf6aa91fbdca64b10df0ab374d2c25596ee11e",
+      "headAtEnd": "c82b32a3858a0344bc959c8bc2c5a03439e2f2ec",
+      "CP3Blob": "eeaa70aa4414648bb2a1173d58244267997d16d7",
+      "runnerSHA256": "6e241c3e67fb1b2942bf44397c3fa5efdd762f5e8f0da95d0d461dfd69efde1a",
+      "commonSHA256": "5220f707db8ebde81468b851f26d48209d8732206d89910159f5c2dd81b08bab",
+      "crossLaneOverlapTimestampsUTC": [],
+      "transcript": "10/10: Building DGamma.CP4SupportActive (/Users/vyacheslavshebanov/Work/dgamma/src/DGamma/CP4SupportActive.idr)\n"
+    },
+    {
+      "unit": "S31",
+      "path": "src/DGamma/CP4SupportSolution.idr",
+      "command": [
+        "idris2",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma/src",
+        "--check",
+        "/Users/vyacheslavshebanov/Work/dgamma/src/DGamma/CP4SupportSolution.idr"
+      ],
+      "start": "2026-09-09T22:56:31.072045+00:00",
+      "end": "2026-09-09T23:00:00.327445+00:00",
+      "seconds": 209.25471770763397,
+      "exit": -15,
+      "passed": false,
+      "fresh": false,
+      "seededPackageNoBuilding": false,
+      "policySHA256": "406c5b0a53eb8e012dce34ad297f6cdb40aa18ecfbdf4c54a05db063a0613987",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "buildingLines": [],
+      "unexpectedBuilding": [],
+      "targetMutationDetected": false,
+      "mutatedPaths": [],
+      "interrupted": true,
+      "resourceStopped": true,
+      "multipleOwnedCompilers": false,
+      "maxSampleRSSKiB": 67128512,
+      "rssLimitKiB": 67108864,
+      "rssSamples": [
+        {
+          "timestampUTC": "2026-09-09T22:56:32.112874+00:00",
+          "rssKiB": 220480,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:56:33.149068+00:00",
+          "rssKiB": 389104,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:56:34.184911+00:00",
+          "rssKiB": 704656,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:56:35.218974+00:00",
+          "rssKiB": 1057584,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:56:36.255437+00:00",
+          "rssKiB": 1315360,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:56:37.320204+00:00",
+          "rssKiB": 1675104,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:56:38.358498+00:00",
+          "rssKiB": 2066912,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:56:39.392505+00:00",
+          "rssKiB": 2458672,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:56:40.426988+00:00",
+          "rssKiB": 2565984,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:56:41.472551+00:00",
+          "rssKiB": 2913856,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:56:42.538040+00:00",
+          "rssKiB": 3323488,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:56:43.577611+00:00",
+          "rssKiB": 3719136,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:56:44.614731+00:00",
+          "rssKiB": 4132608,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:56:45.651608+00:00",
+          "rssKiB": 4524240,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:56:46.686484+00:00",
+          "rssKiB": 4915904,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:56:47.749856+00:00",
+          "rssKiB": 5031424,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:56:48.783429+00:00",
+          "rssKiB": 5075472,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:56:49.820718+00:00",
+          "rssKiB": 5386272,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:56:50.859894+00:00",
+          "rssKiB": 5799696,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:56:51.901529+00:00",
+          "rssKiB": 6191408,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:56:52.961197+00:00",
+          "rssKiB": 6604928,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:56:54.000892+00:00",
+          "rssKiB": 6996704,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:56:55.045273+00:00",
+          "rssKiB": 7388512,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:56:56.085357+00:00",
+          "rssKiB": 7801808,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:56:57.126547+00:00",
+          "rssKiB": 8193808,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:56:58.191185+00:00",
+          "rssKiB": 8585552,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:56:59.230334+00:00",
+          "rssKiB": 8977344,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:57:00.264766+00:00",
+          "rssKiB": 9370048,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:57:01.304080+00:00",
+          "rssKiB": 9777504,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:57:02.342296+00:00",
+          "rssKiB": 9951632,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:57:03.397618+00:00",
+          "rssKiB": 9995280,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:57:04.439707+00:00",
+          "rssKiB": 10038112,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:57:05.481579+00:00",
+          "rssKiB": 10092512,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:57:06.522099+00:00",
+          "rssKiB": 10335376,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:57:07.556044+00:00",
+          "rssKiB": 10726960,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:57:08.610472+00:00",
+          "rssKiB": 11140336,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:57:09.651894+00:00",
+          "rssKiB": 11532064,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:57:10.688912+00:00",
+          "rssKiB": 11923920,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:57:11.724311+00:00",
+          "rssKiB": 12315680,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:57:12.765528+00:00",
+          "rssKiB": 12729232,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:57:13.824781+00:00",
+          "rssKiB": 13120912,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:57:14.864420+00:00",
+          "rssKiB": 13528432,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:57:15.905117+00:00",
+          "rssKiB": 13926096,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:57:16.945076+00:00",
+          "rssKiB": 14317872,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:57:17.987155+00:00",
+          "rssKiB": 14709680,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:57:19.053538+00:00",
+          "rssKiB": 15101488,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:57:20.096688+00:00",
+          "rssKiB": 15515008,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:57:21.134901+00:00",
+          "rssKiB": 15906592,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:57:22.176279+00:00",
+          "rssKiB": 16298176,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:57:23.210102+00:00",
+          "rssKiB": 16689824,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:57:24.268197+00:00",
+          "rssKiB": 17093504,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:57:25.304157+00:00",
+          "rssKiB": 17495056,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:57:26.346296+00:00",
+          "rssKiB": 17886880,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:57:27.389069+00:00",
+          "rssKiB": 18278672,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:57:28.430860+00:00",
+          "rssKiB": 18670432,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:57:29.490758+00:00",
+          "rssKiB": 19062208,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:57:30.537934+00:00",
+          "rssKiB": 19453872,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:57:31.589431+00:00",
+          "rssKiB": 19788432,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:57:32.655138+00:00",
+          "rssKiB": 19831680,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:57:33.709447+00:00",
+          "rssKiB": 19872768,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:57:35.082085+00:00",
+          "rssKiB": 19927552,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:57:36.131111+00:00",
+          "rssKiB": 19970880,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:57:37.169135+00:00",
+          "rssKiB": 20012496,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:57:38.207664+00:00",
+          "rssKiB": 20055936,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:57:39.246663+00:00",
+          "rssKiB": 20116304,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:57:40.308336+00:00",
+          "rssKiB": 20316032,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:57:41.347685+00:00",
+          "rssKiB": 20707872,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:57:42.387031+00:00",
+          "rssKiB": 21099664,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:57:43.425257+00:00",
+          "rssKiB": 21491232,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:57:44.464131+00:00",
+          "rssKiB": 21882800,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:57:45.524432+00:00",
+          "rssKiB": 22292608,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:57:46.559262+00:00",
+          "rssKiB": 22684208,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:57:47.593588+00:00",
+          "rssKiB": 23057776,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:57:48.627468+00:00",
+          "rssKiB": 23455184,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:57:49.663577+00:00",
+          "rssKiB": 23856960,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:57:50.718133+00:00",
+          "rssKiB": 24254768,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:57:51.759033+00:00",
+          "rssKiB": 24646560,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:57:52.796337+00:00",
+          "rssKiB": 25038352,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:57:53.839428+00:00",
+          "rssKiB": 25430064,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:57:54.878497+00:00",
+          "rssKiB": 25821872,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:57:55.944821+00:00",
+          "rssKiB": 26235328,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:57:56.988964+00:00",
+          "rssKiB": 26627136,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:57:58.027531+00:00",
+          "rssKiB": 26996960,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:57:59.070703+00:00",
+          "rssKiB": 27388528,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:58:00.109808+00:00",
+          "rssKiB": 27780096,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:58:01.168376+00:00",
+          "rssKiB": 28184416,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:58:02.206720+00:00",
+          "rssKiB": 28573904,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:58:03.249184+00:00",
+          "rssKiB": 28976992,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:58:04.291266+00:00",
+          "rssKiB": 29368832,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:58:05.326303+00:00",
+          "rssKiB": 29760560,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:58:06.384455+00:00",
+          "rssKiB": 30152352,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:58:07.420621+00:00",
+          "rssKiB": 30544176,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:58:08.462604+00:00",
+          "rssKiB": 30935808,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:58:09.511123+00:00",
+          "rssKiB": 31327424,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:58:10.554795+00:00",
+          "rssKiB": 31718960,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:58:11.619223+00:00",
+          "rssKiB": 32110640,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:58:12.655678+00:00",
+          "rssKiB": 32502448,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:58:13.689824+00:00",
+          "rssKiB": 32894256,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:58:14.726375+00:00",
+          "rssKiB": 33286016,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:58:15.769915+00:00",
+          "rssKiB": 33677728,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:58:16.834447+00:00",
+          "rssKiB": 34069456,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:58:17.869541+00:00",
+          "rssKiB": 34461232,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:58:18.911675+00:00",
+          "rssKiB": 34853008,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:58:19.955887+00:00",
+          "rssKiB": 35244800,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:58:20.992438+00:00",
+          "rssKiB": 35629040,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:58:22.060069+00:00",
+          "rssKiB": 36028384,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:58:23.103907+00:00",
+          "rssKiB": 36420000,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:58:24.143453+00:00",
+          "rssKiB": 36811568,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:58:25.187619+00:00",
+          "rssKiB": 37203168,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:58:26.222920+00:00",
+          "rssKiB": 37573552,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:58:27.287958+00:00",
+          "rssKiB": 37986512,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:58:28.332071+00:00",
+          "rssKiB": 38378352,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:58:29.366045+00:00",
+          "rssKiB": 38756224,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:58:30.409579+00:00",
+          "rssKiB": 39158016,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:58:31.446111+00:00",
+          "rssKiB": 39488336,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:58:32.503840+00:00",
+          "rssKiB": 39517984,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:58:33.540787+00:00",
+          "rssKiB": 39559744,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:58:34.582226+00:00",
+          "rssKiB": 39601520,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:58:35.626498+00:00",
+          "rssKiB": 39643520,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:58:36.668326+00:00",
+          "rssKiB": 39685024,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:58:37.732452+00:00",
+          "rssKiB": 39727520,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:58:38.772355+00:00",
+          "rssKiB": 39768864,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:58:39.815218+00:00",
+          "rssKiB": 39808080,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:58:40.858089+00:00",
+          "rssKiB": 39848384,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:58:41.895806+00:00",
+          "rssKiB": 39889520,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:58:42.957096+00:00",
+          "rssKiB": 39932416,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:58:43.995257+00:00",
+          "rssKiB": 39978704,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:58:45.033146+00:00",
+          "rssKiB": 40022224,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:58:46.072268+00:00",
+          "rssKiB": 40062912,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:58:47.116745+00:00",
+          "rssKiB": 40097792,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:58:48.180526+00:00",
+          "rssKiB": 40179168,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:58:49.224833+00:00",
+          "rssKiB": 40585072,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:58:50.267292+00:00",
+          "rssKiB": 40976864,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:58:51.308887+00:00",
+          "rssKiB": 41368624,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:58:52.353823+00:00",
+          "rssKiB": 41776304,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:58:53.414003+00:00",
+          "rssKiB": 42173824,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:58:54.450803+00:00",
+          "rssKiB": 42565392,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:58:55.491954+00:00",
+          "rssKiB": 42956960,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:58:56.531247+00:00",
+          "rssKiB": 43328752,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:58:57.577775+00:00",
+          "rssKiB": 43718512,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:58:58.643771+00:00",
+          "rssKiB": 44119232,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:58:59.682094+00:00",
+          "rssKiB": 44502032,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:59:00.721098+00:00",
+          "rssKiB": 44909328,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:59:01.766155+00:00",
+          "rssKiB": 45307376,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:59:02.810629+00:00",
+          "rssKiB": 45699072,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:59:03.865037+00:00",
+          "rssKiB": 46090864,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:59:04.903167+00:00",
+          "rssKiB": 46482512,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:59:05.948335+00:00",
+          "rssKiB": 46874256,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:59:06.984625+00:00",
+          "rssKiB": 47244272,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:59:08.025851+00:00",
+          "rssKiB": 47635968,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:59:09.088371+00:00",
+          "rssKiB": 48027568,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:59:10.125859+00:00",
+          "rssKiB": 48419152,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:59:11.166745+00:00",
+          "rssKiB": 48810688,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:59:12.201161+00:00",
+          "rssKiB": 49202480,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:59:13.235141+00:00",
+          "rssKiB": 49594144,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:59:14.296539+00:00",
+          "rssKiB": 49985904,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:59:15.343125+00:00",
+          "rssKiB": 50377632,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:59:16.381480+00:00",
+          "rssKiB": 50769440,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:59:17.416336+00:00",
+          "rssKiB": 51151584,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:59:18.457152+00:00",
+          "rssKiB": 51531248,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:59:19.511519+00:00",
+          "rssKiB": 51923872,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:59:20.556523+00:00",
+          "rssKiB": 52329568,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:59:21.600791+00:00",
+          "rssKiB": 52706464,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:59:22.644922+00:00",
+          "rssKiB": 53098160,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:59:23.687037+00:00",
+          "rssKiB": 53496304,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:59:24.748718+00:00",
+          "rssKiB": 53903072,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:59:25.790989+00:00",
+          "rssKiB": 54273328,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:59:26.835674+00:00",
+          "rssKiB": 54664608,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:59:27.879359+00:00",
+          "rssKiB": 55056272,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:59:28.924074+00:00",
+          "rssKiB": 55448000,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:59:29.984802+00:00",
+          "rssKiB": 55839824,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:59:31.021178+00:00",
+          "rssKiB": 56231584,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:59:32.057718+00:00",
+          "rssKiB": 56601584,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:59:33.098556+00:00",
+          "rssKiB": 56993376,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:59:34.136795+00:00",
+          "rssKiB": 57385072,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:59:35.200791+00:00",
+          "rssKiB": 57798624,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:59:36.236467+00:00",
+          "rssKiB": 58168624,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:59:37.278101+00:00",
+          "rssKiB": 58560272,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:59:38.322280+00:00",
+          "rssKiB": 58933888,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:59:39.367061+00:00",
+          "rssKiB": 59321744,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:59:40.434655+00:00",
+          "rssKiB": 59713296,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:59:41.475496+00:00",
+          "rssKiB": 60105088,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:59:42.520967+00:00",
+          "rssKiB": 60502144,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:59:43.570520+00:00",
+          "rssKiB": 60907472,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:59:44.616894+00:00",
+          "rssKiB": 61284608,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:59:45.676332+00:00",
+          "rssKiB": 61693824,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:59:46.716117+00:00",
+          "rssKiB": 62069984,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:59:47.753980+00:00",
+          "rssKiB": 62455632,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:59:48.796445+00:00",
+          "rssKiB": 62825488,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:59:49.834402+00:00",
+          "rssKiB": 63217072,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:59:50.894086+00:00",
+          "rssKiB": 63625488,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:59:51.937815+00:00",
+          "rssKiB": 64000288,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:59:52.974053+00:00",
+          "rssKiB": 64392032,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:59:54.012827+00:00",
+          "rssKiB": 64793552,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:59:55.056906+00:00",
+          "rssKiB": 65175600,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:59:56.122710+00:00",
+          "rssKiB": 65573216,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:59:57.159391+00:00",
+          "rssKiB": 65959104,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:59:58.206428+00:00",
+          "rssKiB": 66350848,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T22:59:59.248732+00:00",
+          "rssKiB": 66742512,
+          "ownedPids": [
+            99889
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T23:00:00.290286+00:00",
+          "rssKiB": 67128512,
+          "ownedPids": [
+            99889
+          ]
+        }
+      ],
+      "sourceSHA256": "812d874baff27ce025c17ad09527e285079b6ee26a50fec2c4b231723593fda0",
+      "productionManifestSHA256": "07d41fa57ede130a7c38bbfb1126c92d91c1a8c1e474c63fd3173d448ac11525",
+      "sourceManifestSHA256": "2ef2706efe0b95e9e106293f2fcf6aa91fbdca64b10df0ab374d2c25596ee11e",
+      "headAtEnd": "c82b32a3858a0344bc959c8bc2c5a03439e2f2ec",
+      "CP3Blob": "eeaa70aa4414648bb2a1173d58244267997d16d7",
+      "runnerSHA256": "6e241c3e67fb1b2942bf44397c3fa5efdd762f5e8f0da95d0d461dfd69efde1a",
+      "commonSHA256": "5220f707db8ebde81468b851f26d48209d8732206d89910159f5c2dd81b08bab",
+      "crossLaneOverlapTimestampsUTC": [],
+      "transcript": ""
     }
   ]
 }

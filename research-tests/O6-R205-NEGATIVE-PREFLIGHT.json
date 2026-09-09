@@ -1,0 +1,301 @@
+{
+  "timestampUTC": "2026-09-09T22:58:54.623387+00:00",
+  "contracts": {
+    "research-tests/DGamma/R7DuplicateLabelNegative.idr": {
+      "expectedDiagnostic": "not a valid impossible case",
+      "symbol": "duplicateLabelUnique",
+      "authority": "read-only historical contract; run-r11-suite.sh:127; suite NOT executed",
+      "sourceSHA256": "09a6e04ee70df74fe17b97cd100680c5d920dd962b972337287a6af0c0b2ae69",
+      "qualification": "Intended rejection contract recovered before R205 execution; fresh exact-target diagnostic+symbol still required, import failure does NOT satisfy it."
+    },
+    "research-tests/DGamma/R13O3IndependentDictionaryNegative.idr": {
+      "expectedDiagnostic": "alternateKeyEq and keyEq",
+      "symbol": "independentDictionariesCannotAlign",
+      "authority": "read-only historical contract; run-r11-suite.sh:108; suite NOT executed",
+      "sourceSHA256": "43f38318f27127040bf8daa891e2a2bf0b17a4f9bd1ad9191e7b297c7df176f4",
+      "qualification": "Intended rejection contract recovered before R205 execution; fresh exact-target diagnostic+symbol still required, import failure does NOT satisfy it."
+    },
+    "research-tests/DGamma/R14O4IndependentDictionaryNegative.idr": {
+      "expectedDiagnostic": "alternateKeyEq and keyEq",
+      "symbol": "independentMixedPairCannotAlign",
+      "authority": "read-only historical contract; run-r11-suite.sh:107; suite NOT executed",
+      "sourceSHA256": "bd185b36fc7d32ce693549a9d0326c362a812ea239a90a489b542b17617fc163",
+      "qualification": "Intended rejection contract recovered before R205 execution; fresh exact-target diagnostic+symbol still required, import failure does NOT satisfy it."
+    },
+    "research-tests/DGamma/R15O5IndependentDictionaryNegative.idr": {
+      "expectedDiagnostic": "alternateKeyEq and keyEq",
+      "symbol": "independentEarlyOrchestrationCannotAlign",
+      "authority": "read-only historical contract; run-r11-suite.sh:106; suite NOT executed",
+      "sourceSHA256": "9f5d77fc1543c2451ecbbfc701aab79d6081f76b72688840f2a78143857e21d9",
+      "qualification": "Intended rejection contract recovered before R205 execution; fresh exact-target diagnostic+symbol still required, import failure does NOT satisfy it."
+    },
+    "research-tests/DGamma/R34RemoveChildOrientationNegative.idr": {
+      "expectedDiagnostic": "hasChildIn actor (source .bindings) and False",
+      "symbol": "removeChildOrientationProbe",
+      "authority": "read-only historical contract; run-r11-suite.sh:87; suite NOT executed",
+      "sourceSHA256": "28c9886cd88cde4adade1ed89464eb738d111c7e15b239a01d93e4a7b04e163e",
+      "qualification": "Intended rejection contract recovered before R205 execution; fresh exact-target diagnostic+symbol still required, import failure does NOT satisfy it."
+    },
+    "research-tests/DGamma/R44IteratorForwardNestedCoverageNegative.idr": {
+      "expectedDiagnostic": "IteratorForwardGenerator _",
+      "symbol": "directIteratorForwardNestedCoverage",
+      "authority": "read-only historical contract; run-r11-suite.sh:90; suite NOT executed",
+      "sourceSHA256": "dc98dbc7df520c06a00900e50cde9b4ad86da82c9db5838d18ef202105451598",
+      "qualification": "Intended rejection contract recovered before R205 execution; fresh exact-target diagnostic+symbol still required, import failure does NOT satisfy it."
+    },
+    "research-tests/DGamma/R44IteratorYieldedNestedCoverageNegative.idr": {
+      "expectedDiagnostic": "IteratorYieldedGenerator _ _",
+      "symbol": "directIteratorYieldedNestedCoverage",
+      "authority": "read-only historical contract; run-r11-suite.sh:91; suite NOT executed",
+      "sourceSHA256": "4f555f59d8ffd984b339f2bcb748a30712651a40b14cd778b04d213c87528551",
+      "qualification": "Intended rejection contract recovered before R205 execution; fresh exact-target diagnostic+symbol still required, import failure does NOT satisfy it."
+    },
+    "research-tests/DGamma/R17WrongLookupControlNegative.idr": {
+      "expectedDiagnostic": "Nothing and with block in lookupEntries",
+      "symbol": "wrongLookupControlPairRejected",
+      "authority": "read-only historical contract; run-r11-suite.sh:105; suite NOT executed",
+      "sourceSHA256": "e1321b70075b2a32691ba0fe45abb6c8c147e2a2599efda32fabaf41539cd8b2",
+      "qualification": "Intended rejection contract recovered before R205 execution; fresh exact-target diagnostic+symbol still required, import failure does NOT satisfy it."
+    },
+    "research-tests/DGamma/R38UnloadExactMapFromRuntimeAccumulatorNegative.idr": {
+      "expectedDiagnostic": "probeFreshRight and probeFreshLeft",
+      "symbol": "unloadExactMapFromRuntimeAccumulatorNegative",
+      "authority": "read-only historical contract; run-r11-suite.sh:88; suite NOT executed",
+      "sourceSHA256": "99a6dd56abbf3ecfbdd5113076a4ab3e6d2dd9b07bd54ec6ec20181d30c3b426",
+      "qualification": "Intended rejection contract recovered before R205 execution; fresh exact-target diagnostic+symbol still required, import failure does NOT satisfy it."
+    },
+    "research-tests/DGamma/R41PointwiseRelianceProjectionNegative.idr": {
+      "expectedDiagnostic": "rightTable and leftTable",
+      "symbol": "directPointwiseReliedHeadProjectionDoesNotReduce",
+      "authority": "read-only historical contract; run-r11-suite.sh:89; suite NOT executed",
+      "sourceSHA256": "03b4a4c935ac78e5f69097bb10b8c393668bc8ed72ca2d58256baa8e1253ba40",
+      "qualification": "Intended rejection contract recovered before R205 execution; fresh exact-target diagnostic+symbol still required, import failure does NOT satisfy it."
+    },
+    "research-tests/DGamma/R10AdjacentSwapMapCloneNegative.idr": {
+      "expectedDiagnostic": "operationalOccurrenceCorrespondence",
+      "symbol": "replaceActualSwapOccurrenceMap",
+      "authority": "read-only historical contract; run-r11-suite.sh:116; suite NOT executed",
+      "sourceSHA256": "b0553e0d38b9ac951c67be277e589c9aa345702934f44420d98349de75814ee3",
+      "qualification": "Intended rejection contract recovered before R205 execution; fresh exact-target diagnostic+symbol still required, import failure does NOT satisfy it."
+    },
+    "research-tests/DGamma/R19SealedReplayConstructorNegative.idr": {
+      "expectedDiagnostic": "SealedSuffixReplayEnd is private",
+      "symbol": "forgedScopedReplaySpine",
+      "authority": "read-only historical contract; run-r11-suite.sh:85; suite NOT executed",
+      "sourceSHA256": "a90bcd88a7c0a56e272da0ffc1039b0c757007f551b23fd17b629c4ff5cdab97",
+      "qualification": "Intended rejection contract recovered before R205 execution; fresh exact-target diagnostic+symbol still required, import failure does NOT satisfy it."
+    },
+    "research-tests/DGamma/R20WholeBundleMovedAlignmentNegative.idr": {
+      "expectedDiagnostic": "storedRightKeyEq and keyEq",
+      "symbol": "localDiamondCannotSupplyMovedAlignment",
+      "authority": "read-only historical contract; run-r11-suite.sh:96; suite NOT executed",
+      "sourceSHA256": "17f23592e76a26ded5f6660e505e1c1a4126ca8237b5b9dfa05c772a07c59ab7",
+      "qualification": "Intended rejection contract recovered before R205 execution; fresh exact-target diagnostic+symbol still required, import failure does NOT satisfy it."
+    },
+    "research-tests/DGamma/R21RepeatedIterProducerAlignmentNegative.idr": {
+      "expectedDiagnostic": "storedRightKeyEq and storedLeftKeyEq",
+      "symbol": "repeatedIterPremisesCannotSupplyMovedAlignment",
+      "authority": "read-only historical contract; run-r11-suite.sh:98; suite NOT executed",
+      "sourceSHA256": "02d82894e2b1892d933d21e6cfec34a847ef01b6cdaa55a7a57fc6e5f07b14e6",
+      "qualification": "Intended rejection contract recovered before R205 execution; fresh exact-target diagnostic+symbol still required, import failure does NOT satisfy it."
+    },
+    "research-tests/DGamma/R21WholeBundleQuietTransportNegative.idr": {
+      "expectedDiagnostic": "source and target",
+      "symbol": "relationalEndpointDoesNotDirectlyTransportQuiet",
+      "authority": "read-only historical contract; run-r11-suite.sh:99; suite NOT executed",
+      "sourceSHA256": "18a607321869bb7657b2896b6bd48ad19e76dfde4d31460a7bdf872be9bd9cbb",
+      "qualification": "Intended rejection contract recovered before R205 execution; fresh exact-target diagnostic+symbol still required, import failure does NOT satisfy it."
+    },
+    "research-tests/DGamma/R23PointwiseAdvanceReplayNegative.idr": {
+      "expectedDiagnostic": "ControlEquivalent name key world error value nameEq sourceBefore replayedBefore and OrderedRegistryControlsRelated",
+      "symbol": "relationalEndpointDoesNotSupplyOrderedAdvanceReplay",
+      "authority": "read-only historical contract; run-r11-suite.sh:100; suite NOT executed",
+      "sourceSHA256": "41e28cd9057953e5b61f2159443b76603fe79e1c0cc7113aa32ac97119877d32",
+      "qualification": "Intended rejection contract recovered before R205 execution; fresh exact-target diagnostic+symbol still required, import failure does NOT satisfy it."
+    },
+    "research-tests/DGamma/R24CorrectedWholeAlignmentNegative.idr": {
+      "expectedDiagnostic": "storedRightKeyEq and keyEq",
+      "symbol": "correctedFixtureCannotRecoverMovedPairAlignment",
+      "authority": "read-only historical contract; run-r11-suite.sh:101; suite NOT executed",
+      "sourceSHA256": "85057662af8a062f93fa487071aea613848ae94849d5bf2c173462602202b1d4",
+      "qualification": "Intended rejection contract recovered before R205 execution; fresh exact-target diagnostic+symbol still required, import failure does NOT satisfy it."
+    },
+    "research-tests/DGamma/R30AdjacentSwapResultConstructorNegative.idr": {
+      "expectedDiagnostic": "MkAdjacentSwapResult is private",
+      "symbol": "forgeOpaqueAdjacentResult",
+      "authority": "read-only historical contract; run-r11-suite.sh:86; suite NOT executed",
+      "sourceSHA256": "4f817782ffb6efd82dcadf11833dcddb653941b37afa1c3d286d81292ed3229c",
+      "qualification": "Intended rejection contract recovered before R205 execution; fresh exact-target diagnostic+symbol still required, import failure does NOT satisfy it."
+    },
+    "research-tests/DGamma/R45BareDiamondFalseDisciplineNegative.idr": {
+      "expectedDiagnostic": "Inactive Nothing",
+      "symbol": "bareDiamondCannotForgeTargetYield",
+      "authority": "read-only historical contract; run-r11-suite.sh:92; suite NOT executed",
+      "sourceSHA256": "befc587ff12b0964a4302c70cdcd7d4a704b63084531370200a2c8a2c95825f7",
+      "qualification": "Intended rejection contract recovered before R205 execution; fresh exact-target diagnostic+symbol still required, import failure does NOT satisfy it."
+    },
+    "research-tests/DGamma/R45BareDiamondSafetyProjectionNegative.idr": {
+      "expectedDiagnostic": "not a valid impossible case",
+      "symbol": "bareDiamondCannotProjectRegistrationSafety",
+      "authority": "read-only historical contract; run-r11-suite.sh:93; suite NOT executed",
+      "sourceSHA256": "7dd5b10e13e5ebe117d9627c44463fa0f25f163993dd3c840268aad4e453b692",
+      "qualification": "Intended rejection contract recovered before R205 execution; fresh exact-target diagnostic+symbol still required, import failure does NOT satisfy it."
+    },
+    "research-tests/DGamma/R46RetirementRecoveryLiveSafetyNegative.idr": {
+      "expectedDiagnostic": "Mismatch between: LAdvance",
+      "symbol": "retirementRecoveryCannotEnterLiveSafety",
+      "authority": "read-only historical contract; run-r11-suite.sh:95; suite NOT executed",
+      "sourceSHA256": "f919f2322ef99d0969dc5a1417be2db1cdaacbb899ebfe1fec1c70c6af739f32",
+      "qualification": "Intended rejection contract recovered before R205 execution; fresh exact-target diagnostic+symbol still required, import failure does NOT satisfy it."
+    },
+    "research-tests/DGamma/R45OpaqueGenuineAdjacentInputNegative.idr": {
+      "expectedDiagnostic": "CandidateOpaqueGenuineDiamond name key world error value nameEq keyEq left right and LocalRelationalDiamond",
+      "symbol": "frozenAdjacentInputRejectsOpaqueGenuine",
+      "authority": "read-only historical contract; run-r11-suite.sh:94; suite NOT executed",
+      "sourceSHA256": "d0d959573091be2cc01e9055f2e936f79b4381504674cbeb96931975e48ceb0d",
+      "qualification": "Intended rejection contract recovered before R205 execution; fresh exact-target diagnostic+symbol still required, import failure does NOT satisfy it."
+    },
+    "research-tests/DGamma/R10DeletionStepMapCloneNegative.idr": {
+      "expectedDiagnostic": "alternate and step .deletionOccurrenceCorrespondence",
+      "symbol": "replaceDeletionStepOccurrenceMap",
+      "authority": "read-only historical contract; run-r11-suite.sh:118; suite NOT executed",
+      "sourceSHA256": "522d96385cc742cc628105afffc9aa8d9fb4ea8740feafbeae0dfcf87758a3a6",
+      "qualification": "Intended rejection contract recovered before R205 execution; fresh exact-target diagnostic+symbol still required, import failure does NOT satisfy it."
+    },
+    "research-tests/DGamma/R10ReductionMapCloneNegative.idr": {
+      "expectedDiagnostic": "closingFreeDeletionOccurrenceFold",
+      "symbol": "replaceReductionOccurrenceMap",
+      "authority": "read-only historical contract; run-r11-suite.sh:117; suite NOT executed",
+      "sourceSHA256": "37cea009c9caf60fb9bab9cbcaf4ebd7b082d75e888bd772241c8e8d486ce3b3",
+      "qualification": "Intended rejection contract recovered before R205 execution; fresh exact-target diagnostic+symbol still required, import failure does NOT satisfy it."
+    },
+    "research-tests/DGamma/R10CoherentBothHalvesCapitalNegative.idr": {
+      "expectedDiagnostic": "alternate and canonicalOccurrenceCorrespondence capital",
+      "symbol": "coherentBothHalvesCannotBecomeCapitalOutput",
+      "authority": "read-only historical contract; run-r11-suite.sh:120; suite NOT executed",
+      "sourceSHA256": "86228bbdf46811291cb77f8aa5b55ef6df1941eef1d956e4eaf5f209eb2ac8d6",
+      "qualification": "Intended rejection contract recovered before R205 execution; fresh exact-target diagnostic+symbol still required, import failure does NOT satisfy it."
+    },
+    "research-tests/DGamma/R10SortedMapCloneNegative.idr": {
+      "expectedDiagnostic": "finiteDerivationOccurrenceCorrespondence",
+      "symbol": "replaceSortedOccurrenceMap",
+      "authority": "read-only historical contract; run-r11-suite.sh:119; suite NOT executed",
+      "sourceSHA256": "d21be6667598a36e1d261c9119f694c752cefb475bd907d1aed46d106d1de2d9",
+      "qualification": "Intended rejection contract recovered before R205 execution; fresh exact-target diagnostic+symbol still required, import failure does NOT satisfy it."
+    },
+    "research-tests/DGamma/R176ReductionUniqueDirectionNegative.idr": {
+      "expectedDiagnostic": "reduction .reducedFinal and originalFinal",
+      "symbol": "reductionUniqueCannotRunBackward",
+      "authority": "read-only literal contract:research-tests/run-r178-boundaries.py:55",
+      "sourceSHA256": "a466a58e02e3bb663f55cb607bf546a4cd4bd38994e6619fdc2fa1184bbcad0f",
+      "qualification": "Intended rejection contract recovered before R205 execution; fresh exact-target diagnostic+symbol still required, import failure does NOT satisfy it."
+    },
+    "research-tests/DGamma/R176UnsealedOriginUniqueNegative.idr": {
+      "expectedDiagnostic": "Mismatch between: ActionRegistrationReplayCorrespondence",
+      "symbol": "unsealedOriginCannotTransportUnique",
+      "authority": "read-only literal contract:research-tests/run-r178-boundaries.py:54",
+      "sourceSHA256": "2bdc055a4ababa20c056efc110c039b5950c3181346f7095ef350805a24173ac",
+      "qualification": "Intended rejection contract recovered before R205 execution; fresh exact-target diagnostic+symbol still required, import failure does NOT satisfy it."
+    },
+    "research-tests/DGamma/R21CandidateIndependentDictionaryNegative.idr": {
+      "expectedDiagnostic": "storedRightKeyEq and keyEq",
+      "symbol": "forgeCandidateFromIndependentDictionaries",
+      "authority": "read-only historical contract; run-r11-suite.sh:97; suite NOT executed",
+      "sourceSHA256": "670008111f2597b78ff3383ebf6f543f11847addaa191162fd9eb8bfcd876ff2",
+      "qualification": "Intended rejection contract recovered before R205 execution; fresh exact-target diagnostic+symbol still required, import failure does NOT satisfy it."
+    },
+    "research-tests/DGamma/R6ScannerWrongGenerationNegative.idr": {
+      "expectedDiagnostic": "12 and 0",
+      "symbol": "conflateSameRawNameBirths",
+      "authority": "read-only historical contract; run-r11-suite.sh:125; suite NOT executed",
+      "sourceSHA256": "45611c6a82862b5269092f106bd6870b3aaa49c9cf7cd2538eea7e985f3aa6b8",
+      "qualification": "Intended rejection contract recovered before R205 execution; fresh exact-target diagnostic+symbol still required, import failure does NOT satisfy it."
+    },
+    "research-tests/DGamma/R25AlignedEnvelopeForgeryNegative.idr": {
+      "expectedDiagnostic": "storedRightKeyEq and keyEq",
+      "symbol": "forgeAlignedEnvelopeFromIndependentDictionaries",
+      "authority": "read-only historical contract; run-r11-suite.sh:102; suite NOT executed",
+      "sourceSHA256": "0fd32ab52237c4e2e4decacae31c8607a055a77d1ea9b85ed2b7fcf46ee1a136",
+      "qualification": "Intended rejection contract recovered before R205 execution; fresh exact-target diagnostic+symbol still required, import failure does NOT satisfy it."
+    },
+    "research-tests/DGamma/R26FinishMapProjectionNegative.idr": {
+      "expectedDiagnostic": "LFinishTag (?_ .replayedChecked)",
+      "symbol": "transportedFinishActualMapDoesNotReduce",
+      "authority": "read-only historical contract; run-r11-suite.sh:103; suite NOT executed",
+      "sourceSHA256": "d4591eb85247a60882340b2901f353b52d388977114a0284d31544c21ab9f3a5",
+      "qualification": "Intended rejection contract recovered before R205 execution; fresh exact-target diagnostic+symbol still required, import failure does NOT satisfy it."
+    },
+    "research-tests/DGamma/R27FinishMapEnvelopeForgeryNegative.idr": {
+      "expectedDiagnostic": "LFinishTag (?_ .replayedChecked)",
+      "symbol": "forgeFinishMapEnvelopeFromDetachedCanonicalMap",
+      "authority": "read-only historical contract; run-r11-suite.sh:104; suite NOT executed",
+      "sourceSHA256": "80d4228922e5c66b3855d05a8fc522c2f0c0181e9a9d638d9e54a06fd6ee88b9",
+      "qualification": "Intended rejection contract recovered before R205 execution; fresh exact-target diagnostic+symbol still required, import failure does NOT satisfy it."
+    },
+    "research-tests/DGamma/R176WrongOriginalTraceUniqueNegative.idr": {
+      "expectedDiagnostic": "Mismatch between: otherTrace and leftTrace.",
+      "symbol": "wrongOriginalTraceFreshness",
+      "authority": "read-only literal contract:research-tests/run-r178-boundaries.py:53",
+      "sourceSHA256": "40e0645532d72950b6310efeb7764886f2fc0cf3413bb6c3a15a1409477c9731",
+      "qualification": "Intended rejection contract recovered before R205 execution; fresh exact-target diagnostic+symbol still required, import failure does NOT satisfy it."
+    },
+    "research-tests/DGamma/R6OldPollutionNegative.idr": {
+      "expectedDiagnostic": "Mismatch between: CertifiedActorPermutation",
+      "symbol": "oldPollutionReachesO20",
+      "authority": "read-only literal contract:research-tests/run-r178-boundaries.py:56",
+      "sourceSHA256": "5011c53835d8586d9fa91cf8ec251e28f0c6b36cae642ca0bf77db8ec424fbc6",
+      "qualification": "Intended rejection contract recovered before R205 execution; fresh exact-target diagnostic+symbol still required, import failure does NOT satisfy it."
+    },
+    "research-tests/DGamma/R6OuterPollutionNegative.idr": {
+      "expectedDiagnostic": "selectedActorPermutation",
+      "symbol": "wrapPollutedOuter",
+      "authority": "read-only historical contract; run-r11-suite.sh:123; suite NOT executed",
+      "sourceSHA256": "7874faba2df6780e309910d21f51047141722399e205fe17f3bb7f7d31629e66",
+      "qualification": "Intended rejection contract recovered before R205 execution; fresh exact-target diagnostic+symbol still required, import failure does NOT satisfy it."
+    },
+    "research-tests/DGamma/R6SafetyDetachmentNegative.idr": {
+      "expectedDiagnostic": "firstPremises and secondPremises",
+      "symbol": "detachSafetyFromCurrentState",
+      "authority": "read-only historical contract; run-r11-suite.sh:124; suite NOT executed",
+      "sourceSHA256": "2a7dd5d170838d96c8c549b0bf8ff7f72f0180309c3fb0d668f5c06c0d06ba34",
+      "qualification": "Intended rejection contract recovered before R205 execution; fresh exact-target diagnostic+symbol still required, import failure does NOT satisfy it."
+    },
+    "research-tests/DGamma/R6StaleQuotientNegative.idr": {
+      "expectedDiagnostic": "firstOp and secondOp",
+      "symbol": "staleQuotient",
+      "authority": "read-only historical contract; run-r11-suite.sh:126; suite NOT executed",
+      "sourceSHA256": "635574a349ef17d026438100f3ebb16d5e4dc4c388b60e97d7b2e713492819ee",
+      "qualification": "Intended rejection contract recovered before R205 execution; fresh exact-target diagnostic+symbol still required, import failure does NOT satisfy it."
+    },
+    "research-tests/DGamma/R8BlockPrefixIdentityNegative.idr": {
+      "expectedDiagnostic": "alternateRoot",
+      "symbol": "replaceBlockLabelRootByArbitraryMap",
+      "authority": "read-only historical contract; run-r11-suite.sh:128; suite NOT executed",
+      "sourceSHA256": "c8da8691eadc70e456db2c5edd1a771e8ef0c6a74c332ff67b2456e17ec17b14",
+      "qualification": "Intended rejection contract recovered before R205 execution; fresh exact-target diagnostic+symbol still required, import failure does NOT satisfy it."
+    },
+    "research-tests/DGamma/R8WholeBlockShiftedNodeNegative.idr": {
+      "expectedDiagnostic": "0 and 1",
+      "symbol": "relabelExactSameNodeAtNextPosition",
+      "authority": "read-only historical contract; run-r11-suite.sh:131; suite NOT executed",
+      "sourceSHA256": "59dacc5cafa18518652a6f18d44a5d0c0c2d1dbfc5ed7187200c70684589a244",
+      "qualification": "Intended rejection contract recovered before R205 execution; fresh exact-target diagnostic+symbol still required, import failure does NOT satisfy it."
+    },
+    "research-tests/DGamma/R8ZeroDerivationOperationalStepNegative.idr": {
+      "expectedDiagnostic": "FiniteAdjacentSwapDerivation",
+      "symbol": "zeroDerivationOperationalStepStillAccepted",
+      "authority": "read-only historical contract; run-r11-suite.sh:134; suite NOT executed",
+      "sourceSHA256": "69f3604c9468e8e7e9aace369e75cb50e057e858e910ff3f82c4baa418314c41",
+      "qualification": "Intended rejection contract recovered before R205 execution; fresh exact-target diagnostic+symbol still required, import failure does NOT satisfy it."
+    },
+    "research-tests/DGamma/R176BareCapitalFreshnessNegative.idr": {
+      "expectedDiagnostic": "Mismatch between: TraceIndependent",
+      "symbol": "bareCapitalCannotSupplyFreshness",
+      "authority": "read-only literal contract:research-tests/run-r178-boundaries.py:52",
+      "sourceSHA256": "f10e5121016016d28f56a6bd3f59f0852a5be191322091c3075c9ff3b2252215",
+      "qualification": "Intended rejection contract recovered before R205 execution; fresh exact-target diagnostic+symbol still required, import failure does NOT satisfy it."
+    }
+  },
+  "R11Executed": false,
+  "qualification": "Read-only historical literals, not executing old harnesses. Overrides only absent expectations; no source edits or new negative proofs."
+}

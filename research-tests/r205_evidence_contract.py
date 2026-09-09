@@ -18,6 +18,10 @@ def validate_record(record,source,log,root):
         unexpected=[b for i,b in enumerate(building) if b!=target or i>0]
         stem=path.rsplit('/',1)[-1][:-4]
         limit=(64 if path.startswith('src/') and (stem in ['CP3','CP3StatementChecks'] or stem.startswith('CP4')) else 52 if path.endswith('/CP5ConfluenceLocalDiamondSpike.idr') else 48)*1024*1024
+    if record.get('unit')=='S31-2':
+        assert path=='src/DGamma/CP4SupportSolution.idr'
+        assert record['sourceSHA256']=='812d874baff27ce025c17ad09527e285079b6ee26a50fec2c4b231723593fda0'
+        limit=128*1024*1024
     assert record['fresh']==fresh
     assert record['unexpectedBuilding']==unexpected
     assert record['rssLimitKiB']==limit

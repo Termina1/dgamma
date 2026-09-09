@@ -27,6 +27,8 @@ for item in targets:
     if previous:
         if len(previous)==1 and previous[0]['unit']=='S1' and 'is not in the source directory' in previous[0]['transcript'] and not previous[0]['fresh']:
             unit='S1-2' # authenticated CLI-root correction, unchanged source; not a proof retry
+        elif len(previous)==1 and previous[0]['unit']=='S31' and previous[0]['resourceStopped'] and path=='src/DGamma/CP4SupportSolution.idr' and 'S31-2' in policy.get('resourceOverrides',{}):
+            unit='S31-2' # supervisor-authorized ONE isolated 128GiB attempt
         else:continue
     if item.get('validationMode')=='gate-historical-R11-restriction':
         blocked[path]='legacy, not re-checked (standing classification)';continue

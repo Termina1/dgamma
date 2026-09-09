@@ -26,3 +26,7 @@ error: Source file src/DGamma/CP3.idr is not in source directory research-tests.
 to src-only production, src+research research, and all three for fixtures,
 matching inherited successful runners. S1-2 is one unchanged-source CLI repair;
 S1 retained in immutable ledger. No source/guard change.
+
+S31 isolated CP4SupportSolution RESOURCE STOP23:00:00Z:67128512KiB vs67108864KiB64GiB,209.255s,exit−15,no Building/no mutation/no overlap. Previous pre-unfreeze isolated peak UNKNOWN: seeded builds did not re-elaborate it; causation by the CP3 edit is NOT established. Supervisor AUTHORIZED this module ONLY at128GiB for ONE S31-2 attempt; if exceeded stop/skip its dependents then gate. Other module guards unchanged.
+
+42 additional non-R11 intended negative contracts recovered by reading (NOT executing) historical literal tables, source-pinned in O6-R205-NEGATIVE-PREFLIGHT.json. Each still requires fresh own Building + exact diagnostic + exact symbol; dependency failures cannot count as intended rejections.
