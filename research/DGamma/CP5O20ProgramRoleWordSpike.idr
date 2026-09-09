@@ -205,3 +205,31 @@ o20EmptyFinishRoleConsumption nameEq keyEq actor ambient fibers afterState
       (MkFiber component parent retiredFlag table (Reloading [] older view))
       (MkFiber component parent retiredFlag table (Active older view)) fibers found in
     rewrite found in Refl
+
+||| The two actual Finish source constructors each consume exactly Finish.
+||| Empty has no callback; singleton produces its own native success values.
+||| This is single-role source elimination, not an Either callback adapter.
+export
+0 o20FinishRoleAtSource :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (before, afterState : SystemState name key value world error) ->
+  (checkedApplyAction {name} {key} {value} {world} {error} @{nameEq} @{keyEq}
+    (LAdvance actor) before = Just (LFinishTag, afterState)) ->
+  PaperAdvanceSource name key world error value nameEq keyEq actor LFinishTag before ->
+  (o20FiberRoleRemainder
+    (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor (registry before)) =
+   LFinishTag :: o20FiberRoleRemainder
+    (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor (registry afterState)))
+o20FinishRoleAtSource nameEq keyEq actor _ afterState checked
+  (AdvanceSourceFinishEmpty {ambient} {fibers} {component} {parent} {retiredFlag} {table}
+    {accumulator} {view} Refl found target) =
+    o20EmptyFinishRoleConsumption nameEq keyEq actor ambient fibers afterState
+      component parent retiredFlag table accumulator view found target checked
+o20FinishRoleAtSource nameEq keyEq actor _ afterState checked
+  (AdvanceSourceFinishOne {ambient} {fibers} {component} {parent} {retiredFlag} {table}
+    {step} {accumulator} {view} Refl found target) =
+    o20ObservedAdvanceRoleConsumption nameEq keyEq actor ambient fibers afterState LFinishTag
+      component parent retiredFlag table step [] accumulator view found target checked
+      (o20FinishOneNativeValues nameEq keyEq actor (MkSystemState ambient fibers) afterState
+        component parent retiredFlag table step accumulator view found checked)
