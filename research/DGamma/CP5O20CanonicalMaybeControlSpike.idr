@@ -60,3 +60,23 @@ data O20CanonicalControlDisposition :
     (0 outside : Not (Elem selected withdrawn)) ->
     (0 controls : FiberControlMaybeRelated original canonical) ->
     O20CanonicalControlDisposition selected withdrawn original canonical
+
+||| Single-constructor observation of BOTH actual primitive endpoint lookups,
+||| retaining runtime MaybeFiber values and erased exact equations/disposition.
+||| This concerns one trace's canonical endpoint, not a cross-trace name map.
+public export
+record O20CanonicalControlObservation
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (keyEq : DecEq key)
+  (originalFinal, canonicalFinal : SystemState name key value world error)
+  (endpoint : CanonicalEndpointRelation name key world error value nameEq keyEq originalFinal canonicalFinal)
+  (selected : name) where
+  constructor MkO20CanonicalControlObservation
+  observedOriginalFiber : Maybe (Fiber name key value world error)
+  observedCanonicalFiber : Maybe (Fiber name key value world error)
+  0 originalFiberObserved :
+    (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected (registry originalFinal) = observedOriginalFiber)
+  0 canonicalFiberObserved :
+    (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected (registry canonicalFinal) = observedCanonicalFiber)
+  0 canonicalControlDisposition : O20CanonicalControlDisposition selected
+    (endpointWithdrawnNames endpoint) observedOriginalFiber observedCanonicalFiber
