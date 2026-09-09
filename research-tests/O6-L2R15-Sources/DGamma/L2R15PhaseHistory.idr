@@ -62,3 +62,17 @@ export
 phaseMaybeOwnerDecoded nameEq actor Nothing accepted = absurd accepted
 phaseMaybeOwnerDecoded nameEq actor (Just owner) accepted =
   cong Just (phaseOwnerAtDecision nameEq actor owner (decEq @{nameEq} actor owner) Refl accepted)
+
+||| Eliminate the OBSERVED owner Bool before constructing a history path.
+||| A foreign/missing event resets prior life; an owned event preserves the
+||| native seenLife-or-lifecycle update, so contiguity is not postulated.
+export
+0 phaseHistoryPastOwner : {name : Type} -> (nameEq : DecEq name) ->
+  (actor : name) -> (owner : Maybe name) -> (seen, flag : Bool) ->
+  (distance : Nat) -> (rest : List (Maybe name, Bool)) -> (owned : Bool) ->
+  (0 equation : maybe False (\selected => isYes (decEq @{nameEq} actor selected)) owner = owned) ->
+  PhaseHistoryPath actor (owned && (seen || flag)) distance rest ->
+  PhaseHistoryPath actor seen (S distance) ((owner, flag) :: rest)
+phaseHistoryPastOwner nameEq actor owner seen flag distance rest True equation path =
+  HistoryOwned (phaseMaybeOwnerDecoded nameEq actor owner equation) path
+phaseHistoryPastOwner nameEq actor owner seen flag distance rest False equation path = HistoryReset path
