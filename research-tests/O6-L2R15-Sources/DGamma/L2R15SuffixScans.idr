@@ -106,3 +106,27 @@ export
 nativeNonReleaseTail nameEq keyEq _ _ _ _
   (AvailabilityStep source (Fired _ _ action tag checked) rest later) component offset cut inactive =
   (later ** (rewrite inactive in rewrite andFalseFalse (offset < cut) in Refl))
+
+||| Native Root/Retire suffixes preserve the exact release scan for EVERY
+||| component and physical offset/cut. These suffixes contain no Remove;
+||| this is not a crossing-release identity or shifted-ordinal theorem.
+export
+0 nativeSuffixReleases : {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {oldFirst, oldFinal, newFirst, newFinal : SystemState name key value world error} ->
+  {oldTrace : Transitions oldFirst oldFinal} -> {newTrace : Transitions newFirst newFinal} ->
+  NativeSuffixFrames nameEq keyEq oldTrace newTrace ->
+  (oldTrail : AvailabilityTrace name key world error value oldTrace) ->
+  (newTrail : AvailabilityTrace name key world error value newTrace) ->
+  (component : Component key value world error) -> (offset, cut : Nat) ->
+  scanReleaseOrdinals nameEq keyEq component offset cut oldTrail =
+    scanReleaseOrdinals nameEq keyEq component offset cut newTrail
+nativeSuffixReleases nameEq keyEq SuffixFramesEnd (AvailabilityEnd _) (AvailabilityEnd _) component offset cut = Refl
+nativeSuffixReleases nameEq keyEq (SuffixFramesRoot {oldRest} {newRest} actor inserted oldChecked newChecked valid frame later) oldTrail newTrail component offset cut =
+  trans (snd (nativeNonReleaseTail nameEq keyEq (OInsert actor Root inserted) OInsertTag oldChecked oldRest oldTrail component offset cut Refl))
+    (trans (nativeSuffixReleases nameEq keyEq later (fst (nativeNonReleaseTail nameEq keyEq (OInsert actor Root inserted) OInsertTag oldChecked oldRest oldTrail component offset cut Refl)) (fst (nativeNonReleaseTail nameEq keyEq (OInsert actor Root inserted) OInsertTag newChecked newRest newTrail component offset cut Refl)) component (S offset) cut)
+      (sym (snd (nativeNonReleaseTail nameEq keyEq (OInsert actor Root inserted) OInsertTag newChecked newRest newTrail component offset cut Refl))))
+nativeSuffixReleases nameEq keyEq (SuffixFramesRetire {oldRest} {newRest} actor tag oldChecked newChecked valid later) oldTrail newTrail component offset cut =
+  trans (snd (nativeNonReleaseTail nameEq keyEq (ORetire actor) tag oldChecked oldRest oldTrail component offset cut Refl))
+    (trans (nativeSuffixReleases nameEq keyEq later (fst (nativeNonReleaseTail nameEq keyEq (ORetire actor) tag oldChecked oldRest oldTrail component offset cut Refl)) (fst (nativeNonReleaseTail nameEq keyEq (ORetire actor) tag newChecked newRest newTrail component offset cut Refl)) component (S offset) cut)
+      (sym (snd (nativeNonReleaseTail nameEq keyEq (ORetire actor) tag newChecked newRest newTrail component offset cut Refl))))
