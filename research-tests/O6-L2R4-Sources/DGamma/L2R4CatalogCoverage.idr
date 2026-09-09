@@ -31,3 +31,31 @@ export
   AttachedNormalForm name key world error value nameEq keyEq global region offset
 catalogNormalForm region offset catalog = MkAttachedNormalForm
   (\action, occurrence, root => catalog (locatedActionOrdinal occurrence) action (occurrenceObserved occurrence))
+
+||| Structural catalog extension: a real head member plus tail lookup
+||| completeness covers all ordinals of the cons region. One Nat elimination
+||| transports action and offset equalities; no role Either adapter is used.
+export
+0 catalogConsObserved :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {first, finalState, before, middle, gapFinal : SystemState name key value world error} ->
+  {global : Transitions first finalState} ->
+  (step : Transition before middle) -> (rest : Transitions middle gapFinal) -> (offset : Nat) ->
+  (0 head : AttachedBundleOccurrence name key world error value nameEq keyEq global (transitionAction step) offset) ->
+  (0 tail : (n : Nat) -> (action : Action name key value world error) ->
+    nativeActionAt rest n = Just action ->
+    AttachedBundleOccurrence name key world error value nameEq keyEq global action (S offset + n)) ->
+  (ordinal : Nat) -> (action : Action name key value world error) ->
+  nativeActionAt (MoreTransitions step rest) ordinal = Just action ->
+  AttachedBundleOccurrence name key world error value nameEq keyEq global action (offset + ordinal)
+catalogConsObserved {name} {key} {world} {error} {value} {nameEq} {keyEq} {global}
+  step rest offset head tail Z action exact =
+    replace {p = AttachedBundleOccurrence name key world error value nameEq keyEq global action}
+      (sym (plusZeroRightNeutral offset))
+      (replace {p = \act => AttachedBundleOccurrence name key world error value nameEq keyEq global act offset}
+        (justInjective exact) head)
+catalogConsObserved {name} {key} {world} {error} {value} {nameEq} {keyEq} {global}
+  step rest offset head tail (S n) action exact =
+    replace {p = AttachedBundleOccurrence name key world error value nameEq keyEq global action}
+      (plusSuccRightSucc offset n) (tail n action exact)
