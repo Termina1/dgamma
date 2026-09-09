@@ -211,3 +211,21 @@ iterationFixtures = MkIterationFixtures
     (OrderForces (KeyForces Here Refl) (There Here) (LTESucc (LTESucc (LTESucc (LTESucc (LTESucc LTEZero)))))) Refl Refl Refl Refl 1 0 Refl Refl Refl
     (snapshotIntoExtensional %search (bundlePhaseState 6) (barrierState 7) (secondMoveSnapshot bundlePhaseNative)))
   (MkFrontNormal True Refl Refl) (MkFrontNormal True Refl Refl) Refl Refl
+
+||| FIRST actual one-/two-step iteration instances, using the same middle
+||| trail and applying iterationEndpoint. D7 owns native adjacency/current
+||| cuts and exact-one distances, with final zero proofs singleZero/bundleZero.
+||| This is not a generic fold advertised as arbitrary move existence.
+public export
+0 fixtureIterations :
+  ((DistanceIteration %search %search (singleBeforeTrail iterationFixtures) (singleAfterTrail iterationFixtures),
+    RegistryExtensional Nat Bool Unit String (\key => Unit) %search (smallState 9) (smallState 6)),
+   (DistanceIteration %search %search (bundleBeforeTrail iterationFixtures) (bundleAfterTrail iterationFixtures),
+    RegistryExtensional Nat Bool Unit String (\key => Unit) %search (bundlePhaseState 3) (barrierState 7)))
+fixtureIterations =
+  ((IterationMove (singleAdmitted iterationFixtures) (IterationDone (singleAfterTrail iterationFixtures)),
+    iterationEndpoint (IterationMove (singleAdmitted iterationFixtures) (IterationDone (singleAfterTrail iterationFixtures)))),
+   (IterationMove (firstBundleAdmitted iterationFixtures)
+      (IterationMove (secondBundleAdmitted iterationFixtures) (IterationDone (bundleAfterTrail iterationFixtures))),
+    iterationEndpoint (IterationMove (firstBundleAdmitted iterationFixtures)
+      (IterationMove (secondBundleAdmitted iterationFixtures) (IterationDone (bundleAfterTrail iterationFixtures))))))
