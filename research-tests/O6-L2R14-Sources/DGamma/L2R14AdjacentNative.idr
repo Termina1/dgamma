@@ -144,3 +144,31 @@ adjacentNativeAtOrdinal {first} {middle} nameEq keyEq headAction tag checked res
   adjacentNativeThroughHead nameEq keyEq
     (Fired {before = first} {afterState = middle} nameEq keyEq headAction tag checked) rest
     source leftAction rightAction position (tailDecoder position source leftAction rightAction query rightQuery)
+
+||| Eliminate only native dictionary alignment, then invoke the bounded
+||| ordinal decoder. The tail continuation is the trail induction hypothesis.
+export
+0 adjacentNativeAtStep : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (step : Transition first middle) -> (rest : Transitions middle finalState) ->
+  (later : AvailabilityTrace name key world error value rest) ->
+  (aligned : AlignedTransitions name key world error value nameEq keyEq (MoreTransitions step rest)) ->
+  (0 tailDecoder : AlignedTransitions name key world error value nameEq keyEq rest ->
+    (position : Nat) -> (source : SystemState name key value world error) ->
+    (leftAction, rightAction : Action name key value world error) ->
+    head' (drop position (trailSourceActions later)) = Just (source, leftAction) ->
+    head' (drop (S position) (nativeActionWord later)) = Just rightAction ->
+    AlignedAdjacentNative name key world error value nameEq keyEq rest source leftAction rightAction position) ->
+  (position : Nat) -> (source : SystemState name key value world error) ->
+  (leftAction, rightAction : Action name key value world error) ->
+  (0 query : head' (drop position (trailSourceActions (AvailabilityStep first step rest later))) = Just (source, leftAction)) ->
+  (0 rightQuery : head' (drop (S position) (nativeActionWord (AvailabilityStep first step rest later))) = Just rightAction) ->
+  AlignedAdjacentNative name key world error value nameEq keyEq (MoreTransitions step rest)
+    source leftAction rightAction position
+adjacentNativeAtStep nameEq keyEq _ _ later (AlignedStep headAction tag checked rest tail)
+  tailDecoder position source leftAction rightAction query rightQuery =
+  adjacentNativeAtOrdinal nameEq keyEq headAction tag checked rest later tail
+    (\ordinal, wantedSource, left, right, leftEquation, rightEquation =>
+      tailDecoder tail ordinal wantedSource left right leftEquation rightEquation)
+    position source leftAction rightAction query rightQuery
