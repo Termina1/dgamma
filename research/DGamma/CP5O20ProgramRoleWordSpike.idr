@@ -454,3 +454,32 @@ o20RolesAppendSplit NoTransitions later roles = (O20RolesEnd, roles)
 o20RolesAppendSplit (MoreTransitions step rest) later (O20RolesStep role roles) =
   (O20RolesStep role (fst (o20RolesAppendSplit rest later roles)),
    snd (o20RolesAppendSplit rest later roles))
+
+||| Every actual located canonical block satisfies the whole native role
+||| invariant. Body roles are extracted from the supplied whole-word roles at
+||| this block's OWN decomposition, not taken as another caller premise.
+||| Its endpoint remainder is retained explicitly, not silently set to zero.
+export
+0 o20LocatedBlockRoleWordInvariant :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} -> {selected : name} ->
+  {initial, finalState : SystemState name key value world error} ->
+  {trace : Transitions initial finalState} ->
+  (block : LocatedOpenEpisodeBlock name key world error value nameEq keyEq selected trace) ->
+  O20CanonicalTraceRoles trace ->
+  (o20FiberRoleRemainder
+    (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected (registry (blockStart block))) =
+   o20ActorLifecycleRoleWord (blockActorOnly block) ++ o20FiberRoleRemainder
+    (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected (registry (blockEnd block))))
+o20LocatedBlockRoleWordInvariant {nameEq} {keyEq} {selected} block roles =
+  o20ActorRoleWordInvariant nameEq keyEq selected (blockBody block) (blockActorOnly block)
+    (fst (o20RolesAppendSplit (blockBody block) (traceAfterBlock block)
+      (snd (o20RolesAppendSplit (prefixToBlockOpening block)
+        (appendTransitions (blockBody block) (traceAfterBlock block))
+        (replace {p = O20CanonicalTraceRoles}
+          (sym (trans
+            (appendTransitionsAssociative (traceBeforeBlock block)
+              (MoreTransitions (beginTransition (blockOpening block)) NoTransitions)
+              (appendTransitions (blockBody block) (traceAfterBlock block)))
+            (blockDecomposition block))) roles)))))
+    (blockBodyInstalled block)
