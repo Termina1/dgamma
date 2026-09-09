@@ -153,3 +153,20 @@ export
 0 lteToLeTrue : {n, m : Nat} -> LTE n m -> (n <= m) = True
 lteToLeTrue {m} LTEZero = leZero m
 lteToLeTrue (LTESucc earlier) = lteToLeTrue earlier
+
+||| GENERAL completeness: every independent forced derivation makes the
+||| actual classifier's per-occurrence observed flag true. No forcing axiom.
+export
+0 classifyForcedComplete : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {0 first, finalState : SystemState name key value world error} ->
+  {0 trace : Transitions first finalState} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (trail : AvailabilityTrace name key world error value trace) ->
+  (entry : RootCatalogEntry name key world error value) -> (observed : Bool) ->
+  (0 equation : any (\seed => catalogOrdinal seed <= catalogOrdinal entry &&
+    keyForcedOrdinal nameEq keyEq trail (catalogOrdinal seed)) (scanRootCatalog 0 trail) = observed) ->
+  (0 forced : ForcedOnTrace nameEq keyEq trail (catalogOrdinal entry)) -> observed = True
+classifyForcedComplete nameEq keyEq trail entry observed equation forced = trans (sym equation)
+  (anyMappedMember catalogOrdinal (\ordinal => ordinal <= catalogOrdinal entry && keyForcedOrdinal nameEq keyEq trail ordinal)
+    (scanRootCatalog 0 trail) (basisOrdinal (forcedSeedBasis forced)) (basisRoot (forcedSeedBasis forced))
+    (rewrite lteToLeTrue (basisBefore (forcedSeedBasis forced)) in basisKey (forcedSeedBasis forced)))
