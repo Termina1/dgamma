@@ -93,3 +93,22 @@ export
 providerRetirementAtHead nameEq keyEq wanted child current (MkFiber component parent flag table lifecycle) rest tail fiber found =
   providerRetirementAtName nameEq keyEq wanted child current component parent flag table lifecycle rest tail
     (decEq @{nameEq} child current) Refl fiber found
+
+||| GENERAL native provider invariance for an ACTUAL installed retirement,
+||| on exact ordered binding lists. Structural induction uses the observed
+||| head producer/consumer and own call-site name/guard observations. No
+||| supplied provider equality, view equality or alternative action edge.
+export
+0 providerRetirementEntries :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (wanted : key) -> (child : name) ->
+  (entries : List (Binding name (FiberAt name key value world error))) ->
+  (fiber : Fiber name key value world error) ->
+  (0 found : lookupEntries {key = name} {value = FiberAt name key value world error} @{nameEq} child entries = Just fiber) ->
+  providerIn {name} {key} {value} {world} {error} @{nameEq} @{keyEq} wanted entries =
+  providerIn {name} {key} {value} {world} {error} @{nameEq} @{keyEq} wanted
+    (replaceEntries @{nameEq} child (retireFiber fiber) entries)
+providerRetirementEntries nameEq keyEq wanted child [] fiber found = absurd found
+providerRetirementEntries nameEq keyEq wanted child (Bind current head :: rest) fiber found =
+  providerRetirementAtHead nameEq keyEq wanted child current head rest
+    (providerRetirementEntries nameEq keyEq wanted child rest) fiber found
