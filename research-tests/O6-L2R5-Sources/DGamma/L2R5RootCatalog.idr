@@ -63,3 +63,26 @@ record RootCatalogContains
   0 itemPresent : Elem catalogItem entries
   0 itemOrdinal : catalogOrdinal catalogItem = ordinal
   0 itemAction : OInsert (catalogRoot catalogItem) Root (catalogComponent catalogItem) = action
+
+||| A head action observed as a root insertion is genuinely inserted by the
+||| runtime classifier. Exhaustive Action elimination, no pre-supplied member.
+export
+0 rootCatalogHeadComplete :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (offset : Nat) -> (action : Action name key value world error) ->
+  (later : List (RootCatalogEntry name key world error value)) ->
+  (root : name) -> (component : Component key value world error) ->
+  (0 exact : action = OInsert root Root component) ->
+  RootCatalogContains name key world error value (rootCatalogStep offset action later) offset (OInsert root Root component)
+rootCatalogHeadComplete {name} {key} {world} {error} {value} offset (OInsert own Root ownComponent) later root component exact =
+  replace {p = RootCatalogContains name key world error value
+    (rootCatalogStep offset (OInsert own Root ownComponent) later) offset} exact
+    (MkRootCatalogContains (MkRootCatalogEntry offset own ownComponent) Here Refl Refl)
+rootCatalogHeadComplete offset (OInsert _ (ChildOf parent) _) later root component Refl impossible
+rootCatalogHeadComplete offset (ORetire actor) later root component Refl impossible
+rootCatalogHeadComplete offset (ORemove actor) later root component Refl impossible
+rootCatalogHeadComplete offset (LBegin actor) later root component Refl impossible
+rootCatalogHeadComplete offset (LAdvance actor) later root component Refl impossible
+rootCatalogHeadComplete offset (LDivert actor) later root component Refl impossible
+rootCatalogHeadComplete offset (LUnload actor) later root component Refl impossible
+rootCatalogHeadComplete offset (LLeave actor) later root component Refl impossible
