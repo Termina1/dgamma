@@ -185,3 +185,21 @@ o20RootBirthMatchObserved mapping leftOrdinal rightOrdinal _ _
     actual actualComponent leftExact rightExact matched root component
     (o20RootBirthMatchObserved mapping (S leftOrdinal) (S rightOrdinal) leftRest rightRest later root component)
     position observed
+
+||| A real left root location supplies the library action observation at its
+||| own ordinal. The opposite location and mapped ordinal are producer-owned.
+export
+0 o20RootBirthMatchLocated :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (mapping : RegistrationGenerationBijection name) ->
+  {leftFirst, leftFinal, rightFirst, rightFinal : SystemState name key value world error} ->
+  (left : Transitions leftFirst leftFinal) -> (right : Transitions rightFirst rightFinal) ->
+  ExternalRootBirthCorrespondence mapping Z left Z right ->
+  (root : name) -> (component : Component key value world error) ->
+  (birth : LocatedActionOccurrence (OInsert root Root component) left) ->
+  O20RootBirthMatch name key world error value mapping root component
+    (locatedActionOrdinal birth) Z right
+o20RootBirthMatchLocated {name} {key} {world} {error} {value} mapping left right matching root component birth =
+  o20RootBirthMatchObserved mapping Z Z left right matching root component
+    (locatedActionOrdinal birth)
+    (rawClosingActionAtLocated name key world error value left (OInsert root Root component) birth)
