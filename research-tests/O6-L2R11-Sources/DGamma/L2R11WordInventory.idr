@@ -58,3 +58,15 @@ actionKindSelf (ORemove child) = Refl
 actionKindSelf (LDivert actor) = Refl
 actionKindSelf (LLeave actor) = Refl
 actionKindSelf (LUnload actor) = Refl
+
+||| A native head is in the inventory of its ACTUAL word. The left-fold
+||| library bridge is applied to its actual observed comparison value.
+export
+0 wordInventoryHead : {name, key, world, error : Type} -> {value : key -> Type} ->
+  (action : Action name key value world error) ->
+  (word : List (Action name key value world error)) ->
+  wordActionInventory (action :: word) (actionKindCode action) = True
+wordInventoryHead action word =
+  trans (anyFoldObserved (\item => actionKindCode item == actionKindCode action) word
+    (actionKindCode action == actionKindCode action))
+    (rewrite actionKindSelf action in Refl)
