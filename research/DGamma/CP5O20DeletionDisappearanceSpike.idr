@@ -290,3 +290,31 @@ public export
   List (RegistrationGeneration name)
 o20DeletionHeadGenerations (ClosingFreeDeletionDone trace) = []
 o20DeletionHeadGenerations (ClosingFreeDeletionStep trace premises candidate step target rest) = selectedRegistrations candidate
+
+||| A FULL accepted present-vestigial generation selected at the actual head
+||| disappears through the entire actual remaining deletion chain. No tail
+||| disappearance, endpoint cut, or new withdrawal-result premise is supplied.
+||| Global discarded-to-selected coverage is explicitly not proved here.
+export
+0 o20VestigialHeadDisappearsThroughChain :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {protocol : RegistrationProtocol key value world error} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {leftFirst, leftFinal, rightFirst, rightFinal, targetFinal : SystemState name key value world error} ->
+  (left : Transitions leftFirst leftFinal) -> (right : Transitions rightFirst rightFinal) ->
+  (target : Transitions leftFirst targetFinal) ->
+  (mapping : RegistrationGenerationBijection name) ->
+  (registrations : RegistrationCorrespondenceByGeneration nameEq mapping left right) ->
+  (derivation : ClosingFreeDeletionDerivation name key world error value protocol nameEq keyEq left target) ->
+  (selected : name) ->
+  (packet : VestigialEndpointGeneration name key world error value nameEq keyEq
+    (leftFinalGenerations registrations) (leftDeletedGenerations registrations) selected leftFinal) ->
+  Elem (vestigialGeneration packet) (o20DeletionHeadGenerations derivation) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected (registry targetFinal) = Nothing)
+o20VestigialHeadDisappearsThroughChain nameEq keyEq _ right _ mapping registrations
+  (ClosingFreeDeletionDone _) selected packet member = absurd member
+o20VestigialHeadDisappearsThroughChain nameEq keyEq left right _ mapping registrations
+  (ClosingFreeDeletionStep _ premises candidate step _ rest) selected packet member =
+  o20DeletionChainPreservesAbsence nameEq keyEq rest selected
+    (o20SelectedVestigialDisappears nameEq keyEq left right mapping registrations candidate
+      (deletionResult step) selected packet member)
