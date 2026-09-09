@@ -73,3 +73,53 @@ protected statement/frozen family change is proposed at this point. Gate the
 exact fixture result before deciding whether A can proceed or needs a research
 synchronization-family repair. B still separately needs original->canonical
 all-name MaybeFiber observations under expectedBridgeBijection; C ineligible.
+
+
+## A source freeze, 10:01Z — supersedes the preliminary disposition
+
+A has26 attempted MICRO-UNITS,25 retained declarations and33 actual compiler
+invocations (26 PASS,7 rejected). A20-1 was a compiler PASS whose commit guard
+rejected an extra EOF blank line; its exact whitespace-only A20-2 recheck was
+PASS and committed. It is not two proofs. A3 alone exhausted3/3 and was fully
+reverted to A2; its three failed native-path snapshots remain evidence.
+No fourth attempt or alternative own-parent square was launched. See the stop
+audit and owner ruling; no repeated-tag native pair/full capital exists.
+
+A4–A11 prove a structural necessary condition, culminating in
+`o20SynchronizedScanForwardOrdinalFixed`: the OLD synchronization forces the
+forward generation map to preserve every final-left live birth ordinal,
+including the actual `GenerationTraceScan` attachment. This is not a compiled
+accepted-pair countermodel. The owner activated an UNPROTECTED research-goal
+repair on this necessity alone; verbatim gates are in the ruling document.
+The old goal/fold are now superseded candidates and remain byte-identical.
+
+A12–A18 supply actual transition projections, `O20OccurrenceStampedHistory`,
+its finite cut fold, `O20HistorySynchronizationModulo`, the new exact-conjugated
+`o20CanonicalSynchronizationGoalModulo` TYPE, and the empty-origin cut fold.
+A23 `o20CanonicalModuloHistoryCut` specializes that fold to the literal accepted
+capital and literal operational execution; it consumes synchronization and
+produces the existing `O20HistoryCut`. No successor cut or endpoint oracle is
+an extra input. It does NOT produce `O20AllNameCut expectedBridgeBijection`.
+
+A19/20 own the R191 eleven native stages with two actual supplied-word
+occurrences/stamp equations at every stage and the actual endpoint history
+cut. A22 also owns BOTH genuine scanner certificates for this eleven-edge
+identity synchronization. A21 retains R193/R195's actual closing disposition
+and present-vestigial internal cut at a ZERO-EDGE terminal occurrence path.
+A21 is NOT a new full eight-edge closing-history traversal or canonicalization
+fixture; the initial internal cut is the already-proved original-endpoint cut.
+The inherited R195 identity action-replay theorem is separately retained.
+
+A24/25 project genuine left/right native paths from the new family; A26 proves
+the TWO PROJECTED paths have equal edge counts. It does not identify either
+projected path with its supplied word, equate the supplied words' physical
+counts, or assert equal birth ordinals. The family attaches actual occurrences
+but does not encode whole-word/per-actor ordered coverage. Its honest limit is:
+
+> whole-word / per-actor ordering and coverage producer remains to prove; arbitrary skips are NOT asserted to be zero native edges
+
+`o20SynchronizeCanonicalHistoriesModulo` has NOT been declared/inhabited.
+Whole-word coverage/order, occurrence exchanges and an accepted-input producer
+remain debt. The new family is downstream-sufficient for an INTERNAL history
+cut if inhabited; endpoint ALL-name rebasing is still the independent B seam.
+C has zero attempts and remains ineligible. A is frozen; no extension requested.
