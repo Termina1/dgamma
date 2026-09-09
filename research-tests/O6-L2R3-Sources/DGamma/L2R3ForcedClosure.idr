@@ -19,3 +19,17 @@ data ForcedRootInput : (rootInput, keyForced : Nat -> Type) -> Nat -> Type where
     (0 prior : ForcedRootInput rootInput keyForced earlier) ->
     (0 root : rootInput later) -> (0 ordered : LT earlier later) ->
     ForcedRootInput rootInput keyForced later
+
+||| Leastness: every set containing key-forced actual roots and closed under
+||| strictly later actual roots contains ForcedRootInput. Instantiate rootInput
+||| with native root OInsert occurrences, not lifecycle positions or raw names.
+export
+0 forcedRootLeast : {rootInput, keyForced : Nat -> Type} ->
+  (candidate : Nat -> Type) ->
+  (0 seeds : (n : Nat) -> rootInput n -> keyForced n -> candidate n) ->
+  (0 closed : (earlier, later : Nat) -> candidate earlier -> rootInput later ->
+    LT earlier later -> candidate later) ->
+  {ordinal : Nat} -> ForcedRootInput rootInput keyForced ordinal -> candidate ordinal
+forcedRootLeast candidate seeds closed (KeyForces {ordinal} root released) = seeds ordinal root released
+forcedRootLeast candidate seeds closed (OrderForces {earlier} {later} prior root ordered) =
+  closed earlier later (forcedRootLeast candidate seeds closed prior) root ordered
