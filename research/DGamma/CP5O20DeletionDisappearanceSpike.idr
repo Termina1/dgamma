@@ -205,3 +205,17 @@ o20DeletionAcceptedOriginalLive {name} {key} {world} {error} {value}
     left right (leftFinalIndex registrations) (rightFinalIndex registrations) (generationTraceCorrespondence registrations) of
     (finalOrdinal ** scan) => trans (o20GenerationScanFinalLiveExact scan)
       (sym (o20GenerationScanFinalLiveExact (o20DeletionOriginalScan candidate result)))
+
+||| A native withdrawal result at an actually current generation owns lookup
+||| absence. Its historical branch is rejected by this exact current equation.
+export
+0 o20CurrentWithdrawalAbsent :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {live : GenerationEnvironment name} ->
+  {generation : RegistrationGeneration name} ->
+  {originalFinal, survivor : SystemState name key value world error} ->
+  WithdrawnGenerationResult nameEq live generation originalFinal survivor ->
+  (lookupCurrentGeneration @{nameEq} (generationName generation) live = Just generation) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} (generationName generation) (registry survivor) = Nothing)
+o20CurrentWithdrawalAbsent (CurrentGenerationWithdrawn fiber current found retiredFlag inactive empty absent) observed = absent
+o20CurrentWithdrawalAbsent (HistoricalGenerationClosed closed) observed = void (closed observed)
