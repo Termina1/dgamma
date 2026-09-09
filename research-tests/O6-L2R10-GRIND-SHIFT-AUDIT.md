@@ -49,3 +49,9 @@ Supervisor ratified both light stops and AUTHORIZED the UNUSED third attempt on 
 ## Owner rule change — cross-lane heavy lock ABOLISHED
 
 While the C3-3 launcher was ONLY polling, supervisor abolished the shared lock and all rebuild-window blocking. The verified OWN Python polling PID73399 was stopped before any compiler started; no lock acquisition was observed, no shared lock was inspected/read/removed. Poll attempts had occurred under the prior exact authority and are disclosed; do not claim absolute historical lock non-interaction. New rule: one own compiler, declared-heavy48GiB/light18GiB; other-lane compilers separate/never signalled; overlap timestamps recorded. Obsolete acquisition/cleanup code is replaced (git history retains chronology). Fresh reverted-source V2 precedes tool publication; C3-3 will then start immediately on identical C3-2 bytes without any lock/window operations.
+
+## C FINAL STOP3/3 after authorized cost diagnostic
+
+C3-3 on EXACT C3-2 bytes hit declared-heavy48GiB guard:174.610s, sampled50375152KiB (~48.0415GiB,250ms-sampling overshoot), exit-15, no Building, FAIL. This proves neither semantic falsity nor completed peak cost; it records a bounded elaboration-cost lower bound. Other-lane heavy overlap timestamp observations span12:31:48.024028–12:34:42.333664Z, with no signal to its compiler. No lock/window operations occurred in this actual compiler run.
+
+C3 is now genuinely STOP3/3 and fully reverted to C2 hash a4e872076511a84945cba8d6f39fdc8549b56dd85842d97307751555bb388541. C4–C10 remain unattempted. No old SplitPathPacket producer, complete split path, core restoration assembly or GeneralCoreContiguityRestored instance is claimed. Fresh V3 of the reverted retained source precedes the stop audit commit. C1/C2 are the only retained C declarations.
