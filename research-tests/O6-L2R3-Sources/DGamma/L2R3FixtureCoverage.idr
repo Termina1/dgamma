@@ -88,3 +88,19 @@ fixtureCoverage = MkFixtureCoverage smallInsertedBundleMember
   Refl Refl Refl
   () (MkAttachedNormalForm (\action, occurrence, root => void (emptyGapHasNoOccurrence occurrence)))
   () (MkAttachedNormalForm (\action, occurrence, root => void (emptyGapHasNoOccurrence occurrence)))
+
+||| Precise OPEN no-straddling producer obligation at a physical cut (5 for
+||| C12, 6 for R/S, each at the following Begin2). Quantifies over EVERY actual
+||| AttachedBundleOccurrence of the trace, not just the selected catalog.
+||| This declaration defines the predicate ONLY; it does not inhabit it.
+public export
+0 NoBundleStraddlesCut :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (global : Transitions initial finalState) -> (cut : Nat) -> Type
+NoBundleStraddlesCut {name} {key} {world} {error} {value} nameEq keyEq global cut =
+  (action : Action name key value world error) -> (ordinal : Nat) ->
+  (member : AttachedBundleOccurrence name key world error value nameEq keyEq global action ordinal) ->
+  LT (bundleOffset member) cut ->
+  LT cut (bundleOffset member + transitionCount (memberBundle member)) -> Void
