@@ -80,3 +80,45 @@ export
   ForeignInsertPlanView name key world error value nameEq keyEq actor parent component ambient fibers tag afterState ->
   (tag = OInsertTag)
 o20ForeignInsertPlanTag (MkForeignInsertPlanView absent guards) = Refl
+
+||| Both original native tag observations accompany the SAME produced stage.
+export
+0 o20LabelledInsertFromPlans :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (renaming : NameBijection name) ->
+  {mapping : RegistrationGenerationBijection name} ->
+  {leftOrdinal, rightOrdinal : Nat} -> {leftLive, rightLive : GenerationEnvironment name} ->
+  (actor : name) -> (component : Component key value world error) ->
+  (leftParent, rightParent : Parent name) -> ParentRelatedBy renaming leftParent rightParent ->
+  (leftWorld, rightWorld : world) -> (leftRegistry, rightRegistry : Registry name key value world error) ->
+  (leftTag : RuleTag) -> (leftAfter : SystemState name key value world error) ->
+  (checkedApplyAction {name} {key} {value} {world} {error} @{nameEq} @{keyEq}
+    (OInsert actor leftParent component) (MkSystemState leftWorld leftRegistry) = Just (leftTag, leftAfter)) ->
+  (rightTag : RuleTag) -> (rightAfter : SystemState name key value world error) ->
+  (checkedApplyAction {name} {key} {value} {world} {error} @{nameEq} @{keyEq}
+    (OInsert (renameForward renaming actor) rightParent component) (MkSystemState rightWorld rightRegistry) =
+    Just (rightTag, rightAfter)) ->
+  (generationForward mapping (MkRegistrationGeneration actor leftOrdinal) =
+    MkRegistrationGeneration (renameForward renaming actor) rightOrdinal) ->
+  ForeignInsertPlanView name key world error value nameEq keyEq (renameForward renaming actor)
+    rightParent component rightWorld rightRegistry rightTag rightAfter ->
+  ForeignInsertPlanView name key world error value nameEq keyEq actor
+    leftParent component leftWorld leftRegistry leftTag leftAfter ->
+  (stage : O20StampedStage name key world error value nameEq keyEq mapping renaming leftOrdinal rightOrdinal leftLive rightLive
+    (putCurrentGeneration @{nameEq} actor (MkRegistrationGeneration actor leftOrdinal) leftLive)
+    (putCurrentGeneration @{nameEq} (renameForward renaming actor)
+      (MkRegistrationGeneration (renameForward renaming actor) rightOrdinal) rightLive)
+    (MkSystemState leftWorld leftRegistry) (MkSystemState rightWorld rightRegistry)
+    leftAfter rightAfter **
+    (transitionAction (o20StampedLeftTransition stage) = OInsert actor leftParent component,
+     transitionAction (o20StampedRightTransition stage) = OInsert (renameForward renaming actor) rightParent component,
+     transitionTag (o20StampedLeftTransition stage) = leftTag,
+     transitionTag (o20StampedRightTransition stage) = rightTag))
+o20LabelledInsertFromPlans nameEq keyEq renaming actor component leftParent rightParent parents
+  leftWorld rightWorld leftRegistry rightRegistry _ _ leftChecked rightTag rightAfter rightChecked matched rightPlan
+  (MkForeignInsertPlanView leftAbsent guards) =
+    case o20LabelledInsertFromRightPlan nameEq keyEq renaming actor component leftParent rightParent parents
+      leftWorld rightWorld leftRegistry rightRegistry leftAbsent leftChecked rightTag rightAfter rightChecked matched rightPlan of
+        (stage ** (leftAction, rightAction, leftTagExact, rightTagExact)) =>
+          (stage ** (leftAction, rightAction, leftTagExact,
+            trans rightTagExact (sym (o20ForeignInsertPlanTag rightPlan))))
