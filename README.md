@@ -1091,3 +1091,21 @@ position transport/predecessor/skips/synchronization remain OPEN; C0/ineligible.
 No new proof/native invocation afterV177, frozen-source change, new hole,
 archive replacement or self-extension. D4/4; stand down. The separate read-only
 reviewer is being launched by the parent and is NOT claimed complete here.
+
+## R203 — whole retained-close/coverage and global scanner histories (source freeze)
+
+Checked **partial** milestone at `f0c80a37`; final validation is pending in this
+D2 entry. All32 new declarations have fresh native evidence and guarded commits.
+Theorem73 is still open; production and frozen sources are unchanged.
+
+| Paper / obligation | Idris file:name | Status |
+|---|---|---|
+| Lemma72 / Thm73 O20 retained close | `CP5O20WholeClosingJoinSpike:o20DeletionRetainedClosingBirth` | **Proved** for actual accepted deletion steps, whole three-segment join; removed-center exception resolved by an earlier real close |
+| Thm73 O20 deleted-generation coverage | `CP5O20WholeClosingJoinSpike:o20EveryDeletedGenerationSelected` | **Proved** over the actual recursive deletion list, stronger than present-only coverage |
+| Thm73 O20 real disappearance slots | `CP5O20NativeDisappearanceSkipSpike:o20WholeSelectedLifecycleDisappears` | **Proved**; physical removed source edges are not epsilon |
+| Thm73 original per-activation positions | `CP5O20GlobalActivationHistorySpike:o20AcceptedActivationHistories`, `o20ChronologicalPositionAtPrefix` | **Proved** bilateral original scanner chronologies, whole counter replay and every retained-prefix position |
+| Thm73 canonical synchronization / endpoint bridge | Existing O20 goals | **Partial/open**: canonical-prefix transport, ALL-name predecessor cuts, paired runtime histories, synchronization, per-class rebase/D5 and convergence |
+
+Nonempty regressions: `R203NativeDisappearancePositive` and
+`R203GlobalActivationHistoryPositive`. Full declaration/attempt correspondence:
+[`O6-R203-DECLARATIONS.md`](research-tests/O6-R203-DECLARATIONS.md).

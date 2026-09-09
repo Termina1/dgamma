@@ -7,7 +7,7 @@ spec=importlib.util.spec_from_file_location('contract',ROOT/'research-tests/r203
 records=[json.loads(s) for s in (OUT/'ledger.jsonl').read_text().splitlines()]
 policy_bytes=(OUT/'execution-policy.json').read_bytes()
 for r in records:
-    c.authenticate_policy_record(r,policy_bytes,(OUT/'execution-policy-inherited-label.json').read_bytes(),json.loads((OUT/'policy-label-correction.json').read_text()))
+    c.validate_execution_policy(r,policy_bytes)
     assert r['rssLimitKiB']==(52 if r['path'].endswith('CP5ConfluenceLocalDiamondSpike.idr') else 48)*1024*1024
     assert r['maxSampleRSSKiB']==max([s['rssKiB'] for s in r['rssSamples']] or [0])
     if r['passed']:assert r['maxSampleRSSKiB']<=r['rssLimitKiB'] and not r['resourceStopped'] and not r['targetMutationDetected']

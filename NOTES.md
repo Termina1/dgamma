@@ -4640,3 +4640,59 @@ position transport/predecessor/skips/synchronization remain OPEN; C0/ineligible.
 No new proof/native invocation afterV177, frozen-source change, new hole,
 archive replacement or self-extension. D4/4; stand down. The separate read-only
 reviewer is being launched by the parent and is NOT claimed complete here.
+
+## Status
+
+### R203 D2 — checked PARTIAL source freeze (2026-09-09)
+
+Source freeze `f0c80a37`, baseline `77e94c81`. B16/A16 caps exhausted; C0 is
+ineligible.43 development native invocations:33 PASS,10 rejected snapshots;
+32 guarded one-top-level-declaration source commits. B16-1 was a genuine PASS
+superseded by an exactly authenticated two-line explicit-index pattern cleanup
+in B16-2; it is not a failure or a second committed declaration. No cap extension.
+
+**Fully proved supporting results:** whole three-segment retained birth/close
+join, including the selected-parent removed-center exception; every classified
+deleted generation belongs to the actual recursive deletion list; source/target
+partial inverse and physical selected-lifecycle disappearance; both ORIGINAL
+native activation-event chronologies, global counter replay, and every retained
+prefix-position equation. Actual Unload/8-edge discarded/6-edge retained-after-
+remove fixtures apply these proofs.
+
+The key B discovery is an EARLIER close, not an assumed later surviving close:
+a genuine birth before the selected Begin installs its parent at the registering
+cut; Begin requires that same parent uninstalled. `extractFirstClosing` produces
+the intervening before-segment close, whose native nondeletability retains it.
+B16 then inducts on the actual deletion derivation and pulls membership back
+through each node's own generation inverse. Its additional generation DecEq
+argument is ordinary constructive equality data, not coverage capital.
+
+**Partial/open:** the named present-vestigial adapter/per-class ALL-name rebase
+and D5; canonical prefix-position transport through deletion/sorting; genuine
+unconditional predecessor ALL-name cuts; whole paired runtime occurrence
+histories and synchronization. The new native scanner histories are NOT
+`O20OccurrenceStampedHistory`. Final convergence remains merely the unchanged
+frozen goal. No broad insufficiency claim or new countermodel is asserted.
+
+**Design/escape audit:** no new escape hatch, hole, postulate, partial function,
+frozen-hole theorem call or scoped-to-raw cast. All five new Idris files use
+`%default total`. Runtime inverse-slot and event-counter replay functions use
+erased type indices with actual runtime arguments. Proof/specification terms,
+A5's local `let` bindings, and A13's local structural right-side induction are
+quantity0. The auxiliary indexed scan is derived from the accepted scanner; it
+adds no accepted-capital field or premise. Private frozen helper access in the
+rejected A13-1 attempt was removed, not exported or silently assumed.
+
+Read `research-tests/O6-R203-AUTHOR-REVIEW.md` for the premise/conclusion audit,
+and `O6-R203-DECLARATIONS.md` for every declaration and failed-attempt repair.
+Author review is not independent human acceptance. Pure evidence/policy tests
+pass24+10 adversarial cases; the pre-validation machine verifier authenticates
+all43 raw invocations and32 guarded source commits. The immutable plan contains
+ALL176 inherited applicable main sources +5 new =181 source targets, seven exact
+expected negatives, and one seeded (not cold) package build:182 final checks.
+Final validation/publication is still pending in this D2 entry.
+
+Next: complete that validation, publish raw snapshots/archive and independent
+machine authentication, then obtain the supervisor/reviewer gate. No further
+A/B proof work is authorized in this shift. Frozen census remains4 =1/2/0/0/1;
+production is identical to `34b21c9`, and all frozen statements/bodies are pinned.

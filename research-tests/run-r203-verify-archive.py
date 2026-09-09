@@ -19,15 +19,15 @@ with tarfile.open(archive,'r:gz') as tar:
     assert set(names)=={'dgamma-r203/'+p for p in anchor['filesSHA256']}|{'dgamma-r203/archive-anchor.json'}
     for path,digest in anchor['filesSHA256'].items():assert sha(data(path))==digest, path
     records=[json.loads(s) for s in data('ledger.jsonl').decode().splitlines()]
-    assert len(records)==211 and sum(r['passed'] for r in records)==207
+    assert len(records)==225 and sum(r['passed'] for r in records)==215
     assert len({r['unit'] for r in records})==len(records)
     for i,r in enumerate(records):
         assert json.loads(data(r['unit']+'.json'))==r
         c.validate_record(r,data(r['unit']+'.source'),data(r['unit']+'.log').decode(),ROOT)
-        c.authenticate_policy_record(r,archived_policy,data('execution-policy-inherited-label.json'),json.loads(data('policy-label-correction.json')))
+        c.validate_execution_policy(r,archived_policy)
         assert not i or records[i-1]['end']<=r['start']
     receipts=[json.loads(s) for s in data('commit-receipts.jsonl').decode().splitlines()]
-    source_receipts=[r for r in receipts if r['event']=='GUARDED COMMIT'];assert len(source_receipts)==30
+    source_receipts=[r for r in receipts if r['event']=='GUARDED COMMIT'];assert len(source_receipts)==32
     assert sum(r.get('kind')=='authorized-comment-only' for r in source_receipts)==0
     for receipt in receipts:
         r=next(x for x in records if x['unit']==receipt['invocation'])
@@ -37,17 +37,14 @@ with tarfile.open(archive,'r:gz') as tar:
         assert sha(subprocess.check_output(['git','show',receipt['resultingCommitHash']+':'+path],cwd=ROOT))==receipt['sourceHash']
         assert subprocess.run(['git','merge-base','--is-ancestor',receipt['resultingCommitHash'],anchor['anchorCommit']],cwd=ROOT).returncode==0
     plan=json.loads(data('final-validation-plan.json'))
-    assert len(plan)==177 and json.loads(data('final-validation-result.json'))['status']=='PASS'
+    assert len(plan)==182 and json.loads(data('final-validation-result.json'))['status']=='PASS'
     assert data('final-validation-plan.json')==(ART/'O6-R203-FINAL-VALIDATION-PLAN.json').read_bytes()
     for item in plan:
         r=next(x for x in records if x['unit']==item['unit'])
         assert r['passed'] and r['sourceSHA256']==item['sourceHash'] and r['expectedDiagnostic']==item['expectedDiagnostic'] and r['symbol']==item['symbol']
         path='dgamma.ipkg' if item['path']=='package' else item['path']
         assert sha(subprocess.check_output(['git','show',anchor['anchorCommit']+':'+path],cwd=ROOT))==item['sourceHash']
-    correction=json.loads(data('policy-label-correction.json'))
-    assert correction==json.loads((ART/'O6-R203-POLICY-LABEL-CORRECTION.json').read_text())
-    assert data('execution-policy-inherited-label.json')==(ART/'O6-R203-EXECUTION-POLICY-INHERITED-LABEL.json').read_bytes()
-    assert correction['priorInvocations']==[r['unit'] for r in records if r['start']<correction['timestampUTC']]
+    c.validate_superseded_pass(data('B16-1.source'),data('B16-2.source'))
 
-report=dict(status='PASS',anchorCommit=metadata['anchorCommit'],archiveSHA256=metadata['archiveSHA256'],allArchiveFilesVerified=len(members),nativeRecordsVerified=211,sourceSnapshotsVerified=211,rawLogsVerified=211,sourceReceiptsArchived=30,proofSourceReceiptsArchived=30,commentReceiptsArchived=0,artifactReceiptsArchived=len(receipts)-30,expectedPASS=207,rejectedSnapshots=4,finalChecksVerified=177,executionPolicySHA256=sha(archived_policy),ownerPolicyAuthenticated=True,metadataOnlyPolicyLabelHistoryAuthenticated=True,qualification='Read-only post-creation verification, not inside its own archive and not independent human review. Anchor deliberately excludes future publication/gate receipts.')
+report=dict(status='PASS',anchorCommit=metadata['anchorCommit'],archiveSHA256=metadata['archiveSHA256'],allArchiveFilesVerified=len(members),nativeRecordsVerified=225,sourceSnapshotsVerified=225,rawLogsVerified=225,sourceReceiptsArchived=32,proofSourceReceiptsArchived=32,commentReceiptsArchived=0,artifactReceiptsArchived=len(receipts)-32,expectedPASS=215,rejectedSnapshots=10,supersededPASS=['B16-1'],finalChecksVerified=182,executionPolicySHA256=sha(archived_policy),ownerPolicyAuthenticated=True,supersededPASSCleanupAuthenticated=True,qualification='Read-only post-creation verification, not inside its own archive and not independent human review. Anchor deliberately excludes future publication/gate receipts.')
 (OUT/'archive-verification.json').write_text(json.dumps(report,indent=2)+'\n');print(json.dumps(report,indent=2))

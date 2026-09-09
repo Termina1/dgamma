@@ -1,0 +1,258 @@
+[
+  {
+    "unit": "B1",
+    "invocation": "B1-1",
+    "path": "research/DGamma/CP5O20WholeClosingJoinSpike.idr",
+    "declaration": "o20SubsequenceOrdinalBounds",
+    "commit": "df63fb6ce9ca686a15e2a48eb92257e85e68b5f6",
+    "sourceSHA256": "7bc4218d7f5a8787a0a3cfb563c8965498946b2f1e1f5e3db38fbd7556a43456"
+  },
+  {
+    "unit": "B2",
+    "invocation": "B2-1",
+    "path": "research/DGamma/CP5O20WholeClosingJoinSpike.idr",
+    "declaration": "o20OffsetStrictOrder",
+    "commit": "88f4f0b048fa16ce50c71f7172dbb9627e288d51",
+    "sourceSHA256": "efc7ff3349e7321ec94312db8fafa609645b2b205eb5c614e1d5b2671ff61853"
+  },
+  {
+    "unit": "B3",
+    "invocation": "B3-1",
+    "path": "research/DGamma/CP5O20WholeClosingJoinSpike.idr",
+    "declaration": "o20WholeEmbeddingReflectsSourceOrder",
+    "commit": "d5c8a3e2b4583590011b28c299da107755e21697",
+    "sourceSHA256": "1432c9186cd5cd25b4e5acccf1b3080695b7a164e47ca25d1d6d3bb96e77c393"
+  },
+  {
+    "unit": "B4",
+    "invocation": "B4-2",
+    "path": "research/DGamma/CP5O20WholeClosingJoinSpike.idr",
+    "declaration": "o20ClosingActionAtAppendLeft",
+    "commit": "830a8889d1a479dbef65c8c2825f368d0b777f67",
+    "sourceSHA256": "6174f45d90115f44b5881233e3b046afe187708b38fe5075b632f8a436c6c96a"
+  },
+  {
+    "unit": "B5",
+    "invocation": "B5-1",
+    "path": "research/DGamma/CP5O20WholeClosingJoinSpike.idr",
+    "declaration": "o20SplitClosingActionAtAppend",
+    "commit": "28dc44466918b6d1a73c96551a8bf5791dc10edc",
+    "sourceSHA256": "854a8d2b6a74474244158fb587667f8878c77218a370e3bb8e4aec3064761116"
+  },
+  {
+    "unit": "B6",
+    "invocation": "B6-1",
+    "path": "research/DGamma/CP5O20WholeClosingJoinSpike.idr",
+    "declaration": "o20DeletionUnloadFreeSegments",
+    "commit": "ee639059e2f21dae858a2a2b7ffe7044db42432e",
+    "sourceSHA256": "147a5ef6b9cf34d073f5a0e8a463406912c65d186a492cd4915e2945b45639ee"
+  },
+  {
+    "unit": "B7",
+    "invocation": "B7-1",
+    "path": "research/DGamma/CP5O20WholeClosingJoinSpike.idr",
+    "declaration": "o20WholeClosingIndexRetainedOrSelectedCenter",
+    "commit": "c518bde1093d671301704ef9335e0c5c418d185e",
+    "sourceSHA256": "5a290919caf72f8eb783109116fb8e1de612683532269309a3980095acf3348a"
+  },
+  {
+    "unit": "B8",
+    "invocation": "B8-1",
+    "path": "research/DGamma/CP5O20WholeClosingJoinSpike.idr",
+    "declaration": "o20DeletionRetainedBirthEmbedding",
+    "commit": "763e9d0bd34738f3b9d9512afb16abf25216337e",
+    "sourceSHA256": "9a664cbac67b37796c469250d79bb2ff5e3d98b7fa9b02d3f00269b68f1257b5"
+  },
+  {
+    "unit": "B9",
+    "invocation": "B9-2",
+    "path": "research/DGamma/CP5O20WholeClosingJoinSpike.idr",
+    "declaration": "o20DeletionRetainedClosingBirthOrSelectedParent",
+    "commit": "bc17af9eddeb95adf17437db09d7f24386ab0531",
+    "sourceSHA256": "8ecce13c353217384cb014240cbea32d683abb18036bcd23dda0cac4a87cd145"
+  },
+  {
+    "unit": "B10",
+    "invocation": "B10-2",
+    "path": "research/DGamma/CP5O20WholeClosingJoinSpike.idr",
+    "declaration": "o20LocatedOrdinalTransport",
+    "commit": "f88b8732560dab9f514b8e3c2ca8dc7b32fe1f89",
+    "sourceSHA256": "c605a9c427c0b89b5e3b5edcb0534ce3506650f1928e7d588148cb5148cddc70"
+  },
+  {
+    "unit": "B11",
+    "invocation": "B11-1",
+    "path": "research/DGamma/CP5O20WholeClosingJoinSpike.idr",
+    "declaration": "o20ClosingIndexInsideTrace",
+    "commit": "4e70974a477c611f03b27d7c31a7242fb0488f88",
+    "sourceSHA256": "5d9ebd42afb7af0fbe69b02adb495753ae31d4f48b0fe0357df2fdda6f9b712e"
+  },
+  {
+    "unit": "B12",
+    "invocation": "B12-1",
+    "path": "research/DGamma/CP5O20WholeClosingJoinSpike.idr",
+    "declaration": "o20SelectedCenterCloseBirthBefore",
+    "commit": "66d1f47f4114b1031b97ceb4a20a989c82448d16",
+    "sourceSHA256": "62dcd8b7f2e18ff9aa3fcaba09f4299dd83967ffb535e43ca20aae5cd6f7d4f7"
+  },
+  {
+    "unit": "B13",
+    "invocation": "B13-2",
+    "path": "research/DGamma/CP5O20WholeClosingJoinSpike.idr",
+    "declaration": "o20ParentInstalledAtRegistrationCut",
+    "commit": "13be8b5714cbe95ee23979b42c9fcef4b25d3d9b",
+    "sourceSHA256": "69aacb05336915b8ddf04e22c9d22c101452ed7d2f32a1f8b69c00e528323849"
+  },
+  {
+    "unit": "B14",
+    "invocation": "B14-1",
+    "path": "research/DGamma/CP5O20WholeClosingJoinSpike.idr",
+    "declaration": "o20BeforeBirthHasEarlierParentClose",
+    "commit": "874513946a1e06df828ee2940f0ea2989b5fa334",
+    "sourceSHA256": "e8fd855d7a7c1df1e4ced422875c6cd0643c5ff8f0fe195eb5f81d81a40f644c"
+  },
+  {
+    "unit": "B15",
+    "invocation": "B15-1",
+    "path": "research/DGamma/CP5O20WholeClosingJoinSpike.idr",
+    "declaration": "o20DeletionRetainedClosingBirth",
+    "commit": "36f0786a1bcb5449e2bec5ef11782f9cae082427",
+    "sourceSHA256": "a50e3ab19a5ae3def4d6347237e7f7ac22d3515bb196a5b2d58cc00a286c6794"
+  },
+  {
+    "unit": "B16",
+    "invocation": "B16-2",
+    "path": "research/DGamma/CP5O20WholeClosingJoinSpike.idr",
+    "declaration": "o20EveryDeletedGenerationSelected",
+    "commit": "eb6e75a4f348f38bab306ccc625ce4c5e40cd172",
+    "sourceSHA256": "b92c234ef87e99fb139363183a3e841b2a171ecd7616123ae1cc270ff6c6637f"
+  },
+  {
+    "unit": "A1",
+    "invocation": "A1-2",
+    "path": "research/DGamma/CP5O20NativeDisappearanceSkipSpike.idr",
+    "declaration": "o20SubsequenceTargetOrdinal",
+    "commit": "8b63388369de0bf1e8f9b99d627c7ffc7db2e7ad",
+    "sourceSHA256": "c00f6168f60df39accdcf2d3ad398637bf3d68afc51a3bea1eb7f6274eb3fa33"
+  },
+  {
+    "unit": "A2",
+    "invocation": "A2-1",
+    "path": "research/DGamma/CP5O20NativeDisappearanceSkipSpike.idr",
+    "declaration": "o20SubsequenceOrdinalsInverse",
+    "commit": "bc960f0a9760dfdca8633d8716cc8b166b39d1ec",
+    "sourceSHA256": "12efc9705e13ecaa745600ac39eae1d01c46668af83e35092008b7d0e8f8ea57"
+  },
+  {
+    "unit": "A3",
+    "invocation": "A3-1",
+    "path": "research/DGamma/CP5O20NativeDisappearanceSkipSpike.idr",
+    "declaration": "o20SelectedLifecycleTargetAbsent",
+    "commit": "8153cf6c96ec7c46065a2a4db5754b978c566e9d",
+    "sourceSHA256": "25aee8c370f444279548d72ef60349203480a29372c5d553093b43f9d837bf27"
+  },
+  {
+    "unit": "A4",
+    "invocation": "A4-1",
+    "path": "research/DGamma/CP5O20NativeDisappearanceSkipSpike.idr",
+    "declaration": "o20WholeSelectedLifecycleDisappears",
+    "commit": "f376483a61119afa31ab1119018267fdf34b0f9a",
+    "sourceSHA256": "981d7f9994c2ccce23b499a16c516d2d3edecee1173a25aa792488664f43a388"
+  },
+  {
+    "unit": "A5",
+    "invocation": "A5-2",
+    "path": "research-tests/DGamma/R203NativeDisappearancePositive.idr",
+    "declaration": "r203ActualUnloadIsNotEpsilon",
+    "commit": "d86b7acfd4270f60c65baac8c6d0437248bb2809",
+    "sourceSHA256": "b05d2323fbec18160bc212a7ffa3270f0e28e7dc68cfaaa24b1c181f8e410068"
+  },
+  {
+    "unit": "A6",
+    "invocation": "A6-1",
+    "path": "research/DGamma/CP5O20GlobalActivationHistorySpike.idr",
+    "declaration": "o20OrdinaryIndexKeepsActivationCounts",
+    "commit": "a83071a560ec397dfa78c568a453260bed38b398",
+    "sourceSHA256": "bb7284dfad995a73b085b04e1ff97357a46427c21da2b68e5adf676a86fc0ae9"
+  },
+  {
+    "unit": "A7",
+    "invocation": "A7-1",
+    "path": "research/DGamma/CP5O20GlobalActivationHistorySpike.idr",
+    "declaration": "O20NativeActivationScan",
+    "commit": "3828836b169f6da623acb71c0c306434fd46a0e4",
+    "sourceSHA256": "8c90615d2f6f08a4da32c4dbc55e2700bdc777bcffc9a68b87e22a3c76261e86"
+  },
+  {
+    "unit": "A8",
+    "invocation": "A8-2",
+    "path": "research/DGamma/CP5O20GlobalActivationHistorySpike.idr",
+    "declaration": "o20LeftNativeActivationHistory",
+    "commit": "a0a30a8583b5f401ab3b9e0638f83ce9b1c5bada",
+    "sourceSHA256": "bfc31b767111b90228136c2e72de3f5ccbd80975d2d9fa0ce7be11772a4d8f7e"
+  },
+  {
+    "unit": "A9",
+    "invocation": "A9-1",
+    "path": "research/DGamma/CP5O20GlobalActivationHistorySpike.idr",
+    "declaration": "o20ReplayRetainedEventCounts",
+    "commit": "693fb232f9e5d179004e0a19a14b039d1ec789b9",
+    "sourceSHA256": "74f3065357796d56d4e7a7e2c328dab36f95692cb89541a6133ce1e7625c1004"
+  },
+  {
+    "unit": "A10",
+    "invocation": "A10-2",
+    "path": "research/DGamma/CP5O20GlobalActivationHistorySpike.idr",
+    "declaration": "o20NativeActivationCounts",
+    "commit": "b5e7f0061c7a689af36dc5436c77df9cfd9cf588",
+    "sourceSHA256": "8ea02ddda14b6644362a391be5fd032b4a2cdf9b8a87e965f78ee69ffe3a2056"
+  },
+  {
+    "unit": "A11",
+    "invocation": "A11-1",
+    "path": "research/DGamma/CP5O20GlobalActivationHistorySpike.idr",
+    "declaration": "o20ChronologicalPositions",
+    "commit": "5a2dab191b3f0fc7980966317145adf883619f41",
+    "sourceSHA256": "861971d2e32fff92916ff86763a832c08660dbbd3c02a8bd47cc5f6434a0b16d"
+  },
+  {
+    "unit": "A12",
+    "invocation": "A12-1",
+    "path": "research/DGamma/CP5O20GlobalActivationHistorySpike.idr",
+    "declaration": "o20NativeChronologicalPositions",
+    "commit": "8f97c6c4c8eb0af662ab296a135e3e8f3f2dce28",
+    "sourceSHA256": "ab5649d2abeeb3662ad6d1e9ecc56c91a6771b4339c5e9d3860506e09800b561"
+  },
+  {
+    "unit": "A13",
+    "invocation": "A13-2",
+    "path": "research/DGamma/CP5O20GlobalActivationHistorySpike.idr",
+    "declaration": "o20AcceptedActivationHistories",
+    "commit": "6c0a23e1d3114027fb62eee20def34023aa5371e",
+    "sourceSHA256": "bdb2b28c0ac4a406359f8d484d7048650036461fba7322917baaa6b760b407c1"
+  },
+  {
+    "unit": "A14",
+    "invocation": "A14-2",
+    "path": "research/DGamma/CP5O20GlobalActivationHistorySpike.idr",
+    "declaration": "o20ChronologicalPositionAtPrefix",
+    "commit": "fcf33bb942ada8f836acbc13a55c94b3720f9cfc",
+    "sourceSHA256": "d9759a68fbc675efdc9e0473765de35ea8bd09d190d91fb1a460f9d299fe9510"
+  },
+  {
+    "unit": "A15",
+    "invocation": "A15-1",
+    "path": "research-tests/DGamma/R203GlobalActivationHistoryPositive.idr",
+    "declaration": "r203ClosedBirthConsumesNoRetainedPosition",
+    "commit": "8d78eee86f0a98dd34f445ddaf8b60715934df59",
+    "sourceSHA256": "9a61905597ff6df458d96b05fedf29e3f48feca193a7b12e2aa29fd980718745"
+  },
+  {
+    "unit": "A16",
+    "invocation": "A16-1",
+    "path": "research-tests/DGamma/R203GlobalActivationHistoryPositive.idr",
+    "declaration": "r203RemovedBirthKeepsHistoricalPosition",
+    "commit": "f0c80a3707f854cb708645797c0e754a97cd33b2",
+    "sourceSHA256": "d96dea433bd8c5af7a6c648df9d62c5724b22967bac1d6bc1f6c0e1d9a430f74"
+  }
+]

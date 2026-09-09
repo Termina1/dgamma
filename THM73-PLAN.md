@@ -4119,3 +4119,15 @@ position transport/predecessor/skips/synchronization remain OPEN; C0/ineligible.
 No new proof/native invocation afterV177, frozen-source change, new hole,
 archive replacement or self-extension. D4/4; stand down. The separate read-only
 reviewer is being launched by the parent and is NOT claimed complete here.
+
+## R203 source freeze (2026-09-09)
+
+B16/A16 caps reached at `f0c80a37`; no C attempt. Whole actual retained-closing
+birth and classified-generation selection coverage are now checked. Both
+original native scanner chronologies/all prefix positions and whole selected-
+center lifecycle disappearance are checked, with nonempty regressions. Still
+open: present-vestigial adapter/per-class ALL-name rebase/D5; canonical-prefix
+transport, unconditional ALL-name predecessor cuts, paired runtime occurrence
+histories, synchronization and convergence. Do not promote scanner histories to
+runtime histories. D2 final182-check validation pending; proof caps will not be
+extended. See `research-tests/O6-R203-AUTHOR-REVIEW.md`.
