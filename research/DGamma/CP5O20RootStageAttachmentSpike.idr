@@ -293,3 +293,32 @@ o20AttachRootAtRetainedBirth leftReplay rightReplay leftLaw rightLaw original un
       (trans matched (cong (MkRegistrationGeneration root)
         (uniqueInsertionPosition unique root Root Root component component
           rightOriginalBirth (replayActionOrigin rightReplay rightBirth)))))
+
+||| Eliminate the actual original root-match packet and retain that same
+||| right birth through the supplied native external-input replay.
+export
+0 o20AttachRootMatchPacket :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {leftFirst, leftFinal, rightFirst, rightFinal, leftNowFirst, leftNowFinal, rightNowFirst, rightNowFinal : SystemState name key value world error} ->
+  {left : Transitions leftFirst leftFinal} ->
+  (right : Transitions rightFirst rightFinal) ->
+  {leftNow : Transitions leftNowFirst leftNowFinal} ->
+  (rightNow : Transitions rightNowFirst rightNowFinal) ->
+  (leftReplay : ActionRegistrationReplayCorrespondence name key world error value left leftNow) ->
+  (rightReplay : ActionRegistrationReplayCorrespondence name key world error value right rightNow) ->
+  O20RootReplayOrdinals name key world error value leftReplay ->
+  O20RootReplayOrdinals name key world error value rightReplay ->
+  SameExternalOrchestration nameEq right rightNow ->
+  (original : RegistrationGenerationBijection name) ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq right ->
+  (root : name) -> (component : Component key value world error) ->
+  (leftBirth : LocatedActionOccurrence (OInsert root Root component) leftNow) ->
+  O20RootBirthMatch name key world error value original root component
+    (locatedActionOrdinal (replayActionOrigin leftReplay leftBirth)) Z right ->
+  O20AttachedRootBirth name key world error value leftReplay rightReplay original root component leftBirth
+o20AttachRootMatchPacket nameEq keyEq right rightNow leftReplay rightReplay leftLaw rightLaw
+  external original unique root component leftBirth (MkO20RootBirthMatch rightBirth matched) =
+  o20AttachRootAtRetainedBirth {nameEq} {keyEq} leftReplay rightReplay leftLaw rightLaw
+    original unique root component leftBirth rightBirth matched
+    (o20RetainedRootBirth nameEq right rightNow external root component rightBirth)
