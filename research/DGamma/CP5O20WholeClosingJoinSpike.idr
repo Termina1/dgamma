@@ -217,3 +217,87 @@ o20DeletionUnloadFreeSegments name key world error value protocol nameEq keyEq t
         (traceAfterClosing (selectedEpisode candidate)) (episodeEndOrdinal result) (episodeEndLive result)
         (episodeGenerationScan result) laterFree of
           (centerFree, afterFree) => (beforeFree, centerFree, afterFree)
+
+||| WHOLE three-segment closing transport. The only unretained alternative
+||| identifies the selected parent's center Unload with an EXACT source index.
+||| In every other case the target close and its whole native embedding are
+||| outputs, including birth/close uses that cross segment boundaries.
+export
+0 o20WholeClosingIndexRetainedOrSelectedCenter :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (trace : Transitions initial finalState) ->
+  (premises : CanonicalizationPremises name key world error value protocol nameEq keyEq trace) ->
+  (candidate : DeletableClosingEpisode name key world error value nameEq keyEq trace) ->
+  (result : DeletionResult name key world error value nameEq keyEq trace
+    (selectedActor candidate) (selectedEpisode candidate) (selectedRegistrations candidate)
+    (selectedStartOrdinal candidate) (selectedStartLive candidate)) ->
+  (actor : name) -> (sourceIndex : Nat) ->
+  (rawClosingActionAt name key world error value sourceIndex trace = Just (LUnload actor)) ->
+  Either
+    (actor = selectedActor candidate,
+     (centerIndex : Nat ** (sourceIndex = deletionOriginalBeforeCount result + centerIndex,
+       rawClosingActionAt name key world error value centerIndex
+         (MoreTransitions (beginTransition (closedOpening (locatedEpisode (selectedEpisode candidate))))
+           (closedTransitions (locatedEpisode (selectedEpisode candidate)))) = Just (LUnload actor))))
+    (targetIndex : Nat **
+      (rawClosingActionAt name key world error value targetIndex (survivingTrace result) = Just (LUnload actor),
+       DeletionSurvivingOrdinalEmbedding result targetIndex sourceIndex))
+o20WholeClosingIndexRetainedOrSelectedCenter name key world error value protocol nameEq keyEq trace premises candidate result actor sourceIndex exact =
+  case o20DeletionUnloadFreeSegments name key world error value protocol nameEq keyEq trace premises candidate result of
+    (beforeFree, centerFree, afterFree) =>
+      case o20SplitClosingActionAtAppend name key world error value
+        (traceBeforeOpening (selectedEpisode candidate))
+        (appendTransitions
+          (MoreTransitions (beginTransition (closedOpening (locatedEpisode (selectedEpisode candidate))))
+            (closedTransitions (locatedEpisode (selectedEpisode candidate))))
+          (traceAfterClosing (selectedEpisode candidate))) sourceIndex actor
+        (trans (cong (rawClosingActionAt name key world error value sourceIndex)
+          (locatedDecomposition (selectedEpisode candidate))) exact) of
+        Left beforeExact =>
+          case o20RegisteredSubsequenceUnloadIndex name key world error value nameEq (selectedRegistrations candidate)
+            Z [] (beforeDeletion result) beforeFree actor sourceIndex beforeExact of
+            (targetIndex ** (targetExact, originExact)) =>
+              Right (targetIndex **
+                (o20ClosingActionAtAppendLeft name key world error value (survivingBefore result)
+                  (appendTransitions (survivingEpisode result) (survivingAfter result)) targetIndex actor targetExact,
+                 DeletionBeforeEmbedding originExact))
+        Right (laterSource ** (sourceOffset, laterExact)) =>
+          case o20SplitClosingActionAtAppend name key world error value
+            (MoreTransitions (beginTransition (closedOpening (locatedEpisode (selectedEpisode candidate))))
+              (closedTransitions (locatedEpisode (selectedEpisode candidate))))
+            (traceAfterClosing (selectedEpisode candidate)) laterSource actor laterExact of
+            Left centerExact =>
+              case decEq @{nameEq} actor (selectedActor candidate) of
+                Yes selected => Left (selected, (laterSource ** (sourceOffset, centerExact)))
+                No foreignActor =>
+                  case o20ForeignSubsequenceUnloadIndex name key world error value nameEq (selectedActor candidate)
+                    (selectedRegistrations candidate) (selectedStartOrdinal candidate) (selectedStartLive candidate)
+                    (episodeDeletion result) centerFree actor foreignActor laterSource centerExact of
+                    (targetCenter ** (targetExact, originExact)) =>
+                      Right (deletionSurvivingBeforeCount result + targetCenter **
+                        (trans (o20ClosingActionAtAppend name key world error value (survivingBefore result)
+                          (appendTransitions (survivingEpisode result) (survivingAfter result)) targetCenter)
+                          (o20ClosingActionAtAppendLeft name key world error value (survivingEpisode result)
+                            (survivingAfter result) targetCenter actor targetExact),
+                         replace {p = DeletionSurvivingOrdinalEmbedding result (deletionSurvivingBeforeCount result + targetCenter)}
+                           (sym sourceOffset) (DeletionEpisodeEmbedding originExact)))
+            Right (afterSource ** (afterOffset, afterExact)) =>
+              case o20RegisteredSubsequenceUnloadIndex name key world error value nameEq (selectedRegistrations candidate)
+                (episodeEndOrdinal result) (episodeEndLive result) (afterDeletion result) afterFree actor afterSource afterExact of
+                (targetAfter ** (targetExact, originExact)) =>
+                  Right ((deletionSurvivingBeforeCount result + deletionSurvivingEpisodeCount result) + targetAfter **
+                    (trans (cong (\index => rawClosingActionAt name key world error value index (survivingTrace result))
+                      (sym (plusAssociative (deletionSurvivingBeforeCount result) (deletionSurvivingEpisodeCount result) targetAfter)))
+                      (trans (o20ClosingActionAtAppend name key world error value (survivingBefore result)
+                        (appendTransitions (survivingEpisode result) (survivingAfter result))
+                        (deletionSurvivingEpisodeCount result + targetAfter))
+                        (trans (o20ClosingActionAtAppend name key world error value (survivingEpisode result)
+                          (survivingAfter result) targetAfter) targetExact)),
+                     replace {p = DeletionSurvivingOrdinalEmbedding result
+                       ((deletionSurvivingBeforeCount result + deletionSurvivingEpisodeCount result) + targetAfter)}
+                       (sym (trans sourceOffset (trans (cong ((deletionOriginalBeforeCount result) +) afterOffset)
+                         (plusAssociative (deletionOriginalBeforeCount result) (deletionOriginalEpisodeCount result) afterSource))))
+                       (DeletionAfterEmbedding originExact)))
