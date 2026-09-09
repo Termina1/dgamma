@@ -127,3 +127,58 @@ o20MatchedScannedBirthOccurrenceHistory nameEq keyEq left right mapping renaming
       (trans (cong (generationForward mapping) (sym (scannedBirthStampExact leftBirth)))
         (trans (matchedChildGeneration matched) (trans (scannedBirthStampExact rightBirth)
           (cong (\actor => MkRegistrationGeneration actor (locatedActionOrdinal (scannedLocatedBirth rightBirth))) childSame))))
+
+||| Produce BOTH accepted ORIGINAL native chronologies and a runtime-pair
+||| producer for every chosen matching retained event pair in those very lists.
+||| Births, openness and prefix environments are produced, not supplied.
+||| Event matching and two local raw-name equations remain explicit; there is
+||| no assertion of global zip order, canonical transport or a whole history.
+export
+0 o20AcceptedChronologicalOccurrencePairs :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, leftFinal, rightFinal : SystemState name key value world error} ->
+  (left : Transitions initial leftFinal) -> (right : Transitions initial rightFinal) ->
+  (mapping : RegistrationGenerationBijection name) -> (renaming : NameBijection name) ->
+  (registrations : RegistrationCorrespondenceByGeneration nameEq mapping left right) ->
+  AlignedTransitions name key world error value nameEq keyEq left ->
+  AlignedTransitions name key world error value nameEq keyEq right ->
+  (leftEvents : List (RegistrationEvent name key world error value) **
+    (rightEvents : List (RegistrationEvent name key world error value) **
+      (O20NativeActivationScan nameEq Z emptyRegistrationIndex left (leftFinalIndex registrations) leftEvents,
+       O20NativeActivationScan nameEq Z emptyRegistrationIndex right (rightFinalIndex registrations) rightEvents,
+       (leftEvent, rightEvent : RegistrationEvent name key world error value) ->
+       Elem leftEvent leftEvents -> Elem rightEvent rightEvents ->
+       RegistrationEventMatch mapping leftEvent rightEvent ->
+       (eventChild rightEvent = renameForward renaming (eventChild leftEvent)) ->
+       (eventParent rightEvent = renameForward renaming (eventParent leftEvent)) ->
+       (leftBirth : ScannedRegistrationBirth name key world error value Z left leftEvent **
+         (rightBirth : ScannedRegistrationBirth name key world error value Z right rightEvent **
+           (SurvivingRegistration leftEvent (afterActionOccurrence (scannedLocatedBirth leftBirth)),
+            SurvivingRegistration rightEvent (afterActionOccurrence (scannedLocatedBirth rightBirth)),
+  O20OccurrenceStampedHistory name key world error value nameEq keyEq mapping renaming left right
+    (o20ScannedFinalLive nameEq Z [] (beforeActionOccurrence (scannedLocatedBirth leftBirth)))
+    (o20ScannedFinalLive nameEq Z [] (beforeActionOccurrence (scannedLocatedBirth rightBirth)))
+    (putCurrentGeneration @{nameEq} (eventChild leftEvent)
+      (MkRegistrationGeneration (eventChild leftEvent) (locatedActionOrdinal (scannedLocatedBirth leftBirth)))
+      (o20ScannedFinalLive nameEq Z [] (beforeActionOccurrence (scannedLocatedBirth leftBirth))))
+    (putCurrentGeneration @{nameEq} (renameForward renaming (eventChild leftEvent))
+      (MkRegistrationGeneration (renameForward renaming (eventChild leftEvent)) (locatedActionOrdinal (scannedLocatedBirth rightBirth)))
+      (o20ScannedFinalLive nameEq Z [] (beforeActionOccurrence (scannedLocatedBirth rightBirth))))
+    (actionBeforeState (scannedLocatedBirth leftBirth)) (actionBeforeState (scannedLocatedBirth rightBirth))
+    (actionAfterState (scannedLocatedBirth leftBirth)) (actionAfterState (scannedLocatedBirth rightBirth))))))))
+o20AcceptedChronologicalOccurrencePairs {name} {key} {world} {error} {value} nameEq keyEq
+  left right mapping renaming registrations leftAligned rightAligned =
+    case o20AcceptedActivationHistories nameEq left right mapping registrations of
+      (leftEvents ** (rightEvents ** (leftScan, rightScan, leftPositions, rightPositions, leftCounts, rightCounts))) =>
+        (leftEvents ** (rightEvents ** (leftScan, rightScan,
+          \leftEvent, rightEvent, leftMember, rightMember, matched, childSame, parentSame =>
+            case o20NativeChronologicalBirth name key world error value nameEq Z emptyRegistrationIndex
+              left (leftFinalIndex registrations) leftEvents leftScan leftEvent leftMember of
+              (leftBirth ** leftOpen) =>
+                case o20NativeChronologicalBirth name key world error value nameEq Z emptyRegistrationIndex
+                  right (rightFinalIndex registrations) rightEvents rightScan rightEvent rightMember of
+                  (rightBirth ** rightOpen) =>
+                    (leftBirth ** (rightBirth ** (leftOpen, rightOpen,
+                      o20MatchedScannedBirthOccurrenceHistory nameEq keyEq left right mapping renaming leftAligned rightAligned
+                        leftEvent rightEvent matched childSame parentSame leftBirth rightBirth))))))
