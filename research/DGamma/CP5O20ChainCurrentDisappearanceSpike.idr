@@ -84,3 +84,62 @@ o20SelectedClassifiedPresentAbsent name key world error value protocol nameEq ke
         (generationName generation) (deletedParent classified) (deletedComponent classified)
         (deletedOccurrence classified) fiber present)
         (cong Just (deletedOccurrenceGeneration classified)))
+
+||| Whole-chain current-coordinate disappearance for EVERY classified birth,
+||| under the macro's existing unique-raw-insertion hypothesis. Every node
+||| observes its actual original lookup: absent stays absent; selected-present
+||| uses B3; retained uses R203's actual birth/close and the node's bijection.
+||| The closing-free base rejects the classification. No tail absence is input.
+export
+0 o20ClassifiedChainAbsent :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (generationEq : DecEq (RegistrationGeneration name)) ->
+  {initial, sourceFinal, targetFinal : SystemState name key value world error} ->
+  (source : Transitions initial sourceFinal) -> (target : Transitions initial targetFinal) ->
+  (premises : CanonicalizationPremises name key world error value protocol nameEq keyEq source) ->
+  (derivation : ClosingFreeDeletionDerivation name key world error value protocol nameEq keyEq source target) ->
+  NoClosingEpisodes name key world error value nameEq keyEq target ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq source ->
+  (generation : RegistrationGeneration name) ->
+  DeletedGenerationClassification name key world error value nameEq source generation ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} (generationName generation) (registry targetFinal) = Nothing)
+o20ClassifiedChainAbsent name key world error value protocol nameEq keyEq generationEq _ _ premises
+  (ClosingFreeDeletionDone trace) noClosing unique generation classified =
+    absurd (o20EveryDeletedGenerationSelected name key world error value protocol nameEq keyEq generationEq
+      trace trace premises (ClosingFreeDeletionDone trace) noClosing generation classified)
+o20ClassifiedChainAbsent name key world error value protocol nameEq keyEq generationEq
+  {initial} {sourceFinal} {targetFinal} _ _ sourcePremises
+  (ClosingFreeDeletionStep source premises candidate step target rest) noClosing unique generation classified =
+    atObservation (lookupFiber {name} {key} {value} {world} {error} @{nameEq}
+      (generationName generation) (registry sourceFinal)) Refl
+  where
+    0 atObservation : (observed : Maybe (Fiber name key value world error)) ->
+      (lookupFiber {name} {key} {value} {world} {error} @{nameEq}
+        (generationName generation) (registry sourceFinal) = observed) ->
+      (lookupFiber {name} {key} {value} {world} {error} @{nameEq}
+        (generationName generation) (registry targetFinal) = Nothing)
+    atObservation Nothing exact =
+      o20DeletionChainPreservesAbsence nameEq keyEq
+        (ClosingFreeDeletionStep source premises candidate step target rest) (generationName generation) exact
+    atObservation (Just fiber) exact =
+      case isElem @{generationEq} generation (selectedRegistrations candidate) of
+        Yes member => o20DeletionChainPreservesAbsence nameEq keyEq rest (generationName generation)
+          (o20SelectedClassifiedPresentAbsent name key world error value protocol nameEq keyEq
+            source premises candidate step unique generation classified member fiber exact)
+        No outside =>
+          case o20DeletionRetainedClosingBirth name key world error value protocol nameEq keyEq
+            source premises candidate step generation classified outside of
+            (birth ** (stamp, closing)) =>
+              replace {p = \actor => lookupFiber {name} {key} {value} {world} {error} @{nameEq}
+                actor (registry targetFinal) = Nothing} (cong generationName stamp)
+                (o20ClassifiedChainAbsent name key world error value protocol nameEq keyEq generationEq
+                  (survivingTrace (deletionResult step)) target (nextPremises step) rest noClosing
+                  (uniqueInsertionsAfterDeletionDerivation name key world error value nameEq keyEq protocol
+                    (ClosingFreeDeletionStep source premises candidate step (survivingTrace (deletionResult step))
+                      (ClosingFreeDeletionDone (survivingTrace (deletionResult step)))) unique)
+                  (generationForward (deletionProducerGenerationRenaming (deletionProducerCapital step)) generation)
+                  (o20RetainedBirthClassified nameEq (survivingTrace (deletionResult step))
+                    (deletionProducerGenerationRenaming (deletionProducerCapital step)) generation
+                    (MkO20RetainedGenerationBirth (deletedParent classified) (deletedComponent classified) birth stamp) closing))
