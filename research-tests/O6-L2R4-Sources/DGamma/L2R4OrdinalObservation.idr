@@ -42,3 +42,21 @@ export
 nativeActionAfterPrefix NoTransitions step rest = Refl
 nativeActionAfterPrefix (MoreTransitions previous tail) step rest =
   nativeActionAfterPrefix tail step rest
+
+||| Every dependent occurrence observes its own action at its own ordinal.
+||| This authenticates lookup against actual checked decomposition, not a
+||| projected-record equality between independent observations.
+export
+0 occurrenceObserved :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, finalState : SystemState name key value world error} ->
+  {trace : Transitions first finalState} ->
+  {action : Action name key value world error} ->
+  (occurrence : LocatedActionOccurrence action trace) ->
+  nativeActionAt trace (locatedActionOrdinal occurrence) = Just action
+occurrenceObserved occurrence =
+  trans (cong (\whole => nativeActionAt whole (locatedActionOrdinal occurrence))
+    (sym (actionOccurrenceDecomposition occurrence)))
+    (trans (nativeActionAfterPrefix (beforeActionOccurrence occurrence)
+      (locatedTransition occurrence) (afterActionOccurrence occurrence))
+      (cong Just (locatedAction occurrence)))
