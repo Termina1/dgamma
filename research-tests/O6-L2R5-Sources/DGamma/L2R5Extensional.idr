@@ -66,3 +66,24 @@ record DeclaredOccupancy
     occupyingName (registry state) = Just occupyingFiber
   0 occupyingDeclaration : Elem wanted
     (dependencies (componentProvisions (fiberComponent occupyingFiber)))
+
+||| Declaration occupancy agrees in BOTH directions, derived solely from the
+||| exact pointwise fiber lookup field. No availability/occupancy oracle field.
+||| Equivalence with provisionsDisjointFrom's finite Bool scan is still separate.
+export
+0 extensionalDeclaredOccupancy :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (left, right : SystemState name key value world error) ->
+  (0 same : RegistryExtensional name key world error value nameEq left right) ->
+  (wanted : key) ->
+  (DeclaredOccupancy name key world error value nameEq wanted left ->
+     DeclaredOccupancy name key world error value nameEq wanted right,
+   DeclaredOccupancy name key world error value nameEq wanted right ->
+     DeclaredOccupancy name key world error value nameEq wanted left)
+extensionalDeclaredOccupancy nameEq left right same wanted =
+  (\occupied => MkDeclaredOccupancy (occupyingName occupied) (occupyingFiber occupied)
+      (trans (sym (extensionalLookup same (occupyingName occupied))) (occupyingLookup occupied))
+      (occupyingDeclaration occupied),
+   \occupied => MkDeclaredOccupancy (occupyingName occupied) (occupyingFiber occupied)
+      (trans (extensionalLookup same (occupyingName occupied)) (occupyingLookup occupied))
+      (occupyingDeclaration occupied))
