@@ -1,5 +1,7 @@
 module DGamma.CP5O20CanonicalBlockComponentSpike
 
+import DGamma.CP5O20BeginObservationSpike
+import DGamma.CP5O20SharedBeginAdapterSpike
 import DGamma.Calculus
 import DGamma.Coeffects
 import DGamma.Metatheory
@@ -78,3 +80,64 @@ o20SelectedOpeningComponents {nameEq} {keyEq} {protocol} {leftTrace} {rightTrace
       (imageFiber (o20OriginalSupportedImageForward nameEq keyEq protocol leftTrace rightTrace sameInputs leftCapital rightCapital leftUnique rightUnique selected (presentFiber (o20OriginalSupportedLookup nameEq keyEq protocol leftTrace leftCapital selected (pairSelectedSupported pair))) (presentFound (o20OriginalSupportedLookup nameEq keyEq protocol leftTrace leftCapital selected (pairSelectedSupported pair))) (pairSelectedSupported pair))) rightFiber
       (imageFound (o20OriginalSupportedImageForward nameEq keyEq protocol leftTrace rightTrace sameInputs leftCapital rightCapital leftUnique rightUnique selected (presentFiber (o20OriginalSupportedLookup nameEq keyEq protocol leftTrace leftCapital selected (pairSelectedSupported pair))) (presentFound (o20OriginalSupportedLookup nameEq keyEq protocol leftTrace leftCapital selected (pairSelectedSupported pair))) (pairSelectedSupported pair))) rightFound)
         (imageComponent (o20OriginalSupportedImageForward nameEq keyEq protocol leftTrace rightTrace sameInputs leftCapital rightCapital leftUnique rightUnique selected (presentFiber (o20OriginalSupportedLookup nameEq keyEq protocol leftTrace leftCapital selected (pairSelectedSupported pair))) (presentFound (o20OriginalSupportedLookup nameEq keyEq protocol leftTrace leftCapital selected (pairSelectedSupported pair))) (pairSelectedSupported pair)))))
+
+||| Open just the RIGHT actual Begin observation, with left component-indexed
+||| values explicit. Native original/replay metadata produces component
+||| equality at this value boundary; the shared packet retains BOTH actual
+||| views and endpoint equations, without an all-name pre-cut premise.
+export
+0 o20ShareCanonicalBeginRight :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {protocol : RegistrationProtocol key value world error} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {initial, leftFinal, rightFinal : SystemState name key value world error} ->
+  {leftTrace : Transitions initial leftFinal} ->
+  {rightTrace : Transitions initial rightFinal} ->
+  {sameInputs : SameOrchestrationModuloGenerated nameEq keyEq leftTrace rightTrace} ->
+  {leftCapital : IndependentCanonicalSchedule name key world error value protocol
+    nameEq keyEq leftTrace} ->
+  {rightCapital : IndependentCanonicalSchedule name key world error value protocol
+    nameEq keyEq rightTrace} ->
+  {matching : MappedCanonicalSupportOrders name key world error value protocol
+    nameEq keyEq leftTrace rightTrace
+    (currentNameBijection (endpointRenaming sameInputs))
+    (canonicalSchedule leftCapital) (canonicalSchedule rightCapital)} ->
+  {operational : CertifiedOperationalCanonicalPermutation name key world error value
+    protocol nameEq keyEq leftTrace rightTrace sameInputs leftCapital rightCapital matching} ->
+  (execution : PermutedCanonicalExecution name key world error value protocol
+    nameEq keyEq leftTrace rightTrace sameInputs leftCapital rightCapital operational) ->
+  (0 leftUnique : UniqueRawNameInsertions name key world error value nameEq keyEq leftTrace) ->
+  (0 rightUnique : UniqueRawNameInsertions name key world error value nameEq keyEq rightTrace) ->
+  {selected : name} ->
+  (pair : SelectedCanonicalBlockPair name key world error value protocol nameEq keyEq
+    leftTrace rightTrace sameInputs leftCapital rightCapital matching operational selected) ->
+  (leftComponent : Component key value world error) -> (leftParent : Parent name) ->
+  (leftTable : OwnedTable key value (componentProvisions leftComponent)) ->
+  (leftView : View name (dependencies (componentDependencies leftComponent))) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected
+    (registry (blockPreStart (pairLeftBlock pair))) =
+    Just (MkFiber leftComponent leftParent False leftTable (Inactive Nothing))) ->
+  (resolveView {name} {key} {value} {world} {error} @{nameEq} @{keyEq}
+    (dependencies (componentDependencies leftComponent))
+    (registry (blockPreStart (pairLeftBlock pair))) = Just leftView) ->
+  (MkSystemState (worldState (blockPreStart (pairLeftBlock pair)))
+    (replaceBinding @{nameEq} selected
+      (MkFiber leftComponent leftParent False leftTable
+        (Reloading (componentProgram leftComponent) id leftView))
+      (registry (blockPreStart (pairLeftBlock pair)))) = (blockStart (pairLeftBlock pair))) ->
+  O20BeginObservation name key world error value nameEq keyEq
+    (renameForward (expectedBridgeBijection sameInputs) selected)
+    (blockPreStart (pairRightBlock pair)) (blockStart (pairRightBlock pair)) ->
+  O20SharedBeginObservations name key world error value nameEq keyEq
+    (expectedBridgeBijection sameInputs) selected
+    (blockPreStart (pairLeftBlock pair)) (blockStart (pairLeftBlock pair))
+    (blockPreStart (pairRightBlock pair)) (blockStart (pairRightBlock pair))
+o20ShareCanonicalBeginRight execution leftUnique rightUnique pair
+  leftComponent leftParent leftTable leftView leftFound leftResolved leftExact
+  (MkO20BeginObservation rightComponent rightParent rightTable rightView rightFound rightResolved rightExact) =
+    o20ShareBeginValues leftComponent rightComponent
+      (o20SelectedOpeningComponents execution leftUnique rightUnique pair
+        (MkFiber leftComponent leftParent False leftTable (Inactive Nothing))
+        (MkFiber rightComponent rightParent False rightTable (Inactive Nothing)) leftFound rightFound)
+      leftParent rightParent leftTable rightTable leftView rightView
+      leftFound rightFound leftResolved rightResolved leftExact rightExact
