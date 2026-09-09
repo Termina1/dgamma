@@ -69,3 +69,16 @@ phaseFilterMember predicate item [] member = absurd member
 phaseFilterMember predicate item (head :: rest) member =
   phaseFilterAtBool predicate head item rest (predicate head) Refl
     (\later => phaseFilterMember predicate item rest later) member
+
+||| Invert map membership into its authentic source item and exact image.
+||| This will select a proof-carrying native release, not just an ordinal.
+export
+0 phaseMapMember : {a, b : Type} -> (function : a -> b) ->
+  (items : List a) -> (wanted : b) -> (0 member : Elem wanted (map function items)) ->
+  (item : a ** (Elem item items, function item = wanted))
+phaseMapMember function [] wanted member = absurd member
+phaseMapMember function (head :: rest) _ Here = (head ** (Here, Refl))
+phaseMapMember function (head :: rest) wanted (There later) =
+  (fst (phaseMapMember function rest wanted later) **
+    (There (fst (snd (phaseMapMember function rest wanted later))),
+     snd (snd (phaseMapMember function rest wanted later))))
