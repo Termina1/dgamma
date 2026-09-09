@@ -55,3 +55,18 @@ r197StampedElevenRun =
     (StampedHistoryMore {leftMiddle = r191ChildGapState 11} {rightMiddle = r191ChildGapState 11}
     (StampedEmptyFinishStage r45NameEq r45KeyEq identityNameBijection 2 r45Child Root Root False False emptyOwned emptyOwned id id EmptyView EmptyView () () (registry (r191ChildGapState 10)) (registry (r191ChildGapState 10)) Refl Refl Refl Refl)
     StampedHistoryEnd)))))))))))
+
+||| The conditional fold runs from the literal empty R191 origin and returns
+||| all three history-cut fields at its actual eleven-edge endpoint. This is
+||| not an assumed endpoint relation or a canonical decomposition fixture.
+export
+0 r197StampedElevenEndpoint :
+  O20HistoryCut Nat R45Key Unit String R45Value r45NameEq identityRegistrationGenerationBijection
+    [(0, MkRegistrationGeneration 0 0), (1, MkRegistrationGeneration 1 1), (2, MkRegistrationGeneration 2 2), (3, MkRegistrationGeneration 3 4)]
+    [(0, MkRegistrationGeneration 0 0), (1, MkRegistrationGeneration 1 1), (2, MkRegistrationGeneration 2 2), (3, MkRegistrationGeneration 3 4)]
+    (r191ChildGapState 11) (r191ChildGapState 11)
+r197StampedElevenEndpoint =
+  o20StampedHistoryCut r197StampedElevenRun
+    (MkO20StampedCut
+      (o20AllNameEmptyOrigin r45NameEq identityNameBijection (r191ChildGapState 0) Refl)
+      (\selected, stamp, found => absurd found) (\selected, stamp, found => absurd found))
