@@ -58,3 +58,48 @@ export
 o20LivePredicatePut nameEq predicate actor newStamp live inserted previous selected stamp found =
   o20LivePredicatePutAtDecision nameEq predicate actor newStamp live inserted previous
     selected stamp (decEq @{nameEq} selected actor) Refl found
+
+||| A native stamped stage with EQUAL physical counters can only introduce
+||| left live stamps whose forward generation map FIXES their birth ordinal.
+||| Existing fixed stamps survive; this is a NECESSITY, not synchronization.
+export
+0 o20StampedStageForwardOrdinalFixed :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {mapping : RegistrationGenerationBijection name} -> {renaming : NameBijection name} ->
+  {leftOrdinal, rightOrdinal : Nat} ->
+  {leftLive, rightLive, leftNext, rightNext : GenerationEnvironment name} ->
+  {leftBefore, rightBefore, leftAfter, rightAfter : SystemState name key value world error} ->
+  O20StampedStage name key world error value nameEq keyEq mapping renaming
+    leftOrdinal rightOrdinal leftLive rightLive leftNext rightNext
+    leftBefore rightBefore leftAfter rightAfter ->
+  (leftOrdinal = rightOrdinal) ->
+  ((selected : name) -> (stamp : RegistrationGeneration name) ->
+    (lookupCurrentGeneration @{nameEq} selected leftLive = Just stamp) ->
+    (generationBirthOrdinal (generationForward mapping stamp) = generationBirthOrdinal stamp)) ->
+  (selected : name) -> (stamp : RegistrationGeneration name) ->
+  (lookupCurrentGeneration @{nameEq} selected leftNext = Just stamp) ->
+  (generationBirthOrdinal (generationForward mapping stamp) = generationBirthOrdinal stamp)
+o20StampedStageForwardOrdinalFixed {mapping} {leftOrdinal} {rightOrdinal} {leftLive}
+  (StampedBeginStage nameEq keyEq renaming actor leftBefore leftAfter rightBefore rightAfter leftOpening rightOpening pairwise) equalCounters previous selected stamp found =
+    previous selected stamp found
+o20StampedStageForwardOrdinalFixed {mapping} {leftOrdinal} {rightOrdinal} {leftLive}
+  (StampedAdvanceStage nameEq keyEq renaming actor component step rest leftParent rightParent leftRetired rightRetired leftTable rightTable leftOlder rightOlder leftView rightView leftWorld rightWorld leftRegistry rightRegistry leftAfter rightAfter leftUndo rightUndo leftCapability rightCapability leftTag rightTag leftFound rightFound leftResolved rightResolved leftRun rightRun leftChecked rightChecked) equalCounters previous selected stamp found =
+    previous selected stamp found
+o20StampedStageForwardOrdinalFixed {mapping} {leftOrdinal} {rightOrdinal} {leftLive}
+  (StampedEmptyFinishStage nameEq keyEq renaming actor component leftParent rightParent leftRetired rightRetired leftTable rightTable leftOlder rightOlder leftView rightView leftWorld rightWorld leftRegistry rightRegistry leftFound rightFound leftChecked rightChecked) equalCounters previous selected stamp found =
+    previous selected stamp found
+o20StampedStageForwardOrdinalFixed {mapping} {leftOrdinal} {rightOrdinal} {leftLive}
+  (StampedRetireStage nameEq keyEq renaming actor leftWorld rightWorld leftRegistry rightRegistry leftOld rightOld leftFound rightFound leftChecked rightChecked) equalCounters previous selected stamp found =
+    previous selected stamp found
+o20StampedStageForwardOrdinalFixed {mapping} {leftOrdinal} {rightOrdinal} {leftLive}
+  (StampedInsertStage nameEq keyEq renaming actor component leftParent rightParent parents leftWorld rightWorld leftRegistry rightRegistry leftAbsent rightAbsent leftChecked rightChecked matched) equalCounters previous selected stamp found =
+    o20LivePredicatePut nameEq
+      (\candidate => (generationBirthOrdinal (generationForward mapping candidate) = generationBirthOrdinal candidate))
+      actor (MkRegistrationGeneration actor leftOrdinal) leftLive
+      (trans (cong generationBirthOrdinal matched) (sym equalCounters)) previous selected stamp found
+o20StampedStageForwardOrdinalFixed {mapping} {leftOrdinal} {rightOrdinal} {leftLive}
+  (StampedRemoveStage nameEq keyEq renaming actor leftUnique rightUnique
+    leftWorld rightWorld leftRegistry rightRegistry leftChecked rightChecked) equalCounters previous selected stamp found =
+    previous selected stamp
+      (o20HistoryLookupBeforeRemove nameEq actor selected leftLive leftUnique stamp found)
