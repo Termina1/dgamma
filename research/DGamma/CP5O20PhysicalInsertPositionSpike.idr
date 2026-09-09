@@ -67,3 +67,42 @@ export
 o20PhysicalInsertOriginsFromPackets leftReplay rightReplay mapping renaming child parent component leftBirth attached positions =
   MkO20PhysicalInsertOriginPositions attached positions
     (trans (sym (positionMappedStamp positions)) (attachedOriginalEquation attached))
+
+||| With the original endpoint lookup explicitly observed, attach original
+||| scanner positions to the ACTUAL replayed left Insert and its paired
+||| canonical right Insert. Both origins come from the existing producer maps.
+export
+0 o20ReplayedInsertPositionsAtLookup :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {initial, leftFinal, rightFinal, replayedFinal : SystemState name key value world error} ->
+  (left : Transitions initial leftFinal) -> (right : Transitions initial rightFinal) ->
+  (inputs : SameOrchestrationModuloGenerated nameEq keyEq left right) ->
+  (leftCapital : IndependentCanonicalSchedule name key world error value protocol nameEq keyEq left) ->
+  (rightCapital : IndependentCanonicalSchedule name key world error value protocol nameEq keyEq right) ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq left ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq right ->
+  GeneratedOrchestrationMatched name key world error value nameEq left right (generatedGenerationBijection inputs) ->
+  (replayed : Transitions initial replayedFinal) ->
+  (occurrences : ActionRegistrationReplayCorrespondence name key world error value
+    (canonicalTrace (canonicalSchedule leftCapital)) replayed) ->
+  (child, parent : name) -> (component : Component key value world error) ->
+  (isSupported {name} {key} {value} {world} {error} @{nameEq} @{keyEq} child leftFinal = True) ->
+  (leftBirth : LocatedGeneratedRegistration child parent component replayed) ->
+  O20PresentLookup name key world error value nameEq child leftFinal ->
+  O20PhysicalInsertOriginPositions name key world error value
+    (composeActionRegistrationReplayCorrespondence (canonicalOccurrenceCorrespondence leftCapital) occurrences)
+    (canonicalOccurrenceCorrespondence rightCapital) (generatedGenerationBijection inputs)
+    (expectedBridgeBijection inputs) child parent component leftBirth
+o20ReplayedInsertPositionsAtLookup name key world error value nameEq keyEq protocol left right inputs
+  leftCapital rightCapital leftUnique rightUnique matched replayed occurrences child parent component supported leftBirth
+  (MkO20PresentLookup fiber found) =
+    o20PhysicalInsertOriginsFromPackets
+      (composeActionRegistrationReplayCorrespondence (canonicalOccurrenceCorrespondence leftCapital) occurrences)
+      (canonicalOccurrenceCorrespondence rightCapital) (generatedGenerationBijection inputs)
+      (expectedBridgeBijection inputs) child parent component leftBirth
+      (o20SupportedReplayedOrdinalAttachment name key world error value nameEq keyEq protocol left right inputs
+        leftCapital rightCapital leftUnique rightUnique matched replayed occurrences child parent component supported leftBirth)
+      (o20SupportedCanonicalInsertPositions nameEq keyEq protocol left right inputs leftCapital leftUnique child parent component
+        (replayGeneratedRegistrationOrigin occurrences leftBirth) fiber found supported)
