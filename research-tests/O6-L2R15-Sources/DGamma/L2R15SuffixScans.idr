@@ -61,3 +61,27 @@ export
 nativeHeadScanEquations nameEq keyEq _ _ _ _
   (AvailabilityStep source (Fired _ _ action tag checked) rest later) =
   (later ** (\offset => Refl))
+
+||| Arbitrary-length native suffix CATALOG transport from actual frames.
+||| Every root contributes the same physical ordinal/name/component; Retire
+||| contributes no birth. No supplied catalog equality or global frame is used.
+export
+0 nativeSuffixCatalog : {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {oldFirst, oldFinal, newFirst, newFinal : SystemState name key value world error} ->
+  {oldTrace : Transitions oldFirst oldFinal} -> {newTrace : Transitions newFirst newFinal} ->
+  NativeSuffixFrames nameEq keyEq oldTrace newTrace ->
+  (oldTrail : AvailabilityTrace name key world error value oldTrace) ->
+  (newTrail : AvailabilityTrace name key world error value newTrace) -> (offset : Nat) ->
+  scanRootCatalog offset oldTrail = scanRootCatalog offset newTrail
+nativeSuffixCatalog nameEq keyEq SuffixFramesEnd (AvailabilityEnd _) (AvailabilityEnd _) offset = Refl
+nativeSuffixCatalog nameEq keyEq (SuffixFramesRoot {oldRest} {newRest} actor component oldChecked newChecked valid frame later) oldTrail newTrail offset =
+  trans (snd (nativeHeadScanEquations nameEq keyEq (OInsert actor Root component) OInsertTag oldChecked oldRest oldTrail) offset)
+    (trans (cong (rootCatalogStep offset (OInsert actor Root component))
+      (nativeSuffixCatalog nameEq keyEq later (fst (nativeHeadScanEquations nameEq keyEq (OInsert actor Root component) OInsertTag oldChecked oldRest oldTrail)) (fst (nativeHeadScanEquations nameEq keyEq (OInsert actor Root component) OInsertTag newChecked newRest newTrail)) (S offset)))
+      (sym (snd (nativeHeadScanEquations nameEq keyEq (OInsert actor Root component) OInsertTag newChecked newRest newTrail) offset)))
+nativeSuffixCatalog nameEq keyEq (SuffixFramesRetire {oldRest} {newRest} actor tag oldChecked newChecked valid later) oldTrail newTrail offset =
+  trans (snd (nativeHeadScanEquations nameEq keyEq (ORetire actor) tag oldChecked oldRest oldTrail) offset)
+    (trans (cong (rootCatalogStep offset (ORetire actor))
+      (nativeSuffixCatalog nameEq keyEq later (fst (nativeHeadScanEquations nameEq keyEq (ORetire actor) tag oldChecked oldRest oldTrail)) (fst (nativeHeadScanEquations nameEq keyEq (ORetire actor) tag newChecked newRest newTrail)) (S offset)))
+      (sym (snd (nativeHeadScanEquations nameEq keyEq (ORetire actor) tag newChecked newRest newTrail) offset)))
