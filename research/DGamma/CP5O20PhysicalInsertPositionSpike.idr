@@ -106,3 +106,35 @@ o20ReplayedInsertPositionsAtLookup name key world error value nameEq keyEq proto
         leftCapital rightCapital leftUnique rightUnique matched replayed occurrences child parent component supported leftBirth)
       (o20SupportedCanonicalInsertPositions nameEq keyEq protocol left right inputs leftCapital leftUnique child parent component
         (replayGeneratedRegistrationOrigin occurrences leftBirth) fiber found supported)
+
+||| Accepted support produces the original presence observation internally.
+||| The output joins authentic ORIGINAL per-activation positions to the real
+||| exchanged physical Insert pair; canonical per-activation transport remains open.
+export
+0 o20SupportedReplayedInsertOrigins :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {initial, leftFinal, rightFinal, replayedFinal : SystemState name key value world error} ->
+  (left : Transitions initial leftFinal) -> (right : Transitions initial rightFinal) ->
+  (inputs : SameOrchestrationModuloGenerated nameEq keyEq left right) ->
+  (leftCapital : IndependentCanonicalSchedule name key world error value protocol nameEq keyEq left) ->
+  (rightCapital : IndependentCanonicalSchedule name key world error value protocol nameEq keyEq right) ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq left ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq right ->
+  GeneratedOrchestrationMatched name key world error value nameEq left right (generatedGenerationBijection inputs) ->
+  (replayed : Transitions initial replayedFinal) ->
+  (occurrences : ActionRegistrationReplayCorrespondence name key world error value
+    (canonicalTrace (canonicalSchedule leftCapital)) replayed) ->
+  (child, parent : name) -> (component : Component key value world error) ->
+  (isSupported {name} {key} {value} {world} {error} @{nameEq} @{keyEq} child leftFinal = True) ->
+  (leftBirth : LocatedGeneratedRegistration child parent component replayed) ->
+  O20PhysicalInsertOriginPositions name key world error value
+    (composeActionRegistrationReplayCorrespondence (canonicalOccurrenceCorrespondence leftCapital) occurrences)
+    (canonicalOccurrenceCorrespondence rightCapital) (generatedGenerationBijection inputs)
+    (expectedBridgeBijection inputs) child parent component leftBirth
+o20SupportedReplayedInsertOrigins name key world error value nameEq keyEq protocol left right inputs
+  leftCapital rightCapital leftUnique rightUnique matched replayed occurrences child parent component supported leftBirth =
+    o20ReplayedInsertPositionsAtLookup name key world error value nameEq keyEq protocol left right inputs
+      leftCapital rightCapital leftUnique rightUnique matched replayed occurrences child parent component supported leftBirth
+      (o20OriginalSupportedLookup nameEq keyEq protocol left leftCapital child supported)
