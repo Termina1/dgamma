@@ -39,3 +39,21 @@ record AttachedBundleOccurrence
   0 memberOrdinal : ordinal = bundleOffset + locatedActionOrdinal bundleOccurrence
   0 memberLowerBound : LTE bundleOffset ordinal
   0 memberUpperBound : LT ordinal (bundleOffset + transitionCount memberBundle)
+
+||| Attached normal-form COVERAGE: every actual root-orchestration occurrence
+||| in the gap region belongs to an authenticated bundle at the same physical
+||| ordinal. This does not postulate NoRootOrchestration. Nonoverlap of bundles
+||| and the residual gap is a SEPARATE schedule/decomposition obligation.
+public export
+record AttachedNormalForm
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (keyEq : DecEq key)
+  {initial, finalState, gapFirst, gapFinal : SystemState name key value world error}
+  (global : Transitions initial finalState)
+  (gap : Transitions gapFirst gapFinal) (gapOffset : Nat) where
+  constructor MkAttachedNormalForm
+  0 rootInBundle : (action : Action name key value world error) ->
+    (occurrence : LocatedActionOccurrence action gap) ->
+    RootOrchestrationStep nameEq (locatedTransition occurrence) ->
+    AttachedBundleOccurrence name key world error value nameEq keyEq global action
+      (gapOffset + locatedActionOrdinal occurrence)
