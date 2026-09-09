@@ -64,3 +64,13 @@ export
 placedCatalogCoverage placed entry member = placedBirthFromDecoded placed entry
   (scanCatalogBirth (bundleOffset (placedMember placed)) (placedBundleTrail placed) entry
     (replace {p = Elem entry} (sym (placedCatalogExact placed)) member))
+
+||| Lift filtered-tail membership through an explicitly observed head test.
+export
+0 filterTailObserved : {a : Type} -> (predicate : a -> Bool) -> (head : a) -> (items : List a) ->
+  (observed : Bool) -> (0 equation : predicate head = observed) -> (wanted : a) ->
+  (0 member : Elem wanted (filter predicate items)) -> Elem wanted (filter predicate (head :: items))
+filterTailObserved predicate head items True equation wanted member =
+  rewrite equation in There member
+filterTailObserved predicate head items False equation wanted member =
+  rewrite equation in member
