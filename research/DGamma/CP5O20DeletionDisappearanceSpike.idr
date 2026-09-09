@@ -119,3 +119,66 @@ o20DeletionSurvivingLiveObserved name key world error value nameEq ordinal child
   rewrite exact in Refl
 o20DeletionSurvivingLiveObserved name key world error value nameEq ordinal child parent component live activations counts deleted (Just activation) exact =
   rewrite exact in Refl
+
+||| Project the LEFT scan directly from the public bilateral correspondence.
+||| The private side-scan type is intentionally not used. Right-only advances
+||| recurse without changing the left trace, and both matching directions keep
+||| the real asynchronous indices and pending words.
+export
+0 o20DeletionSideGenerationScan :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) ->
+  (mapping : RegistrationGenerationBijection name) ->
+  (leftOrdinal : Nat) -> (leftIndex : RegistrationIndexState name) ->
+  (rightOrdinal : Nat) -> (rightIndex : RegistrationIndexState name) ->
+  {leftFirst, leftFinal, rightFirst, rightFinal : SystemState name key value world error} ->
+  (left : Transitions leftFirst leftFinal) -> (right : Transitions rightFirst rightFinal) ->
+  (leftFinalIndex, rightFinalIndex : RegistrationIndexState name) ->
+  {pendingLeft, pendingRight : List (RegistrationEvent name key world error value)} ->
+  RegistrationTraceCorrespondence nameEq mapping leftOrdinal leftIndex left leftFinalIndex
+    rightOrdinal rightIndex right rightFinalIndex pendingLeft pendingRight ->
+  (finalOrdinal : Nat ** GenerationTraceScan nameEq leftOrdinal (indexedLiveGenerations leftIndex)
+    left finalOrdinal (indexedLiveGenerations leftFinalIndex))
+o20DeletionSideGenerationScan name key world error value nameEq mapping leftOrdinal
+  (MkRegistrationIndexState live activations counts deleted) rightOrdinal rightIndex
+  left right leftFinalIndex rightFinalIndex correspondence = case correspondence of
+    RegistrationCorrespondenceEnd => (leftOrdinal ** GenerationTraceScanEnd)
+    SkipLeftNonRegistration action step rest actionExact nonRegistration tail =>
+      case o20DeletionSideGenerationScan name key world error value nameEq mapping (S leftOrdinal)
+        (advanceRegistrationIndex @{nameEq} leftOrdinal action (MkRegistrationIndexState live activations counts deleted)) rightOrdinal rightIndex rest right leftFinalIndex rightFinalIndex tail of
+        (finalOrdinal ** scan) => (finalOrdinal ** GenerationTraceScanStep step rest
+          (replace {p = \observed => GenerationTraceScan nameEq (S leftOrdinal) observed rest finalOrdinal (indexedLiveGenerations leftFinalIndex)}
+            (trans (o20DeletionIndexLiveAdvance name key world error value nameEq leftOrdinal action (MkRegistrationIndexState live activations counts deleted))
+              (cong (\chosen => advanceGenerationEnvironment @{nameEq} leftOrdinal chosen live) (sym actionExact))) scan))
+    DiscardLeftDeletedRegistration {child} {parent} {component} step rest actionExact discarded tail =>
+      case o20DeletionSideGenerationScan name key world error value nameEq mapping (S leftOrdinal)
+        (advanceDeletedRegistrationIndex @{nameEq} leftOrdinal child parent component (MkRegistrationIndexState live activations counts deleted)) rightOrdinal rightIndex rest right leftFinalIndex rightFinalIndex tail of
+        (finalOrdinal ** scan) => (finalOrdinal ** GenerationTraceScanStep step rest
+          (replace {p = \observed => GenerationTraceScan nameEq (S leftOrdinal) observed rest finalOrdinal (indexedLiveGenerations leftFinalIndex)}
+            (trans (o20DeletionIndexLiveAdvance name key world error value nameEq leftOrdinal (OInsert child (ChildOf parent) component) (MkRegistrationIndexState live activations counts deleted))
+              (cong (\chosen => advanceGenerationEnvironment @{nameEq} leftOrdinal chosen live) (sym actionExact))) scan))
+    QueueLeftGeneratedRegistration {child} {parent} {component} step rest actionExact retained tail =>
+      case o20DeletionSideGenerationScan name key world error value nameEq mapping (S leftOrdinal)
+        (advanceSurvivingRegistrationIndex @{nameEq} leftOrdinal child parent component (MkRegistrationIndexState live activations counts deleted)) rightOrdinal rightIndex rest right leftFinalIndex rightFinalIndex tail of
+        (finalOrdinal ** scan) => (finalOrdinal ** GenerationTraceScanStep step rest
+          (replace {p = \observed => GenerationTraceScan nameEq (S leftOrdinal) observed rest finalOrdinal (indexedLiveGenerations leftFinalIndex)}
+            (trans (o20DeletionSurvivingLiveObserved name key world error value nameEq leftOrdinal child parent component live activations counts deleted (lookupParentActivation @{nameEq} parent activations) Refl)
+              (cong (\chosen => advanceGenerationEnvironment @{nameEq} leftOrdinal chosen live) (sym actionExact))) scan))
+    MatchLeftWithPendingRight {child} {parent} {component} step rest actionExact retained priorWords event laterWords matched tail =>
+      case o20DeletionSideGenerationScan name key world error value nameEq mapping (S leftOrdinal)
+        (advanceSurvivingRegistrationIndex @{nameEq} leftOrdinal child parent component (MkRegistrationIndexState live activations counts deleted)) rightOrdinal rightIndex rest right leftFinalIndex rightFinalIndex tail of
+        (finalOrdinal ** scan) => (finalOrdinal ** GenerationTraceScanStep step rest
+          (replace {p = \observed => GenerationTraceScan nameEq (S leftOrdinal) observed rest finalOrdinal (indexedLiveGenerations leftFinalIndex)}
+            (trans (o20DeletionSurvivingLiveObserved name key world error value nameEq leftOrdinal child parent component live activations counts deleted (lookupParentActivation @{nameEq} parent activations) Refl)
+              (cong (\chosen => advanceGenerationEnvironment @{nameEq} leftOrdinal chosen live) (sym actionExact))) scan))
+    SkipRightNonRegistration action step rest actionExact nonRegistration tail =>
+      o20DeletionSideGenerationScan name key world error value nameEq mapping leftOrdinal (MkRegistrationIndexState live activations counts deleted)
+        (S rightOrdinal) (advanceRegistrationIndex @{nameEq} rightOrdinal action rightIndex) left rest leftFinalIndex rightFinalIndex tail
+    DiscardRightDeletedRegistration {child} {parent} {component} step rest actionExact discarded tail =>
+      o20DeletionSideGenerationScan name key world error value nameEq mapping leftOrdinal (MkRegistrationIndexState live activations counts deleted)
+        (S rightOrdinal) (advanceDeletedRegistrationIndex @{nameEq} rightOrdinal child parent component rightIndex) left rest leftFinalIndex rightFinalIndex tail
+    QueueRightGeneratedRegistration {child} {parent} {component} step rest actionExact retained tail =>
+      o20DeletionSideGenerationScan name key world error value nameEq mapping leftOrdinal (MkRegistrationIndexState live activations counts deleted)
+        (S rightOrdinal) (advanceSurvivingRegistrationIndex @{nameEq} rightOrdinal child parent component rightIndex) left rest leftFinalIndex rightFinalIndex tail
+    MatchRightWithPendingLeft {child} {parent} {component} step rest actionExact retained priorWords event laterWords matched tail =>
+      o20DeletionSideGenerationScan name key world error value nameEq mapping leftOrdinal (MkRegistrationIndexState live activations counts deleted)
+        (S rightOrdinal) (advanceSurvivingRegistrationIndex @{nameEq} rightOrdinal child parent component rightIndex) left rest leftFinalIndex rightFinalIndex tail
