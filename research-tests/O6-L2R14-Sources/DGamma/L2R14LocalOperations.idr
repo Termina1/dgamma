@@ -41,3 +41,16 @@ export
 localDeleteFreshHead dictionary removed fresh inserted entries distinct (Yes same) equation = absurd (distinct same)
 localDeleteFreshHead dictionary removed fresh inserted entries distinct (No different) equation =
   rewrite equation in Refl
+
+||| Fixed-template fresh CHILD insertion is retired and erased after the two
+||| foreign actor updates. All payloads and the underlying list are arbitrary.
+||| Only concrete Nat key comparisons reduce; this never runs the evaluator.
+export
+0 localChildInsertRetireDelete : {a : Type} ->
+  (child, begun, finished, retired : a) -> (entries : List (Binding Nat (\_ => a))) ->
+  deleteEntries @{fst fixtureDictionaries} 5
+    (replaceEntries @{fst fixtureDictionaries} 5 retired
+      (replaceEntries @{fst fixtureDictionaries} 2 finished
+        (replaceEntries @{fst fixtureDictionaries} 2 begun (Bind 5 child :: entries)))) =
+  replaceEntries @{fst fixtureDictionaries} 2 finished (replaceEntries @{fst fixtureDictionaries} 2 begun entries)
+localChildInsertRetireDelete child begun finished retired entries = Refl
