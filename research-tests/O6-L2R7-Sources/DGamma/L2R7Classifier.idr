@@ -146,3 +146,10 @@ anyMappedMember f predicate [] wanted member accepted = absurd member
 anyMappedMember f predicate (head :: items) wanted member accepted =
   anyMappedCons f predicate head items wanted
     (\later => anyMappedMember f predicate items wanted later accepted) member accepted
+
+||| Positive reflection of LTE into the exact Ord Nat Boolean. One proof
+||| elimination per recursive call, not simultaneous two-head Nat matching.
+export
+0 lteToLeTrue : {n, m : Nat} -> LTE n m -> (n <= m) = True
+lteToLeTrue {m} LTEZero = leZero m
+lteToLeTrue (LTESucc earlier) = lteToLeTrue earlier
