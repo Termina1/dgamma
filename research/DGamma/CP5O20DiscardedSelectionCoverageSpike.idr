@@ -263,3 +263,23 @@ o20ClosingFreeRejectsLocatedUnload name key world error value nameEq keyEq globa
       (MoreTransitions (locatedTransition occurrence) (afterActionOccurrence occurrence))
       (replace {p = AlignedTransitions name key world error value nameEq keyEq}
         (sym (actionOccurrenceDecomposition occurrence)) aligned)))
+
+||| Closing-free BASE: the accepted discarded list is empty for any aligned
+||| empty-origin closing-free left trace. No independent canonical schedule,
+||| full vestigial packet, raw uniqueness or list equality is an input.
+export
+0 o20ClosingFreeDiscardedEmpty :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {leftFirst, leftFinal, rightFirst, rightFinal : SystemState name key value world error} ->
+  (left : Transitions leftFirst leftFinal) -> (right : Transitions rightFirst rightFinal) ->
+  (mapping : RegistrationGenerationBijection name) ->
+  (registrations : RegistrationCorrespondenceByGeneration nameEq mapping left right) ->
+  AlignedTransitions name key world error value nameEq keyEq left ->
+  (bindings (registry leftFirst) = []) ->
+  NoClosingEpisodes name key world error value nameEq keyEq left ->
+  (leftDeletedGenerations registrations = [])
+o20ClosingFreeDiscardedEmpty name key world error value nameEq keyEq left right mapping registrations aligned empty noClosing =
+  o20AcceptedNoUnloadDiscardedEmpty name key world error value nameEq left right mapping registrations
+    (\actor, occurs => o20ClosingFreeRejectsLocatedUnload name key world error value nameEq keyEq
+      left aligned empty noClosing actor (retirementOccurrenceLocated name key world error value left (LUnload actor) occurs))
