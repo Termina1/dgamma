@@ -183,3 +183,25 @@ export
 o20GenerationScanFinalLiveExact GenerationTraceScanEnd = Refl
 o20GenerationScanFinalLiveExact (GenerationTraceScanStep transition rest later) =
   o20GenerationScanFinalLiveExact later
+
+||| Attach the old synchronization's ordinal-fixity necessity to ANY actual
+||| scan of its supplied left word. Only plain final-live tables are equated
+||| through the same scanner; no projected dependent-record equality is used.
+export
+0 o20SynchronizedScanForwardOrdinalFixed :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {initial, leftFinal, rightFinal : SystemState name key value world error} ->
+  {left : Transitions initial leftFinal} -> {right : Transitions initial rightFinal} ->
+  {finalOrdinal : Nat} -> {finalLive : GenerationEnvironment name} ->
+  (mapping : RegistrationGenerationBijection name) ->
+  (synchronization : O20HistorySynchronization name key world error value nameEq keyEq mapping left right) ->
+  GenerationTraceScan nameEq Z [] left finalOrdinal finalLive ->
+  (selected : name) -> (stamp : RegistrationGeneration name) ->
+  (lookupCurrentGeneration @{nameEq} selected finalLive = Just stamp) ->
+  (generationBirthOrdinal (generationForward mapping stamp) = generationBirthOrdinal stamp)
+o20SynchronizedScanForwardOrdinalFixed {nameEq} mapping synchronization scan selected stamp found =
+  o20SynchronizationForwardOrdinalFixed mapping synchronization selected stamp
+    (trans (cong (\live => lookupCurrentGeneration @{nameEq} selected live)
+      (trans (o20GenerationScanFinalLiveExact (synchronizationLeftScan synchronization))
+        (sym (o20GenerationScanFinalLiveExact scan)))) found)
