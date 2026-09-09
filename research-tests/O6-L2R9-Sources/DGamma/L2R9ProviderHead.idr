@@ -79,3 +79,14 @@ laneProviderHeadObserved :
 laneProviderHeadObserved nameEq keyEq wanted actor component parent flag table lifecycle rest =
   laneHeadAtGuard nameEq keyEq wanted actor component parent flag table lifecycle rest
     (isActive lifecycle && memberKey @{keyEq} wanted (ownedValues table)) Refl
+
+||| Explicit observed-Bool eliminator used by the native-head consumer.
+||| There is no projected if-guard, and transitivity is applied only after
+||| the condition has become a constructor (both endpoints share a value).
+export
+0 laneNativeAtBool : {a : Type} ->
+  (seen : Bool) -> (present, absent, before, after : a) ->
+  (0 beforeEquation : before = (if seen then present else absent)) ->
+  (0 afterEquation : after = (if seen then present else absent)) -> before = after
+laneNativeAtBool False present absent before after beforeEquation afterEquation = trans beforeEquation (sym afterEquation)
+laneNativeAtBool True present absent before after beforeEquation afterEquation = trans beforeEquation (sym afterEquation)
