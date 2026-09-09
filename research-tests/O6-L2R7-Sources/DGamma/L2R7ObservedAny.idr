@@ -38,3 +38,11 @@ export
   foldl (\acc, item => acc || predicate item) True items = True
 anyFoldTrue predicate [] = Refl
 anyFoldTrue predicate (head :: items) = anyFoldTrue predicate items
+
+||| Bridge the library left fold and observed head disjunction. No computed
+||| Bool is pattern-matched without passing its value/equation to a helper.
+export
+0 anyFoldObserved : {a : Type} -> (predicate : a -> Bool) -> (items : List a) ->
+  (seen : Bool) -> foldl (\acc, item => acc || predicate item) seen items = (seen || any predicate items)
+anyFoldObserved predicate items True = anyFoldTrue predicate items
+anyFoldObserved predicate items False = Refl
