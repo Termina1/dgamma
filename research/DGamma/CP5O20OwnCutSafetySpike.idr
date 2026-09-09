@@ -443,3 +443,32 @@ o20StoppedOrderObservedZeroGap {goalOrder} nameEq keyEq protocol original capita
           (stoppedTrace (referenceStopped result)) (stoppedRealized (referenceStopped result)) (stoppedBlocks (referenceStopped result))
           (stoppedPremises (referenceStopped result)) (stoppedUnique (referenceStopped result))
           (o20EnumerateSwap nameEq (invertedSwap inversion)) (invertedGoalBefore inversion) allZero))))
+
+||| CONDITIONAL stopped-order equality for the actual total reference search.
+||| The equality-or-inversion observation is produced internally. Every native
+||| reached goal inversion must still have literal transitionCount gap = 0;
+||| this unresolved quantified ZeroGapPending is NOT asserted by this theorem.
+||| No sibling selector body, A12-variant claim or scoped-to-raw cast is added.
+export
+0 o20StoppedOrderEqualsGoalZeroGap :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {initial, originalFinal : SystemState name key value world error} ->
+  (original : Transitions initial originalFinal) ->
+  (capital : IndependentCanonicalSchedule name key world error value protocol nameEq keyEq original) ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq original ->
+  {goalOrder : List name} ->
+  (originalReference : O20SupportedReferenceOrders name key world error value nameEq keyEq originalFinal (supportOrder (canonicalSchedule capital)) goalOrder) ->
+  (goalUnique : UniqueKeys goalOrder) ->
+  (result : O20ReferenceStoppedPermutation name key world error value protocol nameEq keyEq
+    (supportOrder (canonicalSchedule capital)) goalOrder originalFinal goalUnique
+    (canonicalTrace (canonicalSchedule capital)) (canonicalActorBlockDecomposition capital) (canonicalReplayPremises capital)) ->
+  ({targetOrder : List name} -> (swap : AdjacentActorOrderSwap name (stoppedOrder (referenceStopped result)) targetOrder) ->
+    BeforeIn (actorRight swap) (actorLeft swap) goalOrder ->
+    ZeroGapPending (betweenBlocks (decomposedBlocksFollowOrder (stoppedBlocks (referenceStopped result)) (actorLeft swap) (actorRight swap)
+      (fst (o20ChosenActorFacts swap)) (fst (snd (o20ChosenActorFacts swap))) (snd (snd (o20ChosenActorFacts swap)))))) ->
+  (stoppedOrder (referenceStopped result) = goalOrder)
+o20StoppedOrderEqualsGoalZeroGap nameEq keyEq protocol original capital unique originalReference goalUnique result allZero =
+  o20StoppedOrderObservedZeroGap nameEq keyEq protocol original capital unique originalReference goalUnique result allZero
+    (o20StoppedInversionAvailable nameEq result)
