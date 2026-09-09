@@ -4380,3 +4380,78 @@ missing historical transport, closed A residual result, still-open Insert/whole
 history producers, C0, comment hashes, resource/census evidence and archive
 anchor limitations. Independent reviewer/owner decision is requested; no new
 budget, proof attempt or full confluence completion is implied by this seal.
+
+
+## Status — R201 source freeze (2026-09-09)
+
+Checked PARTIAL at `df921f18`:45 new supporting declarations in6 new research
+sources,40 proof functions +5 indexed families/records; no new holes or escapes.
+Production `src/` and `dgamma.ipkg` remain byte-identical to34b21c9. No frozen
+surface, selector, O17/O21, lane-owned module or superseded goal is changed.
+
+**B — retained birth and native Unloads, not the retained-closing join.**
+`o20DeletionRetainedBirth` constructs the actual nonselected surviving generated
+Insert and its exact stored `generationForward` coordinate from the actual
+step's accounting/origin equations. `o20DeletionRegisteredUnloadFree` derives
+whole original-scan exclusion of registered-generation Unloads from the
+candidate's no-registered-episode certificate and the native Inactive invariant.
+`o20DeletionRetainedUnloads` then produces physical Unload retention for the
+actual before segment (all actors), center (FOREIGN actors only), and after
+segment (all actors). This is historical output, not just endpoint presence.
+The R193/R195 full vestigial fixture applies both producers with real step and
+nonselection explicitly conditional; it does not fabricate canonical capital.
+
+The EXACT `o20DeletionRetainedClosingBirth` is still OPEN: join the retained birth
+with a retained later parent Unload in its OWN suffix. In the selected-parent
+case, the supplied original close may be the removed center close: another
+retained close or actual selected-birth membership must be derived. Native
+retention on the three segments alone does not prove birth-relative order.
+No logical insufficiency of existing stored capital was established, so no
+new-field manifest/oracle or frozen-edit gate was asserted. Global
+`everyPresentVestigialSelected` over the actual backward-rebased
+`closingFreeDeletionGenerations`, current-coordinate transport, both-side
+present-unsupported cases, per-class ALL-name rebasing at
+`expectedBridgeBijection`, O20AllNameCut and D5 bridge remain OPEN.
+
+**A — actual supported physical Insert stages, not synchronization.**
+`o20PermutedCanonicalInsertOrigins` attaches both original scanners' per-activation
+positions to the SAME actual exchanged/canonical Insert origins and exact
+conjugated physical stamps. `o20PermutedCanonicalPhysicalInsertAttachment` adds
+an actual native O20StampedStage at those two births' own source/target states.
+Both target observations are produced from their exact checked evaluator
+results using the public single-constructor insertion-plan producer; no target
+state equality, successor cut, paired stage or opposite birth is a new premise.
+Whole accepted uniqueness/support/matching/operational inputs remain explicit.
+The original position counters are NOT asserted to be canonical per-activation
+counters. R191/R193 native child cuts exercise the NEW stage observation producer.
+This fixture is not independent accepted canonical capital or a complete history.
+
+The next A debt is `o20ReplayPreservesActivationInsertPosition` (not yet a source
+statement): transport actual per-parent-activation counts/order through block
+exchange, use R200 empty remainders/plain role words, attach root occurrences
+with existing C6/C9 laws, produce genuine unsupported/closing skips, then fold
+whole ordered occurrence-labelled paths. `o20SynchronizeCanonicalHistoriesModulo`
+remains OPEN against the unchanged `o20CanonicalSynchronizationGoalModulo`.
+A stage at two actual cuts is NOT their common predecessor relation, whole-word
+coverage, a skip proof, or a whole execution. No arbitrary edge is declared zero.
+
+**C0/ineligible.** Neither full A nor B closes; no convergence-body attempt.
+Census remains4=1/2/0/0/1, not the conditional3-hole milestone.
+
+Budgets: B26 micro-units/26 invocations, A19 micro-units/21 invocations,45 immediate
+GUARDED source commits. A5-1 had a generated-signature text replacement error,
+repaired on attempt2. A19-1 incorrectly expected front insertion of a fresh
+current-generation entry; CP3 appends. Owner clarified that caps count
+MICRO-UNITS (R199 precedent) and authorized ONLY the expected-list correction;
+A19-2 PASS. This is a fixture-expectation error, not a producer defect. No3/3 or
+exhausted-statement retry. A20 was not started; owner explicitly permitted freeze
+after A19 when the next transport was not a well-defined single micro-unit.
+
+D1 prepares the complete immutable validation plan: ALL165 inherited main
+sources+6 new=171 source targets, plus seeded package=172 checks,7 exact
+expected-negative diagnostics AND symbols, no path exclusions.21 evidence and7
+no-lock policy tests PASS. Final native validation is pending at this checkpoint.
+No cold build or inventory-wide fresh check is claimed. RSS guards remain52GiB
+for unchanged LocalDiamond,48GiB for all other main checks including the
+explicitly gated unchanged UniqueOrdinal; one own compiler, timestamp-only
+foreign overlaps, no lock paths or lane2 worktree operations.

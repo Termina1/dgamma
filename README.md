@@ -1033,3 +1033,18 @@ missing historical transport, closed A residual result, still-open Insert/whole
 history producers, C0, comment hashes, resource/census evidence and archive
 anchor limitations. Independent reviewer/owner decision is requested; no new
 budget, proof attempt or full confluence completion is implied by this seal.
+
+
+### R201 checked partial milestone
+
+45 new supporting declarations (6 new research sources), production API
+unchanged. Theorem73 remains open; no new holes/escapes. Full final171-source
++seeded-package validation is pending at this source-freeze checkpoint.
+
+| Paper obligation | Idris correspondence | Status |
+|---|---|---|
+| Lemma72/O20 nonselected birth transport | `CP5O20DeletionRetainedBirthSpike:o20DeletionRetainedBirth` | proved actual birth + stored forward stamp; later closing join open |
+| Lemma72 physical Unload retention | `CP5O20DeletionRetainedUnloadSpike:o20DeletionRetainedUnloads` | proved actual before/all, center/foreign, after/all segments |
+| Thm73 physical supported Insert attachment | `CP5O20PhysicalInsertStageSpike:o20PermutedCanonicalPhysicalInsertAttachment` | proved native paired Insert stage + original positions at actual replay origins; whole histories open |
+| Thm73 canonical synchronization | `CP5O20CanonicalSynchronizationModuloSpike:o20CanonicalSynchronizationGoalModulo` | goal unchanged; `o20SynchronizeCanonicalHistoriesModulo` not produced |
+| Thm73 global vestigial coverage / D5 bridge / convergence | `everyPresentVestigialSelected` / `o20SupportedBridgeFromOwnedCut` / `canonicalSchedulesConvergeSpike` | open; existing bridge consumer not applied; C0 |

@@ -4064,3 +4064,23 @@ missing historical transport, closed A residual result, still-open Insert/whole
 history producers, C0, comment hashes, resource/census evidence and archive
 anchor limitations. Independent reviewer/owner decision is requested; no new
 budget, proof attempt or full confluence completion is implied by this seal.
+
+
+## R201 — supported physical Insert attachment / retained-close boundary
+
+Source freeze `df921f18`, checked PARTIAL. B actual nonselected birth+forward
+coordinate and actual before/foreign-center/after Unload retention are proved.
+The missing `o20DeletionRetainedClosingBirth` still must JOIN birth and later
+retained close (including selected-parent removed-center case). Then actual
+`everyPresentVestigialSelected` -> per-class endpoint O20AllNameCut -> D5.
+
+A now has `o20PermutedCanonicalPhysicalInsertAttachment`: accepted execution
+produces original scanner-position origins, both physical Inserts/stamps and
+the native paired Insert stage at actual cuts. No per-cut all-name relation is
+assumed or produced. Canonical per-activation count/order transport, roots via
+existing C6/C9, genuine one-sided skips and whole ordered occurrence history
+remain. Register synchronization as OPEN:
+`o20SynchronizeCanonicalHistoriesModulo` must inhabit the unchanged
+`o20CanonicalSynchronizationGoalModulo`; no source hole or new goal was added.
+C remains barred. Frozen census4=1/2/0/0/1. R201 audits/ledger/archive are under
+`research-tests/`; final172-check validation pending at D1.
