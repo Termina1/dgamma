@@ -54,3 +54,20 @@ insertLookupExtensionalObserved {name} {key} {world} {error} {value}
     (trans (extensionalLookup same wanted)
       (sym (lookupInsertOther {key = name} {value = FiberAt name key value world error} @{nameEq}
         wanted actor different fiber (registry right) rightAbsent)))
+
+||| Extensional successor relation for a fresh binding, with right absence
+||| DERIVED from the original lookup. Applicability guards are separate.
+export
+0 freshInsertExtensional : {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (actor : name) -> (fiber : Fiber name key value world error) ->
+  (left, right : SystemState name key value world error) ->
+  (0 same : RegistryExtensional name key world error value nameEq left right) ->
+  (0 absent : lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor (registry left) = Nothing) ->
+  RegistryExtensional name key world error value nameEq
+    (MkSystemState (worldState left) (insertBinding @{nameEq} actor fiber (registry left) absent))
+    (MkSystemState (worldState right) (insertBinding @{nameEq} actor fiber (registry right)
+      (trans (sym (extensionalLookup same actor)) absent)))
+freshInsertExtensional nameEq actor fiber left right same absent =
+  MkRegistryExtensional (extensionalWorld same)
+    (\wanted => insertLookupExtensionalObserved nameEq wanted actor fiber left right same absent
+      (trans (sym (extensionalLookup same actor)) absent) (decEq @{nameEq} wanted actor) Refl)
