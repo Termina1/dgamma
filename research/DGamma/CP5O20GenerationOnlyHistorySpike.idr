@@ -97,3 +97,25 @@ o20DispositionChoice mapping stamp event birth exact (Left closing) =
   O20OriginalClosingBirth event birth exact closing
 o20DispositionChoice mapping stamp event birth exact (Right matched) =
   o20MatchedDispositionPacket mapping stamp event birth exact matched
+
+||| Eliminate a single existing E8 classification packet. The output is a
+||| flat indexed disposition, not another nested existential producer.
+export
+0 o20DispositionPacket :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {leftFirst, leftFinal, rightFirst, rightFinal : SystemState name key value world error} ->
+  {left : Transitions leftFirst leftFinal} -> {right : Transitions rightFirst rightFinal} ->
+  (mapping : RegistrationGenerationBijection name) ->
+  (events : List (RegistrationEvent name key world error value)) ->
+  (selected : name) -> (stamp : RegistrationGeneration name) ->
+  (coverage : ClassifiedGeneratedBirth name key world error value Z left events selected **
+    ((eventChildGeneration (coveredEvent coverage) = stamp),
+     Either
+       (DeletedClosingRegistration (coveredEvent coverage) (afterActionOccurrence (scannedLocatedBirth (coveredBirth coverage))))
+       (opposite : RegistrationEvent name key world error value **
+         (RegistrationEventMatch mapping (coveredEvent coverage) opposite,
+          ScannedRegistrationBirth name key world error value Z right opposite,
+          (generationForward mapping stamp = eventChildGeneration opposite))))) ->
+  O20GenerationOnlyDisposition name key world error value mapping left right stamp
+o20DispositionPacket mapping events selected stamp (coverage ** (exact, choice)) =
+  o20DispositionChoice mapping stamp (coveredEvent coverage) (coveredBirth coverage) exact choice
