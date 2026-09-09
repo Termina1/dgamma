@@ -59,3 +59,28 @@ forcedSeedBeforeObserved seed target (Yes earlier) equation ordered prior root =
 forcedSeedBeforeObserved {rootInput} {keyForced} seed target (No notEarlier) equation ordered prior root =
   replace {p = ForcedRootInput rootInput keyForced}
     (antisymmetric ordered (notLTImpliesGTE notEarlier)) prior
+
+||| A successful computed prefix-seed test gives an independent KeyForces or
+||| OrderForces derivation. Catalog authenticity is fixed to the actual trail.
+export
+0 classifyForcedHitSound : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {0 first, finalState : SystemState name key value world error} ->
+  {0 trace : Transitions first finalState} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (trail : AvailabilityTrace name key world error value trace) ->
+  (entry : RootCatalogEntry name key world error value) ->
+  (0 member : Elem entry (scanRootCatalog 0 trail)) ->
+  AnyHit (\seed => catalogOrdinal seed <= catalogOrdinal entry &&
+    keyForcedOrdinal nameEq keyEq trail (catalogOrdinal seed)) (scanRootCatalog 0 trail) ->
+  ForcedOnTrace nameEq keyEq trail (catalogOrdinal entry)
+classifyForcedHitSound nameEq keyEq trail entry member hit =
+  forcedSeedBeforeObserved (catalogOrdinal (hitItem hit)) (catalogOrdinal entry)
+    (isLT (catalogOrdinal (hitItem hit)) (catalogOrdinal entry)) Refl
+    (lteReflectsLTE (catalogOrdinal (hitItem hit)) (catalogOrdinal entry)
+      (trans (sym (leToLte (catalogOrdinal (hitItem hit)) (catalogOrdinal entry)))
+        (fst (acceptedConjunction (catalogOrdinal (hitItem hit) <= catalogOrdinal entry)
+          (keyForcedOrdinal nameEq keyEq trail (catalogOrdinal (hitItem hit))) (hitAccepted hit)))))
+    (KeyForces (elemMap catalogOrdinal (hitMember hit))
+      (snd (acceptedConjunction (catalogOrdinal (hitItem hit) <= catalogOrdinal entry)
+        (keyForcedOrdinal nameEq keyEq trail (catalogOrdinal (hitItem hit))) (hitAccepted hit))))
+    (elemMap catalogOrdinal member)
