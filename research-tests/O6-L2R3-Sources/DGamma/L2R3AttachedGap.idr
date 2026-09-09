@@ -57,3 +57,9 @@ record AttachedNormalForm
     RootOrchestrationStep nameEq (locatedTransition occurrence) ->
     AttachedBundleOccurrence name key world error value nameEq keyEq global action
       (gapOffset + locatedActionOrdinal occurrence)
+
+||| A nonempty gap extends strictly beyond its physical starting cut.
+export
+0 gapHeadPositive : (offset, remaining : Nat) -> LT offset (offset + S remaining)
+gapHeadPositive offset remaining = rewrite sym (plusSuccRightSucc offset remaining) in
+  LTESucc (lteAddRight offset)
