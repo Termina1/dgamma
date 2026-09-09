@@ -54,3 +54,20 @@ r198ClosingRawIdentityEndpoint =
         selected (registry r193HistoricalClosed)))
     (\selected, member => absurd member)
     (\selected, member => absurd member)
+
+||| The executable observer runs on the genuine present-vestigial endpoint
+||| and the RAW identity relation. Simultaneous physical observations retain
+||| child1 and absent current-image2. NO accepted canonical schedule, all-name
+||| current rebase, or convergence obstruction at canonical endpoints follows.
+export
+0 r198ClosingRawControlObservation :
+  (O20CanonicalControlObservation Nat R45Key Unit String R45Value r45NameEq r45KeyEq
+    r193HistoricalClosed r193HistoricalClosed r198ClosingRawIdentityEndpoint 1,
+   ((lookupFiber {name = Nat} {key = R45Key} {value = R45Value} {world = Unit} {error = String} @{r45NameEq}
+      1 (registry r193HistoricalClosed) = Just r45ChildRetired),
+    (lookupFiber {name = Nat} {key = R45Key} {value = R45Value} {world = Unit} {error = String} @{r45NameEq}
+      (renameForward (expectedBridgeBijection r193HistoricalSameInputs) 1)
+      (registry r193HistoricalClosed) = Nothing)))
+r198ClosingRawControlObservation =
+  (o20ObserveCanonicalControls r45NameEq r45KeyEq r193HistoricalClosed r193HistoricalClosed
+    r198ClosingRawIdentityEndpoint 1, r193VestigialCurrentPresence)
