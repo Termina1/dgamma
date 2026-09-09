@@ -99,3 +99,36 @@ o20SupportedClassifiedInsertPositions {name} {key} {value} {world} {error} {left
       (replace {p = \action => LocatedActionOccurrence action left} (cong ORetire childExact)
         (locatedClosingBirthHasRetirement name key world error value nameEq keyEq protocol left aligned discipline
           (eventChild event) (eventParent event) (eventComponent event) (scannedLocatedBirth scanned) (deletedParentEpisodeCloses closing))))
+
+||| Accepted canonical births supported at their ORIGINAL endpoint have
+||| paired ORIGINAL per-activation Insert positions under the exact original
+||| generation map. The accepted scanners produce both native occurrences.
+||| This does NOT transport positions into the exchanged canonical traces.
+export
+0 o20SupportedCanonicalInsertPositions :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {initial, leftFinal, rightFinal : SystemState name key value world error} ->
+  (left : Transitions initial leftFinal) -> (right : Transitions initial rightFinal) ->
+  (inputs : SameOrchestrationModuloGenerated nameEq keyEq left right) ->
+  (capital : IndependentCanonicalSchedule name key world error value protocol nameEq keyEq left) ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq left ->
+  (selected, parent : name) -> (component : Component key value world error) ->
+  (birth : LocatedGeneratedRegistration selected parent component (canonicalTrace (canonicalSchedule capital))) ->
+  (finalFiber : Fiber name key value world error) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected (registry leftFinal) = Just finalFiber) ->
+  (isSupported {name} {key} {value} {world} {error} @{nameEq} @{keyEq} selected leftFinal = True) ->
+  O20SupportedInsertPositionPair name key world error value (generatedGenerationBijection inputs) left right
+    (registrationGeneration (replayGeneratedRegistrationOrigin (canonicalOccurrenceCorrespondence capital) birth))
+o20SupportedCanonicalInsertPositions {name} {key} {value} {world} {error}
+  nameEq keyEq protocol left right inputs capital unique selected parent component birth finalFiber found supported =
+    o20SupportedClassifiedInsertPositions nameEq keyEq protocol left right (generatedGenerationBijection inputs)
+      (acceptedAuthenticatedRegistrationMatching name key world error value nameEq left right
+        (generatedGenerationBijection inputs) (generatedRegistrationTree inputs))
+      (replayAligned (chainReplayCapital (capitalPremises capital)))
+      (replayDiscipline (chainReplayCapital (capitalPremises capital)))
+      (replayInitialEmpty (chainReplayCapital (capitalPremises capital))) unique selected parent component
+      (replayGeneratedRegistrationOrigin (canonicalOccurrenceCorrespondence capital) birth) finalFiber found supported
+      (o20CanonicalOriginCoverage nameEq keyEq protocol (generatedGenerationBijection inputs) left right
+        (generatedRegistrationTree inputs) capital selected parent component birth)
