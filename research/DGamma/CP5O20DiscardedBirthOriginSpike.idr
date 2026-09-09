@@ -188,3 +188,19 @@ o20DiscardedOriginScan name key world error value nameEq mapping leftOrdinal
         (MkRegistrationIndexState live activations counts discarded) (S rightOrdinal)
         (advanceSurvivingRegistrationIndex @{nameEq} rightOrdinal child parent component rightIndex)
         left rest leftFinalIndex rightFinalIndex tail generation member
+
+||| Empty incoming history eliminates the past-index alternative. The exact
+||| ordinal-zero native birth becomes the existing deleted classification;
+||| no classifier or original/canonical selection equality is assumed.
+export
+0 o20DiscardedOriginClassified :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) ->
+  {first, finalState : SystemState name key value world error} ->
+  (trace : Transitions first finalState) -> (generation : RegistrationGeneration name) ->
+  O20DiscardedTraceOrigin name key world error value Z [] generation trace ->
+  DeletedGenerationClassification name key world error value nameEq trace generation
+o20DiscardedOriginClassified name key world error value nameEq trace generation (O20DiscardedBefore member) = absurd member
+o20DiscardedOriginClassified name key world error value nameEq trace generation
+  (O20DiscardedWithin child parent component birth exact closing) =
+    replace {p = DeletedGenerationClassification name key world error value nameEq trace} (sym exact)
+      (MkDeletedGenerationClassification parent component birth Refl closing)
