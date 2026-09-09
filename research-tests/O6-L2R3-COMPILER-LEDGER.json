@@ -1436,7 +1436,7 @@
   "interruptedCount": 0,
   "evidenceArchive": "O6-L2R3-COMPILER-EVIDENCE.tar.gz",
   "evidenceArchiveSHA256": "37f154ca9ecefad417d9023b86e6e396748513998208c94bafd8b0ed18ff07a6",
-  "matchingSourceCommitsMeaning": "Baseline plus target-changing commits in (start,end], matched by SHA256; validation repeats can match the same source commit. Empty for rejected/uncommitted sources.",
+  "matchingSourceCommitsMeaning": "Baseline plus target-changing commits in (start,end], matched by SHA256. Byte matches, including the baseline, are independent of PASS/commit authorization; rejected unchanged targets (such as V0) may match the baseline.",
   "sourceFreshMeaning": "Target Building line is mandatory. Target-only mtime touches are supervisor-approved and individually logged; no package/cold builds permitted.",
   "protocolIncidents": [],
   "records": [

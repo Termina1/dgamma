@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Run an immutable leaf-before-dependent plan serially, detached, Python -I.
+Optional ADDENDUM selects the separately committed addendum plan.
 No source contents are changed; each checker performs the approved target-only
 mtime touch. Stop on the first non-PASS, never silently rerun an invocation ID.
 """
@@ -7,8 +8,10 @@ import hashlib, json, pathlib, subprocess, sys
 ROOT = pathlib.Path('/Users/vyacheslavshebanov/Work/dgamma-lane2')
 OUT = pathlib.Path('/tmp/dgamma-l2r3')
 assert pathlib.Path.cwd() == ROOT
-plan = json.loads((OUT/'final-validation-plan.json').read_text())
-assert (OUT/'final-validation-plan.json').read_bytes() == (ROOT/'research-tests/O6-L2R3-FINAL-VALIDATION-PLAN.json').read_bytes()
+assert sys.argv[1:] in [[], ['ADDENDUM']]
+localPlan, committedPlan = ('addendum-validation-plan.json','research-tests/O6-L2R3-ADDENDUM-VALIDATION-PLAN.json') if sys.argv[1:] else ('final-validation-plan.json','research-tests/O6-L2R3-FINAL-VALIDATION-PLAN.json')
+plan = json.loads((OUT/localPlan).read_text())
+assert (OUT/localPlan).read_bytes() == (ROOT/committedPlan).read_bytes()
 for item in plan:
     assert hashlib.sha256((ROOT/item['path']).read_bytes()).hexdigest() == item['sourceHash']
     assert not (OUT/(item['unit']+'.json')).exists()

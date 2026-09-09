@@ -78,21 +78,26 @@ for commit in allcommits:
  assert set(changed) <= set(receipt['paths'])
  for path in changed:
   assert sha(git('show', commit+':'+path)) == receipt['artifactHashes'][path]
-plans = json.loads((OUT/'final-validation-plan.json').read_text())
-assert (OUT/'final-validation-plan.json').read_bytes() == (ROOT/'research-tests/O6-L2R3-FINAL-VALIDATION-PLAN.json').read_bytes()
-assert len({p['path'] for p in plans}) == len(plans) == len({p['unit'] for p in plans})
-planpath = 'research-tests/O6-L2R3-FINAL-VALIDATION-PLAN.json'
-plancommits = git('log', '--format=%H', BASE+'..HEAD', '--', planpath).decode().splitlines()
-assert len(plancommits) == 1 and git('show', plancommits[0]+':'+planpath) == (ROOT/planpath).read_bytes(), 'Immutable plan changed after publication'
-assert bycommit[plancommits[0]]['timestampUTC'] <= byunit[plans[0]['unit']]['start']
+planGroups = [('final-validation-plan.json','research-tests/O6-L2R3-FINAL-VALIDATION-PLAN.json')]
+if (ROOT/'research-tests/O6-L2R3-ADDENDUM-VALIDATION-PLAN.json').exists():
+ planGroups.append(('addendum-validation-plan.json','research-tests/O6-L2R3-ADDENDUM-VALIDATION-PLAN.json'))
+plans = []
 seen_paths = set()
-for item in plans:
- assert set(item.get('dependsOn', [])) <= seen_paths, 'Plan is not leaf-before-dependent'
- seen_paths.add(item['path'])
- r = byunit[item['unit']]
- assert r['passed'] and r['fresh'] and not r['interrupted'] and not r['sourceMutationObserved']
- assert r['path'] == item['path'] and r['sourceSHA256'] == item['sourceHash']
- assert sha((ROOT/r['path']).read_bytes()) == r['sourceSHA256']
+for localPlan, planpath in planGroups:
+ assert (OUT/localPlan).read_bytes() == (ROOT/planpath).read_bytes()
+ group = json.loads((OUT/localPlan).read_text())
+ assert len({p['path'] for p in group}) == len(group) == len({p['unit'] for p in group})
+ plancommits = git('log', '--format=%H', BASE+'..HEAD', '--', planpath).decode().splitlines()
+ assert len(plancommits) == 1 and git('show', plancommits[0]+':'+planpath) == (ROOT/planpath).read_bytes(), 'Immutable plan changed after publication'
+ assert bycommit[plancommits[0]]['timestampUTC'] <= byunit[group[0]['unit']]['start']
+ for item in group:
+  assert set(item.get('dependsOn', [])) <= seen_paths, 'Plan is not leaf-before-dependent'
+  seen_paths.add(item['path'])
+  r = byunit[item['unit']]
+  assert r['passed'] and r['fresh'] and not r['interrupted'] and not r['sourceMutationObserved']
+  assert r['path'] == item['path'] and r['sourceSHA256'] == item['sourceHash']
+  assert sha((ROOT/r['path']).read_bytes()) == r['sourceSHA256']
+ plans += group
 # Reconstruct the exact two predecessor repairs from committed guard constants.
 guard = ast.parse((ROOT/'research-tests/run-l2r3-artifact-commit.py').read_text())
 repairs = next(ast.literal_eval(node.value) for node in guard.body if isinstance(node, ast.Assign) and any(isinstance(t, ast.Name) and t.id == 'REPAIRS' for t in node.targets))
@@ -122,8 +127,8 @@ for path in paths:
  assert '%default total' in current.decode()
  newdecls[path] = sorted(declarations(current))
  assert any(p['path'] == path for p in plans), 'Missing current-source final fresh check'
-assert sum(map(len, newdecls.values())) == len(sourcecommits) == 45
-for letter, cap, retained in [('A',24,19), ('B',12,12), ('C',14,14)]:
+assert sum(map(len, newdecls.values())) == len(sourcecommits) == 50
+for letter, cap, retained in [('A',24,24), ('B',12,12), ('C',14,14)]:
  attempts = {}
  for r in records:
   match = re.fullmatch(letter+r'(\d+)-(\d+)', r['unit'])
@@ -134,8 +139,9 @@ for letter, cap, retained in [('A',24,19), ('B',12,12), ('C',14,14)]:
  for group in attempts.values():
   assert [int(r['unit'].rsplit('-', 1)[1]) for r in group] == list(range(1, len(group)+1))
   assert len(group) <= 3 and group[-1]['passed'] and sum(r['passed'] for r in group) == 1
-manifest = json.loads((ROOT/'research-tests/O6-L2R3-COMPILER-LEDGER.json').read_text())
-archive = ROOT/'research-tests/O6-L2R3-COMPILER-EVIDENCE.tar.gz'
+publication = '-ADDENDUM' if len(planGroups)>1 else ''
+manifest = json.loads((ROOT/('research-tests/O6-L2R3'+publication+'-COMPILER-LEDGER.json')).read_text())
+archive = ROOT/('research-tests/O6-L2R3'+publication+'-COMPILER-EVIDENCE.tar.gz')
 assert manifest['recordCount'] == len(records) and manifest['passedCount'] == sum(r['passed'] for r in records)
 assert manifest['evidenceArchiveSHA256'] == sha(archive.read_bytes())
 assert set(sourcecommits) <= {r['resultingCommitHash'] for r in manifest['commitReceipts']}
@@ -147,7 +153,19 @@ with tarfile.open(archive, 'r:gz') as tar:
    assert tar.extractfile(OUT.name+'/'+filename).read() == (OUT/filename).read_bytes()
   for extra in r.get('bundleSources', []):
    assert tar.extractfile(OUT.name+'/'+extra['sourceFile']).read() == (OUT/extra['sourceFile']).read_bytes()
- assert tar.extractfile(OUT.name+'/final-validation-plan.json').read() == (OUT/'final-validation-plan.json').read_bytes()
+ for localPlan, _ in planGroups:
+  assert tar.extractfile(OUT.name+'/'+localPlan).read() == (OUT/localPlan).read_bytes()
+# Authenticate the original immutable milestone archive as well as the addendum.
+if publication:
+ oldManifest = json.loads((ROOT/'research-tests/O6-L2R3-COMPILER-LEDGER.json').read_text())
+ oldArchive = ROOT/'research-tests/O6-L2R3-COMPILER-EVIDENCE.tar.gz'
+ assert sha(oldArchive.read_bytes()) == oldManifest['evidenceArchiveSHA256']
+ assert oldManifest['recordCount'] == 65
+ with tarfile.open(oldArchive, 'r:gz') as historical:
+  for r in records[:oldManifest['recordCount']]:
+   for ending in ['.json','.log','.source']:
+    filename=r['unit']+ending
+    assert historical.extractfile(OUT.name+'/'+filename).read() == (OUT/filename).read_bytes()
 assert not git('diff', BASE, '--', 'src/', 'research/', 'dgamma.ipkg', 'README.md', 'NOTES.md', 'THM73-PLAN.md')
 assert not git('diff', '--cached', '--name-only')
 assert not git('diff', '--name-only'), 'Commit artifacts before independent verification'

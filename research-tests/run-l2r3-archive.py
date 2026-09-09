@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Archive a completed shift's exact invocation records without invoking Idris.
-Usage: python3 -I research-tests/run-l2r3-archive.py L2R3 1893851e FINAL_HEAD
+Usage: python3 -I research-tests/run-l2r3-archive.py L2R3 1893851e FINAL_HEAD [ADDENDUM]
 matchingSourceCommits lists baseline/change commits whose target bytes match;
 it is not a claim that every matching commit was made immediately after this run.
 """
@@ -14,6 +14,8 @@ import sys
 import tarfile
 ROOT = pathlib.Path('/Users/vyacheslavshebanov/Work/dgamma-lane2')
 shift, start, end = sys.argv[1:4]
+assert sys.argv[4:] in [[], ['ADDENDUM']]
+publication = '-ADDENDUM' if sys.argv[4:] else ''
 assert shift=='L2R3' and start=='1893851e'
 OUT = pathlib.Path('/tmp/dgamma-'+shift.lower())
 def git(*args):
@@ -59,7 +61,8 @@ for r in records:
         sourceMutationObserved=r['sourceMutationObserved'], targetMtimeTouch=r['targetMtimeTouch'],
         heavyLockAcquired=r['heavyLockAcquired'], heavyLockEvents=r['heavyLockEvents'],
         separateCompilerObservations=r['separateCompilerObservations']))
-archive = ROOT/('research-tests/O6-'+shift+'-COMPILER-EVIDENCE.tar.gz')
+archive = ROOT/('research-tests/O6-'+shift+publication+'-COMPILER-EVIDENCE.tar.gz')
+assert not archive.exists(), 'Published evidence archives are immutable; use a new gated publication name'
 with tarfile.open(archive,'w:gz') as tar:
     for p in sorted(OUT.iterdir()):
         if p.is_file():
@@ -88,8 +91,8 @@ ledger = dict(monitorQualifications=json.loads((OUT/'monitor-qualifications.json
     publicationBoundary='The archive contains all source-commit receipts. Its own publication and later report-only commit receipts cannot be inside the archive without recursion; the independent verifier authenticates those from the append-only live receipt ledger.',
     failedCount=sum(not r['passed'] for r in records),interruptedCount=sum(r['interrupted'] for r in records),
     evidenceArchive=archive.name,evidenceArchiveSHA256=sha(archive.read_bytes()),
-    matchingSourceCommitsMeaning='Baseline plus target-changing commits in (start,end], matched by SHA256; validation repeats can match the same source commit. Empty for rejected/uncommitted sources.',
+    matchingSourceCommitsMeaning='Baseline plus target-changing commits in (start,end], matched by SHA256. Byte matches, including the baseline, are independent of PASS/commit authorization; rejected unchanged targets (such as V0) may match the baseline.',
     sourceFreshMeaning='Target Building line is mandatory. Target-only mtime touches are supervisor-approved and individually logged; no package/cold builds permitted.',
     protocolIncidents=json.loads((OUT/'protocol-incidents.json').read_text()) if (OUT/'protocol-incidents.json').exists() else [], records=normalized)
-(ROOT/('research-tests/O6-'+shift+'-COMPILER-LEDGER.json')).write_text(json.dumps(ledger,indent=2)+'\n')
+(ROOT/('research-tests/O6-'+shift+publication+'-COMPILER-LEDGER.json')).write_text(json.dumps(ledger,indent=2)+'\n')
 print(json.dumps({k:v for k,v in ledger.items() if k!='records'},indent=2))

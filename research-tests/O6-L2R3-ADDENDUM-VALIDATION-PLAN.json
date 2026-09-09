@@ -1,0 +1,25 @@
+[
+  {
+    "unit": "V13",
+    "path": "research-tests/O6-L2R3-Sources/DGamma/L2R3FixtureCoverage.idr",
+    "sourceHash": "c4ccd73f9e6ec2c02fbc49f7dcb2db6aba3797c40d1beaffc1b01bad2c17e944",
+    "dependsOn": [
+      "research-tests/O6-L2R3-Sources/DGamma/L2R3Attached.idr",
+      "research-tests/O6-L2R3-Sources/DGamma/L2R3AttachedGap.idr",
+      "research-tests/O6-L2R3-Sources/DGamma/L2R3SmallAttached.idr",
+      "research-tests/O6-L2R3-Sources/DGamma/L2R3BarrierStates.idr",
+      "research-tests/O6-L2R3-Sources/DGamma/L2R3BarrierExecution.idr",
+      "research-tests/O6-L2R3-Sources/DGamma/L2R3BarrierBlocks.idr"
+    ]
+  },
+  {
+    "unit": "V14",
+    "path": "research-tests/O6-L2R3-Sources/DGamma/L2R3Separation.idr",
+    "sourceHash": "16ad088141265d2e06b7c8f92ce285198ef161b9889cfd9963bb55169dc13a95",
+    "dependsOn": [
+      "research-tests/O6-L2R3-Sources/DGamma/L2R3Attached.idr",
+      "research-tests/O6-L2R3-Sources/DGamma/L2R3AttachedGap.idr",
+      "research-tests/O6-L2R3-Sources/DGamma/L2R3FixtureCoverage.idr"
+    ]
+  }
+]
