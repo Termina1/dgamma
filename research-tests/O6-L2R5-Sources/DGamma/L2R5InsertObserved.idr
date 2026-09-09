@@ -41,3 +41,25 @@ insertedLookupTwoObserved nameEq wanted root _ rootFiber childFiber (MkCoeffectC
 insertedLookupTwoObserved nameEq wanted root child rootFiber childFiber (MkCoeffectContext entries unique)
   rootAbsent childAbsent distinct (No notRoot) e1 (No notChild) e2 =
     rewrite e1 in rewrite e2 in rewrite e1 in Refl
+
+||| Distinct fresh insertions have extensionally equal endpoints even though
+||| prepending makes their ordered snapshots different. Both second freshness
+||| equations are produced. Applicability/provision guards are NOT proved here.
+export
+0 freshInsertEndpointsExtensional :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (root, child : name) ->
+  (rootFiber, childFiber : Fiber name key value world error) -> (ambient : world) ->
+  (source : Registry name key value world error) ->
+  (0 rootAbsent : lookupFiber {name} {key} {value} {world} {error} @{nameEq} root source = Nothing) ->
+  (0 childAbsent : lookupFiber {name} {key} {value} {world} {error} @{nameEq} child source = Nothing) ->
+  (0 distinct : Not (root = child)) ->
+  RegistryExtensional name key world error value nameEq
+    (MkSystemState ambient (insertBinding @{nameEq} root rootFiber (insertBinding @{nameEq} child childFiber source childAbsent)
+      (trans (lookupInsertOther @{nameEq} root child distinct childFiber source childAbsent) rootAbsent)))
+    (MkSystemState ambient (insertBinding @{nameEq} child childFiber (insertBinding @{nameEq} root rootFiber source rootAbsent)
+      (trans (lookupInsertOther @{nameEq} child root (\same => distinct (sym same)) rootFiber source rootAbsent) childAbsent)))
+freshInsertEndpointsExtensional nameEq root child rootFiber childFiber ambient source rootAbsent childAbsent distinct =
+  MkRegistryExtensional Refl (\wanted => insertedLookupTwoObserved nameEq wanted root child
+    rootFiber childFiber source rootAbsent childAbsent distinct
+    (decEq @{nameEq} wanted root) Refl (decEq @{nameEq} wanted child) Refl)
