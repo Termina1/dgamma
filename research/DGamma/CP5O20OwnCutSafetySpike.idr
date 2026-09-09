@@ -114,3 +114,17 @@ o20BlockOpeningReferenceComponent nameEq keyEq protocol original capital unique 
       (blockDecomposition block) actor referenceFiber
       (MkFiber (beginObservedComponent observed) (beginObservedParent observed) False (beginObservedTable observed) (Inactive Nothing))
       referenceFound (beginObservedFound observed)
+
+||| InstalledTrace includes the ACTUAL endpoint, including an empty body.
+||| Expose that endpoint clause by structural induction, not presence guessing.
+export
+0 o20InstalledTraceEnd :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} -> {actor : name} ->
+  {first, finalState : SystemState name key value world error} ->
+  (trace : Transitions first finalState) ->
+  InstalledTrace name key world error value nameEq keyEq actor trace ->
+  (installedAt {name} {key} {value} {world} {error} @{nameEq} actor finalState = True)
+o20InstalledTraceEnd NoTransitions (InstalledEnd installed) = installed
+o20InstalledTraceEnd _ (InstalledStep action tag checked rest installed tailInstalled) =
+  o20InstalledTraceEnd rest tailInstalled
