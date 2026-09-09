@@ -68,3 +68,40 @@ retireRemoveSnapshot nameEq child removed distinct fiber ambient source =
   cong (MkRuntimeSnapshot ambient)
     (trans (deleteBindingAfterDistinctReplaceBindings nameEq child removed distinct (retireFiber fiber) source)
       (sym (replaceBindingRuntimeBindings nameEq child (retireFiber fiber) (deleteBinding @{nameEq} removed source))))
+
+||| Produce a checked foreign Remove replay from its observed original source
+||| fiber/guard. The arbitrary replay source need only be well formed and have
+||| the exact retired runtime snapshot. Alternate validity is Preservation.
+export
+0 replayRemoveAtObservedSource :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (child, removed : name) ->
+  (fiber, removedFiber : Fiber name key value world error) ->
+  (ambient : world) -> (source : Registry name key value world error) ->
+  (current : SystemState name key value world error) ->
+  (0 distinct : Not (child = removed)) ->
+  (0 childFound : lookupFiber {name} {key} {value} {world} {error} @{nameEq} child source = Just fiber) ->
+  (0 removedFound : lookupFiber {name} {key} {value} {world} {error} @{nameEq} removed source = Just removedFiber) ->
+  (0 removable : retired removedFiber && isInactive (fiberLifecycle removedFiber) &&
+    not (hasChild {name} {key} {value} {world} {error} @{nameEq} removed source) = True) ->
+  (0 noChild : hasChild {name} {key} {value} {world} {error} @{nameEq} removed source = False) ->
+  (0 valid : registryWellFormed {name} {key} {value} {world} {error} @{nameEq} @{keyEq} (MkSystemState ambient source) = True) ->
+  (0 currentValid : registryWellFormed @{nameEq} @{keyEq} current = True) ->
+  (0 currentSame : runtimeSnapshot current = runtimeSnapshot {name} {key} {value} {world} {error}
+    (MkSystemState ambient (replaceBinding @{nameEq} child (retireFiber fiber) source))) ->
+  CheckedSnapshotStep name key world error value nameEq keyEq (ORemove removed) current ORemoveTag
+    (runtimeSnapshot {name} {key} {value} {world} {error}
+      (MkSystemState ambient (replaceBinding @{nameEq} child (retireFiber fiber) (deleteBinding @{nameEq} removed source))))
+replayRemoveAtObservedSource nameEq keyEq child removed fiber removedFiber ambient source current
+  distinct childFound removedFound removable noChild valid currentValid currentSame =
+  replace {p = \expected => CheckedSnapshotStep name key world error value nameEq keyEq (ORemove removed) current ORemoveTag expected}
+    (retireRemoveSnapshot nameEq child removed distinct fiber ambient source)
+    (checkedAcrossSnapshot nameEq keyEq (ORemove removed) ORemoveTag
+      (MkSystemState ambient (replaceBinding @{nameEq} child (retireFiber fiber) source))
+      (MkSystemState ambient (deleteBinding @{nameEq} removed (replaceBinding @{nameEq} child (retireFiber fiber) source))) current
+      (checkedFromRaw nameEq keyEq (ORemove removed)
+        (MkSystemState ambient (replaceBinding @{nameEq} child (retireFiber fiber) source))
+        (MkSystemState ambient (deleteBinding @{nameEq} removed (replaceBinding @{nameEq} child (retireFiber fiber) source))) ORemoveTag
+        (registryWellFormedRetire nameEq keyEq ambient child fiber source childFound valid)
+        (removeAfterRetirementRaw nameEq keyEq child removed fiber removedFiber ambient source distinct childFound removedFound removable noChild))
+      (sym currentSame) currentValid)
