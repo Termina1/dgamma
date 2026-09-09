@@ -52,3 +52,25 @@ phaseAllMember predicate {items = head :: rest} (There later) accepted =
   phaseAllMember predicate later
     (boolAndRight (predicate head) (all predicate rest)
       (trans (sym (phaseAllFoldObserved predicate rest (predicate head))) accepted))
+
+||| Named executable spelling of the ACTUAL phaseScanOk seed predicate.
+||| This does not change scanner semantics or assume the seed exists.
+public export
+phaseAnchorSeedCheck : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {0 first, finalState : SystemState name key value world error} ->
+  {0 trace : Transitions first finalState} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (trail : AvailabilityTrace name key world error value trace) ->
+  (entry : RootCatalogEntry name key world error value) -> (anchor : Nat) ->
+  (seed : RootCatalogEntry name key world error value) -> Bool
+phaseAnchorSeedCheck nameEq keyEq trail entry anchor seed =
+  catalogOrdinal seed <= catalogOrdinal entry &&
+  keyForcedOrdinal nameEq keyEq trail (catalogOrdinal seed) &&
+  elemDec (pred anchor)
+    (filter (\ordinal => ordinal < catalogOrdinal seed)
+      (releaseOrdinalScan nameEq keyEq (catalogComponent seed) trail)) &&
+  maybe False
+    (\event => maybe False
+      (\actor => phaseReleaseCheck nameEq actor 0 (pred anchor) False (phaseEvents nameEq trail))
+      (fst event))
+    (head' (drop (pred anchor) (phaseEvents nameEq trail)))
