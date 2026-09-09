@@ -50,3 +50,15 @@ o20SubsequenceOrdinalBounds (DeleteGenerationAction step rest deleted tail) targ
         (targetBound, sourceBound) =>
           (targetBound,
            replace {p = \source => LT source (S (transitionCount rest))} (sym shift) (LTESucc sourceBound))
+
+||| Exact cancellation and preservation of a common physical segment offset.
+export
+0 o20OffsetStrictOrder :
+  (offset, left, right : Nat) ->
+  (LT left right -> LT (offset + left) (offset + right),
+   LT (offset + left) (offset + right) -> LT left right)
+o20OffsetStrictOrder Z left right = (\ordered => ordered, \ordered => ordered)
+o20OffsetStrictOrder (S offset) left right =
+  case o20OffsetStrictOrder offset left right of
+    (forward, backward) =>
+      (\ordered => LTESucc (forward ordered), \ordered => backward (fromLteSucc ordered))
