@@ -361,3 +361,44 @@ o20ReachedEnumeratedSelectionPresent {reachedOrder} {goalOrder} nameEq keyEq pro
       (snd (o20ReachedInversionChildSafety nameEq keyEq protocol original capital unique originalReference reachedReference replayed operational blocks (enumeratedSwap packet) reverseGoal))
       (o20ReachedInversionEarlierBegin nameEq keyEq protocol original capital unique originalReference reachedReference replayed operational blocks premises (enumeratedSwap packet) reverseGoal empty)
       empty
+
+||| Transport only primitive ACTOR names from the authentic enumeration packet.
+||| Its native membership/safety proof fields are never compared with those of
+||| the original pure swap. Quantified ZeroGapPending applies at its own slots.
+export
+0 o20InversionPacketSelectionPresent :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {initial, originalFinal, reachedFinal : SystemState name key value world error} ->
+  (original : Transitions initial originalFinal) ->
+  (capital : IndependentCanonicalSchedule name key world error value protocol nameEq keyEq original) ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq original ->
+  {reachedOrder, goalOrder : List name} ->
+  O20SupportedReferenceOrders name key world error value nameEq keyEq originalFinal (supportOrder (canonicalSchedule capital)) goalOrder ->
+  O20SupportedReferenceOrders name key world error value nameEq keyEq originalFinal reachedOrder goalOrder ->
+  (goalUnique : UniqueKeys goalOrder) ->
+  (replayed : Transitions initial reachedFinal) ->
+  {certificate : CertifiedActorPermutation name (supportOrder (canonicalSchedule capital)) reachedOrder} ->
+  (operational : OperationalActorPermutation name key world error value protocol nameEq keyEq certificate
+    (canonicalTrace (canonicalSchedule capital)) (canonicalActorBlockDecomposition capital) (canonicalReplayPremises capital) replayed) ->
+  (blocks : ActorBlockDecomposition name key world error value nameEq keyEq reachedOrder replayed) ->
+  (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq replayed) ->
+  (replayedUnique : UniqueRawNameInsertions name key world error value nameEq keyEq replayed) ->
+  {left, right : name} ->
+  (packet : O20EnumeratedPair name reachedOrder (o20AdjacentCandidates nameEq reachedOrder [] reachedOrder Refl) left right) ->
+  BeforeIn right left goalOrder ->
+  ({targetOrder : List name} -> (swap : AdjacentActorOrderSwap name reachedOrder targetOrder) ->
+    BeforeIn (actorRight swap) (actorLeft swap) goalOrder ->
+    ZeroGapPending (betweenBlocks (decomposedBlocksFollowOrder blocks (actorLeft swap) (actorRight swap)
+      (fst (o20ChosenActorFacts swap)) (fst (snd (o20ChosenActorFacts swap))) (snd (snd (o20ChosenActorFacts swap)))))) ->
+  (isJust (o20SelectOrientedSafeBlocks nameEq keyEq protocol reachedOrder goalOrder goalUnique replayed blocks premises replayedUnique) = True)
+o20InversionPacketSelectionPresent {left} {right} {goalOrder} nameEq keyEq protocol original capital unique originalReference reachedReference goalUnique
+  replayed operational blocks premises replayedUnique packet reverseGoal allZero =
+    o20ReachedEnumeratedSelectionPresent nameEq keyEq protocol original capital unique originalReference reachedReference goalUnique
+      replayed operational blocks premises replayedUnique packet
+      (replace {p = \selectedLeft => BeforeIn (actorRight (enumeratedSwap packet)) selectedLeft goalOrder} (sym (enumeratedLeftExact packet))
+        (replace {p = \selectedRight => BeforeIn selectedRight left goalOrder} (sym (enumeratedRightExact packet)) reverseGoal))
+      (allZero (enumeratedSwap packet)
+        (replace {p = \selectedLeft => BeforeIn (actorRight (enumeratedSwap packet)) selectedLeft goalOrder} (sym (enumeratedLeftExact packet))
+          (replace {p = \selectedRight => BeforeIn selectedRight left goalOrder} (sym (enumeratedRightExact packet)) reverseGoal)))
