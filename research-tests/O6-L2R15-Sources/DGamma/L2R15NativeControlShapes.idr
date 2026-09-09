@@ -1,0 +1,42 @@
+module DGamma.L2R15NativeControlShapes
+
+import Builtin
+import Prelude.Types
+import Prelude.Interfaces
+import Prelude.Basics
+import DGamma.Calculus
+import DGamma.Coeffects
+import DGamma.Metatheory
+import DGamma.CP3
+import DGamma.CP4RuntimeBindings
+import DGamma.CP4DeletionBoundaryDeleted
+import DGamma.L2R14ActionShapes
+import DGamma.L2R15OperationSnapshots
+import Data.List
+import Data.Maybe
+import Decidable.Equality
+
+%default total
+%unbound_implicits off
+
+||| Native retirement shape from its actual operation view. The view's
+||| installed fiber is identified by lookup determinism, not a raw state
+||| equality. No extra freshness or source-validity premise is needed.
+export
+0 nativeRetireShapeFromView : {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (fiber : Fiber name key value world error) ->
+  (ambient : world) -> (source : Registry name key value world error) ->
+  (target : SystemState name key value world error) -> (tag : RuleTag) ->
+  (0 found : lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor source = Just fiber) ->
+  (0 checked : checkedApplyAction @{nameEq} @{keyEq} (ORetire actor)
+    (MkSystemState ambient source) = Just (tag, target)) ->
+  RetireSuccessView name key world error value nameEq actor ambient source tag target ->
+  NativeActionShape name key world error value nameEq keyEq (ORetire actor) (MkSystemState ambient source) tag
+    (MkRuntimeSnapshot ambient (replaceEntries @{nameEq} actor (retireFiber fiber) (bindings source)))
+nativeRetireShapeFromView nameEq keyEq actor fiber ambient source _ _ found checked
+  (MkRetireSuccessView observed nativeFound) =
+  MkNativeActionShape (MkSystemState ambient (replaceBinding @{nameEq} actor (retireFiber observed) source)) checked
+    (trans (nativeReplaceSnapshot nameEq actor (retireFiber observed) ambient source)
+      (cong (\owner => MkRuntimeSnapshot ambient (replaceEntries @{nameEq} actor (retireFiber owner) (bindings source)))
+        (injective (trans (sym nativeFound) found))))
