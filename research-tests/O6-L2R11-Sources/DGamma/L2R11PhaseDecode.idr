@@ -129,3 +129,15 @@ export
 locatePhaseEventCore nameEq actor start end before core suffix prefixTrail coreTrail suffixTrail physical owned =
   MkLocatedExtendedCore start end before core suffix prefixTrail coreTrail suffixTrail
     (phaseEventsExtended nameEq actor coreTrail owned) physical
+
+||| The event word preserves physical native ordinals exactly, independently
+||| of any actor ownership, forcing, or release-acceptance premise.
+export
+0 phaseEventsCount : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, finalState : SystemState name key value world error} ->
+  {trace : Transitions first finalState} ->
+  (nameEq : DecEq name) -> (trail : AvailabilityTrace name key world error value trace) ->
+  length (phaseEvents nameEq trail) = transitionCount trace
+phaseEventsCount nameEq (AvailabilityEnd state) = Refl
+phaseEventsCount nameEq (AvailabilityStep source (Fired ne ke action tag checked) rest later) =
+  cong S (phaseEventsCount nameEq later)
