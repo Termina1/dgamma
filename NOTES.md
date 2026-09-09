@@ -4981,3 +4981,12 @@ under its prior gate/V+dependent-revalidation requirements. Only then may
 one new two-path equality micro-unit be considered under R205 scope/budget.
 The raw R204 archive is not rewritten; D4 records the superseding ordering.
 Stand down after the D4 receipt; no R205 work is started in this shift.
+
+
+## R205 production unfreeze authorization — 2026-09-09
+
+Owner decision 21:55 UTC (verbatim): "Давайттак размораживай то что нужно я же все разрешил"
+
+R204 FINAL GATE at 69c90a21 ACCEPTED (supervisor spot-check); D4 sealed at ba880886; R203 ratified. R205 = production unfreeze authorized by the owner (verbatim above).
+
+This shift applies the signed Tier 1 CP3 patch and validates/re-baselines; it is not a proof shift. Tier 2 remains research work.
