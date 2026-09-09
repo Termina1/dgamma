@@ -6,6 +6,8 @@ import DGamma.Coeffects
 import DGamma.Metatheory
 import DGamma.CP3
 import DGamma.CP4DeletionFrameCore
+import DGamma.CP4ProgressPotential
+import DGamma.CP5O20PairedAdvanceSpike
 import DGamma.CP5O19AdvanceObservationSpike
 import DGamma.CP5O20SingleRoleAdvanceExtractionSpike
 import Decidable.Equality
@@ -101,3 +103,37 @@ o20FinishOneEffectValues nameEq keyEq actor before afterState component parent r
   o20NativeValuesAtEffectSource nameEq keyEq actor before component parent retiredFlag table
     (Reloading [step] older view) step view found
     (o20FinishOneNativeValues nameEq keyEq actor before afterState component parent retiredFlag table step older view found checked)
+
+||| Primitive successful Advance equation at explicit resolver/callback
+||| observations. Only the remaining-program list is eliminated. This retains
+||| the literal native target needed to attach a history successor to an edge.
+export
+0 o20ObservedAdvanceRawEquation :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (ambient : world) -> (fibers : Registry name key value world error) ->
+  (component : Component key value world error) -> (parent : Parent name) -> (retiredFlag : Bool) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (step : StepEffect key value world error (dependencies (componentDependencies component)) (componentProvisions component)) ->
+  (rest : List (StepEffect key value world error (dependencies (componentDependencies component)) (componentProvisions component))) ->
+  (older : LocalState key value world (componentProvisions component) -> LocalState key value world (componentProvisions component)) ->
+  (view : View name (dependencies (componentDependencies component))) ->
+  (capability : DepValues key value (dependencies (componentDependencies component))) ->
+  (localAfter : LocalState key value world (componentProvisions component)) ->
+  (undo : LocalState key value world (componentProvisions component) -> LocalState key value world (componentProvisions component)) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor fibers = Just (MkFiber component parent retiredFlag table (Reloading (step :: rest) older view))) ->
+  (targetFiber {name} {key} {value} {world} {error} @{nameEq} @{keyEq} (MkFiber component parent retiredFlag table (Reloading (step :: rest) older view)) fibers = Just view) ->
+  (resolveCommittedValues {name} {key} {value} {world} {error} @{nameEq} @{keyEq} (dependencies (componentDependencies component)) view fibers = Just capability) ->
+  (runStepEffect step capability (MkLocalState ambient (restrictOwnedPreservingOrder {key} {value} @{keyEq} (componentProvisions component) (ownedValues table))) = Right (localAfter, undo)) ->
+  (applyAction {name} {key} {value} {world} {error} @{nameEq} @{keyEq} (LAdvance actor) (MkSystemState ambient fibers) =
+    Just ((case rest of [] => LFinishTag; _ :: _ => LIterTag),
+      MkSystemState (localWorld localAfter) (replaceBinding @{nameEq} actor
+        (MkFiber component parent retiredFlag (localTable localAfter)
+          (o20SuccessfulAdvanceLifecycle {name} {key} {value} {world} {error} rest
+            (pushLocalUndo {key} {value} {world} @{keyEq} (componentProvisions component) older undo) view)) fibers)))
+o20ObservedAdvanceRawEquation nameEq keyEq actor ambient fibers component parent retiredFlag table step [] older view capability localAfter undo found target resolved ran =
+  rewrite found in rewrite resolved in rewrite ran in rewrite target in
+    rewrite trans (viewEqSameNameList nameEq view view) (sameNameListReflexive nameEq (DGamma.Calculus.viewProviders view)) in Refl
+o20ObservedAdvanceRawEquation nameEq keyEq actor ambient fibers component parent retiredFlag table step (next :: more) older view capability localAfter undo found target resolved ran =
+  rewrite found in rewrite resolved in rewrite ran in rewrite target in
+    rewrite trans (viewEqSameNameList nameEq view view) (sameNameListReflexive nameEq (DGamma.Calculus.viewProviders view)) in Refl
