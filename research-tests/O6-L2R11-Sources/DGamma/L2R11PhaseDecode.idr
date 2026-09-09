@@ -47,3 +47,47 @@ export
 phaseControlDecoded nameEq child actor source Nothing equation owner result done = absurd owner
 phaseControlDecoded nameEq child actor source (Just fiber) equation owner result done =
   done fiber equation (phaseParentDecoded (fiberParent fiber) actor owner)
+
+||| One exact phase event extends the native actor grammar. The action and
+||| source lookup are observed at their own call sites, not reconstructed.
+export
+0 phaseActionExtended : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (nameEq : DecEq name) -> (actor : name) ->
+  (step : Transition first middle) -> (rest : Transitions middle finalState) ->
+  (action : Action name key value world error) ->
+  (0 equation : transitionAction step = action) ->
+  (0 owner : phaseActionOwner nameEq first action = Just actor) ->
+  (0 only : ActorLifecycleOnlyExtended nameEq actor rest) ->
+  ActorLifecycleOnlyExtended nameEq actor (MoreTransitions step rest)
+phaseActionExtended nameEq actor step rest (OInsert child parent component) equation owner only =
+  ExtendedYieldedRegistrationStep step rest
+    (trans equation (cong (\nativeParent => OInsert child nativeParent component)
+      (phaseParentDecoded parent actor owner))) only
+phaseActionExtended {name} {key} {world} {error} {value} {first}
+  nameEq actor step rest (ORetire child) equation owner only =
+  phaseControlDecoded nameEq child actor first
+    (lookupFiber {name} {key} {value} {world} {error} @{nameEq} child (registry first)) Refl owner
+    (ActorLifecycleOnlyExtended nameEq actor (MoreTransitions step rest))
+    (\fiber, found, parent => ExtendedChildRetireStep step rest child fiber found parent equation only)
+phaseActionExtended {name} {key} {world} {error} {value} {first}
+  nameEq actor step rest (ORemove child) equation owner only =
+  phaseControlDecoded nameEq child actor first
+    (lookupFiber {name} {key} {value} {world} {error} @{nameEq} child (registry first)) Refl owner
+    (ActorLifecycleOnlyExtended nameEq actor (MoreTransitions step rest))
+    (\fiber, found, parent => ExtendedChildRemoveStep step rest child fiber found parent equation only)
+phaseActionExtended nameEq actor step rest (LBegin selected) equation owner only =
+  ExtendedLifecycleStep step rest (rewrite equation in Refl)
+    (rewrite equation in injective owner) only
+phaseActionExtended nameEq actor step rest (LAdvance selected) equation owner only =
+  ExtendedLifecycleStep step rest (rewrite equation in Refl)
+    (rewrite equation in injective owner) only
+phaseActionExtended nameEq actor step rest (LDivert selected) equation owner only =
+  ExtendedLifecycleStep step rest (rewrite equation in Refl)
+    (rewrite equation in injective owner) only
+phaseActionExtended nameEq actor step rest (LUnload selected) equation owner only =
+  ExtendedLifecycleStep step rest (rewrite equation in Refl)
+    (rewrite equation in injective owner) only
+phaseActionExtended nameEq actor step rest (LLeave selected) equation owner only =
+  ExtendedLifecycleStep step rest (rewrite equation in Refl)
+    (rewrite equation in injective owner) only
