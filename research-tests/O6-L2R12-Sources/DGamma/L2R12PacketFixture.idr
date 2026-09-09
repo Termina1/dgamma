@@ -52,3 +52,23 @@ fixturePacketPassage = MkPacketPassage originalCorePacket restoredCorePacket
   [OInsert 4 Root (smallComponent False)] Refl Refl
   (smallSourceValid smallNativeExecution)
   (\same => SIsNotZ {x = 0} (cong pred (cong pred same)))
+
+||| Fixed full CoreRestorationFixture FROM the NEW arbitrary-family consumer.
+||| Its explicit endpoint premise is DISCHARGED by checked contiguityEndpoints;
+||| the other facts come from packet assembly. No native split edge is used.
+export
+0 coreRestorationViaGeneralPackets : CoreRestorationFixture
+coreRestorationViaGeneralPackets = MkCoreRestorationFixture
+  (packetOriginalRun (coreContiguityFromPackets contiguityState (\ordinal => contiguityState (11 + ordinal)) fixturePacketPassage (snapshotIntoExtensional (fst fixtureDictionaries) (contiguityState 7) (contiguityState 17) (snd contiguityEndpoints))))
+  (packetRestoredRun (coreContiguityFromPackets contiguityState (\ordinal => contiguityState (11 + ordinal)) fixturePacketPassage (snapshotIntoExtensional (fst fixtureDictionaries) (contiguityState 7) (contiguityState 17) (snd contiguityEndpoints))))
+  (packetOriginalTrail (coreContiguityFromPackets contiguityState (\ordinal => contiguityState (11 + ordinal)) fixturePacketPassage (snapshotIntoExtensional (fst fixtureDictionaries) (contiguityState 7) (contiguityState 17) (snd contiguityEndpoints))))
+  (packetRestoredTrail (coreContiguityFromPackets contiguityState (\ordinal => contiguityState (11 + ordinal)) fixturePacketPassage (snapshotIntoExtensional (fst fixtureDictionaries) (contiguityState 7) (contiguityState 17) (snd contiguityEndpoints))))
+  (packetOriginalCore (coreContiguityFromPackets contiguityState (\ordinal => contiguityState (11 + ordinal)) fixturePacketPassage (snapshotIntoExtensional (fst fixtureDictionaries) (contiguityState 7) (contiguityState 17) (snd contiguityEndpoints))))
+  (packetRestoredCore (coreContiguityFromPackets contiguityState (\ordinal => contiguityState (11 + ordinal)) fixturePacketPassage (snapshotIntoExtensional (fst fixtureDictionaries) (contiguityState 7) (contiguityState 17) (snd contiguityEndpoints))))
+  (packetOriginValid (coreContiguityFromPackets contiguityState (\ordinal => contiguityState (11 + ordinal)) fixturePacketPassage (snapshotIntoExtensional (fst fixtureDictionaries) (contiguityState 7) (contiguityState 17) (snd contiguityEndpoints))))
+  (packetRootForeign (coreContiguityFromPackets contiguityState (\ordinal => contiguityState (11 + ordinal)) fixturePacketPassage (snapshotIntoExtensional (fst fixtureDictionaries) (contiguityState 7) (contiguityState 17) (snd contiguityEndpoints))))
+  (packetOriginalSuffix (coreContiguityFromPackets contiguityState (\ordinal => contiguityState (11 + ordinal)) fixturePacketPassage (snapshotIntoExtensional (fst fixtureDictionaries) (contiguityState 7) (contiguityState 17) (snd contiguityEndpoints))))
+  (packetRestoredWord (coreContiguityFromPackets contiguityState (\ordinal => contiguityState (11 + ordinal)) fixturePacketPassage (snapshotIntoExtensional (fst fixtureDictionaries) (contiguityState 7) (contiguityState 17) (snd contiguityEndpoints))))
+  (packetCoreWord (coreContiguityFromPackets contiguityState (\ordinal => contiguityState (11 + ordinal)) fixturePacketPassage (snapshotIntoExtensional (fst fixtureDictionaries) (contiguityState 7) (contiguityState 17) (snd contiguityEndpoints))))
+  (packetCorePosition (coreContiguityFromPackets contiguityState (\ordinal => contiguityState (11 + ordinal)) fixturePacketPassage (snapshotIntoExtensional (fst fixtureDictionaries) (contiguityState 7) (contiguityState 17) (snd contiguityEndpoints))))
+  (packetWholeEndpoints (coreContiguityFromPackets contiguityState (\ordinal => contiguityState (11 + ordinal)) fixturePacketPassage (snapshotIntoExtensional (fst fixtureDictionaries) (contiguityState 7) (contiguityState 17) (snd contiguityEndpoints))))
