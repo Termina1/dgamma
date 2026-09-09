@@ -217,3 +217,18 @@ archive are published together. Archive SHA256:
 The archive does not claim to contain the receipt for its own later artifact
 commit. C uses3 preparation/publication units so far (cap8); no new proof unit.
 Supervisor final gate and independent reviewer remain pending at this entry.
+
+### C4 owner-ratified checked PARTIAL; close permitted
+
+Supervisor independently verified and RATIFIED52e1d308 and authorized this
+artifact-only note and close. Full verbatim ruling is recorded in NOTES.md.
+The owner confirmed all59 validations, unchanged protected and inherited main
+baseline modules, census4=1/2/0/0/1 and clean tree; its two observed compilers
+were explicitly lane2's separate-worktree processes. The owner reports52e1d308
+pushed. Independent reviewer is parent-owned and being launched, not complete.
+
+A remains partial with the exact debts above. B is complete to the REQUESTED
+conditional result, not unconditional gap0 or a sibling selector body. No
+proof/Idris source or compiler work after the ruling. C4/8 artifact budget;
+A30/B16 remain fixed. The documented archive/ledger anchor and SHA are unchanged;
+no claim to contain this later gate-note receipt. Stand down after this note.

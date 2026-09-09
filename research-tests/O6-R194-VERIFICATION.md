@@ -1,6 +1,6 @@
 # R194 checked partial verification
 
-**Checked PARTIAL milestone; supervisor final gate and independent reviewer pending.**
+**Owner-ratified checked PARTIAL at52e1d308; independent reviewer pending.**
 This is not Theorem73 completion and not a sibling selector body.
 
 - Exact start: `b81362d88d8b52298ddd8a1bff41e741fde65d97`.
@@ -98,3 +98,12 @@ archive when reviewing elsewhere. Freshness matching expects the original
 checkout path recorded in the absolute compiler logs. Do not rerun the already-completed immutable
 compiler plan, cold-rebuild, delete seeds, or infer completion of the open proofs.
 The independent automated audit is not a substitute for the parent-owned reviewer.
+
+## Owner final gate
+
+The supervisor independently verified and RATIFIED52e1d308, authorized an
+artifact-only note and close, and reports that commit pushed. The verbatim
+ruling is in NOTES.md. Post-publication read-only audits also PASS at52e1d308.
+No proof/Idris source or compiler work followed the ruling. The parent-owned
+independent reviewer is being launched; its acceptance is not claimed here.
+This gate note does not alter or regenerate the pre-artifact evidence archive.

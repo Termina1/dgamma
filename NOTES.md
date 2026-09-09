@@ -3618,6 +3618,20 @@ Supervisor final gate and independent reviewer are pending. Next main proof
 frontier remains whole paired execution and exact all-name endpoint ownership;
 no additional source/compiler work is planned in this bounded shift.
 
+## R194 owner final gate — checked PARTIAL ratified
+
+Verbatim supervisor ruling after committed evidence52e1d308 and current-head
+read-only frozen/independent PASS audits:
+
+> R194 FINAL GATE RULING: ACCEPTED — checked PARTIAL milestone RATIFIED at 52e1d308; artifact-only gate note and close PERMITTED. Supervisor verified independently: HEAD 52e1d308, 51 commits over b81362d8, clean tree (baseline untracked only), production diff vs 34b21c9 empty, LocalDiamond/O19Surface/CrossTrace/RenamingComposition/CanonicalSort and the two lane-shared baseline modules (ActorLifecycleOnlyExtended, AvailabilityAwarePlacement) byte-identical to b81362d8, independent census 4 = 1/2/0/0/1, 14 R194 artifacts present, pushed; the two idris2 processes observed are lane 2's (separate worktree). Accepted as stated: A honest partial (supported canonical ordinal attachment, closed actual Iter successor; whole pairing / all-name rebasing / vestigial remainder / D5 bridge unowned; no body attempt); B complete to the requested result — both endpoint attachments discharged, native own-cut safety, and ACTUAL stoppedOrder = goalOrder conditional only on the quantified literal ZeroGapPending (the selector body is now one hypothesis from the CP3 diff); 59/59 restored validations incl. the unchanged LocalDiamond under the 52 GiB ruling. The independent reviewer is being launched now. Stand down cleanly after the note.
+
+This is the permitted artifact-only note. No proof/Idris source or compiler
+work followed the ruling. Independent reviewer remains parent-owned and pending;
+this note does not claim its acceptance. The theorem is still conditional on
+literal ZeroGapPending, and A's whole-pairing/all-name/bridge debts remain open.
+The archive stays at its documented pre-artifact anchor and is not regenerated
+to claim self-referential or later gate-note receipts. Standing down cleanly.
+
 This addendum is artifact-only. No further Idris/compiler or implementation
 source work followed the ruling. Independent review remains parent-owned
 and pending; neither ratification nor the52-slot final validation closes

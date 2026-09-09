@@ -793,7 +793,7 @@ all7 changed targets, all5 protected spikes, seeded package and inherited main
 fixtures. LocalDiamond passed unchanged under the standing52GiB limit; sampled
 peak48.12422GiB. The frozen census remains **4=1/2/0/0/1**, with207/207 seeds.
 Ten evidence-contract regressions and all independent automated audits PASS.
-Supervisor/reviewer final gate is pending. See the
+The owner ratified the checked partial at52e1d308; independent reviewer pending. See the
 [R194 verification and evidence](research-tests/O6-R194-VERIFICATION.md),
 [audit](research-tests/O6-R194-GRIND-SHIFT-AUDIT.md) and
 [findings qualifications](research-tests/O6-R194-FINDINGS.md).
