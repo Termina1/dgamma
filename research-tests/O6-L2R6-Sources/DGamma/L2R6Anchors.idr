@@ -74,3 +74,14 @@ anchorAssignment nameEq keyEq trail entry member = MkAnchorAssignment
   (concatMap (\seed => scanReleaseOrdinals nameEq keyEq (catalogComponent seed) 0 (catalogOrdinal seed) trail)
     (filter (\seed => catalogOrdinal seed <= catalogOrdinal entry) (scanRootCatalog 0 trail))) Refl
   (anchorOf nameEq keyEq trail (catalogOrdinal entry)) Refl Refl
+
+||| Catalog roots sharing this observed release anchor, retaining their actual
+||| external orchestration order. Nothing-anchored non-forced roots reject.
+public export
+placedRootsAt : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {0 first, finalState : SystemState name key value world error} ->
+  {0 trace : Transitions first finalState} ->
+  DecEq name -> DecEq key -> AvailabilityTrace name key world error value trace -> Nat ->
+  List (RootCatalogEntry name key world error value)
+placedRootsAt nameEq keyEq trail anchor = filter
+  (\entry => anchorOf nameEq keyEq trail (catalogOrdinal entry) == Just anchor) (scanRootCatalog 0 trail)
