@@ -165,3 +165,28 @@ o20OccurrenceStampedHistoryCut {renaming} OccurrenceHistoryEnd paired =
 o20OccurrenceStampedHistoryCut
   (OccurrenceHistoryMore stage leftOccurrence rightOccurrence leftStampExact rightStampExact leftTagExact rightTagExact later) paired =
     o20OccurrenceStampedHistoryCut later (o20StampedStageCut stage paired)
+
+||| Modulo-map endpoint/scanner synchronization SPECIFICATION: actual native
+||| paired paths, both genuine supplied-word scans, and occurrence-attached
+||| (not lockstep) physical stamps. A8 proves the old candidate forces birth
+||| ordinal preservation; this new target does not impose that restriction.
+||| This record is not an accepted-input producer or an ALL-name current rebase.
+||| whole-word / per-actor ordering and coverage producer remains to prove; arbitrary skips are NOT asserted to be zero native edges
+public export
+record O20HistorySynchronizationModulo
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (keyEq : DecEq key)
+  (mapping : RegistrationGenerationBijection name)
+  {initial, leftFinal, rightFinal : SystemState name key value world error}
+  (leftWord : Transitions initial leftFinal) (rightWord : Transitions initial rightFinal) where
+  constructor MkO20HistorySynchronizationModulo
+  moduloBijection : NameBijection name
+  moduloLeftLive : GenerationEnvironment name
+  moduloRightLive : GenerationEnvironment name
+  0 moduloLeftScan : GenerationTraceScan nameEq Z [] leftWord
+    (transitionCount leftWord) moduloLeftLive
+  0 moduloRightScan : GenerationTraceScan nameEq Z [] rightWord
+    (transitionCount rightWord) moduloRightLive
+  0 moduloStages : O20OccurrenceStampedHistory name key world error value nameEq keyEq
+    mapping moduloBijection leftWord rightWord [] [] moduloLeftLive moduloRightLive
+    initial initial leftFinal rightFinal
