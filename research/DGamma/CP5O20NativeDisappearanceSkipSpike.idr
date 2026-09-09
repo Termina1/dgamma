@@ -85,3 +85,39 @@ o20SubsequenceOrdinalsInverse (DeleteGenerationAction step rest deleted tail) (S
      (earlier ** (shift, origin)) => fst (o20SubsequenceOrdinalsInverse tail source target)
        (trans origin (cong Just (sym (injective shift)))),
    \exact => cong (map S) (snd (o20SubsequenceOrdinalsInverse tail source target) exact))
+
+||| The selected actor's actually observed lifecycle edge has NO target slot
+||| in its center filter. This is a native deletion classification, not a
+||| preservation callback or an assumed disappearance/zero-edge equation.
+export
+0 o20SelectedLifecycleTargetAbsent :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (selected : name) ->
+  (registered : List (RegistrationGeneration name)) ->
+  {ordinal : Nat} -> {live : GenerationEnvironment name} ->
+  {first, finalState, otherFirst, otherFinal : SystemState name key value world error} ->
+  {trace : Transitions first finalState} -> {survivor : Transitions otherFirst otherFinal} ->
+  (kept : GenerationActionSubsequence nameEq (EpisodeGenerationDeletedActor nameEq selected registered)
+    ordinal live trace survivor) ->
+  (source : Nat) -> (action : Action name key value world error) ->
+  (rawClosingActionAt name key world error value source trace = Just action) ->
+  (actionOwner action = selected) -> (isLifecycleAction action = True) ->
+  (o20SubsequenceTargetOrdinal kept source = Nothing)
+o20SelectedLifecycleTargetAbsent name key world error value nameEq selected registered
+  GenerationActionSubsequenceEnd source action exact owner lifecycle = absurd exact
+o20SelectedLifecycleTargetAbsent name key world error value nameEq selected registered
+  (KeepGenerationAction (Fired stepNameEq stepKeyEq sourceAction tag checked) rest next later outside same tail)
+  Z action exact owner lifecycle =
+    void (outside (DeleteEpisodeGenerationLifecycle
+      (trans (cong actionOwner (justInjective exact)) owner)
+      (trans (cong isLifecycleAction (justInjective exact)) lifecycle)))
+o20SelectedLifecycleTargetAbsent name key world error value nameEq selected registered
+  (KeepGenerationAction step rest next later outside same tail) (S source) action exact owner lifecycle =
+    cong (map S) (o20SelectedLifecycleTargetAbsent name key world error value nameEq selected registered
+      tail source action exact owner lifecycle)
+o20SelectedLifecycleTargetAbsent name key world error value nameEq selected registered
+  (DeleteGenerationAction step rest deleted tail) Z action exact owner lifecycle = Refl
+o20SelectedLifecycleTargetAbsent name key world error value nameEq selected registered
+  (DeleteGenerationAction step rest deleted tail) (S source) action exact owner lifecycle =
+    o20SelectedLifecycleTargetAbsent name key world error value nameEq selected registered
+      tail source action exact owner lifecycle
