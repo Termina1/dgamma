@@ -1,5 +1,6 @@
 module DGamma.L2R15PhaseHistory
 
+import Builtin
 import Prelude.Types
 import Prelude.Interfaces
 import Prelude.Basics
@@ -106,3 +107,21 @@ phaseHistoryAtPositionGuard nameEq actor offset release seen owner flag rest tai
        (fst (tailDecoder (maybe False (\selected => isYes (decEq @{nameEq} actor selected)) owner && (seen || flag)) accepted)) rest
        (maybe False (\selected => isYes (decEq @{nameEq} actor selected)) owner) Refl
        (snd (snd (tailDecoder (maybe False (\selected => isYes (decEq @{nameEq} actor selected)) owner && (seen || flag)) accepted)))))
+
+||| Preserve the NATIVE scanner domain until its physical guard is observed.
+||| Rewriting that domain only after Bool elimination avoids equating two
+||| independently reconstructed lazy-if families under a stuck guard.
+export
+0 phaseHistoryAtNativePosition : {name : Type} -> (nameEq : DecEq name) ->
+  (actor : name) -> (offset, release : Nat) -> (seen : Bool) ->
+  (owner : Maybe name) -> (flag : Bool) -> (rest : List (Maybe name, Bool)) ->
+  (0 tailDecoder : (nextSeen : Bool) ->
+    phaseReleaseCheck nameEq actor (S offset) release nextSeen rest = True ->
+    (distance : Nat ** (S offset + distance = release, PhaseHistoryPath actor nextSeen distance rest))) ->
+  (matched : Bool) -> (0 position : (offset == release) = matched) ->
+  (0 accepted : phaseReleaseCheck nameEq actor offset release seen ((owner, flag) :: rest) = True) ->
+  (distance : Nat ** (offset + distance = release, PhaseHistoryPath actor seen distance ((owner, flag) :: rest)))
+phaseHistoryAtNativePosition nameEq actor offset release seen owner flag rest tailDecoder True position =
+  rewrite position in phaseHistoryAtPositionGuard nameEq actor offset release seen owner flag rest tailDecoder True position
+phaseHistoryAtNativePosition nameEq actor offset release seen owner flag rest tailDecoder False position =
+  rewrite position in phaseHistoryAtPositionGuard nameEq actor offset release seen owner flag rest tailDecoder False position
