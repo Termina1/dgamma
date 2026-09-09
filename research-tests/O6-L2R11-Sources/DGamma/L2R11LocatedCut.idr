@@ -33,3 +33,21 @@ record LocatedSourceAction
   occurrence : LocatedActionOccurrence action trace
   0 exactOrdinal : locatedActionOrdinal occurrence = ordinal
   0 exactSource : actionBeforeState occurrence = source
+
+||| Extend a decoded native occurrence through one physical head. Source
+||| identity is unchanged and the ordinal increments by exactly one.
+export
+0 locatedSourceThroughHead : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (step : Transition first middle) -> (rest : Transitions middle finalState) ->
+  (source : SystemState name key value world error) ->
+  (action : Action name key value world error) -> (ordinal : Nat) ->
+  LocatedSourceAction name key world error value rest source action ordinal ->
+  LocatedSourceAction name key world error value (MoreTransitions step rest) source action (S ordinal)
+locatedSourceThroughHead step rest source action ordinal (MkLocatedSourceAction located exactOrdinal exactSource) =
+  MkLocatedSourceAction
+    (MkLocatedActionOccurrence (actionBeforeState located) (actionAfterState located)
+      (MoreTransitions step (beforeActionOccurrence located)) (locatedTransition located)
+      (afterActionOccurrence located) (locatedAction located)
+      (cong (MoreTransitions step) (actionOccurrenceDecomposition located)))
+    (cong S exactOrdinal) exactSource
