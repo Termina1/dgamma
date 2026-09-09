@@ -29,3 +29,11 @@ export
 0 phaseNatZero : (right : Nat) -> (0 accepted : (Z == right) = True) -> Z = right
 phaseNatZero Z accepted = Refl
 phaseNatZero (S right) accepted = absurd accepted
+
+||| Successor reflection consumes only the right Nat and recursive premise.
+export
+0 phaseNatSuccessor : (left : Nat) ->
+  (0 recursive : (right : Nat) -> (left == right) = True -> left = right) ->
+  (right : Nat) -> (0 accepted : (S left == right) = True) -> S left = right
+phaseNatSuccessor left recursive Z accepted = absurd accepted
+phaseNatSuccessor left recursive (S right) accepted = cong S (recursive right accepted)
