@@ -46,3 +46,21 @@ placedBirthFromDecoded placed entry birth = MkAttachedBundleOccurrence
     (rewrite plusSuccRightSucc (bundleOffset (placedMember placed)) (locatedActionOrdinal (catalogBirthOccurrence birth)) in
       plusLteMonotoneLeft (bundleOffset (placedMember placed)) (S (locatedActionOrdinal (catalogBirthOccurrence birth)))
         (transitionCount (memberBundle (placedMember placed))) (locatedBirthBound (catalogBirthOccurrence birth))))
+
+||| GENERAL PlacedBundle catalog-equality -> actual occurrence coverage.
+||| The occurrence is produced by scanCatalogBirth, never supplied as a
+||| rootInBundle callback or taken from the representative's own birth.
+export
+0 placedCatalogCoverage : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {first, finalState : SystemState name key value world error} ->
+  {trace : Transitions first finalState} ->
+  {trail : AvailabilityTrace name key world error value trace} -> {anchor : Nat} ->
+  (placed : PlacedBundle name key world error value nameEq keyEq trail anchor) ->
+  (entry : RootCatalogEntry name key world error value) ->
+  (0 member : Elem entry (placedRootsAt nameEq keyEq trail anchor)) ->
+  AttachedBundleOccurrence name key world error value nameEq keyEq trace
+    (OInsert (catalogRoot entry) Root (catalogComponent entry)) (catalogOrdinal entry)
+placedCatalogCoverage placed entry member = placedBirthFromDecoded placed entry
+  (scanCatalogBirth (bundleOffset (placedMember placed)) (placedBundleTrail placed) entry
+    (replace {p = Elem entry} (sym (placedCatalogExact placed)) member))
