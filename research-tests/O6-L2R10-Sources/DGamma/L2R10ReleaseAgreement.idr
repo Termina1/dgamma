@@ -28,3 +28,14 @@ releaseAbsentAtDecision keyEq wanted head tail (Yes same) equation absent tailFa
   absurd (absent (replace {p = \item => Elem item (head :: tail)} (sym same) Here))
 releaseAbsentAtDecision keyEq wanted head tail (No different) equation absent tailFalse =
   rewrite equation in tailFalse
+
+||| Structural absence fold. Observe the LIBRARY decEq at its own call site;
+||| no inferred local view or re-cased library call appears in the consumer.
+export
+0 releaseAbsentFalse : {key : Type} -> (keyEq : DecEq key) ->
+  (wanted : key) -> (keys : List key) -> (0 absent : Not (Elem wanted keys)) ->
+  elemDec @{keyEq} wanted keys = False
+releaseAbsentFalse keyEq wanted [] absent = Refl
+releaseAbsentFalse keyEq wanted (head :: tail) absent =
+  releaseAbsentAtDecision keyEq wanted head tail (decEq @{keyEq} wanted head) Refl absent
+    (releaseAbsentFalse keyEq wanted tail (\member => absent (There member)))
