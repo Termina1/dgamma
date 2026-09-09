@@ -66,3 +66,18 @@ produceForcedPhaseOrigins nameEq keyEq trail entry member accepted classified =
       phaseSeedActor nameEq keyEq trail entry (hitItem (fst (snd (snd (produceForcedPhaseEntry nameEq keyEq trail entry member accepted classified))))) (fst (produceForcedPhaseEntry nameEq keyEq trail entry member accepted classified)) (hitAccepted (fst (snd (snd (produceForcedPhaseEntry nameEq keyEq trail entry member accepted classified))))),
       phaseSeedRelease nameEq keyEq trail entry (hitItem (fst (snd (snd (produceForcedPhaseEntry nameEq keyEq trail entry member accepted classified))))) (fst (produceForcedPhaseEntry nameEq keyEq trail entry member accepted classified)) (hitAccepted (fst (snd (snd (produceForcedPhaseEntry nameEq keyEq trail entry member accepted classified))))))),
     snd (snd (snd (produceForcedPhaseEntry nameEq keyEq trail entry member accepted classified)))))
+
+||| Every PRODUCED native release classifies as its actual parent actor at
+||| its authentic source. This is not yet event-at-ordinal alignment across
+||| an arbitrary occurrence decomposition of the whole availability trail.
+export
+0 phaseReleaseNativeOwner : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, finalState : SystemState name key value world error} ->
+  {trace : Transitions first finalState} ->
+  (nameEq : DecEq name) -> (actor : name) ->
+  (component : Component key value world error) ->
+  (release : AttachedRelease name key world error value nameEq actor trace component) ->
+  phaseActionOwner nameEq (actionBeforeState (releaseOccurrence release))
+    (ORemove (releasedChild release)) = Just actor
+phaseReleaseNativeOwner nameEq actor component release =
+  rewrite releaseFound release in cong phaseParentOwner (releaseParent release)
