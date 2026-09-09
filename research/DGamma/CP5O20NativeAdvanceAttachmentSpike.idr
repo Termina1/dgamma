@@ -10,6 +10,7 @@ import DGamma.CP4ProgressPotential
 import DGamma.CP5O20PairedAdvanceSpike
 import DGamma.CP5O19AdvanceObservationSpike
 import DGamma.CP5O20SingleRoleAdvanceExtractionSpike
+import Data.Maybe
 import Decidable.Equality
 
 %default total
@@ -137,3 +138,34 @@ o20ObservedAdvanceRawEquation nameEq keyEq actor ambient fibers component parent
 o20ObservedAdvanceRawEquation nameEq keyEq actor ambient fibers component parent retiredFlag table step (next :: more) older view capability localAfter undo found target resolved ran =
   rewrite found in rewrite resolved in rewrite ran in rewrite target in
     rewrite trans (viewEqSameNameList nameEq view view) (sameNameListReflexive nameEq (DGamma.Calculus.viewProviders view)) in Refl
+
+||| The actual checked edge's endpoint equals its own observed native target.
+||| This is evaluator determinism at one shared source, not equality between
+||| independently reconstructed proof-carrying states or observations.
+export
+0 o20ActualAdvanceObservedEndpoint :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (ambient : world) -> (fibers : Registry name key value world error) ->
+  (afterState : SystemState name key value world error) -> (tag : RuleTag) ->
+  (component : Component key value world error) -> (parent : Parent name) -> (retiredFlag : Bool) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (step : StepEffect key value world error (dependencies (componentDependencies component)) (componentProvisions component)) ->
+  (rest : List (StepEffect key value world error (dependencies (componentDependencies component)) (componentProvisions component))) ->
+  (older : LocalState key value world (componentProvisions component) -> LocalState key value world (componentProvisions component)) ->
+  (view : View name (dependencies (componentDependencies component))) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor fibers = Just (MkFiber component parent retiredFlag table (Reloading (step :: rest) older view))) ->
+  (targetFiber {name} {key} {value} {world} {error} @{nameEq} @{keyEq} (MkFiber component parent retiredFlag table (Reloading (step :: rest) older view)) fibers = Just view) ->
+  (checkedApplyAction {name} {key} {value} {world} {error} @{nameEq} @{keyEq} (LAdvance actor) (MkSystemState ambient fibers) = Just (tag, afterState)) ->
+  (observed : O20NativeStepValues name key world error value nameEq keyEq (MkSystemState ambient fibers) component table step view) ->
+  (afterState = MkSystemState (localWorld (stepObservedAfter (nativeCallback observed)))
+    (replaceBinding @{nameEq} actor
+      (MkFiber component parent retiredFlag (localTable (stepObservedAfter (nativeCallback observed)))
+        (o20SuccessfulAdvanceLifecycle {name} {key} {value} {world} {error} rest
+          (pushLocalUndo {key} {value} {world} @{keyEq} (componentProvisions component) older (stepObservedUndo (nativeCallback observed))) view)) fibers))
+o20ActualAdvanceObservedEndpoint nameEq keyEq actor ambient fibers afterState tag component parent retiredFlag table step rest older view
+  found target checked (MkO20NativeStepValues capability resolved callback) =
+    cong snd (justInjective (trans
+      (sym (checkedActionProjects nameEq keyEq (LAdvance actor) (MkSystemState ambient fibers) afterState tag checked))
+      (o20ObservedAdvanceRawEquation nameEq keyEq actor ambient fibers component parent retiredFlag table step rest older view
+        capability (stepObservedAfter callback) (stepObservedUndo callback) found target resolved (stepObservedRan callback))))
