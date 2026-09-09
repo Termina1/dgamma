@@ -53,3 +53,11 @@ searchDistance : {a : Type} -> (distance : a -> Nat) ->
 searchDistance distance [] = AllDistancesZero []
 searchDistance distance (head :: items) =
   distanceSearchAtValue distance head items (distance head) Refl (searchDistance distance items)
+
+||| General bridge to the ACTUAL sum/map used by totalDistance. A zero scan
+||| cannot conceal positive total distance. Proof induction is on All only.
+export
+0 allZeroTotal : {a : Type} -> (distance : a -> Nat) -> {items : List a} ->
+  All (\item => distance item = 0) items -> sum (map distance items) = 0
+allZeroTotal distance [] = Refl
+allZeroTotal distance (zero :: zeros) = rewrite zero in allZeroTotal distance zeros
