@@ -170,3 +170,24 @@ classifyForcedComplete nameEq keyEq trail entry observed equation forced = trans
   (anyMappedMember catalogOrdinal (\ordinal => ordinal <= catalogOrdinal entry && keyForcedOrdinal nameEq keyEq trail ordinal)
     (scanRootCatalog 0 trail) (basisOrdinal (forcedSeedBasis forced)) (basisRoot (forcedSeedBasis forced))
     (rewrite lteToLeTrue (basisBefore (forcedSeedBasis forced)) in basisKey (forcedSeedBasis forced)))
+
+||| Full trace-linked observation for one actual catalog occurrence. The flag
+||| belongs to the ORIGINAL classifyForced output and agrees both ways with
+||| independent ForcedOnTrace. The executable producer is separate.
+public export
+record ForcedClassificationAt
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (keyEq : DecEq key)
+  {0 first, finalState : SystemState name key value world error}
+  {0 trace : Transitions first finalState}
+  (trail : AvailabilityTrace name key world error value trace)
+  (entry : RootCatalogEntry name key world error value) where
+  constructor MkForcedClassificationAt
+  0 classifiedMember : Elem entry (scanRootCatalog 0 trail)
+  classifierObserved : Bool
+  0 classifierEquation : any (\seed => catalogOrdinal seed <= catalogOrdinal entry &&
+    keyForcedOrdinal nameEq keyEq trail (catalogOrdinal seed)) (scanRootCatalog 0 trail) = classifierObserved
+  0 classifierOutputMember : Elem (catalogRoot entry, classifierObserved)
+    (classifyForced nameEq keyEq trail (scanRootCatalog 0 trail) Refl)
+  0 classifierSound : classifierObserved = True -> ForcedOnTrace nameEq keyEq trail (catalogOrdinal entry)
+  0 classifierComplete : ForcedOnTrace nameEq keyEq trail (catalogOrdinal entry) -> classifierObserved = True
