@@ -44,3 +44,22 @@ export
   (fst fixtureDictionaries) (contiguityState 6) (contiguityState 16)
 fixtureLocalCoreRootSquare = snapshotIntoExtensional (fst fixtureDictionaries)
   (contiguityState 6) (contiguityState 16) Refl
+
+||| Discharge every arbitrary-family transport hypothesis with the ACTUAL
+||| L2R11 packets, late R, and both native S edges. Local6~16 is C7; the S
+||| scalar frame computes. No whole endpoint equality is projected or given.
+public export
+fixturePacketEndpointHypotheses : PacketWholeEndpointTransport contiguityState
+  (\ordinal => contiguityState (11 + ordinal)) fixturePacketPassage
+fixturePacketEndpointHypotheses = MkPacketWholeEndpointTransport (contiguityState 6)
+  (fst contiguityOriginalLast)
+  (MoreTransitions (Fired {before = contiguityState 6} {afterState = contiguityState 7}
+    (fst fixtureDictionaries) (snd fixtureDictionaries) (OInsert 4 Root (smallComponent False)) OInsertTag
+    (snd contiguityOriginalLast)) NoTransitions)
+  (AvailabilityStep (contiguityState 6)
+    (Fired {before = contiguityState 6} {afterState = contiguityState 7}
+      (fst fixtureDictionaries) (snd fixtureDictionaries) (OInsert 4 Root (smallComponent False)) OInsertTag
+      (snd contiguityOriginalLast)) NoTransitions (AvailabilityEnd (contiguityState 7)))
+  Refl fixtureLocalCoreRootSquare
+  (SuffixFramesRoot 4 (smallComponent False) (snd contiguityOriginalLast)
+    (restoredEdge16 contiguityRestoredLast) Refl Refl SuffixFramesEnd)
