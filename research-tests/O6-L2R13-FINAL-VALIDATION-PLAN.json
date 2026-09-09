@@ -1,0 +1,107 @@
+{
+  "sourceBoundary": "6b44f2a745de4c59d78bcea31890c808f587e1ac",
+  "createdUTC": "2026-09-09T18:20:01.622169+00:00",
+  "mode": "unchanged-byte target-only fresh validation, dependency order, one own compiler, light18GiB, extra Building rejection, mutation monitoring",
+  "validations": [
+    {
+      "unit": "V1",
+      "path": "research-tests/O6-L2R13-Sources/DGamma/L2R13ForcedAnchor.idr",
+      "sourceSHA256": "8367411083da25484d774e010084eaa1478da8549646c6c2c47684f05c909951",
+      "directOwnDependencies": []
+    },
+    {
+      "unit": "V2",
+      "path": "research-tests/O6-L2R13-Sources/DGamma/L2R13PhaseEntry.idr",
+      "sourceSHA256": "9875f24b408361c576b26f0b71b303aae3ad324ea281228090731252a1066002",
+      "directOwnDependencies": [
+        "research-tests/O6-L2R13-Sources/DGamma/L2R13ForcedAnchor.idr"
+      ]
+    },
+    {
+      "unit": "V3",
+      "path": "research-tests/O6-L2R13-Sources/DGamma/L2R13PhaseFixtures.idr",
+      "sourceSHA256": "83383ab34532a131d9e7e8eddc0d3d7ad3ea30c2032d182b9a329eda4c40ae0f",
+      "directOwnDependencies": [
+        "research-tests/O6-L2R13-Sources/DGamma/L2R13ForcedAnchor.idr",
+        "research-tests/O6-L2R13-Sources/DGamma/L2R13PhaseEntry.idr"
+      ]
+    },
+    {
+      "unit": "V4",
+      "path": "research-tests/O6-L2R13-Sources/DGamma/L2R13InsertExtensional.idr",
+      "sourceSHA256": "3f9032b1a9cb264247aad46a4637f987a02229e04d10f047f0f0eef817a3d02d",
+      "directOwnDependencies": []
+    },
+    {
+      "unit": "V5",
+      "path": "research-tests/O6-L2R13-Sources/DGamma/L2R13SquareSuccessor.idr",
+      "sourceSHA256": "4ad04a3663b22b085f4b643c4932715c6a233fa4465615b137414b372fe5ac2b",
+      "directOwnDependencies": [
+        "research-tests/O6-L2R13-Sources/DGamma/L2R13InsertExtensional.idr"
+      ]
+    },
+    {
+      "unit": "V6",
+      "path": "research-tests/O6-L2R13-Sources/DGamma/L2R13TerminalMove.idr",
+      "sourceSHA256": "f2b9285391ac23969fa9a8fbce76f016bc95abb038a11ba76baed1188b00d220",
+      "directOwnDependencies": [
+        "research-tests/O6-L2R13-Sources/DGamma/L2R13InsertExtensional.idr"
+      ]
+    },
+    {
+      "unit": "V7",
+      "path": "research-tests/O6-L2R13-Sources/DGamma/L2R13ExtendMove.idr",
+      "sourceSHA256": "cb48df7f6557a79cabc8962419c811ac9dc8c32ac136f4ab3dacf9d2cdfcee5f",
+      "directOwnDependencies": [
+        "research-tests/O6-L2R13-Sources/DGamma/L2R13InsertExtensional.idr"
+      ]
+    },
+    {
+      "unit": "V8",
+      "path": "research-tests/O6-L2R13-Sources/DGamma/L2R13DistanceFixtures.idr",
+      "sourceSHA256": "0526c40051eebc6d51efd703eaa2444ce884edf5c99bf53f11c0ed3752679dc3",
+      "directOwnDependencies": [
+        "research-tests/O6-L2R13-Sources/DGamma/L2R13ForcedAnchor.idr",
+        "research-tests/O6-L2R13-Sources/DGamma/L2R13PhaseEntry.idr",
+        "research-tests/O6-L2R13-Sources/DGamma/L2R13ExtendMove.idr",
+        "research-tests/O6-L2R13-Sources/DGamma/L2R13InsertExtensional.idr",
+        "research-tests/O6-L2R13-Sources/DGamma/L2R13TerminalMove.idr"
+      ]
+    },
+    {
+      "unit": "V9",
+      "path": "research-tests/O6-L2R13-Sources/DGamma/L2R13NativeSuffixFrames.idr",
+      "sourceSHA256": "6db9b32b2551670f2f6e97b2a4f217890ec4ce4779b0686c2a1e6de1e4a1e699",
+      "directOwnDependencies": [
+        "research-tests/O6-L2R13-Sources/DGamma/L2R13InsertExtensional.idr"
+      ]
+    },
+    {
+      "unit": "V10",
+      "path": "research-tests/O6-L2R13-Sources/DGamma/L2R13PacketEndpointTransport.idr",
+      "sourceSHA256": "45e294111adcf9605fbc9f97d2235f760b5b47e54c1dfa0d417cd4c34d030fd7",
+      "directOwnDependencies": [
+        "research-tests/O6-L2R13-Sources/DGamma/L2R13NativeSuffixFrames.idr"
+      ]
+    },
+    {
+      "unit": "V11",
+      "path": "research-tests/O6-L2R13-Sources/DGamma/L2R13PacketEndpointFixture.idr",
+      "sourceSHA256": "8be3bbb2117512a89ae91604c0ebc5181616cad5eab539d3e379256756fa5c64",
+      "directOwnDependencies": [
+        "research-tests/O6-L2R13-Sources/DGamma/L2R13NativeSuffixFrames.idr",
+        "research-tests/O6-L2R13-Sources/DGamma/L2R13PacketEndpointTransport.idr"
+      ]
+    },
+    {
+      "unit": "V12",
+      "path": "research-tests/O6-L2R13-Sources/DGamma/L2R13CoreRestoration.idr",
+      "sourceSHA256": "8c8a7f20f676b4bcb18a93955c837546fbe63b53cd5c2969a58597374f52bda1",
+      "directOwnDependencies": [
+        "research-tests/O6-L2R13-Sources/DGamma/L2R13NativeSuffixFrames.idr",
+        "research-tests/O6-L2R13-Sources/DGamma/L2R13PacketEndpointTransport.idr",
+        "research-tests/O6-L2R13-Sources/DGamma/L2R13PacketEndpointFixture.idr"
+      ]
+    }
+  ]
+}
