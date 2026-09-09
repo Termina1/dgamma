@@ -50,3 +50,13 @@ data AdmittedCrossing :
     (0 found : lookupFiber {name} {key} {value} {world} {error} @{nameEq} child (registry source) = Just fiber) ->
     (0 ownChild : fiberParent fiber = ChildOf parent) -> (0 foreign : parent = root -> Void) ->
     AdmittedCrossing nameEq root source (ORemove child)
+
+||| Exact chronological action word of a checked native trail, including ALL
+||| root/child orchestration and lifecycle actions. Not the coarser root word.
+public export
+nativeActionWord : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {0 first, finalState : SystemState name key value world error} ->
+  {0 trace : Transitions first finalState} ->
+  AvailabilityTrace name key world error value trace -> List (Action name key value world error)
+nativeActionWord (AvailabilityEnd state) = []
+nativeActionWord (AvailabilityStep source (Fired ne ke action tag checked) rest later) = action :: nativeActionWord later
