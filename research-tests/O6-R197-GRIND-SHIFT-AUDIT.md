@@ -137,3 +137,48 @@ remain unproved/ineligible; D generic consumer exhausted/reverted. Final
 resource ledger/archive/independent verification and owner/reviewer gate
 remain to be produced. E1 bootstrap/E2 source freeze; E3 final publication and
 E4 owner gate note reserved. No further proof work this shift.
+
+
+## E3 — final authentication and resumed evidence publication
+
+The detached final run finished2026-09-09T08:15:37.422957Z. All144 plan entries
+reconciled at immutable SHA6695cab51ae1239cd9750defc3953ff36bff47d3d17c572cf3fe2a7d73bb6d53:
+144 expected PASS,7 exact expected negatives, zero failures/resource stops/
+mutations/extra Building. Source snapshots, transcript bytes, native results,
+expected diagnostics/symbols, per-record limits, topology, receipt-to-commit
+hashes, one-declaration deltas, and all source commits authenticated.
+
+189 total invocations=178 expected PASS+11 preserved rejections.33 source
+receipts. A26/30 invocations, D7 retained of8 attempted/14 invocations, S0 one;
+B/C no proof invocations. D5 is the sole exhausted unit, full revert verified.
+18 adversarial compiler-free guard tests PASS. All189 native lifetimes covered
+by authenticated disjoint shared-lock intervals; no main lock/process remains.
+LocalDiamond50,615,728KiB under52GiB; UniqueOrdinal44,692,640KiB under48GiB.
+Samples are NOT OS high-water; zero remains unknown/no live capture.
+
+Inventory252=245 inherited+7 new:141 direct measured inventory entries plus2
+unchanged inherited main baseline variants outside the inventory=143 source
+targets.100 unclassified+11 legacy inventory entries remain NOT freshly checked.
+Every136 inherited applicable current target is included. No cold build.
+
+Provider usage limit interrupted the session while the detached runner
+continued; this was not a compiler failure. Owner reset the limit; supervisor
+explicitly authorized compiler-free E3 publication/final gate and declared
+proof work closed. No native rerun, clock extension or source edit on revival.
+Publication prints08:38Z, earlier than recorded09:38/10:03 UTC bounds; a missed
+UTC deadline is NOT asserted. The archived non-native resume note initially
+misinterpreted the closed-work instruction as UTC lateness; the explicit
+O6-R197-TIMING-QUALIFICATION.json corrects it while preserving archive bytes.
+The three archive/resource scripts
+were already prepared untracked; pending NOTES and verifier changes retained.
+
+## Final status (supersedes the pending source-freeze entry)
+
+CHECKED PARTIAL, complete mandatory validation and evidence. A conditional
+history fold, not universal pairing; B exact canonical/replayed rebasing and
+all-name bridge unproduced; C0/ineligible; D producer/fixtures checked, generic
+consumer D5 STOP3/3 and reverted.33 new declarations; no unsafe escapes/new
+holes/production/frozen/lane edits. Fresh census4=1/2/0/0/1 and all frozen hashes
+pass. E3 publishes ledger/costs/resource/frozen/independent/archived evidence;
+archive anchor intentionally excludes its own/future artifact receipts. E4
+owner note reserved; final owner and independent human reviewer gate pending.

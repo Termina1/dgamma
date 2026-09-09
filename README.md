@@ -873,3 +873,25 @@ No unilateral native edge is erased as “stuttering”. Final validation is
 **pending at this source-freeze entry**: immutable plan143 source targets
 (ALL136 inherited R196 current targets +7 new) +1 seeded package build.
 See `research-tests/O6-R197-GRIND-SHIFT-AUDIT.md` and D5 STOP audit.
+
+
+## R197 — final validation complete; checked PARTIAL
+
+Final **144/144** planned invocations have authenticated expected outcomes:
+143 source checks (136 inherited R196 current targets +7 new) and the seeded
+package build, including7 exact expected-negative checks. No resource stop,
+source mutation or extra Building line. The full189-invocation ledger retains
+11 rejected micro-attempts;178 expected PASS,33 source receipts.18 adversarial
+evidence tests and independent record/receipt/lock/frozen audits pass.
+
+A remains **conditional on a supplied stage synchronization; not universal
+pairing**. B's expected-map all-name rebasing/bridge is unproduced; C0. D's
+observed native provider producer and two-binding fixtures are proved, but
+optional generic consumer D5 stopped3/3 and is fully reverted. Census is still
+**4=1/2/0/0/1**; production/frozen surfaces unchanged. No cold build or fresh
+certification of the111 excluded inventory paths is claimed.
+
+The detached validation completed at08:15:37Z on2026-09-09. Provider usage-limit
+interruption delayed E3 publication/final gate; the supervisor explicitly
+resumed **compiler-free artifacts only**, explicitly closing further proof work.
+See `research-tests/O6-R197-VERIFICATION.md` and the committed R197 evidence.

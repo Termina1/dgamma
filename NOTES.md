@@ -3962,3 +3962,78 @@ unchanged and runs under the explicit48GiB owner gate (prior42.715GiB sample).
 Next: finish all144 frozen checks, publish/authenticate full ledger/receipts/
 archive/frozen/resource evidence, then owner gate and independent reviewer.
 Do not attempt more proof work this shift or widen the protected premises.
+
+
+### R197 source-audit qualifications during frozen validation
+
+The stamped family is LOCKSTEP: every paired stage increments both physical
+offsets, and its only epsilon consumes zero native edges on both sides.
+Universal adequacy for accepted schedules is therefore a separate OPEN
+obligation, not supplied by either the root attachments or the Type-valued
+goal. A richer asymmetric/role synchronization may be needed; no accepted
+counterexample or universal impossibility theorem is claimed here.
+
+A broader compiler-free topology audit additionally verifies EVERY direct
+import between the144 planned targets, including three edges to the two
+inherited baseline variants outside the245-entry invalidation inventory.
+All are already ordered correctly; the immutable plan was NOT rewritten.
+Those two variants are themselves direct final targets (not among the111
+unvalidated inventory paths). “Outside-domain reused seed” does not deny a
+separate direct fresh check explicitly listed for such a target.
+
+
+## Status — R197 final checked PARTIAL (compiler-free resumed publication)
+
+**Fully proved within their stated inputs:** A's actual opposite-root/original-
+ordinal and canonical/permuted attachment; six-role stamped stage preservation
+and finite conditional history-cut fold; genuine eleven-edge/closing-history/
+role-boundary fixtures; D's executable observed-head provider producer, native
+observed-Bool equation and packet assembly, generic Bool branch eliminator,
+and two-binding active/inactive-head fixtures.33 retained declarations in7 new
+research modules, each immediately committed from its fresh own-source PASS.
+
+**Partial/unproduced:** universal/whole-word stage synchronization and its
+adequacy (the family is lockstep, zero-edge epsilon only); expected-map
+canonical/replayed all-name MaybeFiber endpoint rebasing and D5 bridge; global
+convergence body C ineligible,0 attempts. The exact synchronization goal is
+only an erased Type function, not an inhabitant/postulate. D5's OPTIONAL
+same-packet retirement-equality consumer exhausted3/3 and was fully reverted;
+its identical-looking projected-if conversion error remains verbatim.
+
+**Validation complete:**144/144 immutable-plan expected outcomes, including7
+exact expected-negative source checks and a seeded package invocation. All136
+inherited applicable current R196 source targets +7 new=143 source paths; no
+applicable path omitted. Full ledger189 invocations=178 expected PASS+11
+honest rejections.33 authenticated source receipts;18 compiler-free adversarial
+guard tests pass. Every compiler lifetime is covered by a non-overlapping
+shared-lock interval. No source/resource interruption or extra Building line.
+LocalDiamond50,615,728KiB (~48.272GiB) under52GiB; UniqueOrdinal44,692,640KiB
+(~42.622GiB) under48GiB. RSS is one-second sampling, NOT OS high-water;0 means
+no captured live sample.141/252 inventory entries rechecked, plus2 directly
+checked inherited baseline variants outside that inventory=143;100 unclassified
+and11 legacy inventory paths remain NOT freshly checked. No cold-build claim.
+
+Frozen/census authentication passes: production vs34b21c9 empty; CP3 blob
+2c697e532e83989de8591fa6a4378747c6a501c0; LocalDiamond
+9f9216170853624cff30449696f2540da0ed48e0b42504533aa587cb70dfc037 and
+DeletionChain91e8fd290cc4fedae9656ce5b4ae3ea0b38509f6e0250f51b4a7aa2aea09067b;
+all other protected module/declaration and O19/adjacent hashes unchanged.
+Census4=1/2/0/0/1. No new unsafe escape, hole, partial function, with/let alias,
+binder prefix, source API widening, or lane-owned edit.
+
+The detached run finished08:15:37Z before any native cutoff. A provider usage
+limit interrupted the interactive session, not the compiler work. The owner
+reset the limit and supervisor explicitly revived only E3 artifacts and final
+gate, declaring proof work closed. Printed publication UTC08:38 is earlier
+than the recorded09:38 proof/10:03 gate bounds, so a missed UTC deadline is NOT
+asserted. No clock extension, native rerun or source edit is claimed. The
+archive resume note originally conflated the closed-work instruction with UTC
+lateness; O6-R197-TIMING-QUALIFICATION.json explicitly corrects that NON-NATIVE
+note without rewriting the archive. Archive anchors precede later receipts to avoid circular
+self-attestation. Machine verification is not independent human proof review.
+
+**Next:** owner/reviewer gate; future separately authorized whole-word/asymmetric
+synchronization adequacy and producer, exact all-name rebasing, then bridge.
+C remains barred until those producers exist. D5 may need a producer boundary
+avoiding projected-if types or compiler investigation, never a fourth R197
+retry. No further proof work in this shift.

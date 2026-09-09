@@ -1,0 +1,132 @@
+{
+  "timestampUTC": "2026-09-09T08:36:21.947684+00:00",
+  "head": "73b2d1c04ae1959150590532b587a539d1c7e37d",
+  "baseline": "e2ebe3b5c61f75dc760a72ede14ebaf426823ef7",
+  "productionDiffVs34b21c9": "empty",
+  "CP3Blob": "2c697e532e83989de8591fa6a4378747c6a501c0",
+  "authorizedContractSourceSHA256": {
+    "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr": "3b62ba1c3bc88503116ed22d82c667043f7f41dd483fb093cc25b677a55245cc",
+    "research/DGamma/CP5ConfluenceCrossTraceSpike.idr": "666d18626e49cbb0d6ac2f7624fe9f6b3519d539dbb574670f420bacd9fc69bb",
+    "research/DGamma/CP5ConfluenceDeletionChainSpike.idr": "91e8fd290cc4fedae9656ce5b4ae3ea0b38509f6e0250f51b4a7aa2aea09067b",
+    "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr": "9f9216170853624cff30449696f2540da0ed48e0b42504533aa587cb70dfc037",
+    "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr": "833bd3450bc8a4214e0334fd2ad95d7f837bc636f40f2e33c408333395602713"
+  },
+  "O19BodyBytes": 1286,
+  "O19BodySHA256": "cbd0954303c35141af0309e515bdb9e98e988e7c23be70b9764d8c1ce18fd396",
+  "adjacentFullBytes": 1470,
+  "adjacentFullSHA256": "2d01486bf953f11191b758ac3cfb5722d1d02b1a192b6e552adc8a3f58199ecf",
+  "adjacentStatementBytes": 1154,
+  "adjacentStatementSHA256": "3aae5a9fbc5b14e0411b4a91e557a6f3dc68c9a6282b9ec2b3fc658cec337adf",
+  "holes": {
+    "CanonicalSort": [
+      "?sortClosingFreeTraceSpike_rhs"
+    ],
+    "CrossTrace": [
+      "?selectOperationalCanonicalPermutationSpike_rhs",
+      "?canonicalSchedulesConvergeSpike_rhs"
+    ],
+    "DeletionChain": [],
+    "LocalDiamond": [],
+    "RenamingComposition": [
+      "?replayedCanonicalToOriginalEndpointSpike_rhs"
+    ]
+  },
+  "census": [
+    1,
+    2,
+    0,
+    0,
+    1
+  ],
+  "seeds": "207/207 retained (presence, not a fresh package PASS)",
+  "protectedDeclarations": {
+    "sortClosingFreeTraceSpike": "1df8d174b9a4f119a5a52e2073a72907bdb890413f877d55886e905e1d0279d1",
+    "selectOperationalCanonicalPermutationSpike": "b00063eacf339b58828eac5829cebc66fc7265f3518be459af0602463b6fbae7",
+    "canonicalSchedulesConvergeSpike": "0e8a177ea7bb4807cb77680cde29e75f7d37224711cc51cf7bf6636426690dd9",
+    "replayedCanonicalToOriginalEndpointSpike": "377b08ff82e1e4212738bb00a45a088b1f0d8fd8bc8b54bf061c96f2f4891681"
+  },
+  "prohibitedAdditions": {
+    "\\bbelieve_me\\b": [],
+    "\\bassert_total\\b": [],
+    "^\\s*partial\\b": [],
+    "\\?\\w+": [],
+    "\\blet\\b": [],
+    "\\bwith\\b": [],
+    "\\bprefix\\b": [],
+    "\\bdeletionTheoremProof\\b": [],
+    "\\bpostulate\\b": []
+  },
+  "changedIdrisFiles": [
+    "research-tests/DGamma/R197ProviderHeadObservedPositive.idr",
+    "research-tests/DGamma/R197RetainedRoleBoundaryPositive.idr",
+    "research-tests/DGamma/R197StampedHistoryPositive.idr",
+    "research/DGamma/CP5O20CanonicalSynchronizationGoalSpike.idr",
+    "research/DGamma/CP5O20RootStageAttachmentSpike.idr",
+    "research/DGamma/CP5O20StampedHistoryFoldSpike.idr",
+    "research/DGamma/CP5ProviderHeadObservedSpike.idr"
+  ],
+  "noMainCompiler": true,
+  "lane2Compilers": [],
+  "noStagedFiles": true,
+  "cleanTrackedTree": false,
+  "allowedUntrackedOnly": false,
+  "untracked": [
+    "paper/cordis-paper.pdf",
+    "paper/cordis-paper.txt",
+    "research-tests/run-r197-archive.py",
+    "research-tests/run-r197-resource-audit.py",
+    "research-tests/run-r197-verify-archive.py",
+    "review-o6-body-adversarial.md"
+  ],
+  "reviewSHA256": "61fc23ae4cea4565b442c840be39c41746ecbac73b8c2f73d04f1e3b4f4681e8",
+  "declaredNewSourceNames": {
+    "research-tests/DGamma/R197ProviderHeadObservedPositive.idr": [
+      "r197ActiveProviderHead",
+      "r197InactiveProviderHead"
+    ],
+    "research-tests/DGamma/R197RetainedRoleBoundaryPositive.idr": [
+      "r197OneOriginRoleWords",
+      "r197RoleMismatchFailsAcceptedE9",
+      "r197RootAndClosingBoundary"
+    ],
+    "research-tests/DGamma/R197StampedHistoryPositive.idr": [
+      "r197StampedElevenRun",
+      "r197StampedElevenEndpoint",
+      "r197ClosingHistoryEpsilon"
+    ],
+    "research/DGamma/CP5O20CanonicalSynchronizationGoalSpike.idr": [
+      "o20CanonicalSynchronizationGoal"
+    ],
+    "research/DGamma/CP5O20RootStageAttachmentSpike.idr": [
+      "o20RootMatchPrepend",
+      "o20RootMatchHead",
+      "o20RootMatchSkipLeft",
+      "o20RootMatchMatchedLeft",
+      "o20RootBirthMatchObserved",
+      "o20RootBirthMatchLocated",
+      "o20RetainedRootBirth",
+      "o20AttachRootAtRetainedBirth",
+      "o20AttachRootMatchPacket",
+      "o20CanonicalRootOrdinalAttachment",
+      "o20PermutedCanonicalRootOrdinalAttachment",
+      "O20RootBirthMatch",
+      "O20AttachedRootBirth"
+    ],
+    "research/DGamma/CP5O20StampedHistoryFoldSpike.idr": [
+      "o20StampedStageCut",
+      "o20StampedHistoryCut",
+      "O20StampedCut",
+      "O20StampedStage",
+      "O20StampedHistory",
+      "O20HistorySynchronization"
+    ],
+    "research/DGamma/CP5ProviderHeadObservedSpike.idr": [
+      "providerInHeadObserved",
+      "providerHeadPacketAtGuard",
+      "providerHeadObserved",
+      "providerObservedBranchEqual",
+      "ProviderHeadObserved"
+    ]
+  },
+  "retainedNewDeclarations": 33
+}

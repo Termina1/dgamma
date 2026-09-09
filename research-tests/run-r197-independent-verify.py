@@ -70,7 +70,14 @@ old=json.loads((ROOT/'research-tests/O6-R196-COMPILER-LEDGER.json').read_text())
 inherited={r['path'] for r in old if r['passed'] and r['path']!='package'}
 assert len(inherited)==136 and {x['path'] for x in plan}==inherited|set(changed)|{'package'}
 completed=[]
+planned_paths={x['path'] for x in plan};seen_planned=set();extra_planned_edges=[]
 for item in plan:
+    if item['path']!='package':
+        imports=re.findall(r'^import\s+(?:public\s+)?([\w.]+)',(ROOT/item['path']).read_text(),re.M)
+        all_planned_dependencies={modules[m] for m in imports if m in modules and modules[m] in planned_paths}
+        assert all_planned_dependencies<=seen_planned, 'Any planned import must be checked before its consumer'
+        extra_planned_edges.extend((item['path'],p) for p in sorted(all_planned_dependencies-set(item['dependencies'])))
+    seen_planned.add(item['path'])
     r=next((x for x in records if x['unit']==item['unit']),None)
     if r:
         assert r['path']==item['path'] and r['sourceSHA256']==item['sourceHash'] and r['expectedDiagnostic']==item['expectedDiagnostic'] and r['symbol']==item['symbol']
@@ -89,6 +96,6 @@ for r in records:
     released=[x for x in locks if x['event']=='released' and x['unit']==r['unit']]
     assert len(acquired)==len(released)==1 and acquired[0]==r['heavyLock'][0]
     assert acquired[0]['timestampUTC']<=r['start']<=r['end']<=released[0]['timestampUTC']
-report=dict(status='PASS',timestampUTC=datetime.datetime.now(datetime.timezone.utc).isoformat(),head=git('rev-parse','HEAD').strip(),invocations=len(records),expectedPASS=sum(r['passed'] for r in records),rejected=[r['unit'] for r in records if not r['passed']],sourceReceipts=len(source_receipts),artifactReceipts=len(receipts)-len(source_receipts),finalCompleted=len(completed),finalTotal=144,finalPlanSHA256=sha(plan_bytes),inheritedApplicableSources=136,newSources=7,sourceSnapshotsAuthenticated=True,sourceReceiptsAuthenticated=True,allSourceCommitsReceipted=True,oneDeclarationPerRetainedCommit=True,allChangedSourcesChecked=True,compilerOverlap=False,resourceStops=[r['unit'] for r in records if r['resourceStopped']],mutations=[r['unit'] for r in records if r['targetMutationDetected']],heavyLockAcquisitionAndReleaseAuthenticated=True,microUnitAttempts={u:len(v) for u,v in attempts.items()},exhaustedAndReverted=['D5'],BCProofAttempts=0,noStagedFiles=not git('diff','--cached','--name-only').strip(),qualification='Read-only machine authentication, not an independent human proof review. Seeded direct targets, not cold build. RSS samples0 are no live capture, not zero actual peak. D5 optional consumer is NOT proved.')
+report=dict(status='PASS',timestampUTC=datetime.datetime.now(datetime.timezone.utc).isoformat(),head=git('rev-parse','HEAD').strip(),invocations=len(records),expectedPASS=sum(r['passed'] for r in records),rejected=[r['unit'] for r in records if not r['passed']],sourceReceipts=len(source_receipts),artifactReceipts=len(receipts)-len(source_receipts),finalCompleted=len(completed),finalTotal=144,finalPlanSHA256=sha(plan_bytes),inheritedApplicableSources=136,newSources=7,sourceSnapshotsAuthenticated=True,sourceReceiptsAuthenticated=True,allSourceCommitsReceipted=True,oneDeclarationPerRetainedCommit=True,allChangedSourcesChecked=True,allPlannedTargetImportsTopological=True,additionalTargetEdgesOutsideInvalidationInventory=extra_planned_edges,compilerOverlap=False,resourceStops=[r['unit'] for r in records if r['resourceStopped']],mutations=[r['unit'] for r in records if r['targetMutationDetected']],heavyLockAcquisitionAndReleaseAuthenticated=True,microUnitAttempts={u:len(v) for u,v in attempts.items()},exhaustedAndReverted=['D5'],BCProofAttempts=0,noStagedFiles=not git('diff','--cached','--name-only').strip(),qualification='Read-only machine authentication, not an independent human proof review. Seeded direct targets, not cold build. RSS samples0 are no live capture, not zero actual peak. D5 optional consumer is NOT proved.')
 output=pathlib.Path(next((s for s in sys.argv[1:] if s.startswith('/tmp/')),str(OUT/'independent.json')))
 output.write_text(json.dumps(report,indent=2)+'\n');print(json.dumps(report,indent=2))

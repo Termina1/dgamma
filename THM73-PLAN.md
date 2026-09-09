@@ -3842,3 +3842,19 @@ ALL136 inherited current R196 paths plus7 R197, and seeded package (144 total),
 with seven exact expected-negative diagnostics. Shared heavy lock for every
 check,48GiB except unchanged LocalDiamond52GiB, unchanged UniqueOrdinal48GiB
 owner gate. See R197 audit/scope/frozen-plan/D5-stop artifacts for exact bounds.
+
+
+## R197 final validated boundary
+
+144/144 planned expected outcomes authenticated (136 inherited+7 new source
+paths, seeded package,7 expected negatives).189 total invocations,178 expected
+PASS,11 retained rejections;33 source receipts;18 guard tests pass. Frozen
+surfaces/production unchanged, census4=1/2/0/0/1. No resource/mutation/extra-
+Building event. A conditional fold is NOT a universal pairing; B canonical/
+replayed all-name rebasing/bridge unproduced; C0; D producer+fixtures proved,
+D5 optional generic consumer STOP3/3 fully reverted. Exact debts above stand.
+
+Validation finished08:15:37Z. Provider limit interrupted interaction; E3 and
+final gate resumed only by explicit supervisor follow-up closing proof work, with
+NO proof/source/native work. Independent human review is parent-owned. See
+O6-R197-VERIFICATION.md, full ledger/archive, frozen and resource audits.
