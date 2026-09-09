@@ -37,3 +37,20 @@ export
 r198RemovedCanonicalAbsence capital =
   o20CanonicalAbsentFromOriginal r45NameEq r45KeyEq r45Protocol
     r192RemovedBirthTrace capital 1 r195RemovedRemainderActuallyAbsent
+
+||| The RAW canonical-endpoint RELATION admits identity even at R193's
+||| present-vestigial original endpoint. This packages NO independent canonical
+||| schedule: it isolates why that endpoint predicate alone cannot force
+||| withdrawal. No frozen/private sorting helper is called or made public.
+public export
+0 r198ClosingRawIdentityEndpoint :
+  CanonicalEndpointRelation Nat R45Key Unit String R45Value r45NameEq r45KeyEq
+    r193HistoricalClosed r193HistoricalClosed
+r198ClosingRawIdentityEndpoint =
+  MkCanonicalEndpointRelation [] []
+    (MkEffectStateRelated Refl (\selected => Refl))
+    (\selected, outside => fiberControlMaybeReflexive
+      (lookupFiber {name = Nat} {key = R45Key} {value = R45Value} {world = Unit} {error = String} @{r45NameEq}
+        selected (registry r193HistoricalClosed)))
+    (\selected, member => absurd member)
+    (\selected, member => absurd member)
