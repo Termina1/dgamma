@@ -40,3 +40,48 @@ o20SubsequenceTargetOrdinal (KeepGenerationAction step rest target later outside
 o20SubsequenceTargetOrdinal (DeleteGenerationAction step rest deleted tail) Z = Nothing
 o20SubsequenceTargetOrdinal (DeleteGenerationAction step rest deleted tail) (S source) =
   o20SubsequenceTargetOrdinal tail source
+
+||| Both partial inverses are proved over the actual keep/delete derivation.
+||| Successful target lookup is EXACTLY the existing source embedding law.
+||| Thus Nothing can certify a physical disappearance, not an arbitrary skip.
+export
+0 o20SubsequenceOrdinalsInverse :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} ->
+  {deletable : Nat -> GenerationEnvironment name -> Action name key value world error -> Type} ->
+  {ordinal : Nat} -> {live : GenerationEnvironment name} ->
+  {first, finalState, otherFirst, otherFinal : SystemState name key value world error} ->
+  {trace : Transitions first finalState} -> {survivor : Transitions otherFirst otherFinal} ->
+  (kept : GenerationActionSubsequence nameEq deletable ordinal live trace survivor) ->
+  (source, target : Nat) ->
+  ((generationSubsequenceSourceOrdinal kept target = Just source -> o20SubsequenceTargetOrdinal kept source = Just target),
+   (o20SubsequenceTargetOrdinal kept source = Just target -> generationSubsequenceSourceOrdinal kept target = Just source))
+o20SubsequenceOrdinalsInverse GenerationActionSubsequenceEnd source target = (absurd, absurd)
+o20SubsequenceOrdinalsInverse (KeepGenerationAction step rest next later outside same tail) Z Z =
+  (\exact => Refl, \exact => Refl)
+o20SubsequenceOrdinalsInverse (KeepGenerationAction step rest next later outside same tail) Z (S target) =
+  (\exact => case o20MappedSuccessorPredecessor (generationSubsequenceSourceOrdinal tail target) Z exact of
+    (earlier ** (shift, origin)) => absurd shift,
+   \exact => absurd (justInjective exact))
+o20SubsequenceOrdinalsInverse (KeepGenerationAction step rest next later outside same tail) (S source) Z =
+  (\exact => absurd (justInjective exact),
+   \exact => case o20MappedSuccessorPredecessor (o20SubsequenceTargetOrdinal tail source) Z exact of
+     (earlier ** (shift, origin)) => absurd shift)
+o20SubsequenceOrdinalsInverse (KeepGenerationAction step rest next later outside same tail) (S source) (S target) =
+  (\exact => case o20MappedSuccessorPredecessor (generationSubsequenceSourceOrdinal tail target) (S source) exact of
+     (earlier ** (shift, origin)) => cong (map S)
+       (fst (o20SubsequenceOrdinalsInverse tail source target)
+         (trans origin (cong Just (sym (injective shift))))),
+   \exact => case o20MappedSuccessorPredecessor (o20SubsequenceTargetOrdinal tail source) (S target) exact of
+     (earlier ** (shift, origin)) => cong (map S)
+       (snd (o20SubsequenceOrdinalsInverse tail source target)
+         (trans origin (cong Just (sym (injective shift))))))
+o20SubsequenceOrdinalsInverse (DeleteGenerationAction step rest deleted tail) Z target =
+  (\exact => case o20MappedSuccessorPredecessor (generationSubsequenceSourceOrdinal tail target) Z exact of
+     (earlier ** (shift, origin)) => absurd shift,
+   absurd)
+o20SubsequenceOrdinalsInverse (DeleteGenerationAction step rest deleted tail) (S source) target =
+  (\exact => case o20MappedSuccessorPredecessor (generationSubsequenceSourceOrdinal tail target) (S source) exact of
+     (earlier ** (shift, origin)) => fst (o20SubsequenceOrdinalsInverse tail source target)
+       (trans origin (cong Just (sym (injective shift)))),
+   \exact => cong (map S) (snd (o20SubsequenceOrdinalsInverse tail source target) exact))
