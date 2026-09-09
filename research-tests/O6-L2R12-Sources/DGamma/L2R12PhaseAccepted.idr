@@ -74,3 +74,23 @@ phaseAnchorSeedCheck nameEq keyEq trail entry anchor seed =
       (\actor => phaseReleaseCheck nameEq actor 0 (pred anchor) False (phaseEvents nameEq trail))
       (fst event))
     (head' (drop (pred anchor) (phaseEvents nameEq trail)))
+
+||| Acceptance at an actual root, extracted from phaseScanOk itself.
+||| A missing anchor remains vacuous; forcing-to-Just is a separate residue.
+export
+0 phaseScanEntryAccepted : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, finalState : SystemState name key value world error} ->
+  {trace : Transitions first finalState} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (trail : AvailabilityTrace name key world error value trace) ->
+  (entry : RootCatalogEntry name key world error value) ->
+  (0 member : Elem entry (scanRootCatalog 0 trail)) ->
+  (0 accepted : phaseScanOk nameEq keyEq trail = True) ->
+  maybe True (\anchor => anchor <= catalogOrdinal entry &&
+    any (phaseAnchorSeedCheck nameEq keyEq trail entry anchor) (scanRootCatalog 0 trail))
+    (anchorOf nameEq keyEq trail (catalogOrdinal entry)) = True
+phaseScanEntryAccepted nameEq keyEq trail entry member accepted =
+  phaseAllMember
+    (\item => maybe True (\anchor => anchor <= catalogOrdinal item &&
+      any (phaseAnchorSeedCheck nameEq keyEq trail item anchor) (scanRootCatalog 0 trail))
+      (anchorOf nameEq keyEq trail (catalogOrdinal item))) member accepted
