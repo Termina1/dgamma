@@ -5,6 +5,8 @@ import DGamma.Coeffects
 import DGamma.Metatheory
 import DGamma.CP3
 import DGamma.CP5RawClosingRankSpike
+import DGamma.CP5ConfluenceLocalDiamondSpike
+import DGamma.CP5O20DeletionRetainedBirthSpike
 import DGamma.CP5ConfluenceDeletionChainSpike
 import DGamma.CP5O20DeletionRetainedUnloadSpike
 import Data.List
@@ -343,3 +345,32 @@ o20RegisteredSegmentRetainedClosingBirth name key world error value nameEq regis
                   (registrationOrdinal (deletedOccurrence classified)) sourceClose birthExact closeExact sourceOrder)
                 (trans (cong (rawClosingActionAt name key world error value targetClose)
                   (registrationDecomposition retained)) targetExact)
+
+||| Refine retained birth production with the original parent/component IN
+||| THE TYPE. This avoids asking a consumer to identify two independently
+||| existential parents while joining the source close to the retained birth.
+export
+0 o20DeletionRetainedNamedBirth :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {protocol : RegistrationProtocol key value world error} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {initial, finalState : SystemState name key value world error} ->
+  (trace : Transitions initial finalState) ->
+  (premises : CanonicalizationPremises name key world error value protocol nameEq keyEq trace) ->
+  (candidate : DeletableClosingEpisode name key world error value nameEq keyEq trace) ->
+  (step : DeletionChainStep name key world error value protocol nameEq keyEq trace premises candidate) ->
+  (generation : RegistrationGeneration name) ->
+  (classified : DeletedGenerationClassification name key world error value nameEq trace generation) ->
+  Not (Elem generation (selectedRegistrations candidate)) ->
+  (birth : LocatedGeneratedRegistration (generationName generation) (deletedParent classified)
+    (deletedComponent classified) (survivingTrace (deletionResult step)) **
+      (generationForward (deletionProducerGenerationRenaming (deletionProducerCapital step)) generation =
+        registrationGeneration birth))
+o20DeletionRetainedNamedBirth trace premises candidate step generation classified outside =
+  case originalRegistrationAccounted (deletionRegistrationAccounting step) (deletedOccurrence classified) of
+    Left selected => void (outside
+      (replace {p = Elem generation} (deletionWithdrawnGenerationsExact step)
+        (replace {p = \stamp => Elem stamp (endpointWithdrawnGenerations (deletionEndpoint step))}
+          (deletedOccurrenceGeneration classified) selected)))
+    Right (birth ** exact) => (birth ** o20DeletionRetainedBirthGeneration trace premises candidate step birth generation
+      (trans exact (deletedOccurrenceGeneration classified)))
