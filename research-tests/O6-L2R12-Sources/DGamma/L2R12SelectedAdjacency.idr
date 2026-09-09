@@ -4,6 +4,7 @@ import Prelude.Types
 import Prelude.Interfaces
 import Prelude.Basics
 import Prelude.Num
+import Prelude.EqOrd
 import DGamma.Calculus
 import DGamma.Coeffects
 import DGamma.Metatheory
@@ -30,3 +31,15 @@ export
   (the Nat (if seen then minus Z target else Z)) = Z
 zeroDistanceAtGuard False target = Refl
 zeroDistanceAtGuard True target = Refl
+
+||| Native distance at physical cut zero, independent of anchor availability.
+export
+0 rootDistanceAtZero : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, finalState : SystemState name key value world error} ->
+  {trace : Transitions first finalState} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (trail : AvailabilityTrace name key world error value trace) ->
+  (seen : Bool) -> (0 equation : isJust (anchorOf nameEq keyEq trail 0) = seen) ->
+  rootDistance nameEq keyEq trail 0 = 0
+rootDistanceAtZero nameEq keyEq trail False equation = rewrite equation in Refl
+rootDistanceAtZero nameEq keyEq trail True equation = rewrite equation in Refl
