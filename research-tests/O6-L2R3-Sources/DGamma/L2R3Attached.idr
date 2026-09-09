@@ -117,3 +117,14 @@ data ActorLifecycleOnlyAttached :
     (bundle : Transitions coreEnd finalState) ->
     (0 orderedForced : OrderedForcedRootBundle nameEq selected core [] bundle) ->
     ActorLifecycleOnlyAttached nameEq selected (appendTransitions core bundle)
+
+||| Sound extended-to-attached inclusion, adding no root and moving no edge.
+export
+0 extendedIntoAttached :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {selected : name} ->
+  {first, finalState : SystemState name key value world error} ->
+  {trace : Transitions first finalState} ->
+  ActorLifecycleOnlyExtended nameEq selected trace ->
+  ActorLifecycleOnlyAttached nameEq selected trace
+extendedIntoAttached {trace} extended = AttachedWithoutRoots trace extended
