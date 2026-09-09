@@ -35,3 +35,11 @@ actionKindCode (ORemove child) = 4
 actionKindCode (LDivert actor) = 5
 actionKindCode (LLeave actor) = 6
 actionKindCode (LUnload actor) = 7
+
+||| Executable SET of kinds as a Boolean characteristic function. Repeated
+||| occurrences do not change membership; inputs are the actual action word,
+||| not an externally supplied list of allowed roles.
+public export
+wordActionInventory : {name, key, world, error : Type} -> {value : key -> Type} ->
+  List (Action name key value world error) -> Nat -> Bool
+wordActionInventory word code = any (\action => actionKindCode action == code) word
