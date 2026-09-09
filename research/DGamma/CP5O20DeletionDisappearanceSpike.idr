@@ -401,3 +401,52 @@ o20PermutedHeadVestigialDisappears {nameEq} {keyEq} {protocol} {leftTrace} {righ
       (composedPermutationEndpoint execution) selected
       (o20CanonicalHeadVestigialDisappears nameEq keyEq leftTrace rightTrace (generatedGenerationBijection sameInputs)
         (generatedRegistrationTree sameInputs) leftCapital selected packet member)
+
+||| Mixed present-vestigial/absent class at the EXACT accepted current map.
+||| Left canonical absence is produced by its own selected deletion chain;
+||| right original Nothing is explicit and its canonical absence is produced.
+||| This is one conditional name-class theorem, not the universal ALL-name cut.
+export
+0 o20SelectedVestigialAbsentReplayedControls :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {protocol : RegistrationProtocol key value world error} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {initial, leftFinal, rightFinal : SystemState name key value world error} ->
+  {leftTrace : Transitions initial leftFinal} ->
+  {rightTrace : Transitions initial rightFinal} ->
+  {sameInputs : SameOrchestrationModuloGenerated nameEq keyEq leftTrace rightTrace} ->
+  {leftCapital : IndependentCanonicalSchedule name key world error value protocol
+    nameEq keyEq leftTrace} ->
+  {rightCapital : IndependentCanonicalSchedule name key world error value protocol
+    nameEq keyEq rightTrace} ->
+  {matching : MappedCanonicalSupportOrders name key world error value protocol
+    nameEq keyEq leftTrace rightTrace
+    (currentNameBijection (endpointRenaming sameInputs))
+    (canonicalSchedule leftCapital) (canonicalSchedule rightCapital)} ->
+  {operational : CertifiedOperationalCanonicalPermutation name key world error value
+    protocol nameEq keyEq leftTrace rightTrace sameInputs leftCapital rightCapital matching} ->
+  (execution : PermutedCanonicalExecution name key world error value protocol
+    nameEq keyEq leftTrace rightTrace sameInputs leftCapital rightCapital operational) ->
+  (selected : name) ->
+  (packet : VestigialEndpointGeneration name key world error value nameEq keyEq
+    (leftFinalGenerations (generatedRegistrationTree sameInputs))
+    (leftDeletedGenerations (generatedRegistrationTree sameInputs)) selected leftFinal) ->
+  Elem (vestigialGeneration packet)
+    (o20DeletionHeadGenerations (reductionDeletionDerivation (capitalReduction leftCapital))) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq}
+    (renameForward (expectedBridgeBijection sameInputs) selected) (registry rightFinal) = Nothing) ->
+  MaybeFiberRelatedBy (expectedBridgeBijection sameInputs)
+    (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected (registry (operationalTargetFinal operational)))
+    (lookupFiber {name} {key} {value} {world} {error} @{nameEq}
+      (renameForward (expectedBridgeBijection sameInputs) selected) (registry (canonicalFinal (canonicalSchedule rightCapital))))
+o20SelectedVestigialAbsentReplayedControls {name} {key} {world} {error} {value}
+  {nameEq} {keyEq} {protocol} {leftTrace} {rightTrace} {sameInputs} {leftCapital} {rightCapital} {operational}
+  execution selected packet member rightAbsent =
+    replace {p = \rightObserved => MaybeFiberRelatedBy (expectedBridgeBijection sameInputs)
+      (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected (registry (operationalTargetFinal operational))) rightObserved}
+      (sym (o20CanonicalAbsentFromOriginal nameEq keyEq protocol rightTrace rightCapital
+        (renameForward (expectedBridgeBijection sameInputs) selected) rightAbsent))
+      (replace {p = \leftObserved => MaybeFiberRelatedBy (expectedBridgeBijection sameInputs) leftObserved
+        (the (Maybe (Fiber name key value world error)) Nothing)}
+        (sym (o20PermutedHeadVestigialDisappears {sameInputs} {leftCapital} {rightCapital} {operational} execution selected packet member))
+        RenamedAbsent)
