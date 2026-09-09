@@ -283,3 +283,25 @@ o20ClosingFreeDiscardedEmpty name key world error value nameEq keyEq left right 
   o20AcceptedNoUnloadDiscardedEmpty name key world error value nameEq left right mapping registrations
     (\actor, occurs => o20ClosingFreeRejectsLocatedUnload name key world error value nameEq keyEq
       left aligned empty noClosing actor (retirementOccurrenceLocated name key world error value left (LUnload actor) occurs))
+
+||| No FULL accepted present-vestigial packet remains in the closing-free
+||| base case. Its own discarded membership contradicts the native empty
+||| discarded scan; unsupportedness alone is never used as a substitute.
+export
+0 o20ClosingFreeNoPresentVestigial :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {leftFirst, leftFinal, rightFirst, rightFinal : SystemState name key value world error} ->
+  (left : Transitions leftFirst leftFinal) -> (right : Transitions rightFirst rightFinal) ->
+  (mapping : RegistrationGenerationBijection name) ->
+  (registrations : RegistrationCorrespondenceByGeneration nameEq mapping left right) ->
+  AlignedTransitions name key world error value nameEq keyEq left ->
+  (bindings (registry leftFirst) = []) ->
+  NoClosingEpisodes name key world error value nameEq keyEq left ->
+  (selected : name) ->
+  VestigialEndpointGeneration name key world error value nameEq keyEq
+    (leftFinalGenerations registrations) (leftDeletedGenerations registrations) selected leftFinal -> Void
+o20ClosingFreeNoPresentVestigial name key world error value nameEq keyEq left right mapping registrations aligned empty noClosing selected packet =
+  absurd (replace {p = Elem (vestigialGeneration packet)}
+    (o20ClosingFreeDiscardedEmpty name key world error value nameEq keyEq left right mapping registrations aligned empty noClosing)
+    (vestigialBirthDiscarded packet))
