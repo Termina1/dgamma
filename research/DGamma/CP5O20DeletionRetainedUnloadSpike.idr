@@ -179,3 +179,18 @@ export
   (actor : name) -> (transitionAction step = LUnload actor) ->
   GenerationOwnedActor nameEq registered ordinal live (transitionAction step) -> Void
 o20RegisteredUnloadHeadExcludes (O20RegisteredUnloadStep step rest excludes tail) = excludes
+
+||| The tail exclusion uses the ORIGINAL head's advanced generation state,
+||| including when that head will be absent from the filtered trace.
+export
+0 o20RegisteredUnloadFreeTail :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {registered : List (RegistrationGeneration name)} ->
+  {ordinal : Nat} -> {live : GenerationEnvironment name} ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  {step : Transition first middle} -> {rest : Transitions middle finalState} ->
+  O20RegisteredUnloadFree name key world error value nameEq registered ordinal live
+    (MoreTransitions step rest) ->
+  O20RegisteredUnloadFree name key world error value nameEq registered (S ordinal)
+    (advanceGenerationEnvironment @{nameEq} ordinal (transitionAction step) live) rest
+o20RegisteredUnloadFreeTail (O20RegisteredUnloadStep step rest excludes tail) = tail
