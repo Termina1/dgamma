@@ -129,3 +129,13 @@ rootDistance : {name, key, world, error : Type} -> {value : key -> Type} ->
   DecEq name -> DecEq key -> AvailabilityTrace name key world error value trace -> Nat -> Nat
 rootDistance nameEq keyEq trail ordinal = if isJust (anchorOf nameEq keyEq trail ordinal)
   then minus ordinal (targetPosition nameEq keyEq trail ordinal) else 0
+
+||| Sum of physical distances over the actual generated birth catalog; no
+||| caller-supplied annotations, root list, distance or target is accepted.
+public export
+totalDistance : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {0 first, finalState : SystemState name key value world error} ->
+  {0 trace : Transitions first finalState} ->
+  DecEq name -> DecEq key -> AvailabilityTrace name key world error value trace -> Nat
+totalDistance nameEq keyEq trail = sum
+  (map (\entry => rootDistance nameEq keyEq trail (catalogOrdinal entry)) (scanRootCatalog 0 trail))
