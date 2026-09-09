@@ -72,3 +72,23 @@ record CheckedExtensionalStep
     Just (tag, extensionalAfter)
   0 extensionalAfterSame : RegistryExtensional name key world error value nameEq
     originalAfter extensionalAfter
+
+||| Original single-constructor Retire view produces the alternate native
+||| edge using transported lookup and current validity, then A15 its endpoint.
+export
+0 retireExtensionalFromView :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (ambient : world) -> (source : Registry name key value world error) ->
+  (afterState, current : SystemState name key value world error) -> (tag : RuleTag) ->
+  (0 same : RegistryExtensional name key world error value nameEq (MkSystemState ambient source) current) ->
+  (0 valid : registryWellFormed @{nameEq} @{keyEq} current = True) ->
+  RetireSuccessView name key world error value nameEq actor ambient source tag afterState ->
+  CheckedExtensionalStep name key world error value nameEq keyEq (ORetire actor) current tag afterState
+retireExtensionalFromView nameEq keyEq actor ambient source _ current _ same valid
+  (MkRetireSuccessView old found) =
+    MkCheckedExtensionalStep
+      (MkSystemState (worldState current) (replaceBinding @{nameEq} actor (retireFiber old) (registry current)))
+      (childRetireAtFound nameEq keyEq actor old current
+        (trans (sym (extensionalLookup same actor)) found) valid)
+      (replaceExtensional nameEq actor old (retireFiber old) (MkSystemState ambient source) current same found)
