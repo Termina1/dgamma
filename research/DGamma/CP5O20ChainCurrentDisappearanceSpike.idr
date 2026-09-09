@@ -6,6 +6,9 @@ import DGamma.Metatheory
 import DGamma.CP3
 import DGamma.CP5ConfluenceLocalDiamondSpike
 import DGamma.CP5ConfluenceDeletionChainSpike
+import DGamma.CP5ConfluenceCanonicalSortSpike
+import DGamma.CP5ConfluenceRenamingCompositionSpike
+import DGamma.CP5O20DiscardedBirthOriginSpike
 import DGamma.CP5CurrentGenerationBirthSpike
 import DGamma.CP5UniqueRawNameInsertions
 import DGamma.CP5UniqueRawNameDeletion
@@ -143,3 +146,39 @@ o20ClassifiedChainAbsent name key world error value protocol nameEq keyEq genera
                   (o20RetainedBirthClassified nameEq (survivingTrace (deletionResult step))
                     (deletionProducerGenerationRenaming (deletionProducerCapital step)) generation
                     (MkO20RetainedGenerationBirth (deletedParent classified) (deletedComponent classified) birth stamp) closing))
+
+||| EVERY full accepted present-vestigial packet disappears at its actual
+||| independent canonical endpoint, not only generations selected at the head.
+||| Deletion follows the supplied real derivation; its own sorting relation
+||| preserves the derived absence. No cumulative-list equality is assumed.
+export
+0 o20CanonicalVestigialDisappears :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (generationEq : DecEq (RegistrationGeneration name)) ->
+  {leftFirst, leftFinal, rightFirst, rightFinal : SystemState name key value world error} ->
+  (left : Transitions leftFirst leftFinal) -> (right : Transitions rightFirst rightFinal) ->
+  (mapping : RegistrationGenerationBijection name) ->
+  (registrations : RegistrationCorrespondenceByGeneration nameEq mapping left right) ->
+  (capital : IndependentCanonicalSchedule name key world error value protocol nameEq keyEq left) ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq left ->
+  (selected : name) ->
+  (packet : VestigialEndpointGeneration name key world error value nameEq keyEq
+    (leftFinalGenerations registrations) (leftDeletedGenerations registrations) selected leftFinal) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected
+    (registry (canonicalFinal (canonicalSchedule capital))) = Nothing)
+o20CanonicalVestigialDisappears name key world error value protocol nameEq keyEq generationEq
+  left right mapping registrations capital unique selected packet =
+    o20ReducedAbsenceSurvivesSorting nameEq keyEq left capital selected
+      (replace {p = \actor => lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor
+        (registry (reducedFinal (capitalReduction capital))) = Nothing}
+        (cong generationName (currentBirthStampExact
+          (acceptedLeftCurrentBirth name key world error value nameEq left right mapping registrations selected
+            (vestigialGeneration packet) (vestigialGenerationCurrent packet))))
+        (o20ClassifiedChainAbsent name key world error value protocol nameEq keyEq generationEq
+          left (reducedTrace (capitalReduction capital)) (capitalPremises capital)
+          (reductionDeletionDerivation (capitalReduction capital)) (reducedClosingFree (capitalReduction capital)) unique
+          (vestigialGeneration packet)
+          (o20AcceptedDiscardedBirthClassified name key world error value nameEq left right mapping registrations
+            (vestigialGeneration packet) (vestigialBirthDiscarded packet))))
