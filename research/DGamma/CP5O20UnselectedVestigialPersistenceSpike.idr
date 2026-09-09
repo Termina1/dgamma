@@ -48,3 +48,13 @@ o20UnselectedVestigialControls nameEq keyEq left right mapping registrations can
           (trans (cong (lookupCurrentGeneration @{nameEq} selected)
             (sym (o20DeletionAcceptedOriginalLive nameEq keyEq left right mapping registrations candidate result)))
             (vestigialGenerationCurrent packet)))) member))
+
+||| Native control agreement cannot turn an observed present fiber into
+||| absence. This primitive eliminator does not claim full vestigial transport.
+export
+0 o20PresentControlsNotAbsent :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {fiber : Fiber name key value world error} ->
+  {observed : Maybe (Fiber name key value world error)} ->
+  FiberControlMaybeRelated (Just fiber) observed -> (observed = Nothing) -> Void
+o20PresentControlsNotAbsent (SomeControlFibers related) absent = uninhabited absent
