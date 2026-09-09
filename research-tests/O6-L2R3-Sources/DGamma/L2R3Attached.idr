@@ -90,3 +90,30 @@ data OrderedForcedRootBundle :
     (0 forced : AttachedReason nameEq selected core priorRoots component) ->
     (0 tail : OrderedForcedRootBundle nameEq selected core (root :: priorRoots) rest) ->
     OrderedForcedRootBundle nameEq selected core priorRoots (MoreTransitions step rest)
+
+||| Research counterpart of CP3 ActorLifecycleOnly:1786. An extended actor
+||| core, optionally followed by an ordered forced-root bundle starting with
+||| EMPTY history. Release witnesses lie in that same core, hence physically
+||| before every bundled root. No reverse coercion or normalization is claimed.
+public export
+data ActorLifecycleOnlyAttached :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (selected : name) ->
+  {first, finalState : SystemState name key value world error} ->
+  Transitions first finalState -> Type where
+  AttachedWithoutRoots :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {nameEq : DecEq name} -> {selected : name} ->
+    {first, finalState : SystemState name key value world error} ->
+    (core : Transitions first finalState) ->
+    (0 extended : ActorLifecycleOnlyExtended nameEq selected core) ->
+    ActorLifecycleOnlyAttached nameEq selected core
+  AttachedWithRoots :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {nameEq : DecEq name} -> {selected : name} ->
+    {first, coreEnd, finalState : SystemState name key value world error} ->
+    (core : Transitions first coreEnd) ->
+    (0 extended : ActorLifecycleOnlyExtended nameEq selected core) ->
+    (bundle : Transitions coreEnd finalState) ->
+    (0 orderedForced : OrderedForcedRootBundle nameEq selected core [] bundle) ->
+    ActorLifecycleOnlyAttached nameEq selected (appendTransitions core bundle)
