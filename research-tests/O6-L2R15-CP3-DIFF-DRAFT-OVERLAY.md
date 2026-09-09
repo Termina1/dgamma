@@ -622,6 +622,237 @@ Quantities: installedness, actor grammar, no-earlier/no-later and final activity
 
 The standalone identical patch is `research-tests/O6-L2R15-CP3-TIER1-SIGNED-DIFF.patch`; exact hashes, complete rename map and graph inventory are in `research-tests/O6-L2R15-CP3-REBUILD-INVENTORY.json`.
 
+### Exact final actor/attached grammar (complete replacement text)
+
+This is the same checked-backed SAME-BUNDLE grammar embedded in the single patch, expanded without diff context elision. No cross-bundle history is supplied.
+
+```idris
+public export
+data ActorLifecycleCore :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (selected : name) ->
+  {first, finalState : SystemState name key value world error} ->
+  Transitions first finalState -> Type where
+  CoreLifecycleEnd :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {nameEq : DecEq name} -> {selected : name} -> {state : SystemState name key value world error} ->
+    ActorLifecycleCore nameEq selected (NoTransitions {state})
+  CoreLifecycleStep :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {nameEq : DecEq name} -> {selected : name} ->
+    {first, middle, finalState : SystemState name key value world error} ->
+    (step : Transition first middle) -> (rest : Transitions middle finalState) ->
+    (0 lifecycle : isLifecycleAction (transitionAction step) = True) ->
+    (0 owned : transitionActor step = selected) ->
+    (0 only : ActorLifecycleCore nameEq selected rest) ->
+    ActorLifecycleCore nameEq selected (MoreTransitions step rest)
+  CoreYieldedRegistrationStep :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {nameEq : DecEq name} -> {selected, child : name} ->
+    {component : Component key value world error} ->
+    {first, middle, finalState : SystemState name key value world error} ->
+    (step : Transition first middle) -> (rest : Transitions middle finalState) ->
+    (0 yielded : transitionAction step = OInsert child (ChildOf selected) component) ->
+    (0 only : ActorLifecycleCore nameEq selected rest) ->
+    ActorLifecycleCore nameEq selected (MoreTransitions step rest)
+  CoreChildRetireStep :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {nameEq : DecEq name} -> {selected : name} ->
+    {first, middle, finalState : SystemState name key value world error} ->
+    (step : Transition first middle) -> (rest : Transitions middle finalState) ->
+    (child : name) -> (fiber : Fiber name key value world error) ->
+    (0 found : lookupFiber {name} {key} {value} {world} {error} @{nameEq} child (registry first) = Just fiber) ->
+    (0 parent : fiberParent fiber = ChildOf selected) ->
+    (0 action : transitionAction step = ORetire child) ->
+    (0 only : ActorLifecycleCore nameEq selected rest) ->
+    ActorLifecycleCore nameEq selected (MoreTransitions step rest)
+  CoreChildRemoveStep :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {nameEq : DecEq name} -> {selected : name} ->
+    {first, middle, finalState : SystemState name key value world error} ->
+    (step : Transition first middle) -> (rest : Transitions middle finalState) ->
+    (child : name) -> (fiber : Fiber name key value world error) ->
+    (0 found : lookupFiber {name} {key} {value} {world} {error} @{nameEq} child (registry first) = Just fiber) ->
+    (0 parent : fiberParent fiber = ChildOf selected) ->
+    (0 action : transitionAction step = ORemove child) ->
+    (0 only : ActorLifecycleCore nameEq selected rest) ->
+    ActorLifecycleCore nameEq selected (MoreTransitions step rest)
+
+public export
+record AttachedRelease
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (selected : name)
+  {first, coreEnd : SystemState name key value world error}
+  (core : Transitions first coreEnd)
+  (component : Component key value world error) where
+  constructor MkAttachedRelease
+  releasedChild : name
+  releasedFiber : Fiber name key value world error
+  releaseOccurrence : LocatedActionOccurrence (ORemove releasedChild) core
+  0 releaseFound : lookupFiber {name} {key} {value} {world} {error} @{nameEq}
+    releasedChild (registry (actionBeforeState releaseOccurrence)) = Just releasedFiber
+  0 releaseParent : fiberParent releasedFiber = ChildOf selected
+  sharedProvision : key
+  0 childDeclares : Elem sharedProvision (dependencies (componentProvisions (fiberComponent releasedFiber)))
+  0 rootDeclares : Elem sharedProvision (dependencies (componentProvisions component))
+
+||| Key-forced locally, or barrier-forced by a root already consumed by the
+||| same ordered bundle. The initially empty history is supplied only by the
+||| attached wrapper; arbitrary prior roots cannot seed an attached body.
+public export
+data AttachedReason :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (selected : name) ->
+  {first, coreEnd : SystemState name key value world error} ->
+  (core : Transitions first coreEnd) -> (priorRoots : List name) ->
+  (component : Component key value world error) -> Type where
+  KeyReleased :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {nameEq : DecEq name} -> {selected : name} ->
+    {first, coreEnd : SystemState name key value world error} ->
+    {core : Transitions first coreEnd} -> {priorRoots : List name} ->
+    {component : Component key value world error} ->
+    AttachedRelease name key world error value nameEq selected core component ->
+    AttachedReason nameEq selected core priorRoots component
+  EarlierForcedRoot :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {nameEq : DecEq name} -> {selected, earlier : name} ->
+    {first, coreEnd : SystemState name key value world error} ->
+    {core : Transitions first coreEnd} -> {priorRoots : List name} ->
+    {component : Component key value world error} ->
+    (0 earlierInBundle : Elem earlier priorRoots) ->
+    AttachedReason nameEq selected core priorRoots component
+
+||| New SAME-BUNDLE controls grammar. Native edges retain orchestration order.
+||| The wrapper starts EMPTY; no arbitrary earlier-bundle history is trusted.
+||| Cross-bundle authenticated prefix/generation history is an open research
+||| obligation, not a blocker for this SAME-BUNDLE definition. Local control
+||| witnesses also check actual source roots.
+public export
+data OrderedForcedRootBundle :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (selected : name) ->
+  {first, coreEnd : SystemState name key value world error} ->
+  (core : Transitions first coreEnd) -> (priorRoots : List name) ->
+  {bundleStart, finalState : SystemState name key value world error} ->
+  Transitions bundleStart finalState -> Type where
+  ForcedBundleEnd :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {nameEq : DecEq name} -> {selected : name} ->
+    {first, coreEnd, state : SystemState name key value world error} ->
+    {core : Transitions first coreEnd} -> {priorRoots : List name} ->
+    OrderedForcedRootBundle nameEq selected core priorRoots (NoTransitions {state})
+  ForcedBundleInsert :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {nameEq : DecEq name} -> {selected : name} ->
+    {first, coreEnd, before, middle, finalState : SystemState name key value world error} ->
+    {core : Transitions first coreEnd} -> {priorRoots : List name} ->
+    (root : name) -> (component : Component key value world error) ->
+    (step : Transition before middle) -> (rest : Transitions middle finalState) ->
+    (0 inserted : transitionAction step = OInsert root Root component) ->
+    (0 forced : AttachedReason nameEq selected core priorRoots component) ->
+    (0 tail : OrderedForcedRootBundle nameEq selected core (root :: priorRoots) rest) ->
+    OrderedForcedRootBundle nameEq selected core priorRoots (MoreTransitions step rest)
+
+  ForcedBundleRetire :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {nameEq : DecEq name} -> {selected : name} ->
+    {first, coreEnd, before, middle, finalState : SystemState name key value world error} ->
+    {core : Transitions first coreEnd} -> {priorRoots : List name} ->
+    (root : name) -> (fiber : Fiber name key value world error) ->
+    (step : Transition before middle) -> (rest : Transitions middle finalState) ->
+    (0 alreadyBundled : Elem root priorRoots) ->
+    (0 found : lookupFiber {name} {key} {value} {world} {error} @{nameEq} root (registry before) = Just fiber) ->
+    (0 rootParent : fiberParent fiber = Root) ->
+    (0 controlled : transitionAction step = ORetire root) ->
+    (0 tail : OrderedForcedRootBundle nameEq selected core priorRoots rest) ->
+    OrderedForcedRootBundle nameEq selected core priorRoots (MoreTransitions step rest)
+  ForcedBundleRemove :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {nameEq : DecEq name} -> {selected : name} ->
+    {first, coreEnd, before, middle, finalState : SystemState name key value world error} ->
+    {core : Transitions first coreEnd} -> {priorRoots : List name} ->
+    (root : name) -> (fiber : Fiber name key value world error) ->
+    (step : Transition before middle) -> (rest : Transitions middle finalState) ->
+    (0 alreadyBundled : Elem root priorRoots) ->
+    (0 found : lookupFiber {name} {key} {value} {world} {error} @{nameEq} root (registry before) = Just fiber) ->
+    (0 rootParent : fiberParent fiber = Root) ->
+    (0 controlled : transitionAction step = ORemove root) ->
+    (0 tail : OrderedForcedRootBundle nameEq selected core priorRoots rest) ->
+    OrderedForcedRootBundle nameEq selected core priorRoots (MoreTransitions step rest)
+
+||| The enlarged body is core ++ bundle-with-controls. EMPTY local history
+||| prevents an arbitrary caller from inventing prior bundled roots.
+public export
+data ActorLifecycleOnly :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (selected : name) ->
+  {first, finalState : SystemState name key value world error} ->
+  Transitions first finalState -> Type where
+  ActorWithoutForcedRoots :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {nameEq : DecEq name} -> {selected : name} ->
+    {first, finalState : SystemState name key value world error} ->
+    (core : Transitions first finalState) ->
+    (0 extended : ActorLifecycleCore nameEq selected core) ->
+    ActorLifecycleOnly nameEq selected core
+  ActorWithForcedRoots :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {nameEq : DecEq name} -> {selected : name} ->
+    {first, coreEnd, finalState : SystemState name key value world error} ->
+    (core : Transitions first coreEnd) ->
+    (0 extended : ActorLifecycleCore nameEq selected core) ->
+    (bundle : Transitions coreEnd finalState) ->
+    (0 orderedForced : OrderedForcedRootBundle nameEq selected core [] bundle) ->
+    ActorLifecycleOnly nameEq selected (appendTransitions core bundle)
+```
+
+### Exact final CanonicalInputPlacement (complete record text)
+
+Helpers and least/barrier/controls-membership definitions are included in the patch above; the complete final A8 record is repeated here so unchanged child fields are not hidden by diff context.
+
+```idris
+public export
+record CanonicalInputPlacement
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (keyEq : DecEq key)
+  (supportState : SystemState name key value world error) (order : List name)
+  {0 initial, originalFinal, finalState : SystemState name key value world error}
+  (0 original : Transitions initial originalFinal) (0 trace : Transitions initial finalState) where
+  constructor MkCanonicalInputPlacement
+  0 placementExternalInputsSame : SameExternalOrchestration nameEq original trace
+  0 rootGenerationEarliestAvailable :
+    {root : name} -> {component : Component key value world error} ->
+    (birth : LocatedActionOccurrence (OInsert root Root component) trace) ->
+    EarliestAvailableRootBirth name key world error value nameEq keyEq trace root component birth
+  0 rootGenerationFresh :
+    {root : name} -> {component : Component key value world error} ->
+    (birth : LocatedActionOccurrence (OInsert root Root component) trace) ->
+    lookupFiber @{nameEq} {key = key} {value = value} {world = world}
+      {error = error} root (registry (actionBeforeState birth)) = Nothing
+  0 rootGenerationBeforeOwnLifecycle :
+    {root : name} -> {component : Component key value world error} ->
+    (birth : LocatedActionOccurrence (OInsert root Root component) trace) ->
+    {action : Action name key value world error} ->
+    (lifecycle : LocatedActionOccurrence action trace) ->
+    isLifecycleAction action = True -> actionOwner action = root ->
+    LT (locatedActionOrdinal birth) (locatedActionOrdinal lifecycle)
+  ||| The frozen child-generation clause is retained without strengthening.
+  0 childGenerationBeforeOwnLifecycle :
+    (n, parent : name) -> Elem n order ->
+    (fiber : Fiber name key value world error) ->
+    lookupFiber @{nameEq} n (registry supportState) = Just fiber ->
+    fiberParent fiber = ChildOf parent ->
+    (component : Component key value world error **
+     birth : LocatedGeneratedRegistration n parent component trace **
+     (lookupFiber @{nameEq} {key = key} {value = value} {world = world}
+       {error = error} n (registry (registrationBefore birth)) = Nothing,
+      (action : Action name key value world error) ->
+      (lifecycle : LocatedActionOccurrence action trace) ->
+      isLifecycleAction action = True -> actionOwner action = n ->
+      LT (registrationOrdinal birth) (locatedActionOrdinal lifecycle)))
+```
+
 ### Checked carry-over versus required re-check
 
 “Carries over” here means the mathematical statement/body has the disclosed structural rename; it does **not** mean a fresh production PASS. Every item must be rechecked after production rehome and import/name disambiguation.
@@ -640,11 +871,11 @@ L2R10's restricted lifecycle role, L2R11's native occurrence/packet route, L2R12
 
 ### Exact research re-check / repair inventory
 
-This is the import-reachable closure from `DGamma.CP3` over the current lane's tracked `src/`, `research/`, `research-tests/` plus owned L2R15 sources. It is NOT an inventory of unseen new main-lane commits. R205 must refresh it at its actual production head before serialized rebuilding. All listed paths require recheck. A `*` means lexical old-API/constructor references or definitions colliding with newly production-owned names: mandatory migration review/repair candidate, NOT a claim that a compiler failure has already occurred. The JSON records per-path imports, source hashes, exact hit names and all affected production paths as well.
+This is the import-reachable closure from `DGamma.CP3` over the current lane's tracked `src/`, `research/`, `research-tests/` plus owned L2R15 sources. It is NOT an inventory of unseen new main-lane commits. R205 must refresh it at its actual production head before serialized rebuilding. All listed paths require recheck. A `*` means lexical old-API/constructor references, colliding definitions, or a direct CP3 import plus unqualified newly rehomed names (including AvailabilityTrace/type-identity and import-ambiguity risks): mandatory migration review/repair candidate, NOT a claim that a compiler failure has already occurred. The JSON records per-path imports, source hashes, exact hit names and all affected production paths as well.
 
-**430 research paths** (97 research + 333 research-tests); **18** marked repair candidates.
+**430 research paths** (97 research + 333 research-tests); **102** marked repair candidates.
 
-- `research-tests/DGamma/L2R1AvailabilityCollision.idr`
+- **\*** `research-tests/DGamma/L2R1AvailabilityCollision.idr`
 - **\*** `research-tests/DGamma/L2R1R191Relocation.idr`
 - `research-tests/DGamma/L2R1RootHoist.idr`
 - `research-tests/DGamma/R10ActorBlockDecompositionFixturesPositive.idr`
@@ -680,7 +911,7 @@ This is the import-reachable closure from `DGamma.CP3` over the current lane's t
 - `research-tests/DGamma/R172O17RootLifetimeCapital.idr`
 - `research-tests/DGamma/R173CanonicalBlockWorklistFixtures.idr`
 - `research-tests/DGamma/R173UniqueRawNameInsertionsFixtures.idr`
-- `research-tests/DGamma/R174O17ProvisionCollisionCandidate.idr`
+- **\*** `research-tests/DGamma/R174O17ProvisionCollisionCandidate.idr`
 - `research-tests/DGamma/R174O17ProvisionCollisionUnique.idr`
 - `research-tests/DGamma/R174O17ProvisionProtocol.idr`
 - `research-tests/DGamma/R174O17SortedProvisionGuard.idr`
@@ -805,88 +1036,88 @@ This is the import-reachable closure from `DGamma.CP3` over the current lane's t
 - `research-tests/O6-L2R10-Sources/DGamma/L2R10BeginAdapter.idr`
 - `research-tests/O6-L2R10-Sources/DGamma/L2R10LifecycleRoles.idr`
 - `research-tests/O6-L2R10-Sources/DGamma/L2R10MoveCutFixtures.idr`
-- `research-tests/O6-L2R10-Sources/DGamma/L2R10MoveCutObservation.idr`
+- **\*** `research-tests/O6-L2R10-Sources/DGamma/L2R10MoveCutObservation.idr`
 - `research-tests/O6-L2R10-Sources/DGamma/L2R10OrdinalData.idr`
 - `research-tests/O6-L2R10-Sources/DGamma/L2R10PhaseFixtures.idr`
-- `research-tests/O6-L2R10-Sources/DGamma/L2R10PhaseScan.idr`
+- **\*** `research-tests/O6-L2R10-Sources/DGamma/L2R10PhaseScan.idr`
 - `research-tests/O6-L2R10-Sources/DGamma/L2R10SplitEdges.idr`
-- `research-tests/O6-L2R10-Sources/DGamma/L2R10UniqueMoveDomain.idr`
+- **\*** `research-tests/O6-L2R10-Sources/DGamma/L2R10UniqueMoveDomain.idr`
 - `research-tests/O6-L2R11-Sources/DGamma/L2R11ActualWordReplay.idr`
-- `research-tests/O6-L2R11-Sources/DGamma/L2R11ClassifierSquare.idr`
+- **\*** `research-tests/O6-L2R11-Sources/DGamma/L2R11ClassifierSquare.idr`
 - `research-tests/O6-L2R11-Sources/DGamma/L2R11CoreFixture.idr`
 - `research-tests/O6-L2R11-Sources/DGamma/L2R11CorePackets.idr`
 - `research-tests/O6-L2R11-Sources/DGamma/L2R11LifecycleDispatch.idr`
 - `research-tests/O6-L2R11-Sources/DGamma/L2R11LifecycleSnapshot.idr`
-- `research-tests/O6-L2R11-Sources/DGamma/L2R11LocatedCut.idr`
-- `research-tests/O6-L2R11-Sources/DGamma/L2R11OpaqueCore.idr`
-- `research-tests/O6-L2R11-Sources/DGamma/L2R11PhaseDecode.idr`
+- **\*** `research-tests/O6-L2R11-Sources/DGamma/L2R11LocatedCut.idr`
+- **\*** `research-tests/O6-L2R11-Sources/DGamma/L2R11OpaqueCore.idr`
+- **\*** `research-tests/O6-L2R11-Sources/DGamma/L2R11PhaseDecode.idr`
 - `research-tests/O6-L2R11-Sources/DGamma/L2R11R191Inventory.idr`
 - `research-tests/O6-L2R11-Sources/DGamma/L2R11ReleaseAgreement.idr`
 - `research-tests/O6-L2R11-Sources/DGamma/L2R11WordInventory.idr`
 - `research-tests/O6-L2R12-Sources/DGamma/L2R12AdvanceDispatch.idr`
-- `research-tests/O6-L2R12-Sources/DGamma/L2R12AlignedCut.idr`
-- `research-tests/O6-L2R12-Sources/DGamma/L2R12ClassifierNative.idr`
+- **\*** `research-tests/O6-L2R12-Sources/DGamma/L2R12AlignedCut.idr`
+- **\*** `research-tests/O6-L2R12-Sources/DGamma/L2R12ClassifierNative.idr`
 - `research-tests/O6-L2R12-Sources/DGamma/L2R12ClosedFold.idr`
-- `research-tests/O6-L2R12-Sources/DGamma/L2R12DistanceFrame.idr`
+- **\*** `research-tests/O6-L2R12-Sources/DGamma/L2R12DistanceFrame.idr`
 - `research-tests/O6-L2R12-Sources/DGamma/L2R12InventoryDomain.idr`
 - `research-tests/O6-L2R12-Sources/DGamma/L2R12KindDispatch.idr`
-- `research-tests/O6-L2R12-Sources/DGamma/L2R12PacketContiguity.idr`
+- **\*** `research-tests/O6-L2R12-Sources/DGamma/L2R12PacketContiguity.idr`
 - `research-tests/O6-L2R12-Sources/DGamma/L2R12PacketFixture.idr`
-- `research-tests/O6-L2R12-Sources/DGamma/L2R12PhaseAccepted.idr`
+- **\*** `research-tests/O6-L2R12-Sources/DGamma/L2R12PhaseAccepted.idr`
 - `research-tests/O6-L2R12-Sources/DGamma/L2R12PhaseAgreement.idr`
-- `research-tests/O6-L2R12-Sources/DGamma/L2R12PhaseContract.idr`
-- `research-tests/O6-L2R12-Sources/DGamma/L2R12PhaseNativeFixtures.idr`
+- **\*** `research-tests/O6-L2R12-Sources/DGamma/L2R12PhaseContract.idr`
+- **\*** `research-tests/O6-L2R12-Sources/DGamma/L2R12PhaseNativeFixtures.idr`
 - `research-tests/O6-L2R12-Sources/DGamma/L2R12R191Segments.idr`
 - `research-tests/O6-L2R12-Sources/DGamma/L2R12R191Whole.idr`
-- `research-tests/O6-L2R12-Sources/DGamma/L2R12SelectedAdjacency.idr`
+- **\*** `research-tests/O6-L2R12-Sources/DGamma/L2R12SelectedAdjacency.idr`
 - `research-tests/O6-L2R12-Sources/DGamma/L2R12SnapshotSuffix.idr`
 - `research-tests/O6-L2R12-Sources/DGamma/L2R12ValidWordFold.idr`
 - `research-tests/O6-L2R13-Sources/DGamma/L2R13CoreRestoration.idr`
 - `research-tests/O6-L2R13-Sources/DGamma/L2R13DistanceFixtures.idr`
-- `research-tests/O6-L2R13-Sources/DGamma/L2R13ExtendMove.idr`
-- `research-tests/O6-L2R13-Sources/DGamma/L2R13ForcedAnchor.idr`
+- **\*** `research-tests/O6-L2R13-Sources/DGamma/L2R13ExtendMove.idr`
+- **\*** `research-tests/O6-L2R13-Sources/DGamma/L2R13ForcedAnchor.idr`
 - `research-tests/O6-L2R13-Sources/DGamma/L2R13InsertExtensional.idr`
 - `research-tests/O6-L2R13-Sources/DGamma/L2R13NativeSuffixFrames.idr`
 - `research-tests/O6-L2R13-Sources/DGamma/L2R13PacketEndpointFixture.idr`
-- `research-tests/O6-L2R13-Sources/DGamma/L2R13PacketEndpointTransport.idr`
-- `research-tests/O6-L2R13-Sources/DGamma/L2R13PhaseEntry.idr`
+- **\*** `research-tests/O6-L2R13-Sources/DGamma/L2R13PacketEndpointTransport.idr`
+- **\*** `research-tests/O6-L2R13-Sources/DGamma/L2R13PhaseEntry.idr`
 - `research-tests/O6-L2R13-Sources/DGamma/L2R13PhaseFixtures.idr`
 - `research-tests/O6-L2R13-Sources/DGamma/L2R13SquareSuccessor.idr`
-- `research-tests/O6-L2R13-Sources/DGamma/L2R13TerminalMove.idr`
+- **\*** `research-tests/O6-L2R13-Sources/DGamma/L2R13TerminalMove.idr`
 - `research-tests/O6-L2R14-Sources/DGamma/L2R14ActionShapes.idr`
-- `research-tests/O6-L2R14-Sources/DGamma/L2R14AdjacentNative.idr`
-- `research-tests/O6-L2R14-Sources/DGamma/L2R14CatalogQuery.idr`
+- **\*** `research-tests/O6-L2R14-Sources/DGamma/L2R14AdjacentNative.idr`
+- **\*** `research-tests/O6-L2R14-Sources/DGamma/L2R14CatalogQuery.idr`
 - `research-tests/O6-L2R14-Sources/DGamma/L2R14CoreShapeFold.idr`
 - `research-tests/O6-L2R14-Sources/DGamma/L2R14IterationFixtures.idr`
-- `research-tests/O6-L2R14-Sources/DGamma/L2R14IterationFromMoves.idr`
+- **\*** `research-tests/O6-L2R14-Sources/DGamma/L2R14IterationFromMoves.idr`
 - `research-tests/O6-L2R14-Sources/DGamma/L2R14LocalOperations.idr`
 - `research-tests/O6-L2R14-Sources/DGamma/L2R14LocalShapeFixture.idr`
 - `research-tests/O6-L2R14-Sources/DGamma/L2R14LocalSquareFixture.idr`
-- `research-tests/O6-L2R14-Sources/DGamma/L2R14LocalSquareProduction.idr`
-- `research-tests/O6-L2R14-Sources/DGamma/L2R14PhaseOrigins.idr`
-- `research-tests/O6-L2R14-Sources/DGamma/L2R14PhaseRelease.idr`
-- `research-tests/O6-L2R14-Sources/DGamma/L2R14PhaseSeed.idr`
-- `research-tests/O6-L2R15-Sources/DGamma/L2R15GlobalFrames.idr`
+- **\*** `research-tests/O6-L2R14-Sources/DGamma/L2R14LocalSquareProduction.idr`
+- **\*** `research-tests/O6-L2R14-Sources/DGamma/L2R14PhaseOrigins.idr`
+- **\*** `research-tests/O6-L2R14-Sources/DGamma/L2R14PhaseRelease.idr`
+- **\*** `research-tests/O6-L2R14-Sources/DGamma/L2R14PhaseSeed.idr`
+- **\*** `research-tests/O6-L2R15-Sources/DGamma/L2R15GlobalFrames.idr`
 - `research-tests/O6-L2R15-Sources/DGamma/L2R15LocalShapeAssembly.idr`
 - `research-tests/O6-L2R15-Sources/DGamma/L2R15LocalSquareFixture.idr`
-- `research-tests/O6-L2R15-Sources/DGamma/L2R15LocalSquareProduction.idr`
+- **\*** `research-tests/O6-L2R15-Sources/DGamma/L2R15LocalSquareProduction.idr`
 - `research-tests/O6-L2R15-Sources/DGamma/L2R15NativeControlShapes.idr`
 - `research-tests/O6-L2R15-Sources/DGamma/L2R15NativeInsertShape.idr`
 - `research-tests/O6-L2R15-Sources/DGamma/L2R15PacketControlShapes.idr`
-- `research-tests/O6-L2R15-Sources/DGamma/L2R15PhaseActor.idr`
+- **\*** `research-tests/O6-L2R15-Sources/DGamma/L2R15PhaseActor.idr`
 - `research-tests/O6-L2R15-Sources/DGamma/L2R15PhaseHistory.idr`
-- `research-tests/O6-L2R15-Sources/DGamma/L2R15PhaseIterationAssembly.idr`
-- `research-tests/O6-L2R15-Sources/DGamma/L2R15PhaseOccurrence.idr`
-- `research-tests/O6-L2R15-Sources/DGamma/L2R15SuffixAnchors.idr`
-- `research-tests/O6-L2R15-Sources/DGamma/L2R15SuffixScans.idr`
+- **\*** `research-tests/O6-L2R15-Sources/DGamma/L2R15PhaseIterationAssembly.idr`
+- **\*** `research-tests/O6-L2R15-Sources/DGamma/L2R15PhaseOccurrence.idr`
+- **\*** `research-tests/O6-L2R15-Sources/DGamma/L2R15SuffixAnchors.idr`
+- **\*** `research-tests/O6-L2R15-Sources/DGamma/L2R15SuffixScans.idr`
 - `research-tests/O6-L2R2-Sources/DGamma/L2R2CheckedSnapshot.idr`
 - `research-tests/O6-L2R2-Sources/DGamma/L2R2ConditionalGap.idr`
 - `research-tests/O6-L2R2-Sources/DGamma/L2R2ForeignReplay.idr`
 - `research-tests/O6-L2R2-Sources/DGamma/L2R2RemoveSquare.idr`
 - `research-tests/O6-L2R2-Sources/DGamma/L2R2RetireInsert.idr`
 - `research-tests/O6-L2R2-Sources/DGamma/L2R2RetireSquare.idr`
-- `research-tests/O6-L2R2-Sources/DGamma/L2R2RootPhase.idr`
-- `research-tests/O6-L2R2-Sources/DGamma/L2R2RootSnapshot.idr`
+- **\*** `research-tests/O6-L2R2-Sources/DGamma/L2R2RootPhase.idr`
+- **\*** `research-tests/O6-L2R2-Sources/DGamma/L2R2RootSnapshot.idr`
 - `research-tests/O6-L2R2-Sources/DGamma/L2R2SmallBlocks.idr`
 - `research-tests/O6-L2R2-Sources/DGamma/L2R2SmallExecution.idr`
 - **\*** `research-tests/O6-L2R2-Sources/DGamma/L2R2SmallPlacement.idr`
@@ -894,85 +1125,85 @@ This is the import-reachable closure from `DGamma.CP3` over the current lane's t
 - **\*** `research-tests/O6-L2R3-Sources/DGamma/L2R3Attached.idr`
 - **\*** `research-tests/O6-L2R3-Sources/DGamma/L2R3AttachedGap.idr`
 - `research-tests/O6-L2R3-Sources/DGamma/L2R3BarrierBlocks.idr`
-- `research-tests/O6-L2R3-Sources/DGamma/L2R3BarrierExecution.idr`
+- **\*** `research-tests/O6-L2R3-Sources/DGamma/L2R3BarrierExecution.idr`
 - **\*** `research-tests/O6-L2R3-Sources/DGamma/L2R3BarrierOrder.idr`
 - `research-tests/O6-L2R3-Sources/DGamma/L2R3BarrierStates.idr`
-- `research-tests/O6-L2R3-Sources/DGamma/L2R3BundlePhase.idr`
+- **\*** `research-tests/O6-L2R3-Sources/DGamma/L2R3BundlePhase.idr`
 - `research-tests/O6-L2R3-Sources/DGamma/L2R3BundlePhaseStates.idr`
-- `research-tests/O6-L2R3-Sources/DGamma/L2R3FixtureCoverage.idr`
+- **\*** `research-tests/O6-L2R3-Sources/DGamma/L2R3FixtureCoverage.idr`
 - `research-tests/O6-L2R3-Sources/DGamma/L2R3RemoveDispatch.idr`
 - `research-tests/O6-L2R3-Sources/DGamma/L2R3RetireDispatch.idr`
-- `research-tests/O6-L2R3-Sources/DGamma/L2R3Separation.idr`
-- `research-tests/O6-L2R3-Sources/DGamma/L2R3SmallAttached.idr`
-- `research-tests/O6-L2R4-Sources/DGamma/L2R4AnchorFixtures.idr`
-- `research-tests/O6-L2R4-Sources/DGamma/L2R4AnchorNative.idr`
-- `research-tests/O6-L2R4-Sources/DGamma/L2R4CatalogCoverage.idr`
-- `research-tests/O6-L2R4-Sources/DGamma/L2R4FixtureCoverage.idr`
+- **\*** `research-tests/O6-L2R3-Sources/DGamma/L2R3Separation.idr`
+- **\*** `research-tests/O6-L2R3-Sources/DGamma/L2R3SmallAttached.idr`
+- **\*** `research-tests/O6-L2R4-Sources/DGamma/L2R4AnchorFixtures.idr`
+- **\*** `research-tests/O6-L2R4-Sources/DGamma/L2R4AnchorNative.idr`
+- **\*** `research-tests/O6-L2R4-Sources/DGamma/L2R4CatalogCoverage.idr`
+- **\*** `research-tests/O6-L2R4-Sources/DGamma/L2R4FixtureCoverage.idr`
 - `research-tests/O6-L2R4-Sources/DGamma/L2R4FixtureSeparation.idr`
-- `research-tests/O6-L2R4-Sources/DGamma/L2R4GapApplications.idr`
+- **\*** `research-tests/O6-L2R4-Sources/DGamma/L2R4GapApplications.idr`
 - `research-tests/O6-L2R4-Sources/DGamma/L2R4InsertReplay.idr`
-- `research-tests/O6-L2R4-Sources/DGamma/L2R4Localization.idr`
+- **\*** `research-tests/O6-L2R4-Sources/DGamma/L2R4Localization.idr`
 - `research-tests/O6-L2R4-Sources/DGamma/L2R4NoStraddling.idr`
 - `research-tests/O6-L2R4-Sources/DGamma/L2R4OrchestrationDispatcher.idr`
 - `research-tests/O6-L2R4-Sources/DGamma/L2R4OrdinalObservation.idr`
 - `research-tests/O6-L2R4-Sources/DGamma/L2R4ReplaceCommute.idr`
 - `research-tests/O6-L2R4-Sources/DGamma/L2R4RetireReplay.idr`
-- `research-tests/O6-L2R5-Sources/DGamma/L2R5CatalogFixtures.idr`
-- `research-tests/O6-L2R5-Sources/DGamma/L2R5CurrentCut.idr`
+- **\*** `research-tests/O6-L2R5-Sources/DGamma/L2R5CatalogFixtures.idr`
+- **\*** `research-tests/O6-L2R5-Sources/DGamma/L2R5CurrentCut.idr`
 - `research-tests/O6-L2R5-Sources/DGamma/L2R5ExtensionalFixtures.idr`
 - `research-tests/O6-L2R5-Sources/DGamma/L2R5ExtensionalRetire.idr`
 - `research-tests/O6-L2R5-Sources/DGamma/L2R5ProviderObservation.idr`
 - `research-tests/O6-L2R5-Sources/DGamma/L2R5RetirementFrame.idr`
-- `research-tests/O6-L2R5-Sources/DGamma/L2R5RootCatalog.idr`
-- `research-tests/O6-L2R6-Sources/DGamma/L2R6Anchors.idr`
-- `research-tests/O6-L2R6-Sources/DGamma/L2R6ForcedFixtures.idr`
-- `research-tests/O6-L2R6-Sources/DGamma/L2R6ForcedScan.idr`
-- `research-tests/O6-L2R6-Sources/DGamma/L2R6FrontFixtures.idr`
-- `research-tests/O6-L2R6-Sources/DGamma/L2R6FrontNormal.idr`
-- `research-tests/O6-L2R6-Sources/DGamma/L2R6Iteration.idr`
-- `research-tests/O6-L2R6-Sources/DGamma/L2R6IterationFixtures.idr`
-- `research-tests/O6-L2R6-Sources/DGamma/L2R6IterationObligations.idr`
-- `research-tests/O6-L2R6-Sources/DGamma/L2R6Phase.idr`
-- `research-tests/O6-L2R6-Sources/DGamma/L2R6PlacementFixtures.idr`
+- **\*** `research-tests/O6-L2R5-Sources/DGamma/L2R5RootCatalog.idr`
+- **\*** `research-tests/O6-L2R6-Sources/DGamma/L2R6Anchors.idr`
+- **\*** `research-tests/O6-L2R6-Sources/DGamma/L2R6ForcedFixtures.idr`
+- **\*** `research-tests/O6-L2R6-Sources/DGamma/L2R6ForcedScan.idr`
+- **\*** `research-tests/O6-L2R6-Sources/DGamma/L2R6FrontFixtures.idr`
+- **\*** `research-tests/O6-L2R6-Sources/DGamma/L2R6FrontNormal.idr`
+- **\*** `research-tests/O6-L2R6-Sources/DGamma/L2R6Iteration.idr`
+- **\*** `research-tests/O6-L2R6-Sources/DGamma/L2R6IterationFixtures.idr`
+- **\*** `research-tests/O6-L2R6-Sources/DGamma/L2R6IterationObligations.idr`
+- **\*** `research-tests/O6-L2R6-Sources/DGamma/L2R6Phase.idr`
+- **\*** `research-tests/O6-L2R6-Sources/DGamma/L2R6PlacementFixtures.idr`
 - `research-tests/O6-L2R7-Sources/DGamma/L2R7AnchorFixture.idr`
-- `research-tests/O6-L2R7-Sources/DGamma/L2R7AnchorTransport.idr`
-- `research-tests/O6-L2R7-Sources/DGamma/L2R7AttachedC.idr`
+- **\*** `research-tests/O6-L2R7-Sources/DGamma/L2R7AnchorTransport.idr`
+- **\*** `research-tests/O6-L2R7-Sources/DGamma/L2R7AttachedC.idr`
 - `research-tests/O6-L2R7-Sources/DGamma/L2R7AttachedCGap.idr`
-- `research-tests/O6-L2R7-Sources/DGamma/L2R7CatalogBirth.idr`
-- `research-tests/O6-L2R7-Sources/DGamma/L2R7Classifier.idr`
+- **\*** `research-tests/O6-L2R7-Sources/DGamma/L2R7CatalogBirth.idr`
+- **\*** `research-tests/O6-L2R7-Sources/DGamma/L2R7Classifier.idr`
 - `research-tests/O6-L2R7-Sources/DGamma/L2R7ClassifierFixtures.idr`
 - `research-tests/O6-L2R7-Sources/DGamma/L2R7ControlDisposition.idr`
 - `research-tests/O6-L2R7-Sources/DGamma/L2R7ControlExecution.idr`
 - `research-tests/O6-L2R7-Sources/DGamma/L2R7ControlFixture.idr`
 - `research-tests/O6-L2R7-Sources/DGamma/L2R7ControlStates.idr`
 - `research-tests/O6-L2R7-Sources/DGamma/L2R7ControlTrace.idr`
-- `research-tests/O6-L2R7-Sources/DGamma/L2R7CoverageFixtures.idr`
-- `research-tests/O6-L2R7-Sources/DGamma/L2R7NFObligation.idr`
-- `research-tests/O6-L2R7-Sources/DGamma/L2R7PlacedCoverage.idr`
+- **\*** `research-tests/O6-L2R7-Sources/DGamma/L2R7CoverageFixtures.idr`
+- **\*** `research-tests/O6-L2R7-Sources/DGamma/L2R7NFObligation.idr`
+- **\*** `research-tests/O6-L2R7-Sources/DGamma/L2R7PlacedCoverage.idr`
 - `research-tests/O6-L2R7-Sources/DGamma/L2R7ReleaseDecode.idr`
 - `research-tests/O6-L2R8-Sources/DGamma/L2R8ContiguityExecution.idr`
 - `research-tests/O6-L2R8-Sources/DGamma/L2R8ContiguityStates.idr`
-- `research-tests/O6-L2R8-Sources/DGamma/L2R8CoreContract.idr`
-- `research-tests/O6-L2R8-Sources/DGamma/L2R8IterationArithmetic.idr`
-- `research-tests/O6-L2R8-Sources/DGamma/L2R8NativeWords.idr`
-- `research-tests/O6-L2R8-Sources/DGamma/L2R8OriginMembership.idr`
-- `research-tests/O6-L2R8-Sources/DGamma/L2R8PrefixPhase.idr`
+- **\*** `research-tests/O6-L2R8-Sources/DGamma/L2R8CoreContract.idr`
+- **\*** `research-tests/O6-L2R8-Sources/DGamma/L2R8IterationArithmetic.idr`
+- **\*** `research-tests/O6-L2R8-Sources/DGamma/L2R8NativeWords.idr`
+- **\*** `research-tests/O6-L2R8-Sources/DGamma/L2R8OriginMembership.idr`
+- **\*** `research-tests/O6-L2R8-Sources/DGamma/L2R8PrefixPhase.idr`
 - `research-tests/O6-L2R8-Sources/DGamma/L2R8RegionEmbedding.idr`
-- `research-tests/O6-L2R8-Sources/DGamma/L2R8ReleaseFixtures.idr`
-- `research-tests/O6-L2R8-Sources/DGamma/L2R8ReleaseScan.idr`
+- **\*** `research-tests/O6-L2R8-Sources/DGamma/L2R8ReleaseFixtures.idr`
+- **\*** `research-tests/O6-L2R8-Sources/DGamma/L2R8ReleaseScan.idr`
 - `research-tests/O6-L2R8-Sources/DGamma/L2R8SharedKey.idr`
 - `research-tests/O6-L2R9-Sources/DGamma/L2R9ContiguityEndpoints.idr`
 - `research-tests/O6-L2R9-Sources/DGamma/L2R9ContiguityPackets.idr`
 - `research-tests/O6-L2R9-Sources/DGamma/L2R9ControlClass.idr`
-- `research-tests/O6-L2R9-Sources/DGamma/L2R9CoreRestoration.idr`
+- **\*** `research-tests/O6-L2R9-Sources/DGamma/L2R9CoreRestoration.idr`
 - `research-tests/O6-L2R9-Sources/DGamma/L2R9LifecycleRoles.idr`
-- `research-tests/O6-L2R9-Sources/DGamma/L2R9NativeSelection.idr`
-- `research-tests/O6-L2R9-Sources/DGamma/L2R9OrdinalFixtures.idr`
-- `research-tests/O6-L2R9-Sources/DGamma/L2R9OrdinalLink.idr`
-- `research-tests/O6-L2R9-Sources/DGamma/L2R9OrdinalScan.idr`
-- `research-tests/O6-L2R9-Sources/DGamma/L2R9OrdinalTrails.idr`
+- **\*** `research-tests/O6-L2R9-Sources/DGamma/L2R9NativeSelection.idr`
+- **\*** `research-tests/O6-L2R9-Sources/DGamma/L2R9OrdinalFixtures.idr`
+- **\*** `research-tests/O6-L2R9-Sources/DGamma/L2R9OrdinalLink.idr`
+- **\*** `research-tests/O6-L2R9-Sources/DGamma/L2R9OrdinalScan.idr`
+- **\*** `research-tests/O6-L2R9-Sources/DGamma/L2R9OrdinalTrails.idr`
 - `research-tests/O6-L2R9-Sources/DGamma/L2R9PredecessorClass.idr`
-- `research-tests/O6-L2R9-Sources/DGamma/L2R9PredecessorExclusion.idr`
+- **\*** `research-tests/O6-L2R9-Sources/DGamma/L2R9PredecessorExclusion.idr`
 - `research-tests/O6-L2R9-Sources/DGamma/L2R9ProviderRetirement.idr`
 - `research-tests/O6-L2R9-Sources/DGamma/L2R9ResolverRetirement.idr`
 - `research-tests/O6-L2R9-Sources/DGamma/L2R9RestoredPackets.idr`
@@ -996,7 +1227,7 @@ This is the import-reachable closure from `DGamma.CP3` over the current lane's t
 - `research/DGamma/CP5L2R1ExtendedZeroGap.idr`
 - `research/DGamma/CP5L2R1PlacementCopies.idr`
 - `research/DGamma/CP5L2R1RetireExchange.idr`
-- `research/DGamma/CP5L2R1RootExchange.idr`
+- **\*** `research/DGamma/CP5L2R1RootExchange.idr`
 - `research/DGamma/CP5MatchedBirthMetadataSpike.idr`
 - `research/DGamma/CP5O19ActivationInsertionRowSpike.idr`
 - `research/DGamma/CP5O19ActivationResolutionSpike.idr`

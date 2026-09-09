@@ -1,0 +1,9 @@
+{
+  "armed": true,
+  "armedUTC": "2026-09-09T22:34:41.537790+00:00",
+  "scope": "All L2R15 source and unchanged final validation compilers finished. Entry points now reject BEFORE spawn/target touch. NO lane2 compiler after final gate until R205 finishes serialized rebuild; next lane shift re-seeds build/ from rebuilt main.",
+  "release": "L2R15 is permanently closed; a later owner-authorized lane shift uses its own newly seeded runner after R205 completion.",
+  "lastValidation": "V15",
+  "lastSourceHead": "67829724cfaddedaa44f794a0ff6272a82ad1a2f",
+  "ownCompilerRunning": false
+}

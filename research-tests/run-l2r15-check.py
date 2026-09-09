@@ -9,6 +9,7 @@ Usage: python3 -I run-l2r15-check.py UNIT PATH [DIAGNOSTIC [SYMBOL]].
 import datetime, hashlib, json, os, pathlib, re, signal, subprocess, sys, time
 ROOT = pathlib.Path('/Users/vyacheslavshebanov/Work/dgamma-lane2')
 OUT = pathlib.Path('/tmp/dgamma-l2r15')
+assert not (ROOT/'research-tests/O6-L2R15-POST-GATE-STANDDOWN.json').exists(), 'L2R15 post-gate stand-down: NO compiler until R205 rebuild finishes; next lane shift must re-seed build/'
 unit, path = sys.argv[1:3]
 assert re.fullmatch(r'(?:[ABCD][1-9]\d*-[1-3]|V\d+)', unit), 'Bounded attempt or validation ID required'
 diagnostic = sys.argv[3] if len(sys.argv)>3 else None

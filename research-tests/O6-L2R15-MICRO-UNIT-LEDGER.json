@@ -1,0 +1,588 @@
+{
+  "sourceBoundary": {
+    "timestampUTC": "2026-09-09T22:11:29.138922+00:00",
+    "head": "67829724cfaddedaa44f794a0ff6272a82ad1a2f",
+    "baseline": "afa16946",
+    "newAttemptsForbidden": true,
+    "retainedDeclarations": 42,
+    "retainedModules": 15,
+    "retainedByUnit": {
+      "A": 14,
+      "B": 16,
+      "C": 12
+    },
+    "stoppedGroups": [],
+    "caps": {
+      "A": 14,
+      "B": 16,
+      "C": 12,
+      "D": 3
+    },
+    "statementAttemptGroups": [
+      {
+        "name": "phaseReleaseHistoryDecoded",
+        "invocations": [
+          "A13-1",
+          "A13-2",
+          "A14-1"
+        ]
+      },
+      {
+        "name": "scanFilterPointwise",
+        "invocations": [
+          "B8-1",
+          "B8-2",
+          "B9-1"
+        ]
+      }
+    ],
+    "scope": "Tier 1 diff signable and signed by the owner on 2026-09-09; Tier 2 = open research obligations. Source milestone remains explicitly PARTIAL; no CP3 edit/typecheck or general normalizer.",
+    "statusByUnit": {
+      "A": "14/14 checked: actual occurrence/source/actor alignment and accepted native history path; physical interval/localized lifecycle+release/full phase production OPEN, research obligation not a blocker.",
+      "B": "16/16 checked: Root/Retire suffix-only scans/alignment/anchor/target/distance and PhaseIterationResult base/step; global frames TYPE-only, invariant/move existence/general normalizer OPEN, research obligations not blockers.",
+      "C": "12/12 checked: eight arbitrary native orchestration shapes and LOCAL square conditional on four common-payload lifecycle shapes; actual twelve fixture shape types and LOCAL6~16/derived whole7~17 reproduced. Four general lifecycle shapes OPEN, research obligation not a blocker.",
+      "D": "Owner-signed same-bundle Tier 1 exact CP3 patch and full lane recheck/repair inventory; CP3 unchanged and candidate NOT typechecked. Final validation/evidence only; after final gate NO lane2 compiler until R205 rebuild finishes, next shift re-seeds build/."
+    }
+  },
+  "sourceUnits": [
+    {
+      "unit": "A1",
+      "name": "phaseEventAtNativeHead",
+      "path": "research-tests/O6-L2R15-Sources/DGamma/L2R15PhaseOccurrence.idr",
+      "line": 23,
+      "kind": "proof",
+      "status": "proved at exact documented scope",
+      "invocation": "A1-1",
+      "commit": "039821b695ab9158805134e5f2708983f147bedd",
+      "checkedSourceSHA256": "08d427218ee59cb51c3501b279fef50f7447591010b891c3c8014fba6cfbd552",
+      "currentSourceSHA256": "61d04d6b085c9d7b6e8aa44939c8a057fc175c6087024e00fa599cc418eaa5fa"
+    },
+    {
+      "unit": "A2",
+      "name": "phaseEventThroughNativeHead",
+      "path": "research-tests/O6-L2R15-Sources/DGamma/L2R15PhaseOccurrence.idr",
+      "line": 36,
+      "kind": "proof",
+      "status": "proved at exact documented scope",
+      "invocation": "A2-1",
+      "commit": "878e99d1479f243209a79dc8040c70b72b94bc54",
+      "checkedSourceSHA256": "d8e72d09babef3038808b27815afe3835f4b07f9b993a7cb71fe9b16af433866",
+      "currentSourceSHA256": "61d04d6b085c9d7b6e8aa44939c8a057fc175c6087024e00fa599cc418eaa5fa"
+    },
+    {
+      "unit": "A3",
+      "name": "phaseEventAtNativePrefix",
+      "path": "research-tests/O6-L2R15-Sources/DGamma/L2R15PhaseOccurrence.idr",
+      "line": 52,
+      "kind": "proof",
+      "status": "proved at exact documented scope",
+      "invocation": "A3-1",
+      "commit": "fe6fad799171e3cbc5e2841b9f8da7bd2d1ea833",
+      "checkedSourceSHA256": "39d936686309c608d97385bbb91e24304dd303d50e9907ef1485d524da162406",
+      "currentSourceSHA256": "61d04d6b085c9d7b6e8aa44939c8a057fc175c6087024e00fa599cc418eaa5fa"
+    },
+    {
+      "unit": "A4",
+      "name": "phaseEventAtNativeSplit",
+      "path": "research-tests/O6-L2R15-Sources/DGamma/L2R15PhaseOccurrence.idr",
+      "line": 70,
+      "kind": "proof",
+      "status": "proved at exact documented scope",
+      "invocation": "A4-1",
+      "commit": "c43a6f2c85cf80d37b2868ec08be7211063cebe8",
+      "checkedSourceSHA256": "a65b3959609604da97cc2fbb4c42a804f5d9540ae81a103de62dc85c7f60ccf4",
+      "currentSourceSHA256": "61d04d6b085c9d7b6e8aa44939c8a057fc175c6087024e00fa599cc418eaa5fa"
+    },
+    {
+      "unit": "A5",
+      "name": "phaseEventAtOccurrence",
+      "path": "research-tests/O6-L2R15-Sources/DGamma/L2R15PhaseOccurrence.idr",
+      "line": 86,
+      "kind": "proof",
+      "status": "proved at exact documented scope",
+      "invocation": "A5-1",
+      "commit": "e3e0db3877ed1bd951152746e80257e90ff87d0b",
+      "checkedSourceSHA256": "61d04d6b085c9d7b6e8aa44939c8a057fc175c6087024e00fa599cc418eaa5fa",
+      "currentSourceSHA256": "61d04d6b085c9d7b6e8aa44939c8a057fc175c6087024e00fa599cc418eaa5fa"
+    },
+    {
+      "unit": "A6",
+      "name": "phaseReleaseActorIdentity",
+      "path": "research-tests/O6-L2R15-Sources/DGamma/L2R15PhaseActor.idr",
+      "line": 31,
+      "kind": "proof",
+      "status": "proved at exact documented scope",
+      "invocation": "A6-1",
+      "commit": "2fd1b969c1829037df2c9d040e67194d9800a4ec",
+      "checkedSourceSHA256": "8954b8abb3cdd31acbc187d2159d2b03345683785fbef7dbaf74511aaad8d65b",
+      "currentSourceSHA256": "f0828f55255e484c56f9c7f3a072abfb8b0b15fa48e5fba64e0488f77386b9d6"
+    },
+    {
+      "unit": "A7",
+      "name": "phaseSeedNativeHistory",
+      "path": "research-tests/O6-L2R15-Sources/DGamma/L2R15PhaseActor.idr",
+      "line": 52,
+      "kind": "proof",
+      "status": "proved at exact documented scope",
+      "invocation": "A7-2",
+      "commit": "6087a4f8a40e5291ddd0548ca6dc1da554bf271b",
+      "checkedSourceSHA256": "f0828f55255e484c56f9c7f3a072abfb8b0b15fa48e5fba64e0488f77386b9d6",
+      "currentSourceSHA256": "f0828f55255e484c56f9c7f3a072abfb8b0b15fa48e5fba64e0488f77386b9d6"
+    },
+    {
+      "unit": "A8",
+      "name": "PhaseHistoryPath",
+      "path": "research-tests/O6-L2R15-Sources/DGamma/L2R15PhaseHistory.idr",
+      "line": 33,
+      "kind": "type",
+      "status": "checked TYPE declaration; inhabitance reported separately",
+      "invocation": "A8-1",
+      "commit": "4f4dbc3ecfd272696a69c0330e98527909cc7182",
+      "checkedSourceSHA256": "27004505a3befb18aff45fab6f5df39da0fc8589fbce0421084b906de9762660",
+      "currentSourceSHA256": "1cd5eea372138dff91fd19e98abc354ee8e6b72539e5ae0fd0c371bc44f2c2f7"
+    },
+    {
+      "unit": "A9",
+      "name": "phaseOwnerAtDecision",
+      "path": "research-tests/O6-L2R15-Sources/DGamma/L2R15PhaseHistory.idr",
+      "line": 48,
+      "kind": "proof",
+      "status": "proved at exact documented scope",
+      "invocation": "A9-1",
+      "commit": "3901bf58b2f71530e8349039c4d2213811d75bc4",
+      "checkedSourceSHA256": "d9e5724c583f8028a9910f23ca22504cc8c44aa33a5fa405f1cf50812094d00f",
+      "currentSourceSHA256": "1cd5eea372138dff91fd19e98abc354ee8e6b72539e5ae0fd0c371bc44f2c2f7"
+    },
+    {
+      "unit": "A10",
+      "name": "phaseMaybeOwnerDecoded",
+      "path": "research-tests/O6-L2R15-Sources/DGamma/L2R15PhaseHistory.idr",
+      "line": 59,
+      "kind": "proof",
+      "status": "proved at exact documented scope",
+      "invocation": "A10-1",
+      "commit": "2faa145fdde2a9a2ce1bf3e9a5bf94ca0700746e",
+      "checkedSourceSHA256": "4e4d84e7cc816257f1a057b24930f849a992f24bba0fdf4ad76a986cca2ea3dd",
+      "currentSourceSHA256": "1cd5eea372138dff91fd19e98abc354ee8e6b72539e5ae0fd0c371bc44f2c2f7"
+    },
+    {
+      "unit": "A11",
+      "name": "phaseHistoryPastOwner",
+      "path": "research-tests/O6-L2R15-Sources/DGamma/L2R15PhaseHistory.idr",
+      "line": 71,
+      "kind": "proof",
+      "status": "proved at exact documented scope",
+      "invocation": "A11-1",
+      "commit": "903ca0e2c1fc95c5e663ca551c349f208e9f1999",
+      "checkedSourceSHA256": "121bd8fedf866fecf4fe7cbd70f901052c42d2714e83fb108ffcf8dea5fd2c23",
+      "currentSourceSHA256": "1cd5eea372138dff91fd19e98abc354ee8e6b72539e5ae0fd0c371bc44f2c2f7"
+    },
+    {
+      "unit": "A12",
+      "name": "phaseHistoryAtPositionGuard",
+      "path": "research-tests/O6-L2R15-Sources/DGamma/L2R15PhaseHistory.idr",
+      "line": 85,
+      "kind": "proof",
+      "status": "proved at exact documented scope",
+      "invocation": "A12-1",
+      "commit": "8df8e09a27b65ce8ff7befda012599bba368d414",
+      "checkedSourceSHA256": "8f1cbc21bf14e70c07aa343804481bb0f8ec8ca1d42af9f8e0cb1b38b8aae0b2",
+      "currentSourceSHA256": "1cd5eea372138dff91fd19e98abc354ee8e6b72539e5ae0fd0c371bc44f2c2f7"
+    },
+    {
+      "unit": "A13",
+      "name": "phaseHistoryAtNativePosition",
+      "path": "research-tests/O6-L2R15-Sources/DGamma/L2R15PhaseHistory.idr",
+      "line": 115,
+      "kind": "proof",
+      "status": "proved at exact documented scope",
+      "invocation": "A13-3",
+      "commit": "9014a654a434048240bbced39d71db4c8a639850",
+      "checkedSourceSHA256": "9a7d0cae0f8b719238effef2f456b4b4b4ed1d747fe3bf19fc808d7aabd59e3d",
+      "currentSourceSHA256": "1cd5eea372138dff91fd19e98abc354ee8e6b72539e5ae0fd0c371bc44f2c2f7"
+    },
+    {
+      "unit": "A14",
+      "name": "phaseReleaseHistoryDecoded",
+      "path": "research-tests/O6-L2R15-Sources/DGamma/L2R15PhaseHistory.idr",
+      "line": 134,
+      "kind": "proof",
+      "status": "proved at exact documented scope",
+      "invocation": "A14-1",
+      "commit": "8b0052730f968bf7a4a3789a0c8516e2421e8a0b",
+      "checkedSourceSHA256": "1cd5eea372138dff91fd19e98abc354ee8e6b72539e5ae0fd0c371bc44f2c2f7",
+      "currentSourceSHA256": "1cd5eea372138dff91fd19e98abc354ee8e6b72539e5ae0fd0c371bc44f2c2f7"
+    },
+    {
+      "unit": "B1",
+      "name": "nativeSuffixAligned",
+      "path": "research-tests/O6-L2R15-Sources/DGamma/L2R15SuffixScans.idr",
+      "line": 29,
+      "kind": "proof",
+      "status": "proved at exact documented scope",
+      "invocation": "B1-1",
+      "commit": "af2b89c4313130d3260fb95c0f9a2e8e796da9e6",
+      "checkedSourceSHA256": "250f127e920a961896d527ec562932e62f44f222bd35037ef041362352361c11",
+      "currentSourceSHA256": "8bdb6b93e6b2741d4730de719c9eb84c70f52385b60e4721fbeaf43f2ad140e8"
+    },
+    {
+      "unit": "B2",
+      "name": "nativeHeadScanEquations",
+      "path": "research-tests/O6-L2R15-Sources/DGamma/L2R15SuffixScans.idr",
+      "line": 50,
+      "kind": "proof",
+      "status": "proved at exact documented scope",
+      "invocation": "B2-3",
+      "commit": "080c31892ab7a9ca7b8b901f0bd2955f4507256e",
+      "checkedSourceSHA256": "ed6e615c17cf33ea054c55f7a96bb3e1dfe29a3a0dec330652c4041b278f9027",
+      "currentSourceSHA256": "8bdb6b93e6b2741d4730de719c9eb84c70f52385b60e4721fbeaf43f2ad140e8"
+    },
+    {
+      "unit": "B3",
+      "name": "nativeSuffixCatalog",
+      "path": "research-tests/O6-L2R15-Sources/DGamma/L2R15SuffixScans.idr",
+      "line": 69,
+      "kind": "proof",
+      "status": "proved at exact documented scope",
+      "invocation": "B3-1",
+      "commit": "beb11b0b1efe9a8cf93ca9747428264960322fb0",
+      "checkedSourceSHA256": "d75f4cd381fed48ab141b0007c1862089a1a5e71c26e409b58f102d65429f63a",
+      "currentSourceSHA256": "8bdb6b93e6b2741d4730de719c9eb84c70f52385b60e4721fbeaf43f2ad140e8"
+    },
+    {
+      "unit": "B4",
+      "name": "nativeNonReleaseTail",
+      "path": "research-tests/O6-L2R15-Sources/DGamma/L2R15SuffixScans.idr",
+      "line": 93,
+      "kind": "proof",
+      "status": "proved at exact documented scope",
+      "invocation": "B4-1",
+      "commit": "4a34bcf6a6d9177803577ca479624d541b62e53c",
+      "checkedSourceSHA256": "3c6e9a703e3a40edfd84311dcff44c62d46fde5b9024b7870a5afcd483f85722",
+      "currentSourceSHA256": "8bdb6b93e6b2741d4730de719c9eb84c70f52385b60e4721fbeaf43f2ad140e8"
+    },
+    {
+      "unit": "B5",
+      "name": "nativeSuffixReleases",
+      "path": "research-tests/O6-L2R15-Sources/DGamma/L2R15SuffixScans.idr",
+      "line": 114,
+      "kind": "proof",
+      "status": "proved at exact documented scope",
+      "invocation": "B5-1",
+      "commit": "4d202744c1f8ee84298f4fc32ed67db5bd4e1106",
+      "checkedSourceSHA256": "8bdb6b93e6b2741d4730de719c9eb84c70f52385b60e4721fbeaf43f2ad140e8",
+      "currentSourceSHA256": "8bdb6b93e6b2741d4730de719c9eb84c70f52385b60e4721fbeaf43f2ad140e8"
+    },
+    {
+      "unit": "B6",
+      "name": "scanFoldPointwise",
+      "path": "research-tests/O6-L2R15-Sources/DGamma/L2R15ScanCongruence.idr",
+      "line": 15,
+      "kind": "proof",
+      "status": "proved at exact documented scope",
+      "invocation": "B6-1",
+      "commit": "cb6e0874783bc69a9f0db4620b0625c9a42adf37",
+      "checkedSourceSHA256": "4eeb064bf7ab41a5a757e01778996fcfe4484683c7acf2a3129efd5eb7b28555",
+      "currentSourceSHA256": "df8e302e803247d51a5e67d0913e454f23f6ee332cf7880a9195a4ee88e4afe1"
+    },
+    {
+      "unit": "B7",
+      "name": "scanMapPointwise",
+      "path": "research-tests/O6-L2R15-Sources/DGamma/L2R15ScanCongruence.idr",
+      "line": 27,
+      "kind": "proof",
+      "status": "proved at exact documented scope",
+      "invocation": "B7-1",
+      "commit": "9c6be29a1dcdef37140b988881da0f6ccff0009a",
+      "checkedSourceSHA256": "70a17bf7e646bf2da6a420775bfa0cb54249e1fd1e5d40e1591463da00060041",
+      "currentSourceSHA256": "df8e302e803247d51a5e67d0913e454f23f6ee332cf7880a9195a4ee88e4afe1"
+    },
+    {
+      "unit": "B8",
+      "name": "scanFilterAtGuard",
+      "path": "research-tests/O6-L2R15-Sources/DGamma/L2R15ScanCongruence.idr",
+      "line": 37,
+      "kind": "proof",
+      "status": "proved at exact documented scope",
+      "invocation": "B8-3",
+      "commit": "c604132d12ad6cbe354dc21249da0ea2bf81b968",
+      "checkedSourceSHA256": "72a6561d9adf24057754d852a01248125abd55d8fad91ebb553642556ec4415c",
+      "currentSourceSHA256": "df8e302e803247d51a5e67d0913e454f23f6ee332cf7880a9195a4ee88e4afe1"
+    },
+    {
+      "unit": "B9",
+      "name": "scanFilterPointwise",
+      "path": "research-tests/O6-L2R15-Sources/DGamma/L2R15ScanCongruence.idr",
+      "line": 50,
+      "kind": "proof",
+      "status": "proved at exact documented scope",
+      "invocation": "B9-1",
+      "commit": "d0062c3c4fb5fb2d77d8eb76d83519746f890ffc",
+      "checkedSourceSHA256": "df8e302e803247d51a5e67d0913e454f23f6ee332cf7880a9195a4ee88e4afe1",
+      "currentSourceSHA256": "df8e302e803247d51a5e67d0913e454f23f6ee332cf7880a9195a4ee88e4afe1"
+    },
+    {
+      "unit": "B10",
+      "name": "nativeSuffixAnchorKey",
+      "path": "research-tests/O6-L2R15-Sources/DGamma/L2R15SuffixAnchors.idr",
+      "line": 31,
+      "kind": "proof",
+      "status": "proved at exact documented scope",
+      "invocation": "B10-1",
+      "commit": "dab39030677c2463dbd13338e827084bf8298e8b",
+      "checkedSourceSHA256": "b63912dfc43a157c766e12d8f6502053241d8beee02282ccb7ea393dd2599466",
+      "currentSourceSHA256": "6bdd4b655efc2c8ea5884eef955f65ef60cdac833be72b517977951e69376bc1"
+    },
+    {
+      "unit": "B11",
+      "name": "nativeSuffixTarget",
+      "path": "research-tests/O6-L2R15-Sources/DGamma/L2R15SuffixAnchors.idr",
+      "line": 64,
+      "kind": "proof",
+      "status": "proved at exact documented scope",
+      "invocation": "B11-1",
+      "commit": "e9cab3c6284e024d1d45331a6a0e190568732c71",
+      "checkedSourceSHA256": "317c6b13496367f29bbd9728f2d1d8ef9b6fc8e7946d3d950d33df9ecf0c3576",
+      "currentSourceSHA256": "6bdd4b655efc2c8ea5884eef955f65ef60cdac833be72b517977951e69376bc1"
+    },
+    {
+      "unit": "B12",
+      "name": "nativeDistanceAtAnchorGuard",
+      "path": "research-tests/O6-L2R15-Sources/DGamma/L2R15SuffixAnchors.idr",
+      "line": 89,
+      "kind": "proof",
+      "status": "proved at exact documented scope",
+      "invocation": "B12-1",
+      "commit": "dff6bbef507f481a350eb9581fa050097e3a52f6",
+      "checkedSourceSHA256": "104a85f427a37b9cb9c78978bef2183754601720f061dd3eacbc24ff860b8b5b",
+      "currentSourceSHA256": "6bdd4b655efc2c8ea5884eef955f65ef60cdac833be72b517977951e69376bc1"
+    },
+    {
+      "unit": "B13",
+      "name": "nativeSuffixDistances",
+      "path": "research-tests/O6-L2R15-Sources/DGamma/L2R15SuffixAnchors.idr",
+      "line": 110,
+      "kind": "proof",
+      "status": "proved at exact documented scope",
+      "invocation": "B13-1",
+      "commit": "10191478ea94cdce4f2bfb825416a8c165e1eac1",
+      "checkedSourceSHA256": "6bdd4b655efc2c8ea5884eef955f65ef60cdac833be72b517977951e69376bc1",
+      "currentSourceSHA256": "6bdd4b655efc2c8ea5884eef955f65ef60cdac833be72b517977951e69376bc1"
+    },
+    {
+      "unit": "B14",
+      "name": "GlobalDistanceFramesFromNativeSuffix",
+      "path": "research-tests/O6-L2R15-Sources/DGamma/L2R15GlobalFrames.idr",
+      "line": 39,
+      "kind": "type",
+      "status": "checked TYPE declaration; NOT inhabited",
+      "invocation": "B14-1",
+      "commit": "04f0b5f9a4a362107e6984fd7a8f1080fc04d8c4",
+      "checkedSourceSHA256": "798d85e74f800278f4f0b86ed4ceb2a0e424ce6e17bdb8a2eaaaed221769e3ea",
+      "currentSourceSHA256": "798d85e74f800278f4f0b86ed4ceb2a0e424ce6e17bdb8a2eaaaed221769e3ea"
+    },
+    {
+      "unit": "B15",
+      "name": "phaseIterationAtZero",
+      "path": "research-tests/O6-L2R15-Sources/DGamma/L2R15PhaseIterationAssembly.idr",
+      "line": 33,
+      "kind": "proof",
+      "status": "proved at exact documented scope",
+      "invocation": "B15-1",
+      "commit": "ac0f1297eb096c48ed505f76ffc6fd15f5f3de29",
+      "checkedSourceSHA256": "e3d30592ef9490874267f8ded2581a5e5d51f558d9ab636b9a477088227b8136",
+      "currentSourceSHA256": "a7e0b2468175a650081b650c16432deee3c46fe6e2d580217bbf8921f465f3f2"
+    },
+    {
+      "unit": "B16",
+      "name": "phaseIterationPrepend",
+      "path": "research-tests/O6-L2R15-Sources/DGamma/L2R15PhaseIterationAssembly.idr",
+      "line": 55,
+      "kind": "proof",
+      "status": "proved at exact documented scope",
+      "invocation": "B16-1",
+      "commit": "6bab23be53939be8f120c2e31d48db74cbbca162",
+      "checkedSourceSHA256": "a7e0b2468175a650081b650c16432deee3c46fe6e2d580217bbf8921f465f3f2",
+      "currentSourceSHA256": "a7e0b2468175a650081b650c16432deee3c46fe6e2d580217bbf8921f465f3f2"
+    },
+    {
+      "unit": "C1",
+      "name": "nativeInsertShapeFromView",
+      "path": "research-tests/O6-L2R15-Sources/DGamma/L2R15NativeInsertShape.idr",
+      "line": 27,
+      "kind": "proof",
+      "status": "proved at exact documented scope",
+      "invocation": "C1-1",
+      "commit": "f2c2213175f719e14c5c989b49862c6caefaec53",
+      "checkedSourceSHA256": "1d9ea64cc93a307f926ef63428432ba2cb5bf57776298a382caa276762c78a42",
+      "currentSourceSHA256": "a2a39c797c69ddeaeddc10c1f1132f9f80a31498d81638290c19b87a3a76a57c"
+    },
+    {
+      "unit": "C2",
+      "name": "nativeInsertShape",
+      "path": "research-tests/O6-L2R15-Sources/DGamma/L2R15NativeInsertShape.idr",
+      "line": 48,
+      "kind": "proof",
+      "status": "proved at exact documented scope",
+      "invocation": "C2-1",
+      "commit": "7005fa0d5267c9123349c4f90385e0ac026a7168",
+      "checkedSourceSHA256": "a2a39c797c69ddeaeddc10c1f1132f9f80a31498d81638290c19b87a3a76a57c",
+      "currentSourceSHA256": "a2a39c797c69ddeaeddc10c1f1132f9f80a31498d81638290c19b87a3a76a57c"
+    },
+    {
+      "unit": "C3",
+      "name": "nativeReplaceSnapshot",
+      "path": "research-tests/O6-L2R15-Sources/DGamma/L2R15OperationSnapshots.idr",
+      "line": 21,
+      "kind": "proof",
+      "status": "proved at exact documented scope",
+      "invocation": "C3-1",
+      "commit": "132e177e82e91b7d42c63bc46e94c044a211a5c8",
+      "checkedSourceSHA256": "a90a760adcca3d7500b73aaa2078d0b1d5a4a87ea5bda414727d9ab17dc9f103",
+      "currentSourceSHA256": "f345e7d65acbe7239b30f4dbb116b51ee9f2d869e5afba4a3598f6d9457c57a9"
+    },
+    {
+      "unit": "C4",
+      "name": "nativeDeleteSnapshot",
+      "path": "research-tests/O6-L2R15-Sources/DGamma/L2R15OperationSnapshots.idr",
+      "line": 32,
+      "kind": "proof",
+      "status": "proved at exact documented scope",
+      "invocation": "C4-1",
+      "commit": "946b8815b84822fcc67b874af2e54d115bed990e",
+      "checkedSourceSHA256": "f345e7d65acbe7239b30f4dbb116b51ee9f2d869e5afba4a3598f6d9457c57a9",
+      "currentSourceSHA256": "f345e7d65acbe7239b30f4dbb116b51ee9f2d869e5afba4a3598f6d9457c57a9"
+    },
+    {
+      "unit": "C5",
+      "name": "nativeRetireShapeFromView",
+      "path": "research-tests/O6-L2R15-Sources/DGamma/L2R15NativeControlShapes.idr",
+      "line": 26,
+      "kind": "proof",
+      "status": "proved at exact documented scope",
+      "invocation": "C5-1",
+      "commit": "29cf9c416be6f8e02cd66d1646a4b5aa4dfad066",
+      "checkedSourceSHA256": "42a0a296a24caf304c7a12159da144108c72dcbb06f3e817799faf1ad739921b",
+      "currentSourceSHA256": "09430275d4f12f57adceaff0171d7092f18d738f29a487c24a61ebae3ac8f5cd"
+    },
+    {
+      "unit": "C6",
+      "name": "nativeRetireShape",
+      "path": "research-tests/O6-L2R15-Sources/DGamma/L2R15NativeControlShapes.idr",
+      "line": 48,
+      "kind": "proof",
+      "status": "proved at exact documented scope",
+      "invocation": "C6-1",
+      "commit": "28adfe4653df70c8e532bd8fb036a753811266d3",
+      "checkedSourceSHA256": "4f62712b278e702bb280531bea871d02645c1ceb9e3e13bcad6ac434a28446e6",
+      "currentSourceSHA256": "09430275d4f12f57adceaff0171d7092f18d738f29a487c24a61ebae3ac8f5cd"
+    },
+    {
+      "unit": "C7",
+      "name": "nativeRemoveShapeFromView",
+      "path": "research-tests/O6-L2R15-Sources/DGamma/L2R15NativeControlShapes.idr",
+      "line": 65,
+      "kind": "proof",
+      "status": "proved at exact documented scope",
+      "invocation": "C7-1",
+      "commit": "f1905e7cf397bba9ffcdb1f8c21bc4712f9afca7",
+      "checkedSourceSHA256": "5928335e884f665afac75d990bd077f2fe3ad83bcfb4f81b1698bb03c91965ca",
+      "currentSourceSHA256": "09430275d4f12f57adceaff0171d7092f18d738f29a487c24a61ebae3ac8f5cd"
+    },
+    {
+      "unit": "C8",
+      "name": "nativeRemoveShape",
+      "path": "research-tests/O6-L2R15-Sources/DGamma/L2R15NativeControlShapes.idr",
+      "line": 83,
+      "kind": "proof",
+      "status": "proved at exact documented scope",
+      "invocation": "C8-1",
+      "commit": "ae7b06de2ad80567df53986b8f010f1fcb677356",
+      "checkedSourceSHA256": "09430275d4f12f57adceaff0171d7092f18d738f29a487c24a61ebae3ac8f5cd",
+      "currentSourceSHA256": "09430275d4f12f57adceaff0171d7092f18d738f29a487c24a61ebae3ac8f5cd"
+    },
+    {
+      "unit": "C9",
+      "name": "nativeCoreControlShapes",
+      "path": "research-tests/O6-L2R15-Sources/DGamma/L2R15PacketControlShapes.idr",
+      "line": 30,
+      "kind": "proof",
+      "status": "proved at exact documented scope",
+      "invocation": "C9-1",
+      "commit": "daf94863ae77eab2706eec2346e993fb3014ecf1",
+      "checkedSourceSHA256": "c8ea4720e04779c6d30e7bd691516379a36372524e2ee24a8a6b6d50cd091a52",
+      "currentSourceSHA256": "c8ea4720e04779c6d30e7bd691516379a36372524e2ee24a8a6b6d50cd091a52"
+    },
+    {
+      "unit": "C10",
+      "name": "localShapesFromLifecycle",
+      "path": "research-tests/O6-L2R15-Sources/DGamma/L2R15LocalShapeAssembly.idr",
+      "line": 34,
+      "kind": "proof",
+      "status": "proved at exact documented scope",
+      "invocation": "C10-1",
+      "commit": "90a883173f853b6c69134caa3f0272b4bccc8e36",
+      "checkedSourceSHA256": "6ede6ebe47e592f70a4449923ce93f3eeb75e411e0e8b49f01df23fc127bef12",
+      "currentSourceSHA256": "6ede6ebe47e592f70a4449923ce93f3eeb75e411e0e8b49f01df23fc127bef12"
+    },
+    {
+      "unit": "C11",
+      "name": "packetWholeTransportFromLifecycleShapes",
+      "path": "research-tests/O6-L2R15-Sources/DGamma/L2R15LocalSquareProduction.idr",
+      "line": 40,
+      "kind": "proof",
+      "status": "proved at exact documented scope",
+      "invocation": "C11-2",
+      "commit": "fbca866e2dc0693bb508c1c25a38c445c732e42a",
+      "checkedSourceSHA256": "0e9e52bca5de43f2b39071fbf70cd6d506d1f12d624b78a9f9e31b7ad2439269",
+      "currentSourceSHA256": "0e9e52bca5de43f2b39071fbf70cd6d506d1f12d624b78a9f9e31b7ad2439269"
+    },
+    {
+      "unit": "C12",
+      "name": "fixtureLocalSquareFromNativeControls",
+      "path": "research-tests/O6-L2R15-Sources/DGamma/L2R15LocalSquareFixture.idr",
+      "line": 50,
+      "kind": "proof",
+      "status": "proved at exact documented scope",
+      "invocation": "C12-1",
+      "commit": "67829724cfaddedaa44f794a0ff6272a82ad1a2f",
+      "checkedSourceSHA256": "6a031ad67e46eeb4a77fae265ac06fc532b4ae6708a430fc66f8046ff734dc97",
+      "currentSourceSHA256": "6a031ad67e46eeb4a77fae265ac06fc532b4ae6708a430fc66f8046ff734dc97"
+    }
+  ],
+  "stopped": [],
+  "documentationUnits": [
+    {
+      "unit": "D1",
+      "status": "owner-signed same-bundle CP3 Tier1 patch and exact lane recheck inventory; CP3 not edited/typechecked"
+    },
+    {
+      "unit": "D2",
+      "status": "committed source freeze and dependency-ordered unchanged validation plan"
+    },
+    {
+      "unit": "D3",
+      "status": "final validations, origins/ledgers/archive/independent mechanical verification"
+    }
+  ],
+  "authorizedDocumentaryCorrections": [],
+  "visibilityCorrection": null,
+  "statementAttemptGroups": [
+    {
+      "name": "phaseReleaseHistoryDecoded",
+      "invocations": [
+        "A13-1",
+        "A13-2",
+        "A14-1"
+      ]
+    },
+    {
+      "name": "scanFilterPointwise",
+      "invocations": [
+        "B8-1",
+        "B8-2",
+        "B9-1"
+      ]
+    }
+  ]
+}

@@ -88,7 +88,7 @@ for path in sorted(paths):
  hits=sorted(n for n in old_names if re.search(r'\b'+re.escape(n)+r'\b',code))
  declarations=set(re.findall(r'^(?:public export\s+|export\s+)?(?:record\s+|data\s+|0\s+)?([A-Za-z][A-Za-z0-9_]*)\s*:',code,re.M))
  declarations.update(re.findall(r'^(?:record|data)\s+([A-Za-z][A-Za-z0-9_]*)',code,re.M))
- items[path]=dict(path=path,module=module[1],imports=re.findall(r'^import\s+(?:public\s+)?(\S+)',text,re.M),sourceSHA256=digest(p.read_bytes()),oldSurfaceNames=hits,productionNameCollisions=sorted(declarations&introduced))
+ items[path]=dict(path=path,module=module[1],imports=re.findall(r'^import\s+(?:public\s+)?(\S+)',text,re.M),sourceSHA256=digest(p.read_bytes()),oldSurfaceNames=hits,productionNameCollisions=sorted(declarations&introduced),unqualifiedRehomedNames=sorted(n for n in introduced if re.search(r'(?<![A-Za-z0-9_.])'+re.escape(n)+r'\b',code)))
 affected={'DGamma.CP3'}
 while True:
  new=affected|{r['module'] for r in items.values() if any(i in affected for i in r['imports'])}
@@ -96,8 +96,8 @@ while True:
  affected=new
 research=[r for r in items.values() if r['module'] in affected and r['path'].startswith(('research/','research-tests/'))]
 production=[r for r in items.values() if r['module'] in affected and r['path'].startswith('src/')]
-repair=[r for r in research if r['oldSurfaceNames'] or r['productionNameCollisions']]
-metadata=dict(generatedUTC=datetime.datetime.now(datetime.timezone.utc).isoformat(),laneHead=subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),cp3Blob=blob,cp3SHA256=digest(original.encode()),candidateSHA256=digest(proposed.encode()),patchSHA256=digest(patch.encode()),ownerSigned='2026-09-09',grammar='checked L2R7 attachedC SAME-BUNDLE controls under production names',typecheckedInCP3=False,oldCoordinates=[dict(first=a,last=b) for a,b,t in replacements],renames=renames,scope='Exact current-lane import closure; main R205 must refresh at its own production head. Every listed path requires recheck; repair candidates are lexical old-API uses/new-name collisions, not invented compiler failures.',researchRecheck=research,productionRecheck=production,researchRepairCandidates=[r['path'] for r in repair],researchCount=len(research),productionCount=len(production),standDown='No lane2 compiler after final gate until R205 serialized rebuild finishes; next lane shift re-seeds build/ from rebuilt main.')
+repair=[r for r in research if r['oldSurfaceNames'] or r['productionNameCollisions'] or ('DGamma.CP3' in r['imports'] and r['unqualifiedRehomedNames'])]
+metadata=dict(generatedUTC=datetime.datetime.now(datetime.timezone.utc).isoformat(),laneHead=subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),cp3Blob=blob,cp3SHA256=digest(original.encode()),candidateSHA256=digest(proposed.encode()),patchSHA256=digest(patch.encode()),ownerSigned='2026-09-09',grammar='checked L2R7 attachedC SAME-BUNDLE controls under production names',typecheckedInCP3=False,oldCoordinates=[dict(first=a,last=b) for a,b,t in replacements],renames=renames,scope='Exact current-lane import closure; main R205 must refresh at its own production head. Every listed path requires recheck; repair candidates are lexical old-API uses/new-name definitions or direct CP3 consumers of unqualified rehomed names (ambiguity/rebinding/type-identity risk), not invented compiler failures.',researchRecheck=research,productionRecheck=production,researchRepairCandidates=[r['path'] for r in repair],researchCount=len(research),productionCount=len(production),standDown='No lane2 compiler after final gate until R205 serialized rebuild finishes; next lane shift re-seeds build/ from rebuilt main.')
 dump('CP3-REBUILD-INVENTORY.json',metadata)
 overlay=ROOT/(P+'CP3-DIFF-DRAFT-OVERLAY.md');text=overlay.read_text().split('\n## Signed Tier 1 — consolidated copy-ready patch',1)[0].rstrip()
 append='''
@@ -145,7 +145,7 @@ L2R10's restricted lifecycle role, L2R11's native occurrence/packet route, L2R12
 
 ### Exact research re-check / repair inventory
 
-This is the import-reachable closure from `DGamma.CP3` over the current lane's tracked `src/`, `research/`, `research-tests/` plus owned L2R15 sources. It is NOT an inventory of unseen new main-lane commits. R205 must refresh it at its actual production head before serialized rebuilding. All listed paths require recheck. A `*` means lexical old-API/constructor references or definitions colliding with newly production-owned names: mandatory migration review/repair candidate, NOT a claim that a compiler failure has already occurred. The JSON records per-path imports, source hashes, exact hit names and all affected production paths as well.
+This is the import-reachable closure from `DGamma.CP3` over the current lane's tracked `src/`, `research/`, `research-tests/` plus owned L2R15 sources. It is NOT an inventory of unseen new main-lane commits. R205 must refresh it at its actual production head before serialized rebuilding. All listed paths require recheck. A `*` means lexical old-API/constructor references, colliding definitions, or a direct CP3 import plus unqualified newly rehomed names (including AvailabilityTrace/type-identity and import-ambiguity risks): mandatory migration review/repair candidate, NOT a claim that a compiler failure has already occurred. The JSON records per-path imports, source hashes, exact hit names and all affected production paths as well.
 
 '''
 append+=f'**{len(research)} research paths** ({sum(r["path"].startswith("research/") for r in research)} research + {sum(r["path"].startswith("research-tests/") for r in research)} research-tests); **{len(repair)}** marked repair candidates.\n\n'
@@ -157,6 +157,9 @@ append+='''
 
 No shared heavy lock or rebuild-window protocol exists: the historical lock paragraph in L2R5 is superseded. After this lane's final gate, **lane2 runs NO compiler until main R205 finishes its serialized rebuild**. The next lane shift must re-seed `build/` from the rebuilt main tree; these old-definition TTCs must not be reused as post-unfreeze proof evidence. No lane2 post-gate “quick check”. Main retains its own bounded monitored one-compiler/rebuild policy and refreshes the graph/statement map at the exact production head. The lane does not touch the main worktree or start its rebuild.
 '''
+full_record='public export\nrecord CanonicalInputPlacement'+placement.split('public export\nrecord CanonicalInputPlacement',1)[1]
+expanded='### Exact final actor/attached grammar (complete replacement text)\n\nThis is the same checked-backed SAME-BUNDLE grammar embedded in the single patch, expanded without diff context elision. No cross-bundle history is supplied.\n\n```idris\n'+grammar+'```\n\n### Exact final CanonicalInputPlacement (complete record text)\n\nHelpers and least/barrier/controls-membership definitions are included in the patch above; the complete final A8 record is repeated here so unchanged child fields are not hidden by diff context.\n\n```idris\n'+full_record+'```\n\n'
+append=append.replace('### Checked carry-over versus required re-check',expanded+'### Checked carry-over versus required re-check')
 overlay.write_text(text+append)
 assert cp3.read_text()==original
 print('D-only signed patch/inventory generated; CP3 unchanged; research paths',len(research),'repair candidates',len(repair),'candidate NOT typechecked')
