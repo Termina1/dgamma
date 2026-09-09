@@ -80,3 +80,21 @@ releaseWitnessObserved : (releases : List Nat) -> (observed : Bool) ->
   (0 equation : not (null releases) = observed) -> (0 forced : observed = True) -> ReleaseWitness releases
 releaseWitnessObserved [] observed equation forced = absurd (trans equation forced)
 releaseWitnessObserved (ordinal :: later) observed equation forced = MkReleaseWitness ordinal Here
+
+||| Trace-linked key-forcing observation for an AUTHENTIC catalog member.
+||| True returns an ordinal in the actual earlier-child-release scan. Explicit
+||| occurrence/key decoding and scan soundness/completeness are separate debt.
+public export
+record KeyForcedAt
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (keyEq : DecEq key)
+  {0 first, finalState : SystemState name key value world error}
+  {0 trace : Transitions first finalState}
+  (trail : AvailabilityTrace name key world error value trace)
+  (entry : RootCatalogEntry name key world error value) where
+  constructor MkKeyForcedAt
+  0 keyRootInCatalog : Elem entry (scanRootCatalog 0 trail)
+  keyForcedObserved : Bool
+  0 keyForcedEquation : not (null (scanReleaseOrdinals nameEq keyEq (catalogComponent entry) 0 (catalogOrdinal entry) trail)) = keyForcedObserved
+  releaseWhenForced : (0 forced : keyForcedObserved = True) ->
+    ReleaseWitness (scanReleaseOrdinals nameEq keyEq (catalogComponent entry) 0 (catalogOrdinal entry) trail)
