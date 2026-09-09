@@ -69,3 +69,28 @@ data OrderedForcedRootBundleC :
     (0 controlled : transitionAction step = ORemove root) ->
     (0 tail : OrderedForcedRootBundleC nameEq selected core priorRoots rest) ->
     OrderedForcedRootBundleC nameEq selected core priorRoots (MoreTransitions step rest)
+
+||| The enlarged body is core ++ bundle-with-controls. EMPTY local history
+||| prevents an arbitrary caller from inventing prior bundled roots.
+public export
+data ActorLifecycleOnlyAttachedC :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (selected : name) ->
+  {first, finalState : SystemState name key value world error} ->
+  Transitions first finalState -> Type where
+  AttachedWithoutRootsC :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {nameEq : DecEq name} -> {selected : name} ->
+    {first, finalState : SystemState name key value world error} ->
+    (core : Transitions first finalState) ->
+    (0 extended : ActorLifecycleOnlyExtended nameEq selected core) ->
+    ActorLifecycleOnlyAttachedC nameEq selected core
+  AttachedWithRootsC :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {nameEq : DecEq name} -> {selected : name} ->
+    {first, coreEnd, finalState : SystemState name key value world error} ->
+    (core : Transitions first coreEnd) ->
+    (0 extended : ActorLifecycleOnlyExtended nameEq selected core) ->
+    (bundle : Transitions coreEnd finalState) ->
+    (0 orderedForced : OrderedForcedRootBundleC nameEq selected core [] bundle) ->
+    ActorLifecycleOnlyAttachedC nameEq selected (appendTransitions core bundle)
