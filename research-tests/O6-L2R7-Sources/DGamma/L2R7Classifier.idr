@@ -102,3 +102,13 @@ classifyForcedSound nameEq keyEq trail entry member observed equation accepted =
   classifyForcedHitSound nameEq keyEq trail entry member
     (anyHitObserved (\seed => catalogOrdinal seed <= catalogOrdinal entry &&
       keyForcedOrdinal nameEq keyEq trail (catalogOrdinal seed)) (scanRootCatalog 0 trail) observed equation accepted)
+
+||| A genuine key seed below an inductively forced root. This extracts the
+||| least-closure derivation's origin, independently of classifier truth.
+public export
+record ForcedSeedBasis (rootInput, keyForced : Nat -> Type) (target : Nat) where
+  constructor MkForcedSeedBasis
+  basisOrdinal : Nat
+  0 basisRoot : rootInput basisOrdinal
+  0 basisKey : keyForced basisOrdinal
+  0 basisBefore : LTE basisOrdinal target
