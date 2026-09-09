@@ -138,3 +138,33 @@ o20CanonicalRootReplayOrdinals
     (o20ClosingFreeDeletionRootReplayOrdinals
       (reductionDeletionDerivation reduction))
     (o20FiniteAdjacentRootReplayOrdinals (sortingAdjacentDerivation sorted))
+
+||| Every actual operational actor permutation owns root ordinals through the
+||| finite adjacent derivation stored by each of its whole-block swaps.
+export
+0 o20OperationalRootReplayOrdinals :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {protocol : RegistrationProtocol key value world error} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {sourceOrder, targetOrder : List name} ->
+  {certificate : CertifiedActorPermutation name sourceOrder targetOrder} ->
+  {initial, sourceFinal, targetFinal : SystemState name key value world error} ->
+  {sourceTrace : Transitions initial sourceFinal} ->
+  {sourceBlocks : ActorBlockDecomposition name key world error value nameEq keyEq
+    sourceOrder sourceTrace} ->
+  {sourcePremises : ReplayInvariantBundle name key world error value protocol
+    nameEq keyEq sourceTrace} ->
+  {targetTrace : Transitions initial targetFinal} ->
+  (replay : OperationalActorPermutation name key world error value protocol
+    nameEq keyEq certificate sourceTrace sourceBlocks sourcePremises targetTrace) ->
+  O20RootReplayOrdinals name key world error value
+    (operationalPermutationOccurrenceCorrespondence replay)
+o20OperationalRootReplayOrdinals {sourceTrace}
+  (OperationalActorDone blocks premises) = o20IdentityRootReplayOrdinals sourceTrace
+o20OperationalRootReplayOrdinals
+  (OperationalActorStep orderSwap restCertificate blocks premises safety step rest) =
+  o20ComposeRootReplayOrdinals (blockSwapOccurrenceCorrespondence step)
+    (operationalPermutationOccurrenceCorrespondence rest)
+    (o20FiniteAdjacentRootReplayOrdinals
+      (wholeBlockFiniteDerivation (blockSwapWholeDerivation step)))
+    (o20OperationalRootReplayOrdinals rest)
