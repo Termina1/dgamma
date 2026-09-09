@@ -66,3 +66,20 @@ export
   S (pred ordinal) = ordinal
 successorPredPositive Z positive = absurd (positive Refl)
 successorPredPositive (S ordinal) positive = Refl
+
+||| EXACT adjacency in physical native ordinals: the decoded selected
+||| predecessor is immediately before the authentic catalog birth. This
+||| closes the ordinal gap, not yet edge dictionary/source-state transport.
+export
+0 selectedLocatedAdjacentOrdinals : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, finalState : SystemState name key value world error} ->
+  {trace : Transitions first finalState} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (trail : AvailabilityTrace name key world error value trace) ->
+  (cut : SelectedSquareCut name key world error value nameEq keyEq trail) ->
+  S (locatedActionOrdinal (occurrence (selectedCutLocated nameEq keyEq trail cut))) =
+    locatedActionOrdinal (catalogBirthOccurrence (selectedNativeBirth cut))
+selectedLocatedAdjacentOrdinals nameEq keyEq trail cut =
+  trans (cong S (exactOrdinal (selectedCutLocated nameEq keyEq trail cut)))
+    (trans (successorPredPositive (catalogOrdinal (cutEntry cut)) (selectedBirthNotZero nameEq keyEq trail cut))
+      (catalogBirthOrdinal (selectedNativeBirth cut)))
