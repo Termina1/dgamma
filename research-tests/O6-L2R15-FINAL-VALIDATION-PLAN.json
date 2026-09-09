@@ -1,0 +1,124 @@
+{
+  "createdUTC": "2026-09-09T22:11:29.139296+00:00",
+  "sourceBoundary": "67829724cfaddedaa44f794a0ff6272a82ad1a2f",
+  "newDeclarations": false,
+  "retainedDeclarations": 42,
+  "retainedModules": 15,
+  "mode": "unchanged target-only touch; dependency-ordered; one detached monitored compiler; light18GiB; no lock/window or foreign signalling",
+  "rssMeaning": "maximum sampled RSS over command-matching idris2 processes, not an aggregate tree total, not OS high-water",
+  "postGateStandDown": "NO compiler until R205 serialized rebuild finishes; next lane shift re-seeds build/ from rebuilt main",
+  "validations": [
+    {
+      "unit": "V1",
+      "path": "research-tests/O6-L2R15-Sources/DGamma/L2R15PhaseOccurrence.idr",
+      "sourceSHA256": "61d04d6b085c9d7b6e8aa44939c8a057fc175c6087024e00fa599cc418eaa5fa",
+      "directOwnDependencies": []
+    },
+    {
+      "unit": "V2",
+      "path": "research-tests/O6-L2R15-Sources/DGamma/L2R15PhaseActor.idr",
+      "sourceSHA256": "f0828f55255e484c56f9c7f3a072abfb8b0b15fa48e5fba64e0488f77386b9d6",
+      "directOwnDependencies": [
+        "research-tests/O6-L2R15-Sources/DGamma/L2R15PhaseOccurrence.idr"
+      ]
+    },
+    {
+      "unit": "V3",
+      "path": "research-tests/O6-L2R15-Sources/DGamma/L2R15PhaseHistory.idr",
+      "sourceSHA256": "1cd5eea372138dff91fd19e98abc354ee8e6b72539e5ae0fd0c371bc44f2c2f7",
+      "directOwnDependencies": []
+    },
+    {
+      "unit": "V4",
+      "path": "research-tests/O6-L2R15-Sources/DGamma/L2R15SuffixScans.idr",
+      "sourceSHA256": "8bdb6b93e6b2741d4730de719c9eb84c70f52385b60e4721fbeaf43f2ad140e8",
+      "directOwnDependencies": []
+    },
+    {
+      "unit": "V5",
+      "path": "research-tests/O6-L2R15-Sources/DGamma/L2R15ScanCongruence.idr",
+      "sourceSHA256": "df8e302e803247d51a5e67d0913e454f23f6ee332cf7880a9195a4ee88e4afe1",
+      "directOwnDependencies": []
+    },
+    {
+      "unit": "V6",
+      "path": "research-tests/O6-L2R15-Sources/DGamma/L2R15SuffixAnchors.idr",
+      "sourceSHA256": "6bdd4b655efc2c8ea5884eef955f65ef60cdac833be72b517977951e69376bc1",
+      "directOwnDependencies": [
+        "research-tests/O6-L2R15-Sources/DGamma/L2R15SuffixScans.idr",
+        "research-tests/O6-L2R15-Sources/DGamma/L2R15ScanCongruence.idr"
+      ]
+    },
+    {
+      "unit": "V7",
+      "path": "research-tests/O6-L2R15-Sources/DGamma/L2R15GlobalFrames.idr",
+      "sourceSHA256": "798d85e74f800278f4f0b86ed4ceb2a0e424ce6e17bdb8a2eaaaed221769e3ea",
+      "directOwnDependencies": []
+    },
+    {
+      "unit": "V8",
+      "path": "research-tests/O6-L2R15-Sources/DGamma/L2R15PhaseIterationAssembly.idr",
+      "sourceSHA256": "a7e0b2468175a650081b650c16432deee3c46fe6e2d580217bbf8921f465f3f2",
+      "directOwnDependencies": []
+    },
+    {
+      "unit": "V9",
+      "path": "research-tests/O6-L2R15-Sources/DGamma/L2R15NativeInsertShape.idr",
+      "sourceSHA256": "a2a39c797c69ddeaeddc10c1f1132f9f80a31498d81638290c19b87a3a76a57c",
+      "directOwnDependencies": []
+    },
+    {
+      "unit": "V10",
+      "path": "research-tests/O6-L2R15-Sources/DGamma/L2R15OperationSnapshots.idr",
+      "sourceSHA256": "f345e7d65acbe7239b30f4dbb116b51ee9f2d869e5afba4a3598f6d9457c57a9",
+      "directOwnDependencies": []
+    },
+    {
+      "unit": "V11",
+      "path": "research-tests/O6-L2R15-Sources/DGamma/L2R15NativeControlShapes.idr",
+      "sourceSHA256": "09430275d4f12f57adceaff0171d7092f18d738f29a487c24a61ebae3ac8f5cd",
+      "directOwnDependencies": [
+        "research-tests/O6-L2R15-Sources/DGamma/L2R15OperationSnapshots.idr"
+      ]
+    },
+    {
+      "unit": "V12",
+      "path": "research-tests/O6-L2R15-Sources/DGamma/L2R15PacketControlShapes.idr",
+      "sourceSHA256": "c8ea4720e04779c6d30e7bd691516379a36372524e2ee24a8a6b6d50cd091a52",
+      "directOwnDependencies": [
+        "research-tests/O6-L2R15-Sources/DGamma/L2R15NativeInsertShape.idr",
+        "research-tests/O6-L2R15-Sources/DGamma/L2R15NativeControlShapes.idr"
+      ]
+    },
+    {
+      "unit": "V13",
+      "path": "research-tests/O6-L2R15-Sources/DGamma/L2R15LocalShapeAssembly.idr",
+      "sourceSHA256": "6ede6ebe47e592f70a4449923ce93f3eeb75e411e0e8b49f01df23fc127bef12",
+      "directOwnDependencies": [
+        "research-tests/O6-L2R15-Sources/DGamma/L2R15PacketControlShapes.idr",
+        "research-tests/O6-L2R15-Sources/DGamma/L2R15NativeInsertShape.idr",
+        "research-tests/O6-L2R15-Sources/DGamma/L2R15NativeControlShapes.idr"
+      ]
+    },
+    {
+      "unit": "V14",
+      "path": "research-tests/O6-L2R15-Sources/DGamma/L2R15LocalSquareProduction.idr",
+      "sourceSHA256": "0e9e52bca5de43f2b39071fbf70cd6d506d1f12d624b78a9f9e31b7ad2439269",
+      "directOwnDependencies": [
+        "research-tests/O6-L2R15-Sources/DGamma/L2R15LocalShapeAssembly.idr",
+        "research-tests/O6-L2R15-Sources/DGamma/L2R15PacketControlShapes.idr",
+        "research-tests/O6-L2R15-Sources/DGamma/L2R15NativeInsertShape.idr",
+        "research-tests/O6-L2R15-Sources/DGamma/L2R15NativeControlShapes.idr"
+      ]
+    },
+    {
+      "unit": "V15",
+      "path": "research-tests/O6-L2R15-Sources/DGamma/L2R15LocalSquareFixture.idr",
+      "sourceSHA256": "6a031ad67e46eeb4a77fae265ac06fc532b4ae6708a430fc66f8046ff734dc97",
+      "directOwnDependencies": [
+        "research-tests/O6-L2R15-Sources/DGamma/L2R15LocalShapeAssembly.idr",
+        "research-tests/O6-L2R15-Sources/DGamma/L2R15LocalSquareProduction.idr"
+      ]
+    }
+  ]
+}
