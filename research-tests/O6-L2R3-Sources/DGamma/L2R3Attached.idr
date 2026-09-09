@@ -165,3 +165,25 @@ record LocatedOpenEpisodeBlockAttached
   0 attachedDecomposition : appendTransitions attachedBefore
     (MoreTransitions (beginTransition attachedOpening)
       (appendTransitions attachedBody attachedAfter)) = global
+
+||| CP3:1873 via CP5L2R1ExtendedZeroGap:19, retaining the same exact
+||| physical-order equation. The gap starts AFTER the complete attached body;
+||| it is not required to be empty.
+public export
+record BlockBeforeAttached
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (keyEq : DecEq key)
+  {initial, finalState : SystemState name key value world error}
+  (global : Transitions initial finalState) (earlierName, laterName : name)
+  (earlier : LocatedOpenEpisodeBlockAttached name key world error value nameEq keyEq earlierName global)
+  (later : LocatedOpenEpisodeBlockAttached name key world error value nameEq keyEq laterName global) where
+  constructor MkBlockBeforeAttached
+  attachedBetweenBlocks : Transitions (attachedEnd earlier) (attachedPreStart later)
+  0 attachedBlocksOrdered :
+    appendTransitions (attachedBefore later)
+      (MoreTransitions (beginTransition (attachedOpening later)) NoTransitions) =
+    appendTransitions
+      (appendTransitions (attachedBefore earlier)
+        (MoreTransitions (beginTransition (attachedOpening earlier)) (attachedBody earlier)))
+      (appendTransitions attachedBetweenBlocks
+        (MoreTransitions (beginTransition (attachedOpening later)) NoTransitions))
