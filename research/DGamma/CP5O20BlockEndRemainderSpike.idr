@@ -64,3 +64,17 @@ o20ActiveRemainderObserved nameEq selected state
   (Just (MkFiber component parent retiredFlag table (Active accumulator view))) exact active = rewrite exact in Refl
 o20ActiveRemainderObserved nameEq selected state
   (Just (MkFiber component parent retiredFlag table (Unloading accumulator view outcome))) exact active = rewrite exact in Refl
+
+||| An actual Insert's native target is inactive at its newly inserted name.
+||| The single-constructor native observation owns its real target registry.
+export
+0 o20InsertViewNotActive :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (parent : Parent name) -> (component : Component key value world error) ->
+  (ambient : world) -> (fibers : Registry name key value world error) ->
+  {tag : RuleTag} -> {afterState : SystemState name key value world error} ->
+  ForeignInsertPlanView name key world error value nameEq keyEq selected parent component ambient fibers tag afterState ->
+  (supportedActiveAt {name} {key} {value} {world} {error} @{nameEq} selected afterState = False)
+o20InsertViewNotActive nameEq keyEq selected parent component ambient fibers (MkForeignInsertPlanView absent guards) =
+  rewrite lookupInserted @{nameEq} selected (freshFiber component parent) fibers absent in Refl
