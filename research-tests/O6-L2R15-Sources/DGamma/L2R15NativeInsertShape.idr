@@ -39,3 +39,20 @@ nativeInsertShapeFromView nameEq keyEq actor parent component ambient source _ _
   (MkForeignInsertPlanView absent guards) =
   MkNativeActionShape (MkSystemState ambient (insertBinding @{nameEq} actor (freshFiber component parent) source absent))
     checked (freshInsertSnapshot nameEq actor (freshFiber component parent) ambient source absent)
+
+||| GENERAL native insert-shape producer from the original checked edge.
+||| Instantiates all FOUR insert shapes in LocalSquareActionShapes (old/new
+||| Child and early/late Root). Freshness is extracted by foreignInsertPlanView,
+||| not added as a separate hypothesis. The actual target is never normalized.
+export
+0 nativeInsertShape : {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) -> (parent : Parent name) ->
+  (component : Component key value world error) ->
+  (source, target : SystemState name key value world error) -> (tag : RuleTag) ->
+  (0 checked : checkedApplyAction @{nameEq} @{keyEq} (OInsert actor parent component) source = Just (tag, target)) ->
+  NativeActionShape name key world error value nameEq keyEq (OInsert actor parent component) source tag
+    (MkRuntimeSnapshot (worldState source) (Bind actor (freshFiber component parent) :: bindings (registry source)))
+nativeInsertShape nameEq keyEq actor parent component (MkSystemState ambient source) target tag checked =
+  nativeInsertShapeFromView nameEq keyEq actor parent component ambient source target tag checked
+    (foreignInsertPlanView nameEq keyEq actor parent component ambient source tag target
+      (checkedActionProjects nameEq keyEq (OInsert actor parent component) (MkSystemState ambient source) target tag checked))
