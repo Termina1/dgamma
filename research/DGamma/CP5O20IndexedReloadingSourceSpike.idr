@@ -73,3 +73,23 @@ export
 o20MatchingSourceFromFibers component remaining leftParent leftRetired leftTable leftOlder leftView _
   (RenamedFibers _ rightParent _ rightRetired _ rightTable _ rightLifecycle parents retired lifecycle) rightFound =
     o20MatchingSourceFromLifecycle component remaining leftOlder leftView rightParent rightRetired rightTable rightLifecycle lifecycle rightFound
+
+||| A typed primitive right lookup is opened once. Absence has no constructor
+||| compatible with the actual present left control; presence feeds A20.
+export
+0 o20MatchingSourceObserved :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {renaming : NameBijection name} -> {actor : name} ->
+  {right : SystemState name key value world error} ->
+  (component : Component key value world error) ->
+  (remaining : List (StepEffect key value world error (dependencies (componentDependencies component)) (componentProvisions component))) ->
+  (leftParent : Parent name) -> (leftRetired : Bool) ->
+  (leftTable : OwnedTable key value (componentProvisions component)) ->
+  (leftOlder : LocalState key value world (componentProvisions component) -> LocalState key value world (componentProvisions component)) ->
+  (leftView : View name (dependencies (componentDependencies component))) ->
+  (observed : Maybe (Fiber name key value world error)) ->
+  MaybeFiberRelatedBy renaming (Just (MkFiber component leftParent leftRetired leftTable (Reloading remaining leftOlder leftView))) observed ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} (renameForward renaming actor) (registry right) = observed) ->
+  O20MatchingReloadingSource name key world error value nameEq (renameForward renaming actor) right component remaining
+o20MatchingSourceObserved component remaining leftParent leftRetired leftTable leftOlder leftView (Just rightFiber) (RenamedPresent related) rightFound =
+  o20MatchingSourceFromFibers component remaining leftParent leftRetired leftTable leftOlder leftView rightFiber related rightFound
