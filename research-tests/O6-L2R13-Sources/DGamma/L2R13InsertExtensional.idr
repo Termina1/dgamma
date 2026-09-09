@@ -71,3 +71,14 @@ freshInsertExtensional nameEq actor fiber left right same absent =
   MkRegistryExtensional (extensionalWorld same)
     (\wanted => insertLookupExtensionalObserved nameEq wanted actor fiber left right same absent
       (trans (sym (extensionalLookup same actor)) absent) (decEq @{nameEq} wanted actor) Refl)
+
+||| Erased uniqueness evidence does not enter the native inserted snapshot.
+export
+0 freshInsertSnapshot : {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (actor : name) -> (fiber : Fiber name key value world error) ->
+  (ambient : world) -> (source : Registry name key value world error) ->
+  (0 absent : lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor source = Nothing) ->
+  runtimeSnapshot {name} {key} {world} {error} {value}
+    (MkSystemState ambient (insertBinding @{nameEq} actor fiber source absent)) =
+  MkRuntimeSnapshot ambient (Bind actor fiber :: bindings source)
+freshInsertSnapshot nameEq actor fiber ambient (MkCoeffectContext entries unique) absent = Refl
