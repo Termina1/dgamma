@@ -105,3 +105,13 @@ foreground build. Do not automatically rerun it as part of read-only acceptance.
 
 Independent acceptance review is parent-owned/required and pending, not claimed
 by this worker's audit. Final owner gate follows the committed publication.
+
+## Final-gate addendum (D3, artifact only)
+
+Supervisor independently verified and RATIFIEDd7b2fc98 as checked PARTIAL;
+permitted this gate note and clean close. Full verbatim ruling is in NOTES and
+the shift audit. Post-publication frozen/independent read-only audits passed
+atd7b2fc98 before the gate. No further Idris/source/compiler work followed it.
+Independent reviewer is parent-owned/launched/pending, not self-certified here.
+The raw archive is NOT regenerated for this note or given self-referential
+receipt claims. Source freeze3bd99171 and all65 final checks remain unchanged.

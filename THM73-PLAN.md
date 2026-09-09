@@ -3763,3 +3763,14 @@ Unknown costs: serialized48GiB/per-module record. No blanket exception.
 Whole actual canonical/replayed paired fold and exact current-map endpoint cut
 remain next, then D5. No partial internal cut/original vestigial packet is cast
 into the frozen theorem. FINAL owner gate/independent review pending.
+
+## R195 final gate — accepted checked PARTIAL
+
+Supervisor independently verified and RATIFIEDd7b2fc98; D3 artifact-only note
+and clean close permitted. No further proof/source/compiler work followed.
+42 declarations at source3bd99171,65 final expected results, all four holes
+unchanged. Root-law storing contracts remain DOCS-ONLY R196 basis; whole actual
+pairing/history fold and exact current-map endpoint/bridge/remainder debts
+remain. No widened52GiB exception; per-helper classification is mandatory.
+Independent reviewer is parent-owned/launched/pending; acceptance is not claimed.
+Archive remains at its documented pre-publication anchor; D4 unused.

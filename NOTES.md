@@ -3723,3 +3723,36 @@ See O6-R195-VERIFICATION, compiler ledger/archive, frozen/independent/resource
 reports and findings. Evidence archive is pinned to the pre-publication anchor;
 its own artifact receipt and future gate note are not self-referentially claimed.
 Supervisor FINAL gate and independent parent-owned reviewer are pending.
+
+## R195 owner FINAL gate — checked PARTIAL ratified
+
+Verbatim supervisor ruling after committed evidence d7b2fc98 and current-head
+read-only frozen/independent PASS audits:
+
+> R195 FINAL GATE RULING: ACCEPTED — checked PARTIAL milestone RATIFIED at d7b2fc98; artifact-only D3 gate note and clean close PERMITTED. Supervisor verified independently: HEAD d7b2fc98, 48 commits over 981e6137, clean tree (baseline untracked only), production diff vs 34b21c9 empty, LocalDiamond/O19Surface/CrossTrace/RenamingComposition/CanonicalSort/DeletionChain and the two lane-shared baseline modules byte-identical to 981e6137, independent census 4 = 1/2/0/0/1, 16 R195 artifacts, pushed. Accepted as stated: A26 (root replay-ordinal necessity witness → structural park; generation-only E8 disposition for every original generated birth carried through any actual occurrence correspondence with the physical ordinal law retained; no whole paired fold), B16 (strengthened ORIGINAL-scope fixture with owned all-name internal cut and Void from the current-map cut; full original VestigialEndpointGeneration derived; removed-child absence; no canonical/replayed all-name rebasing), D1/D2 docs, the root-contract manifest as R196's DOCS-ONLY basis, 65/65 validations with the unchanged LocalDiamond at 48.25 GiB under the 52 GiB rule and the per-helper classification recorded. Exact debts noted verbatim. Independent reviewer is being launched now. Stand down cleanly after the note.
+
+This is the permitted D3 ARTIFACT-ONLY note. No further Idris/source/compiler
+work followed the ruling. Independent reviewer is parent-owned and pending;
+ratification is not a claim of reviewer acceptance or convergence completion.
+Archive remains pinned21269c8e, with its own/later receipt exclusion explicit.
+D4 unused; no further work planned in this bounded R195 shift.
+
+## Status — R195 final checked PARTIAL handoff
+
+Fully proved locally: root-law identity/composition/conditional attachment and
+necessity witness; whole original generated-birth disposition/occurrence-replay
+retention and generated ordinal attachment; native identity all-name/history
+cuts; complete original-scope rebasing obstruction; authenticated original
+vestigial-alternative selection and actual removed-child absence.
+
+Partial/stated: canonical/operational storing root contract (precise docs-only
+R196 basis), whole accepted paired-stage/history fold, canonical vestigial and
+opposite-image absence/current-map all-name controls, exact D5 bridge and O21
+endpoint assembly. All four inherited holes remain; C had0 attempts. No new
+escape hatch or production/statement/lane-owned source delta.
+
+Checked:42 source receipts,65/65 final expected validations,112 total records,
+12 evidence tests,207/207 seeds; frozen/independent/resource audits PASS.
+Owner final gate ratifiedd7b2fc98. Next is parent-owned independent review and
+R196's explicit per-helper root-contract/resource gate, not an R195 extension.
+Standing down cleanly after this note; independent reviewer acceptance unclaimed.

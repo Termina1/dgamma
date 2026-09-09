@@ -174,3 +174,16 @@ accepted pairing and exact canonical endpoint/remainder assembly unowned.
 No new hole, postulate, unsafe/partial escape or state-reconstruction oracle.
 The archive anchor precedes its own artifact commit, and does not claim its
 own/future receipts. Final supervisor gate and independent reviewer pending.
+
+## R195 owner FINAL gate — checked PARTIAL ratified
+
+Verbatim supervisor ruling after committed evidence d7b2fc98 and current-head
+read-only frozen/independent PASS audits:
+
+> R195 FINAL GATE RULING: ACCEPTED — checked PARTIAL milestone RATIFIED at d7b2fc98; artifact-only D3 gate note and clean close PERMITTED. Supervisor verified independently: HEAD d7b2fc98, 48 commits over 981e6137, clean tree (baseline untracked only), production diff vs 34b21c9 empty, LocalDiamond/O19Surface/CrossTrace/RenamingComposition/CanonicalSort/DeletionChain and the two lane-shared baseline modules byte-identical to 981e6137, independent census 4 = 1/2/0/0/1, 16 R195 artifacts, pushed. Accepted as stated: A26 (root replay-ordinal necessity witness → structural park; generation-only E8 disposition for every original generated birth carried through any actual occurrence correspondence with the physical ordinal law retained; no whole paired fold), B16 (strengthened ORIGINAL-scope fixture with owned all-name internal cut and Void from the current-map cut; full original VestigialEndpointGeneration derived; removed-child absence; no canonical/replayed all-name rebasing), D1/D2 docs, the root-contract manifest as R196's DOCS-ONLY basis, 65/65 validations with the unchanged LocalDiamond at 48.25 GiB under the 52 GiB rule and the per-helper classification recorded. Exact debts noted verbatim. Independent reviewer is being launched now. Stand down cleanly after the note.
+
+This is the permitted D3 ARTIFACT-ONLY note. No further Idris/source/compiler
+work followed the ruling. Independent reviewer is parent-owned and pending;
+ratification is not a claim of reviewer acceptance or convergence completion.
+Archive remains pinned21269c8e, with its own/later receipt exclusion explicit.
+D4 unused; no further work planned in this bounded R195 shift.
