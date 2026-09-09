@@ -82,3 +82,21 @@ locateSourceAtStep {name} {key} {world} {error} {value} {first} {middle}
       (MkLocatedActionOccurrence first middle NoTransitions step rest Refl Refl) Refl Refl)
 locateSourceAtStep step rest later tailDecoder (S ordinal) source action equation =
   locatedSourceThroughHead step rest source action ordinal (tailDecoder ordinal source action equation)
+
+||| GENERAL native located occurrence decoder for the actual source word.
+||| The result produces both physical ordinal and native source identity.
+export
+0 locateSourceAction : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, finalState : SystemState name key value world error} ->
+  {trace : Transitions first finalState} ->
+  (trail : AvailabilityTrace name key world error value trace) ->
+  (ordinal : Nat) -> (source : SystemState name key value world error) ->
+  (action : Action name key value world error) ->
+  (0 equation : head' (drop ordinal (trailSourceActions trail)) = Just (source, action)) ->
+  LocatedSourceAction name key world error value trace source action ordinal
+locateSourceAction (AvailabilityEnd state) ordinal source action equation =
+  absurd (sourceQueryEmpty ordinal (source, action) equation)
+locateSourceAction (AvailabilityStep before (Fired ne ke head tag checked) rest later)
+  ordinal source action equation =
+  locateSourceAtStep (Fired ne ke head tag checked) rest later (locateSourceAction later)
+    ordinal source action equation
