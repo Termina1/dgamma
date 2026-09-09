@@ -156,3 +156,17 @@ record DistanceObservation
   0 distanceEquation : rootDistance nameEq keyEq trail ordinal = distanceObserved
   totalObserved : Nat
   0 totalEquation : totalDistance nameEq keyEq trail = totalObserved
+
+||| Total single-constructor producer; observed Nats are calculated, never
+||| supplied as distance/zero premises by callers.
+public export
+distanceObservation : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {0 first, finalState : SystemState name key value world error} ->
+  {0 trace : Transitions first finalState} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (trail : AvailabilityTrace name key world error value trace) -> (ordinal : Nat) ->
+  DistanceObservation name key world error value nameEq keyEq trail ordinal
+distanceObservation nameEq keyEq trail ordinal = MkDistanceObservation
+  (targetPosition nameEq keyEq trail ordinal) Refl
+  (rootDistance nameEq keyEq trail ordinal) Refl
+  (totalDistance nameEq keyEq trail) Refl
