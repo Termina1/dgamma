@@ -219,3 +219,39 @@ export
   (lookupFiber {name} {key} {value} {world} {error} @{nameEq} (generationName generation) (registry survivor) = Nothing)
 o20CurrentWithdrawalAbsent (CurrentGenerationWithdrawn fiber current found retiredFlag inactive empty absent) observed = absent
 o20CurrentWithdrawalAbsent (HistoricalGenerationClosed closed) observed = void (closed observed)
+
+||| Present vestigial disappearance at an actual deletion: the FULL original
+||| packet uses BOTH environments of the same accepted surviving-tree scan.
+||| Its generation must belong to this actual candidate's selected births;
+||| this membership is NOT inferred merely from global discarded membership.
+||| The result, current table reconciliation and actual absence are produced.
+export
+0 o20SelectedVestigialDisappears :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {leftFirst, leftFinal, rightFirst, rightFinal : SystemState name key value world error} ->
+  (left : Transitions leftFirst leftFinal) -> (right : Transitions rightFirst rightFinal) ->
+  (mapping : RegistrationGenerationBijection name) ->
+  (registrations : RegistrationCorrespondenceByGeneration nameEq mapping left right) ->
+  (candidate : DeletableClosingEpisode name key world error value nameEq keyEq left) ->
+  (result : DeletionResult name key world error value nameEq keyEq left
+    (selectedActor candidate) (selectedEpisode candidate) (selectedRegistrations candidate)
+    (selectedStartOrdinal candidate) (selectedStartLive candidate)) ->
+  (selected : name) ->
+  (packet : VestigialEndpointGeneration name key world error value nameEq keyEq
+    (leftFinalGenerations registrations) (leftDeletedGenerations registrations) selected leftFinal) ->
+  Elem (vestigialGeneration packet) (selectedRegistrations candidate) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected (registry (survivingFinal result)) = Nothing)
+o20SelectedVestigialDisappears {name} {key} {value} {world} {error}
+  nameEq keyEq left right mapping registrations candidate result selected packet member =
+  replace {p = \actor => lookupFiber {name} {key} {value} {world} {error} @{nameEq}
+    actor (registry (survivingFinal result)) = Nothing}
+    (cong generationName (currentBirthStampExact (acceptedLeftCurrentBirth name key world error value nameEq
+      left right mapping registrations selected (vestigialGeneration packet) (vestigialGenerationCurrent packet))))
+    (o20CurrentWithdrawalAbsent (registeredWithdrawn result (vestigialGeneration packet) member)
+      (trans (cong (\actor => lookupCurrentGeneration @{nameEq} actor (originalFinalLive result))
+        (cong generationName (currentBirthStampExact (acceptedLeftCurrentBirth name key world error value nameEq
+          left right mapping registrations selected (vestigialGeneration packet) (vestigialGenerationCurrent packet)))))
+        (trans (cong (\live => lookupCurrentGeneration @{nameEq} selected live)
+          (sym (o20DeletionAcceptedOriginalLive nameEq keyEq left right mapping registrations candidate result)))
+          (vestigialGenerationCurrent packet))))
