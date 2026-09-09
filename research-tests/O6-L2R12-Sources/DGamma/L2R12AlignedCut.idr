@@ -59,3 +59,38 @@ alignedSourceThroughHead nameEq keyEq step rest source action ordinal edge =
       (locatedAction (edgeOccurrence edge))
       (cong (MoreTransitions step) (actionOccurrenceDecomposition (edgeOccurrence edge))))
     (cong S (edgeOrdinal edge)) (edgeBefore edge) (edgeAfter edge)
+
+||| Observe only the queried ordinal at a dictionary-aligned native head.
+||| Source/action pair equality transports the whole packet simultaneously.
+export
+0 alignedSourceAtOrdinal : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (headAction : Action name key value world error) -> (tag : RuleTag) ->
+  (0 checked : checkedApplyAction @{nameEq} @{keyEq} headAction first = Just (tag, middle)) ->
+  (rest : Transitions middle finalState) ->
+  (later : AvailabilityTrace name key world error value rest) ->
+  (0 tailDecoder : (ordinal : Nat) -> (source : SystemState name key value world error) ->
+    (action : Action name key value world error) ->
+    head' (drop ordinal (trailSourceActions later)) = Just (source, action) ->
+    AlignedSourceAction name key world error value nameEq keyEq rest source action ordinal) ->
+  (ordinal : Nat) -> (source : SystemState name key value world error) ->
+  (action : Action name key value world error) ->
+  (0 query : head' (drop ordinal ((first, headAction) :: trailSourceActions later)) = Just (source, action)) ->
+  AlignedSourceAction name key world error value nameEq keyEq
+    (MoreTransitions (Fired {before = first} {afterState = middle} nameEq keyEq headAction tag checked) rest)
+    source action ordinal
+alignedSourceAtOrdinal {name} {key} {world} {error} {value} {first} {middle}
+  nameEq keyEq headAction tag checked rest later tailDecoder Z source action query =
+  replace {p = \pair => AlignedSourceAction name key world error value nameEq keyEq
+    (MoreTransitions (Fired {before = first} {afterState = middle} nameEq keyEq headAction tag checked) rest)
+    (fst pair) (snd pair) Z} (injective query)
+    (MkAlignedSourceAction middle tag checked
+      (MkLocatedActionOccurrence first middle NoTransitions
+        (Fired {before = first} {afterState = middle} nameEq keyEq headAction tag checked) rest Refl Refl)
+      Refl Refl Refl)
+alignedSourceAtOrdinal {first} {middle}
+  nameEq keyEq headAction tag checked rest later tailDecoder (S ordinal) source action query =
+  alignedSourceThroughHead nameEq keyEq
+    (Fired {before = first} {afterState = middle} nameEq keyEq headAction tag checked) rest source action ordinal
+    (tailDecoder ordinal source action query)
