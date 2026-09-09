@@ -40,3 +40,17 @@ rootControlHeadExcluded seen rootInput control False seenAccepted rootAccepted c
 rootControlHeadExcluded seen rootInput control True seenAccepted rootAccepted controlAccepted front never =
   absurd (replace {p = \r => not (True && r && True) = True} rootAccepted
     (replace {p = \c => not (c && rootInput && True) = True} controlAccepted never))
+
+||| Exact observed-guard arithmetic: a positive conditional Nat distance
+||| cannot have its source ordinal at/below the external-order floor. The
+||| native guard is passed with its OWN equation, never re-cased implicitly.
+export
+0 positiveFloorAtGuard : (ordinal, target : Nat) ->
+  (condition, seen : Bool) -> (0 equation : condition = seen) ->
+  (0 positive : LT 0 (if condition then minus ordinal target else 0)) ->
+  (0 floor : LTE ordinal target) -> Void
+positiveFloorAtGuard ordinal target False seen equation positive floor = absurd positive
+positiveFloorAtGuard ordinal target True seen equation positive floor =
+  absurd (transitive positive
+    (replace {p = \n => LTE (minus ordinal target) n} (sym (minusZeroN target))
+      (minusLteMonotone {m = ordinal} {n = target} {p = target} floor)))
