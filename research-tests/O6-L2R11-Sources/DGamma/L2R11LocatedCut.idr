@@ -58,3 +58,27 @@ export
   (0 equation : head' (drop ordinal []) = Just wanted) -> Void
 sourceQueryEmpty Z wanted equation = absurd equation
 sourceQueryEmpty (S ordinal) wanted equation = absurd equation
+
+||| Eliminate only the queried ordinal. The tail continuation is structural
+||| recursion, not a supplied locator oracle. Pair equality is transported.
+export
+0 locateSourceAtStep : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (step : Transition first middle) -> (rest : Transitions middle finalState) ->
+  (later : AvailabilityTrace name key world error value rest) ->
+  (0 tailDecoder : (position : Nat) -> (wantedSource : SystemState name key value world error) ->
+    (wantedAction : Action name key value world error) ->
+    (0 found : head' (drop position (trailSourceActions later)) = Just (wantedSource, wantedAction)) ->
+    LocatedSourceAction name key world error value rest wantedSource wantedAction position) ->
+  (ordinal : Nat) -> (source : SystemState name key value world error) ->
+  (action : Action name key value world error) ->
+  (0 equation : head' (drop ordinal ((first, transitionAction step) :: trailSourceActions later)) = Just (source, action)) ->
+  LocatedSourceAction name key world error value (MoreTransitions step rest) source action ordinal
+locateSourceAtStep {name} {key} {world} {error} {value} {first} {middle}
+  step rest later tailDecoder Z source action equation =
+  replace {p = \pair => LocatedSourceAction name key world error value (MoreTransitions step rest) (fst pair) (snd pair) Z}
+    (injective equation)
+    (MkLocatedSourceAction
+      (MkLocatedActionOccurrence first middle NoTransitions step rest Refl Refl) Refl Refl)
+locateSourceAtStep step rest later tailDecoder (S ordinal) source action equation =
+  locatedSourceThroughHead step rest source action ordinal (tailDecoder ordinal source action equation)
