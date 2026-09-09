@@ -61,3 +61,20 @@ record RegionEmbedding
   0 embeddedRootKind : (nameEq : DecEq name) ->
     RootOrchestrationStep nameEq (locatedTransition original) ->
     RootOrchestrationStep nameEq (locatedTransition embeddedOccurrence)
+
+||| GENERAL all-action region embedding, including root Retire/Remove. Actual
+||| native decomposition produces a global occurrence at prefix count + local
+||| ordinal and preserves the original source-aware root-kind proof. No NF,
+||| bundle coverage, front exclusion or generation-origin oracle is supplied.
+export
+0 embedRegionOccurrence : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, regionStart, regionEnd, finalState : SystemState name key value world error} ->
+  {action : Action name key value world error} ->
+  (beforeRegion : Transitions first regionStart) -> (region : Transitions regionStart regionEnd) ->
+  (afterRegion : Transitions regionEnd finalState) -> (global : Transitions first finalState) ->
+  (0 split : appendTransitions beforeRegion (appendTransitions region afterRegion) = global) ->
+  (occurrence : LocatedActionOccurrence action region) ->
+  RegionEmbedding occurrence global (transitionCount beforeRegion)
+embedRegionOccurrence beforeRegion region afterRegion _ Refl occurrence = MkRegionEmbedding
+  (prependOccurrence beforeRegion (appendTransitions region afterRegion) (extendOccurrence region afterRegion occurrence))
+  (extendedCountAppend beforeRegion (beforeActionOccurrence occurrence)) Refl (\nameEq, rootKind => rootKind)
