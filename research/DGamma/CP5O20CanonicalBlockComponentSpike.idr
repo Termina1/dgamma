@@ -184,3 +184,47 @@ o20ShareCanonicalBeginObservations execution leftUnique rightUnique pair
   (MkO20BeginObservation leftComponent leftParent leftTable leftView leftFound leftResolved leftExact) rightSeen =
     o20ShareCanonicalBeginRight execution leftUnique rightUnique pair
       leftComponent leftParent leftTable leftView leftFound leftResolved leftExact rightSeen
+
+||| Accepted canonical/replay capital produces one SHARED component (hence one
+||| initial program) and both actual Begin packets at EVERY selected supported
+||| pair. Neither observation, component equality, nor pre-cut control/effects
+||| is an input. This does not pair the remaining block role words.
+export
+0 o20SelectedCanonicalSharedBegins :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {protocol : RegistrationProtocol key value world error} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {initial, leftFinal, rightFinal : SystemState name key value world error} ->
+  {leftTrace : Transitions initial leftFinal} ->
+  {rightTrace : Transitions initial rightFinal} ->
+  {sameInputs : SameOrchestrationModuloGenerated nameEq keyEq leftTrace rightTrace} ->
+  {leftCapital : IndependentCanonicalSchedule name key world error value protocol
+    nameEq keyEq leftTrace} ->
+  {rightCapital : IndependentCanonicalSchedule name key world error value protocol
+    nameEq keyEq rightTrace} ->
+  {matching : MappedCanonicalSupportOrders name key world error value protocol
+    nameEq keyEq leftTrace rightTrace
+    (currentNameBijection (endpointRenaming sameInputs))
+    (canonicalSchedule leftCapital) (canonicalSchedule rightCapital)} ->
+  {operational : CertifiedOperationalCanonicalPermutation name key world error value
+    protocol nameEq keyEq leftTrace rightTrace sameInputs leftCapital rightCapital matching} ->
+  (execution : PermutedCanonicalExecution name key world error value protocol
+    nameEq keyEq leftTrace rightTrace sameInputs leftCapital rightCapital operational) ->
+  (0 leftUnique : UniqueRawNameInsertions name key world error value nameEq keyEq leftTrace) ->
+  (0 rightUnique : UniqueRawNameInsertions name key world error value nameEq keyEq rightTrace) ->
+  {selected : name} ->
+  (pair : SelectedCanonicalBlockPair name key world error value protocol nameEq keyEq
+    leftTrace rightTrace sameInputs leftCapital rightCapital matching operational selected) ->
+  O20SharedBeginObservations name key world error value nameEq keyEq
+    (expectedBridgeBijection sameInputs) selected
+    (blockPreStart (pairLeftBlock pair)) (blockStart (pairLeftBlock pair))
+    (blockPreStart (pairRightBlock pair)) (blockStart (pairRightBlock pair))
+o20SelectedCanonicalSharedBegins {nameEq} {keyEq} {sameInputs} {selected}
+  execution leftUnique rightUnique pair =
+    o20ShareCanonicalBeginObservations execution leftUnique rightUnique pair
+      (o20ObserveActualBegin nameEq keyEq selected
+        (blockPreStart (pairLeftBlock pair)) (blockStart (pairLeftBlock pair))
+        (blockOpening (pairLeftBlock pair)))
+      (o20ObserveActualBegin nameEq keyEq (renameForward (expectedBridgeBijection sameInputs) selected)
+        (blockPreStart (pairRightBlock pair)) (blockStart (pairRightBlock pair))
+        (blockOpening (pairRightBlock pair)))
