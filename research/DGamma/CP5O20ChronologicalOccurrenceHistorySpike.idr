@@ -81,3 +81,49 @@ o20NativeChronologicalBirth name key world error value nameEq ordinal
               (o20NativeChronologicalBirth name key world error value nameEq (S ordinal)
                 (advanceSurvivingRegistrationIndex @{nameEq} ordinal child parent component (MkRegistrationIndexState live activations counts discarded))
                 rest finalIndex laterEvents later event remaining)
+
+||| Zip TWO actual scanned birth occurrences into a native runtime history
+||| at their computed prefix environments. The accepted event match supplies
+||| component/generation/position equality; raw-name images remain EXPLICIT
+||| local hypotheses, never inferred for removed or vestigial original births.
+export
+0 o20MatchedScannedBirthOccurrenceHistory :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, leftFinal, rightFinal : SystemState name key value world error} ->
+  (left : Transitions initial leftFinal) -> (right : Transitions initial rightFinal) ->
+  (mapping : RegistrationGenerationBijection name) -> (renaming : NameBijection name) ->
+  AlignedTransitions name key world error value nameEq keyEq left ->
+  AlignedTransitions name key world error value nameEq keyEq right ->
+  (leftEvent, rightEvent : RegistrationEvent name key world error value) ->
+  RegistrationEventMatch mapping leftEvent rightEvent ->
+  (eventChild rightEvent = renameForward renaming (eventChild leftEvent)) ->
+  (eventParent rightEvent = renameForward renaming (eventParent leftEvent)) ->
+  (leftBirth : ScannedRegistrationBirth name key world error value Z left leftEvent) ->
+  (rightBirth : ScannedRegistrationBirth name key world error value Z right rightEvent) ->
+  O20OccurrenceStampedHistory name key world error value nameEq keyEq mapping renaming left right
+    (o20ScannedFinalLive nameEq Z [] (beforeActionOccurrence (scannedLocatedBirth leftBirth)))
+    (o20ScannedFinalLive nameEq Z [] (beforeActionOccurrence (scannedLocatedBirth rightBirth)))
+    (putCurrentGeneration @{nameEq} (eventChild leftEvent)
+      (MkRegistrationGeneration (eventChild leftEvent) (locatedActionOrdinal (scannedLocatedBirth leftBirth)))
+      (o20ScannedFinalLive nameEq Z [] (beforeActionOccurrence (scannedLocatedBirth leftBirth))))
+    (putCurrentGeneration @{nameEq} (renameForward renaming (eventChild leftEvent))
+      (MkRegistrationGeneration (renameForward renaming (eventChild leftEvent)) (locatedActionOrdinal (scannedLocatedBirth rightBirth)))
+      (o20ScannedFinalLive nameEq Z [] (beforeActionOccurrence (scannedLocatedBirth rightBirth))))
+    (actionBeforeState (scannedLocatedBirth leftBirth)) (actionBeforeState (scannedLocatedBirth rightBirth))
+    (actionAfterState (scannedLocatedBirth leftBirth)) (actionAfterState (scannedLocatedBirth rightBirth))
+o20MatchedScannedBirthOccurrenceHistory nameEq keyEq left right mapping renaming leftAligned rightAligned
+  leftEvent rightEvent matched childSame parentSame leftBirth rightBirth =
+    o20LocatedInsertOccurrenceHistory nameEq keyEq renaming left right leftAligned rightAligned
+      (eventChild leftEvent) (eventComponent leftEvent) (ChildOf (eventParent leftEvent))
+      (ChildOf (renameForward renaming (eventParent leftEvent))) (ChildrenRelated Refl)
+      (scannedLocatedBirth leftBirth)
+      (MkLocatedActionOccurrence (actionBeforeState (scannedLocatedBirth rightBirth)) (actionAfterState (scannedLocatedBirth rightBirth))
+        (beforeActionOccurrence (scannedLocatedBirth rightBirth)) (locatedTransition (scannedLocatedBirth rightBirth))
+        (afterActionOccurrence (scannedLocatedBirth rightBirth))
+        (trans (locatedAction (scannedLocatedBirth rightBirth))
+          (rewrite childSame in rewrite parentSame in rewrite sym (matchedComponent matched) in Refl))
+        (actionOccurrenceDecomposition (scannedLocatedBirth rightBirth)))
+      (trans (cong (generationForward mapping) (sym (scannedBirthStampExact leftBirth)))
+        (trans (matchedChildGeneration matched) (trans (scannedBirthStampExact rightBirth)
+          (cong (\actor => MkRegistrationGeneration actor (locatedActionOrdinal (scannedLocatedBirth rightBirth))) childSame))))
