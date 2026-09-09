@@ -302,3 +302,26 @@ advanceAtCapability {name} {key} {world} {error} {value}
   advanceAtOutcome nameEq keyEq child parent actor childFiber actorFiber ambient source frame distinct
     step rest accumulator view lifeEquation capability capEquation
     (runStepEffect step capability (MkLocalState ambient (restrictOwnedPreservingOrder (componentProvisions (fiberComponent actorFiber)) (ownedValues (fiberTable actorFiber))))) Refl
+
+||| Eliminate only the actual reloading program list. Library resolver and
+||| target Bool are observed HERE with equations, never reconstructed views.
+export
+0 advanceAtRemaining :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (child, parent, actor : name) ->
+  (childFiber, actorFiber : Fiber name key value world error) ->
+  (ambient : world) -> (source : Registry name key value world error) ->
+  (frame : RetirementProviderFrame name key world error value nameEq keyEq child parent actor childFiber actorFiber source) ->
+  (0 distinct : Not (child = actor)) ->
+  (remaining : List (StepEffect key value world error (dependencies (componentDependencies (fiberComponent actorFiber))) (componentProvisions (fiberComponent actorFiber)))) ->
+  (accumulator : (LocalState key value world (componentProvisions (fiberComponent actorFiber))) -> (LocalState key value world (componentProvisions (fiberComponent actorFiber)))) -> (view : View name (dependencies (componentDependencies (fiberComponent actorFiber)))) ->
+  (0 lifeEquation : fiberLifecycle actorFiber = Reloading remaining accumulator view) ->
+  RetirementAdvanceEquation nameEq keyEq child actor childFiber ambient source
+advanceAtRemaining {name} {key} {world} {error} {value}
+  nameEq keyEq child parent actor childFiber actorFiber ambient source frame distinct [] accumulator view lifeEquation =
+  advanceEmptyAtMatch nameEq keyEq child parent actor childFiber actorFiber ambient source frame distinct accumulator view lifeEquation
+    (targetMatches @{nameEq} (targetFiber {name} {key} {value} {world} {error} @{nameEq} @{keyEq} actorFiber source) view) Refl
+advanceAtRemaining {name} {key} {world} {error} {value}
+  nameEq keyEq child parent actor childFiber actorFiber ambient source frame distinct (step :: rest) accumulator view lifeEquation =
+  advanceAtCapability nameEq keyEq child parent actor childFiber actorFiber ambient source frame distinct step rest accumulator view lifeEquation
+    (resolveCommittedValues {name} {key} {value} {world} {error} @{nameEq} @{keyEq} (dependencies (componentDependencies (fiberComponent actorFiber))) view source) Refl
