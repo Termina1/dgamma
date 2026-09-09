@@ -108,3 +108,15 @@ export
 bundleIntoC ForcedBundleEnd = ForcedBundleEndC
 bundleIntoC (ForcedBundleStep root component step rest inserted forced tail) =
   ForcedBundleInsertC root component step rest inserted forced (bundleIntoC tail)
+
+||| Sound inclusion for the whole attached body, preserving the exact native
+||| transition index. Old FrontNormal/NeverRetired statements stay unchanged.
+export
+0 attachedIntoC : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {selected : name} ->
+  {first, finalState : SystemState name key value world error} ->
+  {trace : Transitions first finalState} ->
+  ActorLifecycleOnlyAttached nameEq selected trace -> ActorLifecycleOnlyAttachedC nameEq selected trace
+attachedIntoC (AttachedWithoutRoots core extended) = AttachedWithoutRootsC core extended
+attachedIntoC (AttachedWithRoots core extended bundle ordered) =
+  AttachedWithRootsC core extended bundle (bundleIntoC ordered)
