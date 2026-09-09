@@ -115,3 +115,32 @@ export
   (state : SystemState name key value world error) ->
   MkSystemState (worldState state) (registry state) = state
 insertionStateEta (MkSystemState ambient source) = Refl
+
+||| ORIGINAL native root-insert view yields an actual alternate checked
+||| successor. Finite declaration-scan agreement is an explicit observed
+||| frame; freshness and endpoint lookup equations are DERIVED, not supplied.
+export
+0 rootInsertExtensionalFromView : {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (component : Component key value world error) -> (ambient, currentAmbient : world) ->
+  (source, currentSource : Registry name key value world error) ->
+  (afterState : SystemState name key value world error) -> (tag : RuleTag) ->
+  (0 same : RegistryExtensional name key world error value nameEq
+    (MkSystemState ambient source) (MkSystemState currentAmbient currentSource)) ->
+  (0 valid : registryWellFormed {name} {key} {world} {error} {value} @{nameEq} @{keyEq}
+    (MkSystemState currentAmbient currentSource) = True) ->
+  (seen : Bool) ->
+  (0 observed : provisionsDisjointFrom {name} {key} {world} {error} {value} @{keyEq}
+    (componentProvisions component) (bindings source) = seen) ->
+  (0 frame : provisionsDisjointFrom {name} {key} {world} {error} {value} @{keyEq}
+    (componentProvisions component) (bindings currentSource) = seen) ->
+  ForeignInsertPlanView name key world error value nameEq keyEq actor Root component ambient source tag afterState ->
+  CheckedExtensionalStep name key world error value nameEq keyEq (OInsert actor Root component)
+    (MkSystemState currentAmbient currentSource) tag afterState
+rootInsertExtensionalFromView nameEq keyEq actor component ambient currentAmbient source currentSource
+  _ _ same valid seen observed frame (MkForeignInsertPlanView absent guards) =
+  rootInsertPacketExtensional nameEq keyEq actor component
+    (MkSystemState ambient source) (MkSystemState currentAmbient currentSource) same absent
+    (checkedInsertAtNativeGuards nameEq keyEq actor Root component currentAmbient currentSource
+      (trans (sym (extensionalLookup same actor)) absent)
+      (trans frame (trans (sym observed) guards)) valid)
