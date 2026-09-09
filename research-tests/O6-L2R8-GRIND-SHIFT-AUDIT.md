@@ -68,6 +68,12 @@ Invocation ledger **62 total =48 bounded proof attempts + V0/V1 +12 final valida
 
 Published artifacts: O6-L2R8-COMPILER-LEDGER.json, MICRO-UNIT-LEDGER.json, DECLARATION-ORIGINS.md, PREPUBLICATION-VERIFICATION.json/.md and COMPILER-EVIDENCE.tar.gz. Archive SHA256 **8e6eefae420c237f82fe4750a65cfe85b27ced30e90b32e32453b5445451f639**. Source boundaryd11d13c0, archive boundary9c72d7ae. Archive includes all proof/final checks, exact snapshots, source receipts, E1 receipt, stopped/deferred/early-stop records, rulings/resume qualification, frozen schedule/closure/plan, tests and tooling. Publication E2/E3 receipts cannot recursively appear inside their own archive; live append-only receipts authenticate those artifact-only commits. E3 post-publication reconstruction follows; no new compiler or proof invocation is needed.
 
+## E3 — post-publication independent reconstruction
+
+**Published-archive reconstruction PASS atbc6b39c4**, source boundaryd11d13c0. All62 records and raw snapshots/logs agree with the committed compiler ledger and immutable archive SHA256; every chronological source/artifact receipt is reconstructed from git. Final plan12/12, tests16/16, exact37 retained declarations, A10 stopped3/3 and B3 deferred2/3 all agree. No staged files or own compiler. O6-L2R8-INDEPENDENT-VERIFICATION.json/.md record this exact inspected boundary and the required independent HUMAN reviewer qualification.
+
+E3 commits those reports plus this audit only, guarded by the unchanged exact-source V21 fresh PASS. This publication-only commit does not make the report recursively cover its own bytes; its live guarded receipt authenticates publication. No proof attempt, new compiler, main-tree action or heavy-lock/window interaction followed the immutable validation series. Final supervisor gate follows with the full baseline diff and explicit PARTIAL residues. No additional worker/reviewer was launched by this child; the parent owns review.
+
 ## Status — explicitly PARTIAL bounded milestone, not a complete cure
 
 **Fully checked at stated scope:** quantity-0 isElem AnyHit→shared-key extraction and native located release enumeration; executable ordered first-positive distance scan and its observed positive-total decoding; generic native full-word/count/concatenation transport; exact arithmetic/step bounds of a GIVEN finite native iteration; generic physical occurrence embedding with offset/source/root-kind preservation; executable unchanged origin observation with authentic filtered-catalog ORDINAL membership.
