@@ -207,3 +207,25 @@ o20NoLifecycleActiveBackward nameEq keyEq selected action before afterState tag 
   o20NoLifecycleActiveAtOwnerDecision nameEq keyEq selected action before afterState tag
     (checkedActionProjects nameEq keyEq action before afterState tag checked) excluded
     (decEq @{nameEq} selected (actionOwner action)) Refl active
+
+||| Whole native no-selected-lifecycle trace induction reflects endpoint
+||| Active back to its start. All orchestration and foreign lifecycle edges
+||| are traversed; neither actor-onlyness nor zero suffix length is assumed.
+export
+0 o20NoLifecycleTraceActiveBackward :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  {first, finalState : SystemState name key value world error} ->
+  (trace : Transitions first finalState) -> NoLifecycleBy selected trace ->
+  AlignedTransitions name key world error value nameEq keyEq trace ->
+  (supportedActiveAt {name} {key} {value} {world} {error} @{nameEq} selected finalState = True) ->
+  (supportedActiveAt {name} {key} {value} {world} {error} @{nameEq} selected first = True)
+o20NoLifecycleTraceActiveBackward nameEq keyEq selected _ NoLifecycleByEnd AlignedEnd active = active
+o20NoLifecycleTraceActiveBackward {name} {key} {value} {world} {error} {first}
+  nameEq keyEq selected _ (NoLifecycleByStep _ _ excluded noLater)
+  (AlignedStep {middle} action tag checked rest alignedLater) active =
+    o20NoLifecycleActiveBackward nameEq keyEq selected action first middle tag checked
+      (\lifecycle, owner => excluded lifecycle
+        (trans (o19TransitionActorOwner (Fired {name} {key} {value} {world} {error}
+          {before = first} {afterState = middle} nameEq keyEq action tag checked)) owner))
+      (o20NoLifecycleTraceActiveBackward nameEq keyEq selected rest noLater alignedLater active)
