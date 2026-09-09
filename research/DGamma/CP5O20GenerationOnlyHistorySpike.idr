@@ -8,6 +8,7 @@ import DGamma.CP5SupportedBirthCoverageSpike
 import DGamma.CP5O20CanonicalBirthDispositionSpike
 import DGamma.CP5ConfluenceCanonicalSortSpike
 import DGamma.CP5ConfluenceLocalDiamondSpike
+import DGamma.CP5ConfluenceRenamingCompositionSpike
 import DGamma.CP5UniqueRawNameInsertions
 import Data.List
 import Data.List.Elem
@@ -119,3 +120,28 @@ export
   O20GenerationOnlyDisposition name key world error value mapping left right stamp
 o20DispositionPacket mapping events selected stamp (coverage ** (exact, choice)) =
   o20DispositionChoice mapping stamp (coveredEvent coverage) (coveredBirth coverage) exact choice
+
+||| Accepted canonical birth capital yields a generation-only ORIGINAL
+||| disposition through E8. Unsupported and closing histories are retained;
+||| the output does not assert a right canonical birth or physical stage.
+export
+0 o20CanonicalGenerationDisposition :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {initial, leftFinal, rightFinal : SystemState name key value world error} ->
+  (left : Transitions initial leftFinal) -> (right : Transitions initial rightFinal) ->
+  (inputs : SameOrchestrationModuloGenerated nameEq keyEq left right) ->
+  (capital : IndependentCanonicalSchedule name key world error value protocol nameEq keyEq left) ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq left ->
+  (selected, parent : name) -> (component : Component key value world error) ->
+  (birth : LocatedGeneratedRegistration selected parent component (canonicalTrace (canonicalSchedule capital))) ->
+  O20GenerationOnlyDisposition name key world error value (generatedGenerationBijection inputs) left right
+    (registrationGeneration (replayGeneratedRegistrationOrigin (canonicalOccurrenceCorrespondence capital) birth))
+o20CanonicalGenerationDisposition {name} {key} {world} {error} {value} nameEq keyEq protocol
+  left right inputs capital unique selected parent component birth =
+    o20DispositionPacket (generatedGenerationBijection inputs)
+      (leftScannedEvents (acceptedAuthenticatedRegistrationMatching name key world error value nameEq
+        left right (generatedGenerationBijection inputs) (generatedRegistrationTree inputs))) selected
+      (registrationGeneration (replayGeneratedRegistrationOrigin (canonicalOccurrenceCorrespondence capital) birth))
+      (o20CanonicalOriginMatchOrClosing nameEq keyEq protocol left right inputs capital unique selected parent component birth)
