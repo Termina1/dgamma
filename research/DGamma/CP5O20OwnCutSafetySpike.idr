@@ -139,3 +139,17 @@ record O20PresentLookup
   constructor MkO20PresentLookup
   0 presentFiber : Fiber name key value world error
   0 presentFound : (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor (registry state) = Just presentFiber)
+
+||| Decode one explicitly observed primitive lookup. The absent branch is
+||| refuted by the supplied native nonabsence proof; no computed existential
+||| is locally eliminated or reconstructed.
+export
+0 o20PresentLookupObserved :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (actor : name) -> (state : SystemState name key value world error) ->
+  (observed : Maybe (Fiber name key value world error)) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor (registry state) = observed) ->
+  Not (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor (registry state) = Nothing) ->
+  O20PresentLookup name key world error value nameEq actor state
+o20PresentLookupObserved nameEq actor state Nothing found notAbsent = void (notAbsent found)
+o20PresentLookupObserved nameEq actor state (Just fiber) found notAbsent = MkO20PresentLookup fiber found
