@@ -53,3 +53,19 @@ originMaximumMember (head :: items) observed equation ordinal accepted =
   replace {p = \n => Elem n (head :: items)}
     (cong (fromMaybe 0) (trans equation accepted))
     (foldMaximumMember (head :: items) items head Here (\item, present => There present))
+
+||| GENERAL rootOriginAt observation -> membership of its exact filtered
+||| catalog-ordinal list. No raw-name birth oracle or supplied membership.
+||| Inverting map/filter into a matching catalog ENTRY and applying
+||| scanCatalogBirth, and the reverse/maximality direction, remain open.
+export
+0 rootOriginCatalogOrdinal : {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (actor : name) -> (cut : Nat) ->
+  (catalog : List (RootCatalogEntry name key world error value)) ->
+  (observed : Maybe Nat) -> (0 equation : rootOriginAt nameEq actor cut catalog = observed) ->
+  (ordinal : Nat) -> (0 accepted : observed = Just ordinal) ->
+  Elem ordinal (map catalogOrdinal (filter (\entry => catalogOrdinal entry <= cut &&
+    isYes (decEq @{nameEq} actor (catalogRoot entry))) catalog))
+rootOriginCatalogOrdinal nameEq actor cut catalog observed equation ordinal accepted =
+  originMaximumMember (map catalogOrdinal (filter (\entry => catalogOrdinal entry <= cut &&
+    isYes (decEq @{nameEq} actor (catalogRoot entry))) catalog)) observed equation ordinal accepted
