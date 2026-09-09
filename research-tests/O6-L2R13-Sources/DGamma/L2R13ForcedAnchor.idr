@@ -105,3 +105,26 @@ phaseKeyHitNonempty nameEq keyEq trail ordinal cut bounded hit =
     (boolAndRight (catalogOrdinal (hitItem hit) == ordinal)
       (not (null (scanReleaseOrdinals nameEq keyEq (catalogComponent (hitItem hit)) 0 (catalogOrdinal (hitItem hit)) trail)))
       (hitAccepted hit))
+
+||| Decode the OUTER classifier hit and observe its inner library any call.
+||| Flattened releases therefore cannot be empty even for an unseeded barrier.
+export
+0 phaseForcedHitNonempty : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, finalState : SystemState name key value world error} ->
+  {trace : Transitions first finalState} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (trail : AvailabilityTrace name key world error value trace) -> (cut : Nat) ->
+  (hit : AnyHit (\seed => catalogOrdinal seed <= cut &&
+    keyForcedOrdinal nameEq keyEq trail (catalogOrdinal seed)) (scanRootCatalog 0 trail)) ->
+  not (null (concatMap
+    (\seed => scanReleaseOrdinals nameEq keyEq (catalogComponent seed) 0 (catalogOrdinal seed) trail)
+    (filter (\seed => catalogOrdinal seed <= cut) (scanRootCatalog 0 trail)))) = True
+phaseForcedHitNonempty nameEq keyEq trail cut hit =
+  phaseKeyHitNonempty nameEq keyEq trail (catalogOrdinal (hitItem hit)) cut
+    (boolAndLeft (catalogOrdinal (hitItem hit) <= cut)
+      (keyForcedOrdinal nameEq keyEq trail (catalogOrdinal (hitItem hit))) (hitAccepted hit))
+    (anyHitObserved (\seed => catalogOrdinal seed == catalogOrdinal (hitItem hit) &&
+      not (null (scanReleaseOrdinals nameEq keyEq (catalogComponent seed) 0 (catalogOrdinal seed) trail)))
+      (scanRootCatalog 0 trail) (keyForcedOrdinal nameEq keyEq trail (catalogOrdinal (hitItem hit))) Refl
+      (boolAndRight (catalogOrdinal (hitItem hit) <= cut)
+        (keyForcedOrdinal nameEq keyEq trail (catalogOrdinal (hitItem hit))) (hitAccepted hit)))
