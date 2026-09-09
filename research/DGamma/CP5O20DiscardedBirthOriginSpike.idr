@@ -44,3 +44,27 @@ data O20DiscardedTraceOrigin :
     (0 exact : (generation = MkRegistrationGeneration child (ordinal + registrationOrdinal birth))) ->
     (0 closing : ActionOccurs (LUnload parent) (afterRegistration birth)) ->
     O20DiscardedTraceOrigin name key world error value ordinal incoming generation trace
+
+||| Prepend the actual native head to a tail-origin packet when its incoming
+||| discarded list is unchanged. A within-tail birth retains its exact suffix
+||| and closing occurrence; the arithmetic transports only its ordinal count.
+export
+0 o20DiscardedOriginPrepend :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (ordinal : Nat) -> (incoming, observed : List (RegistrationGeneration name)) ->
+  (generation : RegistrationGeneration name) ->
+  (step : Transition first middle) -> (rest : Transitions middle finalState) ->
+  (observed = incoming) ->
+  O20DiscardedTraceOrigin name key world error value (S ordinal) observed generation rest ->
+  O20DiscardedTraceOrigin name key world error value ordinal incoming generation (MoreTransitions step rest)
+o20DiscardedOriginPrepend name key world error value ordinal incoming observed generation step rest unchanged (O20DiscardedBefore member) =
+  O20DiscardedBefore (replace {p = Elem generation} unchanged member)
+o20DiscardedOriginPrepend name key world error value ordinal incoming observed generation step rest unchanged
+  (O20DiscardedWithin child parent component birth exact closing) =
+    O20DiscardedWithin child parent component
+      (MkLocatedGeneratedRegistration (registrationBefore birth) (registrationAfter birth)
+        (MoreTransitions step (beforeRegistration birth)) (registrationTransition birth)
+        (afterRegistration birth) (registrationAction birth)
+        (cong (MoreTransitions step) (registrationDecomposition birth)))
+      (trans exact (cong (MkRegistrationGeneration child) (plusSuccRightSucc ordinal (registrationOrdinal birth)))) closing
