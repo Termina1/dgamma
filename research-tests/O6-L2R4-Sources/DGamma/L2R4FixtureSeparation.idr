@@ -22,3 +22,9 @@ import Decidable.Equality
 export
 0 smallNoBundleStraddles : NoBundleStraddlesCut %search %search smallTrace 5
 smallNoBundleStraddles = beginCutNoStraddling 5 2 Refl
+
+||| Universal over all actual bundle decompositions of barrierTrace. The
+||| checked native Begin2 at6 contradicts a root localized from any straddler.
+export
+0 barrierNoBundleStraddles : NoBundleStraddlesCut %search %search barrierTrace 6
+barrierNoBundleStraddles = beginCutNoStraddling 6 2 Refl
