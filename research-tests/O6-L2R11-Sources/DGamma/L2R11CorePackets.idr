@@ -34,3 +34,15 @@ originalCorePacket = MkCoreNativePacket
   (fst (snd (snd contiguityOriginalFirst)))
   (fst (snd (snd (snd contiguityOriginalFirst))))
   (snd (snd (snd (snd contiguityOriginalFirst)))) Refl Refl
+
+||| Restored B core uses the independently checked L2R9 first/last packets.
+||| The shifted family is an explicit parameter to opaque assembly; no
+||| intermediate split path or concrete split ORemove edge is evaluated.
+public export
+restoredCorePacket : CoreNativePacket (\ordinal => contiguityState (11 + ordinal))
+restoredCorePacket = MkCoreNativePacket
+  (restoredEdge11 contiguityRestoredFirst)
+  (restoredEdge12 contiguityRestoredFirst)
+  (restoredEdge13 contiguityRestoredLast)
+  (restoredEdge14 contiguityRestoredLast)
+  (restoredEdge15 contiguityRestoredLast) Refl Refl
