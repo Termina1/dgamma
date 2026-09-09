@@ -27,3 +27,14 @@ public export
 phaseParentOwner : {name : Type} -> Parent name -> Maybe name
 phaseParentOwner Root = Nothing
 phaseParentOwner (ChildOf actor) = Just actor
+
+||| Observe the actual installed fiber before classifying a control owner.
+public export
+phaseControlOwner : {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (child : name) ->
+  (source : SystemState name key value world error) ->
+  (found : Maybe (Fiber name key value world error)) ->
+  (0 equation : lookupFiber {name} {key} {value} {world} {error} @{nameEq}
+    child (registry source) = found) -> Maybe name
+phaseControlOwner nameEq child source Nothing equation = Nothing
+phaseControlOwner nameEq child source (Just fiber) equation = phaseParentOwner (fiberParent fiber)
