@@ -78,3 +78,23 @@ export
     Just (phaseActionOwner nameEq source (transitionAction step), isLifecycleAction (transitionAction step))
 phaseEventAtNativeSplit nameEq before step rest _ trail Refl =
   phaseEventAtNativePrefix nameEq before step rest trail
+
+||| GENERAL event-at-occurrence theorem. The source, action and ordinal are
+||| those of the supplied physical occurrence; no independent alignment
+||| hypothesis or equality between decision dictionaries is used.
+export
+0 phaseEventAtOccurrence : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, finalState : SystemState name key value world error} ->
+  {trace : Transitions first finalState} ->
+  (nameEq : DecEq name) ->
+  (trail : AvailabilityTrace name key world error value trace) ->
+  (action : Action name key value world error) ->
+  (occurrence : LocatedActionOccurrence action trace) ->
+  head' (drop (locatedActionOrdinal occurrence) (phaseEvents nameEq trail)) =
+    Just (phaseActionOwner nameEq (actionBeforeState occurrence) action, isLifecycleAction action)
+phaseEventAtOccurrence {trace} nameEq trail action occurrence =
+  trans (phaseEventAtNativeSplit nameEq (beforeActionOccurrence occurrence)
+    (locatedTransition occurrence) (afterActionOccurrence occurrence) trace trail
+    (actionOccurrenceDecomposition occurrence))
+    (cong (\selected => Just (phaseActionOwner nameEq (actionBeforeState occurrence) selected,
+      isLifecycleAction selected)) (locatedAction occurrence))
