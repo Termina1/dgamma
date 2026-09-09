@@ -61,3 +61,41 @@ o20InsertPositionAtMatchedPacket mapping matching stamp event birth exact (oppos
   MkO20SupportedInsertPositionPair event opposite birth (rightScannedBirths matching opposite retained) exact matched
     (trans (cong (generationForward mapping) (sym exact)) (matchedChildGeneration matched))
     (matchedPerActivationPosition matched)
+
+||| Native support rejects the authentic closing alternative; the retained
+||| branch pairs original positions using the actual authenticated matching.
+||| The source stamp is reconciled to the supplied birth by raw uniqueness.
+export
+0 o20SupportedClassifiedInsertPositions :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {leftFirst, leftFinal, rightFirst, rightFinal : SystemState name key value world error} ->
+  (left : Transitions leftFirst leftFinal) -> (right : Transitions rightFirst rightFinal) ->
+  (mapping : RegistrationGenerationBijection name) ->
+  (matching : AuthenticatedRegistrationMatching name key world error value mapping left right) ->
+  AlignedTransitions name key world error value nameEq keyEq left ->
+  RegistrationDiscipline protocol nameEq left -> (bindings (registry leftFirst) = []) ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq left ->
+  (selected, parent : name) -> (component : Component key value world error) ->
+  (birth : LocatedGeneratedRegistration selected parent component left) ->
+  (finalFiber : Fiber name key value world error) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected (registry leftFinal) = Just finalFiber) ->
+  (isSupported {name} {key} {value} {world} {error} @{nameEq} @{keyEq} selected leftFinal = True) ->
+  ClassifiedGeneratedBirth name key world error value Z left (leftScannedEvents matching) selected ->
+  O20SupportedInsertPositionPair name key world error value mapping left right (registrationGeneration birth)
+o20SupportedClassifiedInsertPositions {name} {key} {value} {world} {error}
+  nameEq keyEq protocol left right mapping matching aligned discipline empty unique selected parent component birth finalFiber found supported
+  (MkClassifiedGeneratedBirth event childExact scanned (Left retained)) =
+    o20InsertPositionAtMatchedPacket mapping matching (registrationGeneration birth) event scanned
+      (o20CoveredOriginStamp {nameEq} {keyEq} left unique (leftScannedEvents matching) selected parent component birth
+        (MkClassifiedGeneratedBirth event childExact scanned (Left retained)))
+      (matchedEventForward matching event retained)
+o20SupportedClassifiedInsertPositions {name} {key} {value} {world} {error} {leftFinal}
+  nameEq keyEq protocol left right mapping matching aligned discipline empty unique selected parent component birth finalFiber found supported
+  (MkClassifiedGeneratedBirth event childExact scanned (Right closing)) =
+    void (nonretiredEndpointRejectsRetirement name key world error value nameEq keyEq left aligned empty unique selected finalFiber found
+      (computedSupportNotRetired name key world error value nameEq keyEq leftFinal selected finalFiber found supported)
+      (replace {p = \action => LocatedActionOccurrence action left} (cong ORetire childExact)
+        (locatedClosingBirthHasRetirement name key world error value nameEq keyEq protocol left aligned discipline
+          (eventChild event) (eventParent event) (eventComponent event) (scannedLocatedBirth scanned) (deletedParentEpisodeCloses closing))))
