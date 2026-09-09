@@ -72,3 +72,31 @@ record PacketPassage
   0 passageNewAfterWord : nativeActionWord passageNewSuffixTrail = passageSuffixWord
   0 passageSourceValid : registryWellFormed @{fst fixtureDictionaries} @{snd fixtureDictionaries} initial = True
   0 passageForeign : passageRoot = 2 -> Void
+
+||| GeneralCoreContiguityRestored-shaped result of the packet route. Both
+||| families and whole endpoints are arbitrary; the inherited core template
+||| is actor2/child5. Exact core words, count and physical placement, not
+||| equality of incompatible core endpoint states, are the conclusions.
+public export
+record PacketContiguityResult
+  (initial, oldFinal, newFinal : SystemState Nat Bool (\key => Unit) Unit String)
+  (root : Nat) (component : Component Bool (\key => Unit) Unit String)
+  (suffix : List (Action Nat Bool (\key => Unit) Unit String)) where
+  constructor MkPacketContiguityResult
+  packetOriginalRun : Transitions initial oldFinal
+  packetRestoredRun : Transitions initial newFinal
+  packetOriginalTrail : AvailabilityTrace Nat Bool Unit String (\key => Unit) packetOriginalRun
+  packetRestoredTrail : AvailabilityTrace Nat Bool Unit String (\key => Unit) packetRestoredRun
+  packetOriginalCore : LocatedExtendedCore Nat Bool Unit String (\key => Unit) (fst fixtureDictionaries) 2 packetOriginalRun
+  packetRestoredCore : LocatedExtendedCore Nat Bool Unit String (\key => Unit) (fst fixtureDictionaries) 2 packetRestoredRun
+  0 packetOriginValid : registryWellFormed @{fst fixtureDictionaries} @{snd fixtureDictionaries} initial = True
+  0 packetRootForeign : root = 2 -> Void
+  0 packetOriginalSuffix : nativeActionWord (afterCoreTrail packetOriginalCore) = OInsert root Root component :: suffix
+  0 packetRestoredWord : nativeActionWord packetRestoredTrail =
+    nativeActionWord (beforeCoreTrail packetOriginalCore) ++
+      OInsert root Root component :: (nativeActionWord (coreTrail packetOriginalCore) ++ suffix)
+  0 packetCoreWord : nativeActionWord (coreTrail packetRestoredCore) = nativeActionWord (coreTrail packetOriginalCore)
+  0 packetOldCount : transitionCount (nativeCore packetOriginalCore) = 5
+  0 packetNewCount : transitionCount (nativeCore packetRestoredCore) = 5
+  0 packetCorePosition : transitionCount (beforeCore packetRestoredCore) = S (transitionCount (beforeCore packetOriginalCore))
+  0 packetWholeEndpoints : RegistryExtensional Nat Bool Unit String (\key => Unit) (fst fixtureDictionaries) oldFinal newFinal
