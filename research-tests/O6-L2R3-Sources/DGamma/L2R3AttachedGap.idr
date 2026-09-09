@@ -75,3 +75,22 @@ bundleOutsideHead offset remaining start width lower upper (Left before) =
   succNotLTEpred (transitive upper before)
 bundleOutsideHead offset remaining start width lower upper (Right after) =
   succNotLTEpred (transitive (gapHeadPositive offset remaining) (transitive after lower))
+
+||| Consume authenticated bundle membership at the actual gap head; only the
+||| count identity offset+0=offset is transported. No dependent record equality.
+export
+0 rootHeadCannotBeBundled :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {initial, finalState : SystemState name key value world error} ->
+  {global : Transitions initial finalState} ->
+  {action : Action name key value world error} ->
+  (offset, remaining : Nat) ->
+  (member : AttachedBundleOccurrence name key world error value nameEq keyEq global action (offset + 0)) ->
+  Either (LTE (bundleOffset member + transitionCount (memberBundle member)) offset)
+    (LTE (offset + S remaining) (bundleOffset member)) -> Void
+rootHeadCannotBeBundled offset remaining member separated =
+  bundleOutsideHead offset remaining (bundleOffset member) (transitionCount (memberBundle member))
+    (replace {p = \n => LTE (bundleOffset member) n} (plusZeroRightNeutral offset) (memberLowerBound member))
+    (replace {p = \n => LT n (bundleOffset member + transitionCount (memberBundle member))}
+      (plusZeroRightNeutral offset) (memberUpperBound member)) separated
