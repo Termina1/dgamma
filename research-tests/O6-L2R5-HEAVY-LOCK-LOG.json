@@ -1,0 +1,30 @@
+{
+  "timestampUTC": "2026-09-09T03:59:33.167967+00:00",
+  "ownAcquisitions": 0,
+  "waits": 0,
+  "staleRemovals": 0,
+  "events": [],
+  "currentOwnerObservation": {
+    "lane": "R196-main",
+    "pid": 86408,
+    "timestampUTC": "2026-09-09T03:51:48.540192+00:00",
+    "unit": "A1-through-B-package",
+    "path": "/Users/vyacheslavshebanov/Work/dgamma/"
+  },
+  "ownLockHeld": false,
+  "policy": "No heavy checks launched. Main-lane compiler/lock only observed; never signalled/removed. Record-specific observations live in compiler ledger.",
+  "mainCompilerPIDs": [
+    26574,
+    36888,
+    39912,
+    40303,
+    43205,
+    45051,
+    55038,
+    59743,
+    82301,
+    86867,
+    92929,
+    96943
+  ]
+}

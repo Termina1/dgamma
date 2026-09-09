@@ -1,0 +1,4210 @@
+{
+  "monitorQualifications": {
+    "sampledRSS": "250ms ps samples, not continuous peak",
+    "sourceMutation": "target contents sampled each250ms and exact hash rechecked at guard; not continuous filesystem surveillance",
+    "bootstrap": "V0 touches only unchanged L2R4AnchorMeasure; bytes not edited and never source-committed by L2R5",
+    "mainLane": "only CLI containing /Users/vyacheslavshebanov/Work/dgamma-lane2/ is owned; separate main-lane compilers never signalled",
+    "heavy": "no heavy invocation launched; unlocked RSS guard18GiB, heavy guard48GiB"
+  },
+  "finalValidationDualRoles": {},
+  "invocationQualifications": {},
+  "validationQualifications": {},
+  "qualifiedPassedCount": 46,
+  "invalidValidationCount": 0,
+  "supersededHistoricalValidationCount": 0,
+  "rawPassMeaning": "passedCount preserves the runner outcome; qualifiedPassedCount excludes explicitly invalidated validation invocations without rewriting their exact records.",
+  "commitReceipts": [
+    {
+      "event": "GUARDED ARTIFACT COMMIT",
+      "unit": "V0",
+      "invocation": "V0",
+      "sourceInvocation": "V0",
+      "sourceHash": "3419e8fa0ad67a6aa42f5765fd382b6e4faf6426c6d24fd11c30b3c2e21f3ef7",
+      "resultingCommitHash": "1dbdef00482fdcb33ac6a1b5b6d63b4f285a3780",
+      "timestampUTC": "2026-09-09T03:07:11.253535+00:00",
+      "paths": [
+        "research-tests/run-l2r5-launch.py",
+        "research-tests/run-l2r5-check.py",
+        "research-tests/run-l2r5-commit.py",
+        "research-tests/run-l2r5-artifact-commit.py",
+        "research-tests/O6-L2R5-SHIFT-PLAN.json",
+        "research-tests/O6-L2R5-SEMANTIC-RULINGS.md"
+      ],
+      "artifactHashes": {
+        "research-tests/run-l2r5-launch.py": "825e1c471cfb55ab36f97ed288889d2279331a1ff4a3aeaf89435449f4a6e101",
+        "research-tests/run-l2r5-check.py": "4794b87a07b926bc14a70f0af6e583101cc39d67ac0eb672be0980493f64cf9f",
+        "research-tests/run-l2r5-commit.py": "6038061d31fd8506c48ff5c571f94156e9b04a812e076394a80d984574e1f56b",
+        "research-tests/run-l2r5-artifact-commit.py": "ebc7ddfb54cd4af5bb1d29c4f7b25247b76f7a2a9af647e83f76fd1cf23f4a70",
+        "research-tests/O6-L2R5-SHIFT-PLAN.json": "fea7de8d5f998a32e76c3c08eec6354114c08543c245963570625764229b986d",
+        "research-tests/O6-L2R5-SEMANTIC-RULINGS.md": "04e6a6033eb8bf814db6814c0d436bc1de99ebc741cf2f5f989e846e481147d2"
+      },
+      "authorizedCommentRepairs": [],
+      "guardChecksPassed": [
+        "fresh PASS",
+        "exit 0",
+        "not interrupted",
+        "no source mutation",
+        "exact source SHA256",
+        "no intervening compiler invocation",
+        "artifact paths or exact authorized comment repairs only",
+        "no new Idris source delta",
+        "no pre-staged files",
+        "no own compiler",
+        "git diff --check",
+        "git commit success",
+        "no post-staged files"
+      ]
+    },
+    {
+      "paths": [
+        "research-tests/O6-L2R5-Sources/DGamma/L2R5AnchorTransport.idr"
+      ],
+      "sourceHashes": {
+        "research-tests/O6-L2R5-Sources/DGamma/L2R5AnchorTransport.idr": "f64053693a91523d268ffb2cce48176e14b5b143adbecbb05441eaf2b50f0494"
+      },
+      "event": "GUARDED COMMIT",
+      "unit": "A1",
+      "attempt": "1",
+      "invocation": "A1-1",
+      "sourceHash": "f64053693a91523d268ffb2cce48176e14b5b143adbecbb05441eaf2b50f0494",
+      "resultingCommitHash": "3baa3fbac4a3473f709ae567ef9e2d14091bcd6e",
+      "timestampUTC": "2026-09-09T03:07:56.766204+00:00",
+      "guardChecksPassed": [
+        "fresh PASS",
+        "exit 0",
+        "not interrupted",
+        "no expected diagnostic",
+        "exact source SHA256",
+        "one new declaration",
+        "no intervening compiler invocation",
+        "no pre-staged files",
+        "no compiler",
+        "git diff --check",
+        "git commit success",
+        "no post-staged files"
+      ]
+    },
+    {
+      "paths": [
+        "research-tests/O6-L2R5-Sources/DGamma/L2R5AnchorTransport.idr"
+      ],
+      "sourceHashes": {
+        "research-tests/O6-L2R5-Sources/DGamma/L2R5AnchorTransport.idr": "130fd6d5ca2701cb8cded52549b19a39fe0aac4060b5b0b702f0f92fdebef231"
+      },
+      "event": "GUARDED COMMIT",
+      "unit": "A2",
+      "attempt": "1",
+      "invocation": "A2-1",
+      "sourceHash": "130fd6d5ca2701cb8cded52549b19a39fe0aac4060b5b0b702f0f92fdebef231",
+      "resultingCommitHash": "e9abbd958dd0cf5bd55b428522551c81c869060f",
+      "timestampUTC": "2026-09-09T03:08:34.816744+00:00",
+      "guardChecksPassed": [
+        "fresh PASS",
+        "exit 0",
+        "not interrupted",
+        "no expected diagnostic",
+        "exact source SHA256",
+        "one new declaration",
+        "no intervening compiler invocation",
+        "no pre-staged files",
+        "no compiler",
+        "git diff --check",
+        "git commit success",
+        "no post-staged files"
+      ]
+    },
+    {
+      "paths": [
+        "research-tests/O6-L2R5-Sources/DGamma/L2R5CurrentCut.idr"
+      ],
+      "sourceHashes": {
+        "research-tests/O6-L2R5-Sources/DGamma/L2R5CurrentCut.idr": "88becfe991f889e41695c0f66183c838193181f8504a40977d06281c753a445e"
+      },
+      "event": "GUARDED COMMIT",
+      "unit": "A3",
+      "attempt": "1",
+      "invocation": "A3-1",
+      "sourceHash": "88becfe991f889e41695c0f66183c838193181f8504a40977d06281c753a445e",
+      "resultingCommitHash": "d2116a31d6b5ea4e81f3f8aa5dbafe30168a7329",
+      "timestampUTC": "2026-09-09T03:09:03.766525+00:00",
+      "guardChecksPassed": [
+        "fresh PASS",
+        "exit 0",
+        "not interrupted",
+        "no expected diagnostic",
+        "exact source SHA256",
+        "one new declaration",
+        "no intervening compiler invocation",
+        "no pre-staged files",
+        "no compiler",
+        "git diff --check",
+        "git commit success",
+        "no post-staged files"
+      ]
+    },
+    {
+      "paths": [
+        "research-tests/O6-L2R5-Sources/DGamma/L2R5CurrentCut.idr"
+      ],
+      "sourceHashes": {
+        "research-tests/O6-L2R5-Sources/DGamma/L2R5CurrentCut.idr": "178497ce17b448302d4b49361b7703a9b81bd432082597903890b3530d4d3d22"
+      },
+      "event": "GUARDED COMMIT",
+      "unit": "A4",
+      "attempt": "1",
+      "invocation": "A4-1",
+      "sourceHash": "178497ce17b448302d4b49361b7703a9b81bd432082597903890b3530d4d3d22",
+      "resultingCommitHash": "5822f06e1c873e17e28751cee539bd9dfc6a799e",
+      "timestampUTC": "2026-09-09T03:09:37.040847+00:00",
+      "guardChecksPassed": [
+        "fresh PASS",
+        "exit 0",
+        "not interrupted",
+        "no expected diagnostic",
+        "exact source SHA256",
+        "one new declaration",
+        "no intervening compiler invocation",
+        "no pre-staged files",
+        "no compiler",
+        "git diff --check",
+        "git commit success",
+        "no post-staged files"
+      ]
+    },
+    {
+      "paths": [
+        "research-tests/O6-L2R5-Sources/DGamma/L2R5CurrentCut.idr"
+      ],
+      "sourceHashes": {
+        "research-tests/O6-L2R5-Sources/DGamma/L2R5CurrentCut.idr": "05ce79fef1c7d8542864540d321f0d9ab3d65fbe814215f0e3140135191ba896"
+      },
+      "event": "GUARDED COMMIT",
+      "unit": "A5",
+      "attempt": "1",
+      "invocation": "A5-1",
+      "sourceHash": "05ce79fef1c7d8542864540d321f0d9ab3d65fbe814215f0e3140135191ba896",
+      "resultingCommitHash": "cb60b7d7185c20b2fc8f2eb69cf31462e0db283b",
+      "timestampUTC": "2026-09-09T03:11:04.086072+00:00",
+      "guardChecksPassed": [
+        "fresh PASS",
+        "exit 0",
+        "not interrupted",
+        "no expected diagnostic",
+        "exact source SHA256",
+        "one new declaration",
+        "no intervening compiler invocation",
+        "no pre-staged files",
+        "no compiler",
+        "git diff --check",
+        "git commit success",
+        "no post-staged files"
+      ]
+    },
+    {
+      "paths": [
+        "research-tests/O6-L2R5-Sources/DGamma/L2R5Extensional.idr"
+      ],
+      "sourceHashes": {
+        "research-tests/O6-L2R5-Sources/DGamma/L2R5Extensional.idr": "5f6434c604f8d3679f914a6fb9c0ec7a071f3df8d0c3af426e7f81262517c9cb"
+      },
+      "event": "GUARDED COMMIT",
+      "unit": "A6",
+      "attempt": "1",
+      "invocation": "A6-1",
+      "sourceHash": "5f6434c604f8d3679f914a6fb9c0ec7a071f3df8d0c3af426e7f81262517c9cb",
+      "resultingCommitHash": "0fbc3d336d25620775c455b4f5409d6ecb684712",
+      "timestampUTC": "2026-09-09T03:13:17.029395+00:00",
+      "guardChecksPassed": [
+        "fresh PASS",
+        "exit 0",
+        "not interrupted",
+        "no expected diagnostic",
+        "exact source SHA256",
+        "one new declaration",
+        "no intervening compiler invocation",
+        "no pre-staged files",
+        "no compiler",
+        "git diff --check",
+        "git commit success",
+        "no post-staged files"
+      ]
+    },
+    {
+      "paths": [
+        "research-tests/O6-L2R5-Sources/DGamma/L2R5Extensional.idr"
+      ],
+      "sourceHashes": {
+        "research-tests/O6-L2R5-Sources/DGamma/L2R5Extensional.idr": "86d3d770e8845a4569142711689c9fa2b72ff22d1c67430c340fe7c172ca9017"
+      },
+      "event": "GUARDED COMMIT",
+      "unit": "A7",
+      "attempt": "1",
+      "invocation": "A7-1",
+      "sourceHash": "86d3d770e8845a4569142711689c9fa2b72ff22d1c67430c340fe7c172ca9017",
+      "resultingCommitHash": "21453f7c916571d2cd48a407710e319334a018e8",
+      "timestampUTC": "2026-09-09T03:13:57.459442+00:00",
+      "guardChecksPassed": [
+        "fresh PASS",
+        "exit 0",
+        "not interrupted",
+        "no expected diagnostic",
+        "exact source SHA256",
+        "one new declaration",
+        "no intervening compiler invocation",
+        "no pre-staged files",
+        "no compiler",
+        "git diff --check",
+        "git commit success",
+        "no post-staged files"
+      ]
+    },
+    {
+      "paths": [
+        "research-tests/O6-L2R5-Sources/DGamma/L2R5Extensional.idr"
+      ],
+      "sourceHashes": {
+        "research-tests/O6-L2R5-Sources/DGamma/L2R5Extensional.idr": "3bbdd6768c4c363d2936515fa4f2188ee448d69afd98e0425e4a438e2df57dfb"
+      },
+      "event": "GUARDED COMMIT",
+      "unit": "A8",
+      "attempt": "1",
+      "invocation": "A8-1",
+      "sourceHash": "3bbdd6768c4c363d2936515fa4f2188ee448d69afd98e0425e4a438e2df57dfb",
+      "resultingCommitHash": "f8e12a2c1cd4861a5aa3f548e18a2c6b66025ea6",
+      "timestampUTC": "2026-09-09T03:15:16.500270+00:00",
+      "guardChecksPassed": [
+        "fresh PASS",
+        "exit 0",
+        "not interrupted",
+        "no expected diagnostic",
+        "exact source SHA256",
+        "one new declaration",
+        "no intervening compiler invocation",
+        "no pre-staged files",
+        "no compiler",
+        "git diff --check",
+        "git commit success",
+        "no post-staged files"
+      ]
+    },
+    {
+      "paths": [
+        "research-tests/O6-L2R5-Sources/DGamma/L2R5Extensional.idr"
+      ],
+      "sourceHashes": {
+        "research-tests/O6-L2R5-Sources/DGamma/L2R5Extensional.idr": "ed66c311d84b9f8b42aa4820e1c1b3ef72a7f9fe1c3e0f1ffd89ef04da7f6121"
+      },
+      "event": "GUARDED COMMIT",
+      "unit": "A9",
+      "attempt": "1",
+      "invocation": "A9-1",
+      "sourceHash": "ed66c311d84b9f8b42aa4820e1c1b3ef72a7f9fe1c3e0f1ffd89ef04da7f6121",
+      "resultingCommitHash": "49ef79d18b187ab83b9e650b8d6d6fdd79aa6dbb",
+      "timestampUTC": "2026-09-09T03:15:54.931830+00:00",
+      "guardChecksPassed": [
+        "fresh PASS",
+        "exit 0",
+        "not interrupted",
+        "no expected diagnostic",
+        "exact source SHA256",
+        "one new declaration",
+        "no intervening compiler invocation",
+        "no pre-staged files",
+        "no compiler",
+        "git diff --check",
+        "git commit success",
+        "no post-staged files"
+      ]
+    },
+    {
+      "paths": [
+        "research-tests/O6-L2R5-Sources/DGamma/L2R5Extensional.idr"
+      ],
+      "sourceHashes": {
+        "research-tests/O6-L2R5-Sources/DGamma/L2R5Extensional.idr": "e88e0d04edb4d5de68c5b2768f720357e511aa46ae0a7951b0b2c5137dbad77e"
+      },
+      "event": "GUARDED COMMIT",
+      "unit": "A10",
+      "attempt": "1",
+      "invocation": "A10-1",
+      "sourceHash": "e88e0d04edb4d5de68c5b2768f720357e511aa46ae0a7951b0b2c5137dbad77e",
+      "resultingCommitHash": "c74c1260abd54682f8383285c9b28c435859d574",
+      "timestampUTC": "2026-09-09T03:16:49.622116+00:00",
+      "guardChecksPassed": [
+        "fresh PASS",
+        "exit 0",
+        "not interrupted",
+        "no expected diagnostic",
+        "exact source SHA256",
+        "one new declaration",
+        "no intervening compiler invocation",
+        "no pre-staged files",
+        "no compiler",
+        "git diff --check",
+        "git commit success",
+        "no post-staged files"
+      ]
+    },
+    {
+      "event": "GUARDED ARTIFACT COMMIT",
+      "unit": "V1",
+      "invocation": "V1",
+      "sourceInvocation": "V1",
+      "sourceHash": "e88e0d04edb4d5de68c5b2768f720357e511aa46ae0a7951b0b2c5137dbad77e",
+      "resultingCommitHash": "725b43801866dc7ce27d5dc62edc8811b8cc11c6",
+      "timestampUTC": "2026-09-09T03:19:32.046041+00:00",
+      "paths": [
+        "research-tests/O6-L2R5-A11-STOP-AUDIT.md"
+      ],
+      "artifactHashes": {
+        "research-tests/O6-L2R5-A11-STOP-AUDIT.md": "b4ae97161d1a20990ef951a1c91c60ac36b651f0f529ddf24b616b92b5afa885"
+      },
+      "authorizedCommentRepairs": [],
+      "guardChecksPassed": [
+        "fresh PASS",
+        "exit 0",
+        "not interrupted",
+        "no source mutation",
+        "exact source SHA256",
+        "no intervening compiler invocation",
+        "artifact paths or exact authorized comment repairs only",
+        "no new Idris source delta",
+        "no pre-staged files",
+        "no own compiler",
+        "git diff --check",
+        "git commit success",
+        "no post-staged files"
+      ]
+    },
+    {
+      "paths": [
+        "research-tests/O6-L2R5-Sources/DGamma/L2R5InsertObserved.idr"
+      ],
+      "sourceHashes": {
+        "research-tests/O6-L2R5-Sources/DGamma/L2R5InsertObserved.idr": "7862f2e2ce8df4ffc8e8dd6bd17b6a46d2c32314342ee26828d713ce95308b64"
+      },
+      "event": "GUARDED COMMIT",
+      "unit": "A12",
+      "attempt": "2",
+      "invocation": "A12-2",
+      "sourceHash": "7862f2e2ce8df4ffc8e8dd6bd17b6a46d2c32314342ee26828d713ce95308b64",
+      "resultingCommitHash": "0efb83c1ed888f9c36f2625f408b295de1d4f7b4",
+      "timestampUTC": "2026-09-09T03:21:44.629049+00:00",
+      "guardChecksPassed": [
+        "fresh PASS",
+        "exit 0",
+        "not interrupted",
+        "no expected diagnostic",
+        "exact source SHA256",
+        "one new declaration",
+        "no intervening compiler invocation",
+        "no pre-staged files",
+        "no compiler",
+        "git diff --check",
+        "git commit success",
+        "no post-staged files"
+      ]
+    },
+    {
+      "paths": [
+        "research-tests/O6-L2R5-Sources/DGamma/L2R5InsertObserved.idr"
+      ],
+      "sourceHashes": {
+        "research-tests/O6-L2R5-Sources/DGamma/L2R5InsertObserved.idr": "7dc427459320a6dea8d33e7112c6008c81a142575b74f8c4d5f6075987c62a23"
+      },
+      "event": "GUARDED COMMIT",
+      "unit": "A13",
+      "attempt": "1",
+      "invocation": "A13-1",
+      "sourceHash": "7dc427459320a6dea8d33e7112c6008c81a142575b74f8c4d5f6075987c62a23",
+      "resultingCommitHash": "71f6de67515d6779be9f77c317e29418d29d911a",
+      "timestampUTC": "2026-09-09T03:22:33.771948+00:00",
+      "guardChecksPassed": [
+        "fresh PASS",
+        "exit 0",
+        "not interrupted",
+        "no expected diagnostic",
+        "exact source SHA256",
+        "one new declaration",
+        "no intervening compiler invocation",
+        "no pre-staged files",
+        "no compiler",
+        "git diff --check",
+        "git commit success",
+        "no post-staged files"
+      ]
+    },
+    {
+      "paths": [
+        "research-tests/O6-L2R5-Sources/DGamma/L2R5ExtensionalRetire.idr"
+      ],
+      "sourceHashes": {
+        "research-tests/O6-L2R5-Sources/DGamma/L2R5ExtensionalRetire.idr": "66649d27a1c277d1251980c6355397e7a8ebb1b87cac1b3ca2ba4b8b7751db6a"
+      },
+      "event": "GUARDED COMMIT",
+      "unit": "A14",
+      "attempt": "1",
+      "invocation": "A14-1",
+      "sourceHash": "66649d27a1c277d1251980c6355397e7a8ebb1b87cac1b3ca2ba4b8b7751db6a",
+      "resultingCommitHash": "ca6b2920d3450d112c8f1f2976549e5fe23270a6",
+      "timestampUTC": "2026-09-09T03:23:33.484278+00:00",
+      "guardChecksPassed": [
+        "fresh PASS",
+        "exit 0",
+        "not interrupted",
+        "no expected diagnostic",
+        "exact source SHA256",
+        "one new declaration",
+        "no intervening compiler invocation",
+        "no pre-staged files",
+        "no compiler",
+        "git diff --check",
+        "git commit success",
+        "no post-staged files"
+      ]
+    },
+    {
+      "paths": [
+        "research-tests/O6-L2R5-Sources/DGamma/L2R5ExtensionalRetire.idr"
+      ],
+      "sourceHashes": {
+        "research-tests/O6-L2R5-Sources/DGamma/L2R5ExtensionalRetire.idr": "da453fb8336d864dd1f1148b7b3c4a1e433f40135ed3604281ef5874914d833f"
+      },
+      "event": "GUARDED COMMIT",
+      "unit": "A15",
+      "attempt": "1",
+      "invocation": "A15-1",
+      "sourceHash": "da453fb8336d864dd1f1148b7b3c4a1e433f40135ed3604281ef5874914d833f",
+      "resultingCommitHash": "d2d5a35d9b856e43e1eef400f5d7adb52b005800",
+      "timestampUTC": "2026-09-09T03:24:13.977767+00:00",
+      "guardChecksPassed": [
+        "fresh PASS",
+        "exit 0",
+        "not interrupted",
+        "no expected diagnostic",
+        "exact source SHA256",
+        "one new declaration",
+        "no intervening compiler invocation",
+        "no pre-staged files",
+        "no compiler",
+        "git diff --check",
+        "git commit success",
+        "no post-staged files"
+      ]
+    },
+    {
+      "paths": [
+        "research-tests/O6-L2R5-Sources/DGamma/L2R5ExtensionalRetire.idr"
+      ],
+      "sourceHashes": {
+        "research-tests/O6-L2R5-Sources/DGamma/L2R5ExtensionalRetire.idr": "a4c2e182703ac916057911f648e50ede5daabecc0cb764c26715bcf0c492c4d8"
+      },
+      "event": "GUARDED COMMIT",
+      "unit": "A16",
+      "attempt": "1",
+      "invocation": "A16-1",
+      "sourceHash": "a4c2e182703ac916057911f648e50ede5daabecc0cb764c26715bcf0c492c4d8",
+      "resultingCommitHash": "a625b77b005a18b86c2c1da09fc8b95a3f50f911",
+      "timestampUTC": "2026-09-09T03:24:45.708531+00:00",
+      "guardChecksPassed": [
+        "fresh PASS",
+        "exit 0",
+        "not interrupted",
+        "no expected diagnostic",
+        "exact source SHA256",
+        "one new declaration",
+        "no intervening compiler invocation",
+        "no pre-staged files",
+        "no compiler",
+        "git diff --check",
+        "git commit success",
+        "no post-staged files"
+      ]
+    },
+    {
+      "paths": [
+        "research-tests/O6-L2R5-Sources/DGamma/L2R5ExtensionalRetire.idr"
+      ],
+      "sourceHashes": {
+        "research-tests/O6-L2R5-Sources/DGamma/L2R5ExtensionalRetire.idr": "be4f5ca26806d054750441330d33d724e8ef9db5f48428f10fbf9622356657a5"
+      },
+      "event": "GUARDED COMMIT",
+      "unit": "A17",
+      "attempt": "1",
+      "invocation": "A17-1",
+      "sourceHash": "be4f5ca26806d054750441330d33d724e8ef9db5f48428f10fbf9622356657a5",
+      "resultingCommitHash": "ca793ff911cd414b6312660afce7758fc1c09c42",
+      "timestampUTC": "2026-09-09T03:25:19.041447+00:00",
+      "guardChecksPassed": [
+        "fresh PASS",
+        "exit 0",
+        "not interrupted",
+        "no expected diagnostic",
+        "exact source SHA256",
+        "one new declaration",
+        "no intervening compiler invocation",
+        "no pre-staged files",
+        "no compiler",
+        "git diff --check",
+        "git commit success",
+        "no post-staged files"
+      ]
+    },
+    {
+      "paths": [
+        "research-tests/O6-L2R5-Sources/DGamma/L2R5ExtensionalRetire.idr"
+      ],
+      "sourceHashes": {
+        "research-tests/O6-L2R5-Sources/DGamma/L2R5ExtensionalRetire.idr": "9b191a053ad48ed09e972b65e26fac5b8baeb97f741d428b3b79bb8e1ca964f8"
+      },
+      "event": "GUARDED COMMIT",
+      "unit": "A18",
+      "attempt": "1",
+      "invocation": "A18-1",
+      "sourceHash": "9b191a053ad48ed09e972b65e26fac5b8baeb97f741d428b3b79bb8e1ca964f8",
+      "resultingCommitHash": "c60f315ad14a84a04f49c148c3204461b940c042",
+      "timestampUTC": "2026-09-09T03:25:58.886927+00:00",
+      "guardChecksPassed": [
+        "fresh PASS",
+        "exit 0",
+        "not interrupted",
+        "no expected diagnostic",
+        "exact source SHA256",
+        "one new declaration",
+        "no intervening compiler invocation",
+        "no pre-staged files",
+        "no compiler",
+        "git diff --check",
+        "git commit success",
+        "no post-staged files"
+      ]
+    },
+    {
+      "paths": [
+        "research-tests/O6-L2R5-Sources/DGamma/L2R5ExtensionalRetire.idr"
+      ],
+      "sourceHashes": {
+        "research-tests/O6-L2R5-Sources/DGamma/L2R5ExtensionalRetire.idr": "4b6f3a1628784c7ad7b62da4b4deec18d21aedddfd0189d7a4581f320e26855c"
+      },
+      "event": "GUARDED COMMIT",
+      "unit": "A19",
+      "attempt": "1",
+      "invocation": "A19-1",
+      "sourceHash": "4b6f3a1628784c7ad7b62da4b4deec18d21aedddfd0189d7a4581f320e26855c",
+      "resultingCommitHash": "fc9ac87f6834fc7703edbf1707a085df858beca9",
+      "timestampUTC": "2026-09-09T03:26:31.942760+00:00",
+      "guardChecksPassed": [
+        "fresh PASS",
+        "exit 0",
+        "not interrupted",
+        "no expected diagnostic",
+        "exact source SHA256",
+        "one new declaration",
+        "no intervening compiler invocation",
+        "no pre-staged files",
+        "no compiler",
+        "git diff --check",
+        "git commit success",
+        "no post-staged files"
+      ]
+    },
+    {
+      "paths": [
+        "research-tests/O6-L2R5-Sources/DGamma/L2R5ExtensionalFixtures.idr"
+      ],
+      "sourceHashes": {
+        "research-tests/O6-L2R5-Sources/DGamma/L2R5ExtensionalFixtures.idr": "2294f6e3637dc3fe2ca1cf05ab9359ef16528405cb47d506683d60f2236ae193"
+      },
+      "event": "GUARDED COMMIT",
+      "unit": "A20",
+      "attempt": "2",
+      "invocation": "A20-2",
+      "sourceHash": "2294f6e3637dc3fe2ca1cf05ab9359ef16528405cb47d506683d60f2236ae193",
+      "resultingCommitHash": "4ab704a96c89bdc84f9371c0219d971e4507b0ed",
+      "timestampUTC": "2026-09-09T03:27:46.192876+00:00",
+      "guardChecksPassed": [
+        "fresh PASS",
+        "exit 0",
+        "not interrupted",
+        "no expected diagnostic",
+        "exact source SHA256",
+        "one new declaration",
+        "no intervening compiler invocation",
+        "no pre-staged files",
+        "no compiler",
+        "git diff --check",
+        "git commit success",
+        "no post-staged files"
+      ]
+    },
+    {
+      "paths": [
+        "research-tests/O6-L2R5-Sources/DGamma/L2R5RetirementFrame.idr"
+      ],
+      "sourceHashes": {
+        "research-tests/O6-L2R5-Sources/DGamma/L2R5RetirementFrame.idr": "eaf6a2a547fdb784f318afaa84c551db92660c9e94cf0cd9dab0918d181eba7f"
+      },
+      "event": "GUARDED COMMIT",
+      "unit": "B1",
+      "attempt": "1",
+      "invocation": "B1-1",
+      "sourceHash": "eaf6a2a547fdb784f318afaa84c551db92660c9e94cf0cd9dab0918d181eba7f",
+      "resultingCommitHash": "cc606679f2ff1186a4fef788e37ef87fcba736b8",
+      "timestampUTC": "2026-09-09T03:28:47.778380+00:00",
+      "guardChecksPassed": [
+        "fresh PASS",
+        "exit 0",
+        "not interrupted",
+        "no expected diagnostic",
+        "exact source SHA256",
+        "one new declaration",
+        "no intervening compiler invocation",
+        "no pre-staged files",
+        "no compiler",
+        "git diff --check",
+        "git commit success",
+        "no post-staged files"
+      ]
+    },
+    {
+      "paths": [
+        "research-tests/O6-L2R5-Sources/DGamma/L2R5RetirementFrame.idr"
+      ],
+      "sourceHashes": {
+        "research-tests/O6-L2R5-Sources/DGamma/L2R5RetirementFrame.idr": "7d9a104d4bd359aa9b269e428328b1f5708fd9c0b00a9460b8ec9ed5f765ceeb"
+      },
+      "event": "GUARDED COMMIT",
+      "unit": "B2",
+      "attempt": "1",
+      "invocation": "B2-1",
+      "sourceHash": "7d9a104d4bd359aa9b269e428328b1f5708fd9c0b00a9460b8ec9ed5f765ceeb",
+      "resultingCommitHash": "239d9676325d5489d3358924adbd7c39cc8a40bd",
+      "timestampUTC": "2026-09-09T03:29:29.704609+00:00",
+      "guardChecksPassed": [
+        "fresh PASS",
+        "exit 0",
+        "not interrupted",
+        "no expected diagnostic",
+        "exact source SHA256",
+        "one new declaration",
+        "no intervening compiler invocation",
+        "no pre-staged files",
+        "no compiler",
+        "git diff --check",
+        "git commit success",
+        "no post-staged files"
+      ]
+    },
+    {
+      "paths": [
+        "research-tests/O6-L2R5-Sources/DGamma/L2R5RetirementFrame.idr"
+      ],
+      "sourceHashes": {
+        "research-tests/O6-L2R5-Sources/DGamma/L2R5RetirementFrame.idr": "07f35852f9e30f2375d65ba9d9255e142dc489dcd84bb2160a7958a1af7a429c"
+      },
+      "event": "GUARDED COMMIT",
+      "unit": "B3",
+      "attempt": "1",
+      "invocation": "B3-1",
+      "sourceHash": "07f35852f9e30f2375d65ba9d9255e142dc489dcd84bb2160a7958a1af7a429c",
+      "resultingCommitHash": "85cd102d0c9b862e39ba8fb3cebc69fc51a2e641",
+      "timestampUTC": "2026-09-09T03:30:20.869491+00:00",
+      "guardChecksPassed": [
+        "fresh PASS",
+        "exit 0",
+        "not interrupted",
+        "no expected diagnostic",
+        "exact source SHA256",
+        "one new declaration",
+        "no intervening compiler invocation",
+        "no pre-staged files",
+        "no compiler",
+        "git diff --check",
+        "git commit success",
+        "no post-staged files"
+      ]
+    },
+    {
+      "paths": [
+        "research-tests/O6-L2R5-Sources/DGamma/L2R5ProviderObservation.idr"
+      ],
+      "sourceHashes": {
+        "research-tests/O6-L2R5-Sources/DGamma/L2R5ProviderObservation.idr": "3e8d4fcb6a9c783832169672f6800808e145a29ea505e014b9146e1e6bba4615"
+      },
+      "event": "GUARDED COMMIT",
+      "unit": "B4",
+      "attempt": "1",
+      "invocation": "B4-1",
+      "sourceHash": "3e8d4fcb6a9c783832169672f6800808e145a29ea505e014b9146e1e6bba4615",
+      "resultingCommitHash": "76a0b126417682d40d62f3ce00b0dff0bd439bd9",
+      "timestampUTC": "2026-09-09T03:31:05.823408+00:00",
+      "guardChecksPassed": [
+        "fresh PASS",
+        "exit 0",
+        "not interrupted",
+        "no expected diagnostic",
+        "exact source SHA256",
+        "one new declaration",
+        "no intervening compiler invocation",
+        "no pre-staged files",
+        "no compiler",
+        "git diff --check",
+        "git commit success",
+        "no post-staged files"
+      ]
+    },
+    {
+      "event": "GUARDED ARTIFACT COMMIT",
+      "unit": "V2",
+      "invocation": "V2",
+      "sourceInvocation": "V2",
+      "sourceHash": "3e8d4fcb6a9c783832169672f6800808e145a29ea505e014b9146e1e6bba4615",
+      "resultingCommitHash": "7acf590d189ae6157635605a3e6bd6975f7654c4",
+      "timestampUTC": "2026-09-09T03:34:29.641594+00:00",
+      "paths": [
+        "research-tests/O6-L2R5-B5-STOP-AUDIT.md"
+      ],
+      "artifactHashes": {
+        "research-tests/O6-L2R5-B5-STOP-AUDIT.md": "1fd4accafad1aad2c913e9bcf5c450c2daab113a8edbfa948b075c9f7f782c9f"
+      },
+      "authorizedCommentRepairs": [],
+      "guardChecksPassed": [
+        "fresh PASS",
+        "exit 0",
+        "not interrupted",
+        "no source mutation",
+        "exact source SHA256",
+        "no intervening compiler invocation",
+        "artifact paths or exact authorized comment repairs only",
+        "no new Idris source delta",
+        "no pre-staged files",
+        "no own compiler",
+        "git diff --check",
+        "git commit success",
+        "no post-staged files"
+      ]
+    },
+    {
+      "paths": [
+        "research-tests/O6-L2R5-Sources/DGamma/L2R5RootCatalog.idr"
+      ],
+      "sourceHashes": {
+        "research-tests/O6-L2R5-Sources/DGamma/L2R5RootCatalog.idr": "75fe6733a8d5a60526229282b98588ba76d846169e6ec1518a395cc00ca54e17"
+      },
+      "event": "GUARDED COMMIT",
+      "unit": "C1",
+      "attempt": "1",
+      "invocation": "C1-1",
+      "sourceHash": "75fe6733a8d5a60526229282b98588ba76d846169e6ec1518a395cc00ca54e17",
+      "resultingCommitHash": "b3a524f59f471c5e6e11fea07f386cc02d791ec0",
+      "timestampUTC": "2026-09-09T03:36:25.034156+00:00",
+      "guardChecksPassed": [
+        "fresh PASS",
+        "exit 0",
+        "not interrupted",
+        "no expected diagnostic",
+        "exact source SHA256",
+        "one new declaration",
+        "no intervening compiler invocation",
+        "no pre-staged files",
+        "no compiler",
+        "git diff --check",
+        "git commit success",
+        "no post-staged files"
+      ]
+    },
+    {
+      "paths": [
+        "research-tests/O6-L2R5-Sources/DGamma/L2R5RootCatalog.idr"
+      ],
+      "sourceHashes": {
+        "research-tests/O6-L2R5-Sources/DGamma/L2R5RootCatalog.idr": "26448c6431ec08980bad6b790dbc1d47614956a134bdfe4c5700aabefc2b4508"
+      },
+      "event": "GUARDED COMMIT",
+      "unit": "C2",
+      "attempt": "1",
+      "invocation": "C2-1",
+      "sourceHash": "26448c6431ec08980bad6b790dbc1d47614956a134bdfe4c5700aabefc2b4508",
+      "resultingCommitHash": "18724c9057e31fdb4f24e3112c9002d2d7047727",
+      "timestampUTC": "2026-09-09T03:36:54.108663+00:00",
+      "guardChecksPassed": [
+        "fresh PASS",
+        "exit 0",
+        "not interrupted",
+        "no expected diagnostic",
+        "exact source SHA256",
+        "one new declaration",
+        "no intervening compiler invocation",
+        "no pre-staged files",
+        "no compiler",
+        "git diff --check",
+        "git commit success",
+        "no post-staged files"
+      ]
+    },
+    {
+      "paths": [
+        "research-tests/O6-L2R5-Sources/DGamma/L2R5RootCatalog.idr"
+      ],
+      "sourceHashes": {
+        "research-tests/O6-L2R5-Sources/DGamma/L2R5RootCatalog.idr": "476ea6c1c5ceaec3aea1f1265ccbd3da662b96be1eb5a661cf8e652f2c57335f"
+      },
+      "event": "GUARDED COMMIT",
+      "unit": "C3",
+      "attempt": "1",
+      "invocation": "C3-1",
+      "sourceHash": "476ea6c1c5ceaec3aea1f1265ccbd3da662b96be1eb5a661cf8e652f2c57335f",
+      "resultingCommitHash": "e9ab71a5d975eec1757654a68e47069bce840ded",
+      "timestampUTC": "2026-09-09T03:37:26.767169+00:00",
+      "guardChecksPassed": [
+        "fresh PASS",
+        "exit 0",
+        "not interrupted",
+        "no expected diagnostic",
+        "exact source SHA256",
+        "one new declaration",
+        "no intervening compiler invocation",
+        "no pre-staged files",
+        "no compiler",
+        "git diff --check",
+        "git commit success",
+        "no post-staged files"
+      ]
+    },
+    {
+      "paths": [
+        "research-tests/O6-L2R5-Sources/DGamma/L2R5RootCatalog.idr"
+      ],
+      "sourceHashes": {
+        "research-tests/O6-L2R5-Sources/DGamma/L2R5RootCatalog.idr": "e29ab2eb28ff606aa2ee3ced4c516c8b2a9867d9e93723ca999fbdd96623ff53"
+      },
+      "event": "GUARDED COMMIT",
+      "unit": "C4",
+      "attempt": "1",
+      "invocation": "C4-1",
+      "sourceHash": "e29ab2eb28ff606aa2ee3ced4c516c8b2a9867d9e93723ca999fbdd96623ff53",
+      "resultingCommitHash": "525730d217350cc8784333ab1df8067364fc5fd2",
+      "timestampUTC": "2026-09-09T03:38:02.805084+00:00",
+      "guardChecksPassed": [
+        "fresh PASS",
+        "exit 0",
+        "not interrupted",
+        "no expected diagnostic",
+        "exact source SHA256",
+        "one new declaration",
+        "no intervening compiler invocation",
+        "no pre-staged files",
+        "no compiler",
+        "git diff --check",
+        "git commit success",
+        "no post-staged files"
+      ]
+    },
+    {
+      "paths": [
+        "research-tests/O6-L2R5-Sources/DGamma/L2R5RootCatalog.idr"
+      ],
+      "sourceHashes": {
+        "research-tests/O6-L2R5-Sources/DGamma/L2R5RootCatalog.idr": "a92e4e30a6b95a4e0167700d0c6397dafa6a71fcbf71766b4be150fee2e88854"
+      },
+      "event": "GUARDED COMMIT",
+      "unit": "C5",
+      "attempt": "2",
+      "invocation": "C5-2",
+      "sourceHash": "a92e4e30a6b95a4e0167700d0c6397dafa6a71fcbf71766b4be150fee2e88854",
+      "resultingCommitHash": "77681c9a8b7c973aeba1080363378da1a3ae602e",
+      "timestampUTC": "2026-09-09T03:39:12.440524+00:00",
+      "guardChecksPassed": [
+        "fresh PASS",
+        "exit 0",
+        "not interrupted",
+        "no expected diagnostic",
+        "exact source SHA256",
+        "one new declaration",
+        "no intervening compiler invocation",
+        "no pre-staged files",
+        "no compiler",
+        "git diff --check",
+        "git commit success",
+        "no post-staged files"
+      ]
+    },
+    {
+      "paths": [
+        "research-tests/O6-L2R5-Sources/DGamma/L2R5RootCatalog.idr"
+      ],
+      "sourceHashes": {
+        "research-tests/O6-L2R5-Sources/DGamma/L2R5RootCatalog.idr": "7e6cb41c515d1dbc764a1c98a34c5fe9897f7c34907d2dae057fb18c38192f34"
+      },
+      "event": "GUARDED COMMIT",
+      "unit": "C6",
+      "attempt": "1",
+      "invocation": "C6-1",
+      "sourceHash": "7e6cb41c515d1dbc764a1c98a34c5fe9897f7c34907d2dae057fb18c38192f34",
+      "resultingCommitHash": "f82f7f8a7ec0a2c2dee094294194979a35235f5c",
+      "timestampUTC": "2026-09-09T03:40:17.523210+00:00",
+      "guardChecksPassed": [
+        "fresh PASS",
+        "exit 0",
+        "not interrupted",
+        "no expected diagnostic",
+        "exact source SHA256",
+        "one new declaration",
+        "no intervening compiler invocation",
+        "no pre-staged files",
+        "no compiler",
+        "git diff --check",
+        "git commit success",
+        "no post-staged files"
+      ]
+    },
+    {
+      "paths": [
+        "research-tests/O6-L2R5-Sources/DGamma/L2R5RootCatalog.idr"
+      ],
+      "sourceHashes": {
+        "research-tests/O6-L2R5-Sources/DGamma/L2R5RootCatalog.idr": "a33d8ef8f985abf7c4a11d3e23b73823281e5bab9aab95e6f49f4967a8c428cf"
+      },
+      "event": "GUARDED COMMIT",
+      "unit": "C7",
+      "attempt": "1",
+      "invocation": "C7-1",
+      "sourceHash": "a33d8ef8f985abf7c4a11d3e23b73823281e5bab9aab95e6f49f4967a8c428cf",
+      "resultingCommitHash": "601c14008b22d7b6df9a750d25d6457e9de1a94a",
+      "timestampUTC": "2026-09-09T03:41:00.364391+00:00",
+      "guardChecksPassed": [
+        "fresh PASS",
+        "exit 0",
+        "not interrupted",
+        "no expected diagnostic",
+        "exact source SHA256",
+        "one new declaration",
+        "no intervening compiler invocation",
+        "no pre-staged files",
+        "no compiler",
+        "git diff --check",
+        "git commit success",
+        "no post-staged files"
+      ]
+    },
+    {
+      "paths": [
+        "research-tests/O6-L2R5-Sources/DGamma/L2R5RootCatalog.idr"
+      ],
+      "sourceHashes": {
+        "research-tests/O6-L2R5-Sources/DGamma/L2R5RootCatalog.idr": "cf7041dc2ed073ee29cd489d8e46792ab5bc987ee7c5941eff87c2b6f9ea0ea6"
+      },
+      "event": "GUARDED COMMIT",
+      "unit": "C8",
+      "attempt": "1",
+      "invocation": "C8-1",
+      "sourceHash": "cf7041dc2ed073ee29cd489d8e46792ab5bc987ee7c5941eff87c2b6f9ea0ea6",
+      "resultingCommitHash": "ef9b9f9b5991862ce4cf84515423b14d3ebcd616",
+      "timestampUTC": "2026-09-09T03:41:48.875845+00:00",
+      "guardChecksPassed": [
+        "fresh PASS",
+        "exit 0",
+        "not interrupted",
+        "no expected diagnostic",
+        "exact source SHA256",
+        "one new declaration",
+        "no intervening compiler invocation",
+        "no pre-staged files",
+        "no compiler",
+        "git diff --check",
+        "git commit success",
+        "no post-staged files"
+      ]
+    },
+    {
+      "paths": [
+        "research-tests/O6-L2R5-Sources/DGamma/L2R5CatalogFixtures.idr"
+      ],
+      "sourceHashes": {
+        "research-tests/O6-L2R5-Sources/DGamma/L2R5CatalogFixtures.idr": "4d8b98718d243e49fd5bfd150af1eb420bd1669dbe9d7857486ef5aaa3b09616"
+      },
+      "event": "GUARDED COMMIT",
+      "unit": "C9",
+      "attempt": "1",
+      "invocation": "C9-1",
+      "sourceHash": "4d8b98718d243e49fd5bfd150af1eb420bd1669dbe9d7857486ef5aaa3b09616",
+      "resultingCommitHash": "935f0aaebc9c1196b86384fe79e79fcdd42ba200",
+      "timestampUTC": "2026-09-09T03:43:05.315864+00:00",
+      "guardChecksPassed": [
+        "fresh PASS",
+        "exit 0",
+        "not interrupted",
+        "no expected diagnostic",
+        "exact source SHA256",
+        "one new declaration",
+        "no intervening compiler invocation",
+        "no pre-staged files",
+        "no compiler",
+        "git diff --check",
+        "git commit success",
+        "no post-staged files"
+      ]
+    },
+    {
+      "paths": [
+        "research-tests/O6-L2R5-Sources/DGamma/L2R5CatalogFixtures.idr"
+      ],
+      "sourceHashes": {
+        "research-tests/O6-L2R5-Sources/DGamma/L2R5CatalogFixtures.idr": "b0ca9efbcc0382927834ffaf2f237a1a9a39efb97cad121a6bdcd7c813b34465"
+      },
+      "event": "GUARDED COMMIT",
+      "unit": "C10",
+      "attempt": "1",
+      "invocation": "C10-1",
+      "sourceHash": "b0ca9efbcc0382927834ffaf2f237a1a9a39efb97cad121a6bdcd7c813b34465",
+      "resultingCommitHash": "8c603e3bc1138f020f544c4a9f09737278fd5d54",
+      "timestampUTC": "2026-09-09T03:44:19.800930+00:00",
+      "guardChecksPassed": [
+        "fresh PASS",
+        "exit 0",
+        "not interrupted",
+        "no expected diagnostic",
+        "exact source SHA256",
+        "one new declaration",
+        "no intervening compiler invocation",
+        "no pre-staged files",
+        "no compiler",
+        "git diff --check",
+        "git commit success",
+        "no post-staged files"
+      ]
+    },
+    {
+      "event": "GUARDED ARTIFACT COMMIT",
+      "unit": "C10-1",
+      "invocation": "C10-1",
+      "sourceInvocation": "C10-1",
+      "sourceHash": "b0ca9efbcc0382927834ffaf2f237a1a9a39efb97cad121a6bdcd7c813b34465",
+      "resultingCommitHash": "883bde25e99ef002243129eb6a11bda572aa2c37",
+      "timestampUTC": "2026-09-09T03:54:56.067135+00:00",
+      "paths": [
+        "research-tests/O6-L2R5-CP3-DIFF-DRAFT.md",
+        "research-tests/O6-L2R5-CP3-TIER2-CLAUSES.md",
+        "research-tests/O6-L2R5-CP3-REHOME-MANIFEST.json",
+        "research-tests/O6-L2R5-CP3-STATEMENT-FIDELITY.json",
+        "research-tests/run-l2r5-draft.py",
+        "research-tests/O6-L2R5-SEMANTIC-RULINGS.md"
+      ],
+      "artifactHashes": {
+        "research-tests/O6-L2R5-CP3-DIFF-DRAFT.md": "b630ff436484d6c957be1783c209c0baefbb310f55ef5340be6f3f0906926257",
+        "research-tests/O6-L2R5-CP3-TIER2-CLAUSES.md": "c7ff7a5424803e385d5457b461f796980cda113b7366fb6e4cf706f9f3a74c2e",
+        "research-tests/O6-L2R5-CP3-REHOME-MANIFEST.json": "bd5f89349686dec10b7022b67f88bfae6625fc8a0610d4dc54bee91426641603",
+        "research-tests/O6-L2R5-CP3-STATEMENT-FIDELITY.json": "9cb82b24255da63d41a475076876651f1ffad73dfa175fec6094f4d0b8402217",
+        "research-tests/run-l2r5-draft.py": "bc73b4ed6274388e293e5f306579ce3f8ac4c90753f658123bee2ed9e99d98bd",
+        "research-tests/O6-L2R5-SEMANTIC-RULINGS.md": "4cafd9135e9dcb8bfdc9ecef280e465edf1854fde0bcd902f70645bffb1945d6"
+      },
+      "authorizedCommentRepairs": [],
+      "guardChecksPassed": [
+        "fresh PASS",
+        "exit 0",
+        "not interrupted",
+        "no source mutation",
+        "exact source SHA256",
+        "no intervening compiler invocation",
+        "artifact paths or exact authorized comment repairs only",
+        "no new Idris source delta",
+        "no pre-staged files",
+        "no own compiler",
+        "git diff --check",
+        "git commit success",
+        "no post-staged files"
+      ]
+    },
+    {
+      "event": "GUARDED ARTIFACT COMMIT",
+      "unit": "C10-1",
+      "invocation": "C10-1",
+      "sourceInvocation": "C10-1",
+      "sourceHash": "b0ca9efbcc0382927834ffaf2f237a1a9a39efb97cad121a6bdcd7c813b34465",
+      "resultingCommitHash": "1fc79bc197fb41374990a5d5cf3526f3256d9c8c",
+      "timestampUTC": "2026-09-09T03:58:21.779995+00:00",
+      "paths": [
+        "research-tests/O6-L2R5-FINAL-VALIDATION-PLAN.json",
+        "research-tests/O6-L2R5-DECLARATION-ORIGINS.md",
+        "research-tests/run-l2r5-evidence-tests.py",
+        "research-tests/run-l2r5-final-validations.py",
+        "research-tests/run-l2r5-archive.py",
+        "research-tests/run-l2r5-independent-verify.py"
+      ],
+      "artifactHashes": {
+        "research-tests/O6-L2R5-FINAL-VALIDATION-PLAN.json": "e73fb0a319a99c57f4844adfa9931eb5a0c08a68c3bfe14c3d293a62ba621d3f",
+        "research-tests/O6-L2R5-DECLARATION-ORIGINS.md": "f1c856c919d8fb646dc5d43555109a1a98e0b5bad621a2d8ede4096390ceb72d",
+        "research-tests/run-l2r5-evidence-tests.py": "7ae99485c943838724a185e22a0d8687b7889c6c2f9682122973eccf58b55d4d",
+        "research-tests/run-l2r5-final-validations.py": "4f322125a8fa51e0489ea6ebda64299b569ce7aae80745620ce7006d1699f2b7",
+        "research-tests/run-l2r5-archive.py": "269e36ed7a3077c698f47fb78a7822a9da7776bce7615b0efcc39f021fd0eb83",
+        "research-tests/run-l2r5-independent-verify.py": "02d74da3d2e423ed43627ec5bfb5f33880b6a541952eb5288ba7aca95f354065"
+      },
+      "authorizedCommentRepairs": [],
+      "guardChecksPassed": [
+        "fresh PASS",
+        "exit 0",
+        "not interrupted",
+        "no source mutation",
+        "exact source SHA256",
+        "no intervening compiler invocation",
+        "artifact paths or exact authorized comment repairs only",
+        "no new Idris source delta",
+        "no pre-staged files",
+        "no own compiler",
+        "git diff --check",
+        "git commit success",
+        "no post-staged files"
+      ]
+    }
+  ],
+  "commitReceiptStatus": "recorded at commit",
+  "shift": "L2R5",
+  "generatedUTC": "2026-09-09T04:02:08.751441+00:00",
+  "startCommit": "769d332dd520c494fff7ffbf2d4e8c9f43c72e7d",
+  "endCommit": "1fc79bc197fb41374990a5d5cf3526f3256d9c8c",
+  "recordCount": 55,
+  "passedCount": 46,
+  "unitCaps": {
+    "A": 20,
+    "B": 16,
+    "C": 10,
+    "D": 6
+  },
+  "publicationBoundary": "The archive contains all source-commit receipts. Its own publication and later report-only commit receipts cannot be inside the archive without recursion; the independent verifier authenticates those from the append-only live receipt ledger.",
+  "failedCount": 9,
+  "interruptedCount": 0,
+  "evidenceArchive": "O6-L2R5-COMPILER-EVIDENCE.tar.gz",
+  "evidenceArchiveSHA256": "c68adad6c3ccaae43b698da6b2a0933ef4e61208ec4f9157e2553d0da4377cf0",
+  "matchingSourceCommitsMeaning": "Baseline plus target-changing commits in (start,end], matched by SHA256. Byte matches, including the baseline, are independent of PASS/commit authorization; a rejected invocation may match committed or baseline bytes without PASS or commit authority.",
+  "sourceFreshMeaning": "Target Building line is mandatory. Target-only mtime touches are supervisor-approved and individually logged; no package/cold builds permitted.",
+  "protocolIncidents": [],
+  "records": [
+    {
+      "effectiveUnit": "V0",
+      "effectiveAttempt": null,
+      "invocation": "V0",
+      "unit": "V0",
+      "attempt": null,
+      "target": "research-tests/O6-L2R4-Sources/DGamma/L2R4AnchorMeasure.idr",
+      "startUTC": "2026-09-09T03:06:26.178943+00:00",
+      "endUTC": "2026-09-09T03:06:26.760648+00:00",
+      "exit": 0,
+      "fresh": true,
+      "passed": true,
+      "interrupted": false,
+      "sourceHash": "3419e8fa0ad67a6aa42f5765fd382b6e4faf6426c6d24fd11c30b3c2e21f3ef7",
+      "matchingSourceCommits": [
+        "769d332dd520c494fff7ffbf2d4e8c9f43c72e7d"
+      ],
+      "command": [
+        "idris2",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/src",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R4-Sources",
+        "--check",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R4-Sources/DGamma/L2R4AnchorMeasure.idr"
+      ],
+      "seconds": 0.5817042500711977,
+      "maxSampleRSSKiB": 194384,
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "record": "V0.json",
+      "log": "V0.log",
+      "source": "V0.source",
+      "bundleSources": [],
+      "bundleFresh": true,
+      "sourceMutationObserved": false,
+      "targetMtimeTouch": {
+        "path": "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R4-Sources/DGamma/L2R4AnchorMeasure.idr",
+        "oldMtimeNs": 1788922162870816000,
+        "newMtimeNs": 1788923186178426000,
+        "authority": "L2R5 task BUILD SEED; target only, dependency rebuilds acknowledged"
+      },
+      "heavyLockAcquired": false,
+      "heavyLockEvents": [],
+      "separateCompilerObservations": []
+    },
+    {
+      "effectiveUnit": "A1",
+      "effectiveAttempt": 1,
+      "invocation": "A1-1",
+      "unit": "A1",
+      "attempt": 1,
+      "target": "research-tests/O6-L2R5-Sources/DGamma/L2R5AnchorTransport.idr",
+      "startUTC": "2026-09-09T03:07:43.557280+00:00",
+      "endUTC": "2026-09-09T03:07:44.132457+00:00",
+      "exit": 0,
+      "fresh": true,
+      "passed": true,
+      "interrupted": false,
+      "sourceHash": "f64053693a91523d268ffb2cce48176e14b5b143adbecbb05441eaf2b50f0494",
+      "matchingSourceCommits": [
+        "3baa3fbac4a3473f709ae567ef9e2d14091bcd6e"
+      ],
+      "command": [
+        "idris2",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/src",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources",
+        "--check",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5AnchorTransport.idr"
+      ],
+      "seconds": 0.5751668750308454,
+      "maxSampleRSSKiB": 198624,
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "record": "A1-1.json",
+      "log": "A1-1.log",
+      "source": "A1-1.source",
+      "bundleSources": [],
+      "bundleFresh": true,
+      "sourceMutationObserved": false,
+      "targetMtimeTouch": {
+        "path": "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5AnchorTransport.idr",
+        "oldMtimeNs": 1788923259185293800,
+        "newMtimeNs": 1788923263557049000,
+        "authority": "L2R5 task BUILD SEED; target only, dependency rebuilds acknowledged"
+      },
+      "heavyLockAcquired": false,
+      "heavyLockEvents": [],
+      "separateCompilerObservations": []
+    },
+    {
+      "effectiveUnit": "A2",
+      "effectiveAttempt": 1,
+      "invocation": "A2-1",
+      "unit": "A2",
+      "attempt": 1,
+      "target": "research-tests/O6-L2R5-Sources/DGamma/L2R5AnchorTransport.idr",
+      "startUTC": "2026-09-09T03:08:18.505577+00:00",
+      "endUTC": "2026-09-09T03:08:19.082728+00:00",
+      "exit": 0,
+      "fresh": true,
+      "passed": true,
+      "interrupted": false,
+      "sourceHash": "130fd6d5ca2701cb8cded52549b19a39fe0aac4060b5b0b702f0f92fdebef231",
+      "matchingSourceCommits": [
+        "e9abbd958dd0cf5bd55b428522551c81c869060f"
+      ],
+      "command": [
+        "idris2",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/src",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources",
+        "--check",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5AnchorTransport.idr"
+      ],
+      "seconds": 0.5771510829217732,
+      "maxSampleRSSKiB": 194448,
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "record": "A2-1.json",
+      "log": "A2-1.log",
+      "source": "A2-1.source",
+      "bundleSources": [],
+      "bundleFresh": true,
+      "sourceMutationObserved": false,
+      "targetMtimeTouch": {
+        "path": "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5AnchorTransport.idr",
+        "oldMtimeNs": 1788923291220317562,
+        "newMtimeNs": 1788923298505362000,
+        "authority": "L2R5 task BUILD SEED; target only, dependency rebuilds acknowledged"
+      },
+      "heavyLockAcquired": false,
+      "heavyLockEvents": [],
+      "separateCompilerObservations": []
+    },
+    {
+      "effectiveUnit": "A3",
+      "effectiveAttempt": 1,
+      "invocation": "A3-1",
+      "unit": "A3",
+      "attempt": 1,
+      "target": "research-tests/O6-L2R5-Sources/DGamma/L2R5CurrentCut.idr",
+      "startUTC": "2026-09-09T03:08:52.180640+00:00",
+      "endUTC": "2026-09-09T03:08:53.047970+00:00",
+      "exit": 0,
+      "fresh": true,
+      "passed": true,
+      "interrupted": false,
+      "sourceHash": "88becfe991f889e41695c0f66183c838193181f8504a40977d06281c753a445e",
+      "matchingSourceCommits": [
+        "d2116a31d6b5ea4e81f3f8aa5dbafe30168a7329"
+      ],
+      "command": [
+        "idris2",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/src",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources",
+        "--check",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5CurrentCut.idr"
+      ],
+      "seconds": 0.867324166931212,
+      "maxSampleRSSKiB": 286592,
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "record": "A3-1.json",
+      "log": "A3-1.log",
+      "source": "A3-1.source",
+      "bundleSources": [],
+      "bundleFresh": true,
+      "sourceMutationObserved": false,
+      "targetMtimeTouch": {
+        "path": "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5CurrentCut.idr",
+        "oldMtimeNs": 1788923327964533595,
+        "newMtimeNs": 1788923332180422000,
+        "authority": "L2R5 task BUILD SEED; target only, dependency rebuilds acknowledged"
+      },
+      "heavyLockAcquired": false,
+      "heavyLockEvents": [],
+      "separateCompilerObservations": []
+    },
+    {
+      "effectiveUnit": "A4",
+      "effectiveAttempt": 1,
+      "invocation": "A4-1",
+      "unit": "A4",
+      "attempt": 1,
+      "target": "research-tests/O6-L2R5-Sources/DGamma/L2R5CurrentCut.idr",
+      "startUTC": "2026-09-09T03:09:23.154088+00:00",
+      "endUTC": "2026-09-09T03:09:24.042153+00:00",
+      "exit": 0,
+      "fresh": true,
+      "passed": true,
+      "interrupted": false,
+      "sourceHash": "178497ce17b448302d4b49361b7703a9b81bd432082597903890b3530d4d3d22",
+      "matchingSourceCommits": [
+        "5822f06e1c873e17e28751cee539bd9dfc6a799e"
+      ],
+      "command": [
+        "idris2",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/src",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources",
+        "--check",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5CurrentCut.idr"
+      ],
+      "seconds": 0.8880627080798149,
+      "maxSampleRSSKiB": 295968,
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "record": "A4-1.json",
+      "log": "A4-1.log",
+      "source": "A4-1.source",
+      "bundleSources": [],
+      "bundleFresh": true,
+      "sourceMutationObserved": false,
+      "targetMtimeTouch": {
+        "path": "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5CurrentCut.idr",
+        "oldMtimeNs": 1788923358405026332,
+        "newMtimeNs": 1788923363153884000,
+        "authority": "L2R5 task BUILD SEED; target only, dependency rebuilds acknowledged"
+      },
+      "heavyLockAcquired": false,
+      "heavyLockEvents": [],
+      "separateCompilerObservations": []
+    },
+    {
+      "effectiveUnit": "A5",
+      "effectiveAttempt": 1,
+      "invocation": "A5-1",
+      "unit": "A5",
+      "attempt": 1,
+      "target": "research-tests/O6-L2R5-Sources/DGamma/L2R5CurrentCut.idr",
+      "startUTC": "2026-09-09T03:10:30.650386+00:00",
+      "endUTC": "2026-09-09T03:10:31.511250+00:00",
+      "exit": 0,
+      "fresh": true,
+      "passed": true,
+      "interrupted": false,
+      "sourceHash": "05ce79fef1c7d8542864540d321f0d9ab3d65fbe814215f0e3140135191ba896",
+      "matchingSourceCommits": [
+        "cb60b7d7185c20b2fc8f2eb69cf31462e0db283b"
+      ],
+      "command": [
+        "idris2",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/src",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources",
+        "--check",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5CurrentCut.idr"
+      ],
+      "seconds": 0.8608572501689196,
+      "maxSampleRSSKiB": 263856,
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "record": "A5-1.json",
+      "log": "A5-1.log",
+      "source": "A5-1.source",
+      "bundleSources": [],
+      "bundleFresh": true,
+      "sourceMutationObserved": false,
+      "targetMtimeTouch": {
+        "path": "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5CurrentCut.idr",
+        "oldMtimeNs": 1788923425160083031,
+        "newMtimeNs": 1788923430650154000,
+        "authority": "L2R5 task BUILD SEED; target only, dependency rebuilds acknowledged"
+      },
+      "heavyLockAcquired": false,
+      "heavyLockEvents": [],
+      "separateCompilerObservations": [
+        {
+          "pid": 92929,
+          "ppid": 92926,
+          "rssKiB": 1146816,
+          "command": "/opt/homebrew/opt/chezscheme/bin/chez --program /opt/homebrew/Cellar/idris2/0.8.0_2/libexec/bin/idris2_app/idris2.so --source-dir /Users/vyacheslavshebanov/Work/dgamma/src --source-dir /Users/vyacheslavshebanov/Work/dgamma/research --check /Users/vyacheslavshebanov/Work/dgamma/research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+          "classification": "main-lane compiler (separate worktree)"
+        }
+      ]
+    },
+    {
+      "effectiveUnit": "A6",
+      "effectiveAttempt": 1,
+      "invocation": "A6-1",
+      "unit": "A6",
+      "attempt": 1,
+      "target": "research-tests/O6-L2R5-Sources/DGamma/L2R5Extensional.idr",
+      "startUTC": "2026-09-09T03:12:58.659175+00:00",
+      "endUTC": "2026-09-09T03:12:59.251632+00:00",
+      "exit": 0,
+      "fresh": true,
+      "passed": true,
+      "interrupted": false,
+      "sourceHash": "5f6434c604f8d3679f914a6fb9c0ec7a071f3df8d0c3af426e7f81262517c9cb",
+      "matchingSourceCommits": [
+        "0fbc3d336d25620775c455b4f5409d6ecb684712"
+      ],
+      "command": [
+        "idris2",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/src",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources",
+        "--check",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5Extensional.idr"
+      ],
+      "seconds": 0.5924621662124991,
+      "maxSampleRSSKiB": 204464,
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "record": "A6-1.json",
+      "log": "A6-1.log",
+      "source": "A6-1.source",
+      "bundleSources": [],
+      "bundleFresh": true,
+      "sourceMutationObserved": false,
+      "targetMtimeTouch": {
+        "path": "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5Extensional.idr",
+        "oldMtimeNs": 1788923573302605454,
+        "newMtimeNs": 1788923578658922000,
+        "authority": "L2R5 task BUILD SEED; target only, dependency rebuilds acknowledged"
+      },
+      "heavyLockAcquired": false,
+      "heavyLockEvents": [],
+      "separateCompilerObservations": [
+        {
+          "pid": 92929,
+          "ppid": 92926,
+          "rssKiB": 38101264,
+          "command": "/opt/homebrew/opt/chezscheme/bin/chez --program /opt/homebrew/Cellar/idris2/0.8.0_2/libexec/bin/idris2_app/idris2.so --source-dir /Users/vyacheslavshebanov/Work/dgamma/src --source-dir /Users/vyacheslavshebanov/Work/dgamma/research --check /Users/vyacheslavshebanov/Work/dgamma/research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+          "classification": "main-lane compiler (separate worktree)"
+        }
+      ]
+    },
+    {
+      "effectiveUnit": "A7",
+      "effectiveAttempt": 1,
+      "invocation": "A7-1",
+      "unit": "A7",
+      "attempt": 1,
+      "target": "research-tests/O6-L2R5-Sources/DGamma/L2R5Extensional.idr",
+      "startUTC": "2026-09-09T03:13:33.169005+00:00",
+      "endUTC": "2026-09-09T03:13:33.757353+00:00",
+      "exit": 0,
+      "fresh": true,
+      "passed": true,
+      "interrupted": false,
+      "sourceHash": "86d3d770e8845a4569142711689c9fa2b72ff22d1c67430c340fe7c172ca9017",
+      "matchingSourceCommits": [
+        "21453f7c916571d2cd48a407710e319334a018e8"
+      ],
+      "command": [
+        "idris2",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/src",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources",
+        "--check",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5Extensional.idr"
+      ],
+      "seconds": 0.5883253337815404,
+      "maxSampleRSSKiB": 193776,
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "record": "A7-1.json",
+      "log": "A7-1.log",
+      "source": "A7-1.source",
+      "bundleSources": [],
+      "bundleFresh": true,
+      "sourceMutationObserved": false,
+      "targetMtimeTouch": {
+        "path": "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5Extensional.idr",
+        "oldMtimeNs": 1788923608837759593,
+        "newMtimeNs": 1788923613168765000,
+        "authority": "L2R5 task BUILD SEED; target only, dependency rebuilds acknowledged"
+      },
+      "heavyLockAcquired": false,
+      "heavyLockEvents": [],
+      "separateCompilerObservations": [
+        {
+          "pid": 92929,
+          "ppid": 92926,
+          "rssKiB": 11774032,
+          "command": "/opt/homebrew/opt/chezscheme/bin/chez --program /opt/homebrew/Cellar/idris2/0.8.0_2/libexec/bin/idris2_app/idris2.so --source-dir /Users/vyacheslavshebanov/Work/dgamma/src --source-dir /Users/vyacheslavshebanov/Work/dgamma/research --check /Users/vyacheslavshebanov/Work/dgamma/research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+          "classification": "main-lane compiler (separate worktree)"
+        }
+      ]
+    },
+    {
+      "effectiveUnit": "A8",
+      "effectiveAttempt": 1,
+      "invocation": "A8-1",
+      "unit": "A8",
+      "attempt": 1,
+      "target": "research-tests/O6-L2R5-Sources/DGamma/L2R5Extensional.idr",
+      "startUTC": "2026-09-09T03:14:57.365424+00:00",
+      "endUTC": "2026-09-09T03:14:57.952545+00:00",
+      "exit": 0,
+      "fresh": true,
+      "passed": true,
+      "interrupted": false,
+      "sourceHash": "3bbdd6768c4c363d2936515fa4f2188ee448d69afd98e0425e4a438e2df57dfb",
+      "matchingSourceCommits": [
+        "f8e12a2c1cd4861a5aa3f548e18a2c6b66025ea6"
+      ],
+      "command": [
+        "idris2",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/src",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources",
+        "--check",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5Extensional.idr"
+      ],
+      "seconds": 0.5871187918819487,
+      "maxSampleRSSKiB": 197408,
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "record": "A8-1.json",
+      "log": "A8-1.log",
+      "source": "A8-1.source",
+      "bundleSources": [],
+      "bundleFresh": true,
+      "sourceMutationObserved": false,
+      "targetMtimeTouch": {
+        "path": "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5Extensional.idr",
+        "oldMtimeNs": 1788923692783580107,
+        "newMtimeNs": 1788923697365218000,
+        "authority": "L2R5 task BUILD SEED; target only, dependency rebuilds acknowledged"
+      },
+      "heavyLockAcquired": false,
+      "heavyLockEvents": [],
+      "separateCompilerObservations": [
+        {
+          "pid": 92929,
+          "ppid": 92926,
+          "rssKiB": 16801680,
+          "command": "/opt/homebrew/opt/chezscheme/bin/chez --program /opt/homebrew/Cellar/idris2/0.8.0_2/libexec/bin/idris2_app/idris2.so --source-dir /Users/vyacheslavshebanov/Work/dgamma/src --source-dir /Users/vyacheslavshebanov/Work/dgamma/research --check /Users/vyacheslavshebanov/Work/dgamma/research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+          "classification": "main-lane compiler (separate worktree)"
+        }
+      ]
+    },
+    {
+      "effectiveUnit": "A9",
+      "effectiveAttempt": 1,
+      "invocation": "A9-1",
+      "unit": "A9",
+      "attempt": 1,
+      "target": "research-tests/O6-L2R5-Sources/DGamma/L2R5Extensional.idr",
+      "startUTC": "2026-09-09T03:15:34.354045+00:00",
+      "endUTC": "2026-09-09T03:15:34.931411+00:00",
+      "exit": 0,
+      "fresh": true,
+      "passed": true,
+      "interrupted": false,
+      "sourceHash": "ed66c311d84b9f8b42aa4820e1c1b3ef72a7f9fe1c3e0f1ffd89ef04da7f6121",
+      "matchingSourceCommits": [
+        "49ef79d18b187ab83b9e650b8d6d6fdd79aa6dbb"
+      ],
+      "command": [
+        "idris2",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/src",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources",
+        "--check",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5Extensional.idr"
+      ],
+      "seconds": 0.577937874943018,
+      "maxSampleRSSKiB": 220912,
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "record": "A9-1.json",
+      "log": "A9-1.log",
+      "source": "A9-1.source",
+      "bundleSources": [],
+      "bundleFresh": true,
+      "sourceMutationObserved": false,
+      "targetMtimeTouch": {
+        "path": "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5Extensional.idr",
+        "oldMtimeNs": 1788923729847063112,
+        "newMtimeNs": 1788923734353762000,
+        "authority": "L2R5 task BUILD SEED; target only, dependency rebuilds acknowledged"
+      },
+      "heavyLockAcquired": false,
+      "heavyLockEvents": [],
+      "separateCompilerObservations": [
+        {
+          "pid": 92929,
+          "ppid": 92926,
+          "rssKiB": 16912832,
+          "command": "/opt/homebrew/opt/chezscheme/bin/chez --program /opt/homebrew/Cellar/idris2/0.8.0_2/libexec/bin/idris2_app/idris2.so --source-dir /Users/vyacheslavshebanov/Work/dgamma/src --source-dir /Users/vyacheslavshebanov/Work/dgamma/research --check /Users/vyacheslavshebanov/Work/dgamma/research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+          "classification": "main-lane compiler (separate worktree)"
+        }
+      ]
+    },
+    {
+      "effectiveUnit": "A10",
+      "effectiveAttempt": 1,
+      "invocation": "A10-1",
+      "unit": "A10",
+      "attempt": 1,
+      "target": "research-tests/O6-L2R5-Sources/DGamma/L2R5Extensional.idr",
+      "startUTC": "2026-09-09T03:16:15.813737+00:00",
+      "endUTC": "2026-09-09T03:16:16.393169+00:00",
+      "exit": 0,
+      "fresh": true,
+      "passed": true,
+      "interrupted": false,
+      "sourceHash": "e88e0d04edb4d5de68c5b2768f720357e511aa46ae0a7951b0b2c5137dbad77e",
+      "matchingSourceCommits": [
+        "c74c1260abd54682f8383285c9b28c435859d574"
+      ],
+      "command": [
+        "idris2",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/src",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources",
+        "--check",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5Extensional.idr"
+      ],
+      "seconds": 0.5794616253115237,
+      "maxSampleRSSKiB": 207264,
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "record": "A10-1.json",
+      "log": "A10-1.log",
+      "source": "A10-1.source",
+      "bundleSources": [],
+      "bundleFresh": true,
+      "sourceMutationObserved": false,
+      "targetMtimeTouch": {
+        "path": "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5Extensional.idr",
+        "oldMtimeNs": 1788923769695854162,
+        "newMtimeNs": 1788923775813415000,
+        "authority": "L2R5 task BUILD SEED; target only, dependency rebuilds acknowledged"
+      },
+      "heavyLockAcquired": false,
+      "heavyLockEvents": [],
+      "separateCompilerObservations": [
+        {
+          "pid": 92929,
+          "ppid": 92926,
+          "rssKiB": 17038528,
+          "command": "/opt/homebrew/opt/chezscheme/bin/chez --program /opt/homebrew/Cellar/idris2/0.8.0_2/libexec/bin/idris2_app/idris2.so --source-dir /Users/vyacheslavshebanov/Work/dgamma/src --source-dir /Users/vyacheslavshebanov/Work/dgamma/research --check /Users/vyacheslavshebanov/Work/dgamma/research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+          "classification": "main-lane compiler (separate worktree)"
+        }
+      ]
+    },
+    {
+      "effectiveUnit": "A11",
+      "effectiveAttempt": 1,
+      "invocation": "A11-1",
+      "unit": "A11",
+      "attempt": 1,
+      "target": "research-tests/O6-L2R5-Sources/DGamma/L2R5InsertExtensional.idr",
+      "startUTC": "2026-09-09T03:17:19.695402+00:00",
+      "endUTC": "2026-09-09T03:17:19.991772+00:00",
+      "exit": 1,
+      "fresh": true,
+      "passed": false,
+      "interrupted": false,
+      "sourceHash": "a80a623b4bf0dcf3f251270f2533b4eb0c216d58e6d447b6e81851e7b9879b02",
+      "matchingSourceCommits": [],
+      "command": [
+        "idris2",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/src",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources",
+        "--check",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5InsertExtensional.idr"
+      ],
+      "seconds": 0.296363125089556,
+      "maxSampleRSSKiB": 0,
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "record": "A11-1.json",
+      "log": "A11-1.log",
+      "source": "A11-1.source",
+      "bundleSources": [],
+      "bundleFresh": true,
+      "sourceMutationObserved": false,
+      "targetMtimeTouch": {
+        "path": "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5InsertExtensional.idr",
+        "oldMtimeNs": 1788923830503121677,
+        "newMtimeNs": 1788923839695159000,
+        "authority": "L2R5 task BUILD SEED; target only, dependency rebuilds acknowledged"
+      },
+      "heavyLockAcquired": false,
+      "heavyLockEvents": [],
+      "separateCompilerObservations": [
+        {
+          "pid": 92929,
+          "ppid": 92926,
+          "rssKiB": 17229264,
+          "command": "/opt/homebrew/opt/chezscheme/bin/chez --program /opt/homebrew/Cellar/idris2/0.8.0_2/libexec/bin/idris2_app/idris2.so --source-dir /Users/vyacheslavshebanov/Work/dgamma/src --source-dir /Users/vyacheslavshebanov/Work/dgamma/research --check /Users/vyacheslavshebanov/Work/dgamma/research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+          "classification": "main-lane compiler (separate worktree)"
+        }
+      ]
+    },
+    {
+      "effectiveUnit": "A11",
+      "effectiveAttempt": 2,
+      "invocation": "A11-2",
+      "unit": "A11",
+      "attempt": 2,
+      "target": "research-tests/O6-L2R5-Sources/DGamma/L2R5InsertExtensional.idr",
+      "startUTC": "2026-09-09T03:17:48.478862+00:00",
+      "endUTC": "2026-09-09T03:17:49.054735+00:00",
+      "exit": 1,
+      "fresh": true,
+      "passed": false,
+      "interrupted": false,
+      "sourceHash": "6ee7d26ccb01c9274112c770e6a0e28876f93b815bc0c59c4933f6ef69b2bfab",
+      "matchingSourceCommits": [],
+      "command": [
+        "idris2",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/src",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources",
+        "--check",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5InsertExtensional.idr"
+      ],
+      "seconds": 0.5758721251040697,
+      "maxSampleRSSKiB": 204080,
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "record": "A11-2.json",
+      "log": "A11-2.log",
+      "source": "A11-2.source",
+      "bundleSources": [],
+      "bundleFresh": true,
+      "sourceMutationObserved": false,
+      "targetMtimeTouch": {
+        "path": "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5InsertExtensional.idr",
+        "oldMtimeNs": 1788923860567519562,
+        "newMtimeNs": 1788923868478641000,
+        "authority": "L2R5 task BUILD SEED; target only, dependency rebuilds acknowledged"
+      },
+      "heavyLockAcquired": false,
+      "heavyLockEvents": [],
+      "separateCompilerObservations": [
+        {
+          "pid": 92929,
+          "ppid": 92926,
+          "rssKiB": 9566704,
+          "command": "/opt/homebrew/opt/chezscheme/bin/chez --program /opt/homebrew/Cellar/idris2/0.8.0_2/libexec/bin/idris2_app/idris2.so --source-dir /Users/vyacheslavshebanov/Work/dgamma/src --source-dir /Users/vyacheslavshebanov/Work/dgamma/research --check /Users/vyacheslavshebanov/Work/dgamma/research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+          "classification": "main-lane compiler (separate worktree)"
+        }
+      ]
+    },
+    {
+      "effectiveUnit": "A11",
+      "effectiveAttempt": 3,
+      "invocation": "A11-3",
+      "unit": "A11",
+      "attempt": 3,
+      "target": "research-tests/O6-L2R5-Sources/DGamma/L2R5InsertExtensional.idr",
+      "startUTC": "2026-09-09T03:18:14.328650+00:00",
+      "endUTC": "2026-09-09T03:18:14.903919+00:00",
+      "exit": 1,
+      "fresh": true,
+      "passed": false,
+      "interrupted": false,
+      "sourceHash": "22738e4ee1492ebe63c91f91f3cd7ad96fe2d74dcfcf8583e8e980cb90245a9e",
+      "matchingSourceCommits": [],
+      "command": [
+        "idris2",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/src",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources",
+        "--check",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5InsertExtensional.idr"
+      ],
+      "seconds": 0.5752655831165612,
+      "maxSampleRSSKiB": 204112,
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "record": "A11-3.json",
+      "log": "A11-3.log",
+      "source": "A11-3.source",
+      "bundleSources": [],
+      "bundleFresh": true,
+      "sourceMutationObserved": false,
+      "targetMtimeTouch": {
+        "path": "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5InsertExtensional.idr",
+        "oldMtimeNs": 1788923885943147250,
+        "newMtimeNs": 1788923894328394000,
+        "authority": "L2R5 task BUILD SEED; target only, dependency rebuilds acknowledged"
+      },
+      "heavyLockAcquired": false,
+      "heavyLockEvents": [],
+      "separateCompilerObservations": [
+        {
+          "pid": 92929,
+          "ppid": 92926,
+          "rssKiB": 10196384,
+          "command": "/opt/homebrew/opt/chezscheme/bin/chez --program /opt/homebrew/Cellar/idris2/0.8.0_2/libexec/bin/idris2_app/idris2.so --source-dir /Users/vyacheslavshebanov/Work/dgamma/src --source-dir /Users/vyacheslavshebanov/Work/dgamma/research --check /Users/vyacheslavshebanov/Work/dgamma/research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+          "classification": "main-lane compiler (separate worktree)"
+        }
+      ]
+    },
+    {
+      "effectiveUnit": "V1",
+      "effectiveAttempt": null,
+      "invocation": "V1",
+      "unit": "V1",
+      "attempt": null,
+      "target": "research-tests/O6-L2R5-Sources/DGamma/L2R5Extensional.idr",
+      "startUTC": "2026-09-09T03:18:42.852574+00:00",
+      "endUTC": "2026-09-09T03:18:43.446882+00:00",
+      "exit": 0,
+      "fresh": true,
+      "passed": true,
+      "interrupted": false,
+      "sourceHash": "e88e0d04edb4d5de68c5b2768f720357e511aa46ae0a7951b0b2c5137dbad77e",
+      "matchingSourceCommits": [
+        "c74c1260abd54682f8383285c9b28c435859d574"
+      ],
+      "command": [
+        "idris2",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/src",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources",
+        "--check",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5Extensional.idr"
+      ],
+      "seconds": 0.5943131251260638,
+      "maxSampleRSSKiB": 189600,
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "record": "V1.json",
+      "log": "V1.log",
+      "source": "V1.source",
+      "bundleSources": [],
+      "bundleFresh": true,
+      "sourceMutationObserved": false,
+      "targetMtimeTouch": {
+        "path": "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5Extensional.idr",
+        "oldMtimeNs": 1788923775813415000,
+        "newMtimeNs": 1788923922852344000,
+        "authority": "L2R5 task BUILD SEED; target only, dependency rebuilds acknowledged"
+      },
+      "heavyLockAcquired": false,
+      "heavyLockEvents": [],
+      "separateCompilerObservations": [
+        {
+          "pid": 26574,
+          "ppid": 26571,
+          "rssKiB": 1619376,
+          "command": "/opt/homebrew/opt/chezscheme/bin/chez --program /opt/homebrew/Cellar/idris2/0.8.0_2/libexec/bin/idris2_app/idris2.so --source-dir /Users/vyacheslavshebanov/Work/dgamma/src --source-dir /Users/vyacheslavshebanov/Work/dgamma/research --check /Users/vyacheslavshebanov/Work/dgamma/research/DGamma/CP5ConfluenceDeletionChainSpike.idr",
+          "classification": "main-lane compiler (separate worktree)"
+        }
+      ]
+    },
+    {
+      "effectiveUnit": "A12",
+      "effectiveAttempt": 1,
+      "invocation": "A12-1",
+      "unit": "A12",
+      "attempt": 1,
+      "target": "research-tests/O6-L2R5-Sources/DGamma/L2R5InsertObserved.idr",
+      "startUTC": "2026-09-09T03:20:55.678347+00:00",
+      "endUTC": "2026-09-09T03:20:56.265870+00:00",
+      "exit": 1,
+      "fresh": true,
+      "passed": false,
+      "interrupted": false,
+      "sourceHash": "df532ecbc13d3217d7be58c228031d37433d23973ae38ffa01660a1f1b132b05",
+      "matchingSourceCommits": [],
+      "command": [
+        "idris2",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/src",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources",
+        "--check",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5InsertObserved.idr"
+      ],
+      "seconds": 0.5875217909924686,
+      "maxSampleRSSKiB": 183888,
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "record": "A12-1.json",
+      "log": "A12-1.log",
+      "source": "A12-1.source",
+      "bundleSources": [],
+      "bundleFresh": true,
+      "sourceMutationObserved": false,
+      "targetMtimeTouch": {
+        "path": "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5InsertObserved.idr",
+        "oldMtimeNs": 1788924048583608754,
+        "newMtimeNs": 1788924055678094000,
+        "authority": "L2R5 task BUILD SEED; target only, dependency rebuilds acknowledged"
+      },
+      "heavyLockAcquired": false,
+      "heavyLockEvents": [],
+      "separateCompilerObservations": [
+        {
+          "pid": 36888,
+          "ppid": 36885,
+          "rssKiB": 2205392,
+          "command": "/opt/homebrew/opt/chezscheme/bin/chez --program /opt/homebrew/Cellar/idris2/0.8.0_2/libexec/bin/idris2_app/idris2.so --source-dir /Users/vyacheslavshebanov/Work/dgamma/src --source-dir /Users/vyacheslavshebanov/Work/dgamma/research --check /Users/vyacheslavshebanov/Work/dgamma/research/DGamma/CP5O20CanonicalPairedExtractionSpike.idr",
+          "classification": "main-lane compiler (separate worktree)"
+        }
+      ]
+    },
+    {
+      "effectiveUnit": "A12",
+      "effectiveAttempt": 2,
+      "invocation": "A12-2",
+      "unit": "A12",
+      "attempt": 2,
+      "target": "research-tests/O6-L2R5-Sources/DGamma/L2R5InsertObserved.idr",
+      "startUTC": "2026-09-09T03:21:32.389380+00:00",
+      "endUTC": "2026-09-09T03:21:32.963160+00:00",
+      "exit": 0,
+      "fresh": true,
+      "passed": true,
+      "interrupted": false,
+      "sourceHash": "7862f2e2ce8df4ffc8e8dd6bd17b6a46d2c32314342ee26828d713ce95308b64",
+      "matchingSourceCommits": [
+        "0efb83c1ed888f9c36f2625f408b295de1d4f7b4"
+      ],
+      "command": [
+        "idris2",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/src",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources",
+        "--check",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5InsertObserved.idr"
+      ],
+      "seconds": 0.5737806251272559,
+      "maxSampleRSSKiB": 207248,
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "record": "A12-2.json",
+      "log": "A12-2.log",
+      "source": "A12-2.source",
+      "bundleSources": [],
+      "bundleFresh": true,
+      "sourceMutationObserved": false,
+      "targetMtimeTouch": {
+        "path": "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5InsertObserved.idr",
+        "oldMtimeNs": 1788924083754815088,
+        "newMtimeNs": 1788924092389160000,
+        "authority": "L2R5 task BUILD SEED; target only, dependency rebuilds acknowledged"
+      },
+      "heavyLockAcquired": false,
+      "heavyLockEvents": [],
+      "separateCompilerObservations": [
+        {
+          "pid": 39912,
+          "ppid": 39909,
+          "rssKiB": 283408,
+          "command": "/opt/homebrew/opt/chezscheme/bin/chez --program /opt/homebrew/Cellar/idris2/0.8.0_2/libexec/bin/idris2_app/idris2.so --source-dir /Users/vyacheslavshebanov/Work/dgamma/src --source-dir /Users/vyacheslavshebanov/Work/dgamma/research --check /Users/vyacheslavshebanov/Work/dgamma/research/DGamma/CP5ActorLifecycleOnlyExtended.idr",
+          "classification": "main-lane compiler (separate worktree)"
+        },
+        {
+          "pid": 40303,
+          "ppid": 40300,
+          "rssKiB": 79120,
+          "command": "/opt/homebrew/opt/chezscheme/bin/chez --program /opt/homebrew/Cellar/idris2/0.8.0_2/libexec/bin/idris2_app/idris2.so --source-dir /Users/vyacheslavshebanov/Work/dgamma/src --source-dir /Users/vyacheslavshebanov/Work/dgamma/research --source-dir /Users/vyacheslavshebanov/Work/dgamma/research-tests --check /Users/vyacheslavshebanov/Work/dgamma/research-tests/DGamma/R192ExtendedChildBlockProbe.idr",
+          "classification": "main-lane compiler (separate worktree)"
+        }
+      ]
+    },
+    {
+      "effectiveUnit": "A13",
+      "effectiveAttempt": 1,
+      "invocation": "A13-1",
+      "unit": "A13",
+      "attempt": 1,
+      "target": "research-tests/O6-L2R5-Sources/DGamma/L2R5InsertObserved.idr",
+      "startUTC": "2026-09-09T03:22:08.645271+00:00",
+      "endUTC": "2026-09-09T03:22:09.222737+00:00",
+      "exit": 0,
+      "fresh": true,
+      "passed": true,
+      "interrupted": false,
+      "sourceHash": "7dc427459320a6dea8d33e7112c6008c81a142575b74f8c4d5f6075987c62a23",
+      "matchingSourceCommits": [
+        "71f6de67515d6779be9f77c317e29418d29d911a"
+      ],
+      "command": [
+        "idris2",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/src",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources",
+        "--check",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5InsertObserved.idr"
+      ],
+      "seconds": 0.5774826668202877,
+      "maxSampleRSSKiB": 183792,
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "record": "A13-1.json",
+      "log": "A13-1.log",
+      "source": "A13-1.source",
+      "bundleSources": [],
+      "bundleFresh": true,
+      "sourceMutationObserved": false,
+      "targetMtimeTouch": {
+        "path": "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5InsertObserved.idr",
+        "oldMtimeNs": 1788924124283214356,
+        "newMtimeNs": 1788924128645079000,
+        "authority": "L2R5 task BUILD SEED; target only, dependency rebuilds acknowledged"
+      },
+      "heavyLockAcquired": false,
+      "heavyLockEvents": [],
+      "separateCompilerObservations": [
+        {
+          "pid": 43205,
+          "ppid": 43174,
+          "rssKiB": 718720,
+          "command": "/opt/homebrew/opt/chezscheme/bin/chez --program /opt/homebrew/Cellar/idris2/0.8.0_2/libexec/bin/idris2_app/idris2.so --source-dir /Users/vyacheslavshebanov/Work/dgamma/src --source-dir /Users/vyacheslavshebanov/Work/dgamma/research --source-dir /Users/vyacheslavshebanov/Work/dgamma/research-tests --check /Users/vyacheslavshebanov/Work/dgamma/research-tests/DGamma/R174O17ProvisionCollisionCandidate.idr",
+          "classification": "main-lane compiler (separate worktree)"
+        }
+      ]
+    },
+    {
+      "effectiveUnit": "A14",
+      "effectiveAttempt": 1,
+      "invocation": "A14-1",
+      "unit": "A14",
+      "attempt": 1,
+      "target": "research-tests/O6-L2R5-Sources/DGamma/L2R5ExtensionalRetire.idr",
+      "startUTC": "2026-09-09T03:23:23.692453+00:00",
+      "endUTC": "2026-09-09T03:23:24.273855+00:00",
+      "exit": 0,
+      "fresh": true,
+      "passed": true,
+      "interrupted": false,
+      "sourceHash": "66649d27a1c277d1251980c6355397e7a8ebb1b87cac1b3ca2ba4b8b7751db6a",
+      "matchingSourceCommits": [
+        "ca6b2920d3450d112c8f1f2976549e5fe23270a6"
+      ],
+      "command": [
+        "idris2",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/src",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources",
+        "--check",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5ExtensionalRetire.idr"
+      ],
+      "seconds": 0.5813997499644756,
+      "maxSampleRSSKiB": 267360,
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "record": "A14-1.json",
+      "log": "A14-1.log",
+      "source": "A14-1.source",
+      "bundleSources": [],
+      "bundleFresh": true,
+      "sourceMutationObserved": false,
+      "targetMtimeTouch": {
+        "path": "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5ExtensionalRetire.idr",
+        "oldMtimeNs": 1788924198756011897,
+        "newMtimeNs": 1788924203692277000,
+        "authority": "L2R5 task BUILD SEED; target only, dependency rebuilds acknowledged"
+      },
+      "heavyLockAcquired": false,
+      "heavyLockEvents": [],
+      "separateCompilerObservations": [
+        {
+          "pid": 45051,
+          "ppid": 45048,
+          "rssKiB": 18632624,
+          "command": "/opt/homebrew/opt/chezscheme/bin/chez --program /opt/homebrew/Cellar/idris2/0.8.0_2/libexec/bin/idris2_app/idris2.so --source-dir /Users/vyacheslavshebanov/Work/dgamma/src --source-dir /Users/vyacheslavshebanov/Work/dgamma/research --source-dir /Users/vyacheslavshebanov/Work/dgamma/research-tests --check /Users/vyacheslavshebanov/Work/dgamma/research-tests/DGamma/R8FullPipeline.idr",
+          "classification": "main-lane compiler (separate worktree)"
+        }
+      ]
+    },
+    {
+      "effectiveUnit": "A15",
+      "effectiveAttempt": 1,
+      "invocation": "A15-1",
+      "unit": "A15",
+      "attempt": 1,
+      "target": "research-tests/O6-L2R5-Sources/DGamma/L2R5ExtensionalRetire.idr",
+      "startUTC": "2026-09-09T03:23:52.143495+00:00",
+      "endUTC": "2026-09-09T03:23:53.023052+00:00",
+      "exit": 0,
+      "fresh": true,
+      "passed": true,
+      "interrupted": false,
+      "sourceHash": "da453fb8336d864dd1f1148b7b3c4a1e433f40135ed3604281ef5874914d833f",
+      "matchingSourceCommits": [
+        "d2d5a35d9b856e43e1eef400f5d7adb52b005800"
+      ],
+      "command": [
+        "idris2",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/src",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources",
+        "--check",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5ExtensionalRetire.idr"
+      ],
+      "seconds": 0.8795656659640372,
+      "maxSampleRSSKiB": 269344,
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "record": "A15-1.json",
+      "log": "A15-1.log",
+      "source": "A15-1.source",
+      "bundleSources": [],
+      "bundleFresh": true,
+      "sourceMutationObserved": false,
+      "targetMtimeTouch": {
+        "path": "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5ExtensionalRetire.idr",
+        "oldMtimeNs": 1788924227204203844,
+        "newMtimeNs": 1788924232143269000,
+        "authority": "L2R5 task BUILD SEED; target only, dependency rebuilds acknowledged"
+      },
+      "heavyLockAcquired": false,
+      "heavyLockEvents": [],
+      "separateCompilerObservations": [
+        {
+          "pid": 45051,
+          "ppid": 45048,
+          "rssKiB": 29100880,
+          "command": "/opt/homebrew/opt/chezscheme/bin/chez --program /opt/homebrew/Cellar/idris2/0.8.0_2/libexec/bin/idris2_app/idris2.so --source-dir /Users/vyacheslavshebanov/Work/dgamma/src --source-dir /Users/vyacheslavshebanov/Work/dgamma/research --source-dir /Users/vyacheslavshebanov/Work/dgamma/research-tests --check /Users/vyacheslavshebanov/Work/dgamma/research-tests/DGamma/R8FullPipeline.idr",
+          "classification": "main-lane compiler (separate worktree)"
+        }
+      ]
+    },
+    {
+      "effectiveUnit": "A16",
+      "effectiveAttempt": 1,
+      "invocation": "A16-1",
+      "unit": "A16",
+      "attempt": 1,
+      "target": "research-tests/O6-L2R5-Sources/DGamma/L2R5ExtensionalRetire.idr",
+      "startUTC": "2026-09-09T03:24:31.629499+00:00",
+      "endUTC": "2026-09-09T03:24:32.517034+00:00",
+      "exit": 0,
+      "fresh": true,
+      "passed": true,
+      "interrupted": false,
+      "sourceHash": "a4c2e182703ac916057911f648e50ede5daabecc0cb764c26715bcf0c492c4d8",
+      "matchingSourceCommits": [
+        "a625b77b005a18b86c2c1da09fc8b95a3f50f911"
+      ],
+      "command": [
+        "idris2",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/src",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources",
+        "--check",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5ExtensionalRetire.idr"
+      ],
+      "seconds": 0.8875359580852091,
+      "maxSampleRSSKiB": 266448,
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "record": "A16-1.json",
+      "log": "A16-1.log",
+      "source": "A16-1.source",
+      "bundleSources": [],
+      "bundleFresh": true,
+      "sourceMutationObserved": false,
+      "targetMtimeTouch": {
+        "path": "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5ExtensionalRetire.idr",
+        "oldMtimeNs": 1788924267198276941,
+        "newMtimeNs": 1788924271629144000,
+        "authority": "L2R5 task BUILD SEED; target only, dependency rebuilds acknowledged"
+      },
+      "heavyLockAcquired": false,
+      "heavyLockEvents": [],
+      "separateCompilerObservations": [
+        {
+          "pid": 55038,
+          "ppid": 55035,
+          "rssKiB": 276512,
+          "command": "/opt/homebrew/opt/chezscheme/bin/chez --program /opt/homebrew/Cellar/idris2/0.8.0_2/libexec/bin/idris2_app/idris2.so --source-dir /Users/vyacheslavshebanov/Work/dgamma/src --source-dir /Users/vyacheslavshebanov/Work/dgamma/research --source-dir /Users/vyacheslavshebanov/Work/dgamma/research-tests --check /Users/vyacheslavshebanov/Work/dgamma/research-tests/DGamma/R193InstalledBlockResolverPositive.idr",
+          "classification": "main-lane compiler (separate worktree)"
+        }
+      ]
+    },
+    {
+      "effectiveUnit": "A17",
+      "effectiveAttempt": 1,
+      "invocation": "A17-1",
+      "unit": "A17",
+      "attempt": 1,
+      "target": "research-tests/O6-L2R5-Sources/DGamma/L2R5ExtensionalRetire.idr",
+      "startUTC": "2026-09-09T03:25:06.968218+00:00",
+      "endUTC": "2026-09-09T03:25:07.855010+00:00",
+      "exit": 0,
+      "fresh": true,
+      "passed": true,
+      "interrupted": false,
+      "sourceHash": "be4f5ca26806d054750441330d33d724e8ef9db5f48428f10fbf9622356657a5",
+      "matchingSourceCommits": [
+        "ca793ff911cd414b6312660afce7758fc1c09c42"
+      ],
+      "command": [
+        "idris2",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/src",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources",
+        "--check",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5ExtensionalRetire.idr"
+      ],
+      "seconds": 0.8867985410615802,
+      "maxSampleRSSKiB": 251808,
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "record": "A17-1.json",
+      "log": "A17-1.log",
+      "source": "A17-1.source",
+      "bundleSources": [],
+      "bundleFresh": true,
+      "sourceMutationObserved": false,
+      "targetMtimeTouch": {
+        "path": "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5ExtensionalRetire.idr",
+        "oldMtimeNs": 1788924301652560166,
+        "newMtimeNs": 1788924306967924000,
+        "authority": "L2R5 task BUILD SEED; target only, dependency rebuilds acknowledged"
+      },
+      "heavyLockAcquired": false,
+      "heavyLockEvents": [],
+      "separateCompilerObservations": [
+        {
+          "pid": 59743,
+          "ppid": 59740,
+          "rssKiB": 2212128,
+          "command": "/opt/homebrew/opt/chezscheme/bin/chez --program /opt/homebrew/Cellar/idris2/0.8.0_2/libexec/bin/idris2_app/idris2.so --source-dir /Users/vyacheslavshebanov/Work/dgamma/src --source-dir /Users/vyacheslavshebanov/Work/dgamma/research --check /Users/vyacheslavshebanov/Work/dgamma/research/DGamma/CP5O19ReachedBlocksSpike.idr",
+          "classification": "main-lane compiler (separate worktree)"
+        }
+      ]
+    },
+    {
+      "effectiveUnit": "A18",
+      "effectiveAttempt": 1,
+      "invocation": "A18-1",
+      "unit": "A18",
+      "attempt": 1,
+      "target": "research-tests/O6-L2R5-Sources/DGamma/L2R5ExtensionalRetire.idr",
+      "startUTC": "2026-09-09T03:25:40.392105+00:00",
+      "endUTC": "2026-09-09T03:25:41.267942+00:00",
+      "exit": 0,
+      "fresh": true,
+      "passed": true,
+      "interrupted": false,
+      "sourceHash": "9b191a053ad48ed09e972b65e26fac5b8baeb97f741d428b3b79bb8e1ca964f8",
+      "matchingSourceCommits": [
+        "c60f315ad14a84a04f49c148c3204461b940c042"
+      ],
+      "command": [
+        "idris2",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/src",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources",
+        "--check",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5ExtensionalRetire.idr"
+      ],
+      "seconds": 0.8758341670036316,
+      "maxSampleRSSKiB": 253296,
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "record": "A18-1.json",
+      "log": "A18-1.log",
+      "source": "A18-1.source",
+      "bundleSources": [],
+      "bundleFresh": true,
+      "sourceMutationObserved": false,
+      "targetMtimeTouch": {
+        "path": "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5ExtensionalRetire.idr",
+        "oldMtimeNs": 1788924335923982328,
+        "newMtimeNs": 1788924340391840000,
+        "authority": "L2R5 task BUILD SEED; target only, dependency rebuilds acknowledged"
+      },
+      "heavyLockAcquired": false,
+      "heavyLockEvents": [],
+      "separateCompilerObservations": [
+        {
+          "pid": 59743,
+          "ppid": 59740,
+          "rssKiB": 2882672,
+          "command": "/opt/homebrew/opt/chezscheme/bin/chez --program /opt/homebrew/Cellar/idris2/0.8.0_2/libexec/bin/idris2_app/idris2.so --source-dir /Users/vyacheslavshebanov/Work/dgamma/src --source-dir /Users/vyacheslavshebanov/Work/dgamma/research --check /Users/vyacheslavshebanov/Work/dgamma/research/DGamma/CP5O19ReachedBlocksSpike.idr",
+          "classification": "main-lane compiler (separate worktree)"
+        }
+      ]
+    },
+    {
+      "effectiveUnit": "A19",
+      "effectiveAttempt": 1,
+      "invocation": "A19-1",
+      "unit": "A19",
+      "attempt": 1,
+      "target": "research-tests/O6-L2R5-Sources/DGamma/L2R5ExtensionalRetire.idr",
+      "startUTC": "2026-09-09T03:26:14.688546+00:00",
+      "endUTC": "2026-09-09T03:26:15.544213+00:00",
+      "exit": 0,
+      "fresh": true,
+      "passed": true,
+      "interrupted": false,
+      "sourceHash": "4b6f3a1628784c7ad7b62da4b4deec18d21aedddfd0189d7a4581f320e26855c",
+      "matchingSourceCommits": [
+        "fc9ac87f6834fc7703edbf1707a085df858beca9"
+      ],
+      "command": [
+        "idris2",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/src",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources",
+        "--check",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5ExtensionalRetire.idr"
+      ],
+      "seconds": 0.8556622499600053,
+      "maxSampleRSSKiB": 286432,
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "record": "A19-1.json",
+      "log": "A19-1.log",
+      "source": "A19-1.source",
+      "bundleSources": [],
+      "bundleFresh": true,
+      "sourceMutationObserved": false,
+      "targetMtimeTouch": {
+        "path": "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5ExtensionalRetire.idr",
+        "oldMtimeNs": 1788924369857790609,
+        "newMtimeNs": 1788924374688284000,
+        "authority": "L2R5 task BUILD SEED; target only, dependency rebuilds acknowledged"
+      },
+      "heavyLockAcquired": false,
+      "heavyLockEvents": [],
+      "separateCompilerObservations": [
+        {
+          "pid": 59743,
+          "ppid": 59740,
+          "rssKiB": 2882672,
+          "command": "/opt/homebrew/opt/chezscheme/bin/chez --program /opt/homebrew/Cellar/idris2/0.8.0_2/libexec/bin/idris2_app/idris2.so --source-dir /Users/vyacheslavshebanov/Work/dgamma/src --source-dir /Users/vyacheslavshebanov/Work/dgamma/research --check /Users/vyacheslavshebanov/Work/dgamma/research/DGamma/CP5O19ReachedBlocksSpike.idr",
+          "classification": "main-lane compiler (separate worktree)"
+        }
+      ]
+    },
+    {
+      "effectiveUnit": "A20",
+      "effectiveAttempt": 1,
+      "invocation": "A20-1",
+      "unit": "A20",
+      "attempt": 1,
+      "target": "research-tests/O6-L2R5-Sources/DGamma/L2R5ExtensionalFixtures.idr",
+      "startUTC": "2026-09-09T03:26:54.342371+00:00",
+      "endUTC": "2026-09-09T03:26:55.796492+00:00",
+      "exit": 1,
+      "fresh": true,
+      "passed": false,
+      "interrupted": false,
+      "sourceHash": "efa63c6410596260377120615bd94c4c0298cf43d938b2d7507afa79f9cf4ff7",
+      "matchingSourceCommits": [],
+      "command": [
+        "idris2",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/src",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources",
+        "--check",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5ExtensionalFixtures.idr"
+      ],
+      "seconds": 1.4541380410082638,
+      "maxSampleRSSKiB": 651440,
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "record": "A20-1.json",
+      "log": "A20-1.log",
+      "source": "A20-1.source",
+      "bundleSources": [],
+      "bundleFresh": true,
+      "sourceMutationObserved": false,
+      "targetMtimeTouch": {
+        "path": "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5ExtensionalFixtures.idr",
+        "oldMtimeNs": 1788924407855569364,
+        "newMtimeNs": 1788924414342153000,
+        "authority": "L2R5 task BUILD SEED; target only, dependency rebuilds acknowledged"
+      },
+      "heavyLockAcquired": false,
+      "heavyLockEvents": [],
+      "separateCompilerObservations": [
+        {
+          "pid": 59743,
+          "ppid": 59740,
+          "rssKiB": 2882672,
+          "command": "/opt/homebrew/opt/chezscheme/bin/chez --program /opt/homebrew/Cellar/idris2/0.8.0_2/libexec/bin/idris2_app/idris2.so --source-dir /Users/vyacheslavshebanov/Work/dgamma/src --source-dir /Users/vyacheslavshebanov/Work/dgamma/research --check /Users/vyacheslavshebanov/Work/dgamma/research/DGamma/CP5O19ReachedBlocksSpike.idr",
+          "classification": "main-lane compiler (separate worktree)"
+        }
+      ]
+    },
+    {
+      "effectiveUnit": "A20",
+      "effectiveAttempt": 2,
+      "invocation": "A20-2",
+      "unit": "A20",
+      "attempt": 2,
+      "target": "research-tests/O6-L2R5-Sources/DGamma/L2R5ExtensionalFixtures.idr",
+      "startUTC": "2026-09-09T03:27:21.102740+00:00",
+      "endUTC": "2026-09-09T03:27:22.269907+00:00",
+      "exit": 0,
+      "fresh": true,
+      "passed": true,
+      "interrupted": false,
+      "sourceHash": "2294f6e3637dc3fe2ca1cf05ab9359ef16528405cb47d506683d60f2236ae193",
+      "matchingSourceCommits": [
+        "4ab704a96c89bdc84f9371c0219d971e4507b0ed"
+      ],
+      "command": [
+        "idris2",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/src",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources",
+        "--check",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5ExtensionalFixtures.idr"
+      ],
+      "seconds": 1.167181875091046,
+      "maxSampleRSSKiB": 625808,
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "record": "A20-2.json",
+      "log": "A20-2.log",
+      "source": "A20-2.source",
+      "bundleSources": [],
+      "bundleFresh": true,
+      "sourceMutationObserved": false,
+      "targetMtimeTouch": {
+        "path": "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5ExtensionalFixtures.idr",
+        "oldMtimeNs": 1788924436121469537,
+        "newMtimeNs": 1788924441102489000,
+        "authority": "L2R5 task BUILD SEED; target only, dependency rebuilds acknowledged"
+      },
+      "heavyLockAcquired": false,
+      "heavyLockEvents": [],
+      "separateCompilerObservations": [
+        {
+          "pid": 59743,
+          "ppid": 59740,
+          "rssKiB": 2882672,
+          "command": "/opt/homebrew/opt/chezscheme/bin/chez --program /opt/homebrew/Cellar/idris2/0.8.0_2/libexec/bin/idris2_app/idris2.so --source-dir /Users/vyacheslavshebanov/Work/dgamma/src --source-dir /Users/vyacheslavshebanov/Work/dgamma/research --check /Users/vyacheslavshebanov/Work/dgamma/research/DGamma/CP5O19ReachedBlocksSpike.idr",
+          "classification": "main-lane compiler (separate worktree)"
+        }
+      ]
+    },
+    {
+      "effectiveUnit": "B1",
+      "effectiveAttempt": 1,
+      "invocation": "B1-1",
+      "unit": "B1",
+      "attempt": 1,
+      "target": "research-tests/O6-L2R5-Sources/DGamma/L2R5RetirementFrame.idr",
+      "startUTC": "2026-09-09T03:28:29.654696+00:00",
+      "endUTC": "2026-09-09T03:28:30.242286+00:00",
+      "exit": 0,
+      "fresh": true,
+      "passed": true,
+      "interrupted": false,
+      "sourceHash": "eaf6a2a547fdb784f318afaa84c551db92660c9e94cf0cd9dab0918d181eba7f",
+      "matchingSourceCommits": [
+        "cc606679f2ff1186a4fef788e37ef87fcba736b8"
+      ],
+      "command": [
+        "idris2",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/src",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources",
+        "--check",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5RetirementFrame.idr"
+      ],
+      "seconds": 0.5876017916016281,
+      "maxSampleRSSKiB": 194368,
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "record": "B1-1.json",
+      "log": "B1-1.log",
+      "source": "B1-1.source",
+      "bundleSources": [],
+      "bundleFresh": true,
+      "sourceMutationObserved": false,
+      "targetMtimeTouch": {
+        "path": "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5RetirementFrame.idr",
+        "oldMtimeNs": 1788924504985422112,
+        "newMtimeNs": 1788924509654521000,
+        "authority": "L2R5 task BUILD SEED; target only, dependency rebuilds acknowledged"
+      },
+      "heavyLockAcquired": false,
+      "heavyLockEvents": [],
+      "separateCompilerObservations": [
+        {
+          "pid": 59743,
+          "ppid": 59740,
+          "rssKiB": 2882672,
+          "command": "/opt/homebrew/opt/chezscheme/bin/chez --program /opt/homebrew/Cellar/idris2/0.8.0_2/libexec/bin/idris2_app/idris2.so --source-dir /Users/vyacheslavshebanov/Work/dgamma/src --source-dir /Users/vyacheslavshebanov/Work/dgamma/research --check /Users/vyacheslavshebanov/Work/dgamma/research/DGamma/CP5O19ReachedBlocksSpike.idr",
+          "classification": "main-lane compiler (separate worktree)"
+        }
+      ]
+    },
+    {
+      "effectiveUnit": "B2",
+      "effectiveAttempt": 1,
+      "invocation": "B2-1",
+      "unit": "B2",
+      "attempt": 1,
+      "target": "research-tests/O6-L2R5-Sources/DGamma/L2R5RetirementFrame.idr",
+      "startUTC": "2026-09-09T03:29:14.216866+00:00",
+      "endUTC": "2026-09-09T03:29:15.082002+00:00",
+      "exit": 0,
+      "fresh": true,
+      "passed": true,
+      "interrupted": false,
+      "sourceHash": "7d9a104d4bd359aa9b269e428328b1f5708fd9c0b00a9460b8ec9ed5f765ceeb",
+      "matchingSourceCommits": [
+        "239d9676325d5489d3358924adbd7c39cc8a40bd"
+      ],
+      "command": [
+        "idris2",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/src",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources",
+        "--check",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5RetirementFrame.idr"
+      ],
+      "seconds": 0.8651380836963654,
+      "maxSampleRSSKiB": 269856,
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "record": "B2-1.json",
+      "log": "B2-1.log",
+      "source": "B2-1.source",
+      "bundleSources": [],
+      "bundleFresh": true,
+      "sourceMutationObserved": false,
+      "targetMtimeTouch": {
+        "path": "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5RetirementFrame.idr",
+        "oldMtimeNs": 1788924549617385752,
+        "newMtimeNs": 1788924554216597000,
+        "authority": "L2R5 task BUILD SEED; target only, dependency rebuilds acknowledged"
+      },
+      "heavyLockAcquired": false,
+      "heavyLockEvents": [],
+      "separateCompilerObservations": [
+        {
+          "pid": 82301,
+          "ppid": 82298,
+          "rssKiB": 2455824,
+          "command": "/opt/homebrew/opt/chezscheme/bin/chez --program /opt/homebrew/Cellar/idris2/0.8.0_2/libexec/bin/idris2_app/idris2.so --source-dir /Users/vyacheslavshebanov/Work/dgamma/src --source-dir /Users/vyacheslavshebanov/Work/dgamma/research --source-dir /Users/vyacheslavshebanov/Work/dgamma/research-tests --check /Users/vyacheslavshebanov/Work/dgamma/research-tests/DGamma/R182O19FourCrossingsPositive.idr",
+          "classification": "main-lane compiler (separate worktree)"
+        }
+      ]
+    },
+    {
+      "effectiveUnit": "B3",
+      "effectiveAttempt": 1,
+      "invocation": "B3-1",
+      "unit": "B3",
+      "attempt": 1,
+      "target": "research-tests/O6-L2R5-Sources/DGamma/L2R5RetirementFrame.idr",
+      "startUTC": "2026-09-09T03:29:58.528923+00:00",
+      "endUTC": "2026-09-09T03:29:59.401329+00:00",
+      "exit": 0,
+      "fresh": true,
+      "passed": true,
+      "interrupted": false,
+      "sourceHash": "07f35852f9e30f2375d65ba9d9255e142dc489dcd84bb2160a7958a1af7a429c",
+      "matchingSourceCommits": [
+        "85cd102d0c9b862e39ba8fb3cebc69fc51a2e641"
+      ],
+      "command": [
+        "idris2",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/src",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources",
+        "--check",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5RetirementFrame.idr"
+      ],
+      "seconds": 0.8724134578369558,
+      "maxSampleRSSKiB": 270128,
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "record": "B3-1.json",
+      "log": "B3-1.log",
+      "source": "B3-1.source",
+      "bundleSources": [],
+      "bundleFresh": true,
+      "sourceMutationObserved": false,
+      "targetMtimeTouch": {
+        "path": "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5RetirementFrame.idr",
+        "oldMtimeNs": 1788924592317864208,
+        "newMtimeNs": 1788924598528631000,
+        "authority": "L2R5 task BUILD SEED; target only, dependency rebuilds acknowledged"
+      },
+      "heavyLockAcquired": false,
+      "heavyLockEvents": [],
+      "separateCompilerObservations": [
+        {
+          "pid": 82301,
+          "ppid": 82298,
+          "rssKiB": 8916784,
+          "command": "/opt/homebrew/opt/chezscheme/bin/chez --program /opt/homebrew/Cellar/idris2/0.8.0_2/libexec/bin/idris2_app/idris2.so --source-dir /Users/vyacheslavshebanov/Work/dgamma/src --source-dir /Users/vyacheslavshebanov/Work/dgamma/research --source-dir /Users/vyacheslavshebanov/Work/dgamma/research-tests --check /Users/vyacheslavshebanov/Work/dgamma/research-tests/DGamma/R182O19FourCrossingsPositive.idr",
+          "classification": "main-lane compiler (separate worktree)"
+        }
+      ]
+    },
+    {
+      "effectiveUnit": "B4",
+      "effectiveAttempt": 1,
+      "invocation": "B4-1",
+      "unit": "B4",
+      "attempt": 1,
+      "target": "research-tests/O6-L2R5-Sources/DGamma/L2R5ProviderObservation.idr",
+      "startUTC": "2026-09-09T03:30:45.402794+00:00",
+      "endUTC": "2026-09-09T03:30:46.264593+00:00",
+      "exit": 0,
+      "fresh": true,
+      "passed": true,
+      "interrupted": false,
+      "sourceHash": "3e8d4fcb6a9c783832169672f6800808e145a29ea505e014b9146e1e6bba4615",
+      "matchingSourceCommits": [
+        "76a0b126417682d40d62f3ce00b0dff0bd439bd9"
+      ],
+      "command": [
+        "idris2",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/src",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources",
+        "--check",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5ProviderObservation.idr"
+      ],
+      "seconds": 0.8618136672303081,
+      "maxSampleRSSKiB": 282144,
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "record": "B4-1.json",
+      "log": "B4-1.log",
+      "source": "B4-1.source",
+      "bundleSources": [],
+      "bundleFresh": true,
+      "sourceMutationObserved": false,
+      "targetMtimeTouch": {
+        "path": "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5ProviderObservation.idr",
+        "oldMtimeNs": 1788924639075496003,
+        "newMtimeNs": 1788924645402612000,
+        "authority": "L2R5 task BUILD SEED; target only, dependency rebuilds acknowledged"
+      },
+      "heavyLockAcquired": false,
+      "heavyLockEvents": [],
+      "separateCompilerObservations": [
+        {
+          "pid": 82301,
+          "ppid": 82298,
+          "rssKiB": 13572016,
+          "command": "/opt/homebrew/opt/chezscheme/bin/chez --program /opt/homebrew/Cellar/idris2/0.8.0_2/libexec/bin/idris2_app/idris2.so --source-dir /Users/vyacheslavshebanov/Work/dgamma/src --source-dir /Users/vyacheslavshebanov/Work/dgamma/research --source-dir /Users/vyacheslavshebanov/Work/dgamma/research-tests --check /Users/vyacheslavshebanov/Work/dgamma/research-tests/DGamma/R182O19FourCrossingsPositive.idr",
+          "classification": "main-lane compiler (separate worktree)"
+        }
+      ]
+    },
+    {
+      "effectiveUnit": "B5",
+      "effectiveAttempt": 1,
+      "invocation": "B5-1",
+      "unit": "B5",
+      "attempt": 1,
+      "target": "research-tests/O6-L2R5-Sources/DGamma/L2R5ProviderObservation.idr",
+      "startUTC": "2026-09-09T03:31:28.770774+00:00",
+      "endUTC": "2026-09-09T03:31:29.344811+00:00",
+      "exit": 1,
+      "fresh": true,
+      "passed": false,
+      "interrupted": false,
+      "sourceHash": "66f600d9a7bb4390836cdc233e9bc2a3b44fe550c5e16e96797d24d2dbc42c4c",
+      "matchingSourceCommits": [],
+      "command": [
+        "idris2",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/src",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources",
+        "--check",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5ProviderObservation.idr"
+      ],
+      "seconds": 0.574029500130564,
+      "maxSampleRSSKiB": 190240,
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "record": "B5-1.json",
+      "log": "B5-1.log",
+      "source": "B5-1.source",
+      "bundleSources": [],
+      "bundleFresh": true,
+      "sourceMutationObserved": false,
+      "targetMtimeTouch": {
+        "path": "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5ProviderObservation.idr",
+        "oldMtimeNs": 1788924680762529025,
+        "newMtimeNs": 1788924688770482000,
+        "authority": "L2R5 task BUILD SEED; target only, dependency rebuilds acknowledged"
+      },
+      "heavyLockAcquired": false,
+      "heavyLockEvents": [],
+      "separateCompilerObservations": [
+        {
+          "pid": 96943,
+          "ppid": 96931,
+          "rssKiB": 2205264,
+          "command": "/opt/homebrew/opt/chezscheme/bin/chez --program /opt/homebrew/Cellar/idris2/0.8.0_2/libexec/bin/idris2_app/idris2.so --source-dir /Users/vyacheslavshebanov/Work/dgamma/src --source-dir /Users/vyacheslavshebanov/Work/dgamma/research --check /Users/vyacheslavshebanov/Work/dgamma/research/DGamma/CP5O20CanonicalOrdinalAttachmentSpike.idr",
+          "classification": "main-lane compiler (separate worktree)"
+        }
+      ]
+    },
+    {
+      "effectiveUnit": "B5",
+      "effectiveAttempt": 2,
+      "invocation": "B5-2",
+      "unit": "B5",
+      "attempt": 2,
+      "target": "research-tests/O6-L2R5-Sources/DGamma/L2R5ProviderObservation.idr",
+      "startUTC": "2026-09-09T03:32:23.299914+00:00",
+      "endUTC": "2026-09-09T03:32:23.879020+00:00",
+      "exit": 1,
+      "fresh": true,
+      "passed": false,
+      "interrupted": false,
+      "sourceHash": "3a8711abb140e74c1de3038f72c1658a112817affacaa0264dc310beadd794ad",
+      "matchingSourceCommits": [],
+      "command": [
+        "idris2",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/src",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources",
+        "--check",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5ProviderObservation.idr"
+      ],
+      "seconds": 0.5791073329746723,
+      "maxSampleRSSKiB": 215312,
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "record": "B5-2.json",
+      "log": "B5-2.log",
+      "source": "B5-2.source",
+      "bundleSources": [],
+      "bundleFresh": true,
+      "sourceMutationObserved": false,
+      "targetMtimeTouch": {
+        "path": "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5ProviderObservation.idr",
+        "oldMtimeNs": 1788924735393411334,
+        "newMtimeNs": 1788924743299701000,
+        "authority": "L2R5 task BUILD SEED; target only, dependency rebuilds acknowledged"
+      },
+      "heavyLockAcquired": false,
+      "heavyLockEvents": [],
+      "separateCompilerObservations": []
+    },
+    {
+      "effectiveUnit": "B5",
+      "effectiveAttempt": 3,
+      "invocation": "B5-3",
+      "unit": "B5",
+      "attempt": 3,
+      "target": "research-tests/O6-L2R5-Sources/DGamma/L2R5ProviderObservation.idr",
+      "startUTC": "2026-09-09T03:33:10.020652+00:00",
+      "endUTC": "2026-09-09T03:33:10.588676+00:00",
+      "exit": 1,
+      "fresh": true,
+      "passed": false,
+      "interrupted": false,
+      "sourceHash": "a0e67256c9fa551d8423b9fe5fc67f2390946ef8bb2859a91d9dd78f6b42facc",
+      "matchingSourceCommits": [],
+      "command": [
+        "idris2",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/src",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources",
+        "--check",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5ProviderObservation.idr"
+      ],
+      "seconds": 0.5680244578979909,
+      "maxSampleRSSKiB": 197664,
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "record": "B5-3.json",
+      "log": "B5-3.log",
+      "source": "B5-3.source",
+      "bundleSources": [],
+      "bundleFresh": true,
+      "sourceMutationObserved": false,
+      "targetMtimeTouch": {
+        "path": "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5ProviderObservation.idr",
+        "oldMtimeNs": 1788924784435036127,
+        "newMtimeNs": 1788924790020435000,
+        "authority": "L2R5 task BUILD SEED; target only, dependency rebuilds acknowledged"
+      },
+      "heavyLockAcquired": false,
+      "heavyLockEvents": [],
+      "separateCompilerObservations": []
+    },
+    {
+      "effectiveUnit": "V2",
+      "effectiveAttempt": null,
+      "invocation": "V2",
+      "unit": "V2",
+      "attempt": null,
+      "target": "research-tests/O6-L2R5-Sources/DGamma/L2R5ProviderObservation.idr",
+      "startUTC": "2026-09-09T03:33:55.050634+00:00",
+      "endUTC": "2026-09-09T03:33:55.912558+00:00",
+      "exit": 0,
+      "fresh": true,
+      "passed": true,
+      "interrupted": false,
+      "sourceHash": "3e8d4fcb6a9c783832169672f6800808e145a29ea505e014b9146e1e6bba4615",
+      "matchingSourceCommits": [
+        "76a0b126417682d40d62f3ce00b0dff0bd439bd9"
+      ],
+      "command": [
+        "idris2",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/src",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources",
+        "--check",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5ProviderObservation.idr"
+      ],
+      "seconds": 0.8619324583560228,
+      "maxSampleRSSKiB": 296304,
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "record": "V2.json",
+      "log": "V2.log",
+      "source": "V2.source",
+      "bundleSources": [],
+      "bundleFresh": true,
+      "sourceMutationObserved": false,
+      "targetMtimeTouch": {
+        "path": "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5ProviderObservation.idr",
+        "oldMtimeNs": 1788924829778518778,
+        "newMtimeNs": 1788924835050375000,
+        "authority": "L2R5 task BUILD SEED; target only, dependency rebuilds acknowledged"
+      },
+      "heavyLockAcquired": false,
+      "heavyLockEvents": [],
+      "separateCompilerObservations": []
+    },
+    {
+      "effectiveUnit": "C1",
+      "effectiveAttempt": 1,
+      "invocation": "C1-1",
+      "unit": "C1",
+      "attempt": 1,
+      "target": "research-tests/O6-L2R5-Sources/DGamma/L2R5RootCatalog.idr",
+      "startUTC": "2026-09-09T03:36:11.111732+00:00",
+      "endUTC": "2026-09-09T03:36:11.686953+00:00",
+      "exit": 0,
+      "fresh": true,
+      "passed": true,
+      "interrupted": false,
+      "sourceHash": "75fe6733a8d5a60526229282b98588ba76d846169e6ec1518a395cc00ca54e17",
+      "matchingSourceCommits": [
+        "b3a524f59f471c5e6e11fea07f386cc02d791ec0"
+      ],
+      "command": [
+        "idris2",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/src",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources",
+        "--check",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5RootCatalog.idr"
+      ],
+      "seconds": 0.5752143333666027,
+      "maxSampleRSSKiB": 193856,
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "record": "C1-1.json",
+      "log": "C1-1.log",
+      "source": "C1-1.source",
+      "bundleSources": [],
+      "bundleFresh": true,
+      "sourceMutationObserved": false,
+      "targetMtimeTouch": {
+        "path": "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5RootCatalog.idr",
+        "oldMtimeNs": 1788924964946571925,
+        "newMtimeNs": 1788924971111396000,
+        "authority": "L2R5 task BUILD SEED; target only, dependency rebuilds acknowledged"
+      },
+      "heavyLockAcquired": false,
+      "heavyLockEvents": [],
+      "separateCompilerObservations": []
+    },
+    {
+      "effectiveUnit": "C2",
+      "effectiveAttempt": 1,
+      "invocation": "C2-1",
+      "unit": "C2",
+      "attempt": 1,
+      "target": "research-tests/O6-L2R5-Sources/DGamma/L2R5RootCatalog.idr",
+      "startUTC": "2026-09-09T03:36:42.816494+00:00",
+      "endUTC": "2026-09-09T03:36:43.394192+00:00",
+      "exit": 0,
+      "fresh": true,
+      "passed": true,
+      "interrupted": false,
+      "sourceHash": "26448c6431ec08980bad6b790dbc1d47614956a134bdfe4c5700aabefc2b4508",
+      "matchingSourceCommits": [
+        "18724c9057e31fdb4f24e3112c9002d2d7047727"
+      ],
+      "command": [
+        "idris2",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/src",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources",
+        "--check",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5RootCatalog.idr"
+      ],
+      "seconds": 0.5776950838044286,
+      "maxSampleRSSKiB": 195792,
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "record": "C2-1.json",
+      "log": "C2-1.log",
+      "source": "C2-1.source",
+      "bundleSources": [],
+      "bundleFresh": true,
+      "sourceMutationObserved": false,
+      "targetMtimeTouch": {
+        "path": "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5RootCatalog.idr",
+        "oldMtimeNs": 1788924997924902211,
+        "newMtimeNs": 1788925002816265000,
+        "authority": "L2R5 task BUILD SEED; target only, dependency rebuilds acknowledged"
+      },
+      "heavyLockAcquired": false,
+      "heavyLockEvents": [],
+      "separateCompilerObservations": []
+    },
+    {
+      "effectiveUnit": "C3",
+      "effectiveAttempt": 1,
+      "invocation": "C3-1",
+      "unit": "C3",
+      "attempt": 1,
+      "target": "research-tests/O6-L2R5-Sources/DGamma/L2R5RootCatalog.idr",
+      "startUTC": "2026-09-09T03:37:11.999545+00:00",
+      "endUTC": "2026-09-09T03:37:12.573491+00:00",
+      "exit": 0,
+      "fresh": true,
+      "passed": true,
+      "interrupted": false,
+      "sourceHash": "476ea6c1c5ceaec3aea1f1265ccbd3da662b96be1eb5a661cf8e652f2c57335f",
+      "matchingSourceCommits": [
+        "e9ab71a5d975eec1757654a68e47069bce840ded"
+      ],
+      "command": [
+        "idris2",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/src",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources",
+        "--check",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5RootCatalog.idr"
+      ],
+      "seconds": 0.5739542501978576,
+      "maxSampleRSSKiB": 197840,
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "record": "C3-1.json",
+      "log": "C3-1.log",
+      "source": "C3-1.source",
+      "bundleSources": [],
+      "bundleFresh": true,
+      "sourceMutationObserved": false,
+      "targetMtimeTouch": {
+        "path": "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5RootCatalog.idr",
+        "oldMtimeNs": 1788925027294044356,
+        "newMtimeNs": 1788925031999339000,
+        "authority": "L2R5 task BUILD SEED; target only, dependency rebuilds acknowledged"
+      },
+      "heavyLockAcquired": false,
+      "heavyLockEvents": [],
+      "separateCompilerObservations": []
+    },
+    {
+      "effectiveUnit": "C4",
+      "effectiveAttempt": 1,
+      "invocation": "C4-1",
+      "unit": "C4",
+      "attempt": 1,
+      "target": "research-tests/O6-L2R5-Sources/DGamma/L2R5RootCatalog.idr",
+      "startUTC": "2026-09-09T03:37:46.646104+00:00",
+      "endUTC": "2026-09-09T03:37:47.232635+00:00",
+      "exit": 0,
+      "fresh": true,
+      "passed": true,
+      "interrupted": false,
+      "sourceHash": "e29ab2eb28ff606aa2ee3ced4c516c8b2a9867d9e93723ca999fbdd96623ff53",
+      "matchingSourceCommits": [
+        "525730d217350cc8784333ab1df8067364fc5fd2"
+      ],
+      "command": [
+        "idris2",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/src",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources",
+        "--check",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5RootCatalog.idr"
+      ],
+      "seconds": 0.5865276670083404,
+      "maxSampleRSSKiB": 310848,
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "record": "C4-1.json",
+      "log": "C4-1.log",
+      "source": "C4-1.source",
+      "bundleSources": [],
+      "bundleFresh": true,
+      "sourceMutationObserved": false,
+      "targetMtimeTouch": {
+        "path": "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5RootCatalog.idr",
+        "oldMtimeNs": 1788925057365496262,
+        "newMtimeNs": 1788925066645896000,
+        "authority": "L2R5 task BUILD SEED; target only, dependency rebuilds acknowledged"
+      },
+      "heavyLockAcquired": false,
+      "heavyLockEvents": [],
+      "separateCompilerObservations": []
+    },
+    {
+      "effectiveUnit": "C5",
+      "effectiveAttempt": 1,
+      "invocation": "C5-1",
+      "unit": "C5",
+      "attempt": 1,
+      "target": "research-tests/O6-L2R5-Sources/DGamma/L2R5RootCatalog.idr",
+      "startUTC": "2026-09-09T03:38:26.554896+00:00",
+      "endUTC": "2026-09-09T03:38:27.133005+00:00",
+      "exit": 1,
+      "fresh": true,
+      "passed": false,
+      "interrupted": false,
+      "sourceHash": "60e1ea5eea884433476ecea88276c670f91e5ea3bff8d1fedba96bd212007487",
+      "matchingSourceCommits": [],
+      "command": [
+        "idris2",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/src",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources",
+        "--check",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5RootCatalog.idr"
+      ],
+      "seconds": 0.5781094999983907,
+      "maxSampleRSSKiB": 215200,
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "record": "C5-1.json",
+      "log": "C5-1.log",
+      "source": "C5-1.source",
+      "bundleSources": [],
+      "bundleFresh": true,
+      "sourceMutationObserved": false,
+      "targetMtimeTouch": {
+        "path": "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5RootCatalog.idr",
+        "oldMtimeNs": 1788925100190758175,
+        "newMtimeNs": 1788925106554702000,
+        "authority": "L2R5 task BUILD SEED; target only, dependency rebuilds acknowledged"
+      },
+      "heavyLockAcquired": false,
+      "heavyLockEvents": [],
+      "separateCompilerObservations": []
+    },
+    {
+      "effectiveUnit": "C5",
+      "effectiveAttempt": 2,
+      "invocation": "C5-2",
+      "unit": "C5",
+      "attempt": 2,
+      "target": "research-tests/O6-L2R5-Sources/DGamma/L2R5RootCatalog.idr",
+      "startUTC": "2026-09-09T03:38:51.464148+00:00",
+      "endUTC": "2026-09-09T03:38:53.513747+00:00",
+      "exit": 0,
+      "fresh": true,
+      "passed": true,
+      "interrupted": false,
+      "sourceHash": "a92e4e30a6b95a4e0167700d0c6397dafa6a71fcbf71766b4be150fee2e88854",
+      "matchingSourceCommits": [
+        "77681c9a8b7c973aeba1080363378da1a3ae602e"
+      ],
+      "command": [
+        "idris2",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/src",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources",
+        "--check",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5RootCatalog.idr"
+      ],
+      "seconds": 2.0496092503890395,
+      "maxSampleRSSKiB": 267936,
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "record": "C5-2.json",
+      "log": "C5-2.log",
+      "source": "C5-2.source",
+      "bundleSources": [],
+      "bundleFresh": true,
+      "sourceMutationObserved": false,
+      "targetMtimeTouch": {
+        "path": "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5RootCatalog.idr",
+        "oldMtimeNs": 1788925124402412162,
+        "newMtimeNs": 1788925131463895000,
+        "authority": "L2R5 task BUILD SEED; target only, dependency rebuilds acknowledged"
+      },
+      "heavyLockAcquired": false,
+      "heavyLockEvents": [],
+      "separateCompilerObservations": []
+    },
+    {
+      "effectiveUnit": "C6",
+      "effectiveAttempt": 1,
+      "invocation": "C6-1",
+      "unit": "C6",
+      "attempt": 1,
+      "target": "research-tests/O6-L2R5-Sources/DGamma/L2R5RootCatalog.idr",
+      "startUTC": "2026-09-09T03:39:48.784168+00:00",
+      "endUTC": "2026-09-09T03:39:50.790894+00:00",
+      "exit": 0,
+      "fresh": true,
+      "passed": true,
+      "interrupted": false,
+      "sourceHash": "7e6cb41c515d1dbc764a1c98a34c5fe9897f7c34907d2dae057fb18c38192f34",
+      "matchingSourceCommits": [
+        "f82f7f8a7ec0a2c2dee094294194979a35235f5c"
+      ],
+      "command": [
+        "idris2",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/src",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources",
+        "--check",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5RootCatalog.idr"
+      ],
+      "seconds": 2.0067307082936168,
+      "maxSampleRSSKiB": 261360,
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "record": "C6-1.json",
+      "log": "C6-1.log",
+      "source": "C6-1.source",
+      "bundleSources": [],
+      "bundleFresh": true,
+      "sourceMutationObserved": false,
+      "targetMtimeTouch": {
+        "path": "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5RootCatalog.idr",
+        "oldMtimeNs": 1788925184129898581,
+        "newMtimeNs": 1788925188783890000,
+        "authority": "L2R5 task BUILD SEED; target only, dependency rebuilds acknowledged"
+      },
+      "heavyLockAcquired": false,
+      "heavyLockEvents": [],
+      "separateCompilerObservations": []
+    },
+    {
+      "effectiveUnit": "C7",
+      "effectiveAttempt": 1,
+      "invocation": "C7-1",
+      "unit": "C7",
+      "attempt": 1,
+      "target": "research-tests/O6-L2R5-Sources/DGamma/L2R5RootCatalog.idr",
+      "startUTC": "2026-09-09T03:40:47.105326+00:00",
+      "endUTC": "2026-09-09T03:40:49.429599+00:00",
+      "exit": 0,
+      "fresh": true,
+      "passed": true,
+      "interrupted": false,
+      "sourceHash": "a33d8ef8f985abf7c4a11d3e23b73823281e5bab9aab95e6f49f4967a8c428cf",
+      "matchingSourceCommits": [
+        "601c14008b22d7b6df9a750d25d6457e9de1a94a"
+      ],
+      "command": [
+        "idris2",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/src",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources",
+        "--check",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5RootCatalog.idr"
+      ],
+      "seconds": 2.3242837912403047,
+      "maxSampleRSSKiB": 269552,
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "record": "C7-1.json",
+      "log": "C7-1.log",
+      "source": "C7-1.source",
+      "bundleSources": [],
+      "bundleFresh": true,
+      "sourceMutationObserved": false,
+      "targetMtimeTouch": {
+        "path": "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5RootCatalog.idr",
+        "oldMtimeNs": 1788925241871378151,
+        "newMtimeNs": 1788925247105029000,
+        "authority": "L2R5 task BUILD SEED; target only, dependency rebuilds acknowledged"
+      },
+      "heavyLockAcquired": false,
+      "heavyLockEvents": [],
+      "separateCompilerObservations": []
+    },
+    {
+      "effectiveUnit": "C8",
+      "effectiveAttempt": 1,
+      "invocation": "C8-1",
+      "unit": "C8",
+      "attempt": 1,
+      "target": "research-tests/O6-L2R5-Sources/DGamma/L2R5RootCatalog.idr",
+      "startUTC": "2026-09-09T03:41:19.589686+00:00",
+      "endUTC": "2026-09-09T03:41:21.611764+00:00",
+      "exit": 0,
+      "fresh": true,
+      "passed": true,
+      "interrupted": false,
+      "sourceHash": "cf7041dc2ed073ee29cd489d8e46792ab5bc987ee7c5941eff87c2b6f9ea0ea6",
+      "matchingSourceCommits": [
+        "ef9b9f9b5991862ce4cf84515423b14d3ebcd616"
+      ],
+      "command": [
+        "idris2",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/src",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources",
+        "--check",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5RootCatalog.idr"
+      ],
+      "seconds": 2.022085457574576,
+      "maxSampleRSSKiB": 251936,
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "record": "C8-1.json",
+      "log": "C8-1.log",
+      "source": "C8-1.source",
+      "bundleSources": [],
+      "bundleFresh": true,
+      "sourceMutationObserved": false,
+      "targetMtimeTouch": {
+        "path": "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5RootCatalog.idr",
+        "oldMtimeNs": 1788925274493744975,
+        "newMtimeNs": 1788925279589402000,
+        "authority": "L2R5 task BUILD SEED; target only, dependency rebuilds acknowledged"
+      },
+      "heavyLockAcquired": false,
+      "heavyLockEvents": [],
+      "separateCompilerObservations": []
+    },
+    {
+      "effectiveUnit": "C9",
+      "effectiveAttempt": 1,
+      "invocation": "C9-1",
+      "unit": "C9",
+      "attempt": 1,
+      "target": "research-tests/O6-L2R5-Sources/DGamma/L2R5CatalogFixtures.idr",
+      "startUTC": "2026-09-09T03:42:15.695089+00:00",
+      "endUTC": "2026-09-09T03:42:17.414380+00:00",
+      "exit": 0,
+      "fresh": true,
+      "passed": true,
+      "interrupted": false,
+      "sourceHash": "4d8b98718d243e49fd5bfd150af1eb420bd1669dbe9d7857486ef5aaa3b09616",
+      "matchingSourceCommits": [
+        "935f0aaebc9c1196b86384fe79e79fcdd42ba200"
+      ],
+      "command": [
+        "idris2",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/src",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources",
+        "--check",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5CatalogFixtures.idr"
+      ],
+      "seconds": 1.719306374900043,
+      "maxSampleRSSKiB": 374016,
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "record": "C9-1.json",
+      "log": "C9-1.log",
+      "source": "C9-1.source",
+      "bundleSources": [],
+      "bundleFresh": true,
+      "sourceMutationObserved": false,
+      "targetMtimeTouch": {
+        "path": "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5CatalogFixtures.idr",
+        "oldMtimeNs": 1788925330458013681,
+        "newMtimeNs": 1788925335694853000,
+        "authority": "L2R5 task BUILD SEED; target only, dependency rebuilds acknowledged"
+      },
+      "heavyLockAcquired": false,
+      "heavyLockEvents": [],
+      "separateCompilerObservations": []
+    },
+    {
+      "effectiveUnit": "C10",
+      "effectiveAttempt": 1,
+      "invocation": "C10-1",
+      "unit": "C10",
+      "attempt": 1,
+      "target": "research-tests/O6-L2R5-Sources/DGamma/L2R5CatalogFixtures.idr",
+      "startUTC": "2026-09-09T03:43:30.218890+00:00",
+      "endUTC": "2026-09-09T03:43:32.228356+00:00",
+      "exit": 0,
+      "fresh": true,
+      "passed": true,
+      "interrupted": false,
+      "sourceHash": "b0ca9efbcc0382927834ffaf2f237a1a9a39efb97cad121a6bdcd7c813b34465",
+      "matchingSourceCommits": [
+        "8c603e3bc1138f020f544c4a9f09737278fd5d54"
+      ],
+      "command": [
+        "idris2",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/src",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources",
+        "--check",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5CatalogFixtures.idr"
+      ],
+      "seconds": 2.009476374834776,
+      "maxSampleRSSKiB": 363568,
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "record": "C10-1.json",
+      "log": "C10-1.log",
+      "source": "C10-1.source",
+      "bundleSources": [],
+      "bundleFresh": true,
+      "sourceMutationObserved": false,
+      "targetMtimeTouch": {
+        "path": "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5CatalogFixtures.idr",
+        "oldMtimeNs": 1788925405123252073,
+        "newMtimeNs": 1788925410218632000,
+        "authority": "L2R5 task BUILD SEED; target only, dependency rebuilds acknowledged"
+      },
+      "heavyLockAcquired": false,
+      "heavyLockEvents": [],
+      "separateCompilerObservations": []
+    },
+    {
+      "effectiveUnit": "V10",
+      "effectiveAttempt": null,
+      "invocation": "V10",
+      "unit": "V10",
+      "attempt": null,
+      "target": "research-tests/O6-L2R5-Sources/DGamma/L2R5AnchorTransport.idr",
+      "startUTC": "2026-09-09T03:58:33.620812+00:00",
+      "endUTC": "2026-09-09T03:58:34.208785+00:00",
+      "exit": 0,
+      "fresh": true,
+      "passed": true,
+      "interrupted": false,
+      "sourceHash": "130fd6d5ca2701cb8cded52549b19a39fe0aac4060b5b0b702f0f92fdebef231",
+      "matchingSourceCommits": [
+        "e9abbd958dd0cf5bd55b428522551c81c869060f"
+      ],
+      "command": [
+        "idris2",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/src",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources",
+        "--check",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5AnchorTransport.idr"
+      ],
+      "seconds": 0.587972791865468,
+      "maxSampleRSSKiB": 194400,
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "record": "V10.json",
+      "log": "V10.log",
+      "source": "V10.source",
+      "bundleSources": [],
+      "bundleFresh": true,
+      "sourceMutationObserved": false,
+      "targetMtimeTouch": {
+        "path": "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5AnchorTransport.idr",
+        "oldMtimeNs": 1788923298505362000,
+        "newMtimeNs": 1788926313620563000,
+        "authority": "L2R5 task BUILD SEED; target only, dependency rebuilds acknowledged"
+      },
+      "heavyLockAcquired": false,
+      "heavyLockEvents": [],
+      "separateCompilerObservations": [
+        {
+          "pid": 86867,
+          "ppid": 86864,
+          "rssKiB": 10959280,
+          "command": "/opt/homebrew/opt/chezscheme/bin/chez --program /opt/homebrew/Cellar/idris2/0.8.0_2/libexec/bin/idris2_app/idris2.so --source-dir /Users/vyacheslavshebanov/Work/dgamma/src --source-dir /Users/vyacheslavshebanov/Work/dgamma/research --check /Users/vyacheslavshebanov/Work/dgamma/research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+          "classification": "main-lane compiler (separate worktree)"
+        }
+      ]
+    },
+    {
+      "effectiveUnit": "V11",
+      "effectiveAttempt": null,
+      "invocation": "V11",
+      "unit": "V11",
+      "attempt": null,
+      "target": "research-tests/O6-L2R5-Sources/DGamma/L2R5CurrentCut.idr",
+      "startUTC": "2026-09-09T03:58:34.287194+00:00",
+      "endUTC": "2026-09-09T03:58:35.160171+00:00",
+      "exit": 0,
+      "fresh": true,
+      "passed": true,
+      "interrupted": false,
+      "sourceHash": "05ce79fef1c7d8542864540d321f0d9ab3d65fbe814215f0e3140135191ba896",
+      "matchingSourceCommits": [
+        "cb60b7d7185c20b2fc8f2eb69cf31462e0db283b"
+      ],
+      "command": [
+        "idris2",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/src",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources",
+        "--check",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5CurrentCut.idr"
+      ],
+      "seconds": 0.8729793326929212,
+      "maxSampleRSSKiB": 269584,
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "record": "V11.json",
+      "log": "V11.log",
+      "source": "V11.source",
+      "bundleSources": [],
+      "bundleFresh": true,
+      "sourceMutationObserved": false,
+      "targetMtimeTouch": {
+        "path": "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5CurrentCut.idr",
+        "oldMtimeNs": 1788923430650154000,
+        "newMtimeNs": 1788926314286932000,
+        "authority": "L2R5 task BUILD SEED; target only, dependency rebuilds acknowledged"
+      },
+      "heavyLockAcquired": false,
+      "heavyLockEvents": [],
+      "separateCompilerObservations": [
+        {
+          "pid": 86867,
+          "ppid": 86864,
+          "rssKiB": 10959280,
+          "command": "/opt/homebrew/opt/chezscheme/bin/chez --program /opt/homebrew/Cellar/idris2/0.8.0_2/libexec/bin/idris2_app/idris2.so --source-dir /Users/vyacheslavshebanov/Work/dgamma/src --source-dir /Users/vyacheslavshebanov/Work/dgamma/research --check /Users/vyacheslavshebanov/Work/dgamma/research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+          "classification": "main-lane compiler (separate worktree)"
+        }
+      ]
+    },
+    {
+      "effectiveUnit": "V12",
+      "effectiveAttempt": null,
+      "invocation": "V12",
+      "unit": "V12",
+      "attempt": null,
+      "target": "research-tests/O6-L2R5-Sources/DGamma/L2R5Extensional.idr",
+      "startUTC": "2026-09-09T03:58:35.238163+00:00",
+      "endUTC": "2026-09-09T03:58:35.823473+00:00",
+      "exit": 0,
+      "fresh": true,
+      "passed": true,
+      "interrupted": false,
+      "sourceHash": "e88e0d04edb4d5de68c5b2768f720357e511aa46ae0a7951b0b2c5137dbad77e",
+      "matchingSourceCommits": [
+        "c74c1260abd54682f8383285c9b28c435859d574"
+      ],
+      "command": [
+        "idris2",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/src",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources",
+        "--check",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5Extensional.idr"
+      ],
+      "seconds": 0.5853091250173748,
+      "maxSampleRSSKiB": 198464,
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "record": "V12.json",
+      "log": "V12.log",
+      "source": "V12.source",
+      "bundleSources": [],
+      "bundleFresh": true,
+      "sourceMutationObserved": false,
+      "targetMtimeTouch": {
+        "path": "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5Extensional.idr",
+        "oldMtimeNs": 1788923922852344000,
+        "newMtimeNs": 1788926315237882000,
+        "authority": "L2R5 task BUILD SEED; target only, dependency rebuilds acknowledged"
+      },
+      "heavyLockAcquired": false,
+      "heavyLockEvents": [],
+      "separateCompilerObservations": [
+        {
+          "pid": 86867,
+          "ppid": 86864,
+          "rssKiB": 10959280,
+          "command": "/opt/homebrew/opt/chezscheme/bin/chez --program /opt/homebrew/Cellar/idris2/0.8.0_2/libexec/bin/idris2_app/idris2.so --source-dir /Users/vyacheslavshebanov/Work/dgamma/src --source-dir /Users/vyacheslavshebanov/Work/dgamma/research --check /Users/vyacheslavshebanov/Work/dgamma/research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+          "classification": "main-lane compiler (separate worktree)"
+        }
+      ]
+    },
+    {
+      "effectiveUnit": "V13",
+      "effectiveAttempt": null,
+      "invocation": "V13",
+      "unit": "V13",
+      "attempt": null,
+      "target": "research-tests/O6-L2R5-Sources/DGamma/L2R5ProviderObservation.idr",
+      "startUTC": "2026-09-09T03:58:35.906142+00:00",
+      "endUTC": "2026-09-09T03:58:36.773154+00:00",
+      "exit": 0,
+      "fresh": true,
+      "passed": true,
+      "interrupted": false,
+      "sourceHash": "3e8d4fcb6a9c783832169672f6800808e145a29ea505e014b9146e1e6bba4615",
+      "matchingSourceCommits": [
+        "76a0b126417682d40d62f3ce00b0dff0bd439bd9"
+      ],
+      "command": [
+        "idris2",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/src",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources",
+        "--check",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5ProviderObservation.idr"
+      ],
+      "seconds": 0.8670142907649279,
+      "maxSampleRSSKiB": 280400,
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "record": "V13.json",
+      "log": "V13.log",
+      "source": "V13.source",
+      "bundleSources": [],
+      "bundleFresh": true,
+      "sourceMutationObserved": false,
+      "targetMtimeTouch": {
+        "path": "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5ProviderObservation.idr",
+        "oldMtimeNs": 1788924835050375000,
+        "newMtimeNs": 1788926315905876000,
+        "authority": "L2R5 task BUILD SEED; target only, dependency rebuilds acknowledged"
+      },
+      "heavyLockAcquired": false,
+      "heavyLockEvents": [],
+      "separateCompilerObservations": [
+        {
+          "pid": 86867,
+          "ppid": 86864,
+          "rssKiB": 10959280,
+          "command": "/opt/homebrew/opt/chezscheme/bin/chez --program /opt/homebrew/Cellar/idris2/0.8.0_2/libexec/bin/idris2_app/idris2.so --source-dir /Users/vyacheslavshebanov/Work/dgamma/src --source-dir /Users/vyacheslavshebanov/Work/dgamma/research --check /Users/vyacheslavshebanov/Work/dgamma/research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+          "classification": "main-lane compiler (separate worktree)"
+        }
+      ]
+    },
+    {
+      "effectiveUnit": "V14",
+      "effectiveAttempt": null,
+      "invocation": "V14",
+      "unit": "V14",
+      "attempt": null,
+      "target": "research-tests/O6-L2R5-Sources/DGamma/L2R5RetirementFrame.idr",
+      "startUTC": "2026-09-09T03:58:36.851604+00:00",
+      "endUTC": "2026-09-09T03:58:37.720165+00:00",
+      "exit": 0,
+      "fresh": true,
+      "passed": true,
+      "interrupted": false,
+      "sourceHash": "07f35852f9e30f2375d65ba9d9255e142dc489dcd84bb2160a7958a1af7a429c",
+      "matchingSourceCommits": [
+        "85cd102d0c9b862e39ba8fb3cebc69fc51a2e641"
+      ],
+      "command": [
+        "idris2",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/src",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources",
+        "--check",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5RetirementFrame.idr"
+      ],
+      "seconds": 0.8685598750598729,
+      "maxSampleRSSKiB": 270144,
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "record": "V14.json",
+      "log": "V14.log",
+      "source": "V14.source",
+      "bundleSources": [],
+      "bundleFresh": true,
+      "sourceMutationObserved": false,
+      "targetMtimeTouch": {
+        "path": "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5RetirementFrame.idr",
+        "oldMtimeNs": 1788924598528631000,
+        "newMtimeNs": 1788926316851310000,
+        "authority": "L2R5 task BUILD SEED; target only, dependency rebuilds acknowledged"
+      },
+      "heavyLockAcquired": false,
+      "heavyLockEvents": [],
+      "separateCompilerObservations": [
+        {
+          "pid": 86867,
+          "ppid": 86864,
+          "rssKiB": 10959280,
+          "command": "/opt/homebrew/opt/chezscheme/bin/chez --program /opt/homebrew/Cellar/idris2/0.8.0_2/libexec/bin/idris2_app/idris2.so --source-dir /Users/vyacheslavshebanov/Work/dgamma/src --source-dir /Users/vyacheslavshebanov/Work/dgamma/research --check /Users/vyacheslavshebanov/Work/dgamma/research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+          "classification": "main-lane compiler (separate worktree)"
+        }
+      ]
+    },
+    {
+      "effectiveUnit": "V15",
+      "effectiveAttempt": null,
+      "invocation": "V15",
+      "unit": "V15",
+      "attempt": null,
+      "target": "research-tests/O6-L2R5-Sources/DGamma/L2R5RootCatalog.idr",
+      "startUTC": "2026-09-09T03:58:37.800646+00:00",
+      "endUTC": "2026-09-09T03:58:40.105364+00:00",
+      "exit": 0,
+      "fresh": true,
+      "passed": true,
+      "interrupted": false,
+      "sourceHash": "cf7041dc2ed073ee29cd489d8e46792ab5bc987ee7c5941eff87c2b6f9ea0ea6",
+      "matchingSourceCommits": [
+        "ef9b9f9b5991862ce4cf84515423b14d3ebcd616"
+      ],
+      "command": [
+        "idris2",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/src",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources",
+        "--check",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5RootCatalog.idr"
+      ],
+      "seconds": 2.304706832859665,
+      "maxSampleRSSKiB": 270288,
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "record": "V15.json",
+      "log": "V15.log",
+      "source": "V15.source",
+      "bundleSources": [],
+      "bundleFresh": true,
+      "sourceMutationObserved": false,
+      "targetMtimeTouch": {
+        "path": "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5RootCatalog.idr",
+        "oldMtimeNs": 1788925279589402000,
+        "newMtimeNs": 1788926317800270000,
+        "authority": "L2R5 task BUILD SEED; target only, dependency rebuilds acknowledged"
+      },
+      "heavyLockAcquired": false,
+      "heavyLockEvents": [],
+      "separateCompilerObservations": [
+        {
+          "pid": 86867,
+          "ppid": 86864,
+          "rssKiB": 10959280,
+          "command": "/opt/homebrew/opt/chezscheme/bin/chez --program /opt/homebrew/Cellar/idris2/0.8.0_2/libexec/bin/idris2_app/idris2.so --source-dir /Users/vyacheslavshebanov/Work/dgamma/src --source-dir /Users/vyacheslavshebanov/Work/dgamma/research --check /Users/vyacheslavshebanov/Work/dgamma/research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+          "classification": "main-lane compiler (separate worktree)"
+        }
+      ]
+    },
+    {
+      "effectiveUnit": "V16",
+      "effectiveAttempt": null,
+      "invocation": "V16",
+      "unit": "V16",
+      "attempt": null,
+      "target": "research-tests/O6-L2R5-Sources/DGamma/L2R5CatalogFixtures.idr",
+      "startUTC": "2026-09-09T03:58:40.185219+00:00",
+      "endUTC": "2026-09-09T03:58:42.222334+00:00",
+      "exit": 0,
+      "fresh": true,
+      "passed": true,
+      "interrupted": false,
+      "sourceHash": "b0ca9efbcc0382927834ffaf2f237a1a9a39efb97cad121a6bdcd7c813b34465",
+      "matchingSourceCommits": [
+        "8c603e3bc1138f020f544c4a9f09737278fd5d54"
+      ],
+      "command": [
+        "idris2",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/src",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources",
+        "--check",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5CatalogFixtures.idr"
+      ],
+      "seconds": 2.037102083209902,
+      "maxSampleRSSKiB": 325936,
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "record": "V16.json",
+      "log": "V16.log",
+      "source": "V16.source",
+      "bundleSources": [],
+      "bundleFresh": true,
+      "sourceMutationObserved": false,
+      "targetMtimeTouch": {
+        "path": "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5CatalogFixtures.idr",
+        "oldMtimeNs": 1788925410218632000,
+        "newMtimeNs": 1788926320184933000,
+        "authority": "L2R5 task BUILD SEED; target only, dependency rebuilds acknowledged"
+      },
+      "heavyLockAcquired": false,
+      "heavyLockEvents": [],
+      "separateCompilerObservations": [
+        {
+          "pid": 86867,
+          "ppid": 86864,
+          "rssKiB": 10959280,
+          "command": "/opt/homebrew/opt/chezscheme/bin/chez --program /opt/homebrew/Cellar/idris2/0.8.0_2/libexec/bin/idris2_app/idris2.so --source-dir /Users/vyacheslavshebanov/Work/dgamma/src --source-dir /Users/vyacheslavshebanov/Work/dgamma/research --check /Users/vyacheslavshebanov/Work/dgamma/research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+          "classification": "main-lane compiler (separate worktree)"
+        }
+      ]
+    },
+    {
+      "effectiveUnit": "V17",
+      "effectiveAttempt": null,
+      "invocation": "V17",
+      "unit": "V17",
+      "attempt": null,
+      "target": "research-tests/O6-L2R5-Sources/DGamma/L2R5ExtensionalFixtures.idr",
+      "startUTC": "2026-09-09T03:58:42.301317+00:00",
+      "endUTC": "2026-09-09T03:58:43.456377+00:00",
+      "exit": 0,
+      "fresh": true,
+      "passed": true,
+      "interrupted": false,
+      "sourceHash": "2294f6e3637dc3fe2ca1cf05ab9359ef16528405cb47d506683d60f2236ae193",
+      "matchingSourceCommits": [
+        "4ab704a96c89bdc84f9371c0219d971e4507b0ed"
+      ],
+      "command": [
+        "idris2",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/src",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources",
+        "--check",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5ExtensionalFixtures.idr"
+      ],
+      "seconds": 1.1550563341006637,
+      "maxSampleRSSKiB": 623744,
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "record": "V17.json",
+      "log": "V17.log",
+      "source": "V17.source",
+      "bundleSources": [],
+      "bundleFresh": true,
+      "sourceMutationObserved": false,
+      "targetMtimeTouch": {
+        "path": "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5ExtensionalFixtures.idr",
+        "oldMtimeNs": 1788924441102489000,
+        "newMtimeNs": 1788926322300268000,
+        "authority": "L2R5 task BUILD SEED; target only, dependency rebuilds acknowledged"
+      },
+      "heavyLockAcquired": false,
+      "heavyLockEvents": [],
+      "separateCompilerObservations": [
+        {
+          "pid": 86867,
+          "ppid": 86864,
+          "rssKiB": 10959280,
+          "command": "/opt/homebrew/opt/chezscheme/bin/chez --program /opt/homebrew/Cellar/idris2/0.8.0_2/libexec/bin/idris2_app/idris2.so --source-dir /Users/vyacheslavshebanov/Work/dgamma/src --source-dir /Users/vyacheslavshebanov/Work/dgamma/research --check /Users/vyacheslavshebanov/Work/dgamma/research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+          "classification": "main-lane compiler (separate worktree)"
+        }
+      ]
+    },
+    {
+      "effectiveUnit": "V18",
+      "effectiveAttempt": null,
+      "invocation": "V18",
+      "unit": "V18",
+      "attempt": null,
+      "target": "research-tests/O6-L2R5-Sources/DGamma/L2R5ExtensionalRetire.idr",
+      "startUTC": "2026-09-09T03:58:43.535006+00:00",
+      "endUTC": "2026-09-09T03:58:44.396026+00:00",
+      "exit": 0,
+      "fresh": true,
+      "passed": true,
+      "interrupted": false,
+      "sourceHash": "4b6f3a1628784c7ad7b62da4b4deec18d21aedddfd0189d7a4581f320e26855c",
+      "matchingSourceCommits": [
+        "fc9ac87f6834fc7703edbf1707a085df858beca9"
+      ],
+      "command": [
+        "idris2",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/src",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources",
+        "--check",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5ExtensionalRetire.idr"
+      ],
+      "seconds": 0.8610158329829574,
+      "maxSampleRSSKiB": 286432,
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "record": "V18.json",
+      "log": "V18.log",
+      "source": "V18.source",
+      "bundleSources": [],
+      "bundleFresh": true,
+      "sourceMutationObserved": false,
+      "targetMtimeTouch": {
+        "path": "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5ExtensionalRetire.idr",
+        "oldMtimeNs": 1788924374688284000,
+        "newMtimeNs": 1788926323534656000,
+        "authority": "L2R5 task BUILD SEED; target only, dependency rebuilds acknowledged"
+      },
+      "heavyLockAcquired": false,
+      "heavyLockEvents": [],
+      "separateCompilerObservations": [
+        {
+          "pid": 86867,
+          "ppid": 86864,
+          "rssKiB": 10959280,
+          "command": "/opt/homebrew/opt/chezscheme/bin/chez --program /opt/homebrew/Cellar/idris2/0.8.0_2/libexec/bin/idris2_app/idris2.so --source-dir /Users/vyacheslavshebanov/Work/dgamma/src --source-dir /Users/vyacheslavshebanov/Work/dgamma/research --check /Users/vyacheslavshebanov/Work/dgamma/research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+          "classification": "main-lane compiler (separate worktree)"
+        }
+      ]
+    },
+    {
+      "effectiveUnit": "V19",
+      "effectiveAttempt": null,
+      "invocation": "V19",
+      "unit": "V19",
+      "attempt": null,
+      "target": "research-tests/O6-L2R5-Sources/DGamma/L2R5InsertObserved.idr",
+      "startUTC": "2026-09-09T03:58:44.471877+00:00",
+      "endUTC": "2026-09-09T03:58:45.050390+00:00",
+      "exit": 0,
+      "fresh": true,
+      "passed": true,
+      "interrupted": false,
+      "sourceHash": "7dc427459320a6dea8d33e7112c6008c81a142575b74f8c4d5f6075987c62a23",
+      "matchingSourceCommits": [
+        "71f6de67515d6779be9f77c317e29418d29d911a"
+      ],
+      "command": [
+        "idris2",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/src",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources",
+        "--check",
+        "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5InsertObserved.idr"
+      ],
+      "seconds": 0.5785016249865294,
+      "maxSampleRSSKiB": 207136,
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "record": "V19.json",
+      "log": "V19.log",
+      "source": "V19.source",
+      "bundleSources": [],
+      "bundleFresh": true,
+      "sourceMutationObserved": false,
+      "targetMtimeTouch": {
+        "path": "/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R5-Sources/DGamma/L2R5InsertObserved.idr",
+        "oldMtimeNs": 1788924128645079000,
+        "newMtimeNs": 1788926324470707000,
+        "authority": "L2R5 task BUILD SEED; target only, dependency rebuilds acknowledged"
+      },
+      "heavyLockAcquired": false,
+      "heavyLockEvents": [],
+      "separateCompilerObservations": [
+        {
+          "pid": 86867,
+          "ppid": 86864,
+          "rssKiB": 10959280,
+          "command": "/opt/homebrew/opt/chezscheme/bin/chez --program /opt/homebrew/Cellar/idris2/0.8.0_2/libexec/bin/idris2_app/idris2.so --source-dir /Users/vyacheslavshebanov/Work/dgamma/src --source-dir /Users/vyacheslavshebanov/Work/dgamma/research --check /Users/vyacheslavshebanov/Work/dgamma/research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+          "classification": "main-lane compiler (separate worktree)"
+        }
+      ]
+    }
+  ]
+}
