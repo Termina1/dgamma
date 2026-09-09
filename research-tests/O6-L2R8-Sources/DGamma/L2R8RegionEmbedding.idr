@@ -42,3 +42,22 @@ extendOccurrence region afterRegion occurrence = MkLocatedActionOccurrence
   (trans (sym (appendTransitionsAssociative (beforeActionOccurrence occurrence)
     (MoreTransitions (locatedTransition occurrence) (afterActionOccurrence occurrence)) afterRegion))
     (cong (\trace => appendTransitions trace afterRegion) (actionOccurrenceDecomposition occurrence)))
+
+||| Full region-to-global observation contract: same physical action source,
+||| exact offset + local ordinal, and source-aware root-control classification
+||| transported too. The embedded occurrence is not just a matching name.
+public export
+record RegionEmbedding
+  {name, key, world, error : Type} {value : key -> Type}
+  {first, finalState, regionStart, regionEnd : SystemState name key value world error}
+  {action : Action name key value world error}
+  {region : Transitions regionStart regionEnd}
+  (0 original : LocatedActionOccurrence action region)
+  (global : Transitions first finalState) (offset : Nat) where
+  constructor MkRegionEmbedding
+  embeddedOccurrence : LocatedActionOccurrence action global
+  0 embeddedOrdinal : locatedActionOrdinal embeddedOccurrence = offset + locatedActionOrdinal original
+  0 embeddedSourceSame : actionBeforeState embeddedOccurrence = actionBeforeState original
+  0 embeddedRootKind : (nameEq : DecEq name) ->
+    RootOrchestrationStep nameEq (locatedTransition original) ->
+    RootOrchestrationStep nameEq (locatedTransition embeddedOccurrence)
