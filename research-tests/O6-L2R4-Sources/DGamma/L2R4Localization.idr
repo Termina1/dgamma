@@ -90,3 +90,20 @@ rootHeadOrdinal {first} {middle} root component step rest inserted later Z upper
 rootHeadOrdinal root component step rest inserted later (S n) upper =
   rootInsertionAfterPrefix (MoreTransitions step NoTransitions) rest
     (later n (fromLteSucc upper))
+
+||| Induction on the actual ordered forced bundle: EVERY in-bounds ordinal
+||| yields an actual checked root OInsert occurrence with producer-owned count
+||| equation. No action-word or selected-catalog restriction is used.
+export
+0 orderedBundleRootAt :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {selected : name} ->
+  {first, coreEnd, bundleStart, finalState : SystemState name key value world error} ->
+  {core : Transitions first coreEnd} -> {priorRoots : List name} ->
+  {bundle : Transitions bundleStart finalState} ->
+  OrderedForcedRootBundle nameEq selected core priorRoots bundle ->
+  (ordinal : Nat) -> LT ordinal (transitionCount bundle) ->
+  RootInsertionAt name key world error value bundle ordinal
+orderedBundleRootAt ForcedBundleEnd ordinal upper = absurd upper
+orderedBundleRootAt (ForcedBundleStep root component step rest inserted forced tail) ordinal upper =
+  rootHeadOrdinal root component step rest inserted (orderedBundleRootAt tail) ordinal upper
