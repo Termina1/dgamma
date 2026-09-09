@@ -107,3 +107,30 @@ rootCatalogTailComplete offset (LAdvance actor) later ordinal wanted member = me
 rootCatalogTailComplete offset (LDivert actor) later ordinal wanted member = member
 rootCatalogTailComplete offset (LUnload actor) later ordinal wanted member = member
 rootCatalogTailComplete offset (LLeave actor) later ordinal wanted member = member
+
+||| One ordinal elimination extends tail lookup-completeness to a native cons
+||| trace. Count equalities transport offsets rather than unifying indices.
+export
+0 rootCatalogConsComplete :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (step : Transition first middle) -> (rest : Transitions middle finalState) ->
+  (later : AvailabilityTrace name key world error value rest) -> (offset : Nat) ->
+  (0 tail : (ordinal : Nat) -> (root : name) -> (component : Component key value world error) ->
+    nativeActionAt rest ordinal = Just (OInsert root Root component) ->
+    RootCatalogContains name key world error value (scanRootCatalog (S offset) later) (S offset + ordinal) (OInsert root Root component)) ->
+  (ordinal : Nat) -> (root : name) -> (component : Component key value world error) ->
+  nativeActionAt (MoreTransitions step rest) ordinal = Just (OInsert root Root component) ->
+  RootCatalogContains name key world error value
+    (rootCatalogStep offset (transitionAction step) (scanRootCatalog (S offset) later)) (offset + ordinal) (OInsert root Root component)
+rootCatalogConsComplete {name} {key} {world} {error} {value} step rest later offset tail Z root component exact =
+  replace {p = \position => RootCatalogContains name key world error value
+    (rootCatalogStep offset (transitionAction step) (scanRootCatalog (S offset) later)) position (OInsert root Root component)}
+    (sym (plusZeroRightNeutral offset))
+    (rootCatalogHeadComplete offset (transitionAction step) (scanRootCatalog (S offset) later) root component (justInjective exact))
+rootCatalogConsComplete {name} {key} {world} {error} {value} step rest later offset tail (S n) root component exact =
+  replace {p = \position => RootCatalogContains name key world error value
+    (rootCatalogStep offset (transitionAction step) (scanRootCatalog (S offset) later)) position (OInsert root Root component)}
+    (plusSuccRightSucc offset n)
+    (rootCatalogTailComplete offset (transitionAction step) (scanRootCatalog (S offset) later)
+      (S offset + n) (OInsert root Root component) (tail n root component exact))
