@@ -166,3 +166,42 @@ advanceYieldAtMatch {name} {key} {world} {error} {value}
   nameEq keyEq child parent actor childFiber actorFiber ambient source frame distinct
   step rest accumulator view lifeEquation capability capEquation localAfter undo outcomeEquation True matchEquation =
   advanceYieldAtRest nameEq keyEq child parent actor childFiber actorFiber ambient source frame distinct step rest accumulator view lifeEquation capability capEquation localAfter undo outcomeEquation matchEquation
+
+||| Empty-program native Finish/Divert observation, with the Bool explicitly
+||| supplied at its own equation. No iterator outcome or late edge is assumed.
+export
+0 advanceEmptyAtMatch :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (child, parent, actor : name) ->
+  (childFiber, actorFiber : Fiber name key value world error) ->
+  (ambient : world) -> (source : Registry name key value world error) ->
+  (frame : RetirementProviderFrame name key world error value nameEq keyEq child parent actor childFiber actorFiber source) ->
+  (0 distinct : Not (child = actor)) ->
+  (accumulator : (LocalState key value world (componentProvisions (fiberComponent actorFiber))) -> (LocalState key value world (componentProvisions (fiberComponent actorFiber)))) -> (view : View name (dependencies (componentDependencies (fiberComponent actorFiber)))) ->
+  (0 lifeEquation : fiberLifecycle actorFiber = Reloading [] accumulator view) ->
+  (seen : Bool) -> (0 matchEquation : targetMatches @{nameEq} (targetFiber {name} {key} {value} {world} {error} @{nameEq} @{keyEq} actorFiber source) view = seen) ->
+  RetirementAdvanceEquation nameEq keyEq child actor childFiber ambient source
+advanceEmptyAtMatch {name} {key} {world} {error} {value}
+  nameEq keyEq child parent actor childFiber actorFiber ambient source frame distinct
+  accumulator view lifeEquation False matchEquation =
+  rewrite lookupReplaceOther {key = name} {value = FiberAt name key value world error} @{nameEq}
+    actor child (\same => distinct (sym same)) (retireFiber childFiber) source in
+  rewrite frameActorFound frame in
+  rewrite lifeEquation in
+  rewrite retirementTargetSame nameEq keyEq child parent actor childFiber actorFiber source frame in
+  rewrite matchEquation in
+  cong (\snapshot => Just (LDivertTag, snapshot))
+    (retirementUpdateSnapshot nameEq child actor childFiber
+      (setFiberLifecycle actorFiber (Unloading accumulator view Nothing)) ambient source distinct)
+advanceEmptyAtMatch {name} {key} {world} {error} {value}
+  nameEq keyEq child parent actor childFiber actorFiber ambient source frame distinct
+  accumulator view lifeEquation True matchEquation =
+  rewrite lookupReplaceOther {key = name} {value = FiberAt name key value world error} @{nameEq}
+    actor child (\same => distinct (sym same)) (retireFiber childFiber) source in
+  rewrite frameActorFound frame in
+  rewrite lifeEquation in
+  rewrite retirementTargetSame nameEq keyEq child parent actor childFiber actorFiber source frame in
+  rewrite matchEquation in
+  cong (\snapshot => Just (LFinishTag, snapshot))
+    (retirementUpdateSnapshot nameEq child actor childFiber
+      (setFiberLifecycle actorFiber (Active accumulator view)) ambient source distinct)
