@@ -55,3 +55,29 @@ resolveRetirementEntries {name} {key} {world} {error} {value} nameEq keyEq (want
     (providerOf {name} {key} {value} {world} {error} @{nameEq} @{keyEq} wanted (MkCoeffectContext entries unique)) Refl
     (sym (providerRetirementEntries nameEq keyEq wanted child entries fiber found))
     (resolveRetirementEntries nameEq keyEq deps child fiber entries unique found)
+
+||| GENERAL native plus observed resolver equality from an ACTUAL
+||| RetirementProviderFrame. No resolver equality/changed=False oracle is an
+||| input; only the existing authenticated lookup fields feed D11's fold.
+||| This does NOT yet produce a lifecycle checked edge or its snapshot.
+export
+0 retirementFrameResolverSame :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (child, parent, actor : name) ->
+  (childFiber, actorFiber : Fiber name key value world error) ->
+  (source : Registry name key value world error) ->
+  (frame : RetirementProviderFrame name key world error value nameEq keyEq child parent actor childFiber actorFiber source) ->
+  (resolveView {name} {key} {value} {world} {error} @{nameEq} @{keyEq}
+      (dependencies (componentDependencies (fiberComponent actorFiber))) source =
+    resolveView {name} {key} {value} {world} {error} @{nameEq} @{keyEq}
+      (dependencies (componentDependencies (fiberComponent actorFiber)))
+      (replaceBinding @{nameEq} child (retireFiber childFiber) source),
+   resolverBefore frame = resolverAfter frame)
+retirementFrameResolverSame nameEq keyEq child parent actor childFiber actorFiber (MkCoeffectContext entries unique) frame =
+  (resolveRetirementEntries nameEq keyEq (dependencies (componentDependencies (fiberComponent actorFiber)))
+    child childFiber entries unique (frameChildFound frame),
+   trans (sym (resolverBeforeEquation frame))
+     (trans
+       (resolveRetirementEntries nameEq keyEq (dependencies (componentDependencies (fiberComponent actorFiber)))
+         child childFiber entries unique (frameChildFound frame))
+       (resolverAfterEquation frame)))
