@@ -1,0 +1,40 @@
+{
+  "status": "R196 exact execution proposal; gate pending; not applied",
+  "baselineCommit": "58f88c63ea70bca97bc974648f8e4939055fffd7",
+  "start": "2026-09-09T03:44:35Z",
+  "timeout": "2026-09-09T07:44:35Z",
+  "items": [
+    {
+      "unit": "A1",
+      "path": "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+      "beforeSHA256": "f77f66a3e3a62f2ff757709f08d1488a25d54d425af74dcec4c2c0f0ed28c6fd",
+      "afterSHA256": "a2175a169f8fdf6b4ad0d19ace2b87403c29cfcb0ddb09aa9fdb5d7eeba371b7",
+      "description": "One new private erased helper, explicit implicit indices; no export changes",
+      "diff": "--- a/research/DGamma/CP5ConfluenceLocalDiamondSpike.idr\n+++ b/research/DGamma/CP5ConfluenceLocalDiamondSpike.idr\n@@ -27294,6 +27294,40 @@\n     (adjacentOriginGeneratedCoherent origin)\n     (adjacentOriginGeneratedOrdinal origin)\n \n+||| Root ordinal preservation for the same adjacent action-origin producer and map.\n+private\n+0 adjacentOriginRootOrdinal :\n+  {name, key, world, error : Type} -> {value : key -> Type} ->\n+  {initial, pairFirst, sourceMiddle, sourceSuffixFirst, sourceFinal,\n+    targetMiddle, targetSuffixFirst, targetFinal :\n+    SystemState name key value world error} ->\n+  {prefixTrace : Transitions initial pairFirst} ->\n+  {sourceFirst : Transition pairFirst sourceMiddle} ->\n+  {sourceSecond : Transition sourceMiddle sourceSuffixFirst} ->\n+  {sourceSuffix : Transitions sourceSuffixFirst sourceFinal} ->\n+  {targetFirst : Transition pairFirst targetMiddle} ->\n+  {targetSecond : Transition targetMiddle targetSuffixFirst} ->\n+  {targetSuffix : Transitions targetSuffixFirst targetFinal} ->\n+  (origin : AdjacentActionOriginProducer name key world error value prefixTrace\n+    sourceFirst sourceSecond sourceSuffix targetFirst targetSecond targetSuffix) ->\n+  {root : name} -> {component : Component key value world error} ->\n+  (occurrence : LocatedActionOccurrence (OInsert root Root component)\n+    (appendTransitions prefixTrace\n+      (MoreTransitions targetFirst (MoreTransitions targetSecond targetSuffix)))) ->\n+  (generationForward\n+    (replayGenerationRenaming (buildAdjacentActionRegistrationCorrespondence origin))\n+    (MkRegistrationGeneration root\n+      (locatedActionOrdinal\n+        (replayActionOrigin (buildAdjacentActionRegistrationCorrespondence origin)\n+          occurrence))) =\n+    MkRegistrationGeneration root (locatedActionOrdinal occurrence))\n+adjacentOriginRootOrdinal {prefixTrace} origin {root} occurrence =\n+  cong (MkRegistrationGeneration root)\n+    (adjacentOrdinalRelationForward (transitionCount prefixTrace)\n+      (locatedActionOrdinal occurrence)\n+      (locatedActionOrdinal (adjacentOriginOccurrence origin occurrence))\n+      (adjacentOriginOrdinalRelation origin occurrence))\n+\n private\n 0 adjacentActionRegistrationCorrespondence :\n   (name, key, world, error : Type) -> (value : key -> Type) ->\n"
+    },
+    {
+      "unit": "A2",
+      "path": "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+      "beforeSHA256": "a2175a169f8fdf6b4ad0d19ace2b87403c29cfcb0ddb09aa9fdb5d7eeba371b7",
+      "afterSHA256": "9f9216170853624cff30449696f2540da0ed48e0b42504533aa587cb70dfc037",
+      "description": "One exact erased field and fill at sole LocalDiamond construction site",
+      "diff": "--- a/research/DGamma/CP5ConfluenceLocalDiamondSpike.idr\n+++ b/research/DGamma/CP5ConfluenceLocalDiamondSpike.idr\n@@ -2874,6 +2874,13 @@\n       (locatedActionOrdinal occurrence)\n       (locatedActionOrdinal\n         (replayActionOrigin operationalOccurrenceCorrespondence occurrence))\n+  0 operationalRootOrdinalPreserved :\n+    {root : name} -> {component : Component key value world error} ->\n+    (occurrence : LocatedActionOccurrence (OInsert root Root component) swappedTrace) ->\n+    (generationForward (replayGenerationRenaming operationalOccurrenceCorrespondence)\n+      (MkRegistrationGeneration root\n+        (locatedActionOrdinal (replayActionOrigin operationalOccurrenceCorrespondence occurrence))) =\n+      MkRegistrationGeneration root (locatedActionOrdinal occurrence))\n \n ||| Producer-sealed recursive suffix replay.  Every node owns its exact checked\n ||| source and target heads and their relational/occurrence capital.  It carries\n@@ -27386,6 +27393,7 @@\n   MkAdjacentSwapOperationalOccurrenceFold Refl Refl\n     (buildAdjacentActionRegistrationCorrespondence origin)\n     (adjacentOriginOrdinalRelation origin)\n+    (adjacentOriginRootOrdinal origin)\n \n private\n 0 produceAdjacentOperationalOccurrenceFold :\n"
+    },
+    {
+      "unit": "A3",
+      "path": "research-tests/DGamma/R19SuffixFreeFullAdjacentCertificatePositive.idr",
+      "beforeSHA256": "aaf2eaa432d595ab4ad3970161f4c24a98da3eda0724302b3800f6da98e3379f",
+      "afterSHA256": "4f30ab58cae44bc89bf3c9cc940d3ab63bf1f0af99494cfd157d6db21617bd80",
+      "description": "Sole fixture constructor fill by disjoint action constructors; no new declaration",
+      "diff": "--- a/research-tests/DGamma/R19SuffixFreeFullAdjacentCertificatePositive.idr\n+++ b/research-tests/DGamma/R19SuffixFreeFullAdjacentCertificatePositive.idr\n@@ -339,6 +339,8 @@\n               (MoreTransitions left (MoreTransitions right NoTransitions))\n             fold = MkAdjacentSwapOperationalOccurrenceFold Refl Refl occurrence\n               (swapTwoAdvanceOrdinal leftAdvance leftIter rightAdvance rightIter)\n+              (\\rootOccurrence => case twoAdvanceOccurrenceAction\n+                leftAdvance rightAdvance rootOccurrence of Refl impossible)\n         in (diamond ** MkScopedFullSuffixFreeAdjacentCertificate finalState\n           NoTransitions trace Refl Refl\n           (sameExternalOrchestrationReflexiveSpike nameEq trace)\n"
+    },
+    {
+      "unit": "A4",
+      "path": "research/DGamma/CP5ConfluenceDeletionChainSpike.idr",
+      "beforeSHA256": "5ca243616ce40e65aaeed35318d96156e98370c4319859e63f18f7b178ffec88",
+      "afterSHA256": "f5ff6b0ee1faa5fc53fd9ef59aafefe95fa573689bba859d52251009542b5857",
+      "description": "One exact erased field and fill from SAME ordinal segments/witness",
+      "diff": "--- a/research/DGamma/CP5ConfluenceDeletionChainSpike.idr\n+++ b/research/DGamma/CP5ConfluenceDeletionChainSpike.idr\n@@ -4654,6 +4654,17 @@\n               registered episodeStartOrdinal episodeStartLive result\n               (generatedRegistrationActionOccurrence occurrence))))) =\n       registrationGeneration occurrence\n+  0 deletionProducerRootOrdinalPreserved :\n+    {root : name} -> {component : Component key value world error} ->\n+    (occurrence : LocatedActionOccurrence (OInsert root Root component)\n+      (survivingTrace result)) ->\n+    (generationForward deletionProducerGenerationRenaming\n+      (MkRegistrationGeneration root\n+        (locatedActionOrdinal\n+          (deletionWholeSourceOccurrence\n+            (deletionWholeOccurrenceOrigin nameEq keyEq original selected episode\n+              registered episodeStartOrdinal episodeStartLive result occurrence)))) =\n+      MkRegistrationGeneration root (locatedActionOrdinal occurrence))\n \n 0 deletionProducerActionOrigin :\n   {name, key, world, error : Type} -> {value : key -> Type} ->\n@@ -27501,6 +27512,11 @@\n     (scopedDeletionWholeTags name key world error value nameEq keyEq initial finalState global candidate result seals)\n     (scopedDeletionGeneratedOrdinal name key world error value nameEq keyEq initial finalState global candidate result segments\n       (scopedOrdinalSpineWitness (joinedOrdinalSpine (wholeOrdinalJoin segments))))\n+    (\\{root} => \\occurrence => cong (MkRegistrationGeneration root)\n+      (scopedDeletionWholeOrdinal name key world error value nameEq keyEq\n+        initial finalState global candidate result segments\n+        (scopedOrdinalSpineWitness (joinedOrdinalSpine (wholeOrdinalJoin segments)))\n+        occurrence))\n \n 0 scopedDeletionOperationalCapital :\n   (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->\n"
+    }
+  ]
+}
