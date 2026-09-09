@@ -1,0 +1,9 @@
+{
+  "path": "paper/cordis-paper.txt",
+  "bytes": 301314,
+  "lines": 3882,
+  "SHA256": "9b40364ab67f944406c6f40980cdc78dbba044d6eb3125aa1087f2ffdfc9a78b",
+  "readUTC": "2026-09-09T16:17:53.759436+00:00",
+  "method": "Eight consecutive read-tool outputs, 500 lines per output, offsets 1,501,1001,1501,2001,2501,3001,3501; final output reaches EOF. No content truncation occurred.",
+  "qualification": "Full extracted text read, including implementation and references. No PDF rendering/typography verification or new paper-wide correctness claim."
+}

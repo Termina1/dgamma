@@ -4083,4 +4083,6 @@ remain. Register synchronization as OPEN:
 `o20SynchronizeCanonicalHistoriesModulo` must inhabit the unchanged
 `o20CanonicalSynchronizationGoalModulo`; no source hole or new goal was added.
 C remains barred. Frozen census4=1/2/0/0/1. R201 audits/ledger/archive are under
-`research-tests/`; final172-check validation pending at D1.
+`research-tests/`; final172-check validation PASS at2026-09-09T16:54:11Z.
+A18 incoming live environments remain arbitrary explicit parameters, not
+produced prefix-scanned environments or an all-name cut.

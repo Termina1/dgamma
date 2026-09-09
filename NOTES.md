@@ -4455,3 +4455,57 @@ No cold build or inventory-wide fresh check is claimed. RSS guards remain52GiB
 for unchanged LocalDiamond,48GiB for all other main checks including the
 explicitly gated unchanged UniqueOrdinal; one own compiler, timestamp-only
 foreign overlaps, no lock paths or lane2 worktree operations.
+
+
+## Status
+
+### R201 D2 — final validation complete, checked PARTIAL
+
+Final native validation completed **2026-09-09T16:54:11Z**: ALL165 inherited
+applicable sources+6 new=171 source targets, plus seeded package=172 checks.
+Seven are exact expected-negative diagnostics AND symbols, not positive
+proofs.220 native invocations total,218 expected outcomes and2 rejected
+development snapshots (A5-1 signature text-generation error, A19-1 fixture
+append-order expectation error); neither rejection is laundered as PASS.
+The45 retained declarations are all guarded-committed, one per invocation:
+40 proof functions+5 indexed families/records, no source changes afterdf921f18.
+
+Compiler-free final independent authentication, frozen audit and resource audit
+PASS. Every source receipt and source commit is authenticated, as are the
+immutable172-check plan, source snapshots and native logs.21 evidence-contract
+and7 no-lock-policy adversarial tests PASS. Native lifetimes do not overlap in
+this lane; no source mutation, resource stop, unexpected prerequisite Building
+line, unknown-source PASS or staged file. One-second sampled peaks: LocalDiamond
+50,505,488KiB under52GiB; UniqueOrdinal and all other main checks at most
+44,795,856KiB under48GiB. These are samples, NOT OS high-water measurements;
+zero-sample short checks are explicitly labelled, not assigned a fictitious peak.
+
+Fully proved **supporting statements**, not completed headline producers:
+actual nonselected retained birth/stamp, actual original-scan registered-Unload
+exclusion, before/foreign-center/after physical Unload retention, and actual
+supported physical Insert attachment/stage with original position coordinates.
+A18's incoming `leftLive`/`rightLive` are arbitrary explicit parameters, NOT
+produced native prefix-scanned environments. Actual source/target states and
+physical ordinal counts are native; a whole scanner/history/cut is still needed.
+
+PARTIAL/OPEN: retained-closing join -> actual global vestigial selection coverage
+-> exact current-coordinate/all-name endpoint rebase -> D5; canonical activation
+position/order transport -> real root/unsupported/closing skips -> whole ordered
+occurrence history -> `o20SynchronizeCanonicalHistoriesModulo`. The modulo goal
+is unchanged. C0/ineligible; no convergence-body attempt and census remains
+**4=1/2/0/0/1**. No capital-insufficiency result or new-field manifest was produced.
+No production, five approved contract, selector, O17/O21 or lane-owned source edit.
+Production byte-identical to34b21c9, frozen hashes match their accepted anchors.
+
+Next: prove the retained birth-relative Unload in the selected-parent removed
+center case (or derive selected membership), then the actual global induction;
+for A, produce native prefix-scanned environments and canonical per-activation
+count/order transport, rather than treating original positions as canonical ones.
+Only after BOTH close may the convergence body be attempted. Independent owner
+review and append-only evidence publication/final gate follow; this paragraph is
+not a claim of independent acceptance.
+
+The complete extracted paper text was read in eight consecutive tool ranges to
+EOF (3882 lines,301314 bytes), SHA256
+9b40364ab67f944406c6f40980cdc78dbba044d6eb3125aa1087f2ffdfc9a78b.
+See `O6-R201-PAPER-READ.json`; this is not PDF typography verification.

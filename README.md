@@ -1038,8 +1038,8 @@ budget, proof attempt or full confluence completion is implied by this seal.
 ### R201 checked partial milestone
 
 45 new supporting declarations (6 new research sources), production API
-unchanged. Theorem73 remains open; no new holes/escapes. Full final171-source
-+seeded-package validation is pending at this source-freeze checkpoint.
+unchanged. Theorem73 remains open; no new holes/escapes. Final validation PASS: all165 inherited+6 new=171 sources and seeded
+package,172 checks including7 exact expected negatives. No cold-build claim.
 
 | Paper obligation | Idris correspondence | Status |
 |---|---|---|
