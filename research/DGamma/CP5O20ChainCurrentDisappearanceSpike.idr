@@ -226,3 +226,42 @@ o20NativeDiscardedOrigin name key world error value nameEq ordinal
           (o20NativeDiscardedOrigin name key world error value nameEq (S ordinal)
             (advanceSurvivingRegistrationIndex @{nameEq} ordinal child parent component (MkRegistrationIndexState live activations counts discarded))
             rest finalIndex laterEvents later generation member)
+
+||| Right-side present-vestigial disappearance uses the SECOND accepted
+||| ORIGINAL chronology, not an assumed swapped correspondence. Its exact
+||| native discarded membership yields the real right deleted classification.
+export
+0 o20RightCanonicalVestigialDisappears :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (generationEq : DecEq (RegistrationGeneration name)) ->
+  {leftFirst, leftFinal, rightFirst, rightFinal : SystemState name key value world error} ->
+  (left : Transitions leftFirst leftFinal) -> (right : Transitions rightFirst rightFinal) ->
+  (mapping : RegistrationGenerationBijection name) ->
+  (registrations : RegistrationCorrespondenceByGeneration nameEq mapping left right) ->
+  (capital : IndependentCanonicalSchedule name key world error value protocol nameEq keyEq right) ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq right ->
+  (selected : name) ->
+  (packet : VestigialEndpointGeneration name key world error value nameEq keyEq
+    (rightFinalGenerations registrations) (rightDeletedGenerations registrations) selected rightFinal) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected
+    (registry (canonicalFinal (canonicalSchedule capital))) = Nothing)
+o20RightCanonicalVestigialDisappears name key world error value protocol nameEq keyEq generationEq
+  left right mapping registrations capital unique selected packet =
+    case o20AcceptedActivationHistories nameEq left right mapping registrations of
+      (leftEvents ** (rightEvents ** (leftScan, rightScan, leftPositions, rightPositions, leftCounts, rightCounts))) =>
+        o20ReducedAbsenceSurvivesSorting nameEq keyEq right capital selected
+          (replace {p = \actor => lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor
+            (registry (reducedFinal (capitalReduction capital))) = Nothing}
+            (cong generationName (currentBirthStampExact
+              (acceptedRightCurrentBirth name key world error value nameEq left right mapping registrations selected
+                (vestigialGeneration packet) (vestigialGenerationCurrent packet))))
+            (o20ClassifiedChainAbsent name key world error value protocol nameEq keyEq generationEq
+              right (reducedTrace (capitalReduction capital)) (capitalPremises capital)
+              (reductionDeletionDerivation (capitalReduction capital)) (reducedClosingFree (capitalReduction capital)) unique
+              (vestigialGeneration packet)
+              (o20DiscardedOriginClassified name key world error value nameEq right (vestigialGeneration packet)
+                (o20NativeDiscardedOrigin name key world error value nameEq Z emptyRegistrationIndex right
+                  (rightFinalIndex registrations) rightEvents rightScan (vestigialGeneration packet)
+                  (vestigialBirthDiscarded packet)))))
