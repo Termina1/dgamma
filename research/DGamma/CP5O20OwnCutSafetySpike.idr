@@ -5,6 +5,7 @@ import DGamma.Coeffects
 import DGamma.Metatheory
 import DGamma.CP3
 import DGamma.CP5ConfluenceLocalDiamondSpike
+import DGamma.CP5ConfluenceCrossTraceSpike
 import DGamma.CP5ConfluenceCanonicalSortSpike
 import DGamma.CP5ConfluenceDeletionChainSpike
 import DGamma.CP5O19SurfaceSpike
@@ -236,3 +237,50 @@ o20ReferenceEarlierBeginObserved {name} {key} {world} {error} {value} {originalF
         (presentFiber rightSeen) (presentFound rightSeen)
         (o20ObserveActualBegin nameEq keyEq right (blockPreStart rightBlock) (blockStart rightBlock) (blockOpening rightBlock)))
       (presentFound leftSeen) (presentFound rightSeen) leftSupported rightSupported noPath
+
+||| The selected inversion's right Begin is safe at its OWN native left slot.
+||| Accepted reference/operational capital produces child exclusion, support,
+||| source well-formedness, all three lookups and both component attachments.
+||| The ONLY remaining physical safety hypothesis is literal ZeroGapPending.
+export
+0 o20ReachedInversionEarlierBegin :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {initial, originalFinal, reachedFinal : SystemState name key value world error} ->
+  (original : Transitions initial originalFinal) ->
+  (capital : IndependentCanonicalSchedule name key world error value protocol nameEq keyEq original) ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq original ->
+  {reachedOrder, goalOrder, swappedOrder : List name} ->
+  (originalReference : O20SupportedReferenceOrders name key world error value nameEq keyEq originalFinal (supportOrder (canonicalSchedule capital)) goalOrder) ->
+  (reachedReference : O20SupportedReferenceOrders name key world error value nameEq keyEq originalFinal reachedOrder goalOrder) ->
+  (replayed : Transitions initial reachedFinal) ->
+  {certificate : CertifiedActorPermutation name (supportOrder (canonicalSchedule capital)) reachedOrder} ->
+  (operational : OperationalActorPermutation name key world error value protocol nameEq keyEq certificate
+    (canonicalTrace (canonicalSchedule capital)) (canonicalActorBlockDecomposition capital) (canonicalReplayPremises capital) replayed) ->
+  (blocks : ActorBlockDecomposition name key world error value nameEq keyEq reachedOrder replayed) ->
+  (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq replayed) ->
+  (swap : AdjacentActorOrderSwap name reachedOrder swappedOrder) ->
+  BeforeIn (actorRight swap) (actorLeft swap) goalOrder ->
+  ZeroGapPending (betweenBlocks (decomposedBlocksFollowOrder blocks (actorLeft swap) (actorRight swap)
+    (fst (o20ChosenActorFacts swap)) (fst (snd (o20ChosenActorFacts swap))) (snd (snd (o20ChosenActorFacts swap))))) ->
+  CheckedEarlyApplication name key world error value nameEq keyEq
+    (blockPreStart (decomposedBlock blocks (actorLeft swap) (fst (o20ChosenActorFacts swap)))) (LBegin (actorRight swap)) LBeginTag
+o20ReachedInversionEarlierBegin nameEq keyEq protocol original capital unique originalReference reachedReference replayed operational blocks premises swap reverseGoal empty =
+  o20ReferenceEarlierBeginObserved nameEq keyEq protocol original capital unique replayed premises
+    (operationalPermutationOccurrenceCorrespondence operational) (actorLeft swap) (actorRight swap) (\same => actorDistinct swap (sym same))
+    (decomposedBlock blocks (actorLeft swap) (fst (o20ChosenActorFacts swap)))
+    (decomposedBlock blocks (actorRight swap) (fst (snd (o20ChosenActorFacts swap))))
+    (decomposedBlocksFollowOrder blocks (actorLeft swap) (actorRight swap)
+      (fst (o20ChosenActorFacts swap)) (fst (snd (o20ChosenActorFacts swap))) (snd (snd (o20ChosenActorFacts swap))))
+    (fst (o20ReachedInversionChildSafety nameEq keyEq protocol original capital unique originalReference reachedReference replayed operational blocks swap reverseGoal))
+    (o20ReachedReferenceSupport capital originalReference reachedReference (actorLeft swap) (fst (o20ChosenActorFacts swap)))
+    (o20ReachedReferenceSupport capital originalReference reachedReference (actorRight swap) (fst (snd (o20ChosenActorFacts swap))))
+    (fst (o20ReferenceIncomparable swap reachedReference reverseGoal)) empty
+    (o20OriginalSupportedLookup nameEq keyEq protocol original capital (actorLeft swap)
+      (o20ReachedReferenceSupport capital originalReference reachedReference (actorLeft swap) (fst (o20ChosenActorFacts swap))))
+    (o20OriginalSupportedLookup nameEq keyEq protocol original capital (actorRight swap)
+      (o20ReachedReferenceSupport capital originalReference reachedReference (actorRight swap) (fst (snd (o20ChosenActorFacts swap)))))
+    (o20InstalledEndPresentLookup nameEq keyEq (actorLeft swap)
+      (blockBody (decomposedBlock blocks (actorLeft swap) (fst (o20ChosenActorFacts swap))))
+      (blockBodyInstalled (decomposedBlock blocks (actorLeft swap) (fst (o20ChosenActorFacts swap)))))
