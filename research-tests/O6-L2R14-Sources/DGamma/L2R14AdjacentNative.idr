@@ -61,3 +61,22 @@ adjacentNativeThroughHead nameEq keyEq step rest source leftAction rightAction p
         (cong (MoreTransitions step) (actionOccurrenceDecomposition (edgeOccurrence left))))
       (cong S (edgeOrdinal left)) (edgeBefore left) (edgeAfter left))
     (alignedSourceThroughHead nameEq keyEq step rest (edgeTarget left) rightAction (S position) right)
+
+||| Identify the native head source FROM an action-only query. Alignment
+||| supplies the authentic requested dictionaries through the existing locator.
+export
+0 alignedNativeHead : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, finalState : SystemState name key value world error} ->
+  {trace : Transitions first finalState} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (trail : AvailabilityTrace name key world error value trace) ->
+  (aligned : AlignedTransitions name key world error value nameEq keyEq trace) ->
+  (action : Action name key value world error) ->
+  (0 query : head' (nativeActionWord trail) = Just action) ->
+  AlignedSourceAction name key world error value nameEq keyEq trace first action 0
+alignedNativeHead nameEq keyEq (AvailabilityEnd state) aligned action query = absurd query
+alignedNativeHead nameEq keyEq (AvailabilityStep source (Fired ne ke head tag checked) rest later)
+  aligned action query =
+  locateAlignedSourceAction nameEq keyEq
+    (AvailabilityStep source (Fired ne ke head tag checked) rest later) aligned 0 source action
+    (cong (\selected => Just (source, selected)) (injective query))
