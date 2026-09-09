@@ -72,3 +72,11 @@ record ReleaseWitness (0 releases : List Nat) where
   constructor MkReleaseWitness
   releaseOrdinal : Nat
   0 releaseScanned : Elem releaseOrdinal releases
+
+||| Extract a member only from an explicitly observed nonempty scan. The
+||| Boolean and its equation are arguments; no computed existential is split.
+public export
+releaseWitnessObserved : (releases : List Nat) -> (observed : Bool) ->
+  (0 equation : not (null releases) = observed) -> (0 forced : observed = True) -> ReleaseWitness releases
+releaseWitnessObserved [] observed equation forced = absurd (trans equation forced)
+releaseWitnessObserved (ordinal :: later) observed equation forced = MkReleaseWitness ordinal Here
