@@ -1,0 +1,107 @@
+{
+  "status": "PASS",
+  "immutablePlanPublishedBeforeValidation": true,
+  "finalPlanLeafBeforeDependent": true,
+  "head": "bbfc40eb6e053901a8e0a9d4eb12d0b7ad80d5c0",
+  "timestampUTC": "2026-09-09T01:09:14.402859+00:00",
+  "invocationCount": 65,
+  "passedCount": 58,
+  "failedCount": 7,
+  "interruptedCount": 0,
+  "finalCheckCount": 12,
+  "newDeclarationCount": 45,
+  "newDeclarations": {
+    "research-tests/O6-L2R3-Sources/DGamma/L2R3Attached.idr": [
+      "ActorLifecycleOnlyAttached",
+      "AttachedReason",
+      "AttachedRelease",
+      "BlockBeforeAttached",
+      "LocatedOpenEpisodeBlockAttached",
+      "OrderedForcedRootBundle",
+      "extendedIntoAttached",
+      "oldIntoAttached"
+    ],
+    "research-tests/O6-L2R3-Sources/DGamma/L2R3AttachedGap.idr": [
+      "AttachedBundleOccurrence",
+      "AttachedNormalForm",
+      "attachedGapCount",
+      "attachedZeroGapInNormalForm",
+      "bundleOutsideHead",
+      "gapHeadPositive",
+      "rootHeadCannotBeBundled"
+    ],
+    "research-tests/O6-L2R3-Sources/DGamma/L2R3BarrierBlocks.idr": [
+      "BarrierAttachedBlocks",
+      "barrierAttachedBlocks"
+    ],
+    "research-tests/O6-L2R3-Sources/DGamma/L2R3BarrierExecution.idr": [
+      "BarrierNativeExecution",
+      "barrierNativeExecution",
+      "barrierTrace"
+    ],
+    "research-tests/O6-L2R3-Sources/DGamma/L2R3BarrierOrder.idr": [
+      "BarrierOrderEvidence",
+      "barrierOrderEvidence",
+      "externalRootHeadsMatch",
+      "rThenSCannotReverse"
+    ],
+    "research-tests/O6-L2R3-Sources/DGamma/L2R3BarrierStates.idr": [
+      "barrierState"
+    ],
+    "research-tests/O6-L2R3-Sources/DGamma/L2R3BundlePhase.idr": [
+      "BundlePhaseEvidence",
+      "BundlePhaseNative",
+      "bundlePhaseEvidence",
+      "bundlePhaseNative",
+      "sRootSnapshotSquare"
+    ],
+    "research-tests/O6-L2R3-Sources/DGamma/L2R3BundlePhaseStates.idr": [
+      "bundlePhaseState"
+    ],
+    "research-tests/O6-L2R3-Sources/DGamma/L2R3ForcedClosure.idr": [
+      "ForcedRootInput",
+      "forcedRootLeast"
+    ],
+    "research-tests/O6-L2R3-Sources/DGamma/L2R3RemoveDispatch.idr": [
+      "removeAfterRetirementRaw",
+      "replayRemoveAfterRetirement",
+      "replayRemoveAtObservedSource",
+      "replayRemoveFromView",
+      "retireRemoveSnapshot",
+      "retirementKeepsParent"
+    ],
+    "research-tests/O6-L2R3-Sources/DGamma/L2R3RetireDispatch.idr": [
+      "replayRootAfterRetirement",
+      "retireSquareReplayObserved"
+    ],
+    "research-tests/O6-L2R3-Sources/DGamma/L2R3SmallAttached.idr": [
+      "SmallAttachedBlocks",
+      "smallAttachedBlocks",
+      "smallInsertedBundleMember",
+      "smallRelease"
+    ]
+  },
+  "sourceCommitCount": 45,
+  "allShiftCommitsReceiptAuthenticated": true,
+  "noUnapprovedBundles": true,
+  "approvedPredecessorCommentRepairsAuthenticated": true,
+  "allInvocationsSerialized": true,
+  "allRecordedSnapshotsAndLogsAuthenticated": true,
+  "protocolIncidents": [],
+  "allFinalCurrentSourcesAuthenticated": true,
+  "committedArchiveAndManifestAuthenticated": true,
+  "evidenceArchiveSHA256": "37f154ca9ecefad417d9023b86e6e396748513998208c94bafd8b0ed18ff07a6",
+  "productionAndFrozenResearchUntouched": true,
+  "maxSampleRSSKiB": 2283376,
+  "RSSQualification": "250ms sampled RSS, not continuous peak; chez classified from the first L2R3 invocation",
+  "noUnsafeNewProofs": true,
+  "noOwnCompiler": true,
+  "noOwnHeavyLock": true,
+  "observedNonOwnedHeavyLock": null,
+  "noStagedFiles": true,
+  "cleanTrackedTree": true,
+  "noUntrackedDeliverables": true,
+  "manualProofReviewStillRequired": true,
+  "paperTextPresentInWorktree": false,
+  "supervisorPaperRulingRecorded": true
+}
