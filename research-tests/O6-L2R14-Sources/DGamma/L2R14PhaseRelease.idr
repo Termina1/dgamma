@@ -36,3 +36,12 @@ phaseMemberAtDecision dictionary item items (Yes present) equation accepted = pr
 phaseMemberAtDecision dictionary item items (No absent) equation accepted =
   absurd (trans (sym (cong isYes equation))
     (trans (releaseScanAgrees dictionary item items) accepted))
+
+||| Membership transport under a shared head. Only membership is eliminated;
+||| this supplies the true branch of the native filter decoder.
+export
+0 phaseConsInclusion : {a : Type} -> (head, item : a) -> (left, right : List a) ->
+  (0 inclusion : Elem item left -> Elem item right) ->
+  (0 member : Elem item (head :: left)) -> Elem item (head :: right)
+phaseConsInclusion _ item left right inclusion Here = Here
+phaseConsInclusion head item left right inclusion (There later) = There (inclusion later)
