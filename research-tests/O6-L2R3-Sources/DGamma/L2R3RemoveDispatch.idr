@@ -50,3 +50,21 @@ removeAfterRetirementRaw nameEq keyEq child removed fiber removedFiber ambient s
   rewrite trans (lookupReplaceOther @{nameEq} removed child (\same => distinct (sym same)) (retireFiber fiber) source) removedFound in
   rewrite hasChildReplaceFalse nameEq removed child (retireFiber fiber) fiber source childFound (retirementKeepsParent fiber) noChild in
   rewrite (replace {p = \children => retired removedFiber && isInactive (fiberLifecycle removedFiber) && not children = True} noChild removable) in Refl
+
+||| Exact world/ordered-binding commutation of distinct child retirement and
+||| foreign deletion. Uses CP4DeletionCommuteCore:266, not proof irrelevance.
+export
+0 retireRemoveSnapshot :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (child, removed : name) ->
+  (0 distinct : Not (child = removed)) ->
+  (fiber : Fiber name key value world error) ->
+  (ambient : world) -> (source : Registry name key value world error) ->
+  runtimeSnapshot {name} {key} {value} {world} {error}
+    (MkSystemState ambient (deleteBinding @{nameEq} removed (replaceBinding @{nameEq} child (retireFiber fiber) source))) =
+  runtimeSnapshot {name} {key} {value} {world} {error}
+    (MkSystemState ambient (replaceBinding @{nameEq} child (retireFiber fiber) (deleteBinding @{nameEq} removed source)))
+retireRemoveSnapshot nameEq child removed distinct fiber ambient source =
+  cong (MkRuntimeSnapshot ambient)
+    (trans (deleteBindingAfterDistinctReplaceBindings nameEq child removed distinct (retireFiber fiber) source)
+      (sym (replaceBindingRuntimeBindings nameEq child (retireFiber fiber) (deleteBinding @{nameEq} removed source))))
