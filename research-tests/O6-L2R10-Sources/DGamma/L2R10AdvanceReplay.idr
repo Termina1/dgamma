@@ -379,3 +379,35 @@ export
 retirementAdvanceNative {name} {key} {world} {error} {value}
   nameEq keyEq child parent actor childFiber actorFiber ambient source frame distinct =
   advanceAtLifecycle nameEq keyEq child parent actor childFiber actorFiber ambient source frame distinct (fiberLifecycle actorFiber) Refl
+
+||| ALL-TAG ORIGINAL-EDGE-ONLY checked LAdvance replay, including native
+||| Iter/Finish and Raise/Divert outcomes. No alternate checked edge premise.
+export
+0 replayRetirementAdvance :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (child, parent, actor : name) ->
+  (childFiber, actorFiber : Fiber name key value world error) ->
+  (before, afterState : SystemState name key value world error) -> (tag : RuleTag) ->
+  (frame : RetirementProviderFrame name key world error value nameEq keyEq child parent actor childFiber actorFiber (registry before)) ->
+  (0 distinct : Not (child = actor)) ->
+  (0 valid : registryWellFormed {name} {key} {value} {world} {error} @{nameEq} @{keyEq} before = True) ->
+  (0 original : checkedApplyAction @{nameEq} @{keyEq} (LAdvance actor) before = Just (tag, afterState)) ->
+  CheckedSnapshotStep name key world error value nameEq keyEq (LAdvance actor)
+    (MkSystemState (worldState before) (replaceBinding @{nameEq} child (retireFiber childFiber) (registry before))) tag
+    (runtimeSnapshot {name} {key} {value} {world} {error}
+      (MkSystemState (worldState afterState) (replaceBinding @{nameEq} child (retireFiber childFiber) (registry afterState))))
+replayRetirementAdvance {name} {key} {world} {error} {value}
+  nameEq keyEq child parent actor childFiber actorFiber (MkSystemState ambient source) afterState tag frame distinct valid original =
+  checkedSnapshotObserved nameEq keyEq (LAdvance actor)
+    (MkSystemState ambient (replaceBinding @{nameEq} child (retireFiber childFiber) source)) tag
+    (runtimeSnapshot {name} {key} {value} {world} {error}
+      (MkSystemState (worldState afterState) (replaceBinding @{nameEq} child (retireFiber childFiber) (registry afterState))))
+    (applyAction @{nameEq} @{keyEq} (LAdvance actor)
+      (MkSystemState ambient (replaceBinding @{nameEq} child (retireFiber childFiber) source))) Refl
+    (trans (retirementAdvanceNative nameEq keyEq child parent actor childFiber actorFiber ambient source frame distinct)
+      (cong (Prelude.map {f = Maybe}
+        (\out => (fst out, runtimeSnapshot {name} {key} {value} {world} {error}
+          (MkSystemState (worldState (snd out))
+            (replaceBinding @{nameEq} child (retireFiber childFiber) (registry (snd out)))))))
+        (checkedActionProjects nameEq keyEq (LAdvance actor) (MkSystemState ambient source) afterState tag original)))
+    (registryWellFormedRetire nameEq keyEq ambient child childFiber source (frameChildFound frame) valid)
