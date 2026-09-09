@@ -40,3 +40,9 @@ export
   (S n <= m) = lte (S n) m
 leSuccessorBridge n earlier Z = Refl
 leSuccessorBridge n earlier (S m) = earlier m
+
+||| Library Ord Nat comparison equals the structurally reflected lte test.
+export
+0 leToLte : (n, m : Nat) -> (n <= m) = lte n m
+leToLte Z m = leZero m
+leToLte (S n) m = leSuccessorBridge n (leToLte n) m
