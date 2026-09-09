@@ -25,3 +25,9 @@ export
   (left = True, right = True)
 acceptedConjunction False right accepted = absurd accepted
 acceptedConjunction True right accepted = (Refl, accepted)
+
+||| The Ord Nat zero comparison agrees with Data.Nat.lte.
+export
+0 leZero : (n : Nat) -> (Z <= n) = True
+leZero Z = Refl
+leZero (S n) = Refl
