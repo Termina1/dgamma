@@ -130,3 +130,31 @@ replayRemoveFromView nameEq keyEq child removed fiber ambient source _ current _
   distinct childFound valid currentValid currentSame (MkRemoveSuccessView removedFiber removedFound removable noChild) =
   replayRemoveAtObservedSource nameEq keyEq child removed fiber removedFiber ambient source current
     distinct childFound removedFound removable noChild valid currentValid currentSame
+
+||| FOREIGN ORemove branch of the local retirement-replay dispatcher, matching
+||| the L2R2ForeignReplay callback's operational inputs for this action kind.
+||| The original checked Remove produces its own view/guard; no alternate edge
+||| or endpoint snapshot equality is supplied. This does not complete the
+||| missing Begin/Iter/Finish/other-parent insert/Retire action dispatchers.
+export
+0 replayRemoveAfterRetirement :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (child, removed : name) ->
+  (fiber : Fiber name key value world error) ->
+  (first, afterState, current : SystemState name key value world error) -> (tag : RuleTag) ->
+  (0 checked : checkedApplyAction @{nameEq} @{keyEq} (ORemove removed) first = Just (tag, afterState)) ->
+  (0 distinct : Not (child = removed)) ->
+  (0 found : lookupFiber {name} {key} {value} {world} {error} @{nameEq} child (registry first) = Just fiber) ->
+  (0 valid : registryWellFormed @{nameEq} @{keyEq} first = True) ->
+  (0 currentValid : registryWellFormed @{nameEq} @{keyEq} current = True) ->
+  (0 currentSame : runtimeSnapshot current = runtimeSnapshot {name} {key} {value} {world} {error}
+    (MkSystemState (worldState first) (replaceBinding @{nameEq} child (retireFiber fiber) (registry first)))) ->
+  CheckedSnapshotStep name key world error value nameEq keyEq (ORemove removed) current tag
+    (runtimeSnapshot {name} {key} {value} {world} {error}
+      (MkSystemState (worldState afterState) (replaceBinding @{nameEq} child (retireFiber fiber) (registry afterState))))
+replayRemoveAfterRetirement nameEq keyEq child removed fiber (MkSystemState ambient source) afterState current tag
+  checked distinct found valid currentValid currentSame =
+  replayRemoveFromView nameEq keyEq child removed fiber ambient source afterState current tag
+    distinct found valid currentValid currentSame
+    (removeSuccessView nameEq keyEq removed ambient source tag afterState
+      (checkedActionProjects nameEq keyEq (ORemove removed) (MkSystemState ambient source) afterState tag checked))
