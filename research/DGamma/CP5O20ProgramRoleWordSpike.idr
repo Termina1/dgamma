@@ -99,3 +99,46 @@ o20ActualAdvanceObservedResult nameEq keyEq actor ambient fibers afterState tag 
       (sym (checkedActionProjects nameEq keyEq (LAdvance actor) (MkSystemState ambient fibers) afterState tag checked))
       (o20ObservedAdvanceRawEquation nameEq keyEq actor ambient fibers component parent retiredFlag table step rest older view
         capability (stepObservedAfter callback) (stepObservedUndo callback) found target resolved (stepObservedRan callback)))
+
+||| Every observed successful NONEMPTY native Advance consumes exactly its
+||| actual head role. Both tag and target come from one evaluator equation;
+||| the actual target lookup is proved by replacement. No successor role
+||| equation or lookup is supplied. Empty-program Finish is separate.
+export
+0 o20ObservedAdvanceRoleConsumption :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (ambient : world) -> (fibers : Registry name key value world error) ->
+  (afterState : SystemState name key value world error) -> (tag : RuleTag) ->
+  (component : Component key value world error) -> (parent : Parent name) -> (retiredFlag : Bool) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (step : StepEffect key value world error (dependencies (componentDependencies component)) (componentProvisions component)) ->
+  (rest : List (StepEffect key value world error (dependencies (componentDependencies component)) (componentProvisions component))) ->
+  (older : LocalState key value world (componentProvisions component) -> LocalState key value world (componentProvisions component)) ->
+  (view : View name (dependencies (componentDependencies component))) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor fibers = Just (MkFiber component parent retiredFlag table (Reloading (step :: rest) older view))) ->
+  (targetFiber {name} {key} {value} {world} {error} @{nameEq} @{keyEq} (MkFiber component parent retiredFlag table (Reloading (step :: rest) older view)) fibers = Just view) ->
+  (checkedApplyAction {name} {key} {value} {world} {error} @{nameEq} @{keyEq} (LAdvance actor) (MkSystemState ambient fibers) = Just (tag, afterState)) ->
+  (observed : O20NativeStepValues name key world error value nameEq keyEq (MkSystemState ambient fibers) component table step view) ->
+  (o20FiberRoleRemainder
+    (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor fibers) =
+   tag :: o20FiberRoleRemainder
+    (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor (registry afterState)))
+o20ObservedAdvanceRoleConsumption nameEq keyEq actor ambient fibers afterState tag component parent retiredFlag table step [] older view found target checked observed =
+    rewrite cong fst (o20ActualAdvanceObservedResult nameEq keyEq actor ambient fibers afterState tag component parent retiredFlag table step [] older view found target checked observed) in
+    rewrite cong snd (o20ActualAdvanceObservedResult nameEq keyEq actor ambient fibers afterState tag component parent retiredFlag table step [] older view found target checked observed) in
+    rewrite lookupReplacedFiber @{nameEq} actor
+      (MkFiber component parent retiredFlag table (Reloading (step :: []) older view))
+      (MkFiber component parent retiredFlag (localTable (stepObservedAfter (nativeCallback observed)))
+        (o20SuccessfulAdvanceLifecycle []
+          (pushLocalUndo @{keyEq} (componentProvisions component) older (stepObservedUndo (nativeCallback observed))) view)) fibers found in
+    rewrite found in Refl
+o20ObservedAdvanceRoleConsumption nameEq keyEq actor ambient fibers afterState tag component parent retiredFlag table step (next :: more) older view found target checked observed =
+    rewrite cong fst (o20ActualAdvanceObservedResult nameEq keyEq actor ambient fibers afterState tag component parent retiredFlag table step (next :: more) older view found target checked observed) in
+    rewrite cong snd (o20ActualAdvanceObservedResult nameEq keyEq actor ambient fibers afterState tag component parent retiredFlag table step (next :: more) older view found target checked observed) in
+    rewrite lookupReplacedFiber @{nameEq} actor
+      (MkFiber component parent retiredFlag table (Reloading (step :: (next :: more)) older view))
+      (MkFiber component parent retiredFlag (localTable (stepObservedAfter (nativeCallback observed)))
+        (o20SuccessfulAdvanceLifecycle (next :: more)
+          (pushLocalUndo @{keyEq} (componentProvisions component) older (stepObservedUndo (nativeCallback observed))) view)) fibers found in
+    rewrite found in Refl
