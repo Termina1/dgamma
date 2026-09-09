@@ -45,3 +45,22 @@ record NativeDistanceSelection
   0 nativeBirth : (entry : RootCatalogEntry name key world error value) ->
     (0 member : Elem entry (scanRootCatalog 0 trail)) ->
     CatalogBirthAt name key world error value entry 0 trace
+
+||| GENERAL unrestricted producer on the actual native trail. Runtime search
+||| comes from searchDistance; the erased positive-total decoder uses the
+||| SAME observed result via selectFirstPositiveObserved and its own equation.
+||| scanCatalogBirth authenticates the resulting catalog membership as a
+||| native root birth. No supplied catalog, selected item or decoder oracle.
+public export
+selectNativeDistanceRoot : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {0 first, finalState : SystemState name key value world error} ->
+  {0 trace : Transitions first finalState} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (trail : AvailabilityTrace name key world error value trace) ->
+  NativeDistanceSelection name key world error value nameEq keyEq trail
+selectNativeDistanceRoot nameEq keyEq trail = MkNativeDistanceSelection
+  (searchDistance (\entry => rootDistance nameEq keyEq trail (catalogOrdinal entry)) (scanRootCatalog 0 trail)) Refl
+  (selectFirstPositiveObserved (\entry => rootDistance nameEq keyEq trail (catalogOrdinal entry))
+    (scanRootCatalog 0 trail)
+    (searchDistance (\entry => rootDistance nameEq keyEq trail (catalogOrdinal entry)) (scanRootCatalog 0 trail)) Refl)
+  (scanCatalogBirth 0 trail)
