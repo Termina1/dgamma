@@ -114,3 +114,19 @@ export
   MaybeFiberRelatedBy renaming (Just fiber) Nothing -> Void
 o20PresentAbsentImpossible RenamedAbsent impossible
 o20PresentAbsentImpossible (RenamedPresent related) impossible
+
+||| Two primitive lookup observations refute an ALL-name cut whose supplied
+||| map sends a real present fiber to absence. No support predicate is used.
+export
+0 o20CutRejectsPresentAbsent :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (renaming : NameBijection name) ->
+  (left, right : SystemState name key value world error) ->
+  (selected : name) -> (fiber : Fiber name key value world error) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected (registry left) = Just fiber) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq}
+    (renameForward renaming selected) (registry right) = Nothing) ->
+  O20AllNameCut name key world error value nameEq renaming left right -> Void
+o20CutRejectsPresentAbsent nameEq renaming left right selected fiber present absent cut =
+  o20PresentAbsentImpossible {renaming} {fiber}
+    (rewrite (sym present) in rewrite (sym absent) in allNameControls cut selected)
