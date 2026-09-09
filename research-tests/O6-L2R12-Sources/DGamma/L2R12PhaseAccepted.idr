@@ -29,3 +29,11 @@ export
   foldl (\acc, item => acc && predicate item) False items = False
 phaseAllFoldFalse predicate [] = Refl
 phaseAllFoldFalse predicate (head :: items) = phaseAllFoldFalse predicate items
+
+||| The observed accumulator equation for the native all fold.
+export
+0 phaseAllFoldObserved : {a : Type} -> (predicate : a -> Bool) -> (items : List a) ->
+  (seen : Bool) -> foldl (\acc, item => acc && predicate item) seen items =
+    (seen && all predicate items)
+phaseAllFoldObserved predicate items False = phaseAllFoldFalse predicate items
+phaseAllFoldObserved predicate items True = Refl
