@@ -85,3 +85,24 @@ nativeSuffixCatalog nameEq keyEq (SuffixFramesRetire {oldRest} {newRest} actor t
     (trans (cong (rootCatalogStep offset (ORetire actor))
       (nativeSuffixCatalog nameEq keyEq later (fst (nativeHeadScanEquations nameEq keyEq (ORetire actor) tag oldChecked oldRest oldTrail)) (fst (nativeHeadScanEquations nameEq keyEq (ORetire actor) tag newChecked newRest newTrail)) (S offset)))
       (sym (snd (nativeHeadScanEquations nameEq keyEq (ORetire actor) tag newChecked newRest newTrail) offset)))
+
+||| Native no-release head reduction, without reconstructing an if-family.
+||| The authentic classifier equation is rewritten before its guard closes.
+||| Root and Retire supply False directly; no Remove equation is attempted.
+export
+0 nativeNonReleaseTail : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (action : Action name key value world error) -> (tag : RuleTag) ->
+  (0 checked : checkedApplyAction @{nameEq} @{keyEq} action first = Just (tag, middle)) ->
+  (rest : Transitions middle finalState) ->
+  (trail : AvailabilityTrace name key world error value
+    (MoreTransitions (Fired {before = first} {afterState = middle} nameEq keyEq action tag checked) rest)) ->
+  (component : Component key value world error) -> (offset, cut : Nat) ->
+  (0 inactive : ownChildReleaseStep nameEq keyEq component first action = False) ->
+  (later : AvailabilityTrace name key world error value rest **
+    scanReleaseOrdinals nameEq keyEq component offset cut trail =
+      scanReleaseOrdinals nameEq keyEq component (S offset) cut later)
+nativeNonReleaseTail nameEq keyEq _ _ _ _
+  (AvailabilityStep source (Fired _ _ action tag checked) rest later) component offset cut inactive =
+  (later ** (rewrite inactive in rewrite andFalseFalse (offset < cut) in Refl))
