@@ -39,3 +39,12 @@ r195SwapRootOrdinals : RegistrationGeneration Nat -> RegistrationGeneration Nat
 r195SwapRootOrdinals (MkRegistrationGeneration selected Z) = MkRegistrationGeneration selected 1
 r195SwapRootOrdinals (MkRegistrationGeneration selected (S Z)) = MkRegistrationGeneration selected 0
 r195SwapRootOrdinals (MkRegistrationGeneration selected (S (S later))) = MkRegistrationGeneration selected (S (S later))
+
+||| The root-ordinal swap is an involution on ALL generation stamps.
+export
+0 r195SwapRootOrdinalsInvolutive :
+  (stamp : RegistrationGeneration Nat) ->
+  (r195SwapRootOrdinals (r195SwapRootOrdinals stamp) = stamp)
+r195SwapRootOrdinalsInvolutive (MkRegistrationGeneration selected Z) = Refl
+r195SwapRootOrdinalsInvolutive (MkRegistrationGeneration selected (S Z)) = Refl
+r195SwapRootOrdinalsInvolutive (MkRegistrationGeneration selected (S (S later))) = Refl
