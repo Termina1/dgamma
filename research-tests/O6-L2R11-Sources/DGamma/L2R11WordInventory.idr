@@ -95,3 +95,13 @@ record ObservedWordInventory
   restrictedObserved : Bool
   0 restrictedEquation :
     all (\code => not (inventory code) || elemDec code [0, 1, 2, 3, 4]) [0, 1, 2, 3, 4, 5, 6, 7] = restrictedObserved
+
+||| Simultaneous executable producer owns both exact equations. The set is
+||| represented extensionally as a Boolean characteristic function on codes.
+public export
+observeWordActionInventory : {name, key, world, error : Type} -> {value : key -> Type} ->
+  (word : List (Action name key value world error)) -> ObservedWordInventory word
+observeWordActionInventory word = MkObservedWordInventory
+  (wordActionInventory word) Refl
+  (all (\code => not (wordActionInventory word code) || elemDec code [0, 1, 2, 3, 4])
+    [0, 1, 2, 3, 4, 5, 6, 7]) Refl
