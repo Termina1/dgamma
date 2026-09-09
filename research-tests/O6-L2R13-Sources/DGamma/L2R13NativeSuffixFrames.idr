@@ -107,3 +107,26 @@ nativeRetireFrameEndpoint {name} {key} {world} {error} {value}
       (checkedRetireAcrossExtensional nameEq keyEq actor oldBefore oldAfter newBefore tag oldChecked same valid))) newChecked)))
     (extensionalAfterSame
       (checkedRetireAcrossExtensional nameEq keyEq actor oldBefore oldAfter newBefore tag oldChecked same valid))
+
+||| Arbitrary-length whole suffix endpoint transport by native frame induction.
+||| The ONLY endpoint hypothesis is at the suffix entrance. Each subsequent
+||| relation is obtained from a native producer, not stored in the frame data.
+export
+0 nativeSuffixEndpoints : {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {oldFirst, oldFinal, newFirst, newFinal : SystemState name key value world error} ->
+  {oldTrace : Transitions oldFirst oldFinal} -> {newTrace : Transitions newFirst newFinal} ->
+  NativeSuffixFrames nameEq keyEq oldTrace newTrace ->
+  (0 same : RegistryExtensional name key world error value nameEq oldFirst newFirst) ->
+  RegistryExtensional name key world error value nameEq oldFinal newFinal
+nativeSuffixEndpoints nameEq keyEq SuffixFramesEnd same = same
+nativeSuffixEndpoints nameEq keyEq
+  (SuffixFramesRoot {oldBefore} {oldAfter} {newBefore} {newAfter} actor component oldChecked newChecked valid frame later) same =
+  nativeSuffixEndpoints nameEq keyEq later
+    (nativeRootFrameEndpoint nameEq keyEq actor component oldBefore oldAfter newBefore newAfter
+      oldChecked newChecked valid frame same)
+nativeSuffixEndpoints nameEq keyEq
+  (SuffixFramesRetire {oldBefore} {oldAfter} {newBefore} {newAfter} actor tag oldChecked newChecked valid later) same =
+  nativeSuffixEndpoints nameEq keyEq later
+    (nativeRetireFrameEndpoint nameEq keyEq actor tag oldBefore oldAfter newBefore newAfter
+      oldChecked newChecked valid same)
