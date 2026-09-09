@@ -6,6 +6,12 @@ import DGamma.Metatheory
 import DGamma.CP3
 import DGamma.CP4DeletionSelectedForeignOrchestration
 import DGamma.CP5ConfluenceLocalDiamondSpike
+import DGamma.CP5ConfluenceDeletionChainSpike
+import DGamma.CP5ConfluenceCanonicalSortSpike
+import DGamma.CP5ConfluenceRenamingCompositionSpike
+import DGamma.CP5ConfluenceCrossTraceSpike
+import DGamma.CP5GeneratedOrchestrationMatched
+import DGamma.CP5UniqueRawNameInsertions
 import DGamma.CP5O20StampedHistoryFoldSpike
 import DGamma.CP5O20CanonicalOrdinalAttachmentSpike
 import DGamma.CP5O20PhysicalInsertPositionSpike
@@ -389,3 +395,55 @@ o20PhysicalInsertAttachmentFromOrigins nameEq keyEq leftReplay rightReplay mappi
     MkO20PhysicalInsertAttachment positions
       (o20AttachedGeneratedInsertStage nameEq keyEq leftReplay rightReplay mapping renaming {leftLive} {rightLive}
         leftAligned rightAligned child parent component leftBirth (physicalBirths positions))
+
+||| Accepted inputs and the literal operational execution produce a physical
+||| supported Insert pair AND its native stamped stage at exact conjugated maps.
+||| Original scanner positions remain attached; full per-activation transport,
+||| one-sided skips and orchestration-order history construction are not claimed.
+export
+0 o20PermutedCanonicalPhysicalInsertAttachment :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {protocol : RegistrationProtocol key value world error} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {initial, leftFinal, rightFinal : SystemState name key value world error} ->
+  {leftTrace : Transitions initial leftFinal} ->
+  {rightTrace : Transitions initial rightFinal} ->
+  {sameInputs : SameOrchestrationModuloGenerated nameEq keyEq leftTrace rightTrace} ->
+  {leftCapital : IndependentCanonicalSchedule name key world error value protocol
+    nameEq keyEq leftTrace} ->
+  {rightCapital : IndependentCanonicalSchedule name key world error value protocol
+    nameEq keyEq rightTrace} ->
+  {matching : MappedCanonicalSupportOrders name key world error value protocol
+    nameEq keyEq leftTrace rightTrace
+    (currentNameBijection (endpointRenaming sameInputs))
+    (canonicalSchedule leftCapital) (canonicalSchedule rightCapital)} ->
+  {operational : CertifiedOperationalCanonicalPermutation name key world error value
+    protocol nameEq keyEq leftTrace rightTrace sameInputs leftCapital rightCapital matching} ->
+  (execution : PermutedCanonicalExecution name key world error value protocol
+    nameEq keyEq leftTrace rightTrace sameInputs leftCapital rightCapital operational) ->
+  (0 leftUnique : UniqueRawNameInsertions name key world error value nameEq keyEq leftTrace) ->
+  (0 rightUnique : UniqueRawNameInsertions name key world error value nameEq keyEq rightTrace) ->
+  (0 generatedMatched : GeneratedOrchestrationMatched name key world error value nameEq
+    leftTrace rightTrace (generatedGenerationBijection sameInputs)) ->
+  (leftLive, rightLive : GenerationEnvironment name) ->
+  (child, parent : name) -> (component : Component key value world error) ->
+  (isSupported {name} {key} {value} {world} {error} @{nameEq} @{keyEq} child leftFinal = True) ->
+  (birth : LocatedGeneratedRegistration child parent component (operationalTargetTrace operational)) ->
+  O20PhysicalInsertAttachment name key world error value nameEq keyEq
+    (composeActionRegistrationReplayCorrespondence (canonicalOccurrenceCorrespondence leftCapital)
+      (permutationOccurrenceCorrespondence execution))
+    (canonicalOccurrenceCorrespondence rightCapital) (generatedGenerationBijection sameInputs)
+    (expectedBridgeBijection sameInputs) leftLive rightLive child parent component birth
+o20PermutedCanonicalPhysicalInsertAttachment {name} {key} {world} {error} {value} {protocol} {nameEq} {keyEq}
+  {initial} {leftFinal} {rightFinal} {leftTrace} {rightTrace} {sameInputs} {leftCapital} {rightCapital} {matching} {operational}
+  execution leftUnique rightUnique generatedMatched leftLive rightLive child parent component supported birth =
+    o20PhysicalInsertAttachmentFromOrigins nameEq keyEq
+      (composeActionRegistrationReplayCorrespondence (canonicalOccurrenceCorrespondence leftCapital)
+        (permutationOccurrenceCorrespondence execution))
+      (canonicalOccurrenceCorrespondence rightCapital) (generatedGenerationBijection sameInputs)
+      (expectedBridgeBijection sameInputs) leftLive rightLive
+      (replayAligned (operationalTargetPremises operational)) (replayAligned (canonicalReplayPremises rightCapital))
+      child parent component birth
+      (o20PermutedCanonicalInsertOrigins {name} {key} {world} {error} {value} {protocol} {nameEq} {keyEq}
+        {initial} {leftFinal} {rightFinal} {leftTrace} {rightTrace} {sameInputs} {leftCapital} {rightCapital} {matching} {operational}
+        execution leftUnique rightUnique generatedMatched child parent component supported birth)
