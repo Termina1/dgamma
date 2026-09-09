@@ -8,6 +8,7 @@ import DGamma.CP5SupportedBirthCoverageSpike
 import DGamma.CP5RootOrchestrationTransportSpike
 import DGamma.CP5UniqueRawNameInsertions
 import Decidable.Equality
+import DGamma.CP5ConfluenceCrossTraceSpike
 import DGamma.CP5ConfluenceLocalDiamondSpike
 import DGamma.CP5ConfluenceCanonicalSortSpike
 import DGamma.CP5ConfluenceRenamingCompositionSpike
@@ -352,3 +353,49 @@ o20CanonicalRootOrdinalAttachment nameEq keyEq protocol left right inputs leftCa
     (o20RootBirthMatchLocated (generatedGenerationBijection inputs) left right
       (externalRootGenerationsCoupled inputs) root component
       (replayActionOrigin (canonicalOccurrenceCorrespondence leftCapital) leftBirth))
+
+||| The exact convergence-facing operational replay obtains its own opposite
+||| right canonical root and both ordinal equations. C9 and C6 are consumed
+||| as producers; no root-law or opposite-occurrence premise remains.
+export
+0 o20PermutedCanonicalRootOrdinalAttachment :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {protocol : RegistrationProtocol key value world error} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {initial, leftFinal, rightFinal : SystemState name key value world error} ->
+  {leftTrace : Transitions initial leftFinal} ->
+  {rightTrace : Transitions initial rightFinal} ->
+  {sameInputs : SameOrchestrationModuloGenerated nameEq keyEq leftTrace rightTrace} ->
+  {leftCapital : IndependentCanonicalSchedule name key world error value protocol
+    nameEq keyEq leftTrace} ->
+  {rightCapital : IndependentCanonicalSchedule name key world error value protocol
+    nameEq keyEq rightTrace} ->
+  {matching : MappedCanonicalSupportOrders name key world error value protocol
+    nameEq keyEq leftTrace rightTrace
+    (currentNameBijection (endpointRenaming sameInputs))
+    (canonicalSchedule leftCapital) (canonicalSchedule rightCapital)} ->
+  {operational : CertifiedOperationalCanonicalPermutation name key world error value
+    protocol nameEq keyEq leftTrace rightTrace sameInputs leftCapital rightCapital matching} ->
+  (execution : PermutedCanonicalExecution name key world error value protocol
+    nameEq keyEq leftTrace rightTrace sameInputs leftCapital rightCapital operational) ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq rightTrace ->
+  (root : name) -> (component : Component key value world error) ->
+  (leftBirth : LocatedActionOccurrence (OInsert root Root component)
+    (operationalTargetTrace operational)) ->
+  O20AttachedRootBirth name key world error value
+    (composeActionRegistrationReplayCorrespondence
+      (canonicalOccurrenceCorrespondence leftCapital) (permutationOccurrenceCorrespondence execution))
+    (canonicalOccurrenceCorrespondence rightCapital)
+    (generatedGenerationBijection sameInputs) root component leftBirth
+o20PermutedCanonicalRootOrdinalAttachment {nameEq} {keyEq} {leftTrace} {rightTrace}
+  {sameInputs} {leftCapital} {rightCapital} execution unique root component leftBirth =
+  o20AttachRootMatchPacket nameEq keyEq rightTrace (canonicalTrace (canonicalSchedule rightCapital))
+    (composeActionRegistrationReplayCorrespondence
+      (canonicalOccurrenceCorrespondence leftCapital) (permutationOccurrenceCorrespondence execution))
+    (canonicalOccurrenceCorrespondence rightCapital)
+    (o20PermutedCanonicalRootReplayOrdinals execution) (o20CanonicalRootReplayOrdinals rightCapital)
+    (DGamma.CP3.CanonicalSchedule.sameInputs (canonicalSchedule rightCapital)) (generatedGenerationBijection sameInputs) unique root component leftBirth
+    (o20RootBirthMatchLocated (generatedGenerationBijection sameInputs) leftTrace rightTrace
+      (externalRootGenerationsCoupled sameInputs) root component
+      (replayActionOrigin (composeActionRegistrationReplayCorrespondence
+        (canonicalOccurrenceCorrespondence leftCapital) (permutationOccurrenceCorrespondence execution)) leftBirth))
