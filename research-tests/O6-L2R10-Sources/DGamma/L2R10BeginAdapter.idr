@@ -61,3 +61,35 @@ retirementBeginPlanAdapter {name} {key} {world} {error} {value}
     (retirementUpdateSnapshot nameEq child actor childFiber
       (MkFiber component ownerParent False table
         (Reloading (componentProgram component) (\local => local) view)) ambient source distinct)
+
+||| LBegin ORIGINAL-EDGE-ONLY replay role. Adapter B1 crosses the exposed
+||| native owner boundary; raw Preservation checks the alternate successor.
+export
+0 replayRetirementBegin :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (child, parent, actor : name) ->
+  (childFiber, actorFiber : Fiber name key value world error) ->
+  (before, afterState : SystemState name key value world error) ->
+  (frame : RetirementProviderFrame name key world error value nameEq keyEq child parent actor childFiber actorFiber (registry before)) ->
+  (0 distinct : Not (child = actor)) ->
+  (0 valid : registryWellFormed {name} {key} {value} {world} {error} @{nameEq} @{keyEq} before = True) ->
+  (0 original : checkedApplyAction @{nameEq} @{keyEq} (LBegin actor) before = Just (LBeginTag, afterState)) ->
+  CheckedSnapshotStep name key world error value nameEq keyEq (LBegin actor)
+    (MkSystemState (worldState before) (replaceBinding @{nameEq} child (retireFiber childFiber) (registry before))) LBeginTag
+    (runtimeSnapshot {name} {key} {value} {world} {error}
+      (MkSystemState (worldState afterState) (replaceBinding @{nameEq} child (retireFiber childFiber) (registry afterState))))
+replayRetirementBegin {name} {key} {world} {error} {value}
+  nameEq keyEq child parent actor childFiber actorFiber (MkSystemState ambient source) afterState frame distinct valid original =
+  checkedSnapshotObserved nameEq keyEq (LBegin actor)
+    (MkSystemState ambient (replaceBinding @{nameEq} child (retireFiber childFiber) source)) LBeginTag
+    (runtimeSnapshot {name} {key} {value} {world} {error}
+      (MkSystemState (worldState afterState) (replaceBinding @{nameEq} child (retireFiber childFiber) (registry afterState))))
+    (applyAction @{nameEq} @{keyEq} (LBegin actor)
+      (MkSystemState ambient (replaceBinding @{nameEq} child (retireFiber childFiber) source))) Refl
+    (rewrite lookupReplaceOther {key = name} {value = FiberAt name key value world error} @{nameEq}
+       actor child (\same => distinct (sym same)) (retireFiber childFiber) source in
+     rewrite frameActorFound frame in
+     retirementBeginPlanAdapter nameEq keyEq child parent actor childFiber actorFiber ambient source afterState LBeginTag frame distinct
+       (foreignBeginPlanView nameEq keyEq actor ambient source actorFiber (frameActorFound frame) LBeginTag afterState
+         (checkedActionProjects nameEq keyEq (LBegin actor) (MkSystemState ambient source) afterState LBeginTag original)))
+    (registryWellFormedRetire nameEq keyEq ambient child childFiber source (frameChildFound frame) valid)
