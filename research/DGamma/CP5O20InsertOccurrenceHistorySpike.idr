@@ -67,3 +67,16 @@ o20LabelledInsertFromRightPlan nameEq keyEq renaming actor component leftParent 
     (StampedInsertStage nameEq keyEq renaming actor component leftParent rightParent parents
       leftWorld rightWorld leftRegistry rightRegistry leftAbsent rightAbsent leftChecked rightChecked matched ** (Refl, Refl, Refl, Refl))
 
+
+||| The observed native insertion plan pins the INPUT tag, not only the tag
+||| of a newly built stage. This will authenticate the supplied-word labels.
+export
+0 o20ForeignInsertPlanTag :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {actor : name} -> {parent : Parent name} -> {component : Component key value world error} ->
+  {ambient : world} -> {fibers : Registry name key value world error} ->
+  {tag : RuleTag} -> {afterState : SystemState name key value world error} ->
+  ForeignInsertPlanView name key world error value nameEq keyEq actor parent component ambient fibers tag afterState ->
+  (tag = OInsertTag)
+o20ForeignInsertPlanTag (MkForeignInsertPlanView absent guards) = Refl
