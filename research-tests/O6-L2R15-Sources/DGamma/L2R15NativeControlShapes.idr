@@ -57,3 +57,21 @@ nativeRetireShape nameEq keyEq actor fiber (MkSystemState ambient source) target
   nativeRetireShapeFromView nameEq keyEq actor fiber ambient source target tag found checked
     (retireSuccessView nameEq keyEq actor ambient source tag target
       (checkedActionProjects nameEq keyEq (ORetire actor) (MkSystemState ambient source) target tag checked))
+
+||| Native removal shape from its authentic operation view. The guards and
+||| source fiber certify the actual edge, but the raw target is simply the
+||| registry deletion. Never evaluates the forbidden intermediate Remove.
+export
+0 nativeRemoveShapeFromView : {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (ambient : world) -> (source : Registry name key value world error) ->
+  (target : SystemState name key value world error) -> (tag : RuleTag) ->
+  (0 checked : checkedApplyAction @{nameEq} @{keyEq} (ORemove actor)
+    (MkSystemState ambient source) = Just (tag, target)) ->
+  RemoveSuccessView name key world error value nameEq actor ambient source tag target ->
+  NativeActionShape name key world error value nameEq keyEq (ORemove actor) (MkSystemState ambient source) tag
+    (MkRuntimeSnapshot ambient (deleteEntries @{nameEq} actor (bindings source)))
+nativeRemoveShapeFromView nameEq keyEq actor ambient source _ _ checked
+  (MkRemoveSuccessView fiber found removable noChild) =
+  MkNativeActionShape (MkSystemState ambient (deleteBinding @{nameEq} actor source)) checked
+    (nativeDeleteSnapshot nameEq actor ambient source)
