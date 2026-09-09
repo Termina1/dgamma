@@ -61,3 +61,23 @@ export
   All (\item => distance item = 0) items -> sum (map distance items) = 0
 allZeroTotal distance [] = Refl
 allZeroTotal distance (zero :: zeros) = rewrite zero in allZeroTotal distance zeros
+
+||| At positive total, decode the first positive item from the OBSERVED exact
+||| search result. Instantiate the call site with searchDistance distance
+||| items and Refl. Prefix/suffix are ordinary lists, not dependent state
+||| views; the complete zero-prefix and physical list split are retained.
+||| This is not ForcedOnTrace decoding or an AdmittedDistanceMove producer.
+export
+0 selectFirstPositiveObserved : {a : Type} -> (distance : a -> Nat) ->
+  (items : List a) -> (observed : DistanceSearch distance items) ->
+  (0 equation : searchDistance distance items = observed) ->
+  (0 positive : LT 0 (sum (map distance items))) ->
+  (item : a ** before : List a ** after : List a **
+    (Elem item items, items = before ++ item :: after,
+     All (\earlier => distance earlier = 0) before, LT 0 (distance item)))
+selectFirstPositiveObserved distance items (AllDistancesZero zeros) equation positive =
+  absurd (replace {p = \n => LT 0 n} (allZeroTotal distance zeros) positive)
+selectFirstPositiveObserved distance items
+  (FoundFirstPositive item before after predecessor member split zeros exact) equation positive =
+  (item ** before ** after ** (member, split, zeros,
+    replace {p = \n => LT 0 n} (sym exact) (LTESucc LTEZero)))
