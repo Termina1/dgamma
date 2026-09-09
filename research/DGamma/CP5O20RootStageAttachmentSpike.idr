@@ -5,6 +5,9 @@ import DGamma.Metatheory
 import DGamma.CP3
 import DGamma.CP5RawClosingRankSpike
 import DGamma.CP5SupportedBirthCoverageSpike
+import DGamma.CP5RootOrchestrationTransportSpike
+import DGamma.CP5UniqueRawNameInsertions
+import Decidable.Equality
 import Data.Nat
 
 %default total
@@ -203,3 +206,22 @@ o20RootBirthMatchLocated {name} {key} {world} {error} {value} mapping left right
   o20RootBirthMatchObserved mapping Z Z left right matching root component
     (locatedActionOrdinal birth)
     (rawClosingActionAtLocated name key world error value left (OInsert root Root component) birth)
+
+||| Same-external-inputs retains each actual root insertion as a native
+||| located action, including roots absent at the endpoint. No support or
+||| current raw-name bijection is used in this historical retention lemma.
+export
+0 o20RetainedRootBirth :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) ->
+  {sourceFirst, sourceFinal, targetFirst, targetFinal : SystemState name key value world error} ->
+  (source : Transitions sourceFirst sourceFinal) -> (target : Transitions targetFirst targetFinal) ->
+  SameExternalOrchestration nameEq source target ->
+  (root : name) -> (component : Component key value world error) ->
+  (birth : LocatedActionOccurrence (OInsert root Root component) source) ->
+  LocatedActionOccurrence (OInsert root Root component) target
+o20RetainedRootBirth {name} {key} {world} {error} {value} nameEq source target external root component birth =
+  rootActionLocated name key world error value nameEq target (OInsert root Root component)
+    (rootActionForward name key world error value nameEq source target external (OInsert root Root component)
+      (rootActionFromLocated name key world error value nameEq source (OInsert root Root component)
+        birth (RootInsertStep (locatedAction birth))))
