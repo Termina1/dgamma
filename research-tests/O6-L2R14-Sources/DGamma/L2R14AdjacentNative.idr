@@ -112,3 +112,35 @@ adjacentNativeAtHead {name} {key} {world} {error} {value} {first} {middle}
       (alignedSourceThroughHead nameEq keyEq
         (Fired {before = first} {afterState = middle} nameEq keyEq headAction tag checked) rest
         middle rightAction 0 (alignedNativeHead nameEq keyEq later tailAligned rightAction rightQuery)))
+
+||| Select the native head pair or structurally lift the tail pair. Only
+||| the queried physical ordinal is eliminated; action guards are unchanged.
+export
+0 adjacentNativeAtOrdinal : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (headAction : Action name key value world error) -> (tag : RuleTag) ->
+  (0 checked : checkedApplyAction @{nameEq} @{keyEq} headAction first = Just (tag, middle)) ->
+  (rest : Transitions middle finalState) ->
+  (later : AvailabilityTrace name key world error value rest) ->
+  (tailAligned : AlignedTransitions name key world error value nameEq keyEq rest) ->
+  (0 tailDecoder : (position : Nat) -> (source : SystemState name key value world error) ->
+    (leftAction, rightAction : Action name key value world error) ->
+    head' (drop position (trailSourceActions later)) = Just (source, leftAction) ->
+    head' (drop (S position) (nativeActionWord later)) = Just rightAction ->
+    AlignedAdjacentNative name key world error value nameEq keyEq rest source leftAction rightAction position) ->
+  (position : Nat) -> (source : SystemState name key value world error) ->
+  (leftAction, rightAction : Action name key value world error) ->
+  (0 query : head' (drop position ((first, headAction) :: trailSourceActions later)) = Just (source, leftAction)) ->
+  (0 rightQuery : head' (drop (S position) (headAction :: nativeActionWord later)) = Just rightAction) ->
+  AlignedAdjacentNative name key world error value nameEq keyEq
+    (MoreTransitions (Fired {before = first} {afterState = middle} nameEq keyEq headAction tag checked) rest)
+    source leftAction rightAction position
+adjacentNativeAtOrdinal nameEq keyEq headAction tag checked rest later tailAligned tailDecoder
+  Z source leftAction rightAction query rightQuery =
+  adjacentNativeAtHead nameEq keyEq headAction tag checked rest later tailAligned source leftAction rightAction query rightQuery
+adjacentNativeAtOrdinal {first} {middle} nameEq keyEq headAction tag checked rest later tailAligned tailDecoder
+  (S position) source leftAction rightAction query rightQuery =
+  adjacentNativeThroughHead nameEq keyEq
+    (Fired {before = first} {afterState = middle} nameEq keyEq headAction tag checked) rest
+    source leftAction rightAction position (tailDecoder position source leftAction rightAction query rightQuery)
