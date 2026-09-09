@@ -45,3 +45,7 @@ SECOND light stop mandates C UNIT STOP. C3 fully reverted to exact C2 source byt
 ## C3-3 exact HEAVY exception (supersedes C stop ONLY as stated)
 
 Supervisor ratified both light stops and AUTHORIZED the UNUSED third attempt on EXACT C3-2 bytes under shared atomic mkdir heavy lock / lane2 JSON owner, poll≤20min,48GiB sampled guard, own-identity cleanup after. Supervisor states no rebuild window is active; this lane does not inspect/edit any window. Manifest freezes source/hash/unit/budget; dedicated checker/launcher cannot authorize another source or retry. If PASS, C4+ may continue light; otherwise C remains stopped. Initial no-heavy instruction is overridden ONLY by this explicit later ruling. No main-tree access is granted.
+
+## Owner rule change — cross-lane heavy lock ABOLISHED
+
+While the C3-3 launcher was ONLY polling, supervisor abolished the shared lock and all rebuild-window blocking. The verified OWN Python polling PID73399 was stopped before any compiler started; no lock acquisition was observed, no shared lock was inspected/read/removed. Poll attempts had occurred under the prior exact authority and are disclosed; do not claim absolute historical lock non-interaction. New rule: one own compiler, declared-heavy48GiB/light18GiB; other-lane compilers separate/never signalled; overlap timestamps recorded. Obsolete acquisition/cleanup code is replaced (git history retains chronology). Fresh reverted-source V2 precedes tool publication; C3-3 will then start immediately on identical C3-2 bytes without any lock/window operations.

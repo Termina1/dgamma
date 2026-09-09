@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-"""C3-3 ONLY: copied from L2R10 light checker under an exact supervisor exception.
-48 GiB sampled stop; shared lock is owned/released by the heavy launcher.
-Same C3-2 source bytes ONLY; no window-file access and no general heavy permission.
+"""C3-3-only DECLARED HEAVY checker copied from L2R10 light protocol.
+48 GiB sampled guard under the supervisor lock-abolition rule.
+No shared lock/window access; exact C3-2 source bytes and one own compiler.
 Uses absolute compiler arguments; never changes source contents or deletes build
  data. Performs target-only mtime touch; no companion bundle is currently authorized.
-Called ONLY by run-l2r10-heavy-launch.py with its authenticated JSON lock owner.
+Called by run-l2r10-heavy-launch.py; declaration budget unchanged.
 """
 import datetime, hashlib, json, os, pathlib, re, signal, subprocess, sys, time
 ROOT = pathlib.Path('/Users/vyacheslavshebanov/Work/dgamma-lane2')
@@ -62,21 +62,19 @@ def compiler_processes():
 initial_procs=compiler_processes()
 assert not any(p['classification']=='lane2' for p in initial_procs),'Own compiler already running'
 authority_bytes=(ROOT/'research-tests/O6-L2R10-HEAVY-EXCEPTION.json').read_bytes()
-assert hashlib.sha256(authority_bytes).hexdigest()=='629bf4a5f404a089d47413dc147fb1f7c49b234341f29cd57590687d8e80d8e2'
+assert hashlib.sha256(authority_bytes).hexdigest()=='cb477eaf914e8d7c4633aaaef390e90a24e1de0d81ed1724edfb14e30e55a89c'
 authority=json.loads(authority_bytes)
 assert unit==authority['unit']=='C3-3' and path==authority['path']
 assert hashlib.sha256(snapshot).hexdigest()==authority['sourceSHA256'], 'EXACT C3-2 bytes only'
-owner=json.loads((pathlib.Path(authority['lock'])/'owner.json').read_text())
-assert owner['lane']=='lane2' and owner['pid']==int(os.environ['L2R10_HEAVY_OWNER_PID'])
-assert owner['unit']==unit and owner['path']==str(target) and owner['authoritySHA256']=='629bf4a5f404a089d47413dc147fb1f7c49b234341f29cd57590687d8e80d8e2'
-heavy=True;locked=True;lock_events=[dict(event='authenticated launcher-owned lock',owner=owner)]
+heavy=False;locked=False;lock_events=[]  # Lock ABOLISHED; never access shared paths.
+heavy_overlap_timestamps=[]
 command=['idris2','--source-dir',str(ROOT/'src'),'--source-dir',str(ROOT/'research')]
 if path.startswith('research-tests/'):command+=['--source-dir',str(ROOT/'research-tests')]
 source_root = target.parent.parent
 command+=['--source-dir',str(source_root),'--check',str(target)]
 old_mtime=target.stat().st_mtime_ns
 target.touch()  # Supervisor-approved TARGET-only fresh validation exception.
-touch_record=dict(path=str(target),oldMtimeNs=old_mtime,newMtimeNs=target.stat().st_mtime_ns,authority='L2R10 C3-3 exact heavy exception; target-only fresh check')
+touch_record=dict(path=str(target),oldMtimeNs=old_mtime,newMtimeNs=target.stat().st_mtime_ns,authority='L2R10 exact C3-3 declared-heavy exception; target only; lock abolished')
 (OUT/(unit+'.source')).write_bytes(snapshot)
 bundle_records=[]
 for i,(extra,data) in enumerate(bundle):
@@ -104,7 +102,9 @@ try:
     stop(signal.SIGTERM,None)
    for p in compiler_processes():
     if p['classification']=='lane2':maximum=max(maximum,p['rssKiB'])
-    else:foreign[p['pid']]=p
+    else:
+     foreign[p['pid']]=p
+     if p['rssKiB']>18*1024*1024:heavy_overlap_timestamps.append(datetime.datetime.now(datetime.timezone.utc).isoformat())
    if maximum>48*1024*1024 and not interrupted:stop(signal.SIGTERM,None)
  if not sources_unchanged(target,snapshot,bundle):
   source_mutation=True;interrupted=True
@@ -113,10 +113,10 @@ try:
  bundle_fresh=all(bool(re.search(r'^\d+/\d+: Building DGamma\.'+re.escape(p.stem)+r' \('+re.escape(str(p))+r'\)$',text,re.M)) for p,data in bundle)
  buildingLines=re.findall(r'^\d+/\d+: Building .+$',text,re.M)
  passed=fresh and len(buildingLines)==1 and bundle_fresh and not interrupted and (process.returncode==0 and 'Error:' not in text if not diagnostic else process.returncode!=0 and diagnostic in text and bool(symbol) and symbol in text)
- record=dict(buildingLines=buildingLines,buildingCount=len(buildingLines),bundleSources=bundle_records,bundleFresh=bundle_fresh,unit=unit,path=path,command=command,start=started,end=datetime.datetime.now(datetime.timezone.utc).isoformat(),seconds=time.monotonic()-clock,exit=process.returncode,fresh=fresh,passed=passed,interrupted=interrupted,maxSampleRSSKiB=maximum,sourceSHA256=hashlib.sha256(snapshot).hexdigest(),expectedDiagnostic=diagnostic,symbol=symbol,transcript=text,separateCompilerObservations=list(foreign.values()),heavyLockAcquired=heavy,heavyLockEvents=lock_events,targetMtimeTouch=touch_record,sourceMutationObserved=source_mutation)
+ record=dict(declaredHeavy=True,heavyAuthoritySHA256=hashlib.sha256(authority_bytes).hexdigest(),concurrentHeavyOverlapTimestamps=heavy_overlap_timestamps,buildingLines=buildingLines,buildingCount=len(buildingLines),bundleSources=bundle_records,bundleFresh=bundle_fresh,unit=unit,path=path,command=command,start=started,end=datetime.datetime.now(datetime.timezone.utc).isoformat(),seconds=time.monotonic()-clock,exit=process.returncode,fresh=fresh,passed=passed,interrupted=interrupted,maxSampleRSSKiB=maximum,sourceSHA256=hashlib.sha256(snapshot).hexdigest(),expectedDiagnostic=diagnostic,symbol=symbol,transcript=text,separateCompilerObservations=list(foreign.values()),heavyLockAcquired=heavy,heavyLockEvents=lock_events,targetMtimeTouch=touch_record,sourceMutationObserved=source_mutation)
  (OUT/(unit+'.json')).write_text(json.dumps(record,indent=2)+'\n')
  with (OUT/'ledger.jsonl').open('a') as ledger:ledger.write(json.dumps(record)+'\n')
  print(text,flush=True);print('RESULT',json.dumps({k:v for k,v in record.items() if k!='transcript'}),flush=True)
 finally:
- pass  # Launcher owns identity-checked lock cleanup after this checker exits.
+ pass  # No shared lock/window operations exist in this light-only runner.
 sys.exit(0 if passed else 1)
