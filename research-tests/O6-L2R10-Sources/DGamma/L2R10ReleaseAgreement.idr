@@ -64,3 +64,14 @@ releaseAgreementAtDec keyEq wanted keys seen oldEquation (Yes present) equation 
   rewrite equation in sym (releasePresentAtBool keyEq wanted keys seen oldEquation present)
 releaseAgreementAtDec keyEq wanted keys seen oldEquation (No absent) equation =
   rewrite equation in trans (sym (releaseAbsentFalse keyEq wanted keys absent)) oldEquation
+
+||| GENERAL SINGLE-KEY agreement. Both library values are observed HERE
+||| with their own native equations. This is not yet the bounded whole-trail
+||| release-list theorem: overlap folding, offsets and filtering remain.
+export
+0 releaseScanAgrees : {key : Type} -> (keyEq : DecEq key) ->
+  (wanted : key) -> (keys : List key) ->
+  isYes (isElem @{keyEq} wanted keys) = elemDec @{keyEq} wanted keys
+releaseScanAgrees keyEq wanted keys =
+  releaseAgreementAtDec keyEq wanted keys (elemDec @{keyEq} wanted keys) Refl
+    (isElem @{keyEq} wanted keys) Refl
