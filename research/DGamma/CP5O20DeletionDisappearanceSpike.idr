@@ -276,3 +276,17 @@ o20DeletionChainPreservesAbsence {sourceFinal} nameEq keyEq
   o20DeletionChainPreservesAbsence nameEq keyEq rest selected
     (o20CanonicalEndpointPreservesAbsence nameEq keyEq sourceFinal (survivingFinal (deletionResult step))
       (deletionEndpoint step) selected absent)
+
+||| Observe the selected birth list at the FIRST actual deletion node. This
+||| is not the accepted global discarded list and no equality is postulated.
+public export
+0 o20DeletionHeadGenerations :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {protocol : RegistrationProtocol key value world error} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {initial, sourceFinal, targetFinal : SystemState name key value world error} ->
+  {source : Transitions initial sourceFinal} -> {target : Transitions initial targetFinal} ->
+  ClosingFreeDeletionDerivation name key world error value protocol nameEq keyEq source target ->
+  List (RegistrationGeneration name)
+o20DeletionHeadGenerations (ClosingFreeDeletionDone trace) = []
+o20DeletionHeadGenerations (ClosingFreeDeletionStep trace premises candidate step target rest) = selectedRegistrations candidate
