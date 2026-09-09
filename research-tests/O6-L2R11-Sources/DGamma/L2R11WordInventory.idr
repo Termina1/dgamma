@@ -105,3 +105,13 @@ observeWordActionInventory word = MkObservedWordInventory
   (wordActionInventory word) Refl
   (all (\code => not (wordActionInventory word code) || elemDec code [0, 1, 2, 3, 4])
     [0, 1, 2, 3, 4, 5, 6, 7]) Refl
+
+||| The word of the ACTUAL native transition chain. This needs no source
+||| registry evaluation and never reads an erased ForeignChildRun tail.
+public export
+replayActionWord : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {0 first, finalState : SystemState name key value world error} ->
+  Transitions first finalState -> List (Action name key value world error)
+replayActionWord NoTransitions = []
+replayActionWord (MoreTransitions (Fired ne ke action tag checked) rest) =
+  action :: replayActionWord rest
