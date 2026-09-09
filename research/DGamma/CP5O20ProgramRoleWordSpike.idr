@@ -440,3 +440,17 @@ o20ActorRoleWordInvariant {first}
   (InstalledStep {middle} action tag checked rest installed installedLater) =
     trans (o20YieldedInsertRoleFrame nameEq keyEq selected child childComponent first middle action tag checked inserted installed)
       (o20ActorRoleWordInvariant nameEq keyEq selected rest actorLater roleLater installedLater)
+
+||| Split complete role certificates at a supplied ACTUAL trace cut. Both
+||| segment certificates are produced by structural head/tail induction.
+export
+0 o20RolesAppendSplit :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (earlier : Transitions first middle) -> (later : Transitions middle finalState) ->
+  O20CanonicalTraceRoles (appendTransitions earlier later) ->
+  (O20CanonicalTraceRoles earlier, O20CanonicalTraceRoles later)
+o20RolesAppendSplit NoTransitions later roles = (O20RolesEnd, roles)
+o20RolesAppendSplit (MoreTransitions step rest) later (O20RolesStep role roles) =
+  (O20RolesStep role (fst (o20RolesAppendSplit rest later roles)),
+   snd (o20RolesAppendSplit rest later roles))
