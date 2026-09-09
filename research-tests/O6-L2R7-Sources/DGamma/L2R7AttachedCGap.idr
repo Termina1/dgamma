@@ -38,3 +38,19 @@ record AttachedBundleOccurrenceC
   0 cMemberOrdinal : ordinal = cBundleOffset + locatedActionOrdinal cBundleOccurrence
   0 cMemberLowerBound : LTE cBundleOffset ordinal
   0 cMemberUpperBound : LT ordinal (cBundleOffset + transitionCount cMemberBundle)
+
+||| Coverage for the enlarged grammar; this is a specification, not a general
+||| producer. Universal interval separation remains a separate obligation.
+public export
+record AttachedNormalFormC
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (keyEq : DecEq key)
+  {initial, finalState, gapFirst, gapFinal : SystemState name key value world error}
+  (global : Transitions initial finalState)
+  (gap : Transitions gapFirst gapFinal) (gapOffset : Nat) where
+  constructor MkAttachedNormalFormC
+  0 cRootInBundle : (action : Action name key value world error) ->
+    (occurrence : LocatedActionOccurrence action gap) ->
+    RootOrchestrationStep nameEq (locatedTransition occurrence) ->
+    AttachedBundleOccurrenceC name key world error value nameEq keyEq global action
+      (gapOffset + locatedActionOrdinal occurrence)
