@@ -138,3 +138,31 @@ export
 releaseShiftList step rest [] = Refl
 releaseShiftList step rest (release :: releases) =
   cong2 (::) (releaseShiftOrdinal step rest release) (releaseShiftList step rest releases)
+
+||| GENERAL exact linkage of the new omega ordinal scan to the unchanged
+||| erased proof-carrying native scan. Thus no ordinal is invented or lost
+||| relative to that located-release enumeration. Old elemDec agreement is
+||| deliberately separate; this theorem does not assume releaseScanAgrees.
+export
+0 releaseOrdinalLink : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, finalState : SystemState name key value world error} ->
+  {trace : Transitions first finalState} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (component : Component key value world error) ->
+  (trail : AvailabilityTrace name key world error value trace) ->
+  map (\release => locatedActionOrdinal (releaseOccurrence (snd release)))
+    (scanObservedReleases nameEq keyEq component trail) =
+  releaseOrdinalScan nameEq keyEq component trail
+releaseOrdinalLink nameEq keyEq component (AvailabilityEnd state) = Refl
+releaseOrdinalLink {name} {key} {world} {error} {value}
+  nameEq keyEq component (AvailabilityStep source (Fired ne ke action tag checked) rest later) =
+  trans (mapAppend
+    (\release => locatedActionOrdinal (releaseOccurrence (snd release)))
+    (releaseAtAction nameEq keyEq component (Fired ne ke action tag checked) rest action Refl)
+    (map (releaseThroughHead (Fired ne ke action tag checked) rest)
+      (scanObservedReleases nameEq keyEq component later)))
+    (cong2 (++)
+      (actionOrdinalLink nameEq keyEq component (Fired ne ke action tag checked) rest action Refl)
+      (trans (releaseShiftList (Fired ne ke action tag checked) rest
+        (scanObservedReleases nameEq keyEq component later))
+        (cong (map S) (releaseOrdinalLink nameEq keyEq component later))))
