@@ -38,3 +38,15 @@ rootCatalogStep ordinal (LAdvance actor) later = later
 rootCatalogStep ordinal (LDivert actor) later = later
 rootCatalogStep ordinal (LUnload actor) later = later
 rootCatalogStep ordinal (LLeave actor) later = later
+
+||| Total executable catalog scan FROM the actual checked native trail. All
+||| input ordinals advance, including non-birth actions; no catalog is supplied.
+public export
+scanRootCatalog : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {0 first, finalState : SystemState name key value world error} ->
+  {0 trace : Transitions first finalState} ->
+  (offset : Nat) -> AvailabilityTrace name key world error value trace ->
+  List (RootCatalogEntry name key world error value)
+scanRootCatalog offset (AvailabilityEnd state) = []
+scanRootCatalog offset (AvailabilityStep first (Fired nameEq keyEq action tag checked) rest later) =
+  rootCatalogStep offset action (scanRootCatalog (S offset) later)
