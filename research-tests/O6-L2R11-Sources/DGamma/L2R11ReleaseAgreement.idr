@@ -103,3 +103,14 @@ actionOrdinalsAgrees nameEq keyEq component source (LAdvance actor) = Refl
 actionOrdinalsAgrees nameEq keyEq component source (LDivert actor) = Refl
 actionOrdinalsAgrees nameEq keyEq component source (LUnload actor) = Refl
 actionOrdinalsAgrees nameEq keyEq component source (LLeave actor) = Refl
+
+||| Shift relative release ordinals through one native head, keeping the
+||| arbitrary global offset explicit instead of comparing unequal indices.
+export
+0 releaseOffsetShift : (offset : Nat) -> (ordinals : List Nat) ->
+  map (\ordinal => offset + ordinal) (map S ordinals) =
+    map (\ordinal => S offset + ordinal) ordinals
+releaseOffsetShift offset [] = Refl
+releaseOffsetShift offset (ordinal :: ordinals) =
+  cong2 (::) (sym (plusSuccRightSucc offset ordinal))
+    (releaseOffsetShift offset ordinals)
