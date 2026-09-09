@@ -41,3 +41,22 @@ export
 o20NativeScanCount {ordinal} GenerationTraceScanEnd = sym (plusZeroRightNeutral ordinal)
 o20NativeScanCount {ordinal} (GenerationTraceScanStep step rest later) =
   trans (o20NativeScanCount later) (plusSuccRightSucc ordinal (transitionCount rest))
+
+||| Scan the actual finite preceding trace from the empty origin. The live
+||| environment is COMPUTED, not a caller parameter; its ordinal is the same
+||| physical count used by LocatedGeneratedRegistration.
+export
+0 o20NativePrefixScan :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) ->
+  {first, finalState : SystemState name key value world error} ->
+  (trace : Transitions first finalState) ->
+  GenerationTraceScan nameEq Z [] trace (transitionCount trace)
+    (o20ScannedFinalLive nameEq Z [] trace)
+o20NativePrefixScan {name} {key} {world} {error} {value} nameEq trace =
+  replace {p = \live => GenerationTraceScan nameEq Z [] trace (transitionCount trace) live}
+    (o20GenerationScanFinalLiveExact (generationScan (scanGenerations nameEq Z [] trace)))
+    (replace {p = \ordinal => GenerationTraceScan nameEq Z [] trace ordinal
+      (scanFinalLive (scanGenerations nameEq Z [] trace))}
+      (o20NativeScanCount (generationScan (scanGenerations nameEq Z [] trace)))
+      (generationScan (scanGenerations nameEq Z [] trace)))
