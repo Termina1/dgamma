@@ -55,3 +55,18 @@ replayAdvanceAtFound nameEq keyEq child parent actor childFiber actorFiber befor
       (retirementProviderFrame nameEq keyEq child parent actor childFiber actorFiber (registry before) childFound ownChild actorFound)
       distinct valid original)
 
+
+||| ANY successful original Advance tag has an actual source actor.
+||| Missing lookup is observed with its own equation, then contradicts the
+||| original native edge. No finite Iter/Finish tag assumption is made.
+export
+0 advanceMissingImpossible : {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (before, afterState : SystemState name key value world error) -> (tag : RuleTag) ->
+  (0 missing : lookupFiber {name} {key} {value} {world} {error} @{nameEq}
+    actor (registry before) = Nothing) ->
+  (0 original : checkedApplyAction @{nameEq} @{keyEq} (LAdvance actor) before = Just (tag, afterState)) -> Void
+advanceMissingImpossible nameEq keyEq actor before afterState tag missing original =
+  absurd (replace {p = \observed => observed = Just (tag, afterState)}
+    (the (applyAction @{nameEq} @{keyEq} (LAdvance actor) before = Nothing) (rewrite missing in Refl))
+    (checkedActionProjects nameEq keyEq (LAdvance actor) before afterState tag original))
