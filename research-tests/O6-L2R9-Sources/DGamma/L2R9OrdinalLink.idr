@@ -28,3 +28,42 @@ export
     overlapOrdinals keyEq left right seen equation
 overlapOrdinalLink keyEq left right True equation = Refl
 overlapOrdinalLink keyEq left right False equation = Refl
+
+||| Head-parent linkage keeps the native occurrence and source proof. Only
+||| the observed parent is eliminated; shared-key extraction is L2R8's own.
+export
+0 parentOrdinalLink : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, finalState : SystemState name key value world error} ->
+  {trace : Transitions first finalState} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (component : Component key value world error) ->
+  (child : name) -> (fiber : Fiber name key value world error) ->
+  (occurrence : LocatedActionOccurrence (ORemove child) trace) ->
+  (0 atHead : locatedActionOrdinal occurrence = Z) ->
+  (0 found : lookupFiber {name} {key} {value} {world} {error} @{nameEq}
+    child (registry (actionBeforeState occurrence)) = Just fiber) ->
+  (parent : Parent name) -> (0 equation : fiberParent fiber = parent) ->
+  map (\release => locatedActionOrdinal (releaseOccurrence (snd release)))
+    (releaseAtParent nameEq keyEq component child fiber occurrence found parent equation) =
+  ordinalAtParent keyEq component fiber parent equation
+parentOrdinalLink nameEq keyEq component child fiber occurrence atHead found Root equation = Refl
+parentOrdinalLink {name} {key} {world} {error} {value} {trace}
+  nameEq keyEq component child fiber occurrence atHead found (ChildOf actor) equation =
+  trans (mapFusion
+    {a = SharedKey (dependencies (componentProvisions (fiberComponent fiber)))
+      (dependencies (componentProvisions component))}
+    {b = (selected : name ** AttachedRelease name key world error value nameEq selected trace component)}
+    {c = Nat}
+    (\release => locatedActionOrdinal (releaseOccurrence (snd release)))
+    (\shared => (actor ** MkAttachedRelease child fiber occurrence found equation
+      (sharedKey shared) (inLeft shared) (inRight shared)))
+    (sharedKeysObserved keyEq
+      (dependencies (componentProvisions (fiberComponent fiber)))
+      (dependencies (componentProvisions component))
+      (any (\item => isYes (isElem @{keyEq} item (dependencies (componentProvisions component))))
+        (dependencies (componentProvisions (fiberComponent fiber)))) Refl))
+    (rewrite atHead in overlapOrdinalLink keyEq
+      (dependencies (componentProvisions (fiberComponent fiber)))
+      (dependencies (componentProvisions component))
+      (any (\item => isYes (isElem @{keyEq} item (dependencies (componentProvisions component))))
+        (dependencies (componentProvisions (fiberComponent fiber)))) Refl)
