@@ -26,3 +26,26 @@ record RootInsertionAt
   insertedComponent : Component key value world error
   rootOccurrence : LocatedActionOccurrence (OInsert insertedRoot Root insertedComponent) trace
   0 rootOrdinal : locatedActionOrdinal rootOccurrence = ordinal
+
+||| Lift the SAME native root occurrence through a checked front, transporting
+||| its ordinal by count additivity (not equality of reconstructed states).
+export
+0 rootInsertionAfterPrefix :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (front : Transitions first middle) -> (trace : Transitions middle finalState) ->
+  {ordinal : Nat} -> RootInsertionAt name key world error value trace ordinal ->
+  RootInsertionAt name key world error value (appendTransitions front trace)
+    (transitionCount front + ordinal)
+rootInsertionAfterPrefix front trace found =
+  MkRootInsertionAt (insertedRoot found) (insertedComponent found)
+    (MkLocatedActionOccurrence
+      (actionBeforeState (rootOccurrence found)) (actionAfterState (rootOccurrence found))
+      (appendTransitions front (beforeActionOccurrence (rootOccurrence found)))
+      (locatedTransition (rootOccurrence found)) (afterActionOccurrence (rootOccurrence found))
+      (locatedAction (rootOccurrence found))
+      (trans (appendTransitionsAssociative front (beforeActionOccurrence (rootOccurrence found))
+        (MoreTransitions (locatedTransition (rootOccurrence found)) (afterActionOccurrence (rootOccurrence found))))
+        (cong (appendTransitions front) (actionOccurrenceDecomposition (rootOccurrence found)))))
+    (trans (extendedCountAppend front (beforeActionOccurrence (rootOccurrence found)))
+      (cong (transitionCount front +) (rootOrdinal found)))
