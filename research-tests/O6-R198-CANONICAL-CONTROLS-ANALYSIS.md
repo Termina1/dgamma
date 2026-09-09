@@ -60,7 +60,8 @@ EVERY x, not just names in either support set.
 
 The candidate missing **canonical vestigial disappearance** obligation must
 consume the literal original trace, actual independent canonical capital,
-actual final generation environment and full original vestigial witness, then
+actual current AND discarded environments of the SAME original surviving-tree
+scan and full original vestigial witness, then
 produce the actual canonical lookup-Nothing (or actual withdrawal membership,
 which is sufficient). Its strength must be checked against retained-open versus
 closing generation dispositions; no unstated axiom asserting it was added.

@@ -923,6 +923,7 @@ UTC deadline. E4 closes this authorized shift cleanly.
 | Thm73 convergence | `CP5ConfluenceCrossTraceSpike:canonicalSchedulesConvergeSpike` | Unchanged hole; C not attempted because A/B producers remain OPEN |
 
 R198 source freeze:41 new research declarations, no new holes/escapes,
-production unchanged.21 guard tests PASS; complete151-check inherited+new seeded
-validation pending at D1. See `research-tests/O6-R198-GRIND-SHIFT-AUDIT.md` and
+production unchanged.21 guard tests and all151 final expected outcomes PASS
+(143 inherited +7 new sources + seeded package;7 expected negatives). A/B main
+producers and convergence remain OPEN. See `research-tests/O6-R198-GRIND-SHIFT-AUDIT.md` and
 `O6-R198-CANONICAL-CONTROLS-ANALYSIS.md` for exact partial claims and limitations.

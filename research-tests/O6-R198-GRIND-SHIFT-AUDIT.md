@@ -95,3 +95,33 @@ Checked PARTIAL; no extension requested. A/B proof work frozen at caps,
 C untouched. D1 prepares complete inherited validation, documentation and
 machine auditors; D2 validation close, D3 archive, D4 independent archive/final
 gate remain. Required independent human review is parent-owned and pending.
+
+
+## D2 final validated boundary — 10:51:21Z
+
+151/151 expected outcomes authenticated: ALL143 inherited sources +7 new
+sources + seeded package;7 exact expected negatives; no inherited exclusions.
+202 native invocations overall,195 expected PASS (188 exit0 +7 negatives),7
+rejected snapshots retained.41 guarded source receipts;21 guard tests PASS.
+Final native-check sum2269.304s; wall window10:13:01–10:51:21Z. No cold build.
+
+Independent machine source/log/receipt/plan/lock authentication PASS. All41
+source commits add exactly one declaration and remove NO prior committed code
+line. A26 units/33 invocations/25 retained; B16/16/16; A3 fully reverted,
+A20 whitespace-only guard repair independently reproduced; C0; D5 unchanged.
+No resource stop, target mutation, extra Building, lock wait or stale removal;
+no main compiler/lock. LocalDiamond peak SAMPLE50,540,272KiB<52GiB; other/Unique
+44,786,256KiB<48GiB.21 zero-sample invocations mean no live capture, not actual
+zero peak. All samples are one-second own-worktree, NOT OS high-water.
+
+Production==34b21c9; CP3blob unchanged;207 package seeds retained. All frozen
+bytes unchanged; census4=1/2/0/0/1; no new holes/escapes. Source freeze remains
+7 new modules/41 declarations. Mathematical status stays checked PARTIAL:
+A accepted synchronization and B all-name current rebase/bridge OPEN; C barred.
+The raw closing identity relation is NOT independent canonical capital. Full
+vestigial obligations require BOTH actual current and discarded environments
+from the SAME original surviving-tree scan, not arbitrary discarded lists.
+
+D2/4 publishes validation/audit results and append-only archive tooling. D3
+archive/ledger/inventory publication and D4 post-publication verification/gate
+remain. Independent HUMAN review is parent-owned and not claimed complete.

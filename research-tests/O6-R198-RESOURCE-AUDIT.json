@@ -1,0 +1,4236 @@
+{
+  "status": "PASS",
+  "timestampUTC": "2026-09-09T10:52:10.561096+00:00",
+  "head": "a9e0851b46a7197593e2e376ac4b77aef90147a9",
+  "invocations": 202,
+  "allCompilerLifetimesCovered": true,
+  "lockIntervalsNonoverlapping": true,
+  "lockEvents": [
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 61052,
+      "timestampUTC": "2026-09-09T08:51:54.850901+00:00",
+      "unit": "S0-1",
+      "path": "research/DGamma/CP5O20CanonicalSynchronizationGoalSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T08:51:58.003544+00:00",
+      "unit": "S0-1",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 61052,
+        "timestampUTC": "2026-09-09T08:51:54.850901+00:00",
+        "unit": "S0-1",
+        "path": "research/DGamma/CP5O20CanonicalSynchronizationGoalSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 80912,
+      "timestampUTC": "2026-09-09T08:54:58.296795+00:00",
+      "unit": "A1-1",
+      "path": "research-tests/DGamma/R198RepeatedTagStageProbe.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T08:54:59.382813+00:00",
+      "unit": "A1-1",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 80912,
+        "timestampUTC": "2026-09-09T08:54:58.296795+00:00",
+        "unit": "A1-1",
+        "path": "research-tests/DGamma/R198RepeatedTagStageProbe.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 87123,
+      "timestampUTC": "2026-09-09T08:55:59.299709+00:00",
+      "unit": "A2-1",
+      "path": "research-tests/DGamma/R198RepeatedTagStageProbe.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T08:56:00.368492+00:00",
+      "unit": "A2-1",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 87123,
+        "timestampUTC": "2026-09-09T08:55:59.299709+00:00",
+        "unit": "A2-1",
+        "path": "research-tests/DGamma/R198RepeatedTagStageProbe.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 92575,
+      "timestampUTC": "2026-09-09T08:56:49.279521+00:00",
+      "unit": "A3-1",
+      "path": "research-tests/DGamma/R198RepeatedTagStageProbe.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T08:56:50.374875+00:00",
+      "unit": "A3-1",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 92575,
+        "timestampUTC": "2026-09-09T08:56:49.279521+00:00",
+        "unit": "A3-1",
+        "path": "research-tests/DGamma/R198RepeatedTagStageProbe.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 5516,
+      "timestampUTC": "2026-09-09T08:58:32.498057+00:00",
+      "unit": "A3-2",
+      "path": "research-tests/DGamma/R198RepeatedTagStageProbe.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T08:58:33.589493+00:00",
+      "unit": "A3-2",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 5516,
+        "timestampUTC": "2026-09-09T08:58:32.498057+00:00",
+        "unit": "A3-2",
+        "path": "research-tests/DGamma/R198RepeatedTagStageProbe.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 15997,
+      "timestampUTC": "2026-09-09T09:00:04.546744+00:00",
+      "unit": "A3-3",
+      "path": "research-tests/DGamma/R198RepeatedTagStageProbe.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T09:00:05.639653+00:00",
+      "unit": "A3-3",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 15997,
+        "timestampUTC": "2026-09-09T09:00:04.546744+00:00",
+        "unit": "A3-3",
+        "path": "research-tests/DGamma/R198RepeatedTagStageProbe.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 36326,
+      "timestampUTC": "2026-09-09T09:02:56.781440+00:00",
+      "unit": "SV1-1",
+      "path": "research-tests/DGamma/R198RepeatedTagStageProbe.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T09:02:57.867248+00:00",
+      "unit": "SV1-1",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 36326,
+        "timestampUTC": "2026-09-09T09:02:56.781440+00:00",
+        "unit": "SV1-1",
+        "path": "research-tests/DGamma/R198RepeatedTagStageProbe.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 42860,
+      "timestampUTC": "2026-09-09T09:03:58.224541+00:00",
+      "unit": "A4-1",
+      "path": "research/DGamma/CP5O20StampedOrdinalNecessitySpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T09:04:00.351842+00:00",
+      "unit": "A4-1",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 42860,
+        "timestampUTC": "2026-09-09T09:03:58.224541+00:00",
+        "unit": "A4-1",
+        "path": "research/DGamma/CP5O20StampedOrdinalNecessitySpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 47766,
+      "timestampUTC": "2026-09-09T09:04:35.414955+00:00",
+      "unit": "A4-2",
+      "path": "research/DGamma/CP5O20StampedOrdinalNecessitySpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T09:04:38.595962+00:00",
+      "unit": "A4-2",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 47766,
+        "timestampUTC": "2026-09-09T09:04:35.414955+00:00",
+        "unit": "A4-2",
+        "path": "research/DGamma/CP5O20StampedOrdinalNecessitySpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 55872,
+      "timestampUTC": "2026-09-09T09:05:54.776474+00:00",
+      "unit": "A5-1",
+      "path": "research/DGamma/CP5O20StampedOrdinalNecessitySpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T09:05:56.882944+00:00",
+      "unit": "A5-1",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 55872,
+        "timestampUTC": "2026-09-09T09:05:54.776474+00:00",
+        "unit": "A5-1",
+        "path": "research/DGamma/CP5O20StampedOrdinalNecessitySpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 63775,
+      "timestampUTC": "2026-09-09T09:07:03.018142+00:00",
+      "unit": "A6-1",
+      "path": "research/DGamma/CP5O20StampedOrdinalNecessitySpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T09:07:05.140562+00:00",
+      "unit": "A6-1",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 63775,
+        "timestampUTC": "2026-09-09T09:07:03.018142+00:00",
+        "unit": "A6-1",
+        "path": "research/DGamma/CP5O20StampedOrdinalNecessitySpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 72124,
+      "timestampUTC": "2026-09-09T09:08:20.337355+00:00",
+      "unit": "A7-1",
+      "path": "research/DGamma/CP5O20StampedOrdinalNecessitySpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T09:08:22.454367+00:00",
+      "unit": "A7-1",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 72124,
+        "timestampUTC": "2026-09-09T09:08:20.337355+00:00",
+        "unit": "A7-1",
+        "path": "research/DGamma/CP5O20StampedOrdinalNecessitySpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 77594,
+      "timestampUTC": "2026-09-09T09:09:18.053128+00:00",
+      "unit": "A8-1",
+      "path": "research/DGamma/CP5O20StampedOrdinalNecessitySpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T09:09:21.227797+00:00",
+      "unit": "A8-1",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 77594,
+        "timestampUTC": "2026-09-09T09:09:18.053128+00:00",
+        "unit": "A8-1",
+        "path": "research/DGamma/CP5O20StampedOrdinalNecessitySpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 86177,
+      "timestampUTC": "2026-09-09T09:10:34.759061+00:00",
+      "unit": "A9-1",
+      "path": "research/DGamma/CP5O20StampedOrdinalNecessitySpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T09:10:35.888141+00:00",
+      "unit": "A9-1",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 86177,
+        "timestampUTC": "2026-09-09T09:10:34.759061+00:00",
+        "unit": "A9-1",
+        "path": "research/DGamma/CP5O20StampedOrdinalNecessitySpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 90780,
+      "timestampUTC": "2026-09-09T09:11:14.880545+00:00",
+      "unit": "A9-2",
+      "path": "research/DGamma/CP5O20StampedOrdinalNecessitySpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T09:11:15.954921+00:00",
+      "unit": "A9-2",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 90780,
+        "timestampUTC": "2026-09-09T09:11:14.880545+00:00",
+        "unit": "A9-2",
+        "path": "research/DGamma/CP5O20StampedOrdinalNecessitySpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 98564,
+      "timestampUTC": "2026-09-09T09:12:29.648693+00:00",
+      "unit": "A9-3",
+      "path": "research/DGamma/CP5O20StampedOrdinalNecessitySpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T09:12:32.864356+00:00",
+      "unit": "A9-3",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 98564,
+        "timestampUTC": "2026-09-09T09:12:29.648693+00:00",
+        "unit": "A9-3",
+        "path": "research/DGamma/CP5O20StampedOrdinalNecessitySpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 19118,
+      "timestampUTC": "2026-09-09T09:15:32.655188+00:00",
+      "unit": "A10-1",
+      "path": "research/DGamma/CP5O20StampedOrdinalNecessitySpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T09:15:35.875804+00:00",
+      "unit": "A10-1",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 19118,
+        "timestampUTC": "2026-09-09T09:15:32.655188+00:00",
+        "unit": "A10-1",
+        "path": "research/DGamma/CP5O20StampedOrdinalNecessitySpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 27099,
+      "timestampUTC": "2026-09-09T09:16:45.793253+00:00",
+      "unit": "A11-1",
+      "path": "research/DGamma/CP5O20StampedOrdinalNecessitySpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T09:16:49.001097+00:00",
+      "unit": "A11-1",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 27099,
+        "timestampUTC": "2026-09-09T09:16:45.793253+00:00",
+        "unit": "A11-1",
+        "path": "research/DGamma/CP5O20StampedOrdinalNecessitySpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 34187,
+      "timestampUTC": "2026-09-09T09:17:48.229897+00:00",
+      "unit": "A12-1",
+      "path": "research/DGamma/CP5O20OccurrenceStampedHistorySpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T09:17:50.346146+00:00",
+      "unit": "A12-1",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 34187,
+        "timestampUTC": "2026-09-09T09:17:48.229897+00:00",
+        "unit": "A12-1",
+        "path": "research/DGamma/CP5O20OccurrenceStampedHistorySpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 40344,
+      "timestampUTC": "2026-09-09T09:18:45.697580+00:00",
+      "unit": "A13-1",
+      "path": "research/DGamma/CP5O20OccurrenceStampedHistorySpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T09:18:48.877452+00:00",
+      "unit": "A13-1",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 40344,
+        "timestampUTC": "2026-09-09T09:18:45.697580+00:00",
+        "unit": "A13-1",
+        "path": "research/DGamma/CP5O20OccurrenceStampedHistorySpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 56339,
+      "timestampUTC": "2026-09-09T09:20:57.949668+00:00",
+      "unit": "A14-1",
+      "path": "research/DGamma/CP5O20OccurrenceStampedHistorySpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T09:21:01.155709+00:00",
+      "unit": "A14-1",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 56339,
+        "timestampUTC": "2026-09-09T09:20:57.949668+00:00",
+        "unit": "A14-1",
+        "path": "research/DGamma/CP5O20OccurrenceStampedHistorySpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 62047,
+      "timestampUTC": "2026-09-09T09:22:00.696880+00:00",
+      "unit": "A15-1",
+      "path": "research/DGamma/CP5O20OccurrenceStampedHistorySpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T09:22:03.926906+00:00",
+      "unit": "A15-1",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 62047,
+        "timestampUTC": "2026-09-09T09:22:00.696880+00:00",
+        "unit": "A15-1",
+        "path": "research/DGamma/CP5O20OccurrenceStampedHistorySpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 69622,
+      "timestampUTC": "2026-09-09T09:23:07.120484+00:00",
+      "unit": "A16-1",
+      "path": "research/DGamma/CP5O20OccurrenceStampedHistorySpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T09:23:10.336416+00:00",
+      "unit": "A16-1",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 69622,
+        "timestampUTC": "2026-09-09T09:23:07.120484+00:00",
+        "unit": "A16-1",
+        "path": "research/DGamma/CP5O20OccurrenceStampedHistorySpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 75361,
+      "timestampUTC": "2026-09-09T09:24:04.866324+00:00",
+      "unit": "A17-1",
+      "path": "research/DGamma/CP5O20CanonicalSynchronizationModuloSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T09:24:08.085872+00:00",
+      "unit": "A17-1",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 75361,
+        "timestampUTC": "2026-09-09T09:24:04.866324+00:00",
+        "unit": "A17-1",
+        "path": "research/DGamma/CP5O20CanonicalSynchronizationModuloSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 81779,
+      "timestampUTC": "2026-09-09T09:25:01.966648+00:00",
+      "unit": "A18-1",
+      "path": "research/DGamma/CP5O20OccurrenceStampedHistorySpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T09:25:05.198368+00:00",
+      "unit": "A18-1",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 81779,
+        "timestampUTC": "2026-09-09T09:25:01.966648+00:00",
+        "unit": "A18-1",
+        "path": "research/DGamma/CP5O20OccurrenceStampedHistorySpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 91233,
+      "timestampUTC": "2026-09-09T09:26:25.050092+00:00",
+      "unit": "A19-1",
+      "path": "research-tests/DGamma/R198OccurrenceStampedHistoryPositive.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T09:26:28.202766+00:00",
+      "unit": "A19-1",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 91233,
+        "timestampUTC": "2026-09-09T09:26:25.050092+00:00",
+        "unit": "A19-1",
+        "path": "research-tests/DGamma/R198OccurrenceStampedHistoryPositive.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 98821,
+      "timestampUTC": "2026-09-09T09:27:43.643289+00:00",
+      "unit": "A20-1",
+      "path": "research-tests/DGamma/R198OccurrenceStampedHistoryPositive.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T09:27:46.803094+00:00",
+      "unit": "A20-1",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 98821,
+        "timestampUTC": "2026-09-09T09:27:43.643289+00:00",
+        "unit": "A20-1",
+        "path": "research-tests/DGamma/R198OccurrenceStampedHistoryPositive.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 6864,
+      "timestampUTC": "2026-09-09T09:28:40.603186+00:00",
+      "unit": "A20-2",
+      "path": "research-tests/DGamma/R198OccurrenceStampedHistoryPositive.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T09:28:43.754340+00:00",
+      "unit": "A20-2",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 6864,
+        "timestampUTC": "2026-09-09T09:28:40.603186+00:00",
+        "unit": "A20-2",
+        "path": "research-tests/DGamma/R198OccurrenceStampedHistoryPositive.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 13969,
+      "timestampUTC": "2026-09-09T09:29:59.277627+00:00",
+      "unit": "A21-1",
+      "path": "research-tests/DGamma/R198OccurrenceStampedHistoryPositive.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T09:30:03.458344+00:00",
+      "unit": "A21-1",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 13969,
+        "timestampUTC": "2026-09-09T09:29:59.277627+00:00",
+        "unit": "A21-1",
+        "path": "research-tests/DGamma/R198OccurrenceStampedHistoryPositive.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 20135,
+      "timestampUTC": "2026-09-09T09:30:47.676166+00:00",
+      "unit": "A22-1",
+      "path": "research-tests/DGamma/R198OccurrenceStampedHistoryPositive.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T09:30:52.969028+00:00",
+      "unit": "A22-1",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 20135,
+        "timestampUTC": "2026-09-09T09:30:47.676166+00:00",
+        "unit": "A22-1",
+        "path": "research-tests/DGamma/R198OccurrenceStampedHistoryPositive.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 26546,
+      "timestampUTC": "2026-09-09T09:31:50.265504+00:00",
+      "unit": "A23-1",
+      "path": "research/DGamma/CP5O20CanonicalSynchronizationModuloSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T09:31:53.464277+00:00",
+      "unit": "A23-1",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 26546,
+        "timestampUTC": "2026-09-09T09:31:50.265504+00:00",
+        "unit": "A23-1",
+        "path": "research/DGamma/CP5O20CanonicalSynchronizationModuloSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 34717,
+      "timestampUTC": "2026-09-09T09:32:35.792428+00:00",
+      "unit": "A23-2",
+      "path": "research/DGamma/CP5O20CanonicalSynchronizationModuloSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T09:32:38.989271+00:00",
+      "unit": "A23-2",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 34717,
+        "timestampUTC": "2026-09-09T09:32:35.792428+00:00",
+        "unit": "A23-2",
+        "path": "research/DGamma/CP5O20CanonicalSynchronizationModuloSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 41446,
+      "timestampUTC": "2026-09-09T09:33:30.319740+00:00",
+      "unit": "A24-1",
+      "path": "research/DGamma/CP5O20OccurrenceStampedHistorySpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T09:33:33.528466+00:00",
+      "unit": "A24-1",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 41446,
+        "timestampUTC": "2026-09-09T09:33:30.319740+00:00",
+        "unit": "A24-1",
+        "path": "research/DGamma/CP5O20OccurrenceStampedHistorySpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 51556,
+      "timestampUTC": "2026-09-09T09:34:44.998230+00:00",
+      "unit": "A25-1",
+      "path": "research/DGamma/CP5O20OccurrenceStampedHistorySpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T09:34:48.201158+00:00",
+      "unit": "A25-1",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 51556,
+        "timestampUTC": "2026-09-09T09:34:44.998230+00:00",
+        "unit": "A25-1",
+        "path": "research/DGamma/CP5O20OccurrenceStampedHistorySpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 59545,
+      "timestampUTC": "2026-09-09T09:35:49.437688+00:00",
+      "unit": "A26-1",
+      "path": "research/DGamma/CP5O20OccurrenceStampedHistorySpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T09:35:52.638373+00:00",
+      "unit": "A26-1",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 59545,
+        "timestampUTC": "2026-09-09T09:35:49.437688+00:00",
+        "unit": "A26-1",
+        "path": "research/DGamma/CP5O20OccurrenceStampedHistorySpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 74914,
+      "timestampUTC": "2026-09-09T09:37:53.774787+00:00",
+      "unit": "B1-1",
+      "path": "research/DGamma/CP5O20CanonicalMaybeControlSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T09:37:56.991002+00:00",
+      "unit": "B1-1",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 74914,
+        "timestampUTC": "2026-09-09T09:37:53.774787+00:00",
+        "unit": "B1-1",
+        "path": "research/DGamma/CP5O20CanonicalMaybeControlSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 80851,
+      "timestampUTC": "2026-09-09T09:39:05.169258+00:00",
+      "unit": "B2-1",
+      "path": "research/DGamma/CP5O20CanonicalMaybeControlSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T09:39:08.373660+00:00",
+      "unit": "B2-1",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 80851,
+        "timestampUTC": "2026-09-09T09:39:05.169258+00:00",
+        "unit": "B2-1",
+        "path": "research/DGamma/CP5O20CanonicalMaybeControlSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 86517,
+      "timestampUTC": "2026-09-09T09:40:03.605513+00:00",
+      "unit": "B3-1",
+      "path": "research/DGamma/CP5O20CanonicalMaybeControlSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T09:40:06.832517+00:00",
+      "unit": "B3-1",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 86517,
+        "timestampUTC": "2026-09-09T09:40:03.605513+00:00",
+        "unit": "B3-1",
+        "path": "research/DGamma/CP5O20CanonicalMaybeControlSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 93729,
+      "timestampUTC": "2026-09-09T09:41:09.818887+00:00",
+      "unit": "B4-1",
+      "path": "research/DGamma/CP5O20CanonicalMaybeControlSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T09:41:13.009927+00:00",
+      "unit": "B4-1",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 93729,
+        "timestampUTC": "2026-09-09T09:41:09.818887+00:00",
+        "unit": "B4-1",
+        "path": "research/DGamma/CP5O20CanonicalMaybeControlSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 99570,
+      "timestampUTC": "2026-09-09T09:42:17.493222+00:00",
+      "unit": "B5-1",
+      "path": "research/DGamma/CP5O20CanonicalMaybeControlSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T09:42:20.700528+00:00",
+      "unit": "B5-1",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 99570,
+        "timestampUTC": "2026-09-09T09:42:17.493222+00:00",
+        "unit": "B5-1",
+        "path": "research/DGamma/CP5O20CanonicalMaybeControlSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 6672,
+      "timestampUTC": "2026-09-09T09:43:13.451144+00:00",
+      "unit": "B6-1",
+      "path": "research/DGamma/CP5O20CanonicalMaybeControlSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T09:43:16.653387+00:00",
+      "unit": "B6-1",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 6672,
+        "timestampUTC": "2026-09-09T09:43:13.451144+00:00",
+        "unit": "B6-1",
+        "path": "research/DGamma/CP5O20CanonicalMaybeControlSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 10022,
+      "timestampUTC": "2026-09-09T09:43:58.444174+00:00",
+      "unit": "B7-1",
+      "path": "research/DGamma/CP5O20CanonicalMaybeControlSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T09:44:01.648074+00:00",
+      "unit": "B7-1",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 10022,
+        "timestampUTC": "2026-09-09T09:43:58.444174+00:00",
+        "unit": "B7-1",
+        "path": "research/DGamma/CP5O20CanonicalMaybeControlSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 19403,
+      "timestampUTC": "2026-09-09T09:45:25.864923+00:00",
+      "unit": "B8-1",
+      "path": "research/DGamma/CP5O20CanonicalMaybeControlSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T09:45:29.060761+00:00",
+      "unit": "B8-1",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 19403,
+        "timestampUTC": "2026-09-09T09:45:25.864923+00:00",
+        "unit": "B8-1",
+        "path": "research/DGamma/CP5O20CanonicalMaybeControlSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 27393,
+      "timestampUTC": "2026-09-09T09:46:42.812387+00:00",
+      "unit": "B9-1",
+      "path": "research/DGamma/CP5O20CanonicalMaybeControlSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T09:46:46.019316+00:00",
+      "unit": "B9-1",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 27393,
+        "timestampUTC": "2026-09-09T09:46:42.812387+00:00",
+        "unit": "B9-1",
+        "path": "research/DGamma/CP5O20CanonicalMaybeControlSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 41270,
+      "timestampUTC": "2026-09-09T09:48:32.106526+00:00",
+      "unit": "B10-1",
+      "path": "research/DGamma/CP5O20CanonicalMaybeControlSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T09:48:35.242135+00:00",
+      "unit": "B10-1",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 41270,
+        "timestampUTC": "2026-09-09T09:48:32.106526+00:00",
+        "unit": "B10-1",
+        "path": "research/DGamma/CP5O20CanonicalMaybeControlSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 50964,
+      "timestampUTC": "2026-09-09T09:49:47.102695+00:00",
+      "unit": "B11-1",
+      "path": "research/DGamma/CP5O20CanonicalMaybeControlSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T09:49:50.240424+00:00",
+      "unit": "B11-1",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 50964,
+        "timestampUTC": "2026-09-09T09:49:47.102695+00:00",
+        "unit": "B11-1",
+        "path": "research/DGamma/CP5O20CanonicalMaybeControlSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 63081,
+      "timestampUTC": "2026-09-09T09:51:06.832603+00:00",
+      "unit": "B12-1",
+      "path": "research/DGamma/CP5O20CanonicalMaybeControlSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T09:51:09.983805+00:00",
+      "unit": "B12-1",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 63081,
+        "timestampUTC": "2026-09-09T09:51:06.832603+00:00",
+        "unit": "B12-1",
+        "path": "research/DGamma/CP5O20CanonicalMaybeControlSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 8345,
+      "timestampUTC": "2026-09-09T09:55:39.210860+00:00",
+      "unit": "B13-1",
+      "path": "research/DGamma/CP5O20CanonicalMaybeControlSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T09:55:42.368070+00:00",
+      "unit": "B13-1",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 8345,
+        "timestampUTC": "2026-09-09T09:55:39.210860+00:00",
+        "unit": "B13-1",
+        "path": "research/DGamma/CP5O20CanonicalMaybeControlSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 27264,
+      "timestampUTC": "2026-09-09T09:58:03.297899+00:00",
+      "unit": "B14-1",
+      "path": "research-tests/DGamma/R198CanonicalMaybeControlPositive.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T09:58:05.417740+00:00",
+      "unit": "B14-1",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 27264,
+        "timestampUTC": "2026-09-09T09:58:03.297899+00:00",
+        "unit": "B14-1",
+        "path": "research-tests/DGamma/R198CanonicalMaybeControlPositive.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 38752,
+      "timestampUTC": "2026-09-09T09:59:13.089288+00:00",
+      "unit": "B15-1",
+      "path": "research-tests/DGamma/R198CanonicalMaybeControlPositive.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T09:59:15.203450+00:00",
+      "unit": "B15-1",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 38752,
+        "timestampUTC": "2026-09-09T09:59:13.089288+00:00",
+        "unit": "B15-1",
+        "path": "research-tests/DGamma/R198CanonicalMaybeControlPositive.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 46202,
+      "timestampUTC": "2026-09-09T10:00:14.119235+00:00",
+      "unit": "B16-1",
+      "path": "research-tests/DGamma/R198CanonicalMaybeControlPositive.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:00:16.223761+00:00",
+      "unit": "B16-1",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 46202,
+        "timestampUTC": "2026-09-09T10:00:14.119235+00:00",
+        "unit": "B16-1",
+        "path": "research-tests/DGamma/R198CanonicalMaybeControlPositive.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 11339,
+      "timestampUTC": "2026-09-09T10:13:01.935822+00:00",
+      "unit": "V1",
+      "path": "research/DGamma/CP5ActorLifecycleOnlyExtended.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:13:03.027076+00:00",
+      "unit": "V1",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 11339,
+        "timestampUTC": "2026-09-09T10:13:01.935822+00:00",
+        "unit": "V1",
+        "path": "research/DGamma/CP5ActorLifecycleOnlyExtended.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 11484,
+      "timestampUTC": "2026-09-09T10:13:03.197291+00:00",
+      "unit": "V2",
+      "path": "research/DGamma/CP5AvailabilityAwarePlacement.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:13:04.280429+00:00",
+      "unit": "V2",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 11484,
+        "timestampUTC": "2026-09-09T10:13:03.197291+00:00",
+        "unit": "V2",
+        "path": "research/DGamma/CP5AvailabilityAwarePlacement.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 11502,
+      "timestampUTC": "2026-09-09T10:13:04.458816+00:00",
+      "unit": "V3",
+      "path": "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:21:14.149908+00:00",
+      "unit": "V3",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 11502,
+        "timestampUTC": "2026-09-09T10:13:04.458816+00:00",
+        "unit": "V3",
+        "path": "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 54796,
+      "timestampUTC": "2026-09-09T10:21:14.326154+00:00",
+      "unit": "V4",
+      "path": "research/DGamma/CP5ProviderHeadObservedSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:21:15.415739+00:00",
+      "unit": "V4",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 54796,
+        "timestampUTC": "2026-09-09T10:21:14.326154+00:00",
+        "unit": "V4",
+        "path": "research/DGamma/CP5ProviderHeadObservedSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 54884,
+      "timestampUTC": "2026-09-09T10:21:15.581231+00:00",
+      "unit": "V5",
+      "path": "research-tests/DGamma/R174O17ProvisionCollisionCandidate.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:21:21.852797+00:00",
+      "unit": "V5",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 54884,
+        "timestampUTC": "2026-09-09T10:21:15.581231+00:00",
+        "unit": "V5",
+        "path": "research-tests/DGamma/R174O17ProvisionCollisionCandidate.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 55208,
+      "timestampUTC": "2026-09-09T10:21:22.016526+00:00",
+      "unit": "V6",
+      "path": "research-tests/DGamma/R197ProviderHeadObservedPositive.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:21:23.121658+00:00",
+      "unit": "V6",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 55208,
+        "timestampUTC": "2026-09-09T10:21:22.016526+00:00",
+        "unit": "V6",
+        "path": "research-tests/DGamma/R197ProviderHeadObservedPositive.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 55291,
+      "timestampUTC": "2026-09-09T10:21:23.285278+00:00",
+      "unit": "V7",
+      "path": "research-tests/DGamma/R39RelationalMapAlgebraPositive.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:21:24.362649+00:00",
+      "unit": "V7",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 55291,
+        "timestampUTC": "2026-09-09T10:21:23.285278+00:00",
+        "unit": "V7",
+        "path": "research-tests/DGamma/R39RelationalMapAlgebraPositive.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 55306,
+      "timestampUTC": "2026-09-09T10:21:24.535260+00:00",
+      "unit": "V8",
+      "path": "research-tests/DGamma/R45BareDiamondDisciplineCounterexamplePositive.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:21:28.707518+00:00",
+      "unit": "V8",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 55306,
+        "timestampUTC": "2026-09-09T10:21:24.535260+00:00",
+        "unit": "V8",
+        "path": "research-tests/DGamma/R45BareDiamondDisciplineCounterexamplePositive.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 55533,
+      "timestampUTC": "2026-09-09T10:21:28.867333+00:00",
+      "unit": "V9",
+      "path": "research/DGamma/CP5ConfluenceDeletionChainSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:22:46.705232+00:00",
+      "unit": "V9",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 55533,
+        "timestampUTC": "2026-09-09T10:21:28.867333+00:00",
+        "unit": "V9",
+        "path": "research/DGamma/CP5ConfluenceDeletionChainSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 61742,
+      "timestampUTC": "2026-09-09T10:22:46.865363+00:00",
+      "unit": "V10",
+      "path": "research/DGamma/CP5O20NativeTargetAttachmentSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:22:48.986643+00:00",
+      "unit": "V10",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 61742,
+        "timestampUTC": "2026-09-09T10:22:46.865363+00:00",
+        "unit": "V10",
+        "path": "research/DGamma/CP5O20NativeTargetAttachmentSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 62671,
+      "timestampUTC": "2026-09-09T10:22:49.161048+00:00",
+      "unit": "V11",
+      "path": "research/DGamma/CP5UniqueRawNameOrdinalCapital.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:27:48.218134+00:00",
+      "unit": "V11",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 62671,
+        "timestampUTC": "2026-09-09T10:22:49.161048+00:00",
+        "unit": "V11",
+        "path": "research/DGamma/CP5UniqueRawNameOrdinalCapital.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 81413,
+      "timestampUTC": "2026-09-09T10:27:48.381412+00:00",
+      "unit": "V12",
+      "path": "research-tests/DGamma/R178GeneratedOrchestrationFixtures.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:27:49.457303+00:00",
+      "unit": "V12",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 81413,
+        "timestampUTC": "2026-09-09T10:27:48.381412+00:00",
+        "unit": "V12",
+        "path": "research-tests/DGamma/R178GeneratedOrchestrationFixtures.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 81428,
+      "timestampUTC": "2026-09-09T10:27:49.619124+00:00",
+      "unit": "V13",
+      "path": "research-tests/DGamma/R198RepeatedTagStageProbe.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:27:50.688043+00:00",
+      "unit": "V13",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 81428,
+        "timestampUTC": "2026-09-09T10:27:49.619124+00:00",
+        "unit": "V13",
+        "path": "research-tests/DGamma/R198RepeatedTagStageProbe.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 81507,
+      "timestampUTC": "2026-09-09T10:27:50.858471+00:00",
+      "unit": "V14",
+      "path": "research-tests/DGamma/R19SuffixFreeFullAdjacentCertificatePositive.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:27:52.967962+00:00",
+      "unit": "V14",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 81507,
+        "timestampUTC": "2026-09-09T10:27:50.858471+00:00",
+        "unit": "V14",
+        "path": "research-tests/DGamma/R19SuffixFreeFullAdjacentCertificatePositive.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 81680,
+      "timestampUTC": "2026-09-09T10:27:53.136320+00:00",
+      "unit": "V15",
+      "path": "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:28:47.207839+00:00",
+      "unit": "V15",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 81680,
+        "timestampUTC": "2026-09-09T10:27:53.136320+00:00",
+        "unit": "V15",
+        "path": "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 85888,
+      "timestampUTC": "2026-09-09T10:28:47.369624+00:00",
+      "unit": "V16",
+      "path": "research/DGamma/CP5SupportedBirthCoverageSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:28:49.496092+00:00",
+      "unit": "V16",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 85888,
+        "timestampUTC": "2026-09-09T10:28:47.369624+00:00",
+        "unit": "V16",
+        "path": "research/DGamma/CP5SupportedBirthCoverageSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 86033,
+      "timestampUTC": "2026-09-09T10:28:49.661226+00:00",
+      "unit": "V17",
+      "path": "research/DGamma/CP5UniqueRawNameDeletion.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:28:51.763790+00:00",
+      "unit": "V17",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 86033,
+        "timestampUTC": "2026-09-09T10:28:49.661226+00:00",
+        "unit": "V17",
+        "path": "research/DGamma/CP5UniqueRawNameDeletion.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 86193,
+      "timestampUTC": "2026-09-09T10:28:51.941553+00:00",
+      "unit": "V18",
+      "path": "research-tests/DGamma/R172O17OpenParentRootReuseCandidate.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:29:40.802758+00:00",
+      "unit": "V18",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 86193,
+        "timestampUTC": "2026-09-09T10:28:51.941553+00:00",
+        "unit": "V18",
+        "path": "research-tests/DGamma/R172O17OpenParentRootReuseCandidate.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 90216,
+      "timestampUTC": "2026-09-09T10:29:40.965852+00:00",
+      "unit": "V19",
+      "path": "research-tests/DGamma/R4VestigialSimultaneous.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:29:43.112203+00:00",
+      "unit": "V19",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 90216,
+        "timestampUTC": "2026-09-09T10:29:40.965852+00:00",
+        "unit": "V19",
+        "path": "research-tests/DGamma/R4VestigialSimultaneous.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 90357,
+      "timestampUTC": "2026-09-09T10:29:43.275981+00:00",
+      "unit": "V20",
+      "path": "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:29:52.638811+00:00",
+      "unit": "V20",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 90357,
+        "timestampUTC": "2026-09-09T10:29:43.275981+00:00",
+        "unit": "V20",
+        "path": "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 90832,
+      "timestampUTC": "2026-09-09T10:29:52.803799+00:00",
+      "unit": "V21",
+      "path": "research/DGamma/CP5RankedEarlyApplicabilitySpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:29:54.915177+00:00",
+      "unit": "V21",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 90832,
+        "timestampUTC": "2026-09-09T10:29:52.803799+00:00",
+        "unit": "V21",
+        "path": "research/DGamma/CP5RankedEarlyApplicabilitySpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 90851,
+      "timestampUTC": "2026-09-09T10:29:55.074458+00:00",
+      "unit": "V22",
+      "path": "research-tests/DGamma/R8BridgeAuthenticatedDirectionPositive.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:29:57.217653+00:00",
+      "unit": "V22",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 90851,
+        "timestampUTC": "2026-09-09T10:29:55.074458+00:00",
+        "unit": "V22",
+        "path": "research-tests/DGamma/R8BridgeAuthenticatedDirectionPositive.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 92493,
+      "timestampUTC": "2026-09-09T10:29:57.379589+00:00",
+      "unit": "V23",
+      "path": "research-tests/DGamma/R8BridgeWrongBirthNegative.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:29:58.471335+00:00",
+      "unit": "V23",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 92493,
+        "timestampUTC": "2026-09-09T10:29:57.379589+00:00",
+        "unit": "V23",
+        "path": "research-tests/DGamma/R8BridgeWrongBirthNegative.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 92606,
+      "timestampUTC": "2026-09-09T10:29:58.633130+00:00",
+      "unit": "V24",
+      "path": "research-tests/DGamma/R8PublicScheduleCannotReachBridgeNegative.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:30:01.776207+00:00",
+      "unit": "V24",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 92606,
+        "timestampUTC": "2026-09-09T10:29:58.633130+00:00",
+        "unit": "V24",
+        "path": "research-tests/DGamma/R8PublicScheduleCannotReachBridgeNegative.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 92768,
+      "timestampUTC": "2026-09-09T10:30:01.953325+00:00",
+      "unit": "V25",
+      "path": "research-tests/DGamma/R8WrongOccurrenceBridgeNegative.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:30:03.044436+00:00",
+      "unit": "V25",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 92768,
+        "timestampUTC": "2026-09-09T10:30:01.953325+00:00",
+        "unit": "V25",
+        "path": "research-tests/DGamma/R8WrongOccurrenceBridgeNegative.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 92912,
+      "timestampUTC": "2026-09-09T10:30:03.206545+00:00",
+      "unit": "V26",
+      "path": "research/DGamma/CP5AcceptedRetirementTransportSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:30:06.375890+00:00",
+      "unit": "V26",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 92912,
+        "timestampUTC": "2026-09-09T10:30:03.206545+00:00",
+        "unit": "V26",
+        "path": "research/DGamma/CP5AcceptedRetirementTransportSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 93070,
+      "timestampUTC": "2026-09-09T10:30:06.535338+00:00",
+      "unit": "V27",
+      "path": "research/DGamma/CP5MatchedBirthMetadataSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:30:10.727933+00:00",
+      "unit": "V27",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 93070,
+        "timestampUTC": "2026-09-09T10:30:06.535338+00:00",
+        "unit": "V27",
+        "path": "research/DGamma/CP5MatchedBirthMetadataSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 93309,
+      "timestampUTC": "2026-09-09T10:30:10.890582+00:00",
+      "unit": "V28",
+      "path": "research/DGamma/CP5O19AdjacentReplayProducerSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:30:14.074889+00:00",
+      "unit": "V28",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 93309,
+        "timestampUTC": "2026-09-09T10:30:10.890582+00:00",
+        "unit": "V28",
+        "path": "research/DGamma/CP5O19AdjacentReplayProducerSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 94272,
+      "timestampUTC": "2026-09-09T10:30:14.241260+00:00",
+      "unit": "V29",
+      "path": "research/DGamma/CP5O20CanonicalBirthDispositionSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:30:17.402930+00:00",
+      "unit": "V29",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 94272,
+        "timestampUTC": "2026-09-09T10:30:14.241260+00:00",
+        "unit": "V29",
+        "path": "research/DGamma/CP5O20CanonicalBirthDispositionSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 94408,
+      "timestampUTC": "2026-09-09T10:30:17.566435+00:00",
+      "unit": "V30",
+      "path": "research/DGamma/CP5O21EndpointIdentitySpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:30:20.748679+00:00",
+      "unit": "V30",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 94408,
+        "timestampUTC": "2026-09-09T10:30:17.566435+00:00",
+        "unit": "V30",
+        "path": "research/DGamma/CP5O21EndpointIdentitySpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 94610,
+      "timestampUTC": "2026-09-09T10:30:20.907672+00:00",
+      "unit": "V31",
+      "path": "research/DGamma/CP5RootBirthCoverageSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:30:24.071898+00:00",
+      "unit": "V31",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 94610,
+        "timestampUTC": "2026-09-09T10:30:20.907672+00:00",
+        "unit": "V31",
+        "path": "research/DGamma/CP5RootBirthCoverageSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 94777,
+      "timestampUTC": "2026-09-09T10:30:24.238340+00:00",
+      "unit": "V32",
+      "path": "research-tests/DGamma/R179O21CurrentBirthIdentityPositive.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:30:26.375829+00:00",
+      "unit": "V32",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 94777,
+        "timestampUTC": "2026-09-09T10:30:24.238340+00:00",
+        "unit": "V32",
+        "path": "research-tests/DGamma/R179O21CurrentBirthIdentityPositive.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 94904,
+      "timestampUTC": "2026-09-09T10:30:26.537458+00:00",
+      "unit": "V33",
+      "path": "research-tests/DGamma/R179O21WrongOriginalBirthNegative.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:30:27.635105+00:00",
+      "unit": "V33",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 94904,
+        "timestampUTC": "2026-09-09T10:30:26.537458+00:00",
+        "unit": "V33",
+        "path": "research-tests/DGamma/R179O21WrongOriginalBirthNegative.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 94975,
+      "timestampUTC": "2026-09-09T10:30:27.817934+00:00",
+      "unit": "V34",
+      "path": "research/DGamma/CP5AllSupportedMetadataSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:30:30.974291+00:00",
+      "unit": "V34",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 94975,
+        "timestampUTC": "2026-09-09T10:30:27.817934+00:00",
+        "unit": "V34",
+        "path": "research/DGamma/CP5AllSupportedMetadataSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 95122,
+      "timestampUTC": "2026-09-09T10:30:31.133126+00:00",
+      "unit": "V35",
+      "path": "research/DGamma/CP5O19OpeningPropagationSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:30:33.249228+00:00",
+      "unit": "V35",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 95122,
+        "timestampUTC": "2026-09-09T10:30:31.133126+00:00",
+        "unit": "V35",
+        "path": "research/DGamma/CP5O19OpeningPropagationSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 95323,
+      "timestampUTC": "2026-09-09T10:30:33.413878+00:00",
+      "unit": "V36",
+      "path": "research/DGamma/CP5O19ReplayObservationSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:30:36.569851+00:00",
+      "unit": "V36",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 95323,
+        "timestampUTC": "2026-09-09T10:30:33.413878+00:00",
+        "unit": "V36",
+        "path": "research/DGamma/CP5O19ReplayObservationSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 96242,
+      "timestampUTC": "2026-09-09T10:30:36.833339+00:00",
+      "unit": "V37",
+      "path": "research/DGamma/CP5O20GenerationOnlyHistorySpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:30:40.064024+00:00",
+      "unit": "V37",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 96242,
+        "timestampUTC": "2026-09-09T10:30:36.833339+00:00",
+        "unit": "V37",
+        "path": "research/DGamma/CP5O20GenerationOnlyHistorySpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 97239,
+      "timestampUTC": "2026-09-09T10:30:40.225270+00:00",
+      "unit": "V38",
+      "path": "research/DGamma/CP5O19AdvanceObservationSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:30:43.386643+00:00",
+      "unit": "V38",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 97239,
+        "timestampUTC": "2026-09-09T10:30:40.225270+00:00",
+        "unit": "V38",
+        "path": "research/DGamma/CP5O19AdvanceObservationSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 97436,
+      "timestampUTC": "2026-09-09T10:30:43.548253+00:00",
+      "unit": "V39",
+      "path": "research/DGamma/CP5O19CartesianCursorSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:30:45.666695+00:00",
+      "unit": "V39",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 97436,
+        "timestampUTC": "2026-09-09T10:30:43.548253+00:00",
+        "unit": "V39",
+        "path": "research/DGamma/CP5O19CartesianCursorSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 97574,
+      "timestampUTC": "2026-09-09T10:30:45.840170+00:00",
+      "unit": "V40",
+      "path": "research/DGamma/CP5O19InsertObservationSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:30:47.951275+00:00",
+      "unit": "V40",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 97574,
+        "timestampUTC": "2026-09-09T10:30:45.840170+00:00",
+        "unit": "V40",
+        "path": "research/DGamma/CP5O19InsertObservationSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 97691,
+      "timestampUTC": "2026-09-09T10:30:48.118963+00:00",
+      "unit": "V41",
+      "path": "research/DGamma/CP5SupportClauseTransportSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:30:51.259304+00:00",
+      "unit": "V41",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 97691,
+        "timestampUTC": "2026-09-09T10:30:48.118963+00:00",
+        "unit": "V41",
+        "path": "research/DGamma/CP5SupportClauseTransportSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 97888,
+      "timestampUTC": "2026-09-09T10:30:51.423294+00:00",
+      "unit": "V42",
+      "path": "research/DGamma/CP5AcceptedSupportTruthSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:30:53.537313+00:00",
+      "unit": "V42",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 97888,
+        "timestampUTC": "2026-09-09T10:30:51.423294+00:00",
+        "unit": "V42",
+        "path": "research/DGamma/CP5AcceptedSupportTruthSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 98005,
+      "timestampUTC": "2026-09-09T10:30:53.711551+00:00",
+      "unit": "V43",
+      "path": "research/DGamma/CP5O19ActivationRowSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:30:56.885239+00:00",
+      "unit": "V43",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 98005,
+        "timestampUTC": "2026-09-09T10:30:53.711551+00:00",
+        "unit": "V43",
+        "path": "research/DGamma/CP5O19ActivationRowSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 98134,
+      "timestampUTC": "2026-09-09T10:30:57.044321+00:00",
+      "unit": "V44",
+      "path": "research/DGamma/CP5O20SingleRoleAdvanceExtractionSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:30:59.153291+00:00",
+      "unit": "V44",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 98134,
+        "timestampUTC": "2026-09-09T10:30:57.044321+00:00",
+        "unit": "V44",
+        "path": "research/DGamma/CP5O20SingleRoleAdvanceExtractionSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 98267,
+      "timestampUTC": "2026-09-09T10:30:59.314901+00:00",
+      "unit": "V45",
+      "path": "research/DGamma/CP5O19SurfaceSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:31:03.495653+00:00",
+      "unit": "V45",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 98267,
+        "timestampUTC": "2026-09-09T10:30:59.314901+00:00",
+        "unit": "V45",
+        "path": "research/DGamma/CP5O19SurfaceSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 98584,
+      "timestampUTC": "2026-09-09T10:31:03.660386+00:00",
+      "unit": "V46",
+      "path": "research/DGamma/CP5O20SupportedBirthBridgeSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:31:06.827615+00:00",
+      "unit": "V46",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 98584,
+        "timestampUTC": "2026-09-09T10:31:03.660386+00:00",
+        "unit": "V46",
+        "path": "research/DGamma/CP5O20SupportedBirthBridgeSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 98758,
+      "timestampUTC": "2026-09-09T10:31:06.987108+00:00",
+      "unit": "V47",
+      "path": "research/DGamma/CP5O19OrdinalPlanSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:31:53.707005+00:00",
+      "unit": "V47",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 98758,
+        "timestampUTC": "2026-09-09T10:31:06.987108+00:00",
+        "unit": "V47",
+        "path": "research/DGamma/CP5O19OrdinalPlanSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 1488,
+      "timestampUTC": "2026-09-09T10:31:53.886356+00:00",
+      "unit": "V48",
+      "path": "research/DGamma/CP5O20BirthBridgeRemainderSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:31:57.069508+00:00",
+      "unit": "V48",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 1488,
+        "timestampUTC": "2026-09-09T10:31:53.886356+00:00",
+        "unit": "V48",
+        "path": "research/DGamma/CP5O20BirthBridgeRemainderSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 1713,
+      "timestampUTC": "2026-09-09T10:31:57.238209+00:00",
+      "unit": "V49",
+      "path": "research/DGamma/CP5O20CanonicalOrdinalAttachmentSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:32:00.425221+00:00",
+      "unit": "V49",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 1713,
+        "timestampUTC": "2026-09-09T10:31:57.238209+00:00",
+        "unit": "V49",
+        "path": "research/DGamma/CP5O20CanonicalOrdinalAttachmentSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 4459,
+      "timestampUTC": "2026-09-09T10:32:00.588677+00:00",
+      "unit": "V50",
+      "path": "research/DGamma/CP5O20SupportedEndpointCapitalSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:32:04.789104+00:00",
+      "unit": "V50",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 4459,
+        "timestampUTC": "2026-09-09T10:32:00.588677+00:00",
+        "unit": "V50",
+        "path": "research/DGamma/CP5O20SupportedEndpointCapitalSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 4736,
+      "timestampUTC": "2026-09-09T10:32:04.952188+00:00",
+      "unit": "V51",
+      "path": "research/DGamma/CP5O19CartesianSitePlanSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:32:08.126224+00:00",
+      "unit": "V51",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 4736,
+        "timestampUTC": "2026-09-09T10:32:04.952188+00:00",
+        "unit": "V51",
+        "path": "research/DGamma/CP5O19CartesianSitePlanSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 5006,
+      "timestampUTC": "2026-09-09T10:32:08.296086+00:00",
+      "unit": "V52",
+      "path": "research/DGamma/CP5O20EpisodeSynchronizationSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:32:11.456530+00:00",
+      "unit": "V52",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 5006,
+        "timestampUTC": "2026-09-09T10:32:08.296086+00:00",
+        "unit": "V52",
+        "path": "research/DGamma/CP5O20EpisodeSynchronizationSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 5304,
+      "timestampUTC": "2026-09-09T10:32:11.620939+00:00",
+      "unit": "V53",
+      "path": "research/DGamma/CP5O20RootOrdinalBoundarySpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:32:14.792598+00:00",
+      "unit": "V53",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 5304,
+        "timestampUTC": "2026-09-09T10:32:11.620939+00:00",
+        "unit": "V53",
+        "path": "research/DGamma/CP5O20RootOrdinalBoundarySpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 5427,
+      "timestampUTC": "2026-09-09T10:32:14.960264+00:00",
+      "unit": "V54",
+      "path": "research-tests/DGamma/R195RootOrdinalBoundaryPositive.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:32:18.123238+00:00",
+      "unit": "V54",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 5427,
+        "timestampUTC": "2026-09-09T10:32:14.960264+00:00",
+        "unit": "V54",
+        "path": "research-tests/DGamma/R195RootOrdinalBoundaryPositive.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 5670,
+      "timestampUTC": "2026-09-09T10:32:18.290374+00:00",
+      "unit": "V55",
+      "path": "research/DGamma/CP5O19CartesianNumericSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:32:21.447230+00:00",
+      "unit": "V55",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 5670,
+        "timestampUTC": "2026-09-09T10:32:18.290374+00:00",
+        "unit": "V55",
+        "path": "research/DGamma/CP5O19CartesianNumericSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 5983,
+      "timestampUTC": "2026-09-09T10:32:21.611596+00:00",
+      "unit": "V56",
+      "path": "research/DGamma/CP5O20PairedPrefixProducerSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:32:24.774110+00:00",
+      "unit": "V56",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 5983,
+        "timestampUTC": "2026-09-09T10:32:21.611596+00:00",
+        "unit": "V56",
+        "path": "research/DGamma/CP5O20PairedPrefixProducerSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 6073,
+      "timestampUTC": "2026-09-09T10:32:24.938506+00:00",
+      "unit": "V57",
+      "path": "research/DGamma/CP5O19GridCertificationSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:32:27.057767+00:00",
+      "unit": "V57",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 6073,
+        "timestampUTC": "2026-09-09T10:32:24.938506+00:00",
+        "unit": "V57",
+        "path": "research/DGamma/CP5O19GridCertificationSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 6203,
+      "timestampUTC": "2026-09-09T10:32:27.221987+00:00",
+      "unit": "V58",
+      "path": "research/DGamma/CP5O20CanonicalPairSelectionSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:32:30.398172+00:00",
+      "unit": "V58",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 6203,
+        "timestampUTC": "2026-09-09T10:32:27.221987+00:00",
+        "unit": "V58",
+        "path": "research/DGamma/CP5O20CanonicalPairSelectionSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 6641,
+      "timestampUTC": "2026-09-09T10:32:30.561164+00:00",
+      "unit": "V59",
+      "path": "research/DGamma/CP5O20BeginObservationSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:32:33.732751+00:00",
+      "unit": "V59",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 6641,
+        "timestampUTC": "2026-09-09T10:32:30.561164+00:00",
+        "unit": "V59",
+        "path": "research/DGamma/CP5O20BeginObservationSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 6909,
+      "timestampUTC": "2026-09-09T10:32:33.915233+00:00",
+      "unit": "V60",
+      "path": "research/DGamma/CP5O19ResolvedOpeningRowSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:32:38.128776+00:00",
+      "unit": "V60",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 6909,
+        "timestampUTC": "2026-09-09T10:32:33.915233+00:00",
+        "unit": "V60",
+        "path": "research/DGamma/CP5O19ResolvedOpeningRowSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 7952,
+      "timestampUTC": "2026-09-09T10:32:38.302110+00:00",
+      "unit": "V61",
+      "path": "research/DGamma/CP5O19SourceShapeSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:32:41.456152+00:00",
+      "unit": "V61",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 7952,
+        "timestampUTC": "2026-09-09T10:32:38.302110+00:00",
+        "unit": "V61",
+        "path": "research/DGamma/CP5O19SourceShapeSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 8423,
+      "timestampUTC": "2026-09-09T10:32:41.619537+00:00",
+      "unit": "V62",
+      "path": "research/DGamma/CP5O20AllNameSynchronizationSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:32:44.784707+00:00",
+      "unit": "V62",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 8423,
+        "timestampUTC": "2026-09-09T10:32:41.619537+00:00",
+        "unit": "V62",
+        "path": "research/DGamma/CP5O20AllNameSynchronizationSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 8516,
+      "timestampUTC": "2026-09-09T10:32:44.951704+00:00",
+      "unit": "V63",
+      "path": "research/DGamma/CP5O20RightOpeningTransportSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:32:48.096065+00:00",
+      "unit": "V63",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 8516,
+        "timestampUTC": "2026-09-09T10:32:44.951704+00:00",
+        "unit": "V63",
+        "path": "research/DGamma/CP5O20RightOpeningTransportSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 8747,
+      "timestampUTC": "2026-09-09T10:32:48.259449+00:00",
+      "unit": "V64",
+      "path": "research/DGamma/CP5O19ActivationInsertionRowSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:32:52.462157+00:00",
+      "unit": "V64",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 8747,
+        "timestampUTC": "2026-09-09T10:32:48.259449+00:00",
+        "unit": "V64",
+        "path": "research/DGamma/CP5O19ActivationInsertionRowSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 9111,
+      "timestampUTC": "2026-09-09T10:32:52.633959+00:00",
+      "unit": "V65",
+      "path": "research/DGamma/CP5O19ActivationResolutionSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:32:55.777523+00:00",
+      "unit": "V65",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 9111,
+        "timestampUTC": "2026-09-09T10:32:52.633959+00:00",
+        "unit": "V65",
+        "path": "research/DGamma/CP5O19ActivationResolutionSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 9272,
+      "timestampUTC": "2026-09-09T10:32:55.964536+00:00",
+      "unit": "V66",
+      "path": "research/DGamma/CP5O20IndexedReloadingSourceSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:32:58.084209+00:00",
+      "unit": "V66",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 9272,
+        "timestampUTC": "2026-09-09T10:32:55.964536+00:00",
+        "unit": "V66",
+        "path": "research/DGamma/CP5O20IndexedReloadingSourceSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 9358,
+      "timestampUTC": "2026-09-09T10:32:58.257942+00:00",
+      "unit": "V67",
+      "path": "research/DGamma/CP5O20SharedBeginAdapterSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:33:01.402031+00:00",
+      "unit": "V67",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 9358,
+        "timestampUTC": "2026-09-09T10:32:58.257942+00:00",
+        "unit": "V67",
+        "path": "research/DGamma/CP5O20SharedBeginAdapterSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 9802,
+      "timestampUTC": "2026-09-09T10:33:01.571251+00:00",
+      "unit": "V68",
+      "path": "research/DGamma/CP5O20SupportedBridgeAssemblySpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:33:04.738393+00:00",
+      "unit": "V68",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 9802,
+        "timestampUTC": "2026-09-09T10:33:01.571251+00:00",
+        "unit": "V68",
+        "path": "research/DGamma/CP5O20SupportedBridgeAssemblySpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 9986,
+      "timestampUTC": "2026-09-09T10:33:04.907986+00:00",
+      "unit": "V69",
+      "path": "research/DGamma/CP5O19BodyMetadataSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:33:09.082480+00:00",
+      "unit": "V69",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 9986,
+        "timestampUTC": "2026-09-09T10:33:04.907986+00:00",
+        "unit": "V69",
+        "path": "research/DGamma/CP5O19BodyMetadataSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 10486,
+      "timestampUTC": "2026-09-09T10:33:09.244137+00:00",
+      "unit": "V70",
+      "path": "research/DGamma/CP5O19InsertionInsertionRowSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:33:12.410211+00:00",
+      "unit": "V70",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 10486,
+        "timestampUTC": "2026-09-09T10:33:09.244137+00:00",
+        "unit": "V70",
+        "path": "research/DGamma/CP5O19InsertionInsertionRowSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 10917,
+      "timestampUTC": "2026-09-09T10:33:12.578542+00:00",
+      "unit": "V71",
+      "path": "research/DGamma/CP5O20PairedAdvanceSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:33:15.729725+00:00",
+      "unit": "V71",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 10917,
+        "timestampUTC": "2026-09-09T10:33:12.578542+00:00",
+        "unit": "V71",
+        "path": "research/DGamma/CP5O20PairedAdvanceSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 11229,
+      "timestampUTC": "2026-09-09T10:33:15.911413+00:00",
+      "unit": "V72",
+      "path": "research/DGamma/CP5O19CartesianInsertionSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:33:21.132309+00:00",
+      "unit": "V72",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 11229,
+        "timestampUTC": "2026-09-09T10:33:15.911413+00:00",
+        "unit": "V72",
+        "path": "research/DGamma/CP5O19CartesianInsertionSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 11771,
+      "timestampUTC": "2026-09-09T10:33:21.294113+00:00",
+      "unit": "V73",
+      "path": "research/DGamma/CP5O19MixedActivationRowSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:33:25.484345+00:00",
+      "unit": "V73",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 11771,
+        "timestampUTC": "2026-09-09T10:33:21.294113+00:00",
+        "unit": "V73",
+        "path": "research/DGamma/CP5O19MixedActivationRowSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 11983,
+      "timestampUTC": "2026-09-09T10:33:25.645372+00:00",
+      "unit": "V74",
+      "path": "research/DGamma/CP5O20NativeAdvanceAttachmentSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:33:28.797716+00:00",
+      "unit": "V74",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 11983,
+        "timestampUTC": "2026-09-09T10:33:25.645372+00:00",
+        "unit": "V74",
+        "path": "research/DGamma/CP5O20NativeAdvanceAttachmentSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 12340,
+      "timestampUTC": "2026-09-09T10:33:28.956720+00:00",
+      "unit": "V75",
+      "path": "research/DGamma/CP5O20PairedExecutionSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:33:32.121556+00:00",
+      "unit": "V75",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 12340,
+        "timestampUTC": "2026-09-09T10:33:28.956720+00:00",
+        "unit": "V75",
+        "path": "research/DGamma/CP5O20PairedExecutionSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 12680,
+      "timestampUTC": "2026-09-09T10:33:32.292659+00:00",
+      "unit": "V76",
+      "path": "research/DGamma/CP5O19MixedRowDispatcherSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:33:35.443670+00:00",
+      "unit": "V76",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 12680,
+        "timestampUTC": "2026-09-09T10:33:32.292659+00:00",
+        "unit": "V76",
+        "path": "research/DGamma/CP5O19MixedRowDispatcherSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 12869,
+      "timestampUTC": "2026-09-09T10:33:35.604499+00:00",
+      "unit": "V77",
+      "path": "research/DGamma/CP5O19PairObservationSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:33:38.760910+00:00",
+      "unit": "V77",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 12869,
+        "timestampUTC": "2026-09-09T10:33:35.604499+00:00",
+        "unit": "V77",
+        "path": "research/DGamma/CP5O19PairObservationSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 13241,
+      "timestampUTC": "2026-09-09T10:33:38.921101+00:00",
+      "unit": "V78",
+      "path": "research/DGamma/CP5O20CanonicalPairedExtractionSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:33:42.082269+00:00",
+      "unit": "V78",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 13241,
+        "timestampUTC": "2026-09-09T10:33:38.921101+00:00",
+        "unit": "V78",
+        "path": "research/DGamma/CP5O20CanonicalPairedExtractionSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 13619,
+      "timestampUTC": "2026-09-09T10:33:42.255845+00:00",
+      "unit": "V79",
+      "path": "research/DGamma/CP5O20PairedRemovalSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:33:45.405427+00:00",
+      "unit": "V79",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 13619,
+        "timestampUTC": "2026-09-09T10:33:42.255845+00:00",
+        "unit": "V79",
+        "path": "research/DGamma/CP5O20PairedRemovalSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 14020,
+      "timestampUTC": "2026-09-09T10:33:45.578202+00:00",
+      "unit": "V80",
+      "path": "research-tests/DGamma/R192RemovedBirthCurrentNameProbe.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:33:58.070212+00:00",
+      "unit": "V80",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 14020,
+        "timestampUTC": "2026-09-09T10:33:45.578202+00:00",
+        "unit": "V80",
+        "path": "research-tests/DGamma/R192RemovedBirthCurrentNameProbe.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 15070,
+      "timestampUTC": "2026-09-09T10:33:58.243545+00:00",
+      "unit": "V81",
+      "path": "research/DGamma/CP5O19CartesianLengthSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:34:01.419382+00:00",
+      "unit": "V81",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 15070,
+        "timestampUTC": "2026-09-09T10:33:58.243545+00:00",
+        "unit": "V81",
+        "path": "research/DGamma/CP5O19CartesianLengthSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 15334,
+      "timestampUTC": "2026-09-09T10:34:01.585407+00:00",
+      "unit": "V82",
+      "path": "research/DGamma/CP5O19OriginalBlockClassSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:34:04.749711+00:00",
+      "unit": "V82",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 15334,
+        "timestampUTC": "2026-09-09T10:34:01.585407+00:00",
+        "unit": "V82",
+        "path": "research/DGamma/CP5O19OriginalBlockClassSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 15719,
+      "timestampUTC": "2026-09-09T10:34:04.914734+00:00",
+      "unit": "V83",
+      "path": "research/DGamma/CP5O20HistoryNameTransportSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:34:08.070531+00:00",
+      "unit": "V83",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 15719,
+        "timestampUTC": "2026-09-09T10:34:04.914734+00:00",
+        "unit": "V83",
+        "path": "research/DGamma/CP5O20HistoryNameTransportSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 15945,
+      "timestampUTC": "2026-09-09T10:34:08.247325+00:00",
+      "unit": "V84",
+      "path": "research-tests/DGamma/R193HistoryNameTransportPositive.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:34:10.391403+00:00",
+      "unit": "V84",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 15945,
+        "timestampUTC": "2026-09-09T10:34:08.247325+00:00",
+        "unit": "V84",
+        "path": "research-tests/DGamma/R193HistoryNameTransportPositive.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 16147,
+      "timestampUTC": "2026-09-09T10:34:10.554941+00:00",
+      "unit": "V85",
+      "path": "research-tests/DGamma/R193VestigialHistoryTransportPositive.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:34:13.740160+00:00",
+      "unit": "V85",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 16147,
+        "timestampUTC": "2026-09-09T10:34:10.554941+00:00",
+        "unit": "V85",
+        "path": "research-tests/DGamma/R193VestigialHistoryTransportPositive.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 16520,
+      "timestampUTC": "2026-09-09T10:34:13.923462+00:00",
+      "unit": "V86",
+      "path": "research/DGamma/CP5O19CartesianWordRowSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:34:19.187456+00:00",
+      "unit": "V86",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 16520,
+        "timestampUTC": "2026-09-09T10:34:13.923462+00:00",
+        "unit": "V86",
+        "path": "research/DGamma/CP5O19CartesianWordRowSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 17149,
+      "timestampUTC": "2026-09-09T10:34:19.353283+00:00",
+      "unit": "V87",
+      "path": "research/DGamma/CP5O19PaperBranchCompletenessSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:34:23.577801+00:00",
+      "unit": "V87",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 17149,
+        "timestampUTC": "2026-09-09T10:34:19.353283+00:00",
+        "unit": "V87",
+        "path": "research/DGamma/CP5O19PaperBranchCompletenessSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 18983,
+      "timestampUTC": "2026-09-09T10:34:23.741189+00:00",
+      "unit": "V88",
+      "path": "research/DGamma/CP5O20EndpointRebaseBoundarySpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:34:26.910045+00:00",
+      "unit": "V88",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 18983,
+        "timestampUTC": "2026-09-09T10:34:23.741189+00:00",
+        "unit": "V88",
+        "path": "research/DGamma/CP5O20EndpointRebaseBoundarySpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 19131,
+      "timestampUTC": "2026-09-09T10:34:27.070932+00:00",
+      "unit": "V89",
+      "path": "research/DGamma/CP5O20HistoryExecutionSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:34:30.232114+00:00",
+      "unit": "V89",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 19131,
+        "timestampUTC": "2026-09-09T10:34:27.070932+00:00",
+        "unit": "V89",
+        "path": "research/DGamma/CP5O20HistoryExecutionSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 19373,
+      "timestampUTC": "2026-09-09T10:34:30.394798+00:00",
+      "unit": "V90",
+      "path": "research-tests/DGamma/R195ClosingHistoryRetentionPositive.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:34:32.519175+00:00",
+      "unit": "V90",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 19373,
+        "timestampUTC": "2026-09-09T10:34:30.394798+00:00",
+        "unit": "V90",
+        "path": "research-tests/DGamma/R195ClosingHistoryRetentionPositive.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 19593,
+      "timestampUTC": "2026-09-09T10:34:32.682131+00:00",
+      "unit": "V91",
+      "path": "research-tests/DGamma/R195EndpointRebaseBoundaryPositive.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:34:34.799672+00:00",
+      "unit": "V91",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 19593,
+        "timestampUTC": "2026-09-09T10:34:32.682131+00:00",
+        "unit": "V91",
+        "path": "research-tests/DGamma/R195EndpointRebaseBoundaryPositive.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 19674,
+      "timestampUTC": "2026-09-09T10:34:34.964563+00:00",
+      "unit": "V92",
+      "path": "research/DGamma/CP5O19CartesianColumnsSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:34:43.336401+00:00",
+      "unit": "V92",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 19674,
+        "timestampUTC": "2026-09-09T10:34:34.964563+00:00",
+        "unit": "V92",
+        "path": "research/DGamma/CP5O19CartesianColumnsSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 20525,
+      "timestampUTC": "2026-09-09T10:34:43.503369+00:00",
+      "unit": "V93",
+      "path": "research/DGamma/CP5O20ActualHistoryAdvanceSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:34:46.641454+00:00",
+      "unit": "V93",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 20525,
+        "timestampUTC": "2026-09-09T10:34:43.503369+00:00",
+        "unit": "V93",
+        "path": "research/DGamma/CP5O20ActualHistoryAdvanceSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 20683,
+      "timestampUTC": "2026-09-09T10:34:46.803713+00:00",
+      "unit": "V94",
+      "path": "research/DGamma/CP5O20StampedHistoryFoldSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:34:49.944749+00:00",
+      "unit": "V94",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 20683,
+        "timestampUTC": "2026-09-09T10:34:46.803713+00:00",
+        "unit": "V94",
+        "path": "research/DGamma/CP5O20StampedHistoryFoldSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 21001,
+      "timestampUTC": "2026-09-09T10:34:50.116047+00:00",
+      "unit": "V95",
+      "path": "research/DGamma/CP5O19ActualCartesianSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:34:54.322202+00:00",
+      "unit": "V95",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 21001,
+        "timestampUTC": "2026-09-09T10:34:50.116047+00:00",
+        "unit": "V95",
+        "path": "research/DGamma/CP5O19ActualCartesianSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 21270,
+      "timestampUTC": "2026-09-09T10:34:54.485989+00:00",
+      "unit": "V96",
+      "path": "research/DGamma/CP5O20OccurrenceStampedHistorySpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:34:57.668649+00:00",
+      "unit": "V96",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 21270,
+        "timestampUTC": "2026-09-09T10:34:54.485989+00:00",
+        "unit": "V96",
+        "path": "research/DGamma/CP5O20OccurrenceStampedHistorySpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 21630,
+      "timestampUTC": "2026-09-09T10:34:57.836721+00:00",
+      "unit": "V97",
+      "path": "research/DGamma/CP5O20StampedOrdinalNecessitySpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:35:00.993350+00:00",
+      "unit": "V97",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 21630,
+        "timestampUTC": "2026-09-09T10:34:57.836721+00:00",
+        "unit": "V97",
+        "path": "research/DGamma/CP5O20StampedOrdinalNecessitySpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 21865,
+      "timestampUTC": "2026-09-09T10:35:01.154854+00:00",
+      "unit": "V98",
+      "path": "research/DGamma/CP5O19WholeBlockSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:35:04.313207+00:00",
+      "unit": "V98",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 21865,
+        "timestampUTC": "2026-09-09T10:35:01.154854+00:00",
+        "unit": "V98",
+        "path": "research/DGamma/CP5O19WholeBlockSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 22225,
+      "timestampUTC": "2026-09-09T10:35:04.481387+00:00",
+      "unit": "V99",
+      "path": "research/DGamma/CP5O19SameChainAssemblySpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:35:07.651541+00:00",
+      "unit": "V99",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 22225,
+        "timestampUTC": "2026-09-09T10:35:04.481387+00:00",
+        "unit": "V99",
+        "path": "research/DGamma/CP5O19SameChainAssemblySpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 22716,
+      "timestampUTC": "2026-09-09T10:35:07.829078+00:00",
+      "unit": "V100",
+      "path": "research/DGamma/CP5O19ReachedBlocksSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:38:53.038394+00:00",
+      "unit": "V100",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 22716,
+        "timestampUTC": "2026-09-09T10:35:07.829078+00:00",
+        "unit": "V100",
+        "path": "research/DGamma/CP5O19ReachedBlocksSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 48383,
+      "timestampUTC": "2026-09-09T10:38:53.204758+00:00",
+      "unit": "V101",
+      "path": "research/DGamma/CP5O19ReachedDecompositionSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:38:56.380171+00:00",
+      "unit": "V101",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 48383,
+        "timestampUTC": "2026-09-09T10:38:53.204758+00:00",
+        "unit": "V101",
+        "path": "research/DGamma/CP5O19ReachedDecompositionSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 48511,
+      "timestampUTC": "2026-09-09T10:38:56.547338+00:00",
+      "unit": "V102",
+      "path": "research/DGamma/CP5O19OperationalAssemblySpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:38:59.712384+00:00",
+      "unit": "V102",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 48511,
+        "timestampUTC": "2026-09-09T10:38:56.547338+00:00",
+        "unit": "V102",
+        "path": "research/DGamma/CP5O19OperationalAssemblySpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 48737,
+      "timestampUTC": "2026-09-09T10:38:59.879168+00:00",
+      "unit": "V103",
+      "path": "research/DGamma/CP5O20CanonicalActionCompletenessSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:39:03.069323+00:00",
+      "unit": "V103",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 48737,
+        "timestampUTC": "2026-09-09T10:38:59.879168+00:00",
+        "unit": "V103",
+        "path": "research/DGamma/CP5O20CanonicalActionCompletenessSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 49022,
+      "timestampUTC": "2026-09-09T10:39:03.231373+00:00",
+      "unit": "V104",
+      "path": "research/DGamma/CP5ConfluenceCrossTraceSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:39:07.436338+00:00",
+      "unit": "V104",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 49022,
+        "timestampUTC": "2026-09-09T10:39:03.231373+00:00",
+        "unit": "V104",
+        "path": "research/DGamma/CP5ConfluenceCrossTraceSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 49219,
+      "timestampUTC": "2026-09-09T10:39:07.602793+00:00",
+      "unit": "V105",
+      "path": "research-tests/DGamma/R16EndpointControlsImpossibilityPositive.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:39:10.773186+00:00",
+      "unit": "V105",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 49219,
+        "timestampUTC": "2026-09-09T10:39:07.602793+00:00",
+        "unit": "V105",
+        "path": "research-tests/DGamma/R16EndpointControlsImpossibilityPositive.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 49868,
+      "timestampUTC": "2026-09-09T10:39:10.933039+00:00",
+      "unit": "V106",
+      "path": "research-tests/DGamma/R178WrongGenerationMatchingNegative.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:39:12.030057+00:00",
+      "unit": "V106",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 49868,
+        "timestampUTC": "2026-09-09T10:39:10.933039+00:00",
+        "unit": "V106",
+        "path": "research-tests/DGamma/R178WrongGenerationMatchingNegative.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 49989,
+      "timestampUTC": "2026-09-09T10:39:12.202728+00:00",
+      "unit": "V107",
+      "path": "research-tests/DGamma/R181O19BundlePrerequisites.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:40:19.732494+00:00",
+      "unit": "V107",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 49989,
+        "timestampUTC": "2026-09-09T10:39:12.202728+00:00",
+        "unit": "V107",
+        "path": "research-tests/DGamma/R181O19BundlePrerequisites.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 58345,
+      "timestampUTC": "2026-09-09T10:40:19.896064+00:00",
+      "unit": "V108",
+      "path": "research-tests/DGamma/R6MixedScheduleNegative.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:40:20.969843+00:00",
+      "unit": "V108",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 58345,
+        "timestampUTC": "2026-09-09T10:40:19.896064+00:00",
+        "unit": "V108",
+        "path": "research-tests/DGamma/R6MixedScheduleNegative.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 58408,
+      "timestampUTC": "2026-09-09T10:40:21.129910+00:00",
+      "unit": "V109",
+      "path": "research-tests/DGamma/R6OuterSchedulesPositive.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:40:23.265457+00:00",
+      "unit": "V109",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 58408,
+        "timestampUTC": "2026-09-09T10:40:21.129910+00:00",
+        "unit": "V109",
+        "path": "research-tests/DGamma/R6OuterSchedulesPositive.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 58592,
+      "timestampUTC": "2026-09-09T10:40:23.433300+00:00",
+      "unit": "V110",
+      "path": "research-tests/DGamma/R8FullPipeline.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:42:03.267762+00:00",
+      "unit": "V110",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 58592,
+        "timestampUTC": "2026-09-09T10:40:23.433300+00:00",
+        "unit": "V110",
+        "path": "research-tests/DGamma/R8FullPipeline.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 66552,
+      "timestampUTC": "2026-09-09T10:42:03.432175+00:00",
+      "unit": "V111",
+      "path": "research-tests/DGamma/R8WrongTraceBridgeNegative.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:42:04.527554+00:00",
+      "unit": "V111",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 66552,
+        "timestampUTC": "2026-09-09T10:42:03.432175+00:00",
+        "unit": "V111",
+        "path": "research-tests/DGamma/R8WrongTraceBridgeNegative.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 66568,
+      "timestampUTC": "2026-09-09T10:42:04.694813+00:00",
+      "unit": "V112",
+      "path": "research/DGamma/CP5O20CanonicalMaybeControlSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:42:07.870883+00:00",
+      "unit": "V112",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 66568,
+        "timestampUTC": "2026-09-09T10:42:04.694813+00:00",
+        "unit": "V112",
+        "path": "research/DGamma/CP5O20CanonicalMaybeControlSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 66790,
+      "timestampUTC": "2026-09-09T10:42:08.031902+00:00",
+      "unit": "V113",
+      "path": "research/DGamma/CP5O20CanonicalSynchronizationGoalSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:42:11.173527+00:00",
+      "unit": "V113",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 66790,
+        "timestampUTC": "2026-09-09T10:42:08.031902+00:00",
+        "unit": "V113",
+        "path": "research/DGamma/CP5O20CanonicalSynchronizationGoalSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 67071,
+      "timestampUTC": "2026-09-09T10:42:11.339524+00:00",
+      "unit": "V114",
+      "path": "research/DGamma/CP5O20CanonicalSynchronizationModuloSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:42:14.518598+00:00",
+      "unit": "V114",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 67071,
+        "timestampUTC": "2026-09-09T10:42:11.339524+00:00",
+        "unit": "V114",
+        "path": "research/DGamma/CP5O20CanonicalSynchronizationModuloSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 67219,
+      "timestampUTC": "2026-09-09T10:42:14.686871+00:00",
+      "unit": "V115",
+      "path": "research/DGamma/CP5O20RootReplayLawProducerSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:42:17.847888+00:00",
+      "unit": "V115",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 67219,
+        "timestampUTC": "2026-09-09T10:42:14.686871+00:00",
+        "unit": "V115",
+        "path": "research/DGamma/CP5O20RootReplayLawProducerSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 67846,
+      "timestampUTC": "2026-09-09T10:42:18.008305+00:00",
+      "unit": "V116",
+      "path": "research/DGamma/CP5O20SafeBlockSelectionSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:42:28.473266+00:00",
+      "unit": "V116",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 67846,
+        "timestampUTC": "2026-09-09T10:42:18.008305+00:00",
+        "unit": "V116",
+        "path": "research/DGamma/CP5O20SafeBlockSelectionSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 70010,
+      "timestampUTC": "2026-09-09T10:42:28.640636+00:00",
+      "unit": "V117",
+      "path": "research/DGamma/CP5UniqueRawNameCanonicalCapital.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:42:31.797097+00:00",
+      "unit": "V117",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 70010,
+        "timestampUTC": "2026-09-09T10:42:28.640636+00:00",
+        "unit": "V117",
+        "path": "research/DGamma/CP5UniqueRawNameCanonicalCapital.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 70278,
+      "timestampUTC": "2026-09-09T10:42:31.962944+00:00",
+      "unit": "V118",
+      "path": "research-tests/DGamma/R16ConfluenceTheoremAssemblyPositive.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:42:34.072803+00:00",
+      "unit": "V118",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 70278,
+        "timestampUTC": "2026-09-09T10:42:31.962944+00:00",
+        "unit": "V118",
+        "path": "research-tests/DGamma/R16ConfluenceTheoremAssemblyPositive.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 70424,
+      "timestampUTC": "2026-09-09T10:42:34.249100+00:00",
+      "unit": "V119",
+      "path": "research-tests/DGamma/R182O19RevisedSafetyNegative.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:42:37.426291+00:00",
+      "unit": "V119",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 70424,
+        "timestampUTC": "2026-09-09T10:42:34.249100+00:00",
+        "unit": "V119",
+        "path": "research-tests/DGamma/R182O19RevisedSafetyNegative.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 70590,
+      "timestampUTC": "2026-09-09T10:42:37.590052+00:00",
+      "unit": "V120",
+      "path": "research-tests/DGamma/R198CanonicalMaybeControlPositive.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:42:39.698790+00:00",
+      "unit": "V120",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 70590,
+        "timestampUTC": "2026-09-09T10:42:37.590052+00:00",
+        "unit": "V120",
+        "path": "research-tests/DGamma/R198CanonicalMaybeControlPositive.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 70822,
+      "timestampUTC": "2026-09-09T10:42:39.865441+00:00",
+      "unit": "V121",
+      "path": "research/DGamma/CP5O20LinearExtensionSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:42:43.014201+00:00",
+      "unit": "V121",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 70822,
+        "timestampUTC": "2026-09-09T10:42:39.865441+00:00",
+        "unit": "V121",
+        "path": "research/DGamma/CP5O20LinearExtensionSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 71893,
+      "timestampUTC": "2026-09-09T10:42:43.185360+00:00",
+      "unit": "V122",
+      "path": "research/DGamma/CP5O20RootStageAttachmentSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:42:46.339644+00:00",
+      "unit": "V122",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 71893,
+        "timestampUTC": "2026-09-09T10:42:43.185360+00:00",
+        "unit": "V122",
+        "path": "research/DGamma/CP5O20RootStageAttachmentSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 72055,
+      "timestampUTC": "2026-09-09T10:42:46.510021+00:00",
+      "unit": "V123",
+      "path": "research-tests/DGamma/R182O19RevisedSafetyPositive.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:43:04.239103+00:00",
+      "unit": "V123",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 72055,
+        "timestampUTC": "2026-09-09T10:42:46.510021+00:00",
+        "unit": "V123",
+        "path": "research-tests/DGamma/R182O19RevisedSafetyPositive.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 75406,
+      "timestampUTC": "2026-09-09T10:43:04.408204+00:00",
+      "unit": "V124",
+      "path": "research-tests/DGamma/R197RetainedRoleBoundaryPositive.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:43:06.510755+00:00",
+      "unit": "V124",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 75406,
+        "timestampUTC": "2026-09-09T10:43:04.408204+00:00",
+        "unit": "V124",
+        "path": "research-tests/DGamma/R197RetainedRoleBoundaryPositive.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 75576,
+      "timestampUTC": "2026-09-09T10:43:06.690016+00:00",
+      "unit": "V125",
+      "path": "research/DGamma/CP5O20BlockMeasureSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:43:09.838350+00:00",
+      "unit": "V125",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 75576,
+        "timestampUTC": "2026-09-09T10:43:06.690016+00:00",
+        "unit": "V125",
+        "path": "research/DGamma/CP5O20BlockMeasureSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 75825,
+      "timestampUTC": "2026-09-09T10:43:10.007758+00:00",
+      "unit": "V126",
+      "path": "research/DGamma/CP5O20SupportedReferenceSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:43:13.161380+00:00",
+      "unit": "V126",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 75825,
+        "timestampUTC": "2026-09-09T10:43:10.007758+00:00",
+        "unit": "V126",
+        "path": "research/DGamma/CP5O20SupportedReferenceSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 76094,
+      "timestampUTC": "2026-09-09T10:43:13.329819+00:00",
+      "unit": "V127",
+      "path": "research-tests/DGamma/R182O19ActualCrossingPositive.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:46:11.997350+00:00",
+      "unit": "V127",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 76094,
+        "timestampUTC": "2026-09-09T10:43:13.329819+00:00",
+        "unit": "V127",
+        "path": "research-tests/DGamma/R182O19ActualCrossingPositive.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 97376,
+      "timestampUTC": "2026-09-09T10:46:12.165072+00:00",
+      "unit": "V128",
+      "path": "research-tests/DGamma/R191CanonicalChildRetirementGap.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:46:17.415934+00:00",
+      "unit": "V128",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 97376,
+        "timestampUTC": "2026-09-09T10:46:12.165072+00:00",
+        "unit": "V128",
+        "path": "research-tests/DGamma/R191CanonicalChildRetirementGap.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 97603,
+      "timestampUTC": "2026-09-09T10:46:17.588451+00:00",
+      "unit": "V129",
+      "path": "research/DGamma/CP5O20OperationalProgressSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:46:20.753552+00:00",
+      "unit": "V129",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 97603,
+        "timestampUTC": "2026-09-09T10:46:17.588451+00:00",
+        "unit": "V129",
+        "path": "research/DGamma/CP5O20OperationalProgressSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 97850,
+      "timestampUTC": "2026-09-09T10:46:20.922943+00:00",
+      "unit": "V130",
+      "path": "research/DGamma/CP5O20SelectorResolverFrameSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:46:24.103057+00:00",
+      "unit": "V130",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 97850,
+        "timestampUTC": "2026-09-09T10:46:20.922943+00:00",
+        "unit": "V130",
+        "path": "research/DGamma/CP5O20SelectorResolverFrameSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 98055,
+      "timestampUTC": "2026-09-09T10:46:24.266484+00:00",
+      "unit": "V131",
+      "path": "research-tests/DGamma/R182O19SecondCrossingPositive.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:46:27.420167+00:00",
+      "unit": "V131",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 98055,
+        "timestampUTC": "2026-09-09T10:46:24.266484+00:00",
+        "unit": "V131",
+        "path": "research-tests/DGamma/R182O19SecondCrossingPositive.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 98202,
+      "timestampUTC": "2026-09-09T10:46:27.585324+00:00",
+      "unit": "V132",
+      "path": "research-tests/DGamma/R192ExtendedChildBlockProbe.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:46:30.758965+00:00",
+      "unit": "V132",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 98202,
+        "timestampUTC": "2026-09-09T10:46:27.585324+00:00",
+        "unit": "V132",
+        "path": "research-tests/DGamma/R192ExtendedChildBlockProbe.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 98442,
+      "timestampUTC": "2026-09-09T10:46:30.926617+00:00",
+      "unit": "V133",
+      "path": "research-tests/DGamma/R197StampedHistoryPositive.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:46:34.082874+00:00",
+      "unit": "V133",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 98442,
+        "timestampUTC": "2026-09-09T10:46:30.926617+00:00",
+        "unit": "V133",
+        "path": "research-tests/DGamma/R197StampedHistoryPositive.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 98708,
+      "timestampUTC": "2026-09-09T10:46:34.246140+00:00",
+      "unit": "V134",
+      "path": "research-tests/DGamma/R198OccurrenceStampedHistoryPositive.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:46:39.493285+00:00",
+      "unit": "V134",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 98708,
+        "timestampUTC": "2026-09-09T10:46:34.246140+00:00",
+        "unit": "V134",
+        "path": "research-tests/DGamma/R198OccurrenceStampedHistoryPositive.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 99051,
+      "timestampUTC": "2026-09-09T10:46:39.658019+00:00",
+      "unit": "V135",
+      "path": "research/DGamma/CP5O20BlockResolverFrameSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:46:42.804548+00:00",
+      "unit": "V135",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 99051,
+        "timestampUTC": "2026-09-09T10:46:39.658019+00:00",
+        "unit": "V135",
+        "path": "research/DGamma/CP5O20BlockResolverFrameSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 99957,
+      "timestampUTC": "2026-09-09T10:46:42.986743+00:00",
+      "unit": "V136",
+      "path": "research/DGamma/CP5O20OperationalDescentSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:46:46.135105+00:00",
+      "unit": "V136",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 99957,
+        "timestampUTC": "2026-09-09T10:46:42.986743+00:00",
+        "unit": "V136",
+        "path": "research/DGamma/CP5O20OperationalDescentSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 194,
+      "timestampUTC": "2026-09-09T10:46:46.294864+00:00",
+      "unit": "V137",
+      "path": "research-tests/DGamma/R182O19RemainingCrossingFacts.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:46:50.483250+00:00",
+      "unit": "V137",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 194,
+        "timestampUTC": "2026-09-09T10:46:46.294864+00:00",
+        "unit": "V137",
+        "path": "research-tests/DGamma/R182O19RemainingCrossingFacts.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 547,
+      "timestampUTC": "2026-09-09T10:46:50.667279+00:00",
+      "unit": "V138",
+      "path": "research-tests/DGamma/R193InstalledBlockResolverPositive.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:47:04.212713+00:00",
+      "unit": "V138",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 547,
+        "timestampUTC": "2026-09-09T10:46:50.667279+00:00",
+        "unit": "V138",
+        "path": "research-tests/DGamma/R193InstalledBlockResolverPositive.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 3174,
+      "timestampUTC": "2026-09-09T10:47:04.376279+00:00",
+      "unit": "V139",
+      "path": "research/DGamma/CP5O20ReferenceDescentSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:47:07.530559+00:00",
+      "unit": "V139",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 3174,
+        "timestampUTC": "2026-09-09T10:47:04.376279+00:00",
+        "unit": "V139",
+        "path": "research/DGamma/CP5O20ReferenceDescentSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 3391,
+      "timestampUTC": "2026-09-09T10:47:07.693279+00:00",
+      "unit": "V140",
+      "path": "research/DGamma/CP5O20SelectionCompletenessSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:47:11.898397+00:00",
+      "unit": "V140",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 3391,
+        "timestampUTC": "2026-09-09T10:47:07.693279+00:00",
+        "unit": "V140",
+        "path": "research/DGamma/CP5O20SelectionCompletenessSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 3724,
+      "timestampUTC": "2026-09-09T10:47:12.062701+00:00",
+      "unit": "V141",
+      "path": "research-tests/DGamma/R182O19ThirdCrossingConstruction.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:47:20.453141+00:00",
+      "unit": "V141",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 3724,
+        "timestampUTC": "2026-09-09T10:47:12.062701+00:00",
+        "unit": "V141",
+        "path": "research-tests/DGamma/R182O19ThirdCrossingConstruction.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 4824,
+      "timestampUTC": "2026-09-09T10:47:20.614439+00:00",
+      "unit": "V142",
+      "path": "research-tests/DGamma/R193CandidateEnumerationPositive.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:47:22.719565+00:00",
+      "unit": "V142",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 4824,
+        "timestampUTC": "2026-09-09T10:47:20.614439+00:00",
+        "unit": "V142",
+        "path": "research-tests/DGamma/R193CandidateEnumerationPositive.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 5015,
+      "timestampUTC": "2026-09-09T10:47:22.884404+00:00",
+      "unit": "V143",
+      "path": "research/DGamma/CP5O20FiniteInversionSpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:47:26.051410+00:00",
+      "unit": "V143",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 5015,
+        "timestampUTC": "2026-09-09T10:47:22.884404+00:00",
+        "unit": "V143",
+        "path": "research/DGamma/CP5O20FiniteInversionSpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 5146,
+      "timestampUTC": "2026-09-09T10:47:26.214543+00:00",
+      "unit": "V144",
+      "path": "research/DGamma/CP5O20InversionChildSafetySpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:47:29.376958+00:00",
+      "unit": "V144",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 5146,
+        "timestampUTC": "2026-09-09T10:47:26.214543+00:00",
+        "unit": "V144",
+        "path": "research/DGamma/CP5O20InversionChildSafetySpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 5316,
+      "timestampUTC": "2026-09-09T10:47:29.543820+00:00",
+      "unit": "V145",
+      "path": "research-tests/DGamma/R182O19ThirdCrossingPositive.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:47:46.206599+00:00",
+      "unit": "V145",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 5316,
+        "timestampUTC": "2026-09-09T10:47:29.543820+00:00",
+        "unit": "V145",
+        "path": "research-tests/DGamma/R182O19ThirdCrossingPositive.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 7070,
+      "timestampUTC": "2026-09-09T10:47:46.370400+00:00",
+      "unit": "V146",
+      "path": "research/DGamma/CP5O20OwnCutSafetySpike.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:47:56.793234+00:00",
+      "unit": "V146",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 7070,
+        "timestampUTC": "2026-09-09T10:47:46.370400+00:00",
+        "unit": "V146",
+        "path": "research/DGamma/CP5O20OwnCutSafetySpike.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 7651,
+      "timestampUTC": "2026-09-09T10:47:56.959922+00:00",
+      "unit": "V147",
+      "path": "research-tests/DGamma/R182O19FourthCrossingFacts.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:48:01.154503+00:00",
+      "unit": "V147",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 7651,
+        "timestampUTC": "2026-09-09T10:47:56.959922+00:00",
+        "unit": "V147",
+        "path": "research-tests/DGamma/R182O19FourthCrossingFacts.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 7972,
+      "timestampUTC": "2026-09-09T10:48:01.325627+00:00",
+      "unit": "V148",
+      "path": "research-tests/DGamma/R182O19FourthCrossingConstruction.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:48:40.819366+00:00",
+      "unit": "V148",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 7972,
+        "timestampUTC": "2026-09-09T10:48:01.325627+00:00",
+        "unit": "V148",
+        "path": "research-tests/DGamma/R182O19FourthCrossingConstruction.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 12512,
+      "timestampUTC": "2026-09-09T10:48:40.981709+00:00",
+      "unit": "V149",
+      "path": "research-tests/DGamma/R182O19FourCrossingsPositive.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:50:37.299260+00:00",
+      "unit": "V149",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 12512,
+        "timestampUTC": "2026-09-09T10:48:40.981709+00:00",
+        "unit": "V149",
+        "path": "research-tests/DGamma/R182O19FourCrossingsPositive.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 27043,
+      "timestampUTC": "2026-09-09T10:50:37.467378+00:00",
+      "unit": "V150",
+      "path": "research-tests/DGamma/R182O19AllFourCrossingsPositive.idr"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:51:04.471052+00:00",
+      "unit": "V150",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 27043,
+        "timestampUTC": "2026-09-09T10:50:37.467378+00:00",
+        "unit": "V150",
+        "path": "research-tests/DGamma/R182O19AllFourCrossingsPositive.idr"
+      }
+    },
+    {
+      "event": "acquired",
+      "lane": "R198-main",
+      "pid": 29522,
+      "timestampUTC": "2026-09-09T10:51:04.638474+00:00",
+      "unit": "V151",
+      "path": "package"
+    },
+    {
+      "event": "released",
+      "timestampUTC": "2026-09-09T10:51:21.282872+00:00",
+      "unit": "V151",
+      "owner": {
+        "lane": "R198-main",
+        "pid": 29522,
+        "timestampUTC": "2026-09-09T10:51:04.638474+00:00",
+        "unit": "V151",
+        "path": "package"
+      }
+    }
+  ],
+  "resourceStops": [],
+  "sourceMutations": [],
+  "extraBuildingRejectedUnits": [],
+  "zeroSampleUnits": [
+    "A1-1",
+    "A2-1",
+    "A3-1",
+    "A3-2",
+    "A3-3",
+    "SV1-1",
+    "A9-1",
+    "A9-2",
+    "V1",
+    "V2",
+    "V4",
+    "V6",
+    "V7",
+    "V12",
+    "V13",
+    "V23",
+    "V25",
+    "V33",
+    "V106",
+    "V108",
+    "V111"
+  ],
+  "sampleQualification": "Own-worktree one-second RSS samples are NOT OS high-water; zero means no live sample captured, not zero actual peak",
+  "maxLocalDiamondSampleRSSKiB": 50540272,
+  "maxOtherSampleRSSKiB": 44786256,
+  "maxUniqueOrdinalSampleRSSKiB": 44786256,
+  "staleLockRemovals": [],
+  "waitEvents": [],
+  "noMainLock": true,
+  "currentForeignLock": null,
+  "lane2CompilerObservations": [
+    {
+      "unit": "A9-1",
+      "processes": [
+        "82536 82526 /opt/homebrew/opt/chezscheme/bin/chez --program /opt/homebrew/Cellar/idris2/0.8.0_2/libexec/bin/idris2_app/idris2.so --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/src --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/research --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R9-Sources --check /Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R9-Sources/DGamma/L2R9ContiguityPackets.idr"
+      ]
+    },
+    {
+      "unit": "A9-3",
+      "processes": [
+        "95106 95096 /opt/homebrew/opt/chezscheme/bin/chez --program /opt/homebrew/Cellar/idris2/0.8.0_2/libexec/bin/idris2_app/idris2.so --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/src --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/research --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R9-Sources --check /Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R9-Sources/DGamma/L2R9ContiguityPackets.idr"
+      ]
+    },
+    {
+      "unit": "A10-1",
+      "processes": [
+        "12516 12506 /opt/homebrew/opt/chezscheme/bin/chez --program /opt/homebrew/Cellar/idris2/0.8.0_2/libexec/bin/idris2_app/idris2.so --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/src --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/research --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R9-Sources --check /Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R9-Sources/DGamma/L2R9ContiguityPackets.idr"
+      ]
+    },
+    {
+      "unit": "A11-1",
+      "processes": [
+        "12516 12506 /opt/homebrew/opt/chezscheme/bin/chez --program /opt/homebrew/Cellar/idris2/0.8.0_2/libexec/bin/idris2_app/idris2.so --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/src --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/research --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R9-Sources --check /Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R9-Sources/DGamma/L2R9ContiguityPackets.idr"
+      ]
+    },
+    {
+      "unit": "A14-1",
+      "processes": [
+        "55639 55629 /opt/homebrew/opt/chezscheme/bin/chez --program /opt/homebrew/Cellar/idris2/0.8.0_2/libexec/bin/idris2_app/idris2.so --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/src --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/research --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R9-Sources --check /Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R9-Sources/DGamma/L2R9RestoredPackets.idr"
+      ]
+    },
+    {
+      "unit": "A15-1",
+      "processes": [
+        "55639 55629 /opt/homebrew/opt/chezscheme/bin/chez --program /opt/homebrew/Cellar/idris2/0.8.0_2/libexec/bin/idris2_app/idris2.so --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/src --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/research --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R9-Sources --check /Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R9-Sources/DGamma/L2R9RestoredPackets.idr"
+      ]
+    },
+    {
+      "unit": "A16-1",
+      "processes": [
+        "55639 55629 /opt/homebrew/opt/chezscheme/bin/chez --program /opt/homebrew/Cellar/idris2/0.8.0_2/libexec/bin/idris2_app/idris2.so --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/src --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/research --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R9-Sources --check /Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R9-Sources/DGamma/L2R9RestoredPackets.idr"
+      ]
+    },
+    {
+      "unit": "A17-1",
+      "processes": [
+        "55639 55629 /opt/homebrew/opt/chezscheme/bin/chez --program /opt/homebrew/Cellar/idris2/0.8.0_2/libexec/bin/idris2_app/idris2.so --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/src --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/research --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R9-Sources --check /Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R9-Sources/DGamma/L2R9RestoredPackets.idr"
+      ]
+    },
+    {
+      "unit": "A18-1",
+      "processes": [
+        "55639 55629 /opt/homebrew/opt/chezscheme/bin/chez --program /opt/homebrew/Cellar/idris2/0.8.0_2/libexec/bin/idris2_app/idris2.so --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/src --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/research --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R9-Sources --check /Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R9-Sources/DGamma/L2R9RestoredPackets.idr"
+      ]
+    },
+    {
+      "unit": "A22-1",
+      "processes": [
+        "17050 17040 /opt/homebrew/opt/chezscheme/bin/chez --program /opt/homebrew/Cellar/idris2/0.8.0_2/libexec/bin/idris2_app/idris2.so --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/src --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/research --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R9-Sources --check /Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R9-Sources/DGamma/L2R9CoreRestoration.idr"
+      ]
+    },
+    {
+      "unit": "A23-1",
+      "processes": [
+        "17050 17040 /opt/homebrew/opt/chezscheme/bin/chez --program /opt/homebrew/Cellar/idris2/0.8.0_2/libexec/bin/idris2_app/idris2.so --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/src --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/research --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R9-Sources --check /Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R9-Sources/DGamma/L2R9CoreRestoration.idr"
+      ]
+    },
+    {
+      "unit": "A23-2",
+      "processes": [
+        "17050 17040 /opt/homebrew/opt/chezscheme/bin/chez --program /opt/homebrew/Cellar/idris2/0.8.0_2/libexec/bin/idris2_app/idris2.so --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/src --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/research --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R9-Sources --check /Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R9-Sources/DGamma/L2R9CoreRestoration.idr"
+      ]
+    },
+    {
+      "unit": "A24-1",
+      "processes": [
+        "17050 17040 /opt/homebrew/opt/chezscheme/bin/chez --program /opt/homebrew/Cellar/idris2/0.8.0_2/libexec/bin/idris2_app/idris2.so --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/src --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/research --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R9-Sources --check /Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R9-Sources/DGamma/L2R9CoreRestoration.idr"
+      ]
+    },
+    {
+      "unit": "A25-1",
+      "processes": [
+        "17050 17040 /opt/homebrew/opt/chezscheme/bin/chez --program /opt/homebrew/Cellar/idris2/0.8.0_2/libexec/bin/idris2_app/idris2.so --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/src --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/research --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R9-Sources --check /Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R9-Sources/DGamma/L2R9CoreRestoration.idr"
+      ]
+    },
+    {
+      "unit": "A26-1",
+      "processes": [
+        "57791 57781 /opt/homebrew/opt/chezscheme/bin/chez --program /opt/homebrew/Cellar/idris2/0.8.0_2/libexec/bin/idris2_app/idris2.so --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/src --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/research --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R9-Sources --check /Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R9-Sources/DGamma/L2R9CoreRestoration.idr"
+      ]
+    },
+    {
+      "unit": "B1-1",
+      "processes": [
+        "57791 57781 /opt/homebrew/opt/chezscheme/bin/chez --program /opt/homebrew/Cellar/idris2/0.8.0_2/libexec/bin/idris2_app/idris2.so --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/src --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/research --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R9-Sources --check /Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R9-Sources/DGamma/L2R9CoreRestoration.idr"
+      ]
+    },
+    {
+      "unit": "B2-1",
+      "processes": [
+        "57791 57781 /opt/homebrew/opt/chezscheme/bin/chez --program /opt/homebrew/Cellar/idris2/0.8.0_2/libexec/bin/idris2_app/idris2.so --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/src --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/research --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R9-Sources --check /Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R9-Sources/DGamma/L2R9CoreRestoration.idr"
+      ]
+    },
+    {
+      "unit": "B3-1",
+      "processes": [
+        "57791 57781 /opt/homebrew/opt/chezscheme/bin/chez --program /opt/homebrew/Cellar/idris2/0.8.0_2/libexec/bin/idris2_app/idris2.so --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/src --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/research --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R9-Sources --check /Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R9-Sources/DGamma/L2R9CoreRestoration.idr"
+      ]
+    },
+    {
+      "unit": "B4-1",
+      "processes": [
+        "57791 57781 /opt/homebrew/opt/chezscheme/bin/chez --program /opt/homebrew/Cellar/idris2/0.8.0_2/libexec/bin/idris2_app/idris2.so --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/src --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/research --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R9-Sources --check /Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R9-Sources/DGamma/L2R9CoreRestoration.idr"
+      ]
+    },
+    {
+      "unit": "B5-1",
+      "processes": [
+        "57791 57781 /opt/homebrew/opt/chezscheme/bin/chez --program /opt/homebrew/Cellar/idris2/0.8.0_2/libexec/bin/idris2_app/idris2.so --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/src --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/research --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R9-Sources --check /Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R9-Sources/DGamma/L2R9CoreRestoration.idr"
+      ]
+    },
+    {
+      "unit": "B6-1",
+      "processes": [
+        " 3652  3642 /opt/homebrew/opt/chezscheme/bin/chez --program /opt/homebrew/Cellar/idris2/0.8.0_2/libexec/bin/idris2_app/idris2.so --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/src --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/research --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R9-Sources --check /Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R9-Sources/DGamma/L2R9CoreRestoration.idr"
+      ]
+    },
+    {
+      "unit": "B7-1",
+      "processes": [
+        " 3652  3642 /opt/homebrew/opt/chezscheme/bin/chez --program /opt/homebrew/Cellar/idris2/0.8.0_2/libexec/bin/idris2_app/idris2.so --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/src --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/research --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R9-Sources --check /Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R9-Sources/DGamma/L2R9CoreRestoration.idr"
+      ]
+    },
+    {
+      "unit": "B8-1",
+      "processes": [
+        " 3652  3642 /opt/homebrew/opt/chezscheme/bin/chez --program /opt/homebrew/Cellar/idris2/0.8.0_2/libexec/bin/idris2_app/idris2.so --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/src --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/research --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R9-Sources --check /Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R9-Sources/DGamma/L2R9CoreRestoration.idr"
+      ]
+    },
+    {
+      "unit": "B9-1",
+      "processes": [
+        " 3652  3642 /opt/homebrew/opt/chezscheme/bin/chez --program /opt/homebrew/Cellar/idris2/0.8.0_2/libexec/bin/idris2_app/idris2.so --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/src --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/research --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R9-Sources --check /Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R9-Sources/DGamma/L2R9CoreRestoration.idr"
+      ]
+    },
+    {
+      "unit": "V37",
+      "processes": [
+        "95584 95573 /opt/homebrew/opt/chezscheme/bin/chez --program /opt/homebrew/Cellar/idris2/0.8.0_2/libexec/bin/idris2_app/idris2.so --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/src --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/research --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests --source-dir /Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R9-Sources --check /Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R9-Sources/DGamma/L2R9ProviderRetirement.idr"
+      ]
+    }
+  ]
+}
