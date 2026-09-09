@@ -100,3 +100,33 @@ export
   (whenFalse : family False) -> (whenTrue : family True) -> (seen : Bool) -> family seen
 laneObservedBoolEliminate family whenFalse whenTrue False = whenFalse
 laneObservedBoolEliminate family whenFalse whenTrue True = whenTrue
+
+||| NEW observed-head consumer (not the frozen bare R4/R5 statement). It
+||| eliminates the record once, then the EXPLICIT Bool via laneObservedBoolEliminate.
+||| No projected if expression appears in this consumer's interface or body.
+export
+0 laneProviderHeadSame :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (wanted : key) -> (actor : name) ->
+  (component : Component key value world error) ->
+  (parent : Parent name) -> (flag : Bool) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (lifecycle : Lifecycle key value world error name
+    (dependencies (componentDependencies component)) (componentProvisions component)) ->
+  (rest : List (Binding name (FiberAt name key value world error))) ->
+  LaneProviderHeadObserved name key world error value nameEq keyEq wanted actor component parent flag table lifecycle rest ->
+  providerIn {name} {key} {value} {world} {error} @{nameEq} @{keyEq} wanted
+    (Bind actor (MkFiber component parent flag table lifecycle) :: rest) =
+  providerIn {name} {key} {value} {world} {error} @{nameEq} @{keyEq} wanted
+    (Bind actor (MkFiber component parent True table lifecycle) :: rest)
+laneProviderHeadSame {name} {key} {world} {error} {value} nameEq keyEq wanted actor component parent flag table lifecycle rest
+  (MkLaneProviderHeadObserved seen equation before after) =
+  laneObservedBoolEliminate
+    (\observed => (0 shape : seen = observed) ->
+      providerIn {name} {key} {value} {world} {error} @{nameEq} @{keyEq} wanted
+        (Bind actor (MkFiber component parent flag table lifecycle) :: rest) =
+      providerIn {name} {key} {value} {world} {error} @{nameEq} @{keyEq} wanted
+        (Bind actor (MkFiber component parent True table lifecycle) :: rest))
+    (\shape => rewrite (trans equation shape) in Refl)
+    (\shape => rewrite (trans equation shape) in Refl) seen Refl
