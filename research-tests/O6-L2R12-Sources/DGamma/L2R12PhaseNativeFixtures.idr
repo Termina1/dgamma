@@ -51,3 +51,19 @@ export
 0 phaseFixtureLife : LocatedActionOccurrence (LAdvance 0) (fst phaseFixtureCore)
 phaseFixtureLife = MkLocatedActionOccurrence (smallState 1) (smallState 2)
   NoTransitions (Fired {before = smallState 1} {afterState = smallState 2} (fst fixtureDictionaries) (snd fixtureDictionaries) (LAdvance 0) LFinishTag (smallFinish0 smallNativeExecution)) (MoreTransitions (Fired {before = smallState 2} {afterState = smallState 3} (fst fixtureDictionaries) (snd fixtureDictionaries) (ORetire 1) ORetireTag (smallRetire1 smallNativeExecution)) (MoreTransitions (Fired {before = smallState 3} {afterState = smallState 4} (fst fixtureDictionaries) (snd fixtureDictionaries) (ORemove 1) ORemoveTag (smallRemove1 smallNativeExecution)) NoTransitions)) Refl Refl
+
+||| Concrete ForcedRootPhase FROM native fragment, release and phase owner
+||| decoder. Every seed/anchor/count fact computes on explicit fixture data.
+||| This is a fixed certificate, not the general acceptance-to-phase producer.
+export
+0 singleForcedPhaseDecoded : ForcedRootPhase Nat Bool Unit String (\key => Unit)
+  (fst fixtureDictionaries) (snd fixtureDictionaries) (fst ordinalFixtureTrails) (MkRootCatalogEntry 4 3 (smallComponent True))
+singleForcedPhaseDecoded = MkForcedRootPhase
+  (MkRootCatalogEntry 4 3 (smallComponent True)) Here (LTESucc (LTESucc (LTESucc (LTESucc LTEZero)))) Refl
+  0 (smallState 1) (smallState 4)
+  (MoreTransitions (Fired {before = smallState 0} {afterState = smallState 1} (fst fixtureDictionaries) (snd fixtureDictionaries) (LBegin 0) LBeginTag (smallBegin0 smallNativeExecution)) NoTransitions) (fst phaseFixtureCore) (MoreTransitions (Fired {before = smallState 4} {afterState = smallState 5} (fst fixtureDictionaries) (snd fixtureDictionaries) (OInsert 3 Root (smallComponent True)) OInsertTag (smallInsert3 smallNativeExecution)) (MoreTransitions (Fired {before = smallState 5} {afterState = smallState 6} (fst fixtureDictionaries) (snd fixtureDictionaries) (LBegin 2) LBeginTag (smallBegin2 smallNativeExecution)) (MoreTransitions (Fired {before = smallState 6} {afterState = smallState 7} (fst fixtureDictionaries) (snd fixtureDictionaries) (LAdvance 2) LFinishTag (smallFinish2 smallNativeExecution)) NoTransitions)))
+  (phaseEventsExtended (fst fixtureDictionaries) 0 (snd phaseFixtureCore)
+    [Refl, Refl, Refl]) Refl
+  smallRelease (LAdvance 0) phaseFixtureLife True Refl Refl
+  (phaseLifeOwnerDecoded (fst fixtureDictionaries) 0 (smallState 1) (LAdvance 0) Refl Refl)
+  (LTESucc LTEZero) Refl Refl (LTESucc (LTESucc (LTESucc (LTESucc LTEZero))))
