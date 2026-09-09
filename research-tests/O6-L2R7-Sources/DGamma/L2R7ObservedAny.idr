@@ -46,3 +46,15 @@ export
   (seen : Bool) -> foldl (\acc, item => acc || predicate item) seen items = (seen || any predicate items)
 anyFoldObserved predicate items True = anyFoldTrue predicate items
 anyFoldObserved predicate items False = Refl
+
+||| General executable decoder. The scan acceptance is passed through an
+||| explicit observed Bool/equation; the chosen element is computed here.
+public export
+anyHitObserved : {a : Type} -> (predicate : a -> Bool) -> (items : List a) ->
+  (seen : Bool) -> (0 equation : any predicate items = seen) ->
+  (0 accepted : seen = True) -> AnyHit predicate items
+anyHitObserved predicate [] seen equation accepted = absurd (trans equation accepted)
+anyHitObserved predicate (head :: items) seen equation accepted =
+  anyHitConsObserved predicate head items (predicate head) Refl
+    (anyHitObserved predicate items (any predicate items) Refl)
+    (trans (sym (anyFoldObserved predicate items (predicate head))) (trans equation accepted))
