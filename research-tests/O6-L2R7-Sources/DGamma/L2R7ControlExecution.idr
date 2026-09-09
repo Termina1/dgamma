@@ -27,3 +27,9 @@ record ControlNativeExecution where
   0 finishControlFollowing : checkedApplyAction @{%search} @{%search} (LAdvance 2) (controlState 9) = Just (LFinishTag, controlState 10)
   0 retireRootFound : lookupFiber {name = Nat} {key = Bool} {value = (\key => Unit)} {world = Unit} {error = String} @{%search} 3 (registry (controlState 6)) = Just (freshFiber (smallComponent True) Root)
   0 removeRootFound : lookupFiber {name = Nat} {key = Bool} {value = (\key => Unit)} {world = Unit} {error = String} @{%search} 3 (registry (controlState 7)) = Just (retireFiber (freshFiber (smallComponent True) Root))
+
+||| Simultaneous native checker/lookup equations on the one-origin states.
+||| This is not scalar reflection over a nested transition builder.
+public export
+0 controlNativeExecution : ControlNativeExecution
+controlNativeExecution = MkControlNativeExecution Refl Refl Refl Refl Refl Refl
