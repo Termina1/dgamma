@@ -114,10 +114,15 @@ targetPosition : {name, key, world, error : Type} -> {value : key -> Type} ->
   {0 first, finalState : SystemState name key value world error} ->
   {0 trace : Transitions first finalState} ->
   DecEq name -> DecEq key -> AvailabilityTrace name key world error value trace -> Nat -> Nat
-targetPosition nameEq keyEq trail ordinal = fromMaybe 0 (anchorOf nameEq keyEq trail ordinal) +
-  length (filter (\earlier => catalogOrdinal earlier < ordinal &&
-    anchorOf nameEq keyEq trail (catalogOrdinal earlier) == anchorOf nameEq keyEq trail ordinal)
-    (scanRootCatalog 0 trail))
+targetPosition nameEq keyEq trail ordinal = max
+  (fromMaybe 0 (anchorOf nameEq keyEq trail ordinal) +
+    length (filter (\earlier => catalogOrdinal earlier < ordinal &&
+      anchorOf nameEq keyEq trail (catalogOrdinal earlier) == anchorOf nameEq keyEq trail ordinal)
+      (scanRootCatalog 0 trail)))
+  (fromMaybe 0 (lastReleaseCut (map catalogOrdinal
+    (filter (\earlier => catalogOrdinal earlier < ordinal &&
+      not (anchorOf nameEq keyEq trail (catalogOrdinal earlier) == anchorOf nameEq keyEq trail ordinal))
+      (scanRootCatalog 0 trail)))))
 
 ||| Physical cut minus ordered target, charging only anchored roots. Nat
 ||| subtraction saturates: zero alone is NOT a placement theorem without
