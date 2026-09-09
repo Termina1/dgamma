@@ -225,7 +225,8 @@ o20CurrentWithdrawalAbsent (HistoricalGenerationClosed closed) observed = void (
 ||| packet uses BOTH environments of the same accepted surviving-tree scan.
 ||| Its generation must belong to this actual candidate's selected births;
 ||| this membership is NOT inferred merely from global discarded membership.
-||| The result, current table reconciliation and actual absence are produced.
+||| It consumes the actual deletion result and produces current-table
+||| reconciliation and actual absence.
 export
 0 o20SelectedVestigialDisappears :
   {name, key, world, error : Type} -> {value : key -> Type} ->
