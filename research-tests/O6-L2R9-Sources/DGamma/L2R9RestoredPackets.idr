@@ -46,3 +46,9 @@ record RestoredLastPacket (states : Nat -> SystemState Nat Bool (\key => Unit) U
   0 restoredEdge14 : checkedApplyAction @{%search} @{%search} (ORetire 5) (states 14) = Just (ORetireTag, states 15)
   0 restoredEdge15 : checkedApplyAction @{%search} @{%search} (ORemove 5) (states 15) = Just (ORemoveTag, states 16)
   0 restoredEdge16 : checkedApplyAction @{%search} @{%search} (OInsert 4 Root (smallComponent False)) (states 16) = Just (OInsertTag, states 17)
+
+||| Native restored suffix: Finish2;Retire5;Remove5;S. Four exact native
+||| equations on the retained state family, never a supplied edge premise.
+export
+0 contiguityRestoredLast : RestoredLastPacket contiguityState
+contiguityRestoredLast = MkRestoredLastPacket {states = contiguityState} Refl Refl Refl Refl
