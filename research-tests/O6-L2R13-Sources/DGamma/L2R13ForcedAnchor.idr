@@ -76,3 +76,32 @@ phaseConcatNonempty scan item items member present =
   trans (phaseFlattenNonempty scan items [])
     (anyMappedMember id (\selected => not (null (scan selected))) items item
       (elemMap id member) present)
+
+||| Decode the INNER keyForcedOrdinal hit into a member of the anchor's
+||| bounded catalog. Native ordinal equality transports its cutoff bound.
+export
+0 phaseKeyHitNonempty : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, finalState : SystemState name key value world error} ->
+  {trace : Transitions first finalState} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (trail : AvailabilityTrace name key world error value trace) -> (ordinal, cut : Nat) ->
+  (0 bounded : (ordinal <= cut) = True) ->
+  (hit : AnyHit (\seed => catalogOrdinal seed == ordinal &&
+    not (null (scanReleaseOrdinals nameEq keyEq (catalogComponent seed) 0 (catalogOrdinal seed) trail)))
+    (scanRootCatalog 0 trail)) ->
+  not (null (concatMap
+    (\seed => scanReleaseOrdinals nameEq keyEq (catalogComponent seed) 0 (catalogOrdinal seed) trail)
+    (filter (\seed => catalogOrdinal seed <= cut) (scanRootCatalog 0 trail)))) = True
+phaseKeyHitNonempty nameEq keyEq trail ordinal cut bounded hit =
+  phaseConcatNonempty
+    (\seed => scanReleaseOrdinals nameEq keyEq (catalogComponent seed) 0 (catalogOrdinal seed) trail)
+    (hitItem hit) (filter (\seed => catalogOrdinal seed <= cut) (scanRootCatalog 0 trail))
+    (filterMemberObserved (\seed => catalogOrdinal seed <= cut) (hitItem hit) (hitMember hit) True
+      (trans (cong (\position => position <= cut)
+        (phaseNatEqual (catalogOrdinal (hitItem hit)) ordinal
+          (boolAndLeft (catalogOrdinal (hitItem hit) == ordinal)
+            (not (null (scanReleaseOrdinals nameEq keyEq (catalogComponent (hitItem hit)) 0 (catalogOrdinal (hitItem hit)) trail)))
+            (hitAccepted hit)))) bounded) Refl)
+    (boolAndRight (catalogOrdinal (hitItem hit) == ordinal)
+      (not (null (scanReleaseOrdinals nameEq keyEq (catalogComponent (hitItem hit)) 0 (catalogOrdinal (hitItem hit)) trail)))
+      (hitAccepted hit))
