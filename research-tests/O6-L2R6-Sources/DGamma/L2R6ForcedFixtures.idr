@@ -45,3 +45,56 @@ record ForcedClassifierFixtures where
   0 sNotKeyForced : keyForcedOrdinal %search %search barrierForcedTrail 5 = False
   0 singleClosure : ForcedOnTrace %search %search singleForcedTrail 4
   0 barrierClosure : ForcedOnTrace %search %search barrierForcedTrail 5
+
+||| Simultaneous native annotations, computed classifications/release lists,
+||| and genuine least-closure derivations. No scalar observer theorem over a
+||| nested fixture builder, supplied seed list, or supplied classifier flags.
+public export
+0 forcedClassifierFixtures : ForcedClassifierFixtures
+forcedClassifierFixtures = MkForcedClassifierFixtures
+  (AvailabilityStep (smallState 0)
+    (Fired {before = smallState 0} {afterState = smallState 1} %search %search (LBegin 0) LBeginTag (smallBegin0 smallNativeExecution)) _
+    (AvailabilityStep (smallState 1)
+    (Fired {before = smallState 1} {afterState = smallState 2} %search %search (LAdvance 0) LFinishTag (smallFinish0 smallNativeExecution)) _
+    (AvailabilityStep (smallState 2)
+    (Fired {before = smallState 2} {afterState = smallState 3} %search %search (ORetire 1) ORetireTag (smallRetire1 smallNativeExecution)) _
+    (AvailabilityStep (smallState 3)
+    (Fired {before = smallState 3} {afterState = smallState 4} %search %search (ORemove 1) ORemoveTag (smallRemove1 smallNativeExecution)) _
+    (AvailabilityStep (smallState 4)
+    (Fired {before = smallState 4} {afterState = smallState 5} %search %search (OInsert 3 Root (smallComponent True)) OInsertTag (smallInsert3 smallNativeExecution)) _
+    (AvailabilityStep (smallState 5)
+    (Fired {before = smallState 5} {afterState = smallState 6} %search %search (LBegin 2) LBeginTag (smallBegin2 smallNativeExecution)) _
+    (AvailabilityStep (smallState 6)
+    (Fired {before = smallState 6} {afterState = smallState 7} %search %search (LAdvance 2) LFinishTag (smallFinish2 smallNativeExecution)) _
+    (AvailabilityEnd (smallState 7)))))))))
+  (AvailabilityStep (barrierState 0)
+    (Fired {before = barrierState 0} {afterState = barrierState 1} %search %search (LBegin 0) LBeginTag (smallBegin0 smallNativeExecution)) _
+    (AvailabilityStep (barrierState 1)
+    (Fired {before = barrierState 1} {afterState = barrierState 2} %search %search (LAdvance 0) LFinishTag (smallFinish0 smallNativeExecution)) _
+    (AvailabilityStep (barrierState 2)
+    (Fired {before = barrierState 2} {afterState = barrierState 3} %search %search (ORetire 1) ORetireTag (smallRetire1 smallNativeExecution)) _
+    (AvailabilityStep (barrierState 3)
+    (Fired {before = barrierState 3} {afterState = barrierState 4} %search %search (ORemove 1) ORemoveTag (smallRemove1 smallNativeExecution)) _
+    (AvailabilityStep (barrierState 4)
+    (Fired {before = barrierState 4} {afterState = barrierState 5} %search %search (OInsert 3 Root (smallComponent True)) OInsertTag (smallInsert3 smallNativeExecution)) _
+    (AvailabilityStep (barrierState 5)
+    (Fired {before = barrierState 5} {afterState = barrierState 6} %search %search (OInsert 4 Root (smallComponent False)) OInsertTag (insertS barrierNativeExecution)) _
+    (AvailabilityStep (barrierState 6)
+    (Fired {before = barrierState 6} {afterState = barrierState 7} %search %search (LBegin 2) LBeginTag (beginFollowing barrierNativeExecution)) _
+    (AvailabilityStep (barrierState 7)
+    (Fired {before = barrierState 7} {afterState = barrierState 8} %search %search (LAdvance 2) LFinishTag (finishFollowing barrierNativeExecution)) _
+    (AvailabilityEnd (barrierState 8))))))))))
+  (MoreTransitions (Fired {before = smallState 4} {afterState = smallState 5} %search %search
+    (OInsert 3 Root (smallComponent True)) OInsertTag (smallInsert3 smallNativeExecution))
+    (MoreTransitions (Fired {before = smallState 5} {afterState = smallState 6} %search %search
+      (LBegin 2) LBeginTag (smallBegin2 smallNativeExecution)) NoTransitions))
+  (AvailabilityStep (smallState 4)
+    (Fired {before = smallState 4} {afterState = smallState 5} %search %search
+      (OInsert 3 Root (smallComponent True)) OInsertTag (smallInsert3 smallNativeExecution)) _
+    (AvailabilityStep (smallState 5)
+      (Fired {before = smallState 5} {afterState = smallState 6} %search %search
+        (LBegin 2) LBeginTag (smallBegin2 smallNativeExecution)) _ (AvailabilityEnd (smallState 6))))
+  [(3, True)] [(3, True), (4, True)] [(3, False)]
+  Refl Refl Refl Refl Refl Refl Refl Refl Refl
+  (KeyForces Here Refl)
+  (OrderForces (KeyForces Here Refl) (There Here) (LTESucc (LTESucc (LTESucc (LTESucc (LTESucc LTEZero))))))
