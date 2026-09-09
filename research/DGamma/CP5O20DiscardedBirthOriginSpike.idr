@@ -204,3 +204,21 @@ o20DiscardedOriginClassified name key world error value nameEq trace generation
   (O20DiscardedWithin child parent component birth exact closing) =
     replace {p = DeletedGenerationClassification name key world error value nameEq trace} (sym exact)
       (MkDeletedGenerationClassification parent component birth Refl closing)
+
+||| EVERY accepted discarded left generation owns its exact original birth
+||| and an actual later parent Unload. This is the converse scanner direction
+||| required before deletion-node selection; it is not itself that selection.
+export
+0 o20AcceptedDiscardedBirthClassified :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) ->
+  {leftFirst, leftFinal, rightFirst, rightFinal : SystemState name key value world error} ->
+  (left : Transitions leftFirst leftFinal) -> (right : Transitions rightFirst rightFinal) ->
+  (mapping : RegistrationGenerationBijection name) ->
+  (registrations : RegistrationCorrespondenceByGeneration nameEq mapping left right) ->
+  (generation : RegistrationGeneration name) -> Elem generation (leftDeletedGenerations registrations) ->
+  DeletedGenerationClassification name key world error value nameEq left generation
+o20AcceptedDiscardedBirthClassified name key world error value nameEq left right mapping registrations generation member =
+  o20DiscardedOriginClassified name key world error value nameEq left generation
+    (o20DiscardedOriginScan name key world error value nameEq mapping Z emptyRegistrationIndex Z emptyRegistrationIndex
+      left right (leftFinalIndex registrations) (rightFinalIndex registrations)
+      (generationTraceCorrespondence registrations) generation member)
