@@ -1,0 +1,869 @@
+{
+  "scope": "L2R3 including owner-authorized A20-A24 addendum",
+  "base": "1893851e",
+  "ratifiedOriginalBoundary": "4194087e",
+  "lastProofCommit": "138aef3e184972859926e8a87ffdae68e6ad9fd7",
+  "sourceCommitCount": 50,
+  "sourceInvocations": 57,
+  "allInvocations": 73,
+  "passed": 65,
+  "failed": 8,
+  "maxSampleRSSKiB": 5883536,
+  "summedCompilerSeconds": 363.2145507489331,
+  "finalCheckCount": 14,
+  "heavyLocks": 0,
+  "sourceMutations": 0,
+  "interrupted": 0,
+  "noExhaustedUnits": true,
+  "rows": [
+    {
+      "unit": "A1",
+      "name": "AttachedRelease",
+      "path": "research-tests/O6-L2R3-Sources/DGamma/L2R3Attached.idr",
+      "commit": "4b0ddd44214a8ba76b4864486b2a86e3f511d050",
+      "passInvocation": "A1-1",
+      "attempts": [
+        {
+          "id": "A1-1",
+          "passed": true,
+          "fresh": true,
+          "sourceHash": "36ed282f6b9f8ae4f568a8904694223ff6e080092300739148c0829187d10ffd",
+          "maxRSSKiB": 290736
+        }
+      ]
+    },
+    {
+      "unit": "A2",
+      "name": "AttachedReason",
+      "path": "research-tests/O6-L2R3-Sources/DGamma/L2R3Attached.idr",
+      "commit": "624ddf711fe9e01fd3c1de19284ec3d9d3021fb0",
+      "passInvocation": "A2-1",
+      "attempts": [
+        {
+          "id": "A2-1",
+          "passed": true,
+          "fresh": true,
+          "sourceHash": "8632dd2a3b84306fc39888b40a9d342e7aab52bb96db1e46264b024e4ecf07f7",
+          "maxRSSKiB": 295936
+        }
+      ]
+    },
+    {
+      "unit": "A3",
+      "name": "OrderedForcedRootBundle",
+      "path": "research-tests/O6-L2R3-Sources/DGamma/L2R3Attached.idr",
+      "commit": "9a6f2595c9ceb79f5addd4f737a289e4520b0c0c",
+      "passInvocation": "A3-1",
+      "attempts": [
+        {
+          "id": "A3-1",
+          "passed": true,
+          "fresh": true,
+          "sourceHash": "7e5d21571f76a4949145f6f410e5dbcae600d27e44b39f24df5f488aa465fc1c",
+          "maxRSSKiB": 294480
+        }
+      ]
+    },
+    {
+      "unit": "A4",
+      "name": "ActorLifecycleOnlyAttached",
+      "path": "research-tests/O6-L2R3-Sources/DGamma/L2R3Attached.idr",
+      "commit": "4974a6f9fbe9e7ef7af8888eecb2bb19fd7c860a",
+      "passInvocation": "A4-1",
+      "attempts": [
+        {
+          "id": "A4-1",
+          "passed": true,
+          "fresh": true,
+          "sourceHash": "a443e827aad63b12cd5ae12787765b047f7d7b268e352e050492e47b2f42ec91",
+          "maxRSSKiB": 276624
+        }
+      ]
+    },
+    {
+      "unit": "A5",
+      "name": "extendedIntoAttached",
+      "path": "research-tests/O6-L2R3-Sources/DGamma/L2R3Attached.idr",
+      "commit": "d2b26a9ab4fc411f3c94cb30b1bf13d9028030d4",
+      "passInvocation": "A5-1",
+      "attempts": [
+        {
+          "id": "A5-1",
+          "passed": true,
+          "fresh": true,
+          "sourceHash": "b0928ac7e00b6900a37ff4e92eaf1a233d72242e446bb4769d302f95af3ed28c",
+          "maxRSSKiB": 277296
+        }
+      ]
+    },
+    {
+      "unit": "A6",
+      "name": "oldIntoAttached",
+      "path": "research-tests/O6-L2R3-Sources/DGamma/L2R3Attached.idr",
+      "commit": "0f19676dec6e2eae7ec8c2d8527ad3f1ce36257b",
+      "passInvocation": "A6-1",
+      "attempts": [
+        {
+          "id": "A6-1",
+          "passed": true,
+          "fresh": true,
+          "sourceHash": "5667505849a9b067229084b6f793b936d0be7fe8434d2986ddfc849b006baa8d",
+          "maxRSSKiB": 278800
+        }
+      ]
+    },
+    {
+      "unit": "A7",
+      "name": "LocatedOpenEpisodeBlockAttached",
+      "path": "research-tests/O6-L2R3-Sources/DGamma/L2R3Attached.idr",
+      "commit": "a779904748367ba216dff33f4e4c989f67e6aa4d",
+      "passInvocation": "A7-1",
+      "attempts": [
+        {
+          "id": "A7-1",
+          "passed": true,
+          "fresh": true,
+          "sourceHash": "d6a1f88439eafd3d8334409457878ba155873a56457c72ce4964160272ad571f",
+          "maxRSSKiB": 268000
+        }
+      ]
+    },
+    {
+      "unit": "A8",
+      "name": "BlockBeforeAttached",
+      "path": "research-tests/O6-L2R3-Sources/DGamma/L2R3Attached.idr",
+      "commit": "ce0c13bde59ad16c9d1998ab7290916ef4caac7d",
+      "passInvocation": "A8-1",
+      "attempts": [
+        {
+          "id": "A8-1",
+          "passed": true,
+          "fresh": true,
+          "sourceHash": "32a742cf8a7dbfbe75bffc3f972f686e138155c9cebf709d1a0cfd444636f0b3",
+          "maxRSSKiB": 273808
+        }
+      ]
+    },
+    {
+      "unit": "A9",
+      "name": "smallRelease",
+      "path": "research-tests/O6-L2R3-Sources/DGamma/L2R3SmallAttached.idr",
+      "commit": "ffb8a023b1b8283269c5e6e3c7ed4f86e7951e5b",
+      "passInvocation": "A9-1",
+      "attempts": [
+        {
+          "id": "A9-1",
+          "passed": true,
+          "fresh": true,
+          "sourceHash": "3605bf4951048c3307b9535b42d1af92e271c396bd38df747ae4fcbb0fa6b21c",
+          "maxRSSKiB": 259392
+        }
+      ]
+    },
+    {
+      "unit": "A10",
+      "name": "SmallAttachedBlocks",
+      "path": "research-tests/O6-L2R3-Sources/DGamma/L2R3SmallAttached.idr",
+      "commit": "b754c2a4bde30645e4b9db9b51d57d6d93031bbc",
+      "passInvocation": "A10-1",
+      "attempts": [
+        {
+          "id": "A10-1",
+          "passed": true,
+          "fresh": true,
+          "sourceHash": "1f4e4bc8ff8920312c8e581eb9db3d9c4e55aeed777a77071eb49d90faf778e0",
+          "maxRSSKiB": 506672
+        }
+      ]
+    },
+    {
+      "unit": "A11",
+      "name": "smallAttachedBlocks",
+      "path": "research-tests/O6-L2R3-Sources/DGamma/L2R3SmallAttached.idr",
+      "commit": "1b7e1eebffa0bdb6a0218d1e4f5567bfd8e0f86c",
+      "passInvocation": "A11-1",
+      "attempts": [
+        {
+          "id": "A11-1",
+          "passed": true,
+          "fresh": true,
+          "sourceHash": "3ca4fe65f68dff4f9860c99c26429ecec38077d13845df5e13fe1697c9dac9a8",
+          "maxRSSKiB": 466240
+        }
+      ]
+    },
+    {
+      "unit": "A12",
+      "name": "AttachedBundleOccurrence",
+      "path": "research-tests/O6-L2R3-Sources/DGamma/L2R3AttachedGap.idr",
+      "commit": "fa6c22e758d66c5bd648e3b2650365928b994b5c",
+      "passInvocation": "A12-1",
+      "attempts": [
+        {
+          "id": "A12-1",
+          "passed": true,
+          "fresh": true,
+          "sourceHash": "bdac9c2fa2932f6fc475dc964b42665339aca7fcafa57b9f465ee97b465c6456",
+          "maxRSSKiB": 255936
+        }
+      ]
+    },
+    {
+      "unit": "A13",
+      "name": "AttachedNormalForm",
+      "path": "research-tests/O6-L2R3-Sources/DGamma/L2R3AttachedGap.idr",
+      "commit": "20d4c0662ad48f2889630ed56f013fce746782f9",
+      "passInvocation": "A13-1",
+      "attempts": [
+        {
+          "id": "A13-1",
+          "passed": true,
+          "fresh": true,
+          "sourceHash": "94b1886ce009994d0f49f7804cbe4e0758e15090b639ac1a2c890bbf4238aa11",
+          "maxRSSKiB": 262192
+        }
+      ]
+    },
+    {
+      "unit": "A14",
+      "name": "gapHeadPositive",
+      "path": "research-tests/O6-L2R3-Sources/DGamma/L2R3AttachedGap.idr",
+      "commit": "f5a50fb296a999e191a21fb7253972d3e0a47cff",
+      "passInvocation": "A14-2",
+      "attempts": [
+        {
+          "id": "A14-1",
+          "passed": false,
+          "fresh": true,
+          "sourceHash": "b322b4a1e4231a99d1636647bc8cdfdae7c9064f80b4338f28398bb7256352e0",
+          "maxRSSKiB": 212976
+        },
+        {
+          "id": "A14-2",
+          "passed": true,
+          "fresh": true,
+          "sourceHash": "717bd36c75d884c6eb0cc0973d5afb8e9e033697e1c40b932c6ec9b4aef1e39f",
+          "maxRSSKiB": 262240
+        }
+      ]
+    },
+    {
+      "unit": "A15",
+      "name": "bundleOutsideHead",
+      "path": "research-tests/O6-L2R3-Sources/DGamma/L2R3AttachedGap.idr",
+      "commit": "47e12ecf69801fe9336891c8e9a9d0b6701faf30",
+      "passInvocation": "A15-1",
+      "attempts": [
+        {
+          "id": "A15-1",
+          "passed": true,
+          "fresh": true,
+          "sourceHash": "4efe3218de81afc075435f807bf36f3e516c245bdf658eff54f5214aa1498016",
+          "maxRSSKiB": 263696
+        }
+      ]
+    },
+    {
+      "unit": "A16",
+      "name": "rootHeadCannotBeBundled",
+      "path": "research-tests/O6-L2R3-Sources/DGamma/L2R3AttachedGap.idr",
+      "commit": "3990f8132ee88130dd892de78ac75b4dcdb485d1",
+      "passInvocation": "A16-1",
+      "attempts": [
+        {
+          "id": "A16-1",
+          "passed": true,
+          "fresh": true,
+          "sourceHash": "59b49b9685deaf23c8dff3202ee87dc5d66b4a594eeeea87f748ce63de9bd753",
+          "maxRSSKiB": 255504
+        }
+      ]
+    },
+    {
+      "unit": "A17",
+      "name": "attachedGapCount",
+      "path": "research-tests/O6-L2R3-Sources/DGamma/L2R3AttachedGap.idr",
+      "commit": "88918000cf857aa8c3b35bcdc6f0eb3c1e819506",
+      "passInvocation": "A17-1",
+      "attempts": [
+        {
+          "id": "A17-1",
+          "passed": true,
+          "fresh": true,
+          "sourceHash": "96853d7da373ea8c959aaca7fe5f6ed8cfdc2563f23cbd49c8de5e677be288aa",
+          "maxRSSKiB": 274960
+        }
+      ]
+    },
+    {
+      "unit": "A18",
+      "name": "attachedZeroGapInNormalForm",
+      "path": "research-tests/O6-L2R3-Sources/DGamma/L2R3AttachedGap.idr",
+      "commit": "2f57340cc4f5a74ddcc27078485ad9ca08732136",
+      "passInvocation": "A18-1",
+      "attempts": [
+        {
+          "id": "A18-1",
+          "passed": true,
+          "fresh": true,
+          "sourceHash": "cf4c148ea6effb932b7c16589a0d8cd7d3e782db5d79691920d05d671018f841",
+          "maxRSSKiB": 255360
+        }
+      ]
+    },
+    {
+      "unit": "A19",
+      "name": "smallInsertedBundleMember",
+      "path": "research-tests/O6-L2R3-Sources/DGamma/L2R3SmallAttached.idr",
+      "commit": "a30ec23dd736eba5aef338fbe47a08bc3139b98d",
+      "passInvocation": "A19-1",
+      "attempts": [
+        {
+          "id": "A19-1",
+          "passed": true,
+          "fresh": true,
+          "sourceHash": "aa0b9619f0940ae634c5f5c934227c455af09d0d537a12c237a7ff1cc6e167f1",
+          "maxRSSKiB": 514400
+        }
+      ]
+    },
+    {
+      "unit": "B1",
+      "name": "ForcedRootInput",
+      "path": "research-tests/O6-L2R3-Sources/DGamma/L2R3ForcedClosure.idr",
+      "commit": "cfa0bb9168b3fc1fd5f12b0f8a4855364f35bec9",
+      "passInvocation": "B1-1",
+      "attempts": [
+        {
+          "id": "B1-1",
+          "passed": true,
+          "fresh": true,
+          "sourceHash": "0be4e9ed54346ec592dea115bf51584342b8ae49888cb6bdb2959c0422da4421",
+          "maxRSSKiB": 198032
+        }
+      ]
+    },
+    {
+      "unit": "B2",
+      "name": "forcedRootLeast",
+      "path": "research-tests/O6-L2R3-Sources/DGamma/L2R3ForcedClosure.idr",
+      "commit": "7737a01908cc79f3a67560a76f181fbd1fe7d924",
+      "passInvocation": "B2-1",
+      "attempts": [
+        {
+          "id": "B2-1",
+          "passed": true,
+          "fresh": true,
+          "sourceHash": "3a969ef6e366a656adcd4938ba59bb971dad227b8479ec192b36b3999d2efd21",
+          "maxRSSKiB": 196512
+        }
+      ]
+    },
+    {
+      "unit": "B3",
+      "name": "barrierState",
+      "path": "research-tests/O6-L2R3-Sources/DGamma/L2R3BarrierStates.idr",
+      "commit": "f6733f7676cc2c0d7d4b66773dc8603b79d5da36",
+      "passInvocation": "B3-1",
+      "attempts": [
+        {
+          "id": "B3-1",
+          "passed": true,
+          "fresh": true,
+          "sourceHash": "6cbf4320f00c217c3c94b548886a8a0241e40a55b97febd8053d5fc6715a7a32",
+          "maxRSSKiB": 298624
+        }
+      ]
+    },
+    {
+      "unit": "B4",
+      "name": "BarrierNativeExecution",
+      "path": "research-tests/O6-L2R3-Sources/DGamma/L2R3BarrierExecution.idr",
+      "commit": "5271b0022ce9ff59aa4c6c08a019590e49852e2e",
+      "passInvocation": "B4-1",
+      "attempts": [
+        {
+          "id": "B4-1",
+          "passed": true,
+          "fresh": true,
+          "sourceHash": "ff1526936c144bf2447f3a820c35e64829125428e6afaaa6259eb5525e2f61ea",
+          "maxRSSKiB": 263296
+        }
+      ]
+    },
+    {
+      "unit": "B5",
+      "name": "barrierNativeExecution",
+      "path": "research-tests/O6-L2R3-Sources/DGamma/L2R3BarrierExecution.idr",
+      "commit": "379174171da43175b922988bc6a8988f5fc21c6b",
+      "passInvocation": "B5-3",
+      "attempts": [
+        {
+          "id": "B5-1",
+          "passed": false,
+          "fresh": true,
+          "sourceHash": "bca175ea603eee14a9e24e0a3a80aadc0dd6cb62378c1558428a05a5700c4abe",
+          "maxRSSKiB": 207264
+        },
+        {
+          "id": "B5-2",
+          "passed": false,
+          "fresh": true,
+          "sourceHash": "2a56affec53bae378a4a0a2b03994bec0682788639e0418205fd531074751f31",
+          "maxRSSKiB": 272608
+        },
+        {
+          "id": "B5-3",
+          "passed": true,
+          "fresh": true,
+          "sourceHash": "6b231254be3da777fa42c05d6ea67acf6a8f52871c8850017d93d70cbf93238b",
+          "maxRSSKiB": 264144
+        }
+      ]
+    },
+    {
+      "unit": "B6",
+      "name": "barrierTrace",
+      "path": "research-tests/O6-L2R3-Sources/DGamma/L2R3BarrierExecution.idr",
+      "commit": "c6e3324ff3ffecbc908129a8c43a27fb14970b82",
+      "passInvocation": "B6-1",
+      "attempts": [
+        {
+          "id": "B6-1",
+          "passed": true,
+          "fresh": true,
+          "sourceHash": "05ab1c90d0cd6b392ee382f5518b6b7d2ab440b8d6a20ae1c849dc27d85f5c13",
+          "maxRSSKiB": 261648
+        }
+      ]
+    },
+    {
+      "unit": "B7",
+      "name": "BarrierAttachedBlocks",
+      "path": "research-tests/O6-L2R3-Sources/DGamma/L2R3BarrierBlocks.idr",
+      "commit": "9bf37b94af13eb9a8f0b5b97b44b87667a6ce415",
+      "passInvocation": "B7-1",
+      "attempts": [
+        {
+          "id": "B7-1",
+          "passed": true,
+          "fresh": true,
+          "sourceHash": "cefd5690324bfa8f39f1ad758925a02017be9f3346cad508df8b0054ebaacc72",
+          "maxRSSKiB": 1411776
+        }
+      ]
+    },
+    {
+      "unit": "B8",
+      "name": "barrierAttachedBlocks",
+      "path": "research-tests/O6-L2R3-Sources/DGamma/L2R3BarrierBlocks.idr",
+      "commit": "224988a1739ea9acb41680d3cb7b78bf740de543",
+      "passInvocation": "B8-2",
+      "attempts": [
+        {
+          "id": "B8-1",
+          "passed": false,
+          "fresh": true,
+          "sourceHash": "6a8427a23ee4bc409ae4eb275e4a020b94e2dc98a648b51c195dc5a4d749b811",
+          "maxRSSKiB": 1406192
+        },
+        {
+          "id": "B8-2",
+          "passed": true,
+          "fresh": true,
+          "sourceHash": "45e04429581d5941869739093cc77b6c9dd12cbdbc7b9088e670f45f856eef5f",
+          "maxRSSKiB": 746256
+        }
+      ]
+    },
+    {
+      "unit": "B9",
+      "name": "externalRootHeadsMatch",
+      "path": "research-tests/O6-L2R3-Sources/DGamma/L2R3BarrierOrder.idr",
+      "commit": "110fd718a63b147ff87b885c69ac207044879d3f",
+      "passInvocation": "B9-1",
+      "attempts": [
+        {
+          "id": "B9-1",
+          "passed": true,
+          "fresh": true,
+          "sourceHash": "eb7e8ce671c921de7d9cb65b0526a5264b39530944c6c42c5ebcafd069f79f04",
+          "maxRSSKiB": 298592
+        }
+      ]
+    },
+    {
+      "unit": "B10",
+      "name": "BarrierOrderEvidence",
+      "path": "research-tests/O6-L2R3-Sources/DGamma/L2R3BarrierOrder.idr",
+      "commit": "d6517c45f85a798d76e9f65b809f86fea6ae1b1d",
+      "passInvocation": "B10-1",
+      "attempts": [
+        {
+          "id": "B10-1",
+          "passed": true,
+          "fresh": true,
+          "sourceHash": "1c56575c25d62f4fef8a590455d7f117d8e7f90d20b253fa4c09026b6a806081",
+          "maxRSSKiB": 420704
+        }
+      ]
+    },
+    {
+      "unit": "B11",
+      "name": "barrierOrderEvidence",
+      "path": "research-tests/O6-L2R3-Sources/DGamma/L2R3BarrierOrder.idr",
+      "commit": "9c7c0a7c973c94b2528623081c1483ff2e01e595",
+      "passInvocation": "B11-1",
+      "attempts": [
+        {
+          "id": "B11-1",
+          "passed": true,
+          "fresh": true,
+          "sourceHash": "36e46d2e6a64543f29d9d7759e87cd4bab95f31dbd40ba0da2a58be91ef824a3",
+          "maxRSSKiB": 411472
+        }
+      ]
+    },
+    {
+      "unit": "B12",
+      "name": "rThenSCannotReverse",
+      "path": "research-tests/O6-L2R3-Sources/DGamma/L2R3BarrierOrder.idr",
+      "commit": "0249d5efed8e9caef915378f0075f030783b2537",
+      "passInvocation": "B12-1",
+      "attempts": [
+        {
+          "id": "B12-1",
+          "passed": true,
+          "fresh": true,
+          "sourceHash": "ba8651f57df253c38e1ad2b8f6be6bc384ec2a544ef03b0ecbfadebbbdac6383",
+          "maxRSSKiB": 430128
+        }
+      ]
+    },
+    {
+      "unit": "C1",
+      "name": "retireSquareReplayObserved",
+      "path": "research-tests/O6-L2R3-Sources/DGamma/L2R3RetireDispatch.idr",
+      "commit": "30b7d7a97424fccd161ad8cc434fcb572c1e2ff1",
+      "passInvocation": "C1-1",
+      "attempts": [
+        {
+          "id": "C1-1",
+          "passed": true,
+          "fresh": true,
+          "sourceHash": "11c7152c3559f8c653e1624b2498bfa476c75bb495170f376c825a63f3f53284",
+          "maxRSSKiB": 283456
+        }
+      ]
+    },
+    {
+      "unit": "C2",
+      "name": "replayRootAfterRetirement",
+      "path": "research-tests/O6-L2R3-Sources/DGamma/L2R3RetireDispatch.idr",
+      "commit": "73207255a80ccf7512b9ec669fea3ecf30a59bb8",
+      "passInvocation": "C2-1",
+      "attempts": [
+        {
+          "id": "C2-1",
+          "passed": true,
+          "fresh": true,
+          "sourceHash": "e7de464108aa5b824db01c1f0eefbafcb2e91743fa13529d3b47502aea0f098c",
+          "maxRSSKiB": 293264
+        }
+      ]
+    },
+    {
+      "unit": "C3",
+      "name": "bundlePhaseState",
+      "path": "research-tests/O6-L2R3-Sources/DGamma/L2R3BundlePhaseStates.idr",
+      "commit": "e6c26fe433450032fc06bfd649fa5683fd6278d0",
+      "passInvocation": "C3-1",
+      "attempts": [
+        {
+          "id": "C3-1",
+          "passed": true,
+          "fresh": true,
+          "sourceHash": "529531a6db2de2b68a55f0274ed293f8507a74c6b214f620abb5eb48d92285ed",
+          "maxRSSKiB": 195248
+        }
+      ]
+    },
+    {
+      "unit": "C4",
+      "name": "BundlePhaseNative",
+      "path": "research-tests/O6-L2R3-Sources/DGamma/L2R3BundlePhase.idr",
+      "commit": "7a7babeea900dd7fd8724c4acab04cfb2cfa9701",
+      "passInvocation": "C4-1",
+      "attempts": [
+        {
+          "id": "C4-1",
+          "passed": true,
+          "fresh": true,
+          "sourceHash": "c88b87a8060f85509c45d638e3c91c712712aae007ba2acd45b842f4c50ed9b4",
+          "maxRSSKiB": 353952
+        }
+      ]
+    },
+    {
+      "unit": "C5",
+      "name": "bundlePhaseNative",
+      "path": "research-tests/O6-L2R3-Sources/DGamma/L2R3BundlePhase.idr",
+      "commit": "899a111a2f7c838309afb1043bcffe5ccd0b5124",
+      "passInvocation": "C5-1",
+      "attempts": [
+        {
+          "id": "C5-1",
+          "passed": true,
+          "fresh": true,
+          "sourceHash": "110ddfcc0b7e4775e5b6f0f0e51e983a25159711d0833aa37df0e1eab701f9a1",
+          "maxRSSKiB": 323424
+        }
+      ]
+    },
+    {
+      "unit": "C6",
+      "name": "sRootSnapshotSquare",
+      "path": "research-tests/O6-L2R3-Sources/DGamma/L2R3BundlePhase.idr",
+      "commit": "300f18e058991a4b4013ef6ec970e287afb90f5c",
+      "passInvocation": "C6-1",
+      "attempts": [
+        {
+          "id": "C6-1",
+          "passed": true,
+          "fresh": true,
+          "sourceHash": "94ad7c36f72bd2b70b44d70527a9d477a868161c688751a4c1b3b68e50a25d74",
+          "maxRSSKiB": 339008
+        }
+      ]
+    },
+    {
+      "unit": "C7",
+      "name": "BundlePhaseEvidence",
+      "path": "research-tests/O6-L2R3-Sources/DGamma/L2R3BundlePhase.idr",
+      "commit": "afcb2f31f6701fffb7f03c83f8769cbf207db966",
+      "passInvocation": "C7-1",
+      "attempts": [
+        {
+          "id": "C7-1",
+          "passed": true,
+          "fresh": true,
+          "sourceHash": "b38d97fc37e01e5a4642bd82478b9ede03fce48a432faf545d35f2cb27bfb4c6",
+          "maxRSSKiB": 2011248
+        }
+      ]
+    },
+    {
+      "unit": "C8",
+      "name": "bundlePhaseEvidence",
+      "path": "research-tests/O6-L2R3-Sources/DGamma/L2R3BundlePhase.idr",
+      "commit": "99837ef0d2a95ffb97bf4431bbc3461bca1ea46b",
+      "passInvocation": "C8-2",
+      "attempts": [
+        {
+          "id": "C8-1",
+          "passed": false,
+          "fresh": true,
+          "sourceHash": "14af7e8a9719bba73159e71a329e090de20fbeed78921943f449ad4ffbb3d815",
+          "maxRSSKiB": 1393664
+        },
+        {
+          "id": "C8-2",
+          "passed": true,
+          "fresh": true,
+          "sourceHash": "0647e6c60e080bada72725005b5a37223ead934f406bdb001dcf74eb67e4cd19",
+          "maxRSSKiB": 2283376
+        }
+      ]
+    },
+    {
+      "unit": "C9",
+      "name": "retirementKeepsParent",
+      "path": "research-tests/O6-L2R3-Sources/DGamma/L2R3RemoveDispatch.idr",
+      "commit": "8a5673318dd849d6ca35d5942f9c9bdfb64d79ee",
+      "passInvocation": "C9-1",
+      "attempts": [
+        {
+          "id": "C9-1",
+          "passed": true,
+          "fresh": true,
+          "sourceHash": "07caa022e27f92674fc3fe01bf747daa9f0b40da60dcbbac419aad0c5dad6f58",
+          "maxRSSKiB": 197824
+        }
+      ]
+    },
+    {
+      "unit": "C10",
+      "name": "removeAfterRetirementRaw",
+      "path": "research-tests/O6-L2R3-Sources/DGamma/L2R3RemoveDispatch.idr",
+      "commit": "679220a805e486e4c719521f55f1521d09136197",
+      "passInvocation": "C10-2",
+      "attempts": [
+        {
+          "id": "C10-1",
+          "passed": false,
+          "fresh": true,
+          "sourceHash": "796842c85562ec4b05e56a2f880fbb94278a265737080d013fa35f4adbfef1ee",
+          "maxRSSKiB": 267696
+        },
+        {
+          "id": "C10-2",
+          "passed": true,
+          "fresh": true,
+          "sourceHash": "f414e2a6ef0462646cec320c502f320d781af5b37f17286296c235e7d99686bd",
+          "maxRSSKiB": 271824
+        }
+      ]
+    },
+    {
+      "unit": "C11",
+      "name": "retireRemoveSnapshot",
+      "path": "research-tests/O6-L2R3-Sources/DGamma/L2R3RemoveDispatch.idr",
+      "commit": "28de385eb4bf068f38994f1cda43b856af1dd3ef",
+      "passInvocation": "C11-1",
+      "attempts": [
+        {
+          "id": "C11-1",
+          "passed": true,
+          "fresh": true,
+          "sourceHash": "ac7b4475583d92701816e4b62214183f441150db8261f36b39ba47987c1c1c47",
+          "maxRSSKiB": 270080
+        }
+      ]
+    },
+    {
+      "unit": "C12",
+      "name": "replayRemoveAtObservedSource",
+      "path": "research-tests/O6-L2R3-Sources/DGamma/L2R3RemoveDispatch.idr",
+      "commit": "a0989ea5b91e5d45f11a8c3ad199678069389b10",
+      "passInvocation": "C12-1",
+      "attempts": [
+        {
+          "id": "C12-1",
+          "passed": true,
+          "fresh": true,
+          "sourceHash": "d1c8b5b951ee3f5d99afd59da744ac139a0773dc60517628d3c24ce8f05aff0d",
+          "maxRSSKiB": 295792
+        }
+      ]
+    },
+    {
+      "unit": "C13",
+      "name": "replayRemoveFromView",
+      "path": "research-tests/O6-L2R3-Sources/DGamma/L2R3RemoveDispatch.idr",
+      "commit": "cd8655bf733391c9a1f0516e8e09e2c886f2ba9a",
+      "passInvocation": "C13-1",
+      "attempts": [
+        {
+          "id": "C13-1",
+          "passed": true,
+          "fresh": true,
+          "sourceHash": "f46d458abfd44ae4d86c4978139201675e996f43d4f0dc3285b0d5f49a324c58",
+          "maxRSSKiB": 301584
+        }
+      ]
+    },
+    {
+      "unit": "C14",
+      "name": "replayRemoveAfterRetirement",
+      "path": "research-tests/O6-L2R3-Sources/DGamma/L2R3RemoveDispatch.idr",
+      "commit": "784cb92d4d2e1fb1d3626d7286a0e7734dc2cdb7",
+      "passInvocation": "C14-1",
+      "attempts": [
+        {
+          "id": "C14-1",
+          "passed": true,
+          "fresh": true,
+          "sourceHash": "c47e6b86b448edb13d6832064268d59079a48bcc9e152a17a77cf28b23dcd0ab",
+          "maxRSSKiB": 267824
+        }
+      ]
+    },
+    {
+      "unit": "A20",
+      "name": "emptyGapHasNoOccurrence",
+      "path": "research-tests/O6-L2R3-Sources/DGamma/L2R3FixtureCoverage.idr",
+      "commit": "358f8bf3b076487f7896d3371cc06d472fe255b4",
+      "passInvocation": "A20-1",
+      "attempts": [
+        {
+          "id": "A20-1",
+          "passed": true,
+          "fresh": true,
+          "sourceHash": "0a662d34481bf389e7cf8fd2d1c089d5017b9503a00f6fda514149a8d7506990",
+          "maxRSSKiB": 279760
+        }
+      ]
+    },
+    {
+      "unit": "A21",
+      "name": "FixtureCoverage",
+      "path": "research-tests/O6-L2R3-Sources/DGamma/L2R3FixtureCoverage.idr",
+      "commit": "9efd3cb0877ec894793507446a1bc599259bfa2e",
+      "passInvocation": "A21-2",
+      "attempts": [
+        {
+          "id": "A21-1",
+          "passed": false,
+          "fresh": true,
+          "sourceHash": "af74cf3a385a1a61f4d34b3c91a2f22f17aea0157cb790e12e332e8a211fb713",
+          "maxRSSKiB": 278944
+        },
+        {
+          "id": "A21-2",
+          "passed": true,
+          "fresh": true,
+          "sourceHash": "43f550dd4b029755f953524e9c7a8b359ccfb8bc4d16f19134320e1b2ec45b28",
+          "maxRSSKiB": 5883536
+        }
+      ]
+    },
+    {
+      "unit": "A22",
+      "name": "fixtureCoverage",
+      "path": "research-tests/O6-L2R3-Sources/DGamma/L2R3FixtureCoverage.idr",
+      "commit": "b81a98cf773171df7e346a8cebb7806128ff01ef",
+      "passInvocation": "A22-1",
+      "attempts": [
+        {
+          "id": "A22-1",
+          "passed": true,
+          "fresh": true,
+          "sourceHash": "59e59dbfa838af0d9c4c0fb7a72adda7e6dc4ab71e6a3cb0ab4ea9c1495a659f",
+          "maxRSSKiB": 5560032
+        }
+      ]
+    },
+    {
+      "unit": "A23",
+      "name": "NoBundleStraddlesCut",
+      "path": "research-tests/O6-L2R3-Sources/DGamma/L2R3FixtureCoverage.idr",
+      "commit": "10d59dc3b3860cf47f3c9a40e395f33321d47acd",
+      "passInvocation": "A23-1",
+      "attempts": [
+        {
+          "id": "A23-1",
+          "passed": true,
+          "fresh": true,
+          "sourceHash": "c4ccd73f9e6ec2c02fbc49f7dcb2db6aba3797c40d1beaffc1b01bad2c17e944",
+          "maxRSSKiB": 5335632
+        }
+      ]
+    },
+    {
+      "unit": "A24",
+      "name": "separateBundleObserved",
+      "path": "research-tests/O6-L2R3-Sources/DGamma/L2R3Separation.idr",
+      "commit": "138aef3e184972859926e8a87ffdae68e6ad9fd7",
+      "passInvocation": "A24-1",
+      "attempts": [
+        {
+          "id": "A24-1",
+          "passed": true,
+          "fresh": true,
+          "sourceHash": "16ad088141265d2e06b7c8f92ce285198ef161b9889cfd9963bb55169dc13a95",
+          "maxRSSKiB": 1775696
+        }
+      ]
+    }
+  ]
+}

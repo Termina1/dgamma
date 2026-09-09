@@ -74,3 +74,16 @@ Inline source references sometimes point inside a declaration; declaration start
 | `retireRemoveSnapshot` | `src/DGamma/CP4DeletionCommuteCore.idr:266 deleteBindingAfterDistinctReplaceBindings` | Runtime world + ordered-bindings algebra only, no uniqueness-proof equality. |
 | `replayRemoveFromView` | `src/DGamma/CP4DeletionBoundaryDeleted.idr:74 RemoveSuccessView` and `:94 removeSuccessView` (reused) | Single-constructor observed native-domain elimination, not a local case on a computed existential. |
 | `replayRemoveAfterRetirement` | L2R2ForeignReplay single-edge callback type (ORemove specialization) | Native foreign Remove role from original checked edge and actual source lookup; raw replay/guard, checked validity and snapshot all derived. NOT exhausted L2R1 childRemoveAtFound; not full dispatcher. |
+
+
+## Owner-authorized A20–A24 continuation
+
+The table above is the ratified4194087e milestone. After an explicit owner continuation gate, the following five declarations use the remaining A slots (now A24/B12/C14,50 total). Full new status, proof/conditional/stated distinctions, exact gap-index retention, and source/recipe origins are in **O6-L2R3-COVERAGE-ADDENDUM.md**. No new grammar or weakening of separation.
+
+| Unit | Current file:name line | Fresh PASS | Commit |
+|---|---|---|---|
+| A20 | `L2R3FixtureCoverage.idr:emptyGapHasNoOccurrence` line30 | A20-1 | `358f8bf3` |
+| A21 | `L2R3FixtureCoverage.idr:FixtureCoverage` line48 | A21-2 | `9efd3cb0` |
+| A22 | `L2R3FixtureCoverage.idr:fixtureCoverage` line76 | A22-1 | `b81a98cf` |
+| A23 | `L2R3FixtureCoverage.idr:NoBundleStraddlesCut` line97 | A23-1 | `10d59dc3` |
+| A24 | `L2R3Separation.idr:separateBundleObserved` line22 | A24-1 | `138aef3e` |
