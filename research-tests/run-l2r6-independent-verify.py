@@ -4,10 +4,12 @@ Reads this worktree/git objects and archived/raw records only. It never enters
 another worktree, reads shared lock/window state, invokes a compiler or stages.
 Not an independent human mathematical proof review; that gate stays required.
 """
-import ast, datetime, hashlib, json, pathlib, re, subprocess, tarfile
+import ast, datetime, hashlib, json, pathlib, re, subprocess, sys, tarfile
 ROOT=pathlib.Path('/Users/vyacheslavshebanov/Work/dgamma-lane2')
 OUT=pathlib.Path('/tmp/dgamma-l2r6')
 BASE='c09c0da2'
+assert sys.argv[1:] in ([], ['--prepublication'])
+prepublication=bool(sys.argv[1:])
 OWNED='research-tests/O6-L2R6-Sources/'
 DOC_EXCEPTIONS={'research-tests/O6-L2R5-CP3-DIFF-DRAFT.md','research-tests/O6-L2R5-CP3-REHOME-MANIFEST.json','research-tests/run-l2r5-draft.py'}
 def git(*args): return subprocess.check_output(['git',*args],cwd=ROOT)
@@ -111,7 +113,16 @@ for path in paths:
  assert not re.search(r'\b(believe_me|assert_total|postulate|assert_smaller|partial|with|let)\b|\?[A-Za-z_]',code(current))
  newdecls[path]=sorted(declarations(current));assert path in seen
 assert sum(map(len,newdecls.values()))==len(sourcecommits)==50
-assert len(commentcommits)==1
+origins=json.loads((OUT/'declaration-origins.json').read_text());assert len(origins)==50
+for origin in origins:
+ line=(ROOT/origin['path']).read_text().splitlines()[origin['line']-1]
+ assert re.match(r'^(?:[01] |record |data )?'+re.escape(origin['declaration'])+r'\b',line)
+ assert bycommit[origin['commit']]['invocation']==origin['check']
+
+assert len(commentcommits)==(0 if prepublication else 1)
+if prepublication:
+ before=git('show','HEAD:'+repair['path']);after=(ROOT/repair['path']).read_bytes()
+ assert after==before.replace(repair['old'].encode(),repair['new'].encode()) and code(before)==code(after)
 for letter,cap in [('A',14),('B',14),('C',10),('D',12)]:
  attempts={}
  for r in records:
@@ -147,12 +158,17 @@ for node in tree.body:
  if isinstance(node,ast.For) and isinstance(node.target,ast.Tuple) and [ast.unparse(t) for t in node.target.elts]==['a','b']:mapping.update(dict(ast.literal_eval(node.iter)))
 assert mapping==rehome['renamings'] and len(mapping)==30
 assert not git('diff',BASE,'--','src/','research/','dgamma.ipkg','README.md','NOTES.md','THM73-PLAN.md')
-assert not git('diff','--cached','--name-only') and not git('diff','--name-only') and not git('ls-files','--others','--exclude-standard')
+assert not git('diff','--cached','--name-only')
+if not prepublication:
+ assert not git('diff','--name-only') and not git('ls-files','--others','--exclude-standard')
+else:
+ pending=git('diff','--name-only').decode().splitlines()+git('ls-files','--others','--exclude-standard').decode().splitlines()
+ assert all(path==repair['path'] or (path.startswith(('research-tests/O6-L2R6-','research-tests/run-l2r6-')) and not path.endswith('.idr')) for path in pending)
 processes=subprocess.check_output(['ps','-axo','pid,ppid,command'],text=True)
 assert not any('/idris2_app/idris2' in row and str(ROOT)+'/' in row and re.match(r'^\s*\d+\s+\d+\s+(?:\S*/)?(?:chez|scheme|chezscheme|idris2(?:\.so)?)(?:\s|$)',row) for row in processes.splitlines())
 shift=json.loads((OUT/'shift.json').read_text())
 assert all(r['start']<shift['attemptCutoff'] for r in records if re.fullmatch(r'[ABCD]\d+-[1-3]',r['unit']))
 assert all(byunit[p['unit']]['end']<shift['validationCutoff'] for p in plan)
-report=dict(status='PASS',head=git('rev-parse','HEAD').decode().strip(),timestampUTC=datetime.datetime.now(datetime.timezone.utc).isoformat(),invocationCount=len(records),passedCount=sum(r['passed'] for r in records),failedCount=sum(not r['passed'] for r in records),finalCheckCount=len(plan),newDeclarationCount=50,newDeclarations=newdecls,proofCommitCount=50,commentOnlyRepairCount=1,allCommitsReceiptAuthenticated=True,allSourceHashesAndLogsAuthenticated=True,D9BodyOnlyBundleAndFixtureRecheckAuthenticated=True,immutableFinalPlanPublishedBeforeChecks=True,finalPlanLeafBeforeDependent=True,allFinalSourcesFreshlyChecked=True,allInvocationsSerialized=True,maxSampleRSSKiB=max(r['maxSampleRSSKiB'] for r in records),RSSQualification='250ms sampled, not continuous peak',archiveSHA256=sha(archive.read_bytes()),predecessorProofSourcesUntouched=True,authorizedPredecessorDocsOnly=sorted(DOC_EXCEPTIONS),tier1CodeHashesUnchanged=True,all30RenamingsSerialized=True,productionAndFrozenResearchUntouched=True,noSharedLockInteractionByCheckRunner=True,sharedLockAndWindowNotInspected=True,noOwnCompiler=True,noStagedFiles=True,cleanTrackedTree=True,noUntrackedDeliverables=True,independentHumanProofReviewRequired=True)
-(OUT/'independent-verification.json').write_text(json.dumps(report,indent=2)+'\n')
+report=dict(status='PREPUBLICATION_PASS' if prepublication else 'PASS',head=git('rev-parse','HEAD').decode().strip(),timestampUTC=datetime.datetime.now(datetime.timezone.utc).isoformat(),invocationCount=len(records),passedCount=sum(r['passed'] for r in records),failedCount=sum(not r['passed'] for r in records),finalCheckCount=len(plan),newDeclarationCount=50,newDeclarations=newdecls,proofCommitCount=50,commentOnlyRepairCount=len(commentcommits),commentRepairValidatedPending=prepublication,allCommitsReceiptAuthenticated=True,allSourceHashesAndLogsAuthenticated=True,D9BodyOnlyBundleAndFixtureRecheckAuthenticated=True,immutableFinalPlanPublishedBeforeChecks=True,finalPlanLeafBeforeDependent=True,allFinalSourcesFreshlyChecked=True,allInvocationsSerialized=True,maxSampleRSSKiB=max(r['maxSampleRSSKiB'] for r in records),RSSQualification='250ms sampled, not continuous peak',archiveSHA256=sha(archive.read_bytes()),predecessorProofSourcesUntouched=True,authorizedPredecessorDocsOnly=sorted(DOC_EXCEPTIONS),tier1CodeHashesUnchanged=True,all30RenamingsSerialized=True,productionAndFrozenResearchUntouched=True,noSharedLockInteractionByCheckRunner=True,sharedLockAndWindowNotInspected=True,noOwnCompiler=True,noStagedFiles=True,cleanTrackedTree=not prepublication,noUntrackedDeliverables=not prepublication,independentHumanProofReviewRequired=True)
+(OUT/('prepublication-verification.json' if prepublication else 'independent-verification.json')).write_text(json.dumps(report,indent=2)+'\n')
 print(json.dumps({k:v for k,v in report.items() if k!='newDeclarations'},indent=2))

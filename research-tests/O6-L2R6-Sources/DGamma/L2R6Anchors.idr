@@ -106,9 +106,10 @@ record PlacedBundle
   0 placedImmediatelyAfterRelease : bundleOffset placedMember = anchor
   0 placedCatalogExact : scanRootCatalog (bundleOffset placedMember) placedBundleTrail = placedRootsAt nameEq keyEq trail anchor
 
-||| Forced-root target position: its release-ending anchor plus the number
-||| of earlier roots assigned that same anchor. This preserves bundle order;
-||| non-forced roots have no placement claim from this arithmetic definition.
+||| Forced-root target: max(anchor plus same-anchor rank, one past the latest
+||| earlier different-anchor/non-forced root birth). External order forbids
+||| crossing that earlier birth. In the phase/front/never-retired domain,
+||| controls are at the front; same-anchor roots use outer orchestration order.
 public export
 targetPosition : {name, key, world, error : Type} -> {value : key -> Type} ->
   {0 first, finalState : SystemState name key value world error} ->
