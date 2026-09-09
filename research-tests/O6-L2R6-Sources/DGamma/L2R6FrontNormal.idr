@@ -60,3 +60,22 @@ public export
 frontControlHead : Bool -> Bool -> (Bool, Bool) -> (Bool, Bool)
 frontControlHead frontOK controlOK (tailFront, tailControl) =
   (frontOK && tailFront, controlOK && tailControl)
+
+||| Total actual-trace scan: (all non-forced root orchestration is before the
+||| first lifecycle, no forced root Retire/Remove). Retire/Remove root status
+||| uses the native source; birth generation uses the latest catalog ordinal.
+||| Whole/traversed traces are separate solely to retain the original catalog.
+public export
+scanFrontDisposition : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {0 initial, finalState, first, lastState : SystemState name key value world error} ->
+  {0 global : Transitions initial finalState} -> {0 trace : Transitions first lastState} ->
+  DecEq name -> DecEq key -> AvailabilityTrace name key world error value global ->
+  Nat -> Bool -> AvailabilityTrace name key world error value trace -> (Bool, Bool)
+scanFrontDisposition nameEq keyEq whole ordinal seen (AvailabilityEnd state) = (True, True)
+scanFrontDisposition {name} {key} {world} {error} {value} nameEq keyEq whole ordinal seen
+  (AvailabilityStep source (Fired ne ke action tag checked) rest later) = frontControlHead
+    (not (seen && rootInputAtSource name key world error value nameEq action source &&
+      not (originForced nameEq keyEq whole (rootOriginAt nameEq (actionOwner action) ordinal (scanRootCatalog 0 whole)))))
+    (not (rootControlAction action && rootInputAtSource name key world error value nameEq action source &&
+      originForced nameEq keyEq whole (rootOriginAt nameEq (actionOwner action) ordinal (scanRootCatalog 0 whole))))
+    (scanFrontDisposition nameEq keyEq whole (S ordinal) (seen || isLifecycleAction action) later)
