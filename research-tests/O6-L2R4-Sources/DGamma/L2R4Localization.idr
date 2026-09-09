@@ -49,3 +49,24 @@ rootInsertionAfterPrefix front trace found =
         (cong (appendTransitions front) (actionOccurrenceDecomposition (rootOccurrence found)))))
     (trans (extendedCountAppend front (beforeActionOccurrence (rootOccurrence found)))
       (cong (transitionCount front +) (rootOrdinal found)))
+
+||| Extend a root occurrence's suffix without changing its native step or
+||| ordinal. Associativity supplies the actual extended trace decomposition.
+export
+0 rootInsertionBeforeSuffix :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (trace : Transitions first middle) -> (back : Transitions middle finalState) ->
+  {ordinal : Nat} -> RootInsertionAt name key world error value trace ordinal ->
+  RootInsertionAt name key world error value (appendTransitions trace back) ordinal
+rootInsertionBeforeSuffix trace back found =
+  MkRootInsertionAt (insertedRoot found) (insertedComponent found)
+    (MkLocatedActionOccurrence
+      (actionBeforeState (rootOccurrence found)) (actionAfterState (rootOccurrence found))
+      (beforeActionOccurrence (rootOccurrence found)) (locatedTransition (rootOccurrence found))
+      (appendTransitions (afterActionOccurrence (rootOccurrence found)) back)
+      (locatedAction (rootOccurrence found))
+      (trans (sym (appendTransitionsAssociative (beforeActionOccurrence (rootOccurrence found))
+        (MoreTransitions (locatedTransition (rootOccurrence found)) (afterActionOccurrence (rootOccurrence found))) back))
+        (cong (\part => appendTransitions part back) (actionOccurrenceDecomposition (rootOccurrence found)))))
+    (rootOrdinal found)
