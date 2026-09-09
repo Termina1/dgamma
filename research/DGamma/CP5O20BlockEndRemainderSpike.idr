@@ -143,3 +143,21 @@ o20NonLifecycleOwnerActiveBackward nameEq keyEq (LAdvance selected) ambient fibe
 o20NonLifecycleOwnerActiveBackward nameEq keyEq (LDivert selected) ambient fibers afterState tag raw nonLifecycle active = absurd nonLifecycle
 o20NonLifecycleOwnerActiveBackward nameEq keyEq (LLeave selected) ambient fibers afterState tag raw nonLifecycle active = absurd nonLifecycle
 o20NonLifecycleOwnerActiveBackward nameEq keyEq (LUnload selected) ambient fibers afterState tag raw nonLifecycle active = absurd nonLifecycle
+
+||| Observe the native lifecycle Bool at its call site. An excluded owner
+||| lifecycle cannot occur; the false branch uses real orchestration semantics.
+export
+0 o20OwnerActiveAtLifecycleBool :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (action : Action name key value world error) ->
+  (ambient : world) -> (fibers : Registry name key value world error) ->
+  (afterState : SystemState name key value world error) -> (tag : RuleTag) ->
+  (applyAction {name} {key} {value} {world} {error} @{nameEq} @{keyEq} action (MkSystemState ambient fibers) = Just (tag, afterState)) ->
+  (observed : Bool) -> (isLifecycleAction action = observed) ->
+  ((isLifecycleAction action = True) -> Void) ->
+  (supportedActiveAt {name} {key} {value} {world} {error} @{nameEq} (actionOwner action) afterState = True) ->
+  (supportedActiveAt {name} {key} {value} {world} {error} @{nameEq} (actionOwner action) (MkSystemState ambient fibers) = True)
+o20OwnerActiveAtLifecycleBool nameEq keyEq action ambient fibers afterState tag raw False exact excluded active =
+  o20NonLifecycleOwnerActiveBackward nameEq keyEq action ambient fibers afterState tag raw exact active
+o20OwnerActiveAtLifecycleBool nameEq keyEq action ambient fibers afterState tag raw True exact excluded active = void (excluded exact)
