@@ -182,3 +182,28 @@ o20AcceptedChronologicalOccurrencePairs {name} {key} {world} {error} {value} nam
                     (leftBirth ** (rightBirth ** (leftOpen, rightOpen,
                       o20MatchedScannedBirthOccurrenceHistory nameEq keyEq left right mapping renaming leftAligned rightAligned
                         leftEvent rightEvent matched childSame parentSame leftBirth rightBirth))))))
+
+||| Join two already-produced native occurrence histories at their EXACT
+||| intermediate states and generation environments. Both word labels are
+||| kept unchanged. This structural assembly law does not invent skips or
+||| matching intermediate cuts and does not assert whole-word coverage.
+export
+0 o20OccurrenceHistoryAppend :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {mapping : RegistrationGenerationBijection name} -> {renaming : NameBijection name} ->
+  {wordInitial, leftWordFinal, rightWordFinal : SystemState name key value world error} ->
+  {leftWord : Transitions wordInitial leftWordFinal} -> {rightWord : Transitions wordInitial rightWordFinal} ->
+  {leftLive, rightLive, leftMiddleLive, rightMiddleLive, leftFinalLive, rightFinalLive : GenerationEnvironment name} ->
+  {leftBefore, rightBefore, leftMiddle, rightMiddle, leftAfter, rightAfter : SystemState name key value world error} ->
+  O20OccurrenceStampedHistory name key world error value nameEq keyEq mapping renaming leftWord rightWord
+    leftLive rightLive leftMiddleLive rightMiddleLive leftBefore rightBefore leftMiddle rightMiddle ->
+  O20OccurrenceStampedHistory name key world error value nameEq keyEq mapping renaming leftWord rightWord
+    leftMiddleLive rightMiddleLive leftFinalLive rightFinalLive leftMiddle rightMiddle leftAfter rightAfter ->
+  O20OccurrenceStampedHistory name key world error value nameEq keyEq mapping renaming leftWord rightWord
+    leftLive rightLive leftFinalLive rightFinalLive leftBefore rightBefore leftAfter rightAfter
+o20OccurrenceHistoryAppend OccurrenceHistoryEnd right = right
+o20OccurrenceHistoryAppend
+  (OccurrenceHistoryMore stage leftOccurrence rightOccurrence leftStamp rightStamp leftTag rightTag later) right =
+    OccurrenceHistoryMore stage leftOccurrence rightOccurrence leftStamp rightStamp leftTag rightTag
+      (o20OccurrenceHistoryAppend later right)
