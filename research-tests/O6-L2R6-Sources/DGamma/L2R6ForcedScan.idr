@@ -126,3 +126,15 @@ keyForcedOrdinal nameEq keyEq trail ordinal = any
   (\entry => catalogOrdinal entry == ordinal &&
     not (null (scanReleaseOrdinals nameEq keyEq (catalogComponent entry) 0 (catalogOrdinal entry) trail)))
   (scanRootCatalog 0 trail)
+
+||| The generic least closure instantiated ONLY with generated birth ordinals
+||| and computed actual-release key seeds. This is not defined as classifier
+||| truth, and includes precisely key seeds plus strictly later actual roots.
+public export
+ForcedOnTrace : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {0 first, finalState : SystemState name key value world error} ->
+  {0 trace : Transitions first finalState} ->
+  DecEq name -> DecEq key -> AvailabilityTrace name key world error value trace -> Nat -> Type
+ForcedOnTrace nameEq keyEq trail = ForcedRootInput
+  (\ordinal => Elem ordinal (map catalogOrdinal (scanRootCatalog 0 trail)))
+  (\ordinal => keyForcedOrdinal nameEq keyEq trail ordinal = True)
