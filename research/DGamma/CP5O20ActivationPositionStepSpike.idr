@@ -91,3 +91,19 @@ o20ActivationKeySelf nameEq (MkRegistrationActivation (MkRegistrationGeneration 
         rewrite o20ActivationOrdinalSelf birthOrdinal in
           rewrite o20ActivationOrdinalSelf beginOrdinal in Refl
       (No different ** observed) => void (different Refl)
+
+||| The executable surviving-position update advances exactly once, including
+||| absent counters and nonmatching earlier activation entries. No uniqueness
+||| assumption or unstated association-list normalization is needed.
+export
+0 o20IncrementActivationCount :
+  {name : Type} -> (nameEq : DecEq name) -> (activation : RegistrationActivation name) ->
+  (counts : List (RegistrationActivation name, Nat)) ->
+  (childrenBornInActivation @{nameEq} activation (incrementChildrenBornInActivation @{nameEq} activation counts) =
+    S (childrenBornInActivation @{nameEq} activation counts))
+o20IncrementActivationCount nameEq activation [] = rewrite o20ActivationKeySelf nameEq activation in Refl
+o20IncrementActivationCount nameEq activation ((candidate, count) :: rest) =
+  case the (decision : Bool ** (sameRegistrationActivation @{nameEq} activation candidate = decision))
+    (sameRegistrationActivation @{nameEq} activation candidate ** Refl) of
+      (True ** observed) => rewrite observed in rewrite observed in Refl
+      (False ** observed) => rewrite observed in rewrite observed in o20IncrementActivationCount nameEq activation rest
