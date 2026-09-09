@@ -80,3 +80,35 @@ record O20CanonicalControlObservation
     (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected (registry canonicalFinal) = observedCanonicalFiber)
   0 canonicalControlDisposition : O20CanonicalControlDisposition selected
     (endpointWithdrawnNames endpoint) observedOriginalFiber observedCanonicalFiber
+
+||| Executable single-constructor producer at the observed LIBRARY membership
+||| decision and both observed primitive lookups. Eliminate Dec BEFORE building
+||| the packet. The endpoint's own fields produce withdrawal or full controls;
+||| no control relation, canonical absence or successor packet is assumed.
+export
+o20CanonicalControlsAtDecision :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (originalFinal, canonicalFinal : SystemState name key value world error) ->
+  (endpoint : CanonicalEndpointRelation name key world error value nameEq keyEq originalFinal canonicalFinal) ->
+  (selected : name) ->
+  (original, canonical : Maybe (Fiber name key value world error)) ->
+  (0 originalExact : (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected (registry originalFinal) = original)) ->
+  (0 canonicalExact : (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected (registry canonicalFinal) = canonical)) ->
+  (decision : Dec (Elem selected (endpointWithdrawnNames endpoint))) ->
+  (0 decisionExact : (isElem @{nameEq} selected (endpointWithdrawnNames endpoint) = decision)) ->
+  O20CanonicalControlObservation name key world error value nameEq keyEq originalFinal canonicalFinal endpoint selected
+o20CanonicalControlsAtDecision nameEq keyEq originalFinal canonicalFinal endpoint selected
+  original canonical originalExact canonicalExact (Yes member) decisionExact =
+    MkO20CanonicalControlObservation original canonical originalExact canonicalExact
+      (CanonicalControlWithdrawn member
+        (trans (sym canonicalExact) (o20WithdrawnNameActuallyAbsent (endpointNamesWithdrawn endpoint selected member))))
+o20CanonicalControlsAtDecision {name} {key} {world} {error} {value}
+  nameEq keyEq originalFinal canonicalFinal endpoint selected
+  original canonical originalExact canonicalExact (No outside) decisionExact =
+    MkO20CanonicalControlObservation original canonical originalExact canonicalExact
+      (CanonicalControlKept outside
+        (replace {p = \left => FiberControlMaybeRelated left canonical} originalExact
+          (replace {p = \right => FiberControlMaybeRelated
+            (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected (registry originalFinal)) right}
+            canonicalExact (endpointControlsOutside endpoint selected outside))))
