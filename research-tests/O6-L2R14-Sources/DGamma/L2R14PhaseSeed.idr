@@ -39,3 +39,22 @@ export
     phaseReleaseCheck nameEq actor 0 ordinal False events = True))
 phaseActorAtOwner nameEq events ordinal Nothing accepted = absurd accepted
 phaseActorAtOwner nameEq events ordinal (Just actor) accepted = (actor ** (Refl, accepted))
+
+||| Observe the physical release event before extracting its actor. Native
+||| head/drop equality is supplied at the actual call site, never re-cased.
+export
+0 phaseActorAtEvent : {name : Type} -> (nameEq : DecEq name) ->
+  (events : List (Maybe name, Bool)) -> (ordinal : Nat) ->
+  (event : Maybe (Maybe name, Bool)) ->
+  (0 equation : head' (drop ordinal events) = event) ->
+  (0 accepted : maybe False (\item => maybe False
+    (\actor => phaseReleaseCheck nameEq actor 0 ordinal False events) (fst item)) event = True) ->
+  (actor : name ** (flag : Bool **
+    (head' (drop ordinal events) = Just (Just actor, flag),
+     phaseReleaseCheck nameEq actor 0 ordinal False events = True)))
+phaseActorAtEvent nameEq events ordinal Nothing equation accepted = absurd accepted
+phaseActorAtEvent nameEq events ordinal (Just (owner, flag)) equation accepted =
+  (fst (phaseActorAtOwner nameEq events ordinal owner accepted) **
+   (flag ** (trans equation (cong (\selected => Just (selected, flag))
+      (fst (snd (phaseActorAtOwner nameEq events ordinal owner accepted)))),
+    snd (snd (phaseActorAtOwner nameEq events ordinal owner accepted)))))
