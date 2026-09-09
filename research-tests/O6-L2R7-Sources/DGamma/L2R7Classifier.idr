@@ -31,3 +31,12 @@ export
 0 leZero : (n : Nat) -> (Z <= n) = True
 leZero Z = Refl
 leZero (S n) = Refl
+
+||| Right-argument elimination for the successor bridge, separate from the
+||| recursive left-argument elimination in leToLte.
+export
+0 leSuccessorBridge : (n : Nat) ->
+  (0 earlier : (m : Nat) -> (n <= m) = lte n m) -> (m : Nat) ->
+  (S n <= m) = lte (S n) m
+leSuccessorBridge n earlier Z = Refl
+leSuccessorBridge n earlier (S m) = earlier m
