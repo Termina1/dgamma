@@ -44,3 +44,20 @@ iterationDistanceBalance (IterationMove move later) =
   trans (beforeDistanceEquation move)
     (trans (dropsExactlyOne move)
       (cong S (trans (sym (afterDistanceEquation move)) (iterationDistanceBalance later))))
+
+||| A supplied zero-distance terminal chain has EXACTLY the initial distance
+||| many steps. Not normalization; move/phase producers open. This does not
+||| produce the chain, its terminal zero, placement, or AttachedNormalForm.
+export
+0 iterationStepsAtZero : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {initial, oldFinal, newFinal : SystemState name key value world error} ->
+  {oldTrace : Transitions initial oldFinal} -> {newTrace : Transitions initial newFinal} ->
+  {oldTrail : AvailabilityTrace name key world error value oldTrace} ->
+  {newTrail : AvailabilityTrace name key world error value newTrace} ->
+  (iteration : DistanceIteration nameEq keyEq oldTrail newTrail) ->
+  (0 zero : totalDistance nameEq keyEq newTrail = 0) ->
+  iterationSteps iteration = totalDistance nameEq keyEq oldTrail
+iterationStepsAtZero iteration zero = sym
+  (trans (iterationDistanceBalance iteration)
+    (trans (cong (iterationSteps iteration +) zero) (plusZeroRightNeutral (iterationSteps iteration))))
