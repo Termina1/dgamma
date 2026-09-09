@@ -1,0 +1,36 @@
+Pre-publication boundary 5f64a58d23314b4515f2996b47fa37e32b125526
+Command: git diff --stat b9130fbb HEAD
+Only L2R13 artifacts plus the three authorized P2 predecessor documentary paths.
+The later D3 archive publication is intentionally excluded here to avoid self-reference; final HEAD diff is printed at the gate.
+
+ research-tests/O6-L2R12-DECLARATION-ORIGINS.md     |  12 +-
+ research-tests/O6-L2R12-MICRO-UNIT-LEDGER.json     |  12 +-
+ research-tests/O6-L2R13-CP3-DIFF-DRAFT-OVERLAY.md  |  34 +++
+ research-tests/O6-L2R13-FINAL-VALIDATION-PLAN.json | 107 +++++++++
+ research-tests/O6-L2R13-GRIND-SHIFT-AUDIT.md       |  65 ++++++
+ .../DGamma/L2R13CoreRestoration.idr                |  60 ++++++
+ .../DGamma/L2R13DistanceFixtures.idr               | 110 ++++++++++
+ .../O6-L2R13-Sources/DGamma/L2R13ExtendMove.idr    | 104 +++++++++
+ .../O6-L2R13-Sources/DGamma/L2R13ForcedAnchor.idr  | 160 ++++++++++++++
+ .../DGamma/L2R13InsertExtensional.idr              | 177 +++++++++++++++
+ .../DGamma/L2R13NativeSuffixFrames.idr             | 132 ++++++++++++
+ .../DGamma/L2R13PacketEndpointFixture.idr          |  65 ++++++
+ .../DGamma/L2R13PacketEndpointTransport.idr        |  79 +++++++
+ .../O6-L2R13-Sources/DGamma/L2R13PhaseEntry.idr    |  99 +++++++++
+ .../O6-L2R13-Sources/DGamma/L2R13PhaseFixtures.idr |  56 +++++
+ .../DGamma/L2R13SquareSuccessor.idr                |  52 +++++
+ .../O6-L2R13-Sources/DGamma/L2R13TerminalMove.idr  |  90 ++++++++
+ research-tests/run-l2r12-publish-evidence.py       |   2 +-
+ research-tests/run-l2r13-artifact-commit.py        |  67 ++++++
+ research-tests/run-l2r13-check.py                  | 119 ++++++++++
+ research-tests/run-l2r13-commit.py                 |  49 +++++
+ .../run-l2r13-distance-fixture-recipe.py           |  41 ++++
+ research-tests/run-l2r13-evidence-tests.py         | 136 ++++++++++++
+ research-tests/run-l2r13-extend-move-recipe.py     |  74 +++++++
+ research-tests/run-l2r13-final-validation.py       |  26 +++
+ research-tests/run-l2r13-independent-verify.py     | 240 +++++++++++++++++++++
+ research-tests/run-l2r13-launch.py                 |  14 ++
+ research-tests/run-l2r13-publish-evidence.py       |  73 +++++++
+ research-tests/run-l2r13-terminal-recipe.py        |  56 +++++
+ research-tests/run-l2r13-visibility-commit.py      |  56 +++++
+ 30 files changed, 2354 insertions(+), 13 deletions(-)

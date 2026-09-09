@@ -1,0 +1,29 @@
+{
+  "passed": true,
+  "checkedHead": "5f64a58d23314b4515f2996b47fa37e32b125526",
+  "verifierSHA256": "bb1b682163d9ad7a602b6d10377c6cb7d31d98a6851fb0b8bd00bf46c4c35981",
+  "archiveBoundaryHead": "5f64a58d23314b4515f2996b47fa37e32b125526",
+  "derivedLedgersVerified": true,
+  "focusedEvidenceTests": 51,
+  "records": 58,
+  "proofAttempts": 45,
+  "retainedDeclarations": 38,
+  "failedAttempts": [
+    "A3-1",
+    "A5-1",
+    "B10-1",
+    "B12-1",
+    "B13-1",
+    "B14-1",
+    "C10-1"
+  ],
+  "guardedSourceCommits": 38,
+  "guardedReceipts": 45,
+  "finalValidations": 12,
+  "archiveFiles": 365,
+  "archiveSHA256": "123a85bd242f9a7ab1f5c7f312a1c84da75394f373979169aca0aeb4e37e4599",
+  "noStagedFiles": true,
+  "ownCompilerRunning": false,
+  "humanMathematicalReview": "parent-owned, not performed by this script",
+  "scope": "PARTIAL bounded milestone: forced anchor/seed/birth and all D8 moves from producers; arbitrary-family local-square/native-suffix whole endpoints and fixed core restoration checked. General phase producer, phase-preserving move existence/normalizer and per-action core square production remain OPEN; complete cure NOT SIGNABLE."
+}
