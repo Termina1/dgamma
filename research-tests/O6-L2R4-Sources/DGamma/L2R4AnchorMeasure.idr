@@ -32,3 +32,10 @@ anchorHistoryStep nameEq root anchor (AnchorRelease marker) prior =
   if anchor == Just marker then 0 else prior
 anchorHistoryStep nameEq root anchor (AnchorBirth actor otherAnchor) prior = prior
 anchorHistoryStep nameEq root anchor AnchorOther prior = prior
+
+||| Count foreign lifecycle events since a root's fixed release in reverse-
+||| chronological history. Nothing counts from trace start. A forced anchor
+||| must actually occur in authenticated history; assignment is not inferred.
+public export
+anchorHistoryCount : {name : Type} -> DecEq name -> name -> Maybe Nat -> List (AnchorEvent name) -> Nat
+anchorHistoryCount nameEq root anchor history = foldr (anchorHistoryStep nameEq root anchor) 0 history
