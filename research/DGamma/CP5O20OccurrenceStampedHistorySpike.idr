@@ -190,3 +190,25 @@ record O20HistorySynchronizationModulo
   0 moduloStages : O20OccurrenceStampedHistory name key world error value nameEq keyEq
     mapping moduloBijection leftWord rightWord [] [] moduloLeftLive moduloRightLive
     initial initial leftFinal rightFinal
+
+||| SUFFICIENCY of a supplied modulo synchronization for the existing history
+||| cut. Its native fold produces every successor; empty-origin control is
+||| produced here, so no runtime cut is an extra input. Current-name ALL-name
+||| rebasing remains B debt. A8 motivates the replacement, not its inhabitation.
+||| whole-word / per-actor ordering and coverage producer remains to prove; arbitrary skips are NOT asserted to be zero native edges
+export
+0 o20ModuloSynchronizationHistoryCut :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {initial, leftFinal, rightFinal : SystemState name key value world error} ->
+  {leftWord : Transitions initial leftFinal} -> {rightWord : Transitions initial rightFinal} ->
+  (mapping : RegistrationGenerationBijection name) ->
+  (synchronization : O20HistorySynchronizationModulo name key world error value nameEq keyEq mapping leftWord rightWord) ->
+  (bindings (registry initial) = []) ->
+  O20HistoryCut name key world error value nameEq mapping
+    (moduloLeftLive synchronization) (moduloRightLive synchronization) leftFinal rightFinal
+o20ModuloSynchronizationHistoryCut {nameEq} {initial} mapping synchronization empty =
+  o20OccurrenceStampedHistoryCut (moduloStages synchronization)
+    (MkO20StampedCut
+      (o20AllNameEmptyOrigin nameEq (moduloBijection synchronization) initial empty)
+      (\selected, stamp, found => absurd found) (\selected, stamp, found => absurd found))
