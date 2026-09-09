@@ -66,3 +66,38 @@ by the singleton fixture. No protected statement revision is proposed/applied.
 
 Root-only generic extraction is structurally parked pending supervisor gate;
 remaining A(b)/(c) and B are not claimed closed. All frozen surfaces stay intact.
+
+## Root rulings and A26 cap
+
+Supervisor ratified the generic-root extraction park as a necessity witness,
+not a counterexample. The proposed three-keyword visibility manifest was
+committed1a20d608, then explicitly DEFERRED: the exported explicit map/proof
+would not attach the law to an arbitrary stored correspondence. No keyword
+was changed. The stronger erased producer-contract manifest is required as
+DOCS ONLY for R196, including both storing records and all construction sites.
+Supervisor extends52GiB to future owner-gated KEYWORD/FIELD-only LocalDiamond
+changes; this shift's file remains unchanged and only its52GiB frozen check
+is planned. No field or statement revision is authorized/applied in R195.
+
+A11--A26 retained at993d7fe4. Whole ORIGINAL occurrence history now has a flat
+closing-or-matched disposition. Actual scanner coverage+raw uniqueness produce
+EVERY original generated birth's exact disposition. Both actual original
+births are retained in the matched case; the closing case retains its actual
+birth suffix and authenticated parent Unload, without a right retained birth
+or fixed-current raw-name claim. o20HistoryThroughReplay preserves that
+original history through ANY supplied actual occurrence correspondence;
+o20HistoryReplayAttachment pairs it with the SAME occurrence's physical
+replay ordinal equation. This works on unsupported original histories too.
+R193's real8-edge present-vestigial trace instantiates the closing constructor
+and actual identity-replay attachment; the current map still sends1 to absent2.
+
+All26 source units have immediate guarded receipts;27 invocations=26PASS/1
+rejected (A15-1 missing direct defining RenamingComposition import; A15-2PASS).
+No3/3, no body attempt, no source extension past A26. These are ORIGINAL
+history/occurrence-retention results, NOT a whole aligned paired-stage producer.
+No arbitrary canonical fold, no all-stage root/action ordinal attachment, no
+right canonical retention/stuttering proof or internal-live-name bijection
+construction is claimed. The11-edge R191 paired execution remains inherited
+capital scheduled for fresh final validation, not a new accepted-pair instance.
+A(c) is structurally parked behind the missing all-root producer contract and
+actual stage-by-stage alignment. Moving to pre-authorized B, not extending A.
