@@ -69,3 +69,46 @@ o20SharedBlocksAugmentedRoleWords {name} {key} {value} {world} {error} {nameEq} 
              (MkFiber component rightParent False rightTable (Reloading (componentProgram component) id rightView))
              (registry (blockPreStart rightBlock)) rightFound in Refl))
         (o20LocatedBlockRoleWordInvariant rightBlock rightRoles))
+
+||| Accepted-input per-actor AUGMENTED native-word agreement at the prescribed
+||| operational permutation. Both whole-word role certificates and the shared
+||| initial program are produced. End-of-block remainders remain explicit:
+||| eliminating them, pairing Insert positions and constructing ordered,
+||| occurrence-labelled whole histories are still separate obligations.
+export
+0 o20SelectedCanonicalAugmentedRoleWords :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {protocol : RegistrationProtocol key value world error} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {initial, leftFinal, rightFinal : SystemState name key value world error} ->
+  {leftTrace : Transitions initial leftFinal} ->
+  {rightTrace : Transitions initial rightFinal} ->
+  {sameInputs : SameOrchestrationModuloGenerated nameEq keyEq leftTrace rightTrace} ->
+  {leftCapital : IndependentCanonicalSchedule name key world error value protocol
+    nameEq keyEq leftTrace} ->
+  {rightCapital : IndependentCanonicalSchedule name key world error value protocol
+    nameEq keyEq rightTrace} ->
+  {matching : MappedCanonicalSupportOrders name key world error value protocol
+    nameEq keyEq leftTrace rightTrace
+    (currentNameBijection (endpointRenaming sameInputs))
+    (canonicalSchedule leftCapital) (canonicalSchedule rightCapital)} ->
+  {operational : CertifiedOperationalCanonicalPermutation name key world error value
+    protocol nameEq keyEq leftTrace rightTrace sameInputs leftCapital rightCapital matching} ->
+  (execution : PermutedCanonicalExecution name key world error value protocol
+    nameEq keyEq leftTrace rightTrace sameInputs leftCapital rightCapital operational) ->
+  (0 leftUnique : UniqueRawNameInsertions name key world error value nameEq keyEq leftTrace) ->
+  (0 rightUnique : UniqueRawNameInsertions name key world error value nameEq keyEq rightTrace) ->
+  {selected : name} ->
+  (pair : SelectedCanonicalBlockPair name key world error value protocol nameEq keyEq
+    leftTrace rightTrace sameInputs leftCapital rightCapital matching operational selected) ->
+  ((o20ActorLifecycleRoleWord (blockActorOnly (pairLeftBlock pair)) ++ o20FiberRoleRemainder
+      (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected (registry (blockEnd (pairLeftBlock pair))))) =
+   (o20ActorLifecycleRoleWord (blockActorOnly (pairRightBlock pair)) ++ o20FiberRoleRemainder
+      (lookupFiber {name} {key} {value} {world} {error} @{nameEq}
+        (renameForward (expectedBridgeBijection sameInputs) selected) (registry (blockEnd (pairRightBlock pair))))))
+o20SelectedCanonicalAugmentedRoleWords {nameEq} {keyEq} {protocol} {rightTrace} {rightCapital} {operational}
+  execution leftUnique rightUnique pair =
+    o20SharedBlocksAugmentedRoleWords (pairLeftBlock pair) (pairRightBlock pair)
+      (o20WholePermutedCanonicalRoles operational)
+      (o20WholeCanonicalRoles nameEq keyEq protocol rightTrace rightCapital)
+      (o20SelectedCanonicalSharedBegins execution leftUnique rightUnique pair)
