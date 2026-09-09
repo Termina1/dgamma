@@ -94,3 +94,27 @@ alignedSourceAtOrdinal {first} {middle}
   alignedSourceThroughHead nameEq keyEq
     (Fired {before = first} {afterState = middle} nameEq keyEq headAction tag checked) rest source action ordinal
     (tailDecoder ordinal source action query)
+
+||| Eliminate alignment separately from trail/ordinal observations. Its
+||| index authenticates the exact dictionaries of the ACTUAL Fired edge.
+export
+0 alignedSourceAtStep : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (step : Transition first middle) -> (rest : Transitions middle finalState) ->
+  (later : AvailabilityTrace name key world error value rest) ->
+  (aligned : AlignedTransitions name key world error value nameEq keyEq (MoreTransitions step rest)) ->
+  (0 tailDecoder : AlignedTransitions name key world error value nameEq keyEq rest ->
+    (ordinal : Nat) -> (source : SystemState name key value world error) ->
+    (action : Action name key value world error) ->
+    head' (drop ordinal (trailSourceActions later)) = Just (source, action) ->
+    AlignedSourceAction name key world error value nameEq keyEq rest source action ordinal) ->
+  (ordinal : Nat) -> (source : SystemState name key value world error) ->
+  (action : Action name key value world error) ->
+  (0 query : head' (drop ordinal (trailSourceActions (AvailabilityStep first step rest later))) = Just (source, action)) ->
+  AlignedSourceAction name key world error value nameEq keyEq (MoreTransitions step rest) source action ordinal
+alignedSourceAtStep nameEq keyEq _ _ later
+  (AlignedStep headAction tag checked rest tail) tailDecoder ordinal source action query =
+  alignedSourceAtOrdinal nameEq keyEq headAction tag checked rest later
+    (\position, wantedSource, wantedAction, equation => tailDecoder tail position wantedSource wantedAction equation)
+    ordinal source action query
