@@ -60,3 +60,40 @@ nativeActionWord : {name, key, world, error : Type} -> {value : key -> Type} ->
   AvailabilityTrace name key world error value trace -> List (Action name key value world error)
 nativeActionWord (AvailabilityEnd state) = []
 nativeActionWord (AvailabilityStep source (Fired ne ke action tag checked) rest later) = action :: nativeActionWord later
+
+||| ONE actual adjacent action interchange between two checked runs from the
+||| same initial state. Actual located source/crossing and moved birth, exact
+||| full action words, trace-forcing, both declaration-free current cuts,
+||| observed exact-one total distance, and RegistryExtensional endpoints are
+||| owned together. This is not an original-edge-only general square producer
+||| or a proof of the frozen SameExternalOrchestration relation.
+public export
+record AdmittedDistanceMove
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (keyEq : DecEq key)
+  {initial, oldFinal, newFinal : SystemState name key value world error}
+  {oldTrace : Transitions initial oldFinal} {newTrace : Transitions initial newFinal}
+  (oldTrail : AvailabilityTrace name key world error value oldTrace)
+  (newTrail : AvailabilityTrace name key world error value newTrace) where
+  constructor MkAdmittedDistanceMove
+  movedRoot : name
+  movedComponent : Component key value world error
+  prefixWord : List (Action name key value world error)
+  crossedAction : Action name key value world error
+  suffixWord : List (Action name key value world error)
+  crossedOccurrence : LocatedActionOccurrence crossedAction oldTrace
+  movedBirthOccurrence : LocatedActionOccurrence (OInsert movedRoot Root movedComponent) newTrace
+  0 crossedOrdinalExact : locatedActionOrdinal crossedOccurrence = length prefixWord
+  0 movedBirthOrdinalExact : locatedActionOrdinal movedBirthOccurrence = length prefixWord
+  crossingAdmitted : AdmittedCrossing nameEq movedRoot (actionBeforeState crossedOccurrence) crossedAction
+  0 oldRootForced : ForcedOnTrace nameEq keyEq oldTrail (S (length prefixWord))
+  0 oldWordExact : nativeActionWord oldTrail = prefixWord ++ crossedAction :: OInsert movedRoot Root movedComponent :: suffixWord
+  0 newWordExact : nativeActionWord newTrail = prefixWord ++ OInsert movedRoot Root movedComponent :: crossedAction :: suffixWord
+  0 oldCurrentCut : rootDeclaredProvisionsFree name key world error value keyEq movedComponent (actionAfterState crossedOccurrence) = True
+  0 newCurrentCut : rootDeclaredProvisionsFree name key world error value keyEq movedComponent (actionBeforeState movedBirthOccurrence) = True
+  beforeDistance : Nat
+  afterDistance : Nat
+  0 beforeDistanceEquation : totalDistance nameEq keyEq oldTrail = beforeDistance
+  0 afterDistanceEquation : totalDistance nameEq keyEq newTrail = afterDistance
+  0 dropsExactlyOne : beforeDistance = S afterDistance
+  0 moveEndpoints : RegistryExtensional name key world error value nameEq oldFinal newFinal
