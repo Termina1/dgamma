@@ -108,3 +108,18 @@ r198OccurrenceElevenRun =
     (MkLocatedActionOccurrence (r191ChildGapState 10) (r191ChildGapState 11) (MoreTransitions (Fired {before = r191ChildGapState 0} {afterState = r191ChildGapState 1} r45NameEq r45KeyEq (OInsert 0 Root r45Parent) OInsertTag Refl) (MoreTransitions (Fired {before = r191ChildGapState 1} {afterState = r191ChildGapState 2} r45NameEq r45KeyEq (OInsert 1 Root r45Child) OInsertTag Refl) (MoreTransitions (Fired {before = r191ChildGapState 2} {afterState = r191ChildGapState 3} r45NameEq r45KeyEq (OInsert 2 Root r45Child) OInsertTag Refl) (MoreTransitions (Fired {before = r191ChildGapState 3} {afterState = r191ChildGapState 4} r45NameEq r45KeyEq (LBegin 0) LBeginTag Refl) (MoreTransitions (Fired {before = r191ChildGapState 4} {afterState = r191ChildGapState 5} r45NameEq r45KeyEq (OInsert 3 (ChildOf 0) r45Child) OInsertTag Refl) (MoreTransitions (Fired {before = r191ChildGapState 5} {afterState = r191ChildGapState 6} r45NameEq r45KeyEq (LAdvance 0) LFinishTag Refl) (MoreTransitions (Fired {before = r191ChildGapState 6} {afterState = r191ChildGapState 7} r45NameEq r45KeyEq (LBegin 1) LBeginTag Refl) (MoreTransitions (Fired {before = r191ChildGapState 7} {afterState = r191ChildGapState 8} r45NameEq r45KeyEq (LAdvance 1) LFinishTag Refl) (MoreTransitions (Fired {before = r191ChildGapState 8} {afterState = r191ChildGapState 9} r45NameEq r45KeyEq (ORetire 3) ORetireTag Refl) (MoreTransitions (Fired {before = r191ChildGapState 9} {afterState = r191ChildGapState 10} r45NameEq r45KeyEq (LBegin 2) LBeginTag Refl) NoTransitions)))))))))) (Fired {before = r191ChildGapState 10} {afterState = r191ChildGapState 11} r45NameEq r45KeyEq (LAdvance 2) LFinishTag Refl) NoTransitions Refl Refl)
     Refl Refl Refl Refl (
     OccurrenceHistoryEnd)))))))))))
+
+||| The NEW occurrence-labelled fold runs from the literal empty R191 origin and returns
+||| all three history-cut fields at its actual eleven-edge endpoint. This is
+||| not an assumed endpoint relation or a canonical decomposition fixture.
+export
+0 r198OccurrenceElevenEndpoint :
+  O20HistoryCut Nat R45Key Unit String R45Value r45NameEq identityRegistrationGenerationBijection
+    [(0, MkRegistrationGeneration 0 0), (1, MkRegistrationGeneration 1 1), (2, MkRegistrationGeneration 2 2), (3, MkRegistrationGeneration 3 4)]
+    [(0, MkRegistrationGeneration 0 0), (1, MkRegistrationGeneration 1 1), (2, MkRegistrationGeneration 2 2), (3, MkRegistrationGeneration 3 4)]
+    (r191ChildGapState 11) (r191ChildGapState 11)
+r198OccurrenceElevenEndpoint =
+  o20OccurrenceStampedHistoryCut r198OccurrenceElevenRun
+    (MkO20StampedCut
+      (o20AllNameEmptyOrigin r45NameEq identityNameBijection (r191ChildGapState 0) Refl)
+      (\selected, stamp, found => absurd found) (\selected, stamp, found => absurd found))
