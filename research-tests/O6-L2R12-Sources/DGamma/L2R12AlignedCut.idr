@@ -140,3 +140,20 @@ locateAlignedSourceAction nameEq keyEq (AvailabilityStep first step rest later) 
     (\tail, position, wantedSource, wantedAction, equation =>
       locateAlignedSourceAction nameEq keyEq later tail position wantedSource wantedAction equation)
     ordinal source action query
+
+||| The selected request PRODUCES its dictionary-correct native predecessor
+||| edge, not just its location. Alignment is explicit; no equality between
+||| independently inferred DecEq dictionaries is silently inserted.
+export
+0 selectedCutAlignedEdge : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, finalState : SystemState name key value world error} ->
+  {trace : Transitions first finalState} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (trail : AvailabilityTrace name key world error value trace) ->
+  (aligned : AlignedTransitions name key world error value nameEq keyEq trace) ->
+  (cut : SelectedSquareCut name key world error value nameEq keyEq trail) ->
+  AlignedSourceAction name key world error value nameEq keyEq trace
+    (cutSource cut) (cutAction cut) (pred (catalogOrdinal (cutEntry cut)))
+selectedCutAlignedEdge nameEq keyEq trail aligned cut =
+  locateAlignedSourceAction nameEq keyEq trail aligned
+    (pred (catalogOrdinal (cutEntry cut))) (cutSource cut) (cutAction cut) (predecessorSourceEquation cut)
