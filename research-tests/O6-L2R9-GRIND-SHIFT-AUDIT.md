@@ -8,7 +8,7 @@ Guard runners copied from L2R8 with accurate new shift paths/caps. The retained1
 
 ## Status
 
-Shift in progress. No new proof claim yet. All predecessor producer residues remain OPEN until checked code below establishes otherwise. No production edits, predecessor source edits, or frozen-hole changes authorized.
+Source phase CLOSED: 50 checked retained declarations in17 modules (A14/B9/C14/D13). Explicitly PARTIAL / NOT SIGNABLE. Native ordinal execution/linkage, authentic predecessor observations/native first-positive selection, conditional floor exclusion, and native retirement provider/resolver invariance close at their exact scopes below. General phases, agreement fixtures, core restoration, admitted moves/normalization and lifecycle/whole replay remain OPEN. No production or frozen-hole edits. The sole predecessor exception is the supervisor-authorized E TYPE-comment correction.
 
 ## A14 stop gate
 
@@ -84,3 +84,9 @@ C9 passed2/3 after explicit isLifecycleAction type parameters (standalone Bool c
 | LFinish | checked D13 | clause present in common attempt source; NOT independently reached/checked |
 
 **Full single OPEN; whole L2R2 ForeignReplay on R191 NOT RUN / OPEN; no replayed native endpoint or snapshot-equal R191 run claimed.** Native provider/resolver invariance is fully proved; the replay role producer is not. Raw D14-stop.json and run-l2r9-lifecycle-recipe.py retain the boundary. No frozen statement re-entry or main/heavy-lock use.
+
+## E1 — source closure and exact comment-only guard authority
+
+Source cap phase closed (O6-L2R9-SOURCE-CLOSURE.json); no more A/B/C/D invocations. E has THREE bounded bookkeeping units: E1 exact comment authority/tool guards + source closure; E2 the approved predecessor comment correction with its own fresh validation; E3 honest Tier-2 draft/manifest synchronization. Audit/ledger/archive verification bookkeeping follows, not new proof units.
+
+O6-L2R9-COMMENT-REPAIR.json freezes the one authorized path, exact old/new bytes, BEFORE/AFTER SHA256 and supervisor P2 authority. Both new lane-owned guard tools freeze that manifest digest; the checker admits the exact repaired predecessor hash for V validations only. Artifact commit requires exact before/after bytes and final-source fresh PASS. No general predecessor/body/statement permission. The formerly dormant REPAIR variable reference is corrected to the validated per-path repair object; unused header-repair authority remains absent.

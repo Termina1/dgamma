@@ -1,0 +1,8 @@
+{
+  "path": "research-tests/O6-L2R8-Sources/DGamma/L2R8ReleaseFixtures.idr",
+  "old": "Both full native fixtures compute the\n||| same exact filtered release list, not just equal nonempty flags.",
+  "new": "Contract requiring both native fixtures to\n||| compute the same exact filtered release list; TYPE ONLY — producer OPEN\n||| (L2R8 A10 3/3).",
+  "beforeSHA256": "0fe69d4de4154c217f7f9eac1afb7ba05ee5ceda6a092d09e627ca86a6c79119",
+  "afterSHA256": "3e7480e07791c82c3a424412026f466cc82878d7509218c45feeb8620f762125",
+  "authority": "Supervisor L2R8 independent review ACCEPT-WITH-NOTES P2: exact comment-only TYPE ONLY / producer OPEN correction authorized for E; no body or statement edits."
+}

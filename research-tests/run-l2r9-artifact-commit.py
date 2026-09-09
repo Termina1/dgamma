@@ -1,16 +1,20 @@
 #!/usr/bin/env python3
 """Guarded artifact commit after an independently inspected exact-source PASS.
 Accept lane-owned L2R9 non-Idris artifacts, the predecessor CP3 draft/manifest,
-only. No predecessor runner repair or Idris
-source/body/comment repair is authorized.
+plus ONE exact supervisor-authorized predecessor TYPE-comment correction.
+No predecessor runner/body/statement repair or other source edit is authorized.
 Usage: python3 -I research-tests/run-l2r9-artifact-commit.py UNIT MESSAGE PATH...
 """
 import datetime, hashlib, json, pathlib, re, subprocess, sys
 ROOT = pathlib.Path('/Users/vyacheslavshebanov/Work/dgamma-lane2')
 OUT = pathlib.Path('/tmp/dgamma-l2r9')
 BASE = 'a7120095'
-REPAIRS = {}
-HEADER_REPAIRS = {}
+AUTHORITY_SHA256 = '4e08e49673db9c979653412b66293897e1cb0279a2856851c2e6e637fd6a408e'
+authorityBytes = (ROOT/'research-tests/O6-L2R9-COMMENT-REPAIR.json').read_bytes()
+assert hashlib.sha256(authorityBytes).hexdigest() == AUTHORITY_SHA256
+PATCH = json.loads(authorityBytes)
+assert PATCH['path'] == 'research-tests/O6-L2R8-Sources/DGamma/L2R8ReleaseFixtures.idr'
+REPAIRS = {PATCH['path']: PATCH}
 
 def git(*args):
  return subprocess.check_output(['git', *args], cwd=ROOT)
@@ -26,22 +30,19 @@ assert sha((ROOT/record['path']).read_bytes()) == record['sourceSHA256']
 assert paths and len(paths) == len(set(paths))
 repair_checks = []
 for path in paths:
- assert path in {'research-tests/O6-L2R5-CP3-DIFF-DRAFT.md','research-tests/O6-L2R5-CP3-REHOME-MANIFEST.json'} or path in REPAIRS or path in HEADER_REPAIRS or (path.startswith(('research-tests/O6-L2R9-', 'research-tests/run-l2r9-')) and not path.endswith('.idr'))
+ assert path in {'research-tests/O6-L2R5-CP3-DIFF-DRAFT.md','research-tests/O6-L2R5-CP3-REHOME-MANIFEST.json'} or path in REPAIRS or (path.startswith(('research-tests/O6-L2R9-', 'research-tests/run-l2r9-')) and not path.endswith('.idr'))
  assert (ROOT/path).is_file() and (ROOT/path).stat().st_size > 0
- if path in HEADER_REPAIRS:
-  repair = HEADER_REPAIRS[path]
-  before = git('show', 'HEAD:'+path)
-  assert sha(before) == repair['beforeSHA256']
-  assert before.count(repair['old'].encode()) == 1
-  assert (ROOT/path).read_bytes() == before.replace(repair['old'].encode(),repair['new'].encode())
  if path in REPAIRS:
   before = git('show', 'HEAD:'+path)
-  old, new = REPAIRS[path]
+  repair = REPAIRS[path]
+  old, new = repair['old'].encode(), repair['new'].encode()
+  assert sha(before) == repair['beforeSHA256']
   assert before.count(old) == 1 and (ROOT/path).read_bytes() == before.replace(old, new)
+  assert sha((ROOT/path).read_bytes()) == repair['afterSHA256']
   currentHash=sha((ROOT/path).read_bytes())
   validations=[json.loads(line) for line in (OUT/'ledger.jsonl').read_text().splitlines()]
   assert any(r['unit'].startswith('V') and r['path']==path and r['passed'] and r['fresh'] and r['sourceSHA256']==currentHash for r in validations), 'Comment repair needs exact final source fresh PASS'
-  repair_checks.append(dict(path=path, beforeSHA256=sha(before), repairedSHA256=currentHash, authority=REPAIR['authority']))
+  repair_checks.append(dict(path=path, beforeSHA256=sha(before), repairedSHA256=currentHash, authority=repair['authority']))
 assert not git('diff', '--cached', '--name-only').strip()
 dirty = git('diff', '--name-only').decode().splitlines()
 assert set(dirty) <= set(paths), 'Unlisted tracked changes'

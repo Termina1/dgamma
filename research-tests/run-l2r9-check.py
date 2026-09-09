@@ -17,7 +17,15 @@ assert not (OUT/(unit+'.json')).exists(), 'Append-only invocation IDs'
 assert path != 'package', 'Whole package and cold rebuild forbidden in this lane'
 target = ROOT/path
 assert target.is_file() and target.stat().st_size > 0 and target.resolve().is_relative_to(ROOT)
-assert path.startswith('research-tests/O6-L2R9-Sources/') or (unit == 'V0' and path == 'research-tests/O6-L2R8-Sources/DGamma/L2R8ReleaseScan.idr'), 'Lane-owned targets or exact unchanged bootstrap target only'
+AUTHORITY_SHA256 = '4e08e49673db9c979653412b66293897e1cb0279a2856851c2e6e637fd6a408e'
+authorityBytes = (ROOT/'research-tests/O6-L2R9-COMMENT-REPAIR.json').read_bytes()
+assert hashlib.sha256(authorityBytes).hexdigest() == AUTHORITY_SHA256
+commentRepair = json.loads(authorityBytes)
+assert commentRepair['path'] == 'research-tests/O6-L2R8-Sources/DGamma/L2R8ReleaseFixtures.idr'
+def comment_target_allowed(unit, path, current_hash, repair):
+ return bool(re.fullmatch(r'V\d+', unit)) and path == repair['path'] and current_hash == repair['afterSHA256']
+commentTarget = comment_target_allowed(unit, path, hashlib.sha256(target.read_bytes()).hexdigest(), commentRepair)
+assert path.startswith('research-tests/O6-L2R9-Sources/') or (unit == 'V0' and path == 'research-tests/O6-L2R8-Sources/DGamma/L2R8ReleaseScan.idr') or commentTarget, 'Lane-owned targets or exact unchanged bootstrap or exact authorized comment target only'
 assert not path.startswith('src/')
 assert not any(x in target.name for x in ['CP5O20', 'LocalDiamond']), 'Frozen target forbidden'
 plan = json.loads((OUT/'shift.json').read_text())

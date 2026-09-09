@@ -1,0 +1,16 @@
+{
+  "time": "2026-09-09T11:05:39.539742+00:00",
+  "boundary": "6dbfd2360319a95ed9bb868485851d554ad0f910",
+  "headAtClosure": "89988d8ebb7b38808ce20ef9e2324f1e437bcdf3",
+  "noFurtherProofAttempts": true,
+  "caps": {
+    "A": 16,
+    "B": 12,
+    "C": 14,
+    "D": 14,
+    "E": 3
+  },
+  "retainedDeclarations": 50,
+  "modules": 17,
+  "exceptions": "Only the frozen exact E predecessor comment repair; no body/type edits. All further compiler invocations V validations only."
+}
