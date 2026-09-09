@@ -118,3 +118,28 @@ selectedCutAtLookup :
 selectedCutAtLookup nameEq keyEq trail entry before after predecessor member split zeros positive Nothing equation = Nothing
 selectedCutAtLookup nameEq keyEq trail entry before after predecessor member split zeros positive (Just observed) equation =
   selectedCutAtPair nameEq keyEq trail entry before after predecessor member split zeros positive observed equation
+
+||| Consume the explicitly observed ACTUAL first-positive search. Earlier
+||| zero distances, catalog split, and positive equation remain in the result.
+public export
+selectedCutAtSearch :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {0 initial, finalState : SystemState name key value world error} ->
+  {0 trace : Transitions initial finalState} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (trail : AvailabilityTrace name key world error value trace) ->
+  (distance : RootCatalogEntry name key world error value -> Nat) ->
+  (items : List (RootCatalogEntry name key world error value)) ->
+  (0 distanceEquation : (\entry => rootDistance nameEq keyEq trail (catalogOrdinal entry)) = distance) ->
+  (0 catalogEquation : scanRootCatalog 0 trail = items) ->
+  (observed : DistanceSearch distance items) ->
+  (0 equation : searchDistance distance items = observed) ->
+  Maybe (SelectedSquareCut name key world error value nameEq keyEq trail)
+selectedCutAtSearch nameEq keyEq trail distance items distanceEquation catalogEquation (AllDistancesZero zeros) equation = Nothing
+selectedCutAtSearch nameEq keyEq trail distance items distanceEquation catalogEquation (FoundFirstPositive entry before after predecessor member split zeros positive) equation =
+  selectedCutAtLookup nameEq keyEq trail entry before after predecessor
+    (replace {p = Elem entry} (sym catalogEquation) member)
+    (trans catalogEquation split)
+    (replace {p = \fn => All (\item => fn item = 0) before} (sym distanceEquation) zeros)
+    (trans (cong (\fn => fn entry) distanceEquation) positive)
+    (head' (drop (pred (catalogOrdinal entry)) (trailSourceActions trail))) Refl
