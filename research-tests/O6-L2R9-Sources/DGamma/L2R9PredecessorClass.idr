@@ -103,3 +103,39 @@ insertAtParent : {name, key, world, error : Type} -> {value : key -> Type} ->
 insertAtParent nameEq root child source component Root = RootInsertPredecessor
 insertAtParent nameEq root child source component (ChildOf parent) =
   insertAtDifference nameEq root child parent source component (decEq @{nameEq} parent root) Refl
+
+||| GENERAL executable source/action classifier, for ALL eight constructors.
+||| This is the named input to the still-missing admitted-move producer.
+||| Retire/Remove preserve the full observed ControlClass; ForeignChildControl
+||| provides exactly CrossChildRetire/CrossChildRemove's native-source data.
+||| Root cases are not relabelled foreign. Local/missing outcomes for arbitrary
+||| inputs still need exclusion from selected native predecessors. No square,
+||| D8 move, phase transport or normalization is asserted by this classifier.
+public export
+classifyPredecessor : {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (root : name) ->
+  (source : SystemState name key value world error) ->
+  (action : Action name key value world error) -> PredecessorClass nameEq root source action
+classifyPredecessor nameEq root source (OInsert child parent component) =
+  insertAtParent nameEq root child source component parent
+classifyPredecessor {name} {key} {world} {error} {value} nameEq root source (ORetire child) =
+  RetirePredecessor (controlAtLookup nameEq root child source
+    (lookupFiber {name} {key} {value} {world} {error} @{nameEq} child (registry source)) Refl)
+classifyPredecessor {name} {key} {world} {error} {value} nameEq root source (ORemove child) =
+  RemovePredecessor (controlAtLookup nameEq root child source
+    (lookupFiber {name} {key} {value} {world} {error} @{nameEq} child (registry source)) Refl)
+classifyPredecessor {name} {key} {world} {error} {value} nameEq root source (LBegin actor) =
+  lifecycleAtDifference nameEq root source (LBegin actor) (isLifecycleAction {name} {key} {value} {world} {error} (LBegin actor)) Refl Refl
+    (decEq @{nameEq} actor root) Refl
+classifyPredecessor {name} {key} {world} {error} {value} nameEq root source (LAdvance actor) =
+  lifecycleAtDifference nameEq root source (LAdvance actor) (isLifecycleAction {name} {key} {value} {world} {error} (LAdvance actor)) Refl Refl
+    (decEq @{nameEq} actor root) Refl
+classifyPredecessor {name} {key} {world} {error} {value} nameEq root source (LDivert actor) =
+  lifecycleAtDifference nameEq root source (LDivert actor) (isLifecycleAction {name} {key} {value} {world} {error} (LDivert actor)) Refl Refl
+    (decEq @{nameEq} actor root) Refl
+classifyPredecessor {name} {key} {world} {error} {value} nameEq root source (LUnload actor) =
+  lifecycleAtDifference nameEq root source (LUnload actor) (isLifecycleAction {name} {key} {value} {world} {error} (LUnload actor)) Refl Refl
+    (decEq @{nameEq} actor root) Refl
+classifyPredecessor {name} {key} {world} {error} {value} nameEq root source (LLeave actor) =
+  lifecycleAtDifference nameEq root source (LLeave actor) (isLifecycleAction {name} {key} {value} {world} {error} (LLeave actor)) Refl Refl
+    (decEq @{nameEq} actor root) Refl
