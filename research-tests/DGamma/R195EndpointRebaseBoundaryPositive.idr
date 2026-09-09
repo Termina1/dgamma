@@ -26,3 +26,14 @@ r195VestigialCurrentCutImpossible =
   o20CutRejectsPresentAbsent r45NameEq (expectedBridgeBijection r193HistoricalSameInputs)
     r193HistoricalClosed r193HistoricalClosed 1 r45ChildRetired
     (fst r193VestigialCurrentPresence) (snd r193VestigialCurrentPresence)
+
+||| A FULL internal history cut exists at the actual two final scanner
+||| environments and the SAME concrete endpoint. The runtime and stamp fields
+||| are produced, not assumed; its internal map is identity, not the current map.
+public export
+0 r195VestigialInternalHistoryCut :
+  O20HistoryCut Nat R45Key Unit String R45Value r45NameEq identityRegistrationGenerationBijection
+    (leftFinalGenerations r193HistoricalTree) (rightFinalGenerations r193HistoricalTree)
+    r193HistoricalClosed r193HistoricalClosed
+r195VestigialInternalHistoryCut =
+  o20IdentityHistoryCut r45NameEq r193HistoricalClosedTrace r193HistoricalTree
