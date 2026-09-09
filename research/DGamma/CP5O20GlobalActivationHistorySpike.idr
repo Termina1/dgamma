@@ -49,3 +49,60 @@ o20OrdinaryIndexKeepsActivationCounts nameEq ordinal (LLeave actor)
   (MkRegistrationIndexState live activations counts deleted) = Refl
 o20OrdinaryIndexKeepsActivationCounts nameEq ordinal (LUnload actor)
   (MkRegistrationIndexState live activations counts deleted) = Refl
+
+||| Exact unilateral native scan WITH its chronological retained-event word.
+||| Every source edge is explicit. Deleted births retain the actual later
+||| closing certificate and consume no event position. This is a derived
+||| projection type, not a new premise/field on any accepted canonical capital.
+||| The corresponding frozen side-scan is private and has no event-word index.
+public export
+data O20NativeActivationScan :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (ordinal : Nat) -> (index : RegistrationIndexState name) ->
+  {first, finalState : SystemState name key value world error} ->
+  (trace : Transitions first finalState) -> (finalIndex : RegistrationIndexState name) ->
+  List (RegistrationEvent name key world error value) -> Type where
+  O20ActivationScanEnd :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {nameEq : DecEq name} -> {ordinal : Nat} -> {index : RegistrationIndexState name} ->
+    {state : SystemState name key value world error} ->
+    O20NativeActivationScan nameEq ordinal index (the (Transitions state state) NoTransitions) index []
+  O20ActivationScanOrdinary :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {nameEq : DecEq name} -> {ordinal : Nat} -> {index, finalIndex : RegistrationIndexState name} ->
+    {first, middle, finalState : SystemState name key value world error} ->
+    {events : List (RegistrationEvent name key world error value)} ->
+    (action : Action name key value world error) -> (edge : Transition first middle) ->
+    (rest : Transitions middle finalState) ->
+    (0 shape : (transitionAction edge = action)) ->
+    (0 ordinary : (isGeneratedRegistrationAction action = False)) ->
+    (0 later : O20NativeActivationScan nameEq (S ordinal)
+      (advanceRegistrationIndex @{nameEq} ordinal action index) rest finalIndex events) ->
+    O20NativeActivationScan nameEq ordinal index (MoreTransitions edge rest) finalIndex events
+  O20ActivationScanDeleted :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {nameEq : DecEq name} -> {ordinal : Nat} -> {index, finalIndex : RegistrationIndexState name} ->
+    {first, middle, finalState : SystemState name key value world error} ->
+    {events : List (RegistrationEvent name key world error value)} ->
+    {child, parent : name} -> {component : Component key value world error} ->
+    (edge : Transition first middle) -> (rest : Transitions middle finalState) ->
+    (0 shape : (transitionAction edge = OInsert child (ChildOf parent) component)) ->
+    (0 deleted : DeletedClosingRegistration
+      (registrationEventAt @{nameEq} ordinal index child parent component) rest) ->
+    (0 later : O20NativeActivationScan nameEq (S ordinal)
+      (advanceDeletedRegistrationIndex @{nameEq} ordinal child parent component index) rest finalIndex events) ->
+    O20NativeActivationScan nameEq ordinal index (MoreTransitions edge rest) finalIndex events
+  O20ActivationScanRetained :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {nameEq : DecEq name} -> {ordinal : Nat} -> {index, finalIndex : RegistrationIndexState name} ->
+    {first, middle, finalState : SystemState name key value world error} ->
+    {events : List (RegistrationEvent name key world error value)} ->
+    {child, parent : name} -> {component : Component key value world error} ->
+    (edge : Transition first middle) -> (rest : Transitions middle finalState) ->
+    (0 shape : (transitionAction edge = OInsert child (ChildOf parent) component)) ->
+    (0 retained : SurvivingRegistration
+      (registrationEventAt @{nameEq} ordinal index child parent component) rest) ->
+    (0 later : O20NativeActivationScan nameEq (S ordinal)
+      (advanceSurvivingRegistrationIndex @{nameEq} ordinal child parent component index) rest finalIndex events) ->
+    O20NativeActivationScan nameEq ordinal index (MoreTransitions edge rest) finalIndex
+      (registrationEventAt @{nameEq} ordinal index child parent component :: events)
