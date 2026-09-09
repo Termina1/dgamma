@@ -32,3 +32,14 @@ record ClassifierCorrespondenceFixtures where
     (barrierForcedTrail forcedClassifierFixtures) (MkRootCatalogEntry 5 4 (smallComponent False))
   0 singleFlagTrue : classifierObserved singleCorrespondence = True
   0 barrierFlagTrue : classifierObserved barrierCorrespondence = True
+
+||| Both flags follow by the GENERAL completeness proof applied to retained
+||| independent KeyForces/OrderForces derivations, not by scalar Refl over a
+||| nested fixture builder. Each observation also contains general soundness.
+public export
+0 classifierCorrespondenceFixtures : ClassifierCorrespondenceFixtures
+classifierCorrespondenceFixtures = MkClassifierCorrespondenceFixtures
+  (observeForcedClassification %search %search (singleForcedTrail forcedClassifierFixtures) (MkRootCatalogEntry 4 3 (smallComponent True)) Here)
+  (observeForcedClassification %search %search (barrierForcedTrail forcedClassifierFixtures) (MkRootCatalogEntry 5 4 (smallComponent False)) (There Here))
+  (classifierComplete (observeForcedClassification %search %search (singleForcedTrail forcedClassifierFixtures) (MkRootCatalogEntry 4 3 (smallComponent True)) Here) (singleClosure forcedClassifierFixtures))
+  (classifierComplete (observeForcedClassification %search %search (barrierForcedTrail forcedClassifierFixtures) (MkRootCatalogEntry 5 4 (smallComponent False)) (There Here)) (barrierClosure forcedClassifierFixtures))
