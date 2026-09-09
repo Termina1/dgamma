@@ -39,3 +39,15 @@ anchorHistoryStep nameEq root anchor AnchorOther prior = prior
 public export
 anchorHistoryCount : {name : Type} -> DecEq name -> name -> Maybe Nat -> List (AnchorEvent name) -> Nat
 anchorHistoryCount nameEq root anchor history = foldr (anchorHistoryStep nameEq root anchor) 0 history
+
+||| One chronological event's contribution to total inversions. Births charge
+||| their own fixed-anchor cost but do NOT alter historical counting context,
+||| so hoisting one root cannot expose a new inversion for a later bundle root.
+public export
+anchorMeasureStep : {name : Type} -> (nameEq : DecEq name) -> AnchorEvent name ->
+  (List (AnchorEvent name) -> Nat) -> List (AnchorEvent name) -> Nat
+anchorMeasureStep nameEq (AnchorBirth root anchor) later history =
+  anchorHistoryCount nameEq root anchor history + later history
+anchorMeasureStep nameEq (AnchorLife actor) later history = later (AnchorLife actor :: history)
+anchorMeasureStep nameEq (AnchorRelease marker) later history = later (AnchorRelease marker :: history)
+anchorMeasureStep nameEq AnchorOther later history = later (AnchorOther :: history)
