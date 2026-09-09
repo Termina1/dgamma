@@ -48,3 +48,25 @@ record AttachedFixtureObservations where
 public export
 0 attachedFixtureObservations : AttachedFixtureObservations
 attachedFixtureObservations = MkAttachedFixtureObservations Refl Refl Refl Refl
+
+||| First non-conditional application of the UNCHANGED zero-gap theorem on
+||| C12. Physical empty-gap/offset are observed fixture data, residual NF is
+||| honestly vacuous; separation is PRODUCED for ALL bundles by localization.
+||| Nonvacuous pre-attachment coverage is separately fixtureRootRegions.
+export
+0 smallGapViaNormalForm :
+  transitionCount (attachedBetweenBlocks
+    (DGamma.L2R3SmallAttached.SmallAttachedBlocks.physicalOrder smallAttachedBlocks)) = 0
+smallGapViaNormalForm = attachedZeroGapInNormalForm
+  (DGamma.L2R3SmallAttached.SmallAttachedBlocks.freeingBlock smallAttachedBlocks)
+  (DGamma.L2R3SmallAttached.SmallAttachedBlocks.followingBlock smallAttachedBlocks)
+  (DGamma.L2R3SmallAttached.SmallAttachedBlocks.physicalOrder smallAttachedBlocks)
+  (NoTransitions {state = smallState 5}) 5
+  (cong transitionCount (sym (smallGapObserved attachedFixtureObservations)))
+  (smallOffsetObserved attachedFixtureObservations)
+  (replace {p = RemainingGapHeadIsRoot %search} (smallGapObserved attachedFixtureObservations)
+    (c12ResidualCovered fixtureCoverage))
+  (replace {p = \gap => AttachedNormalForm Nat Bool Unit String (\key => Unit) %search %search smallTrace gap 5}
+    (smallGapObserved attachedFixtureObservations) (c12ResidualNF fixtureCoverage))
+  (\action, ordinal, member => separateBundleObserved 5 action ordinal member smallNoBundleStraddles
+    (isLTE (bundleOffset member + transitionCount (memberBundle member)) 5))
