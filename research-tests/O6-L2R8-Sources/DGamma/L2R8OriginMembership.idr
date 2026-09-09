@@ -69,3 +69,19 @@ export
 rootOriginCatalogOrdinal nameEq actor cut catalog observed equation ordinal accepted =
   originMaximumMember (map catalogOrdinal (filter (\entry => catalogOrdinal entry <= cut &&
     isYes (decEq @{nameEq} actor (catalogRoot entry))) catalog)) observed equation ordinal accepted
+
+||| Executable origin observation, tied to the ORIGINAL computed catalog.
+||| Its conditional proof is ordinal membership, NOT yet a native birth and
+||| root-identity/maximality decoder or the full rootOriginAt equivalence.
+public export
+record OriginObservation
+  (name, key, world, error : Type) (value : key -> Type) (nameEq : DecEq name)
+  {0 first, finalState : SystemState name key value world error}
+  {0 trace : Transitions first finalState}
+  (trail : AvailabilityTrace name key world error value trace) (actor : name) (cut : Nat) where
+  constructor MkOriginObservation
+  originObserved : Maybe Nat
+  0 originEquation : rootOriginAt nameEq actor cut (scanRootCatalog 0 trail) = originObserved
+  0 originOrdinalMember : (ordinal : Nat) -> originObserved = Just ordinal ->
+    Elem ordinal (map catalogOrdinal (filter (\entry => catalogOrdinal entry <= cut &&
+      isYes (decEq @{nameEq} actor (catalogRoot entry))) (scanRootCatalog 0 trail)))
