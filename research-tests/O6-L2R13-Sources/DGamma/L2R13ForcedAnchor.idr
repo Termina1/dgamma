@@ -15,6 +15,7 @@ import DGamma.L2R6Anchors
 import DGamma.L2R7ObservedAny
 import DGamma.L2R7PlacedCoverage
 import DGamma.L2R12PhaseAccepted
+import Data.Bool
 import Data.List
 import Data.List.Elem
 import Data.Maybe
@@ -50,3 +51,16 @@ export
   not (null (left ++ right)) = (not (null left) || not (null right))
 phaseAppendNonempty [] right = Refl
 phaseAppendNonempty (head :: left) right = Refl
+
+||| Reflect the library concatMap LEFT fold through nonempty observation.
+||| The accumulator remains explicit; append observation is transported.
+export
+0 phaseFlattenNonempty : {a, b : Type} -> (scan : a -> List b) ->
+  (items : List a) -> (accumulator : List b) ->
+  not (null (foldl (\acc, item => acc ++ scan item) accumulator items)) =
+    foldl (\seen, item => seen || not (null (scan item))) (not (null accumulator)) items
+phaseFlattenNonempty scan [] accumulator = Refl
+phaseFlattenNonempty scan (head :: rest) accumulator =
+  trans (phaseFlattenNonempty scan rest (accumulator ++ scan head))
+    (cong (\seen => foldl (\acc, item => acc || not (null (scan item))) seen rest)
+      (phaseAppendNonempty accumulator (scan head)))
