@@ -221,3 +221,24 @@ o20ClosingFreeRejectsCheckedAction name key world error value nameEq keyEq selec
       global earlier tag checked later decomposition aligned empty noClosing
       (fst (lUnloadBoundary nameEq keyEq selected before afterState tag
         (checkedActionProjects nameEq keyEq (LUnload selected) before afterState tag checked)))
+
+||| Alignment at the actual split exposes its native checked dictionary and
+||| action. Only this aligned head is eliminated; the source trace is fixed.
+export
+0 o20ClosingFreeRejectsAlignedUnload :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  {initial, before, afterState, finalState : SystemState name key value world error} ->
+  (global : Transitions initial finalState) -> (earlier : Transitions initial before) ->
+  (step : Transition before afterState) -> (later : Transitions afterState finalState) ->
+  (appendTransitions earlier (MoreTransitions step later) = global) ->
+  AlignedTransitions name key world error value nameEq keyEq global ->
+  (bindings (registry initial) = []) ->
+  NoClosingEpisodes name key world error value nameEq keyEq global ->
+  (transitionAction step = LUnload selected) ->
+  AlignedTransitions name key world error value nameEq keyEq (MoreTransitions step later) -> Void
+o20ClosingFreeRejectsAlignedUnload name key world error value nameEq keyEq selected
+  global earlier _ _ decomposition aligned empty noClosing actionExact
+  (AlignedStep action tag checked rest alignedRest) =
+    o20ClosingFreeRejectsCheckedAction name key world error value nameEq keyEq selected
+      global earlier action tag checked rest decomposition aligned empty noClosing actionExact
