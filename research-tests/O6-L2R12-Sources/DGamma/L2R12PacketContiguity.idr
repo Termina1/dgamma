@@ -100,3 +100,20 @@ record PacketContiguityResult
   0 packetNewCount : transitionCount (nativeCore packetRestoredCore) = 5
   0 packetCorePosition : transitionCount (beforeCore packetRestoredCore) = S (transitionCount (beforeCore packetOriginalCore))
   0 packetWholeEndpoints : RegistryExtensional Nat Bool Unit String (\key => Unit) (fst fixtureDictionaries) oldFinal newFinal
+
+||| Produce a physically located extended core FROM an arbitrary native
+||| packet and actual surrounding traces. Grammar is derived by assembly.
+export
+0 locatePacketCore :
+  (states : Nat -> SystemState Nat Bool (\key => Unit) Unit String) ->
+  {initial, finalState : SystemState Nat Bool (\key => Unit) Unit String} ->
+  (packet : CoreNativePacket states) ->
+  (before : Transitions initial (states 0)) -> (after : Transitions (states 5) finalState) ->
+  (beforeTrail : AvailabilityTrace Nat Bool Unit String (\key => Unit) before) ->
+  (afterTrail : AvailabilityTrace Nat Bool Unit String (\key => Unit) after) ->
+  LocatedExtendedCore Nat Bool Unit String (\key => Unit) (fst fixtureDictionaries) 2
+    (appendTransitions before (appendTransitions (assembledTrace (assembleCoreNative states packet)) after))
+locatePacketCore states packet before after beforeTrail afterTrail =
+  MkLocatedExtendedCore (states 0) (states 5) before (assembledTrace (assembleCoreNative states packet)) after
+    beforeTrail (assembledTrail (assembleCoreNative states packet)) afterTrail
+    (assembledActorOnly (assembleCoreNative states packet)) Refl
