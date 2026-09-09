@@ -104,3 +104,13 @@ o20IdentityHistoryCut {name} {key} {world} {error} {value} {finalState} nameEq t
     (\selected, stamp, found => sym (cong generationName (currentBirthStampExact
       (acceptedRightCurrentBirth name key world error value nameEq trace trace identityRegistrationGenerationBijection
         registrations selected stamp found))))
+
+||| Exact Maybe-fiber renaming never relates a present fiber to absence.
+||| A full vestigial packet is a different relation, not this constructor.
+export
+0 o20PresentAbsentImpossible :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {renaming : NameBijection name} -> {fiber : Fiber name key value world error} ->
+  MaybeFiberRelatedBy renaming (Just fiber) Nothing -> Void
+o20PresentAbsentImpossible RenamedAbsent impossible
+o20PresentAbsentImpossible (RenamedPresent related) impossible
