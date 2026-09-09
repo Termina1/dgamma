@@ -1,0 +1,111 @@
+{
+  "timestampUTC": "2026-09-09T20:06:53.790398+00:00",
+  "sourceBoundary": "a33379be402dc6027d584ac147039bb8864a9e93",
+  "mode": "UNCHANGED one-target fresh validations only, dependency order, detached monitored seeded runner,18GiB light guard; V0 was the earlier authorized C8 visibility companion",
+  "validations": [
+    {
+      "unit": "V1",
+      "path": "research-tests/O6-L2R14-Sources/DGamma/L2R14CatalogQuery.idr",
+      "sourceSHA256": "5042e40e8f735936fbd55cde56f42559b0de457ea92690fda061339cefba1ea7",
+      "directOwnDependencies": []
+    },
+    {
+      "unit": "V2",
+      "path": "research-tests/O6-L2R14-Sources/DGamma/L2R14IterationFromMoves.idr",
+      "sourceSHA256": "5bb5fc1b4436efd42b524df2f0e5c8b9088860cdb9e38c7a97f2af84c69e21a8",
+      "directOwnDependencies": []
+    },
+    {
+      "unit": "V3",
+      "path": "research-tests/O6-L2R14-Sources/DGamma/L2R14LocalOperations.idr",
+      "sourceSHA256": "9e5dda2f2262af995360370964649c4bdfc4dc738455996954118f257ebb4346",
+      "directOwnDependencies": []
+    },
+    {
+      "unit": "V4",
+      "path": "research-tests/O6-L2R14-Sources/DGamma/L2R14PhaseSeed.idr",
+      "sourceSHA256": "0923f629a260717a27716f6dee6306731ac4dee2ba338048c15047f3d710d052",
+      "directOwnDependencies": []
+    },
+    {
+      "unit": "V5",
+      "path": "research-tests/O6-L2R14-Sources/DGamma/L2R14ActionShapes.idr",
+      "sourceSHA256": "0461386637f46f1b6f9a3f78bbf90d6f1dfa611bcd57849f117f900913ea5aa5",
+      "directOwnDependencies": [
+        "research-tests/O6-L2R14-Sources/DGamma/L2R14LocalOperations.idr"
+      ]
+    },
+    {
+      "unit": "V6",
+      "path": "research-tests/O6-L2R14-Sources/DGamma/L2R14AdjacentNative.idr",
+      "sourceSHA256": "c9264aa2a60fb2dd68d7fd56f3e44e5316989d450ccd7b81c5d8cc295258b4cf",
+      "directOwnDependencies": [
+        "research-tests/O6-L2R14-Sources/DGamma/L2R14CatalogQuery.idr"
+      ]
+    },
+    {
+      "unit": "V7",
+      "path": "research-tests/O6-L2R14-Sources/DGamma/L2R14IterationFixtures.idr",
+      "sourceSHA256": "381de455ec190cbf990087ddc12ad9d2e7b7c98cfc79fe246d218f37437bcfd8",
+      "directOwnDependencies": [
+        "research-tests/O6-L2R14-Sources/DGamma/L2R14IterationFromMoves.idr"
+      ]
+    },
+    {
+      "unit": "V8",
+      "path": "research-tests/O6-L2R14-Sources/DGamma/L2R14PhaseRelease.idr",
+      "sourceSHA256": "156f84c1839ecb85b2fd9b6e98b5545c5989550b1892a4fcbd83dbb30ecdcc0e",
+      "directOwnDependencies": [
+        "research-tests/O6-L2R14-Sources/DGamma/L2R14PhaseSeed.idr"
+      ]
+    },
+    {
+      "unit": "V9",
+      "path": "research-tests/O6-L2R14-Sources/DGamma/L2R14CoreShapeFold.idr",
+      "sourceSHA256": "d80be9aeeaef5ea40502d4bedf1c3f2e7445cac36fb60f5af3ac340184241991",
+      "directOwnDependencies": [
+        "research-tests/O6-L2R14-Sources/DGamma/L2R14LocalOperations.idr",
+        "research-tests/O6-L2R14-Sources/DGamma/L2R14ActionShapes.idr"
+      ]
+    },
+    {
+      "unit": "V10",
+      "path": "research-tests/O6-L2R14-Sources/DGamma/L2R14LocalShapeFixture.idr",
+      "sourceSHA256": "f01210242bc981d72c7c06ad086d372b5623c4a9e61ef08a7f5d7a2045c9446c",
+      "directOwnDependencies": [
+        "research-tests/O6-L2R14-Sources/DGamma/L2R14LocalOperations.idr",
+        "research-tests/O6-L2R14-Sources/DGamma/L2R14ActionShapes.idr"
+      ]
+    },
+    {
+      "unit": "V11",
+      "path": "research-tests/O6-L2R14-Sources/DGamma/L2R14PhaseOrigins.idr",
+      "sourceSHA256": "01d3da3a7ba2ce9b6f8e8b6d10a374b2c1d10f90e1bae897a4144c059ce2e4ff",
+      "directOwnDependencies": [
+        "research-tests/O6-L2R14-Sources/DGamma/L2R14PhaseSeed.idr",
+        "research-tests/O6-L2R14-Sources/DGamma/L2R14PhaseRelease.idr"
+      ]
+    },
+    {
+      "unit": "V12",
+      "path": "research-tests/O6-L2R14-Sources/DGamma/L2R14LocalSquareProduction.idr",
+      "sourceSHA256": "f0b7fbb9590ca476c04dd72d5f860593198f31d9c482355e5e6924357787569c",
+      "directOwnDependencies": [
+        "research-tests/O6-L2R14-Sources/DGamma/L2R14LocalOperations.idr",
+        "research-tests/O6-L2R14-Sources/DGamma/L2R14ActionShapes.idr",
+        "research-tests/O6-L2R14-Sources/DGamma/L2R14CoreShapeFold.idr"
+      ]
+    },
+    {
+      "unit": "V13",
+      "path": "research-tests/O6-L2R14-Sources/DGamma/L2R14LocalSquareFixture.idr",
+      "sourceSHA256": "f9f2db6b744e0c0923bea2bf0fa70cc65f8303a11d4b260c69cf773a352e8ca1",
+      "directOwnDependencies": [
+        "research-tests/O6-L2R14-Sources/DGamma/L2R14LocalOperations.idr",
+        "research-tests/O6-L2R14-Sources/DGamma/L2R14ActionShapes.idr",
+        "research-tests/O6-L2R14-Sources/DGamma/L2R14LocalShapeFixture.idr",
+        "research-tests/O6-L2R14-Sources/DGamma/L2R14LocalSquareProduction.idr"
+      ]
+    }
+  ]
+}
