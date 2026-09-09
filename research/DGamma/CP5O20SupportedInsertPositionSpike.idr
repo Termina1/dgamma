@@ -40,3 +40,24 @@ record O20SupportedInsertPositionPair
   0 positionEventMatch : RegistrationEventMatch mapping positionLeftEvent positionRightEvent
   0 positionMappedStamp : (generationForward mapping stamp = eventChildGeneration positionRightEvent)
   0 positionEqual : (eventChildPosition positionLeftEvent = eventChildPosition positionRightEvent)
+
+||| Consume the authentic matcher's opposite event once. Its retained domain
+||| supplies that very event's native birth; its match supplies position and
+||| generation equations at the same original source stamp.
+export
+0 o20InsertPositionAtMatchedPacket :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {leftFirst, leftFinal, rightFirst, rightFinal : SystemState name key value world error} ->
+  {left : Transitions leftFirst leftFinal} -> {right : Transitions rightFirst rightFinal} ->
+  (mapping : RegistrationGenerationBijection name) ->
+  (matching : AuthenticatedRegistrationMatching name key world error value mapping left right) ->
+  (stamp : RegistrationGeneration name) -> (event : RegistrationEvent name key world error value) ->
+  ScannedRegistrationBirth name key world error value Z left event ->
+  (eventChildGeneration event = stamp) ->
+  (opposite : RegistrationEvent name key world error value **
+    (Elem opposite (rightScannedEvents matching), RegistrationEventMatch mapping event opposite)) ->
+  O20SupportedInsertPositionPair name key world error value mapping left right stamp
+o20InsertPositionAtMatchedPacket mapping matching stamp event birth exact (opposite ** (retained, matched)) =
+  MkO20SupportedInsertPositionPair event opposite birth (rightScannedBirths matching opposite retained) exact matched
+    (trans (cong (generationForward mapping) (sym exact)) (matchedChildGeneration matched))
+    (matchedPerActivationPosition matched)
