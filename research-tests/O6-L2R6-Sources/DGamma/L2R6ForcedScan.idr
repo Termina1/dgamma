@@ -32,3 +32,19 @@ foundChildOverlap : {name, key, world, error : Type} -> {value : key -> Type} ->
 foundChildOverlap keyEq root Nothing = False
 foundChildOverlap keyEq root (Just fiber) =
   childDeclaredOverlap keyEq root (fiberParent fiber) (fiberComponent fiber)
+
+||| Only an actual ORemove of an installed child sharing a declared key is a
+||| release. The native transition supplies the source; other tags reject.
+public export
+ownChildReleaseStep : {name, key, world, error : Type} -> {value : key -> Type} ->
+  DecEq name -> DecEq key -> Component key value world error ->
+  SystemState name key value world error -> Action name key value world error -> Bool
+ownChildReleaseStep nameEq keyEq root source (OInsert actor parent component) = False
+ownChildReleaseStep nameEq keyEq root source (ORetire actor) = False
+ownChildReleaseStep {name} {key} {world} {error} {value} nameEq keyEq root source (ORemove child) =
+  foundChildOverlap keyEq root (lookupFiber {name} {key} {value} {world} {error} @{nameEq} child (registry source))
+ownChildReleaseStep nameEq keyEq root source (LBegin actor) = False
+ownChildReleaseStep nameEq keyEq root source (LAdvance actor) = False
+ownChildReleaseStep nameEq keyEq root source (LDivert actor) = False
+ownChildReleaseStep nameEq keyEq root source (LUnload actor) = False
+ownChildReleaseStep nameEq keyEq root source (LLeave actor) = False
