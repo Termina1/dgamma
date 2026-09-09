@@ -42,3 +42,14 @@ distanceSearchAtValue : {a : Type} -> (distance : a -> Nat) ->
 distanceSearchAtValue distance head items Z equation tail = distanceSearchThere head equation tail
 distanceSearchAtValue distance head items (S predecessor) equation tail =
   FoundFirstPositive head [] items predecessor Here Refl [] equation
+
+||| GENERAL executable first-positive search, in supplied list order.
+||| Instantiating distance with rootDistance and items with scanRootCatalog
+||| preserves orchestration order. Key-forcing and native swap construction
+||| remain separate obligations: this producer does not claim either.
+public export
+searchDistance : {a : Type} -> (distance : a -> Nat) ->
+  (items : List a) -> DistanceSearch distance items
+searchDistance distance [] = AllDistancesZero []
+searchDistance distance (head :: items) =
+  distanceSearchAtValue distance head items (distance head) Refl (searchDistance distance items)
