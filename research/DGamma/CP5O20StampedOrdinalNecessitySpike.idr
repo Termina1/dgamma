@@ -153,3 +153,17 @@ export
 o20SynchronizationForwardOrdinalFixed mapping synchronization selected stamp found =
   o20StampedHistoryForwardOrdinalFixed (synchronizationStages synchronization) Refl
     (\query, candidate, absent => void (nothingIsNotJust absent)) selected stamp found
+
+||| Erased deterministic final live environment of one supplied native word.
+||| This observes actions, starting ordinal and live table; no trace certificate
+||| equality or endpoint reconstruction is used.
+public export
+0 o20ScannedFinalLive :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {0 first, finalState : SystemState name key value world error} ->
+  (nameEq : DecEq name) -> (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  (trace : Transitions first finalState) -> GenerationEnvironment name
+o20ScannedFinalLive nameEq ordinal live NoTransitions = live
+o20ScannedFinalLive nameEq ordinal live (MoreTransitions transition rest) =
+  o20ScannedFinalLive nameEq (S ordinal)
+    (advanceGenerationEnvironment @{nameEq} ordinal (transitionAction transition) live) rest
