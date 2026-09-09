@@ -37,3 +37,9 @@ export
   (right : Nat) -> (0 accepted : (S left == right) = True) -> S left = right
 phaseNatSuccessor left recursive Z accepted = absurd accepted
 phaseNatSuccessor left recursive (S right) accepted = cong S (recursive right accepted)
+
+||| Reflect the exact Nat equality used inside keyForcedOrdinal.
+export
+0 phaseNatEqual : (left, right : Nat) -> (0 accepted : (left == right) = True) -> left = right
+phaseNatEqual Z right accepted = phaseNatZero right accepted
+phaseNatEqual (S left) right accepted = phaseNatSuccessor left (\other, equal => phaseNatEqual left other equal) right accepted
