@@ -94,3 +94,30 @@ rootHeadCannotBeBundled offset remaining member separated =
     (replace {p = \n => LTE (bundleOffset member) n} (plusZeroRightNeutral offset) (memberLowerBound member))
     (replace {p = \n => LT n (bundleOffset member + transitionCount (memberBundle member))}
       (plusZeroRightNeutral offset) (memberUpperBound member)) separated
+
+||| Conditional zero gap from residual-root-head coverage, attached-normal-form
+||| membership, and physical separation of bundles from this gap. Separation is
+||| an explicit decomposition obligation: attachment grammar alone supplies no
+||| maximal nonoverlapping schedule. No NoRootOrchestration input is used.
+export
+0 attachedGapCount :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {initial, finalState, gapFirst, gapFinal : SystemState name key value world error} ->
+  {global : Transitions initial finalState} ->
+  (gap : Transitions gapFirst gapFinal) -> (offset : Nat) ->
+  (0 covered : RemainingGapHeadIsRoot nameEq gap) ->
+  (0 normal : AttachedNormalForm name key world error value nameEq keyEq global gap offset) ->
+  (0 separated : (action : Action name key value world error) -> (ordinal : Nat) ->
+    (member : AttachedBundleOccurrence name key world error value nameEq keyEq global action ordinal) ->
+    Either (LTE (bundleOffset member + transitionCount (memberBundle member)) offset)
+      (LTE (offset + transitionCount gap) (bundleOffset member))) ->
+  transitionCount gap = 0
+attachedGapCount NoTransitions offset covered normal separated = Refl
+attachedGapCount {gapFirst} {gapFinal} (MoreTransitions {middle} step rest) offset covered normal separated =
+  void (rootHeadCannotBeBundled offset (transitionCount rest)
+    (rootInBundle normal (transitionAction step)
+      (MkLocatedActionOccurrence gapFirst middle NoTransitions step rest Refl Refl) covered)
+    (separated (transitionAction step) (offset + 0)
+      (rootInBundle normal (transitionAction step)
+        (MkLocatedActionOccurrence gapFirst middle NoTransitions step rest Refl Refl) covered)))
