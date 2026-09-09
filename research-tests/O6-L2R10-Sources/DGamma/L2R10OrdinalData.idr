@@ -31,3 +31,19 @@ import Decidable.Decidable
 public export
 fixtureDictionaries : (DecEq Nat, DecEq Bool)
 fixtureDictionaries = (the (DecEq Nat) %search, the (DecEq Bool) %search)
+
+||| NEW data agreement: explicit concrete dictionary VALUES at every scan,
+||| explicit List functor, and defining Prelude/data/fixture modules imported.
+||| Both omega scans and unchanged bounded scans compute [3]. This does not
+||| restate the exhausted OrdinalFixtures constructor or claim general phases.
+export
+0 ordinalDataAgreement :
+  (releaseOrdinalScan (fst fixtureDictionaries) (snd fixtureDictionaries)
+     (smallComponent True) (fst ordinalFixtureTrails) = Prelude.map {f = List} S [2],
+   releaseOrdinalScan (fst fixtureDictionaries) (snd fixtureDictionaries)
+     (smallComponent True) (snd ordinalFixtureTrails) = Prelude.map {f = List} S [2],
+   scanReleaseOrdinals (fst fixtureDictionaries) (snd fixtureDictionaries)
+     (smallComponent True) 0 4 (fst ordinalFixtureTrails) = Prelude.map {f = List} S [2],
+   scanReleaseOrdinals (fst fixtureDictionaries) (snd fixtureDictionaries)
+     (smallComponent True) 0 4 (snd ordinalFixtureTrails) = Prelude.map {f = List} S [2])
+ordinalDataAgreement = (Refl, Refl, Refl, Refl)
