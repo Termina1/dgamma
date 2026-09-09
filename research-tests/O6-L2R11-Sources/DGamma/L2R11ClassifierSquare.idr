@@ -75,3 +75,40 @@ export
 originalRetireSnapshot nameEq keyEq child fiber before afterState found valid original =
   cong runtimeSnapshot (cong snd (justInjective (trans (sym original)
     (childRetireAtFound nameEq keyEq child fiber before found valid))))
+
+||| GENUINE foreign-own-child Retire/root local square. The source-aware
+||| classifier facts and original pair authenticate the crossing. Only early
+||| root applicability is additionally required (the selected request observes
+||| it); the late Retire and extensional endpoint are PRODUCED, not assumed.
+export
+0 produceRetireClassifierSquare : {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (child, parent, root : name) ->
+  (fiber : Fiber name key value world error) -> (component : Component key value world error) ->
+  (before, retiredState, oldFinal, earlyRoot : SystemState name key value world error) ->
+  (0 found : lookupFiber {name} {key} {value} {world} {error} @{nameEq} child (registry before) = Just fiber) ->
+  (0 ownChild : fiberParent fiber = ChildOf parent) ->
+  (0 parentForeign : Not (parent = root)) -> (0 childDifferent : Not (child = root)) ->
+  (0 valid : registryWellFormed @{nameEq} @{keyEq} before = True) ->
+  (0 retired : checkedApplyAction @{nameEq} @{keyEq} (ORetire child) before = Just (ORetireTag, retiredState)) ->
+  (0 oldRoot : checkedApplyAction @{nameEq} @{keyEq} (OInsert root Root component) retiredState = Just (OInsertTag, oldFinal)) ->
+  (0 early : checkedApplyAction @{nameEq} @{keyEq} (OInsert root Root component) before = Just (OInsertTag, earlyRoot)) ->
+  ClassifierSquare name key world error value nameEq keyEq root component before (ORetire child) ORetireTag oldFinal
+produceRetireClassifierSquare nameEq keyEq child parent root fiber component before retiredState oldFinal earlyRoot
+  found ownChild parentForeign childDifferent valid retired oldRoot early =
+  MkClassifierSquare earlyRoot
+    (MkSystemState (worldState earlyRoot) (replaceBinding @{nameEq} child (retireFiber fiber) (registry earlyRoot)))
+    early
+    (childRetireAtFound nameEq keyEq child fiber earlyRoot
+      (trans (childForeignLookupFrame nameEq keyEq child (OInsert root Root component) OInsertTag early childDifferent) found)
+      (checkedActionTargetValid nameEq keyEq (OInsert root Root component) before earlyRoot OInsertTag early))
+    (CrossChildRetire fiber found ownChild parentForeign)
+    (checkedRootCurrentAvailable nameEq keyEq root component before earlyRoot OInsertTag early)
+    (snapshotIntoExtensional nameEq oldFinal
+      (MkSystemState (worldState earlyRoot) (replaceBinding @{nameEq} child (retireFiber fiber) (registry earlyRoot)))
+      (snapshotPacketMatches nameEq keyEq (OInsert root Root component) OInsertTag retiredState oldFinal
+        (runtimeSnapshot (MkSystemState (worldState earlyRoot) (replaceBinding @{nameEq} child (retireFiber fiber) (registry earlyRoot))))
+        oldRoot
+        (replayInsertAfterRetirement nameEq keyEq child root Root fiber component before earlyRoot retiredState OInsertTag
+          early childDifferent found valid
+          (checkedActionTargetValid nameEq keyEq (ORetire child) before retiredState ORetireTag retired)
+          (originalRetireSnapshot nameEq keyEq child fiber before retiredState found valid retired))))
