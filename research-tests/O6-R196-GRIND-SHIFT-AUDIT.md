@@ -220,3 +220,18 @@ paths remain explicitly stale/notchecked. Lane2 lifecycle-replay note is ONLY
 a future main candidate: "observed retired-head guard at the source". No lane2
 new-result certification or worktree/source operation. D1/D2 used; D4 reserved
 for the owner gate note. Owner final gate and parent-owned reviewer pending.
+
+
+## R196 owner FINAL gate — checked PARTIAL ratified
+
+Verbatim supervisor ruling after committed794719a5 and strict post-publication
+read-only frozen/independent/archive PASS verification:
+
+> R196 FINAL GATE RULING: ACCEPTED — checked PARTIAL milestone RATIFIED at 794719a5 (root-contract + exact root-law consumer milestone COMPLETE); artifact-only D4 gate note and clean close PERMITTED; no need to stay active to the boundary. Supervisor verified independently: HEAD 794719a5, 16 commits over 58f88c63, clean tree (baseline untracked only), production diff vs 34b21c9 empty, LocalDiamond SHA 9f921617… and DeletionChain SHA 91e8fd29… (new frozen baselines) confirmed by direct hashing, O19Surface/CrossTrace/RenamingComposition/CanonicalSort byte-identical to 58f88c63, independent census 4 = 1/2/0/0/1, 21 R196 artifacts, pushed. Accepted as stated: A (helper + two erased root-law fields + fixture fill; exact approved diffs; O19 body / adjacentSwapSuffixSpike hashes unchanged), B (import-closed 133/133 + second window 127/127; 135 applicable modules + package; 100 unclassified + 11 legacy stale by path; B6 42.7 GiB datum; no resource stops), C (C6 exact canonical law, C7/C8 operational fold + composition, C9 exact permuted composition — no root-law premise; whole paired fold not attempted), D docs, resource/lock audit. The two observed idris2 processes are lane 2's / wrappers (separate worktree). Independent reviewer is being launched now. Stand down cleanly after the note.
+
+This is the permitted D4 ARTIFACT-ONLY gate note. No further Idris/proof-source
+or compiler work followed the ruling. A/C caps remain binding; whole paired
+fold and endpoint bridge remain open. The archive stays pinned to1fd9bbcb and
+does not claim its own/later artifact receipts. Parent-owned independent review
+is pending; owner ratification is not reviewer acceptance or Theorem73 closure.
+D4/4 used. Clean close is expressly authorized before the four-hour boundary.
