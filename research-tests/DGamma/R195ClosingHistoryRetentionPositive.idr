@@ -48,3 +48,13 @@ r195ActualClosingDisposition = MkDeletedClosingRegistration
         (MoreTransitions r193HistoricalLeave (MoreTransitions r193HistoricalUnload NoTransitions))
         (ActionOccursLater r193HistoricalLeave (MoreTransitions r193HistoricalUnload NoTransitions)
           (ActionOccursHere r193HistoricalUnload NoTransitions Refl)))))
+
+||| Generation-only retention of the genuine PRESENT vestigial child. The
+||| unchanged accepted current map sends child1 to absent2; no right raw-name
+||| birth or current-name match is asserted by this closing constructor.
+public export
+0 r195ClosingHistoryRetained :
+  O20GenerationOnlyDisposition Nat R45Key Unit String R45Value identityRegistrationGenerationBijection
+    r193HistoricalClosedTrace r193HistoricalClosedTrace (MkRegistrationGeneration 1 2)
+r195ClosingHistoryRetained = O20OriginalClosingBirth r195ClosingEvent
+  r195ClosingScannedBirth Refl r195ActualClosingDisposition
