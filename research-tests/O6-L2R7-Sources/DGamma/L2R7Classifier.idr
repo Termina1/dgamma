@@ -112,3 +112,13 @@ record ForcedSeedBasis (rootInput, keyForced : Nat -> Type) (target : Nat) where
   0 basisRoot : rootInput basisOrdinal
   0 basisKey : keyForced basisOrdinal
   0 basisBefore : LTE basisOrdinal target
+
+||| Structural induction on the independent least family produces its seed.
+export
+0 forcedSeedBasis : {rootInput, keyForced : Nat -> Type} -> {ordinal : Nat} ->
+  ForcedRootInput rootInput keyForced ordinal -> ForcedSeedBasis rootInput keyForced ordinal
+forcedSeedBasis (KeyForces {ordinal} root released) = MkForcedSeedBasis ordinal root released reflexive
+forcedSeedBasis (OrderForces prior root ordered) = MkForcedSeedBasis
+  (basisOrdinal (forcedSeedBasis prior)) (basisRoot (forcedSeedBasis prior))
+  (basisKey (forcedSeedBasis prior))
+  (transitive (basisBefore (forcedSeedBasis prior)) (lteSuccLeft ordered))
