@@ -83,3 +83,19 @@ barrierRootPhaseDecoded = MkForcedRootPhase
   smallRelease (LAdvance 0) phaseFixtureLife True Refl Refl
   (phaseLifeOwnerDecoded (fst fixtureDictionaries) 0 (smallState 1) (LAdvance 0) Refl Refl)
   (LTESucc LTEZero) Refl Refl (LTESucc (LTESucc (LTESucc (LTESucc LTEZero))))
+
+||| Concrete ForcedRootPhase FROM native fragment, release and phase owner
+||| decoder. Every seed/anchor/count fact computes on explicit fixture data.
+||| This is a fixed certificate, not the general acceptance-to-phase producer.
+export
+0 barrierSuccessorPhaseDecoded : ForcedRootPhase Nat Bool Unit String (\key => Unit)
+  (fst fixtureDictionaries) (snd fixtureDictionaries) (snd ordinalFixtureTrails) (MkRootCatalogEntry 5 4 (smallComponent False))
+barrierSuccessorPhaseDecoded = MkForcedRootPhase
+  (MkRootCatalogEntry 4 3 (smallComponent True)) Here (LTESucc (LTESucc (LTESucc (LTESucc LTEZero)))) Refl
+  0 (smallState 1) (smallState 4)
+  (MoreTransitions (Fired {before = smallState 0} {afterState = smallState 1} (fst fixtureDictionaries) (snd fixtureDictionaries) (LBegin 0) LBeginTag (smallBegin0 smallNativeExecution)) NoTransitions) (fst phaseFixtureCore) (MoreTransitions (Fired {before = smallState 4} {afterState = smallState 5} (fst fixtureDictionaries) (snd fixtureDictionaries) (OInsert 3 Root (smallComponent True)) OInsertTag (smallInsert3 smallNativeExecution)) (MoreTransitions (Fired {before = barrierState 5} {afterState = barrierState 6} (fst fixtureDictionaries) (snd fixtureDictionaries) (OInsert 4 Root (smallComponent False)) OInsertTag (insertS barrierNativeExecution)) (MoreTransitions (Fired {before = barrierState 6} {afterState = barrierState 7} (fst fixtureDictionaries) (snd fixtureDictionaries) (LBegin 2) LBeginTag (beginFollowing barrierNativeExecution)) (MoreTransitions (Fired {before = barrierState 7} {afterState = barrierState 8} (fst fixtureDictionaries) (snd fixtureDictionaries) (LAdvance 2) LFinishTag (finishFollowing barrierNativeExecution)) NoTransitions))))
+  (phaseEventsExtended (fst fixtureDictionaries) 0 (snd phaseFixtureCore)
+    [Refl, Refl, Refl]) Refl
+  smallRelease (LAdvance 0) phaseFixtureLife True Refl Refl
+  (phaseLifeOwnerDecoded (fst fixtureDictionaries) 0 (smallState 1) (LAdvance 0) Refl Refl)
+  (LTESucc LTEZero) Refl Refl (LTESucc (LTESucc (LTESucc (LTESucc LTEZero))))
