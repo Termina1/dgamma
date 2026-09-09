@@ -37,3 +37,26 @@ export
   FiberControlMaybeRelated (the (Maybe (Fiber name key value world error)) Nothing) observed ->
   (observed = Nothing)
 o20AbsentControlTarget NoControlFibers = Refl
+
+||| Exact one-name ORIGINAL->canonical control alternatives at observed
+||| MaybeFiber values. Withdrawn means actual canonical Nothing; kept means
+||| complete identity-name control (including absent/absent), not presence.
+||| Neither alternative equates unsupportedness with withdrawal/vestigiality.
+public export
+data O20CanonicalControlDisposition :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (selected : name) -> (withdrawn : List name) ->
+  (original, canonical : Maybe (Fiber name key value world error)) -> Type where
+  CanonicalControlWithdrawn :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {selected : name} -> {withdrawn : List name} ->
+    {original, canonical : Maybe (Fiber name key value world error)} ->
+    (0 member : Elem selected withdrawn) -> (0 absent : (canonical = Nothing)) ->
+    O20CanonicalControlDisposition selected withdrawn original canonical
+  CanonicalControlKept :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {selected : name} -> {withdrawn : List name} ->
+    {original, canonical : Maybe (Fiber name key value world error)} ->
+    (0 outside : Not (Elem selected withdrawn)) ->
+    (0 controls : FiberControlMaybeRelated original canonical) ->
+    O20CanonicalControlDisposition selected withdrawn original canonical
