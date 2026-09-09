@@ -57,7 +57,8 @@ nativePairTrail nameEq keyEq first middle last leftAction rightAction leftTag ri
 ||| This local theorem has NO suffix. It is not GeneralAdmittedMoveExistence:
 ||| phase/NeverRetired/uniqueness and global frame existence remain its domain
 ||| obligations; none is silently dropped from that unchanged global type.
-export
+||| Public because downstream consumers reduce its computed record fields.
+public export
 0 terminalSquareAdmittedMove : {name, key, world, error : Type} -> {value : key -> Type} ->
   {initial : SystemState name key value world error} ->
   (nameEq : DecEq name) -> (keyEq : DecEq key) -> (root : name) ->
