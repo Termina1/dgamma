@@ -60,3 +60,17 @@ o20SelectedCenterBirthContradictsNonselection trace candidate generation classif
     (trans (sym exact) (deletedOccurrenceGeneration classified))
     (snd (selectedRegisteredDuring candidate) (generationName generation)
       (deletedComponent classified) centerBirth))
+
+||| Rebase a physical suffix observation by the ACTUAL preceding trace count.
+||| This equality is needed when a birth-relative index enters the whole scan.
+export
+0 o20ClosingActionAtAppend :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (earlier : Transitions first middle) -> (later : Transitions middle finalState) ->
+  (ordinal : Nat) ->
+  (rawClosingActionAt name key world error value (transitionCount earlier + ordinal)
+    (appendTransitions earlier later) = rawClosingActionAt name key world error value ordinal later)
+o20ClosingActionAtAppend name key world error value NoTransitions later ordinal = Refl
+o20ClosingActionAtAppend name key world error value (MoreTransitions step rest) later ordinal =
+  o20ClosingActionAtAppend name key world error value rest later ordinal
