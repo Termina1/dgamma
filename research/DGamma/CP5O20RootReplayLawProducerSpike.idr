@@ -69,3 +69,27 @@ export
 o20DeletionProducerRootReplayOrdinals trace premises candidate result capital =
   MkO20RootReplayOrdinals
     (deletionBuiltRootOrdinalPreserved trace premises candidate result capital)
+
+||| Transport the built root law along the step's OWN stored correspondence
+||| exactness equation; no equality between independently rebuilt maps is input.
+export
+0 o20DeletionStepRootReplayOrdinals :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {protocol : RegistrationProtocol key value world error} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {initial, finalState : SystemState name key value world error} ->
+  (trace : Transitions initial finalState) ->
+  (premises : CanonicalizationPremises name key world error value protocol
+    nameEq keyEq trace) ->
+  (candidate : DeletableClosingEpisode name key world error value nameEq keyEq trace) ->
+  (step : DeletionChainStep name key world error value protocol nameEq keyEq
+    trace premises candidate) ->
+  O20RootReplayOrdinals name key world error value
+    (deletionOccurrenceCorrespondence step)
+o20DeletionStepRootReplayOrdinals {name} {key} {world} {error} {value}
+  trace premises candidate step =
+  replace {p = \correspondence =>
+    O20RootReplayOrdinals name key world error value correspondence}
+    (sym (deletionOccurrenceCorrespondenceExact step))
+    (o20DeletionProducerRootReplayOrdinals trace premises candidate
+      (deletionResult step) (deletionProducerCapital step))
