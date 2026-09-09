@@ -3,6 +3,7 @@ module DGamma.CP5O20ActivationPositionStepSpike
 import DGamma.Calculus
 import DGamma.Metatheory
 import DGamma.CP3
+import Prelude.Types
 import Data.List
 import Data.Maybe
 import Data.Nat
@@ -67,3 +68,9 @@ o20DeletedBirthPreservesObservedPosition nameEq ordinal nextOrdinal child parent
       (trans (cong (childrenBornInActivation @{nameEq} activation)
         (snd (o20DeletedBirthKeepsActivationPosition nameEq ordinal child parent component index)))
         (sym (o20EventActivationPositionKnown nameEq nextOrdinal nextChild nextParent nextComponent index activation observed)))
+
+||| Boolean Nat equality used by the executable activation-counter key.
+export
+0 o20ActivationOrdinalSelf : (ordinal : Nat) -> (ordinal == ordinal = True)
+o20ActivationOrdinalSelf Z = Refl
+o20ActivationOrdinalSelf (S ordinal) = o20ActivationOrdinalSelf ordinal
