@@ -391,3 +391,19 @@ o20DeletionRetainedClosingBirthOrSelectedParent name key world error value proto
                      closeEmbedding sourceOrder)
                    (trans (cong (rawClosingActionAt name key world error value targetClose)
                      (registrationDecomposition birth)) targetExact)))
+
+||| Reassociating an exact trace or rewriting an action equality does not
+||| change a located occurrence's physical ordinal. Both transports are named.
+export
+0 o20LocatedOrdinalTransport :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, finalState : SystemState name key value world error} ->
+  (source, target : Transitions first finalState) ->
+  (sourceAction, targetAction : Action name key value world error) ->
+  (traceExact : source = target) -> (actionExact : sourceAction = targetAction) ->
+  (occurrence : LocatedActionOccurrence sourceAction source) ->
+  (locatedActionOrdinal
+    (replace {p = \action => LocatedActionOccurrence action target} actionExact
+      (replace {p = LocatedActionOccurrence sourceAction} traceExact occurrence)) =
+    locatedActionOrdinal occurrence)
+o20LocatedOrdinalTransport source _ sourceAction _ Refl Refl occurrence = Refl
