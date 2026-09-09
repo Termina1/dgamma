@@ -82,3 +82,22 @@ nativeSuffixTarget nameEq keyEq frames oldTrail newTrail ordinal =
             (\earlier => cong2 (\left, right => catalogOrdinal earlier < ordinal && not (left == right))
               (fst (nativeSuffixAnchorKey nameEq keyEq frames oldTrail newTrail (catalogOrdinal earlier))) (fst (nativeSuffixAnchorKey nameEq keyEq frames oldTrail newTrail ordinal)))
             (scanRootCatalog 0 newTrail))))
+
+||| Eliminate the observed anchor-presence guard BEFORE transporting the
+||| native distance. Target equality is relevant only in the anchored branch.
+export
+0 nativeDistanceAtAnchorGuard : {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {oldFirst, oldFinal, newFirst, newFinal : SystemState name key value world error} ->
+  {oldTrace : Transitions oldFirst oldFinal} -> {newTrace : Transitions newFirst newFinal} ->
+  (oldTrail : AvailabilityTrace name key world error value oldTrace) ->
+  (newTrail : AvailabilityTrace name key world error value newTrace) -> (ordinal : Nat) ->
+  (seen : Bool) ->
+  (0 oldGuard : isJust (anchorOf nameEq keyEq oldTrail ordinal) = seen) ->
+  (0 newGuard : isJust (anchorOf nameEq keyEq newTrail ordinal) = seen) ->
+  (0 target : targetPosition nameEq keyEq oldTrail ordinal = targetPosition nameEq keyEq newTrail ordinal) ->
+  rootDistance nameEq keyEq oldTrail ordinal = rootDistance nameEq keyEq newTrail ordinal
+nativeDistanceAtAnchorGuard nameEq keyEq oldTrail newTrail ordinal True oldGuard newGuard target =
+  rewrite oldGuard in rewrite newGuard in cong (minus ordinal) target
+nativeDistanceAtAnchorGuard nameEq keyEq oldTrail newTrail ordinal False oldGuard newGuard target =
+  rewrite oldGuard in rewrite newGuard in Refl
