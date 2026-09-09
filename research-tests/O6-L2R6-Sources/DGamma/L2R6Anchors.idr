@@ -139,3 +139,20 @@ totalDistance : {name, key, world, error : Type} -> {value : key -> Type} ->
   DecEq name -> DecEq key -> AvailabilityTrace name key world error value trace -> Nat
 totalDistance nameEq keyEq trail = sum
   (map (\entry => rootDistance nameEq keyEq trail (catalogOrdinal entry)) (scanRootCatalog 0 trail))
+
+||| Explicit Nat observations/equations for one root and the complete actual
+||| trace. This contains neither a positive-distance move nor a zero-NF proof.
+public export
+record DistanceObservation
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (keyEq : DecEq key)
+  {0 first, finalState : SystemState name key value world error}
+  {0 trace : Transitions first finalState}
+  (trail : AvailabilityTrace name key world error value trace) (ordinal : Nat) where
+  constructor MkDistanceObservation
+  targetObserved : Nat
+  0 targetEquation : targetPosition nameEq keyEq trail ordinal = targetObserved
+  distanceObserved : Nat
+  0 distanceEquation : rootDistance nameEq keyEq trail ordinal = distanceObserved
+  totalObserved : Nat
+  0 totalEquation : totalDistance nameEq keyEq trail = totalObserved
