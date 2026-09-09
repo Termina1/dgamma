@@ -154,3 +154,20 @@ classifyForced nameEq keyEq trail catalog exact = map
   (\entry => (catalogRoot entry, any
     (\seed => catalogOrdinal seed <= catalogOrdinal entry &&
       keyForcedOrdinal nameEq keyEq trail (catalogOrdinal seed)) catalog)) catalog
+
+||| Leastness after the trace predicates are fixed. This proof does not use
+||| classifier truth as a premise or redefine the seed set to match its output.
+export
+0 forcedOnTraceLeast : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {0 first, finalState : SystemState name key value world error} ->
+  {0 trace : Transitions first finalState} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (trail : AvailabilityTrace name key world error value trace) ->
+  (candidate : Nat -> Type) ->
+  (0 seeds : (n : Nat) -> Elem n (map catalogOrdinal (scanRootCatalog 0 trail)) ->
+    keyForcedOrdinal nameEq keyEq trail n = True -> candidate n) ->
+  (0 closed : (earlier, later : Nat) -> candidate earlier ->
+    Elem later (map catalogOrdinal (scanRootCatalog 0 trail)) -> LT earlier later -> candidate later) ->
+  {ordinal : Nat} -> ForcedOnTrace nameEq keyEq trail ordinal -> candidate ordinal
+forcedOnTraceLeast nameEq keyEq trail candidate seeds closed forced =
+  forcedRootLeast candidate seeds closed forced
