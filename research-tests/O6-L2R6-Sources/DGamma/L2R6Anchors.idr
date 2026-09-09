@@ -85,3 +85,23 @@ placedRootsAt : {name, key, world, error : Type} -> {value : key -> Type} ->
   List (RootCatalogEntry name key world error value)
 placedRootsAt nameEq keyEq trail anchor = filter
   (\entry => anchorOf nameEq keyEq trail (catalogOrdinal entry) == Just anchor) (scanRootCatalog 0 trail)
+
+||| Connector between the generated same-anchor catalog and ONE actual
+||| OrderedForcedRootBundle (inside placedMember). Its complete catalog equals
+||| all same-anchor roots in order; its starting interval is exactly the
+||| observed release-ending cut, immediately after that member's actor core.
+||| This record states placement, not a general producer for arbitrary traces.
+public export
+record PlacedBundle
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (keyEq : DecEq key)
+  {first, finalState : SystemState name key value world error}
+  {trace : Transitions first finalState}
+  (trail : AvailabilityTrace name key world error value trace) (anchor : Nat) where
+  constructor MkPlacedBundle
+  representativeAction : Action name key value world error
+  representativeOrdinal : Nat
+  placedMember : AttachedBundleOccurrence name key world error value nameEq keyEq trace representativeAction representativeOrdinal
+  placedBundleTrail : AvailabilityTrace name key world error value (memberBundle placedMember)
+  0 placedImmediatelyAfterRelease : bundleOffset placedMember = anchor
+  0 placedCatalogExact : scanRootCatalog (bundleOffset placedMember) placedBundleTrail = placedRootsAt nameEq keyEq trail anchor
