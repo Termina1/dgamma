@@ -131,3 +131,29 @@ earlyRootDistinctFromChild {name} {key} {world} {error} {value}
     (foreignInsertPlanView nameEq keyEq root Root component ambient source OInsertTag earlyRoot
       (checkedActionProjects nameEq keyEq (OInsert root Root component) (MkSystemState ambient source) earlyRoot OInsertTag early))))
     (trans (sym (cong (\wanted => lookupFiber {name} {key} {value} {world} {error} @{nameEq} wanted source) same)) found))
+
+||| Classifier-case square production. ONLY the foreign own-child case is
+||| accepted; missing, root and local-child controls remain explicit Nothing.
+||| Child/root inequality is derived from early insertion, not an input.
+export
+0 retireSquareOnClassifier : {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (child, root : name) ->
+  (component : Component key value world error) ->
+  (before, retiredState, oldFinal, earlyRoot : SystemState name key value world error) ->
+  (classification : ControlClass nameEq root child before) ->
+  (0 valid : registryWellFormed @{nameEq} @{keyEq} before = True) ->
+  (0 retired : checkedApplyAction @{nameEq} @{keyEq} (ORetire child) before = Just (ORetireTag, retiredState)) ->
+  (0 oldRoot : checkedApplyAction @{nameEq} @{keyEq} (OInsert root Root component) retiredState = Just (OInsertTag, oldFinal)) ->
+  (0 early : checkedApplyAction @{nameEq} @{keyEq} (OInsert root Root component) before = Just (OInsertTag, earlyRoot)) ->
+  Maybe (ClassifierSquare name key world error value nameEq keyEq root component before (ORetire child) ORetireTag oldFinal)
+retireSquareOnClassifier nameEq keyEq child root component before retiredState oldFinal earlyRoot
+  (MissingControl missing) valid retired oldRoot early = Nothing
+retireSquareOnClassifier nameEq keyEq child root component before retiredState oldFinal earlyRoot
+  (RootControl fiber found parent) valid retired oldRoot early = Nothing
+retireSquareOnClassifier nameEq keyEq child root component before retiredState oldFinal earlyRoot
+  (LocalChildControl fiber found parent) valid retired oldRoot early = Nothing
+retireSquareOnClassifier nameEq keyEq child root component before retiredState oldFinal earlyRoot
+  (ForeignChildControl parent fiber found own foreign) valid retired oldRoot early =
+  Just (produceRetireClassifierSquare nameEq keyEq child parent root fiber component before retiredState oldFinal earlyRoot
+    found own foreign (earlyRootDistinctFromChild nameEq keyEq child root fiber component before earlyRoot found early)
+    valid retired oldRoot early)
