@@ -186,3 +186,19 @@ window; main must not enter, edit, build or kill processes in its worktree.
 The shared lock still applies to every actual heavy launch; no assumed calendar
 reservation replaces lock ownership. This document does not claim lane2 agreed
 or that a rebuild window has been scheduled.
+
+## Owner acceptance as R196 execution basis (not executed in R195)
+
+After21269c8e the source-cap gate RATIFIED3bd99171 and accepted this manifest
+as R196 execution basis, retaining every source/constructor/frozen-body condition.
+It did NOT authorize R195 field/keyword/helper execution. Per-helper classification
+will be done at the R196 gate. Standing rule:52GiB ONLY for LocalDiamond source
+unchanged or FIELD/KEYWORD-only; every OTHER module stays48GiB unless its OWN
+historical measured peak exceeds40GiB, and its gate states that peak and the
+requested limit. Unknown-cost modules: serialized48GiB and per-module record.
+No blanket52GiB exception. No lane2 heavy rebuild reservation is claimed.
+
+The cost inventory is refreshed244 entries (including three new consumers since
+the241-entry visibility inventory),182 UNKNOWN direct costs, with all R195 final
+measurements retained. It is still not a runnable suite. The new unchanged
+LocalDiamond sample is50,598,096KiB (48.254105GiB), under its52GiB gate.

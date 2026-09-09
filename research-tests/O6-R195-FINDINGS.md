@@ -108,3 +108,19 @@ window through the supervisor with lane2; no reservation is claimed now.
    assembly required by unchanged O21 is still unproved. No O21 withdrawal proof
    or protected statement revision was attempted. No statement-level failure of
    the protected convergence theorem has been established.
+
+## Source-cap ruling and final checks
+
+The supervisor ratified the capped source boundary and accepted the stronger
+root-contract manifest as R196 execution BASIS. Per-helper gate classification
+is mandatory:52GiB only for LocalDiamond unchanged/FIELD/KEYWORD-only; other
+modules48GiB unless their own measured historical >40GiB peak and requested
+limit are explicitly gated. Unknown costs use serialized48GiB/per-module records.
+No blanket exception or reserved lane2 rebuild window is asserted.
+
+65/65 final expected results:58 positive (including the seeded package) and7 authenticated named negatives, ALL59 inherited main targets plus6 changed targets, exclusions[].112 serialized compiler invocations overall=108 expected PASS +4 rejected development snapshots,0 interrupted,0 mutated.42 source receipts and all six final source snapshots independently authenticated. Package207/207 TTC retained. LocalDiamond unchanged and fresh PASS490.233s; sampled peak50,598,096KiB (48.254105GiB) under52GiB, shared lock acquired/released. Default48GiB elsewhere; samples are not OS high-water. Census4=1/2/0/0/1; production diff vs34b21c9 empty, CP3blob2c697e532e83989de8591fa6a4378747c6a501c0. No own compiler, no staged files, clean tracked tree at the pre-publication audit.12 evidence-contract tests PASS.
+
+The full original vestigial result selects/retains the accepted CurrentEndpoint-
+Renaming alternative; no generation-only-to-full-package oracle is introduced.
+The original obstruction does not package independent canonical capital or
+claim all canonical metatheorem premises. Final owner gate/reviewer pending.

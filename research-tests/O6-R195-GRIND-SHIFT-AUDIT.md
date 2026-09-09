@@ -153,3 +153,24 @@ attestation is made. Root-contract manifest and244-module conservative cost
 inventory are DOCS ONLY for R196;182 modules have honestly UNKNOWN direct cost.
 Legacy R11 inventory entries are explicitly NOT runnable.12 noncompiler evidence-
 contract tests PASS; no successful-recheck exception is inherited from R194.
+
+## D2 final validation and committed evidence publication
+
+65/65 final expected results:58 positive (including the seeded package) and7 authenticated named negatives, ALL59 inherited main targets plus6 changed targets, exclusions[].112 serialized compiler invocations overall=108 expected PASS +4 rejected development snapshots,0 interrupted,0 mutated.42 source receipts and all six final source snapshots independently authenticated. Package207/207 TTC retained. LocalDiamond unchanged and fresh PASS490.233s; sampled peak50,598,096KiB (48.254105GiB) under52GiB, shared lock acquired/released. Default48GiB elsewhere; samples are not OS high-water. Census4=1/2/0/0/1; production diff vs34b21c9 empty, CP3blob2c697e532e83989de8591fa6a4378747c6a501c0. No own compiler, no staged files, clean tracked tree at the pre-publication audit.12 evidence-contract tests PASS.
+
+The full verbatim pre-final source-cap ruling is in the evidence archive as
+source-cap-owner-ruling.md. Source extension is prohibited; the stronger root
+manifest is accepted as R196 basis with per-helper memory classification.
+No next mathematical attempt/body/check outside the65-target plan was run.
+The raw archive retains every monitor, source snapshot, compiler JSON/log,
+receipt, source-cap ruling, pre/final audits and worker review qualification.
+A display-only read of V2 metadata briefly used nonexistent `heavy` instead of
+`heavyLock`; the corrected read succeeded, without any compiler/action retry.
+
+Status: checked PARTIAL. A26/B16 complete to their capped/parked boundaries; C0
+ineligible/prohibited. D1 findings and D2 validation/evidence publication; D3
+reserved for final gate note, D4 unused. Root contract unimplemented; whole
+accepted pairing and exact canonical endpoint/remainder assembly unowned.
+No new hole, postulate, unsafe/partial escape or state-reconstruction oracle.
+The archive anchor precedes its own artifact commit, and does not claim its
+own/future receipts. Final supervisor gate and independent reviewer pending.

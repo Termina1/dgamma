@@ -3709,7 +3709,7 @@ verbatim ruling and subsequent read-only PASS audits. Independent reviewer
 is parent-owned/read-only and pending at this handoff. Remaining proof/fixture
 debts and the deferred production-unfreeze requirement are unchanged.
 
-## R195 source milestone and R196 root contract (final validation pending)
+## R195 checked PARTIAL milestone and R196 root contract
 
 Source freeze3bd99171, A26/B16:42 immediate receipt-authenticated declarations.
 Root generic ARRC→root-law extraction is constructively impossible and owner-
@@ -3750,3 +3750,16 @@ explicitly deferred as insufficient. LocalDiamond remains unchanged in R195;
 only strengthening,48GiB otherwise. Resolve the helper-check exception explicitly
 and reserve any R196 heavy rebuild window through the supervisor with lane2.
 No production edit, cold build, TTC deletion or sibling-worktree operation.
+
+### R195 validation and next gate
+
+65/65 final expected results:58 positive (including the seeded package) and7 authenticated named negatives, ALL59 inherited main targets plus6 changed targets, exclusions[].112 serialized compiler invocations overall=108 expected PASS +4 rejected development snapshots,0 interrupted,0 mutated.42 source receipts and all six final source snapshots independently authenticated. Package207/207 TTC retained. LocalDiamond unchanged and fresh PASS490.233s; sampled peak50,598,096KiB (48.254105GiB) under52GiB, shared lock acquired/released. Default48GiB elsewhere; samples are not OS high-water. Census4=1/2/0/0/1; production diff vs34b21c9 empty, CP3blob2c697e532e83989de8591fa6a4378747c6a501c0. No own compiler, no staged files, clean tracked tree at the pre-publication audit.12 evidence-contract tests PASS.
+
+The source-cap gate ratified3bd99171; no source extension followed. Stronger
+root manifest accepted as R196 basis, with PER-HELPER resource classification:
+LocalDiamond52GiB only unchanged or FIELD/KEYWORD-only, other modules48GiB
+unless their own measured >40GiB peak and requested limit are explicitly gated.
+Unknown costs: serialized48GiB/per-module record. No blanket exception.
+Whole actual canonical/replayed paired fold and exact current-map endpoint cut
+remain next, then D5. No partial internal cut/original vestigial packet is cast
+into the frozen theorem. FINAL owner gate/independent review pending.

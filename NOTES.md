@@ -3638,7 +3638,7 @@ and pending; neither ratification nor the52-slot final validation closes
 Theorem73 or changes any producer/consumer qualification above. The evidence
 archive remains pinned to its documented pre-artifact anchor.
 
-## Status — R195 source milestone (final validation pending)
+## Status — R195 checked PARTIAL milestone
 
 Source freeze `3bd991710c76170d358dd5dadc07c676dfdb21f0`:42 checked research
 proof/specification declarations (A26/B16), each immediately guarded committed.
@@ -3700,3 +3700,26 @@ There is no blanket52GiB authorization for arbitrary changed mathematical code.
 The244-module conservative invalidation inventory includes UNKNOWN costs and
 non-runnable legacy/diagnostic-unclassified fixtures explicitly; it is not a cold
 rebuild command or a claim that a lane2 rebuild window has been reserved.
+
+### R195 final validation and bounded handoff
+
+65/65 final expected results:58 positive (including the seeded package) and7 authenticated named negatives, ALL59 inherited main targets plus6 changed targets, exclusions[].112 serialized compiler invocations overall=108 expected PASS +4 rejected development snapshots,0 interrupted,0 mutated.42 source receipts and all six final source snapshots independently authenticated. Package207/207 TTC retained. LocalDiamond unchanged and fresh PASS490.233s; sampled peak50,598,096KiB (48.254105GiB) under52GiB, shared lock acquired/released. Default48GiB elsewhere; samples are not OS high-water. Census4=1/2/0/0/1; production diff vs34b21c9 empty, CP3blob2c697e532e83989de8591fa6a4378747c6a501c0. No own compiler, no staged files, clean tracked tree at the pre-publication audit.12 evidence-contract tests PASS.
+
+A26/B16 caps and parked boundary were explicitly ratified before validation.
+The root-contract manifest was accepted as R196 execution BASIS, not executed
+in R195. Its helper checks require per-helper classification:52GiB ONLY for
+LocalDiamond unchanged or FIELD/KEYWORD-only; every other module48GiB unless
+its own measured historical peak exceeds40GiB and its gate names that peak and
+requested limit. Unknown costs use serialized48GiB and a per-module record.
+No blanket exception or lane2 rebuild-window reservation.
+
+The original vestigial mismatch lemma SELECTS/RETAINS the authenticated FULL
+alternative in CurrentEndpointRenaming; it is not a construction from history
+alone. The obstruction packet does not package independent canonical capital
+or claim all canonical metatheorem premises. No whole pairing/canonical cut/
+bridge producer or body was added. Source remains3bd99171.
+
+See O6-R195-VERIFICATION, compiler ledger/archive, frozen/independent/resource
+reports and findings. Evidence archive is pinned to the pre-publication anchor;
+its own artifact receipt and future gate note are not self-referentially claimed.
+Supervisor FINAL gate and independent parent-owned reviewer are pending.

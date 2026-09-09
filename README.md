@@ -798,7 +798,7 @@ The owner ratified the checked partial at52e1d308; independent reviewer pending.
 [audit](research-tests/O6-R194-GRIND-SHIFT-AUDIT.md) and
 [findings qualifications](research-tests/O6-R194-FINDINGS.md).
 
-### R195 checked source frontier (final validation pending)
+### R195 checked PARTIAL milestone —65/65 final validation
 
 42 new research declarations, A26/B16; no convergence-body attempt. Supporting
 Theorem73 correspondence, not additional closed paper theorems:
@@ -815,3 +815,9 @@ Theorem73 correspondence, not additional closed paper theorems:
 [receipts](research-tests/O6-R195-MICRO-UNITS.md), and
 [R196 root-contract plan](research-tests/O6-R195-ROOT-CONTRACT-MANIFEST.md).
 Production, all four hole statements, O19/LocalDiamond and A11 remain frozen.
+
+Final validation:65/65 expected results (58positive/7named negative),207/207
+seeded package, all42 source receipts authenticated, census4 unchanged.
+[Verification](research-tests/O6-R195-VERIFICATION.md). Whole pairing, exact
+canonical all-name rebasing and convergence remain open; independent review
+is parent-owned and pending.
