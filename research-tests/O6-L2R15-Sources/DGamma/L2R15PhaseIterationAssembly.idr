@@ -45,3 +45,24 @@ export
 phaseIterationAtZero {finalState} {trace} nameEq keyEq trail zero front never phases =
   MkPhaseIterationResult finalState trace trail (IterationDone trail) zero
     (MkRegistryExtensional Refl (\wanted => Refl)) front never phases
+
+||| General STEP assembly for the existing result record. Consumes an ACTUAL
+||| admitted move and an already-produced terminal result; its endpoint is
+||| composed extensionally and final invariants remain literally shared.
+||| This does not supply GeneralAdmittedMoveExistenceUnique or a recursive
+||| result by fiat, and is NOT named normalizePhaseDistance.
+export
+0 phaseIterationPrepend : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {initial, oldFinal, middleFinal : SystemState name key value world error} ->
+  {oldTrace : Transitions initial oldFinal} -> {middleTrace : Transitions initial middleFinal} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (oldTrail : AvailabilityTrace name key world error value oldTrace) ->
+  (middleTrail : AvailabilityTrace name key world error value middleTrace) ->
+  (0 move : AdmittedDistanceMove name key world error value nameEq keyEq oldTrail middleTrail) ->
+  (result : PhaseIterationResult name key world error value nameEq keyEq middleTrail) ->
+  PhaseIterationResult name key world error value nameEq keyEq oldTrail
+phaseIterationPrepend nameEq keyEq oldTrail middleTrail move result =
+  MkPhaseIterationResult (iterationFinal result) (iterationTrace result) (iterationTrail result)
+    (IterationMove move (finiteIteration result)) (iterationDistanceZero result)
+    (extensionalTransitive (moveEndpoints move) (extensionalIterationEnd result))
+    (iterationFront result) (iterationNeverRetired result) (iterationPhases result)
