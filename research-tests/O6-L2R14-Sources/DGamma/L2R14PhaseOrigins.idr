@@ -81,3 +81,21 @@ export
     (ORemove (releasedChild release)) = Just actor
 phaseReleaseNativeOwner nameEq actor component release =
   rewrite releaseFound release in cong phaseParentOwner (releaseParent release)
+
+||| The ACTUAL produced release ends at the observed maximum scan count and
+||| is strictly before the authentic root birth. This is a GLOBAL ordinal
+||| theorem, not a claim that a physical owned core has been located.
+export
+0 phaseProducedReleaseCount : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, finalState : SystemState name key value world error} ->
+  {trace : Transitions first finalState} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (trail : AvailabilityTrace name key world error value trace) ->
+  (entry, seed : RootCatalogEntry name key world error value) -> (anchor : Nat) ->
+  (0 equation : anchorOf nameEq keyEq trail (catalogOrdinal entry) = Just anchor) ->
+  (0 member : Elem entry (scanRootCatalog 0 trail)) ->
+  (0 accepted : phaseScanOk nameEq keyEq trail = True) ->
+  (0 seedAccepted : phaseAnchorSeedCheck nameEq keyEq trail entry anchor seed = True) ->
+  (S (locatedActionOrdinal (releaseOccurrence (snd (fst (phaseSeedRelease nameEq keyEq trail entry seed anchor seedAccepted))))) = anchor, LT (locatedActionOrdinal (releaseOccurrence (snd (fst (phaseSeedRelease nameEq keyEq trail entry seed anchor seedAccepted))))) (catalogOrdinal entry))
+phaseProducedReleaseCount nameEq keyEq trail entry seed anchor equation member accepted seedAccepted =
+  ((trans (cong S (snd (phaseSeedRelease nameEq keyEq trail entry seed anchor seedAccepted))) (snd (snd (phaseAnchorCountBound nameEq keyEq trail entry anchor equation member accepted)))), replace {p = \count => LTE count (catalogOrdinal entry)} (sym (trans (cong S (snd (phaseSeedRelease nameEq keyEq trail entry seed anchor seedAccepted))) (snd (snd (phaseAnchorCountBound nameEq keyEq trail entry anchor equation member accepted))))) (fst (phaseAnchorCountBound nameEq keyEq trail entry anchor equation member accepted)))
