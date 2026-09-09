@@ -135,3 +135,14 @@ anyMappedCons f predicate head items _ tail Here accepted =
 anyMappedCons f predicate head items wanted tail (There later) accepted =
   trans (anyFoldObserved (\item => predicate (f item)) items (predicate (f head)))
     (trans (cong (\flag => predicate (f head) || flag) (tail later)) (orTrueTrue (predicate (f head))))
+
+||| Completeness of any for actual mapped-list membership; no inverse catalog
+||| oracle or reconstructed existential state is needed.
+export
+0 anyMappedMember : {a, b : Type} -> (f : a -> b) -> (predicate : b -> Bool) ->
+  (items : List a) -> (wanted : b) -> (0 member : Elem wanted (map f items)) ->
+  (0 accepted : predicate wanted = True) -> any (\item => predicate (f item)) items = True
+anyMappedMember f predicate [] wanted member accepted = absurd member
+anyMappedMember f predicate (head :: items) wanted member accepted =
+  anyMappedCons f predicate head items wanted
+    (\later => anyMappedMember f predicate items wanted later accepted) member accepted
