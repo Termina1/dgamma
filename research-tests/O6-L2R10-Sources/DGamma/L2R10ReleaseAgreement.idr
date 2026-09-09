@@ -50,3 +50,17 @@ export
 releasePresentAtBool keyEq wanted keys False equation present =
   absurd (elemDecFalseNotElem @{keyEq} wanted keys equation present)
 releasePresentAtBool keyEq wanted keys True equation present = Refl
+
+||| Own both library observations. A single Dec elimination connects native
+||| isElem truth to the observed old Bool; no old/new equality is assumed.
+export
+0 releaseAgreementAtDec : {key : Type} -> (keyEq : DecEq key) ->
+  (wanted : key) -> (keys : List key) -> (seen : Bool) ->
+  (0 oldEquation : elemDec @{keyEq} wanted keys = seen) ->
+  (decision : Dec (Elem wanted keys)) ->
+  (0 equation : isElem @{keyEq} wanted keys = decision) ->
+  isYes (isElem @{keyEq} wanted keys) = seen
+releaseAgreementAtDec keyEq wanted keys seen oldEquation (Yes present) equation =
+  rewrite equation in sym (releasePresentAtBool keyEq wanted keys seen oldEquation present)
+releaseAgreementAtDec keyEq wanted keys seen oldEquation (No absent) equation =
+  rewrite equation in trans (sym (releaseAbsentFalse keyEq wanted keys absent)) oldEquation
