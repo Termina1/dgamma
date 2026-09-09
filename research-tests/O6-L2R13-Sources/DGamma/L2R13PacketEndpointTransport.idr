@@ -62,3 +62,18 @@ export
 packetWholeEndpointsFromLocalSquare oldStates newStates passage hypotheses =
   nativeSuffixEndpoints (fst fixtureDictionaries) (snd fixtureDictionaries)
     (suffixNativeFrames hypotheses) (localCoreRootSquare hypotheses)
+
+||| GENERAL composition of core action-word/location/placement construction
+||| with the new native whole-endpoint derivation. The LOCAL square hypothesis
+||| remains visible in the type; no whole endpoint premise is accepted.
+export
+0 coreContiguityFromLocalSquareFrames :
+  (oldStates, newStates : Nat -> SystemState Nat Bool (\key => Unit) Unit String) ->
+  {initial, oldFinal, newFinal : SystemState Nat Bool (\key => Unit) Unit String} ->
+  (passage : PacketPassage oldStates newStates initial oldFinal newFinal) ->
+  PacketWholeEndpointTransport oldStates newStates passage ->
+  PacketContiguityResult initial oldFinal newFinal
+    (passageRoot passage) (passageComponent passage) (passageSuffixWord passage)
+coreContiguityFromLocalSquareFrames oldStates newStates passage hypotheses =
+  coreContiguityFromPackets oldStates newStates passage
+    (packetWholeEndpointsFromLocalSquare oldStates newStates passage hypotheses)
