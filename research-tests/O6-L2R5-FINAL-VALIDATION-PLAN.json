@@ -1,0 +1,70 @@
+[
+  {
+    "unit": "V10",
+    "path": "research-tests/O6-L2R5-Sources/DGamma/L2R5AnchorTransport.idr",
+    "sourceHash": "130fd6d5ca2701cb8cded52549b19a39fe0aac4060b5b0b702f0f92fdebef231",
+    "dependsOn": []
+  },
+  {
+    "unit": "V11",
+    "path": "research-tests/O6-L2R5-Sources/DGamma/L2R5CurrentCut.idr",
+    "sourceHash": "05ce79fef1c7d8542864540d321f0d9ab3d65fbe814215f0e3140135191ba896",
+    "dependsOn": []
+  },
+  {
+    "unit": "V12",
+    "path": "research-tests/O6-L2R5-Sources/DGamma/L2R5Extensional.idr",
+    "sourceHash": "e88e0d04edb4d5de68c5b2768f720357e511aa46ae0a7951b0b2c5137dbad77e",
+    "dependsOn": []
+  },
+  {
+    "unit": "V13",
+    "path": "research-tests/O6-L2R5-Sources/DGamma/L2R5ProviderObservation.idr",
+    "sourceHash": "3e8d4fcb6a9c783832169672f6800808e145a29ea505e014b9146e1e6bba4615",
+    "dependsOn": []
+  },
+  {
+    "unit": "V14",
+    "path": "research-tests/O6-L2R5-Sources/DGamma/L2R5RetirementFrame.idr",
+    "sourceHash": "07f35852f9e30f2375d65ba9d9255e142dc489dcd84bb2160a7958a1af7a429c",
+    "dependsOn": []
+  },
+  {
+    "unit": "V15",
+    "path": "research-tests/O6-L2R5-Sources/DGamma/L2R5RootCatalog.idr",
+    "sourceHash": "cf7041dc2ed073ee29cd489d8e46792ab5bc987ee7c5941eff87c2b6f9ea0ea6",
+    "dependsOn": []
+  },
+  {
+    "unit": "V16",
+    "path": "research-tests/O6-L2R5-Sources/DGamma/L2R5CatalogFixtures.idr",
+    "sourceHash": "b0ca9efbcc0382927834ffaf2f237a1a9a39efb97cad121a6bdcd7c813b34465",
+    "dependsOn": [
+      "research-tests/O6-L2R5-Sources/DGamma/L2R5RootCatalog.idr"
+    ]
+  },
+  {
+    "unit": "V17",
+    "path": "research-tests/O6-L2R5-Sources/DGamma/L2R5ExtensionalFixtures.idr",
+    "sourceHash": "2294f6e3637dc3fe2ca1cf05ab9359ef16528405cb47d506683d60f2236ae193",
+    "dependsOn": [
+      "research-tests/O6-L2R5-Sources/DGamma/L2R5Extensional.idr"
+    ]
+  },
+  {
+    "unit": "V18",
+    "path": "research-tests/O6-L2R5-Sources/DGamma/L2R5ExtensionalRetire.idr",
+    "sourceHash": "4b6f3a1628784c7ad7b62da4b4deec18d21aedddfd0189d7a4581f320e26855c",
+    "dependsOn": [
+      "research-tests/O6-L2R5-Sources/DGamma/L2R5Extensional.idr"
+    ]
+  },
+  {
+    "unit": "V19",
+    "path": "research-tests/O6-L2R5-Sources/DGamma/L2R5InsertObserved.idr",
+    "sourceHash": "7dc427459320a6dea8d33e7112c6008c81a142575b74f8c4d5f6075987c62a23",
+    "dependsOn": [
+      "research-tests/O6-L2R5-Sources/DGamma/L2R5Extensional.idr"
+    ]
+  }
+]
