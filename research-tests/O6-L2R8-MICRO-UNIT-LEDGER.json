@@ -1,0 +1,894 @@
+{
+  "base": "4469421e",
+  "sourceBoundary": "d11d13c0",
+  "archiveBoundary": "9c72d7ae65eaed9dff40fea789db3e083478431d",
+  "caps": {
+    "A": 10,
+    "B": 14,
+    "C": 8,
+    "D": 10,
+    "E": 3
+  },
+  "attemptedSlots": {
+    "A": 10,
+    "B": 14,
+    "C": 5,
+    "D": 10
+  },
+  "CQualification": "Supervisor explicitly authorized finite-iteration arithmetic and placed-prefix invariant TYPE; scope complete at C5, NOT general normalization.",
+  "retainedDeclarations": 37,
+  "stopped": [
+    "A10"
+  ],
+  "deferred": [
+    "B3"
+  ],
+  "records": [
+    {
+      "unit": "A1",
+      "status": "checked total definition/proof; exact scope and quantity in source/audit",
+      "declarations": [
+        "sharedKeyDecision"
+      ],
+      "commit": "f6a2b96d54c6ef9f8f8e8b8d12c2ec4362c211ba",
+      "attempts": [
+        {
+          "unit": "A1-1",
+          "passed": false,
+          "fresh": true,
+          "exit": 1,
+          "interrupted": false,
+          "sourceSHA256": "7ed0d6f9d46601ecb8540f1f789e9270e884167d31cb0cd98db432b52881d31a",
+          "maxSampleRSSKiB": 198880,
+          "seconds": 0.8679980831220746
+        },
+        {
+          "unit": "A1-2",
+          "passed": false,
+          "fresh": true,
+          "exit": 1,
+          "interrupted": false,
+          "sourceSHA256": "a23db78428298c5257e7b3d2213c344a8fb031dd157e5bbe7923346dca287168",
+          "maxSampleRSSKiB": 0,
+          "seconds": 0.29245595773682
+        },
+        {
+          "unit": "A1-3",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "interrupted": false,
+          "sourceSHA256": "c35fbe27778ec8a060300bdf2add3d29ef8457302cc5924b6a799ea87163272f",
+          "maxSampleRSSKiB": 196544,
+          "seconds": 0.5724535421468318
+        }
+      ]
+    },
+    {
+      "unit": "A2",
+      "status": "checked total definition/proof; exact scope and quantity in source/audit",
+      "declarations": [
+        "sharedKeyFromAnyHit"
+      ],
+      "commit": "c7ba9c7e41ca1f6f6c96a44ccb98fa36d808d0af",
+      "attempts": [
+        {
+          "unit": "A2-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "interrupted": false,
+          "sourceSHA256": "a5afa978f2e6aed4c0689c5b7b93d958fa23904d5078c4f3c4bf91de25bc711f",
+          "maxSampleRSSKiB": 194448,
+          "seconds": 0.5751968328841031
+        }
+      ]
+    },
+    {
+      "unit": "A3",
+      "status": "checked total definition/proof; exact scope and quantity in source/audit",
+      "declarations": [
+        "sharedKeysObserved"
+      ],
+      "commit": "c1d288c12b2366937a8f784e51e5bd4fa4d6ff1f",
+      "attempts": [
+        {
+          "unit": "A3-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "interrupted": false,
+          "sourceSHA256": "da1035d7b889ace797ac25d44ff12e2c451688b3e9f7714dc84257cd8646cf72",
+          "maxSampleRSSKiB": 194384,
+          "seconds": 0.574818457942456
+        }
+      ]
+    },
+    {
+      "unit": "A4",
+      "status": "checked total definition/proof; exact scope and quantity in source/audit",
+      "declarations": [
+        "releaseAtParent"
+      ],
+      "commit": "e99fe7c710091e510c3613e1c840fdd2e29eca3d",
+      "attempts": [
+        {
+          "unit": "A4-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "interrupted": false,
+          "sourceSHA256": "21522127779b44374019574fb13beec838091b53e12e01f2137f50aaa552e01c",
+          "maxSampleRSSKiB": 293808,
+          "seconds": 0.8718545413576066
+        }
+      ]
+    },
+    {
+      "unit": "A5",
+      "status": "checked total definition/proof; exact scope and quantity in source/audit",
+      "declarations": [
+        "releaseAtLookup"
+      ],
+      "commit": "7ee2843feec199dcea9dfb3b235f412a49dcb5b2",
+      "attempts": [
+        {
+          "unit": "A5-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "interrupted": false,
+          "sourceSHA256": "f0718c13af17e6fdd055b93bba33920537f9937dd01b5410dd2a42c619dc1a03",
+          "maxSampleRSSKiB": 294928,
+          "seconds": 0.879736291244626
+        }
+      ]
+    },
+    {
+      "unit": "A6",
+      "status": "checked total definition/proof; exact scope and quantity in source/audit",
+      "declarations": [
+        "releaseAtAction"
+      ],
+      "commit": "ab00be62d1274b1fbdff807a1c5a27602102fc8e",
+      "attempts": [
+        {
+          "unit": "A6-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "interrupted": false,
+          "sourceSHA256": "86028ed927abaf0f8cd2fe664d810bed4819aa891daa405c2ea5f790d23ad262",
+          "maxSampleRSSKiB": 269856,
+          "seconds": 0.8760412503033876
+        }
+      ]
+    },
+    {
+      "unit": "A7",
+      "status": "checked total definition/proof; exact scope and quantity in source/audit",
+      "declarations": [
+        "releaseThroughHead"
+      ],
+      "commit": "af72e02891082ad1b6a8f857af40d7ac85242a21",
+      "attempts": [
+        {
+          "unit": "A7-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "interrupted": false,
+          "sourceSHA256": "2d40c54a9126ea8607987e1e9c8a1816a3d9f221183956589088f05bb8e576c2",
+          "maxSampleRSSKiB": 303664,
+          "seconds": 0.8674563751555979
+        }
+      ]
+    },
+    {
+      "unit": "A8",
+      "status": "checked total definition/proof; exact scope and quantity in source/audit",
+      "declarations": [
+        "scanObservedReleases"
+      ],
+      "commit": "8d4e1894fb601902d935090b1a0ab9faf6970d90",
+      "attempts": [
+        {
+          "unit": "A8-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "interrupted": false,
+          "sourceSHA256": "8b8026931517a2b930530b2b3cfbfdcd919519cee13b10aea21c1b81ed2ccf19",
+          "maxSampleRSSKiB": 303760,
+          "seconds": 0.8795232912525535
+        }
+      ]
+    },
+    {
+      "unit": "A9",
+      "status": "TYPE ONLY; producer/fixture OPEN",
+      "declarations": [
+        "ObservedReleaseFixtures"
+      ],
+      "commit": "8baab184c6fa50ee33c7313412dc405916fae969",
+      "attempts": [
+        {
+          "unit": "A9-1",
+          "passed": false,
+          "fresh": false,
+          "exit": -15,
+          "interrupted": true,
+          "sourceSHA256": "982a4f1e4e960cd9f23df1a4be07d47730c5e5f5d2f2c30ae0f20e790550b914",
+          "maxSampleRSSKiB": 8939200,
+          "seconds": 83.07814624998719
+        },
+        {
+          "unit": "A9-2",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "interrupted": false,
+          "sourceSHA256": "0fe69d4de4154c217f7f9eac1afb7ba05ee5ceda6a092d09e627ca86a6c79119",
+          "maxSampleRSSKiB": 607104,
+          "seconds": 3.7551325829699636
+        }
+      ]
+    },
+    {
+      "unit": "A10",
+      "status": "STOPPED3/3; full revert; no restatement",
+      "declarations": [],
+      "commit": null,
+      "attempts": [
+        {
+          "unit": "A10-1",
+          "passed": false,
+          "fresh": true,
+          "exit": 1,
+          "interrupted": false,
+          "sourceSHA256": "5dac8ef5de21c3a2cfc7ff67dc3afda0e6ef812b43a096aac909fcad4b0a3b9a",
+          "maxSampleRSSKiB": 455712,
+          "seconds": 2.893672125414014
+        },
+        {
+          "unit": "A10-2",
+          "passed": false,
+          "fresh": true,
+          "exit": 1,
+          "interrupted": false,
+          "sourceSHA256": "39047a13eda3355cc822f0297bdc1a4c86abeb6e9e4101f9978c4fdb17bb9295",
+          "maxSampleRSSKiB": 455600,
+          "seconds": 2.8960715839639306
+        },
+        {
+          "unit": "A10-3",
+          "passed": false,
+          "fresh": true,
+          "exit": 1,
+          "interrupted": false,
+          "sourceSHA256": "c93da1134d06f79fe105a65d23faf8a6ab6a0de23a044bd8cc2b0973eeac4688",
+          "maxSampleRSSKiB": 480464,
+          "seconds": 5.811966124922037
+        }
+      ]
+    },
+    {
+      "unit": "B1",
+      "status": "executable explicit states ONLY; native fixture DEFERRED",
+      "declarations": [
+        "contiguityState"
+      ],
+      "commit": "91ed26ae03dd178b7c65e6f53eb6dc13e1969a69",
+      "attempts": [
+        {
+          "unit": "B1-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "interrupted": false,
+          "sourceSHA256": "03875d79721b9bc7e675f750a30c64ef01cb84a32f21d996e29009193dcbd5a3",
+          "maxSampleRSSKiB": 261376,
+          "seconds": 8.914946666918695
+        }
+      ]
+    },
+    {
+      "unit": "B2",
+      "status": "TYPE ONLY; producer/fixture OPEN",
+      "declarations": [
+        "ContiguityNativeExecution"
+      ],
+      "commit": "a680d95fa075d18eb1cc0cf4d3c9880b604791c7",
+      "attempts": [
+        {
+          "unit": "B2-1",
+          "passed": false,
+          "fresh": false,
+          "exit": -15,
+          "interrupted": true,
+          "sourceSHA256": "3af6a92522c7fac13d767770afd1ddbcb8eebe308399749ae53504ea907240a3",
+          "maxSampleRSSKiB": 2004560,
+          "seconds": 141.3708599996753
+        },
+        {
+          "unit": "B2-2",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "interrupted": false,
+          "sourceSHA256": "70ba26bc81ecfcb7584e1083af69b5ed4cb64f0aaba274b44f4a24dd90c20f33",
+          "maxSampleRSSKiB": 295456,
+          "seconds": 1.161022167187184
+        }
+      ]
+    },
+    {
+      "unit": "B3",
+      "status": "DEFERRED2/3; full revert; one attempt remains only under future gate",
+      "declarations": [],
+      "commit": null,
+      "attempts": [
+        {
+          "unit": "B3-1",
+          "passed": false,
+          "fresh": false,
+          "exit": -15,
+          "interrupted": true,
+          "sourceSHA256": "5e1ed1d6a4bd8f8d5536ad9fdda58a1e0a90095e9e5b4c84cd65462d73a66616",
+          "maxSampleRSSKiB": 18927216,
+          "seconds": 57.977209750097245
+        },
+        {
+          "unit": "B3-2",
+          "passed": false,
+          "fresh": false,
+          "exit": -15,
+          "interrupted": true,
+          "sourceSHA256": "1330a5e32c4376855f5f6970cc1772fa41ec74174a88a1359d6aafcc1bc13a36",
+          "maxSampleRSSKiB": 18905712,
+          "seconds": 57.79893633304164
+        }
+      ]
+    },
+    {
+      "unit": "B4",
+      "status": "TYPE ONLY; producer/fixture OPEN",
+      "declarations": [
+        "LocatedExtendedCore"
+      ],
+      "commit": "79aa5fcbaef78eaddcd8d683f98fb48a4f385796",
+      "attempts": [
+        {
+          "unit": "B4-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "interrupted": false,
+          "sourceSHA256": "1148e0e19df54a9e7ec81b09f5f33e60b6807fc70e503176fa9e3fd10862c0fa",
+          "maxSampleRSSKiB": 272192,
+          "seconds": 0.8624502080492675
+        }
+      ]
+    },
+    {
+      "unit": "B5",
+      "status": "TYPE ONLY; producer/fixture OPEN",
+      "declarations": [
+        "GeneralCoreContiguityRestored"
+      ],
+      "commit": "bf888aec4d687ab2425b5a30e7fc19cf2c1c8fe3",
+      "attempts": [
+        {
+          "unit": "B5-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "interrupted": false,
+          "sourceSHA256": "ae5ca8df2bf5afd4b5ee9fa22e045db376a63ecf673dd4b91ed89b349db9315a",
+          "maxSampleRSSKiB": 278480,
+          "seconds": 0.8646674999035895
+        }
+      ]
+    },
+    {
+      "unit": "B6",
+      "status": "checked total definition/proof; exact scope and quantity in source/audit",
+      "declarations": [
+        "nativeWordCount"
+      ],
+      "commit": "e615fc323eb1b35cddd3fbe59f559bef8a479b71",
+      "attempts": [
+        {
+          "unit": "B6-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "interrupted": false,
+          "sourceSHA256": "db5d907844964ef81d916a1903a62b056fcfcac1b04fe1dcfe3fd6880efe700e",
+          "maxSampleRSSKiB": 200032,
+          "seconds": 0.585297167301178
+        }
+      ]
+    },
+    {
+      "unit": "B7",
+      "status": "checked total definition/proof; exact scope and quantity in source/audit",
+      "declarations": [
+        "appendAvailability"
+      ],
+      "commit": "9d35a0cfae91f82090e2e8b873081ca51bc30b17",
+      "attempts": [
+        {
+          "unit": "B7-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "interrupted": false,
+          "sourceSHA256": "4509938ca2f7dbde0177524213f26911d8ee1cef3db71a55dde94dd25c979667",
+          "maxSampleRSSKiB": 192288,
+          "seconds": 0.582796333823353
+        }
+      ]
+    },
+    {
+      "unit": "B8",
+      "status": "checked total definition/proof; exact scope and quantity in source/audit",
+      "declarations": [
+        "nativeWordAppend"
+      ],
+      "commit": "911a9e95bf837d912cf0b7d67c77ebd711cee09b",
+      "attempts": [
+        {
+          "unit": "B8-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "interrupted": false,
+          "sourceSHA256": "ce20c0b6af0a054d3dea1363cb33ebc992d4560ef1414ba6c1a29573d09463b0",
+          "maxSampleRSSKiB": 261168,
+          "seconds": 0.8760274578817189
+        }
+      ]
+    },
+    {
+      "unit": "B9",
+      "status": "checked record/family; producer separately listed",
+      "declarations": [
+        "DistanceSearch"
+      ],
+      "commit": "dd261790ea2be2e0e9603b10d617a8eaa93f2aba",
+      "attempts": [
+        {
+          "unit": "B9-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "interrupted": false,
+          "sourceSHA256": "5034a1a71275f043acb0fa238baddcbd9dcb3236b1633bd958e21b70bf682c1d",
+          "maxSampleRSSKiB": 196464,
+          "seconds": 0.5827662078663707
+        }
+      ]
+    },
+    {
+      "unit": "B10",
+      "status": "checked total definition/proof; exact scope and quantity in source/audit",
+      "declarations": [
+        "distanceSearchThere"
+      ],
+      "commit": "b3425aec1a1727d23c8aef9204bd12e103812706",
+      "attempts": [
+        {
+          "unit": "B10-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "interrupted": false,
+          "sourceSHA256": "fd190254a19fae01bede3dd4eb0563012a04506d3173b0386fb8b2c0210cc1ee",
+          "maxSampleRSSKiB": 194384,
+          "seconds": 0.5803882908076048
+        }
+      ]
+    },
+    {
+      "unit": "B11",
+      "status": "checked total definition/proof; exact scope and quantity in source/audit",
+      "declarations": [
+        "distanceSearchAtValue"
+      ],
+      "commit": "73276141b6d14f85420d6d446eb28f6fece927a4",
+      "attempts": [
+        {
+          "unit": "B11-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "interrupted": false,
+          "sourceSHA256": "cc8a3fc9a328778bab3be40f28f5ba8f240e344a79315d184f2cdfd6b68e505d",
+          "maxSampleRSSKiB": 192304,
+          "seconds": 0.5793642080388963
+        }
+      ]
+    },
+    {
+      "unit": "B12",
+      "status": "checked total definition/proof; exact scope and quantity in source/audit",
+      "declarations": [
+        "searchDistance"
+      ],
+      "commit": "d3100a10410ae7ab3e7c43347f6ae938295952b9",
+      "attempts": [
+        {
+          "unit": "B12-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "interrupted": false,
+          "sourceSHA256": "a29427f5e787360fb6e649124f96e7c0b2ee756dbb71bb9bc383ad63317d0687",
+          "maxSampleRSSKiB": 192320,
+          "seconds": 0.5906440829858184
+        }
+      ]
+    },
+    {
+      "unit": "B13",
+      "status": "checked total definition/proof; exact scope and quantity in source/audit",
+      "declarations": [
+        "allZeroTotal"
+      ],
+      "commit": "0f835e612caae534174e9d84b967220f6f615125",
+      "attempts": [
+        {
+          "unit": "B13-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "interrupted": false,
+          "sourceSHA256": "a677a5ace88a6dea376cfe9ee462c639c1d83758605c821c11e92c4631fd7afe",
+          "maxSampleRSSKiB": 190240,
+          "seconds": 0.5757069997489452
+        }
+      ]
+    },
+    {
+      "unit": "B14",
+      "status": "checked total definition/proof; exact scope and quantity in source/audit",
+      "declarations": [
+        "selectFirstPositiveObserved"
+      ],
+      "commit": "f3d660ee778274be5f32df533cb65586a2e1a2f3",
+      "attempts": [
+        {
+          "unit": "B14-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "interrupted": false,
+          "sourceSHA256": "e68ce397329c455282c9fef6bb47c9df62bb38310b2791435cb41a41d7f26d29",
+          "maxSampleRSSKiB": 186240,
+          "seconds": 0.5809934581629932
+        }
+      ]
+    },
+    {
+      "unit": "C1",
+      "status": "checked total definition/proof; exact scope and quantity in source/audit",
+      "declarations": [
+        "iterationSteps"
+      ],
+      "commit": "2db63563a1a9890cae272b09a737eb7d112f801f",
+      "attempts": [
+        {
+          "unit": "C1-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "interrupted": false,
+          "sourceSHA256": "fb4c9a5f735a7957e20e6caf3d0edd88e3fc63b4eef2d7b85e8477f5fca239a9",
+          "maxSampleRSSKiB": 207280,
+          "seconds": 0.5788388750515878
+        }
+      ]
+    },
+    {
+      "unit": "C2",
+      "status": "checked total definition/proof; exact scope and quantity in source/audit",
+      "declarations": [
+        "iterationDistanceBalance"
+      ],
+      "commit": "22c1f17111a8057ff0a7ad32e78239535e443ab4",
+      "attempts": [
+        {
+          "unit": "C2-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "interrupted": false,
+          "sourceSHA256": "2b6cfc6c47749fe38535b5ce6473ddf60ab7db9742beb021452bcba04edb2504",
+          "maxSampleRSSKiB": 265584,
+          "seconds": 0.8733524587005377
+        }
+      ]
+    },
+    {
+      "unit": "C3",
+      "status": "checked total definition/proof; exact scope and quantity in source/audit",
+      "declarations": [
+        "iterationStepsAtZero"
+      ],
+      "commit": "0b564942e981b4d7968065b1cee43d9668ad9969",
+      "attempts": [
+        {
+          "unit": "C3-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "interrupted": false,
+          "sourceSHA256": "913e5cbe213e202b7d10f5f84cb2eda947ecae1b177bdcc0c12cd22b9e40750e",
+          "maxSampleRSSKiB": 261472,
+          "seconds": 0.8737304168753326
+        }
+      ]
+    },
+    {
+      "unit": "C4",
+      "status": "checked total definition/proof; exact scope and quantity in source/audit",
+      "declarations": [
+        "iterationLengthBound"
+      ],
+      "commit": "014667cbad33e4cd22c2da57849b2cfc86988a38",
+      "attempts": [
+        {
+          "unit": "C4-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "interrupted": false,
+          "sourceSHA256": "0360dedcd4f5cd7557557047ffb144491484ef26214b533073408f835d9b4c83",
+          "maxSampleRSSKiB": 289616,
+          "seconds": 0.8674906250089407
+        }
+      ]
+    },
+    {
+      "unit": "C5",
+      "status": "TYPE ONLY; producer/fixture OPEN",
+      "declarations": [
+        "PlacedPrefixPhaseInvariant"
+      ],
+      "commit": "fee4c25268e4025f38b4a7a32b45b58e45c37ba7",
+      "attempts": [
+        {
+          "unit": "C5-1",
+          "passed": false,
+          "fresh": true,
+          "exit": 0,
+          "interrupted": false,
+          "sourceSHA256": "516f75dd6aa60e4d25a0994480c03c53c52f8d025831f96e91d149a499ca514d",
+          "maxSampleRSSKiB": 183920,
+          "seconds": 0.5888111656531692
+        },
+        {
+          "unit": "C5-2",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "interrupted": false,
+          "sourceSHA256": "f9c623015439c1d6402f91b27786c2424bf6399098ed150f510cba53fbf8d8f1",
+          "maxSampleRSSKiB": 1330736,
+          "seconds": 1.1719976249150932
+        }
+      ]
+    },
+    {
+      "unit": "D1",
+      "status": "checked total definition/proof; exact scope and quantity in source/audit",
+      "declarations": [
+        "prependOccurrence"
+      ],
+      "commit": "6618f181271074e75f10ba2a608904f1e51f3161",
+      "attempts": [
+        {
+          "unit": "D1-1",
+          "passed": false,
+          "fresh": true,
+          "exit": 1,
+          "interrupted": false,
+          "sourceSHA256": "9eb743051a6dce1ebf77fb9f66625c16e2908cf206873051f655b2a6d3ec2bf9",
+          "maxSampleRSSKiB": 0,
+          "seconds": 0.2874307078309357
+        },
+        {
+          "unit": "D1-2",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "interrupted": false,
+          "sourceSHA256": "a1a2439c69d895f97ad69e9238600e848fa0881238c225adc6b793e90eee362a",
+          "maxSampleRSSKiB": 194400,
+          "seconds": 0.5842865002341568
+        }
+      ]
+    },
+    {
+      "unit": "D2",
+      "status": "checked total definition/proof; exact scope and quantity in source/audit",
+      "declarations": [
+        "extendOccurrence"
+      ],
+      "commit": "0c9289692633314999f9fe75a1272919effc9be2",
+      "attempts": [
+        {
+          "unit": "D2-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "interrupted": false,
+          "sourceSHA256": "b0c752f2f72003f27c2792f1bce186d9ccafcf68dffdf74bb6f8b3a1596181d5",
+          "maxSampleRSSKiB": 276240,
+          "seconds": 0.8732834588736296
+        }
+      ]
+    },
+    {
+      "unit": "D3",
+      "status": "checked record/family; producer separately listed",
+      "declarations": [
+        "RegionEmbedding"
+      ],
+      "commit": "c91de82beae271d2613d7339c1f5f486732e46dc",
+      "attempts": [
+        {
+          "unit": "D3-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "interrupted": false,
+          "sourceSHA256": "0005dbfdd2992e5ef2ae94788e639c7dfdb8e5ce1f53377455d78c749071c2a6",
+          "maxSampleRSSKiB": 280832,
+          "seconds": 0.88055883301422
+        }
+      ]
+    },
+    {
+      "unit": "D4",
+      "status": "checked total definition/proof; exact scope and quantity in source/audit",
+      "declarations": [
+        "embedRegionOccurrence"
+      ],
+      "commit": "00943aa6dcd3fb9ceac40d7d74cee23b8309d544",
+      "attempts": [
+        {
+          "unit": "D4-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "interrupted": false,
+          "sourceSHA256": "ea207013624038d9c03555ce2c5f87352fd614907be22d145e1d42c8e3881507",
+          "maxSampleRSSKiB": 266128,
+          "seconds": 0.8679917920380831
+        }
+      ]
+    },
+    {
+      "unit": "D5",
+      "status": "checked total definition/proof; exact scope and quantity in source/audit",
+      "declarations": [
+        "maxMemberObserved"
+      ],
+      "commit": "1df6d32bd6a862f1cc8db5001e3d4b78397490bb",
+      "attempts": [
+        {
+          "unit": "D5-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "interrupted": false,
+          "sourceSHA256": "0c6b38718503086ef8ac164b1dd1ebeed428c15e6f85c9c59b4be83c2c7e2172",
+          "maxSampleRSSKiB": 184128,
+          "seconds": 0.5893288752995431
+        }
+      ]
+    },
+    {
+      "unit": "D6",
+      "status": "checked total definition/proof; exact scope and quantity in source/audit",
+      "declarations": [
+        "foldMaximumMember"
+      ],
+      "commit": "642ef8e91b1c9069434b5dd8111294d6ec576eb5",
+      "attempts": [
+        {
+          "unit": "D6-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "interrupted": false,
+          "sourceSHA256": "9fcd7615380ffcf31981898a752b764773df45bab85fa2355bf934c1ef0c0723",
+          "maxSampleRSSKiB": 203296,
+          "seconds": 0.5822165422141552
+        }
+      ]
+    },
+    {
+      "unit": "D7",
+      "status": "checked total definition/proof; exact scope and quantity in source/audit",
+      "declarations": [
+        "originMaximumMember"
+      ],
+      "commit": "2fe6b449fa092712b2c66db6d1e74edb30174826",
+      "attempts": [
+        {
+          "unit": "D7-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "interrupted": false,
+          "sourceSHA256": "348da942ec3bc253dbf268063760e0f05326f89319be8a7876b1d8b6082ca188",
+          "maxSampleRSSKiB": 203360,
+          "seconds": 0.5856176251545548
+        }
+      ]
+    },
+    {
+      "unit": "D8",
+      "status": "checked total definition/proof; exact scope and quantity in source/audit",
+      "declarations": [
+        "rootOriginCatalogOrdinal"
+      ],
+      "commit": "90392707e8e82a61d24f89be1a21371e05118420",
+      "attempts": [
+        {
+          "unit": "D8-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "interrupted": false,
+          "sourceSHA256": "c39ccc8036156af059962ac0084b44cd92646deacc2725716c01ddbf11aa7acd",
+          "maxSampleRSSKiB": 267600,
+          "seconds": 0.890761333052069
+        }
+      ]
+    },
+    {
+      "unit": "D9",
+      "status": "checked record/family; producer separately listed",
+      "declarations": [
+        "OriginObservation"
+      ],
+      "commit": "632a1e66b903e1c6fe25e522db7cc76dd6e87726",
+      "attempts": [
+        {
+          "unit": "D9-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "interrupted": false,
+          "sourceSHA256": "919fec9772e1a43db263131c5c02ee6433bc6e209bfc5604c8e658137a49a388",
+          "maxSampleRSSKiB": 310736,
+          "seconds": 0.8864082498475909
+        }
+      ]
+    },
+    {
+      "unit": "D10",
+      "status": "checked total definition/proof; exact scope and quantity in source/audit",
+      "declarations": [
+        "observeRootOrigin"
+      ],
+      "commit": "d11d13c0043ae173d9d9125476032c7327f881ac",
+      "attempts": [
+        {
+          "unit": "D10-1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "interrupted": false,
+          "sourceSHA256": "e91d37f0dc81735c5c5ac541083e2efc6fec13a87277d0cd76d937e049daa0c2",
+          "maxSampleRSSKiB": 310352,
+          "seconds": 0.8866445422172546
+        }
+      ]
+    }
+  ]
+}

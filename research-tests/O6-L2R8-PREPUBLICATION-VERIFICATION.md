@@ -1,0 +1,63 @@
+# L2R8 independent evidence reconstruction
+
+{
+  "mode": "prepublication",
+  "result": "PASS",
+  "head": "9c72d7ae65eaed9dff40fea789db3e083478431d",
+  "sourceBoundary": "d11d13c0043ae173d9d9125476032c7327f881ac",
+  "timestamp": "2026-09-09T08:39:28.328483+00:00",
+  "recordCount": 62,
+  "passedCount": 51,
+  "failedCount": 11,
+  "retainedDeclarations": 37,
+  "maximumSampleRSSKiB": 18927216,
+  "finalOwnTargetChecks": 12,
+  "noStagedFiles": true,
+  "noOwnCompiler": true,
+  "changedFiles": [
+    "research-tests/O6-L2R5-CP3-DIFF-DRAFT.md",
+    "research-tests/O6-L2R5-CP3-REHOME-MANIFEST.json",
+    "research-tests/O6-L2R8-FINAL-VALIDATION-PLAN.json",
+    "research-tests/O6-L2R8-GRIND-SHIFT-AUDIT.md",
+    "research-tests/O6-L2R8-SOURCE-CLOSURE.json",
+    "research-tests/O6-L2R8-Sources/DGamma/L2R8ContiguityExecution.idr",
+    "research-tests/O6-L2R8-Sources/DGamma/L2R8ContiguityStates.idr",
+    "research-tests/O6-L2R8-Sources/DGamma/L2R8CoreContract.idr",
+    "research-tests/O6-L2R8-Sources/DGamma/L2R8DistanceSearch.idr",
+    "research-tests/O6-L2R8-Sources/DGamma/L2R8IterationArithmetic.idr",
+    "research-tests/O6-L2R8-Sources/DGamma/L2R8NativeWords.idr",
+    "research-tests/O6-L2R8-Sources/DGamma/L2R8OriginMembership.idr",
+    "research-tests/O6-L2R8-Sources/DGamma/L2R8PrefixPhase.idr",
+    "research-tests/O6-L2R8-Sources/DGamma/L2R8RegionEmbedding.idr",
+    "research-tests/O6-L2R8-Sources/DGamma/L2R8ReleaseFixtures.idr",
+    "research-tests/O6-L2R8-Sources/DGamma/L2R8ReleaseScan.idr",
+    "research-tests/O6-L2R8-Sources/DGamma/L2R8SharedKey.idr",
+    "research-tests/run-l2r8-archive.py",
+    "research-tests/run-l2r8-artifact-commit.py",
+    "research-tests/run-l2r8-check.py",
+    "research-tests/run-l2r8-commit.py",
+    "research-tests/run-l2r8-draft-sync.py",
+    "research-tests/run-l2r8-evidence-tests.py",
+    "research-tests/run-l2r8-final-validations.py",
+    "research-tests/run-l2r8-fixture-recipe.py",
+    "research-tests/run-l2r8-independent-verify.py",
+    "research-tests/run-l2r8-launch.py"
+  ],
+  "checks": [
+    "all individual records/logs/source snapshots reconstructed",
+    "chronological fresh exact-source guarded receipts",
+    "one declaration and previous source bytes preserved at each source commit",
+    "A10 exact full revert; B3 exact deferred full revert",
+    "per-slot attempts/caps and source-closure boundary",
+    "immutable plan published before every final own-target check",
+    "all old Idris draft fragments and all30 renamings preserved",
+    "old source hashes and frozen paths unchanged",
+    "16 actual-AST compiler-free guard tests passed",
+    "no escape hatches/with/let or unchecked producer claims in retained sources",
+    "no main-tree/lock commands; sampled RSS <19 GiB",
+    "no staged files or own compiler"
+  ],
+  "qualification": "Script-based independent reconstruction, NOT independent human mathematical review. Parent-owned reviewer gate remains required."
+}
+
+Script-based independent reconstruction, NOT independent human mathematical review. Parent-owned reviewer gate remains required.
