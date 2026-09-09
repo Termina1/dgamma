@@ -32,3 +32,28 @@ data O20NativeReloadingTarget :
       (MkFiber component parent retiredFlag table (Reloading remaining older view)) fibers = Just view)) ->
     O20NativeReloadingTarget name key world error value nameEq keyEq fibers
       (MkFiber component parent retiredFlag table (Reloading remaining older view))
+
+||| Each native paper Advance source owns its target. Transport that property
+||| through equality of TWO EXPLICIT fiber values derived from their shared
+||| primitive lookup, never through equality of dependent source records.
+export
+0 o20PaperSourceTargetAtFiber :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} -> {actor : name} -> {tag : RuleTag} ->
+  {before : SystemState name key value world error} ->
+  PaperAdvanceSource name key world error value nameEq keyEq actor tag before ->
+  (fiber : Fiber name key value world error) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor (registry before) = Just fiber) ->
+  O20NativeReloadingTarget name key world error value nameEq keyEq (registry before) fiber
+o20PaperSourceTargetAtFiber {name} {key} {world} {error} {value} {nameEq} {keyEq}
+  (AdvanceSourceIter {fibers} Refl observedFound target) fiber found =
+    replace {p = O20NativeReloadingTarget name key world error value nameEq keyEq fibers}
+      (justInjective (trans (sym observedFound) found)) (O20TargetReloading target)
+o20PaperSourceTargetAtFiber {name} {key} {world} {error} {value} {nameEq} {keyEq}
+  (AdvanceSourceFinishEmpty {fibers} Refl observedFound target) fiber found =
+    replace {p = O20NativeReloadingTarget name key world error value nameEq keyEq fibers}
+      (justInjective (trans (sym observedFound) found)) (O20TargetReloading target)
+o20PaperSourceTargetAtFiber {name} {key} {world} {error} {value} {nameEq} {keyEq}
+  (AdvanceSourceFinishOne {fibers} Refl observedFound target) fiber found =
+    replace {p = O20NativeReloadingTarget name key world error value nameEq keyEq fibers}
+      (justInjective (trans (sym observedFound) found)) (O20TargetReloading target)
