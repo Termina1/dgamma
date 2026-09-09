@@ -82,3 +82,16 @@ export
 wordInventoryTail head word code accepted =
   trans (anyFoldObserved (\item => actionKindCode item == code) word (actionKindCode head == code))
     (rewrite accepted in orTrueTrue (actionKindCode head == code))
+
+||| Actual-word inventory and its observed finite-domain subset check.
+||| The flag is NOT assumed True: unsupported roles remain observable.
+public export
+record ObservedWordInventory
+  {name, key, world, error : Type} {value : key -> Type}
+  (word : List (Action name key value world error)) where
+  constructor MkObservedWordInventory
+  inventory : Nat -> Bool
+  0 inventoryEquation : inventory = wordActionInventory word
+  restrictedObserved : Bool
+  0 restrictedEquation :
+    all (\code => not (inventory code) || elemDec code [0, 1, 2, 3, 4]) [0, 1, 2, 3, 4, 5, 6, 7] = restrictedObserved
