@@ -72,3 +72,14 @@ public export
     (MoreTransitions r45ParentInsert NoTransitions)
 r195ActualRootOccurrence = MkLocatedActionOccurrence r45Initial r45AfterParent
   NoTransitions r45ParentInsert NoTransitions Refl Refl
+
+||| Constructive boundary counterexample: the full replay record alone does
+||| NOT entail its root ordinal law, even on an authentic singleton execution.
+||| This is NOT an independently authenticated canonical schedule pair and
+||| is not a counterexample to the protected convergence statement.
+export
+0 r195ReplayRecordDoesNotOwnRootLaw :
+  O20RootReplayOrdinals Nat R45Key Unit String R45Value
+    r195RootLawFreeCorrespondence -> Void
+r195ReplayRecordDoesNotOwnRootLaw law =
+  case rootReplayOrdinal law r195ActualRootOccurrence of Refl impossible
