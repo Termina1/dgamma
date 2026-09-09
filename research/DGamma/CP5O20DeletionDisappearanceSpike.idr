@@ -8,6 +8,7 @@ import DGamma.CP3
 import DGamma.CP5ConfluenceLocalDiamondSpike
 import DGamma.CP5ConfluenceDeletionChainSpike
 import DGamma.CP5ConfluenceCanonicalSortSpike
+import DGamma.CP5ConfluenceCrossTraceSpike
 import DGamma.CP5ConfluenceRenamingCompositionSpike
 import DGamma.CP5CurrentGenerationBirthSpike
 import DGamma.CP5O20CanonicalMaybeControlSpike
@@ -362,3 +363,41 @@ o20CanonicalHeadVestigialDisappears nameEq keyEq left right mapping registration
   o20ReducedAbsenceSurvivesSorting nameEq keyEq left capital selected
     (o20VestigialHeadDisappearsThroughChain nameEq keyEq left right (reducedTrace (capitalReduction capital))
       mapping registrations (reductionDeletionDerivation (capitalReduction capital)) selected packet member)
+
+||| The actual operational permutation preserves this construction-owned
+||| head-vestigial disappearance. Global discarded coverage is still required.
+export
+0 o20PermutedHeadVestigialDisappears :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {protocol : RegistrationProtocol key value world error} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {initial, leftFinal, rightFinal : SystemState name key value world error} ->
+  {leftTrace : Transitions initial leftFinal} ->
+  {rightTrace : Transitions initial rightFinal} ->
+  {sameInputs : SameOrchestrationModuloGenerated nameEq keyEq leftTrace rightTrace} ->
+  {leftCapital : IndependentCanonicalSchedule name key world error value protocol
+    nameEq keyEq leftTrace} ->
+  {rightCapital : IndependentCanonicalSchedule name key world error value protocol
+    nameEq keyEq rightTrace} ->
+  {matching : MappedCanonicalSupportOrders name key world error value protocol
+    nameEq keyEq leftTrace rightTrace
+    (currentNameBijection (endpointRenaming sameInputs))
+    (canonicalSchedule leftCapital) (canonicalSchedule rightCapital)} ->
+  {operational : CertifiedOperationalCanonicalPermutation name key world error value
+    protocol nameEq keyEq leftTrace rightTrace sameInputs leftCapital rightCapital matching} ->
+  (execution : PermutedCanonicalExecution name key world error value protocol
+    nameEq keyEq leftTrace rightTrace sameInputs leftCapital rightCapital operational) ->
+  (selected : name) ->
+  (packet : VestigialEndpointGeneration name key world error value nameEq keyEq
+    (leftFinalGenerations (generatedRegistrationTree sameInputs))
+    (leftDeletedGenerations (generatedRegistrationTree sameInputs)) selected leftFinal) ->
+  Elem (vestigialGeneration packet)
+    (o20DeletionHeadGenerations (reductionDeletionDerivation (capitalReduction leftCapital))) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected (registry (operationalTargetFinal operational)) = Nothing)
+o20PermutedHeadVestigialDisappears {nameEq} {keyEq} {protocol} {leftTrace} {rightTrace} {sameInputs} {leftCapital} {operational}
+  execution selected packet member =
+    o20ReplayEndpointPreservesAbsence nameEq keyEq
+      (canonicalFinal (canonicalSchedule leftCapital)) (operationalTargetFinal operational)
+      (composedPermutationEndpoint execution) selected
+      (o20CanonicalHeadVestigialDisappears nameEq keyEq leftTrace rightTrace (generatedGenerationBijection sameInputs)
+        (generatedRegistrationTree sameInputs) leftCapital selected packet member)
