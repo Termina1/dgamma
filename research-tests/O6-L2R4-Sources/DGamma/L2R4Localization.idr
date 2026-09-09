@@ -107,3 +107,36 @@ export
 orderedBundleRootAt ForcedBundleEnd ordinal upper = absurd upper
 orderedBundleRootAt (ForcedBundleStep root component step rest inserted forced tail) ordinal upper =
   rootHeadOrdinal root component step rest inserted (orderedBundleRootAt tail) ordinal upper
+
+||| Lift an arbitrary local bundle position through its own core, opening,
+||| prefix and suffix. All trace equations are the authenticated member/block
+||| equations; only Nat count associativity changes the ordinal index.
+export
+0 attachedRootAtOffset :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {first, finalState : SystemState name key value world error} ->
+  {global : Transitions first finalState} ->
+  {action : Action name key value world error} -> {ordinal : Nat} ->
+  (member : AttachedBundleOccurrence name key world error value nameEq keyEq global action ordinal) ->
+  (local : Nat) -> LT local (transitionCount (memberBundle member)) ->
+  RootInsertionAt name key world error value global (bundleOffset member + local)
+attachedRootAtOffset member local upper =
+  replace {p = RootInsertionAt _ _ _ _ _ _}
+    (trans (plusAssociative (transitionCount (attachedBefore (containingBlock member)))
+      (S (transitionCount (memberCore member))) local)
+      (cong (+ local) (sym (offsetExact member))))
+    (replace {p = \whole => RootInsertionAt _ _ _ _ _ whole
+        (transitionCount (attachedBefore (containingBlock member)) + S (transitionCount (memberCore member) + local))}
+      (attachedDecomposition (containingBlock member))
+      (rootInsertionAfterPrefix (attachedBefore (containingBlock member))
+        (MoreTransitions (beginTransition (attachedOpening (containingBlock member)))
+          (appendTransitions (attachedBody (containingBlock member)) (attachedAfter (containingBlock member))))
+        (rootInsertionAfterPrefix
+          (MoreTransitions (beginTransition (attachedOpening (containingBlock member))) NoTransitions)
+          (appendTransitions (attachedBody (containingBlock member)) (attachedAfter (containingBlock member)))
+          (rootInsertionBeforeSuffix (attachedBody (containingBlock member)) (attachedAfter (containingBlock member))
+            (replace {p = \body => RootInsertionAt _ _ _ _ _ body (transitionCount (memberCore member) + local)}
+              (memberSplit member)
+              (rootInsertionAfterPrefix (memberCore member) (memberBundle member)
+                (orderedBundleRootAt (memberForced member) local upper)))))))
