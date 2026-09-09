@@ -9,6 +9,7 @@ import DGamma.Metatheory
 import DGamma.CP3
 import DGamma.CP5AvailabilityAwarePlacement
 import DGamma.L2R3Attached
+import DGamma.L2R5RootCatalog
 import DGamma.L2R8ReleaseScan
 import DGamma.L2R9OrdinalScan
 import DGamma.L2R9OrdinalLink
@@ -103,3 +104,28 @@ phaseReleaseAtOrdinal nameEq keyEq component trail ordinal member =
    snd (snd (phaseMapMember (\packet => locatedActionOrdinal (releaseOccurrence (snd packet)))
     (scanObservedReleases nameEq keyEq component trail) ordinal
     (replace {p = Elem ordinal} (sym (releaseOrdinalLink nameEq keyEq component trail)) member))))
+
+||| The authentic accepted seed PRODUCES its native GLOBAL own-child release
+||| at pred anchor. The old/new whole-trail agreement is NOT needed for this
+||| extraction: phaseAnchorSeedCheck itself uses the new ordinal scan.
+export
+0 phaseSeedRelease : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, finalState : SystemState name key value world error} ->
+  {trace : Transitions first finalState} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (trail : AvailabilityTrace name key world error value trace) ->
+  (entry, seed : RootCatalogEntry name key world error value) -> (anchor : Nat) ->
+  (0 accepted : phaseAnchorSeedCheck nameEq keyEq trail entry anchor seed = True) ->
+  (packet : (actor : name ** AttachedRelease name key world error value nameEq actor trace (catalogComponent seed)) **
+    locatedActionOrdinal (releaseOccurrence (snd packet)) = pred anchor)
+phaseSeedRelease nameEq keyEq trail entry seed anchor accepted =
+  phaseReleaseAtOrdinal nameEq keyEq (catalogComponent seed) trail (pred anchor)
+    (phaseFilterMember (\ordinal => ordinal < catalogOrdinal seed) (pred anchor)
+      (releaseOrdinalScan nameEq keyEq (catalogComponent seed) trail)
+      (phaseMemberAtDecision (the (DecEq Nat) %search) (pred anchor)
+        (filter (\ordinal => ordinal < catalogOrdinal seed)
+          (releaseOrdinalScan nameEq keyEq (catalogComponent seed) trail))
+        (isElem @{the (DecEq Nat) %search} (pred anchor)
+          (filter (\ordinal => ordinal < catalogOrdinal seed)
+            (releaseOrdinalScan nameEq keyEq (catalogComponent seed) trail))) Refl
+        (fst (snd (snd (phaseSeedAcceptedParts nameEq keyEq trail entry seed anchor accepted))))))
