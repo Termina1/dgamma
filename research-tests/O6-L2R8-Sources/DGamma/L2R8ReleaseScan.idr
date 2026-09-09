@@ -57,3 +57,28 @@ public export
 releaseAtLookup nameEq keyEq component child occurrence Nothing equation = []
 releaseAtLookup nameEq keyEq component child occurrence (Just fiber) equation =
   releaseAtParent nameEq keyEq component child fiber occurrence equation (fiberParent fiber) Refl
+
+||| Head-action classification over the isElem release scan; agreement with
+||| scanReleaseOrdinals open. Only ORemove emits; every lookup is fully indexed.
+public export
+0 releaseAtAction : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (component : Component key value world error) ->
+  (step : Transition first middle) -> (rest : Transitions middle finalState) ->
+  (action : Action name key value world error) ->
+  (0 equation : transitionAction step = action) ->
+  List (actor : name ** AttachedRelease name key world error value nameEq actor
+    (MoreTransitions step rest) component)
+releaseAtAction nameEq keyEq component step rest (OInsert child parent inserted) equation = []
+releaseAtAction nameEq keyEq component step rest (ORetire child) equation = []
+releaseAtAction {name} {key} {world} {error} {value} {first} {middle}
+  nameEq keyEq component step rest (ORemove child) equation =
+  releaseAtLookup nameEq keyEq component child
+    (MkLocatedActionOccurrence first middle NoTransitions step rest equation Refl)
+    (lookupFiber {name} {key} {value} {world} {error} @{nameEq} child (registry first)) Refl
+releaseAtAction nameEq keyEq component step rest (LBegin actor) equation = []
+releaseAtAction nameEq keyEq component step rest (LAdvance actor) equation = []
+releaseAtAction nameEq keyEq component step rest (LDivert actor) equation = []
+releaseAtAction nameEq keyEq component step rest (LUnload actor) equation = []
+releaseAtAction nameEq keyEq component step rest (LLeave actor) equation = []
