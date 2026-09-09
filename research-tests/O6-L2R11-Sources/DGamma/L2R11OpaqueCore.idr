@@ -43,3 +43,16 @@ record CoreNativePacket (states : Nat -> SystemState Nat Bool (\key => Unit) Uni
     @{fst fixtureDictionaries} 5 (registry (states 3)) = Just (freshFiber (smallComponent False) (ChildOf 2))
   0 removeSource : lookupFiber {name = Nat} {key = Bool} {value = \key => Unit} {world = Unit} {error = String}
     @{fst fixtureDictionaries} 5 (registry (states 4)) = Just (retireFiber (freshFiber (smallComponent False) (ChildOf 2)))
+
+||| Simultaneously constructed native core, source-aware trail and grammar.
+||| The output has exact action-word/count specifications, not endpoint-state
+||| equality between original and restored cores.
+public export
+record CoreNativeRun (states : Nat -> SystemState Nat Bool (\key => Unit) Unit String) where
+  constructor MkCoreNativeRun
+  assembledTrace : Transitions (states 0) (states 5)
+  assembledTrail : AvailabilityTrace Nat Bool Unit String (\key => Unit) assembledTrace
+  0 assembledActorOnly : ActorLifecycleOnlyExtended (fst fixtureDictionaries) 2 assembledTrace
+  0 assembledWord : nativeActionWord assembledTrail =
+    [OInsert 5 (ChildOf 2) (smallComponent False), LBegin 2, LAdvance 2, ORetire 5, ORemove 5]
+  0 assembledCount : transitionCount assembledTrace = 5
