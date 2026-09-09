@@ -4858,6 +4858,41 @@ deletionStepOperationalOccurrenceFoldSpike nameEq keyEq protocol trace premises
         (selectedRegistrations candidate) (selectedStartOrdinal candidate)
         (selectedStartLive candidate) result capital)
 
+||| The actual deletion occurrence builder preserves root ordinals using the
+||| SAME stored capital; its private action-origin definition is unfolded here.
+export
+0 deletionBuiltRootOrdinalPreserved :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {protocol : RegistrationProtocol key value world error} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {initial, finalState : SystemState name key value world error} ->
+  (trace : Transitions initial finalState) ->
+  (premises : CanonicalizationPremises name key world error value protocol
+    nameEq keyEq trace) ->
+  (candidate : DeletableClosingEpisode name key world error value nameEq keyEq trace) ->
+  (result : DeletionResult name key world error value nameEq keyEq trace
+    (selectedActor candidate) (selectedEpisode candidate)
+    (selectedRegistrations candidate) (selectedStartOrdinal candidate)
+    (selectedStartLive candidate)) ->
+  (capital : DeletionProducerOperationalCapital name key world error value
+    nameEq keyEq trace (selectedActor candidate) (selectedEpisode candidate)
+    (selectedRegistrations candidate) (selectedStartOrdinal candidate)
+    (selectedStartLive candidate) result) ->
+  {root : name} -> {component : Component key value world error} ->
+  (occurrence : LocatedActionOccurrence (OInsert root Root component)
+    (survivingTrace result)) ->
+  (generationForward
+    (replayGenerationRenaming (deletionOperationalCorrespondence
+      (deletionStepOperationalOccurrenceFoldSpike nameEq keyEq protocol trace
+        premises candidate result capital)))
+    (MkRegistrationGeneration root
+      (locatedActionOrdinal (replayActionOrigin (deletionOperationalCorrespondence
+        (deletionStepOperationalOccurrenceFoldSpike nameEq keyEq protocol trace
+          premises candidate result capital)) occurrence))) =
+    MkRegistrationGeneration root (locatedActionOrdinal occurrence))
+deletionBuiltRootOrdinalPreserved trace premises candidate result capital occurrence =
+  deletionProducerRootOrdinalPreserved capital occurrence
+
 ||| Internal enriched result of one D72 call.  The public `DeletionResult` stays
 ||| immutable, but the checked fold/adapter used by Path A must construct the
 ||| replay correspondence, exact generated-registration accounting, and every
