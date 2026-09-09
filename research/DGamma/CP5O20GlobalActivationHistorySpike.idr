@@ -149,3 +149,19 @@ o20LeftNativeActivationHistory (QueueRightGeneratedRegistration edge rest shape 
   o20LeftNativeActivationHistory later
 o20LeftNativeActivationHistory (MatchRightWithPendingLeft edge rest shape retained earlierEvents event laterEvents matched later) =
   o20LeftNativeActivationHistory later
+
+||| Executable replay of ONLY retained activation events. The historical
+||| generation-and-Begin key, not the raw parent or global edge ordinal,
+||| selects each counter. Ordinary/deleted source edges are absent from this
+||| word because the native scanner authenticates them separately.
+public export
+o20ReplayRetainedEventCounts :
+  {0 name, key, world, error : Type} -> {0 value : key -> Type} ->
+  (nameEq : DecEq name) -> List (RegistrationEvent name key world error value) ->
+  List (RegistrationActivation name, Nat) -> List (RegistrationActivation name, Nat)
+o20ReplayRetainedEventCounts nameEq [] counts = counts
+o20ReplayRetainedEventCounts nameEq (event :: later) counts =
+  case eventParentActivation event of
+    Nothing => o20ReplayRetainedEventCounts nameEq later counts
+    Just activation => o20ReplayRetainedEventCounts nameEq later
+      (incrementChildrenBornInActivation @{nameEq} activation counts)
