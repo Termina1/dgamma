@@ -15,3 +15,44 @@ A1–A9 retained; A10 observedReleaseFixtures exhausted3/3 and fully reverted to
 ## Core-contiguity ruling (verbatim)
 
 CONFIRMED: `coreContiguityRestored` = exact contiguous ACTION-WORD equality of B's extended core (the same action sequence, contiguous again after R exits), with both native core traces present and source-aware ActorLifecycleOnlyExtended evidence for the new core; state relations at the endpoints are RegistryExtensional (R's binding is present in every later B state, so state-indexed native trace equality is impossible and was never the intent).
+
+
+## A final residue and gate ratification
+
+A1–A9: **9 checked declarations**. sharedKeyDecision/sharedKeyFromAnyHit explicitly observe the ACTUAL isElem decision with its call-site equation. scanObservedReleases constructs located native own-child ORemove occurrences, source lookup, parent and shared declared key by structural trail recursion. All this extraction is **quantity0**, over the NEW isElem release scan; it is NOT an unrestricted ordinal scan and does not inhabit old phase/anchor statements. releaseScanAgrees remains NAMED OPEN, not assumed. The supervisor RATIFIED A10 stopped3/3/full revert. Exact next-shift residue: **data-agreement fixtures need a public export, unrestricted (omega) executable release-ORDINAL scan linked by an equation to the erased proof-carrying scan; A10 failed on native literal checkedApplyAction normalization before that split existed**. No C12/barrier data agreement, phaseScanOk or produceForcedRootPhases was produced. No L2R7 A8 restatement.
+
+## B final scope — capped B14; B3 deferred
+
+**13 checked declarations** at B1/B2/B4–B14. contiguityState (91ed26ae) and ContiguityNativeExecution TYPE (a680d95f) describe the intended one-origin original/split/restored schedules. B2's concrete state contract was CPU-bound and stopped; abstracting its state family passed2/3 in1.16s at295,456KiB.
+
+**B3 native fixture producer DEFERRED2/3**, full revert to B2 bytes. Both attempts hit the stricter LIGHT18GiB RSS stop (18,927,216 and18,905,712KiB sampled), not the48GiB outer ceiling. Explicit constructor family instantiation did not fix normalization of17 native scalar equations. This is a cost datum, NOT proof of a semantic impossibility. Supervisor prohibited another identical attempt or alternative evaluator producer, allowed independent B work, and allowed packet splitting only if >=3 B slots remained. B14 consumed the cap, so no split/third assembly was launched. Native coreContiguityRestored fixture remains OPEN.
+
+LocatedExtendedCore (79aa5fcb) and **GeneralCoreContiguityRestored (bf888aec) are TYPES ONLY**. The latter asks for an actual restored contiguous source-aware core with byte-identical ACTION WORD at the shifted physical position, plus RegistryExtensional WHOLE-run endpoints. It does not ask for literal equality of core endpoint states, which change when R is inserted earlier.
+
+nativeWordCount/appendAvailability/nativeWordAppend (e615fc32/9d35a0cf/911a9e95) are general checked native word/count/concatenation connectors. **searchDistance (d3100a10) is an unrestricted general first-positive ordered-list producer**, retaining exact split and all earlier distances zero. allZeroTotal/selectFirstPositiveObserved (0f835e61/f3d660ee) prove positive-total existence from the observed actual search. Native catalog instantiation/forcing linkage, predecessor admissibility, one-step squares, native Insert/Insert applicability and produceAdmittedDistanceMove remain OPEN. No original-prefix D8 move reproduction FROM a general producer.
+
+## C revised authorized scope complete at C5/8
+
+The supervisor explicitly AUTHORIZED tractable given-finite-chain arithmetic and a placed-prefix invariant TYPE because move/phase producers were unavailable; no move oracle was authorized. **5 checked declarations**: iterationSteps (2db63563), iterationDistanceBalance (22c1f171), iterationStepsAtZero (0b564942), iterationLengthBound (014667cb), and PlacedPrefixPhaseInvariant TYPE (fee4c252). C5 passed2/3 after adding a required direct ForcedRootInput import.
+
+The arithmetic is general for a GIVEN finite native DistanceIteration; exact initial distance = step count + final distance, terminal-zero count, and initial-distance bound. **Not normalization; move/phase producers open.** No accessibility recursion, move oracle or general chain-existence theorem was introduced. The new invariant carries actual phases/placed bundles/zero for earlier forced roots and the selected root's phase; no later-root contiguous-core premise mid-round. General transport, outer-round restoration/coreContiguityRestored, stable anchors and other-root distances remain OPEN. L2R6 all-roots types unchanged. D8 is NOT reproduced from general producers.
+
+## D final scope — capped D10
+
+**10 checked declarations**. prependOccurrence/extendOccurrence/RegionEmbedding/**embedRegionOccurrence (00943aa6)** GENERALLY preserve the actual source and transition when embedding a region using a native prefix/region/suffix decomposition. The exact global ordinal is prefix count + local ordinal; RootOrchestrationStep (including Retire/Remove) is transported, not reclassified by raw name. D1 passed2/3 after replacing reserved binder `prefix`; no source-level semantic repair elsewhere. This closes the generic physical embedding kernel, not the production of arbitrary inter-block decomposition/offset equations.
+
+maxMemberObserved/foldMaximumMember/originMaximumMember/rootOriginCatalogOrdinal (1df6d32b/642ef8e9/2fe6b449/90392707) close observed actual maximum and filtered-catalog ORDINAL membership. **observeRootOrigin (d11d13c0)** is a single-constructor unrestricted producer of the UNCHANGED rootOriginAt value and its general conditional ordinal-membership proof. Inverting map/filter to an actual catalog ENTRY, observing its equality decider to obtain root identity, applying scanCatalogBirth, and the reverse/maximality direction remain OPEN. The full rootOriginAt ↔ native-birth linkage is NOT claimed.
+
+**produceAttachedNormalForm remains OPEN**, with front/control exclusion, generation-origin linkage and general placement still missing. No all-premises-produced zero-gap application closes for either original attached trace or controlFixture/attachedC. No old empty-gap NF was relabelled as a general producer. Cross-bundle authenticated prefix/generation history remains OPEN.
+
+## E1 — source closure, draft sync, tooling, immutable final plan
+
+Source phase is CLOSED at **d11d13c0:37 retained declarations in12 modules**; A10 stop and B3 defer snapshots/records remain in /tmp/dgamma-l2r8. Caps A10/B14/D10 reached; C's supervisor-revised scope completedC5. The checker now additionally refuses ANY proof invocation after source-closure publication. No new proof attempt is authorized.
+
+Pending docs/tools were interrupted by provider usage limits, NOT by a compiler or source failure. Supervisor/owner reset usage and explicitly resumed E only. Exact d11d13c0 branch/tree was reverified08:35UTC; all pending files were complete and consistent with intent. Original10:44UTC validation cutoff remains in force; no self-extension.
+
+Docs-only sync preserves EVERY prior Idris draft code block, all predecessor manifest fields/source hashes and all30 renamings. Signature/Tier-2 rows cite the new kernels and exact residues. Main R197 providerHeadObserved was read by authorized git fetch/show only; it is not imported or duplicated here. The draft is **NOT SIGNABLE as a complete attached-grammar + placement cure until GENERAL normalizer iteration AND cross-bundle controls close**, together with listed connector debts. No global Tier-2 clause is promoted wholesale.
+
+16 compiler-free tests exercise actual guard ASTs/helpers (bounded IDs/caps/attempts, target and process ownership, fresh-only/exactly-one Building, mutation, source closure, no validation publication bypass, no companion authority, frozen plan and Python syntax). The12-target leaf-before-dependent immutable plan is published before V10–V21. Final checks/archiving/reconstruction are pending at E1; later E2/E3 record actual outcomes, never predictions.
+
+All checks are detached/serialized, seeded and target-only touched; no build deletion, mass touch or package build. No main-worktree access and no heavy-lock/window inspection/acquisition/modification. A1-1 source-publication guard was mistakenly invoked after a FAIL and correctly rejected before staging; actual publication was fresh A1-3. No whitespace repair exception was needed. No escape hatch, postulate, hole, partial declaration, `with` or `let` introduced in new Idris code. Independent HUMAN reviewer gate remains parent-owned and REQUIRED.

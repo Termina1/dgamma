@@ -1,0 +1,18 @@
+{
+  "boundary": "d11d13c0043ae173d9d9125476032c7327f881ac",
+  "time": "2026-09-09T08:01:44.331012+00:00",
+  "caps": {
+    "A": 10,
+    "B": 14,
+    "C": 8,
+    "D": 10,
+    "E": 3
+  },
+  "completion": {
+    "A": "A10 capped; stopped3/3",
+    "B": "B14 capped; B3 deferred2/3",
+    "C": "C1-C5 revised authorized tractable scope complete; not normalization",
+    "D": "D10 capped; general NF open"
+  },
+  "noFurtherProofAttempts": true
+}

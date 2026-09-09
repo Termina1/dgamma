@@ -1,0 +1,62 @@
+[
+  {
+    "unit": "V10",
+    "path": "research-tests/O6-L2R8-Sources/DGamma/L2R8SharedKey.idr",
+    "sourceHash": "da1035d7b889ace797ac25d44ff12e2c451688b3e9f7714dc84257cd8646cf72"
+  },
+  {
+    "unit": "V11",
+    "path": "research-tests/O6-L2R8-Sources/DGamma/L2R8ReleaseScan.idr",
+    "sourceHash": "8b8026931517a2b930530b2b3cfbfdcd919519cee13b10aea21c1b81ed2ccf19"
+  },
+  {
+    "unit": "V12",
+    "path": "research-tests/O6-L2R8-Sources/DGamma/L2R8ReleaseFixtures.idr",
+    "sourceHash": "0fe69d4de4154c217f7f9eac1afb7ba05ee5ceda6a092d09e627ca86a6c79119"
+  },
+  {
+    "unit": "V13",
+    "path": "research-tests/O6-L2R8-Sources/DGamma/L2R8ContiguityStates.idr",
+    "sourceHash": "03875d79721b9bc7e675f750a30c64ef01cb84a32f21d996e29009193dcbd5a3"
+  },
+  {
+    "unit": "V14",
+    "path": "research-tests/O6-L2R8-Sources/DGamma/L2R8ContiguityExecution.idr",
+    "sourceHash": "70ba26bc81ecfcb7584e1083af69b5ed4cb64f0aaba274b44f4a24dd90c20f33"
+  },
+  {
+    "unit": "V15",
+    "path": "research-tests/O6-L2R8-Sources/DGamma/L2R8CoreContract.idr",
+    "sourceHash": "ae5ca8df2bf5afd4b5ee9fa22e045db376a63ecf673dd4b91ed89b349db9315a"
+  },
+  {
+    "unit": "V16",
+    "path": "research-tests/O6-L2R8-Sources/DGamma/L2R8NativeWords.idr",
+    "sourceHash": "ce20c0b6af0a054d3dea1363cb33ebc992d4560ef1414ba6c1a29573d09463b0"
+  },
+  {
+    "unit": "V17",
+    "path": "research-tests/O6-L2R8-Sources/DGamma/L2R8DistanceSearch.idr",
+    "sourceHash": "e68ce397329c455282c9fef6bb47c9df62bb38310b2791435cb41a41d7f26d29"
+  },
+  {
+    "unit": "V18",
+    "path": "research-tests/O6-L2R8-Sources/DGamma/L2R8IterationArithmetic.idr",
+    "sourceHash": "0360dedcd4f5cd7557557047ffb144491484ef26214b533073408f835d9b4c83"
+  },
+  {
+    "unit": "V19",
+    "path": "research-tests/O6-L2R8-Sources/DGamma/L2R8PrefixPhase.idr",
+    "sourceHash": "f9c623015439c1d6402f91b27786c2424bf6399098ed150f510cba53fbf8d8f1"
+  },
+  {
+    "unit": "V20",
+    "path": "research-tests/O6-L2R8-Sources/DGamma/L2R8RegionEmbedding.idr",
+    "sourceHash": "ea207013624038d9c03555ce2c5f87352fd614907be22d145e1d42c8e3881507"
+  },
+  {
+    "unit": "V21",
+    "path": "research-tests/O6-L2R8-Sources/DGamma/L2R8OriginMembership.idr",
+    "sourceHash": "e91d37f0dc81735c5c5ac541083e2efc6fec13a87277d0cd76d937e049daa0c2"
+  }
+]

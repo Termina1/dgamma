@@ -30,6 +30,7 @@ bundle=[]
 def declarations(data):
  text=data.decode();return set(re.findall(r'^(?:[01] )?([A-Za-z_]\w*)\s*:',text,re.M)+re.findall(r'^(?:record|data)\s+([A-Za-z_]\w*)',text,re.M))
 if re.fullmatch(r'[ABCD]\d+-\d+',unit):
+ assert not (OUT/'source-closed.json').exists(), 'Source phase closed; validation only'
  assert int(unit.split('-')[0][1:]) <= {'A':10,'B':14,'C':8,'D':10}[unit[0]]
  old=subprocess.run(['git','show','HEAD:'+path],cwd=ROOT,capture_output=True)
  assert len(declarations(snapshot)-declarations(old.stdout if old.returncode==0 else b''))==1

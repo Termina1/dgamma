@@ -109,5 +109,47 @@
     "generalScopedNF": "TYPE ONLY; producer OPEN",
     "allPremisesZeroGap": "OPEN",
     "predecessorProofSourcesUntouched": true
+  },
+  "l2r8ResearchStatus": {
+    "sourceBoundary": "d11d13c0",
+    "status": "PARTIAL; NOT SIGNABLE as complete attached grammar + placement cure",
+    "retainedDeclarations": 37,
+    "moduleCount": 12,
+    "generalProducerResidues": [
+      "releaseScanAgrees",
+      "executable release-ordinal/proof split",
+      "phaseScanOk",
+      "produceForcedRootPhases",
+      "coreContiguityRestored proof/fixture",
+      "produceAdmittedDistanceMove",
+      "normalizePhaseDistance",
+      "D8 reproduction from general producers",
+      "origin map/filter-to-entry/native-birth linkage and converse",
+      "front/control exclusion",
+      "produceAttachedNormalForm",
+      "all-premises zero-gap for attached/attachedC",
+      "cross-bundle authenticated prefix/generation history"
+    ],
+    "checkedKernels": [
+      "quantity-0 shared-key and located native isElem release scan",
+      "unrestricted ordered first-positive distance scan and observed positive-total decoder",
+      "given finite-iteration distance balance, terminal-zero count and bound",
+      "generic native physical region embedding with source/root-kind transport",
+      "unrestricted unchanged origin observation with filtered-catalog ordinal membership"
+    ],
+    "proofSourcePaths": [
+      "research-tests/O6-L2R8-Sources/DGamma/L2R8ContiguityExecution.idr",
+      "research-tests/O6-L2R8-Sources/DGamma/L2R8ContiguityStates.idr",
+      "research-tests/O6-L2R8-Sources/DGamma/L2R8CoreContract.idr",
+      "research-tests/O6-L2R8-Sources/DGamma/L2R8DistanceSearch.idr",
+      "research-tests/O6-L2R8-Sources/DGamma/L2R8IterationArithmetic.idr",
+      "research-tests/O6-L2R8-Sources/DGamma/L2R8NativeWords.idr",
+      "research-tests/O6-L2R8-Sources/DGamma/L2R8OriginMembership.idr",
+      "research-tests/O6-L2R8-Sources/DGamma/L2R8PrefixPhase.idr",
+      "research-tests/O6-L2R8-Sources/DGamma/L2R8RegionEmbedding.idr",
+      "research-tests/O6-L2R8-Sources/DGamma/L2R8ReleaseFixtures.idr",
+      "research-tests/O6-L2R8-Sources/DGamma/L2R8ReleaseScan.idr",
+      "research-tests/O6-L2R8-Sources/DGamma/L2R8SharedKey.idr"
+    ]
   }
 }
