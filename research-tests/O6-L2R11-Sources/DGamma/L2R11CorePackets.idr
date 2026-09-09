@@ -53,3 +53,9 @@ restoredCorePacket = MkCoreNativePacket
 public export
 originalCoreNative : CoreNativeRun contiguityState
 originalCoreNative = assembleCoreNative contiguityState originalCorePacket
+
+||| Executable restored core instance from the SAME opaque assembler. The
+||| original and restored core words agree, but their endpoints need not.
+public export
+restoredCoreNative : CoreNativeRun (\ordinal => contiguityState (11 + ordinal))
+restoredCoreNative = assembleCoreNative (\ordinal => contiguityState (11 + ordinal)) restoredCorePacket
