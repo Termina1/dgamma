@@ -7,6 +7,7 @@ import DGamma.Metatheory
 import DGamma.CP3
 import DGamma.CP4DeletionFrameCore
 import DGamma.CP5ConfluenceRenamingCompositionSpike
+import DGamma.CP5ConfluenceLocalDiamondSpike
 import DGamma.CP5O19AdvanceObservationSpike
 import DGamma.CP5O20SingleRoleAdvanceExtractionSpike
 import DGamma.CP5O20NativeAdvanceAttachmentSpike
@@ -244,3 +245,30 @@ o20HistoryIterKnownLeft {name} {key} {world} {error} {value} nameEq keyEq mappin
         {renaming = historyCutBijection paired} {actor}
         {left = MkSystemState leftWorld leftRegistry} {right = MkSystemState rightWorld rightRegistry}
         component (step :: next :: more) leftParent leftRetired leftTable leftOlder leftView leftFound (historyCutRuntime paired))
+
+||| Open the single-role native left Iter source. Its constructor supplies the
+||| source program and lookup; A28 derives the whole right source and all
+||| runtime observations. No caller supplies an independently reconstructed
+||| target equation or a callback equation.
+export
+0 o20HistoryIterFromPaperSource :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (mapping : RegistrationGenerationBijection name) -> (actor : name) ->
+  (leftOrdinal, rightOrdinal : Nat) -> (leftLive, rightLive : GenerationEnvironment name) ->
+  (leftBefore, leftAfter, rightAfter : SystemState name key value world error) ->
+  (rightWorld : world) -> (rightRegistry : Registry name key value world error) ->
+  (paired : O20HistoryCut name key world error value nameEq mapping leftLive rightLive leftBefore (MkSystemState rightWorld rightRegistry)) ->
+  (checkedApplyAction {name} {key} {value} {world} {error} @{nameEq} @{keyEq} (LAdvance actor) leftBefore = Just (LIterTag, leftAfter)) ->
+  (checkedApplyAction {name} {key} {value} {world} {error} @{nameEq} @{keyEq} (LAdvance (renameForward (historyCutBijection paired) actor)) (MkSystemState rightWorld rightRegistry) = Just (LIterTag, rightAfter)) ->
+  PaperAdvanceSource name key world error value nameEq keyEq actor LIterTag leftBefore ->
+  O20HistoryCut name key world error value nameEq mapping
+    (advanceGenerationEnvironment {name} {key} {value} {world} {error} @{nameEq} leftOrdinal (LAdvance actor) leftLive)
+    (advanceGenerationEnvironment {name} {key} {value} {world} {error} @{nameEq} rightOrdinal (LAdvance (renameForward (historyCutBijection paired) actor)) rightLive)
+    leftAfter rightAfter
+o20HistoryIterFromPaperSource nameEq keyEq mapping actor leftOrdinal rightOrdinal leftLive rightLive
+  _ leftAfter rightAfter rightWorld rightRegistry paired leftChecked rightChecked
+  (AdvanceSourceIter {ambient} {fibers} {component} {parent} {retiredFlag} {table} {step} {next} {more} {accumulator} {view} Refl found target) =
+    o20HistoryIterKnownLeft nameEq keyEq mapping actor leftOrdinal rightOrdinal leftLive rightLive
+      component step next more parent retiredFlag table accumulator view ambient rightWorld fibers rightRegistry
+      leftAfter rightAfter paired found leftChecked rightChecked
