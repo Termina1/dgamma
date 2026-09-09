@@ -51,3 +51,14 @@ export
 phaseOwnerAtDecision nameEq actor owner (Yes equal) equation accepted = sym equal
 phaseOwnerAtDecision nameEq actor owner (No different) equation accepted =
   absurd (trans (sym (cong isYes equation)) accepted)
+
+||| An accepted Maybe-owner test produces actual actor identity. Absence
+||| rejects, and the present case observes decEq through its own equation.
+export
+0 phaseMaybeOwnerDecoded : {name : Type} -> (nameEq : DecEq name) ->
+  (actor : name) -> (owner : Maybe name) ->
+  (0 accepted : maybe False (\selected => isYes (decEq @{nameEq} actor selected)) owner = True) ->
+  owner = Just actor
+phaseMaybeOwnerDecoded nameEq actor Nothing accepted = absurd accepted
+phaseMaybeOwnerDecoded nameEq actor (Just owner) accepted =
+  cong Just (phaseOwnerAtDecision nameEq actor owner (decEq @{nameEq} actor owner) Refl accepted)
