@@ -38,3 +38,29 @@ o20ActiveLookupFrame nameEq selected before afterState Nothing leftExact rightEx
   rewrite leftExact in rewrite rightExact in Refl
 o20ActiveLookupFrame nameEq selected before afterState (Just fiber) leftExact rightExact =
   rewrite leftExact in rewrite rightExact in Refl
+
+||| An observed native Active endpoint has no successful-activation remainder.
+||| Inactive/Reloading are rejected by the actual native Active-bit equation.
+export
+0 o20ActiveRemainderObserved :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (selected : name) -> (state : SystemState name key value world error) ->
+  (observed : Maybe (Fiber name key value world error)) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected (registry state) = observed) ->
+  (supportedActiveAt {name} {key} {value} {world} {error} @{nameEq} selected state = True) ->
+  (o20FiberRoleRemainder (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected (registry state)) = [])
+o20ActiveRemainderObserved nameEq selected state Nothing exact active = rewrite exact in Refl
+o20ActiveRemainderObserved {name} {key} {value} {world} {error} nameEq selected state
+  (Just (MkFiber component parent retiredFlag table (Inactive outcome))) exact active =
+    void (uninhabited (trans (sym (the
+      (supportedActiveAt {name} {key} {value} {world} {error} @{nameEq} selected state = False)
+      (rewrite exact in Refl))) active))
+o20ActiveRemainderObserved {name} {key} {value} {world} {error} nameEq selected state
+  (Just (MkFiber component parent retiredFlag table (Reloading remaining accumulator view))) exact active =
+    void (uninhabited (trans (sym (the
+      (supportedActiveAt {name} {key} {value} {world} {error} @{nameEq} selected state = False)
+      (rewrite exact in Refl))) active))
+o20ActiveRemainderObserved nameEq selected state
+  (Just (MkFiber component parent retiredFlag table (Active accumulator view))) exact active = rewrite exact in Refl
+o20ActiveRemainderObserved nameEq selected state
+  (Just (MkFiber component parent retiredFlag table (Unloading accumulator view outcome))) exact active = rewrite exact in Refl
