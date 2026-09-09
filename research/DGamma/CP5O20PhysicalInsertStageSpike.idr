@@ -362,3 +362,30 @@ record O20PhysicalInsertAttachment
       (registrationGeneration (attachedRightBirth (physicalBirths insertOriginPositions))) rightLive)
     (registrationBefore leftBirth) (registrationBefore (attachedRightBirth (physicalBirths insertOriginPositions)))
     (registrationAfter leftBirth) (registrationAfter (attachedRightBirth (physicalBirths insertOriginPositions)))
+
+||| Construct positions and native stage together using the SAME physical
+||| opposite birth packet. No projected-record equality is required.
+export
+0 o20PhysicalInsertAttachmentFromOrigins :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {leftFirst, leftFinal, rightFirst, rightFinal, leftNowFirst, leftNowFinal, rightNowFirst, rightNowFinal : SystemState name key value world error} ->
+  {left : Transitions leftFirst leftFinal} -> {right : Transitions rightFirst rightFinal} ->
+  {leftNow : Transitions leftNowFirst leftNowFinal} -> {rightNow : Transitions rightNowFirst rightNowFinal} ->
+  (leftReplay : ActionRegistrationReplayCorrespondence name key world error value left leftNow) ->
+  (rightReplay : ActionRegistrationReplayCorrespondence name key world error value right rightNow) ->
+  (mapping : RegistrationGenerationBijection name) -> (renaming : NameBijection name) ->
+  (leftLive, rightLive : GenerationEnvironment name) ->
+  AlignedTransitions name key world error value nameEq keyEq leftNow ->
+  AlignedTransitions name key world error value nameEq keyEq rightNow ->
+  (child, parent : name) -> (component : Component key value world error) ->
+  (leftBirth : LocatedGeneratedRegistration child parent component leftNow) ->
+  (positions : O20PhysicalInsertOriginPositions name key world error value leftReplay rightReplay mapping renaming
+    child parent component leftBirth) ->
+  O20PhysicalInsertAttachment name key world error value nameEq keyEq leftReplay rightReplay mapping renaming
+    leftLive rightLive child parent component leftBirth
+o20PhysicalInsertAttachmentFromOrigins nameEq keyEq leftReplay rightReplay mapping renaming leftLive rightLive
+  leftAligned rightAligned child parent component leftBirth positions =
+    MkO20PhysicalInsertAttachment positions
+      (o20AttachedGeneratedInsertStage nameEq keyEq leftReplay rightReplay mapping renaming {leftLive} {rightLive}
+        leftAligned rightAligned child parent component leftBirth (physicalBirths positions))
