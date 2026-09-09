@@ -8,6 +8,8 @@ import DGamma.CP5ActorLifecycleOnlyExtended
 import DGamma.L2R2SmallStates
 import DGamma.L2R2SmallExecution
 import DGamma.L2R3Attached
+import DGamma.L2R3AttachedGap
+import Data.Nat
 import Data.List.Elem
 import Decidable.Equality
 
@@ -60,3 +62,13 @@ smallAttachedBlocks = MkSmallAttachedBlocks
   (MkBlockBeforeAttached NoTransitions Refl)
   Refl Refl Refl
   (MkLocatedActionOccurrence (smallState 4) (smallState 5) (MoreTransitions (Fired {before = smallState 1} {afterState = smallState 2} %search %search (LAdvance 0) LFinishTag (smallFinish0 smallNativeExecution)) (MoreTransitions (Fired {before = smallState 2} {afterState = smallState 3} %search %search (ORetire 1) ORetireTag (smallRetire1 smallNativeExecution)) (MoreTransitions (Fired {before = smallState 3} {afterState = smallState 4} %search %search (ORemove 1) ORemoveTag (smallRemove1 smallNativeExecution)) NoTransitions))) (Fired {before = smallState 4} {afterState = smallState 5} %search %search (OInsert 3 Root (smallComponent True)) OInsertTag (smallInsert3 smallNativeExecution)) NoTransitions Refl Refl)
+
+||| Nonvacuous instance of the generic membership record: Root3 really lies
+||| in parent0's trailing bundle at global ordinal4, with exact local bounds.
+public export
+0 smallInsertedBundleMember : AttachedBundleOccurrence Nat Bool Unit String (\key => Unit)
+  %search %search smallTrace (OInsert 3 Root (smallComponent True)) 4
+smallInsertedBundleMember = MkAttachedBundleOccurrence 0 (freeingBlock smallAttachedBlocks)
+  (smallState 4) (MoreTransitions (Fired {before = smallState 1} {afterState = smallState 2} %search %search (LAdvance 0) LFinishTag (smallFinish0 smallNativeExecution)) (MoreTransitions (Fired {before = smallState 2} {afterState = smallState 3} %search %search (ORetire 1) ORetireTag (smallRetire1 smallNativeExecution)) (MoreTransitions (Fired {before = smallState 3} {afterState = smallState 4} %search %search (ORemove 1) ORemoveTag (smallRemove1 smallNativeExecution)) NoTransitions))) (ExtendedLifecycleStep (Fired {before = smallState 1} {afterState = smallState 2} %search %search (LAdvance 0) LFinishTag (smallFinish0 smallNativeExecution)) (MoreTransitions (Fired {before = smallState 2} {afterState = smallState 3} %search %search (ORetire 1) ORetireTag (smallRetire1 smallNativeExecution)) (MoreTransitions (Fired {before = smallState 3} {afterState = smallState 4} %search %search (ORemove 1) ORemoveTag (smallRemove1 smallNativeExecution)) NoTransitions)) Refl Refl (ExtendedChildRetireStep (Fired {before = smallState 2} {afterState = smallState 3} %search %search (ORetire 1) ORetireTag (smallRetire1 smallNativeExecution)) (MoreTransitions (Fired {before = smallState 3} {afterState = smallState 4} %search %search (ORemove 1) ORemoveTag (smallRemove1 smallNativeExecution)) NoTransitions) 1 (freshFiber (smallComponent True) (ChildOf 0)) Refl Refl Refl (ExtendedChildRemoveStep (Fired {before = smallState 3} {afterState = smallState 4} %search %search (ORemove 1) ORemoveTag (smallRemove1 smallNativeExecution)) NoTransitions 1 (retireFiber (freshFiber (smallComponent True) (ChildOf 0))) Refl Refl Refl ExtendedLifecycleEnd)))
+  (MoreTransitions (Fired {before = smallState 4} {afterState = smallState 5} %search %search (OInsert 3 Root (smallComponent True)) OInsertTag (smallInsert3 smallNativeExecution)) NoTransitions) (ForcedBundleStep 3 (smallComponent True) (Fired {before = smallState 4} {afterState = smallState 5} %search %search (OInsert 3 Root (smallComponent True)) OInsertTag (smallInsert3 smallNativeExecution)) NoTransitions Refl (KeyReleased smallRelease) ForcedBundleEnd) Refl
+  (MkLocatedActionOccurrence (smallState 4) (smallState 5) NoTransitions (Fired {before = smallState 4} {afterState = smallState 5} %search %search (OInsert 3 Root (smallComponent True)) OInsertTag (smallInsert3 smallNativeExecution)) NoTransitions Refl Refl) 4 Refl Refl (LTESucc (LTESucc (LTESucc (LTESucc LTEZero)))) (LTESucc (LTESucc (LTESucc (LTESucc (LTESucc LTEZero)))))
