@@ -4,6 +4,7 @@ import DGamma.Calculus
 import DGamma.Coeffects
 import DGamma.Metatheory
 import DGamma.CP4RuntimeBindings
+import Data.List.Elem
 import Data.Maybe
 import Decidable.Equality
 
@@ -49,3 +50,19 @@ export
   memberKey {key = name} {value = FiberAt name key value world error} @{nameEq} wanted (registry left) =
   memberKey {key = name} {value = FiberAt name key value world error} @{nameEq} wanted (registry right)
 extensionalMemberKey nameEq left right same wanted = cong isJust (extensionalLookup same wanted)
+
+||| Actual installed declaration occupying a key, regardless of activity or
+||| retirement. Runtime witness data, erased lookup/declaration specifications.
+||| This is existential declaration occupancy, not the executable scan Bool.
+public export
+record DeclaredOccupancy
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (wanted : key)
+  (0 state : SystemState name key value world error) where
+  constructor MkDeclaredOccupancy
+  occupyingName : name
+  occupyingFiber : Fiber name key value world error
+  0 occupyingLookup : lookupFiber {name} {key} {value} {world} {error} @{nameEq}
+    occupyingName (registry state) = Just occupyingFiber
+  0 occupyingDeclaration : Elem wanted
+    (dependencies (componentProvisions (fiberComponent occupyingFiber)))
