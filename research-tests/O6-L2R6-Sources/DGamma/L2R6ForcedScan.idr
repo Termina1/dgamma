@@ -114,3 +114,15 @@ keyForcedAt nameEq keyEq trail entry member = MkKeyForcedAt member
   (not (null (scanReleaseOrdinals nameEq keyEq (catalogComponent entry) 0 (catalogOrdinal entry) trail))) Refl
   (releaseWitnessObserved (scanReleaseOrdinals nameEq keyEq (catalogComponent entry) 0 (catalogOrdinal entry) trail)
     (not (null (scanReleaseOrdinals nameEq keyEq (catalogComponent entry) 0 (catalogOrdinal entry) trail))) Refl)
+
+||| Key-seed test at a physical ordinal in the generated native catalog.
+||| Non-birth ordinals reject; an actual item's own component drives its scan.
+public export
+keyForcedOrdinal : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {0 first, finalState : SystemState name key value world error} ->
+  {0 trace : Transitions first finalState} ->
+  DecEq name -> DecEq key -> AvailabilityTrace name key world error value trace -> Nat -> Bool
+keyForcedOrdinal nameEq keyEq trail ordinal = any
+  (\entry => catalogOrdinal entry == ordinal &&
+    not (null (scanReleaseOrdinals nameEq keyEq (catalogComponent entry) 0 (catalogOrdinal entry) trail)))
+  (scanRootCatalog 0 trail)
