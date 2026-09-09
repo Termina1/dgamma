@@ -274,3 +274,39 @@ o20SubsequenceReflectsSourceOrder (DeleteGenerationAction step rest deleted tail
           o20SubsequenceReflectsSourceOrder tail leftTarget rightTarget leftEarlier rightEarlier leftOrigin rightOrigin
             (fromLteSucc (replace {p = LT (S leftEarlier)} rightShift
               (replace {p = \source => LT source rightSource} leftShift ordered)))
+
+||| JOIN within ONE foreign-center subsequence: the original classification
+||| supplies the close, this exact map supplies the retained birth coordinate,
+||| and source-order reflection places the retained close in THAT birth's own
+||| suffix. No retained Unload or target order is supplied by the caller.
+export
+0 o20ForeignSegmentRetainedClosingBirth :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (selected : name) -> (registered : List (RegistrationGeneration name)) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  {first, finalState, otherFirst, otherFinal : SystemState name key value world error} ->
+  (trace : Transitions first finalState) -> (survivor : Transitions otherFirst otherFinal) ->
+  (kept : GenerationActionSubsequence nameEq (EpisodeGenerationDeletedActor nameEq selected registered)
+    ordinal live trace survivor) ->
+  O20RegisteredUnloadFree name key world error value nameEq registered ordinal live trace ->
+  (generation : RegistrationGeneration name) ->
+  (classified : DeletedGenerationClassification name key world error value nameEq trace generation) ->
+  Not (deletedParent classified = selected) ->
+  (retained : LocatedGeneratedRegistration (generationName generation) (deletedParent classified)
+    (deletedComponent classified) survivor) ->
+  (generationSubsequenceSourceOrdinal kept (registrationOrdinal retained) =
+    Just (registrationOrdinal (deletedOccurrence classified))) ->
+  ActionOccurs (LUnload (deletedParent classified)) (afterRegistration retained)
+o20ForeignSegmentRetainedClosingBirth name key world error value nameEq selected registered ordinal live
+  trace survivor kept free generation classified distinct retained birthExact =
+    case o20DeletedBirthClosingIndex name key world error value nameEq trace generation classified of
+      (sourceClose ** (sourceOrder, sourceExact)) =>
+        case o20ForeignSubsequenceUnloadIndex name key world error value nameEq selected registered ordinal live
+          kept free (deletedParent classified) distinct sourceClose sourceExact of
+            (targetClose ** (targetExact, closeExact)) =>
+              o20UnloadBeyondBirthCut name key world error value (beforeRegistration retained)
+                (registrationTransition retained) (afterRegistration retained) targetClose (deletedParent classified)
+                (o20SubsequenceReflectsSourceOrder kept (registrationOrdinal retained) targetClose
+                  (registrationOrdinal (deletedOccurrence classified)) sourceClose birthExact closeExact sourceOrder)
+                (trans (cong (rawClosingActionAt name key world error value targetClose)
+                  (registrationDecomposition retained)) targetExact)
