@@ -55,3 +55,20 @@ replaceExtensional nameEq selected old next left right same found =
   MkRegistryExtensional (extensionalWorld same)
     (\wanted => replaceLookupExtensionalObserved nameEq wanted selected old next left right same found
       (decEq @{nameEq} wanted selected) Refl)
+
+||| A checked native step at a new source with its actual produced successor,
+||| same rule tag and extensional endpoint. No successful replay is a field
+||| of RegistryExtensional itself. This package does not assert its producer.
+public export
+record CheckedExtensionalStep
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (keyEq : DecEq key)
+  (action : Action name key value world error)
+  (source : SystemState name key value world error) (tag : RuleTag)
+  (0 originalAfter : SystemState name key value world error) where
+  constructor MkCheckedExtensionalStep
+  extensionalAfter : SystemState name key value world error
+  0 extensionalChecked : checkedApplyAction @{nameEq} @{keyEq} action source =
+    Just (tag, extensionalAfter)
+  0 extensionalAfterSame : RegistryExtensional name key world error value nameEq
+    originalAfter extensionalAfter
