@@ -222,3 +222,22 @@ export
 o20WholeOriginalGenerationHistory nameEq keyEq left right mapping registrations unique =
   MkO20GenerationOnlyHistory
     (o20OriginalGenerationDisposition nameEq keyEq left right mapping registrations unique)
+
+||| Carry immutable ORIGINAL disposition to every actual replay birth using
+||| its owned origin. This applies at any retained replay stage, including a
+||| closing/unsupported original history, without a current raw-name match.
+export
+0 o20HistoryThroughReplay :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {leftFirst, leftFinal, rightFirst, rightFinal, replayedFirst, replayedFinal : SystemState name key value world error} ->
+  {left : Transitions leftFirst leftFinal} -> {right : Transitions rightFirst rightFinal} ->
+  {replayed : Transitions replayedFirst replayedFinal} ->
+  (mapping : RegistrationGenerationBijection name) ->
+  O20GenerationOnlyHistory name key world error value mapping left right ->
+  (occurrences : ActionRegistrationReplayCorrespondence name key world error value left replayed) ->
+  (selected, parent : name) -> (component : Component key value world error) ->
+  (birth : LocatedGeneratedRegistration selected parent component replayed) ->
+  O20GenerationOnlyDisposition name key world error value mapping left right
+    (registrationGeneration (replayGeneratedRegistrationOrigin occurrences birth))
+o20HistoryThroughReplay mapping history occurrences selected parent component birth =
+  originalBirthDisposition history selected parent component (replayGeneratedRegistrationOrigin occurrences birth)
