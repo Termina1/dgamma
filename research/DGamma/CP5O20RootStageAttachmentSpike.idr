@@ -50,3 +50,30 @@ o20RootMatchPrepend {root} rightOrdinal step rest (MkO20RootBirthMatch birth exa
       (cong (MoreTransitions step) (actionOccurrenceDecomposition birth)))
     (trans exact (cong (MkRegistrationGeneration root)
       (plusSuccRightSucc rightOrdinal (locatedActionOrdinal birth))))
+
+||| A matched external-root head supplies its own occurrence and stamp.
+||| The explicit action equation transports the requested root/component.
+export
+0 o20RootMatchHead :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (mapping : RegistrationGenerationBijection name) ->
+  (actual, root : name) ->
+  (actualComponent, component : Component key value world error) ->
+  (leftOrdinal, rightOrdinal : Nat) ->
+  {rightFirst, rightMiddle, rightFinal : SystemState name key value world error} ->
+  (step : Transition rightFirst rightMiddle) ->
+  (rest : Transitions rightMiddle rightFinal) ->
+  (transitionAction step = OInsert actual Root actualComponent) ->
+  (OInsert actual Root actualComponent = OInsert root Root component) ->
+  (generationForward mapping (MkRegistrationGeneration actual leftOrdinal) =
+    MkRegistrationGeneration actual rightOrdinal) ->
+  O20RootBirthMatch name key world error value mapping root component
+    (leftOrdinal + Z) rightOrdinal (MoreTransitions step rest)
+o20RootMatchHead mapping actual _ actualComponent _ leftOrdinal rightOrdinal
+  step rest action Refl matched =
+  MkO20RootBirthMatch
+    (MkLocatedActionOccurrence _ _ NoTransitions step rest action Refl)
+    (trans (cong (\ordinal => generationForward mapping
+      (MkRegistrationGeneration actual ordinal)) (plusZeroRightNeutral leftOrdinal))
+      (trans matched (cong (MkRegistrationGeneration actual)
+        (sym (plusZeroRightNeutral rightOrdinal)))))
