@@ -142,3 +142,26 @@ o20ObservedAdvanceRoleConsumption nameEq keyEq actor ambient fibers afterState t
         (o20SuccessfulAdvanceLifecycle (next :: more)
           (pushLocalUndo @{keyEq} (componentProvisions component) older (stepObservedUndo (nativeCallback observed))) view)) fibers found in
     rewrite found in Refl
+
+||| At the actual Iter source packet, produce capability/callback values and
+||| the exact role consumption. Only the one Iter constructor is eliminated;
+||| no caller success value, shared program or successor lookup is required.
+export
+0 o20IterRoleAtSource :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (before, afterState : SystemState name key value world error) ->
+  (checkedApplyAction {name} {key} {value} {world} {error} @{nameEq} @{keyEq}
+    (LAdvance actor) before = Just (LIterTag, afterState)) ->
+  PaperAdvanceSource name key world error value nameEq keyEq actor LIterTag before ->
+  (o20FiberRoleRemainder
+    (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor (registry before)) =
+   LIterTag :: o20FiberRoleRemainder
+    (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor (registry afterState)))
+o20IterRoleAtSource nameEq keyEq actor _ afterState checked
+  (AdvanceSourceIter {ambient} {fibers} {component} {parent} {retiredFlag} {table}
+    {step} {next} {more} {accumulator} {view} Refl found target) =
+    o20ObservedAdvanceRoleConsumption nameEq keyEq actor ambient fibers afterState LIterTag
+      component parent retiredFlag table step (next :: more) accumulator view found target checked
+      (o20IterNativeValues nameEq keyEq actor (MkSystemState ambient fibers) afterState
+        component parent retiredFlag table step next more accumulator view found checked)
