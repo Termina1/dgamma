@@ -136,3 +136,32 @@ data O20OccurrenceStampedHistory :
     O20OccurrenceStampedHistory name key world error value nameEq keyEq mapping renaming
       leftWord rightWord leftLive rightLive leftFinalLive rightFinalLive
       leftBefore rightBefore leftAfter rightAfter
+
+||| Actual conditional finite fold into the EXISTING O20HistoryCut. Only the
+||| INITIAL cut is supplied. Each successor is produced by o20StampedStageCut;
+||| differing genuine occurrence labels are related by its insertion map law.
+||| A8's ordinal-fixity necessity motivates replacing lockstep labels, not the
+||| native runtime laws. This does not produce the synchronization certificate.
+||| whole-word / per-actor ordering and coverage producer remains to prove; arbitrary skips are NOT asserted to be zero native edges
+export
+0 o20OccurrenceStampedHistoryCut :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {mapping : RegistrationGenerationBijection name} -> {renaming : NameBijection name} ->
+  {wordInitial, leftWordFinal, rightWordFinal : SystemState name key value world error} ->
+  {leftWord : Transitions wordInitial leftWordFinal} ->
+  {rightWord : Transitions wordInitial rightWordFinal} ->
+  {leftLive, rightLive, leftFinalLive, rightFinalLive : GenerationEnvironment name} ->
+  {leftBefore, rightBefore, leftAfter, rightAfter : SystemState name key value world error} ->
+  O20OccurrenceStampedHistory name key world error value nameEq keyEq mapping renaming
+    leftWord rightWord leftLive rightLive leftFinalLive rightFinalLive
+    leftBefore rightBefore leftAfter rightAfter ->
+  O20StampedCut name key world error value nameEq mapping renaming
+    leftLive rightLive leftBefore rightBefore ->
+  O20HistoryCut name key world error value nameEq mapping
+    leftFinalLive rightFinalLive leftAfter rightAfter
+o20OccurrenceStampedHistoryCut {renaming} OccurrenceHistoryEnd paired =
+  MkO20HistoryCut renaming (stampedRuntime paired) (stampedForward paired) (stampedBackward paired)
+o20OccurrenceStampedHistoryCut
+  (OccurrenceHistoryMore stage leftOccurrence rightOccurrence leftStampExact rightStampExact leftTagExact rightTagExact later) paired =
+    o20OccurrenceStampedHistoryCut later (o20StampedStageCut stage paired)
