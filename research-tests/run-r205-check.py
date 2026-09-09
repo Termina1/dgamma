@@ -11,6 +11,7 @@ import sys, pathlib, os, signal, time, subprocess, json, re
 sys.dont_write_bytecode=True
 sys.path.insert(0,str(pathlib.Path(__file__).resolve().parent))
 from r205_common import *
+from r205_pressure import sample_pressure, steady_growth
 unit,path=sys.argv[1:3]; OUT.mkdir(exist_ok=True)
 assert re.fullmatch(r'[A-Za-z0-9_-]+',unit)
 assert not (OUT/(unit+'.json')).exists() and not (OUT/(unit+'.log')).exists(), 'Append-only invocation'
@@ -45,9 +46,9 @@ if path!='package':
 limit=(96 if path=='package' else 64 if path.startswith('src/') and (source.stem in ['CP3','CP3StatementChecks'] or source.stem.startswith('CP4')) else 52 if path.endswith('/CP5ConfluenceLocalDiamondSpike.idr') else 48)*1024*1024
 override=policy.get('resourceOverrides',{}).get(unit)
 if override:
-    assert unit=='S31-2' and path=='src/DGamma/CP4SupportSolution.idr'
+    assert unit in ['S31-2','S31-3'] and path=='src/DGamma/CP4SupportSolution.idr'
     assert override['path']==path and override['sourceSHA256']==sha(snapshot)
-    assert override['rssLimitKiB']==128*1024*1024
+    assert override['rssLimitKiB']==(128 if unit=='S31-2' else 200)*1024*1024
     limit=override['rssLimitKiB']
 seeded_package=path=='package' and unit!='P1'
 (OUT/(unit+'.policy.json')).write_bytes((ROOT/'research-tests/O6-R205-REBUILD-POLICY.json').read_bytes())
@@ -55,9 +56,12 @@ seeded_package=path=='package' and unit!='P1'
 (OUT/(unit+'.source')).write_bytes(snapshot)
 (OUT/(unit+'.runner.py')).write_bytes(pathlib.Path(__file__).read_bytes())
 (OUT/(unit+'.common.py')).write_bytes((ROOT/'research-tests/r205_common.py').read_bytes())
+(OUT/(unit+'.pressure.py')).write_bytes((ROOT/'research-tests/r205_pressure.py').read_bytes())
 write_json(OUT/(unit+'.sources.json'),source_manifest)
 start=utc(); clock=time.monotonic(); samples=[]; overlaps=[start] if foreign else []
 mutation=[]; interrupted=False; resource=False; multiple=False; maximum=0
+pressure_samples=[sample_pressure()] if unit=='S31-3' else []
+last_pressure=time.monotonic(); pressure_stopped=False; wall_stopped=False; pressure_error=None
 print('START',unit,start,' '.join(command),'guardKiB',limit,flush=True)
 with (OUT/(unit+'.log')).open('w') as log:
     process=subprocess.Popen(command,cwd=ROOT,stdout=log,stderr=subprocess.STDOUT,start_new_session=True)
@@ -81,6 +85,16 @@ with (OUT/(unit+'.log')).open('w') as log:
         if foreign_active: overlaps.append(stamp)
         if len(ours)>1: multiple=True; stop()
         if maximum>limit: resource=True; stop()
+        if unit=='S31-3' and time.monotonic()-clock>45*60:
+            wall_stopped=True; stop()
+        if unit=='S31-3' and time.monotonic()-last_pressure>=5:
+            try:
+                pressure_samples.append(sample_pressure())
+                if steady_growth(pressure_samples): pressure_stopped=True; stop()
+            except Exception as error:
+                pressure_error=str(error);pressure_stopped=True;stop()
+            last_pressure=time.monotonic()
+            write_json(OUT/(unit+'.pressure-samples.json'),pressure_samples)
         if len(samples)%5==0 or interrupted:
             mutation=[p for p,h in source_manifest.items() if not (ROOT/p).exists() or sha((ROOT/p).read_bytes())!=h]
             if sha((ROOT/'dgamma.ipkg').read_bytes())!=production['dgamma.ipkg']: mutation.append('dgamma.ipkg')
@@ -99,7 +113,7 @@ post_mutation=[p for p,h in source_manifest.items() if not (ROOT/p).exists() or 
 mutation=sorted(set(mutation+post_mutation))
 diagnostic_ok=(process.returncode!=0 and expected in text and symbol and symbol in text) if expected else (process.returncode==0 and 'Error:' not in text)
 passed=bool(fresh and diagnostic_ok and not interrupted and not mutation and not unexpected and not multiple and maximum<=limit)
-record=dict(unit=unit,path=path,command=command,start=start,end=utc(),seconds=time.monotonic()-clock,exit=process.returncode,passed=passed,fresh=fresh,seededPackageNoBuilding=seeded_package,policySHA256=sha((ROOT/'research-tests/O6-R205-REBUILD-POLICY.json').read_bytes()),expectedDiagnostic=expected,symbol=symbol,buildingLines=building,unexpectedBuilding=unexpected,targetMutationDetected=bool(mutation),mutatedPaths=mutation,interrupted=interrupted,resourceStopped=resource,multipleOwnedCompilers=multiple,maxSampleRSSKiB=maximum,rssLimitKiB=limit,rssSamples=samples,sourceSHA256=sha(snapshot),productionManifestSHA256=sha(json.dumps(production,sort_keys=True).encode()),sourceManifestSHA256=sha((OUT/(unit+'.sources.json')).read_bytes()),headAtEnd=git('rev-parse','HEAD').strip(),CP3Blob=git('hash-object','src/DGamma/CP3.idr').strip(),runnerSHA256=sha(pathlib.Path(__file__).read_bytes()),commonSHA256=sha((ROOT/'research-tests/r205_common.py').read_bytes()),crossLaneOverlapTimestampsUTC=overlaps,transcript=text)
+record=dict(unit=unit,path=path,command=command,start=start,end=utc(),seconds=time.monotonic()-clock,exit=process.returncode,passed=passed,fresh=fresh,seededPackageNoBuilding=seeded_package,policySHA256=sha((ROOT/'research-tests/O6-R205-REBUILD-POLICY.json').read_bytes()),expectedDiagnostic=expected,symbol=symbol,buildingLines=building,unexpectedBuilding=unexpected,targetMutationDetected=bool(mutation),mutatedPaths=mutation,interrupted=interrupted,resourceStopped=resource,multipleOwnedCompilers=multiple,memoryPressureStopped=pressure_stopped,wallTimeStopped=wall_stopped,memoryPressureSamplingError=pressure_error,memoryPressureSamples=pressure_samples,memoryPressurePolicy='S31-3 only:query5s;three consecutive positive deltas in swapouts OR occupied compressor pages;45min wall' if unit=='S31-3' else None,pressureSamplerSHA256=sha((ROOT/'research-tests/r205_pressure.py').read_bytes()),maxSampleRSSKiB=maximum,rssLimitKiB=limit,rssSamples=samples,sourceSHA256=sha(snapshot),productionManifestSHA256=sha(json.dumps(production,sort_keys=True).encode()),sourceManifestSHA256=sha((OUT/(unit+'.sources.json')).read_bytes()),headAtEnd=git('rev-parse','HEAD').strip(),CP3Blob=git('hash-object','src/DGamma/CP3.idr').strip(),runnerSHA256=sha(pathlib.Path(__file__).read_bytes()),commonSHA256=sha((ROOT/'research-tests/r205_common.py').read_bytes()),crossLaneOverlapTimestampsUTC=overlaps,transcript=text)
 write_json(OUT/(unit+'.json'),record)
 with (OUT/'ledger.jsonl').open('a') as f: f.write(json.dumps(record)+'\n')
 write_json(OUT/'active.json',dict(status='IDLE',lastInvocation=unit,end=record['end']))

@@ -29,6 +29,8 @@ for item in targets:
             unit='S1-2' # authenticated CLI-root correction, unchanged source; not a proof retry
         elif len(previous)==1 and previous[0]['unit']=='S31' and previous[0]['resourceStopped'] and path=='src/DGamma/CP4SupportSolution.idr' and 'S31-2' in policy.get('resourceOverrides',{}):
             unit='S31-2' # supervisor-authorized ONE isolated 128GiB attempt
+        elif len(previous)==2 and previous[-1]['unit']=='S31-2' and previous[-1]['resourceStopped'] and path=='src/DGamma/CP4SupportSolution.idr' and 'S31-3' in policy.get('resourceOverrides',{}):
+            unit='S31-3' # FINAL gated200GiB/45min/pressure-monitored attempt
         else:continue
     if item.get('validationMode')=='gate-historical-R11-restriction':
         blocked[path]='legacy, not re-checked (standing classification)';continue
@@ -50,7 +52,7 @@ for item in targets:
     print('DONE',unit,'PASS' if r['passed'] else 'FAIL',r['seconds'],r['maxSampleRSSKiB'],flush=True)
     write_json(OUT/(mode+'-progress.json'),dict(timestampUTC=utc(),lastInvocation=unit,status=current_status(),blocked=blocked))
     subprocess.run(['python3','-I',str(ROOT/'research-tests/run-r205-state.py')],cwd=ROOT,check=True,stdout=subprocess.DEVNULL)
-    if r['resourceStopped'] or r['targetMutationDetected'] or r['multipleOwnedCompilers'] or r['unexpectedBuilding']:
+    if r['resourceStopped'] or r.get('memoryPressureStopped') or r.get('wallTimeStopped') or r['targetMutationDetected'] or r['multipleOwnedCompilers'] or r['unexpectedBuilding']:
         print('GATE REQUIRED: resource/mutation/multiple/unexpected-building stop',unit,flush=True);break
 write_json(OUT/(mode+'-progress.json'),dict(timestampUTC=utc(),status=current_status(),blocked=blocked,driverIdle=True))
 subprocess.run(['python3','-I',str(ROOT/'research-tests/run-r205-state.py')],cwd=ROOT,check=True)

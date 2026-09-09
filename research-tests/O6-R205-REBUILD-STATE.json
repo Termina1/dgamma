@@ -1,7 +1,7 @@
 {
-  "timestampUTC": "2026-09-09T23:00:00.505737+00:00",
+  "timestampUTC": "2026-09-09T23:09:05.896965+00:00",
   "status": "INCOMPLETE",
-  "head": "c82b32a3858a0344bc959c8bc2c5a03439e2f2ec",
+  "head": "c9427ebd4df2a0a870ec1d2ac631e4717485ffe4",
   "CP3Blob": "eeaa70aa4414648bb2a1173d58244267997d16d7",
   "patchSHA256": "42d957748fcc67ff534c33a6c369eded4bad65e0f37e5c72e4539b737a68fb8a",
   "lane2CompilerRelease": "NOT RELEASED: remain idle until supervisor confirms COMPLETE",
@@ -1298,8 +1298,8 @@
       "plannedSHA256": "812d874baff27ce025c17ad09527e285079b6ee26a50fec2c4b231723593fda0",
       "status": "RESOURCE STOP — gate required",
       "reason": null,
-      "invocation": "S31",
-      "peakRSSKiB": 67128512,
+      "invocation": "S31-2",
+      "peakRSSKiB": 134435632,
       "exactErrors": "",
       "protected": false
     },

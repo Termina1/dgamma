@@ -8497,6 +8497,17 @@
       "authority": "Supervisor explicit23:00Z gate:THIS module128GiB forONE attempt; all others48/64 unchanged; if exceeded STOP/skip dependencies and gate",
       "priorIsolatedPeakKiB": 67128512,
       "preUnfreezePeak": "UNKNOWN: previous seeded builds did not freshly elaborate this module; no CP3-caused-growth claim"
+    },
+    "S31-3": {
+      "path": "src/DGamma/CP4SupportSolution.idr",
+      "sourceSHA256": "812d874baff27ce025c17ad09527e285079b6ee26a50fec2c4b231723593fda0",
+      "rssLimitKiB": 209715200,
+      "wallLimitSeconds": 2700,
+      "pressureSamplingSeconds": 5,
+      "pressureStop": "three consecutive positive5s increments in Swapouts OR Pages occupied by compressor; query-only memory_pressure -Q; sampling failure also stops",
+      "authority": "Supervisor explicit final gate after128GiB stop: ONE FINAL S31-3 attempt200GiB/45min plus memory-pressure guard; no fourth attempt",
+      "priorIsolatedPeakKiB": 134435632,
+      "preUnfreezePeak": "UNKNOWN; no causal-growth claim"
     }
   }
 }

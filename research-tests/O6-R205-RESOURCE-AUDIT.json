@@ -1,0 +1,714 @@
+{
+  "timestampUTC": "2026-09-09T23:14:17.386749+00:00",
+  "entries": [
+    {
+      "path": "package",
+      "invocations": [
+        {
+          "unit": "P1",
+          "sourceSHA256": "aee761a37757cb047ddbf0f846bc23ce830ed755422f96852d08eb435c368727",
+          "passed": false,
+          "fresh": false,
+          "exit": -15,
+          "seconds": 369.549328584224,
+          "sampledPeakKiB": 100669328,
+          "guardKiB": 100663296,
+          "resourceStopped": true,
+          "ownBuildingLines": 0
+        }
+      ],
+      "maximumObservedSampleKiB": 100669328,
+      "maximumSuccessfulSampleKiB": 0,
+      "preUnfreezeIsolatedPeak": "Not investigated in R205; no growth claim",
+      "qualification": "A stopped check is a lower bound on needed resources, not a completed-check peak. Zero samples means the short-lived compiler escaped one-second sampling."
+    },
+    {
+      "path": "src/DGamma/CP3.idr",
+      "invocations": [
+        {
+          "unit": "S1",
+          "sourceSHA256": "0aa65041e36342a831b24a231e4d68eb74ffa17cf93e56e84b668ae4f19b95ba",
+          "passed": false,
+          "fresh": false,
+          "exit": 1,
+          "seconds": 1.0628040004521608,
+          "sampledPeakKiB": 0,
+          "guardKiB": 67108864,
+          "resourceStopped": false,
+          "ownBuildingLines": 0
+        },
+        {
+          "unit": "S1-2",
+          "sourceSHA256": "0aa65041e36342a831b24a231e4d68eb74ffa17cf93e56e84b668ae4f19b95ba",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "seconds": 12.5154864997603,
+          "sampledPeakKiB": 871120,
+          "guardKiB": 67108864,
+          "resourceStopped": false,
+          "ownBuildingLines": 1
+        }
+      ],
+      "maximumObservedSampleKiB": 871120,
+      "maximumSuccessfulSampleKiB": 871120,
+      "preUnfreezeIsolatedPeak": "Not investigated in R205; no growth claim",
+      "qualification": "A stopped check is a lower bound on needed resources, not a completed-check peak. Zero samples means the short-lived compiler escaped one-second sampling."
+    },
+    {
+      "path": "src/DGamma/CP3Support.idr",
+      "invocations": [
+        {
+          "unit": "S20",
+          "sourceSHA256": "cc3ebec90ac1a3dd80b03fd75710ee346fa168a33c9f1fce932adef556bff47e",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "seconds": 2.10767470812425,
+          "sampledPeakKiB": 332112,
+          "guardKiB": 50331648,
+          "resourceStopped": false,
+          "ownBuildingLines": 1
+        }
+      ],
+      "maximumObservedSampleKiB": 332112,
+      "maximumSuccessfulSampleKiB": 332112,
+      "preUnfreezeIsolatedPeak": "Not investigated in R205; no growth claim",
+      "qualification": "A stopped check is a lower bound on needed resources, not a completed-check peak. Zero samples means the short-lived compiler escaped one-second sampling."
+    },
+    {
+      "path": "src/DGamma/CP4AccumulatorControlChecks.idr",
+      "invocations": [
+        {
+          "unit": "S2",
+          "sourceSHA256": "59c370f3618de4c473f1a07d9f374f907564575ae61c22d7ada645ef8aeae8b1",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "seconds": 1.0603322079405189,
+          "sampledPeakKiB": 0,
+          "guardKiB": 67108864,
+          "resourceStopped": false,
+          "ownBuildingLines": 1
+        }
+      ],
+      "maximumObservedSampleKiB": 0,
+      "maximumSuccessfulSampleKiB": 0,
+      "preUnfreezeIsolatedPeak": "Not investigated in R205; no growth claim",
+      "qualification": "A stopped check is a lower bound on needed resources, not a completed-check peak. Zero samples means the short-lived compiler escaped one-second sampling."
+    },
+    {
+      "path": "src/DGamma/CP4DeletionCommittedProviderPersistence.idr",
+      "invocations": [
+        {
+          "unit": "S3",
+          "sourceSHA256": "ff3b1e16e9b937aeb1b8e6dccac482c732bb67c5832897d31ce77761276dd71f",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "seconds": 1.0653477078303695,
+          "sampledPeakKiB": 0,
+          "guardKiB": 67108864,
+          "resourceStopped": false,
+          "ownBuildingLines": 1
+        }
+      ],
+      "maximumObservedSampleKiB": 0,
+      "maximumSuccessfulSampleKiB": 0,
+      "preUnfreezeIsolatedPeak": "Not investigated in R205; no growth claim",
+      "qualification": "A stopped check is a lower bound on needed resources, not a completed-check peak. Zero samples means the short-lived compiler escaped one-second sampling."
+    },
+    {
+      "path": "src/DGamma/CP4DeletionControl.idr",
+      "invocations": [
+        {
+          "unit": "S21",
+          "sourceSHA256": "9a70692d3083e26129aeb9d2255da2867e78c280ed6992a913008436df9ad818",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "seconds": 1.065387916751206,
+          "sampledPeakKiB": 0,
+          "guardKiB": 67108864,
+          "resourceStopped": false,
+          "ownBuildingLines": 1
+        }
+      ],
+      "maximumObservedSampleKiB": 0,
+      "maximumSuccessfulSampleKiB": 0,
+      "preUnfreezeIsolatedPeak": "Not investigated in R205; no growth claim",
+      "qualification": "A stopped check is a lower bound on needed resources, not a completed-check peak. Zero samples means the short-lived compiler escaped one-second sampling."
+    },
+    {
+      "path": "src/DGamma/CP4DeletionFilterSuccess.idr",
+      "invocations": [
+        {
+          "unit": "S22",
+          "sourceSHA256": "f294f449672441d20a258462c6962d71c3144c677c2df77ca9ccda84c02b43c4",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "seconds": 1.0659000826999545,
+          "sampledPeakKiB": 0,
+          "guardKiB": 67108864,
+          "resourceStopped": false,
+          "ownBuildingLines": 1
+        }
+      ],
+      "maximumObservedSampleKiB": 0,
+      "maximumSuccessfulSampleKiB": 0,
+      "preUnfreezeIsolatedPeak": "Not investigated in R205; no growth claim",
+      "qualification": "A stopped check is a lower bound on needed resources, not a completed-check peak. Zero samples means the short-lived compiler escaped one-second sampling."
+    },
+    {
+      "path": "src/DGamma/CP4DeletionGenerationBounds.idr",
+      "invocations": [
+        {
+          "unit": "S4",
+          "sourceSHA256": "390d4adcaf51409e177dac9041049ccaeb4ccaba582dd962b1a60146002853e8",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "seconds": 1.0604262501001358,
+          "sampledPeakKiB": 0,
+          "guardKiB": 67108864,
+          "resourceStopped": false,
+          "ownBuildingLines": 1
+        }
+      ],
+      "maximumObservedSampleKiB": 0,
+      "maximumSuccessfulSampleKiB": 0,
+      "preUnfreezeIsolatedPeak": "Not investigated in R205; no growth claim",
+      "qualification": "A stopped check is a lower bound on needed resources, not a completed-check peak. Zero samples means the short-lived compiler escaped one-second sampling."
+    },
+    {
+      "path": "src/DGamma/CP4DeletionGenerationChecks.idr",
+      "invocations": [
+        {
+          "unit": "S5",
+          "sourceSHA256": "475aa6b7c5e985779b78aeececd061e58bba20e03fa41d150f649b82f9087ecf",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "seconds": 1.061778291594237,
+          "sampledPeakKiB": 0,
+          "guardKiB": 67108864,
+          "resourceStopped": false,
+          "ownBuildingLines": 1
+        }
+      ],
+      "maximumObservedSampleKiB": 0,
+      "maximumSuccessfulSampleKiB": 0,
+      "preUnfreezeIsolatedPeak": "Not investigated in R205; no growth claim",
+      "qualification": "A stopped check is a lower bound on needed resources, not a completed-check peak. Zero samples means the short-lived compiler escaped one-second sampling."
+    },
+    {
+      "path": "src/DGamma/CP4DeletionGenerationFilter.idr",
+      "invocations": [
+        {
+          "unit": "S6",
+          "sourceSHA256": "dbbd9d3592f05ccdf6dbff7dcfa52b53519406f93f6881b52c81fcbe3453066a",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "seconds": 1.067827207967639,
+          "sampledPeakKiB": 0,
+          "guardKiB": 67108864,
+          "resourceStopped": false,
+          "ownBuildingLines": 1
+        }
+      ],
+      "maximumObservedSampleKiB": 0,
+      "maximumSuccessfulSampleKiB": 0,
+      "preUnfreezeIsolatedPeak": "Not investigated in R205; no growth claim",
+      "qualification": "A stopped check is a lower bound on needed resources, not a completed-check peak. Zero samples means the short-lived compiler escaped one-second sampling."
+    },
+    {
+      "path": "src/DGamma/CP4DeletionGenerationScan.idr",
+      "invocations": [
+        {
+          "unit": "S7",
+          "sourceSHA256": "11d27d9b26a2ab4c5b2fbc8ba980fa239d629cdd6e4f562da627ee728c0ecd0d",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "seconds": 1.0565557917580009,
+          "sampledPeakKiB": 0,
+          "guardKiB": 67108864,
+          "resourceStopped": false,
+          "ownBuildingLines": 1
+        }
+      ],
+      "maximumObservedSampleKiB": 0,
+      "maximumSuccessfulSampleKiB": 0,
+      "preUnfreezeIsolatedPeak": "Not investigated in R205; no growth claim",
+      "qualification": "A stopped check is a lower bound on needed resources, not a completed-check peak. Zero samples means the short-lived compiler escaped one-second sampling."
+    },
+    {
+      "path": "src/DGamma/CP4DeletionGenerationStamped.idr",
+      "invocations": [
+        {
+          "unit": "S8",
+          "sourceSHA256": "10652b1fad98788cd966812dd4ed23820808ed3448116ac59b49b02a168d6ef7",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "seconds": 1.070242458023131,
+          "sampledPeakKiB": 0,
+          "guardKiB": 67108864,
+          "resourceStopped": false,
+          "ownBuildingLines": 1
+        }
+      ],
+      "maximumObservedSampleKiB": 0,
+      "maximumSuccessfulSampleKiB": 0,
+      "preUnfreezeIsolatedPeak": "Not investigated in R205; no growth claim",
+      "qualification": "A stopped check is a lower bound on needed resources, not a completed-check peak. Zero samples means the short-lived compiler escaped one-second sampling."
+    },
+    {
+      "path": "src/DGamma/CP4DeletionPremiseSplit.idr",
+      "invocations": [
+        {
+          "unit": "S23",
+          "sourceSHA256": "8919e95c84bc580da5a875d0355c79d9846ab78171c125bed11035a9aa991987",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "seconds": 2.1099948748014867,
+          "sampledPeakKiB": 249296,
+          "guardKiB": 67108864,
+          "resourceStopped": false,
+          "ownBuildingLines": 1
+        }
+      ],
+      "maximumObservedSampleKiB": 249296,
+      "maximumSuccessfulSampleKiB": 249296,
+      "preUnfreezeIsolatedPeak": "Not investigated in R205; no growth claim",
+      "qualification": "A stopped check is a lower bound on needed resources, not a completed-check peak. Zero samples means the short-lived compiler escaped one-second sampling."
+    },
+    {
+      "path": "src/DGamma/CP4DeletionSelectedForeignLifecycleAnchorCore.idr",
+      "invocations": [
+        {
+          "unit": "S9",
+          "sourceSHA256": "26ffb8f5b50ef14368050dc78b91923d1af77d1a0ef9d4c4e60615ef94af2cd2",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "seconds": 1.0668290839530528,
+          "sampledPeakKiB": 0,
+          "guardKiB": 67108864,
+          "resourceStopped": false,
+          "ownBuildingLines": 1
+        }
+      ],
+      "maximumObservedSampleKiB": 0,
+      "maximumSuccessfulSampleKiB": 0,
+      "preUnfreezeIsolatedPeak": "Not investigated in R205; no growth claim",
+      "qualification": "A stopped check is a lower bound on needed resources, not a completed-check peak. Zero samples means the short-lived compiler escaped one-second sampling."
+    },
+    {
+      "path": "src/DGamma/CP4DeletionSelectedForeignLifecycleAnchorRelianceResolved.idr",
+      "invocations": [
+        {
+          "unit": "S10",
+          "sourceSHA256": "369acd8bc5221c2a5993b2e3c46c11c3178d14bb9199958bc77d751f3933bf3f",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "seconds": 1.0622869171202183,
+          "sampledPeakKiB": 0,
+          "guardKiB": 67108864,
+          "resourceStopped": false,
+          "ownBuildingLines": 1
+        }
+      ],
+      "maximumObservedSampleKiB": 0,
+      "maximumSuccessfulSampleKiB": 0,
+      "preUnfreezeIsolatedPeak": "Not investigated in R205; no growth claim",
+      "qualification": "A stopped check is a lower bound on needed resources, not a completed-check peak. Zero samples means the short-lived compiler escaped one-second sampling."
+    },
+    {
+      "path": "src/DGamma/CP4DeletionSelectedForeignLifecycleAnchorTrace.idr",
+      "invocations": [
+        {
+          "unit": "S24",
+          "sourceSHA256": "99becf85d3ef74793f4fde4fe2138f277519066f3767c2a6fa13937d737e2d6f",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "seconds": 1.0623182500712574,
+          "sampledPeakKiB": 0,
+          "guardKiB": 67108864,
+          "resourceStopped": false,
+          "ownBuildingLines": 1
+        }
+      ],
+      "maximumObservedSampleKiB": 0,
+      "maximumSuccessfulSampleKiB": 0,
+      "preUnfreezeIsolatedPeak": "Not investigated in R205; no growth claim",
+      "qualification": "A stopped check is a lower bound on needed resources, not a completed-check peak. Zero samples means the short-lived compiler escaped one-second sampling."
+    },
+    {
+      "path": "src/DGamma/CP4ParentSafety.idr",
+      "invocations": [
+        {
+          "unit": "S11",
+          "sourceSHA256": "0e8f9570a68275c5959bc6fd2021c1117830482adbf8d9a9caeaccfcf73cc0a8",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "seconds": 2.1004291670396924,
+          "sampledPeakKiB": 227696,
+          "guardKiB": 67108864,
+          "resourceStopped": false,
+          "ownBuildingLines": 1
+        }
+      ],
+      "maximumObservedSampleKiB": 227696,
+      "maximumSuccessfulSampleKiB": 227696,
+      "preUnfreezeIsolatedPeak": "Not investigated in R205; no growth claim",
+      "qualification": "A stopped check is a lower bound on needed resources, not a completed-check peak. Zero samples means the short-lived compiler escaped one-second sampling."
+    },
+    {
+      "path": "src/DGamma/CP4ProgressBound.idr",
+      "invocations": [
+        {
+          "unit": "S12",
+          "sourceSHA256": "16d6ea674d7070c7ce84d42d45e915f3952876af6d7b7c2145d53a92cb27fe5c",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "seconds": 1.0650309580378234,
+          "sampledPeakKiB": 0,
+          "guardKiB": 67108864,
+          "resourceStopped": false,
+          "ownBuildingLines": 1
+        }
+      ],
+      "maximumObservedSampleKiB": 0,
+      "maximumSuccessfulSampleKiB": 0,
+      "preUnfreezeIsolatedPeak": "Not investigated in R205; no growth claim",
+      "qualification": "A stopped check is a lower bound on needed resources, not a completed-check peak. Zero samples means the short-lived compiler escaped one-second sampling."
+    },
+    {
+      "path": "src/DGamma/CP4ProgressChecks.idr",
+      "invocations": [
+        {
+          "unit": "S25",
+          "sourceSHA256": "82d8a552d42bfbb39e51943201d7a9b5cc96de24b3336d0bad23199b034bba78",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "seconds": 2.1042840420268476,
+          "sampledPeakKiB": 243584,
+          "guardKiB": 67108864,
+          "resourceStopped": false,
+          "ownBuildingLines": 1
+        }
+      ],
+      "maximumObservedSampleKiB": 243584,
+      "maximumSuccessfulSampleKiB": 243584,
+      "preUnfreezeIsolatedPeak": "Not investigated in R205; no growth claim",
+      "qualification": "A stopped check is a lower bound on needed resources, not a completed-check peak. Zero samples means the short-lived compiler escaped one-second sampling."
+    },
+    {
+      "path": "src/DGamma/CP4ProgressFinite.idr",
+      "invocations": [
+        {
+          "unit": "S13",
+          "sourceSHA256": "25fe7f56dea9e9319cb0c7b7e90bea9a6fbc62caff45383cd933227071749d31",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "seconds": 1.055769792292267,
+          "sampledPeakKiB": 0,
+          "guardKiB": 67108864,
+          "resourceStopped": false,
+          "ownBuildingLines": 1
+        }
+      ],
+      "maximumObservedSampleKiB": 0,
+      "maximumSuccessfulSampleKiB": 0,
+      "preUnfreezeIsolatedPeak": "Not investigated in R205; no growth claim",
+      "qualification": "A stopped check is a lower bound on needed resources, not a completed-check peak. Zero samples means the short-lived compiler escaped one-second sampling."
+    },
+    {
+      "path": "src/DGamma/CP4ProgressPotential.idr",
+      "invocations": [
+        {
+          "unit": "S26",
+          "sourceSHA256": "8d30f7cfec01940eed5081d28ffc4a6f9fd15ac2e4707af5a3081189ff54d7a7",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "seconds": 1.0581847499124706,
+          "sampledPeakKiB": 0,
+          "guardKiB": 67108864,
+          "resourceStopped": false,
+          "ownBuildingLines": 1
+        }
+      ],
+      "maximumObservedSampleKiB": 0,
+      "maximumSuccessfulSampleKiB": 0,
+      "preUnfreezeIsolatedPeak": "Not investigated in R205; no growth claim",
+      "qualification": "A stopped check is a lower bound on needed resources, not a completed-check peak. Zero samples means the short-lived compiler escaped one-second sampling."
+    },
+    {
+      "path": "src/DGamma/CP4ProgressPrecedence.idr",
+      "invocations": [
+        {
+          "unit": "S27",
+          "sourceSHA256": "fb019be2423fed4bcdae0ad1d06516491ee20cc0ce18513c0deee23d944b817c",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "seconds": 1.0612810826860368,
+          "sampledPeakKiB": 0,
+          "guardKiB": 67108864,
+          "resourceStopped": false,
+          "ownBuildingLines": 1
+        }
+      ],
+      "maximumObservedSampleKiB": 0,
+      "maximumSuccessfulSampleKiB": 0,
+      "preUnfreezeIsolatedPeak": "Not investigated in R205; no growth claim",
+      "qualification": "A stopped check is a lower bound on needed resources, not a completed-check peak. Zero samples means the short-lived compiler escaped one-second sampling."
+    },
+    {
+      "path": "src/DGamma/CP4ProgressProgramBound.idr",
+      "invocations": [
+        {
+          "unit": "S14",
+          "sourceSHA256": "5f676cd1ec3426c3b3b891192b4024c877b1cd00e136a74bb1ac6057a307cbeb",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "seconds": 1.0557752079330385,
+          "sampledPeakKiB": 0,
+          "guardKiB": 67108864,
+          "resourceStopped": false,
+          "ownBuildingLines": 1
+        }
+      ],
+      "maximumObservedSampleKiB": 0,
+      "maximumSuccessfulSampleKiB": 0,
+      "preUnfreezeIsolatedPeak": "Not investigated in R205; no growth claim",
+      "qualification": "A stopped check is a lower bound on needed resources, not a completed-check peak. Zero samples means the short-lived compiler escaped one-second sampling."
+    },
+    {
+      "path": "src/DGamma/CP4ProgressReliance.idr",
+      "invocations": [
+        {
+          "unit": "S28",
+          "sourceSHA256": "30a245afef0dfb9cb4a76e01722e77c126a942dfc056d97ffe33ffa741a7cf98",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "seconds": 2.1017459998838603,
+          "sampledPeakKiB": 243024,
+          "guardKiB": 67108864,
+          "resourceStopped": false,
+          "ownBuildingLines": 1
+        }
+      ],
+      "maximumObservedSampleKiB": 243024,
+      "maximumSuccessfulSampleKiB": 243024,
+      "preUnfreezeIsolatedPeak": "Not investigated in R205; no growth claim",
+      "qualification": "A stopped check is a lower bound on needed resources, not a completed-check peak. Zero samples means the short-lived compiler escaped one-second sampling."
+    },
+    {
+      "path": "src/DGamma/CP4ProgressUnloadingShape.idr",
+      "invocations": [
+        {
+          "unit": "S15",
+          "sourceSHA256": "0314dfa71ec9d638f10614a396fe18cd3eb34182ce3df94a61b7068487bfa602",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "seconds": 1.0572417080402374,
+          "sampledPeakKiB": 0,
+          "guardKiB": 67108864,
+          "resourceStopped": false,
+          "ownBuildingLines": 1
+        }
+      ],
+      "maximumObservedSampleKiB": 0,
+      "maximumSuccessfulSampleKiB": 0,
+      "preUnfreezeIsolatedPeak": "Not investigated in R205; no growth claim",
+      "qualification": "A stopped check is a lower bound on needed resources, not a completed-check peak. Zero samples means the short-lived compiler escaped one-second sampling."
+    },
+    {
+      "path": "src/DGamma/CP4RestrictionChecks.idr",
+      "invocations": [
+        {
+          "unit": "S29",
+          "sourceSHA256": "fc8c1f6f4a90e46419a2c4b082e02597070f9db70cb644672bc69029a96d7454",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "seconds": 1.0603044172748923,
+          "sampledPeakKiB": 0,
+          "guardKiB": 67108864,
+          "resourceStopped": false,
+          "ownBuildingLines": 1
+        }
+      ],
+      "maximumObservedSampleKiB": 0,
+      "maximumSuccessfulSampleKiB": 0,
+      "preUnfreezeIsolatedPeak": "Not investigated in R205; no growth claim",
+      "qualification": "A stopped check is a lower bound on needed resources, not a completed-check peak. Zero samples means the short-lived compiler escaped one-second sampling."
+    },
+    {
+      "path": "src/DGamma/CP4Support.idr",
+      "invocations": [
+        {
+          "unit": "S16",
+          "sourceSHA256": "98d18b6935b00bc5bd1621e5a9a9b08e41081e21bbad4a449dd7d6ade767fa8e",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "seconds": 2.1111340411007404,
+          "sampledPeakKiB": 225872,
+          "guardKiB": 67108864,
+          "resourceStopped": false,
+          "ownBuildingLines": 1
+        }
+      ],
+      "maximumObservedSampleKiB": 225872,
+      "maximumSuccessfulSampleKiB": 225872,
+      "preUnfreezeIsolatedPeak": "Not investigated in R205; no growth claim",
+      "qualification": "A stopped check is a lower bound on needed resources, not a completed-check peak. Zero samples means the short-lived compiler escaped one-second sampling."
+    },
+    {
+      "path": "src/DGamma/CP4SupportActive.idr",
+      "invocations": [
+        {
+          "unit": "S30",
+          "sourceSHA256": "2ce7e7def1010e54784db5d0041af667b3d01b6cd68c37560ad6729fa819fd7b",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "seconds": 1.063705625012517,
+          "sampledPeakKiB": 0,
+          "guardKiB": 67108864,
+          "resourceStopped": false,
+          "ownBuildingLines": 1
+        }
+      ],
+      "maximumObservedSampleKiB": 0,
+      "maximumSuccessfulSampleKiB": 0,
+      "preUnfreezeIsolatedPeak": "Not investigated in R205; no growth claim",
+      "qualification": "A stopped check is a lower bound on needed resources, not a completed-check peak. Zero samples means the short-lived compiler escaped one-second sampling."
+    },
+    {
+      "path": "src/DGamma/CP4SupportQuiescence.idr",
+      "invocations": [
+        {
+          "unit": "S17",
+          "sourceSHA256": "4c5252dd2520bd150e242cef3c2881f4796095ebcad638862f5ef42ae5aab185",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "seconds": 2.097761500161141,
+          "sampledPeakKiB": 239088,
+          "guardKiB": 67108864,
+          "resourceStopped": false,
+          "ownBuildingLines": 1
+        }
+      ],
+      "maximumObservedSampleKiB": 239088,
+      "maximumSuccessfulSampleKiB": 239088,
+      "preUnfreezeIsolatedPeak": "Not investigated in R205; no growth claim",
+      "qualification": "A stopped check is a lower bound on needed resources, not a completed-check peak. Zero samples means the short-lived compiler escaped one-second sampling."
+    },
+    {
+      "path": "src/DGamma/CP4SupportSolution.idr",
+      "invocations": [
+        {
+          "unit": "S31",
+          "sourceSHA256": "812d874baff27ce025c17ad09527e285079b6ee26a50fec2c4b231723593fda0",
+          "passed": false,
+          "fresh": false,
+          "exit": -15,
+          "seconds": 209.25471770763397,
+          "sampledPeakKiB": 67128512,
+          "guardKiB": 67108864,
+          "resourceStopped": true,
+          "ownBuildingLines": 0
+        },
+        {
+          "unit": "S31-2",
+          "sourceSHA256": "812d874baff27ce025c17ad09527e285079b6ee26a50fec2c4b231723593fda0",
+          "passed": false,
+          "fresh": false,
+          "exit": -15,
+          "seconds": 419.8127729590051,
+          "sampledPeakKiB": 134435632,
+          "guardKiB": 134217728,
+          "resourceStopped": true,
+          "ownBuildingLines": 0
+        }
+      ],
+      "maximumObservedSampleKiB": 134435632,
+      "maximumSuccessfulSampleKiB": 0,
+      "preUnfreezeIsolatedPeak": "UNKNOWN: prior seeded validation is not a fresh isolated cost measurement",
+      "qualification": "A stopped check is a lower bound on needed resources, not a completed-check peak. Zero samples means the short-lived compiler escaped one-second sampling."
+    },
+    {
+      "path": "src/DGamma/CalculusChecks.idr",
+      "invocations": [
+        {
+          "unit": "S18",
+          "sourceSHA256": "3207a74add9b2a81724e5a1976211d7dd9cfbcb2586b203ad2ab4de898cefc03",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "seconds": 1.0658760420046747,
+          "sampledPeakKiB": 0,
+          "guardKiB": 50331648,
+          "resourceStopped": false,
+          "ownBuildingLines": 1
+        }
+      ],
+      "maximumObservedSampleKiB": 0,
+      "maximumSuccessfulSampleKiB": 0,
+      "preUnfreezeIsolatedPeak": "Not investigated in R205; no growth claim",
+      "qualification": "A stopped check is a lower bound on needed resources, not a completed-check peak. Zero samples means the short-lived compiler escaped one-second sampling."
+    },
+    {
+      "path": "src/DGamma/Ordering.idr",
+      "invocations": [
+        {
+          "unit": "S19",
+          "sourceSHA256": "28b17d08b669abab39d39003e7583efec599b88444cfbb2d720cb67b9c3128b8",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "seconds": 9.401089624967426,
+          "sampledPeakKiB": 2101280,
+          "guardKiB": 50331648,
+          "resourceStopped": false,
+          "ownBuildingLines": 1
+        }
+      ],
+      "maximumObservedSampleKiB": 2101280,
+      "maximumSuccessfulSampleKiB": 2101280,
+      "preUnfreezeIsolatedPeak": "Not investigated in R205; no growth claim",
+      "qualification": "A stopped check is a lower bound on needed resources, not a completed-check peak. Zero samples means the short-lived compiler escaped one-second sampling."
+    }
+  ],
+  "totalInvocations": 34,
+  "passedInvocations": 30,
+  "resourceStops": [
+    "P1",
+    "S31",
+    "S31-2"
+  ],
+  "unexpectedDependencyBuilds": [],
+  "sourceMutationInvocations": [],
+  "multipleCompilerInvocations": [],
+  "crossLaneOverlapTimestampsUTC": [],
+  "measurement": "maximum sampled RSS over command-matching idris2 processes; one compiler; one-second samples; NOT aggregate tree RSS, NOT OS high-water. Only the owned process group is ever signalled.",
+  "CP4SupportSolutionDatum": "isolated measured peak >=64.02GiB under unfrozen CP3; supervisor authorized128GiB for ONE S31-2 attempt. Pre-unfreeze isolated cost UNKNOWN; no claim CP3 caused growth."
+}
