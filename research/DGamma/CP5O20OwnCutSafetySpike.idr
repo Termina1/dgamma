@@ -153,3 +153,19 @@ export
   O20PresentLookup name key world error value nameEq actor state
 o20PresentLookupObserved nameEq actor state Nothing found notAbsent = void (notAbsent found)
 o20PresentLookupObserved nameEq actor state (Just fiber) found notAbsent = MkO20PresentLookup fiber found
+
+||| An ACTUAL installed segment produces its endpoint lookup observation.
+||| End installedness and the primitive lookup rule out absence internally.
+export
+0 o20InstalledEndPresentLookup :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  {first, finalState : SystemState name key value world error} ->
+  (trace : Transitions first finalState) ->
+  InstalledTrace name key world error value nameEq keyEq actor trace ->
+  O20PresentLookup name key world error value nameEq actor finalState
+o20InstalledEndPresentLookup {name} {key} {world} {error} {value} {finalState} nameEq keyEq actor trace installed =
+  o20PresentLookupObserved nameEq actor finalState
+    (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor (registry finalState)) Refl
+    (\absent => absurd (trans (sym (the (installedAt {name} {key} {value} {world} {error} @{nameEq} actor finalState = False)
+      (rewrite absent in Refl))) (o20InstalledTraceEnd trace installed)))
