@@ -40,3 +40,20 @@ releaseAtParent nameEq keyEq component child fiber occurrence found (ChildOf act
       (dependencies (componentProvisions component))
       (any (\item => isYes (isElem @{keyEq} item (dependencies (componentProvisions component))))
         (dependencies (componentProvisions (fiberComponent fiber)))) Refl)
+
+||| Observed lookup boundary over the isElem release scan; agreement with
+||| scanReleaseOrdinals open. No two-head lookup pattern or reconstructed view.
+public export
+0 releaseAtLookup : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, finalState : SystemState name key value world error} ->
+  {trace : Transitions first finalState} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (component : Component key value world error) -> (child : name) ->
+  (occurrence : LocatedActionOccurrence (ORemove child) trace) ->
+  (found : Maybe (Fiber name key value world error)) ->
+  (0 equation : lookupFiber {name} {key} {value} {world} {error} @{nameEq}
+    child (registry (actionBeforeState occurrence)) = found) ->
+  List (actor : name ** AttachedRelease name key world error value nameEq actor trace component)
+releaseAtLookup nameEq keyEq component child occurrence Nothing equation = []
+releaseAtLookup nameEq keyEq component child occurrence (Just fiber) equation =
+  releaseAtParent nameEq keyEq component child fiber occurrence equation (fiberParent fiber) Refl
