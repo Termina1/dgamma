@@ -30,3 +30,16 @@ export
 scanMapPointwise oldMap newMap same [] = Refl
 scanMapPointwise oldMap newMap same (entry :: items) =
   cong2 (::) (same entry) (scanMapPointwise oldMap newMap same items)
+
+||| Native filter transport only AFTER observing its head Bool. Both
+||| predicates are tied to that observation; the tail equation is structural.
+export
+0 scanFilterAtGuard : {item : Type} -> (oldTest, newTest : item -> Bool) ->
+  (entry : item) -> (items : List item) -> (seen : Bool) ->
+  (0 oldHead : oldTest entry = seen) -> (0 newHead : newTest entry = seen) ->
+  (0 tail : filter oldTest items = filter newTest items) ->
+  filter oldTest (entry :: items) = filter newTest (entry :: items)
+scanFilterAtGuard oldTest newTest entry items True oldHead newHead tail =
+  rewrite oldHead in rewrite newHead in cong (entry ::) tail
+scanFilterAtGuard oldTest newTest entry items False oldHead newHead tail =
+  rewrite oldHead in rewrite newHead in tail
