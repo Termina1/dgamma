@@ -36,3 +36,16 @@ releaseOverlapAgrees keyEq [] right accumulator = Refl
 releaseOverlapAgrees keyEq (head :: tail) right accumulator =
   rewrite releaseScanAgrees keyEq head right in
   releaseOverlapAgrees keyEq tail right (accumulator || elemDec @{keyEq} head right)
+
+||| Eliminate the observed library overlap before constructing its ordinal
+||| list. Agreement covers ALL declared keys, including duplicate keys.
+export
+0 overlapOrdinalsAgrees : {key : Type} -> (keyEq : DecEq key) ->
+  (left, right : List key) -> (seen : Bool) ->
+  (0 equation : any (\item => isYes (isElem @{keyEq} item right)) left = seen) ->
+  overlapOrdinals keyEq left right seen equation =
+    (if any (\item => elemDec @{keyEq} item right) left then [0] else [])
+overlapOrdinalsAgrees keyEq left right True equation =
+  rewrite trans (sym (releaseOverlapAgrees keyEq left right False)) equation in Refl
+overlapOrdinalsAgrees keyEq left right False equation =
+  rewrite trans (sym (releaseOverlapAgrees keyEq left right False)) equation in Refl
