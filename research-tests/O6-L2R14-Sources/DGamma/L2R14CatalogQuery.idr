@@ -51,3 +51,36 @@ catalogQueryInsert root component offset word catalog tail _ Here =
   (0 ** (sym (plusZeroRightNeutral offset), Refl))
 catalogQueryInsert root component offset word catalog tail entry (There later) =
   catalogQueryThroughHead (OInsert root Root component) word entry offset (tail entry later)
+
+||| Exhaustive authentic head-action classification for catalog word queries.
+||| No action, source or root-birth query is supplied for the whole trail.
+export
+0 catalogQueryAtAction : {name, key, world, error : Type} -> {value : key -> Type} ->
+  (head : Action name key value world error) -> (offset : Nat) ->
+  (word : List (Action name key value world error)) ->
+  (catalog : List (RootCatalogEntry name key world error value)) ->
+  (0 tail : (item : RootCatalogEntry name key world error value) -> Elem item catalog ->
+    (position : Nat ** (catalogOrdinal item = S offset + position,
+      head' (drop position word) = Just (OInsert (catalogRoot item) Root (catalogComponent item))))) ->
+  (entry : RootCatalogEntry name key world error value) ->
+  (0 member : Elem entry (rootCatalogStep offset head catalog)) ->
+  (position : Nat ** (catalogOrdinal entry = offset + position,
+    head' (drop position (head :: word)) = Just (OInsert (catalogRoot entry) Root (catalogComponent entry))))
+catalogQueryAtAction (OInsert root Root component) offset word catalog tail entry member =
+  catalogQueryInsert root component offset word catalog tail entry member
+catalogQueryAtAction (OInsert child (ChildOf parent) component) offset word catalog tail entry member =
+  catalogQueryThroughHead (OInsert child (ChildOf parent) component) word entry offset (tail entry member)
+catalogQueryAtAction (ORetire actor) offset word catalog tail entry member =
+  catalogQueryThroughHead (ORetire actor) word entry offset (tail entry member)
+catalogQueryAtAction (ORemove actor) offset word catalog tail entry member =
+  catalogQueryThroughHead (ORemove actor) word entry offset (tail entry member)
+catalogQueryAtAction (LBegin actor) offset word catalog tail entry member =
+  catalogQueryThroughHead (LBegin actor) word entry offset (tail entry member)
+catalogQueryAtAction (LAdvance actor) offset word catalog tail entry member =
+  catalogQueryThroughHead (LAdvance actor) word entry offset (tail entry member)
+catalogQueryAtAction (LDivert actor) offset word catalog tail entry member =
+  catalogQueryThroughHead (LDivert actor) word entry offset (tail entry member)
+catalogQueryAtAction (LUnload actor) offset word catalog tail entry member =
+  catalogQueryThroughHead (LUnload actor) word entry offset (tail entry member)
+catalogQueryAtAction (LLeave actor) offset word catalog tail entry member =
+  catalogQueryThroughHead (LLeave actor) word entry offset (tail entry member)
