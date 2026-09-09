@@ -146,3 +146,20 @@ o20NoUnloadDiscardedScan name key world error value nameEq mapping leftOrdinal
         (MkRegistrationIndexState live activations counts discarded) (S rightOrdinal)
         (advanceSurvivingRegistrationIndex @{nameEq} rightOrdinal child parent component rightIndex)
         left rest leftFinalIndex rightFinalIndex tail noUnload
+
+||| An accepted complete left scan beginning at the empty index has no
+||| discarded births if its actual word has no Unload. This is the native
+||| discarded-list invariant specialized to the accepted scan, not a fixture.
+export
+0 o20AcceptedNoUnloadDiscardedEmpty :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) ->
+  {leftFirst, leftFinal, rightFirst, rightFinal : SystemState name key value world error} ->
+  (left : Transitions leftFirst leftFinal) -> (right : Transitions rightFirst rightFinal) ->
+  (mapping : RegistrationGenerationBijection name) ->
+  (registrations : RegistrationCorrespondenceByGeneration nameEq mapping left right) ->
+  ((actor : name) -> (ActionOccurs (LUnload actor) left -> Void)) ->
+  (leftDeletedGenerations registrations = [])
+o20AcceptedNoUnloadDiscardedEmpty name key world error value nameEq left right mapping registrations noUnload =
+  o20NoUnloadDiscardedScan name key world error value nameEq mapping Z emptyRegistrationIndex Z emptyRegistrationIndex
+    left right (leftFinalIndex registrations) (rightFinalIndex registrations)
+    (generationTraceCorrespondence registrations) noUnload
