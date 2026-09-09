@@ -35,3 +35,17 @@ appendAvailability : {name, key, world, error : Type} -> {value : key -> Type} -
 appendAvailability (AvailabilityEnd state) rightTrail = rightTrail
 appendAvailability {right} (AvailabilityStep source step rest later) rightTrail =
   AvailabilityStep source step (appendTransitions rest right) (appendAvailability later rightTrail)
+
+||| GENERAL action-word transport through native concatenation. This proves
+||| the physical decomposition connector, not core restoration after a swap.
+export
+0 nativeWordAppend : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  {left : Transitions first middle} -> {right : Transitions middle finalState} ->
+  (leftTrail : AvailabilityTrace name key world error value left) ->
+  (rightTrail : AvailabilityTrace name key world error value right) ->
+  nativeActionWord (appendAvailability leftTrail rightTrail) =
+    nativeActionWord leftTrail ++ nativeActionWord rightTrail
+nativeWordAppend (AvailabilityEnd state) rightTrail = Refl
+nativeWordAppend (AvailabilityStep source (Fired ne ke action tag checked) rest later) rightTrail =
+  cong (action ::) (nativeWordAppend later rightTrail)
