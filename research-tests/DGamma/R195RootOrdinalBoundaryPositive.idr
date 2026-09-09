@@ -48,3 +48,18 @@ export
 r195SwapRootOrdinalsInvolutive (MkRegistrationGeneration selected Z) = Refl
 r195SwapRootOrdinalsInvolutive (MkRegistrationGeneration selected (S Z)) = Refl
 r195SwapRootOrdinalsInvolutive (MkRegistrationGeneration selected (S (S later))) = Refl
+
+||| Full original ActionRegistrationReplayCorrespondence for a checked root
+||| singleton replayed literally to itself. Every action/tag/coherence field
+||| is satisfied, and its generated-only ordinal law is genuinely vacuous.
+||| Its generation map nevertheless moves the existing root's ordinal.
+public export
+0 r195RootLawFreeCorrespondence :
+  ActionRegistrationReplayCorrespondence Nat R45Key Unit String R45Value
+    (MoreTransitions r45ParentInsert NoTransitions)
+    (MoreTransitions r45ParentInsert NoTransitions)
+r195RootLawFreeCorrespondence = MkActionRegistrationReplayCorrespondence
+  (MkRegistrationGenerationBijection r195SwapRootOrdinals r195SwapRootOrdinals
+    r195SwapRootOrdinalsInvolutive r195SwapRootOrdinalsInvolutive)
+  id (\occurrence => Refl) id (\occurrence => Refl)
+  (\occurrence => void (r195RootOnlyNoChildBirth occurrence))
