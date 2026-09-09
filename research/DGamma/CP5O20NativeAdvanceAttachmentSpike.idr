@@ -169,3 +169,26 @@ o20ActualAdvanceObservedEndpoint nameEq keyEq actor ambient fibers afterState ta
       (sym (checkedActionProjects nameEq keyEq (LAdvance actor) (MkSystemState ambient fibers) afterState tag checked))
       (o20ObservedAdvanceRawEquation nameEq keyEq actor ambient fibers component parent retiredFlag table step rest older view
         capability (stepObservedAfter callback) (stepObservedUndo callback) found target resolved (stepObservedRan callback))))
+
+||| Project the SAME native callback's equation without creating a second
+||| dependent observation. The primitive owner-table equation is the only
+||| reindexing; local after-state and undo remain the native packet's values.
+export
+0 o20NativeCallbackProjected :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (ambient : world) -> (fibers : Registry name key value world error) ->
+  (component : Component key value world error) -> (parent : Parent name) -> (retiredFlag : Bool) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (lifecycle : Lifecycle key value world error name (dependencies (componentDependencies component)) (componentProvisions component)) ->
+  (step : StepEffect key value world error (dependencies (componentDependencies component)) (componentProvisions component)) ->
+  (view : View name (dependencies (componentDependencies component))) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor fibers = Just (MkFiber component parent retiredFlag table lifecycle)) ->
+  (observed : O20NativeStepValues name key world error value nameEq keyEq (MkSystemState ambient fibers) component table step view) ->
+  (runStepEffect step (nativeCapability observed)
+    (MkLocalState ambient (restrictOwnedPreservingOrder {key} {value} @{keyEq} (componentProvisions component)
+      (effectTables (projectEffectState {name} {key} {value} {world} {error} @{nameEq} (MkSystemState ambient fibers)) actor))) =
+    Right (stepObservedAfter (nativeCallback observed), stepObservedUndo (nativeCallback observed)))
+o20NativeCallbackProjected nameEq keyEq actor ambient fibers component parent retiredFlag table lifecycle step view found observed =
+  rewrite projectedActorTable nameEq actor (MkSystemState ambient fibers) (MkFiber component parent retiredFlag table lifecycle) found in
+    stepObservedRan (nativeCallback observed)
