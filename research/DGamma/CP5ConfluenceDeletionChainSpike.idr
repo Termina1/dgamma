@@ -4654,6 +4654,17 @@ record DeletionProducerOperationalCapital
               registered episodeStartOrdinal episodeStartLive result
               (generatedRegistrationActionOccurrence occurrence))))) =
       registrationGeneration occurrence
+  0 deletionProducerRootOrdinalPreserved :
+    {root : name} -> {component : Component key value world error} ->
+    (occurrence : LocatedActionOccurrence (OInsert root Root component)
+      (survivingTrace result)) ->
+    (generationForward deletionProducerGenerationRenaming
+      (MkRegistrationGeneration root
+        (locatedActionOrdinal
+          (deletionWholeSourceOccurrence
+            (deletionWholeOccurrenceOrigin nameEq keyEq original selected episode
+              registered episodeStartOrdinal episodeStartLive result occurrence)))) =
+      MkRegistrationGeneration root (locatedActionOrdinal occurrence))
 
 0 deletionProducerActionOrigin :
   {name, key, world, error : Type} -> {value : key -> Type} ->
@@ -27501,6 +27512,11 @@ scopedOperationalFromOrdinalSegments name key world error value nameEq keyEq ini
     (scopedDeletionWholeTags name key world error value nameEq keyEq initial finalState global candidate result seals)
     (scopedDeletionGeneratedOrdinal name key world error value nameEq keyEq initial finalState global candidate result segments
       (scopedOrdinalSpineWitness (joinedOrdinalSpine (wholeOrdinalJoin segments))))
+    (\occurrence => cong (MkRegistrationGeneration _)
+      (scopedDeletionWholeOrdinal name key world error value nameEq keyEq
+        initial finalState global candidate result segments
+        (scopedOrdinalSpineWitness (joinedOrdinalSpine (wholeOrdinalJoin segments)))
+        occurrence))
 
 0 scopedDeletionOperationalCapital :
   (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) -> (keyEq : DecEq key) ->
