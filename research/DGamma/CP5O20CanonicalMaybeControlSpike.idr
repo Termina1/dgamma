@@ -179,3 +179,22 @@ export
 o20CanonicalEndpointPreservesAbsence nameEq keyEq originalFinal canonicalFinal endpoint selected absent =
   o20CanonicalObservationAbsent
     (o20ObserveCanonicalControls nameEq keyEq originalFinal canonicalFinal endpoint selected) absent
+
+||| Accepted independent canonical capital produces actual canonical absence
+||| for EVERY originally absent name. This discharges the one-side removed
+||| class, not absence at an arbitrary opposite current-name image.
+export
+0 o20CanonicalAbsentFromOriginal :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {initial, originalFinal : SystemState name key value world error} ->
+  (original : Transitions initial originalFinal) ->
+  (capital : IndependentCanonicalSchedule name key world error value protocol nameEq keyEq original) ->
+  (selected : name) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected (registry originalFinal) = Nothing) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected
+    (registry (canonicalFinal (canonicalSchedule capital))) = Nothing)
+o20CanonicalAbsentFromOriginal {originalFinal} nameEq keyEq protocol original capital selected absent =
+  o20CanonicalEndpointPreservesAbsence nameEq keyEq originalFinal
+    (canonicalFinal (canonicalSchedule capital)) (canonicalEndpoint (canonicalSchedule capital)) selected absent
