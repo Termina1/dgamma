@@ -46,3 +46,24 @@ record O20PhysicalInsertOriginPositions
   0 physicalRightOriginExact :
     (eventChildGeneration (positionRightEvent physicalOriginalPositions) =
       registrationGeneration (replayGeneratedRegistrationOrigin rightReplay (attachedRightBirth physicalBirths)))
+
+||| Reconcile the position matcher's right ORIGINAL stamp with the SAME
+||| opposite physical birth owned by the actual replay attachment.
+export
+0 o20PhysicalInsertOriginsFromPackets :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {leftFirst, leftFinal, rightFirst, rightFinal, leftNowFirst, leftNowFinal, rightNowFirst, rightNowFinal : SystemState name key value world error} ->
+  {left : Transitions leftFirst leftFinal} -> {right : Transitions rightFirst rightFinal} ->
+  {leftNow : Transitions leftNowFirst leftNowFinal} -> {rightNow : Transitions rightNowFirst rightNowFinal} ->
+  (leftReplay : ActionRegistrationReplayCorrespondence name key world error value left leftNow) ->
+  (rightReplay : ActionRegistrationReplayCorrespondence name key world error value right rightNow) ->
+  (mapping : RegistrationGenerationBijection name) -> (renaming : NameBijection name) ->
+  (child, parent : name) -> (component : Component key value world error) ->
+  (leftBirth : LocatedGeneratedRegistration child parent component leftNow) ->
+  O20AttachedGeneratedBirth name key world error value leftReplay rightReplay mapping renaming child parent component leftBirth ->
+  O20SupportedInsertPositionPair name key world error value mapping left right
+    (registrationGeneration (replayGeneratedRegistrationOrigin leftReplay leftBirth)) ->
+  O20PhysicalInsertOriginPositions name key world error value leftReplay rightReplay mapping renaming child parent component leftBirth
+o20PhysicalInsertOriginsFromPackets leftReplay rightReplay mapping renaming child parent component leftBirth attached positions =
+  MkO20PhysicalInsertOriginPositions attached positions
+    (trans (sym (positionMappedStamp positions)) (attachedOriginalEquation attached))
