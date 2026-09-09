@@ -161,3 +161,32 @@ export
 o20OwnerActiveAtLifecycleBool nameEq keyEq action ambient fibers afterState tag raw False exact excluded active =
   o20NonLifecycleOwnerActiveBackward nameEq keyEq action ambient fibers afterState tag raw exact active
 o20OwnerActiveAtLifecycleBool nameEq keyEq action ambient fibers afterState tag raw True exact excluded active = void (excluded exact)
+
+||| The observed library owner decision selects an actual owner operation or
+||| the generic foreign lookup frame. The native lifecycle Bool is observed
+||| in the owner branch; no abstract conditional is projected or rebuilt.
+export
+0 o20NoLifecycleActiveAtOwnerDecision :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  (action : Action name key value world error) ->
+  (before, afterState : SystemState name key value world error) -> (tag : RuleTag) ->
+  (applyAction {name} {key} {value} {world} {error} @{nameEq} @{keyEq} action before = Just (tag, afterState)) ->
+  ((isLifecycleAction action = True) -> (actionOwner action = selected) -> Void) ->
+  (decision : Dec (selected = actionOwner action)) ->
+  (decEq @{nameEq} selected (actionOwner action) = decision) ->
+  (supportedActiveAt {name} {key} {value} {world} {error} @{nameEq} selected afterState = True) ->
+  (supportedActiveAt {name} {key} {value} {world} {error} @{nameEq} selected before = True)
+o20NoLifecycleActiveAtOwnerDecision {name} {key} {value} {world} {error}
+  nameEq keyEq selected action (MkSystemState ambient fibers) afterState tag raw excluded (Yes same) decisionExact active =
+    replace {p = \actor => supportedActiveAt {name} {key} {value} {world} {error} @{nameEq} actor (MkSystemState ambient fibers) = True}
+      (sym same)
+      (o20OwnerActiveAtLifecycleBool nameEq keyEq action ambient fibers afterState tag raw
+        (isLifecycleAction action) Refl (\lifecycle => excluded lifecycle (sym same))
+        (replace {p = \actor => supportedActiveAt {name} {key} {value} {world} {error} @{nameEq} actor afterState = True} same active))
+o20NoLifecycleActiveAtOwnerDecision {name} {key} {value} {world} {error}
+  nameEq keyEq selected action before afterState tag raw excluded (No distinct) decisionExact active =
+    trans (o20ActiveLookupFrame nameEq selected before afterState
+      (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected (registry before)) Refl
+      (systemLocalUpdateForeign nameEq selected (actionOwner action) distinct before afterState
+        (applyActionLocalUpdate nameEq keyEq action before afterState tag raw))) active
