@@ -64,3 +64,45 @@ record AnchorFixtureEvidence where
   0 middleGlobalOne : anchorInversions %search [] middleEvents = 1
   0 firstGlobalDecreases : anchorInversions %search [] originalEvents = S (anchorInversions %search [] middleEvents)
   0 secondGlobalDecreases : anchorInversions %search [] middleEvents = S (anchorInversions %search [] bundleEvents)
+
+||| Simultaneously annotate the ACTUAL full moved trails and both original/
+||| middle R/S paths, preserving cut0's blocked lifecycle prefix. All forced
+||| fixture roots use their real release cut4, including barrier-forced S.
+||| Global 2->1->0 follows C10 with the unchanged prefix and suffix, not by
+||| pretending compatible-cut counting decreases on R's hoist.
+public export
+0 anchorFixtureEvidence : AnchorFixtureEvidence
+anchorFixtureEvidence = MkAnchorFixtureEvidence
+  (smallMovedTrail smallRootPhaseEvidence)
+  (AvailabilityStep (smallState 0)
+    (Fired {before = smallState 0} {afterState = smallState 1} %search %search (LBegin 0) LBeginTag (smallBegin0 smallNativeExecution)) _
+    (AvailabilityStep (smallState 1)
+      (Fired {before = smallState 1} {afterState = smallState 2} %search %search (LAdvance 0) LFinishTag (smallFinish0 smallNativeExecution)) _
+      (AvailabilityStep (smallState 2)
+        (Fired {before = smallState 2} {afterState = smallState 3} %search %search (ORetire 1) ORetireTag (smallRetire1 smallNativeExecution)) _
+        (AvailabilityStep (smallState 3)
+          (Fired {before = smallState 3} {afterState = smallState 4} %search %search (ORemove 1) ORemoveTag (smallRemove1 smallNativeExecution)) _
+          (movedTrail bundlePhaseEvidence)))))
+  [AnchorLife 0, AnchorLife 0, AnchorOther, AnchorRelease 4, AnchorBirth 3 (Just 4), AnchorLife 2]
+  [AnchorLife 0, AnchorLife 0, AnchorOther, AnchorRelease 4, AnchorBirth 3 (Just 4), AnchorBirth 4 (Just 4), AnchorLife 2]
+  [AnchorLife 0, AnchorLife 0, AnchorOther, AnchorRelease 4, AnchorLife 2, AnchorBirth 3 (Just 4), AnchorBirth 4 (Just 4)]
+  [AnchorLife 0, AnchorLife 0, AnchorOther, AnchorRelease 4, AnchorBirth 3 (Just 4), AnchorLife 2, AnchorBirth 4 (Just 4)]
+  Refl Refl Refl Refl Refl smallRootEarliest
+  (cong fst (c12CatalogInterval fixtureCoverage))
+  (cong fst (barrierCatalogSInterval fixtureCoverage))
+  Refl Refl
+  (trans (anchorSwapDecreases %search 2 3 (Just 4)
+    [AnchorLife 0, AnchorLife 0, AnchorOther, AnchorRelease 4]
+    [AnchorBirth 4 (Just 4)] (\same => case same of Refl impossible) [])
+    (cong S (anchorSwapDecreases %search 2 4 (Just 4)
+      [AnchorLife 0, AnchorLife 0, AnchorOther, AnchorRelease 4, AnchorBirth 3 (Just 4)]
+      [] (\same => case same of Refl impossible) [])))
+  (anchorSwapDecreases %search 2 4 (Just 4)
+    [AnchorLife 0, AnchorLife 0, AnchorOther, AnchorRelease 4, AnchorBirth 3 (Just 4)]
+    [] (\same => case same of Refl impossible) [])
+  (anchorSwapDecreases %search 2 3 (Just 4)
+    [AnchorLife 0, AnchorLife 0, AnchorOther, AnchorRelease 4]
+    [AnchorBirth 4 (Just 4)] (\same => case same of Refl impossible) [])
+  (anchorSwapDecreases %search 2 4 (Just 4)
+    [AnchorLife 0, AnchorLife 0, AnchorOther, AnchorRelease 4, AnchorBirth 3 (Just 4)]
+    [] (\same => case same of Refl impossible) [])
