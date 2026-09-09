@@ -118,3 +118,25 @@ alignedSourceAtStep nameEq keyEq _ _ later
   alignedSourceAtOrdinal nameEq keyEq headAction tag checked rest later
     (\position, wantedSource, wantedAction, equation => tailDecoder tail position wantedSource wantedAction equation)
     ordinal source action query
+
+||| GENERAL source-query decoder from an authentic ALIGNED native trail.
+||| Produces target, tag, checked equation at the requested dictionaries,
+||| physical occurrence and both source/target identities simultaneously.
+export
+0 locateAlignedSourceAction : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, finalState : SystemState name key value world error} ->
+  {trace : Transitions first finalState} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (trail : AvailabilityTrace name key world error value trace) ->
+  (aligned : AlignedTransitions name key world error value nameEq keyEq trace) ->
+  (ordinal : Nat) -> (source : SystemState name key value world error) ->
+  (action : Action name key value world error) ->
+  (0 query : head' (drop ordinal (trailSourceActions trail)) = Just (source, action)) ->
+  AlignedSourceAction name key world error value nameEq keyEq trace source action ordinal
+locateAlignedSourceAction nameEq keyEq (AvailabilityEnd state) aligned ordinal source action query =
+  absurd (sourceQueryEmpty ordinal (source, action) query)
+locateAlignedSourceAction nameEq keyEq (AvailabilityStep first step rest later) aligned ordinal source action query =
+  alignedSourceAtStep nameEq keyEq step rest later aligned
+    (\tail, position, wantedSource, wantedAction, equation =>
+      locateAlignedSourceAction nameEq keyEq later tail position wantedSource wantedAction equation)
+    ordinal source action query
