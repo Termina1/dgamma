@@ -24,7 +24,12 @@ assert len(declarations((ROOT/record['path']).read_bytes())-declarations(old.std
 assert record['path'].startswith(('research-tests/O6-L2R6-Sources/',)), 'Lane-owned source only'
 source = ROOT/record['path']
 commitPaths=[record['path']]
-assert not record.get('bundleSources'), 'No L2R6 two-file bundle gate exists; predecessor C4 exception is not reusable'
+assert not record.get('bundleSources') or unit.startswith('D9-'), 'Exact supervisor D9 bundle authority only'
+if record.get('bundleSources'):
+ assert record['bundleFresh']
+ for extra in record['bundleSources']:
+  assert hashlib.sha256((ROOT/extra['path']).read_bytes()).hexdigest()==extra['sourceSHA256']
+  commitPaths.append(extra['path'])
 assert hashlib.sha256(source.read_bytes()).hexdigest() == record['sourceSHA256']
 assert not subprocess.check_output(['git','diff','--cached','--name-only'],cwd=ROOT,text=True).strip()
 processes = subprocess.check_output(['ps','-axo','pid,ppid,command'],text=True)

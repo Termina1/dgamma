@@ -24,7 +24,19 @@ plan = json.loads((OUT/'shift.json').read_text())
 cutoff = plan['validationCutoff'] if re.fullmatch(r'V\d+',unit) else plan['attemptCutoff']
 assert datetime.datetime.now(datetime.timezone.utc).isoformat() < cutoff
 snapshot = target.read_bytes()
-bundle=[]  # A new bundle requires a separately gated runner change.
+bundle=[]
+if unit.startswith('D9-'):
+ assert path == 'research-tests/O6-L2R6-Sources/DGamma/L2R6Phase.idr'
+ correction=json.loads((OUT/'target-correction.json').read_text())
+ for owned in ['research-tests/O6-L2R6-Sources/DGamma/L2R6Anchors.idr','research-tests/O6-L2R6-Sources/DGamma/L2R6PlacementFixtures.idr']:
+  extra=ROOT/owned; data=extra.read_bytes()
+  old_extra=subprocess.check_output(['git','show','HEAD:'+owned],cwd=ROOT)
+  if owned.endswith('L2R6Anchors.idr'):
+   assert old_extra.count(correction['old'].encode())==1
+   assert data==old_extra.replace(correction['old'].encode(),correction['new'].encode())
+  else: assert data==old_extra, 'Fixture bytes unchanged; fresh check verifies 0/0/1/2 drift'
+  bundle.append((extra,data))
+
 
 def declarations(data):
  text=data.decode();return set(re.findall(r'^(?:[01] )?([A-Za-z_]\w*)\s*:',text,re.M)+re.findall(r'^(?:record|data)\s+([A-Za-z_]\w*)',text,re.M))
@@ -34,7 +46,7 @@ if re.fullmatch(r'[ABCD]\d+-\d+',unit):
  assert len(declarations(snapshot)-declarations(old.stdout if old.returncode==0 else b''))==1
  for extra,data in bundle:
   old_extra=subprocess.check_output(['git','show','HEAD:'+str(extra.relative_to(ROOT))],cwd=ROOT)
-  assert declarations(data)==declarations(old_extra), 'C4 bundle data-only, no declaration changes'
+  assert declarations(data)==declarations(old_extra), 'D9 gated body-only bundle, no declaration changes'
  previous=[json.loads(s) for s in (OUT/'ledger.jsonl').read_text().splitlines()] if (OUT/'ledger.jsonl').exists() else []
  assert sum(r['unit'].rsplit('-',1)[0]==unit.rsplit('-',1)[0] for r in previous)<3
  assert not any(r['passed'] and r['unit'].rsplit('-',1)[0]==unit.rsplit('-',1)[0] for r in previous)
@@ -62,7 +74,7 @@ bundle_records=[]
 for i,(extra,data) in enumerate(bundle):
  old=extra.stat().st_mtime_ns;extra.touch()
  sourcefile=unit+'.bundle-'+str(i)+'.source';(OUT/sourcefile).write_bytes(data)
- bundle_records.append(dict(path=str(extra.relative_to(ROOT)),sourceSHA256=hashlib.sha256(data).hexdigest(),sourceFile=sourcefile,targetMtimeTouch=dict(path=str(extra),oldMtimeNs=old,newMtimeNs=extra.stat().st_mtime_ns,authority='Explicit supervisor C4 two-file data-only bundle ruling')))
+ bundle_records.append(dict(path=str(extra.relative_to(ROOT)),sourceSHA256=hashlib.sha256(data).hexdigest(),sourceFile=sourcefile,targetMtimeTouch=dict(path=str(extra),oldMtimeNs=old,newMtimeNs=extra.stat().st_mtime_ns,authority='Explicit supervisor D9 phase + body-only target correction + unchanged fixture recheck ruling')))
 
 started=datetime.datetime.now(datetime.timezone.utc).isoformat();clock=time.monotonic()
 maximum=0;interrupted=False;source_mutation=False;foreign={p['pid']:p for p in initial_procs if p['classification']!='lane2'}
