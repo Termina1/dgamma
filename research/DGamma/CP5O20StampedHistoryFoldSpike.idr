@@ -257,3 +257,56 @@ o20StampedStageCut {leftLive} {rightLive}
       (o20HistoryLookupBeforeRemove nameEq actor selected leftLive leftUnique stamp found))
     (\selected, stamp, found => stampedBackward paired selected stamp
       (o20HistoryLookupBeforeRemove nameEq (renameForward renaming actor) selected rightLive rightUnique stamp found))
+
+||| Physical stage synchronization with constructor-indexed scanner offsets
+||| and live environments. Only literal same-cut ZERO-edge stuttering is
+||| admitted: this does not erase any unmatched native insertion or removal.
+||| This is conditional on a supplied stage synchronization; not universal pairing.
+public export
+data O20StampedHistory :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (mapping : RegistrationGenerationBijection name) -> (renaming : NameBijection name) ->
+  (leftOrdinal, rightOrdinal : Nat) ->
+  (leftLive, rightLive, leftFinalLive, rightFinalLive : GenerationEnvironment name) ->
+  (leftBefore, rightBefore, leftAfter, rightAfter : SystemState name key value world error) -> Type where
+  StampedHistoryEnd :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+    {mapping : RegistrationGenerationBijection name} -> {renaming : NameBijection name} ->
+    {leftOrdinal, rightOrdinal : Nat} ->
+    {leftLive, rightLive : GenerationEnvironment name} ->
+    {left, right : SystemState name key value world error} ->
+    O20StampedHistory name key world error value nameEq keyEq mapping renaming
+      leftOrdinal rightOrdinal leftLive rightLive leftLive rightLive left right left right
+  StampedHistoryMore :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+    {mapping : RegistrationGenerationBijection name} -> {renaming : NameBijection name} ->
+    {leftOrdinal, rightOrdinal : Nat} ->
+    {leftLive, rightLive, leftNext, rightNext, leftFinalLive, rightFinalLive : GenerationEnvironment name} ->
+    {leftBefore, rightBefore, leftMiddle, rightMiddle, leftAfter, rightAfter : SystemState name key value world error} ->
+    (0 stage : O20StampedStage name key world error value nameEq keyEq mapping renaming
+      leftOrdinal rightOrdinal leftLive rightLive leftNext rightNext
+      leftBefore rightBefore leftMiddle rightMiddle) ->
+    (0 later : O20StampedHistory name key world error value nameEq keyEq mapping renaming
+      (S leftOrdinal) (S rightOrdinal) leftNext rightNext leftFinalLive rightFinalLive
+      leftMiddle rightMiddle leftAfter rightAfter) ->
+    O20StampedHistory name key world error value nameEq keyEq mapping renaming
+      leftOrdinal rightOrdinal leftLive rightLive leftFinalLive rightFinalLive
+      leftBefore rightBefore leftAfter rightAfter
+  StampedHistoryEpsilon :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+    {mapping : RegistrationGenerationBijection name} -> {renaming : NameBijection name} ->
+    {leftOrdinal, rightOrdinal : Nat} ->
+    {leftLive, rightLive, leftFinalLive, rightFinalLive : GenerationEnvironment name} ->
+    {leftBefore, rightBefore, leftAfter, rightAfter : SystemState name key value world error} ->
+    (0 leftIdle : Transitions leftBefore leftBefore) -> (0 leftZero : (transitionCount leftIdle = Z)) ->
+    (0 rightIdle : Transitions rightBefore rightBefore) -> (0 rightZero : (transitionCount rightIdle = Z)) ->
+    (0 later : O20StampedHistory name key world error value nameEq keyEq mapping renaming
+      leftOrdinal rightOrdinal leftLive rightLive leftFinalLive rightFinalLive
+      leftBefore rightBefore leftAfter rightAfter) ->
+    O20StampedHistory name key world error value nameEq keyEq mapping renaming
+      leftOrdinal rightOrdinal leftLive rightLive leftFinalLive rightFinalLive
+      leftBefore rightBefore leftAfter rightAfter
