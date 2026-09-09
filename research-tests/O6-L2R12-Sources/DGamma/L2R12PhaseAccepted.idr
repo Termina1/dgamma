@@ -37,3 +37,18 @@ export
     (seen && all predicate items)
 phaseAllFoldObserved predicate items False = phaseAllFoldFalse predicate items
 phaseAllFoldObserved predicate items True = Refl
+
+||| Extract acceptance at any authentic list member from the native fold.
+||| Only the membership is eliminated, with accumulator conversion explicit.
+export
+0 phaseAllMember : {a : Type} -> (predicate : a -> Bool) ->
+  {item : a} -> {items : List a} ->
+  (0 member : Elem item items) -> (0 accepted : all predicate items = True) ->
+  predicate item = True
+phaseAllMember predicate {items = head :: rest} Here accepted =
+  boolAndLeft (predicate head) (all predicate rest)
+    (trans (sym (phaseAllFoldObserved predicate rest (predicate head))) accepted)
+phaseAllMember predicate {items = head :: rest} (There later) accepted =
+  phaseAllMember predicate later
+    (boolAndRight (predicate head) (all predicate rest)
+      (trans (sym (phaseAllFoldObserved predicate rest (predicate head))) accepted))
