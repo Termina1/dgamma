@@ -59,3 +59,19 @@ export
 snapshotPacketMatches nameEq keyEq action tag source target expected checked
   (MkCheckedSnapshotStep afterState produced exact) =
   trans (cong runtimeSnapshot (cong snd (justInjective (trans (sym checked) produced)))) exact
+
+||| Recover the canonical retirement snapshot from the original checked
+||| Retire edge and its native installed fiber, not a supplied state equality.
+export
+0 originalRetireSnapshot : {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (child : name) ->
+  (fiber : Fiber name key value world error) ->
+  (before, afterState : SystemState name key value world error) ->
+  (0 found : lookupFiber {name} {key} {value} {world} {error} @{nameEq} child (registry before) = Just fiber) ->
+  (0 valid : registryWellFormed @{nameEq} @{keyEq} before = True) ->
+  (0 original : checkedApplyAction @{nameEq} @{keyEq} (ORetire child) before = Just (ORetireTag, afterState)) ->
+  runtimeSnapshot afterState = runtimeSnapshot {name} {key} {value} {world} {error}
+    (MkSystemState (worldState before) (replaceBinding @{nameEq} child (retireFiber fiber) (registry before)))
+originalRetireSnapshot nameEq keyEq child fiber before afterState found valid original =
+  cong runtimeSnapshot (cong snd (justInjective (trans (sym original)
+    (childRetireAtFound nameEq keyEq child fiber before found valid))))
