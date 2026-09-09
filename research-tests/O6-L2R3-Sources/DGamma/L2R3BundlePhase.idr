@@ -47,3 +47,15 @@ bundlePhaseNative = MkBundlePhaseNative
     (checkedActionTargetValid %search %search (LBegin 2)
       (smallState 5) (smallState 6) LBeginTag (smallBegin2 smallNativeExecution)) Refl)
   Refl Refl
+
+||| Second authenticated availability-aware root phase: S crosses Begin2 only
+||| after R is already in its ordered place. Early S and late Begin are the
+||| actual barrier fixture edges; empty provisions make both crossed cuts free.
+public export
+0 sRootSnapshotSquare : AvailabilityRootSnapshotExchange Nat Bool Unit String (\key => Unit)
+  %search %search 4 (smallComponent False)
+  (Fired {before = smallState 5} {afterState = smallState 6} %search %search (LBegin 2) LBeginTag (smallBegin2 smallNativeExecution))
+  (Fired {before = smallState 6} {afterState = bundlePhaseState 6} %search %search (OInsert 4 Root (smallComponent False)) OInsertTag (sAfterRBegin bundlePhaseNative))
+sRootSnapshotSquare = MkAvailabilityRootSnapshotExchange
+  (\same => case same of Refl impossible) Refl Refl (barrierState 6) (barrierState 7)
+  (insertS barrierNativeExecution) (beginFollowing barrierNativeExecution) (secondMoveSnapshot bundlePhaseNative)
