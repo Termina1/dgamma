@@ -8,6 +8,7 @@ import DGamma.Coeffects
 import DGamma.Metatheory
 import DGamma.CP3
 import DGamma.CP4RuntimeBindings
+import DGamma.CP4DeletionSelectedForeignOrchestration
 import DGamma.CP5AvailabilityAwarePlacement
 import DGamma.CP5L2R1ChildRelocation
 import DGamma.L2R2CheckedSnapshot
@@ -112,3 +113,21 @@ produceRetireClassifierSquare nameEq keyEq child parent root fiber component bef
           early childDifferent found valid
           (checkedActionTargetValid nameEq keyEq (ORetire child) before retiredState ORetireTag retired)
           (originalRetireSnapshot nameEq keyEq child fiber before retiredState found valid retired))))
+
+||| Successful early insertion produces name freshness against every actual
+||| installed child. This needs no assumption that parent-distinct implies
+||| child-distinct and no initially-installed birth provenance oracle.
+export
+0 earlyRootDistinctFromChild : {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (child, root : name) ->
+  (fiber : Fiber name key value world error) -> (component : Component key value world error) ->
+  (before, earlyRoot : SystemState name key value world error) ->
+  (0 found : lookupFiber {name} {key} {value} {world} {error} @{nameEq} child (registry before) = Just fiber) ->
+  (0 early : checkedApplyAction @{nameEq} @{keyEq} (OInsert root Root component) before = Just (OInsertTag, earlyRoot)) ->
+  Not (child = root)
+earlyRootDistinctFromChild {name} {key} {world} {error} {value}
+  nameEq keyEq child root fiber component (MkSystemState ambient source) earlyRoot found early same =
+  nothingIsNotJust (trans (sym (foreignInsertViewAbsent
+    (foreignInsertPlanView nameEq keyEq root Root component ambient source OInsertTag earlyRoot
+      (checkedActionProjects nameEq keyEq (OInsert root Root component) (MkSystemState ambient source) earlyRoot OInsertTag early))))
+    (trans (sym (cong (\wanted => lookupFiber {name} {key} {value} {world} {error} @{nameEq} wanted source) same)) found))
