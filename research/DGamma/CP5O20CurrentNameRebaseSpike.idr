@@ -151,3 +151,30 @@ o20ReplayInsertionOrdinals correspondence roots selected (ChildOf parent) compon
             (MkLocatedGeneratedRegistration before afterState earlier edge later shape decomposition))))))
       (replayGeneratedOrdinalPreserved correspondence
         (MkLocatedGeneratedRegistration before afterState earlier edge later shape decomposition))
+
+||| Producer-owned current birth packets compare in COUNT coordinates under
+||| the SAME actual replay. Source uniqueness pins the target's original
+||| occurrence to the source current birth, then B12 applies the exact map.
+||| Neither a stamp equation nor equality of dependent birth records is input.
+export
+0 o20ReplayCurrentBirthStamps :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {sourceFirst, sourceFinal, targetFirst, targetFinal : SystemState name key value world error} ->
+  {source : Transitions sourceFirst sourceFinal} -> {target : Transitions targetFirst targetFinal} ->
+  (correspondence : ActionRegistrationReplayCorrespondence name key world error value source target) ->
+  O20RootReplayOrdinals name key world error value correspondence ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq source ->
+  (selected : name) -> (sourceStamp, targetStamp : RegistrationGeneration name) ->
+  CurrentGenerationBirth name key world error value source selected sourceStamp ->
+  CurrentGenerationBirth name key world error value target selected targetStamp ->
+  (generationForward (replayGenerationRenaming correspondence) sourceStamp = targetStamp)
+o20ReplayCurrentBirthStamps correspondence roots unique selected sourceStamp targetStamp
+  (MkCurrentGenerationBirth sourceParent sourceComponent sourceBirth sourceExact)
+  (MkCurrentGenerationBirth targetParent targetComponent targetBirth targetExact) =
+    trans (cong (generationForward (replayGenerationRenaming correspondence))
+      (trans sourceExact (cong (MkRegistrationGeneration selected)
+        (uniqueInsertionPosition unique selected sourceParent targetParent sourceComponent targetComponent
+          sourceBirth (replayActionOrigin correspondence targetBirth)))))
+      (trans (o20ReplayInsertionOrdinals correspondence roots selected targetParent targetComponent targetBirth)
+        (sym targetExact))
