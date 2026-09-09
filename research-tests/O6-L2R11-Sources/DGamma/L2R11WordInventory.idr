@@ -43,3 +43,18 @@ public export
 wordActionInventory : {name, key, world, error : Type} -> {value : key -> Type} ->
   List (Action name key value world error) -> Nat -> Bool
 wordActionInventory word code = any (\action => actionKindCode action == code) word
+
+||| The native Nat comparison is reflexive on every actual action kind.
+||| No unrestricted Nat-to-kind coercion or decider equality is assumed.
+export
+0 actionKindSelf : {name, key, world, error : Type} -> {value : key -> Type} ->
+  (action : Action name key value world error) ->
+  (actionKindCode action == actionKindCode action) = True
+actionKindSelf (LBegin actor) = Refl
+actionKindSelf (LAdvance actor) = Refl
+actionKindSelf (OInsert child parent component) = Refl
+actionKindSelf (ORetire child) = Refl
+actionKindSelf (ORemove child) = Refl
+actionKindSelf (LDivert actor) = Refl
+actionKindSelf (LLeave actor) = Refl
+actionKindSelf (LUnload actor) = Refl
