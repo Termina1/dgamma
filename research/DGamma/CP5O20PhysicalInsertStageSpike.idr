@@ -160,3 +160,35 @@ o20InsertStageAtRightState nameEq keyEq renaming actor component leftParent righ
   leftWorld leftRegistry (MkSystemState rightWorld rightRegistry) leftTag leftAfter leftChecked rightTag rightAfter rightChecked matched =
     o20InsertStageFromCheckedRegistries nameEq keyEq renaming actor component leftParent rightParent parents
       leftWorld rightWorld leftRegistry rightRegistry leftTag leftAfter leftChecked rightTag rightAfter rightChecked matched
+
+||| Paired Insert at two actual native source/target states. The two checked
+||| evaluator equations determine the physical targets; no relation between
+||| independently reconstructed states is assumed.
+export
+0 o20InsertStageAtCheckedStates :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (renaming : NameBijection name) ->
+  {mapping : RegistrationGenerationBijection name} ->
+  {leftOrdinal, rightOrdinal : Nat} -> {leftLive, rightLive : GenerationEnvironment name} ->
+  (actor : name) -> (component : Component key value world error) ->
+  (leftParent, rightParent : Parent name) -> ParentRelatedBy renaming leftParent rightParent ->
+  (leftBefore, rightBefore : SystemState name key value world error) ->
+  (leftTag : RuleTag) -> (leftAfter : SystemState name key value world error) ->
+  (checkedApplyAction {name} {key} {value} {world} {error} @{nameEq} @{keyEq}
+    (OInsert actor leftParent component) leftBefore = Just (leftTag, leftAfter)) ->
+  (rightTag : RuleTag) -> (rightAfter : SystemState name key value world error) ->
+  (checkedApplyAction {name} {key} {value} {world} {error} @{nameEq} @{keyEq}
+    (OInsert (renameForward renaming actor) rightParent component) rightBefore =
+    Just (rightTag, rightAfter)) ->
+  (generationForward mapping (MkRegistrationGeneration actor leftOrdinal) =
+    MkRegistrationGeneration (renameForward renaming actor) rightOrdinal) ->
+  O20StampedStage name key world error value nameEq keyEq mapping renaming leftOrdinal rightOrdinal leftLive rightLive
+    (putCurrentGeneration @{nameEq} actor (MkRegistrationGeneration actor leftOrdinal) leftLive)
+    (putCurrentGeneration @{nameEq} (renameForward renaming actor)
+      (MkRegistrationGeneration (renameForward renaming actor) rightOrdinal) rightLive)
+    leftBefore rightBefore
+    leftAfter rightAfter
+o20InsertStageAtCheckedStates nameEq keyEq renaming actor component leftParent rightParent parents
+  (MkSystemState leftWorld leftRegistry) rightBefore leftTag leftAfter leftChecked rightTag rightAfter rightChecked matched =
+    o20InsertStageAtRightState nameEq keyEq renaming actor component leftParent rightParent parents
+      leftWorld leftRegistry rightBefore leftTag leftAfter leftChecked rightTag rightAfter rightChecked matched
