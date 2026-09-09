@@ -321,3 +321,47 @@ o20AcceptedActivationHistories nameEq left right mapping registrations =
     rightHistory (DiscardLeftDeletedRegistration edge rest shape deleted later) = rightHistory later
     rightHistory (QueueLeftGeneratedRegistration edge rest shape retained later) = rightHistory later
     rightHistory (MatchLeftWithPendingRight edge rest shape retained earlierEvents event laterEvents matched later) = rightHistory later
+
+||| Read ANY retained event's position from its COMPLETE earlier event word.
+||| The produced chronological invariant supplies the equation; the queried
+||| position or corresponding target position is not a premise. Physical
+||| source ordinals remain in each event and are never confused with this count.
+export
+0 o20ChronologicalPositionAtPrefix :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) ->
+  (earlier : List (RegistrationEvent name key world error value)) ->
+  (event : RegistrationEvent name key world error value) ->
+  (later : List (RegistrationEvent name key world error value)) ->
+  (counts : List (RegistrationActivation name, Nat)) ->
+  o20ChronologicalPositions nameEq (earlier ++ (event :: later)) counts ->
+  (eventChildPosition event = case eventParentActivation event of
+    Nothing => Z
+    Just activation => childrenBornInActivation @{nameEq} activation
+      (o20ReplayRetainedEventCounts nameEq earlier counts))
+o20ChronologicalPositionAtPrefix nameEq [] (MkRegistrationEvent child parent component stamp Nothing position)
+  later counts positions = fst positions
+o20ChronologicalPositionAtPrefix nameEq [] (MkRegistrationEvent child parent component stamp (Just activation) position)
+  later counts positions = fst positions
+o20ChronologicalPositionAtPrefix nameEq
+  (MkRegistrationEvent child parent component stamp Nothing position :: earlier)
+  (MkRegistrationEvent wantedChild wantedParent wantedComponent wantedStamp Nothing wantedPosition) later counts positions =
+    o20ChronologicalPositionAtPrefix nameEq earlier
+      (MkRegistrationEvent wantedChild wantedParent wantedComponent wantedStamp Nothing wantedPosition) later counts (snd positions)
+o20ChronologicalPositionAtPrefix nameEq
+  (MkRegistrationEvent child parent component stamp Nothing position :: earlier)
+  (MkRegistrationEvent wantedChild wantedParent wantedComponent wantedStamp (Just wantedActivation) wantedPosition) later counts positions =
+    o20ChronologicalPositionAtPrefix nameEq earlier
+      (MkRegistrationEvent wantedChild wantedParent wantedComponent wantedStamp (Just wantedActivation) wantedPosition) later counts (snd positions)
+o20ChronologicalPositionAtPrefix nameEq
+  (MkRegistrationEvent child parent component stamp (Just activation) position :: earlier)
+  (MkRegistrationEvent wantedChild wantedParent wantedComponent wantedStamp Nothing wantedPosition) later counts positions =
+    o20ChronologicalPositionAtPrefix nameEq earlier
+      (MkRegistrationEvent wantedChild wantedParent wantedComponent wantedStamp Nothing wantedPosition) later
+      (incrementChildrenBornInActivation @{nameEq} activation counts) (snd positions)
+o20ChronologicalPositionAtPrefix nameEq
+  (MkRegistrationEvent child parent component stamp (Just activation) position :: earlier)
+  (MkRegistrationEvent wantedChild wantedParent wantedComponent wantedStamp (Just wantedActivation) wantedPosition) later counts positions =
+    o20ChronologicalPositionAtPrefix nameEq earlier
+      (MkRegistrationEvent wantedChild wantedParent wantedComponent wantedStamp (Just wantedActivation) wantedPosition) later
+      (incrementChildrenBornInActivation @{nameEq} activation counts) (snd positions)
