@@ -232,3 +232,45 @@ export
 o20MappedSuccessorPredecessor Nothing sourceIndex exact = absurd exact
 o20MappedSuccessorPredecessor (Just earlier) sourceIndex exact =
   (earlier ** (sym (justInjective exact), Refl))
+
+||| Reflection of STRICT source order by the ACTUAL subsequence map. This
+||| proves the birth-relative ordering needed for a retained closing join;
+||| action equality alone would not suffice when actions repeat.
+export
+0 o20SubsequenceReflectsSourceOrder :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} ->
+  {deletable : Nat -> GenerationEnvironment name -> Action name key value world error -> Type} ->
+  {ordinal : Nat} -> {live : GenerationEnvironment name} ->
+  {first, finalState, otherFirst, otherFinal : SystemState name key value world error} ->
+  {trace : Transitions first finalState} -> {survivor : Transitions otherFirst otherFinal} ->
+  (kept : GenerationActionSubsequence nameEq deletable ordinal live trace survivor) ->
+  (leftTarget, rightTarget, leftSource, rightSource : Nat) ->
+  (generationSubsequenceSourceOrdinal kept leftTarget = Just leftSource) ->
+  (generationSubsequenceSourceOrdinal kept rightTarget = Just rightSource) ->
+  LT leftSource rightSource -> LT leftTarget rightTarget
+o20SubsequenceReflectsSourceOrder GenerationActionSubsequenceEnd leftTarget rightTarget leftSource rightSource leftExact rightExact ordered =
+  absurd leftExact
+o20SubsequenceReflectsSourceOrder (KeepGenerationAction step rest target later outside same tail) Z Z leftSource rightSource leftExact rightExact ordered =
+  void (succNotLTEzero (replace {p = LT Z} (sym (justInjective rightExact))
+    (replace {p = \source => LT source rightSource} (sym (justInjective leftExact)) ordered)))
+o20SubsequenceReflectsSourceOrder (KeepGenerationAction step rest target later outside same tail) Z (S rightTarget) leftSource rightSource leftExact rightExact ordered =
+  LTESucc LTEZero
+o20SubsequenceReflectsSourceOrder (KeepGenerationAction step rest target later outside same tail) (S leftTarget) Z leftSource rightSource leftExact rightExact ordered =
+  void (succNotLTEzero (replace {p = LT leftSource} (sym (justInjective rightExact)) ordered))
+o20SubsequenceReflectsSourceOrder (KeepGenerationAction step rest target later outside same tail) (S leftTarget) (S rightTarget) leftSource rightSource leftExact rightExact ordered =
+  case o20MappedSuccessorPredecessor (generationSubsequenceSourceOrdinal tail leftTarget) leftSource leftExact of
+    (leftEarlier ** (leftShift, leftOrigin)) =>
+      case o20MappedSuccessorPredecessor (generationSubsequenceSourceOrdinal tail rightTarget) rightSource rightExact of
+        (rightEarlier ** (rightShift, rightOrigin)) =>
+          LTESucc (o20SubsequenceReflectsSourceOrder tail leftTarget rightTarget leftEarlier rightEarlier leftOrigin rightOrigin
+            (fromLteSucc (replace {p = LT (S leftEarlier)} rightShift
+              (replace {p = \source => LT source rightSource} leftShift ordered))))
+o20SubsequenceReflectsSourceOrder (DeleteGenerationAction step rest deleted tail) leftTarget rightTarget leftSource rightSource leftExact rightExact ordered =
+  case o20MappedSuccessorPredecessor (generationSubsequenceSourceOrdinal tail leftTarget) leftSource leftExact of
+    (leftEarlier ** (leftShift, leftOrigin)) =>
+      case o20MappedSuccessorPredecessor (generationSubsequenceSourceOrdinal tail rightTarget) rightSource rightExact of
+        (rightEarlier ** (rightShift, rightOrigin)) =>
+          o20SubsequenceReflectsSourceOrder tail leftTarget rightTarget leftEarlier rightEarlier leftOrigin rightOrigin
+            (fromLteSucc (replace {p = LT (S leftEarlier)} rightShift
+              (replace {p = \source => LT source rightSource} leftShift ordered)))
