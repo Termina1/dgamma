@@ -1,0 +1,17 @@
+{
+  "startUTC": "2026-09-09T18:28:00+00:00",
+  "timeoutUTC": "2026-09-09T22:28:00+00:00",
+  "newProofCutoffUTC": "2026-09-09T21:48:00+00:00",
+  "validationStartCutoffUTC": "2026-09-09T22:03:00+00:00",
+  "gateCutoffUTC": "2026-09-09T22:13:00+00:00",
+  "baseline": "77e94c81",
+  "uniqueOrdinalGate": "APPROVED by R203 task; unchanged-source 48GiB; prior44.8GiB",
+  "firstRecord": "R202 FINAL GATE at 396e963d ACCEPTED as a checked partial milestone; D4 sealed at 77e94c81; reviewer launched.",
+  "readFirstCorrection": "O6-R202-SUPERVISOR-GATE.md absent; equivalent seal is O6-R202-OWNER-FINAL-GATE.md. Read in full; no gate required by task.",
+  "caps": {
+    "B": 16,
+    "A": 16,
+    "C": 6,
+    "D": 4
+  }
+}
