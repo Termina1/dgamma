@@ -221,3 +221,14 @@ o20ForeignSubsequenceUnloadIndex name key world error value nameEq selected regi
       tail (o20RegisteredUnloadFreeTail free) actor distinct sourceIndex exact of
         (targetIndex ** (targetExact, originExact)) =>
           (targetIndex ** (targetExact, cong (map S) originExact))
+
+||| Eliminate an OBSERVED successor-map equation before constructing any
+||| dependent packet. The predecessor and its exact source equation agree.
+export
+0 o20MappedSuccessorPredecessor :
+  (observed : Maybe Nat) -> (sourceIndex : Nat) ->
+  (map S observed = Just sourceIndex) ->
+  (earlier : Nat ** (sourceIndex = S earlier, observed = Just earlier))
+o20MappedSuccessorPredecessor Nothing sourceIndex exact = absurd exact
+o20MappedSuccessorPredecessor (Just earlier) sourceIndex exact =
+  (earlier ** (sym (justInjective exact), Refl))
