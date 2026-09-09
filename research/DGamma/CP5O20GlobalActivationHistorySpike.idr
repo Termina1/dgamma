@@ -165,3 +165,39 @@ o20ReplayRetainedEventCounts nameEq (event :: later) counts =
     Nothing => o20ReplayRetainedEventCounts nameEq later counts
     Just activation => o20ReplayRetainedEventCounts nameEq later
       (incrementChildrenBornInActivation @{nameEq} activation counts)
+
+||| GLOBAL counter equation for the complete native classified word. This
+||| turns R202's local updates into a whole-history induction. Each discarded
+||| birth contributes zero; each actual retained birth contributes one update
+||| at its observed activation. No target counter or chronological equality is
+||| assumed. Transport between exchanged canonical words remains separate.
+export
+0 o20NativeActivationCounts :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (ordinal : Nat) -> (index : RegistrationIndexState name) ->
+  {first, finalState : SystemState name key value world error} ->
+  (trace : Transitions first finalState) -> (finalIndex : RegistrationIndexState name) ->
+  (events : List (RegistrationEvent name key world error value)) ->
+  O20NativeActivationScan nameEq ordinal index trace finalIndex events ->
+  (indexedSurvivingChildCounts finalIndex =
+    o20ReplayRetainedEventCounts nameEq events (indexedSurvivingChildCounts index))
+o20NativeActivationCounts nameEq ordinal (MkRegistrationIndexState live activations counts deleted)
+  trace finalIndex events scan = case scan of
+    O20ActivationScanEnd => Refl
+    O20ActivationScanOrdinary action edge rest shape ordinary later =>
+      trans (o20NativeActivationCounts nameEq (S ordinal) (advanceRegistrationIndex @{nameEq} ordinal action (MkRegistrationIndexState live activations counts deleted))
+        rest finalIndex events later)
+        (cong (o20ReplayRetainedEventCounts nameEq events)
+          (o20OrdinaryIndexKeepsActivationCounts nameEq ordinal action (MkRegistrationIndexState live activations counts deleted)))
+    O20ActivationScanDeleted {child} {parent} {component} edge rest shape discarded later =>
+      trans (o20NativeActivationCounts nameEq (S ordinal) (advanceDeletedRegistrationIndex @{nameEq} ordinal child parent component (MkRegistrationIndexState live activations counts deleted))
+        rest finalIndex events later)
+        (cong (o20ReplayRetainedEventCounts nameEq events)
+          (snd (o20DeletedBirthKeepsActivationPosition nameEq ordinal child parent component (MkRegistrationIndexState live activations counts deleted))))
+    O20ActivationScanRetained {child} {parent} {component} {events = laterEvents} edge rest shape retained later =>
+      rewrite survivingActivationPresent retained in
+        trans (o20NativeActivationCounts nameEq (S ordinal) (advanceSurvivingRegistrationIndex @{nameEq} ordinal child parent component (MkRegistrationIndexState live activations counts deleted))
+          rest finalIndex laterEvents later)
+          (cong (o20ReplayRetainedEventCounts nameEq laterEvents)
+            (snd (o20SurvivingBirthActivationUpdate nameEq ordinal child parent component (MkRegistrationIndexState live activations counts deleted)
+              (survivingActivation retained) (survivingActivationPresent retained))))
