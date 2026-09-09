@@ -75,3 +75,32 @@ retireAnyInsertedSnapshot nameEq child actor parent fiber component ambient (MkC
   cong (MkRuntimeSnapshot ambient)
     (replaceOtherHeadObserved nameEq child actor (retireFiber fiber) (freshFiber component parent)
       entries (decEq @{nameEq} child actor) Refl distinct)
+
+||| Transport a PRODUCED native insertion replay to an arbitrary snapshot-
+||| equal well-formed retired source, retaining the observed original insertion
+||| endpoint. Helper for one action role; not a supplied suffix oracle.
+export
+0 replayInsertObserved :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (child, actor : name) -> (parent : Parent name) ->
+  (fiber : Fiber name key value world error) -> (component : Component key value world error) ->
+  (ambient : world) -> (source : Registry name key value world error) ->
+  (current : SystemState name key value world error) ->
+  (0 absent : lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor source = Nothing) ->
+  (0 distinct : Not (child = actor)) ->
+  (0 currentValid : registryWellFormed @{nameEq} @{keyEq} current = True) ->
+  (0 currentSame : runtimeSnapshot current = runtimeSnapshot {name} {key} {value} {world} {error}
+    (MkSystemState ambient (replaceBinding @{nameEq} child (retireFiber fiber) source))) ->
+  CheckedSnapshotStep name key world error value nameEq keyEq (OInsert actor parent component)
+    (MkSystemState ambient (replaceBinding @{nameEq} child (retireFiber fiber) source)) OInsertTag
+    (MkRuntimeSnapshot ambient (Bind actor (freshFiber component parent) :: bindings (replaceBinding @{nameEq} child (retireFiber fiber) source))) ->
+  CheckedSnapshotStep name key world error value nameEq keyEq (OInsert actor parent component) current OInsertTag
+    (runtimeSnapshot {name} {key} {value} {world} {error}
+      (MkSystemState ambient (replaceBinding @{nameEq} child (retireFiber fiber)
+        (insertBinding @{nameEq} actor (freshFiber component parent) source absent))))
+replayInsertObserved nameEq keyEq child actor parent fiber component ambient source current absent distinct currentValid currentSame replay =
+  replace {p = \expected => CheckedSnapshotStep name key world error value nameEq keyEq (OInsert actor parent component) current OInsertTag expected}
+    (trans (snapshotExact replay) (sym (retireAnyInsertedSnapshot nameEq child actor parent fiber component ambient source absent distinct)))
+    (checkedAcrossSnapshot nameEq keyEq (OInsert actor parent component) OInsertTag
+      (MkSystemState ambient (replaceBinding @{nameEq} child (retireFiber fiber) source))
+      (snapshotAfter replay) current (snapshotChecked replay) (sym currentSame) currentValid)
