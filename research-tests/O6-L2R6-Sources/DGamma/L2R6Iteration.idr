@@ -97,3 +97,31 @@ record AdmittedDistanceMove
   0 afterDistanceEquation : totalDistance nameEq keyEq newTrail = afterDistance
   0 dropsExactlyOne : beforeDistance = S afterDistance
   0 moveEndpoints : RegistryExtensional name key world error value nameEq oldFinal newFinal
+
+||| Finite checked iteration of actual one-step moves. The middle TRAIL is
+||| shared literally by adjacent iterations; endpoint preservation itself is
+||| extensional, never equality of independently reconstructed registry states.
+public export
+data DistanceIteration :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  DecEq name -> DecEq key ->
+  {initial, oldFinal, newFinal : SystemState name key value world error} ->
+  {oldTrace : Transitions initial oldFinal} -> {newTrace : Transitions initial newFinal} ->
+  AvailabilityTrace name key world error value oldTrace ->
+  AvailabilityTrace name key world error value newTrace -> Type where
+  IterationDone : {name, key, world, error : Type} -> {value : key -> Type} ->
+    {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+    {initial, finalState : SystemState name key value world error} ->
+    {trace : Transitions initial finalState} ->
+    (trail : AvailabilityTrace name key world error value trace) -> DistanceIteration nameEq keyEq trail trail
+  IterationMove : {name, key, world, error : Type} -> {value : key -> Type} ->
+    {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+    {initial, oldFinal, middleFinal, newFinal : SystemState name key value world error} ->
+    {oldTrace : Transitions initial oldFinal} -> {middleTrace : Transitions initial middleFinal} ->
+    {newTrace : Transitions initial newFinal} ->
+    {oldTrail : AvailabilityTrace name key world error value oldTrace} ->
+    {middleTrail : AvailabilityTrace name key world error value middleTrace} ->
+    {newTrail : AvailabilityTrace name key world error value newTrace} ->
+    (0 move : AdmittedDistanceMove name key world error value nameEq keyEq oldTrail middleTrail) ->
+    (0 later : DistanceIteration nameEq keyEq middleTrail newTrail) ->
+    DistanceIteration nameEq keyEq oldTrail newTrail
