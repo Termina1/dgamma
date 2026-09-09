@@ -39,3 +39,17 @@ originForced : {name, key, world, error : Type} -> {value : key -> Type} ->
   DecEq name -> DecEq key -> AvailabilityTrace name key world error value trace -> Maybe Nat -> Bool
 originForced nameEq keyEq trail Nothing = False
 originForced nameEq keyEq trail (Just ordinal) = isJust (anchorOf nameEq keyEq trail ordinal)
+
+||| Retire/Remove tag observation; root status still requires the ACTUAL
+||| source-state rootInputAtSource test. This does not classify children roots.
+public export
+rootControlAction : {name, key, world, error : Type} -> {value : key -> Type} ->
+  Action name key value world error -> Bool
+rootControlAction (ORetire actor) = True
+rootControlAction (ORemove actor) = True
+rootControlAction (OInsert actor parent component) = False
+rootControlAction (LBegin actor) = False
+rootControlAction (LAdvance actor) = False
+rootControlAction (LDivert actor) = False
+rootControlAction (LUnload actor) = False
+rootControlAction (LLeave actor) = False
