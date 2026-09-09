@@ -57,3 +57,19 @@ o20PaperSourceTargetAtFiber {name} {key} {world} {error} {value} {nameEq} {keyEq
   (AdvanceSourceFinishOne {fibers} Refl observedFound target) fiber found =
     replace {p = O20NativeReloadingTarget name key world error value nameEq keyEq fibers}
       (justInjective (trans (sym observedFound) found)) (O20TargetReloading target)
+
+||| Eliminate the single native target constructor at known Reloading indices.
+export
+0 o20NativeReloadingTargetEquation :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {fibers : Registry name key value world error} ->
+  {component : Component key value world error} -> {parent : Parent name} -> {retiredFlag : Bool} ->
+  {table : OwnedTable key value (componentProvisions component)} ->
+  {remaining : List (StepEffect key value world error (dependencies (componentDependencies component)) (componentProvisions component))} ->
+  {older : LocalState key value world (componentProvisions component) -> LocalState key value world (componentProvisions component)} ->
+  {view : View name (dependencies (componentDependencies component))} ->
+  O20NativeReloadingTarget name key world error value nameEq keyEq fibers (MkFiber component parent retiredFlag table (Reloading remaining older view)) ->
+  (targetFiber {name} {key} {value} {world} {error} @{nameEq} @{keyEq}
+    (MkFiber component parent retiredFlag table (Reloading remaining older view)) fibers = Just view)
+o20NativeReloadingTargetEquation (O20TargetReloading resolved) = resolved
