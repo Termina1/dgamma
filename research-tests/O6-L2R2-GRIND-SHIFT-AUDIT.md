@@ -188,3 +188,32 @@ All source-commit receipts are inside the archive. The archive's own publication
 **Still only inherited statements / open:** full availability canonical placement, complete canonical/closing-free producers, complete generic Retire/Remove dispatchers, full root-phase/suffix normalization, support-linearization/invariant transport, unconditional adjacency, attached-root grammar and O19 integration. No full confluence theorem is claimed by this shift.
 
 **Next:** independent proof review, owner A12 grammar/availability-dependency gate, then complete the missing native action-square dispatcher and real coverage/normalization producers under the chosen interface. Preserve the honest conditional statements until those premises are discharged.
+
+
+## Final owner/supervisor gate addendum
+
+At HEAD `1307994978d325a367c481fcfafc606d85dae2fb`, the supervisor **ACCEPTED
+and RATIFIED the bounded PARTIAL stage-1 milestone**, with all honest limits
+above unchanged. The supervisor reported 45 commits over the shift base,
+clean scope/tree, no lane2 compiler, and pushed that boundary. Independent
+read-only review is being launched by the supervisor; this child does no more
+source work.
+
+The authorized next-shift direction is **ATTACH with immediate-after-freeing
+PLACEMENT**, last-release attachment and ordered root bundles, fixture-first
+under a research-only `ActorLifecycleOnlyAttached`. The complete ruling is
+recorded verbatim in the A12 design memo. L2R2 has **not** implemented it.
+A root-order-barrier consistency obligation for the non-forced-inputs-first
+clause was reported. The supervisor amended the ruling to the LEAST set
+containing key-forced roots and closed under later external orchestration
+order (barrier-forced roots); only the initial roots before the first forced
+root keep the inputs-first clause. That amendment is also recorded verbatim
+next to the original ruling. Definition and the R-then-S fixture proof remain
+unproved L2R3 work, with no source changes in L2R2.
+
+The compiler-free evidence verifier passed first at `76122d73` and again at
+`13079949`; the committed JSON reports the first genuinely checked boundary.
+This subsequent addendum is artifact-only. No final validation plan, source,
+compiler evidence or immutable archive was changed. Human proof review remains
+separate from those mechanical checks. Stand-down follows publication of this
+requested addendum.

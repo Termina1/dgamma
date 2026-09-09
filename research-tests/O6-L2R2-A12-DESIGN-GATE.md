@@ -140,3 +140,41 @@ Checked new capital:
 **Provisional recommendation: ATTACH, with PLACEMENT as its intended placement discipline.** Retain the conditional PREMISE theorem meanwhile. Before any new variant grammar, the owner must choose the representation and accepted downstream O19/root-phase signature changes. A release/availability dependency policy (including multi-key and ordered-root bundles) is part of that gate, not an implementation detail to guess.
 
 This shift has deliberately stopped at B22/C20 and has defined no attached-root grammar. The checked A12 witness and scoped snapshot phase are review capital for that decision.
+
+
+## 7. Final supervisor gate — direction ratified, implementation deferred
+
+The supervisor ratified this bounded **PARTIAL stage-1 milestone** at
+`1307994978d325a367c481fcfafc606d85dae2fb`, accepted the stated limitations,
+and instructed: independent read-only review is being launched; do no source
+work, finish any artifact-only addendum and stand down.
+
+The following design ruling is recorded **verbatim** as requested:
+
+> A12 DESIGN RULING (supervisor under owner delegation, record verbatim in the design gate memo): direction = ATTACH with immediate-after-freeing PLACEMENT. Rules: (1) a forced root input (one whose declared provision keys were declaration-occupied until an own-child ORemove) is PLACED immediately after the LAST release that makes it native-applicable and ATTACHED to that releasing actor's extended block as a trailing element — multi-key releases across different parents attach to the last releasing block; (2) several roots released by the same removal form an ORDERED BUNDLE at the end of that block, keeping their original orchestration order (external orchestration order among roots is retained, only interleaving with lifecycle changes); (3) non-forced roots stay under "orchestration inputs first" (RootInputsBeforeLifecycle unchanged for them). Next lane shift (L2R3) executes this fixture-first: define the research grammar variant `ActorLifecycleOnlyAttached` (extended grammar + trailing forced-root bundle with the release witness), prove old→extended→attached inclusions, show the C12 small countershape gets gap 0 under it with the root inside parent0's attached block, then the conditional gap theorem with the no-root premise replaced by the attached-normal-form premise. Also keep the PREMISE theorem as interim capital. No production edit; this goes into the CP3 diff plan for the owner's signature (ActorLifecycleOnly + CanonicalInputPlacement + the O19 safetyBlocksAdjacent reading over attached blocks).
+
+The supervisor then issued this amendment, also recorded **verbatim**:
+
+> SUPERVISOR AMENDMENT to the A12 ruling (record verbatim next to it): correct obligation. Since the frozen external orchestration (RootOrchestrationStep / SameExternalOrchestration) preserves the relative order of root inputs, "forced" must be the LEAST set of root inputs that (a) contains every root whose declared provision keys are declaration-occupied until an own-child ORemove (key-forced), and (b) is closed under "later in orchestration order than a forced root" (barrier-forced). Rule (3) becomes: only roots BEFORE the first forced root in orchestration order stay under "orchestration inputs first"; the ordered trailing bundle after the last release contains all forced roots (key- or barrier-forced) in their orchestration order; a barrier-forced root with always-native-available provisions attaches to the same releasing block as the forced root it follows (or a later releasing block if it is itself key-forced by a later release). This is the transitive-closure qualification you identified; it is an unproved generalization obligation for L2R3 (define, then prove the R-then-S fixture), not a guess. Artifact-only now.
+
+
+**No such grammar or inclusion/normalization theorem was defined in L2R2.**
+This is the authorized direction for the next gated shift, not a new proof
+claim or permission to edit production here.
+
+### Generalization consistency obligation — direction qualified, proof deferred
+
+The ruling is not silently amended here. Before a universal attached-normal-
+form claim, reconcile this case: an externally ordered **forced root R** is
+followed by a root **S whose own provisions are always free** (for example,
+empty provisions). R must follow its freeing lifecycle/Remove, and retaining
+root-input order puts S after R. A literal *global* RootInputsBeforeLifecycle
+condition for non-forced S cannot then also hold. This motivated closure of the ordered bundle under root-order barriers
+and an explicit qualification of the non-forced-first clause. The amendment
+above now selects that least-closure direction; its definition and R-then-S
+fixture proof are deferred to L2R3. This is a logical design obligation, not a newly
+mechanized counterexample or an unauthorized choice of definition. It was
+reported to the supervisor and answered by the verbatim amendment above;
+the fixture-first C12 attachment and R-then-S follow-up remain the ratified
+next steps. The multi-key and interior-release cautions above remain
+proof obligations as well.
