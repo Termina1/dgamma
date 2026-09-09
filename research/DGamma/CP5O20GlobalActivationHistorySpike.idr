@@ -201,3 +201,19 @@ o20NativeActivationCounts nameEq ordinal (MkRegistrationIndexState live activati
           (cong (o20ReplayRetainedEventCounts nameEq laterEvents)
             (snd (o20SurvivingBirthActivationUpdate nameEq ordinal child parent component (MkRegistrationIndexState live activations counts deleted)
               (survivingActivation retained) (survivingActivationPresent retained))))
+
+||| ALL chronological event positions, not only the final count. At each
+||| retained event, its position is read from the counter produced by every
+||| earlier retained event. The next event sees exactly one additional update.
+public export
+0 o20ChronologicalPositions :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> List (RegistrationEvent name key world error value) ->
+  List (RegistrationActivation name, Nat) -> Type
+o20ChronologicalPositions nameEq [] counts = ()
+o20ChronologicalPositions nameEq (event :: later) counts =
+  case eventParentActivation event of
+    Nothing => (eventChildPosition event = Z, o20ChronologicalPositions nameEq later counts)
+    Just activation =>
+      (eventChildPosition event = childrenBornInActivation @{nameEq} activation counts,
+       o20ChronologicalPositions nameEq later (incrementChildrenBornInActivation @{nameEq} activation counts))
