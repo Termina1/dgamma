@@ -41,3 +41,33 @@ r203ClosedBirthConsumesNoRetainedPosition =
      (leftFinalIndex r193HistoricalTree)
      (fst (o20LeftNativeActivationHistory (generationTraceCorrespondence r193HistoricalTree)))
      (snd (o20LeftNativeActivationHistory (generationTraceCorrespondence r193HistoricalTree))), Refl)
+
+||| The real six-edge history RETAINS the generated event even after child
+||| retirement/removal. Its actual birth stamp is2, parent Begin stamp1,
+||| iterator position0, and the historical activation count stays1. Both the
+||| complete replay theorem and arbitrary-prefix position theorem are applied.
+export
+0 r203RemovedBirthKeepsHistoricalPosition :
+  (fst (o20AcceptedActivationHistories r45NameEq r192RemovedBirthTrace r192RemovedBirthTrace
+      identityRegistrationGenerationBijection r192RemovedBirthTree) =
+    [MkRegistrationEvent 1 0 r45Child (MkRegistrationGeneration 1 2)
+      (Just (MkRegistrationActivation (MkRegistrationGeneration 0 0) 1)) 0],
+   indexedSurvivingChildCounts (leftFinalIndex r192RemovedBirthTree) =
+     [(MkRegistrationActivation (MkRegistrationGeneration 0 0) 1, 1)],
+   eventChildPosition (MkRegistrationEvent 1 0 r45Child (MkRegistrationGeneration 1 2)
+      (Just (MkRegistrationActivation (MkRegistrationGeneration 0 0) 1)) 0) =
+     childrenBornInActivation @{r45NameEq} (MkRegistrationActivation (MkRegistrationGeneration 0 0) 1)
+       (o20ReplayRetainedEventCounts {key = R45Key} {world = Unit} {error = String} {value = R45Value} r45NameEq [] []))
+r203RemovedBirthKeepsHistoricalPosition =
+  (Refl,
+   o20NativeActivationCounts r45NameEq Z emptyRegistrationIndex r192RemovedBirthTrace
+     (leftFinalIndex r192RemovedBirthTree)
+     (fst (o20LeftNativeActivationHistory (generationTraceCorrespondence r192RemovedBirthTree)))
+     (snd (o20LeftNativeActivationHistory (generationTraceCorrespondence r192RemovedBirthTree))),
+   o20ChronologicalPositionAtPrefix r45NameEq []
+     (MkRegistrationEvent 1 0 r45Child (MkRegistrationGeneration 1 2)
+       (Just (MkRegistrationActivation (MkRegistrationGeneration 0 0) 1)) 0) [] []
+     (o20NativeChronologicalPositions r45NameEq Z emptyRegistrationIndex r192RemovedBirthTrace
+       (leftFinalIndex r192RemovedBirthTree)
+       (fst (o20LeftNativeActivationHistory (generationTraceCorrespondence r192RemovedBirthTree)))
+       (snd (o20LeftNativeActivationHistory (generationTraceCorrespondence r192RemovedBirthTree)))))
