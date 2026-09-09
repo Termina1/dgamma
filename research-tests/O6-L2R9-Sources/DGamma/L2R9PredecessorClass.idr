@@ -79,3 +79,15 @@ lifecycleAtDifference nameEq root source action seen lifeEquation lifeAccepted (
   LocalLifecyclePredecessor seen lifeEquation lifeAccepted same
 lifecycleAtDifference nameEq root source action seen lifeEquation lifeAccepted (No foreign) equation =
   ForeignPredecessor (CrossLifecycle seen lifeEquation lifeAccepted foreign)
+
+||| Own-child insertion classification observes the ACTUAL parent/root Dec.
+public export
+insertAtDifference : {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (root, child, parent : name) ->
+  (source : SystemState name key value world error) ->
+  (component : Component key value world error) ->
+  (decision : Dec (parent = root)) -> (0 equation : decEq @{nameEq} parent root = decision) ->
+  PredecessorClass nameEq root source (OInsert child (ChildOf parent) component)
+insertAtDifference nameEq root child parent source component (Yes same) equation = LocalInsertPredecessor same
+insertAtDifference nameEq root child parent source component (No foreign) equation =
+  ForeignPredecessor (CrossChildInsert foreign)
