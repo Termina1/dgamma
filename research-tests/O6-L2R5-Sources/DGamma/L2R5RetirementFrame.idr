@@ -53,3 +53,32 @@ record RetirementProviderFrame
     (replaceBinding @{nameEq} child (retireFiber childFiber) source) = resolverAfter
   resolverChanged : Bool
   0 resolverChangedEquation : not (sameOptionalView nameEq resolverBefore resolverAfter) = resolverChanged
+
+||| Simultaneous producer from actual installed fibers/source, not from
+||| supplied flags, view equalities, alternate checked edges or replay oracles.
+||| Flags remain honestly observed; unchanged-resolver proof is separate.
+public export
+retirementProviderFrame :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (child, parent, actor : name) ->
+  (childFiber, actorFiber : Fiber name key value world error) ->
+  (source : Registry name key value world error) ->
+  (0 childFound : lookupFiber {name} {key} {value} {world} {error} @{nameEq} child source = Just childFiber) ->
+  (0 ownChild : fiberParent childFiber = ChildOf parent) ->
+  (0 actorFound : lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor source = Just actorFiber) ->
+  RetirementProviderFrame name key world error value nameEq keyEq child parent actor childFiber actorFiber source
+retirementProviderFrame {name} {key} {world} {error} {value} nameEq keyEq child parent actor childFiber actorFiber source childFound ownChild actorFound =
+  MkRetirementProviderFrame childFound ownChild actorFound
+    (retired childFiber) Refl (isActive (fiberLifecycle childFiber)) Refl (retired actorFiber) Refl
+    (provisionOverlap @{keyEq} (componentProvisions (fiberComponent childFiber))
+      (componentDependencies (fiberComponent actorFiber))) Refl
+    (resolveView {name} {key} {value} {world} {error} @{nameEq} @{keyEq}
+      (dependencies (componentDependencies (fiberComponent actorFiber))) source)
+    (resolveView {name} {key} {value} {world} {error} @{nameEq} @{keyEq}
+      (dependencies (componentDependencies (fiberComponent actorFiber))) (replaceBinding @{nameEq} child (retireFiber childFiber) source))
+    Refl Refl
+    (not (sameOptionalView nameEq
+      (resolveView {name} {key} {value} {world} {error} @{nameEq} @{keyEq}
+        (dependencies (componentDependencies (fiberComponent actorFiber))) source)
+      (resolveView {name} {key} {value} {world} {error} @{nameEq} @{keyEq}
+        (dependencies (componentDependencies (fiberComponent actorFiber))) (replaceBinding @{nameEq} child (retireFiber childFiber) source)))) Refl
