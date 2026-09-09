@@ -190,3 +190,19 @@ o20OriginalGenerationDisposition {name} {key} {world} {error} {value} nameEq key
       unique selected parent component birth
       (acceptedLeftBirthCoverage name key world error value nameEq left right mapping registrations selected parent component
         (generatedRegistrationActionOccurrence birth))
+
+||| Complete immutable ORIGINAL birth history, quantified over actual located
+||| occurrences. The closing branch is retained at every replay stage by
+||| transporting occurrence origins, not by imposing current raw-name matches.
+||| This record contains no paired stage sequence or runtime cut.
+public export
+record O20GenerationOnlyHistory
+  (name, key, world, error : Type) (value : key -> Type)
+  {leftFirst, leftFinal, rightFirst, rightFinal : SystemState name key value world error}
+  (mapping : RegistrationGenerationBijection name)
+  (left : Transitions leftFirst leftFinal) (right : Transitions rightFirst rightFinal) where
+  constructor MkO20GenerationOnlyHistory
+  0 originalBirthDisposition :
+    (selected, parent : name) -> (component : Component key value world error) ->
+    (birth : LocatedGeneratedRegistration selected parent component left) ->
+    O20GenerationOnlyDisposition name key world error value mapping left right (registrationGeneration birth)
