@@ -61,3 +61,20 @@ o20DeletionRetainedBirthGeneration trace premises candidate step birth generatio
         registrationGeneration birth)}
       (o20DeletionStepGenerationRenaming trace premises candidate step)
       (replayGeneratedOrdinalPreserved (deletionOccurrenceCorrespondence step) birth))
+
+||| An actual surviving generated Insert and its exact forward source stamp.
+||| This packet does not contain, or imply, a later parent Unload.
+public export
+record O20RetainedGenerationBirth
+  (name, key, world, error : Type) (value : key -> Type)
+  (mapping : RegistrationGenerationBijection name)
+  (generation : RegistrationGeneration name)
+  {initial, finalState : SystemState name key value world error}
+  (trace : Transitions initial finalState) where
+  constructor MkO20RetainedGenerationBirth
+  0 retainedParent : name
+  0 retainedComponent : Component key value world error
+  0 retainedBirth : LocatedGeneratedRegistration (generationName generation)
+    retainedParent retainedComponent trace
+  0 retainedGenerationExact :
+    (generationForward mapping generation = registrationGeneration retainedBirth)
