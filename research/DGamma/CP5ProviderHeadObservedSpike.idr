@@ -36,3 +36,26 @@ record ProviderHeadObserved
       (Bind actor (MkFiber component parent True table lifecycle) :: rest) =
       (if observedHeadGuard then Just actor else
         providerIn {name} {key} {value} {world} {error} @{nameEq} @{keyEq} wanted rest))
+
+||| The NATIVE library guard is observed explicitly at this head. Its own
+||| equation, not a second Bool case split, transports the provider branch.
+export
+0 providerInHeadObserved :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (wanted : key) -> (actor : name) ->
+  (fiber : Fiber name key value world error) ->
+  (rest : List (Binding name (FiberAt name key value world error))) ->
+  (observed : Bool) ->
+  ((isActive (fiberLifecycle fiber) &&
+    memberKey @{keyEq} wanted (ownedValues (fiberTable fiber))) = observed) ->
+  (providerIn {name} {key} {value} {world} {error} @{nameEq} @{keyEq} wanted
+    (Bind actor fiber :: rest) =
+    (if observed then Just actor else
+      providerIn {name} {key} {value} {world} {error} @{nameEq} @{keyEq} wanted rest))
+providerInHeadObserved {name} {key} {world} {error} {value}
+  nameEq keyEq wanted actor fiber rest True equation =
+  rewrite equation in Refl
+providerInHeadObserved {name} {key} {world} {error} {value}
+  nameEq keyEq wanted actor fiber rest False equation =
+  rewrite equation in Refl
