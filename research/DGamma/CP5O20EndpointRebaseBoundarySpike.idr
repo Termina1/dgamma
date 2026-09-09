@@ -153,3 +153,24 @@ export
     (leftFinalGenerations registrations) (leftDeletedGenerations registrations) selected leftFinal
 o20DisagreementVestigialChoice mapping registrations current selected stamp different (Left vestigial) = vestigial
 o20DisagreementVestigialChoice mapping registrations current selected stamp different (Right same) = void (different same)
+
+||| Produce every field of the ORIGINAL present vestigial remainder from an
+||| authentic current-generation lookup and a history/current disagreement.
+||| This does not identify canonical lookup absence or produce D5's cut.
+export
+0 o20DisagreementVestigial :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {leftFirst, leftFinal, rightFirst, rightFinal : SystemState name key value world error} ->
+  (left : Transitions leftFirst leftFinal) -> (right : Transitions rightFirst rightFinal) ->
+  (mapping : RegistrationGenerationBijection name) ->
+  (registrations : RegistrationCorrespondenceByGeneration nameEq mapping left right) ->
+  (current : CurrentEndpointRenaming nameEq keyEq mapping left right registrations) ->
+  (selected : name) -> (stamp : RegistrationGeneration name) ->
+  (lookupCurrentGeneration @{nameEq} selected (leftFinalGenerations registrations) = Just stamp) ->
+  Not (o20HistoricalTarget mapping stamp = renameForward (currentNameBijection current) selected) ->
+  VestigialEndpointGeneration name key world error value nameEq keyEq
+    (leftFinalGenerations registrations) (leftDeletedGenerations registrations) selected leftFinal
+o20DisagreementVestigial nameEq keyEq left right mapping registrations current selected stamp found different =
+  o20DisagreementVestigialChoice mapping registrations current selected stamp different
+    (o20HistoryEndpointPartition nameEq keyEq left right mapping registrations current selected stamp found)
