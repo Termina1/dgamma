@@ -66,3 +66,17 @@ controlAtDifference nameEq root child parent source fiber found ownChild (Yes sa
   LocalChildControl fiber found (trans ownChild (cong ChildOf same))
 controlAtDifference nameEq root child parent source fiber found ownChild (No foreign) equation =
   ForeignChildControl parent fiber found ownChild foreign
+
+||| Classify the observed native parent; observe DecEq at the child call site.
+public export
+controlAtParent : {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (root, child : name) ->
+  (source : SystemState name key value world error) ->
+  (fiber : Fiber name key value world error) ->
+  (0 found : lookupFiber {name} {key} {value} {world} {error} @{nameEq} child (registry source) = Just fiber) ->
+  (parent : Parent name) -> (0 equation : fiberParent fiber = parent) ->
+  ControlClass nameEq root child source
+controlAtParent nameEq root child source fiber found Root equation = RootControl fiber found equation
+controlAtParent nameEq root child source fiber found (ChildOf parent) equation =
+  controlAtDifference nameEq root child parent source fiber found equation
+    (decEq @{nameEq} parent root) Refl
