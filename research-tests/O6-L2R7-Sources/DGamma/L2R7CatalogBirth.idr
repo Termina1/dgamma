@@ -42,3 +42,23 @@ catalogBirthTail step rest entry offset (MkCatalogBirthAt occurrence ordinal) = 
     (afterActionOccurrence occurrence) (locatedAction occurrence)
     (cong (MoreTransitions step) (actionOccurrenceDecomposition occurrence)))
   (trans ordinal (plusSuccRightSucc offset (locatedActionOrdinal occurrence)))
+
+||| A root-insertion catalog cons: decode either its genuine head birth or
+||| the recursively decoded tail. Only membership is eliminated here.
+export
+0 catalogBirthInsertMember : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (step : Transition first middle) -> (rest : Transitions middle finalState) ->
+  (root : name) -> (component : Component key value world error) -> (offset : Nat) ->
+  (0 inserted : transitionAction step = OInsert root Root component) ->
+  (tailCatalog : List (RootCatalogEntry name key world error value)) ->
+  (0 tail : (item : RootCatalogEntry name key world error value) -> Elem item tailCatalog ->
+    CatalogBirthAt name key world error value item (S offset) rest) ->
+  (entry : RootCatalogEntry name key world error value) ->
+  (0 member : Elem entry (MkRootCatalogEntry offset root component :: tailCatalog)) ->
+  CatalogBirthAt name key world error value entry offset (MoreTransitions step rest)
+catalogBirthInsertMember {first} {middle} step rest root component offset inserted tailCatalog tail _ Here =
+  MkCatalogBirthAt (MkLocatedActionOccurrence first middle NoTransitions step rest inserted Refl)
+    (sym (plusZeroRightNeutral offset))
+catalogBirthInsertMember step rest root component offset inserted tailCatalog tail entry (There later) =
+  catalogBirthTail step rest entry offset (tail entry later)
