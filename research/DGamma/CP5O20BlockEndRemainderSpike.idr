@@ -269,3 +269,15 @@ o20LocatedBlockEndRemainderEmpty {name} {key} {value} {world} {error} {nameEq} {
   o20ActiveRemainderObserved nameEq selected (blockEnd block)
     (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected (registry (blockEnd block))) Refl
     (o20LocatedBlockEndActive block aligned)
+
+||| Erase two actually empty remainder words from an augmented equality.
+||| This is explicit list algebra; it supplies no endpoint emptiness itself.
+export
+0 o20EraseEmptyAugmentation :
+  (leftWord, rightWord, leftRemainder, rightRemainder : List RuleTag) ->
+  (leftRemainder = []) -> (rightRemainder = []) ->
+  ((leftWord ++ leftRemainder) = (rightWord ++ rightRemainder)) -> (leftWord = rightWord)
+o20EraseEmptyAugmentation leftWord rightWord leftRemainder rightRemainder leftEmpty rightEmpty augmented =
+  trans (sym (appendNilRightNeutral leftWord))
+    (trans (cong (leftWord ++) (sym leftEmpty))
+      (trans augmented (trans (cong (rightWord ++) rightEmpty) (appendNilRightNeutral rightWord))))
