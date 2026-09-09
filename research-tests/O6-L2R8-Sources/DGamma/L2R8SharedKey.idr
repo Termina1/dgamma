@@ -22,3 +22,15 @@ public export
 sharedKeyDecision keyEq left right item member (Yes present) equation accepted =
   MkSharedKey item member present
 sharedKeyDecision keyEq left right item member (No absent) equation accepted = absurd accepted
+
+||| General AnyHit decoder over the isElem release scan; agreement with
+||| scanReleaseOrdinals open. Observe the library decision ONCE at this call
+||| site. The successful key and BOTH list memberships are produced, not
+||| supplied as a shared-key oracle. Proof-erased constructive extraction.
+public export
+0 sharedKeyFromAnyHit : {key : Type} -> (keyEq : DecEq key) ->
+  (left, right : List key) ->
+  AnyHit (\item => isYes (isElem @{keyEq} item right)) left -> SharedKey left right
+sharedKeyFromAnyHit keyEq left right hit =
+  sharedKeyDecision keyEq left right (hitItem hit) (hitMember hit)
+    (isElem @{keyEq} (hitItem hit) right) Refl (hitAccepted hit)
