@@ -44,3 +44,18 @@ record ClassifierSquare
   0 squareAdmitted : AdmittedCrossing nameEq root source action
   0 squareCurrentCut : rootDeclaredProvisionsFree name key world error value keyEq component source = True
   0 squareEndpoint : RegistryExtensional name key world error value nameEq oldFinal squareFinal
+
+||| Match a produced checked snapshot packet against a known native edge
+||| at the SAME source/action/tag. Only the packet is eliminated.
+export
+0 snapshotPacketMatches : {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (action : Action name key value world error) -> (tag : RuleTag) ->
+  (source, target : SystemState name key value world error) ->
+  (expected : RuntimeSnapshot name key world error value) ->
+  (0 checked : checkedApplyAction @{nameEq} @{keyEq} action source = Just (tag, target)) ->
+  CheckedSnapshotStep name key world error value nameEq keyEq action source tag expected ->
+  runtimeSnapshot target = expected
+snapshotPacketMatches nameEq keyEq action tag source target expected checked
+  (MkCheckedSnapshotStep afterState produced exact) =
+  trans (cong runtimeSnapshot (cong snd (justInjective (trans (sym checked) produced)))) exact
