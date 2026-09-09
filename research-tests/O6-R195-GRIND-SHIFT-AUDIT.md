@@ -31,3 +31,38 @@ accepted paired alignment and fixtures. B<=16: endpoint all-name fold/rebase;
 vestigial remainder and exact D5 bridge. C<=3 body invocations only after A/B.
 D<=4 docs-only sync. One new declaration/check, <=3 attempts, immediate exact-
 source guarded commit; exhausted unit restored/audited/gated, never restated.
+
+## A1--A10: exact root boundary; no false generic extraction
+
+All10 first-attempt PASS, each immediately receipt-guarded committed:
+23f50e84,4aa45649,7d0f261c,3045e188,d94c015e,d79669de,af20f0b7,
+f83259b4,5fa7af54,7b5b3593. A1 specifies O20RootReplayOrdinals;
+A2 identity owns it; A3 composes two owned laws at the SAME intermediate
+occurrence; A4 derives conjugated physical root stamps from both laws and an
+original root-stamp match. A4 is CONDITIONAL, not accepted-capital extraction.
+
+A5--A10 authenticate a checked singleton OInsert0 Root r45Parent with no child
+births and a FULL ActionRegistrationReplayCorrespondence back to itself.
+Its map swaps ordinals0/1, preserving all raw names; both inverse laws, all
+actual action/tag/coherence fields, and the generated-only ordinal field hold.
+The actual root occurrence contradicts O20RootReplayOrdinals for that record.
+The boundary theorem r195ReplayRecordDoesNotOwnRootLaw is constructive Void,
+not an expected compiler error or new hole. A10 PASS3.142s,2,595,808KiB.
+
+Exact missing producer:
+O20RootReplayOrdinals name key world error value
+  (canonicalOccurrenceCorrespondence capital), and the corresponding law for
+its composition with the ACTUAL operational occurrence fold. Neither follows
+from ActionRegistrationReplayCorrespondence alone. The default actual adjacent
+producer does compute an all-ordinal swap, but its definition and proof are
+private in frozen LocalDiamond (26676--26706,27280--27295); no edit was made.
+The deletion producer uses scoped all-ordinal witnesses (27463--27505), but the
+public DeletionProducerOperationalCapital stores only a generated-birth law
+(4634--4655), and public DeletionChainStep authenticates against that supplied
+capital (4870--4881), not an exported all-root law. This is a ROOT CONSTRUCTION
+SURFACE RISK, not a proven protected-theorem counterexample: no independent
+canonical schedule pair or actual nonempty operational permutation is packaged
+by the singleton fixture. No protected statement revision is proposed/applied.
+
+Root-only generic extraction is structurally parked pending supervisor gate;
+remaining A(b)/(c) and B are not claimed closed. All frozen surfaces stay intact.
