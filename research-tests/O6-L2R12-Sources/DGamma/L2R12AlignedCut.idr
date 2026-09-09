@@ -39,3 +39,23 @@ record AlignedSourceAction
   0 edgeOrdinal : locatedActionOrdinal edgeOccurrence = ordinal
   0 edgeBefore : actionBeforeState edgeOccurrence = source
   0 edgeAfter : actionAfterState edgeOccurrence = edgeTarget
+
+||| Lift exact source, target, tag and dictionary equation through one head.
+||| Only the native ordinal changes; no dictionary equality is guessed.
+export
+0 alignedSourceThroughHead : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (step : Transition first middle) -> (rest : Transitions middle finalState) ->
+  (source : SystemState name key value world error) ->
+  (action : Action name key value world error) -> (ordinal : Nat) ->
+  (edge : AlignedSourceAction name key world error value nameEq keyEq rest source action ordinal) ->
+  AlignedSourceAction name key world error value nameEq keyEq (MoreTransitions step rest) source action (S ordinal)
+alignedSourceThroughHead nameEq keyEq step rest source action ordinal edge =
+  MkAlignedSourceAction (edgeTarget edge) (edgeTag edge) (edgeChecked edge)
+    (MkLocatedActionOccurrence (actionBeforeState (edgeOccurrence edge)) (actionAfterState (edgeOccurrence edge))
+      (MoreTransitions step (beforeActionOccurrence (edgeOccurrence edge)))
+      (locatedTransition (edgeOccurrence edge)) (afterActionOccurrence (edgeOccurrence edge))
+      (locatedAction (edgeOccurrence edge))
+      (cong (MoreTransitions step) (actionOccurrenceDecomposition (edgeOccurrence edge))))
+    (cong S (edgeOrdinal edge)) (edgeBefore edge) (edgeAfter edge)
