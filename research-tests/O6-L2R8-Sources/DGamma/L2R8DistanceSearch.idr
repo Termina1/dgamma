@@ -31,3 +31,14 @@ distanceSearchThere head zero (AllDistancesZero zeros) = AllDistancesZero (zero 
 distanceSearchThere head zero (FoundFirstPositive item before after predecessor member split zeros equation) =
   FoundFirstPositive item (head :: before) after predecessor (There member)
     (cong (head ::) split) (zero :: zeros) equation
+
+||| Eliminate only the explicit observed Nat, with its producer-owned exact
+||| equation. No second evaluation or Boolean decision enters the proof.
+public export
+distanceSearchAtValue : {a : Type} -> (distance : a -> Nat) ->
+  (head : a) -> (items : List a) -> (observed : Nat) ->
+  (0 equation : distance head = observed) ->
+  DistanceSearch distance items -> DistanceSearch distance (head :: items)
+distanceSearchAtValue distance head items Z equation tail = distanceSearchThere head equation tail
+distanceSearchAtValue distance head items (S predecessor) equation tail =
+  FoundFirstPositive head [] items predecessor Here Refl [] equation
