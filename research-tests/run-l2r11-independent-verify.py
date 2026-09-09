@@ -59,6 +59,7 @@ def verify(use_archive=True):
  with tarfile.open(archive,'r:gz') as tf:
   members=tf.getmembers();assert all(m.isfile() and m.name.startswith('raw/') and '..' not in m.name for m in members)
   stored={m.name[4:]:tf.extractfile(m).read() for m in members}
+  assert len(stored)==len(members), 'Duplicate archive member'
  assert set(stored)==set(manifest['files'])
  for name,info in manifest['files'].items():
   assert sha(stored[name])==info['sha256'] and len(stored[name])==info['bytes']
@@ -84,6 +85,11 @@ def verify(use_archive=True):
   else:assert re.fullmatch(r'V\d+',unit)
  successful=[r for r in receipts if r['event']=='GUARDED COMMIT']
  assert len(successful)==sum(r['passed'] for rows in groups.values() for r in rows)
+ assert len({r['invocation'] for r in successful})==len(successful)
+ assert {r['invocation'] for r in successful}=={r['unit'] for rows in groups.values() for r in rows if r['passed']}
+ for rows in groups.values():assert [int(r['unit'].rsplit('-',1)[1]) for r in rows]==list(range(1,len(rows)+1))
+ order=[(r['unit'][0],int(r['unit'].split('-')[0][1:])) for r in records if not r['unit'].startswith('V')]
+ assert order==sorted(order), 'Ordered A then B then C then D'
  for receipt in receipts:
   r=byid[receipt['invocation']];assert r['passed'] and r['sourceSHA256']==receipt['sourceHash']
   assert r['end']<=receipt['timestampUTC']
@@ -100,6 +106,8 @@ def verify(use_archive=True):
    old=before.stdout if before.returncode==0 else b''
    assert len(decls(stored[r['unit']+'.source'])-decls(old))==1
  closed=json.loads(stored['source-closed.json']);assert closed['retainedDeclarations']==len(successful) and closed['newAttemptsForbidden']
+ assert closed['head']==successful[-1]['resultingCommitHash']
+ subprocess.run(['git','merge-base','--is-ancestor',closed['head'],manifest['boundaryHead']],cwd=ROOT,check=True)
  assert all(r['start']<closed['timestampUTC'] for r in records if not r['unit'].startswith('V'))
  shift=json.loads(stored['shift.json'])
  assert all(r['start']<(shift['validationCutoff'] if r['unit'].startswith('V') else shift['attemptCutoff']) for r in records)
@@ -122,10 +130,29 @@ def verify(use_archive=True):
   r=byid[task['unit']];assert r['passed'] and r['path']==task['path'] and r['sourceSHA256']==task['sourceSHA256']
   assert sha((ROOT/task['path']).read_bytes())==task['sourceSHA256']
  final=json.loads(stored['final-validation-result.json']);assert final['passed'] and len(final['validations'])==len(retained)
+ assert final['validations']==[{k:byid[t['unit']][k] for k in ['unit','path','seconds','maxSampleRSSKiB']} for t in plan['validations']]
+ micro=json.loads((ROOT/(PREFIX+'MICRO-UNIT-LEDGER.json')).read_text())
+ assert micro['sourceBoundary']==closed and len(micro['sourceUnits'])==len(successful)
+ for row,receipt in zip(micro['sourceUnits'],successful):
+  r=byid[receipt['invocation']];data=stored[r['unit']+'.source']
+  old=subprocess.run(['git','show',receipt['resultingCommitHash']+'^:'+r['path']],cwd=ROOT,capture_output=True)
+  assert decls(data)-decls(old.stdout if old.returncode==0 else b'')=={row['name']}
+  assert row['unit']==receipt['unit'] and row['invocation']==r['unit'] and row['commit']==receipt['resultingCommitHash']
+  assert row['path']==r['path'] and row['checkedSourceSHA256']==r['sourceSHA256']
+  assert row['currentSourceSHA256']==sha((ROOT/r['path']).read_bytes())
+  assert re.search(r'\b'+re.escape(row['name'])+r'\b',(ROOT/r['path']).read_text().splitlines()[row['line']-1])
+ compiler=json.loads((ROOT/(PREFIX+'COMPILER-LEDGER.json')).read_text())
+ assert compiler['boundaryHead']==manifest['boundaryHead'] and compiler['archiveSHA256']==manifest['archiveSHA256']
+ assert compiler['guardedReceipts']==receipts and compiler['sourceDeclarations']==len(successful)
+ assert len(compiler['invocations'])==len(records)
+ for row,r in zip(compiler['invocations'],records):
+  for k in ['unit','path','start','end','seconds','exit','passed','fresh','interrupted','sourceMutationObserved','sourceSHA256','maxSampleRSSKiB','buildingCount','buildingLines','expectedDiagnostic']:assert row[k]==r[k]
+ overlaps=json.loads((ROOT/(PREFIX+'OVERLAP-LOG.json')).read_text())
+ assert overlaps['timestampObservations']==[dict(invocation=r['unit'],firstObservedUTC=p.get('firstObservedUTC',r['start']),lastObservedUTC=p.get('lastObservedUTC',r['start'])) for r in records for p in r['separateCompilerObservations']]
  assert not git('diff','--cached','--name-only').strip()
  processes=subprocess.check_output(['ps','-axo','pid,ppid,command'],text=True)
  assert not any('/idris2_app/idris2' in row and str(ROOT)+'/' in row and re.match(r'^\s*\d+\s+\d+\s+(?:\S*/)?(?:chez|scheme|chezscheme|idris2(?:\.so)?)(?:\s|$)',row) for row in processes.splitlines())
- return dict(passed=True,checkedHead=git('rev-parse','HEAD').decode().strip(),records=len(records),proofAttempts=sum(len(v) for v in groups.values()),retainedDeclarations=len(successful),failedAttempts=[r['unit'] for r in records if not r['passed']],guardedSourceCommits=len(successful),guardedReceipts=len(receipts),finalValidations=len(retained),archiveFiles=len(stored),archiveSHA256=manifest['archiveSHA256'],noStagedFiles=True,ownCompilerRunning=False,humanMathematicalReview='parent-owned, not performed by this script',scope=closed['scope'])
+ return dict(passed=True,checkedHead=git('rev-parse','HEAD').decode().strip(),verifierSHA256=sha(Path(__file__).read_bytes()),archiveBoundaryHead=manifest['boundaryHead'],derivedLedgersVerified=True,records=len(records),proofAttempts=sum(len(v) for v in groups.values()),retainedDeclarations=len(successful),failedAttempts=[r['unit'] for r in records if not r['passed']],guardedSourceCommits=len(successful),guardedReceipts=len(receipts),finalValidations=len(retained),archiveFiles=len(stored),archiveSHA256=manifest['archiveSHA256'],noStagedFiles=True,ownCompilerRunning=False,humanMathematicalReview='parent-owned, not performed by this script',scope=closed['scope'])
 
 if __name__=='__main__':
  parser=argparse.ArgumentParser();parser.add_argument('--write-report',action='store_true');parser.add_argument('--compare-raw',action='store_true');args=parser.parse_args()

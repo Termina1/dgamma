@@ -1,0 +1,32 @@
+{
+  "passed": true,
+  "checkedHead": "f6363f10d0ac962746d93dce4a3f7177f5aa913b",
+  "verifierSHA256": "2c3cbbc7151c720d8bd4b5ede5b1403f31191e637e15cb0d24eb93c6d2f8a915",
+  "archiveBoundaryHead": "f6363f10d0ac962746d93dce4a3f7177f5aa913b",
+  "derivedLedgersVerified": true,
+  "records": 76,
+  "proofAttempts": 61,
+  "retainedDeclarations": 50,
+  "failedAttempts": [
+    "A1-1",
+    "A1-2",
+    "A7-1",
+    "A7-2",
+    "A7-3",
+    "A10-1",
+    "A12-1",
+    "C7-1",
+    "C14-1",
+    "C14-2",
+    "C14-3"
+  ],
+  "guardedSourceCommits": 50,
+  "guardedReceipts": 57,
+  "finalValidations": 12,
+  "archiveFiles": 498,
+  "archiveSHA256": "ba13e04fd569e40171f1e5f9500b8b2517bb4a283e32742d471a5614d9d1f0e5",
+  "noStagedFiles": true,
+  "ownCompilerRunning": false,
+  "humanMathematicalReview": "parent-owned, not performed by this script",
+  "scope": "PARTIAL: actual-word restricted replay and fixed B-packet core-restoration contract instance proved; no produced ForcedRootPhases, full R191 relocated replay, AdmittedDistanceMove or normalizer"
+}

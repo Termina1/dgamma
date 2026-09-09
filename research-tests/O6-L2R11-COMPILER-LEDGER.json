@@ -1,0 +1,3373 @@
+{
+  "boundaryHead": "f6363f10d0ac962746d93dce4a3f7177f5aa913b",
+  "sourceDeclarations": 50,
+  "invocations": [
+    {
+      "unit": "V0",
+      "path": "research-tests/O6-L2R10-Sources/DGamma/L2R10ReleaseAgreement.idr",
+      "start": "2026-09-09T13:26:59.893907+00:00",
+      "end": "2026-09-09T13:27:00.477141+00:00",
+      "seconds": 0.5832240418531001,
+      "exit": 0,
+      "passed": true,
+      "fresh": true,
+      "interrupted": false,
+      "sourceMutationObserved": false,
+      "sourceSHA256": "3f2ffbc9dcc4bee8860ff761038135e597ece6e8bcb20f9202c48e8d5d34f754",
+      "maxSampleRSSKiB": 183152,
+      "buildingCount": 1,
+      "buildingLines": [
+        "1/1: Building DGamma.L2R10ReleaseAgreement (/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R10-Sources/DGamma/L2R10ReleaseAgreement.idr)"
+      ],
+      "expectedDiagnostic": null,
+      "declaredHeavy": false,
+      "guardedSourceCommit": null,
+      "rawRecord": "raw/V0.json"
+    },
+    {
+      "unit": "A1-1",
+      "path": "research-tests/O6-L2R11-Sources/DGamma/L2R11ReleaseAgreement.idr",
+      "start": "2026-09-09T13:28:14.128104+00:00",
+      "end": "2026-09-09T13:28:14.721752+00:00",
+      "seconds": 0.5936164162121713,
+      "exit": 1,
+      "passed": false,
+      "fresh": true,
+      "interrupted": false,
+      "sourceMutationObserved": false,
+      "sourceSHA256": "f71c7c97f66910bf4b9c019527e7e0c51bc82391b48ea75b7c4a7cc631be983b",
+      "maxSampleRSSKiB": 195248,
+      "buildingCount": 1,
+      "buildingLines": [
+        "1/1: Building DGamma.L2R11ReleaseAgreement (/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R11-Sources/DGamma/L2R11ReleaseAgreement.idr)"
+      ],
+      "expectedDiagnostic": null,
+      "declaredHeavy": false,
+      "guardedSourceCommit": null,
+      "rawRecord": "raw/A1-1.json"
+    },
+    {
+      "unit": "A1-2",
+      "path": "research-tests/O6-L2R11-Sources/DGamma/L2R11ReleaseAgreement.idr",
+      "start": "2026-09-09T13:28:48.781125+00:00",
+      "end": "2026-09-09T13:28:49.379438+00:00",
+      "seconds": 0.598307709209621,
+      "exit": 1,
+      "passed": false,
+      "fresh": true,
+      "interrupted": false,
+      "sourceMutationObserved": false,
+      "sourceSHA256": "e19664b99b1488e3d14cad4b738ad9231615974279e66ec2ff404e28128e40d8",
+      "maxSampleRSSKiB": 195840,
+      "buildingCount": 1,
+      "buildingLines": [
+        "1/1: Building DGamma.L2R11ReleaseAgreement (/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R11-Sources/DGamma/L2R11ReleaseAgreement.idr)"
+      ],
+      "expectedDiagnostic": null,
+      "declaredHeavy": false,
+      "guardedSourceCommit": null,
+      "rawRecord": "raw/A1-2.json"
+    },
+    {
+      "unit": "A1-3",
+      "path": "research-tests/O6-L2R11-Sources/DGamma/L2R11ReleaseAgreement.idr",
+      "start": "2026-09-09T13:29:58.003452+00:00",
+      "end": "2026-09-09T13:29:58.599974+00:00",
+      "seconds": 0.5965162091888487,
+      "exit": 0,
+      "passed": true,
+      "fresh": true,
+      "interrupted": false,
+      "sourceMutationObserved": false,
+      "sourceSHA256": "b1be78e689a73b11ee3dbaaa7018a82383e80328b1db4a404e8b8e42a781596c",
+      "maxSampleRSSKiB": 183888,
+      "buildingCount": 1,
+      "buildingLines": [
+        "1/1: Building DGamma.L2R11ReleaseAgreement (/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R11-Sources/DGamma/L2R11ReleaseAgreement.idr)"
+      ],
+      "expectedDiagnostic": null,
+      "declaredHeavy": false,
+      "guardedSourceCommit": "e4cfc60b47c4e5ab35340e046ffa3bd22052ebdd",
+      "rawRecord": "raw/A1-3.json"
+    },
+    {
+      "unit": "A2-1",
+      "path": "research-tests/O6-L2R11-Sources/DGamma/L2R11ReleaseAgreement.idr",
+      "start": "2026-09-09T13:30:35.997381+00:00",
+      "end": "2026-09-09T13:30:36.586128+00:00",
+      "seconds": 0.5887397923506796,
+      "exit": 0,
+      "passed": true,
+      "fresh": true,
+      "interrupted": false,
+      "sourceMutationObserved": false,
+      "sourceSHA256": "ac20c9b8b39674c7362001f2e31f536e559b1b89ada152391e1108743189b8b6",
+      "maxSampleRSSKiB": 189824,
+      "buildingCount": 1,
+      "buildingLines": [
+        "1/1: Building DGamma.L2R11ReleaseAgreement (/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R11-Sources/DGamma/L2R11ReleaseAgreement.idr)"
+      ],
+      "expectedDiagnostic": null,
+      "declaredHeavy": false,
+      "guardedSourceCommit": "cff4efbe85059c0511669976d24203531b6d2b66",
+      "rawRecord": "raw/A2-1.json"
+    },
+    {
+      "unit": "A3-1",
+      "path": "research-tests/O6-L2R11-Sources/DGamma/L2R11ReleaseAgreement.idr",
+      "start": "2026-09-09T13:31:04.971480+00:00",
+      "end": "2026-09-09T13:31:05.853822+00:00",
+      "seconds": 0.8823369578458369,
+      "exit": 0,
+      "passed": true,
+      "fresh": true,
+      "interrupted": false,
+      "sourceMutationObserved": false,
+      "sourceSHA256": "baa4f75c908d5ecf32de5438d37000b70eabb103cb9d36ec4a3232d65878ff4b",
+      "maxSampleRSSKiB": 295632,
+      "buildingCount": 1,
+      "buildingLines": [
+        "1/1: Building DGamma.L2R11ReleaseAgreement (/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R11-Sources/DGamma/L2R11ReleaseAgreement.idr)"
+      ],
+      "expectedDiagnostic": null,
+      "declaredHeavy": false,
+      "guardedSourceCommit": "55a5152a925266d20d62a850276fab564e5ae4b4",
+      "rawRecord": "raw/A3-1.json"
+    },
+    {
+      "unit": "A4-1",
+      "path": "research-tests/O6-L2R11-Sources/DGamma/L2R11ReleaseAgreement.idr",
+      "start": "2026-09-09T13:31:50.929063+00:00",
+      "end": "2026-09-09T13:31:51.805761+00:00",
+      "seconds": 0.8766997079364955,
+      "exit": 0,
+      "passed": true,
+      "fresh": true,
+      "interrupted": false,
+      "sourceMutationObserved": false,
+      "sourceSHA256": "d9aedc127dc8360ae438cd7d299ee5612cef8e7318ffd94b13978f1e2f4469f5",
+      "maxSampleRSSKiB": 274496,
+      "buildingCount": 1,
+      "buildingLines": [
+        "1/1: Building DGamma.L2R11ReleaseAgreement (/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R11-Sources/DGamma/L2R11ReleaseAgreement.idr)"
+      ],
+      "expectedDiagnostic": null,
+      "declaredHeavy": false,
+      "guardedSourceCommit": "11f59232ce04f4a44d56c34e553c785eb6c7044d",
+      "rawRecord": "raw/A4-1.json"
+    },
+    {
+      "unit": "A5-1",
+      "path": "research-tests/O6-L2R11-Sources/DGamma/L2R11ReleaseAgreement.idr",
+      "start": "2026-09-09T13:32:26.889195+00:00",
+      "end": "2026-09-09T13:32:27.789443+00:00",
+      "seconds": 0.9002490416169167,
+      "exit": 0,
+      "passed": true,
+      "fresh": true,
+      "interrupted": false,
+      "sourceMutationObserved": false,
+      "sourceSHA256": "06876781cd3d036d4dac2a4b6eb7903da6b213a093e7548cb90cfdaf59e787be",
+      "maxSampleRSSKiB": 271440,
+      "buildingCount": 1,
+      "buildingLines": [
+        "1/1: Building DGamma.L2R11ReleaseAgreement (/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R11-Sources/DGamma/L2R11ReleaseAgreement.idr)"
+      ],
+      "expectedDiagnostic": null,
+      "declaredHeavy": false,
+      "guardedSourceCommit": "fb2f255a009c61249359903168eb9f155e6eec39",
+      "rawRecord": "raw/A5-1.json"
+    },
+    {
+      "unit": "A6-1",
+      "path": "research-tests/O6-L2R11-Sources/DGamma/L2R11ReleaseAgreement.idr",
+      "start": "2026-09-09T13:32:46.960995+00:00",
+      "end": "2026-09-09T13:32:47.868135+00:00",
+      "seconds": 0.90713099995628,
+      "exit": 0,
+      "passed": true,
+      "fresh": true,
+      "interrupted": false,
+      "sourceMutationObserved": false,
+      "sourceSHA256": "904bd9aea2ea7778c937c661af964262417d3f775a4f2a40ccf34fec6ddc8ae9",
+      "maxSampleRSSKiB": 297264,
+      "buildingCount": 1,
+      "buildingLines": [
+        "1/1: Building DGamma.L2R11ReleaseAgreement (/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R11-Sources/DGamma/L2R11ReleaseAgreement.idr)"
+      ],
+      "expectedDiagnostic": null,
+      "declaredHeavy": false,
+      "guardedSourceCommit": "1e48fec42ca8d8124e415fb4308bf5ecc78cd2b4",
+      "rawRecord": "raw/A6-1.json"
+    },
+    {
+      "unit": "A7-1",
+      "path": "research-tests/O6-L2R11-Sources/DGamma/L2R11ReleaseAgreement.idr",
+      "start": "2026-09-09T13:33:20.302300+00:00",
+      "end": "2026-09-09T13:33:20.891927+00:00",
+      "seconds": 0.5896204998716712,
+      "exit": 1,
+      "passed": false,
+      "fresh": true,
+      "interrupted": false,
+      "sourceMutationObserved": false,
+      "sourceSHA256": "3f8c8d49104c63adab2e8482220dab5ff8502d443e7f749924920be3774714a4",
+      "maxSampleRSSKiB": 183776,
+      "buildingCount": 1,
+      "buildingLines": [
+        "1/1: Building DGamma.L2R11ReleaseAgreement (/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R11-Sources/DGamma/L2R11ReleaseAgreement.idr)"
+      ],
+      "expectedDiagnostic": null,
+      "declaredHeavy": false,
+      "guardedSourceCommit": null,
+      "rawRecord": "raw/A7-1.json"
+    },
+    {
+      "unit": "A7-2",
+      "path": "research-tests/O6-L2R11-Sources/DGamma/L2R11ReleaseAgreement.idr",
+      "start": "2026-09-09T13:33:56.290033+00:00",
+      "end": "2026-09-09T13:33:56.875024+00:00",
+      "seconds": 0.5849700407125056,
+      "exit": 1,
+      "passed": false,
+      "fresh": true,
+      "interrupted": false,
+      "sourceMutationObserved": false,
+      "sourceSHA256": "a5b06bf011d9f282d298597926b8dc23a84111a3abdc04b0c9ebd3bf368a0a62",
+      "maxSampleRSSKiB": 183840,
+      "buildingCount": 1,
+      "buildingLines": [
+        "1/1: Building DGamma.L2R11ReleaseAgreement (/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R11-Sources/DGamma/L2R11ReleaseAgreement.idr)"
+      ],
+      "expectedDiagnostic": null,
+      "declaredHeavy": false,
+      "guardedSourceCommit": null,
+      "rawRecord": "raw/A7-2.json"
+    },
+    {
+      "unit": "A7-3",
+      "path": "research-tests/O6-L2R11-Sources/DGamma/L2R11ReleaseAgreement.idr",
+      "start": "2026-09-09T13:34:35.727262+00:00",
+      "end": "2026-09-09T13:34:36.320380+00:00",
+      "seconds": 0.5931090414524078,
+      "exit": 1,
+      "passed": false,
+      "fresh": true,
+      "interrupted": false,
+      "sourceMutationObserved": false,
+      "sourceSHA256": "e24e281b1b58783bf22aafb421bcc070a25b0cc92c7de4a77387ebcc1e6c7b4b",
+      "maxSampleRSSKiB": 183792,
+      "buildingCount": 1,
+      "buildingLines": [
+        "1/1: Building DGamma.L2R11ReleaseAgreement (/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R11-Sources/DGamma/L2R11ReleaseAgreement.idr)"
+      ],
+      "expectedDiagnostic": null,
+      "declaredHeavy": false,
+      "guardedSourceCommit": null,
+      "rawRecord": "raw/A7-3.json"
+    },
+    {
+      "unit": "V1",
+      "path": "research-tests/O6-L2R11-Sources/DGamma/L2R11ReleaseAgreement.idr",
+      "start": "2026-09-09T13:36:24.001541+00:00",
+      "end": "2026-09-09T13:36:24.889293+00:00",
+      "seconds": 0.8877486246638,
+      "exit": 0,
+      "passed": true,
+      "fresh": true,
+      "interrupted": false,
+      "sourceMutationObserved": false,
+      "sourceSHA256": "904bd9aea2ea7778c937c661af964262417d3f775a4f2a40ccf34fec6ddc8ae9",
+      "maxSampleRSSKiB": 297248,
+      "buildingCount": 1,
+      "buildingLines": [
+        "1/1: Building DGamma.L2R11ReleaseAgreement (/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R11-Sources/DGamma/L2R11ReleaseAgreement.idr)"
+      ],
+      "expectedDiagnostic": null,
+      "declaredHeavy": false,
+      "guardedSourceCommit": null,
+      "rawRecord": "raw/V1.json"
+    },
+    {
+      "unit": "A8-1",
+      "path": "research-tests/O6-L2R11-Sources/DGamma/L2R11PhaseDecode.idr",
+      "start": "2026-09-09T13:37:53.690382+00:00",
+      "end": "2026-09-09T13:37:54.279273+00:00",
+      "seconds": 0.5889068329706788,
+      "exit": 0,
+      "passed": true,
+      "fresh": true,
+      "interrupted": false,
+      "sourceMutationObserved": false,
+      "sourceSHA256": "3174dc98fbc5fc40326a1a4ef3147b0c4bc7b8af1fcc963e5bc85b800f010990",
+      "maxSampleRSSKiB": 204064,
+      "buildingCount": 1,
+      "buildingLines": [
+        "1/1: Building DGamma.L2R11PhaseDecode (/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R11-Sources/DGamma/L2R11PhaseDecode.idr)"
+      ],
+      "expectedDiagnostic": null,
+      "declaredHeavy": false,
+      "guardedSourceCommit": "9181ded67dc62b3843411bc72c839c36ed9ef58a",
+      "rawRecord": "raw/A8-1.json"
+    },
+    {
+      "unit": "A9-1",
+      "path": "research-tests/O6-L2R11-Sources/DGamma/L2R11PhaseDecode.idr",
+      "start": "2026-09-09T13:38:35.122098+00:00",
+      "end": "2026-09-09T13:38:35.709434+00:00",
+      "seconds": 0.5873400419950485,
+      "exit": 0,
+      "passed": true,
+      "fresh": true,
+      "interrupted": false,
+      "sourceMutationObserved": false,
+      "sourceSHA256": "81adbff5aa2ee36b4fe82e4689d3720a2aa885bbd6219f10178869b31863e1c1",
+      "maxSampleRSSKiB": 198336,
+      "buildingCount": 1,
+      "buildingLines": [
+        "1/1: Building DGamma.L2R11PhaseDecode (/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R11-Sources/DGamma/L2R11PhaseDecode.idr)"
+      ],
+      "expectedDiagnostic": null,
+      "declaredHeavy": false,
+      "guardedSourceCommit": "e0eddcfcc7abb48ca98e60e2fbd1990ccb3b7cee",
+      "rawRecord": "raw/A9-1.json"
+    },
+    {
+      "unit": "A10-1",
+      "path": "research-tests/O6-L2R11-Sources/DGamma/L2R11PhaseDecode.idr",
+      "start": "2026-09-09T13:39:12.654308+00:00",
+      "end": "2026-09-09T13:39:13.239902+00:00",
+      "seconds": 0.5855698343366385,
+      "exit": 1,
+      "passed": false,
+      "fresh": true,
+      "interrupted": false,
+      "sourceMutationObserved": false,
+      "sourceSHA256": "ec9838c098a67e74fb87480071edfcd12096ab1aac3b0840d627bcaae5368185",
+      "maxSampleRSSKiB": 192880,
+      "buildingCount": 1,
+      "buildingLines": [
+        "1/1: Building DGamma.L2R11PhaseDecode (/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R11-Sources/DGamma/L2R11PhaseDecode.idr)"
+      ],
+      "expectedDiagnostic": null,
+      "declaredHeavy": false,
+      "guardedSourceCommit": null,
+      "rawRecord": "raw/A10-1.json"
+    },
+    {
+      "unit": "A10-2",
+      "path": "research-tests/O6-L2R11-Sources/DGamma/L2R11PhaseDecode.idr",
+      "start": "2026-09-09T13:39:55.443308+00:00",
+      "end": "2026-09-09T13:39:56.313328+00:00",
+      "seconds": 0.8700126660987735,
+      "exit": 0,
+      "passed": true,
+      "fresh": true,
+      "interrupted": false,
+      "sourceMutationObserved": false,
+      "sourceSHA256": "8666c389278c18a628ce9be2174dad041b4c9c48b2332786647d6b2f462bbf28",
+      "maxSampleRSSKiB": 299472,
+      "buildingCount": 1,
+      "buildingLines": [
+        "1/1: Building DGamma.L2R11PhaseDecode (/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R11-Sources/DGamma/L2R11PhaseDecode.idr)"
+      ],
+      "expectedDiagnostic": null,
+      "declaredHeavy": false,
+      "guardedSourceCommit": "1459b5e45f987780f6de5e807a6b5c06ca834bd3",
+      "rawRecord": "raw/A10-2.json"
+    },
+    {
+      "unit": "A11-1",
+      "path": "research-tests/O6-L2R11-Sources/DGamma/L2R11PhaseDecode.idr",
+      "start": "2026-09-09T13:40:42.704414+00:00",
+      "end": "2026-09-09T13:40:43.579311+00:00",
+      "seconds": 0.8748816670849919,
+      "exit": 0,
+      "passed": true,
+      "fresh": true,
+      "interrupted": false,
+      "sourceMutationObserved": false,
+      "sourceSHA256": "b7400e7e71c355fff28fbb74e640927ed4afefed9efab9d5dfeca46f1da3581a",
+      "maxSampleRSSKiB": 274640,
+      "buildingCount": 1,
+      "buildingLines": [
+        "1/1: Building DGamma.L2R11PhaseDecode (/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R11-Sources/DGamma/L2R11PhaseDecode.idr)"
+      ],
+      "expectedDiagnostic": null,
+      "declaredHeavy": false,
+      "guardedSourceCommit": "71873a4b3cf397f8a24c65c7c441cd63c33ec40a",
+      "rawRecord": "raw/A11-1.json"
+    },
+    {
+      "unit": "A12-1",
+      "path": "research-tests/O6-L2R11-Sources/DGamma/L2R11PhaseDecode.idr",
+      "start": "2026-09-09T13:41:45.376673+00:00",
+      "end": "2026-09-09T13:41:45.670936+00:00",
+      "seconds": 0.2942526671104133,
+      "exit": 1,
+      "passed": false,
+      "fresh": true,
+      "interrupted": false,
+      "sourceMutationObserved": false,
+      "sourceSHA256": "237b5f04b566d1895be7bf786c78e839e97c98f075eb4385889caf9c84cab054",
+      "maxSampleRSSKiB": 0,
+      "buildingCount": 1,
+      "buildingLines": [
+        "1/1: Building DGamma.L2R11PhaseDecode (/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R11-Sources/DGamma/L2R11PhaseDecode.idr)"
+      ],
+      "expectedDiagnostic": null,
+      "declaredHeavy": false,
+      "guardedSourceCommit": null,
+      "rawRecord": "raw/A12-1.json"
+    },
+    {
+      "unit": "A12-2",
+      "path": "research-tests/O6-L2R11-Sources/DGamma/L2R11PhaseDecode.idr",
+      "start": "2026-09-09T13:42:02.788047+00:00",
+      "end": "2026-09-09T13:42:03.671430+00:00",
+      "seconds": 0.8833553749136627,
+      "exit": 0,
+      "passed": true,
+      "fresh": true,
+      "interrupted": false,
+      "sourceMutationObserved": false,
+      "sourceSHA256": "a9801da54a843b46dbed9ee34d7cd5e93ea5924adf2a2d13186d275d616df15d",
+      "maxSampleRSSKiB": 271200,
+      "buildingCount": 1,
+      "buildingLines": [
+        "1/1: Building DGamma.L2R11PhaseDecode (/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R11-Sources/DGamma/L2R11PhaseDecode.idr)"
+      ],
+      "expectedDiagnostic": null,
+      "declaredHeavy": false,
+      "guardedSourceCommit": "9ae72cd8ca40aa96bded459107034b5ae16d4ce9",
+      "rawRecord": "raw/A12-2.json"
+    },
+    {
+      "unit": "A13-1",
+      "path": "research-tests/O6-L2R11-Sources/DGamma/L2R11PhaseDecode.idr",
+      "start": "2026-09-09T13:42:39.380855+00:00",
+      "end": "2026-09-09T13:42:40.254107+00:00",
+      "seconds": 0.873232833109796,
+      "exit": 0,
+      "passed": true,
+      "fresh": true,
+      "interrupted": false,
+      "sourceMutationObserved": false,
+      "sourceSHA256": "0d7c61a1fadcb110e2d8ae194a63437bd22fc8d4febe520221e6c2d74b22923f",
+      "maxSampleRSSKiB": 264224,
+      "buildingCount": 1,
+      "buildingLines": [
+        "1/1: Building DGamma.L2R11PhaseDecode (/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R11-Sources/DGamma/L2R11PhaseDecode.idr)"
+      ],
+      "expectedDiagnostic": null,
+      "declaredHeavy": false,
+      "guardedSourceCommit": "68f53d84f87c222070ffdec5024e3258193fd791",
+      "rawRecord": "raw/A13-1.json"
+    },
+    {
+      "unit": "A14-1",
+      "path": "research-tests/O6-L2R11-Sources/DGamma/L2R11PhaseDecode.idr",
+      "start": "2026-09-09T13:43:23.702279+00:00",
+      "end": "2026-09-09T13:43:24.586735+00:00",
+      "seconds": 0.8844394166953862,
+      "exit": 0,
+      "passed": true,
+      "fresh": true,
+      "interrupted": false,
+      "sourceMutationObserved": false,
+      "sourceSHA256": "3a13ce06c073d3a285705ee7150d863dbfe29489a1fc8b3efc0f6285b1540a17",
+      "maxSampleRSSKiB": 249664,
+      "buildingCount": 1,
+      "buildingLines": [
+        "1/1: Building DGamma.L2R11PhaseDecode (/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R11-Sources/DGamma/L2R11PhaseDecode.idr)"
+      ],
+      "expectedDiagnostic": null,
+      "declaredHeavy": false,
+      "guardedSourceCommit": "46069054a0523e9d9bf05cfc6910180ae0add4af",
+      "rawRecord": "raw/A14-1.json"
+    },
+    {
+      "unit": "B1-1",
+      "path": "research-tests/O6-L2R11-Sources/DGamma/L2R11WordInventory.idr",
+      "start": "2026-09-09T13:46:08.554256+00:00",
+      "end": "2026-09-09T13:46:09.438362+00:00",
+      "seconds": 0.8840953754261136,
+      "exit": 0,
+      "passed": true,
+      "fresh": true,
+      "interrupted": false,
+      "sourceMutationObserved": false,
+      "sourceSHA256": "c406cea4657d0913f78dbd63e79998d49fca6f894f2b8f9c4468cc919754002b",
+      "maxSampleRSSKiB": 282512,
+      "buildingCount": 1,
+      "buildingLines": [
+        "1/1: Building DGamma.L2R11WordInventory (/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R11-Sources/DGamma/L2R11WordInventory.idr)"
+      ],
+      "expectedDiagnostic": null,
+      "declaredHeavy": false,
+      "guardedSourceCommit": "b4544852b75efc454951b0b108ff58d929ee6cc6",
+      "rawRecord": "raw/B1-1.json"
+    },
+    {
+      "unit": "B2-1",
+      "path": "research-tests/O6-L2R11-Sources/DGamma/L2R11WordInventory.idr",
+      "start": "2026-09-09T13:46:51.273310+00:00",
+      "end": "2026-09-09T13:46:51.863484+00:00",
+      "seconds": 0.5901680421084166,
+      "exit": 0,
+      "passed": true,
+      "fresh": true,
+      "interrupted": false,
+      "sourceMutationObserved": false,
+      "sourceSHA256": "f7eaea76210415624cff6089d3798e2770a19bf36f3d85c9acb2ab2ce0434f5b",
+      "maxSampleRSSKiB": 189584,
+      "buildingCount": 1,
+      "buildingLines": [
+        "1/1: Building DGamma.L2R11WordInventory (/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R11-Sources/DGamma/L2R11WordInventory.idr)"
+      ],
+      "expectedDiagnostic": null,
+      "declaredHeavy": false,
+      "guardedSourceCommit": "50552719b883ff58c3a73971634d970f94016106",
+      "rawRecord": "raw/B2-1.json"
+    },
+    {
+      "unit": "B3-1",
+      "path": "research-tests/O6-L2R11-Sources/DGamma/L2R11WordInventory.idr",
+      "start": "2026-09-09T13:47:27.414371+00:00",
+      "end": "2026-09-09T13:47:27.992687+00:00",
+      "seconds": 0.5783061250112951,
+      "exit": 0,
+      "passed": true,
+      "fresh": true,
+      "interrupted": false,
+      "sourceMutationObserved": false,
+      "sourceSHA256": "7ab7c05b1b4b1e58f884ce2fb66572c44decb181e32fbca84a2c28714561c89f",
+      "maxSampleRSSKiB": 198320,
+      "buildingCount": 1,
+      "buildingLines": [
+        "1/1: Building DGamma.L2R11WordInventory (/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R11-Sources/DGamma/L2R11WordInventory.idr)"
+      ],
+      "expectedDiagnostic": null,
+      "declaredHeavy": false,
+      "guardedSourceCommit": "bf5abcfde989cbd0ef7a88ca3a0e574d9abb0fb1",
+      "rawRecord": "raw/B3-1.json"
+    },
+    {
+      "unit": "B4-1",
+      "path": "research-tests/O6-L2R11-Sources/DGamma/L2R11WordInventory.idr",
+      "start": "2026-09-09T13:47:54.847729+00:00",
+      "end": "2026-09-09T13:47:55.728378+00:00",
+      "seconds": 0.8806347497738898,
+      "exit": 0,
+      "passed": true,
+      "fresh": true,
+      "interrupted": false,
+      "sourceMutationObserved": false,
+      "sourceSHA256": "2fbd559f8d6d7474e37b4ae1a1e0bff6b9c5788328820befe46a7648094474d8",
+      "maxSampleRSSKiB": 270208,
+      "buildingCount": 1,
+      "buildingLines": [
+        "1/1: Building DGamma.L2R11WordInventory (/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R11-Sources/DGamma/L2R11WordInventory.idr)"
+      ],
+      "expectedDiagnostic": null,
+      "declaredHeavy": false,
+      "guardedSourceCommit": "1e91019442b87e222cdb1852c6dfd3ea1020e11a",
+      "rawRecord": "raw/B4-1.json"
+    },
+    {
+      "unit": "B5-1",
+      "path": "research-tests/O6-L2R11-Sources/DGamma/L2R11WordInventory.idr",
+      "start": "2026-09-09T13:48:29.465340+00:00",
+      "end": "2026-09-09T13:48:30.343694+00:00",
+      "seconds": 0.8783444161526859,
+      "exit": 0,
+      "passed": true,
+      "fresh": true,
+      "interrupted": false,
+      "sourceMutationObserved": false,
+      "sourceSHA256": "25fa8c433ffd3b395394ff83a0cc960cad358535d796f28e797cb4cf564a0c9a",
+      "maxSampleRSSKiB": 275248,
+      "buildingCount": 1,
+      "buildingLines": [
+        "1/1: Building DGamma.L2R11WordInventory (/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R11-Sources/DGamma/L2R11WordInventory.idr)"
+      ],
+      "expectedDiagnostic": null,
+      "declaredHeavy": false,
+      "guardedSourceCommit": "b64fa36ff7c147928f9209819843b4dcd19b0f84",
+      "rawRecord": "raw/B5-1.json"
+    },
+    {
+      "unit": "B6-1",
+      "path": "research-tests/O6-L2R11-Sources/DGamma/L2R11WordInventory.idr",
+      "start": "2026-09-09T13:48:52.492275+00:00",
+      "end": "2026-09-09T13:48:53.374039+00:00",
+      "seconds": 0.8817490828223526,
+      "exit": 0,
+      "passed": true,
+      "fresh": true,
+      "interrupted": false,
+      "sourceMutationObserved": false,
+      "sourceSHA256": "176a79f283a6ea4541c861c6d7ced5190c4250791322a8e807a62b26b22c4e00",
+      "maxSampleRSSKiB": 289808,
+      "buildingCount": 1,
+      "buildingLines": [
+        "1/1: Building DGamma.L2R11WordInventory (/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R11-Sources/DGamma/L2R11WordInventory.idr)"
+      ],
+      "expectedDiagnostic": null,
+      "declaredHeavy": false,
+      "guardedSourceCommit": "3a2f03a2dd99450cc23f77f1829627a1218a8892",
+      "rawRecord": "raw/B6-1.json"
+    },
+    {
+      "unit": "B7-1",
+      "path": "research-tests/O6-L2R11-Sources/DGamma/L2R11WordInventory.idr",
+      "start": "2026-09-09T13:49:14.146764+00:00",
+      "end": "2026-09-09T13:49:15.025439+00:00",
+      "seconds": 0.8786777500063181,
+      "exit": 0,
+      "passed": true,
+      "fresh": true,
+      "interrupted": false,
+      "sourceMutationObserved": false,
+      "sourceSHA256": "e9b743be59507720c7bd42d1f45049fb22e92f327aab8dcf3f60f8c2460af913",
+      "maxSampleRSSKiB": 288816,
+      "buildingCount": 1,
+      "buildingLines": [
+        "1/1: Building DGamma.L2R11WordInventory (/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R11-Sources/DGamma/L2R11WordInventory.idr)"
+      ],
+      "expectedDiagnostic": null,
+      "declaredHeavy": false,
+      "guardedSourceCommit": "21c2b532bb794c6c15c8539cea447f49e2859d14",
+      "rawRecord": "raw/B7-1.json"
+    },
+    {
+      "unit": "B8-1",
+      "path": "research-tests/O6-L2R11-Sources/DGamma/L2R11WordInventory.idr",
+      "start": "2026-09-09T13:49:33.065250+00:00",
+      "end": "2026-09-09T13:49:33.946596+00:00",
+      "seconds": 0.8813269170932472,
+      "exit": 0,
+      "passed": true,
+      "fresh": true,
+      "interrupted": false,
+      "sourceMutationObserved": false,
+      "sourceSHA256": "e02373384eb30e36ccd61d40d18a771ba94bff2de40756ca01173eab7fd140ae",
+      "maxSampleRSSKiB": 281024,
+      "buildingCount": 1,
+      "buildingLines": [
+        "1/1: Building DGamma.L2R11WordInventory (/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R11-Sources/DGamma/L2R11WordInventory.idr)"
+      ],
+      "expectedDiagnostic": null,
+      "declaredHeavy": false,
+      "guardedSourceCommit": "a052eab3b3cffcd2524b39e2daf1a71871d4e581",
+      "rawRecord": "raw/B8-1.json"
+    },
+    {
+      "unit": "B9-1",
+      "path": "research-tests/O6-L2R11-Sources/DGamma/L2R11ActualWordReplay.idr",
+      "start": "2026-09-09T13:50:25.468916+00:00",
+      "end": "2026-09-09T13:50:26.345321+00:00",
+      "seconds": 0.8763918750919402,
+      "exit": 0,
+      "passed": true,
+      "fresh": true,
+      "interrupted": false,
+      "sourceMutationObserved": false,
+      "sourceSHA256": "f6cb38a928a07eb18cc0f73ca6c5d235a7c6e1a3c57479b9387d9840f4ecccd0",
+      "maxSampleRSSKiB": 271744,
+      "buildingCount": 1,
+      "buildingLines": [
+        "2/2: Building DGamma.L2R11ActualWordReplay (/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R11-Sources/DGamma/L2R11ActualWordReplay.idr)"
+      ],
+      "expectedDiagnostic": null,
+      "declaredHeavy": false,
+      "guardedSourceCommit": "652926eb955b46042ed80d69bc453696f01f3250",
+      "rawRecord": "raw/B9-1.json"
+    },
+    {
+      "unit": "B10-1",
+      "path": "research-tests/O6-L2R11-Sources/DGamma/L2R11ActualWordReplay.idr",
+      "start": "2026-09-09T13:51:36.923521+00:00",
+      "end": "2026-09-09T13:51:37.795092+00:00",
+      "seconds": 0.8718193341046572,
+      "exit": 0,
+      "passed": true,
+      "fresh": true,
+      "interrupted": false,
+      "sourceMutationObserved": false,
+      "sourceSHA256": "7d4528db425b9db4f6dfa904d30c925341d2fa48378f0108b1184a971e3bcb2e",
+      "maxSampleRSSKiB": 258000,
+      "buildingCount": 1,
+      "buildingLines": [
+        "2/2: Building DGamma.L2R11ActualWordReplay (/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R11-Sources/DGamma/L2R11ActualWordReplay.idr)"
+      ],
+      "expectedDiagnostic": null,
+      "declaredHeavy": false,
+      "guardedSourceCommit": "5bb305572b43f37531c987a4ad59bccf42e472ad",
+      "rawRecord": "raw/B10-1.json"
+    },
+    {
+      "unit": "B11-1",
+      "path": "research-tests/O6-L2R11-Sources/DGamma/L2R11LifecycleSnapshot.idr",
+      "start": "2026-09-09T13:53:40.355366+00:00",
+      "end": "2026-09-09T13:53:41.227859+00:00",
+      "seconds": 0.8724833750165999,
+      "exit": 0,
+      "passed": true,
+      "fresh": true,
+      "interrupted": false,
+      "sourceMutationObserved": false,
+      "sourceSHA256": "7f147e5e97596d318ad1c6fec13844b8be7cb78c84065413d42909f61996bb74",
+      "maxSampleRSSKiB": 266640,
+      "buildingCount": 1,
+      "buildingLines": [
+        "1/1: Building DGamma.L2R11LifecycleSnapshot (/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R11-Sources/DGamma/L2R11LifecycleSnapshot.idr)"
+      ],
+      "expectedDiagnostic": null,
+      "declaredHeavy": false,
+      "guardedSourceCommit": "becb3f257328537ed2f5278a5c6d1b24c8cb4a52",
+      "rawRecord": "raw/B11-1.json"
+    },
+    {
+      "unit": "B12-1",
+      "path": "research-tests/O6-L2R11-Sources/DGamma/L2R11LifecycleSnapshot.idr",
+      "start": "2026-09-09T13:54:38.954575+00:00",
+      "end": "2026-09-09T13:54:39.842498+00:00",
+      "seconds": 0.8879223340190947,
+      "exit": 0,
+      "passed": true,
+      "fresh": true,
+      "interrupted": false,
+      "sourceMutationObserved": false,
+      "sourceSHA256": "c9badd13e54c21b6d4107829c7dcca02ad2d3b540321d380d0560c63c8ac76a0",
+      "maxSampleRSSKiB": 295520,
+      "buildingCount": 1,
+      "buildingLines": [
+        "1/1: Building DGamma.L2R11LifecycleSnapshot (/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R11-Sources/DGamma/L2R11LifecycleSnapshot.idr)"
+      ],
+      "expectedDiagnostic": null,
+      "declaredHeavy": false,
+      "guardedSourceCommit": "c66db5d252b05cab9dec2ac709f46a15d54b1486",
+      "rawRecord": "raw/B12-1.json"
+    },
+    {
+      "unit": "B13-1",
+      "path": "research-tests/O6-L2R11-Sources/DGamma/L2R11LifecycleSnapshot.idr",
+      "start": "2026-09-09T13:55:21.887735+00:00",
+      "end": "2026-09-09T13:56:22.474721+00:00",
+      "seconds": 60.58711350010708,
+      "exit": 0,
+      "passed": true,
+      "fresh": true,
+      "interrupted": false,
+      "sourceMutationObserved": false,
+      "sourceSHA256": "0b20e113c7c7ffcff867ae1b25377bef5ab7866aab8f075cf3c67d838f90986b",
+      "maxSampleRSSKiB": 705168,
+      "buildingCount": 1,
+      "buildingLines": [
+        "1/1: Building DGamma.L2R11LifecycleSnapshot (/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R11-Sources/DGamma/L2R11LifecycleSnapshot.idr)"
+      ],
+      "expectedDiagnostic": null,
+      "declaredHeavy": false,
+      "guardedSourceCommit": "f38306d795d86b830463bfc5aebdf24d73f6c0bf",
+      "rawRecord": "raw/B13-1.json"
+    },
+    {
+      "unit": "B14-1",
+      "path": "research-tests/O6-L2R11-Sources/DGamma/L2R11LifecycleDispatch.idr",
+      "start": "2026-09-09T13:57:12.569593+00:00",
+      "end": "2026-09-09T13:57:13.452135+00:00",
+      "seconds": 0.8825508747249842,
+      "exit": 0,
+      "passed": true,
+      "fresh": true,
+      "interrupted": false,
+      "sourceMutationObserved": false,
+      "sourceSHA256": "35933770ab2180cc21559e5b03d9b6995cb02a004c3df8b97c4ee613466bf36f",
+      "maxSampleRSSKiB": 287664,
+      "buildingCount": 1,
+      "buildingLines": [
+        "2/2: Building DGamma.L2R11LifecycleDispatch (/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R11-Sources/DGamma/L2R11LifecycleDispatch.idr)"
+      ],
+      "expectedDiagnostic": null,
+      "declaredHeavy": false,
+      "guardedSourceCommit": "93eae1e1d5b2855fc700bf550d8b388bc5a82e4d",
+      "rawRecord": "raw/B14-1.json"
+    },
+    {
+      "unit": "B15-1",
+      "path": "research-tests/O6-L2R11-Sources/DGamma/L2R11LifecycleDispatch.idr",
+      "start": "2026-09-09T13:58:10.736106+00:00",
+      "end": "2026-09-09T13:58:11.608526+00:00",
+      "seconds": 0.8724336251616478,
+      "exit": 0,
+      "passed": true,
+      "fresh": true,
+      "interrupted": false,
+      "sourceMutationObserved": false,
+      "sourceSHA256": "d19819058ae14bbb0a987c51c51ee07da25643b056557bb9bcf748f59a33510b",
+      "maxSampleRSSKiB": 262112,
+      "buildingCount": 1,
+      "buildingLines": [
+        "2/2: Building DGamma.L2R11LifecycleDispatch (/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R11-Sources/DGamma/L2R11LifecycleDispatch.idr)"
+      ],
+      "expectedDiagnostic": null,
+      "declaredHeavy": false,
+      "guardedSourceCommit": "f4fa032e263009d5f1a32cd25d37c443df44e137",
+      "rawRecord": "raw/B15-1.json"
+    },
+    {
+      "unit": "B16-1",
+      "path": "research-tests/O6-L2R11-Sources/DGamma/L2R11R191Inventory.idr",
+      "start": "2026-09-09T13:58:59.326270+00:00",
+      "end": "2026-09-09T13:59:01.664178+00:00",
+      "seconds": 2.337897290941328,
+      "exit": 0,
+      "passed": true,
+      "fresh": true,
+      "interrupted": false,
+      "sourceMutationObserved": false,
+      "sourceSHA256": "d01775f4d58083b10774273c4efbb491aebc2e7586c927108b48c9549bb6be4f",
+      "maxSampleRSSKiB": 4793328,
+      "buildingCount": 1,
+      "buildingLines": [
+        "2/2: Building DGamma.L2R11R191Inventory (/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R11-Sources/DGamma/L2R11R191Inventory.idr)"
+      ],
+      "expectedDiagnostic": null,
+      "declaredHeavy": false,
+      "guardedSourceCommit": "c6fc314d199955a7a15e3d0319f981389160b461",
+      "rawRecord": "raw/B16-1.json"
+    },
+    {
+      "unit": "C1-1",
+      "path": "research-tests/O6-L2R11-Sources/DGamma/L2R11LocatedCut.idr",
+      "start": "2026-09-09T14:02:10.925897+00:00",
+      "end": "2026-09-09T14:02:11.830124+00:00",
+      "seconds": 0.9042230411432683,
+      "exit": 0,
+      "passed": true,
+      "fresh": true,
+      "interrupted": false,
+      "sourceMutationObserved": false,
+      "sourceSHA256": "6dca558e6ccbe02bb7c4566c89006b632933b9223ef56105c956bcdcf4f656af",
+      "maxSampleRSSKiB": 246448,
+      "buildingCount": 1,
+      "buildingLines": [
+        "1/1: Building DGamma.L2R11LocatedCut (/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R11-Sources/DGamma/L2R11LocatedCut.idr)"
+      ],
+      "expectedDiagnostic": null,
+      "declaredHeavy": false,
+      "guardedSourceCommit": "23142be54b7120779715ab7e4e3623c098b5a03c",
+      "rawRecord": "raw/C1-1.json"
+    },
+    {
+      "unit": "C2-1",
+      "path": "research-tests/O6-L2R11-Sources/DGamma/L2R11LocatedCut.idr",
+      "start": "2026-09-09T14:02:53.362475+00:00",
+      "end": "2026-09-09T14:02:54.262042+00:00",
+      "seconds": 0.89957654196769,
+      "exit": 0,
+      "passed": true,
+      "fresh": true,
+      "interrupted": false,
+      "sourceMutationObserved": false,
+      "sourceSHA256": "8f85274dc6f3f66b00e555efbb955f4ec3eadc433f17b694467f01fe1821f2df",
+      "maxSampleRSSKiB": 274320,
+      "buildingCount": 1,
+      "buildingLines": [
+        "1/1: Building DGamma.L2R11LocatedCut (/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R11-Sources/DGamma/L2R11LocatedCut.idr)"
+      ],
+      "expectedDiagnostic": null,
+      "declaredHeavy": false,
+      "guardedSourceCommit": "cb4db354d3d6bf94c8d34e53de94e9451e5d4971",
+      "rawRecord": "raw/C2-1.json"
+    },
+    {
+      "unit": "C3-1",
+      "path": "research-tests/O6-L2R11-Sources/DGamma/L2R11LocatedCut.idr",
+      "start": "2026-09-09T14:03:35.849237+00:00",
+      "end": "2026-09-09T14:03:36.715159+00:00",
+      "seconds": 0.8659229995682836,
+      "exit": 0,
+      "passed": true,
+      "fresh": true,
+      "interrupted": false,
+      "sourceMutationObserved": false,
+      "sourceSHA256": "392519409dd20be9d4fee9c4de3a7ac5de679b3a3c2b7b5d5d5fe53b8c9fa411",
+      "maxSampleRSSKiB": 264704,
+      "buildingCount": 1,
+      "buildingLines": [
+        "1/1: Building DGamma.L2R11LocatedCut (/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R11-Sources/DGamma/L2R11LocatedCut.idr)"
+      ],
+      "expectedDiagnostic": null,
+      "declaredHeavy": false,
+      "guardedSourceCommit": "bd2f75a204d9763533c64f46e6c5af308da3a58f",
+      "rawRecord": "raw/C3-1.json"
+    },
+    {
+      "unit": "C4-1",
+      "path": "research-tests/O6-L2R11-Sources/DGamma/L2R11LocatedCut.idr",
+      "start": "2026-09-09T14:04:19.398970+00:00",
+      "end": "2026-09-09T14:04:20.299756+00:00",
+      "seconds": 0.9007723750546575,
+      "exit": 0,
+      "passed": true,
+      "fresh": true,
+      "interrupted": false,
+      "sourceMutationObserved": false,
+      "sourceSHA256": "c634083d4d5c0730b29eb4c508e7995060288960d5bc56589147c7c507e606d1",
+      "maxSampleRSSKiB": 263872,
+      "buildingCount": 1,
+      "buildingLines": [
+        "1/1: Building DGamma.L2R11LocatedCut (/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R11-Sources/DGamma/L2R11LocatedCut.idr)"
+      ],
+      "expectedDiagnostic": null,
+      "declaredHeavy": false,
+      "guardedSourceCommit": "8276d82d5e2ef68c1242a85b212d16ed3cf14ebf",
+      "rawRecord": "raw/C4-1.json"
+    },
+    {
+      "unit": "C5-1",
+      "path": "research-tests/O6-L2R11-Sources/DGamma/L2R11LocatedCut.idr",
+      "start": "2026-09-09T14:04:54.848585+00:00",
+      "end": "2026-09-09T14:04:55.934623+00:00",
+      "seconds": 1.0859885830432177,
+      "exit": 0,
+      "passed": true,
+      "fresh": true,
+      "interrupted": false,
+      "sourceMutationObserved": false,
+      "sourceSHA256": "ca5260e5151a47447c62b16427ca629c04a2bea8c1740c0479b62472bcf39512",
+      "maxSampleRSSKiB": 264352,
+      "buildingCount": 1,
+      "buildingLines": [
+        "1/1: Building DGamma.L2R11LocatedCut (/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R11-Sources/DGamma/L2R11LocatedCut.idr)"
+      ],
+      "expectedDiagnostic": null,
+      "declaredHeavy": false,
+      "guardedSourceCommit": "00ec6e36fc927f36cac15ee6969740bad11451a5",
+      "rawRecord": "raw/C5-1.json"
+    },
+    {
+      "unit": "C6-1",
+      "path": "research-tests/O6-L2R11-Sources/DGamma/L2R11LocatedCut.idr",
+      "start": "2026-09-09T14:05:41.227056+00:00",
+      "end": "2026-09-09T14:05:46.950513+00:00",
+      "seconds": 5.723440958186984,
+      "exit": 0,
+      "passed": true,
+      "fresh": true,
+      "interrupted": false,
+      "sourceMutationObserved": false,
+      "sourceSHA256": "583a023d510e4b1951a6f27a1e772d9574429b1e2759b47411c87157f980a595",
+      "maxSampleRSSKiB": 278304,
+      "buildingCount": 1,
+      "buildingLines": [
+        "1/1: Building DGamma.L2R11LocatedCut (/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R11-Sources/DGamma/L2R11LocatedCut.idr)"
+      ],
+      "expectedDiagnostic": null,
+      "declaredHeavy": false,
+      "guardedSourceCommit": "0cd0e7c8d35a0c752a8092e4da3aff0147faa167",
+      "rawRecord": "raw/C6-1.json"
+    },
+    {
+      "unit": "C7-1",
+      "path": "research-tests/O6-L2R11-Sources/DGamma/L2R11ClassifierSquare.idr",
+      "start": "2026-09-09T14:07:03.516156+00:00",
+      "end": "2026-09-09T14:07:05.567699+00:00",
+      "seconds": 2.051540750078857,
+      "exit": 1,
+      "passed": false,
+      "fresh": true,
+      "interrupted": false,
+      "sourceMutationObserved": false,
+      "sourceSHA256": "cbdbd73482f01f64202dae9c0468702be23ae9603029b3c78476249ee0542f0b",
+      "maxSampleRSSKiB": 270896,
+      "buildingCount": 1,
+      "buildingLines": [
+        "1/1: Building DGamma.L2R11ClassifierSquare (/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R11-Sources/DGamma/L2R11ClassifierSquare.idr)"
+      ],
+      "expectedDiagnostic": null,
+      "declaredHeavy": false,
+      "guardedSourceCommit": null,
+      "rawRecord": "raw/C7-1.json"
+    },
+    {
+      "unit": "C7-2",
+      "path": "research-tests/O6-L2R11-Sources/DGamma/L2R11ClassifierSquare.idr",
+      "start": "2026-09-09T14:07:41.814767+00:00",
+      "end": "2026-09-09T14:07:42.679236+00:00",
+      "seconds": 0.8644739170558751,
+      "exit": 0,
+      "passed": true,
+      "fresh": true,
+      "interrupted": false,
+      "sourceMutationObserved": false,
+      "sourceSHA256": "e38e0d2bd617a8da5416afc33ee63d4dc6c7e5c9933d046efb99bf926fdeb3bc",
+      "maxSampleRSSKiB": 292064,
+      "buildingCount": 1,
+      "buildingLines": [
+        "1/1: Building DGamma.L2R11ClassifierSquare (/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R11-Sources/DGamma/L2R11ClassifierSquare.idr)"
+      ],
+      "expectedDiagnostic": null,
+      "declaredHeavy": false,
+      "guardedSourceCommit": "d20f789faca554e66bef4b55873c414f3fe57d5e",
+      "rawRecord": "raw/C7-2.json"
+    },
+    {
+      "unit": "C8-1",
+      "path": "research-tests/O6-L2R11-Sources/DGamma/L2R11ClassifierSquare.idr",
+      "start": "2026-09-09T14:08:17.098407+00:00",
+      "end": "2026-09-09T14:08:17.983788+00:00",
+      "seconds": 0.8853794173337519,
+      "exit": 0,
+      "passed": true,
+      "fresh": true,
+      "interrupted": false,
+      "sourceMutationObserved": false,
+      "sourceSHA256": "621e936115d48c633d6cc1a3e5875b02b05719392b94c98584890a38a1aa4d91",
+      "maxSampleRSSKiB": 307264,
+      "buildingCount": 1,
+      "buildingLines": [
+        "1/1: Building DGamma.L2R11ClassifierSquare (/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R11-Sources/DGamma/L2R11ClassifierSquare.idr)"
+      ],
+      "expectedDiagnostic": null,
+      "declaredHeavy": false,
+      "guardedSourceCommit": "6ebb82ab9fdd3753b696d7906125c1d02c30d32c",
+      "rawRecord": "raw/C8-1.json"
+    },
+    {
+      "unit": "C9-1",
+      "path": "research-tests/O6-L2R11-Sources/DGamma/L2R11ClassifierSquare.idr",
+      "start": "2026-09-09T14:09:30.770137+00:00",
+      "end": "2026-09-09T14:09:31.664302+00:00",
+      "seconds": 0.8941569589078426,
+      "exit": 0,
+      "passed": true,
+      "fresh": true,
+      "interrupted": false,
+      "sourceMutationObserved": false,
+      "sourceSHA256": "0446a5433a1d8220951acca85aa36985dfe96d636ff83b84e0528afb5526da4d",
+      "maxSampleRSSKiB": 272368,
+      "buildingCount": 1,
+      "buildingLines": [
+        "1/1: Building DGamma.L2R11ClassifierSquare (/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R11-Sources/DGamma/L2R11ClassifierSquare.idr)"
+      ],
+      "expectedDiagnostic": null,
+      "declaredHeavy": false,
+      "guardedSourceCommit": "3c78abdbc1df1d8d9784cb55121203182c165f5b",
+      "rawRecord": "raw/C9-1.json"
+    },
+    {
+      "unit": "C10-1",
+      "path": "research-tests/O6-L2R11-Sources/DGamma/L2R11ClassifierSquare.idr",
+      "start": "2026-09-09T14:10:35.097428+00:00",
+      "end": "2026-09-09T14:10:35.982062+00:00",
+      "seconds": 0.8846159582026303,
+      "exit": 0,
+      "passed": true,
+      "fresh": true,
+      "interrupted": false,
+      "sourceMutationObserved": false,
+      "sourceSHA256": "dcc97bb8b33f8250fbe5067ac7f45b3561ddd09549a61901a53181acdb34e842",
+      "maxSampleRSSKiB": 273872,
+      "buildingCount": 1,
+      "buildingLines": [
+        "1/1: Building DGamma.L2R11ClassifierSquare (/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R11-Sources/DGamma/L2R11ClassifierSquare.idr)"
+      ],
+      "expectedDiagnostic": null,
+      "declaredHeavy": false,
+      "guardedSourceCommit": "710ed7c3f991da277eea9033dc9dab1db14d4404",
+      "rawRecord": "raw/C10-1.json"
+    },
+    {
+      "unit": "C11-1",
+      "path": "research-tests/O6-L2R11-Sources/DGamma/L2R11ClassifierSquare.idr",
+      "start": "2026-09-09T14:12:03.504972+00:00",
+      "end": "2026-09-09T14:12:04.386267+00:00",
+      "seconds": 0.8812878332100809,
+      "exit": 0,
+      "passed": true,
+      "fresh": true,
+      "interrupted": false,
+      "sourceMutationObserved": false,
+      "sourceSHA256": "e51ee75d6245526853a4f42b7723c4267e60cfefb887a7e82f671112a3a71007",
+      "maxSampleRSSKiB": 275968,
+      "buildingCount": 1,
+      "buildingLines": [
+        "1/1: Building DGamma.L2R11ClassifierSquare (/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R11-Sources/DGamma/L2R11ClassifierSquare.idr)"
+      ],
+      "expectedDiagnostic": null,
+      "declaredHeavy": false,
+      "guardedSourceCommit": "72e9cdc0153cfb27f799f74a932a090314cb02eb",
+      "rawRecord": "raw/C11-1.json"
+    },
+    {
+      "unit": "C12-1",
+      "path": "research-tests/O6-L2R11-Sources/DGamma/L2R11ClassifierSquare.idr",
+      "start": "2026-09-09T14:13:06.142550+00:00",
+      "end": "2026-09-09T14:13:07.029722+00:00",
+      "seconds": 0.8871573326177895,
+      "exit": 0,
+      "passed": true,
+      "fresh": true,
+      "interrupted": false,
+      "sourceMutationObserved": false,
+      "sourceSHA256": "5c4eba8baca0154a8b0ad4aad545c36a5f70455c63e881571c1550c1aeb91fc7",
+      "maxSampleRSSKiB": 262080,
+      "buildingCount": 1,
+      "buildingLines": [
+        "1/1: Building DGamma.L2R11ClassifierSquare (/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R11-Sources/DGamma/L2R11ClassifierSquare.idr)"
+      ],
+      "expectedDiagnostic": null,
+      "declaredHeavy": false,
+      "guardedSourceCommit": "a40adf4015daf8bc948472e158805b9f9e698136",
+      "rawRecord": "raw/C12-1.json"
+    },
+    {
+      "unit": "C13-1",
+      "path": "research-tests/O6-L2R11-Sources/DGamma/L2R11ClassifierSquare.idr",
+      "start": "2026-09-09T14:13:57.202321+00:00",
+      "end": "2026-09-09T14:13:58.368135+00:00",
+      "seconds": 1.1658088327385485,
+      "exit": 0,
+      "passed": true,
+      "fresh": true,
+      "interrupted": false,
+      "sourceMutationObserved": false,
+      "sourceSHA256": "739a280dd6574a03d2290837b4b543d8ab0d9efeb366e82c18aed45a747e084b",
+      "maxSampleRSSKiB": 259360,
+      "buildingCount": 1,
+      "buildingLines": [
+        "1/1: Building DGamma.L2R11ClassifierSquare (/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R11-Sources/DGamma/L2R11ClassifierSquare.idr)"
+      ],
+      "expectedDiagnostic": null,
+      "declaredHeavy": false,
+      "guardedSourceCommit": "996c8a4b02c4476c4385d613f7315464c48bce3f",
+      "rawRecord": "raw/C13-1.json"
+    },
+    {
+      "unit": "C14-1",
+      "path": "research-tests/O6-L2R11-Sources/DGamma/L2R11RetireSquareFixture.idr",
+      "start": "2026-09-09T14:15:10.079445+00:00",
+      "end": "2026-09-09T14:15:10.969277+00:00",
+      "seconds": 0.8898134590126574,
+      "exit": 1,
+      "passed": false,
+      "fresh": true,
+      "interrupted": false,
+      "sourceMutationObserved": false,
+      "sourceSHA256": "f7dae3ebb4cdb57fca56d81a771fc3cf68ff4f28360a41f43d4caa7f7c2bfa24",
+      "maxSampleRSSKiB": 274560,
+      "buildingCount": 1,
+      "buildingLines": [
+        "2/2: Building DGamma.L2R11RetireSquareFixture (/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R11-Sources/DGamma/L2R11RetireSquareFixture.idr)"
+      ],
+      "expectedDiagnostic": null,
+      "declaredHeavy": false,
+      "guardedSourceCommit": null,
+      "rawRecord": "raw/C14-1.json"
+    },
+    {
+      "unit": "C14-2",
+      "path": "research-tests/O6-L2R11-Sources/DGamma/L2R11RetireSquareFixture.idr",
+      "start": "2026-09-09T14:16:28.899950+00:00",
+      "end": "2026-09-09T14:16:29.501313+00:00",
+      "seconds": 0.6013424159027636,
+      "exit": 1,
+      "passed": false,
+      "fresh": true,
+      "interrupted": false,
+      "sourceMutationObserved": false,
+      "sourceSHA256": "4e561da7e47e87ffd584747e5dbe864617ce81400a9cc1971e88273385c4c3c7",
+      "maxSampleRSSKiB": 189504,
+      "buildingCount": 1,
+      "buildingLines": [
+        "2/2: Building DGamma.L2R11RetireSquareFixture (/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R11-Sources/DGamma/L2R11RetireSquareFixture.idr)"
+      ],
+      "expectedDiagnostic": null,
+      "declaredHeavy": false,
+      "guardedSourceCommit": null,
+      "rawRecord": "raw/C14-2.json"
+    },
+    {
+      "unit": "C14-3",
+      "path": "research-tests/O6-L2R11-Sources/DGamma/L2R11RetireSquareFixture.idr",
+      "start": "2026-09-09T14:17:33.583037+00:00",
+      "end": "2026-09-09T14:17:34.172866+00:00",
+      "seconds": 0.5897771250456572,
+      "exit": 1,
+      "passed": false,
+      "fresh": true,
+      "interrupted": false,
+      "sourceMutationObserved": false,
+      "sourceSHA256": "50ed26c4b6670f1d81e868dda218c2d37906bae4bd65432fb1fddaa3a558dfac",
+      "maxSampleRSSKiB": 189488,
+      "buildingCount": 1,
+      "buildingLines": [
+        "2/2: Building DGamma.L2R11RetireSquareFixture (/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R11-Sources/DGamma/L2R11RetireSquareFixture.idr)"
+      ],
+      "expectedDiagnostic": null,
+      "declaredHeavy": false,
+      "guardedSourceCommit": null,
+      "rawRecord": "raw/C14-3.json"
+    },
+    {
+      "unit": "V2",
+      "path": "research-tests/O6-L2R11-Sources/DGamma/L2R11ClassifierSquare.idr",
+      "start": "2026-09-09T14:18:29.637348+00:00",
+      "end": "2026-09-09T14:18:30.798468+00:00",
+      "seconds": 1.1611013328656554,
+      "exit": 0,
+      "passed": true,
+      "fresh": true,
+      "interrupted": false,
+      "sourceMutationObserved": false,
+      "sourceSHA256": "739a280dd6574a03d2290837b4b543d8ab0d9efeb366e82c18aed45a747e084b",
+      "maxSampleRSSKiB": 259312,
+      "buildingCount": 1,
+      "buildingLines": [
+        "1/1: Building DGamma.L2R11ClassifierSquare (/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R11-Sources/DGamma/L2R11ClassifierSquare.idr)"
+      ],
+      "expectedDiagnostic": null,
+      "declaredHeavy": false,
+      "guardedSourceCommit": null,
+      "rawRecord": "raw/V2.json"
+    },
+    {
+      "unit": "D1-1",
+      "path": "research-tests/O6-L2R11-Sources/DGamma/L2R11OpaqueCore.idr",
+      "start": "2026-09-09T14:19:30.521984+00:00",
+      "end": "2026-09-09T14:19:31.406680+00:00",
+      "seconds": 0.8846841254271567,
+      "exit": 0,
+      "passed": true,
+      "fresh": true,
+      "interrupted": false,
+      "sourceMutationObserved": false,
+      "sourceSHA256": "cbf8dd42d76e2637ead3cd0a26a6838a82ec4104ef1504dbfc0917937d524d0d",
+      "maxSampleRSSKiB": 264992,
+      "buildingCount": 1,
+      "buildingLines": [
+        "1/1: Building DGamma.L2R11OpaqueCore (/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R11-Sources/DGamma/L2R11OpaqueCore.idr)"
+      ],
+      "expectedDiagnostic": null,
+      "declaredHeavy": false,
+      "guardedSourceCommit": "a2a264ee072593eafb2c1cdc83727263a321a70a",
+      "rawRecord": "raw/D1-1.json"
+    },
+    {
+      "unit": "D2-1",
+      "path": "research-tests/O6-L2R11-Sources/DGamma/L2R11OpaqueCore.idr",
+      "start": "2026-09-09T14:20:22.099596+00:00",
+      "end": "2026-09-09T14:20:22.979541+00:00",
+      "seconds": 0.8799274577759206,
+      "exit": 0,
+      "passed": true,
+      "fresh": true,
+      "interrupted": false,
+      "sourceMutationObserved": false,
+      "sourceSHA256": "9c1f83882cecaaa40e1fc1a30b1c103679524e10582b7b9e6cdc82dd05618557",
+      "maxSampleRSSKiB": 276672,
+      "buildingCount": 1,
+      "buildingLines": [
+        "1/1: Building DGamma.L2R11OpaqueCore (/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R11-Sources/DGamma/L2R11OpaqueCore.idr)"
+      ],
+      "expectedDiagnostic": null,
+      "declaredHeavy": false,
+      "guardedSourceCommit": "c7dba5275d017e9afc30bf548b1a365304013cca",
+      "rawRecord": "raw/D2-1.json"
+    },
+    {
+      "unit": "D3-1",
+      "path": "research-tests/O6-L2R11-Sources/DGamma/L2R11OpaqueCore.idr",
+      "start": "2026-09-09T14:21:13.303320+00:00",
+      "end": "2026-09-09T14:21:14.470906+00:00",
+      "seconds": 1.167577666696161,
+      "exit": 0,
+      "passed": true,
+      "fresh": true,
+      "interrupted": false,
+      "sourceMutationObserved": false,
+      "sourceSHA256": "0fbbc712bea296c5a13c3e4cc757e71d344b67bd903efedc52bbfe5f85d6a755",
+      "maxSampleRSSKiB": 264304,
+      "buildingCount": 1,
+      "buildingLines": [
+        "1/1: Building DGamma.L2R11OpaqueCore (/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R11-Sources/DGamma/L2R11OpaqueCore.idr)"
+      ],
+      "expectedDiagnostic": null,
+      "declaredHeavy": false,
+      "guardedSourceCommit": "098843336e66424ce61d1de338f6e0106a3188ef",
+      "rawRecord": "raw/D3-1.json"
+    },
+    {
+      "unit": "D4-1",
+      "path": "research-tests/O6-L2R11-Sources/DGamma/L2R11CorePackets.idr",
+      "start": "2026-09-09T14:22:21.662315+00:00",
+      "end": "2026-09-09T14:22:46.800161+00:00",
+      "seconds": 25.137879666872323,
+      "exit": 0,
+      "passed": true,
+      "fresh": true,
+      "interrupted": false,
+      "sourceMutationObserved": false,
+      "sourceSHA256": "43bba68b43b6292e34c584578406a60b99ce2b2eb258c93402a9cb882fe1fe1b",
+      "maxSampleRSSKiB": 272128,
+      "buildingCount": 1,
+      "buildingLines": [
+        "2/2: Building DGamma.L2R11CorePackets (/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R11-Sources/DGamma/L2R11CorePackets.idr)"
+      ],
+      "expectedDiagnostic": null,
+      "declaredHeavy": false,
+      "guardedSourceCommit": "62e8760211a1203d7b9191c10f89d27813355349",
+      "rawRecord": "raw/D4-1.json"
+    },
+    {
+      "unit": "D5-1",
+      "path": "research-tests/O6-L2R11-Sources/DGamma/L2R11CorePackets.idr",
+      "start": "2026-09-09T14:23:56.752027+00:00",
+      "end": "2026-09-09T14:24:32.441760+00:00",
+      "seconds": 35.689801750238985,
+      "exit": 0,
+      "passed": true,
+      "fresh": true,
+      "interrupted": false,
+      "sourceMutationObserved": false,
+      "sourceSHA256": "b4b3f35dc4a32ab49aa3e643f55fc8cbf6121a45769e311dd00a8242a4f2fd61",
+      "maxSampleRSSKiB": 272912,
+      "buildingCount": 1,
+      "buildingLines": [
+        "2/2: Building DGamma.L2R11CorePackets (/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R11-Sources/DGamma/L2R11CorePackets.idr)"
+      ],
+      "expectedDiagnostic": null,
+      "declaredHeavy": false,
+      "guardedSourceCommit": "d269ef717e544bd1a211bea760f3d4e731d85eaf",
+      "rawRecord": "raw/D5-1.json"
+    },
+    {
+      "unit": "D6-1",
+      "path": "research-tests/O6-L2R11-Sources/DGamma/L2R11CorePackets.idr",
+      "start": "2026-09-09T14:25:48.980511+00:00",
+      "end": "2026-09-09T14:26:24.875537+00:00",
+      "seconds": 35.89509024983272,
+      "exit": 0,
+      "passed": true,
+      "fresh": true,
+      "interrupted": false,
+      "sourceMutationObserved": false,
+      "sourceSHA256": "c841260291a7633c2c5ddf591082070bca9cf76553b5cf889b33bd674bf456db",
+      "maxSampleRSSKiB": 320640,
+      "buildingCount": 1,
+      "buildingLines": [
+        "2/2: Building DGamma.L2R11CorePackets (/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R11-Sources/DGamma/L2R11CorePackets.idr)"
+      ],
+      "expectedDiagnostic": null,
+      "declaredHeavy": false,
+      "guardedSourceCommit": "1ab882e599d0230331f4e8af8ab56a31b6f876e1",
+      "rawRecord": "raw/D6-1.json"
+    },
+    {
+      "unit": "D7-1",
+      "path": "research-tests/O6-L2R11-Sources/DGamma/L2R11CorePackets.idr",
+      "start": "2026-09-09T14:27:21.681320+00:00",
+      "end": "2026-09-09T14:27:57.625207+00:00",
+      "seconds": 35.95341458264738,
+      "exit": 0,
+      "passed": true,
+      "fresh": true,
+      "interrupted": false,
+      "sourceMutationObserved": false,
+      "sourceSHA256": "55ecc62ef740ac142efd20de81986d268234aad6fecb1adddf91430b18265677",
+      "maxSampleRSSKiB": 388704,
+      "buildingCount": 1,
+      "buildingLines": [
+        "2/2: Building DGamma.L2R11CorePackets (/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R11-Sources/DGamma/L2R11CorePackets.idr)"
+      ],
+      "expectedDiagnostic": null,
+      "declaredHeavy": false,
+      "guardedSourceCommit": "32202b7b0f1717dbd13c86b69a3e9b7f01fb8e55",
+      "rawRecord": "raw/D7-1.json"
+    },
+    {
+      "unit": "D8-1",
+      "path": "research-tests/O6-L2R11-Sources/DGamma/L2R11CoreFixture.idr",
+      "start": "2026-09-09T14:29:03.567938+00:00",
+      "end": "2026-09-09T14:50:13.082660+00:00",
+      "seconds": 1269.5233819591813,
+      "exit": 0,
+      "passed": true,
+      "fresh": true,
+      "interrupted": false,
+      "sourceMutationObserved": false,
+      "sourceSHA256": "e20671a8bdfe8aeefe08df87d2c4063b0801fb3199ba59f9dd87cf36f96c7d7a",
+      "maxSampleRSSKiB": 349104,
+      "buildingCount": 1,
+      "buildingLines": [
+        "3/3: Building DGamma.L2R11CoreFixture (/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R11-Sources/DGamma/L2R11CoreFixture.idr)"
+      ],
+      "expectedDiagnostic": null,
+      "declaredHeavy": false,
+      "guardedSourceCommit": "5e9c0f64e4bddb20159e7865b4949aa1307433ea",
+      "rawRecord": "raw/D8-1.json"
+    },
+    {
+      "unit": "V3",
+      "path": "research-tests/O6-L2R11-Sources/DGamma/L2R11ReleaseAgreement.idr",
+      "start": "2026-09-09T14:53:20.682761+00:00",
+      "end": "2026-09-09T14:53:21.568080+00:00",
+      "seconds": 0.8853004169650376,
+      "exit": 0,
+      "passed": true,
+      "fresh": true,
+      "interrupted": false,
+      "sourceMutationObserved": false,
+      "sourceSHA256": "904bd9aea2ea7778c937c661af964262417d3f775a4f2a40ccf34fec6ddc8ae9",
+      "maxSampleRSSKiB": 265856,
+      "buildingCount": 1,
+      "buildingLines": [
+        "1/1: Building DGamma.L2R11ReleaseAgreement (/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R11-Sources/DGamma/L2R11ReleaseAgreement.idr)"
+      ],
+      "expectedDiagnostic": null,
+      "declaredHeavy": false,
+      "guardedSourceCommit": null,
+      "rawRecord": "raw/V3.json"
+    },
+    {
+      "unit": "V4",
+      "path": "research-tests/O6-L2R11-Sources/DGamma/L2R11PhaseDecode.idr",
+      "start": "2026-09-09T14:53:21.727872+00:00",
+      "end": "2026-09-09T14:53:22.598890+00:00",
+      "seconds": 0.871023166924715,
+      "exit": 0,
+      "passed": true,
+      "fresh": true,
+      "interrupted": false,
+      "sourceMutationObserved": false,
+      "sourceSHA256": "3a13ce06c073d3a285705ee7150d863dbfe29489a1fc8b3efc0f6285b1540a17",
+      "maxSampleRSSKiB": 249632,
+      "buildingCount": 1,
+      "buildingLines": [
+        "1/1: Building DGamma.L2R11PhaseDecode (/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R11-Sources/DGamma/L2R11PhaseDecode.idr)"
+      ],
+      "expectedDiagnostic": null,
+      "declaredHeavy": false,
+      "guardedSourceCommit": null,
+      "rawRecord": "raw/V4.json"
+    },
+    {
+      "unit": "V5",
+      "path": "research-tests/O6-L2R11-Sources/DGamma/L2R11WordInventory.idr",
+      "start": "2026-09-09T14:53:22.757506+00:00",
+      "end": "2026-09-09T14:53:23.635636+00:00",
+      "seconds": 0.8781318329274654,
+      "exit": 0,
+      "passed": true,
+      "fresh": true,
+      "interrupted": false,
+      "sourceMutationObserved": false,
+      "sourceSHA256": "e02373384eb30e36ccd61d40d18a771ba94bff2de40756ca01173eab7fd140ae",
+      "maxSampleRSSKiB": 280992,
+      "buildingCount": 1,
+      "buildingLines": [
+        "1/1: Building DGamma.L2R11WordInventory (/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R11-Sources/DGamma/L2R11WordInventory.idr)"
+      ],
+      "expectedDiagnostic": null,
+      "declaredHeavy": false,
+      "guardedSourceCommit": null,
+      "rawRecord": "raw/V5.json"
+    },
+    {
+      "unit": "V6",
+      "path": "research-tests/O6-L2R11-Sources/DGamma/L2R11ActualWordReplay.idr",
+      "start": "2026-09-09T14:53:23.788499+00:00",
+      "end": "2026-09-09T14:53:24.660288+00:00",
+      "seconds": 0.8717916668392718,
+      "exit": 0,
+      "passed": true,
+      "fresh": true,
+      "interrupted": false,
+      "sourceMutationObserved": false,
+      "sourceSHA256": "7d4528db425b9db4f6dfa904d30c925341d2fa48378f0108b1184a971e3bcb2e",
+      "maxSampleRSSKiB": 258000,
+      "buildingCount": 1,
+      "buildingLines": [
+        "2/2: Building DGamma.L2R11ActualWordReplay (/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R11-Sources/DGamma/L2R11ActualWordReplay.idr)"
+      ],
+      "expectedDiagnostic": null,
+      "declaredHeavy": false,
+      "guardedSourceCommit": null,
+      "rawRecord": "raw/V6.json"
+    },
+    {
+      "unit": "V7",
+      "path": "research-tests/O6-L2R11-Sources/DGamma/L2R11LifecycleSnapshot.idr",
+      "start": "2026-09-09T14:53:24.830882+00:00",
+      "end": "2026-09-09T14:54:24.836055+00:00",
+      "seconds": 60.00558675033972,
+      "exit": 0,
+      "passed": true,
+      "fresh": true,
+      "interrupted": false,
+      "sourceMutationObserved": false,
+      "sourceSHA256": "0b20e113c7c7ffcff867ae1b25377bef5ab7866aab8f075cf3c67d838f90986b",
+      "maxSampleRSSKiB": 706064,
+      "buildingCount": 1,
+      "buildingLines": [
+        "1/1: Building DGamma.L2R11LifecycleSnapshot (/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R11-Sources/DGamma/L2R11LifecycleSnapshot.idr)"
+      ],
+      "expectedDiagnostic": null,
+      "declaredHeavy": false,
+      "guardedSourceCommit": null,
+      "rawRecord": "raw/V7.json"
+    },
+    {
+      "unit": "V8",
+      "path": "research-tests/O6-L2R11-Sources/DGamma/L2R11LifecycleDispatch.idr",
+      "start": "2026-09-09T14:54:25.252521+00:00",
+      "end": "2026-09-09T14:54:26.132016+00:00",
+      "seconds": 0.8795004170387983,
+      "exit": 0,
+      "passed": true,
+      "fresh": true,
+      "interrupted": false,
+      "sourceMutationObserved": false,
+      "sourceSHA256": "d19819058ae14bbb0a987c51c51ee07da25643b056557bb9bcf748f59a33510b",
+      "maxSampleRSSKiB": 278256,
+      "buildingCount": 1,
+      "buildingLines": [
+        "2/2: Building DGamma.L2R11LifecycleDispatch (/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R11-Sources/DGamma/L2R11LifecycleDispatch.idr)"
+      ],
+      "expectedDiagnostic": null,
+      "declaredHeavy": false,
+      "guardedSourceCommit": null,
+      "rawRecord": "raw/V8.json"
+    },
+    {
+      "unit": "V9",
+      "path": "research-tests/O6-L2R11-Sources/DGamma/L2R11R191Inventory.idr",
+      "start": "2026-09-09T14:54:26.289252+00:00",
+      "end": "2026-09-09T14:54:28.606691+00:00",
+      "seconds": 2.317459790967405,
+      "exit": 0,
+      "passed": true,
+      "fresh": true,
+      "interrupted": false,
+      "sourceMutationObserved": false,
+      "sourceSHA256": "d01775f4d58083b10774273c4efbb491aebc2e7586c927108b48c9549bb6be4f",
+      "maxSampleRSSKiB": 4821232,
+      "buildingCount": 1,
+      "buildingLines": [
+        "2/2: Building DGamma.L2R11R191Inventory (/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R11-Sources/DGamma/L2R11R191Inventory.idr)"
+      ],
+      "expectedDiagnostic": null,
+      "declaredHeavy": false,
+      "guardedSourceCommit": null,
+      "rawRecord": "raw/V9.json"
+    },
+    {
+      "unit": "V10",
+      "path": "research-tests/O6-L2R11-Sources/DGamma/L2R11LocatedCut.idr",
+      "start": "2026-09-09T14:54:29.336791+00:00",
+      "end": "2026-09-09T14:54:30.206019+00:00",
+      "seconds": 0.8692342918366194,
+      "exit": 0,
+      "passed": true,
+      "fresh": true,
+      "interrupted": false,
+      "sourceMutationObserved": false,
+      "sourceSHA256": "583a023d510e4b1951a6f27a1e772d9574429b1e2759b47411c87157f980a595",
+      "maxSampleRSSKiB": 278688,
+      "buildingCount": 1,
+      "buildingLines": [
+        "1/1: Building DGamma.L2R11LocatedCut (/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R11-Sources/DGamma/L2R11LocatedCut.idr)"
+      ],
+      "expectedDiagnostic": null,
+      "declaredHeavy": false,
+      "guardedSourceCommit": null,
+      "rawRecord": "raw/V10.json"
+    },
+    {
+      "unit": "V11",
+      "path": "research-tests/O6-L2R11-Sources/DGamma/L2R11ClassifierSquare.idr",
+      "start": "2026-09-09T14:54:30.373839+00:00",
+      "end": "2026-09-09T14:54:31.561406+00:00",
+      "seconds": 1.187563749961555,
+      "exit": 0,
+      "passed": true,
+      "fresh": true,
+      "interrupted": false,
+      "sourceMutationObserved": false,
+      "sourceSHA256": "739a280dd6574a03d2290837b4b543d8ab0d9efeb366e82c18aed45a747e084b",
+      "maxSampleRSSKiB": 259328,
+      "buildingCount": 1,
+      "buildingLines": [
+        "1/1: Building DGamma.L2R11ClassifierSquare (/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R11-Sources/DGamma/L2R11ClassifierSquare.idr)"
+      ],
+      "expectedDiagnostic": null,
+      "declaredHeavy": false,
+      "guardedSourceCommit": null,
+      "rawRecord": "raw/V11.json"
+    },
+    {
+      "unit": "V12",
+      "path": "research-tests/O6-L2R11-Sources/DGamma/L2R11OpaqueCore.idr",
+      "start": "2026-09-09T14:54:32.444944+00:00",
+      "end": "2026-09-09T14:54:33.314559+00:00",
+      "seconds": 0.8696213751100004,
+      "exit": 0,
+      "passed": true,
+      "fresh": true,
+      "interrupted": false,
+      "sourceMutationObserved": false,
+      "sourceSHA256": "0fbbc712bea296c5a13c3e4cc757e71d344b67bd903efedc52bbfe5f85d6a755",
+      "maxSampleRSSKiB": 264272,
+      "buildingCount": 1,
+      "buildingLines": [
+        "1/1: Building DGamma.L2R11OpaqueCore (/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R11-Sources/DGamma/L2R11OpaqueCore.idr)"
+      ],
+      "expectedDiagnostic": null,
+      "declaredHeavy": false,
+      "guardedSourceCommit": null,
+      "rawRecord": "raw/V12.json"
+    },
+    {
+      "unit": "V13",
+      "path": "research-tests/O6-L2R11-Sources/DGamma/L2R11CorePackets.idr",
+      "start": "2026-09-09T14:54:33.481916+00:00",
+      "end": "2026-09-09T14:55:09.011688+00:00",
+      "seconds": 35.53001533308998,
+      "exit": 0,
+      "passed": true,
+      "fresh": true,
+      "interrupted": false,
+      "sourceMutationObserved": false,
+      "sourceSHA256": "55ecc62ef740ac142efd20de81986d268234aad6fecb1adddf91430b18265677",
+      "maxSampleRSSKiB": 388656,
+      "buildingCount": 1,
+      "buildingLines": [
+        "2/2: Building DGamma.L2R11CorePackets (/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R11-Sources/DGamma/L2R11CorePackets.idr)"
+      ],
+      "expectedDiagnostic": null,
+      "declaredHeavy": false,
+      "guardedSourceCommit": null,
+      "rawRecord": "raw/V13.json"
+    },
+    {
+      "unit": "V14",
+      "path": "research-tests/O6-L2R11-Sources/DGamma/L2R11CoreFixture.idr",
+      "start": "2026-09-09T14:55:09.755707+00:00",
+      "end": "2026-09-09T15:16:03.360299+00:00",
+      "seconds": 1253.6087205000222,
+      "exit": 0,
+      "passed": true,
+      "fresh": true,
+      "interrupted": false,
+      "sourceMutationObserved": false,
+      "sourceSHA256": "e20671a8bdfe8aeefe08df87d2c4063b0801fb3199ba59f9dd87cf36f96c7d7a",
+      "maxSampleRSSKiB": 351824,
+      "buildingCount": 1,
+      "buildingLines": [
+        "3/3: Building DGamma.L2R11CoreFixture (/Users/vyacheslavshebanov/Work/dgamma-lane2/research-tests/O6-L2R11-Sources/DGamma/L2R11CoreFixture.idr)"
+      ],
+      "expectedDiagnostic": null,
+      "declaredHeavy": false,
+      "guardedSourceCommit": null,
+      "rawRecord": "raw/V14.json"
+    }
+  ],
+  "archive": "research-tests/O6-L2R11-RAW-EVIDENCE.tar.gz",
+  "archiveSHA256": "ba13e04fd569e40171f1e5f9500b8b2517bb4a283e32742d471a5614d9d1f0e5",
+  "guardedReceipts": [
+    {
+      "event": "GUARDED ARTIFACT COMMIT",
+      "unit": "V0",
+      "invocation": "V0",
+      "sourceInvocation": "V0",
+      "sourceHash": "3f2ffbc9dcc4bee8860ff761038135e597ece6e8bcb20f9202c48e8d5d34f754",
+      "resultingCommitHash": "5a6ced8246d4130485565134c508ff568ed7ad39",
+      "timestampUTC": "2026-09-09T13:27:15.345019+00:00",
+      "paths": [
+        "research-tests/O6-L2R11-GRIND-SHIFT-AUDIT.md",
+        "research-tests/run-l2r11-check.py",
+        "research-tests/run-l2r11-launch.py",
+        "research-tests/run-l2r11-commit.py",
+        "research-tests/run-l2r11-artifact-commit.py"
+      ],
+      "artifactHashes": {
+        "research-tests/O6-L2R11-GRIND-SHIFT-AUDIT.md": "65eedb7786c795d6dc8c8ceeb55b57b50945bc2f6618e4c55014b130b35ceed0",
+        "research-tests/run-l2r11-check.py": "43ab204886d0b5fd6f8e3df48ab6056357bbb5860f9a7ada73c10560877afbf0",
+        "research-tests/run-l2r11-launch.py": "dfd48fcd0840676480a827e30bdfebaad37b36f1db907d1f3eab6c72ccfdb875",
+        "research-tests/run-l2r11-commit.py": "58f4f915e3468416e4692696304340d3d21350a76eee2953ad1c689648682b86",
+        "research-tests/run-l2r11-artifact-commit.py": "2f0b63a04965258a04f9c1e4fb2dbdb26e120fbf6dcff5475a2fcdbb906c0bd1"
+      },
+      "authorizedCommentRepairs": [],
+      "guardChecksPassed": [
+        "fresh PASS",
+        "exit 0",
+        "not interrupted",
+        "no source mutation",
+        "exact source SHA256",
+        "no intervening compiler invocation",
+        "artifact paths or exact authorized comment repairs only",
+        "no new Idris source delta",
+        "no pre-staged files",
+        "no own compiler",
+        "git diff --check",
+        "git commit success",
+        "no post-staged files"
+      ]
+    },
+    {
+      "paths": [
+        "research-tests/O6-L2R11-Sources/DGamma/L2R11ReleaseAgreement.idr"
+      ],
+      "sourceHashes": {
+        "research-tests/O6-L2R11-Sources/DGamma/L2R11ReleaseAgreement.idr": "b1be78e689a73b11ee3dbaaa7018a82383e80328b1db4a404e8b8e42a781596c"
+      },
+      "event": "GUARDED COMMIT",
+      "unit": "A1",
+      "attempt": "3",
+      "invocation": "A1-3",
+      "sourceHash": "b1be78e689a73b11ee3dbaaa7018a82383e80328b1db4a404e8b8e42a781596c",
+      "resultingCommitHash": "e4cfc60b47c4e5ab35340e046ffa3bd22052ebdd",
+      "timestampUTC": "2026-09-09T13:30:18.362941+00:00",
+      "guardChecksPassed": [
+        "fresh PASS",
+        "exit 0",
+        "not interrupted",
+        "no expected diagnostic",
+        "exact source SHA256",
+        "one new declaration",
+        "no intervening compiler invocation",
+        "no pre-staged files",
+        "no compiler",
+        "git diff --check",
+        "git commit success",
+        "no post-staged files"
+      ]
+    },
+    {
+      "paths": [
+        "research-tests/O6-L2R11-Sources/DGamma/L2R11ReleaseAgreement.idr"
+      ],
+      "sourceHashes": {
+        "research-tests/O6-L2R11-Sources/DGamma/L2R11ReleaseAgreement.idr": "ac20c9b8b39674c7362001f2e31f536e559b1b89ada152391e1108743189b8b6"
+      },
+      "event": "GUARDED COMMIT",
+      "unit": "A2",
+      "attempt": "1",
+      "invocation": "A2-1",
+      "sourceHash": "ac20c9b8b39674c7362001f2e31f536e559b1b89ada152391e1108743189b8b6",
+      "resultingCommitHash": "cff4efbe85059c0511669976d24203531b6d2b66",
+      "timestampUTC": "2026-09-09T13:31:04.844453+00:00",
+      "guardChecksPassed": [
+        "fresh PASS",
+        "exit 0",
+        "not interrupted",
+        "no expected diagnostic",
+        "exact source SHA256",
+        "one new declaration",
+        "no intervening compiler invocation",
+        "no pre-staged files",
+        "no compiler",
+        "git diff --check",
+        "git commit success",
+        "no post-staged files"
+      ]
+    },
+    {
+      "paths": [
+        "research-tests/O6-L2R11-Sources/DGamma/L2R11ReleaseAgreement.idr"
+      ],
+      "sourceHashes": {
+        "research-tests/O6-L2R11-Sources/DGamma/L2R11ReleaseAgreement.idr": "baa4f75c908d5ecf32de5438d37000b70eabb103cb9d36ec4a3232d65878ff4b"
+      },
+      "event": "GUARDED COMMIT",
+      "unit": "A3",
+      "attempt": "1",
+      "invocation": "A3-1",
+      "sourceHash": "baa4f75c908d5ecf32de5438d37000b70eabb103cb9d36ec4a3232d65878ff4b",
+      "resultingCommitHash": "55a5152a925266d20d62a850276fab564e5ae4b4",
+      "timestampUTC": "2026-09-09T13:31:36.153308+00:00",
+      "guardChecksPassed": [
+        "fresh PASS",
+        "exit 0",
+        "not interrupted",
+        "no expected diagnostic",
+        "exact source SHA256",
+        "one new declaration",
+        "no intervening compiler invocation",
+        "no pre-staged files",
+        "no compiler",
+        "git diff --check",
+        "git commit success",
+        "no post-staged files"
+      ]
+    },
+    {
+      "paths": [
+        "research-tests/O6-L2R11-Sources/DGamma/L2R11ReleaseAgreement.idr"
+      ],
+      "sourceHashes": {
+        "research-tests/O6-L2R11-Sources/DGamma/L2R11ReleaseAgreement.idr": "d9aedc127dc8360ae438cd7d299ee5612cef8e7318ffd94b13978f1e2f4469f5"
+      },
+      "event": "GUARDED COMMIT",
+      "unit": "A4",
+      "attempt": "1",
+      "invocation": "A4-1",
+      "sourceHash": "d9aedc127dc8360ae438cd7d299ee5612cef8e7318ffd94b13978f1e2f4469f5",
+      "resultingCommitHash": "11f59232ce04f4a44d56c34e553c785eb6c7044d",
+      "timestampUTC": "2026-09-09T13:32:08.231089+00:00",
+      "guardChecksPassed": [
+        "fresh PASS",
+        "exit 0",
+        "not interrupted",
+        "no expected diagnostic",
+        "exact source SHA256",
+        "one new declaration",
+        "no intervening compiler invocation",
+        "no pre-staged files",
+        "no compiler",
+        "git diff --check",
+        "git commit success",
+        "no post-staged files"
+      ]
+    },
+    {
+      "paths": [
+        "research-tests/O6-L2R11-Sources/DGamma/L2R11ReleaseAgreement.idr"
+      ],
+      "sourceHashes": {
+        "research-tests/O6-L2R11-Sources/DGamma/L2R11ReleaseAgreement.idr": "06876781cd3d036d4dac2a4b6eb7903da6b213a093e7548cb90cfdaf59e787be"
+      },
+      "event": "GUARDED COMMIT",
+      "unit": "A5",
+      "attempt": "1",
+      "invocation": "A5-1",
+      "sourceHash": "06876781cd3d036d4dac2a4b6eb7903da6b213a093e7548cb90cfdaf59e787be",
+      "resultingCommitHash": "fb2f255a009c61249359903168eb9f155e6eec39",
+      "timestampUTC": "2026-09-09T13:32:36.602506+00:00",
+      "guardChecksPassed": [
+        "fresh PASS",
+        "exit 0",
+        "not interrupted",
+        "no expected diagnostic",
+        "exact source SHA256",
+        "one new declaration",
+        "no intervening compiler invocation",
+        "no pre-staged files",
+        "no compiler",
+        "git diff --check",
+        "git commit success",
+        "no post-staged files"
+      ]
+    },
+    {
+      "paths": [
+        "research-tests/O6-L2R11-Sources/DGamma/L2R11ReleaseAgreement.idr"
+      ],
+      "sourceHashes": {
+        "research-tests/O6-L2R11-Sources/DGamma/L2R11ReleaseAgreement.idr": "904bd9aea2ea7778c937c661af964262417d3f775a4f2a40ccf34fec6ddc8ae9"
+      },
+      "event": "GUARDED COMMIT",
+      "unit": "A6",
+      "attempt": "1",
+      "invocation": "A6-1",
+      "sourceHash": "904bd9aea2ea7778c937c661af964262417d3f775a4f2a40ccf34fec6ddc8ae9",
+      "resultingCommitHash": "1e48fec42ca8d8124e415fb4308bf5ecc78cd2b4",
+      "timestampUTC": "2026-09-09T13:33:01.169696+00:00",
+      "guardChecksPassed": [
+        "fresh PASS",
+        "exit 0",
+        "not interrupted",
+        "no expected diagnostic",
+        "exact source SHA256",
+        "one new declaration",
+        "no intervening compiler invocation",
+        "no pre-staged files",
+        "no compiler",
+        "git diff --check",
+        "git commit success",
+        "no post-staged files"
+      ]
+    },
+    {
+      "event": "GUARDED ARTIFACT COMMIT",
+      "unit": "V1",
+      "invocation": "V1",
+      "sourceInvocation": "V1",
+      "sourceHash": "904bd9aea2ea7778c937c661af964262417d3f775a4f2a40ccf34fec6ddc8ae9",
+      "resultingCommitHash": "7d8c220e62160fc9191ee2f1bccba6dba7438ff7",
+      "timestampUTC": "2026-09-09T13:37:02.246058+00:00",
+      "paths": [
+        "research-tests/O6-L2R11-GRIND-SHIFT-AUDIT.md"
+      ],
+      "artifactHashes": {
+        "research-tests/O6-L2R11-GRIND-SHIFT-AUDIT.md": "18bc614a44165e2baf87d9e7dcf37c956b4a035fcd109fef7befb17368dd5845"
+      },
+      "authorizedCommentRepairs": [],
+      "guardChecksPassed": [
+        "fresh PASS",
+        "exit 0",
+        "not interrupted",
+        "no source mutation",
+        "exact source SHA256",
+        "no intervening compiler invocation",
+        "artifact paths or exact authorized comment repairs only",
+        "no new Idris source delta",
+        "no pre-staged files",
+        "no own compiler",
+        "git diff --check",
+        "git commit success",
+        "no post-staged files"
+      ]
+    },
+    {
+      "paths": [
+        "research-tests/O6-L2R11-Sources/DGamma/L2R11PhaseDecode.idr"
+      ],
+      "sourceHashes": {
+        "research-tests/O6-L2R11-Sources/DGamma/L2R11PhaseDecode.idr": "3174dc98fbc5fc40326a1a4ef3147b0c4bc7b8af1fcc963e5bc85b800f010990"
+      },
+      "event": "GUARDED COMMIT",
+      "unit": "A8",
+      "attempt": "1",
+      "invocation": "A8-1",
+      "sourceHash": "3174dc98fbc5fc40326a1a4ef3147b0c4bc7b8af1fcc963e5bc85b800f010990",
+      "resultingCommitHash": "9181ded67dc62b3843411bc72c839c36ed9ef58a",
+      "timestampUTC": "2026-09-09T13:38:17.974944+00:00",
+      "guardChecksPassed": [
+        "fresh PASS",
+        "exit 0",
+        "not interrupted",
+        "no expected diagnostic",
+        "exact source SHA256",
+        "one new declaration",
+        "no intervening compiler invocation",
+        "no pre-staged files",
+        "no compiler",
+        "git diff --check",
+        "git commit success",
+        "no post-staged files"
+      ]
+    },
+    {
+      "paths": [
+        "research-tests/O6-L2R11-Sources/DGamma/L2R11PhaseDecode.idr"
+      ],
+      "sourceHashes": {
+        "research-tests/O6-L2R11-Sources/DGamma/L2R11PhaseDecode.idr": "81adbff5aa2ee36b4fe82e4689d3720a2aa885bbd6219f10178869b31863e1c1"
+      },
+      "event": "GUARDED COMMIT",
+      "unit": "A9",
+      "attempt": "1",
+      "invocation": "A9-1",
+      "sourceHash": "81adbff5aa2ee36b4fe82e4689d3720a2aa885bbd6219f10178869b31863e1c1",
+      "resultingCommitHash": "e0eddcfcc7abb48ca98e60e2fbd1990ccb3b7cee",
+      "timestampUTC": "2026-09-09T13:38:48.943620+00:00",
+      "guardChecksPassed": [
+        "fresh PASS",
+        "exit 0",
+        "not interrupted",
+        "no expected diagnostic",
+        "exact source SHA256",
+        "one new declaration",
+        "no intervening compiler invocation",
+        "no pre-staged files",
+        "no compiler",
+        "git diff --check",
+        "git commit success",
+        "no post-staged files"
+      ]
+    },
+    {
+      "paths": [
+        "research-tests/O6-L2R11-Sources/DGamma/L2R11PhaseDecode.idr"
+      ],
+      "sourceHashes": {
+        "research-tests/O6-L2R11-Sources/DGamma/L2R11PhaseDecode.idr": "8666c389278c18a628ce9be2174dad041b4c9c48b2332786647d6b2f462bbf28"
+      },
+      "event": "GUARDED COMMIT",
+      "unit": "A10",
+      "attempt": "2",
+      "invocation": "A10-2",
+      "sourceHash": "8666c389278c18a628ce9be2174dad041b4c9c48b2332786647d6b2f462bbf28",
+      "resultingCommitHash": "1459b5e45f987780f6de5e807a6b5c06ca834bd3",
+      "timestampUTC": "2026-09-09T13:40:26.392709+00:00",
+      "guardChecksPassed": [
+        "fresh PASS",
+        "exit 0",
+        "not interrupted",
+        "no expected diagnostic",
+        "exact source SHA256",
+        "one new declaration",
+        "no intervening compiler invocation",
+        "no pre-staged files",
+        "no compiler",
+        "git diff --check",
+        "git commit success",
+        "no post-staged files"
+      ]
+    },
+    {
+      "paths": [
+        "research-tests/O6-L2R11-Sources/DGamma/L2R11PhaseDecode.idr"
+      ],
+      "sourceHashes": {
+        "research-tests/O6-L2R11-Sources/DGamma/L2R11PhaseDecode.idr": "b7400e7e71c355fff28fbb74e640927ed4afefed9efab9d5dfeca46f1da3581a"
+      },
+      "event": "GUARDED COMMIT",
+      "unit": "A11",
+      "attempt": "1",
+      "invocation": "A11-1",
+      "sourceHash": "b7400e7e71c355fff28fbb74e640927ed4afefed9efab9d5dfeca46f1da3581a",
+      "resultingCommitHash": "71873a4b3cf397f8a24c65c7c441cd63c33ec40a",
+      "timestampUTC": "2026-09-09T13:41:19.769101+00:00",
+      "guardChecksPassed": [
+        "fresh PASS",
+        "exit 0",
+        "not interrupted",
+        "no expected diagnostic",
+        "exact source SHA256",
+        "one new declaration",
+        "no intervening compiler invocation",
+        "no pre-staged files",
+        "no compiler",
+        "git diff --check",
+        "git commit success",
+        "no post-staged files"
+      ]
+    },
+    {
+      "paths": [
+        "research-tests/O6-L2R11-Sources/DGamma/L2R11PhaseDecode.idr"
+      ],
+      "sourceHashes": {
+        "research-tests/O6-L2R11-Sources/DGamma/L2R11PhaseDecode.idr": "a9801da54a843b46dbed9ee34d7cd5e93ea5924adf2a2d13186d275d616df15d"
+      },
+      "event": "GUARDED COMMIT",
+      "unit": "A12",
+      "attempt": "2",
+      "invocation": "A12-2",
+      "sourceHash": "a9801da54a843b46dbed9ee34d7cd5e93ea5924adf2a2d13186d275d616df15d",
+      "resultingCommitHash": "9ae72cd8ca40aa96bded459107034b5ae16d4ce9",
+      "timestampUTC": "2026-09-09T13:42:22.206096+00:00",
+      "guardChecksPassed": [
+        "fresh PASS",
+        "exit 0",
+        "not interrupted",
+        "no expected diagnostic",
+        "exact source SHA256",
+        "one new declaration",
+        "no intervening compiler invocation",
+        "no pre-staged files",
+        "no compiler",
+        "git diff --check",
+        "git commit success",
+        "no post-staged files"
+      ]
+    },
+    {
+      "paths": [
+        "research-tests/O6-L2R11-Sources/DGamma/L2R11PhaseDecode.idr"
+      ],
+      "sourceHashes": {
+        "research-tests/O6-L2R11-Sources/DGamma/L2R11PhaseDecode.idr": "0d7c61a1fadcb110e2d8ae194a63437bd22fc8d4febe520221e6c2d74b22923f"
+      },
+      "event": "GUARDED COMMIT",
+      "unit": "A13",
+      "attempt": "1",
+      "invocation": "A13-1",
+      "sourceHash": "0d7c61a1fadcb110e2d8ae194a63437bd22fc8d4febe520221e6c2d74b22923f",
+      "resultingCommitHash": "68f53d84f87c222070ffdec5024e3258193fd791",
+      "timestampUTC": "2026-09-09T13:43:08.179583+00:00",
+      "guardChecksPassed": [
+        "fresh PASS",
+        "exit 0",
+        "not interrupted",
+        "no expected diagnostic",
+        "exact source SHA256",
+        "one new declaration",
+        "no intervening compiler invocation",
+        "no pre-staged files",
+        "no compiler",
+        "git diff --check",
+        "git commit success",
+        "no post-staged files"
+      ]
+    },
+    {
+      "paths": [
+        "research-tests/O6-L2R11-Sources/DGamma/L2R11PhaseDecode.idr"
+      ],
+      "sourceHashes": {
+        "research-tests/O6-L2R11-Sources/DGamma/L2R11PhaseDecode.idr": "3a13ce06c073d3a285705ee7150d863dbfe29489a1fc8b3efc0f6285b1540a17"
+      },
+      "event": "GUARDED COMMIT",
+      "unit": "A14",
+      "attempt": "1",
+      "invocation": "A14-1",
+      "sourceHash": "3a13ce06c073d3a285705ee7150d863dbfe29489a1fc8b3efc0f6285b1540a17",
+      "resultingCommitHash": "46069054a0523e9d9bf05cfc6910180ae0add4af",
+      "timestampUTC": "2026-09-09T13:44:45.187946+00:00",
+      "guardChecksPassed": [
+        "fresh PASS",
+        "exit 0",
+        "not interrupted",
+        "no expected diagnostic",
+        "exact source SHA256",
+        "one new declaration",
+        "no intervening compiler invocation",
+        "no pre-staged files",
+        "no compiler",
+        "git diff --check",
+        "git commit success",
+        "no post-staged files"
+      ]
+    },
+    {
+      "event": "GUARDED ARTIFACT COMMIT",
+      "unit": "A14-1",
+      "invocation": "A14-1",
+      "sourceInvocation": "A14-1",
+      "sourceHash": "3a13ce06c073d3a285705ee7150d863dbfe29489a1fc8b3efc0f6285b1540a17",
+      "resultingCommitHash": "f163145c3826321baefddf1c737adf775b84459d",
+      "timestampUTC": "2026-09-09T13:45:04.135719+00:00",
+      "paths": [
+        "research-tests/O6-L2R11-GRIND-SHIFT-AUDIT.md"
+      ],
+      "artifactHashes": {
+        "research-tests/O6-L2R11-GRIND-SHIFT-AUDIT.md": "4b210655a39158ef6640eb29cb297346f33569ecf6aacde4100b8f0103d35d8e"
+      },
+      "authorizedCommentRepairs": [],
+      "guardChecksPassed": [
+        "fresh PASS",
+        "exit 0",
+        "not interrupted",
+        "no source mutation",
+        "exact source SHA256",
+        "no intervening compiler invocation",
+        "artifact paths or exact authorized comment repairs only",
+        "no new Idris source delta",
+        "no pre-staged files",
+        "no own compiler",
+        "git diff --check",
+        "git commit success",
+        "no post-staged files"
+      ]
+    },
+    {
+      "paths": [
+        "research-tests/O6-L2R11-Sources/DGamma/L2R11WordInventory.idr"
+      ],
+      "sourceHashes": {
+        "research-tests/O6-L2R11-Sources/DGamma/L2R11WordInventory.idr": "c406cea4657d0913f78dbd63e79998d49fca6f894f2b8f9c4468cc919754002b"
+      },
+      "event": "GUARDED COMMIT",
+      "unit": "B1",
+      "attempt": "1",
+      "invocation": "B1-1",
+      "sourceHash": "c406cea4657d0913f78dbd63e79998d49fca6f894f2b8f9c4468cc919754002b",
+      "resultingCommitHash": "b4544852b75efc454951b0b108ff58d929ee6cc6",
+      "timestampUTC": "2026-09-09T13:46:37.177350+00:00",
+      "guardChecksPassed": [
+        "fresh PASS",
+        "exit 0",
+        "not interrupted",
+        "no expected diagnostic",
+        "exact source SHA256",
+        "one new declaration",
+        "no intervening compiler invocation",
+        "no pre-staged files",
+        "no compiler",
+        "git diff --check",
+        "git commit success",
+        "no post-staged files"
+      ]
+    },
+    {
+      "paths": [
+        "research-tests/O6-L2R11-Sources/DGamma/L2R11WordInventory.idr"
+      ],
+      "sourceHashes": {
+        "research-tests/O6-L2R11-Sources/DGamma/L2R11WordInventory.idr": "f7eaea76210415624cff6089d3798e2770a19bf36f3d85c9acb2ab2ce0434f5b"
+      },
+      "event": "GUARDED COMMIT",
+      "unit": "B2",
+      "attempt": "1",
+      "invocation": "B2-1",
+      "sourceHash": "f7eaea76210415624cff6089d3798e2770a19bf36f3d85c9acb2ab2ce0434f5b",
+      "resultingCommitHash": "50552719b883ff58c3a73971634d970f94016106",
+      "timestampUTC": "2026-09-09T13:47:08.929575+00:00",
+      "guardChecksPassed": [
+        "fresh PASS",
+        "exit 0",
+        "not interrupted",
+        "no expected diagnostic",
+        "exact source SHA256",
+        "one new declaration",
+        "no intervening compiler invocation",
+        "no pre-staged files",
+        "no compiler",
+        "git diff --check",
+        "git commit success",
+        "no post-staged files"
+      ]
+    },
+    {
+      "paths": [
+        "research-tests/O6-L2R11-Sources/DGamma/L2R11WordInventory.idr"
+      ],
+      "sourceHashes": {
+        "research-tests/O6-L2R11-Sources/DGamma/L2R11WordInventory.idr": "7ab7c05b1b4b1e58f884ce2fb66572c44decb181e32fbca84a2c28714561c89f"
+      },
+      "event": "GUARDED COMMIT",
+      "unit": "B3",
+      "attempt": "1",
+      "invocation": "B3-1",
+      "sourceHash": "7ab7c05b1b4b1e58f884ce2fb66572c44decb181e32fbca84a2c28714561c89f",
+      "resultingCommitHash": "bf5abcfde989cbd0ef7a88ca3a0e574d9abb0fb1",
+      "timestampUTC": "2026-09-09T13:47:38.649032+00:00",
+      "guardChecksPassed": [
+        "fresh PASS",
+        "exit 0",
+        "not interrupted",
+        "no expected diagnostic",
+        "exact source SHA256",
+        "one new declaration",
+        "no intervening compiler invocation",
+        "no pre-staged files",
+        "no compiler",
+        "git diff --check",
+        "git commit success",
+        "no post-staged files"
+      ]
+    },
+    {
+      "paths": [
+        "research-tests/O6-L2R11-Sources/DGamma/L2R11WordInventory.idr"
+      ],
+      "sourceHashes": {
+        "research-tests/O6-L2R11-Sources/DGamma/L2R11WordInventory.idr": "2fbd559f8d6d7474e37b4ae1a1e0bff6b9c5788328820befe46a7648094474d8"
+      },
+      "event": "GUARDED COMMIT",
+      "unit": "B4",
+      "attempt": "1",
+      "invocation": "B4-1",
+      "sourceHash": "2fbd559f8d6d7474e37b4ae1a1e0bff6b9c5788328820befe46a7648094474d8",
+      "resultingCommitHash": "1e91019442b87e222cdb1852c6dfd3ea1020e11a",
+      "timestampUTC": "2026-09-09T13:48:13.793973+00:00",
+      "guardChecksPassed": [
+        "fresh PASS",
+        "exit 0",
+        "not interrupted",
+        "no expected diagnostic",
+        "exact source SHA256",
+        "one new declaration",
+        "no intervening compiler invocation",
+        "no pre-staged files",
+        "no compiler",
+        "git diff --check",
+        "git commit success",
+        "no post-staged files"
+      ]
+    },
+    {
+      "paths": [
+        "research-tests/O6-L2R11-Sources/DGamma/L2R11WordInventory.idr"
+      ],
+      "sourceHashes": {
+        "research-tests/O6-L2R11-Sources/DGamma/L2R11WordInventory.idr": "25fa8c433ffd3b395394ff83a0cc960cad358535d796f28e797cb4cf564a0c9a"
+      },
+      "event": "GUARDED COMMIT",
+      "unit": "B5",
+      "attempt": "1",
+      "invocation": "B5-1",
+      "sourceHash": "25fa8c433ffd3b395394ff83a0cc960cad358535d796f28e797cb4cf564a0c9a",
+      "resultingCommitHash": "b64fa36ff7c147928f9209819843b4dcd19b0f84",
+      "timestampUTC": "2026-09-09T13:48:38.129586+00:00",
+      "guardChecksPassed": [
+        "fresh PASS",
+        "exit 0",
+        "not interrupted",
+        "no expected diagnostic",
+        "exact source SHA256",
+        "one new declaration",
+        "no intervening compiler invocation",
+        "no pre-staged files",
+        "no compiler",
+        "git diff --check",
+        "git commit success",
+        "no post-staged files"
+      ]
+    },
+    {
+      "paths": [
+        "research-tests/O6-L2R11-Sources/DGamma/L2R11WordInventory.idr"
+      ],
+      "sourceHashes": {
+        "research-tests/O6-L2R11-Sources/DGamma/L2R11WordInventory.idr": "176a79f283a6ea4541c861c6d7ced5190c4250791322a8e807a62b26b22c4e00"
+      },
+      "event": "GUARDED COMMIT",
+      "unit": "B6",
+      "attempt": "1",
+      "invocation": "B6-1",
+      "sourceHash": "176a79f283a6ea4541c861c6d7ced5190c4250791322a8e807a62b26b22c4e00",
+      "resultingCommitHash": "3a2f03a2dd99450cc23f77f1829627a1218a8892",
+      "timestampUTC": "2026-09-09T13:49:00.521311+00:00",
+      "guardChecksPassed": [
+        "fresh PASS",
+        "exit 0",
+        "not interrupted",
+        "no expected diagnostic",
+        "exact source SHA256",
+        "one new declaration",
+        "no intervening compiler invocation",
+        "no pre-staged files",
+        "no compiler",
+        "git diff --check",
+        "git commit success",
+        "no post-staged files"
+      ]
+    },
+    {
+      "paths": [
+        "research-tests/O6-L2R11-Sources/DGamma/L2R11WordInventory.idr"
+      ],
+      "sourceHashes": {
+        "research-tests/O6-L2R11-Sources/DGamma/L2R11WordInventory.idr": "e9b743be59507720c7bd42d1f45049fb22e92f327aab8dcf3f60f8c2460af913"
+      },
+      "event": "GUARDED COMMIT",
+      "unit": "B7",
+      "attempt": "1",
+      "invocation": "B7-1",
+      "sourceHash": "e9b743be59507720c7bd42d1f45049fb22e92f327aab8dcf3f60f8c2460af913",
+      "resultingCommitHash": "21c2b532bb794c6c15c8539cea447f49e2859d14",
+      "timestampUTC": "2026-09-09T13:49:21.839051+00:00",
+      "guardChecksPassed": [
+        "fresh PASS",
+        "exit 0",
+        "not interrupted",
+        "no expected diagnostic",
+        "exact source SHA256",
+        "one new declaration",
+        "no intervening compiler invocation",
+        "no pre-staged files",
+        "no compiler",
+        "git diff --check",
+        "git commit success",
+        "no post-staged files"
+      ]
+    },
+    {
+      "paths": [
+        "research-tests/O6-L2R11-Sources/DGamma/L2R11WordInventory.idr"
+      ],
+      "sourceHashes": {
+        "research-tests/O6-L2R11-Sources/DGamma/L2R11WordInventory.idr": "e02373384eb30e36ccd61d40d18a771ba94bff2de40756ca01173eab7fd140ae"
+      },
+      "event": "GUARDED COMMIT",
+      "unit": "B8",
+      "attempt": "1",
+      "invocation": "B8-1",
+      "sourceHash": "e02373384eb30e36ccd61d40d18a771ba94bff2de40756ca01173eab7fd140ae",
+      "resultingCommitHash": "a052eab3b3cffcd2524b39e2daf1a71871d4e581",
+      "timestampUTC": "2026-09-09T13:50:00.939899+00:00",
+      "guardChecksPassed": [
+        "fresh PASS",
+        "exit 0",
+        "not interrupted",
+        "no expected diagnostic",
+        "exact source SHA256",
+        "one new declaration",
+        "no intervening compiler invocation",
+        "no pre-staged files",
+        "no compiler",
+        "git diff --check",
+        "git commit success",
+        "no post-staged files"
+      ]
+    },
+    {
+      "paths": [
+        "research-tests/O6-L2R11-Sources/DGamma/L2R11ActualWordReplay.idr"
+      ],
+      "sourceHashes": {
+        "research-tests/O6-L2R11-Sources/DGamma/L2R11ActualWordReplay.idr": "f6cb38a928a07eb18cc0f73ca6c5d235a7c6e1a3c57479b9387d9840f4ecccd0"
+      },
+      "event": "GUARDED COMMIT",
+      "unit": "B9",
+      "attempt": "1",
+      "invocation": "B9-1",
+      "sourceHash": "f6cb38a928a07eb18cc0f73ca6c5d235a7c6e1a3c57479b9387d9840f4ecccd0",
+      "resultingCommitHash": "652926eb955b46042ed80d69bc453696f01f3250",
+      "timestampUTC": "2026-09-09T13:51:20.496892+00:00",
+      "guardChecksPassed": [
+        "fresh PASS",
+        "exit 0",
+        "not interrupted",
+        "no expected diagnostic",
+        "exact source SHA256",
+        "one new declaration",
+        "no intervening compiler invocation",
+        "no pre-staged files",
+        "no compiler",
+        "git diff --check",
+        "git commit success",
+        "no post-staged files"
+      ]
+    },
+    {
+      "paths": [
+        "research-tests/O6-L2R11-Sources/DGamma/L2R11ActualWordReplay.idr"
+      ],
+      "sourceHashes": {
+        "research-tests/O6-L2R11-Sources/DGamma/L2R11ActualWordReplay.idr": "7d4528db425b9db4f6dfa904d30c925341d2fa48378f0108b1184a971e3bcb2e"
+      },
+      "event": "GUARDED COMMIT",
+      "unit": "B10",
+      "attempt": "1",
+      "invocation": "B10-1",
+      "sourceHash": "7d4528db425b9db4f6dfa904d30c925341d2fa48378f0108b1184a971e3bcb2e",
+      "resultingCommitHash": "5bb305572b43f37531c987a4ad59bccf42e472ad",
+      "timestampUTC": "2026-09-09T13:52:11.269536+00:00",
+      "guardChecksPassed": [
+        "fresh PASS",
+        "exit 0",
+        "not interrupted",
+        "no expected diagnostic",
+        "exact source SHA256",
+        "one new declaration",
+        "no intervening compiler invocation",
+        "no pre-staged files",
+        "no compiler",
+        "git diff --check",
+        "git commit success",
+        "no post-staged files"
+      ]
+    },
+    {
+      "paths": [
+        "research-tests/O6-L2R11-Sources/DGamma/L2R11LifecycleSnapshot.idr"
+      ],
+      "sourceHashes": {
+        "research-tests/O6-L2R11-Sources/DGamma/L2R11LifecycleSnapshot.idr": "7f147e5e97596d318ad1c6fec13844b8be7cb78c84065413d42909f61996bb74"
+      },
+      "event": "GUARDED COMMIT",
+      "unit": "B11",
+      "attempt": "1",
+      "invocation": "B11-1",
+      "sourceHash": "7f147e5e97596d318ad1c6fec13844b8be7cb78c84065413d42909f61996bb74",
+      "resultingCommitHash": "becb3f257328537ed2f5278a5c6d1b24c8cb4a52",
+      "timestampUTC": "2026-09-09T13:54:03.186613+00:00",
+      "guardChecksPassed": [
+        "fresh PASS",
+        "exit 0",
+        "not interrupted",
+        "no expected diagnostic",
+        "exact source SHA256",
+        "one new declaration",
+        "no intervening compiler invocation",
+        "no pre-staged files",
+        "no compiler",
+        "git diff --check",
+        "git commit success",
+        "no post-staged files"
+      ]
+    },
+    {
+      "paths": [
+        "research-tests/O6-L2R11-Sources/DGamma/L2R11LifecycleSnapshot.idr"
+      ],
+      "sourceHashes": {
+        "research-tests/O6-L2R11-Sources/DGamma/L2R11LifecycleSnapshot.idr": "c9badd13e54c21b6d4107829c7dcca02ad2d3b540321d380d0560c63c8ac76a0"
+      },
+      "event": "GUARDED COMMIT",
+      "unit": "B12",
+      "attempt": "1",
+      "invocation": "B12-1",
+      "sourceHash": "c9badd13e54c21b6d4107829c7dcca02ad2d3b540321d380d0560c63c8ac76a0",
+      "resultingCommitHash": "c66db5d252b05cab9dec2ac709f46a15d54b1486",
+      "timestampUTC": "2026-09-09T13:55:00.415257+00:00",
+      "guardChecksPassed": [
+        "fresh PASS",
+        "exit 0",
+        "not interrupted",
+        "no expected diagnostic",
+        "exact source SHA256",
+        "one new declaration",
+        "no intervening compiler invocation",
+        "no pre-staged files",
+        "no compiler",
+        "git diff --check",
+        "git commit success",
+        "no post-staged files"
+      ]
+    },
+    {
+      "paths": [
+        "research-tests/O6-L2R11-Sources/DGamma/L2R11LifecycleSnapshot.idr"
+      ],
+      "sourceHashes": {
+        "research-tests/O6-L2R11-Sources/DGamma/L2R11LifecycleSnapshot.idr": "0b20e113c7c7ffcff867ae1b25377bef5ab7866aab8f075cf3c67d838f90986b"
+      },
+      "event": "GUARDED COMMIT",
+      "unit": "B13",
+      "attempt": "1",
+      "invocation": "B13-1",
+      "sourceHash": "0b20e113c7c7ffcff867ae1b25377bef5ab7866aab8f075cf3c67d838f90986b",
+      "resultingCommitHash": "f38306d795d86b830463bfc5aebdf24d73f6c0bf",
+      "timestampUTC": "2026-09-09T13:56:39.384635+00:00",
+      "guardChecksPassed": [
+        "fresh PASS",
+        "exit 0",
+        "not interrupted",
+        "no expected diagnostic",
+        "exact source SHA256",
+        "one new declaration",
+        "no intervening compiler invocation",
+        "no pre-staged files",
+        "no compiler",
+        "git diff --check",
+        "git commit success",
+        "no post-staged files"
+      ]
+    },
+    {
+      "paths": [
+        "research-tests/O6-L2R11-Sources/DGamma/L2R11LifecycleDispatch.idr"
+      ],
+      "sourceHashes": {
+        "research-tests/O6-L2R11-Sources/DGamma/L2R11LifecycleDispatch.idr": "35933770ab2180cc21559e5b03d9b6995cb02a004c3df8b97c4ee613466bf36f"
+      },
+      "event": "GUARDED COMMIT",
+      "unit": "B14",
+      "attempt": "1",
+      "invocation": "B14-1",
+      "sourceHash": "35933770ab2180cc21559e5b03d9b6995cb02a004c3df8b97c4ee613466bf36f",
+      "resultingCommitHash": "93eae1e1d5b2855fc700bf550d8b388bc5a82e4d",
+      "timestampUTC": "2026-09-09T13:57:46.633630+00:00",
+      "guardChecksPassed": [
+        "fresh PASS",
+        "exit 0",
+        "not interrupted",
+        "no expected diagnostic",
+        "exact source SHA256",
+        "one new declaration",
+        "no intervening compiler invocation",
+        "no pre-staged files",
+        "no compiler",
+        "git diff --check",
+        "git commit success",
+        "no post-staged files"
+      ]
+    },
+    {
+      "paths": [
+        "research-tests/O6-L2R11-Sources/DGamma/L2R11LifecycleDispatch.idr"
+      ],
+      "sourceHashes": {
+        "research-tests/O6-L2R11-Sources/DGamma/L2R11LifecycleDispatch.idr": "d19819058ae14bbb0a987c51c51ee07da25643b056557bb9bcf748f59a33510b"
+      },
+      "event": "GUARDED COMMIT",
+      "unit": "B15",
+      "attempt": "1",
+      "invocation": "B15-1",
+      "sourceHash": "d19819058ae14bbb0a987c51c51ee07da25643b056557bb9bcf748f59a33510b",
+      "resultingCommitHash": "f4fa032e263009d5f1a32cd25d37c443df44e137",
+      "timestampUTC": "2026-09-09T13:58:34.856563+00:00",
+      "guardChecksPassed": [
+        "fresh PASS",
+        "exit 0",
+        "not interrupted",
+        "no expected diagnostic",
+        "exact source SHA256",
+        "one new declaration",
+        "no intervening compiler invocation",
+        "no pre-staged files",
+        "no compiler",
+        "git diff --check",
+        "git commit success",
+        "no post-staged files"
+      ]
+    },
+    {
+      "paths": [
+        "research-tests/O6-L2R11-Sources/DGamma/L2R11R191Inventory.idr"
+      ],
+      "sourceHashes": {
+        "research-tests/O6-L2R11-Sources/DGamma/L2R11R191Inventory.idr": "d01775f4d58083b10774273c4efbb491aebc2e7586c927108b48c9549bb6be4f"
+      },
+      "event": "GUARDED COMMIT",
+      "unit": "B16",
+      "attempt": "1",
+      "invocation": "B16-1",
+      "sourceHash": "d01775f4d58083b10774273c4efbb491aebc2e7586c927108b48c9549bb6be4f",
+      "resultingCommitHash": "c6fc314d199955a7a15e3d0319f981389160b461",
+      "timestampUTC": "2026-09-09T14:00:59.536797+00:00",
+      "guardChecksPassed": [
+        "fresh PASS",
+        "exit 0",
+        "not interrupted",
+        "no expected diagnostic",
+        "exact source SHA256",
+        "one new declaration",
+        "no intervening compiler invocation",
+        "no pre-staged files",
+        "no compiler",
+        "git diff --check",
+        "git commit success",
+        "no post-staged files"
+      ]
+    },
+    {
+      "event": "GUARDED ARTIFACT COMMIT",
+      "unit": "B16-1",
+      "invocation": "B16-1",
+      "sourceInvocation": "B16-1",
+      "sourceHash": "d01775f4d58083b10774273c4efbb491aebc2e7586c927108b48c9549bb6be4f",
+      "resultingCommitHash": "97b5539a06a5ebcbd120dfd8631c3e151e13f69b",
+      "timestampUTC": "2026-09-09T14:01:27.132674+00:00",
+      "paths": [
+        "research-tests/O6-L2R11-GRIND-SHIFT-AUDIT.md"
+      ],
+      "artifactHashes": {
+        "research-tests/O6-L2R11-GRIND-SHIFT-AUDIT.md": "3ceec0165b8f6b062e4be26f8a077d4fca7bcf80def0d0eea8ec9300e4c5f18b"
+      },
+      "authorizedCommentRepairs": [],
+      "guardChecksPassed": [
+        "fresh PASS",
+        "exit 0",
+        "not interrupted",
+        "no source mutation",
+        "exact source SHA256",
+        "no intervening compiler invocation",
+        "artifact paths or exact authorized comment repairs only",
+        "no new Idris source delta",
+        "no pre-staged files",
+        "no own compiler",
+        "git diff --check",
+        "git commit success",
+        "no post-staged files"
+      ]
+    },
+    {
+      "paths": [
+        "research-tests/O6-L2R11-Sources/DGamma/L2R11LocatedCut.idr"
+      ],
+      "sourceHashes": {
+        "research-tests/O6-L2R11-Sources/DGamma/L2R11LocatedCut.idr": "6dca558e6ccbe02bb7c4566c89006b632933b9223ef56105c956bcdcf4f656af"
+      },
+      "event": "GUARDED COMMIT",
+      "unit": "C1",
+      "attempt": "1",
+      "invocation": "C1-1",
+      "sourceHash": "6dca558e6ccbe02bb7c4566c89006b632933b9223ef56105c956bcdcf4f656af",
+      "resultingCommitHash": "23142be54b7120779715ab7e4e3623c098b5a03c",
+      "timestampUTC": "2026-09-09T14:02:35.635002+00:00",
+      "guardChecksPassed": [
+        "fresh PASS",
+        "exit 0",
+        "not interrupted",
+        "no expected diagnostic",
+        "exact source SHA256",
+        "one new declaration",
+        "no intervening compiler invocation",
+        "no pre-staged files",
+        "no compiler",
+        "git diff --check",
+        "git commit success",
+        "no post-staged files"
+      ]
+    },
+    {
+      "paths": [
+        "research-tests/O6-L2R11-Sources/DGamma/L2R11LocatedCut.idr"
+      ],
+      "sourceHashes": {
+        "research-tests/O6-L2R11-Sources/DGamma/L2R11LocatedCut.idr": "8f85274dc6f3f66b00e555efbb955f4ec3eadc433f17b694467f01fe1821f2df"
+      },
+      "event": "GUARDED COMMIT",
+      "unit": "C2",
+      "attempt": "1",
+      "invocation": "C2-1",
+      "sourceHash": "8f85274dc6f3f66b00e555efbb955f4ec3eadc433f17b694467f01fe1821f2df",
+      "resultingCommitHash": "cb4db354d3d6bf94c8d34e53de94e9451e5d4971",
+      "timestampUTC": "2026-09-09T14:03:23.367633+00:00",
+      "guardChecksPassed": [
+        "fresh PASS",
+        "exit 0",
+        "not interrupted",
+        "no expected diagnostic",
+        "exact source SHA256",
+        "one new declaration",
+        "no intervening compiler invocation",
+        "no pre-staged files",
+        "no compiler",
+        "git diff --check",
+        "git commit success",
+        "no post-staged files"
+      ]
+    },
+    {
+      "paths": [
+        "research-tests/O6-L2R11-Sources/DGamma/L2R11LocatedCut.idr"
+      ],
+      "sourceHashes": {
+        "research-tests/O6-L2R11-Sources/DGamma/L2R11LocatedCut.idr": "392519409dd20be9d4fee9c4de3a7ac5de679b3a3c2b7b5d5d5fe53b8c9fa411"
+      },
+      "event": "GUARDED COMMIT",
+      "unit": "C3",
+      "attempt": "1",
+      "invocation": "C3-1",
+      "sourceHash": "392519409dd20be9d4fee9c4de3a7ac5de679b3a3c2b7b5d5d5fe53b8c9fa411",
+      "resultingCommitHash": "bd2f75a204d9763533c64f46e6c5af308da3a58f",
+      "timestampUTC": "2026-09-09T14:03:53.083435+00:00",
+      "guardChecksPassed": [
+        "fresh PASS",
+        "exit 0",
+        "not interrupted",
+        "no expected diagnostic",
+        "exact source SHA256",
+        "one new declaration",
+        "no intervening compiler invocation",
+        "no pre-staged files",
+        "no compiler",
+        "git diff --check",
+        "git commit success",
+        "no post-staged files"
+      ]
+    },
+    {
+      "paths": [
+        "research-tests/O6-L2R11-Sources/DGamma/L2R11LocatedCut.idr"
+      ],
+      "sourceHashes": {
+        "research-tests/O6-L2R11-Sources/DGamma/L2R11LocatedCut.idr": "c634083d4d5c0730b29eb4c508e7995060288960d5bc56589147c7c507e606d1"
+      },
+      "event": "GUARDED COMMIT",
+      "unit": "C4",
+      "attempt": "1",
+      "invocation": "C4-1",
+      "sourceHash": "c634083d4d5c0730b29eb4c508e7995060288960d5bc56589147c7c507e606d1",
+      "resultingCommitHash": "8276d82d5e2ef68c1242a85b212d16ed3cf14ebf",
+      "timestampUTC": "2026-09-09T14:04:38.895392+00:00",
+      "guardChecksPassed": [
+        "fresh PASS",
+        "exit 0",
+        "not interrupted",
+        "no expected diagnostic",
+        "exact source SHA256",
+        "one new declaration",
+        "no intervening compiler invocation",
+        "no pre-staged files",
+        "no compiler",
+        "git diff --check",
+        "git commit success",
+        "no post-staged files"
+      ]
+    },
+    {
+      "paths": [
+        "research-tests/O6-L2R11-Sources/DGamma/L2R11LocatedCut.idr"
+      ],
+      "sourceHashes": {
+        "research-tests/O6-L2R11-Sources/DGamma/L2R11LocatedCut.idr": "ca5260e5151a47447c62b16427ca629c04a2bea8c1740c0479b62472bcf39512"
+      },
+      "event": "GUARDED COMMIT",
+      "unit": "C5",
+      "attempt": "1",
+      "invocation": "C5-1",
+      "sourceHash": "ca5260e5151a47447c62b16427ca629c04a2bea8c1740c0479b62472bcf39512",
+      "resultingCommitHash": "00ec6e36fc927f36cac15ee6969740bad11451a5",
+      "timestampUTC": "2026-09-09T14:05:21.274479+00:00",
+      "guardChecksPassed": [
+        "fresh PASS",
+        "exit 0",
+        "not interrupted",
+        "no expected diagnostic",
+        "exact source SHA256",
+        "one new declaration",
+        "no intervening compiler invocation",
+        "no pre-staged files",
+        "no compiler",
+        "git diff --check",
+        "git commit success",
+        "no post-staged files"
+      ]
+    },
+    {
+      "paths": [
+        "research-tests/O6-L2R11-Sources/DGamma/L2R11LocatedCut.idr"
+      ],
+      "sourceHashes": {
+        "research-tests/O6-L2R11-Sources/DGamma/L2R11LocatedCut.idr": "583a023d510e4b1951a6f27a1e772d9574429b1e2759b47411c87157f980a595"
+      },
+      "event": "GUARDED COMMIT",
+      "unit": "C6",
+      "attempt": "1",
+      "invocation": "C6-1",
+      "sourceHash": "583a023d510e4b1951a6f27a1e772d9574429b1e2759b47411c87157f980a595",
+      "resultingCommitHash": "0cd0e7c8d35a0c752a8092e4da3aff0147faa167",
+      "timestampUTC": "2026-09-09T14:06:31.466985+00:00",
+      "guardChecksPassed": [
+        "fresh PASS",
+        "exit 0",
+        "not interrupted",
+        "no expected diagnostic",
+        "exact source SHA256",
+        "one new declaration",
+        "no intervening compiler invocation",
+        "no pre-staged files",
+        "no compiler",
+        "git diff --check",
+        "git commit success",
+        "no post-staged files"
+      ]
+    },
+    {
+      "paths": [
+        "research-tests/O6-L2R11-Sources/DGamma/L2R11ClassifierSquare.idr"
+      ],
+      "sourceHashes": {
+        "research-tests/O6-L2R11-Sources/DGamma/L2R11ClassifierSquare.idr": "e38e0d2bd617a8da5416afc33ee63d4dc6c7e5c9933d046efb99bf926fdeb3bc"
+      },
+      "event": "GUARDED COMMIT",
+      "unit": "C7",
+      "attempt": "2",
+      "invocation": "C7-2",
+      "sourceHash": "e38e0d2bd617a8da5416afc33ee63d4dc6c7e5c9933d046efb99bf926fdeb3bc",
+      "resultingCommitHash": "d20f789faca554e66bef4b55873c414f3fe57d5e",
+      "timestampUTC": "2026-09-09T14:08:02.485502+00:00",
+      "guardChecksPassed": [
+        "fresh PASS",
+        "exit 0",
+        "not interrupted",
+        "no expected diagnostic",
+        "exact source SHA256",
+        "one new declaration",
+        "no intervening compiler invocation",
+        "no pre-staged files",
+        "no compiler",
+        "git diff --check",
+        "git commit success",
+        "no post-staged files"
+      ]
+    },
+    {
+      "paths": [
+        "research-tests/O6-L2R11-Sources/DGamma/L2R11ClassifierSquare.idr"
+      ],
+      "sourceHashes": {
+        "research-tests/O6-L2R11-Sources/DGamma/L2R11ClassifierSquare.idr": "621e936115d48c633d6cc1a3e5875b02b05719392b94c98584890a38a1aa4d91"
+      },
+      "event": "GUARDED COMMIT",
+      "unit": "C8",
+      "attempt": "1",
+      "invocation": "C8-1",
+      "sourceHash": "621e936115d48c633d6cc1a3e5875b02b05719392b94c98584890a38a1aa4d91",
+      "resultingCommitHash": "6ebb82ab9fdd3753b696d7906125c1d02c30d32c",
+      "timestampUTC": "2026-09-09T14:09:13.237882+00:00",
+      "guardChecksPassed": [
+        "fresh PASS",
+        "exit 0",
+        "not interrupted",
+        "no expected diagnostic",
+        "exact source SHA256",
+        "one new declaration",
+        "no intervening compiler invocation",
+        "no pre-staged files",
+        "no compiler",
+        "git diff --check",
+        "git commit success",
+        "no post-staged files"
+      ]
+    },
+    {
+      "paths": [
+        "research-tests/O6-L2R11-Sources/DGamma/L2R11ClassifierSquare.idr"
+      ],
+      "sourceHashes": {
+        "research-tests/O6-L2R11-Sources/DGamma/L2R11ClassifierSquare.idr": "0446a5433a1d8220951acca85aa36985dfe96d636ff83b84e0528afb5526da4d"
+      },
+      "event": "GUARDED COMMIT",
+      "unit": "C9",
+      "attempt": "1",
+      "invocation": "C9-1",
+      "sourceHash": "0446a5433a1d8220951acca85aa36985dfe96d636ff83b84e0528afb5526da4d",
+      "resultingCommitHash": "3c78abdbc1df1d8d9784cb55121203182c165f5b",
+      "timestampUTC": "2026-09-09T14:09:55.430723+00:00",
+      "guardChecksPassed": [
+        "fresh PASS",
+        "exit 0",
+        "not interrupted",
+        "no expected diagnostic",
+        "exact source SHA256",
+        "one new declaration",
+        "no intervening compiler invocation",
+        "no pre-staged files",
+        "no compiler",
+        "git diff --check",
+        "git commit success",
+        "no post-staged files"
+      ]
+    },
+    {
+      "paths": [
+        "research-tests/O6-L2R11-Sources/DGamma/L2R11ClassifierSquare.idr"
+      ],
+      "sourceHashes": {
+        "research-tests/O6-L2R11-Sources/DGamma/L2R11ClassifierSquare.idr": "dcc97bb8b33f8250fbe5067ac7f45b3561ddd09549a61901a53181acdb34e842"
+      },
+      "event": "GUARDED COMMIT",
+      "unit": "C10",
+      "attempt": "1",
+      "invocation": "C10-1",
+      "sourceHash": "dcc97bb8b33f8250fbe5067ac7f45b3561ddd09549a61901a53181acdb34e842",
+      "resultingCommitHash": "710ed7c3f991da277eea9033dc9dab1db14d4404",
+      "timestampUTC": "2026-09-09T14:11:39.946072+00:00",
+      "guardChecksPassed": [
+        "fresh PASS",
+        "exit 0",
+        "not interrupted",
+        "no expected diagnostic",
+        "exact source SHA256",
+        "one new declaration",
+        "no intervening compiler invocation",
+        "no pre-staged files",
+        "no compiler",
+        "git diff --check",
+        "git commit success",
+        "no post-staged files"
+      ]
+    },
+    {
+      "paths": [
+        "research-tests/O6-L2R11-Sources/DGamma/L2R11ClassifierSquare.idr"
+      ],
+      "sourceHashes": {
+        "research-tests/O6-L2R11-Sources/DGamma/L2R11ClassifierSquare.idr": "e51ee75d6245526853a4f42b7723c4267e60cfefb887a7e82f671112a3a71007"
+      },
+      "event": "GUARDED COMMIT",
+      "unit": "C11",
+      "attempt": "1",
+      "invocation": "C11-1",
+      "sourceHash": "e51ee75d6245526853a4f42b7723c4267e60cfefb887a7e82f671112a3a71007",
+      "resultingCommitHash": "72e9cdc0153cfb27f799f74a932a090314cb02eb",
+      "timestampUTC": "2026-09-09T14:12:41.376509+00:00",
+      "guardChecksPassed": [
+        "fresh PASS",
+        "exit 0",
+        "not interrupted",
+        "no expected diagnostic",
+        "exact source SHA256",
+        "one new declaration",
+        "no intervening compiler invocation",
+        "no pre-staged files",
+        "no compiler",
+        "git diff --check",
+        "git commit success",
+        "no post-staged files"
+      ]
+    },
+    {
+      "paths": [
+        "research-tests/O6-L2R11-Sources/DGamma/L2R11ClassifierSquare.idr"
+      ],
+      "sourceHashes": {
+        "research-tests/O6-L2R11-Sources/DGamma/L2R11ClassifierSquare.idr": "5c4eba8baca0154a8b0ad4aad545c36a5f70455c63e881571c1550c1aeb91fc7"
+      },
+      "event": "GUARDED COMMIT",
+      "unit": "C12",
+      "attempt": "1",
+      "invocation": "C12-1",
+      "sourceHash": "5c4eba8baca0154a8b0ad4aad545c36a5f70455c63e881571c1550c1aeb91fc7",
+      "resultingCommitHash": "a40adf4015daf8bc948472e158805b9f9e698136",
+      "timestampUTC": "2026-09-09T14:13:27.290595+00:00",
+      "guardChecksPassed": [
+        "fresh PASS",
+        "exit 0",
+        "not interrupted",
+        "no expected diagnostic",
+        "exact source SHA256",
+        "one new declaration",
+        "no intervening compiler invocation",
+        "no pre-staged files",
+        "no compiler",
+        "git diff --check",
+        "git commit success",
+        "no post-staged files"
+      ]
+    },
+    {
+      "paths": [
+        "research-tests/O6-L2R11-Sources/DGamma/L2R11ClassifierSquare.idr"
+      ],
+      "sourceHashes": {
+        "research-tests/O6-L2R11-Sources/DGamma/L2R11ClassifierSquare.idr": "739a280dd6574a03d2290837b4b543d8ab0d9efeb366e82c18aed45a747e084b"
+      },
+      "event": "GUARDED COMMIT",
+      "unit": "C13",
+      "attempt": "1",
+      "invocation": "C13-1",
+      "sourceHash": "739a280dd6574a03d2290837b4b543d8ab0d9efeb366e82c18aed45a747e084b",
+      "resultingCommitHash": "996c8a4b02c4476c4385d613f7315464c48bce3f",
+      "timestampUTC": "2026-09-09T14:14:37.111175+00:00",
+      "guardChecksPassed": [
+        "fresh PASS",
+        "exit 0",
+        "not interrupted",
+        "no expected diagnostic",
+        "exact source SHA256",
+        "one new declaration",
+        "no intervening compiler invocation",
+        "no pre-staged files",
+        "no compiler",
+        "git diff --check",
+        "git commit success",
+        "no post-staged files"
+      ]
+    },
+    {
+      "event": "GUARDED ARTIFACT COMMIT",
+      "unit": "V2",
+      "invocation": "V2",
+      "sourceInvocation": "V2",
+      "sourceHash": "739a280dd6574a03d2290837b4b543d8ab0d9efeb366e82c18aed45a747e084b",
+      "resultingCommitHash": "a69322fbf6dff37c27e32d7c9c7638eca04cd266",
+      "timestampUTC": "2026-09-09T14:18:57.541132+00:00",
+      "paths": [
+        "research-tests/O6-L2R11-GRIND-SHIFT-AUDIT.md"
+      ],
+      "artifactHashes": {
+        "research-tests/O6-L2R11-GRIND-SHIFT-AUDIT.md": "5b14931ba3afcf5c69ee2f25ad9dd325e84d3dcf74027bb24a05566b308208b8"
+      },
+      "authorizedCommentRepairs": [],
+      "guardChecksPassed": [
+        "fresh PASS",
+        "exit 0",
+        "not interrupted",
+        "no source mutation",
+        "exact source SHA256",
+        "no intervening compiler invocation",
+        "artifact paths or exact authorized comment repairs only",
+        "no new Idris source delta",
+        "no pre-staged files",
+        "no own compiler",
+        "git diff --check",
+        "git commit success",
+        "no post-staged files"
+      ]
+    },
+    {
+      "paths": [
+        "research-tests/O6-L2R11-Sources/DGamma/L2R11OpaqueCore.idr"
+      ],
+      "sourceHashes": {
+        "research-tests/O6-L2R11-Sources/DGamma/L2R11OpaqueCore.idr": "cbf8dd42d76e2637ead3cd0a26a6838a82ec4104ef1504dbfc0917937d524d0d"
+      },
+      "event": "GUARDED COMMIT",
+      "unit": "D1",
+      "attempt": "1",
+      "invocation": "D1-1",
+      "sourceHash": "cbf8dd42d76e2637ead3cd0a26a6838a82ec4104ef1504dbfc0917937d524d0d",
+      "resultingCommitHash": "a2a264ee072593eafb2c1cdc83727263a321a70a",
+      "timestampUTC": "2026-09-09T14:20:07.833723+00:00",
+      "guardChecksPassed": [
+        "fresh PASS",
+        "exit 0",
+        "not interrupted",
+        "no expected diagnostic",
+        "exact source SHA256",
+        "one new declaration",
+        "no intervening compiler invocation",
+        "no pre-staged files",
+        "no compiler",
+        "git diff --check",
+        "git commit success",
+        "no post-staged files"
+      ]
+    },
+    {
+      "paths": [
+        "research-tests/O6-L2R11-Sources/DGamma/L2R11OpaqueCore.idr"
+      ],
+      "sourceHashes": {
+        "research-tests/O6-L2R11-Sources/DGamma/L2R11OpaqueCore.idr": "9c1f83882cecaaa40e1fc1a30b1c103679524e10582b7b9e6cdc82dd05618557"
+      },
+      "event": "GUARDED COMMIT",
+      "unit": "D2",
+      "attempt": "1",
+      "invocation": "D2-1",
+      "sourceHash": "9c1f83882cecaaa40e1fc1a30b1c103679524e10582b7b9e6cdc82dd05618557",
+      "resultingCommitHash": "c7dba5275d017e9afc30bf548b1a365304013cca",
+      "timestampUTC": "2026-09-09T14:20:47.267035+00:00",
+      "guardChecksPassed": [
+        "fresh PASS",
+        "exit 0",
+        "not interrupted",
+        "no expected diagnostic",
+        "exact source SHA256",
+        "one new declaration",
+        "no intervening compiler invocation",
+        "no pre-staged files",
+        "no compiler",
+        "git diff --check",
+        "git commit success",
+        "no post-staged files"
+      ]
+    },
+    {
+      "paths": [
+        "research-tests/O6-L2R11-Sources/DGamma/L2R11OpaqueCore.idr"
+      ],
+      "sourceHashes": {
+        "research-tests/O6-L2R11-Sources/DGamma/L2R11OpaqueCore.idr": "0fbbc712bea296c5a13c3e4cc757e71d344b67bd903efedc52bbfe5f85d6a755"
+      },
+      "event": "GUARDED COMMIT",
+      "unit": "D3",
+      "attempt": "1",
+      "invocation": "D3-1",
+      "sourceHash": "0fbbc712bea296c5a13c3e4cc757e71d344b67bd903efedc52bbfe5f85d6a755",
+      "resultingCommitHash": "098843336e66424ce61d1de338f6e0106a3188ef",
+      "timestampUTC": "2026-09-09T14:21:53.796672+00:00",
+      "guardChecksPassed": [
+        "fresh PASS",
+        "exit 0",
+        "not interrupted",
+        "no expected diagnostic",
+        "exact source SHA256",
+        "one new declaration",
+        "no intervening compiler invocation",
+        "no pre-staged files",
+        "no compiler",
+        "git diff --check",
+        "git commit success",
+        "no post-staged files"
+      ]
+    },
+    {
+      "paths": [
+        "research-tests/O6-L2R11-Sources/DGamma/L2R11CorePackets.idr"
+      ],
+      "sourceHashes": {
+        "research-tests/O6-L2R11-Sources/DGamma/L2R11CorePackets.idr": "43bba68b43b6292e34c584578406a60b99ce2b2eb258c93402a9cb882fe1fe1b"
+      },
+      "event": "GUARDED COMMIT",
+      "unit": "D4",
+      "attempt": "1",
+      "invocation": "D4-1",
+      "sourceHash": "43bba68b43b6292e34c584578406a60b99ce2b2eb258c93402a9cb882fe1fe1b",
+      "resultingCommitHash": "62e8760211a1203d7b9191c10f89d27813355349",
+      "timestampUTC": "2026-09-09T14:23:43.487827+00:00",
+      "guardChecksPassed": [
+        "fresh PASS",
+        "exit 0",
+        "not interrupted",
+        "no expected diagnostic",
+        "exact source SHA256",
+        "one new declaration",
+        "no intervening compiler invocation",
+        "no pre-staged files",
+        "no compiler",
+        "git diff --check",
+        "git commit success",
+        "no post-staged files"
+      ]
+    },
+    {
+      "paths": [
+        "research-tests/O6-L2R11-Sources/DGamma/L2R11CorePackets.idr"
+      ],
+      "sourceHashes": {
+        "research-tests/O6-L2R11-Sources/DGamma/L2R11CorePackets.idr": "b4b3f35dc4a32ab49aa3e643f55fc8cbf6121a45769e311dd00a8242a4f2fd61"
+      },
+      "event": "GUARDED COMMIT",
+      "unit": "D5",
+      "attempt": "1",
+      "invocation": "D5-1",
+      "sourceHash": "b4b3f35dc4a32ab49aa3e643f55fc8cbf6121a45769e311dd00a8242a4f2fd61",
+      "resultingCommitHash": "d269ef717e544bd1a211bea760f3d4e731d85eaf",
+      "timestampUTC": "2026-09-09T14:25:38.005495+00:00",
+      "guardChecksPassed": [
+        "fresh PASS",
+        "exit 0",
+        "not interrupted",
+        "no expected diagnostic",
+        "exact source SHA256",
+        "one new declaration",
+        "no intervening compiler invocation",
+        "no pre-staged files",
+        "no compiler",
+        "git diff --check",
+        "git commit success",
+        "no post-staged files"
+      ]
+    },
+    {
+      "paths": [
+        "research-tests/O6-L2R11-Sources/DGamma/L2R11CorePackets.idr"
+      ],
+      "sourceHashes": {
+        "research-tests/O6-L2R11-Sources/DGamma/L2R11CorePackets.idr": "c841260291a7633c2c5ddf591082070bca9cf76553b5cf889b33bd674bf456db"
+      },
+      "event": "GUARDED COMMIT",
+      "unit": "D6",
+      "attempt": "1",
+      "invocation": "D6-1",
+      "sourceHash": "c841260291a7633c2c5ddf591082070bca9cf76553b5cf889b33bd674bf456db",
+      "resultingCommitHash": "1ab882e599d0230331f4e8af8ab56a31b6f876e1",
+      "timestampUTC": "2026-09-09T14:27:11.148394+00:00",
+      "guardChecksPassed": [
+        "fresh PASS",
+        "exit 0",
+        "not interrupted",
+        "no expected diagnostic",
+        "exact source SHA256",
+        "one new declaration",
+        "no intervening compiler invocation",
+        "no pre-staged files",
+        "no compiler",
+        "git diff --check",
+        "git commit success",
+        "no post-staged files"
+      ]
+    },
+    {
+      "paths": [
+        "research-tests/O6-L2R11-Sources/DGamma/L2R11CorePackets.idr"
+      ],
+      "sourceHashes": {
+        "research-tests/O6-L2R11-Sources/DGamma/L2R11CorePackets.idr": "55ecc62ef740ac142efd20de81986d268234aad6fecb1adddf91430b18265677"
+      },
+      "event": "GUARDED COMMIT",
+      "unit": "D7",
+      "attempt": "1",
+      "invocation": "D7-1",
+      "sourceHash": "55ecc62ef740ac142efd20de81986d268234aad6fecb1adddf91430b18265677",
+      "resultingCommitHash": "32202b7b0f1717dbd13c86b69a3e9b7f01fb8e55",
+      "timestampUTC": "2026-09-09T14:28:26.969445+00:00",
+      "guardChecksPassed": [
+        "fresh PASS",
+        "exit 0",
+        "not interrupted",
+        "no expected diagnostic",
+        "exact source SHA256",
+        "one new declaration",
+        "no intervening compiler invocation",
+        "no pre-staged files",
+        "no compiler",
+        "git diff --check",
+        "git commit success",
+        "no post-staged files"
+      ]
+    },
+    {
+      "paths": [
+        "research-tests/O6-L2R11-Sources/DGamma/L2R11CoreFixture.idr"
+      ],
+      "sourceHashes": {
+        "research-tests/O6-L2R11-Sources/DGamma/L2R11CoreFixture.idr": "e20671a8bdfe8aeefe08df87d2c4063b0801fb3199ba59f9dd87cf36f96c7d7a"
+      },
+      "event": "GUARDED COMMIT",
+      "unit": "D8",
+      "attempt": "1",
+      "invocation": "D8-1",
+      "sourceHash": "e20671a8bdfe8aeefe08df87d2c4063b0801fb3199ba59f9dd87cf36f96c7d7a",
+      "resultingCommitHash": "5e9c0f64e4bddb20159e7865b4949aa1307433ea",
+      "timestampUTC": "2026-09-09T14:50:26.143603+00:00",
+      "guardChecksPassed": [
+        "fresh PASS",
+        "exit 0",
+        "not interrupted",
+        "no expected diagnostic",
+        "exact source SHA256",
+        "one new declaration",
+        "no intervening compiler invocation",
+        "no pre-staged files",
+        "no compiler",
+        "git diff --check",
+        "git commit success",
+        "no post-staged files"
+      ]
+    },
+    {
+      "event": "GUARDED ARTIFACT COMMIT",
+      "unit": "D8-1",
+      "invocation": "D8-1",
+      "sourceInvocation": "D8-1",
+      "sourceHash": "e20671a8bdfe8aeefe08df87d2c4063b0801fb3199ba59f9dd87cf36f96c7d7a",
+      "resultingCommitHash": "8edb46c125aa4c2e47ea065d84d8ed611beefd6e",
+      "timestampUTC": "2026-09-09T14:51:34.359498+00:00",
+      "paths": [
+        "research-tests/O6-L2R11-GRIND-SHIFT-AUDIT.md",
+        "research-tests/O6-L2R11-CP3-DIFF-DRAFT-OVERLAY.md",
+        "research-tests/run-l2r11-core-fixture-recipe.py"
+      ],
+      "artifactHashes": {
+        "research-tests/O6-L2R11-GRIND-SHIFT-AUDIT.md": "57b88a7b79d75f1dd51cf596c10123cfd4d93b3eb8456e622b98fed53d3fb93e",
+        "research-tests/O6-L2R11-CP3-DIFF-DRAFT-OVERLAY.md": "67f14a0de37a1b3a633839f3916eb5480b5b3348ebf62de9d3abd55d7f77858d",
+        "research-tests/run-l2r11-core-fixture-recipe.py": "b7b958e771dfb7f8767ce34616eead4e8f98bf20bc88f08b053e8701bf9dc274"
+      },
+      "authorizedCommentRepairs": [],
+      "guardChecksPassed": [
+        "fresh PASS",
+        "exit 0",
+        "not interrupted",
+        "no source mutation",
+        "exact source SHA256",
+        "no intervening compiler invocation",
+        "artifact paths or exact authorized comment repairs only",
+        "no new Idris source delta",
+        "no pre-staged files",
+        "no own compiler",
+        "git diff --check",
+        "git commit success",
+        "no post-staged files"
+      ]
+    },
+    {
+      "event": "GUARDED ARTIFACT COMMIT",
+      "unit": "D8-1",
+      "invocation": "D8-1",
+      "sourceInvocation": "D8-1",
+      "sourceHash": "e20671a8bdfe8aeefe08df87d2c4063b0801fb3199ba59f9dd87cf36f96c7d7a",
+      "resultingCommitHash": "f6363f10d0ac962746d93dce4a3f7177f5aa913b",
+      "timestampUTC": "2026-09-09T14:53:20.510545+00:00",
+      "paths": [
+        "research-tests/O6-L2R11-GRIND-SHIFT-AUDIT.md",
+        "research-tests/O6-L2R11-FINAL-VALIDATION-PLAN.json",
+        "research-tests/run-l2r11-check.py",
+        "research-tests/run-l2r11-final-validation.py",
+        "research-tests/run-l2r11-independent-verify.py",
+        "research-tests/run-l2r11-evidence-tests.py",
+        "research-tests/run-l2r11-publish-evidence.py"
+      ],
+      "artifactHashes": {
+        "research-tests/O6-L2R11-GRIND-SHIFT-AUDIT.md": "ee99cfee8bc0a1135c882a1fc0adbba5a585afa0c335a5d12761ba02b9bea1e9",
+        "research-tests/O6-L2R11-FINAL-VALIDATION-PLAN.json": "1e159cd9d4ebdcdd2f327e3bdb486bf5153ef4d6570bc41fe2b0a8ae2f8d5a1a",
+        "research-tests/run-l2r11-check.py": "89311143cf5784f195c22adab95012f8024f300ec647608cb6721c8872fe353a",
+        "research-tests/run-l2r11-final-validation.py": "ce18713fa1e689d0644b1e3c9626812e98178d3607286ffe00eaa0ffad0eab61",
+        "research-tests/run-l2r11-independent-verify.py": "62423d2a24188d4e446811623885150541b342291240b2a647a8facd758e63d2",
+        "research-tests/run-l2r11-evidence-tests.py": "4f03d3b714a81f31d67628c67758e73acf9d8361c8489ded245ffc28650728f4",
+        "research-tests/run-l2r11-publish-evidence.py": "233b25b4671f878e1a3a73f733601093472dcce63458dd6246692c42ed7a34a3"
+      },
+      "authorizedCommentRepairs": [],
+      "guardChecksPassed": [
+        "fresh PASS",
+        "exit 0",
+        "not interrupted",
+        "no source mutation",
+        "exact source SHA256",
+        "no intervening compiler invocation",
+        "artifact paths or exact authorized comment repairs only",
+        "no new Idris source delta",
+        "no pre-staged files",
+        "no own compiler",
+        "git diff --check",
+        "git commit success",
+        "no post-staged files"
+      ]
+    }
+  ]
+}
