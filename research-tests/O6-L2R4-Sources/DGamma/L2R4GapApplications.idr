@@ -41,3 +41,10 @@ record AttachedFixtureObservations where
   0 barrierOffsetObserved : 6 =
     transitionCount (attachedBefore (DGamma.L2R3BarrierBlocks.BarrierAttachedBlocks.freeingBlock barrierAttachedBlocks)) +
     S (transitionCount (attachedBody (DGamma.L2R3BarrierBlocks.BarrierAttachedBlocks.freeingBlock barrierAttachedBlocks)))
+
+||| Simultaneous single-constructor observation of the existing native block
+||| producers. These literal gap/offset data instantiate physical premises;
+||| universal separation comes separately from the localization theorem.
+public export
+0 attachedFixtureObservations : AttachedFixtureObservations
+attachedFixtureObservations = MkAttachedFixtureObservations Refl Refl Refl Refl
