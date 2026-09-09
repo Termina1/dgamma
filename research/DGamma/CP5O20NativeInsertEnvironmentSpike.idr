@@ -60,3 +60,40 @@ o20NativePrefixScan {name} {key} {world} {error} {value} nameEq trace =
       (scanFinalLive (scanGenerations nameEq Z [] trace))}
       (o20NativeScanCount (generationScan (scanGenerations nameEq Z [] trace)))
       (generationScan (scanGenerations nameEq Z [] trace)))
+
+||| A18-style physical attachment with NO live-environment parameters.
+||| Both source tables are the deterministic scans of the attached births'
+||| actual preceding traces. This record does NOT postulate an all-name cut.
+public export
+record O20PrefixScannedInsertAttachment
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (keyEq : DecEq key)
+  {leftFirst, leftFinal, rightFirst, rightFinal, leftNowFirst, leftNowFinal, rightNowFirst, rightNowFinal : SystemState name key value world error}
+  {left : Transitions leftFirst leftFinal} {right : Transitions rightFirst rightFinal}
+  {leftNow : Transitions leftNowFirst leftNowFinal} {rightNow : Transitions rightNowFirst rightNowFinal}
+  (leftReplay : ActionRegistrationReplayCorrespondence name key world error value left leftNow)
+  (rightReplay : ActionRegistrationReplayCorrespondence name key world error value right rightNow)
+  (mapping : RegistrationGenerationBijection name) (renaming : NameBijection name)
+  (child, parent : name) (component : Component key value world error)
+  (leftBirth : LocatedGeneratedRegistration child parent component leftNow) where
+  constructor MkO20PrefixScannedInsertAttachment
+  0 nativeInsertPositions : O20PhysicalInsertOriginPositions name key world error value leftReplay rightReplay mapping renaming
+    child parent component leftBirth
+  0 nativeLeftBirthScan : GenerationTraceScan nameEq Z [] (beforeRegistration leftBirth)
+    (registrationOrdinal leftBirth) (o20ScannedFinalLive nameEq Z [] (beforeRegistration leftBirth))
+  0 nativeRightBirthScan : GenerationTraceScan nameEq Z []
+    (beforeRegistration (attachedRightBirth (physicalBirths nativeInsertPositions)))
+    (registrationOrdinal (attachedRightBirth (physicalBirths nativeInsertPositions)))
+    (o20ScannedFinalLive nameEq Z [] (beforeRegistration (attachedRightBirth (physicalBirths nativeInsertPositions))))
+  0 nativeInsertStage : O20StampedStage name key world error value nameEq keyEq
+    (o20ReplayOrdinalBijection (replayGenerationRenaming leftReplay) mapping (replayGenerationRenaming rightReplay)) renaming
+    (registrationOrdinal leftBirth) (registrationOrdinal (attachedRightBirth (physicalBirths nativeInsertPositions)))
+    (o20ScannedFinalLive nameEq Z [] (beforeRegistration leftBirth))
+    (o20ScannedFinalLive nameEq Z [] (beforeRegistration (attachedRightBirth (physicalBirths nativeInsertPositions))))
+    (putCurrentGeneration @{nameEq} child (registrationGeneration leftBirth)
+      (o20ScannedFinalLive nameEq Z [] (beforeRegistration leftBirth)))
+    (putCurrentGeneration @{nameEq} (renameForward renaming child)
+      (registrationGeneration (attachedRightBirth (physicalBirths nativeInsertPositions)))
+      (o20ScannedFinalLive nameEq Z [] (beforeRegistration (attachedRightBirth (physicalBirths nativeInsertPositions)))))
+    (registrationBefore leftBirth) (registrationBefore (attachedRightBirth (physicalBirths nativeInsertPositions)))
+    (registrationAfter leftBirth) (registrationAfter (attachedRightBirth (physicalBirths nativeInsertPositions)))
