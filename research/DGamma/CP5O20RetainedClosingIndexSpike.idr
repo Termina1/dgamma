@@ -120,3 +120,24 @@ o20IndexedUnloadOccurs name key world error value
     ActionOccursHere (Fired nameEq keyEq action tag checked) rest (justInjective exact)
 o20IndexedUnloadOccurs name key world error value (MoreTransitions step rest) (S ordinal) actor exact =
   ActionOccursLater step rest (o20IndexedUnloadOccurs name key world error value rest ordinal actor exact)
+
+||| Drop the actual birth's preceding trace and its own edge. The strict
+||| scan inequality prevents a close at or before that birth from being used.
+export
+0 o20UnloadBeyondBirthCut :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  {first, before, afterState, finalState : SystemState name key value world error} ->
+  (earlier : Transitions first before) -> (birth : Transition before afterState) ->
+  (later : Transitions afterState finalState) -> (ordinal : Nat) -> (actor : name) ->
+  LT (transitionCount earlier) ordinal ->
+  (rawClosingActionAt name key world error value ordinal
+    (appendTransitions earlier (MoreTransitions birth later)) = Just (LUnload actor)) ->
+  ActionOccurs (LUnload actor) later
+o20UnloadBeyondBirthCut name key world error value NoTransitions birth later Z actor afterBirth exact =
+  void (succNotLTEzero afterBirth)
+o20UnloadBeyondBirthCut name key world error value NoTransitions birth later (S ordinal) actor afterBirth exact =
+  o20IndexedUnloadOccurs name key world error value later ordinal actor exact
+o20UnloadBeyondBirthCut name key world error value (MoreTransitions step rest) birth later Z actor afterBirth exact =
+  void (succNotLTEzero afterBirth)
+o20UnloadBeyondBirthCut name key world error value (MoreTransitions step rest) birth later (S ordinal) actor afterBirth exact =
+  o20UnloadBeyondBirthCut name key world error value rest birth later ordinal actor (fromLteSucc afterBirth) exact
