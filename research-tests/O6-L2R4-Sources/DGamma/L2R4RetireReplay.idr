@@ -65,3 +65,29 @@ replayRetireFromView nameEq keyEq child actor fiber ambient source _ current _ d
           (trans (lookupReplaceOther @{nameEq} actor child (\same => distinct (sym same)) (retireFiber fiber) source) actorFound)
           (registryWellFormedRetire nameEq keyEq ambient child fiber source found valid))
         (sym currentSame) currentValid)
+
+||| FOREIGN ORetire local dispatcher role at arbitrary well-formed snapshot-
+||| equal retired sources. ONLY the original checked edge is operational input.
+||| No ownership metadata, alternate guard or alternate snapshot premise.
+export
+0 replayRetireAfterRetirement :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (child, actor : name) ->
+  (fiber : Fiber name key value world error) ->
+  (first, afterState, current : SystemState name key value world error) -> (tag : RuleTag) ->
+  (0 checked : checkedApplyAction @{nameEq} @{keyEq} (ORetire actor) first = Just (tag, afterState)) ->
+  (0 distinct : Not (child = actor)) ->
+  (0 found : lookupFiber {name} {key} {value} {world} {error} @{nameEq} child (registry first) = Just fiber) ->
+  (0 valid : registryWellFormed @{nameEq} @{keyEq} first = True) ->
+  (0 currentValid : registryWellFormed @{nameEq} @{keyEq} current = True) ->
+  (0 currentSame : runtimeSnapshot current = runtimeSnapshot {name} {key} {value} {world} {error}
+    (MkSystemState (worldState first) (replaceBinding @{nameEq} child (retireFiber fiber) (registry first)))) ->
+  CheckedSnapshotStep name key world error value nameEq keyEq (ORetire actor) current tag
+    (runtimeSnapshot {name} {key} {value} {world} {error}
+      (MkSystemState (worldState afterState) (replaceBinding @{nameEq} child (retireFiber fiber) (registry afterState))))
+replayRetireAfterRetirement nameEq keyEq child actor fiber (MkSystemState ambient source) afterState current tag
+  checked distinct found valid currentValid currentSame =
+    replayRetireFromView nameEq keyEq child actor fiber ambient source afterState current tag
+      distinct found valid currentValid currentSame
+      (retireSuccessView nameEq keyEq actor ambient source tag afterState
+        (checkedActionProjects nameEq keyEq (ORetire actor) (MkSystemState ambient source) afterState tag checked))
