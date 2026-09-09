@@ -70,3 +70,18 @@ phaseEvents : {name, key, world, error : Type} -> {value : key -> Type} ->
 phaseEvents nameEq (AvailabilityEnd state) = []
 phaseEvents nameEq (AvailabilityStep source (Fired ne ke action tag checked) rest later) =
   (phaseActionOwner nameEq source action, isLifecycleAction action) :: phaseEvents nameEq later
+
+||| Test a physical release position for a preceding lifecycle in the SAME
+||| contiguous actor core. Foreign/root/missing steps reset lifecycle history.
+||| The release itself cannot establish the required STRICTLY earlier life.
+public export
+phaseReleaseCheck : {name : Type} -> (nameEq : DecEq name) ->
+  (actor : name) -> (offset, release : Nat) -> (seenLife : Bool) ->
+  List (Maybe name, Bool) -> Bool
+phaseReleaseCheck nameEq actor offset release seenLife [] = False
+phaseReleaseCheck nameEq actor offset release seenLife (event :: rest) =
+  if offset == release
+    then seenLife && maybe False (\owner => isYes (decEq @{nameEq} actor owner)) (fst event)
+    else phaseReleaseCheck nameEq actor (S offset) release
+      (maybe False (\owner => isYes (decEq @{nameEq} actor owner)) (fst event) &&
+        (seenLife || snd event)) rest
