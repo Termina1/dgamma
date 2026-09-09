@@ -41,6 +41,7 @@ import DGamma.L2R13TerminalMove
 import DGamma.L2R5Extensional
 import DGamma.L2R5CurrentCut
 import DGamma.CP4RuntimeBindings
+import DGamma.CP4ProgressNoDeadlock
 import Data.List
 import Data.List.Elem
 import Data.List.Quantifiers
@@ -72,3 +73,23 @@ distanceFixtureSquares =
     (CrossLifecycle True Refl Refl (\same => case same of Refl impossible)) Refl
     (snapshotIntoExtensional (fst fixtureDictionaries) (bundlePhaseState 6) (barrierState 7)
       (secondMoveSnapshot bundlePhaseNative)))
+
+||| D8 single 1->0 and the bundle's terminal 1->0 move FROM the general
+||| terminal-square producer. Native prefixes, forcing and scan frames compute;
+||| no singleAdmitted/secondBundleAdmitted field of iterationFixtures is used.
+public export
+0 terminalFixtureMoves :
+  (AdmittedDistanceMove Nat Bool Unit String (\key => Unit) (fst fixtureDictionaries) (snd fixtureDictionaries)
+    (singleBeforeTrail iterationFixtures) (singleAfterTrail iterationFixtures),
+   AdmittedDistanceMove Nat Bool Unit String (\key => Unit) (fst fixtureDictionaries) (snd fixtureDictionaries)
+    (bundleMiddleTrail iterationFixtures) (bundleAfterTrail iterationFixtures))
+terminalFixtureMoves =
+  (terminalSquareAdmittedMove (fst fixtureDictionaries) (snd fixtureDictionaries) 3 (smallComponent True)
+    (smallState 4) (smallState 8) (smallState 9) (LBegin 2) LBeginTag (MoreTransitions (Fired {before = smallState 0} {afterState = smallState 1} (fst fixtureDictionaries) (snd fixtureDictionaries) (LBegin 0) LBeginTag (smallBegin0 smallNativeExecution)) (MoreTransitions (Fired {before = smallState 1} {afterState = smallState 2} (fst fixtureDictionaries) (snd fixtureDictionaries) (LAdvance 0) LFinishTag (smallFinish0 smallNativeExecution)) (MoreTransitions (Fired {before = smallState 2} {afterState = smallState 3} (fst fixtureDictionaries) (snd fixtureDictionaries) (ORetire 1) ORetireTag (smallRetire1 smallNativeExecution)) (MoreTransitions (Fired {before = smallState 3} {afterState = smallState 4} (fst fixtureDictionaries) (snd fixtureDictionaries) (ORemove 1) ORemoveTag (smallRemove1 smallNativeExecution)) NoTransitions)))) (appendAvailability (nativePairTrail (fst fixtureDictionaries) (snd fixtureDictionaries) (smallState 0) (smallState 1) (smallState 2) (LBegin 0) (LAdvance 0) LBeginTag LFinishTag (smallBegin0 smallNativeExecution) (smallFinish0 smallNativeExecution)) (nativePairTrail (fst fixtureDictionaries) (snd fixtureDictionaries) (smallState 2) (smallState 3) (smallState 4) (ORetire 1) (ORemove 1) ORetireTag ORemoveTag (smallRetire1 smallNativeExecution) (smallRemove1 smallNativeExecution)))
+    (smallEarlyBegin2 smallNativeExecution) (smallLateInsert3 smallNativeExecution)
+    (fst distanceFixtureSquares) (KeyForces Here Refl) 4 0 (LTESucc (LTESucc (LTESucc (LTESucc LTEZero)))) Refl Refl,
+   terminalSquareAdmittedMove (fst fixtureDictionaries) (snd fixtureDictionaries) 4 (smallComponent False)
+    (smallState 5) (smallState 6) (bundlePhaseState 6) (LBegin 2) LBeginTag (MoreTransitions (Fired {before = smallState 0} {afterState = smallState 1} (fst fixtureDictionaries) (snd fixtureDictionaries) (LBegin 0) LBeginTag (smallBegin0 smallNativeExecution)) (MoreTransitions (Fired {before = smallState 1} {afterState = smallState 2} (fst fixtureDictionaries) (snd fixtureDictionaries) (LAdvance 0) LFinishTag (smallFinish0 smallNativeExecution)) (MoreTransitions (Fired {before = smallState 2} {afterState = smallState 3} (fst fixtureDictionaries) (snd fixtureDictionaries) (ORetire 1) ORetireTag (smallRetire1 smallNativeExecution)) (MoreTransitions (Fired {before = smallState 3} {afterState = smallState 4} (fst fixtureDictionaries) (snd fixtureDictionaries) (ORemove 1) ORemoveTag (smallRemove1 smallNativeExecution)) (MoreTransitions (Fired {before = smallState 4} {afterState = smallState 5} (fst fixtureDictionaries) (snd fixtureDictionaries) (OInsert 3 Root (smallComponent True)) OInsertTag (smallInsert3 smallNativeExecution)) NoTransitions))))) (appendAvailability (appendAvailability (nativePairTrail (fst fixtureDictionaries) (snd fixtureDictionaries) (smallState 0) (smallState 1) (smallState 2) (LBegin 0) (LAdvance 0) LBeginTag LFinishTag (smallBegin0 smallNativeExecution) (smallFinish0 smallNativeExecution)) (nativePairTrail (fst fixtureDictionaries) (snd fixtureDictionaries) (smallState 2) (smallState 3) (smallState 4) (ORetire 1) (ORemove 1) ORetireTag ORemoveTag (smallRetire1 smallNativeExecution) (smallRemove1 smallNativeExecution))) (AvailabilityStep (smallState 4) (Fired {before = smallState 4} {afterState = smallState 5} (fst fixtureDictionaries) (snd fixtureDictionaries) (OInsert 3 Root (smallComponent True)) OInsertTag (smallInsert3 smallNativeExecution)) NoTransitions (AvailabilityEnd (smallState 5))))
+    (smallBegin2 smallNativeExecution) (sAfterRBegin bundlePhaseNative)
+    (snd distanceFixtureSquares)
+    (OrderForces (KeyForces Here Refl) (There Here) (LTESucc (LTESucc (LTESucc (LTESucc (LTESucc LTEZero)))))) 5 0 (LTESucc (LTESucc (LTESucc (LTESucc (LTESucc LTEZero))))) Refl Refl)
