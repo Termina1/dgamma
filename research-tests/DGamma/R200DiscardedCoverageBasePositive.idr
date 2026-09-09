@@ -56,3 +56,14 @@ r200HistoricalAligned =
     (LUnload 0) r193HistoricalLeaving r193HistoricalClosed LUnloadTag
     (checkedTransitionTargetValid r193HistoricalLeave) Refl) _ (
   AlignedEnd))))))))
+
+||| The actual R193/R195 present-vestigial history cannot inhabit the empty
+||| closing-free base. Both alignment and the FULL accepted packet are owned;
+||| no canonical schedule is fabricated by this negative boundary control.
+export
+0 r200HistoricalNotClosingFree :
+  (NoClosingEpisodes Nat R45Key Unit String R45Value r45NameEq r45KeyEq r193HistoricalClosedTrace -> Void)
+r200HistoricalNotClosingFree noClosing =
+  o20ClosingFreeNoPresentVestigial Nat R45Key Unit String R45Value r45NameEq r45KeyEq
+    r193HistoricalClosedTrace r193HistoricalClosedTrace identityRegistrationGenerationBijection
+    r193HistoricalTree r200HistoricalAligned Refl noClosing 1 r195MismatchOwnsVestigialRemainder
