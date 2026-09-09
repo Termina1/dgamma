@@ -43,3 +43,10 @@ export
 0 phaseNatEqual : (left, right : Nat) -> (0 accepted : (left == right) = True) -> left = right
 phaseNatEqual Z right accepted = phaseNatZero right accepted
 phaseNatEqual (S left) right accepted = phaseNatSuccessor left (\other, equal => phaseNatEqual left other equal) right accepted
+
+||| Native append preserves the disjunction of nonempty observations.
+export
+0 phaseAppendNonempty : {a : Type} -> (left, right : List a) ->
+  not (null (left ++ right)) = (not (null left) || not (null right))
+phaseAppendNonempty [] right = Refl
+phaseAppendNonempty (head :: left) right = Refl
