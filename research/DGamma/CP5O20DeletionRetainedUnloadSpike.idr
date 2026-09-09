@@ -114,3 +114,29 @@ o20RegisteredUnloadFreeHead name key world error value nameEq keyEq registered o
         (advanceGenerationEnvironmentPreservesUnique nameEq ordinal action live unique)
         (currentRegisteredInactiveStep nameEq keyEq registered ordinal live unique action first middle tag
           (checkedActionProjects nameEq keyEq action first middle tag checked) noBegin inactive))
+
+||| Whole aligned source induction: the authentic no-registered-Begin
+||| certificate and initial Inactive invariant forbid registered Unloads.
+export
+0 o20RegisteredUnloadFreeTrace :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (registered : List (RegistrationGeneration name)) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  GenerationEnvironmentNamesUnique live ->
+  {first, finalState : SystemState name key value world error} ->
+  (trace : Transitions first finalState) ->
+  AlignedTransitions name key world error value nameEq keyEq trace ->
+  NoRegisteredEpisode nameEq registered ordinal live trace ->
+  CurrentRegisteredInactiveFibers name key world error value nameEq registered live first ->
+  O20RegisteredUnloadFree name key world error value nameEq registered ordinal live trace
+o20RegisteredUnloadFreeTrace name key world error value nameEq keyEq registered ordinal live unique
+  _ aligned NoRegisteredEpisodeEnd inactive = O20RegisteredUnloadEnd
+o20RegisteredUnloadFreeTrace name key world error value nameEq keyEq registered ordinal live unique
+  _ aligned (NoRegisteredEpisodeStep step rest noBegin tail) inactive =
+    o20RegisteredUnloadFreeHead name key world error value nameEq keyEq registered ordinal live unique
+      step rest noBegin inactive
+      (\alignedRest, nextUnique, nextInactive =>
+        o20RegisteredUnloadFreeTrace name key world error value nameEq keyEq registered (S ordinal)
+          (advanceGenerationEnvironment @{nameEq} ordinal (transitionAction step) live)
+          nextUnique rest alignedRest tail nextInactive) aligned
