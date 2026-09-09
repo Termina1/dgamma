@@ -318,3 +318,27 @@ o20OrchestrationRoleNonLifecycle (PaperRetireStep exact) =
   trans (cong isLifecycleAction exact) Refl
 o20OrchestrationRoleNonLifecycle (PaperRemoveStep exact) =
   trans (cong isLifecycleAction exact) Refl
+
+||| Consume one whole-word canonical role at a lifecycle node. This theorem
+||| returns only the role-remainder equation, NOT a callback-domain adapter.
+||| The orchestration branch contradicts the node's own lifecycle equation.
+export
+0 o20CanonicalLifecycleRoleConsumption :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (before, afterState : SystemState name key value world error) ->
+  (action : Action name key value world error) -> (tag : RuleTag) ->
+  (checked : (checkedApplyAction {name} {key} {value} {world} {error} @{nameEq} @{keyEq}
+    action before = Just (tag, afterState))) ->
+  Either
+    (PaperActivationStep (Fired {name} {key} {value} {world} {error} {before} {afterState} nameEq keyEq action tag checked))
+    (PaperOrchestrationStep (Fired {name} {key} {value} {world} {error} {before} {afterState} nameEq keyEq action tag checked)) ->
+  (isLifecycleAction action = True) ->
+  (o20FiberRoleRemainder
+    (lookupFiber {name} {key} {value} {world} {error} @{nameEq} (actionOwner action) (registry before)) =
+   tag :: o20FiberRoleRemainder
+    (lookupFiber {name} {key} {value} {world} {error} @{nameEq} (actionOwner action) (registry afterState)))
+o20CanonicalLifecycleRoleConsumption nameEq keyEq before afterState action tag checked (Left paperRole) lifecycle =
+  o20ActualPaperRoleConsumption nameEq keyEq before afterState action tag checked paperRole
+o20CanonicalLifecycleRoleConsumption nameEq keyEq before afterState action tag checked (Right orchestrationRole) lifecycle =
+  absurd (trans (sym (o20OrchestrationRoleNonLifecycle orchestrationRole)) lifecycle)
