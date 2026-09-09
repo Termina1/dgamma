@@ -13,6 +13,8 @@ import DGamma.CP5O20NativeAdvanceAttachmentSpike
 import DGamma.CP5O20HistoryNameTransportSpike
 import DGamma.CP5O20HistoryExecutionSpike
 import DGamma.CP5O20PairedAdvanceSpike
+import DGamma.CP5O20IndexedReloadingSourceSpike
+import DGamma.CP5O20NativeTargetAttachmentSpike
 import Decidable.Equality
 
 %default total
@@ -162,3 +164,45 @@ o20HistoryActualFinishOneCut nameEq keyEq mapping actor leftOrdinal rightOrdinal
         component leftParent leftRetired leftTable step leftOlder leftView leftFound leftChecked)
       (o20FinishOneNativeValues nameEq keyEq (renameForward (historyCutBijection paired) actor) (MkSystemState rightWorld rightRegistry) rightAfter
         component rightParent rightRetired rightTable step rightOlder rightView rightFound rightChecked)
+
+||| Open one indexed opposite-source observation. Both target guards, both
+||| callbacks and both actual successor equations are then native outputs,
+||| not caller hypotheses. The next producer supplies this source packet.
+export
+0 o20HistoryIterAtMatchingSource :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (mapping : RegistrationGenerationBijection name) -> (actor : name) ->
+  (leftOrdinal, rightOrdinal : Nat) -> (leftLive, rightLive : GenerationEnvironment name) ->
+  (component : Component key value world error) ->
+  (step, next : StepEffect key value world error (dependencies (componentDependencies component)) (componentProvisions component)) ->
+  (more : List (StepEffect key value world error (dependencies (componentDependencies component)) (componentProvisions component))) ->
+  (leftParent : Parent name) -> (leftRetired : Bool) ->
+  (leftTable : OwnedTable key value (componentProvisions component)) ->
+  (leftOlder : LocalState key value world (componentProvisions component) -> LocalState key value world (componentProvisions component)) ->
+  (leftView : View name (dependencies (componentDependencies component))) ->
+  (leftWorld, rightWorld : world) -> (leftRegistry, rightRegistry : Registry name key value world error) ->
+  (leftAfter, rightAfter : SystemState name key value world error) ->
+  (paired : O20HistoryCut name key world error value nameEq mapping leftLive rightLive
+    (MkSystemState leftWorld leftRegistry) (MkSystemState rightWorld rightRegistry)) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor leftRegistry = Just (MkFiber component leftParent leftRetired leftTable (Reloading (step :: next :: more) leftOlder leftView))) ->
+  (checkedApplyAction {name} {key} {value} {world} {error} @{nameEq} @{keyEq} (LAdvance actor) (MkSystemState leftWorld leftRegistry) = Just (LIterTag, leftAfter)) ->
+  (checkedApplyAction {name} {key} {value} {world} {error} @{nameEq} @{keyEq} (LAdvance (renameForward (historyCutBijection paired) actor)) (MkSystemState rightWorld rightRegistry) = Just (LIterTag, rightAfter)) ->
+  (rightSource : O20MatchingReloadingSource name key world error value nameEq
+    (renameForward (historyCutBijection paired) actor) (MkSystemState rightWorld rightRegistry) component (step :: next :: more)) ->
+  O20HistoryCut name key world error value nameEq mapping
+    (advanceGenerationEnvironment {name} {key} {value} {world} {error} @{nameEq} leftOrdinal (LAdvance actor) leftLive)
+    (advanceGenerationEnvironment {name} {key} {value} {world} {error} @{nameEq} rightOrdinal (LAdvance (renameForward (historyCutBijection paired) actor)) rightLive)
+    leftAfter rightAfter
+o20HistoryIterAtMatchingSource nameEq keyEq mapping actor leftOrdinal rightOrdinal leftLive rightLive
+  component step next more leftParent leftRetired leftTable leftOlder leftView
+  leftWorld rightWorld leftRegistry rightRegistry leftAfter rightAfter paired leftFound leftChecked rightChecked
+  (MkO20MatchingReloadingSource rightParent rightRetired rightTable rightOlder rightView rightFound) =
+    o20HistoryActualIterCut nameEq keyEq mapping actor leftOrdinal rightOrdinal leftLive rightLive
+      component step next more leftParent rightParent leftRetired rightRetired leftTable rightTable leftOlder rightOlder leftView rightView
+      leftWorld rightWorld leftRegistry rightRegistry leftAfter rightAfter paired leftFound rightFound
+      (o20CheckedIterTarget nameEq keyEq actor (MkSystemState leftWorld leftRegistry) leftAfter
+        component leftParent leftRetired leftTable (step :: next :: more) leftOlder leftView leftFound leftChecked)
+      (o20CheckedIterTarget nameEq keyEq (renameForward (historyCutBijection paired) actor) (MkSystemState rightWorld rightRegistry) rightAfter
+        component rightParent rightRetired rightTable (step :: next :: more) rightOlder rightView rightFound rightChecked)
+      leftChecked rightChecked
