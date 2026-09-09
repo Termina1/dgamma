@@ -1,0 +1,584 @@
+{
+  "timestampUTC": "2026-09-09T23:16:32.465010+00:00",
+  "path": "src/DGamma/CP4SupportSolution.idr",
+  "sourceSHA256": "812d874baff27ce025c17ad09527e285079b6ee26a50fec2c4b231723593fda0",
+  "sourceUnchangedFromBaseline": true,
+  "patchedTypePatternMatches": [],
+  "declarations": [
+    {
+      "name": "prependedTrans",
+      "line": 20
+    },
+    {
+      "name": "prependedLength",
+      "line": 27
+    },
+    {
+      "name": "supportPassEntriesPrepended",
+      "line": 34
+    },
+    {
+      "name": "supportPassPrepended",
+      "line": 60
+    },
+    {
+      "name": "prependedZeroSame",
+      "line": 69
+    },
+    {
+      "name": "prependedNonzeroLonger",
+      "line": 73
+    },
+    {
+      "name": "supportFuelFixed",
+      "line": 82
+    },
+    {
+      "name": "supportFuelEndpointFixed",
+      "line": 94
+    },
+    {
+      "name": "totalCountLower",
+      "line": 111
+    },
+    {
+      "name": "unstableFuelAdds",
+      "line": 124
+    },
+    {
+      "name": "listMemberFalseNotElem",
+      "line": 179
+    },
+    {
+      "name": "NamesSubset",
+      "line": 191
+    },
+    {
+      "name": "bindingNamesSubsetTail",
+      "line": 195
+    },
+    {
+      "name": "supportPassEntriesSubset",
+      "line": 199
+    },
+    {
+      "name": "supportPassEntriesUnique",
+      "line": 231
+    },
+    {
+      "name": "identityNamesSubset",
+      "line": 254
+    },
+    {
+      "name": "supportPassSubset",
+      "line": 257
+    },
+    {
+      "name": "supportPassUnique",
+      "line": 267
+    },
+    {
+      "name": "supportFuelSubset",
+      "line": 276
+    },
+    {
+      "name": "supportFuelUnique",
+      "line": 289
+    },
+    {
+      "name": "removeFirst",
+      "line": 302
+    },
+    {
+      "name": "removePresentLength",
+      "line": 309
+    },
+    {
+      "name": "elemOtherRemove",
+      "line": 319
+    },
+    {
+      "name": "uniqueHeadDifferent",
+      "line": 334
+    },
+    {
+      "name": "uniqueSubsetLength",
+      "line": 339
+    },
+    {
+      "name": "natLTIrreflexiveSolution",
+      "line": 357
+    },
+    {
+      "name": "listDecEqWith",
+      "line": 362
+    },
+    {
+      "name": "bindingKeysLength",
+      "line": 378
+    },
+    {
+      "name": "supportFuelLengthStable",
+      "line": 385
+    },
+    {
+      "name": "listMemberTrueElem",
+      "line": 451
+    },
+    {
+      "name": "elemListMemberTrue",
+      "line": 459
+    },
+    {
+      "name": "namesSubsetCons",
+      "line": 470
+    },
+    {
+      "name": "namesSubsetTrans",
+      "line": 473
+    },
+    {
+      "name": "prependedNamesSubset",
+      "line": 477
+    },
+    {
+      "name": "orRightTrue",
+      "line": 485
+    },
+    {
+      "name": "providerCandidateMonotone",
+      "line": 489
+    },
+    {
+      "name": "parentCandidateMonotone",
+      "line": 526
+    },
+    {
+      "name": "andBothTrue",
+      "line": 536
+    },
+    {
+      "name": "andLeftTrue",
+      "line": 541
+    },
+    {
+      "name": "andRightTrue",
+      "line": 545
+    },
+    {
+      "name": "allProvidersMonotone",
+      "line": 549
+    },
+    {
+      "name": "supportCandidateMonotone",
+      "line": 574
+    },
+    {
+      "name": "bindingKeyFromEntryElem",
+      "line": 616
+    },
+    {
+      "name": "entryLookupFromElem",
+      "line": 624
+    },
+    {
+      "name": "EntriesSubset",
+      "line": 650
+    },
+    {
+      "name": "entriesSubsetTail",
+      "line": 653
+    },
+    {
+      "name": "entriesSubsetIdentity",
+      "line": 656
+    },
+    {
+      "name": "SupportListSound",
+      "line": 659
+    },
+    {
+      "name": "emptySupportListSound",
+      "line": 671
+    },
+    {
+      "name": "supportListSoundCons",
+      "line": 679
+    },
+    {
+      "name": "supportPassEntriesSound",
+      "line": 709
+    },
+    {
+      "name": "supportPassSound",
+      "line": 744
+    },
+    {
+      "name": "supportFuelSound",
+      "line": 756
+    },
+    {
+      "name": "maybeJustInjective",
+      "line": 771
+    },
+    {
+      "name": "lookupEntryElem",
+      "line": 774
+    },
+    {
+      "name": "providerPredicateCandidate",
+      "line": 788
+    },
+    {
+      "name": "allListPointwise",
+      "line": 804
+    },
+    {
+      "name": "allProviderPredicatesCandidate",
+      "line": 815
+    },
+    {
+      "name": "supportParentEta",
+      "line": 836
+    },
+    {
+      "name": "reverseEquation",
+      "line": 853
+    },
+    {
+      "name": "reverseSupportCore",
+      "line": 856
+    },
+    {
+      "name": "supportClauseCoreCandidate",
+      "line": 880
+    },
+    {
+      "name": "finishSupportCore",
+      "line": 909
+    },
+    {
+      "name": "supportClauseCandidate",
+      "line": 939
+    },
+    {
+      "name": "transportListMemberTrue",
+      "line": 967
+    },
+    {
+      "name": "eligibleAppearsPass",
+      "line": 974
+    },
+    {
+      "name": "emptyNamesSubset",
+      "line": 998
+    },
+    {
+      "name": "lookupNothingNoElem",
+      "line": 1001
+    },
+    {
+      "name": "supportListSoundAtFound",
+      "line": 1014
+    },
+    {
+      "name": "supportSetIsSolution",
+      "line": 1034
+    },
+    {
+      "name": "supportAndTrueLeft",
+      "line": 1145
+    },
+    {
+      "name": "supportAndTrueRight",
+      "line": 1150
+    },
+    {
+      "name": "supportOrTrueRight",
+      "line": 1155
+    },
+    {
+      "name": "supportBothTrue",
+      "line": 1160
+    },
+    {
+      "name": "PredicateSubset",
+      "line": 1166
+    },
+    {
+      "name": "solutionProviderMonotone",
+      "line": 1170
+    },
+    {
+      "name": "allProviderPredicatesMonotone",
+      "line": 1199
+    },
+    {
+      "name": "supportClausePredicateMonotone",
+      "line": 1215
+    },
+    {
+      "name": "NamesSatisfy",
+      "line": 1257
+    },
+    {
+      "name": "namesSatisfyCons",
+      "line": 1261
+    },
+    {
+      "name": "emptyNamesSatisfy",
+      "line": 1267
+    },
+    {
+      "name": "supportPassEntriesSatisfiesSolution",
+      "line": 1271
+    },
+    {
+      "name": "supportFuelSatisfiesSolution",
+      "line": 1334
+    },
+    {
+      "name": "computedSupportIncludedInSolution",
+      "line": 1357
+    },
+    {
+      "name": "RankCandidateIncluded",
+      "line": 1373
+    },
+    {
+      "name": "providerCandidateIncludedBelow",
+      "line": 1385
+    },
+    {
+      "name": "allCandidateProvidersIncludedBelow",
+      "line": 1464
+    },
+    {
+      "name": "stableEligibleMember",
+      "line": 1505
+    },
+    {
+      "name": "supportClausePredicateAtFound",
+      "line": 1531
+    },
+    {
+      "name": "candidateFiberIncludedFromLowerRanks",
+      "line": 1557
+    },
+    {
+      "name": "candidateIncludedAtAccessibleRank",
+      "line": 1645
+    },
+    {
+      "name": "supportClausePredicateAtNothing",
+      "line": 1679
+    },
+    {
+      "name": "candidateIncludedInComputedSupport",
+      "line": 1692
+    },
+    {
+      "name": "boolEqualFromTrueIff",
+      "line": 1723
+    },
+    {
+      "name": "supportSolutionUniqueFromRanks",
+      "line": 1735
+    },
+    {
+      "name": "supportWellFoundedTheoremProof",
+      "line": 1758
+    },
+    {
+      "name": "registrationStepDisciplineProvenance",
+      "line": 1770
+    },
+    {
+      "name": "registrationDisciplineProvenance",
+      "line": 1795
+    },
+    {
+      "name": "supportWellFoundedUnderDiscipline",
+      "line": 1814
+    }
+  ],
+  "CP3InitialDeclarationBlockComparison": [
+    {
+      "name": "PrecedenceAcyclic",
+      "oldLine": 79,
+      "newLine": 79,
+      "initialDeclarationBlockBytes": 250,
+      "blockUnchanged": true,
+      "sha256": "de6c7fd0fb71a6a1890ca1d5ea53c27cded420d6fa300e5927f396f4496d51a3"
+    },
+    {
+      "name": "ReachedFromEmpty",
+      "oldLine": 410,
+      "newLine": 410,
+      "initialDeclarationBlockBytes": 548,
+      "blockUnchanged": true,
+      "sha256": "a5090ca01daa58b9a038d746b45bf0a6d0dc0361e68dd12ea389da1057ef8efd"
+    },
+    {
+      "name": "RegistrationDiscipline",
+      "oldLine": 390,
+      "newLine": 390,
+      "initialDeclarationBlockBytes": 732,
+      "blockUnchanged": true,
+      "sha256": "e17e8860c88d962788b1d314db0d838d0aaf627c2ac4079abfc773403b6bba32"
+    },
+    {
+      "name": "RegistrationProtocol",
+      "oldLine": 169,
+      "newLine": 169,
+      "initialDeclarationBlockBytes": 1339,
+      "blockUnchanged": true,
+      "sha256": "d508ef150dd7120b47dc9f4c5eb8bfca345e07ae64c1624ef362f7e53bd9b5f8"
+    },
+    {
+      "name": "RegistrationProvenance",
+      "oldLine": 345,
+      "newLine": 345,
+      "initialDeclarationBlockBytes": 717,
+      "blockUnchanged": true,
+      "sha256": "08000ba5482c7344068970a85f7b37760c210f7485401e8771dc4931d8598e38"
+    },
+    {
+      "name": "RegistrationStepDiscipline",
+      "oldLine": 364,
+      "newLine": 364,
+      "initialDeclarationBlockBytes": 1310,
+      "blockUnchanged": true,
+      "sha256": "5f9ffd7e26157b7135c10ace468e62cef91ffb3c42c7586192ad1ecae2c076ae"
+    },
+    {
+      "name": "RegistrationStepProvenance",
+      "oldLine": 324,
+      "newLine": 324,
+      "initialDeclarationBlockBytes": 1103,
+      "blockUnchanged": true,
+      "sha256": "3783d7d4f55d5fa8170f88243491922bba07f45eaa79ac3bb8e01dca2f277aa3"
+    },
+    {
+      "name": "SupportSolution",
+      "oldLine": 452,
+      "newLine": 452,
+      "initialDeclarationBlockBytes": 279,
+      "blockUnchanged": true,
+      "sha256": "e2b57e3096a9fc734fc7a2fac5b69bc75bc20ec20a25c1deb780d691570dabdb"
+    },
+    {
+      "name": "SupportWellFoundedResult",
+      "oldLine": 731,
+      "newLine": 731,
+      "initialDeclarationBlockBytes": 471,
+      "blockUnchanged": true,
+      "sha256": "838a9b5a95b9ca022e6a9e218f268696ca2cc7cdb314bba195d2ded69cf82e92"
+    },
+    {
+      "name": "allList",
+      "oldLine": 431,
+      "newLine": 431,
+      "initialDeclarationBlockBytes": 145,
+      "blockUnchanged": true,
+      "sha256": "8ceba085036f596d6dc35a98b4b20efdaa97f21b786cab574d60cebcd4ca6366"
+    },
+    {
+      "name": "isSupported",
+      "oldLine": 583,
+      "newLine": 583,
+      "initialDeclarationBlockBytes": 151,
+      "blockUnchanged": true,
+      "sha256": "612a919ed55873f293fcc5282d8d9d345c0e1cc74de4ed4612fdd5a50bc2f301"
+    },
+    {
+      "name": "listMember",
+      "oldLine": 14,
+      "newLine": 14,
+      "initialDeclarationBlockBytes": 191,
+      "blockUnchanged": true,
+      "sha256": "0c3bd0a1df9073764dc2a657085245fa35f1f7b1ea9f2e78226a7c7e75c8694c"
+    },
+    {
+      "name": "parentFromCandidate",
+      "oldLine": 470,
+      "newLine": 470,
+      "initialDeclarationBlockBytes": 187,
+      "blockUnchanged": true,
+      "sha256": "373e99be5dcc6d519aa64d4bdecaec0b7aaf61aeaba5526069151eb2c107b235"
+    },
+    {
+      "name": "providerFromCandidate",
+      "oldLine": 461,
+      "newLine": 461,
+      "initialDeclarationBlockBytes": 412,
+      "blockUnchanged": true,
+      "sha256": "05afd95b48d79d0926d5eb949aac94e9db219e90f9111625a9cb2d06fc21bb92"
+    },
+    {
+      "name": "providerFromPredicate",
+      "oldLine": 422,
+      "newLine": 422,
+      "initialDeclarationBlockBytes": 406,
+      "blockUnchanged": true,
+      "sha256": "a99a2d3b268f75805c1ef2915e6dd2b7c8923610fcc063c607bdc0e7ddc1e3f8"
+    },
+    {
+      "name": "supportCandidate",
+      "oldLine": 475,
+      "newLine": 475,
+      "initialDeclarationBlockBytes": 438,
+      "blockUnchanged": true,
+      "sha256": "828bd1c2e84bbc09836d9b0251486099520d67335ad9be8ff84ffb6167e4253f"
+    },
+    {
+      "name": "supportClause",
+      "oldLine": 437,
+      "newLine": 437,
+      "initialDeclarationBlockBytes": 543,
+      "blockUnchanged": true,
+      "sha256": "48fe8c2a390e26676121aff7e797b2ebaeea92a090e6ce33f816c7c303348291"
+    },
+    {
+      "name": "supportFuel",
+      "oldLine": 567,
+      "newLine": 567,
+      "initialDeclarationBlockBytes": 278,
+      "blockUnchanged": true,
+      "sha256": "447141b2dc5a83fba29fbaceef5e4c9f6bd0c951e722e56d7bb0b143e9cabe7e"
+    },
+    {
+      "name": "supportPass",
+      "oldLine": 561,
+      "newLine": 561,
+      "initialDeclarationBlockBytes": 204,
+      "blockUnchanged": true,
+      "sha256": "3ef6b04418419448872511c0ef452f149cf5b27a9a70e0e67538d1c2d44914fc"
+    },
+    {
+      "name": "supportPassEntries",
+      "oldLine": 485,
+      "newLine": 485,
+      "initialDeclarationBlockBytes": 553,
+      "blockUnchanged": true,
+      "sha256": "1462c7ef9bdb6d736c76f7dc987d6c3ba8298523233d7ca318bab9d3fe79998c"
+    },
+    {
+      "name": "supportPassEntriesEligible",
+      "oldLine": 654,
+      "newLine": 654,
+      "initialDeclarationBlockBytes": 4707,
+      "blockUnchanged": true,
+      "sha256": "e81a247b4b72b02cad088b492fcfc7b437eac7b28eaf8285bf04f0a62bc08ea2"
+    },
+    {
+      "name": "supportWellFoundedTheorem",
+      "oldLine": 747,
+      "newLine": 747,
+      "initialDeclarationBlockBytes": 591,
+      "blockUnchanged": true,
+      "sha256": "20b960eff57dc5de2e21d315afd9802208a32dc578794ac538d9bfce9751f042"
+    }
+  ],
+  "qualification": "Static identifier and initial-declaration-block inventory, not a full semantic call graph or dynamic profiler. No patched-type occurrence; no evidence for new bundle-coverage explosion in this module."
+}

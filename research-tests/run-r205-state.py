@@ -22,6 +22,8 @@ for item in plan['allModulesTopological']:
     if r:
         if r['passed']:status='passed' if r['exit']==0 else 'passed expected-negative contract'
         elif r['resourceStopped']:status='RESOURCE STOP — gate required'
+        elif r.get('memoryPressureStopped'):status='RESOURCE STOP — memory pressure'
+        elif r.get('wallTimeStopped'):status='RESOURCE STOP — wall-time limit'
         elif r['unexpectedBuilding']:status='MONITOR STOP — unexpected dependency Building'
         elif r['targetMutationDetected']:status='MONITOR STOP — source mutation'
         else:status='FAILED — lexical/semantic classification required'

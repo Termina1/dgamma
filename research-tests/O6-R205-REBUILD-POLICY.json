@@ -8508,6 +8508,17 @@
       "authority": "Supervisor explicit final gate after128GiB stop: ONE FINAL S31-3 attempt200GiB/45min plus memory-pressure guard; no fourth attempt",
       "priorIsolatedPeakKiB": 134435632,
       "preUnfreezePeak": "UNKNOWN; no causal-growth claim"
+    },
+    "S31-4": {
+      "path": "src/DGamma/CP4SupportSolution.idr",
+      "sourceSHA256": "812d874baff27ce025c17ad09527e285079b6ee26a50fec2c4b231723593fda0",
+      "rssLimitKiB": 209715200,
+      "wallLimitSeconds": 3600,
+      "pressureSamplingSeconds": 5,
+      "pressureStop": "two consecutive freePercent<15 OR three consecutive increases in Swapouts; compressor counts recorded only",
+      "gateVerbatim": "NEW GATE (supervisor-owned): the S31-3 stop was caused by MY mis-calibrated pressure rule, not by the compiler — compressor occupancy rising from 40k to 51k pages (≈40 MiB) with Swapouts flat and memory_pressure at 97% free is noise on a 256 GiB machine, and the peak (147.6 GiB, still under the 200 GiB guard, 476 s) is consistent with the historical ~138 GiB from-scratch datum for this tree. AUTHORIZED: ONE additional attempt S31-4, same 200 GiB guard, wall clock 60 min, corrected pressure rule: STOP only if (a) `memory_pressure -Q` leaves the normal level (free < 15%) in two consecutive 5-s samples, or (b) Swapouts increase in three consecutive samples; compressor page counts are recorded but are NOT a stop condition. Record this ruling verbatim (miscalibration acknowledged) in the ledger. If S31-4 exceeds, the RESOURCE-BLOCKED disposition stands with no further attempts this shift; the R206 handoff then carries the gated decomposition proposal from your diagnosis as the next step.",
+      "nativePageSizeCorrection": "Raw vm_stat page size16384 bytes;50942−40069=10873 pages=169.890625MiB, not approx40MiB. Ruling quoted verbatim; native measured counters remain authoritative.",
+      "preUnfreezeIsolatedPeak": "UNKNOWN; consistency judgment in quoted ruling is not a measured isolated pre-unfreeze baseline"
     }
   }
 }

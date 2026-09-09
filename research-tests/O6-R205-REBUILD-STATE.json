@@ -1,7 +1,7 @@
 {
-  "timestampUTC": "2026-09-09T23:09:05.896965+00:00",
+  "timestampUTC": "2026-09-09T23:29:19.312159+00:00",
   "status": "INCOMPLETE",
-  "head": "c9427ebd4df2a0a870ec1d2ac631e4717485ffe4",
+  "head": "24e538d1bc457f71f109398b17fc757f3632f4ed",
   "CP3Blob": "eeaa70aa4414648bb2a1173d58244267997d16d7",
   "patchSHA256": "42d957748fcc67ff534c33a6c369eded4bad65e0f37e5c72e4539b737a68fb8a",
   "lane2CompilerRelease": "NOT RELEASED: remain idle until supervisor confirms COMPLETE",
@@ -9,7 +9,7 @@
     "unchecked": 457,
     "unchanged production prerequisite; seeded (not freshly checked)": 44,
     "passed": 30,
-    "RESOURCE STOP — gate required": 1,
+    "RESOURCE STOP — memory pressure": 1,
     "legacy, not re-checked (standing classification)": 11
   },
   "checked": 31,
@@ -1296,10 +1296,10 @@
       "module": "DGamma.CP4SupportSolution",
       "sourceSHA256": "812d874baff27ce025c17ad09527e285079b6ee26a50fec2c4b231723593fda0",
       "plannedSHA256": "812d874baff27ce025c17ad09527e285079b6ee26a50fec2c4b231723593fda0",
-      "status": "RESOURCE STOP — gate required",
+      "status": "RESOURCE STOP — memory pressure",
       "reason": null,
-      "invocation": "S31-2",
-      "peakRSSKiB": 134435632,
+      "invocation": "S31-3",
+      "peakRSSKiB": 154783872,
       "exactErrors": "",
       "protected": false
     },

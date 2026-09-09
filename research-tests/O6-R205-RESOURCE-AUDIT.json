@@ -1,5 +1,5 @@
 {
-  "timestampUTC": "2026-09-09T23:14:17.386749+00:00",
+  "timestampUTC": "2026-09-09T23:29:19.414046+00:00",
   "entries": [
     {
       "path": "package",
@@ -648,9 +648,21 @@
           "guardKiB": 134217728,
           "resourceStopped": true,
           "ownBuildingLines": 0
+        },
+        {
+          "unit": "S31-3",
+          "sourceSHA256": "812d874baff27ce025c17ad09527e285079b6ee26a50fec2c4b231723593fda0",
+          "passed": false,
+          "fresh": false,
+          "exit": -15,
+          "seconds": 476.3502123747021,
+          "sampledPeakKiB": 154783872,
+          "guardKiB": 209715200,
+          "resourceStopped": false,
+          "ownBuildingLines": 0
         }
       ],
-      "maximumObservedSampleKiB": 134435632,
+      "maximumObservedSampleKiB": 154783872,
       "maximumSuccessfulSampleKiB": 0,
       "preUnfreezeIsolatedPeak": "UNKNOWN: prior seeded validation is not a fresh isolated cost measurement",
       "qualification": "A stopped check is a lower bound on needed resources, not a completed-check peak. Zero samples means the short-lived compiler escaped one-second sampling."
@@ -698,17 +710,21 @@
       "qualification": "A stopped check is a lower bound on needed resources, not a completed-check peak. Zero samples means the short-lived compiler escaped one-second sampling."
     }
   ],
-  "totalInvocations": 34,
+  "totalInvocations": 35,
   "passedInvocations": 30,
   "resourceStops": [
     "P1",
     "S31",
     "S31-2"
   ],
+  "memoryPressureStops": [
+    "S31-3"
+  ],
+  "wallTimeStops": [],
   "unexpectedDependencyBuilds": [],
   "sourceMutationInvocations": [],
   "multipleCompilerInvocations": [],
   "crossLaneOverlapTimestampsUTC": [],
   "measurement": "maximum sampled RSS over command-matching idris2 processes; one compiler; one-second samples; NOT aggregate tree RSS, NOT OS high-water. Only the owned process group is ever signalled.",
-  "CP4SupportSolutionDatum": "isolated measured peak >=64.02GiB under unfrozen CP3; supervisor authorized128GiB for ONE S31-2 attempt. Pre-unfreeze isolated cost UNKNOWN; no claim CP3 caused growth."
+  "CP4SupportSolutionDatum": "isolated stops >=64.02GiB and128.21GiB under unfrozen CP3. S31-3 pressure-stopped at147.61GiB. NEW supervisor-owned gate acknowledges pressure-rule miscalibration and authorizes S31-4 at200GiB/60min:two samples free<15% OR three rising swapouts; compressor counts recorded only. Pre-unfreeze isolated cost UNKNOWN; no claim CP3 caused growth; see diagnosis (zero patched-type matches)."
 }

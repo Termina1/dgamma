@@ -31,6 +31,8 @@ for item in targets:
             unit='S31-2' # supervisor-authorized ONE isolated 128GiB attempt
         elif len(previous)==2 and previous[-1]['unit']=='S31-2' and previous[-1]['resourceStopped'] and path=='src/DGamma/CP4SupportSolution.idr' and 'S31-3' in policy.get('resourceOverrides',{}):
             unit='S31-3' # FINAL gated200GiB/45min/pressure-monitored attempt
+        elif len(previous)==3 and previous[-1]['unit']=='S31-3' and previous[-1].get('memoryPressureStopped') and path=='src/DGamma/CP4SupportSolution.idr' and 'S31-4' in policy.get('resourceOverrides',{}):
+            unit='S31-4' # NEW supervisor-owned gate: acknowledged pressure-rule miscalibration
         else:continue
     if item.get('validationMode')=='gate-historical-R11-restriction':
         blocked[path]='legacy, not re-checked (standing classification)';continue
