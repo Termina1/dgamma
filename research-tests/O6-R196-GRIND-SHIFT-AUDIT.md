@@ -66,10 +66,47 @@ private root specialization, not yet the storing-field revision. Twelve
 noncompiler evidence-contract regressions PASS. D1 bootstraps the gated plan,
 check/commit/window/evidence guards and this audit from that same fresh PASS.
 
+## Unit A completed; A4 syntax amendment is explicit
+
+| Unit | Invocation | Result | Seconds | Sample KiB | Guarded commit |
+|---|---|---|---:|---:|---|
+| A1 helper | A1-1 | PASS |489.272|50036832|eff1e877|
+| A2 adjacent field/fill | A2-1 | PASS |488.094|50611312|72624ff7|
+| A4 deletion field/fill | A4-1 | parser REJECTED |4.190|468992|none|
+| A4 deletion field/fill | A4-2 | PASS |77.839|4830272|35e1fe89|
+| A3 empty-root fixture | A3-1 | PASS |2.089|727504|512affed|
+
+A4-1's proposed implicit-lambda binder was rejected by the parser. No mathematical
+failure or resource stop is inferred. Owner explicitly approved replacing ONLY
+that fill's lambda head with `\occurrence => cong (MkRegistrationGeneration _)`;
+the root index is determined by the field's expected equality, not a proof hole
+or a freely supplied premise. Exact field text stays verbatim. Append-only
+O6-R196-A4-SYNTAX-AMENDMENT.json SHA50cbc4dab9df4781ebf81965b96536a782c3160e9656c782ca880fd1550d7f4f
+retains the full ruling, original rejected hash/diff and successful revised hash.
+The original proposal and A4-1 snapshot/log/record were NOT rewritten. No3/3.
+
+New frozen LocalDiamond SHA:
+`9f9216170853624cff30449696f2540da0ed48e0b42504533aa587cb70dfc037`.
+New frozen DeletionChain SHA:
+`7fadaf6b3e71030290813393d8954afee0da79ec93b293fcfcd977deb4562578`.
+R19 fixture SHA:
+`4f30ab58cae44bc89bf3c9cc940d3ab63bf1f0af99494cfd157d6db21617bd80`.
+Both exact stored producer contracts now typecheck with their actual constructor
+fills. Generic ARRC is unchanged; no extra LocalDiamond/DeletionChain bytes.
+
+A5 read-only exact-delta audit and independent receipt/snapshot authentication
+PASS at512affed. O19 closed declaration/body1286B SHA
+`cbd0954303c35141af0309e515bdb9e98e988e7c23be70b9764d8c1ce18fd396` unchanged;
+adjacent1470B/1154B hashes unchanged; production empty against34b21c9, CP3 pinned,
+census4=1/2/0/0/1 and207/207 seeded TTCs retained. This is NOT yet a fresh package
+PASS. Five A invocations=4PASS/1 parser rejection,0 interruption/mutation/resource
+stop, four immediate source receipts. D2 records amendment/A outcomes and guards.
+
 ## Status
 
-Execution in progress. No new convergence, canonical root consumer, whole
-paired fold, canonical all-name cut or bridge completion is claimed. The R195
-necessity witness remains required: generic ActionRegistrationReplayCorrespondence
-still does not own an all-root law. This shift strengthens the two ACTUAL
-storing producer contracts instead of assuming that false generic extraction.
+A1/A2/A4/A3/A5 complete. Serialized B window is next; C has ZERO invocations and
+remains ineligible until B completes. No new convergence, canonical root consumer,
+whole paired fold, canonical all-name cut or bridge completion is claimed. The
+R195 necessity witness remains required: generic ActionRegistrationReplayCorrespondence
+still does not own an all-root law. Both ACTUAL storing producer contracts are
+now strengthened instead of assuming that false generic extraction.

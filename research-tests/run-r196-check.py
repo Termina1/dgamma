@@ -49,6 +49,11 @@ rss_limit_kib=48*1024*1024
 continuation_sha=None
 stage=unit.rsplit('-',1)[0]
 approved_edit=next((x for x in manifest['items'] if x['unit']==stage),None)
+if unit=='A4-2':
+    amendment_bytes=(ROOT/'research-tests/O6-R196-A4-SYNTAX-AMENDMENT.json').read_bytes()
+    assert hashlib.sha256(amendment_bytes).hexdigest()==(pathlib.Path('/tmp/dgamma-r196')/'A4-syntax-amendment.sha256').read_text().strip()
+    approved_edit=json.loads(amendment_bytes)
+
 if re.fullmatch(r'B\d+',unit):
     plan_bytes=(ROOT/'research-tests/O6-R196-DEPENDENT-RECHECK-PLAN.json').read_bytes()
     assert hashlib.sha256(plan_bytes).hexdigest()==(OUT/'dependent-plan.sha256').read_text().strip()

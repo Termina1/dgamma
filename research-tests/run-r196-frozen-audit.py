@@ -33,6 +33,12 @@ for item in manifest['items']:
     after=contract.apply_manifest_diff(before,item['diff'])
     assert sha(after.encode())==item['afterSHA256']
     generated[path]=after; possible[path].append(item['afterSHA256'])
+amendment=json.loads((ROOT/'research-tests/O6-R196-A4-SYNTAX-AMENDMENT.json').read_text())
+amendment_before=git('show',START+':'+amendment['path'])
+assert sha(amendment_before.encode())==amendment['beforeSHA256']
+amendment_after=contract.apply_manifest_diff(amendment_before,amendment['diff'])
+assert sha(amendment_after.encode())==amendment['afterSHA256']=='7fadaf6b3e71030290813393d8954afee0da79ec93b293fcfcd977deb4562578'
+possible[amendment['path']].append(amendment['afterSHA256'])
 contract_states={p:sha((ROOT/p).read_bytes()) for p in possible}
 assert all(contract_states[p] in possible[p] for p in possible)
 parts=['CanonicalSort','CrossTrace','DeletionChain','LocalDiamond','RenamingComposition']

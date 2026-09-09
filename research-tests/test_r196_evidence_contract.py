@@ -56,6 +56,23 @@ class Contracts(unittest.TestCase):
             after=contract.apply_manifest_diff(before,item['diff'])
             self.assertEqual(hashlib.sha256(after.encode()).hexdigest(),item['afterSHA256'])
             states[path]=after
+    def test_append_only_A4_amendment(self):
+        item=json.loads((ROOT/'research-tests/O6-R196-A4-SYNTAX-AMENDMENT.json').read_text())
+        before=subprocess.check_output(['git','show','58f88c63:'+item['path']],cwd=ROOT,text=True)
+        after=contract.apply_manifest_diff(before,item['diff'])
+        self.assertEqual(hashlib.sha256(after.encode()).hexdigest(),item['afterSHA256'])
+        original=json.loads((ROOT/'research-tests/O6-R196-ROOT-CONTRACT-EXECUTION.json').read_text())
+        rejected=next(x for x in original['items'] if x['unit']=='A4')
+        self.assertEqual(rejected['afterSHA256'],item['rejectedAfterSHA256'])
+        self.assertNotEqual(rejected['afterSHA256'],item['afterSHA256'])
+    def test_fields_match_R195_verbatim(self):
+        manifest=(ROOT/'research-tests/O6-R195-ROOT-CONTRACT-MANIFEST.md').read_text()
+        proposal=json.loads((ROOT/'research-tests/O6-R196-ROOT-CONTRACT-EXECUTION.json').read_text())
+        for field,unit in [('operationalRootOrdinalPreserved','A2'),('deletionProducerRootOrdinalPreserved','A4')]:
+            text='  0 '+field+' :'+manifest.split('  0 '+field+' :',1)[1].split('```',1)[0]
+            delta=next(x['diff'] for x in proposal['items'] if x['unit']==unit)
+            added=''.join(s[1:] for s in delta.splitlines(keepends=True) if s.startswith('+') and not s.startswith('+++'))
+            self.assertIn(text,added)
     def test_diff_rejects_mutated_context(self):
         old='one\ntwo\n'; new='one\nthree\n'
         delta=''.join(difflib.unified_diff(old.splitlines(True),new.splitlines(True),fromfile='a/source',tofile='b/source'))

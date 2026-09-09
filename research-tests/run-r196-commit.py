@@ -39,6 +39,11 @@ def declarations(data):
 manifest=json.loads((ROOT/'research-tests/O6-R196-ROOT-CONTRACT-EXECUTION.json').read_text())
 stage=unit.rsplit('-',1)[0]
 edit=next((x for x in manifest['items'] if x['unit']==stage),None)
+if unit=='A4-2':
+    amendment_bytes=(ROOT/'research-tests/O6-R196-A4-SYNTAX-AMENDMENT.json').read_bytes()
+    assert hashlib.sha256(amendment_bytes).hexdigest()==(pathlib.Path('/tmp/dgamma-r196')/'A4-syntax-amendment.sha256').read_text().strip()
+    edit=json.loads(amendment_bytes)
+
 if edit:
     assert edit['path']==record['path'] and edit['afterSHA256']==record['sourceSHA256']
     assert hashlib.sha256(old.stdout).hexdigest()==edit['beforeSHA256']
