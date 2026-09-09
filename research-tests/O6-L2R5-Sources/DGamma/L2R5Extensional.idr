@@ -4,6 +4,7 @@ import DGamma.Calculus
 import DGamma.Coeffects
 import DGamma.Metatheory
 import DGamma.CP4RuntimeBindings
+import Data.Maybe
 import Decidable.Equality
 
 %default total
@@ -37,3 +38,14 @@ snapshotIntoExtensional {name} {key} {world} {error} {value} nameEq
     MkRegistryExtensional (cong snapshotWorld same)
       (\wanted => cong (lookupEntries {key = name} {value = FiberAt name key value world error} @{nameEq} wanted)
         (cong snapshotBindings same))
+
+||| Name-domain membership agrees as a DERIVED equation, not a relation field.
+export
+0 extensionalMemberKey :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (left, right : SystemState name key value world error) ->
+  (0 same : RegistryExtensional name key world error value nameEq left right) ->
+  (wanted : name) ->
+  memberKey {key = name} {value = FiberAt name key value world error} @{nameEq} wanted (registry left) =
+  memberKey {key = name} {value = FiberAt name key value world error} @{nameEq} wanted (registry right)
+extensionalMemberKey nameEq left right same wanted = cong isJust (extensionalLookup same wanted)
