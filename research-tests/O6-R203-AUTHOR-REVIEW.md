@@ -90,3 +90,12 @@ archive and all1170 files pass post-creation verification. Machine source/log/
 receipt, frozen and resource audits pass; no own compiler remains. Source
 statements and the author scope verdict above are unchanged. Independent human
 review and the supervisor gate are still required; A/B/D5/convergence stay open.
+
+## D4 owner ruling and unresolved style review
+
+The owner accepts a1abf6d1 as checked PARTIAL and launches independent read-only
+review. This does not certify review completion. The standing “no let aliases”
+rule applies: the A5 erased bindings/A13 helper will be inspected. Kernel-checked
+ordinary syntax is not automatically style-compliant. If aliases, an R204 gated
+body-only companion repair is scheduled; if necessary erased bindings, the audit
+wording stands. No source change or inferred style waiver is made in R203.

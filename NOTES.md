@@ -4730,3 +4730,25 @@ synchronization and convergence remain open. Next proof work requires a NEW
 allocation; the A16/B16 caps will not be extended. D4 awaits the supervisor's
 checked-partial gate and independent reviewer coordination; machine authentication
 and author review do not replace independent human review.
+
+### R203 D4 — owner-accepted checked partial seal
+
+The supervisor ACCEPTED `a1abf6d1` as a checked PARTIAL milestone, independently
+rechecked production/frozen identity, census, clean tree/no compiler, and pushed
+that D3 commit. D4 is explicitly artifact-only. The verbatim ruling is preserved
+in `research-tests/O6-R203-OWNER-FINAL-GATE.md`; post-publication machine/frozen
+authentication covers all35 pre-seal commits. No new compiler invocation follows
+V182, and no proof body, frozen/source statement or archive is changed by D4.
+
+The owner confirmed the two B producers closed, but present-vestigial adapter /
+per-class rebase / D5 open; A produces activation chronologies and positions,
+NOT paired runtime histories. C remains ineligible. Independent read-only review
+is being launched, not claimed complete.
+
+**Standing style review note (not a rejection or waiver):** the rule is “no let
+aliases.” The reviewer will inspect the disclosed A5 erased bindings and A13
+local erased helper. If plain aliases, a body-only companion repair is scheduled
+for R204 under gate; if genuinely necessary erased bindings, the audit wording
+stands. Successful erasure/typechecking does not decide that style question.
+R203 performs no speculative repair and no cap extension. Next work belongs to
+the supervisor's new allocation; stand down after this artifact seal.

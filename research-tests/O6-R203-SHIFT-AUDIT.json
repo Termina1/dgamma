@@ -1,5 +1,5 @@
 {
-  "status": "PASS; checked PARTIAL, owner gate pending",
+  "status": "PASS; owner-accepted CHECKED PARTIAL; D4 artifact-only seal",
   "preparedUTC": "2026-09-09T20:29:26.671151+00:00",
   "sourceFreezeHead": "f0c80a3707f854cb708645797c0e754a97cd33b2",
   "archiveAnchorCommit": "d50bd0265ca832f23acf17a245a36e87e1781b5e",
@@ -81,5 +81,8 @@
   "AStatus": "Partial: actual original native activation histories/all prefix positions and explicit physical disappearance proved; canonical transport/ALL-name predecessor/runtime histories/synchronization open",
   "BStatus": "Partial: whole retained closing birth and actual classified-generation selection coverage proved; present-vestigial adapter/per-class ALL-name rebase/D5 open",
   "CStatus": "Ineligible; unchanged",
-  "humanReviewStatus": "Required; machine authentication and author review are not independent human review"
+  "humanReviewStatus": "Independent read-only reviewer being launched; completion not claimed",
+  "ownerAcceptedCommit": "a1abf6d19030b472ebcb35dc493c37c42c21a983",
+  "ownerD4Authorized": true,
+  "standingStyleReview": "No let aliases: reviewer to inspect A5 erased bindings and A13 local helper. Any plain-alias body-only companion repair belongs to R204 under gate; no waiver or R203 repair."
 }

@@ -4136,3 +4136,8 @@ R203 D3 validation completed20:25:03Z:182/182 expected outcomes;32 guarded sourc
 commits/225 raw invocations authenticated, archive verified. No A/B/D5/convergence
 closure. Request checked-partial supervisor gate; D4 is artifact-only. A16/B16
 caps are exhausted and further proof work belongs to a new allocation.
+
+R203 D4: owner ACCEPTED a1abf6d1 as checked partial and authorized artifact-only
+seal. Independent read-only review launched; standing no-let-alias style review
+of A5 bindings/A13 helper may schedule an R204 gated body-only repair. No current
+source repair, compiler recheck, macro-closure claim or proof-budget extension.

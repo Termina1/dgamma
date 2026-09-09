@@ -1123,3 +1123,12 @@ supervisor/reviewer gate—not A/B/D5 or Theorem73 closure.
 [Final audit](research-tests/O6-R203-GRIND-SHIFT-AUDIT.md) ·
 [Machine verification](research-tests/O6-R203-INDEPENDENT-VERIFICATION.json) ·
 [Archive verification](research-tests/O6-R203-ARCHIVE-VERIFICATION.json)
+
+### R203 D4 — owner accepted, partial scope unchanged
+
+The supervisor accepted `a1abf6d1` as a **checked partial** milestone and authorized
+an artifact-only D4 seal. Independent read-only review is being launched. The
+standing “no let aliases” rule will be checked for the disclosed A5 bindings/A13
+helper; any necessary body-only repair is deferred to R204 under gate. No waiver,
+reviewer completion or A/B/D5/convergence closure is claimed.
+[Verbatim ruling](research-tests/O6-R203-OWNER-FINAL-GATE.md).

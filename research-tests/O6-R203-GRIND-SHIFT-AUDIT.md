@@ -68,3 +68,11 @@ post-publication audits cover those receipts instead of rewriting the archive.
 `O6-R203-AUTHOR-REVIEW.md` is author review, not independent human acceptance.
 The supervisor/reviewer final gate is REQUIRED; only a checked PARTIAL milestone
 is requested. No main compiler or staged file remains at the completed audit.
+
+## D4 owner gate
+
+ACCEPTED as checked PARTIAL at a1abf6d1; artifact-only seal authorized. See the
+verbatim OWNER-FINAL-GATE ruling. Independent read-only review is being launched;
+the disclosed A5/A13 syntax remains subject to the standing no-let-alias review,
+with any required body-only repair gated for R204. No source repair, compiler
+invocation, archive replacement or proof-scope expansion occurs in this seal.
