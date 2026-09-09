@@ -71,3 +71,25 @@ providerRetirementAtName {name} {key} {world} {error} {value} nameEq keyEq wante
         (rewrite decisionEquation in Refl))) found))
     (\shape => rewrite shape in Refl)
     (isActive lifecycle && memberKey @{keyEq} wanted (ownedValues table)) Refl
+
+||| Expose this ACTUAL head fiber once; the name Dec is observed at this
+||| own call site, then D7 handles one replacement step using native evidence.
+export
+0 providerRetirementAtHead :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (wanted : key) -> (child, current : name) ->
+  (head : Fiber name key value world error) ->
+  (rest : List (Binding name (FiberAt name key value world error))) ->
+  (0 tail : (fiber : Fiber name key value world error) ->
+    (0 found : lookupEntries {key = name} {value = FiberAt name key value world error} @{nameEq} child rest = Just fiber) ->
+    providerIn {name} {key} {value} {world} {error} @{nameEq} @{keyEq} wanted rest =
+    providerIn {name} {key} {value} {world} {error} @{nameEq} @{keyEq} wanted (replaceEntries @{nameEq} child (retireFiber fiber) rest)) ->
+  (fiber : Fiber name key value world error) ->
+  (0 found : lookupEntries {key = name} {value = FiberAt name key value world error} @{nameEq} child
+    (Bind current head :: rest) = Just fiber) ->
+  providerIn {name} {key} {value} {world} {error} @{nameEq} @{keyEq} wanted (Bind current head :: rest) =
+  providerIn {name} {key} {value} {world} {error} @{nameEq} @{keyEq} wanted
+    (replaceEntries @{nameEq} child (retireFiber fiber) (Bind current head :: rest))
+providerRetirementAtHead nameEq keyEq wanted child current (MkFiber component parent flag table lifecycle) rest tail fiber found =
+  providerRetirementAtName nameEq keyEq wanted child current component parent flag table lifecycle rest tail
+    (decEq @{nameEq} child current) Refl fiber found
