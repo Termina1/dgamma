@@ -116,3 +116,25 @@ o20ClosingFreeDeletionRootReplayOrdinals
     (closingFreeDeletionOccurrenceFold rest)
     (o20DeletionStepRootReplayOrdinals trace premises candidate step)
     (o20ClosingFreeDeletionRootReplayOrdinals rest)
+
+||| The actual accepted canonical correspondence owns its root law. The
+||| capital's own producer equation exposes the same deletion and sorting folds.
+export
+0 o20CanonicalRootReplayOrdinals :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {protocol : RegistrationProtocol key value world error} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {initial, finalState : SystemState name key value world error} ->
+  {original : Transitions initial finalState} ->
+  (capital : IndependentCanonicalSchedule name key world error value protocol
+    nameEq keyEq original) ->
+  O20RootReplayOrdinals name key world error value
+    (canonicalOccurrenceCorrespondence capital)
+o20CanonicalRootReplayOrdinals
+  (MkIndependentCanonicalSchedule premises reduction ordering sorted
+    supportTransport accounting _ Refl classified) =
+  o20ComposeRootReplayOrdinals (reductionOccurrenceCorrespondence reduction)
+    (sortingOccurrenceCorrespondence sorted)
+    (o20ClosingFreeDeletionRootReplayOrdinals
+      (reductionDeletionDerivation reduction))
+    (o20FiniteAdjacentRootReplayOrdinals (sortingAdjacentDerivation sorted))
