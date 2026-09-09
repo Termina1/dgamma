@@ -167,3 +167,26 @@ o20CoveredGenerationDisposition {nameEq} {keyEq} left right mapping matching uni
     (o20CoveredOriginStamp {nameEq} {keyEq} left unique (leftScannedEvents matching) selected parent component birth coverage)
     (o20MatchClassifiedOrigin mapping matching selected (registrationGeneration birth) coverage
       (o20CoveredOriginStamp {nameEq} {keyEq} left unique (leftScannedEvents matching) selected parent component birth coverage))
+
+||| EVERY actual original generated birth receives its authenticated E8
+||| disposition. No original support/presence or right canonical-retention
+||| premise is required; raw uniqueness identifies this birth's exact stamp.
+export
+0 o20OriginalGenerationDisposition :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {leftFirst, leftFinal, rightFirst, rightFinal : SystemState name key value world error} ->
+  (left : Transitions leftFirst leftFinal) -> (right : Transitions rightFirst rightFinal) ->
+  (mapping : RegistrationGenerationBijection name) ->
+  (registrations : RegistrationCorrespondenceByGeneration nameEq mapping left right) ->
+  UniqueRawNameInsertions name key world error value nameEq keyEq left ->
+  (selected, parent : name) -> (component : Component key value world error) ->
+  (birth : LocatedGeneratedRegistration selected parent component left) ->
+  O20GenerationOnlyDisposition name key world error value mapping left right (registrationGeneration birth)
+o20OriginalGenerationDisposition {name} {key} {world} {error} {value} nameEq keyEq left right mapping registrations unique
+  selected parent component birth =
+    o20CoveredGenerationDisposition {nameEq} {keyEq} left right mapping
+      (acceptedAuthenticatedRegistrationMatching name key world error value nameEq left right mapping registrations)
+      unique selected parent component birth
+      (acceptedLeftBirthCoverage name key world error value nameEq left right mapping registrations selected parent component
+        (generatedRegistrationActionOccurrence birth))
