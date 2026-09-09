@@ -88,3 +88,22 @@ nativeRootFrameEndpoint {name} {key} {world} {error} {value}
       (checkedRootAcrossExtensional nameEq keyEq actor component oldBefore oldAfter newBefore OInsertTag
         oldChecked same valid (provisionsDisjointFrom {name} {key} {world} {error} {value} @{keyEq}
           (componentProvisions component) (bindings (registry oldBefore))) Refl frame))
+
+||| Retire needs no finite declaration-scan frame: inherited original-edge
+||| extensional replay produces its native successor, then determinism aligns.
+export
+0 nativeRetireFrameEndpoint : {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) -> (tag : RuleTag) ->
+  (oldBefore, oldAfter, newBefore, newAfter : SystemState name key value world error) ->
+  (0 oldChecked : checkedApplyAction @{nameEq} @{keyEq} (ORetire actor) oldBefore = Just (tag, oldAfter)) ->
+  (0 newChecked : checkedApplyAction @{nameEq} @{keyEq} (ORetire actor) newBefore = Just (tag, newAfter)) ->
+  (0 valid : registryWellFormed @{nameEq} @{keyEq} newBefore = True) ->
+  (0 same : RegistryExtensional name key world error value nameEq oldBefore newBefore) ->
+  RegistryExtensional name key world error value nameEq oldAfter newAfter
+nativeRetireFrameEndpoint {name} {key} {world} {error} {value}
+  nameEq keyEq actor tag oldBefore oldAfter newBefore newAfter oldChecked newChecked valid same =
+  replace {p = \next => RegistryExtensional name key world error value nameEq oldAfter next}
+    (cong snd (justInjective (trans (sym (extensionalChecked
+      (checkedRetireAcrossExtensional nameEq keyEq actor oldBefore oldAfter newBefore tag oldChecked same valid))) newChecked)))
+    (extensionalAfterSame
+      (checkedRetireAcrossExtensional nameEq keyEq actor oldBefore oldAfter newBefore tag oldChecked same valid))
