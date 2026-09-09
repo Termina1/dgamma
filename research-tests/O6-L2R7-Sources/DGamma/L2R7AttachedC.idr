@@ -120,3 +120,29 @@ export
 attachedIntoC (AttachedWithoutRoots core extended) = AttachedWithoutRootsC core extended
 attachedIntoC (AttachedWithRoots core extended bundle ordered) =
   AttachedWithRootsC core extended bundle (bundleIntoC ordered)
+
+||| Full located block for the NEW controls grammar. All installedness,
+||| episode uniqueness, final activity and physical decomposition fields
+||| retain their strength; controls are inside the body, not in the gap.
+public export
+record LocatedOpenEpisodeBlockAttachedC
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (keyEq : DecEq key) (selected : name)
+  {initial, finalState : SystemState name key value world error}
+  (global : Transitions initial finalState) where
+  constructor MkLocatedOpenEpisodeBlockAttachedC
+  attachedCPreStart : SystemState name key value world error
+  attachedCStart : SystemState name key value world error
+  attachedCEnd : SystemState name key value world error
+  attachedCBefore : Transitions initial attachedCPreStart
+  attachedCOpening : BeginStep nameEq keyEq selected attachedCPreStart attachedCStart
+  attachedCBody : Transitions attachedCStart attachedCEnd
+  0 attachedCInstalled : InstalledTrace name key world error value nameEq keyEq selected attachedCBody
+  0 attachedCActorOnly : ActorLifecycleOnlyAttachedC nameEq selected attachedCBody
+  attachedCAfter : Transitions attachedCEnd finalState
+  0 attachedCNoEarlier : NoLifecycleBy selected attachedCBefore
+  0 attachedCNoLater : NoLifecycleBy selected attachedCAfter
+  0 attachedCActiveAtFinal : supportedActiveAt @{nameEq} selected finalState = True
+  0 attachedCDecomposition : appendTransitions attachedCBefore
+    (MoreTransitions (beginTransition attachedCOpening)
+      (appendTransitions attachedCBody attachedCAfter)) = global
