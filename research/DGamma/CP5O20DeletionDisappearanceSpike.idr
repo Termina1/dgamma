@@ -182,3 +182,26 @@ o20DeletionSideGenerationScan name key world error value nameEq mapping leftOrdi
     MatchRightWithPendingLeft {child} {parent} {component} step rest actionExact retained priorWords event laterWords matched tail =>
       o20DeletionSideGenerationScan name key world error value nameEq mapping leftOrdinal (MkRegistrationIndexState live activations counts deleted)
         (S rightOrdinal) (advanceSurvivingRegistrationIndex @{nameEq} rightOrdinal child parent component rightIndex) left rest leftFinalIndex rightFinalIndex tail
+
+||| Accepted original current generations and the actual deletion's current
+||| table are the same plain value: both are authenticated scans of THIS word.
+||| No equality of independently reconstructed dependent records is needed.
+export
+0 o20DeletionAcceptedOriginalLive :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {leftFirst, leftFinal, rightFirst, rightFinal : SystemState name key value world error} ->
+  (left : Transitions leftFirst leftFinal) -> (right : Transitions rightFirst rightFinal) ->
+  (mapping : RegistrationGenerationBijection name) ->
+  (registrations : RegistrationCorrespondenceByGeneration nameEq mapping left right) ->
+  (candidate : DeletableClosingEpisode name key world error value nameEq keyEq left) ->
+  (result : DeletionResult name key world error value nameEq keyEq left
+    (selectedActor candidate) (selectedEpisode candidate) (selectedRegistrations candidate)
+    (selectedStartOrdinal candidate) (selectedStartLive candidate)) ->
+  (leftFinalGenerations registrations = originalFinalLive result)
+o20DeletionAcceptedOriginalLive {name} {key} {world} {error} {value}
+  nameEq keyEq left right mapping registrations candidate result =
+  case o20DeletionSideGenerationScan name key world error value nameEq mapping Z emptyRegistrationIndex Z emptyRegistrationIndex
+    left right (leftFinalIndex registrations) (rightFinalIndex registrations) (generationTraceCorrespondence registrations) of
+    (finalOrdinal ** scan) => trans (o20GenerationScanFinalLiveExact scan)
+      (sym (o20GenerationScanFinalLiveExact (o20DeletionOriginalScan candidate result)))
