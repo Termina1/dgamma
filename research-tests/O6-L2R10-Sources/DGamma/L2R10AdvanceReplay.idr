@@ -268,3 +268,37 @@ advanceAtOutcome {name} {key} {world} {error} {value}
   step rest accumulator view lifeEquation capability capEquation (Right yielded) outcomeEquation =
   advanceAtYield nameEq keyEq child parent actor childFiber actorFiber ambient source frame distinct
     step rest accumulator view lifeEquation capability capEquation yielded outcomeEquation
+
+||| Observe the native committed-capability Maybe, whose retirement
+||| invariance is the existing Calculus theorem. Nothing remains undefined.
+export
+0 advanceAtCapability :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (child, parent, actor : name) ->
+  (childFiber, actorFiber : Fiber name key value world error) ->
+  (ambient : world) -> (source : Registry name key value world error) ->
+  (frame : RetirementProviderFrame name key world error value nameEq keyEq child parent actor childFiber actorFiber source) ->
+  (0 distinct : Not (child = actor)) ->
+  (step : (StepEffect key value world error (dependencies (componentDependencies (fiberComponent actorFiber))) (componentProvisions (fiberComponent actorFiber)))) -> (rest : List (StepEffect key value world error (dependencies (componentDependencies (fiberComponent actorFiber))) (componentProvisions (fiberComponent actorFiber)))) ->
+  (accumulator : (LocalState key value world (componentProvisions (fiberComponent actorFiber))) -> (LocalState key value world (componentProvisions (fiberComponent actorFiber)))) -> (view : View name (dependencies (componentDependencies (fiberComponent actorFiber)))) ->
+  (0 lifeEquation : fiberLifecycle actorFiber = Reloading (step :: rest) accumulator view) ->
+  (capability : Maybe (DepValues key value (dependencies (componentDependencies (fiberComponent actorFiber))))) ->
+  (0 capEquation : resolveCommittedValues {name} {key} {value} {world} {error} @{nameEq} @{keyEq} (dependencies (componentDependencies (fiberComponent actorFiber))) view source = capability) ->
+  RetirementAdvanceEquation nameEq keyEq child actor childFiber ambient source
+advanceAtCapability {name} {key} {world} {error} {value}
+  nameEq keyEq child parent actor childFiber actorFiber ambient source frame distinct
+  step rest accumulator view lifeEquation Nothing capEquation =
+  rewrite lookupReplaceOther {key = name} {value = FiberAt name key value world error} @{nameEq}
+    actor child (\same => distinct (sym same)) (retireFiber childFiber) source in
+  rewrite frameActorFound frame in
+  rewrite lifeEquation in
+  rewrite resolveCommittedValuesRetireRegistry {name} {key} {value} {world} {error} nameEq keyEq (dependencies (componentDependencies (fiberComponent actorFiber))) view
+    child childFiber source (frameChildFound frame) in
+  rewrite capEquation in
+  Refl
+advanceAtCapability {name} {key} {world} {error} {value}
+  nameEq keyEq child parent actor childFiber actorFiber ambient source frame distinct
+  step rest accumulator view lifeEquation (Just capability) capEquation =
+  advanceAtOutcome nameEq keyEq child parent actor childFiber actorFiber ambient source frame distinct
+    step rest accumulator view lifeEquation capability capEquation
+    (runStepEffect step capability (MkLocalState ambient (restrictOwnedPreservingOrder (componentProvisions (fiberComponent actorFiber)) (ownedValues (fiberTable actorFiber))))) Refl
