@@ -465,3 +465,28 @@ o20SelectedCenterCloseBirthBefore name key world error value nameEq keyEq trace 
           (lteSuccLeft (fst (o20OffsetStrictOrder (transitionCount (traceBeforeOpening (selectedEpisode candidate))) centerIndex (transitionCount (MoreTransitions (beginTransition (closedOpening (locatedEpisode (selectedEpisode candidate)))) (closedTransitions (locatedEpisode (selectedEpisode candidate))))))
             (o20ClosingIndexInsideTrace name key world error value (MoreTransitions (beginTransition (closedOpening (locatedEpisode (selectedEpisode candidate)))) (closedTransitions (locatedEpisode (selectedEpisode candidate)))) centerIndex (LUnload (deletedParent classified)) centerExact))))
         (lteAddRight (transitionCount (traceBeforeOpening (selectedEpisode candidate)) + transitionCount (MoreTransitions (beginTransition (closedOpening (locatedEpisode (selectedEpisode candidate)))) (closedTransitions (locatedEpisode (selectedEpisode candidate))))))))
+
+||| Consume registration discipline at its exact physical cut. The parent is
+||| installed at the registering edge's source because the native yield is
+||| Reloading there; this is PRODUCED, not supplied by the closing consumer.
+export
+0 o20ParentInstalledAtRegistrationCut :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) -> (nameEq : DecEq name) ->
+  {first, before, afterState, finalState : SystemState name key value world error} ->
+  (earlier : Transitions first before) -> (edge : Transition before afterState) ->
+  (later : Transitions afterState finalState) ->
+  (child, parent : name) -> (component : Component key value world error) ->
+  (transitionAction edge = OInsert child (ChildOf parent) component) ->
+  RegistrationDiscipline protocol nameEq (appendTransitions earlier (MoreTransitions edge later)) ->
+  (installedAt {name} {key} {value} {world} {error} @{nameEq} parent before = True)
+o20ParentInstalledAtRegistrationCut name key world error value protocol nameEq {before}
+  NoTransitions edge later child parent component exact
+  (RegistrationDisciplineStep _ _ discipline tail) =
+    case replace {p = \action => RegistrationStepDiscipline protocol nameEq action before later} exact discipline of
+      (yielded, retirement) =>
+        rewrite parentFoundAtYield yielded in rewrite parentAtYield yielded in Refl
+o20ParentInstalledAtRegistrationCut name key world error value protocol nameEq
+  (MoreTransitions firstEdge rest) edge later child parent component exact
+  (RegistrationDisciplineStep _ _ firstDiscipline tail) =
+    o20ParentInstalledAtRegistrationCut name key world error value protocol nameEq rest edge later child parent component exact tail
