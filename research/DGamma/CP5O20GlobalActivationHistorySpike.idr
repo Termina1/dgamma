@@ -255,3 +255,69 @@ o20NativeChronologicalPositions nameEq ordinal (MkRegistrationIndexState live ac
           (o20NativeChronologicalPositions nameEq (S ordinal)
             (advanceSurvivingRegistrationIndex @{nameEq} ordinal child parent component (MkRegistrationIndexState live activations counts deleted))
             rest finalIndex laterEvents later))
+
+||| PRODUCE BOTH original native activation histories, every prefix position,
+||| and both complete counter equations from one actual accepted bilateral
+||| scanner. There are no supplied histories or counter/position equations.
+||| These are registration scanner histories, NOT paired runtime occurrence
+||| stages, and NOT transport through deletion/sorting or an ALL-name cut.
+public export
+0 o20AcceptedActivationHistories :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) ->
+  {leftFirst, leftFinal, rightFirst, rightFinal : SystemState name key value world error} ->
+  (left : Transitions leftFirst leftFinal) -> (right : Transitions rightFirst rightFinal) ->
+  (mapping : RegistrationGenerationBijection name) ->
+  (registrations : RegistrationCorrespondenceByGeneration nameEq mapping left right) ->
+  (leftEvents : List (RegistrationEvent name key world error value) **
+    (rightEvents : List (RegistrationEvent name key world error value) **
+      (O20NativeActivationScan nameEq Z emptyRegistrationIndex left (leftFinalIndex registrations) leftEvents,
+       O20NativeActivationScan nameEq Z emptyRegistrationIndex right (rightFinalIndex registrations) rightEvents,
+       o20ChronologicalPositions nameEq leftEvents [],
+       o20ChronologicalPositions nameEq rightEvents [],
+       indexedSurvivingChildCounts (leftFinalIndex registrations) = o20ReplayRetainedEventCounts nameEq leftEvents [],
+       indexedSurvivingChildCounts (rightFinalIndex registrations) = o20ReplayRetainedEventCounts nameEq rightEvents [])))
+o20AcceptedActivationHistories nameEq left right mapping registrations =
+  case o20LeftNativeActivationHistory (generationTraceCorrespondence registrations) of
+    (leftEvents ** leftScan) =>
+      case rightHistory (generationTraceCorrespondence registrations) of
+        (rightEvents ** rightScan) =>
+          (leftEvents ** (rightEvents ** (leftScan, rightScan,
+            o20NativeChronologicalPositions nameEq Z emptyRegistrationIndex left (leftFinalIndex registrations) leftEvents leftScan,
+            o20NativeChronologicalPositions nameEq Z emptyRegistrationIndex right (rightFinalIndex registrations) rightEvents rightScan,
+            o20NativeActivationCounts nameEq Z emptyRegistrationIndex left (leftFinalIndex registrations) leftEvents leftScan,
+            o20NativeActivationCounts nameEq Z emptyRegistrationIndex right (rightFinalIndex registrations) rightEvents rightScan)))
+  where
+    0 rightHistory :
+      {name, key, world, error : Type} -> {value : key -> Type} ->
+      {nameEq : DecEq name} -> {mapping : RegistrationGenerationBijection name} ->
+      {leftOrdinal, rightOrdinal : Nat} ->
+      {leftIndex, rightIndex, leftFinalIndex, rightFinalIndex : RegistrationIndexState name} ->
+      {leftFirst, leftFinal, rightFirst, rightFinal : SystemState name key value world error} ->
+      {left : Transitions leftFirst leftFinal} -> {right : Transitions rightFirst rightFinal} ->
+      {pendingLeft, pendingRight : List (RegistrationEvent name key world error value)} ->
+      RegistrationTraceCorrespondence nameEq mapping leftOrdinal leftIndex left leftFinalIndex
+        rightOrdinal rightIndex right rightFinalIndex pendingLeft pendingRight ->
+      (events : List (RegistrationEvent name key world error value) **
+        O20NativeActivationScan nameEq rightOrdinal rightIndex right rightFinalIndex events)
+    rightHistory RegistrationCorrespondenceEnd = ([] ** O20ActivationScanEnd)
+    rightHistory (SkipRightNonRegistration action edge rest shape ordinary later) =
+      case rightHistory later of
+        (events ** scan) => (events ** O20ActivationScanOrdinary action edge rest shape ordinary scan)
+    rightHistory (DiscardRightDeletedRegistration edge rest shape deleted later) =
+      case rightHistory later of
+        (events ** scan) => (events ** O20ActivationScanDeleted edge rest shape deleted scan)
+    rightHistory {nameEq} {rightOrdinal} {rightIndex}
+      (QueueRightGeneratedRegistration {child} {parent} {component} edge rest shape retained later) =
+        case rightHistory later of
+          (events ** scan) => (registrationEventAt @{nameEq} rightOrdinal rightIndex child parent component :: events **
+            O20ActivationScanRetained edge rest shape retained scan)
+    rightHistory {nameEq} {rightOrdinal} {rightIndex}
+      (MatchRightWithPendingLeft {child} {parent} {component} edge rest shape retained earlierEvents event laterEvents matched later) =
+        case rightHistory later of
+          (events ** scan) => (registrationEventAt @{nameEq} rightOrdinal rightIndex child parent component :: events **
+            O20ActivationScanRetained edge rest shape retained scan)
+    rightHistory (SkipLeftNonRegistration action edge rest shape ordinary later) = rightHistory later
+    rightHistory (DiscardLeftDeletedRegistration edge rest shape deleted later) = rightHistory later
+    rightHistory (QueueLeftGeneratedRegistration edge rest shape retained later) = rightHistory later
+    rightHistory (MatchLeftWithPendingRight edge rest shape retained earlierEvents event laterEvents matched later) = rightHistory later
