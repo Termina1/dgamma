@@ -8,6 +8,7 @@ import DGamma.CP4DeletionSelectedForeignOrchestration
 import DGamma.CP5ConfluenceLocalDiamondSpike
 import DGamma.CP5O20StampedHistoryFoldSpike
 import DGamma.CP5O20CanonicalOrdinalAttachmentSpike
+import DGamma.CP5O20PhysicalInsertPositionSpike
 import Data.List
 import Data.List.Elem
 import Data.Maybe
@@ -333,3 +334,31 @@ o20AttachedGeneratedInsertStage {leftNow} {rightNow} nameEq keyEq leftReplay rig
       (ChildOf parent) (ChildOf (renameForward renaming parent)) (ChildrenRelated Refl)
       (generatedRegistrationActionOccurrence leftBirth) (generatedRegistrationActionOccurrence (attachedRightBirth attached))
       (attachedPhysicalEquation attached)
+
+||| One same-origin package owns original per-activation positions, both
+||| physical Insert occurrences, and their native paired stage. No ordering,
+||| canonical per-activation preservation, skip or whole history is a field.
+public export
+record O20PhysicalInsertAttachment
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (keyEq : DecEq key)
+  {leftFirst, leftFinal, rightFirst, rightFinal, leftNowFirst, leftNowFinal, rightNowFirst, rightNowFinal : SystemState name key value world error}
+  {left : Transitions leftFirst leftFinal} {right : Transitions rightFirst rightFinal}
+  {leftNow : Transitions leftNowFirst leftNowFinal} {rightNow : Transitions rightNowFirst rightNowFinal}
+  (leftReplay : ActionRegistrationReplayCorrespondence name key world error value left leftNow)
+  (rightReplay : ActionRegistrationReplayCorrespondence name key world error value right rightNow)
+  (mapping : RegistrationGenerationBijection name) (renaming : NameBijection name)
+  (leftLive, rightLive : GenerationEnvironment name)
+  (child, parent : name) (component : Component key value world error)
+  (leftBirth : LocatedGeneratedRegistration child parent component leftNow) where
+  constructor MkO20PhysicalInsertAttachment
+  0 insertOriginPositions : O20PhysicalInsertOriginPositions name key world error value leftReplay rightReplay mapping renaming
+    child parent component leftBirth
+  0 insertNativeStage : O20StampedStage name key world error value nameEq keyEq
+    (o20ReplayOrdinalBijection (replayGenerationRenaming leftReplay) mapping (replayGenerationRenaming rightReplay)) renaming
+    (registrationOrdinal leftBirth) (registrationOrdinal (attachedRightBirth (physicalBirths insertOriginPositions))) leftLive rightLive
+    (putCurrentGeneration @{nameEq} child (registrationGeneration leftBirth) leftLive)
+    (putCurrentGeneration @{nameEq} (renameForward renaming child)
+      (registrationGeneration (attachedRightBirth (physicalBirths insertOriginPositions))) rightLive)
+    (registrationBefore leftBirth) (registrationBefore (attachedRightBirth (physicalBirths insertOriginPositions)))
+    (registrationAfter leftBirth) (registrationAfter (attachedRightBirth (physicalBirths insertOriginPositions)))
