@@ -77,3 +77,19 @@ export
 fixtureIterationsFromProducers =
   (((IterationMove (fst terminalFixtureMoves) (IterationDone (singleAfterTrail iterationFixtures))), iterationEndpoint (IterationMove (fst terminalFixtureMoves) (IterationDone (singleAfterTrail iterationFixtures))), singleZero iterationFixtures),
    ((IterationMove firstBundleFromProducer (IterationMove (snd terminalFixtureMoves) (IterationDone (bundleAfterTrail iterationFixtures)))), iterationEndpoint (IterationMove firstBundleFromProducer (IterationMove (snd terminalFixtureMoves) (IterationDone (bundleAfterTrail iterationFixtures)))), bundleZero iterationFixtures))
+
+||| All THREE producer moves have exactly the same before/after DISTANCE
+||| witnesses as D8. Old records are used ONLY for this comparison, never
+||| to construct the new moves or iterations. This is not proof-record equality.
+export
+0 fixtureProducedMeasuresAgree :
+  ((beforeDistance (fst terminalFixtureMoves) = beforeDistance (singleAdmitted iterationFixtures),
+    afterDistance (fst terminalFixtureMoves) = afterDistance (singleAdmitted iterationFixtures)),
+   (beforeDistance firstBundleFromProducer = beforeDistance (firstBundleAdmitted iterationFixtures),
+    afterDistance firstBundleFromProducer = afterDistance (firstBundleAdmitted iterationFixtures)),
+   (beforeDistance (snd terminalFixtureMoves) = beforeDistance (secondBundleAdmitted iterationFixtures),
+    afterDistance (snd terminalFixtureMoves) = afterDistance (secondBundleAdmitted iterationFixtures)))
+fixtureProducedMeasuresAgree =
+  (admittedMoveMeasuresUnique (fst terminalFixtureMoves) (singleAdmitted iterationFixtures),
+   admittedMoveMeasuresUnique firstBundleFromProducer (firstBundleAdmitted iterationFixtures),
+   admittedMoveMeasuresUnique (snd terminalFixtureMoves) (secondBundleAdmitted iterationFixtures))
