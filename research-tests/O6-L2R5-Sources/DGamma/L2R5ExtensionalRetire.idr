@@ -92,3 +92,21 @@ retireExtensionalFromView nameEq keyEq actor ambient source _ current _ same val
       (childRetireAtFound nameEq keyEq actor old current
         (trans (sym (extensionalLookup same actor)) found) valid)
       (replaceExtensional nameEq actor old (retireFiber old) (MkSystemState ambient source) current same found)
+
+||| ORetire transport from an ORIGINAL checked edge at an extensionally equal,
+||| well-formed source. Same tag and exact pointwise successor are PRODUCED;
+||| no target, raw replay, successful alternate edge or endpoint is a premise.
+||| This is one action role, not all-action evaluator congruence.
+export
+0 checkedRetireAcrossExtensional :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (first, afterState, current : SystemState name key value world error) -> (tag : RuleTag) ->
+  (0 checked : checkedApplyAction @{nameEq} @{keyEq} (ORetire actor) first = Just (tag, afterState)) ->
+  (0 same : RegistryExtensional name key world error value nameEq first current) ->
+  (0 valid : registryWellFormed @{nameEq} @{keyEq} current = True) ->
+  CheckedExtensionalStep name key world error value nameEq keyEq (ORetire actor) current tag afterState
+checkedRetireAcrossExtensional nameEq keyEq actor (MkSystemState ambient source) afterState current tag checked same valid =
+  retireExtensionalFromView nameEq keyEq actor ambient source afterState current tag same valid
+    (retireSuccessView nameEq keyEq actor ambient source tag afterState
+      (checkedActionProjects nameEq keyEq (ORetire actor) (MkSystemState ambient source) afterState tag checked))
