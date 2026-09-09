@@ -15,6 +15,10 @@ import Data.List
 import Data.Maybe
 import Decidable.Equality
 
+import DGamma.CP5O20GenerationOnlyHistorySpike
+import DGamma.R193VestigialHistoryTransportPositive
+import DGamma.R195ClosingHistoryRetentionPositive
+import DGamma.R195EndpointRebaseBoundaryPositive
 import DGamma.CP5O20StampedHistoryFoldSpike
 import DGamma.CP5O20HistoryNameTransportSpike
 
@@ -70,3 +74,22 @@ r197StampedElevenEndpoint =
     (MkO20StampedCut
       (o20AllNameEmptyOrigin r45NameEq identityNameBijection (r191ChildGapState 0) Refl)
       (\selected, stamp, found => absurd found) (\selected, stamp, found => absurd found))
+
+||| R193/R195's actual PRESENT vestigial original history retains its closing
+||| disposition and owned internal history cut through a zero-edge epsilon.
+||| This is NOT canonical deletion, unilateral stuttering, or current-map
+||| rebasing; no unmatched native edge is silently skipped by this fixture.
+export
+0 r197ClosingHistoryEpsilon :
+  (O20GenerationOnlyDisposition Nat R45Key Unit String R45Value identityRegistrationGenerationBijection
+    r193HistoricalClosedTrace r193HistoricalClosedTrace (MkRegistrationGeneration 1 2),
+   O20HistoryCut Nat R45Key Unit String R45Value r45NameEq identityRegistrationGenerationBijection
+    (leftFinalGenerations r193HistoricalTree) (rightFinalGenerations r193HistoricalTree)
+    r193HistoricalClosed r193HistoricalClosed)
+r197ClosingHistoryEpsilon =
+  (r195ClosingHistoryRetained,
+   o20StampedHistoryCut {keyEq = r45KeyEq} {leftOrdinal = 8} {rightOrdinal = 8}
+    (StampedHistoryEpsilon NoTransitions Refl NoTransitions Refl StampedHistoryEnd)
+    (MkO20StampedCut (historyCutRuntime r195VestigialInternalHistoryCut)
+      (historyCutForward r195VestigialInternalHistoryCut)
+      (historyCutBackward r195VestigialInternalHistoryCut)))
