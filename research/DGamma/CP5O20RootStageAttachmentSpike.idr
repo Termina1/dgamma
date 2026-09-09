@@ -8,6 +8,12 @@ import DGamma.CP5SupportedBirthCoverageSpike
 import DGamma.CP5RootOrchestrationTransportSpike
 import DGamma.CP5UniqueRawNameInsertions
 import Decidable.Equality
+import DGamma.CP5ConfluenceLocalDiamondSpike
+import DGamma.CP5ConfluenceCanonicalSortSpike
+import DGamma.CP5ConfluenceRenamingCompositionSpike
+import DGamma.CP5O20RootOrdinalBoundarySpike
+import DGamma.CP5O20RootReplayLawProducerSpike
+import DGamma.CP5O20CanonicalOrdinalAttachmentSpike
 import Data.Nat
 
 %default total
@@ -225,3 +231,30 @@ o20RetainedRootBirth {name} {key} {world} {error} {value} nameEq source target e
     (rootActionForward name key world error value nameEq source target external (OInsert root Root component)
       (rootActionFromLocated name key world error value nameEq source (OInsert root Root component)
         birth (RootInsertStep (locatedAction birth))))
+
+||| A replayed root's actual opposite birth with both original-origin and
+||| conjugated physical-ordinal equations. Roots keep their external names;
+||| this record does not assert agreement with an endpoint-only raw map.
+public export
+record O20AttachedRootBirth
+  (name, key, world, error : Type) (value : key -> Type)
+  {leftFirst, leftFinal, rightFirst, rightFinal, leftNowFirst, leftNowFinal, rightNowFirst, rightNowFinal : SystemState name key value world error}
+  {left : Transitions leftFirst leftFinal} {right : Transitions rightFirst rightFinal}
+  {leftNow : Transitions leftNowFirst leftNowFinal} {rightNow : Transitions rightNowFirst rightNowFinal}
+  (leftReplay : ActionRegistrationReplayCorrespondence name key world error value left leftNow)
+  (rightReplay : ActionRegistrationReplayCorrespondence name key world error value right rightNow)
+  (original : RegistrationGenerationBijection name)
+  (root : name) (component : Component key value world error)
+  (leftBirth : LocatedActionOccurrence (OInsert root Root component) leftNow) where
+  constructor MkO20AttachedRootBirth
+  0 attachedRootRightBirth : LocatedActionOccurrence (OInsert root Root component) rightNow
+  0 attachedRootOriginalEquation :
+    (generationForward original (MkRegistrationGeneration root
+      (locatedActionOrdinal (replayActionOrigin leftReplay leftBirth))) =
+      MkRegistrationGeneration root
+        (locatedActionOrdinal (replayActionOrigin rightReplay attachedRootRightBirth)))
+  0 attachedRootPhysicalEquation :
+    (generationForward (o20ReplayOrdinalBijection (replayGenerationRenaming leftReplay)
+      original (replayGenerationRenaming rightReplay))
+      (MkRegistrationGeneration root (locatedActionOrdinal leftBirth)) =
+      MkRegistrationGeneration root (locatedActionOrdinal attachedRootRightBirth))
