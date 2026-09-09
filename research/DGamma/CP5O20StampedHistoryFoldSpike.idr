@@ -336,3 +336,27 @@ o20StampedHistoryCut (StampedHistoryMore stage later) paired =
   o20StampedHistoryCut later (o20StampedStageCut stage paired)
 o20StampedHistoryCut (StampedHistoryEpsilon leftIdle leftZero rightIdle rightZero later) paired =
   o20StampedHistoryCut later paired
+
+||| Precise UNPRODUCED endpoint/scanner synchronization specification for two
+||| supplied native words. The family owns an actual paired path between their
+||| literal endpoints and the two scans pin its final generation environments.
+||| It does NOT assert equality of that path with the supplied trace values;
+||| actual whole-word extraction is stronger and remains unproved.
+public export
+record O20HistorySynchronization
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (keyEq : DecEq key)
+  (mapping : RegistrationGenerationBijection name)
+  {initial, leftFinal, rightFinal : SystemState name key value world error}
+  (left : Transitions initial leftFinal) (right : Transitions initial rightFinal) where
+  constructor MkO20HistorySynchronization
+  synchronizationBijection : NameBijection name
+  synchronizationLeftLive : GenerationEnvironment name
+  synchronizationRightLive : GenerationEnvironment name
+  0 synchronizationLeftScan : GenerationTraceScan nameEq Z [] left
+    (transitionCount left) synchronizationLeftLive
+  0 synchronizationRightScan : GenerationTraceScan nameEq Z [] right
+    (transitionCount right) synchronizationRightLive
+  0 synchronizationStages : O20StampedHistory name key world error value nameEq keyEq
+    mapping synchronizationBijection Z Z [] [] synchronizationLeftLive synchronizationRightLive
+    initial initial leftFinal rightFinal
