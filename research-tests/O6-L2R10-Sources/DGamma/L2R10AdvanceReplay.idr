@@ -363,3 +363,19 @@ advanceAtLifecycle {name} {key} {world} {error} {value}
 advanceAtLifecycle {name} {key} {world} {error} {value}
   nameEq keyEq child parent actor childFiber actorFiber ambient source frame distinct (Reloading remaining accumulator view) lifeEquation =
   advanceAtRemaining nameEq keyEq child parent actor childFiber actorFiber ambient source frame distinct remaining accumulator view lifeEquation
+
+||| GENERAL all-tag native LAdvance observation producer from the ACTUAL
+||| frame. Iter, Finish, Raise, Divert and undefined results are all covered.
+||| No iterator outcome, target truth, or alternate edge is a premise.
+export
+0 retirementAdvanceNative :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (child, parent, actor : name) ->
+  (childFiber, actorFiber : Fiber name key value world error) ->
+  (ambient : world) -> (source : Registry name key value world error) ->
+  (frame : RetirementProviderFrame name key world error value nameEq keyEq child parent actor childFiber actorFiber source) ->
+  (0 distinct : Not (child = actor)) ->
+  RetirementAdvanceEquation nameEq keyEq child actor childFiber ambient source
+retirementAdvanceNative {name} {key} {world} {error} {value}
+  nameEq keyEq child parent actor childFiber actorFiber ambient source frame distinct =
+  advanceAtLifecycle nameEq keyEq child parent actor childFiber actorFiber ambient source frame distinct (fiberLifecycle actorFiber) Refl
