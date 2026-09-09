@@ -8,10 +8,12 @@ import DGamma.Coeffects
 import DGamma.Metatheory
 import DGamma.CP3
 import DGamma.CP5AvailabilityAwarePlacement
+import DGamma.L2R5RootCatalog
 import DGamma.L2R6Iteration
 import DGamma.L2R10MoveCutObservation
 import DGamma.L2R11LocatedCut
 import DGamma.L2R12AlignedCut
+import DGamma.L2R12SelectedAdjacency
 import DGamma.L2R14CatalogQuery
 import Data.List
 import Data.List.Elem
@@ -196,3 +198,29 @@ locateAlignedAdjacent nameEq keyEq (AvailabilityStep first step rest later) alig
     (\tail, ordinal, wantedSource, left, right, leftEquation, rightEquation =>
       locateAlignedAdjacent nameEq keyEq later tail ordinal wantedSource left right leftEquation rightEquation)
     position source leftAction rightAction query rightQuery
+
+||| An ARBITRARY selected positive-distance cut now PRODUCES both ORIGINAL
+||| native adjacent edges at the requested dictionaries. Its following ROOT
+||| source is literally the predecessor target. The root action query is
+||| derived from scanRootCatalog, not supplied from a fixture or square.
+export
+0 selectedAlignedAdjacent : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, finalState : SystemState name key value world error} ->
+  {trace : Transitions first finalState} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (trail : AvailabilityTrace name key world error value trace) ->
+  (aligned : AlignedTransitions name key world error value nameEq keyEq trace) ->
+  (cut : SelectedSquareCut name key world error value nameEq keyEq trail) ->
+  AlignedAdjacentNative name key world error value nameEq keyEq trace (cutSource cut) (cutAction cut)
+    (OInsert (catalogRoot (cutEntry cut)) Root (catalogComponent (cutEntry cut)))
+    (pred (catalogOrdinal (cutEntry cut)))
+selectedAlignedAdjacent nameEq keyEq trail aligned cut =
+  locateAlignedAdjacent nameEq keyEq trail aligned (pred (catalogOrdinal (cutEntry cut)))
+    (cutSource cut) (cutAction cut) (OInsert (catalogRoot (cutEntry cut)) Root (catalogComponent (cutEntry cut)))
+    (predecessorSourceEquation cut)
+    (replace {p = \position => head' (drop position (nativeActionWord trail)) =
+      Just (OInsert (catalogRoot (cutEntry cut)) Root (catalogComponent (cutEntry cut)))}
+      (sym (trans
+        (successorPredPositive (catalogOrdinal (cutEntry cut)) (selectedBirthNotZero nameEq keyEq trail cut))
+        (fst (snd (scanCatalogActionQuery 0 trail (cutEntry cut) (selectedMember cut))))))
+      (snd (snd (scanCatalogActionQuery 0 trail (cutEntry cut) (selectedMember cut)))))
