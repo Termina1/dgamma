@@ -27,3 +27,13 @@ record RestoredFirstPacket (states : Nat -> SystemState Nat Bool (\key => Unit) 
   0 restoredEdge10 : checkedApplyAction @{%search} @{%search} (OInsert 3 Root (smallComponent True)) (states 0) = Just (OInsertTag, states 11)
   0 restoredEdge11 : checkedApplyAction @{%search} @{%search} (OInsert 5 (ChildOf 2) (smallComponent False)) (states 11) = Just (OInsertTag, states 12)
   0 restoredEdge12 : checkedApplyAction @{%search} @{%search} (LBegin 2) (states 12) = Just (LBeginTag, states 13)
+
+||| Native restored-prefix producer: move R BEFORE the original B core.
+||| R's edge is the SAME inherited smallState4 insertion; new child insertion
+||| and Begin2 derive source validity from the preceding checked target.
+export
+0 contiguityRestoredFirst : RestoredFirstPacket contiguityState
+contiguityRestoredFirst = MkRestoredFirstPacket {states = contiguityState}
+  (smallInsert3 smallNativeExecution)
+  (checkedFromRaw %search %search (OInsert 5 (ChildOf 2) (smallComponent False)) (contiguityState 11) (contiguityState 12) OInsertTag (checkedActionTargetValid %search %search (OInsert 3 Root (smallComponent True)) (contiguityState 0) (contiguityState 11) OInsertTag (smallInsert3 smallNativeExecution)) Refl)
+  (checkedFromRaw %search %search (LBegin 2) (contiguityState 12) (contiguityState 13) LBeginTag (checkedActionTargetValid %search %search (OInsert 5 (ChildOf 2) (smallComponent False)) (contiguityState 11) (contiguityState 12) OInsertTag (checkedFromRaw %search %search (OInsert 5 (ChildOf 2) (smallComponent False)) (contiguityState 11) (contiguityState 12) OInsertTag (checkedActionTargetValid %search %search (OInsert 3 Root (smallComponent True)) (contiguityState 0) (contiguityState 11) OInsertTag (smallInsert3 smallNativeExecution)) Refl)) Refl)
