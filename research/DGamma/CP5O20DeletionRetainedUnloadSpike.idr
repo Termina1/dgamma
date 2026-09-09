@@ -32,3 +32,32 @@ o20RegisteredUnloadImpossible name key world error value nameEq keyEq registered
   actor before afterState tag raw inactive owned =
     inactiveCannotUnload nameEq keyEq actor before afterState tag raw
       (inactive actor (fst owned) (snd (snd owned)) (fst (snd owned)))
+
+||| Every native source step excludes an Unload owned by an exact registered
+||| generation, using the continuously advanced ORIGINAL scanner environment.
+public export
+data O20RegisteredUnloadFree :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (registered : List (RegistrationGeneration name)) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  {first, finalState : SystemState name key value world error} ->
+  Transitions first finalState -> Type where
+  O20RegisteredUnloadEnd :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {nameEq : DecEq name} -> {registered : List (RegistrationGeneration name)} ->
+    {ordinal : Nat} -> {live : GenerationEnvironment name} ->
+    {state : SystemState name key value world error} ->
+    O20RegisteredUnloadFree name key world error value nameEq registered ordinal live
+      (the (Transitions state state) NoTransitions)
+  O20RegisteredUnloadStep :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {nameEq : DecEq name} -> {registered : List (RegistrationGeneration name)} ->
+    {ordinal : Nat} -> {live : GenerationEnvironment name} ->
+    {first, middle, finalState : SystemState name key value world error} ->
+    (step : Transition first middle) -> (rest : Transitions middle finalState) ->
+    (0 excludes : (actor : name) -> (transitionAction step = LUnload actor) ->
+      GenerationOwnedActor nameEq registered ordinal live (transitionAction step) -> Void) ->
+    (0 tail : O20RegisteredUnloadFree name key world error value nameEq registered (S ordinal)
+      (advanceGenerationEnvironment @{nameEq} ordinal (transitionAction step) live) rest) ->
+    O20RegisteredUnloadFree name key world error value nameEq registered ordinal live
+      (MoreTransitions step rest)
