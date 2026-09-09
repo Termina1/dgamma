@@ -5,6 +5,8 @@ import DGamma.Coeffects
 import DGamma.Metatheory
 import DGamma.CP3
 import DGamma.CP5RawClosingRankSpike
+import DGamma.CP5ConfluenceLocalDiamondSpike
+import DGamma.CP5O20DeletionRetainedUnloadSpike
 import DGamma.CP5ConfluenceDeletionChainSpike
 import DGamma.CP5O20RetainedClosingIndexSpike
 import Data.List
@@ -173,3 +175,45 @@ o20SplitClosingActionAtAppend name key world error value (MoreTransitions step r
   case o20SplitClosingActionAtAppend name key world error value rest later ordinal actor exact of
     Left earlier => Left earlier
     Right (laterIndex ** (offset, found)) => Right (laterIndex ** (cong S offset, found))
+
+||| Produce the three Unload-exclusion certificates from the actual candidate
+||| and the result's OWN generation scans. No segment exclusion is assumed.
+export
+0 o20DeletionUnloadFreeSegments :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (trace : Transitions initial finalState) ->
+  (premises : CanonicalizationPremises name key world error value protocol nameEq keyEq trace) ->
+  (candidate : DeletableClosingEpisode name key world error value nameEq keyEq trace) ->
+  (result : DeletionResult name key world error value nameEq keyEq trace
+    (selectedActor candidate) (selectedEpisode candidate) (selectedRegistrations candidate)
+    (selectedStartOrdinal candidate) (selectedStartLive candidate)) ->
+  (O20RegisteredUnloadFree name key world error value nameEq (selectedRegistrations candidate) Z []
+     (traceBeforeOpening (selectedEpisode candidate)),
+   O20RegisteredUnloadFree name key world error value nameEq (selectedRegistrations candidate)
+     (selectedStartOrdinal candidate) (selectedStartLive candidate)
+     (MoreTransitions (beginTransition (closedOpening (locatedEpisode (selectedEpisode candidate))))
+       (closedTransitions (locatedEpisode (selectedEpisode candidate)))),
+   O20RegisteredUnloadFree name key world error value nameEq (selectedRegistrations candidate)
+     (episodeEndOrdinal result) (episodeEndLive result) (traceAfterClosing (selectedEpisode candidate)))
+o20DeletionUnloadFreeSegments name key world error value protocol nameEq keyEq trace premises candidate result =
+  case o20RegisteredUnloadSplit nameEq (selectedRegistrations candidate) Z []
+    (traceBeforeOpening (selectedEpisode candidate))
+    (appendTransitions
+      (MoreTransitions (beginTransition (closedOpening (locatedEpisode (selectedEpisode candidate))))
+        (closedTransitions (locatedEpisode (selectedEpisode candidate))))
+      (traceAfterClosing (selectedEpisode candidate)))
+    (selectedStartOrdinal candidate) (selectedStartLive candidate) (beforeGenerationScan result)
+    (replace {p = O20RegisteredUnloadFree name key world error value nameEq (selectedRegistrations candidate) Z []}
+      (sym (locatedDecomposition (selectedEpisode candidate)))
+      (o20DeletionRegisteredUnloadFree name key world error value protocol nameEq keyEq trace premises candidate)) of
+    (beforeFree, laterFree) =>
+      case o20RegisteredUnloadSplit nameEq (selectedRegistrations candidate)
+        (selectedStartOrdinal candidate) (selectedStartLive candidate)
+        (MoreTransitions (beginTransition (closedOpening (locatedEpisode (selectedEpisode candidate))))
+          (closedTransitions (locatedEpisode (selectedEpisode candidate))))
+        (traceAfterClosing (selectedEpisode candidate)) (episodeEndOrdinal result) (episodeEndLive result)
+        (episodeGenerationScan result) laterFree of
+          (centerFree, afterFree) => (beforeFree, centerFree, afterFree)
