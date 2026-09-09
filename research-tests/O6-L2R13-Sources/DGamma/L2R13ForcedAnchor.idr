@@ -137,3 +137,24 @@ phaseNonemptyAnchor : (items : List Nat) -> (seen : Bool) ->
   (anchor : Nat ** lastReleaseCut items = Just anchor)
 phaseNonemptyAnchor [] seen equation accepted = absurd (trans equation accepted)
 phaseNonemptyAnchor (head :: rest) seen equation accepted = (S (foldl max head rest) ** Refl)
+
+||| GENERAL forcing-to-Just: this is the unchanged classifyForced per-entry
+||| test. No phase, seed, anchor, nonempty release list or success is supplied.
+export
+0 forcedAnchorJust : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, finalState : SystemState name key value world error} ->
+  {trace : Transitions first finalState} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (trail : AvailabilityTrace name key world error value trace) -> (cut : Nat) ->
+  (seen : Bool) -> (0 equation : any (\seed => catalogOrdinal seed <= cut &&
+    keyForcedOrdinal nameEq keyEq trail (catalogOrdinal seed)) (scanRootCatalog 0 trail) = seen) ->
+  (0 forced : seen = True) -> (anchor : Nat ** anchorOf nameEq keyEq trail cut = Just anchor)
+forcedAnchorJust nameEq keyEq trail cut seen equation forced =
+  phaseNonemptyAnchor
+    (concatMap (\seed => scanReleaseOrdinals nameEq keyEq (catalogComponent seed) 0 (catalogOrdinal seed) trail)
+      (filter (\seed => catalogOrdinal seed <= cut) (scanRootCatalog 0 trail)))
+    (not (null (concatMap (\seed => scanReleaseOrdinals nameEq keyEq (catalogComponent seed) 0 (catalogOrdinal seed) trail)
+      (filter (\seed => catalogOrdinal seed <= cut) (scanRootCatalog 0 trail))))) Refl
+    (phaseForcedHitNonempty nameEq keyEq trail cut
+      (anyHitObserved (\seed => catalogOrdinal seed <= cut &&
+        keyForcedOrdinal nameEq keyEq trail (catalogOrdinal seed)) (scanRootCatalog 0 trail) seen equation forced))
