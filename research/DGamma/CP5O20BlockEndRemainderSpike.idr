@@ -229,3 +229,25 @@ o20NoLifecycleTraceActiveBackward {name} {key} {value} {world} {error} {first}
         (trans (o19TransitionActorOwner (Fired {name} {key} {value} {world} {error}
           {before = first} {afterState = middle} nameEq keyEq action tag checked)) owner))
       (o20NoLifecycleTraceActiveBackward nameEq keyEq selected rest noLater alignedLater active)
+
+||| EVERY actual located open block ends Active at its own body-end cut.
+||| Its final Active field is reflected through its exact no-later-lifecycle
+||| suffix; the suffix is neither assumed empty nor independently rebuilt.
+export
+0 o20LocatedBlockEndActive :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} -> {selected : name} ->
+  {initial, finalState : SystemState name key value world error} ->
+  {trace : Transitions initial finalState} ->
+  (block : LocatedOpenEpisodeBlock name key world error value nameEq keyEq selected trace) ->
+  AlignedTransitions name key world error value nameEq keyEq trace ->
+  (supportedActiveAt {name} {key} {value} {world} {error} @{nameEq} selected (blockEnd block) = True)
+o20LocatedBlockEndActive {name} {key} {value} {world} {error} {nameEq} {keyEq} {selected} block aligned =
+  o20NoLifecycleTraceActiveBackward nameEq keyEq selected (traceAfterBlock block) (noLaterLifecycle block)
+    (snd (alignedAppendSplit (prefixThroughBlock block) (traceAfterBlock block)
+      (replace {p = AlignedTransitions name key world error value nameEq keyEq}
+        (sym (trans (appendTransitionsAssociative (prefixToBlockOpening block) (blockBody block) (traceAfterBlock block))
+          (trans (appendTransitionsAssociative (traceBeforeBlock block)
+            (MoreTransitions (beginTransition (blockOpening block)) NoTransitions)
+            (appendTransitions (blockBody block) (traceAfterBlock block))) (blockDecomposition block)))) aligned)))
+    (blockActiveAtFinal block)
