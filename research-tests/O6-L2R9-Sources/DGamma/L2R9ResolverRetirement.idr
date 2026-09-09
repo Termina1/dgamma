@@ -33,3 +33,25 @@ resolveAtObservedProvider nameEq keyEq wanted deps before after Nothing beforeEq
 resolveAtObservedProvider {name} {key} nameEq keyEq wanted deps before after (Just provider) beforeEquation afterEquation tail =
   rewrite beforeEquation in rewrite afterEquation in
   cong (map (ProviderView {name} {k = wanted} {rest = deps} provider)) tail
+
+||| GENERAL native resolver invariance for installed retirement. The list
+||| proof D9 supplies each actual provider equality; D10 observes the actual
+||| provider at its own call site. Structural induction on dependencies.
+export
+0 resolveRetirementEntries :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (deps : List key) -> (child : name) ->
+  (fiber : Fiber name key value world error) ->
+  (entries : List (Binding name (FiberAt name key value world error))) ->
+  (0 unique : UniqueKeys (bindingKeys entries)) ->
+  (0 found : lookupEntries {key = name} {value = FiberAt name key value world error} @{nameEq} child entries = Just fiber) ->
+  resolveView {name} {key} {value} {world} {error} @{nameEq} @{keyEq} deps (MkCoeffectContext entries unique) =
+  resolveView {name} {key} {value} {world} {error} @{nameEq} @{keyEq} deps
+    (replaceBinding @{nameEq} child (retireFiber fiber) (MkCoeffectContext entries unique))
+resolveRetirementEntries nameEq keyEq [] child fiber entries unique found = Refl
+resolveRetirementEntries {name} {key} {world} {error} {value} nameEq keyEq (wanted :: deps) child fiber entries unique found =
+  resolveAtObservedProvider nameEq keyEq wanted deps (MkCoeffectContext entries unique)
+    (replaceBinding @{nameEq} child (retireFiber fiber) (MkCoeffectContext entries unique))
+    (providerOf {name} {key} {value} {world} {error} @{nameEq} @{keyEq} wanted (MkCoeffectContext entries unique)) Refl
+    (sym (providerRetirementEntries nameEq keyEq wanted child entries fiber found))
+    (resolveRetirementEntries nameEq keyEq deps child fiber entries unique found)
