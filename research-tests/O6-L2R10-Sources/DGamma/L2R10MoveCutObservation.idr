@@ -143,3 +143,22 @@ selectedCutAtSearch nameEq keyEq trail distance items distanceEquation catalogEq
     (replace {p = \fn => All (\item => fn item = 0) before} (sym distanceEquation) zeros)
     (trans (cong (\fn => fn entry) distanceEquation) positive)
     (head' (drop (pred (catalogOrdinal entry)) (trailSourceActions trail))) Refl
+
+||| GENERAL executable, oracle-free square-availability REQUEST producer.
+||| Selects through selectNativeDistanceRoot, reads its actual predecessor
+||| position, classifies the native source/action and executes early OInsert.
+||| It does NOT assume success, cross replay, endpoints, forcing or decrement;
+||| hence it is not produceAdmittedDistanceMove or a terminating normalizer.
+public export
+observeSelectedMoveCut :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {0 initial, finalState : SystemState name key value world error} ->
+  {0 trace : Transitions initial finalState} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (trail : AvailabilityTrace name key world error value trace) ->
+  Maybe (SelectedSquareCut name key world error value nameEq keyEq trail)
+observeSelectedMoveCut nameEq keyEq trail =
+  selectedCutAtSearch nameEq keyEq trail
+    (\entry => rootDistance nameEq keyEq trail (catalogOrdinal entry)) (scanRootCatalog 0 trail) Refl Refl
+    (nativeSearch (selectNativeDistanceRoot nameEq keyEq trail))
+    (nativeSearchEquation (selectNativeDistanceRoot nameEq keyEq trail))
