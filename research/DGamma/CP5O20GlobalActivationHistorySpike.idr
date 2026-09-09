@@ -217,3 +217,41 @@ o20ChronologicalPositions nameEq (event :: later) counts =
     Just activation =>
       (eventChildPosition event = childrenBornInActivation @{nameEq} activation counts,
        o20ChronologicalPositions nameEq later (incrementChildrenBornInActivation @{nameEq} activation counts))
+
+||| PRODUCE all prefix-position equations by induction on the full native
+||| scanner. Native deleted births and ordinary edges preserve the running
+||| counts; the retained case authenticates its own source activation and
+||| increments it. No prefix position, final position or target index is input.
+export
+0 o20NativeChronologicalPositions :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (ordinal : Nat) -> (index : RegistrationIndexState name) ->
+  {first, finalState : SystemState name key value world error} ->
+  (trace : Transitions first finalState) -> (finalIndex : RegistrationIndexState name) ->
+  (events : List (RegistrationEvent name key world error value)) ->
+  O20NativeActivationScan nameEq ordinal index trace finalIndex events ->
+  o20ChronologicalPositions nameEq events (indexedSurvivingChildCounts index)
+o20NativeChronologicalPositions nameEq ordinal (MkRegistrationIndexState live activations counts deleted)
+  trace finalIndex events scan = case scan of
+    O20ActivationScanEnd => ()
+    O20ActivationScanOrdinary action edge rest shape ordinary later =>
+      replace {p = o20ChronologicalPositions nameEq events}
+        (o20OrdinaryIndexKeepsActivationCounts nameEq ordinal action (MkRegistrationIndexState live activations counts deleted))
+        (o20NativeChronologicalPositions nameEq (S ordinal)
+          (advanceRegistrationIndex @{nameEq} ordinal action (MkRegistrationIndexState live activations counts deleted))
+          rest finalIndex events later)
+    O20ActivationScanDeleted {child} {parent} {component} edge rest shape discarded later =>
+      replace {p = o20ChronologicalPositions nameEq events}
+        (snd (o20DeletedBirthKeepsActivationPosition nameEq ordinal child parent component (MkRegistrationIndexState live activations counts deleted)))
+        (o20NativeChronologicalPositions nameEq (S ordinal)
+          (advanceDeletedRegistrationIndex @{nameEq} ordinal child parent component (MkRegistrationIndexState live activations counts deleted))
+          rest finalIndex events later)
+    O20ActivationScanRetained {child} {parent} {component} {events = laterEvents} edge rest shape retained later =>
+      rewrite survivingActivationPresent retained in
+        (Refl, replace {p = o20ChronologicalPositions nameEq laterEvents}
+          (snd (o20SurvivingBirthActivationUpdate nameEq ordinal child parent component
+            (MkRegistrationIndexState live activations counts deleted) (survivingActivation retained)
+            (survivingActivationPresent retained)))
+          (o20NativeChronologicalPositions nameEq (S ordinal)
+            (advanceSurvivingRegistrationIndex @{nameEq} ordinal child parent component (MkRegistrationIndexState live activations counts deleted))
+            rest finalIndex laterEvents later))
