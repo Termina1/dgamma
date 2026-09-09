@@ -80,3 +80,35 @@ alignedNativeHead nameEq keyEq (AvailabilityStep source (Fired ne ke head tag ch
   locateAlignedSourceAction nameEq keyEq
     (AvailabilityStep source (Fired ne ke head tag checked) rest later) aligned 0 source action
     (cong (\selected => Just (source, selected)) (injective query))
+
+||| Construct both adjacent native edges at the exact checked head. The
+||| following source is PRODUCED as this head's target, not an extra premise.
+export
+0 adjacentNativeAtHead : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (headAction : Action name key value world error) -> (tag : RuleTag) ->
+  (0 checked : checkedApplyAction @{nameEq} @{keyEq} headAction first = Just (tag, middle)) ->
+  (rest : Transitions middle finalState) ->
+  (later : AvailabilityTrace name key world error value rest) ->
+  (tailAligned : AlignedTransitions name key world error value nameEq keyEq rest) ->
+  (source : SystemState name key value world error) ->
+  (leftAction, rightAction : Action name key value world error) ->
+  (0 query : Just (first, headAction) = Just (source, leftAction)) ->
+  (0 rightQuery : head' (nativeActionWord later) = Just rightAction) ->
+  AlignedAdjacentNative name key world error value nameEq keyEq
+    (MoreTransitions (Fired {before = first} {afterState = middle} nameEq keyEq headAction tag checked) rest)
+    source leftAction rightAction 0
+adjacentNativeAtHead {name} {key} {world} {error} {value} {first} {middle}
+  nameEq keyEq headAction tag checked rest later tailAligned source leftAction rightAction query rightQuery =
+  replace {p = \pair => AlignedAdjacentNative name key world error value nameEq keyEq
+    (MoreTransitions (Fired {before = first} {afterState = middle} nameEq keyEq headAction tag checked) rest)
+    (fst pair) (snd pair) rightAction 0} (injective query)
+    (MkAlignedAdjacentNative
+      (MkAlignedSourceAction middle tag checked
+        (MkLocatedActionOccurrence first middle NoTransitions
+          (Fired {before = first} {afterState = middle} nameEq keyEq headAction tag checked) rest Refl Refl)
+        Refl Refl Refl)
+      (alignedSourceThroughHead nameEq keyEq
+        (Fired {before = first} {afterState = middle} nameEq keyEq headAction tag checked) rest
+        middle rightAction 0 (alignedNativeHead nameEq keyEq later tailAligned rightAction rightQuery)))
