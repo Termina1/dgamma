@@ -44,3 +44,25 @@ o20FiberRoleRemainder (Just (MkFiber component parent retiredFlag table (Reloadi
   o20ProgramRoleWord remaining
 o20FiberRoleRemainder (Just (MkFiber component parent retiredFlag table (Active accumulator view))) = []
 o20FiberRoleRemainder (Just (MkFiber component parent retiredFlag table (Unloading accumulator view outcome))) = []
+
+||| An observed ACTUAL Begin consumes exactly the head Begin of its fiber's
+||| remainder. The after lookup is produced by native replacement and the
+||| observation's own endpoint equation, not an assumed target lookup.
+export
+0 o20ObservedBeginRoleConsumption :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (before, afterState : SystemState name key value world error) ->
+  O20BeginObservation name key world error value nameEq keyEq actor before afterState ->
+  (o20FiberRoleRemainder
+    (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor (registry before)) =
+   LBeginTag :: o20FiberRoleRemainder
+    (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor (registry afterState)))
+o20ObservedBeginRoleConsumption nameEq keyEq actor before afterState
+  (MkO20BeginObservation component parent table view found resolved afterExact) =
+    rewrite sym afterExact in
+    rewrite lookupReplacedFiber @{nameEq} actor
+      (MkFiber component parent False table (Inactive Nothing))
+      (MkFiber component parent False table (Reloading (componentProgram component) id view))
+      (registry before) found in
+    rewrite found in Refl
