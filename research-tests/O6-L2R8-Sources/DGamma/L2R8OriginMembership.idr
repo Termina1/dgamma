@@ -85,3 +85,17 @@ record OriginObservation
   0 originOrdinalMember : (ordinal : Nat) -> originObserved = Just ordinal ->
     Elem ordinal (map catalogOrdinal (filter (\entry => catalogOrdinal entry <= cut &&
       isYes (decEq @{nameEq} actor (catalogRoot entry))) (scanRootCatalog 0 trail)))
+
+||| Single-constructor, unrestricted executable producer of the unchanged
+||| origin scan and its GENERAL membership consequence. No caller-supplied
+||| origin or catalog list; native entry/birth linkage remains open as above.
+public export
+observeRootOrigin : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {0 first, finalState : SystemState name key value world error} ->
+  {0 trace : Transitions first finalState} ->
+  (nameEq : DecEq name) -> (trail : AvailabilityTrace name key world error value trace) ->
+  (actor : name) -> (cut : Nat) -> OriginObservation name key world error value nameEq trail actor cut
+observeRootOrigin nameEq trail actor cut = MkOriginObservation
+  (rootOriginAt nameEq actor cut (scanRootCatalog 0 trail)) Refl
+  (\ordinal, accepted => rootOriginCatalogOrdinal nameEq actor cut (scanRootCatalog 0 trail)
+    (rootOriginAt nameEq actor cut (scanRootCatalog 0 trail)) Refl ordinal accepted)
