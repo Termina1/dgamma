@@ -36,7 +36,8 @@ import DGamma.L2R13PacketEndpointTransport
 ||| each). No whole or LOCAL endpoint relation is supplied by the caller.
 ||| Raw per-action state-shape premises are general hypotheses, discharged
 ||| only on the fixture; suffix kinds remain the inherited Root/Retire scope.
-export
+||| Public because consumers reduce its computed record fields.
+public export
 0 packetWholeTransportFromActionShapes :
   (oldStates, newStates : Nat -> SystemState Nat Bool (\key => Unit) Unit String) ->
   {initial, oldFinal, newFinal : SystemState Nat Bool (\key => Unit) Unit String} ->
