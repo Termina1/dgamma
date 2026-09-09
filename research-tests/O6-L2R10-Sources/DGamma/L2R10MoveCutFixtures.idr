@@ -58,3 +58,18 @@ export
     (observeSelectedMoveCut (fst fixtureDictionaries) (snd fixtureDictionaries) (singleBeforeTrail iterationFixtures)) =
   Just (3, 5, LBegin 2, True)
 singleSelectedCutObservation = Refl
+
+||| BOTH ordered bundle requests FROM the new producer: R first, then S.
+||| These native applicability observations do not project/restate the old
+||| firstBundleAdmitted/secondBundleAdmitted proof fields or certify moves.
+export
+0 bundleSelectedCutObservations :
+  (Prelude.map {f = Maybe}
+    (\cut => (catalogRoot (cutEntry cut), catalogOrdinal (cutEntry cut), cutAction cut, isJust (earlyRootResult cut)))
+    (observeSelectedMoveCut (fst fixtureDictionaries) (snd fixtureDictionaries) (bundleBeforeTrail iterationFixtures)) =
+    Just (3, 5, LBegin 2, True),
+   Prelude.map {f = Maybe}
+    (\cut => (catalogRoot (cutEntry cut), catalogOrdinal (cutEntry cut), cutAction cut, isJust (earlyRootResult cut)))
+    (observeSelectedMoveCut (fst fixtureDictionaries) (snd fixtureDictionaries) (bundleMiddleTrail iterationFixtures)) =
+    Just (4, 6, LBegin 2, True))
+bundleSelectedCutObservations = (Refl, Refl)
