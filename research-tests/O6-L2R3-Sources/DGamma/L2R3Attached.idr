@@ -128,3 +128,14 @@ export
   ActorLifecycleOnlyExtended nameEq selected trace ->
   ActorLifecycleOnlyAttached nameEq selected trace
 extendedIntoAttached {trace} extended = AttachedWithoutRoots trace extended
+
+||| Compose CP5ActorLifecycleOnlyExtended's CP3:1786 inclusion with A5.
+||| These are forward inclusions only; frozen blocks cannot absorb root inputs.
+export
+0 oldIntoAttached :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> {selected : name} ->
+  {first, finalState : SystemState name key value world error} ->
+  {trace : Transitions first finalState} ->
+  ActorLifecycleOnly selected trace -> ActorLifecycleOnlyAttached nameEq selected trace
+oldIntoAttached nameEq old = extendedIntoAttached (actorLifecycleOnlyIntoExtended nameEq old)
