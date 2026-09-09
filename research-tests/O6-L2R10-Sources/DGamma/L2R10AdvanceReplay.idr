@@ -39,3 +39,17 @@ retirementTargetAtFlag nameEq keyEq child parent actor childFiber actorFiber sou
   rewrite equation in sym (fst (retirementFrameResolverSame nameEq keyEq child parent actor childFiber actorFiber source frame))
 retirementTargetAtFlag nameEq keyEq child parent actor childFiber actorFiber source frame True equation =
   rewrite equation in Refl
+
+||| Actual frame producer for native target equality, no equality oracle.
+export
+0 retirementTargetSame :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (child, parent, actor : name) ->
+  (childFiber, actorFiber : Fiber name key value world error) ->
+  (source : Registry name key value world error) ->
+  (frame : RetirementProviderFrame name key world error value nameEq keyEq child parent actor childFiber actorFiber source) ->
+  targetFiber {name} {key} {value} {world} {error} @{nameEq} @{keyEq} actorFiber
+    (replaceBinding @{nameEq} child (retireFiber childFiber) source) =
+  targetFiber {name} {key} {value} {world} {error} @{nameEq} @{keyEq} actorFiber source
+retirementTargetSame nameEq keyEq child parent actor childFiber actorFiber source frame =
+  retirementTargetAtFlag nameEq keyEq child parent actor childFiber actorFiber source frame (retired actorFiber) Refl
