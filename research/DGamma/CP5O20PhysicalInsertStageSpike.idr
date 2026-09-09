@@ -223,3 +223,41 @@ export
   (checkedApplyAction {name} {key} {value} {world} {error} @{nameEq} @{keyEq}
     (transitionAction step) before = Just (transitionTag step, afterState))
 o20AlignedPhysicalHeadChecked nameEq keyEq _ _ (AlignedStep action tag checked rest alignedRest) = checked
+
+||| Two authentic aligned physical Insert edges produce a paired stamped
+||| stage at their OWN source/target states. Their matched generation equation
+||| is consumed without changing either transition or rebuilding its target.
+export
+0 o20InsertStageFromAlignedHeads :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (renaming : NameBijection name) ->
+  {mapping : RegistrationGenerationBijection name} ->
+  {leftOrdinal, rightOrdinal : Nat} -> {leftLive, rightLive : GenerationEnvironment name} ->
+  (actor : name) -> (component : Component key value world error) ->
+  (leftParent, rightParent : Parent name) -> ParentRelatedBy renaming leftParent rightParent ->
+  {leftBefore, leftAfter, leftFinal, rightBefore, rightAfter, rightFinal : SystemState name key value world error} ->
+  (leftStep : Transition leftBefore leftAfter) -> (leftRest : Transitions leftAfter leftFinal) ->
+  AlignedTransitions name key world error value nameEq keyEq (MoreTransitions leftStep leftRest) ->
+  (transitionAction leftStep = OInsert actor leftParent component) ->
+  (rightStep : Transition rightBefore rightAfter) -> (rightRest : Transitions rightAfter rightFinal) ->
+  AlignedTransitions name key world error value nameEq keyEq (MoreTransitions rightStep rightRest) ->
+  (transitionAction rightStep = OInsert (renameForward renaming actor) rightParent component) ->
+  (generationForward mapping (MkRegistrationGeneration actor leftOrdinal) =
+    MkRegistrationGeneration (renameForward renaming actor) rightOrdinal) ->
+  O20StampedStage name key world error value nameEq keyEq mapping renaming leftOrdinal rightOrdinal leftLive rightLive
+    (putCurrentGeneration @{nameEq} actor (MkRegistrationGeneration actor leftOrdinal) leftLive)
+    (putCurrentGeneration @{nameEq} (renameForward renaming actor)
+      (MkRegistrationGeneration (renameForward renaming actor) rightOrdinal) rightLive)
+    leftBefore rightBefore leftAfter rightAfter
+o20InsertStageFromAlignedHeads nameEq keyEq renaming actor component leftParent rightParent parents
+  {leftBefore} {leftAfter} {rightBefore} {rightAfter}
+  leftStep leftRest leftAligned leftExact rightStep rightRest rightAligned rightExact matched =
+    o20InsertStageAtCheckedStates nameEq keyEq renaming actor component leftParent rightParent parents
+      leftBefore rightBefore (transitionTag leftStep) leftAfter
+      (o20CheckedInsertFromActionEquation nameEq keyEq actor leftParent component (transitionAction leftStep)
+        leftBefore leftAfter (transitionTag leftStep)
+        (o20AlignedPhysicalHeadChecked nameEq keyEq leftStep leftRest leftAligned) leftExact)
+      (transitionTag rightStep) rightAfter
+      (o20CheckedInsertFromActionEquation nameEq keyEq (renameForward renaming actor) rightParent component (transitionAction rightStep)
+        rightBefore rightAfter (transitionTag rightStep)
+        (o20AlignedPhysicalHeadChecked nameEq keyEq rightStep rightRest rightAligned) rightExact) matched
