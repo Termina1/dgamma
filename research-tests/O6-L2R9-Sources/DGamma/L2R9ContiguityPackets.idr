@@ -29,3 +29,10 @@ export
    (checkedApplyAction @{%search} @{%search} (ORetire 5) (contiguityState 3) = Just (ORetireTag, contiguityState 4)),
    (checkedApplyAction @{%search} @{%search} (ORemove 5) (contiguityState 4) = Just (ORemoveTag, contiguityState 5)))
 contiguityOriginalFirst = (Refl, Refl, Refl, Refl, Refl)
+
+||| Original-path suffix packet: native R then S after the complete B core.
+export
+0 contiguityOriginalLast :
+  ((checkedApplyAction @{%search} @{%search} (OInsert 3 Root (smallComponent True)) (contiguityState 5) = Just (OInsertTag, contiguityState 6)),
+   (checkedApplyAction @{%search} @{%search} (OInsert 4 Root (smallComponent False)) (contiguityState 6) = Just (OInsertTag, contiguityState 7)))
+contiguityOriginalLast = (Refl, Refl)
