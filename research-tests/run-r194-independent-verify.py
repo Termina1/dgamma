@@ -71,6 +71,17 @@ if not INTERIM:
     assert sha(plan_bytes) == (OUT / 'final-validation-plan.sha256').read_text().strip()
     plans = json.loads(plan_bytes)
     assert [p['unit'] for p in plans] == ['V' + str(n) for n in range(1, len(plans) + 1)]
+    assert len(plans) == 59
+    prior = (ROOT / 'research-tests/O6-R194-PREFLIGHT-PLAN.json').read_bytes()
+    assert sha(prior) == '73ddfc58ea6e13473f31a61366fcbad931a18cc69b62b1de6ceb58985fa31bfe'
+    assert prior == (OUT / 'preflight-plan.json').read_bytes()
+    scope = json.loads((ROOT / 'research-tests/O6-R194-FINAL-VALIDATION-SCOPE.json').read_text())
+    assert scope == json.loads((OUT / 'final-validation-scope.json').read_text()) and scope['exclusions'] == []
+    inherited = json.loads((ROOT / 'research-tests/O6-R193-FINAL-VALIDATION-PLAN.json').read_text())
+    assert {p['path'] for p in inherited}.issubset({p['path'] for p in plans})
+    for item in inherited:
+        target = 'dgamma.ipkg' if item['path'] == 'package' else item['path']
+        assert (ROOT / target).read_bytes() == git('show', START + ':' + target)
     completion = json.loads((OUT / 'final-validation-complete.json').read_text())
     assert completion['invocations'] == [p['unit'] for p in plans] and completion['serial'] and completion['substitutions'] == {}
     assert {r['unit'] for r in records if r['unit'].startswith('V')} == {p['unit'] for p in plans}
@@ -89,7 +100,7 @@ if not INTERIM:
             assert snapshots[r['unit']] == git('show', START + ':' + target)
             assert r['heavyLock'] and r['heavyLock'][-1]['event'] == 'acquired'
             assert 'HEAVY LOCK RELEASE ' + r['unit'] in (OUT / (r['unit'] + '.monitor')).read_text()
-        assert r['start'] < '2026-09-09T03:28:53+00:00'
+        assert scope['timestampUTC'] <= r['start'] < '2026-09-09T03:28:53+00:00'
 assert not git('diff', '34b21c9', '--', 'src/', 'dgamma.ipkg')
 assert not git('diff', '--cached', '--name-only')
 assert not git('diff', '--name-only', '--', 'research/', 'research-tests/DGamma/', 'src/', 'dgamma.ipkg')
@@ -111,7 +122,8 @@ report = dict(status='PASS', phase='interim' if INTERIM else 'final', head=git('
     allLogsAndSnapshotsAuthenticated=True, attemptCounts={unit: len(runs) for unit, runs in attempts.items()},
     allSourceAttemptsBeforeCutoff=all(r['start'] < '2026-09-09T03:13:53+00:00' for runs in attempts.values() for r in runs),
     productionFrozen=True, noCompiler=True, compilerScope='main worktree only', lane2Compilers=lane2,
-    noLaneOwnedTargets=True, noStagedFiles=True, cleanTrackedProofTree=True, cleanTrackedTree=not bool(git('diff', '--name-only')))
+    noLane2CreatedResultsChecked=True, inheritedMainBaselineTargetsIncluded=not INTERIM,
+    noStagedFiles=True, cleanTrackedProofTree=True, cleanTrackedTree=not bool(git('diff', '--name-only')))
 assert report['allSourceAttemptsBeforeCutoff']
 (OUT / ('interim-independent-verification.json' if INTERIM else 'independent-verification.json')).write_text(json.dumps(report, indent=2) + '\n')
 print(json.dumps({k: v for k, v in report.items() if k not in ['newDeclarations', 'attemptCounts']}, indent=2))

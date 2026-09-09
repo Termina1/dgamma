@@ -73,7 +73,11 @@ else:
             text = data.decode()
             return set(re.findall(r'^(?:[01] )?([A-Za-z_]\w*)\s*:',text,re.M) + re.findall(r'^(?:record|data)\s+([A-Za-z_]\w*)',text,re.M))
         assert len(declarations(snapshot)-declarations(old.stdout if old.returncode == 0 else b'')) == 1, 'Exactly one new declaration per proof invocation'
-    assert not any(word in path for word in ['ActorLifecycleOnlyExtended','CP5AvailabilityAware','CP5L2R','L2R']), 'Lane-owned target prohibited'
+    assert not any(word in path for word in ['CP5L2R','L2R']), 'Lane-created result target prohibited'
+    # Owner's preflight ruling permits inherited MAIN-baseline variant modules,
+    # not lane2 results or worktree access. These targets must remain byte-pinned.
+    if any(word in path for word in ['ActorLifecycleOnlyExtended','CP5AvailabilityAware']):
+        assert planned_validation and snapshot == subprocess.check_output(['git','show','b81362d8:'+path],cwd=ROOT)
     target.touch()
     if path.startswith('research-tests/'):
         command += ['--source-dir', str(ROOT/'research-tests')]

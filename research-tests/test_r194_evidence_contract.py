@@ -62,11 +62,13 @@ class EvidenceContractTests(unittest.TestCase):
         sources['A8-2'] = b'||| accurate wording\nx : Nat\nx = 1\n'
         with self.assertRaises(AssertionError): contract.validate_attempts(records, sources)
 
-    def test_lane_owned_variants_are_excluded(self):
+    def test_main_baseline_variants_allowed_not_other_worktrees(self):
         for path in ('research/DGamma/CP5AvailabilityAwarePlacement.idr', 'research/DGamma/CP5ActorLifecycleOnlyExtended.idr',
-                     'research-tests/DGamma/R192ExtendedChildBlockProbe.idr', 'research/DGamma/CP5L2R3Example.idr'):
+                     'research-tests/DGamma/R192ExtendedChildBlockProbe.idr', 'research/DGamma/CP5O20OwnCutSafetySpike.idr'):
+            self.assertTrue(contract.owned_target(path))
+        for path in ('../dgamma-lane2/research/DGamma/CP5L2R3Example.idr', '/Users/other/dgamma-lane2/research/DGamma/Example.idr',
+                     'research/DGamma/../../outside.idr'):
             self.assertFalse(contract.owned_target(path))
-        self.assertTrue(contract.owned_target('research/DGamma/CP5O20OwnCutSafetySpike.idr'))
 
 if __name__ == '__main__':
     unittest.main()

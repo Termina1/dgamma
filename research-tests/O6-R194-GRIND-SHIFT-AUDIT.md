@@ -23,7 +23,9 @@ not zero resource usage. No seed deletion/cold build or orphan kill.
 One native compiler at a time in THIS worktree. Lane2 compilers encountered
 at guards are classified "lane-2 compiler (separate worktree)", never killed
 or counted against main concurrency; their command lines are recorded only.
-No cd/edit/build/commit in lane2, and no lane-owned source target in main.
+No cd/edit/build/commit in lane2 and no lane2-created result target in main.
+Inherited main-baseline variant modules are included only as clarified by the
+explicit preflight ruling below; that is not certification of lane2 results.
 Shared heavy lock policy: atomic mkdir /tmp/dgamma-heavy.lock with JSON
 owner(lane R194-main,pid,timestampUTC,unit,path), maximum20min wait, only
 age>25min plus dead-owner cleanup logged. No heavy check launched yet.
@@ -168,3 +170,18 @@ all5 protected spikes, seeded package, main fixtures and R8/R16 boundaries.
 It deliberately omits lane-owned ActorLifecycleOnlyExtended/AvailabilityAware
 source targets and the extension-dependent R192 probe; no lane2 certification
 is inferred. Final results and evidence archive remain pending at this entry.
+
+### C2 preflight owner clarification; C1 plan withdrawn UNRUN
+
+The interpretation behind C1's exclusions was rejected by the supervisor.
+Main-tree inherited baseline variant modules and their regression fixtures MUST
+be included; only files absent from main may be excluded. The old56-slot plan
+and SHA remain versioned, withdrawn BEFORE any final compiler, and all52
+inherited targets are restored with their bytes authenticated to b81362d8.
+Restored immutable plan:59 checks=52 positives/7 expected negatives, no exclusions.
+See O6-R194-PREFLIGHT-RULING.md for the exact request/ruling and original plan.
+The guard permits the two inherited variant modules only in planned validation
+and only at their frozen baseline bytes. No ongoing lane2-created result is
+certified. Source freeze408bd21e and binding A30/B16 caps are unchanged.
+The corrected ten-test suite distinguishes inherited main baseline targets from
+sibling-worktree paths; original preflight test logs remain historical evidence.

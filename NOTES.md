@@ -3568,6 +3568,18 @@ PASS. Main excludes lane-owned source targets and extension-dependent probes;
 no main check certifies ongoing lane2 variants. After acceptance, whole pairing
 and exact all-name endpoint ownership remain the next main proof frontier.
 
+### R194 preflight owner clarification (C2)
+
+The C1 exclusion interpretation was rejected BEFORE any final compiler. The
+supervisor requires all inherited main-baseline modules/fixtures, including
+ActorLifecycleOnlyExtended and AvailabilityAwarePlacement, to be validated in
+main at their unchanged baseline bytes. This does not certify ongoing lane2-
+created results. No inherited target is absent, so the restored immutable plan
+has59 checks (52 positives/7 expected negatives), not56. Original56-slot plan,
+hash and scope are retained as explicitly withdrawn, unrun preflight evidence.
+Exact ruling: research-tests/O6-R194-PREFLIGHT-RULING.md. No Idris edit, retry or
+budget extension; source freeze408bd21e remains unchanged.
+
 This addendum is artifact-only. No further Idris/compiler or implementation
 source work followed the ruling. Independent review remains parent-owned
 and pending; neither ratification nor the52-slot final validation closes

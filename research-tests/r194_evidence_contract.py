@@ -1,10 +1,11 @@
 """Pure R194 evidence contracts; no compiler, subprocess or filesystem writes."""
 import re
 
-LANE_TARGETS = ('ActorLifecycleOnlyExtended', 'CP5AvailabilityAware', 'CP5L2R', 'L2R', 'R192ExtendedChildBlockProbe')
-
 def owned_target(path):
-    return not any(marker in path for marker in LANE_TARGETS)
+    # Owner clarification: inherited main-baseline modules are valid targets,
+    # even if their subject also belongs to lane2. Never enter another tree.
+    return path == 'package' or (path.startswith(('research/DGamma/', 'research-tests/DGamma/'))
+        and '..' not in path.split('/'))
 
 def source_code(source):
     return '\n'.join(line for line in source.decode().splitlines()
@@ -14,7 +15,7 @@ def validate_record(record, source, log, root):
     import hashlib
     assert hashlib.sha256(source).hexdigest() == record['sourceSHA256']
     assert log == record['transcript']
-    assert owned_target(record['path']), 'Lane-owned target'
+    assert owned_target(record['path']), 'Target outside main research roots'
     assert 'rssSamples' in record and 'targetMutationDetected' in record
     assert record['maxSampleRSSKiB'] == max([s['rssKiB'] for s in record['rssSamples']] or [0])
     if record['passed']:

@@ -17,7 +17,7 @@ assert not (OUT / 'final-validation-complete.json').exists(), 'Append-only compl
 assert not subprocess.check_output(['git', 'diff', '--cached', '--name-only'], cwd=ROOT).strip()
 assert not subprocess.check_output(['git', 'diff', '--name-only', '--', 'research/', 'src/', 'research-tests/DGamma/'], cwd=ROOT).strip()
 for item in plan:
-    assert contract['owned_target'](item['path']), 'No lane-owned target or extension-dependent probe'
+    assert contract['owned_target'](item['path']), 'Only main research roots; inherited baseline variants are allowed'
     source = ROOT / ('dgamma.ipkg' if item['path'] == 'package' else item['path'])
     assert hashlib.sha256(source.read_bytes()).hexdigest() == item['sourceHash']
     assert not (OUT / (item['unit'] + '.json')).exists(), 'No silent overwrite or skip'

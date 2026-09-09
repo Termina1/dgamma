@@ -42,7 +42,9 @@ citations, NOT line numbers in the extracted paper.
 5. No separate A12Pending is needed inside that exact-zero frozen theorem:
    a gap with zero actual transitions contains no availability-forced root.
    This says nothing about establishing gap0 or repairing the extended/root-
-   availability variants owned by lane2. Those targets are not checked in main.
+   availability variants being developed by lane2. Per the explicit preflight
+   owner clarification, unchanged inherited MAIN baseline modules/fixtures ARE
+   checked; those validations do not certify ongoing lane2-created results.
 6. Theorem73's final transposition paragraph motivates B, but pure adjacent
    order inversion is not asserted to imply physical adjacency. The conditional
    theorem does not silently close the paragraph's mechanization debt.
