@@ -115,3 +115,31 @@ export
   (supportedActiveAt {name} {key} {value} {world} {error} @{nameEq} selected afterState = False)
 o20RemoveViewNotActive nameEq selected ambient fibers (MkRemoveSuccessView fiber found guards childless) =
   rewrite o20DeletedLookupAbsent nameEq selected fibers in Refl
+
+||| Every actual non-lifecycle owner action reflects Active backwards. Insert
+||| and Remove cannot end Active; Retire preserves it. No operation is skipped.
+export
+0 o20NonLifecycleOwnerActiveBackward :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (action : Action name key value world error) ->
+  (ambient : world) -> (fibers : Registry name key value world error) ->
+  (afterState : SystemState name key value world error) -> (tag : RuleTag) ->
+  (applyAction {name} {key} {value} {world} {error} @{nameEq} @{keyEq} action (MkSystemState ambient fibers) = Just (tag, afterState)) ->
+  (isLifecycleAction action = False) ->
+  (supportedActiveAt {name} {key} {value} {world} {error} @{nameEq} (actionOwner action) afterState = True) ->
+  (supportedActiveAt {name} {key} {value} {world} {error} @{nameEq} (actionOwner action) (MkSystemState ambient fibers) = True)
+o20NonLifecycleOwnerActiveBackward nameEq keyEq (OInsert selected parent component) ambient fibers afterState tag raw nonLifecycle active =
+  void (uninhabited (trans (sym (o20InsertViewNotActive nameEq keyEq selected parent component ambient fibers
+    (foreignInsertPlanView nameEq keyEq selected parent component ambient fibers tag afterState raw))) active))
+o20NonLifecycleOwnerActiveBackward nameEq keyEq (ORetire selected) ambient fibers afterState tag raw nonLifecycle active =
+  trans (o20RetireViewActive nameEq selected ambient fibers
+    (retireSuccessView nameEq keyEq selected ambient fibers tag afterState raw)) active
+o20NonLifecycleOwnerActiveBackward nameEq keyEq (ORemove selected) ambient fibers afterState tag raw nonLifecycle active =
+  void (uninhabited (trans (sym (o20RemoveViewNotActive nameEq selected ambient fibers
+    (removeSuccessView nameEq keyEq selected ambient fibers tag afterState raw))) active))
+o20NonLifecycleOwnerActiveBackward nameEq keyEq (LBegin selected) ambient fibers afterState tag raw nonLifecycle active = absurd nonLifecycle
+o20NonLifecycleOwnerActiveBackward nameEq keyEq (LAdvance selected) ambient fibers afterState tag raw nonLifecycle active = absurd nonLifecycle
+o20NonLifecycleOwnerActiveBackward nameEq keyEq (LDivert selected) ambient fibers afterState tag raw nonLifecycle active = absurd nonLifecycle
+o20NonLifecycleOwnerActiveBackward nameEq keyEq (LLeave selected) ambient fibers afterState tag raw nonLifecycle active = absurd nonLifecycle
+o20NonLifecycleOwnerActiveBackward nameEq keyEq (LUnload selected) ambient fibers afterState tag raw nonLifecycle active = absurd nonLifecycle
