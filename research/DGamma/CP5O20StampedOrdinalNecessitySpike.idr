@@ -103,3 +103,34 @@ o20StampedStageForwardOrdinalFixed {mapping} {leftOrdinal} {rightOrdinal} {leftL
     leftWorld rightWorld leftRegistry rightRegistry leftChecked rightChecked) equalCounters previous selected stamp found =
     previous selected stamp
       (o20HistoryLookupBeforeRemove nameEq actor selected leftLive leftUnique stamp found)
+
+||| Induction over the existing finite paired history: equal starting
+||| counters stay equal at each recursive stage, so EVERY surviving left
+||| stamp has a forward-map-fixed birth ordinal. Zero/zero epsilon cannot
+||| change that invariant. No equality of supplied trace tokens is required.
+export
+0 o20StampedHistoryForwardOrdinalFixed :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {mapping : RegistrationGenerationBijection name} -> {renaming : NameBijection name} ->
+  {leftOrdinal, rightOrdinal : Nat} ->
+  {leftLive, rightLive, leftFinalLive, rightFinalLive : GenerationEnvironment name} ->
+  {leftBefore, rightBefore, leftAfter, rightAfter : SystemState name key value world error} ->
+  O20StampedHistory name key world error value nameEq keyEq mapping renaming
+    leftOrdinal rightOrdinal leftLive rightLive leftFinalLive rightFinalLive
+    leftBefore rightBefore leftAfter rightAfter ->
+  (leftOrdinal = rightOrdinal) ->
+  ((selected : name) -> (stamp : RegistrationGeneration name) ->
+    (lookupCurrentGeneration @{nameEq} selected leftLive = Just stamp) ->
+    (generationBirthOrdinal (generationForward mapping stamp) = generationBirthOrdinal stamp)) ->
+  (selected : name) -> (stamp : RegistrationGeneration name) ->
+  (lookupCurrentGeneration @{nameEq} selected leftFinalLive = Just stamp) ->
+  (generationBirthOrdinal (generationForward mapping stamp) = generationBirthOrdinal stamp)
+o20StampedHistoryForwardOrdinalFixed StampedHistoryEnd equalCounters previous selected stamp found =
+  previous selected stamp found
+o20StampedHistoryForwardOrdinalFixed (StampedHistoryMore stage later) equalCounters previous selected stamp found =
+  o20StampedHistoryForwardOrdinalFixed later (cong S equalCounters)
+    (o20StampedStageForwardOrdinalFixed stage equalCounters previous) selected stamp found
+o20StampedHistoryForwardOrdinalFixed (StampedHistoryEpsilon leftIdle leftZero rightIdle rightZero later)
+  equalCounters previous selected stamp found =
+    o20StampedHistoryForwardOrdinalFixed later equalCounters previous selected stamp found
