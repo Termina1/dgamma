@@ -81,3 +81,68 @@ o20SurvivingDiscardedObserved name key world error value nameEq ordinal child pa
   rewrite exact in Refl
 o20SurvivingDiscardedObserved name key world error value nameEq ordinal child parent component live activations counts deleted (Just activation) exact =
   rewrite exact in Refl
+
+||| The public bilateral scanner cannot add a left discarded generation when
+||| the actual left word contains no Unload. Right-only advances are retained;
+||| the actual discard constructor contradicts its own closing occurrence.
+export
+0 o20NoUnloadDiscardedScan :
+  (name, key, world, error : Type) -> (value : key -> Type) -> (nameEq : DecEq name) ->
+  (mapping : RegistrationGenerationBijection name) ->
+  (leftOrdinal : Nat) -> (leftIndex : RegistrationIndexState name) ->
+  (rightOrdinal : Nat) -> (rightIndex : RegistrationIndexState name) ->
+  {leftFirst, leftFinal, rightFirst, rightFinal : SystemState name key value world error} ->
+  (left : Transitions leftFirst leftFinal) -> (right : Transitions rightFirst rightFinal) ->
+  (leftFinalIndex, rightFinalIndex : RegistrationIndexState name) ->
+  {pendingLeft, pendingRight : List (RegistrationEvent name key world error value)} ->
+  RegistrationTraceCorrespondence nameEq mapping leftOrdinal leftIndex left leftFinalIndex
+    rightOrdinal rightIndex right rightFinalIndex pendingLeft pendingRight ->
+  ((actor : name) -> (ActionOccurs (LUnload actor) left -> Void)) ->
+  (indexedDeletedGenerations leftFinalIndex = indexedDeletedGenerations leftIndex)
+o20NoUnloadDiscardedScan name key world error value nameEq mapping leftOrdinal
+  (MkRegistrationIndexState live activations counts discarded) rightOrdinal rightIndex
+  left right leftFinalIndex rightFinalIndex correspondence noUnload = case correspondence of
+    RegistrationCorrespondenceEnd => Refl
+    SkipLeftNonRegistration action step rest actionExact nonRegistration tail =>
+      trans (o20NoUnloadDiscardedScan name key world error value nameEq mapping (S leftOrdinal)
+        (advanceRegistrationIndex @{nameEq} leftOrdinal action (MkRegistrationIndexState live activations counts discarded))
+        rightOrdinal rightIndex rest right leftFinalIndex rightFinalIndex tail
+        (\actor, occurs => noUnload actor (ActionOccursLater step rest occurs)))
+        (o20IndexDiscardedAdvance name key world error value nameEq leftOrdinal action
+          (MkRegistrationIndexState live activations counts discarded))
+    DiscardLeftDeletedRegistration {child} {parent} {component} step rest actionExact closing tail =>
+      void (noUnload parent (ActionOccursLater step rest (deletedParentEpisodeCloses closing)))
+    QueueLeftGeneratedRegistration {child} {parent} {component} step rest actionExact retained tail =>
+      trans (o20NoUnloadDiscardedScan name key world error value nameEq mapping (S leftOrdinal)
+        (advanceSurvivingRegistrationIndex @{nameEq} leftOrdinal child parent component (MkRegistrationIndexState live activations counts discarded))
+        rightOrdinal rightIndex rest right leftFinalIndex rightFinalIndex tail
+        (\actor, occurs => noUnload actor (ActionOccursLater step rest occurs)))
+        (o20SurvivingDiscardedObserved name key world error value nameEq leftOrdinal child parent component
+          live activations counts discarded (lookupParentActivation @{nameEq} parent activations) Refl)
+    MatchLeftWithPendingRight {child} {parent} {component} step rest actionExact retained priorWords event laterWords matched tail =>
+      trans (o20NoUnloadDiscardedScan name key world error value nameEq mapping (S leftOrdinal)
+        (advanceSurvivingRegistrationIndex @{nameEq} leftOrdinal child parent component (MkRegistrationIndexState live activations counts discarded))
+        rightOrdinal rightIndex rest right leftFinalIndex rightFinalIndex tail
+        (\actor, occurs => noUnload actor (ActionOccursLater step rest occurs)))
+        (o20SurvivingDiscardedObserved name key world error value nameEq leftOrdinal child parent component
+          live activations counts discarded (lookupParentActivation @{nameEq} parent activations) Refl)
+    SkipRightNonRegistration action step rest actionExact nonRegistration tail =>
+      o20NoUnloadDiscardedScan name key world error value nameEq mapping leftOrdinal
+        (MkRegistrationIndexState live activations counts discarded) (S rightOrdinal)
+        (advanceRegistrationIndex @{nameEq} rightOrdinal action rightIndex)
+        left rest leftFinalIndex rightFinalIndex tail noUnload
+    DiscardRightDeletedRegistration {child} {parent} {component} step rest actionExact closing tail =>
+      o20NoUnloadDiscardedScan name key world error value nameEq mapping leftOrdinal
+        (MkRegistrationIndexState live activations counts discarded) (S rightOrdinal)
+        (advanceDeletedRegistrationIndex @{nameEq} rightOrdinal child parent component rightIndex)
+        left rest leftFinalIndex rightFinalIndex tail noUnload
+    QueueRightGeneratedRegistration {child} {parent} {component} step rest actionExact retained tail =>
+      o20NoUnloadDiscardedScan name key world error value nameEq mapping leftOrdinal
+        (MkRegistrationIndexState live activations counts discarded) (S rightOrdinal)
+        (advanceSurvivingRegistrationIndex @{nameEq} rightOrdinal child parent component rightIndex)
+        left rest leftFinalIndex rightFinalIndex tail noUnload
+    MatchRightWithPendingLeft {child} {parent} {component} step rest actionExact retained priorWords event laterWords matched tail =>
+      o20NoUnloadDiscardedScan name key world error value nameEq mapping leftOrdinal
+        (MkRegistrationIndexState live activations counts discarded) (S rightOrdinal)
+        (advanceSurvivingRegistrationIndex @{nameEq} rightOrdinal child parent component rightIndex)
+        left rest leftFinalIndex rightFinalIndex tail noUnload
