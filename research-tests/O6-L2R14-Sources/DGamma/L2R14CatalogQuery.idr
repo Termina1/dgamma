@@ -84,3 +84,20 @@ catalogQueryAtAction (LUnload actor) offset word catalog tail entry member =
   catalogQueryThroughHead (LUnload actor) word entry offset (tail entry member)
 catalogQueryAtAction (LLeave actor) offset word catalog tail entry member =
   catalogQueryThroughHead (LLeave actor) word entry offset (tail entry member)
+
+||| GENERAL catalog membership to native action-word query, by induction
+||| on the authentic availability trail. Source/dictionary alignment follows
+||| separately; neither a birth action nor a word equation is assumed.
+export
+0 scanCatalogActionQuery : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, finalState : SystemState name key value world error} ->
+  {trace : Transitions first finalState} ->
+  (offset : Nat) -> (trail : AvailabilityTrace name key world error value trace) ->
+  (entry : RootCatalogEntry name key world error value) ->
+  (0 member : Elem entry (scanRootCatalog offset trail)) ->
+  (position : Nat ** (catalogOrdinal entry = offset + position,
+    head' (drop position (nativeActionWord trail)) = Just (OInsert (catalogRoot entry) Root (catalogComponent entry))))
+scanCatalogActionQuery offset (AvailabilityEnd state) entry member = absurd member
+scanCatalogActionQuery offset (AvailabilityStep source (Fired ne ke action tag checked) rest later) entry member =
+  catalogQueryAtAction action offset (nativeActionWord later) (scanRootCatalog (S offset) later)
+    (\item, present => scanCatalogActionQuery (S offset) later item present) entry member
