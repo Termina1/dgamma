@@ -1,0 +1,42 @@
+{
+  "path": "paper/cordis-paper.txt",
+  "lines": 3882,
+  "bytes": 301314,
+  "SHA256": "9b40364ab67f944406c6f40980cdc78dbba044d6eb3125aa1087f2ffdfc9a78b",
+  "readRanges": [
+    {
+      "offset": 1,
+      "limit": 490
+    },
+    {
+      "offset": 491,
+      "limit": 490
+    },
+    {
+      "offset": 981,
+      "limit": 490
+    },
+    {
+      "offset": 1471,
+      "limit": 490
+    },
+    {
+      "offset": 1961,
+      "limit": 490
+    },
+    {
+      "offset": 2451,
+      "limit": 490
+    },
+    {
+      "offset": 2941,
+      "limit": 490
+    },
+    {
+      "offset": 3431,
+      "limit": 490
+    }
+  ],
+  "completedUTC": "2026-09-09T17:18:26.812294+00:00",
+  "qualification": "Complete extracted text read with read tool to EOF; no rendered-PDF verification."
+}
