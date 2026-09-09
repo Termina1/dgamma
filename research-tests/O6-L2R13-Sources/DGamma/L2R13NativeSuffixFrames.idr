@@ -60,3 +60,31 @@ data NativeSuffixFrames :
     NativeSuffixFrames nameEq keyEq
       (MoreTransitions (Fired {before = oldBefore} {afterState = oldAfter} nameEq keyEq (ORetire actor) tag oldChecked) oldRest)
       (MoreTransitions (Fired {before = newBefore} {afterState = newAfter} nameEq keyEq (ORetire actor) tag newChecked) newRest)
+
+||| Native root frame endpoint: B7 produces the successor; the given actual
+||| right edge identifies that successor by checked determinism.
+export
+0 nativeRootFrameEndpoint : {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (component : Component key value world error) ->
+  (oldBefore, oldAfter, newBefore, newAfter : SystemState name key value world error) ->
+  (0 oldChecked : checkedApplyAction @{nameEq} @{keyEq} (OInsert actor Root component) oldBefore = Just (OInsertTag, oldAfter)) ->
+  (0 newChecked : checkedApplyAction @{nameEq} @{keyEq} (OInsert actor Root component) newBefore = Just (OInsertTag, newAfter)) ->
+  (0 valid : registryWellFormed @{nameEq} @{keyEq} newBefore = True) ->
+  (0 frame : provisionsDisjointFrom {name} {key} {world} {error} {value} @{keyEq}
+    (componentProvisions component) (bindings (registry newBefore)) =
+    provisionsDisjointFrom {name} {key} {world} {error} {value} @{keyEq}
+      (componentProvisions component) (bindings (registry oldBefore))) ->
+  (0 same : RegistryExtensional name key world error value nameEq oldBefore newBefore) ->
+  RegistryExtensional name key world error value nameEq oldAfter newAfter
+nativeRootFrameEndpoint {name} {key} {world} {error} {value}
+  nameEq keyEq actor component oldBefore oldAfter newBefore newAfter oldChecked newChecked valid frame same =
+  replace {p = \next => RegistryExtensional name key world error value nameEq oldAfter next}
+    (cong snd (justInjective (trans (sym (extensionalChecked
+      (checkedRootAcrossExtensional nameEq keyEq actor component oldBefore oldAfter newBefore OInsertTag
+        oldChecked same valid (provisionsDisjointFrom {name} {key} {world} {error} {value} @{keyEq}
+          (componentProvisions component) (bindings (registry oldBefore))) Refl frame))) newChecked)))
+    (extensionalAfterSame
+      (checkedRootAcrossExtensional nameEq keyEq actor component oldBefore oldAfter newBefore OInsertTag
+        oldChecked same valid (provisionsDisjointFrom {name} {key} {world} {error} {value} @{keyEq}
+          (componentProvisions component) (bindings (registry oldBefore))) Refl frame))
