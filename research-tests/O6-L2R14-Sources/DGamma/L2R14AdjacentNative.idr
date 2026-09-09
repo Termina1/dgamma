@@ -37,3 +37,27 @@ record AlignedAdjacentNative
   leftNative : AlignedSourceAction name key world error value nameEq keyEq trace source leftAction position
   rightNative : AlignedSourceAction name key world error value nameEq keyEq trace
     (edgeTarget leftNative) rightAction (S position)
+
+||| Lift both native edges together through one physical head. The left
+||| target is constructed simultaneously, so the right source stays exact
+||| without projecting a target equality from an opaque locator result.
+export
+0 adjacentNativeThroughHead : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (step : Transition first middle) -> (rest : Transitions middle finalState) ->
+  (source : SystemState name key value world error) ->
+  (leftAction, rightAction : Action name key value world error) -> (position : Nat) ->
+  AlignedAdjacentNative name key world error value nameEq keyEq rest source leftAction rightAction position ->
+  AlignedAdjacentNative name key world error value nameEq keyEq (MoreTransitions step rest)
+    source leftAction rightAction (S position)
+adjacentNativeThroughHead nameEq keyEq step rest source leftAction rightAction position
+  (MkAlignedAdjacentNative left right) = MkAlignedAdjacentNative
+    (MkAlignedSourceAction (edgeTarget left) (edgeTag left) (edgeChecked left)
+      (MkLocatedActionOccurrence (actionBeforeState (edgeOccurrence left)) (actionAfterState (edgeOccurrence left))
+        (MoreTransitions step (beforeActionOccurrence (edgeOccurrence left)))
+        (locatedTransition (edgeOccurrence left)) (afterActionOccurrence (edgeOccurrence left))
+        (locatedAction (edgeOccurrence left))
+        (cong (MoreTransitions step) (actionOccurrenceDecomposition (edgeOccurrence left))))
+      (cong S (edgeOrdinal left)) (edgeBefore left) (edgeAfter left))
+    (alignedSourceThroughHead nameEq keyEq step rest (edgeTarget left) rightAction (S position) right)
