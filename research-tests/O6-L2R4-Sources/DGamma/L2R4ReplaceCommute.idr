@@ -30,3 +30,25 @@ replaceCommuteRightObserved keyEq left right current nextLeft nextRight old rest
   rewrite replaceOtherHeadObserved keyEq left current nextLeft old (replaceEntries @{keyEq} right nextRight rest)
     (decEq @{keyEq} left current) Refl leftMisses in
   rewrite exact in cong (Bind current old ::) tail
+
+||| First observed key decision for distinct replacements; hitting the left
+||| key forces the right key to miss, otherwise delegate to B1's single split.
+export
+0 replaceCommuteLeftObserved :
+  {key, item : Type} -> (keyEq : DecEq key) -> (left, right, current : key) ->
+  (nextLeft, nextRight, old : item) -> (rest : List (Binding key (\k => item))) ->
+  (0 distinct : Not (left = right)) ->
+  (0 tail : replaceEntries @{keyEq} left nextLeft (replaceEntries @{keyEq} right nextRight rest) =
+    replaceEntries @{keyEq} right nextRight (replaceEntries @{keyEq} left nextLeft rest)) ->
+  (decision : Dec (left = current)) -> (0 exact : decEq @{keyEq} left current = decision) ->
+  replaceEntries @{keyEq} left nextLeft (replaceEntries @{keyEq} right nextRight (Bind current old :: rest)) =
+    replaceEntries @{keyEq} right nextRight (replaceEntries @{keyEq} left nextLeft (Bind current old :: rest))
+replaceCommuteLeftObserved keyEq left right _ nextLeft nextRight old rest distinct tail (Yes Refl) exact =
+  rewrite replaceOtherHeadObserved keyEq right left nextRight old rest (decEq @{keyEq} right left) Refl
+    (\same => distinct (sym same)) in
+  rewrite exact in
+  sym (replaceOtherHeadObserved keyEq right left nextRight nextLeft rest (decEq @{keyEq} right left) Refl
+    (\same => distinct (sym same)))
+replaceCommuteLeftObserved keyEq left right current nextLeft nextRight old rest distinct tail (No leftMisses) exact =
+  replaceCommuteRightObserved keyEq left right current nextLeft nextRight old rest leftMisses tail
+    (decEq @{keyEq} right current) Refl
