@@ -23,3 +23,20 @@ export
     S (anchorInversions nameEq history (AnchorBirth root anchor :: AnchorLife actor :: back))
 anchorSwapObserved nameEq actor root anchor history back distinct (Yes same) exact = void (distinct same)
 anchorSwapObserved nameEq actor root anchor history back distinct (No different) exact = rewrite exact in Refl
+
+||| Every possible prefix event preserves a suffix's exact-one difference.
+||| Births add the same historical charge on both sides; release/lifecycle/
+||| other events pass the SAME transformed history to both continuations.
+export
+0 anchorStepPreservesOne :
+  {name : Type} -> (nameEq : DecEq name) -> (event : AnchorEvent name) ->
+  (left, right : List (AnchorEvent name) -> Nat) ->
+  (0 same : (history : List (AnchorEvent name)) -> left history = S (right history)) ->
+  (history : List (AnchorEvent name)) ->
+  anchorMeasureStep nameEq event left history = S (anchorMeasureStep nameEq event right history)
+anchorStepPreservesOne nameEq (AnchorBirth root anchor) left right same history =
+  trans (cong (anchorHistoryCount nameEq root anchor history +) (same history))
+    (sym (plusSuccRightSucc (anchorHistoryCount nameEq root anchor history) (right history)))
+anchorStepPreservesOne nameEq (AnchorLife actor) left right same history = same (AnchorLife actor :: history)
+anchorStepPreservesOne nameEq (AnchorRelease marker) left right same history = same (AnchorRelease marker :: history)
+anchorStepPreservesOne nameEq AnchorOther left right same history = same (AnchorOther :: history)
