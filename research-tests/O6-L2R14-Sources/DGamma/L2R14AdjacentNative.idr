@@ -172,3 +172,27 @@ adjacentNativeAtStep nameEq keyEq _ _ later (AlignedStep headAction tag checked 
     (\ordinal, wantedSource, left, right, leftEquation, rightEquation =>
       tailDecoder tail ordinal wantedSource left right leftEquation rightEquation)
     position source leftAction rightAction query rightQuery
+
+||| GENERAL native adjacent-pair decoder. A source/action query on the left
+||| and action-only query on the right PRODUCE their common intermediate
+||| state, both checked edges and actual consecutive physical occurrences.
+export
+0 locateAlignedAdjacent : {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, finalState : SystemState name key value world error} ->
+  {trace : Transitions first finalState} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (trail : AvailabilityTrace name key world error value trace) ->
+  (aligned : AlignedTransitions name key world error value nameEq keyEq trace) ->
+  (position : Nat) -> (source : SystemState name key value world error) ->
+  (leftAction, rightAction : Action name key value world error) ->
+  (0 query : head' (drop position (trailSourceActions trail)) = Just (source, leftAction)) ->
+  (0 rightQuery : head' (drop (S position) (nativeActionWord trail)) = Just rightAction) ->
+  AlignedAdjacentNative name key world error value nameEq keyEq trace source leftAction rightAction position
+locateAlignedAdjacent nameEq keyEq (AvailabilityEnd state) aligned position source leftAction rightAction query rightQuery =
+  absurd (sourceQueryEmpty position (source, leftAction) query)
+locateAlignedAdjacent nameEq keyEq (AvailabilityStep first step rest later) aligned
+  position source leftAction rightAction query rightQuery =
+  adjacentNativeAtStep nameEq keyEq step rest later aligned
+    (\tail, ordinal, wantedSource, left, right, leftEquation, rightEquation =>
+      locateAlignedAdjacent nameEq keyEq later tail ordinal wantedSource left right leftEquation rightEquation)
+    position source leftAction rightAction query rightQuery
