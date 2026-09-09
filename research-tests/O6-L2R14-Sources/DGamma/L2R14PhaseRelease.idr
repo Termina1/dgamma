@@ -58,3 +58,14 @@ phaseFilterAtBool predicate head item rest True equation inclusion =
   rewrite equation in phaseConsInclusion head item (filter predicate rest) rest inclusion
 phaseFilterAtBool predicate head item rest False equation inclusion =
   rewrite equation in \member => There (inclusion member)
+
+||| Genuine unfiltered membership from native filter membership. Every
+||| predicate Bool is observed at this structural call site.
+export
+0 phaseFilterMember : {a : Type} -> (predicate : a -> Bool) ->
+  (item : a) -> (items : List a) ->
+  (0 member : Elem item (filter predicate items)) -> Elem item items
+phaseFilterMember predicate item [] member = absurd member
+phaseFilterMember predicate item (head :: rest) member =
+  phaseFilterAtBool predicate head item rest (predicate head) Refl
+    (\later => phaseFilterMember predicate item rest later) member
