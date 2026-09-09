@@ -9,6 +9,8 @@ import DGamma.CP5ConfluenceDeletionChainSpike
 import DGamma.CP5ConfluenceCanonicalSortSpike
 import DGamma.CP5ConfluenceRenamingCompositionSpike
 import DGamma.CP5O20DiscardedBirthOriginSpike
+import DGamma.CP5O20DiscardedSelectionCoverageSpike
+import DGamma.CP5O20GlobalActivationHistorySpike
 import DGamma.CP5CurrentGenerationBirthSpike
 import DGamma.CP5UniqueRawNameInsertions
 import DGamma.CP5UniqueRawNameDeletion
@@ -182,3 +184,45 @@ o20CanonicalVestigialDisappears name key world error value protocol nameEq keyEq
           (vestigialGeneration packet)
           (o20AcceptedDiscardedBirthClassified name key world error value nameEq left right mapping registrations
             (vestigialGeneration packet) (vestigialBirthDiscarded packet))))
+
+||| Reverse discarded-membership coverage for either native activation scan.
+||| This consumes the ACTUAL chronology produced in R203, so it covers the
+||| right side without exporting/changing a private bilateral symmetry helper.
+export
+0 o20NativeDiscardedOrigin :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (ordinal : Nat) -> (index : RegistrationIndexState name) ->
+  {first, finalState : SystemState name key value world error} ->
+  (trace : Transitions first finalState) -> (finalIndex : RegistrationIndexState name) ->
+  (events : List (RegistrationEvent name key world error value)) ->
+  O20NativeActivationScan nameEq ordinal index trace finalIndex events ->
+  (generation : RegistrationGeneration name) -> Elem generation (indexedDeletedGenerations finalIndex) ->
+  O20DiscardedTraceOrigin name key world error value ordinal (indexedDeletedGenerations index) generation trace
+o20NativeDiscardedOrigin name key world error value nameEq ordinal
+  (MkRegistrationIndexState live activations counts discarded) trace finalIndex events scan generation member =
+    case scan of
+      O20ActivationScanEnd => O20DiscardedBefore member
+      O20ActivationScanOrdinary action edge rest shape ordinary later =>
+        o20DiscardedOriginPrepend name key world error value ordinal discarded
+          (indexedDeletedGenerations (advanceRegistrationIndex @{nameEq} ordinal action
+            (MkRegistrationIndexState live activations counts discarded))) generation edge rest
+          (o20IndexDiscardedAdvance name key world error value nameEq ordinal action
+            (MkRegistrationIndexState live activations counts discarded))
+          (o20NativeDiscardedOrigin name key world error value nameEq (S ordinal)
+            (advanceRegistrationIndex @{nameEq} ordinal action (MkRegistrationIndexState live activations counts discarded))
+            rest finalIndex events later generation member)
+      O20ActivationScanDeleted {child} {parent} {component} edge rest shape closing later =>
+        o20DiscardedOriginAfterDiscard name key world error value ordinal discarded generation child parent component
+          edge rest shape (deletedParentEpisodeCloses closing)
+          (o20NativeDiscardedOrigin name key world error value nameEq (S ordinal)
+            (advanceDeletedRegistrationIndex @{nameEq} ordinal child parent component (MkRegistrationIndexState live activations counts discarded))
+            rest finalIndex events later generation member)
+      O20ActivationScanRetained {child} {parent} {component} {events = laterEvents} edge rest shape retained later =>
+        o20DiscardedOriginPrepend name key world error value ordinal discarded
+          (indexedDeletedGenerations (advanceSurvivingRegistrationIndex @{nameEq} ordinal child parent component
+            (MkRegistrationIndexState live activations counts discarded))) generation edge rest
+          (o20SurvivingDiscardedObserved name key world error value nameEq ordinal child parent component
+            live activations counts discarded (lookupParentActivation @{nameEq} parent activations) Refl)
+          (o20NativeDiscardedOrigin name key world error value nameEq (S ordinal)
+            (advanceSurvivingRegistrationIndex @{nameEq} ordinal child parent component (MkRegistrationIndexState live activations counts discarded))
+            rest finalIndex laterEvents later generation member)
