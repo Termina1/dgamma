@@ -1,0 +1,37 @@
+{
+  "status": "PROPOSAL ONLY; no source change; gate after native failure",
+  "path": "src/DGamma/CP3StatementChecks.idr",
+  "beforeSHA256": "aa7b71a88c1e16304c0247880403ee68c776a5b43683759cdeffc750623d33e9",
+  "afterSHA256": "2d2bd1811a5330646f3530d659c9f4db5adcdce51c9d6340a9bd08c4bf9d2fea",
+  "patchSHA256": "202b71ec59c197af8c63c437c1ae4cdd33eaa41123e33a55c0cb5bc2cb7757cb",
+  "edits": [
+    {
+      "old": "(namedAfter (rootAdvance1 original)) order canonicalTrace ->",
+      "new": "(namedAfter (rootAdvance1 original)) order (namedRoleChangingTrace original) canonicalTrace ->"
+    },
+    {
+      "old": "||| Canonical parent blocks explicitly admit their yielded child O-Insert.\npublic export\n0 canonicalBlockRegistrationGuard :\n  (transition : Transition first middle) ->",
+      "new": "||| Revised canonical actor CORES admit their yielded child O-Insert.\n||| This is the core constructor guard, not a reverse attached-to-core coercion.\npublic export\n0 canonicalBlockRegistrationGuard :\n  {nameEq : DecEq name} ->\n  (transition : Transition first middle) ->"
+    },
+    {
+      "old": "  ActorLifecycleOnly selected rest ->\n  ActorLifecycleOnly selected (MoreTransitions transition rest)\ncanonicalBlockRegistrationGuard = ActorYieldedRegistrationStep",
+      "new": "  ActorLifecycleCore nameEq selected rest ->\n  ActorLifecycleCore nameEq selected (MoreTransitions transition rest)\ncanonicalBlockRegistrationGuard = CoreYieldedRegistrationStep"
+    },
+    {
+      "old": "(supportOrder schedule) (canonicalTrace schedule)\ncanonicalInputPlacementGuard schedule = inputPlacement schedule",
+      "new": "(supportOrder schedule) trace (canonicalTrace schedule)\ncanonicalInputPlacementGuard schedule = inputPlacement schedule"
+    },
+    {
+      "old": "public export\n0 canonicalAllRootInputsGuard :\n  {initial, originalFinal : SystemState name key value world error} ->\n  {trace : Transitions initial originalFinal} ->\n  (schedule : CanonicalSchedule name key world error value protocol nameEq keyEq trace) ->\n  RootInputsBeforeLifecycle nameEq (canonicalTrace schedule)\ncanonicalAllRootInputsGuard schedule =\n  allRootInputsFirst (inputPlacement schedule)",
+      "new": "||| A8/A12 replaces the retired strict all-root-first projection by the exact\n||| production current-cut/terminal-earliest field; no global normalizer inferred.\npublic export\n0 canonicalRootEarliestAvailableGuard :\n  {initial, originalFinal : SystemState name key value world error} ->\n  {trace : Transitions initial originalFinal} ->\n  (schedule : CanonicalSchedule name key world error value protocol nameEq keyEq trace) ->\n  {root : name} -> {component : Component key value world error} ->\n  (birth : LocatedActionOccurrence (OInsert root Root component)\n    (canonicalTrace schedule)) ->\n  EarliestAvailableRootBirth name key world error value nameEq keyEq\n    (canonicalTrace schedule) root component birth\ncanonicalRootEarliestAvailableGuard schedule =\n  rootGenerationEarliestAvailable (inputPlacement schedule)"
+    },
+    {
+      "old": "  isLifecycleAction action = True ->\n  LT (locatedActionOrdinal birth) (locatedActionOrdinal lifecycle)\ncanonicalRootGenerationPlacementGuard schedule =\n  rootGenerationBeforeLifecycle (inputPlacement schedule)",
+      "new": "  isLifecycleAction action = True -> actionOwner action = root ->\n  LT (locatedActionOrdinal birth) (locatedActionOrdinal lifecycle)\ncanonicalRootGenerationPlacementGuard schedule =\n  rootGenerationBeforeOwnLifecycle (inputPlacement schedule)"
+    }
+  ],
+  "scope": "Six targeted migration replacements: original-trace indices, renamed core constructor grammar, retired strict projection replaced by exact terminal-earliest projection, own-lifecycle clause. No general forcing/normalizer claim.",
+  "unifiedDiffContext": 0,
+  "applyFlag": "--unidiff-zero",
+  "note": "Zero-context patch avoids trailing-space context markers in an unapproved proposal; old/new exact replacements remain in this manifest. Source is unchanged and proposal remains UNAPPLIED."
+}

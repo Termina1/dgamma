@@ -58,7 +58,8 @@
     "AvailabilityAwareCanonicalInputPlacement": "CanonicalInputPlacement",
     "MkAvailabilityAwareCanonicalInputPlacement": "MkCanonicalInputPlacement",
     "availableRootGenerationFresh": "rootGenerationFresh",
-    "availableChildGenerationBeforeOwnLifecycle": "childGenerationBeforeOwnLifecycle"
+    "availableChildGenerationBeforeOwnLifecycle": "childGenerationBeforeOwnLifecycle",
+    "canonicalAllRootInputsGuard": "canonicalRootEarliestAvailableGuard"
   },
   "removedProductionNames": [
     "ActorLifecycleEnd",
@@ -75,5 +76,7 @@
   ],
   "noAutomaticGlobalRename": true,
   "R11Disposition": "Parent ruling:11 legacy stale-by-path; not applicable; do not execute",
-  "productionStatementChecksGate": "Exact compiler diagnostic then one gated revised-statement or retirement diff; no ungated production edits"
+  "productionStatementChecksGate": "Exact compiler diagnostic then one gated revised-statement or retirement diff; no ungated production edits",
+  "guardRenameQualification": "Authorized semantic specification migration to the existing terminal-earliest field, not an alias for strict placement.",
+  "retiredGuardConsumers": []
 }

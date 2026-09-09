@@ -8,7 +8,7 @@ sys.dont_write_bytecode=True
 sys.path.insert(0,str(pathlib.Path(__file__).resolve().parent))
 from r205_common import *
 kind,message,*paths=sys.argv[1:]
-assert kind in ['PRESTATE','PRODUCTION','ARTIFACT','LEXICAL'] and paths
+assert kind in ['PRESTATE','PRODUCTION','PRODUCTION-MIGRATION','ARTIFACT','LEXICAL'] and paths
 assert git('branch','--show-current').strip()=='cp5-thm73-scoping'
 assert not git('diff','--cached','--name-only').strip()
 own,foreign,unknown=compiler_scopes()
@@ -39,6 +39,18 @@ if kind=='PRODUCTION':
     expected=json.loads((ROOT/'research-tests/O6-R205-LANE-INVENTORY-COPY.json').read_text())['candidateSHA256']
     assert sha((ROOT/paths[0]).read_bytes())==expected
     assert OWNER in message
+elif kind=='PRODUCTION-MIGRATION':
+    gate=json.loads((ROOT/'research-tests/O6-R205-PRODUCTION-MIGRATION-GATE.json').read_text())
+    assert paths==[gate['path']]==['src/DGamma/CP3StatementChecks.idr']
+    assert sha(subprocess.check_output(['git','show','HEAD:'+paths[0]],cwd=ROOT))==gate['beforeSHA256']
+    assert sha((ROOT/paths[0]).read_bytes())==gate['afterSHA256']
+    assert sha((ROOT/gate['patchPath']).read_bytes())==gate['patchSHA256']
+    assert git('diff','--name-only','--','src/','dgamma.ipkg').splitlines()==paths
+    native=json.loads((OUT/(gate['passingInvocation']+'.json')).read_text())
+    assert native['passed'] and native['fresh'] and native['exit']==0 and native['sourceSHA256']==gate['afterSHA256']
+    assert json.loads((OUT/'ledger.jsonl').read_text().splitlines()[-1])['unit']==gate['passingInvocation']
+    assert not any(json.loads(s)['kind']=='PRODUCTION-MIGRATION' for s in (OUT/'commit-receipts.jsonl').read_text().splitlines())
+    assert 'S33' in message
 elif kind in ['ARTIFACT','PRESTATE']:
     assert all((p.startswith('research-tests/') and not p.endswith('.idr')) or p in ['README.md','NOTES.md','THM73-PLAN.md'] for p in paths)
     assert not git('diff','--name-only','--','src/','research/','research-tests/DGamma/','dgamma.ipkg').strip()
@@ -56,9 +68,11 @@ hashes={}
 for path in paths:
     before=subprocess.run(['git','show','HEAD:'+path],cwd=ROOT,capture_output=True)
     hashes[path]=dict(before=sha(before.stdout) if before.returncode==0 else None,after=sha((ROOT/path).read_bytes()))
-subprocess.run(['git','add','--',*paths],cwd=ROOT,check=True)
-assert set(git('diff','--cached','--name-only').splitlines())==set(paths)
+paths=[p for p in paths if hashes[p]['before']!=hashes[p]['after']]
+assert paths,'No actual changed paths to commit'
 try:
+    subprocess.run(['git','add','--',*paths],cwd=ROOT,check=True)
+    assert set(git('diff','--cached','--name-only').splitlines())==set(paths)
     subprocess.run(['git','diff','--cached','--check','--',*whitespace_paths],cwd=ROOT,check=True)
     subprocess.run(['git','commit','-m',message],cwd=ROOT,check=True)
 except BaseException:
@@ -67,5 +81,7 @@ except BaseException:
 assert not git('diff','--cached','--name-only').strip()
 receipt=dict(kind=kind,message=message,ownerDecisionVerbatim=OWNER if kind=='PRODUCTION' else None,beforeCommit=parent,afterCommit=git('rev-parse','HEAD').strip(),timestampUTC=utc(),hashes=hashes,guardSHA256=sha(pathlib.Path(__file__).read_bytes()),noStagedFiles=True,frozenUnchanged=True,whitespaceGuard=True)
 OUT.mkdir(exist_ok=True)
+if kind=='PRODUCTION-MIGRATION':
+    receipt.update(gateVerbatim=gate['gateVerbatim'],priorFailureInvocation='S33',passingInvocation=gate['passingInvocation'],secondAndLastProductionEdit=True)
 with (OUT/'commit-receipts.jsonl').open('a') as f: f.write(json.dumps(receipt,ensure_ascii=False)+'\n')
 print(json.dumps(receipt,ensure_ascii=False,indent=2))

@@ -1,0 +1,45 @@
+--- a/src/DGamma/CP3StatementChecks.idr
++++ b/src/DGamma/CP3StatementChecks.idr
+@@ -3426 +3426 @@
+-    (namedAfter (rootAdvance1 original)) order canonicalTrace ->
++    (namedAfter (rootAdvance1 original)) order (namedRoleChangingTrace original) canonicalTrace ->
+@@ -3541 +3541,2 @@
+-||| Canonical parent blocks explicitly admit their yielded child O-Insert.
++||| Revised canonical actor CORES admit their yielded child O-Insert.
++||| This is the core constructor guard, not a reverse attached-to-core coercion.
+@@ -3543,0 +3545 @@
++  {nameEq : DecEq name} ->
+@@ -3548,3 +3550,3 @@
+-  ActorLifecycleOnly selected rest ->
+-  ActorLifecycleOnly selected (MoreTransitions transition rest)
+-canonicalBlockRegistrationGuard = ActorYieldedRegistrationStep
++  ActorLifecycleCore nameEq selected rest ->
++  ActorLifecycleCore nameEq selected (MoreTransitions transition rest)
++canonicalBlockRegistrationGuard = CoreYieldedRegistrationStep
+@@ -3587 +3589 @@
+-    (supportOrder schedule) (canonicalTrace schedule)
++    (supportOrder schedule) trace (canonicalTrace schedule)
+@@ -3590,2 +3592,4 @@
+-public export
+-0 canonicalAllRootInputsGuard :
++||| A8/A12 replaces the retired strict all-root-first projection by the exact
++||| production current-cut/terminal-earliest field; no global normalizer inferred.
++public export
++0 canonicalRootEarliestAvailableGuard :
+@@ -3595,3 +3599,7 @@
+-  RootInputsBeforeLifecycle nameEq (canonicalTrace schedule)
+-canonicalAllRootInputsGuard schedule =
+-  allRootInputsFirst (inputPlacement schedule)
++  {root : name} -> {component : Component key value world error} ->
++  (birth : LocatedActionOccurrence (OInsert root Root component)
++    (canonicalTrace schedule)) ->
++  EarliestAvailableRootBirth name key world error value nameEq keyEq
++    (canonicalTrace schedule) root component birth
++canonicalRootEarliestAvailableGuard schedule =
++  rootGenerationEarliestAvailable (inputPlacement schedule)
+@@ -3624 +3632 @@
+-  isLifecycleAction action = True ->
++  isLifecycleAction action = True -> actionOwner action = root ->
+@@ -3627 +3635 @@
+-  rootGenerationBeforeLifecycle (inputPlacement schedule)
++  rootGenerationBeforeOwnLifecycle (inputPlacement schedule)

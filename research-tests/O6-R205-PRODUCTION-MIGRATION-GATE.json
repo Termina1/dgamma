@@ -1,0 +1,14 @@
+{
+  "timestampUTC": "2026-09-09T23:51:12.475230+00:00",
+  "path": "src/DGamma/CP3StatementChecks.idr",
+  "beforeSHA256": "aa7b71a88c1e16304c0247880403ee68c776a5b43683759cdeffc750623d33e9",
+  "afterSHA256": "2d2bd1811a5330646f3530d659c9f4db5adcdce51c9d6340a9bd08c4bf9d2fea",
+  "patchPath": "research-tests/O6-R205-CP3-STATEMENT-CHECKS-PROPOSAL.patch",
+  "patchSHA256": "202b71ec59c197af8c63c437c1ae4cdd33eaa41123e33a55c0cb5bc2cb7757cb",
+  "gateVerbatim": "APPROVED: apply research-tests/O6-R205-CP3-STATEMENT-CHECKS-PROPOSAL.patch (SHA256 202b71ec59c197af…, 45 lines, six replacements) to src/DGamma/CP3StatementChecks.idr exactly as read by the supervisor — original-trace threading at 3426/3587, core constructor guard with explicit nameEq (CoreYieldedRegistrationStep), canonicalAllRootInputsGuard → canonicalRootEarliestAvailableGuard = rootGenerationEarliestAvailable projection, own-lifecycle guard with `actionOwner action = root` → rootGenerationBeforeOwnLifecycle. This is the second and last authorized production edit of this shift (PRODUCTION receipt citing this gate and the S33 failure log; before/after hashes). Record the renamed guard in the rename map (consumers of canonicalAllRootInputsGuard become repair candidates). S31-4 PASS accepted: CP4SupportSolution datum = 160.8 GiB / 986 s (guard 200 GiB from now on, datum-based; record it in the baselines and the agent-facing cost table). Continue the closure.",
+  "sourceEditNumber": 2,
+  "lastAuthorizedProductionEdit": true,
+  "priorFailureInvocation": "S33",
+  "passingInvocation": "S33-2",
+  "preCommitCheck": "Exact gated uncommitted source allowed for ONE fresh check; guarded production migration commit requires PASS"
+}

@@ -18,7 +18,13 @@ assert not (OUT/(unit+'.json')).exists() and not (OUT/(unit+'.log')).exists(), '
 own,foreign,unknown=compiler_scopes(); assert not own and not unknown, 'Own/unknown compiler already active'
 assert_frozen()
 assert not git('diff','--cached','--name-only').strip()
-assert not git('diff','--name-only','--','src/','dgamma.ipkg').strip(), 'Commit authorized production before checking'
+production_delta=git('diff','--name-only','--','src/','dgamma.ipkg').splitlines()
+migration_path=ROOT/'research-tests/O6-R205-PRODUCTION-MIGRATION-GATE.json'
+migration=json.loads(migration_path.read_text()) if migration_path.exists() else None
+if production_delta:
+    assert unit=='S33-2' and migration and production_delta==[migration['path']]==[path]
+    assert sha((ROOT/path).read_bytes())==migration['afterSHA256']
+    assert sha(subprocess.check_output(['git','show','HEAD:'+path],cwd=ROOT))==migration['beforeSHA256']
 production_paths=[p for p in source_paths() if p.startswith('src/')]+['dgamma.ipkg']
 production={p:sha((ROOT/p).read_bytes()) for p in production_paths}
 current_paths=source_paths()
@@ -36,7 +42,8 @@ if path!='package':
     plan=json.loads(plan_path.read_text())
     targets=json.loads((ROOT/'research-tests/O6-R205-REBUILD-POLICY.json').read_text())['productionTargets'] if path.startswith('src/') else plan['targets']
     item=next(i for i in targets if i['path']==path)
-    assert item['sourceSHA256']==sha(snapshot), 'Changed target needs a new recorded lexical plan'
+    expected_source=migration['afterSHA256'] if migration and path==migration['path'] and sha(snapshot)==migration['afterSHA256'] else item['sourceSHA256']
+    assert expected_source==sha(snapshot), 'Changed target needs a new recorded lexical plan'
     expected=item.get('expectedDiagnostic'); symbol=item.get('symbol')
     if not expected and path in negative_preflight['contracts']:
         negative=negative_preflight['contracts'][path]
