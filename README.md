@@ -845,3 +845,31 @@ validation outcomes, two seeded207/207 package checks,18 evidence-contract tests
 All276 raw invocations retained, including3 rejected snapshots; no resource stop.
 See `research-tests/O6-R196-GRIND-SHIFT-AUDIT.md`, refreshed cost inventory and
 per-module table.111 excluded fixture/legacy paths are explicitly not re-checked.
+
+
+## R197 — source-frozen PARTIAL history-fold / observed-provider milestone
+
+R197 adds **33 checked declarations in seven new research modules**. It does
+**not** prove universal canonical pairing or Theorem73. Production and all
+protected theorem/module surfaces remain unchanged; fresh census is
+**4 = 1/2/0/0/1**. Status below supersedes older shift status, not prior evidence.
+
+| Paper/research obligation | Idris correspondence | Status |
+|---|---|---|
+| Thm73 support: original matched root + exact canonical/replayed ordinal | `CP5O20RootStageAttachmentSpike.o20CanonicalRootOrdinalAttachment`, `o20PermutedCanonicalRootOrdinalAttachment` | proved from actual root correspondence, original uniqueness and R196 laws; no supplied opposite birth |
+| Thm73 support: finite native history preservation | `CP5O20StampedHistoryFoldSpike.o20StampedStageCut`, `o20StampedHistoryCut` | proved **conditional on a supplied stage synchronization; not universal pairing** |
+| Thm73 support: accepted canonical endpoint/scanner synchronization | `CP5O20CanonicalSynchronizationGoalSpike.o20CanonicalSynchronizationGoal` | precise erased TYPE FUNCTION only; no inhabitant/postulate; reconstructed trace equality is stronger and absent |
+| Thm73 support: expected-map all-name canonical/replayed endpoint cut and D5 bridge | existing consumers only | unproduced; original vestigial packages do not supply the canonical/replayed `MaybeFiber` controls |
+| Native provider head observation, before/after retirement | `CP5ProviderHeadObservedSpike.providerHeadObserved` | executable total producer; own native guard equation + both native head equations |
+| Generic observed packet → before/after provider equality | attempted `providerHeadRetirementFromObserved` | **not retained/proved**; D5 STOP3/3, full revert, exact hidden-if constraint archived |
+
+Fixtures cover an actual eleven-edge R191 stamped run from an empty origin,
+retained R193/R195 present-vestigial history through literal zero-edge epsilon,
+and two-binding active/inactive provider heads. The R178 unequal role words
+are **excluded by accepted E9**, not a convergence counterexample.
+
+B stops at the owner-approved eligibility boundary; C has **zero attempts**.
+No unilateral native edge is erased as “stuttering”. Final validation is
+**pending at this source-freeze entry**: immutable plan143 source targets
+(ALL136 inherited R196 current targets +7 new) +1 seeded package build.
+See `research-tests/O6-R197-GRIND-SHIFT-AUDIT.md` and D5 STOP audit.

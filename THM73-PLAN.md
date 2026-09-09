@@ -3807,3 +3807,38 @@ to a canonical-convergence counterexample. Lifecycle-replay candidate from lane2
 "observed retired-head guard at the source" — later shift ONLY, not R196 work
 or main certification of lane2 results. Use the refreshed measured inventory;
 B6 is now >40GiB, and111 excluded fixture/legacy TTCs remain explicitly stale.
+
+
+## R197 — root attachment and conditional history fold; B/C remain parked
+
+At source freeze e1f608cb, A26 retained/30 invocations. A1–A13 own actual
+opposite-root occurrence AND ordinal, then exact canonical/permuted attachment
+via R196 C6/C9 and original uniqueness. A14–A26 were explicitly rescoped by
+the owner: six native stamped roles, cut preservation, finite history fold,
+eleven-edge/closing-history/role-boundary fixtures and a missing-goal TYPE.
+**Conditional on a supplied stage synchronization; not universal pairing.**
+No unilateral native edges are discarded as epsilon, and the endpoint/scanner
+specification does not identify reconstructed paths with supplied trace values.
+
+Ordered remaining seams (no R197 body attempt):
+1. Produce `o20SynchronizeCanonicalHistories` at the actual conjugated map;
+   strengthen alignment to actual whole words, not only endpoints/scanners.
+2. Rebase ORIGINAL vestigial/closing history into exact canonical/replayed
+   all-name `MaybeFiber` controls under `expectedBridgeBijection`.
+3. Produce the D5 all-name bridge; only then consider the protected convergence
+   body. Current B stops at eligibility, C0. The R178 mismatch FAILS accepted E9
+   and is not a counterexample licensing a theorem/signature change.
+
+D observed-retired-head producer is executable/checked with two-binding
+active-head/inactive-head fixtures. D3 passed attempt3 through a separate
+observed-Bool packet builder; D6 generic branch eliminator is also checked.
+D5 OPTIONAL consumer still hits identical-looking projected-if conversion at
+3/3 and is fully reverted/parked. Future producer restructuring or compiler
+investigation needs a new owner task; no fourth retry this shift.
+
+Census remains4=1/2/0/0/1, no source/frozen/lane edits, no holes or escapes added.
+Final validation PENDING at source freeze:143 distinct source targets covering
+ALL136 inherited current R196 paths plus7 R197, and seeded package (144 total),
+with seven exact expected-negative diagnostics. Shared heavy lock for every
+check,48GiB except unchanged LocalDiamond52GiB, unchanged UniqueOrdinal48GiB
+owner gate. See R197 audit/scope/frozen-plan/D5-stop artifacts for exact bounds.

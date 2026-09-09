@@ -51,6 +51,7 @@ if re.fullmatch(r'V\d+', unit):
     planned_source = ROOT/('dgamma.ipkg' if path == 'package' else path)
     assert hashlib.sha256(planned_source.read_bytes()).hexdigest() == items[0]['sourceHash']
     planned_validation = True
+    continuation_sha = hashlib.sha256(plan_bytes).hexdigest()
 cutoff = datetime.datetime(2026,9,9,9,53,0,tzinfo=datetime.timezone.utc) if planned_validation else datetime.datetime(2026,9,9,9,38,0,tzinfo=datetime.timezone.utc)
 assert datetime.datetime.now(datetime.timezone.utc) < cutoff, 'R197 attempt09:38:00 / frozen-validation09:53:00 start guard'
 owned_compilers, lane2_compilers, unknown_compilers = compiler_scopes()
@@ -80,6 +81,8 @@ else:
     target.touch()
     if path.startswith('research-tests/'):
         command += ['--source-dir', str(ROOT/'research-tests')]
+    if os.environ.get('DGAMMA_SHOW_IMPLICITS') == '1':
+        command += ['--show-implicits']
     command += ['--check', str(target)]
 (OUT/(unit+'.source')).write_bytes(snapshot)
 # Supervisor-approved worktree-scoped concurrency and shared heavy lock.
@@ -96,6 +99,8 @@ if path == 'research/DGamma/CP5ConfluenceLocalDiamondSpike.idr':
     assert heavy and planned_validation
     assert snapshot == subprocess.check_output(['git','show','e2ebe3b5:'+path],cwd=ROOT), 'Changed LocalDiamond requires prior gate'
     rss_limit_kib = 52*1024*1024
+if planned_validation:
+    assert rss_limit_kib == items[0]['rssLimitKiB']
 lock = pathlib.Path('/tmp/dgamma-heavy.lock')
 lock_owner = dict(lane='R197-main',pid=os.getpid(),timestampUTC=datetime.datetime.now(datetime.timezone.utc).isoformat(),unit=unit,path=path)
 lock_acquired = False
@@ -138,6 +143,8 @@ if heavy:
                 shutil.rmtree(lock)
                 continue
             assert time.monotonic()-lock_started < 20*60, 'Heavy-lock wait exceeded20min; no compiler launched'
+            wait_event=dict(event='waiting',unit=unit,timestampUTC=datetime.datetime.now(datetime.timezone.utc).isoformat(),waitSeconds=time.monotonic()-lock_started,observedOwner=owner_text)
+            with (OUT/'lock-events.jsonl').open('a') as f:f.write(json.dumps(wait_event)+'\n')
             print('HEAVY LOCK WAIT',unit,owner_text,flush=True)
             time.sleep(10)
     assert datetime.datetime.now(datetime.timezone.utc) < cutoff, 'Cutoff passed while awaiting heavy lock'
@@ -179,7 +186,8 @@ with (OUT/(unit+'.log')).open('w') as log:
             stop(signal.SIGTERM, None)
 text = (OUT/(unit+'.log')).read_text()
 building_lines=re.findall(r'^\d+/\d+: Building (.+)$',text,re.M)
-unexpected_builds=[] if path=='package' else [b for b in building_lines if not b.startswith('DGamma.'+pathlib.Path(path).stem+' (')]
+expected_building='DGamma.'+pathlib.Path(path).stem+' ('+str(ROOT/path)+')'
+unexpected_builds=[] if path=='package' else [b for i,b in enumerate(building_lines) if b != expected_building or i > 0]
 
 fresh = path == 'package' or bool(re.search(r'^\d+/\d+: Building DGamma\.'+re.escape(pathlib.Path(path).stem)+r' \('+r'(?:'+re.escape(path)+'|'+re.escape(str(ROOT/path))+r')\)$', text, re.M))
 passed = fresh and not interrupted and not unexpected_builds and (process.returncode == 0 and 'Error:' not in text if not diagnostic
@@ -188,7 +196,7 @@ record = dict(unit=unit,path=path,command=command,start=started,
               end=datetime.datetime.now(datetime.timezone.utc).isoformat(),seconds=time.monotonic()-clock,
               exit=process.returncode,fresh=fresh,passed=passed,interrupted=interrupted,
               targetMutationDetected=mutation_detected, resourceStopped=resource_stopped, unexpectedBuilding=unexpected_builds, buildingLines=building_lines, rssSamples=samples, maxSampleRSSKiB=maximum,rssLimitKiB=rss_limit_kib,validationContinuationSHA256=continuation_sha,
-              sourceSHA256=hashlib.sha256(snapshot).hexdigest(),
+              sourceSHA256=hashlib.sha256(snapshot).hexdigest(),runnerSHA256=hashlib.sha256(pathlib.Path(__file__).read_bytes()).hexdigest(),
               expectedDiagnostic=diagnostic,symbol=symbol,transcript=text,
               compilerScope='main worktree only', lane2Compilers=lane2_compilers, heavyLock=lock_events)
 (OUT/(unit+'.json')).write_text(json.dumps(record,indent=2)+'\n')

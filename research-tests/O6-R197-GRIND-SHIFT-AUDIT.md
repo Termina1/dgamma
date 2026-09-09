@@ -41,8 +41,99 @@ only its own73/73 Building. No target mutation/interruption/extra rebuild.
 E1 bootstraps guards and this audit from that fresh PASS. This is not final
 validation, whole-pair extraction or convergence closure.
 
+## A — bounded root attachment and CONDITIONAL history fold
+
+A1–A13: actual opposite original root AND original ordinal equation produced
+in the same structural packet; native retention; same right canonical root
+with original-origin and conjugated physical-ordinal equations. Exact
+canonical/permuted attachment consumes R196 C6/C9 and original raw uniqueness,
+not an assumed opposite birth/root law. Final root commit86b70925.
+
+Owner-approved A14–A26 rescope: <=8 conditional stamped history declarations/
+fixtures and <=5 retained/withdrawn role boundary probes. Six actual native
+stage constructors, preservation producer, finite paired history and fold to
+existing O20HistoryCut. No supplied successor cut or preservation callback.
+All labels: **conditional on a supplied stage synchronization; not universal
+pairing**. Epsilon is literally zero native edges. Eleven-edge R191 empty-
+origin fixture returns its endpoint cut by the fold. Actual R193/R195
+present-vestigial history retained at epsilon, not falsely canonically rebased.
+
+O20HistorySynchronization and o20CanonicalSynchronizationGoal are unproduced
+endpoint/scanner SPECIFICATIONS (the latter an erased total Type function),
+NOT an inhabitant/postulate/hidden hole. They do NOT assert equality of the
+reconstructed paths to supplied trace values. The actual R178 role mismatch
+FAILS accepted E9 for every mapping: not accepted canonical capital or an
+accepted convergence counterexample. Root/closing alternatives stay together
+at one R193 origin. A26 final a86b43e0:26 declarations/30 invocations; four
+repaired rejections, no exhausted A unit.
+
+## B/C — exact eligibility stop
+
+Missing producer `o20SynchronizeCanonicalHistories :
+o20CanonicalSynchronizationGoal …`. Whole-word alignment is stronger than
+current endpoint/scanner specification. In addition, original vestigial/
+closing packets do not produce canonical/replayed all-name MaybeFiber controls
+at expectedBridgeBijection. No all-name endpoint producer or bridge obtained.
+B stops at eligibility by explicit owner ruling; C INELIGIBLE, ZERO attempts.
+No premise widening, protected body edit, or frozen theorem call.
+
+## D — observed native head producer; optional consumer STOP
+
+D1 TYPE renamed ProviderHeadObserved from approved read-only git object.
+D2 native head equation: attempted cong and abstract-Bool rewrite both reject
+identical-looking if types; explicit observed Bool elimination + own guard
+equation passes attempt3 (d397a2dd). D3 abstract record assembly rejects twice.
+Owner-gated reorder: D4 providerHeadPacketAtGuard eliminates observed Bool
+BEFORE constructing both fields, PASS1 (3ae60cea); unchanged D3 producer
+statement then passes its FINAL attempt3 (40d0d59e). Actual native guard is
+observed with its own equation at the call site, no provider equality premise.
+
+D5 optional same-packet provider equality consumer fails at abstract-if
+conversion. D6 separate generic Bool branch-equation consumer passes1
+(8deec075), but D5 delegation still fails. Owner approved last D5 signature
+amendment to explicit SAME packet/observed Bool/own field equation. Projection
+replacement still rejects syntactically identical displayed if types with
+full implicits. D5 STOP3/3; SHA-authenticated FULL revert to exact D6 source,
+owner RATIFIED. Verbatim diagnostic and future-only diagnosis in
+O6-R197-D5-STOP-AUDIT.md. No fourth/renamed/shrunken retry or consumer theorem
+claim. D6 retained; producer unaffected.
+
+D7/D8 actual TWO-binding active-head / inactive-head-live-tail producer
+fixtures PASS1 at92d4f9b5/e1f608cb. D attempted8 units/14 invocations, retained7.
+No worktree access/edit/compilation in lane2; observed lane2 native processes
+were classified/logged, never killed. Producer capital sent to supervisor.
+
+## E2 — source freeze and immutable final validation plan
+
+Source freeze e1f608cb;33 guarded retained declarations in7 new modules.
+45 native invocations so far (S0+30A+14D),34 expected PASS,11 rejections; all
+rejected snapshots/logs preserved. All source commits authenticated and one
+new declaration verified. Source-freeze read-only audit passes: production
+vs34b21c9 empty, CP3 pinned, all five theorem modules plus O19 byte-frozen,
+LocalDiamond9f921617…/DeletionChain91e8fd29…, adjacent/O19 regions unchanged,
+fresh census4=1/2/0/0/1. No forbidden source additions; no staged files.
+
+Immutable plan143 source targets + package=144. This is ALL135 R196 baseline
+applicable sources PLUS its late root consumer=136 inherited present paths,
+plus7 R197 sources. Seven inherited expected negatives retain exact diagnostic
+and symbol. Topology/import closure checked in the inherited245-source
+invalidation inventory+new targets. Unchanged out-of-inventory prerequisites
+are pinned reused seeds, not fresh-PASS claims. A compiler-free overly broad
+whole-repository closure preflight rejected RankObservation; no plan/native
+invocation was created before correcting to R196's exact invalidation domain.
+Frozen planSHA6695cab51ae1239cd9750defc3953ff36bff47d3d17c572cf3fe2a7d73bb6d53.
+
+E2 also records the optional --show-implicits command switch used during D;
+tightens extra-Building rejection to include duplicate own/same-module-wrong-
+path lines; records runner/plan SHA and lock-wait events.18 adversarial pure
+Python evidence tests PASS, and45 existing records/33 source receipts replay-
+authenticate. No native proof check or rejection is silently relabelled.
+
 ## Status
 
-In progress. Inherited root C6/C9 owned; whole paired extraction and all-name
-rebasing remain unproved. D5 remains a consumer. Frozen census last inherited
-4=1/2/0/0/1; fresh final audit pending. No body attempt.
+CHECKED PARTIAL source milestone; final144-check validation PENDING. A's
+universal producer, canonical/replayed all-name rebasing and bridge, and C
+remain unproved/ineligible; D generic consumer exhausted/reverted. Final
+resource ledger/archive/independent verification and owner/reviewer gate
+remain to be produced. E1 bootstrap/E2 source freeze; E3 final publication and
+E4 owner gate note reserved. No further proof work this shift.

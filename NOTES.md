@@ -3849,3 +3849,116 @@ fold and endpoint bridge remain open. The archive stays pinned to1fd9bbcb and
 does not claim its own/later artifact receipts. Parent-owned independent review
 is pending; owner ratification is not reviewer acceptance or Theorem73 closure.
 D4/4 used. Clean close is expressly authorized before the four-hour boundary.
+
+
+## Status — R197 source-frozen checked PARTIAL milestone
+
+Source freeze e1f608cb; 33 retained declarations (A26 + D7), each freshly
+checked and immediately Python-guarded committed. A used30 invocations,
+D14, plus S0 baseline1:45 total,34 expected PASS,11 preserved rejections.
+No B/C proof invocation; no resource/mutation stop. Final144-check validation
+has not run yet at this entry. All compiler work is seeded, detached, monitored,
+main-worktree-scoped; ALL invocations acquire/release the shared heavy lock.
+Samples0 mean no live sample, not zero memory. Toolchain Idris2 v0.8.0.
+
+### Fully proved capital (not global convergence)
+
+A1–A13 construct an actual opposite original external root and its physical
+ordinal equation simultaneously, retain it through native replay, then attach
+the SAME canonical right occurrence to both its original origin and the
+conjugated physical ordinal. They consume R196 C6/C9 and original right raw
+insertion uniqueness, not an opposite-birth/root-equation premise. Root names
+absent historically are not silently identified with an endpoint-only map.
+
+Owner explicitly rescoped A14–A26 to a conditional fold and boundary probes.
+`O20StampedStage` has actual Begin, Advance, empty Finish, Insert, Retire,
+Remove constructors: actual native checks, insertion stamp equation, exact
+live-map updates and removal uniqueness. `o20StampedStageCut` produces the
+successor cut; no output cut/preservation callback is an input.
+`O20StampedHistory` and `o20StampedHistoryCut` perform total finite induction
+and return existing `O20HistoryCut` with all-name runtime and BOTH historical
+clauses. They are **conditional on a supplied stage synchronization; not
+universal pairing**. Epsilon admits only literal same-cut zero-edge paths,
+never removal of an unmatched insertion, retirement, or other native edge.
+
+The positive eleven-edge R191 run has actual root stamps0/1/2 and child stamp4;
+its endpoint cut is obtained by the fold from empty origin, not supplied.
+R193/R195's present vestigial original history remains present through honest
+zero-edge epsilon. Root and child-closing alternatives stay paired at one
+actual origin. R178's differing child-role words satisfy unary paper-role
+classification but FAIL accepted E9 for every generation bijection; this is
+not an accepted canonical-capital or convergence counterexample.
+
+D1/D2/D4/D3 prove `providerHeadObserved`: one runtime observed Bool, its native
+head guard equation, and both providerIn head equations before/after setting
+the retired flag True. The TYPE was read only by approved `git show` at
+94273eaab85e4edf0145027418fb0f1c387bb824, not from lane2's worktree. D2 eliminates
+an explicit observed Bool with its own guard equation; D4 eliminates that Bool
+BEFORE constructing the packet; D3 supplies the actual native guard with its
+own equation at the call site. D3 passed its LAST authorized attempt3 after
+D4 was separately checked/committed; its signature was unchanged. D6's generic
+Bool branch-equation eliminator is independently checked. D7/D8 are actual
+TWO-binding active-head and inactive-head/live-tail producer fixtures.
+
+### Partial/stated work and exact next obligations
+
+`O20HistorySynchronization` is UNPRODUCED endpoint/scanner capital, owning a
+paired native path between the supplied endpoints and actual final scan
+maps. It does NOT assert literal equality of its reconstructed paths to the
+two supplied words. `o20CanonicalSynchronizationGoal` is only a total erased
+function returning this Type for accepted canonical/replayed inputs at the
+actual conjugated generation map. It is not an inhabitant, postulate, hidden
+oracle, or new TODO hole. Named missing producer:
+`o20SynchronizeCanonicalHistories : o20CanonicalSynchronizationGoal …`.
+Actual whole-word extraction needs stronger trace alignment as well.
+
+B eligibility stops there by owner ruling. Additionally, ORIGINAL-scope
+`VestigialEndpointGeneration`/closing-retention packets do not produce the
+exact canonical/replayed all-name `MaybeFiber` controls under
+`expectedBridgeBijection`. Both this rebasing and the actual bridge remain
+unproved, even were the synchronization supplied. C is ineligible,0 attempts;
+no protected convergence, selector, O17/O21, adjacent or O19 body was edited.
+
+D5 generic packet-consumer failed3/3 and was FULLY reverted to D6 commit
+8deec075. Its last approved signature exposed the SAME packet's observed Bool
+and its own erased field equation; even explicit replacement of the projected
+field rejected two syntactically identical displayed `if` types under
+`--show-implicits`. Full error/snapshots/rollback hash are retained in
+`O6-R197-D5-STOP-AUDIT.md` and the evidence archive. No fourth/renamed/shrunken
+retry, unsafe escape, partial definition, or new hole. Owner diagnosis:
+Idris2 v0.8.0 conversion-check wall; lazy Delay desugaring is a possibility,
+NOT established internals. Future work may split the producer packet before
+projected-guard field types arise, or investigate the compiler. R197 DOES NOT
+advertise a generic retirement equality consumer as proved.
+
+### Scope, guards and validation plan
+
+Fresh source-freeze audit: production vs34b21c9 empty; CP3 blob
+2c697e532e83989de8591fa6a4378747c6a501c0; all five frozen theorem modules and
+O19 unchanged from e2ebe3b5. LocalDiamond9f921617…/DeletionChain91e8fd29…,
+O19 body and adjacent statement/body hashes unchanged. Census4=1/2/0/0/1.
+All seven source changes are NEW research modules, `%default total`, with no
+unsafe escapes/holes/with/let aliases/binder prefix. No lane-owned source edit.
+
+Final plan is immutable and covers ALL R196135 applicable baseline sources
+PLUS its late root-law consumer =136 inherited current paths, all present;
+seven new paths produce143 source checks + seeded package =144 invocations.
+Seven inherited expected-negative checks keep their exact diagnostics/symbols.
+Import closure is checked within the inherited245-source invalidation inventory
+plus new targets, matching R196's seeded discipline. Unchanged prerequisites
+OUTSIDE that inventory (e.g. RankObservation) are source-pinned reused seeds,
+NOT called freshly checked. A compiler-free initial plan preflight over the
+entire repository import universe was overly broad and rejected that seed;
+no plan/native compiler was created before the corrected domain passed.
+
+E2 tightens existing own-Building checks to reject duplicate own lines and
+same-module/different-path lines, records runner/plan SHA, and logs heavy-lock
+waits. Optional --show-implicits was used only on retained rejected/repair
+attempts as shown in their immutable command records.18 compiler-free
+adversarial evidence tests pass. No old validation is relabelled as R197 PASS.
+Default48GiB; byte-frozen LocalDiamond52GiB only. UniqueRawNameOrdinal remains
+unchanged and runs under the explicit48GiB owner gate (prior42.715GiB sample).
+
+Next: finish all144 frozen checks, publish/authenticate full ledger/receipts/
+archive/frozen/resource evidence, then owner gate and independent reviewer.
+Do not attempt more proof work this shift or widen the protected premises.
