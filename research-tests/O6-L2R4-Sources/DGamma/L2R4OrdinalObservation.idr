@@ -28,3 +28,17 @@ public export
 nativeActionAt NoTransitions = \ordinal => Nothing
 nativeActionAt (MoreTransitions step rest) =
   observeOrdinalHead (transitionAction step) (nativeActionAt rest)
+
+||| The action immediately after any checked prefix is found at its count.
+||| Structural prefix induction, independent of endpoint representation.
+export
+0 nativeActionAfterPrefix :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, before, afterState, finalState : SystemState name key value world error} ->
+  (front : Transitions first before) -> (step : Transition before afterState) ->
+  (rest : Transitions afterState finalState) ->
+  nativeActionAt (appendTransitions front (MoreTransitions step rest)) (transitionCount front) =
+    Just (transitionAction step)
+nativeActionAfterPrefix NoTransitions step rest = Refl
+nativeActionAfterPrefix (MoreTransitions previous tail) step rest =
+  nativeActionAfterPrefix tail step rest
