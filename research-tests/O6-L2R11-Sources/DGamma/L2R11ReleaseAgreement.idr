@@ -65,3 +65,19 @@ parentOrdinalsAgrees keyEq component fiber (ChildOf actor) equation =
     (dependencies (componentProvisions component))
     (any (\item => isYes (isElem @{keyEq} item (dependencies (componentProvisions component))))
       (dependencies (componentProvisions (fiberComponent fiber)))) Refl
+
+||| Observe the actual fully indexed source lookup; no installed fiber
+||| assumption is required in the absent branch.
+export
+0 lookupOrdinalsAgrees : {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (component : Component key value world error) -> (child : name) ->
+  (source : SystemState name key value world error) ->
+  (found : Maybe (Fiber name key value world error)) ->
+  (0 equation : lookupFiber {name} {key} {value} {world} {error} @{nameEq}
+    child (registry source) = found) ->
+  ordinalAtLookup nameEq keyEq component child source found equation =
+    (if foundChildOverlap keyEq component found then [0] else [])
+lookupOrdinalsAgrees nameEq keyEq component child source Nothing equation = Refl
+lookupOrdinalsAgrees nameEq keyEq component child source (Just fiber) equation =
+  parentOrdinalsAgrees keyEq component fiber (fiberParent fiber) Refl
