@@ -48,7 +48,7 @@ mutation, resource stop or unexpected dependency Building. Cross-lane overlaps
 occurred in96 invocations and are logged by UTC timestamps ONLY; no lock/window
 was acquired, polled, inspected or removed. Sampled LocalDiamond maximum
 50,502,192KiB (52GiB limit); maximum other/UniqueOrdinal44,799,888KiB (48GiB limit).
-These are one-second OWN-tree samples, NOT OS high-water; zeros are not measured peaks.
+These report maximum sampled RSS over command-matching idris2 processes (single-process compiler; not an aggregate process-tree total; not OS high-water); zeros are not measured peaks.
 
 Production identical to `34b21c9`, CP3 blob `2c697e532e83989de8591fa6a4378747c6a501c0`.
 Whole frozen sources and named statements/bodies unchanged, including the

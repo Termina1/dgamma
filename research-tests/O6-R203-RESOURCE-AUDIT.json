@@ -2269,7 +2269,7 @@
     "V116",
     "V119"
   ],
-  "sampleQualification": "Own-worktree one-second RSS samples are NOT OS high-water; zero means no live sample captured, not zero actual peak",
+  "sampleQualification": "maximum sampled RSS over command-matching idris2 processes (single-process compiler; not an aggregate process-tree total; not OS high-water); zero means no live sample captured, not zero actual peak",
   "maxLocalDiamondSampleRSSKiB": 50502192,
   "maxOtherSampleRSSKiB": 44799888,
   "maxUniqueOrdinalSampleRSSKiB": 44799888,
