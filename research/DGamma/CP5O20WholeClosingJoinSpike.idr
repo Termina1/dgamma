@@ -152,3 +152,24 @@ o20ClosingActionAtAppendLeft name key world error value
   (MoreTransitions (Fired nameEq keyEq action tag checked) rest) later Z actor exact = exact
 o20ClosingActionAtAppendLeft name key world error value (MoreTransitions step rest) later (S ordinal) actor exact =
   o20ClosingActionAtAppendLeft name key world error value rest later ordinal actor exact
+
+||| Split a WHOLE indexed Unload into a left occurrence or a right occurrence
+||| with its exact physical offset. The right index is computed structurally.
+export
+0 o20SplitClosingActionAtAppend :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (earlier : Transitions first middle) -> (later : Transitions middle finalState) ->
+  (ordinal : Nat) -> (actor : name) ->
+  (rawClosingActionAt name key world error value ordinal (appendTransitions earlier later) = Just (LUnload actor)) ->
+  Either (rawClosingActionAt name key world error value ordinal earlier = Just (LUnload actor))
+    (laterIndex : Nat ** (ordinal = transitionCount earlier + laterIndex,
+      rawClosingActionAt name key world error value laterIndex later = Just (LUnload actor)))
+o20SplitClosingActionAtAppend name key world error value NoTransitions later ordinal actor exact =
+  Right (ordinal ** (Refl, exact))
+o20SplitClosingActionAtAppend name key world error value
+  (MoreTransitions (Fired nameEq keyEq action tag checked) rest) later Z actor exact = Left exact
+o20SplitClosingActionAtAppend name key world error value (MoreTransitions step rest) later (S ordinal) actor exact =
+  case o20SplitClosingActionAtAppend name key world error value rest later ordinal actor exact of
+    Left earlier => Left earlier
+    Right (laterIndex ** (offset, found)) => Right (laterIndex ** (cong S offset, found))
