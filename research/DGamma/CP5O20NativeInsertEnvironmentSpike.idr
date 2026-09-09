@@ -125,3 +125,54 @@ o20PrefixScannedInsertFromOrigins nameEq keyEq leftReplay rightReplay mapping re
       (o20NativePrefixScan nameEq (beforeRegistration (attachedRightBirth (physicalBirths positions))))
       (o20AttachedGeneratedInsertStage nameEq keyEq leftReplay rightReplay mapping renaming
         leftAligned rightAligned child parent component leftBirth (physicalBirths positions))
+
+||| Accepted A18 telescope with the arbitrary live-environment PARAMETERS
+||| REMOVED. Both real source-cut environments and their scans are produced
+||| at the attached births, using the unchanged conjugated physical map.
+||| This does not yet produce the all-name predecessor relation.
+export
+0 o20PermutedCanonicalPrefixScannedInsert :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {protocol : RegistrationProtocol key value world error} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {initial, leftFinal, rightFinal : SystemState name key value world error} ->
+  {leftTrace : Transitions initial leftFinal} ->
+  {rightTrace : Transitions initial rightFinal} ->
+  {sameInputs : SameOrchestrationModuloGenerated nameEq keyEq leftTrace rightTrace} ->
+  {leftCapital : IndependentCanonicalSchedule name key world error value protocol
+    nameEq keyEq leftTrace} ->
+  {rightCapital : IndependentCanonicalSchedule name key world error value protocol
+    nameEq keyEq rightTrace} ->
+  {matching : MappedCanonicalSupportOrders name key world error value protocol
+    nameEq keyEq leftTrace rightTrace
+    (currentNameBijection (endpointRenaming sameInputs))
+    (canonicalSchedule leftCapital) (canonicalSchedule rightCapital)} ->
+  {operational : CertifiedOperationalCanonicalPermutation name key world error value
+    protocol nameEq keyEq leftTrace rightTrace sameInputs leftCapital rightCapital matching} ->
+  (execution : PermutedCanonicalExecution name key world error value protocol
+    nameEq keyEq leftTrace rightTrace sameInputs leftCapital rightCapital operational) ->
+  (0 leftUnique : UniqueRawNameInsertions name key world error value nameEq keyEq leftTrace) ->
+  (0 rightUnique : UniqueRawNameInsertions name key world error value nameEq keyEq rightTrace) ->
+  (0 generatedMatched : GeneratedOrchestrationMatched name key world error value nameEq
+    leftTrace rightTrace (generatedGenerationBijection sameInputs)) ->
+  (child, parent : name) -> (component : Component key value world error) ->
+  (isSupported {name} {key} {value} {world} {error} @{nameEq} @{keyEq} child leftFinal = True) ->
+  (birth : LocatedGeneratedRegistration child parent component (operationalTargetTrace operational)) ->
+  O20PrefixScannedInsertAttachment name key world error value nameEq keyEq
+    (composeActionRegistrationReplayCorrespondence (canonicalOccurrenceCorrespondence leftCapital)
+      (permutationOccurrenceCorrespondence execution))
+    (canonicalOccurrenceCorrespondence rightCapital) (generatedGenerationBijection sameInputs)
+    (expectedBridgeBijection sameInputs) child parent component birth
+o20PermutedCanonicalPrefixScannedInsert {name} {key} {world} {error} {value} {protocol} {nameEq} {keyEq}
+  {initial} {leftFinal} {rightFinal} {leftTrace} {rightTrace} {sameInputs} {leftCapital} {rightCapital} {matching} {operational}
+  execution leftUnique rightUnique generatedMatched child parent component supported birth =
+    o20PrefixScannedInsertFromOrigins nameEq keyEq
+      (composeActionRegistrationReplayCorrespondence (canonicalOccurrenceCorrespondence leftCapital)
+        (permutationOccurrenceCorrespondence execution))
+      (canonicalOccurrenceCorrespondence rightCapital) (generatedGenerationBijection sameInputs)
+      (expectedBridgeBijection sameInputs)
+      (replayAligned (operationalTargetPremises operational)) (replayAligned (canonicalReplayPremises rightCapital))
+      child parent component birth
+      (o20PermutedCanonicalInsertOrigins {name} {key} {world} {error} {value} {protocol} {nameEq} {keyEq}
+        {initial} {leftFinal} {rightFinal} {leftTrace} {rightTrace} {sameInputs} {leftCapital} {rightCapital} {matching} {operational}
+        execution leftUnique rightUnique generatedMatched child parent component supported birth)
