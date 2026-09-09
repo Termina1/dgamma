@@ -343,3 +343,26 @@ export
 o20RegisteredUnloadSplitHead nameEq registered ordinal live step tail right middleOrdinal middleLive continue
   (O20RegisteredUnloadStep _ _ excludes restFree) =
     (O20RegisteredUnloadStep step tail excludes (fst (continue restFree)), snd (continue restFree))
+
+||| Split whole source exclusion at a concrete generation-scan boundary.
+||| The supplied scan determines the exact starting index of the suffix.
+export
+0 o20RegisteredUnloadSplit :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (registered : List (RegistrationGeneration name)) ->
+  (ordinal : Nat) -> (live : GenerationEnvironment name) ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (left : Transitions first middle) -> (right : Transitions middle finalState) ->
+  (middleOrdinal : Nat) -> (middleLive : GenerationEnvironment name) ->
+  GenerationTraceScan nameEq ordinal live left middleOrdinal middleLive ->
+  O20RegisteredUnloadFree name key world error value nameEq registered ordinal live (appendTransitions left right) ->
+  (O20RegisteredUnloadFree name key world error value nameEq registered ordinal live left,
+   O20RegisteredUnloadFree name key world error value nameEq registered middleOrdinal middleLive right)
+o20RegisteredUnloadSplit nameEq registered ordinal live _ right _ _ GenerationTraceScanEnd free =
+  (O20RegisteredUnloadEnd, free)
+o20RegisteredUnloadSplit nameEq registered ordinal live _ right middleOrdinal middleLive
+  (GenerationTraceScanStep step tail scan) free =
+    o20RegisteredUnloadSplitHead nameEq registered ordinal live step tail right middleOrdinal middleLive
+      (o20RegisteredUnloadSplit nameEq registered (S ordinal)
+        (advanceGenerationEnvironment @{nameEq} ordinal (transitionAction step) live)
+        tail right middleOrdinal middleLive scan) free
