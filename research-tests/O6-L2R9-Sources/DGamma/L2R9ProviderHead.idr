@@ -90,3 +90,13 @@ export
   (0 afterEquation : after = (if seen then present else absent)) -> before = after
 laneNativeAtBool False present absent before after beforeEquation afterEquation = trans beforeEquation (sym afterEquation)
 laneNativeAtBool True present absent before after beforeEquation afterEquation = trans beforeEquation (sym afterEquation)
+
+||| Dependent elimination of the ALREADY observed Bool. Unlike D4's generic
+||| conditional equality interface, the family can carry just an equality
+||| from the stored observed value, avoiding reconstruction of ANY if type.
+||| D4 is checked generic capital; its D5 native splice failed once.
+export
+0 laneObservedBoolEliminate : (0 family : Bool -> Type) ->
+  (whenFalse : family False) -> (whenTrue : family True) -> (seen : Bool) -> family seen
+laneObservedBoolEliminate family whenFalse whenTrue False = whenFalse
+laneObservedBoolEliminate family whenFalse whenTrue True = whenTrue
