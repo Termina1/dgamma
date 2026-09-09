@@ -112,3 +112,22 @@ o20CanonicalControlsAtDecision {name} {key} {world} {error} {value}
           (replace {p = \right => FiberControlMaybeRelated
             (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected (registry originalFinal)) right}
             canonicalExact (endpointControlsOutside endpoint selected outside))))
+
+||| Observe BOTH actual primitive MaybeFiber lookups and the library isElem
+||| decision with their own equations. Produces the control disposition for
+||| ANY name, including present unsupported and already-removed names. It
+||| does not decide which original vestigial names MUST be withdrawn.
+export
+o20ObserveCanonicalControls :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (originalFinal, canonicalFinal : SystemState name key value world error) ->
+  (endpoint : CanonicalEndpointRelation name key world error value nameEq keyEq originalFinal canonicalFinal) ->
+  (selected : name) ->
+  O20CanonicalControlObservation name key world error value nameEq keyEq originalFinal canonicalFinal endpoint selected
+o20ObserveCanonicalControls {name} {key} {world} {error} {value}
+  nameEq keyEq originalFinal canonicalFinal endpoint selected =
+    o20CanonicalControlsAtDecision nameEq keyEq originalFinal canonicalFinal endpoint selected
+      (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected (registry originalFinal))
+      (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected (registry canonicalFinal))
+      Refl Refl (isElem @{nameEq} selected (endpointWithdrawnNames endpoint)) Refl
