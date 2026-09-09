@@ -301,3 +301,36 @@ o20WholeClosingIndexRetainedOrSelectedCenter name key world error value protocol
                        (sym (trans sourceOffset (trans (cong ((deletionOriginalBeforeCount result) +) afterOffset)
                          (plusAssociative (deletionOriginalBeforeCount result) (deletionOriginalEpisodeCount result) afterSource))))
                        (DeletionAfterEmbedding originExact)))
+
+||| Rebase the accounting producer's ACTUAL retained birth to its source
+||| generation ordinal, using operational occurrence embedding and the exact
+||| generated/action coherence law. No segment assignment is a premise.
+export
+0 o20DeletionRetainedBirthEmbedding :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {protocol : RegistrationProtocol key value world error} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+  {initial, finalState : SystemState name key value world error} ->
+  (trace : Transitions initial finalState) ->
+  (premises : CanonicalizationPremises name key world error value protocol nameEq keyEq trace) ->
+  (candidate : DeletableClosingEpisode name key world error value nameEq keyEq trace) ->
+  (step : DeletionChainStep name key world error value protocol nameEq keyEq trace premises candidate) ->
+  {child, parent : name} -> {component : Component key value world error} ->
+  (birth : LocatedGeneratedRegistration child parent component (survivingTrace (deletionResult step))) ->
+  (generation : RegistrationGeneration name) ->
+  (registrationGeneration (canonicalToOriginal (deletionRegistrationAccounting step) birth) = generation) ->
+  DeletionSurvivingOrdinalEmbedding (deletionResult step) (registrationOrdinal birth) (generationBirthOrdinal generation)
+o20DeletionRetainedBirthEmbedding {protocol} {nameEq} {keyEq} trace premises candidate step birth generation exact =
+  replace {p = DeletionSurvivingOrdinalEmbedding (deletionResult step) (registrationOrdinal birth)}
+    (trans (sym (cong locatedActionOrdinal
+      (replayGeneratedActionOriginCoherent (deletionOccurrenceCorrespondence step) birth)))
+      (cong generationBirthOrdinal
+        (trans (sym (cong registrationGeneration (deletionRegistrationOriginExact step birth))) exact)))
+    (replace {p = \correspondence => DeletionSurvivingOrdinalEmbedding (deletionResult step)
+      (registrationOrdinal birth)
+      (locatedActionOrdinal (replayActionOrigin correspondence (generatedRegistrationActionOccurrence birth)))}
+      (sym (deletionOccurrenceCorrespondenceExact step))
+      (everySurvivingOccurrenceEmbedded
+        (deletionStepOperationalOccurrenceFoldSpike nameEq keyEq protocol trace premises candidate
+          (deletionResult step) (deletionProducerCapital step))
+        (generatedRegistrationActionOccurrence birth)))
