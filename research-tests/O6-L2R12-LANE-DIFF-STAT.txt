@@ -1,0 +1,38 @@
+L2R12 lane-only SOURCE/PLAN boundary diff stat
+Base a23a6d54; boundary 2c6ca4a26bdfc50e5c2f81623e7bd9ed6825521c
+E3 archive/ledgers/report publication follows this immutable boundary.
+Final full diff stat is reported after the E3 guarded commit at final gate.
+
+ research-tests/O6-L2R12-CP3-DIFF-DRAFT-OVERLAY.md  |  32 ++++
+ research-tests/O6-L2R12-FINAL-VALIDATION-PLAN.json |  98 +++++++++++
+ research-tests/O6-L2R12-GRIND-SHIFT-AUDIT.md       |  59 +++++++
+ .../DGamma/L2R12AdvanceDispatch.idr                | 100 +++++++++++
+ .../O6-L2R12-Sources/DGamma/L2R12AlignedCut.idr    | 159 ++++++++++++++++++
+ .../DGamma/L2R12ClassifierNative.idr               |  72 ++++++++
+ .../O6-L2R12-Sources/DGamma/L2R12ClosedFold.idr    |  46 ++++++
+ .../O6-L2R12-Sources/DGamma/L2R12DistanceFrame.idr |  38 +++++
+ .../DGamma/L2R12InventoryDomain.idr                |  52 ++++++
+ .../O6-L2R12-Sources/DGamma/L2R12KindDispatch.idr  |  85 ++++++++++
+ .../DGamma/L2R12PacketContiguity.idr               | 161 ++++++++++++++++++
+ .../O6-L2R12-Sources/DGamma/L2R12PacketFixture.idr |  74 +++++++++
+ .../O6-L2R12-Sources/DGamma/L2R12PhaseAccepted.idr | 121 ++++++++++++++
+ .../DGamma/L2R12PhaseAgreement.idr                 |  46 ++++++
+ .../O6-L2R12-Sources/DGamma/L2R12PhaseContract.idr |  48 ++++++
+ .../DGamma/L2R12PhaseNativeFixtures.idr            | 116 +++++++++++++
+ .../O6-L2R12-Sources/DGamma/L2R12R191Segments.idr  |  71 ++++++++
+ .../O6-L2R12-Sources/DGamma/L2R12R191Whole.idr     |  97 +++++++++++
+ .../DGamma/L2R12SelectedAdjacency.idr              |  85 ++++++++++
+ .../DGamma/L2R12SnapshotSuffix.idr                 |  52 ++++++
+ .../O6-L2R12-Sources/DGamma/L2R12ValidWordFold.idr |  80 +++++++++
+ research-tests/run-l2r12-artifact-commit.py        |  56 +++++++
+ research-tests/run-l2r12-check.py                  | 119 +++++++++++++
+ research-tests/run-l2r12-commit.py                 |  61 +++++++
+ research-tests/run-l2r12-evidence-tests.py         | 102 ++++++++++++
+ research-tests/run-l2r12-final-validation.py       |  26 +++
+ research-tests/run-l2r12-independent-verify.py     | 184 +++++++++++++++++++++
+ research-tests/run-l2r12-launch.py                 |  14 ++
+ research-tests/run-l2r12-packet-consumer-recipe.py |  61 +++++++
+ research-tests/run-l2r12-packet-fixture-recipe.py  |  89 ++++++++++
+ research-tests/run-l2r12-phase-fixture-recipe.py   | 105 ++++++++++++
+ research-tests/run-l2r12-publish-evidence.py       |  73 ++++++++
+ 32 files changed, 2582 insertions(+)

@@ -1,0 +1,30 @@
+{
+  "passed": true,
+  "checkedHead": "2c6ca4a26bdfc50e5c2f81623e7bd9ed6825521c",
+  "verifierSHA256": "022da757af7413da329c14d5ec3de9c3548d99836585dd558ed2c472e6dc9c5b",
+  "archiveBoundaryHead": "2c6ca4a26bdfc50e5c2f81623e7bd9ed6825521c",
+  "derivedLedgersVerified": true,
+  "records": 79,
+  "proofAttempts": 59,
+  "retainedDeclarations": 50,
+  "failedAttempts": [
+    "A5-1",
+    "B4-1",
+    "B5-1",
+    "B5-2",
+    "B10-1",
+    "B10-2",
+    "B13-1",
+    "C1-1",
+    "C2-1"
+  ],
+  "guardedSourceCommits": 50,
+  "guardedReceipts": 56,
+  "finalValidations": 18,
+  "archiveFiles": 487,
+  "archiveSHA256": "a9623e20bfb25e4741fe9abe0451a20930d07fed58df0bc861b0c7c6d9777590",
+  "noStagedFiles": true,
+  "ownCompilerRunning": false,
+  "humanMathematicalReview": "parent-owned, not performed by this script",
+  "scope": "PARTIAL L2R12: three native phase certificates, closed actual-kind callback and full R191 fold replay, selected adjacency/dictionary/tag connectors, conditional arbitrary-family packet contiguity with fixed endpoint discharge. General phases/admitted moves/normalizer and arbitrary-family endpoint derivation OPEN."
+}
