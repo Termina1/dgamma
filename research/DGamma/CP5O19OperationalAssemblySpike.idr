@@ -18,6 +18,7 @@ import DGamma.CP5O19OrdinalPlanSpike
 import DGamma.CP5O19ActualCartesianSpike
 import DGamma.CP5O19GridCertificationSpike
 import DGamma.CP5O19WholeBlockSpike
+import DGamma.CP5O19OriginalBlockClassSpike
 import DGamma.CP5ConfluenceDeletionChainSpike
 import DGamma.CP5GeneratedOrchestrationMatched
 import Data.List
@@ -59,11 +60,13 @@ export
   (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq source) ->
   (safety : AdjacentActorSwapSafety name key world error value protocol nameEq keyEq swap source blocks premises) ->
   (unique : UniqueRawNameInsertions name key world error value nameEq keyEq source) ->
+  (legacyBlocks : (selected : name) -> (member : Elem selected sourceOrder) ->
+    LegacyActorOnly selected (blockBody (decomposedBlock blocks selected member))) ->
   RelationalReplayEndpoint name key world error value nameEq keyEq sourceFinal
-    (cursorFinal (columnCursor (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique)))
-o19ActualTargetEndpoint nameEq keyEq protocol swap source blocks premises safety unique =
+    (cursorFinal (columnCursor (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique (legacyBlocks (actorLeft swap) (safetyLeftInOrder safety)) (legacyBlocks (actorRight swap) (safetyRightInOrder safety)))))
+o19ActualTargetEndpoint nameEq keyEq protocol swap source blocks premises safety unique legacyBlocks =
   o19FiniteEndpoint nameEq keyEq
-    (cursorDerivation (columnCursor (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique)))
+    (cursorDerivation (columnCursor (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique (legacyBlocks (actorLeft swap) (safetyLeftInOrder safety)) (legacyBlocks (actorRight swap) (safetyRightInOrder safety)))))
     (replayFinalWellFormed premises)
 
 ||| Retain the ENTIRE reached invariant bundle together with raw-insertion
@@ -80,13 +83,15 @@ export
   (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq source) ->
   (safety : AdjacentActorSwapSafety name key world error value protocol nameEq keyEq swap source blocks premises) ->
   (unique : UniqueRawNameInsertions name key world error value nameEq keyEq source) ->
+  (legacyBlocks : (selected : name) -> (member : Elem selected sourceOrder) ->
+    LegacyActorOnly selected (blockBody (decomposedBlock blocks selected member))) ->
   (ReplayInvariantBundle name key world error value protocol nameEq keyEq
-      (cursorTrace (columnCursor (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique))),
+      (cursorTrace (columnCursor (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique (legacyBlocks (actorLeft swap) (safetyLeftInOrder safety)) (legacyBlocks (actorRight swap) (safetyRightInOrder safety))))),
    UniqueRawNameInsertions name key world error value nameEq keyEq
-      (cursorTrace (columnCursor (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique))))
-o19ActualTargetPremises nameEq keyEq protocol swap source blocks premises safety unique =
-  (cursorBundle (columnCursor (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique)),
-   cursorUnique (columnCursor (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique)))
+      (cursorTrace (columnCursor (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique (legacyBlocks (actorLeft swap) (safetyLeftInOrder safety)) (legacyBlocks (actorRight swap) (safetyRightInOrder safety))))))
+o19ActualTargetPremises nameEq keyEq protocol swap source blocks premises safety unique legacyBlocks =
+  (cursorBundle (columnCursor (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique (legacyBlocks (actorLeft swap) (safetyLeftInOrder safety)) (legacyBlocks (actorRight swap) (safetyRightInOrder safety)))),
+   cursorUnique (columnCursor (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique (legacyBlocks (actorLeft swap) (safetyLeftInOrder safety)) (legacyBlocks (actorRight swap) (safetyRightInOrder safety)))))
 
 ||| Full genuine external-input relation for the actual Cartesian trace,
 ||| folded from the very chain that owns its whole-block derivation.
@@ -100,15 +105,19 @@ export
   (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq source) ->
   (safety : AdjacentActorSwapSafety name key world error value protocol nameEq keyEq swap source blocks premises) ->
   (unique : UniqueRawNameInsertions name key world error value nameEq keyEq source) ->
+  (legacyBlocks : (selected : name) -> (member : Elem selected sourceOrder) ->
+    LegacyActorOnly selected (blockBody (decomposedBlock blocks selected member))) ->
   SameExternalOrchestration nameEq source
-    (cursorTrace (columnCursor (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique)))
-o19ActualTargetSameExternalInputs nameEq keyEq protocol swap source blocks premises safety unique =
+    (cursorTrace (columnCursor (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique (legacyBlocks (actorLeft swap) (safetyLeftInOrder safety)) (legacyBlocks (actorRight swap) (safetyRightInOrder safety)))))
+o19ActualTargetSameExternalInputs nameEq keyEq protocol swap source blocks premises safety unique legacyBlocks =
   o19FiniteSameExternalInputs nameEq
-    (cursorDerivation (columnCursor (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique)))
+    (cursorDerivation (columnCursor (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique (legacyBlocks (actorLeft swap) (safetyLeftInOrder safety)) (legacyBlocks (actorRight swap) (safetyRightInOrder safety)))))
 
-||| COMPLETE same-chain operational whole-block swap. All fields belong to
+||| LEGACY-CONDITIONAL same-chain operational whole-block swap. All fields belong to
 ||| the SAME actual Cartesian cursor: whole derivation, full reached block
 ||| decomposition, endpoint, full invariant bundle, and external inputs.
+||| Every source decomposition body must be LegacyActorOnly. This is NOT an
+||| unconditional expanded producer, and cannot satisfy frozen CrossTrace.
 ||| The source/raw uniqueness is consumed by the actual cursor derivation;
 ||| B4 retains reached uniqueness as accompanying erased capital.
 export
@@ -121,14 +130,34 @@ export
   (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq source) ->
   (safety : AdjacentActorSwapSafety name key world error value protocol nameEq keyEq swap source blocks premises) ->
   (unique : UniqueRawNameInsertions name key world error value nameEq keyEq source) ->
+  (legacyBlocks : (selected : name) -> (member : Elem selected sourceOrder) ->
+    LegacyActorOnly selected (blockBody (decomposedBlock blocks selected member))) ->
   OperationalAdjacentBlockSwap name key world error value protocol nameEq keyEq
     swap source blocks premises safety
-o19ActualOperationalBlockSwap nameEq keyEq protocol swap source blocks premises safety unique =
+o19ActualOperationalBlockSwap nameEq keyEq protocol swap source blocks premises safety unique legacyBlocks =
   MkOperationalAdjacentBlockSwap
-    (cursorFinal (columnCursor (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique)))
-    (cursorTrace (columnCursor (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique)))
-    (certifiedWholeBlock (o19ActualWholeBlock nameEq keyEq protocol swap source blocks premises safety unique))
-    (o19ActualTargetDecomposition nameEq keyEq protocol swap source blocks premises safety unique)
-    (o19ActualTargetEndpoint nameEq keyEq protocol swap source blocks premises safety unique)
-    (fst (o19ActualTargetPremises nameEq keyEq protocol swap source blocks premises safety unique))
-    (o19ActualTargetSameExternalInputs nameEq keyEq protocol swap source blocks premises safety unique)
+    (cursorFinal (columnCursor (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique (legacyBlocks (actorLeft swap) (safetyLeftInOrder safety)) (legacyBlocks (actorRight swap) (safetyRightInOrder safety)))))
+    (cursorTrace (columnCursor (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique (legacyBlocks (actorLeft swap) (safetyLeftInOrder safety)) (legacyBlocks (actorRight swap) (safetyRightInOrder safety)))))
+    (certifiedWholeBlock (o19ActualWholeBlock nameEq keyEq protocol swap source blocks premises safety unique (legacyBlocks (actorLeft swap) (safetyLeftInOrder safety)) (legacyBlocks (actorRight swap) (safetyRightInOrder safety))))
+    (o19ActualTargetDecomposition nameEq keyEq protocol swap source blocks premises safety unique legacyBlocks)
+    (o19ActualTargetEndpoint nameEq keyEq protocol swap source blocks premises safety unique legacyBlocks)
+    (fst (o19ActualTargetPremises nameEq keyEq protocol swap source blocks premises safety unique legacyBlocks))
+    (o19ActualTargetSameExternalInputs nameEq keyEq protocol swap source blocks premises safety unique legacyBlocks)
+
+||| OPEN R207: the EXACT original unconditional producer type. This is
+||| TYPE ONLY: no value of this type, implicit axiom, or hole is supplied.
+||| Frozen CrossTrace requires an inhabitant; the legacy function above does
+||| not provide one. Expanded root-order and metadata transport remain open.
+public export
+0 O19OperationalUnconditionalObligation : Type
+O19OperationalUnconditionalObligation =
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (protocol : RegistrationProtocol key value world error) ->
+  {sourceOrder, targetOrder : List name} -> (swap : AdjacentActorOrderSwap name sourceOrder targetOrder) ->
+  {initial, sourceFinal : SystemState name key value world error} -> (source : Transitions initial sourceFinal) ->
+  (blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder source) ->
+  (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq source) ->
+  (safety : AdjacentActorSwapSafety name key world error value protocol nameEq keyEq swap source blocks premises) ->
+  (unique : UniqueRawNameInsertions name key world error value nameEq keyEq source) ->
+  OperationalAdjacentBlockSwap name key world error value protocol nameEq keyEq
+    swap source blocks premises safety
