@@ -162,3 +162,87 @@ o20ChronologyPairingLength (ChronologyPairLeftRotate earlier event suffix later)
   trans (o20ChronologyRotationLength earlier event suffix) (o20ChronologyPairingLength later)
 o20ChronologyPairingLength (ChronologyPairRightRotate earlier event suffix later) =
   trans (o20ChronologyPairingLength later) (sym (o20ChronologyRotationLength earlier event suffix))
+
+||| UNCONDITIONAL producer from E8's actual asynchronous derivation. Both
+||| native scans and their exact-list pairing are built in the SAME recursion.
+||| Pending events are represented explicitly; every real ordinary/deleted
+||| edge is kept in its source scan. No chosen lists, zip, coverage or runtime
+||| endpoint cut is a premise. Global order may differ by the recorded rotations.
+public export
+0 o20NativeChronologiesPaired :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {mapping : RegistrationGenerationBijection name} ->
+  {leftOrdinal, rightOrdinal : Nat} ->
+  {leftIndex, rightIndex, leftFinalIndex, rightFinalIndex : RegistrationIndexState name} ->
+  {leftFirst, leftFinal, rightFirst, rightFinal : SystemState name key value world error} ->
+  {left : Transitions leftFirst leftFinal} -> {right : Transitions rightFirst rightFinal} ->
+  {pendingLeft, pendingRight : List (RegistrationEvent name key world error value)} ->
+  RegistrationTraceCorrespondence nameEq mapping leftOrdinal leftIndex left leftFinalIndex
+    rightOrdinal rightIndex right rightFinalIndex pendingLeft pendingRight ->
+  (leftEvents : List (RegistrationEvent name key world error value) **
+    (rightEvents : List (RegistrationEvent name key world error value) **
+      (O20NativeActivationScan nameEq leftOrdinal leftIndex left leftFinalIndex leftEvents,
+       O20NativeActivationScan nameEq rightOrdinal rightIndex right rightFinalIndex rightEvents,
+       O20ChronologyPairing mapping (pendingLeft ++ leftEvents) (pendingRight ++ rightEvents))))
+o20NativeChronologiesPaired RegistrationCorrespondenceEnd =
+  ([] ** ([] ** (O20ActivationScanEnd, O20ActivationScanEnd, ChronologyPairEnd)))
+o20NativeChronologiesPaired (SkipLeftNonRegistration action edge rest shape ordinary later) =
+  case o20NativeChronologiesPaired later of
+    (leftEvents ** (rightEvents ** (leftScan, rightScan, paired))) =>
+      (leftEvents ** (rightEvents ** (O20ActivationScanOrdinary action edge rest shape ordinary leftScan, rightScan, paired)))
+o20NativeChronologiesPaired (SkipRightNonRegistration action edge rest shape ordinary later) =
+  case o20NativeChronologiesPaired later of
+    (leftEvents ** (rightEvents ** (leftScan, rightScan, paired))) =>
+      (leftEvents ** (rightEvents ** (leftScan, O20ActivationScanOrdinary action edge rest shape ordinary rightScan, paired)))
+o20NativeChronologiesPaired (DiscardLeftDeletedRegistration edge rest shape deleted later) =
+  case o20NativeChronologiesPaired later of
+    (leftEvents ** (rightEvents ** (leftScan, rightScan, paired))) =>
+      (leftEvents ** (rightEvents ** (O20ActivationScanDeleted edge rest shape deleted leftScan, rightScan, paired)))
+o20NativeChronologiesPaired (DiscardRightDeletedRegistration edge rest shape deleted later) =
+  case o20NativeChronologiesPaired later of
+    (leftEvents ** (rightEvents ** (leftScan, rightScan, paired))) =>
+      (leftEvents ** (rightEvents ** (leftScan, O20ActivationScanDeleted edge rest shape deleted rightScan, paired)))
+o20NativeChronologiesPaired {nameEq} {leftOrdinal} {leftIndex} {pendingLeft}
+  (QueueLeftGeneratedRegistration {child} {parent} {component} edge rest shape retained later) =
+    case o20NativeChronologiesPaired later of
+      (leftEvents ** (rightEvents ** (leftScan, rightScan, paired))) =>
+        (registrationEventAt @{nameEq} leftOrdinal leftIndex child parent component :: leftEvents **
+          (rightEvents ** (O20ActivationScanRetained edge rest shape retained leftScan, rightScan,
+            ChronologyPairLeftRotate pendingLeft
+              (registrationEventAt @{nameEq} leftOrdinal leftIndex child parent component) leftEvents paired)))
+o20NativeChronologiesPaired {nameEq} {rightOrdinal} {rightIndex} {pendingRight}
+  (QueueRightGeneratedRegistration {child} {parent} {component} edge rest shape retained later) =
+    case o20NativeChronologiesPaired later of
+      (leftEvents ** (rightEvents ** (leftScan, rightScan, paired))) =>
+        (leftEvents **
+          (registrationEventAt @{nameEq} rightOrdinal rightIndex child parent component :: rightEvents **
+            (leftScan, O20ActivationScanRetained edge rest shape retained rightScan,
+              ChronologyPairRightRotate pendingRight
+                (registrationEventAt @{nameEq} rightOrdinal rightIndex child parent component) rightEvents paired)))
+o20NativeChronologiesPaired {nameEq} {leftOrdinal} {leftIndex} {pendingLeft}
+  (MatchLeftWithPendingRight {child} {parent} {component} edge rest shape retained rightPrefix rightEvent rightSuffix matched later) =
+    case o20NativeChronologiesPaired later of
+      (leftEvents ** (rightEvents ** (leftScan, rightScan, paired))) =>
+        (registrationEventAt @{nameEq} leftOrdinal leftIndex child parent component :: leftEvents **
+          (rightEvents ** (O20ActivationScanRetained edge rest shape retained leftScan, rightScan,
+            rewrite sym (appendAssociative rightPrefix (rightEvent :: rightSuffix) rightEvents) in
+              ChronologyPairLeftRotate pendingLeft
+                (registrationEventAt @{nameEq} leftOrdinal leftIndex child parent component) leftEvents
+                (ChronologyPairRightRotate rightPrefix rightEvent (rightSuffix ++ rightEvents)
+                  (ChronologyPairMatch (registrationEventAt @{nameEq} leftOrdinal leftIndex child parent component)
+                    rightEvent matched
+                    (rewrite appendAssociative rightPrefix rightSuffix rightEvents in paired))))))
+o20NativeChronologiesPaired {nameEq} {rightOrdinal} {rightIndex} {pendingRight}
+  (MatchRightWithPendingLeft {child} {parent} {component} edge rest shape retained leftPrefix leftEvent leftSuffix matched later) =
+    case o20NativeChronologiesPaired later of
+      (leftEvents ** (rightEvents ** (leftScan, rightScan, paired))) =>
+        (leftEvents **
+          (registrationEventAt @{nameEq} rightOrdinal rightIndex child parent component :: rightEvents **
+            (leftScan, O20ActivationScanRetained edge rest shape retained rightScan,
+              rewrite sym (appendAssociative leftPrefix (leftEvent :: leftSuffix) leftEvents) in
+                ChronologyPairLeftRotate leftPrefix leftEvent (leftSuffix ++ leftEvents)
+                  (ChronologyPairRightRotate pendingRight
+                    (registrationEventAt @{nameEq} rightOrdinal rightIndex child parent component) rightEvents
+                    (ChronologyPairMatch leftEvent
+                      (registrationEventAt @{nameEq} rightOrdinal rightIndex child parent component) matched
+                      (rewrite appendAssociative leftPrefix leftSuffix leftEvents in paired))))))
