@@ -49,6 +49,12 @@ if path!='package':
         if lexical:
             assert path not in PROTECTED_PATHS and lexical['beforeSHA256']==item['sourceSHA256']
             expected_source=lexical['afterSHA256']
+    frozen_gate_path=ROOT/'research-tests/O6-R205-FROZEN-MIGRATION-GATE.json'
+    if frozen_gate_path.exists():
+        fg=json.loads(frozen_gate_path.read_text())
+        if path==fg['path'] and sha(snapshot)==fg['afterSHA256']:
+            assert unit in fg['allowedInvocations'] and fg['beforeSHA256']==item['sourceSHA256']
+            expected_source=fg['afterSHA256']
     assert expected_source==sha(snapshot), 'Changed target needs a new recorded lexical plan'
     expected=item.get('expectedDiagnostic'); symbol=item.get('symbol')
     if not expected and path in negative_preflight['contracts']:

@@ -1,0 +1,103 @@
+{
+  "path": "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+  "diagnosticInvocation": "V100",
+  "status": "PROPOSAL ONLY; source untouched; exact supervisor gate required",
+  "beforeSHA256": "3b62ba1c3bc88503116ed22d82c667043f7f41dd483fb093cc25b677a55245cc",
+  "afterSHA256": "eb0ab7b95779a4b44360b222030e7aa0f8d134c17ea4d2dfa98f3306e135df1b",
+  "patchSHA256": "7e13c53c889ecaf8ac0389c405b807519f7c6e90cb2648dfb635ef107a998083",
+  "candidatePath": "/tmp/dgamma-r205/CanonicalSort.candidate",
+  "edits": [
+    {
+      "old": "    {initial, canonicalFinal : SystemState name key value world error} ->\n    (canonical : Transitions initial canonicalFinal) ->",
+      "new": "    {initial, inputFinal, canonicalFinal : SystemState name key value world error} ->\n    {0 inputOriginal : Transitions initial inputFinal} ->\n    (canonical : Transitions initial canonicalFinal) ->",
+      "count": 1
+    },
+    {
+      "old": "      order canonical",
+      "new": "      order inputOriginal canonical",
+      "count": 2
+    },
+    {
+      "old": "nameEq keyEq originalFinal (orderedSupportNames ordering) sortedTrace",
+      "new": "nameEq keyEq originalFinal (orderedSupportNames ordering) original sortedTrace",
+      "count": 1
+    },
+    {
+      "old": "    (orderedSupportNames ordering) trace ->\n  CanonicalRegistrationCorrespondence trace trace [] ->",
+      "new": "    (orderedSupportNames ordering) trace trace ->\n  CanonicalRegistrationCorrespondence trace trace [] ->",
+      "count": 1
+    },
+    {
+      "old": "record CanonicalWorkActorPrefix\n  (name, key, world, error : Type) (value : key -> Type) (selected : name)",
+      "new": "record CanonicalWorkActorPrefix\n  (name, key, world, error : Type) (value : key -> Type)\n  (nameEq : DecEq name) (selected : name)",
+      "count": 1
+    },
+    {
+      "old": "CanonicalWorkActorPrefix name key world error value selected",
+      "new": "CanonicalWorkActorPrefix name key world error value nameEq selected",
+      "count": 14
+    },
+    {
+      "old": "0 workPrefixActorOnly : ActorLifecycleOnly selected workActorPrefix",
+      "new": "0 workPrefixActorCore : ActorLifecycleCore nameEq selected workActorPrefix",
+      "count": 1
+    },
+    {
+      "old": "workPrefixActorOnly",
+      "new": "workPrefixActorCore",
+      "count": 3
+    },
+    {
+      "old": "0 canonicalWorkActorPrefixCons :\n  (name, key, world, error : Type) -> (value : key -> Type) -> (selected : name) ->",
+      "new": "0 canonicalWorkActorPrefixCons :\n  (name, key, world, error : Type) -> (value : key -> Type) ->\n  {nameEq : DecEq name} -> (selected : name) ->",
+      "count": 1
+    },
+    {
+      "old": "ActorLifecycleStep",
+      "new": "CoreLifecycleStep",
+      "count": 1
+    },
+    {
+      "old": "ActorYieldedRegistrationStep",
+      "new": "CoreYieldedRegistrationStep",
+      "count": 1
+    },
+    {
+      "old": "ActorLifecycleEnd",
+      "new": "CoreLifecycleEnd",
+      "count": 2
+    },
+    {
+      "old": "    (workPrefixActorCore scanned) (workActorRest scanned)",
+      "new": "    (ActorWithoutForcedRoots (workActorPrefix scanned) (workPrefixActorCore scanned)) (workActorRest scanned)",
+      "count": 1
+    },
+    {
+      "old": "0 canonicalChildPlacementFromForward :\n  {name, key, world, error : Type} -> {value : key -> Type} ->\n  {nameEq : DecEq name} -> {keyEq : DecEq key} ->\n  {originalFinal, reducedFinal : SystemState name key value world error} ->\n  {order : List name} ->\n  {initial, canonicalFinal : SystemState name key value world error} ->\n  {canonical : Transitions initial canonicalFinal} ->\n  (placement : CanonicalInputPlacement name key world error value nameEq keyEq\n    reducedFinal order canonical) ->\n  (selected, parent : name) ->\n  (selectedIn : Elem selected order) ->\n  (fiber : Fiber name key value world error) ->\n  (forward : CanonicalOutsideFiberForward name key world error value nameEq\n    selected originalFinal reducedFinal fiber) ->\n  fiberParent fiber = ChildOf parent ->\n  (component : Component key value world error **\n   birth : LocatedGeneratedRegistration selected parent component canonical **\n   (lookupFiber @{nameEq} {name = name} {key = key} {value = value}\n      {world = world} {error = error} selected\n      (registry (registrationBefore birth)) = Nothing,\n    (action : Action name key value world error) ->\n    (lifecycle : LocatedActionOccurrence action canonical) ->\n    isLifecycleAction action = True -> actionOwner action = selected ->\n    LT (registrationOrdinal birth) (locatedActionOrdinal lifecycle)))",
+      "new": "0 canonicalChildPlacementFromForward :\n  {name, key, world, error : Type} -> {value : key -> Type} ->\n  {nameEq : DecEq name} -> {keyEq : DecEq key} ->\n  {originalFinal, reducedFinal : SystemState name key value world error} ->\n  {order : List name} ->\n  {initial, inputFinal, canonicalFinal : SystemState name key value world error} ->\n  {0 inputOriginal : Transitions initial inputFinal} ->\n  {canonical : Transitions initial canonicalFinal} ->\n  (placement : CanonicalInputPlacement name key world error value nameEq keyEq\n    reducedFinal order inputOriginal canonical) ->\n  (selected, parent : name) ->\n  (selectedIn : Elem selected order) ->\n  (fiber : Fiber name key value world error) ->\n  (forward : CanonicalOutsideFiberForward name key world error value nameEq\n    selected originalFinal reducedFinal fiber) ->\n  fiberParent fiber = ChildOf parent ->\n  (component : Component key value world error **\n   birth : LocatedGeneratedRegistration selected parent component canonical **\n   (lookupFiber @{nameEq} {name = name} {key = key} {value = value}\n      {world = world} {error = error} selected\n      (registry (registrationBefore birth)) = Nothing,\n    (action : Action name key value world error) ->\n    (lifecycle : LocatedActionOccurrence action canonical) ->\n    isLifecycleAction action = True -> actionOwner action = selected ->\n    LT (registrationOrdinal birth) (locatedActionOrdinal lifecycle)))",
+      "count": 1
+    },
+    {
+      "old": "0 canonicalChildPlacementToOriginal :\n  {name, key, world, error : Type} -> {value : key -> Type} ->\n  {nameEq : DecEq name} -> {keyEq : DecEq key} ->\n  {originalFinal, reducedFinal : SystemState name key value world error} ->\n  {order : List name} ->\n  {initial, canonicalFinal : SystemState name key value world error} ->\n  {canonical : Transitions initial canonicalFinal} ->\n  (endpoint : CanonicalEndpointRelation name key world error value nameEq keyEq\n    originalFinal reducedFinal) ->\n  (originalLinearization : LinearizesSupport name key world error value nameEq\n    keyEq originalFinal order) ->\n  (placement : CanonicalInputPlacement name key world error value nameEq keyEq\n    reducedFinal order canonical) ->\n  (selected, parent : name) ->\n  (selectedIn : Elem selected order) ->\n  (fiber : Fiber name key value world error) ->\n  lookupFiber @{nameEq} selected (registry originalFinal) = Just fiber ->\n  fiberParent fiber = ChildOf parent ->\n  (component : Component key value world error **\n   birth : LocatedGeneratedRegistration selected parent component canonical **\n   (lookupFiber @{nameEq} {name = name} {key = key} {value = value}\n      {world = world} {error = error} selected\n      (registry (registrationBefore birth)) = Nothing,\n    (action : Action name key value world error) ->\n    (lifecycle : LocatedActionOccurrence action canonical) ->\n    isLifecycleAction action = True -> actionOwner action = selected ->\n    LT (registrationOrdinal birth) (locatedActionOrdinal lifecycle)))",
+      "new": "0 canonicalChildPlacementToOriginal :\n  {name, key, world, error : Type} -> {value : key -> Type} ->\n  {nameEq : DecEq name} -> {keyEq : DecEq key} ->\n  {originalFinal, reducedFinal : SystemState name key value world error} ->\n  {order : List name} ->\n  {initial, inputFinal, canonicalFinal : SystemState name key value world error} ->\n  {0 inputOriginal : Transitions initial inputFinal} ->\n  {canonical : Transitions initial canonicalFinal} ->\n  (endpoint : CanonicalEndpointRelation name key world error value nameEq keyEq\n    originalFinal reducedFinal) ->\n  (originalLinearization : LinearizesSupport name key world error value nameEq\n    keyEq originalFinal order) ->\n  (placement : CanonicalInputPlacement name key world error value nameEq keyEq\n    reducedFinal order inputOriginal canonical) ->\n  (selected, parent : name) ->\n  (selectedIn : Elem selected order) ->\n  (fiber : Fiber name key value world error) ->\n  lookupFiber @{nameEq} selected (registry originalFinal) = Just fiber ->\n  fiberParent fiber = ChildOf parent ->\n  (component : Component key value world error **\n   birth : LocatedGeneratedRegistration selected parent component canonical **\n   (lookupFiber @{nameEq} {name = name} {key = key} {value = value}\n      {world = world} {error = error} selected\n      (registry (registrationBefore birth)) = Nothing,\n    (action : Action name key value world error) ->\n    (lifecycle : LocatedActionOccurrence action canonical) ->\n    isLifecycleAction action = True -> actionOwner action = selected ->\n    LT (registrationOrdinal birth) (locatedActionOrdinal lifecycle)))",
+      "count": 1
+    },
+    {
+      "old": "0 canonicalInputPlacementToOriginal :\n  {name, key, world, error : Type} -> {value : key -> Type} ->\n  {nameEq : DecEq name} -> {keyEq : DecEq key} ->\n  {originalFinal, reducedFinal : SystemState name key value world error} ->\n  {order : List name} ->\n  {initial, canonicalFinal : SystemState name key value world error} ->\n  (endpoint : CanonicalEndpointRelation name key world error value nameEq keyEq\n    originalFinal reducedFinal) ->\n  (originalLinearization : LinearizesSupport name key world error value nameEq\n    keyEq originalFinal order) ->\n  (canonical : Transitions initial canonicalFinal) ->\n  CanonicalInputPlacement name key world error value nameEq keyEq reducedFinal\n    order canonical ->\n  CanonicalInputPlacement name key world error value nameEq keyEq originalFinal\n    order canonical",
+      "new": "0 canonicalInputPlacementToOriginal :\n  {name, key, world, error : Type} -> {value : key -> Type} ->\n  {nameEq : DecEq name} -> {keyEq : DecEq key} ->\n  {originalFinal, reducedFinal : SystemState name key value world error} ->\n  {order : List name} ->\n  {initial, inputFinal, canonicalFinal : SystemState name key value world error} ->\n  {0 inputOriginal : Transitions initial inputFinal} ->\n  (endpoint : CanonicalEndpointRelation name key world error value nameEq keyEq\n    originalFinal reducedFinal) ->\n  (originalLinearization : LinearizesSupport name key world error value nameEq\n    keyEq originalFinal order) ->\n  (canonical : Transitions initial canonicalFinal) ->\n  CanonicalInputPlacement name key world error value nameEq keyEq reducedFinal\n    order inputOriginal canonical ->\n  CanonicalInputPlacement name key world error value nameEq keyEq originalFinal\n    order inputOriginal canonical",
+      "count": 1
+    },
+    {
+      "old": "    MkCanonicalInputPlacement (allRootInputsFirst placement)\n      (rootGenerationFresh placement)\n      (rootGenerationBeforeLifecycle placement)",
+      "new": "    MkCanonicalInputPlacement (placementExternalInputsSame placement)\n      (rootGenerationEarliestAvailable placement)\n      (rootGenerationFresh placement)\n      (rootGenerationBeforeOwnLifecycle placement)",
+      "count": 1
+    },
+    {
+      "old": "      (inputPlacementToOriginal supportTransport\n        (sortedTrace sorted) (sortedInputPlacement sorted))",
+      "new": "      (MkCanonicalInputPlacement (accountedExternalInputs accounting)\n        (rootGenerationEarliestAvailable (inputPlacementToOriginal supportTransport\n          (sortedTrace sorted) (sortedInputPlacement sorted)))\n        (rootGenerationFresh (inputPlacementToOriginal supportTransport\n          (sortedTrace sorted) (sortedInputPlacement sorted)))\n        (rootGenerationBeforeOwnLifecycle (inputPlacementToOriginal supportTransport\n          (sortedTrace sorted) (sortedInputPlacement sorted)))\n        (childGenerationBeforeOwnLifecycle (inputPlacementToOriginal supportTransport\n          (sortedTrace sorted) (sortedInputPlacement sorted))))",
+      "count": 1
+    }
+  ],
+  "protectedDeclarationUnchanged": true,
+  "scope": "Thread original trace indices; retain same two-case scan as SUBSET of Core (NOT generalized producer), rename core field/constructors, wrap concrete core only at block boundary; forward new placement fields and rebuild original-indexed placement using ALREADY AVAILABLE accountedExternalInputs. No new premise, theorem, case, normalizer, cast, hole, let/with or unsafe construct."
+}

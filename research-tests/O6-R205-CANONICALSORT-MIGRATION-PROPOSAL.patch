@@ -1,0 +1,286 @@
+--- a/research/DGamma/CP5ConfluenceCanonicalSortSpike.idr
++++ b/research/DGamma/CP5ConfluenceCanonicalSortSpike.idr
+@@ -104,12 +104,13 @@
+   originalSupportLinearization :
+     LinearizesSupport name key world error value nameEq keyEq originalFinal order
+   inputPlacementToOriginal :
+-    {initial, canonicalFinal : SystemState name key value world error} ->
++    {initial, inputFinal, canonicalFinal : SystemState name key value world error} ->
++    {0 inputOriginal : Transitions initial inputFinal} ->
+     (canonical : Transitions initial canonicalFinal) ->
+     CanonicalInputPlacement name key world error value nameEq keyEq reducedFinal
+-      order canonical ->
++      order inputOriginal canonical ->
+     CanonicalInputPlacement name key world error value nameEq keyEq originalFinal
+-      order canonical
++      order inputOriginal canonical
+ 
+ ||| Sorting result with every recursive invariant, replay generator/stage
+ ||| correspondence, external-input witness, and registration-accounting field
+@@ -157,7 +158,7 @@
+   sortedLifecycleCoverage : LifecycleActorsCovered
+     (orderedSupportNames ordering) sortedTrace
+   sortedInputPlacement : CanonicalInputPlacement name key world error value
+-    nameEq keyEq originalFinal (orderedSupportNames ordering) sortedTrace
++    nameEq keyEq originalFinal (orderedSupportNames ordering) original sortedTrace
+   sortedEndpoint : CanonicalEndpointRelation name key world error value nameEq
+     keyEq originalFinal sortedFinal
+   0 sortedWithdrawsNoNames : endpointWithdrawnNames sortedEndpoint = []
+@@ -1292,7 +1293,7 @@
+         (traceBeforeBlock (blocks later laterIn)) + laterPosition)) ->
+   LifecycleActorsCovered (orderedSupportNames ordering) trace ->
+   CanonicalInputPlacement name key world error value nameEq keyEq finalState
+-    (orderedSupportNames ordering) trace ->
++    (orderedSupportNames ordering) trace trace ->
+   CanonicalRegistrationCorrespondence trace trace [] ->
+   SortedClosingFreeTrace name key world error value protocol nameEq keyEq trace
+     ordering
+@@ -2017,33 +2018,35 @@
+ ||| The structural scan simultaneously owns its actual pieces, actor proof,
+ ||| boundary and exact count equation; no existential state equality is guessed.
+ record CanonicalWorkActorPrefix
+-  (name, key, world, error : Type) (value : key -> Type) (selected : name)
++  (name, key, world, error : Type) (value : key -> Type)
++  (nameEq : DecEq name) (selected : name)
+   {first, finalState : SystemState name key value world error}
+   (trace : Transitions first finalState) where
+   constructor MkCanonicalWorkActorPrefix
+   workPrefixEnd : SystemState name key value world error
+   workActorPrefix : Transitions first workPrefixEnd
+   workActorRest : Transitions workPrefixEnd finalState
+-  0 workPrefixActorOnly : ActorLifecycleOnly selected workActorPrefix
++  0 workPrefixActorCore : ActorLifecycleCore nameEq selected workActorPrefix
+   0 workPrefixDecomposition : appendTransitions workActorPrefix workActorRest = trace
+   0 workPrefixCountSplit : transitionCount workActorPrefix + transitionCount workActorRest = transitionCount trace
+   0 workPrefixBoundary : CanonicalWorkActorBoundary selected workActorRest
+ 
+ 0 canonicalWorkActorPrefixCons :
+-  (name, key, world, error : Type) -> (value : key -> Type) -> (selected : name) ->
++  (name, key, world, error : Type) -> (value : key -> Type) ->
++  {nameEq : DecEq name} -> (selected : name) ->
+   {first, middle, finalState : SystemState name key value world error} ->
+   (step : Transition first middle) -> (rest : Transitions middle finalState) ->
+   CanonicalWorkActorStep selected step ->
+-  CanonicalWorkActorPrefix name key world error value selected rest ->
+-  CanonicalWorkActorPrefix name key world error value selected (MoreTransitions step rest)
++  CanonicalWorkActorPrefix name key world error value nameEq selected rest ->
++  CanonicalWorkActorPrefix name key world error value nameEq selected (MoreTransitions step rest)
+ canonicalWorkActorPrefixCons name key world error value selected step rest (CanonicalWorkLifecycle lifecycle actor) tail =
+   MkCanonicalWorkActorPrefix (workPrefixEnd tail) (MoreTransitions step (workActorPrefix tail)) (workActorRest tail)
+-    (ActorLifecycleStep step (workActorPrefix tail) lifecycle actor (workPrefixActorOnly tail))
++    (CoreLifecycleStep step (workActorPrefix tail) lifecycle actor (workPrefixActorCore tail))
+     (cong (MoreTransitions step) (workPrefixDecomposition tail))
+     (cong S (workPrefixCountSplit tail)) (workPrefixBoundary tail)
+ canonicalWorkActorPrefixCons name key world error value selected step rest (CanonicalWorkRegistration action) tail =
+   MkCanonicalWorkActorPrefix (workPrefixEnd tail) (MoreTransitions step (workActorPrefix tail)) (workActorRest tail)
+-    (ActorYieldedRegistrationStep step (workActorPrefix tail) action (workPrefixActorOnly tail))
++    (CoreYieldedRegistrationStep step (workActorPrefix tail) action (workPrefixActorCore tail))
+     (cong (MoreTransitions step) (workPrefixDecomposition tail))
+     (cong S (workPrefixCountSplit tail)) (workPrefixBoundary tail)
+ 
+@@ -2053,15 +2056,15 @@
+   (nameEq : DecEq name) -> (selected : name) ->
+   {first, finalState : SystemState name key value world error} ->
+   (trace : Transitions first finalState) ->
+-  CanonicalWorkActorPrefix name key world error value selected trace
++  CanonicalWorkActorPrefix name key world error value nameEq selected trace
+ canonicalWorkScanActorPrefix name key world error value nameEq selected NoTransitions =
+-  MkCanonicalWorkActorPrefix _ NoTransitions NoTransitions ActorLifecycleEnd Refl Refl CanonicalWorkBoundaryEnd
++  MkCanonicalWorkActorPrefix _ NoTransitions NoTransitions CoreLifecycleEnd Refl Refl CanonicalWorkBoundaryEnd
+ canonicalWorkScanActorPrefix name key world error value nameEq selected (MoreTransitions step rest) =
+   case canonicalWorkClassifyActor name key world error value nameEq selected step of
+     Yes owned => canonicalWorkActorPrefixCons name key world error value selected step rest owned
+       (canonicalWorkScanActorPrefix name key world error value nameEq selected rest)
+     No foreign => MkCanonicalWorkActorPrefix _ NoTransitions (MoreTransitions step rest)
+-      ActorLifecycleEnd Refl Refl (CanonicalWorkBoundaryBlocked step rest foreign)
++      CoreLifecycleEnd Refl Refl (CanonicalWorkBoundaryBlocked step rest foreign)
+ 
+ 0 canonicalWorkNoLifecycleCons :
+   (name, key, world, error : Type) -> (value : key -> Type) -> (selected : name) ->
+@@ -2113,7 +2116,7 @@
+   {initial, finalState : SystemState name key value world error} ->
+   (trace : Transitions initial finalState) ->
+   (episode : LocatedInterleavedOpenEpisode name key world error value nameEq keyEq selected trace) ->
+-  (scanned : CanonicalWorkActorPrefix name key world error value selected (openInside episode)) ->
++  (scanned : CanonicalWorkActorPrefix name key world error value nameEq selected (openInside episode)) ->
+   NoLifecycleBy selected (workActorRest scanned) ->
+   LocatedOpenEpisodeBlock name key world error value nameEq keyEq selected trace
+ canonicalWorkBlockFromPrefix name key world error value nameEq keyEq selected trace episode scanned noLater =
+@@ -2122,7 +2125,7 @@
+     (canonicalWorkInstalledPrefix name key world error value nameEq keyEq selected (workActorPrefix scanned) (workActorRest scanned)
+       (replace {p = InstalledTrace name key world error value nameEq keyEq selected}
+         (sym (workPrefixDecomposition scanned)) (openInstalled episode)))
+-    (workPrefixActorOnly scanned) (workActorRest scanned) (openNoEarlierLifecycle episode) noLater (openActiveAtFinal episode)
++    (ActorWithoutForcedRoots (workActorPrefix scanned) (workPrefixActorCore scanned)) (workActorRest scanned) (openNoEarlierLifecycle episode) noLater (openActiveAtFinal episode)
+     (trans (cong (\body => appendTransitions (openPrefix episode)
+       (MoreTransitions (beginTransition (openBegin episode)) body)) (workPrefixDecomposition scanned)) (openDecomposition episode))
+ 
+@@ -2141,7 +2144,7 @@
+     {initial, finalState : SystemState name key value world error} ->
+     {trace : Transitions initial finalState} ->
+     {episode : LocatedInterleavedOpenEpisode name key world error value nameEq keyEq selected trace} ->
+-    (scanned : CanonicalWorkActorPrefix name key world error value selected (openInside episode)) ->
++    (scanned : CanonicalWorkActorPrefix name key world error value nameEq selected (openInside episode)) ->
+     (0 noLater : NoLifecycleBy selected (workActorRest scanned)) ->
+     CanonicalWorkOpenInspection name key world error value nameEq keyEq selected trace episode
+   CanonicalWorkOpenInterleaved :
+@@ -2150,7 +2153,7 @@
+     {initial, finalState : SystemState name key value world error} ->
+     {trace : Transitions initial finalState} ->
+     {episode : LocatedInterleavedOpenEpisode name key world error value nameEq keyEq selected trace} ->
+-    (scanned : CanonicalWorkActorPrefix name key world error value selected (openInside episode)) ->
++    (scanned : CanonicalWorkActorPrefix name key world error value nameEq selected (openInside episode)) ->
+     (0 laterRemains : Not (NoLifecycleBy selected (workActorRest scanned))) ->
+     CanonicalWorkOpenInspection name key world error value nameEq keyEq selected trace episode
+ 
+@@ -2160,7 +2163,7 @@
+   {initial, finalState : SystemState name key value world error} ->
+   (trace : Transitions initial finalState) ->
+   (episode : LocatedInterleavedOpenEpisode name key world error value nameEq keyEq selected trace) ->
+-  CanonicalWorkActorPrefix name key world error value selected (openInside episode) ->
++  CanonicalWorkActorPrefix name key world error value nameEq selected (openInside episode) ->
+   CanonicalWorkOpenInspection name key world error value nameEq keyEq selected trace episode
+ canonicalWorkInspectScanned name key world error value nameEq keyEq selected trace episode scanned =
+   case canonicalWorkDecNoLifecycle name key world error value nameEq selected (workActorRest scanned) of
+@@ -2200,7 +2203,7 @@
+   {initial, finalState : SystemState name key value world error} ->
+   (trace : Transitions initial finalState) ->
+   (episode : LocatedInterleavedOpenEpisode name key world error value nameEq keyEq selected trace) ->
+-  (scanned : CanonicalWorkActorPrefix name key world error value selected (openInside episode)) ->
++  (scanned : CanonicalWorkActorPrefix name key world error value nameEq selected (openInside episode)) ->
+   NoLifecycleBy selected (workActorRest scanned) ->
+   CanonicalWorkCompletedBlock name key world error value nameEq keyEq selected trace
+ canonicalWorkCompleteBlock name key world error value nameEq keyEq selected trace episode scanned noLater =
+@@ -2241,7 +2244,7 @@
+     {trace : Transitions initial finalState} ->
+     {selected : name} -> {remaining : List name} -> {minimumStart : Nat} ->
+     (episode : LocatedInterleavedOpenEpisode name key world error value nameEq keyEq selected trace) ->
+-    (scanned : CanonicalWorkActorPrefix name key world error value selected (openInside episode)) ->
++    (scanned : CanonicalWorkActorPrefix name key world error value nameEq selected (openInside episode)) ->
+     (0 laterRemains : Not (NoLifecycleBy selected (workActorRest scanned))) ->
+     CanonicalWorklistInspection name key world error value nameEq keyEq trace (selected :: remaining) minimumStart
+   CanonicalWorklistNeedsOrdering :
+@@ -2700,7 +2703,7 @@
+   {initial, finalState : SystemState name key value world error} ->
+   (trace : Transitions initial finalState) ->
+   (episode : LocatedInterleavedOpenEpisode name key world error value nameEq keyEq selected trace) ->
+-  (scanned : CanonicalWorkActorPrefix name key world error value selected (openInside episode)) ->
++  (scanned : CanonicalWorkActorPrefix name key world error value nameEq selected (openInside episode)) ->
+   Not (NoLifecycleBy selected (workActorRest scanned)) ->
+   CanonicalWorkGroupingPair name key world error value selected trace
+ canonicalWorkGroupingPairForEpisode name key world error value nameEq keyEq selected trace episode scanned remains =
+@@ -3485,7 +3488,7 @@
+   {initial, finalState : SystemState name key value world error} ->
+   (global : Transitions initial finalState) ->
+   (episode : LocatedInterleavedOpenEpisode name key world error value nameEq keyEq selected global) ->
+-  (scanned : CanonicalWorkActorPrefix name key world error value selected (openInside episode)) ->
++  (scanned : CanonicalWorkActorPrefix name key world error value nameEq selected (openInside episode)) ->
+   InstalledTrace name key world error value nameEq keyEq selected (workActorRest scanned)
+ canonicalWorkScannedResidualInstalled name key world error value nameEq keyEq selected global episode scanned =
+   canonicalWorkInstalledAppendRight name key world error value nameEq keyEq selected
+@@ -3578,7 +3581,7 @@
+   {initial, finalState : SystemState name key value world error} ->
+   (trace : Transitions initial finalState) ->
+   (episode : LocatedInterleavedOpenEpisode name key world error value nameEq keyEq selected trace) ->
+-  (scanned : CanonicalWorkActorPrefix name key world error value selected (openInside episode)) ->
++  (scanned : CanonicalWorkActorPrefix name key world error value nameEq selected (openInside episode)) ->
+   (remains : Not (NoLifecycleBy selected (workActorRest scanned))) ->
+   transitionAction (workPairRight (canonicalWorkGroupingPairForEpisode name key world error value
+     nameEq keyEq selected trace episode scanned remains)) =
+@@ -3608,7 +3611,7 @@
+   {initial, finalState : SystemState name key value world error} ->
+   (trace : Transitions initial finalState) ->
+   (episode : LocatedInterleavedOpenEpisode name key world error value nameEq keyEq selected trace) ->
+-  (scanned : CanonicalWorkActorPrefix name key world error value selected (openInside episode)) ->
++  (scanned : CanonicalWorkActorPrefix name key world error value nameEq selected (openInside episode)) ->
+   (remains : Not (NoLifecycleBy selected (workActorRest scanned))) ->
+   (observedActor : name) ->
+   Not (transitionAction (workPairRight (canonicalWorkGroupingPairForEpisode name key world error value
+@@ -3631,7 +3634,7 @@
+   {initial, finalState : SystemState name key value world error} ->
+   (trace : Transitions initial finalState) ->
+   (episode : LocatedInterleavedOpenEpisode name key world error value nameEq keyEq selected trace) ->
+-  (scanned : CanonicalWorkActorPrefix name key world error value selected (openInside episode)) ->
++  (scanned : CanonicalWorkActorPrefix name key world error value nameEq selected (openInside episode)) ->
+   (remains : Not (NoLifecycleBy selected (workActorRest scanned))) ->
+   PaperActivationStep (workPairRight (canonicalWorkGroupingPairForEpisode name key world error value
+     nameEq keyEq selected trace episode scanned remains)) ->
+@@ -4180,10 +4183,11 @@
+   {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+   {originalFinal, reducedFinal : SystemState name key value world error} ->
+   {order : List name} ->
+-  {initial, canonicalFinal : SystemState name key value world error} ->
++  {initial, inputFinal, canonicalFinal : SystemState name key value world error} ->
++  {0 inputOriginal : Transitions initial inputFinal} ->
+   {canonical : Transitions initial canonicalFinal} ->
+   (placement : CanonicalInputPlacement name key world error value nameEq keyEq
+-    reducedFinal order canonical) ->
++    reducedFinal order inputOriginal canonical) ->
+   (selected, parent : name) ->
+   (selectedIn : Elem selected order) ->
+   (fiber : Fiber name key value world error) ->
+@@ -4213,14 +4217,15 @@
+   {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+   {originalFinal, reducedFinal : SystemState name key value world error} ->
+   {order : List name} ->
+-  {initial, canonicalFinal : SystemState name key value world error} ->
++  {initial, inputFinal, canonicalFinal : SystemState name key value world error} ->
++  {0 inputOriginal : Transitions initial inputFinal} ->
+   {canonical : Transitions initial canonicalFinal} ->
+   (endpoint : CanonicalEndpointRelation name key world error value nameEq keyEq
+     originalFinal reducedFinal) ->
+   (originalLinearization : LinearizesSupport name key world error value nameEq
+     keyEq originalFinal order) ->
+   (placement : CanonicalInputPlacement name key world error value nameEq keyEq
+-    reducedFinal order canonical) ->
++    reducedFinal order inputOriginal canonical) ->
+   (selected, parent : name) ->
+   (selectedIn : Elem selected order) ->
+   (fiber : Fiber name key value world error) ->
+@@ -4248,21 +4253,23 @@
+   {nameEq : DecEq name} -> {keyEq : DecEq key} ->
+   {originalFinal, reducedFinal : SystemState name key value world error} ->
+   {order : List name} ->
+-  {initial, canonicalFinal : SystemState name key value world error} ->
++  {initial, inputFinal, canonicalFinal : SystemState name key value world error} ->
++  {0 inputOriginal : Transitions initial inputFinal} ->
+   (endpoint : CanonicalEndpointRelation name key world error value nameEq keyEq
+     originalFinal reducedFinal) ->
+   (originalLinearization : LinearizesSupport name key world error value nameEq
+     keyEq originalFinal order) ->
+   (canonical : Transitions initial canonicalFinal) ->
+   CanonicalInputPlacement name key world error value nameEq keyEq reducedFinal
+-    order canonical ->
++    order inputOriginal canonical ->
+   CanonicalInputPlacement name key world error value nameEq keyEq originalFinal
+-    order canonical
++    order inputOriginal canonical
+ canonicalInputPlacementToOriginal endpoint originalLinearization canonical
+   placement =
+-    MkCanonicalInputPlacement (allRootInputsFirst placement)
++    MkCanonicalInputPlacement (placementExternalInputsSame placement)
++      (rootGenerationEarliestAvailable placement)
+       (rootGenerationFresh placement)
+-      (rootGenerationBeforeLifecycle placement)
++      (rootGenerationBeforeOwnLifecycle placement)
+       (canonicalChildPlacementToOriginal endpoint originalLinearization placement)
+ 
+ ||| Rebuild one precedence edge from two producer-owned exact target lookups.
+@@ -4798,8 +4805,15 @@
+       (sortedBlock sorted)
+       (sortedBlocksFollowOrder sorted)
+       (sortedLifecycleCoverage sorted)
+-      (inputPlacementToOriginal supportTransport
+-        (sortedTrace sorted) (sortedInputPlacement sorted))
++      (MkCanonicalInputPlacement (accountedExternalInputs accounting)
++        (rootGenerationEarliestAvailable (inputPlacementToOriginal supportTransport
++          (sortedTrace sorted) (sortedInputPlacement sorted)))
++        (rootGenerationFresh (inputPlacementToOriginal supportTransport
++          (sortedTrace sorted) (sortedInputPlacement sorted)))
++        (rootGenerationBeforeOwnLifecycle (inputPlacementToOriginal supportTransport
++          (sortedTrace sorted) (sortedInputPlacement sorted)))
++        (childGenerationBeforeOwnLifecycle (inputPlacementToOriginal supportTransport
++          (sortedTrace sorted) (sortedInputPlacement sorted))))
+       (accountedEndpoint accounting)
+       (accountedGeneratedRegistrations accounting)
+ 

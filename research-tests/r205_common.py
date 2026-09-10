@@ -43,7 +43,16 @@ def frozen():
     return dict(regions={k:dict(bytes=len(v),sha256=sha(v)) for k,v in regions.items()},protectedModuleHashes={p:sha((ROOT/p).read_bytes()) for p in sorted(PROTECTED_PATHS)},holes=holes,census=[len(holes[p]) for p in PARTS],holeStatements=statements)
 def assert_frozen():
     pre=json.loads((ROOT/'research-tests/O6-R205-PRE-STATE.json').read_text())
-    assert frozen()==pre['frozen'], 'Protected source/region/statement changed; separate exact-diff gate required'
+    expected=pre['frozen'];current=frozen()
+    gate_path=ROOT/'research-tests/O6-R205-FROZEN-MIGRATION-GATE.json'
+    if gate_path.exists():
+        gate=json.loads(gate_path.read_text());path=gate['path']
+        assert path=='research/DGamma/CP5ConfluenceCanonicalSortSpike.idr'
+        assert gate['beforeSHA256']==expected['protectedModuleHashes'][path]
+        if current['protectedModuleHashes'][path]==gate['afterSHA256']:
+            assert gate['status'].startswith(('APPROVED','COMMITTED'))
+            expected['protectedModuleHashes'][path]=gate['afterSHA256']
+    assert current==expected, 'Protected source/region/statement changed beyond exact approved migration'
 def compiler_scopes():
     own, foreign, unknown=[],[],[]
     for row in subprocess.check_output(['ps','-axo','pid,ppid,command'],text=True).splitlines():

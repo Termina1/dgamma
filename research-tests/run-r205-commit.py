@@ -8,7 +8,7 @@ sys.dont_write_bytecode=True
 sys.path.insert(0,str(pathlib.Path(__file__).resolve().parent))
 from r205_common import *
 kind,message,*paths=sys.argv[1:]
-assert kind in ['PRESTATE','PRODUCTION','PRODUCTION-MIGRATION','ARTIFACT','LEXICAL'] and paths
+assert kind in ['PRESTATE','PRODUCTION','PRODUCTION-MIGRATION','FROZEN-MIGRATION','ARTIFACT','LEXICAL'] and paths
 assert git('branch','--show-current').strip()=='cp5-thm73-scoping'
 assert not git('diff','--cached','--name-only').strip()
 own,foreign,unknown=compiler_scopes()
@@ -20,6 +20,11 @@ copy_paths=['research-tests/O6-R205-CP3-TIER1-SIGNED-DIFF.patch','research-tests
 inputs=json.loads((ROOT/'research-tests/O6-R205-INPUTS.json').read_text())
 for item in inputs['items'].values():
     if item['copiedTo'] in copy_paths: assert sha((ROOT/item['copiedTo']).read_bytes())==item['sha256']
+frozen_gate_path=ROOT/'research-tests/O6-R205-FROZEN-MIGRATION-GATE.json'
+if frozen_gate_path.exists():
+    fg=json.loads(frozen_gate_path.read_text());fp='research-tests/O6-R205-CANONICALSORT-MIGRATION-PROPOSAL.patch'
+    assert sha((ROOT/fp).read_bytes())==fg['patchSHA256']
+    copy_paths.append(fp) # byte-authenticated approved patch context, never source
 whitespace_paths=['.']+[':(exclude)'+p for p in copy_paths]
 subprocess.run(['git','diff','--check','--',*whitespace_paths],cwd=ROOT,check=True)
 assert_frozen()
@@ -51,6 +56,15 @@ elif kind=='PRODUCTION-MIGRATION':
     assert json.loads((OUT/'ledger.jsonl').read_text().splitlines()[-1])['unit']==gate['passingInvocation']
     assert not any(json.loads(s)['kind']=='PRODUCTION-MIGRATION' for s in (OUT/'commit-receipts.jsonl').read_text().splitlines())
     assert 'S33' in message
+elif kind=='FROZEN-MIGRATION':
+    gate=json.loads(frozen_gate_path.read_text());assert paths==[gate['path']]
+    assert sha(subprocess.check_output(['git','show','HEAD:'+paths[0]],cwd=ROOT))==gate['beforeSHA256']
+    assert sha((ROOT/paths[0]).read_bytes())==gate['afterSHA256']
+    native=json.loads((OUT/(gate['passingInvocation']+'.json')).read_text())
+    assert native['passed'] and native['fresh'] and native['exit']==0 and native['sourceSHA256']==gate['afterSHA256']
+    assert json.loads((OUT/'ledger.jsonl').read_text().splitlines()[-1])['unit']==gate['passingInvocation']
+    added='\n'.join(x[1:] for x in git('diff','--',paths[0]).splitlines() if x.startswith('+') and not x.startswith('+++') and not x[1:].lstrip().startswith(('--','|||')))
+    assert not re.search(r'\b(?:with|let|believe_me|assert_total|assert_smaller|partial|postulate|deletionTheoremProof)\b|\?\w+',added)
 elif kind in ['ARTIFACT','PRESTATE']:
     assert all((p.startswith('research-tests/') and not p.endswith('.idr')) or p in ['README.md','NOTES.md','THM73-PLAN.md'] for p in paths)
     assert not git('diff','--name-only','--','src/','research/','research-tests/DGamma/','dgamma.ipkg').strip()
@@ -79,9 +93,11 @@ except BaseException:
     subprocess.run(['git','restore','--staged','--',*paths],cwd=ROOT,check=True)
     raise
 assert not git('diff','--cached','--name-only').strip()
-receipt=dict(kind=kind,message=message,ownerDecisionVerbatim=OWNER if kind=='PRODUCTION' else None,beforeCommit=parent,afterCommit=git('rev-parse','HEAD').strip(),timestampUTC=utc(),hashes=hashes,guardSHA256=sha(pathlib.Path(__file__).read_bytes()),noStagedFiles=True,frozenUnchanged=True,whitespaceGuard=True)
+receipt=dict(kind=kind,message=message,ownerDecisionVerbatim=OWNER if kind=='PRODUCTION' else None,beforeCommit=parent,afterCommit=git('rev-parse','HEAD').strip(),timestampUTC=utc(),hashes=hashes,guardSHA256=sha(pathlib.Path(__file__).read_bytes()),noStagedFiles=True,frozenUnchanged=frozen()==json.loads((ROOT/'research-tests/O6-R205-PRE-STATE.json').read_text())['frozen'],protectedRegionsAndHolesUnchanged=True,whitespaceGuard=True)
 OUT.mkdir(exist_ok=True)
 if kind=='PRODUCTION-MIGRATION':
     receipt.update(gateVerbatim=gate['gateVerbatim'],additionalGateVerbatim=gate.get('additionalGateVerbatim'),quantityGateVerbatim=gate.get('quantityGateVerbatim'),textualChangeDetails=json.loads((ROOT/'research-tests/O6-R205-CP3-STATEMENT-CHECKS-PROPOSAL.json').read_text())['edits'],priorFailureInvocations=gate.get('failureInvocations',['S33']),passingInvocation=gate['passingInvocation'],textualChanges=gate.get('textualChanges',6),secondAndLastProductionEdit=True)
+if kind=='FROZEN-MIGRATION':
+    receipt.update(gateVerbatim=gate['gateVerbatim'],hunks=gate['hunks'],patchSHA256=gate['patchSHA256'],passingInvocation=gate['passingInvocation'],sortClosingFreeTraceDeclarationAndBodyUnchanged=True,protectedBaselineAfter=frozen())
 with (OUT/'commit-receipts.jsonl').open('a') as f: f.write(json.dumps(receipt,ensure_ascii=False)+'\n')
 print(json.dumps(receipt,ensure_ascii=False,indent=2))
