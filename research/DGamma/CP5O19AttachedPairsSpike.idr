@@ -271,3 +271,24 @@ record O19AttachedSourcePair
   0 rightSourceMember : OccursIn right rightBody
   0 leftSourceClass : O19AttachedEdge name key world error value nameEq leftActor leftOriginalCore left
   0 rightSourceClass : O19AttachedEdge name key world error value nameEq rightActor rightOriginalCore right
+
+||| Unconditional TOTAL pair observer for the admitted production bodies.
+||| No shape restriction, guessed lookup, guard, swapped result or global
+||| commuting assumption enters the source observation.
+export
+0 o19ObserveAttachedPair :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (leftActor, rightActor : name) ->
+  {leftFirst, leftLast, rightFirst, rightLast, leftBefore, leftAfter,
+   rightBefore, rightAfter : SystemState name key value world error} ->
+  (leftBody : Transitions leftFirst leftLast) -> (rightBody : Transitions rightFirst rightLast) ->
+  ActorLifecycleOnly nameEq leftActor leftBody -> ActorLifecycleOnly nameEq rightActor rightBody ->
+  (left : Transition leftBefore leftAfter) -> (right : Transition rightBefore rightAfter) ->
+  OccursIn left leftBody -> OccursIn right rightBody ->
+  O19AttachedSourcePair name key world error value nameEq leftActor rightActor leftBody rightBody left right
+o19ObserveAttachedPair nameEq leftActor rightActor leftBody rightBody leftShape rightShape left right leftIn rightIn =
+  case o19AttachedBodyOccurrence left (o19ObserveAttachedBody nameEq leftActor leftBody leftShape) leftIn of
+    (leftEnd ** (leftCore ** leftClass)) =>
+      case o19AttachedBodyOccurrence right (o19ObserveAttachedBody nameEq rightActor rightBody rightShape) rightIn of
+        (rightEnd ** (rightCore ** rightClass)) =>
+          MkO19AttachedSourcePair leftEnd rightEnd leftCore rightCore leftIn rightIn leftClass rightClass
