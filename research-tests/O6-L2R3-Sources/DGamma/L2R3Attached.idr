@@ -50,8 +50,8 @@ data AttachedReason :
     {first, coreEnd : SystemState name key value world error} ->
     {core : Transitions first coreEnd} -> {priorRoots : List name} ->
     {component : Component key value world error} ->
-    AttachedRelease name key world error value nameEq selected core component ->
-    AttachedReason nameEq selected core priorRoots component
+    DGamma.L2R3Attached.AttachedRelease name key world error value nameEq selected core component ->
+    DGamma.L2R3Attached.AttachedReason nameEq selected core priorRoots component
   EarlierForcedRoot :
     {name, key, world, error : Type} -> {value : key -> Type} ->
     {nameEq : DecEq name} -> {selected, earlier : name} ->
@@ -59,7 +59,7 @@ data AttachedReason :
     {core : Transitions first coreEnd} -> {priorRoots : List name} ->
     {component : Component key value world error} ->
     (0 earlierInBundle : Elem earlier priorRoots) ->
-    AttachedReason nameEq selected core priorRoots component
+    DGamma.L2R3Attached.AttachedReason nameEq selected core priorRoots component
 
 ||| A contiguous trail of checked root OInsert transitions in physical (hence
 ||| external orchestration) order. History grows only after consuming an
@@ -78,7 +78,7 @@ data OrderedForcedRootBundle :
     {nameEq : DecEq name} -> {selected : name} ->
     {first, coreEnd, state : SystemState name key value world error} ->
     {core : Transitions first coreEnd} -> {priorRoots : List name} ->
-    OrderedForcedRootBundle nameEq selected core priorRoots (NoTransitions {state})
+    DGamma.L2R3Attached.OrderedForcedRootBundle nameEq selected core priorRoots (NoTransitions {state})
   ForcedBundleStep :
     {name, key, world, error : Type} -> {value : key -> Type} ->
     {nameEq : DecEq name} -> {selected : name} ->
@@ -87,9 +87,9 @@ data OrderedForcedRootBundle :
     (root : name) -> (component : Component key value world error) ->
     (step : Transition before middle) -> (rest : Transitions middle finalState) ->
     (0 inserted : transitionAction step = OInsert root Root component) ->
-    (0 forced : AttachedReason nameEq selected core priorRoots component) ->
-    (0 tail : OrderedForcedRootBundle nameEq selected core (root :: priorRoots) rest) ->
-    OrderedForcedRootBundle nameEq selected core priorRoots (MoreTransitions step rest)
+    (0 forced : DGamma.L2R3Attached.AttachedReason nameEq selected core priorRoots component) ->
+    (0 tail : DGamma.L2R3Attached.OrderedForcedRootBundle nameEq selected core (root :: priorRoots) rest) ->
+    DGamma.L2R3Attached.OrderedForcedRootBundle nameEq selected core priorRoots (MoreTransitions step rest)
 
 ||| Research counterpart of CP3 ActorLifecycleOnly:1786. An extended actor
 ||| core, optionally followed by an ordered forced-root bundle starting with
@@ -115,7 +115,7 @@ data ActorLifecycleOnlyAttached :
     (core : Transitions first coreEnd) ->
     (0 extended : ActorLifecycleOnlyExtended nameEq selected core) ->
     (bundle : Transitions coreEnd finalState) ->
-    (0 orderedForced : OrderedForcedRootBundle nameEq selected core [] bundle) ->
+    (0 orderedForced : DGamma.L2R3Attached.OrderedForcedRootBundle nameEq selected core [] bundle) ->
     ActorLifecycleOnlyAttached nameEq selected (appendTransitions core bundle)
 
 ||| Sound extended-to-attached inclusion, adding no root and moving no edge.
@@ -129,16 +129,19 @@ export
   ActorLifecycleOnlyAttached nameEq selected trace
 extendedIntoAttached {trace} extended = AttachedWithoutRoots trace extended
 
-||| Compose CP5ActorLifecycleOnlyExtended's CP3:1786 inclusion with A5.
-||| These are forward inclusions only; frozen blocks cannot absorb root inputs.
+||| L2R16 supervisor-gated CORE-to-attached restatement: no root is added.
+||| Retired oldIntoAttached: its domain was the pre-unfreeze insert-only
+||| production type, not the new attached production ActorLifecycleOnly.
+||| The research core is production ActorLifecycleCore up to constructor names.
+||| No attached-to-core or controls-to-INSERT-only inclusion is asserted.
 export
-0 oldIntoAttached :
+0 coreIntoAttached :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   (nameEq : DecEq name) -> {selected : name} ->
   {first, finalState : SystemState name key value world error} ->
   {trace : Transitions first finalState} ->
-  ActorLifecycleOnly selected trace -> ActorLifecycleOnlyAttached nameEq selected trace
-oldIntoAttached nameEq old = extendedIntoAttached (actorLifecycleOnlyIntoExtended nameEq old)
+  ActorLifecycleOnlyExtended nameEq selected trace -> ActorLifecycleOnlyAttached nameEq selected trace
+coreIntoAttached nameEq core = extendedIntoAttached core
 
 ||| CP3:1824 via Extended:94, with only body grammar changed to Attached.
 ||| Physical body and endpoint include the full trailing bundle. All installed,
