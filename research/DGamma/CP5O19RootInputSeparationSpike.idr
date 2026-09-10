@@ -65,6 +65,24 @@ o19RootHeadOwnerEqual RootInsertAgreement = Refl
 o19RootHeadOwnerEqual RootRetireAgreement = Refl
 o19RootHeadOwnerEqual RootRemoveAgreement = Refl
 
+||| Distinct native root owners cannot exchange their root inputs, for ANY
+||| of the nine products. This is an obstruction, not a universal block swap.
+export
+0 o19DistinctRootInputsCannotExchange :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} ->
+  {first, middle, last, movedFirst, movedMiddle, movedLast : SystemState name key value world error} ->
+  (left : Transition first middle) -> (right : Transition middle last) ->
+  (movedRight : Transition movedFirst movedMiddle) -> (movedLeft : Transition movedMiddle movedLast) ->
+  RootOrchestrationStep nameEq left -> RootOrchestrationStep nameEq movedRight ->
+  transitionAction movedRight = transitionAction right ->
+  Not (actionOwner (transitionAction left) = actionOwner (transitionAction right)) ->
+  Not (SameExternalOrchestration nameEq (MoreTransitions left (MoreTransitions right NoTransitions))
+    (MoreTransitions movedRight (MoreTransitions movedLeft NoTransitions)))
+o19DistinctRootInputsCannotExchange left right movedRight movedLeft leftRoot movedRoot movedAction distinct =
+  o19AttachedRootOrderObstruction left right movedRight movedLeft leftRoot movedRoot movedAction
+    (\same => distinct (cong actionOwner same))
+
 ||| Native occurrence elimination: no action-word or raw-name relabelling.
 export
 0 o19NoRootOccurrence :
