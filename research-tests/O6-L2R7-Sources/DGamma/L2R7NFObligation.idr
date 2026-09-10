@@ -33,7 +33,7 @@ public export
 GeneralAttachedNormalForm : {name, key, world, error : Type} -> {value : key -> Type} ->
   {initial, finalState : SystemState name key value world error} ->
   {trace : Transitions initial finalState} ->
-  DecEq name -> DecEq key -> AvailabilityTrace name key world error value trace -> Type
+  DecEq name -> DecEq key -> DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value trace -> Type
 GeneralAttachedNormalForm {name} {key} {world} {error} {value} {trace} nameEq keyEq trail =
   (earlierName, laterName : name) ->
   (earlier : LocatedOpenEpisodeBlockAttached name key world error value nameEq keyEq earlierName trace) ->
@@ -46,5 +46,5 @@ GeneralAttachedNormalForm {name} {key} {world} {error} {value} {trace} nameEq ke
   (0 placements : (entry : RootCatalogEntry name key world error value) -> Elem entry (scanRootCatalog 0 trail) ->
     (anchor : Nat) -> anchorOf nameEq keyEq trail (catalogOrdinal entry) = Just anchor ->
     PlacedBundle name key world error value nameEq keyEq trail anchor) ->
-  AttachedNormalForm name key world error value nameEq keyEq trace (attachedBetweenBlocks ordered)
+  DGamma.L2R3AttachedGap.AttachedNormalForm name key world error value nameEq keyEq trace (attachedBetweenBlocks ordered)
     (transitionCount (attachedBefore earlier) + S (transitionCount (attachedBody earlier)))
