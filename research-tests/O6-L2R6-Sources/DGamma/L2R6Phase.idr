@@ -30,7 +30,7 @@ record ForcedRootPhase
   (nameEq : DecEq name) (keyEq : DecEq key)
   {initial, finalState : SystemState name key value world error}
   {trace : Transitions initial finalState}
-  (trail : AvailabilityTrace name key world error value trace)
+  (trail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value trace)
   (entry : RootCatalogEntry name key world error value) where
   constructor MkForcedRootPhase
   phaseSeed : RootCatalogEntry name key world error value
@@ -45,7 +45,7 @@ record ForcedRootPhase
   phaseSuffix : Transitions phaseCoreEnd finalState
   0 phaseExtended : ActorLifecycleOnlyExtended nameEq phaseActor phaseCore
   0 phaseGlobalSplit : appendTransitions phasePrefix (appendTransitions phaseCore phaseSuffix) = trace
-  phaseRelease : AttachedRelease name key world error value nameEq phaseActor phaseCore (catalogComponent phaseSeed)
+  phaseRelease : DGamma.L2R3Attached.AttachedRelease name key world error value nameEq phaseActor phaseCore (catalogComponent phaseSeed)
   phaseLifeAction : Action name key value world error
   phaseLife : LocatedActionOccurrence phaseLifeAction phaseCore
   phaseLifecycleObserved : Bool
