@@ -415,3 +415,18 @@ o19ExpandedOwnedSafeWord nameEq actor forbidden _ (ActorWithForcedRoots core onl
   o19NativeWordAppendCases core bundle action
     (o19CoreSafeWord nameEq actor forbidden core only (o19NoGeneratedPrefix forbidden core bundle safe) action)
     (o19BundleWord nameEq actor forbidden bundle ordered action) member
+
+||| Explicit legacy-spine embedding into the production CORE. Wrapping this
+||| result by ActorWithoutForcedRoots embeds precisely the restricted domain.
+export
+0 o19LegacyActorCore :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> {actor : name} ->
+  {first, last : SystemState name key value world error} ->
+  {trace : Transitions first last} -> LegacyActorOnly actor trace ->
+  ActorLifecycleCore nameEq actor trace
+o19LegacyActorCore nameEq LegacyActorEnd = CoreLifecycleEnd
+o19LegacyActorCore nameEq (LegacyActorStep step rest lifecycle owner tail) =
+  CoreLifecycleStep step rest lifecycle owner (o19LegacyActorCore nameEq tail)
+o19LegacyActorCore nameEq (LegacyActorYield step rest inserted tail) =
+  CoreYieldedRegistrationStep step rest inserted (o19LegacyActorCore nameEq tail)
