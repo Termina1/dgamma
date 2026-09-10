@@ -32,3 +32,9 @@ r206ReleaseSource = MkSystemState (MkToyRuntime False False)
     (retireFiber (freshFiber DGamma.CalculusChecks.providerComponent (ChildOf 0)))
     (insertBinding @{the (DecEq Nat) %search} 0
       (freshFiber DGamma.CalculusChecks.failingComponent Root) emptyContext Refl) Refl)
+
+||| Removing the child frees its provision key; the root parent stays present.
+public export
+r206Released : SystemState Nat ToyKey ToyValue ToyRuntime String
+r206Released = MkSystemState (MkToyRuntime False False)
+  (deleteBinding @{the (DecEq Nat) %search} 1 (registry r206ReleaseSource))
