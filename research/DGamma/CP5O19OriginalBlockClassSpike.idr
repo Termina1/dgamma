@@ -396,3 +396,22 @@ o19NativeWordAppendCases NoTransitions later action inPrior inLater member = inL
 o19NativeWordAppendCases (MoreTransitions step rest) later _ inPrior inLater Here = inPrior Here
 o19NativeWordAppendCases (MoreTransitions step rest) later action inPrior inLater (There member) =
   o19NativeWordAppendCases rest later action (\there => inPrior (There there)) inLater member
+
+||| TOTAL production body observation: both attached wrappers and every core
+||| and bundle constructor are covered. The old four-orientation classifier
+||| consumes only the separately restricted legacy observation.
+export
+0 o19ExpandedOwnedSafeWord :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (actor, forbidden : name) ->
+  {first, last : SystemState name key value world error} ->
+  (trace : Transitions first last) -> ActorLifecycleOnly nameEq actor trace ->
+  NoGeneratedChild forbidden trace ->
+  (action : Action name key value world error) -> Elem action (o19ActionWord trace) ->
+  O19ExpandedBlockWordObservation name key world error value nameEq actor forbidden action
+o19ExpandedOwnedSafeWord nameEq actor forbidden _ (ActorWithoutForcedRoots core only) safe action member =
+  o19CoreSafeWord nameEq actor forbidden core only safe action member
+o19ExpandedOwnedSafeWord nameEq actor forbidden _ (ActorWithForcedRoots core only bundle ordered) safe action member =
+  o19NativeWordAppendCases core bundle action
+    (o19CoreSafeWord nameEq actor forbidden core only (o19NoGeneratedPrefix forbidden core bundle safe) action)
+    (o19BundleWord nameEq actor forbidden bundle ordered action) member
