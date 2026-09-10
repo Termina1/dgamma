@@ -38,3 +38,9 @@ public export
 r206Released : SystemState Nat ToyKey ToyValue ToyRuntime String
 r206Released = MkSystemState (MkToyRuntime False False)
   (deleteBinding @{the (DecEq Nat) %search} 1 (registry r206ReleaseSource))
+
+||| Native checked O-Remove, not a fabricated transition or bare action label.
+public export
+r206ReleaseEdge : Transition r206ReleaseSource r206Released
+r206ReleaseEdge = Fired (the (DecEq Nat) %search) (the (DecEq ToyKey) %search)
+  (ORemove 1) ORemoveTag Refl
