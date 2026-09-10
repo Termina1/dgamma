@@ -9,7 +9,7 @@ import DGamma.CP5UniqueRawNameInsertions
 import DGamma.CP5GeneratedOrchestrationMatched
 import DGamma.CP5ConfluenceLocalDiamondSpike
 import DGamma.CP5ConfluenceCanonicalSortSpike
-import DGamma.CP5ConfluenceCrossTraceSpike
+import DGamma.CP5O19SurfaceSpike
 import DGamma.CP5RankedEarlyApplicabilitySpike
 import Data.List
 import Data.List.Elem
