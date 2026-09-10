@@ -101,11 +101,11 @@ export
   {first, finalState : SystemState name key value world error} ->
   {trace : Transitions first finalState} ->
   (nameEq : DecEq name) -> (actor : name) ->
-  (trail : AvailabilityTrace name key world error value trace) ->
+  (trail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value trace) ->
   (0 owned : All (\event => fst event = Just actor) (phaseEvents nameEq trail)) ->
   ActorLifecycleOnlyExtended nameEq actor trace
-phaseEventsExtended nameEq actor (AvailabilityEnd state) owned = ExtendedLifecycleEnd
-phaseEventsExtended nameEq actor (AvailabilityStep source (Fired ne ke action tag checked) rest later) owned =
+phaseEventsExtended nameEq actor (DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd state) owned = ExtendedLifecycleEnd
+phaseEventsExtended nameEq actor (DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep source (Fired ne ke action tag checked) rest later) owned =
   phaseActionExtended nameEq actor (Fired ne ke action tag checked) rest action Refl
     (All.head owned) (phaseEventsExtended nameEq actor later (All.tail owned))
 
@@ -120,9 +120,9 @@ export
   (start, end : SystemState name key value world error) ->
   (before : Transitions initial start) -> (core : Transitions start end) ->
   (suffix : Transitions end finalState) ->
-  (prefixTrail : AvailabilityTrace name key world error value before) ->
-  (coreTrail : AvailabilityTrace name key world error value core) ->
-  (suffixTrail : AvailabilityTrace name key world error value suffix) ->
+  (prefixTrail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value before) ->
+  (coreTrail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value core) ->
+  (suffixTrail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value suffix) ->
   (0 physical : appendTransitions before (appendTransitions core suffix) = global) ->
   (0 owned : All (\event => fst event = Just actor) (phaseEvents nameEq coreTrail)) ->
   LocatedExtendedCore name key world error value nameEq actor global
@@ -136,10 +136,10 @@ export
 0 phaseEventsCount : {name, key, world, error : Type} -> {value : key -> Type} ->
   {first, finalState : SystemState name key value world error} ->
   {trace : Transitions first finalState} ->
-  (nameEq : DecEq name) -> (trail : AvailabilityTrace name key world error value trace) ->
+  (nameEq : DecEq name) -> (trail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value trace) ->
   length (phaseEvents nameEq trail) = transitionCount trace
-phaseEventsCount nameEq (AvailabilityEnd state) = Refl
-phaseEventsCount nameEq (AvailabilityStep source (Fired ne ke action tag checked) rest later) =
+phaseEventsCount nameEq (DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd state) = Refl
+phaseEventsCount nameEq (DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep source (Fired ne ke action tag checked) rest later) =
   cong S (phaseEventsCount nameEq later)
 
 ||| Native lifecycle owner field decoded from phaseEvents' classifier.
