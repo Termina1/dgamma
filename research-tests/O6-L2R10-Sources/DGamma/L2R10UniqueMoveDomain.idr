@@ -24,7 +24,7 @@ GeneralAdmittedMoveExistenceUnique :
   {initial, finalState : SystemState name key value world error} ->
   {trace : Transitions initial finalState} ->
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
-  AvailabilityTrace name key world error value trace -> Type
+  DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value trace -> Type
 GeneralAdmittedMoveExistenceUnique {name} {key} {world} {error} {value} {trace}
   nameEq keyEq trail =
   (0 unique : UniqueRawNameInsertions name key world error value nameEq keyEq trace) ->
