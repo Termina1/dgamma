@@ -39,7 +39,7 @@ data OrderedForcedRootBundleC :
     (root : name) -> (component : Component key value world error) ->
     (step : Transition before middle) -> (rest : Transitions middle finalState) ->
     (0 inserted : transitionAction step = OInsert root Root component) ->
-    (0 forced : AttachedReason nameEq selected core priorRoots component) ->
+    (0 forced : DGamma.L2R3Attached.AttachedReason nameEq selected core priorRoots component) ->
     (0 tail : OrderedForcedRootBundleC nameEq selected core (root :: priorRoots) rest) ->
     OrderedForcedRootBundleC nameEq selected core priorRoots (MoreTransitions step rest)
 
@@ -103,9 +103,9 @@ export
   {first, coreEnd, bundleStart, finalState : SystemState name key value world error} ->
   {core : Transitions first coreEnd} -> {priorRoots : List name} ->
   {bundle : Transitions bundleStart finalState} ->
-  OrderedForcedRootBundle nameEq selected core priorRoots bundle ->
+  DGamma.L2R3Attached.OrderedForcedRootBundle nameEq selected core priorRoots bundle ->
   OrderedForcedRootBundleC nameEq selected core priorRoots bundle
-bundleIntoC ForcedBundleEnd = ForcedBundleEndC
+bundleIntoC DGamma.L2R3Attached.ForcedBundleEnd = ForcedBundleEndC
 bundleIntoC (ForcedBundleStep root component step rest inserted forced tail) =
   ForcedBundleInsertC root component step rest inserted forced (bundleIntoC tail)
 
