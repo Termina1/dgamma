@@ -102,9 +102,9 @@ r178R174ObservedAction (MoreTransitions step rest) wanted (S position) observed 
 ||| The runtime observer itself remains executable; no sorting proof is built.
 0 r178R174Annotate :
   {first, finalState : SystemState Nat ToyKey ToyValue ToyRuntime String} ->
-  (trace : Transitions first finalState) -> AvailabilityTrace Nat ToyKey ToyRuntime String ToyValue trace
-r178R174Annotate {first} NoTransitions = AvailabilityEnd first
-r178R174Annotate {first} (MoreTransitions step rest) = AvailabilityStep first step rest (r178R174Annotate rest)
+  (trace : Transitions first finalState) -> DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace Nat ToyKey ToyRuntime String ToyValue trace
+r178R174Annotate {first} NoTransitions = DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd first
+r178R174Annotate {first} (MoreTransitions step rest) = DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep first step rest (r178R174Annotate rest)
 
 ||| Authorized independent scalar-fixture route: the returned annotations own
 ||| an ACTUAL prefix/suffix decomposition, with no located-root packet.
@@ -113,14 +113,14 @@ r178R174Annotate {first} (MoreTransitions step rest) = AvailabilityStep first st
   (count : Nat) -> (trace : Transitions first finalState) ->
   (middle : SystemState Nat ToyKey ToyValue ToyRuntime String **
    prior : Transitions first middle ** later : Transitions middle finalState **
-   (appendTransitions prior later = trace, AvailabilityTrace Nat ToyKey ToyRuntime String ToyValue prior))
-r178R174AnnotatedPrefix {first} Z trace = (first ** NoTransitions ** trace ** (Refl, AvailabilityEnd first))
-r178R174AnnotatedPrefix {first} (S count) NoTransitions = (first ** NoTransitions ** NoTransitions ** (Refl, AvailabilityEnd first))
+   (appendTransitions prior later = trace, DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace Nat ToyKey ToyRuntime String ToyValue prior))
+r178R174AnnotatedPrefix {first} Z trace = (first ** NoTransitions ** trace ** (Refl, DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd first))
+r178R174AnnotatedPrefix {first} (S count) NoTransitions = (first ** NoTransitions ** NoTransitions ** (Refl, DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd first))
 r178R174AnnotatedPrefix {first} (S count) (MoreTransitions step rest) =
   case r178R174AnnotatedPrefix count rest of
     (middle ** prior ** later ** (decomposition, annotations)) =>
       (middle ** MoreTransitions step prior ** later **
-        (cong (MoreTransitions step) decomposition, AvailabilityStep first step prior annotations))
+        (cong (MoreTransitions step) decomposition, DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep first step prior annotations))
 
 ||| Scalar observations over the ACTUAL root action and authenticated prefix:
 ||| root=2; prefix length=5; lifecycle at1; removal of1 at4; snapshot free at1;
@@ -134,13 +134,13 @@ export
           [root == 2, transitionCount prior == 5,
            (case rawClosingActionAt Nat ToyKey ToyRuntime String ToyValue 1 prior of Just action => isLifecycleAction action; Nothing => False),
            (case rawClosingActionAt Nat ToyKey ToyRuntime String ToyValue 4 prior of Just (ORemove 1) => True; _ => False),
-           (case annotations of AvailabilityStep _ _ _ (AvailabilityStep early _ _ _) => rootDeclaredProvisionsFree Nat ToyKey ToyRuntime String ToyValue %search component early; _ => False),
-           rootCutCompatible Nat ToyKey ToyRuntime String ToyValue %search %search component 0 annotations,
-           rootCutCompatible Nat ToyKey ToyRuntime String ToyValue %search %search component 1 annotations,
-           rootCutCompatible Nat ToyKey ToyRuntime String ToyValue %search %search component 2 annotations,
-           rootCutCompatible Nat ToyKey ToyRuntime String ToyValue %search %search component 3 annotations,
-           rootCutCompatible Nat ToyKey ToyRuntime String ToyValue %search %search component 4 annotations,
-           rootCutCompatible Nat ToyKey ToyRuntime String ToyValue %search %search component 5 annotations]
+           (case annotations of DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep _ _ _ (DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep early _ _ _) => DGamma.CP5AvailabilityAwarePlacement.rootDeclaredProvisionsFree Nat ToyKey ToyRuntime String ToyValue %search component early; _ => False),
+           DGamma.CP5AvailabilityAwarePlacement.rootCutCompatible Nat ToyKey ToyRuntime String ToyValue %search %search component 0 annotations,
+           DGamma.CP5AvailabilityAwarePlacement.rootCutCompatible Nat ToyKey ToyRuntime String ToyValue %search %search component 1 annotations,
+           DGamma.CP5AvailabilityAwarePlacement.rootCutCompatible Nat ToyKey ToyRuntime String ToyValue %search %search component 2 annotations,
+           DGamma.CP5AvailabilityAwarePlacement.rootCutCompatible Nat ToyKey ToyRuntime String ToyValue %search %search component 3 annotations,
+           DGamma.CP5AvailabilityAwarePlacement.rootCutCompatible Nat ToyKey ToyRuntime String ToyValue %search %search component 4 annotations,
+           DGamma.CP5AvailabilityAwarePlacement.rootCutCompatible Nat ToyKey ToyRuntime String ToyValue %search %search component 5 annotations]
     _ => []) =
     [True, True, True, True, True, False, False, False, False, False, True])
 r178R174ScalarIntervalShape = Refl
