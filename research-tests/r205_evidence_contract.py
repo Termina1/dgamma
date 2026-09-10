@@ -35,7 +35,7 @@ def validate_record(record,source,log,root):
     assert multiple==record['multipleOwnedCompilers']
     assert record['targetMutationDetected']==bool(record['mutatedPaths'])
     expected=record['expectedDiagnostic'];symbol=record['symbol']
-    diagnostic_ok=(record['exit']!=0 and expected in log and symbol and symbol in log) if expected else record['exit']==0 and 'Error:' not in log
+    diagnostic_ok=(record['exit']==1 and expected in log and symbol and symbol in log) if expected else record['exit']==0 and 'Error:' not in log
     passed=bool(fresh and diagnostic_ok and not record['interrupted'] and not record['mutatedPaths'] and not unexpected and not multiple and maximum<=limit)
     assert passed==record['passed'],'PASS was not justified by exact evidence'
     assert all(record['start']<=s['timestampUTC']<=record['end'] for s in record['rssSamples'])

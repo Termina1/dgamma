@@ -70,3 +70,12 @@ by exact recorded hash from historical git blobs, with explicit reconstruction
 provenance; none remain missing.38 compiler-free contract/pressure tests PASS.
 All six changed Idris files and their before/after hashes/commits/receipts are
 listed in O6-R205-REPAIR-TABLE.md. No new theorem, semantic re-proof or escape.
+
+Compiler-free adversarial pass after P3: E1 committed frozen gate could still
+accept PRE bytes; corrected to require the new hash once COMMITTED, with nine
+mutation tests. E2 expected-negative evidence accepted any nonzero exit; now
+requires normal Idris error exit1, with two signal-exit mutation tests. All371
+native outcomes remain identical under stronger verification, no Idris source
+changed, no new compiler invocation. Final evidence suite49/49 PASS. Archive
+revision records superseded hashes transparently; immutable native rows/logs/
+snapshots were not rewritten. This is evidence hardening, not a proof retry.

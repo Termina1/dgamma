@@ -49,7 +49,7 @@ def assert_frozen():
         gate=json.loads(gate_path.read_text());path=gate['path']
         assert path=='research/DGamma/CP5ConfluenceCanonicalSortSpike.idr'
         assert gate['beforeSHA256']==expected['protectedModuleHashes'][path]
-        if current['protectedModuleHashes'][path]==gate['afterSHA256']:
+        if gate['status'].startswith('COMMITTED') or current['protectedModuleHashes'][path]==gate['afterSHA256']:
             assert gate['status'].startswith(('APPROVED','COMMITTED'))
             expected['protectedModuleHashes'][path]=gate['afterSHA256']
     assert current==expected, 'Protected source/region/statement changed beyond exact approved migration'

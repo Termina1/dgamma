@@ -1,5 +1,10 @@
 {
   "timestampUTC": "2026-09-10T01:42:19.876802+00:00",
   "supersededPreliminaryArchiveSHA256": "dcd7645206051a69bc875c6a5a92ca1ba614b8d3229918983d6003ba5b61e1ce",
-  "reason": "Before publication: clarify five-of-six protected modules (CrossTrace unchecked), strengthen archive verification to rederive all native outcomes directly from archived bytes. No source, receipt, native transcript or outcome changed."
+  "reason": "Before publication: clarify five-of-six protected modules (CrossTrace unchecked), strengthen archive verification to rederive all native outcomes directly from archived bytes. No source, receipt, native transcript or outcome changed.",
+  "postPublicationHardening": {
+    "timestampUTC": "2026-09-10T01:51:18.588473+00:00",
+    "supersededArchiveSHA256": "a94c8bb854e5cb3720758300101ebea304883ab86ae045aa6dc2722a444ce470",
+    "reason": "Compiler-free adversarial review tightened COMMITTED frozen baseline to reject PRE-byte reverts, and required normal Idris error exit1 for expected negatives (not signal exit). Nine freeze-gate and two signal-exit mutation tests added;49 tests pass. All371 native outcomes/source hashes unchanged and reverified."
+  }
 }

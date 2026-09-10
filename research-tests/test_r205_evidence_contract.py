@@ -35,6 +35,12 @@ class Evidence(unittest.TestCase):
     def test_expected_negative(self):
         self.log+='Error: Mismatch between in someSymbol\n';self.r.update(transcript=self.log,exit=1,expectedDiagnostic='Mismatch between',symbol='someSymbol')
         self.assertTrue(self.check())
+    def test_negative_killed_after_diagnostic_is_not_pass(self):
+        self.log+='Error: Mismatch between in someSymbol\n';self.r.update(transcript=self.log,exit=-15,expectedDiagnostic='Mismatch between',symbol='someSymbol')
+        with self.assertRaises(AssertionError):self.check()
+    def test_negative_shell_signal_exit_is_not_pass(self):
+        self.log+='Error: Mismatch between in someSymbol\n';self.r.update(transcript=self.log,exit=137,expectedDiagnostic='Mismatch between',symbol='someSymbol')
+        with self.assertRaises(AssertionError):self.check()
     def test_negative_missing_symbol(self):
         self.log+='Error: Mismatch between in wrongSymbol\n';self.r.update(transcript=self.log,exit=1,expectedDiagnostic='Mismatch between',symbol='someSymbol')
         with self.assertRaises(AssertionError):self.check()

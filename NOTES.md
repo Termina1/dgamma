@@ -5097,3 +5097,8 @@ address the pre-existing R137 fixture only under its own gate. The earlier A15
 visibility proposal was NOT executed during this production-unfreeze shift.
 See O6-R205-REBUILD-STATE.json, A8-A10-A12-ERRATA-UPDATE.md, PER-MODULE-COSTS.md,
 POST-FROZEN-BASELINE.json and the independent evidence/archive verification.
+
+R205 compiler-free adversarial audit tightened two evidence guards after P3:
+committed frozen baselines reject reverts to PRE bytes; expected negatives require
+Idris exit1, not signal termination.49/49 tests now pass; all371 native outcomes
+are unchanged under stronger re-derivation. No Idris source/statement/body changed.
