@@ -227,3 +227,23 @@ o20RebaseControlObserved {name} {key} {world} {error} {value} nameEq before afte
       (replace {p = \observed => MaybeFiberRelatedBy before observed
         (lookupFiber {name} {key} {value} {world} {error} @{nameEq} (renameForward before selected) (registry right))}
         found (allNameControls old selected))
+
+||| Full ordered table bindings rebase at every raw name. Absent tables are
+||| derived empty on both sides; present tables use the exact old effect field.
+export
+0 o20RebaseEffectsObserved :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (before, after : NameBijection name) ->
+  (left, right : SystemState name key value world error) ->
+  O20AllNameCut name key world error value nameEq before left right ->
+  (0 agreeCurrent : (point : name) -> (fiber : Fiber name key value world error) ->
+    lookupFiber {name} {key} {value} {world} {error} @{nameEq} point (registry left) = Just fiber ->
+    renameForward before point = renameForward after point) ->
+  (selected : name) -> (observed : Maybe (Fiber name key value world error)) ->
+  (0 found : lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected (registry left) = observed) ->
+  bindings (effectTables (projectEffectState {name} {key} {value} {world} {error} @{nameEq} left) selected) =
+  bindings (effectTables (projectEffectState {name} {key} {value} {world} {error} @{nameEq} right) (renameForward after selected))
+o20RebaseEffectsObserved nameEq before after left right old agreeCurrent selected Nothing found =
+  rewrite found in rewrite o20RebaseAbsentDomain nameEq before after left right old agreeCurrent selected found in Refl
+o20RebaseEffectsObserved nameEq before after left right old agreeCurrent selected (Just fiber) found =
+  rewrite sym (agreeCurrent selected fiber found) in synchronizedTables (allNameEffects old) selected
