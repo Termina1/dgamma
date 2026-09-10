@@ -79,3 +79,30 @@ r206RootRemoveEdge : Transition r206RootRetired
     (deleteBinding @{the (DecEq Nat) %search} 2 (registry r206RootRetired)))
 r206RootRemoveEdge = Fired (the (DecEq Nat) %search) (the (DecEq ToyKey) %search)
   (ORemove 2) ORemoveTag Refl
+
+||| Nonempty attached production body: actual child Remove, forced root Insert,
+||| root Retire, root Remove. Empty initial root history and KeyReleased are
+||| constructed from the actual core occurrence, not assumed by the caller.
+export
+0 r206AttachedControlsShape : ActorLifecycleOnly (the (DecEq Nat) %search) 0
+  (MoreTransitions r206ReleaseEdge (MoreTransitions r206RootInsertEdge
+    (MoreTransitions r206RootRetireEdge (MoreTransitions r206RootRemoveEdge NoTransitions))))
+r206AttachedControlsShape = ActorWithForcedRoots
+  (MoreTransitions r206ReleaseEdge NoTransitions)
+  (CoreChildRemoveStep r206ReleaseEdge NoTransitions 1
+    (retireFiber (freshFiber DGamma.CalculusChecks.providerComponent (ChildOf 0)))
+    Refl Refl Refl CoreLifecycleEnd)
+  (MoreTransitions r206RootInsertEdge (MoreTransitions r206RootRetireEdge
+    (MoreTransitions r206RootRemoveEdge NoTransitions)))
+  (ForcedBundleInsert 2 DGamma.CalculusChecks.providerComponent r206RootInsertEdge
+    (MoreTransitions r206RootRetireEdge (MoreTransitions r206RootRemoveEdge NoTransitions)) Refl
+    (KeyReleased (MkAttachedRelease 1
+      (retireFiber (freshFiber DGamma.CalculusChecks.providerComponent (ChildOf 0)))
+      (MkLocatedActionOccurrence r206ReleaseSource r206Released NoTransitions
+        r206ReleaseEdge NoTransitions Refl Refl)
+      Refl Refl ServiceA Here Here))
+    (ForcedBundleRetire 2 (freshFiber DGamma.CalculusChecks.providerComponent Root)
+      r206RootRetireEdge (MoreTransitions r206RootRemoveEdge NoTransitions)
+      Here Refl Refl Refl
+      (ForcedBundleRemove 2 (retireFiber (freshFiber DGamma.CalculusChecks.providerComponent Root))
+        r206RootRemoveEdge NoTransitions Here Refl Refl Refl ForcedBundleEnd)))
