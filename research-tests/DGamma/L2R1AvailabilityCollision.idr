@@ -38,9 +38,9 @@ l2r1ObservedAction (MoreTransitions step rest) wanted (S position) observed =
 public export
 0 l2r1Annotate :
   {first, finalState : SystemState Nat ToyKey ToyValue ToyRuntime String} ->
-  (trace : Transitions first finalState) -> AvailabilityTrace Nat ToyKey ToyRuntime String ToyValue trace
-l2r1Annotate {first} NoTransitions = AvailabilityEnd first
-l2r1Annotate {first} (MoreTransitions step rest) = AvailabilityStep first step rest (l2r1Annotate rest)
+  (trace : Transitions first finalState) -> DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace Nat ToyKey ToyRuntime String ToyValue trace
+l2r1Annotate {first} NoTransitions = DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd first
+l2r1Annotate {first} (MoreTransitions step rest) = DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep first step rest (l2r1Annotate rest)
 
 ||| Executable research fixture copy of R174's eight actions. The inherited
 ||| exported r174ProvisionExecution does not unfold externally, so that exact
