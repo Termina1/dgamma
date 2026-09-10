@@ -51,3 +51,9 @@ r206RootInserted : SystemState Nat ToyKey ToyValue ToyRuntime String
 r206RootInserted = MkSystemState (MkToyRuntime False False)
   (insertBinding @{the (DecEq Nat) %search} 2
     (freshFiber DGamma.CalculusChecks.providerComponent Root) (registry r206Released) Refl)
+
+||| The forced insertion is an actual checked root input.
+public export
+r206RootInsertEdge : Transition r206Released r206RootInserted
+r206RootInsertEdge = Fired (the (DecEq Nat) %search) (the (DecEq ToyKey) %search)
+  (OInsert 2 Root DGamma.CalculusChecks.providerComponent) OInsertTag Refl
