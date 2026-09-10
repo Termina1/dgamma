@@ -40,8 +40,8 @@ record AnchorTransport
   {initial, oldFinal, newFinal : SystemState name key value world error}
   (oldTrace : Transitions initial oldFinal) (newTrace : Transitions initial newFinal) where
   constructor MkAnchorTransport
-  beforeAnchorTrail : AvailabilityTrace name key world error value oldTrace
-  afterAnchorTrail : AvailabilityTrace name key world error value newTrace
+  beforeAnchorTrail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value oldTrace
+  afterAnchorTrail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value newTrace
   0 transportedMove : AdmittedDistanceMove name key world error value nameEq keyEq beforeAnchorTrail afterAnchorTrail
   transportCut : Nat
   0 transportCutEquation : length (prefixWord transportedMove) = transportCut
