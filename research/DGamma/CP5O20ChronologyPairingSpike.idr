@@ -122,3 +122,27 @@ o20ChronologyLeftCovered (ChronologyPairRightRotate earlier event suffix later) 
   case o20ChronologyLeftCovered later selected member of
     (other ** (present, related)) =>
       (other ** (o20ChronologyRotateMember {event} earlier suffix present, related))
+
+||| Bilateral coverage, still at the two literal lists. This is NOT the
+||| separately blocked predecessor ALL-name-cut obligation called A6.
+export
+0 o20ChronologyRightCovered :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {mapping : RegistrationGenerationBijection name} ->
+  {left, right : List (RegistrationEvent name key world error value)} ->
+  O20ChronologyPairing mapping left right ->
+  (selected : RegistrationEvent name key world error value) -> Elem selected right ->
+  (other : RegistrationEvent name key world error value **
+    (Elem other left, RegistrationEventMatch mapping other selected))
+o20ChronologyRightCovered ChronologyPairEnd selected member = absurd member
+o20ChronologyRightCovered (ChronologyPairMatch leftEvent rightEvent matched later) _ Here =
+  (leftEvent ** (Here, matched))
+o20ChronologyRightCovered (ChronologyPairMatch leftEvent rightEvent matched later) selected (There member) =
+  case o20ChronologyRightCovered later selected member of
+    (other ** (present, related)) => (other ** (There present, related))
+o20ChronologyRightCovered (ChronologyPairLeftRotate earlier event suffix later) selected member =
+  case o20ChronologyRightCovered later selected member of
+    (other ** (present, related)) =>
+      (other ** (o20ChronologyRotateMember {event} earlier suffix present, related))
+o20ChronologyRightCovered (ChronologyPairRightRotate earlier event suffix later) selected member =
+  o20ChronologyRightCovered later selected (o20ChronologyUnrotateMember {event} earlier suffix member)
