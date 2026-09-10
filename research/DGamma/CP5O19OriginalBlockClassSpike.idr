@@ -41,33 +41,62 @@ data O19BlockWordObservation :
     (0 childSafe : Not (child = forbidden)) ->
     O19BlockWordObservation name key world error value actor forbidden action
 
+||| R206 restricted legacy body: lifecycle and yielded-child edges ONLY.
+||| Its embedding uses ActorWithoutForcedRoots; neither owned-child controls
+||| nor attached root bundles can be manufactured by this predicate.
+public export
+data LegacyActorOnly :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (selected : name) -> {first, last : SystemState name key value world error} ->
+  Transitions first last -> Type where
+  LegacyActorEnd :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {selected : name} -> {state : SystemState name key value world error} ->
+    LegacyActorOnly selected (NoTransitions {state})
+  LegacyActorStep :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {selected : name} -> {first, middle, last : SystemState name key value world error} ->
+    (step : Transition first middle) -> (rest : Transitions middle last) ->
+    (0 lifecycle : isLifecycleAction (transitionAction step) = True) ->
+    (0 owned : transitionActor step = selected) ->
+    (0 tail : LegacyActorOnly selected rest) ->
+    LegacyActorOnly selected (MoreTransitions step rest)
+  LegacyActorYield :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {selected, child : name} -> {childComponent : Component key value world error} ->
+    {first, middle, last : SystemState name key value world error} ->
+    (step : Transition first middle) -> (rest : Transitions middle last) ->
+    (0 inserted : transitionAction step = OInsert child (ChildOf selected) childComponent) ->
+    (0 tail : LegacyActorOnly selected rest) ->
+    LegacyActorOnly selected (MoreTransitions step rest)
+
 ||| Derive every ORIGINAL body-word observation simultaneously from actual
-||| ActorLifecycleOnly and sanctioned NoGeneratedChild spines. Registration
+||| the EXPLICIT restricted LegacyActorOnly and NoGeneratedChild spines. Registration
 ||| child/component values and the opposite-actor exclusion are produced.
 export
 0 o19OwnedSafeWord :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   (actor, forbidden : name) -> {first, last : SystemState name key value world error} ->
-  (trace : Transitions first last) -> ActorLifecycleOnly actor trace -> NoGeneratedChild forbidden trace ->
+  (trace : Transitions first last) -> LegacyActorOnly actor trace -> NoGeneratedChild forbidden trace ->
   (action : Action name key value world error) -> Elem action (o19ActionWord trace) ->
   O19BlockWordObservation name key world error value actor forbidden action
-o19OwnedSafeWord actor forbidden _ ActorLifecycleEnd NoGeneratedChildEnd action absent = void (uninhabited absent)
-o19OwnedSafeWord actor forbidden _ (ActorLifecycleStep step rest lifecycle owner tail)
+o19OwnedSafeWord actor forbidden _ LegacyActorEnd NoGeneratedChildEnd action absent = void (uninhabited absent)
+o19OwnedSafeWord actor forbidden _ (LegacyActorStep step rest lifecycle owner tail)
   (NoGeneratedChildStep _ _ excluded safeTail) _ Here =
     BlockOwnLifecycle lifecycle (trans (sym (o19TransitionActorOwner step)) owner)
-o19OwnedSafeWord actor forbidden _ (ActorLifecycleStep step rest lifecycle owner tail)
+o19OwnedSafeWord actor forbidden _ (LegacyActorStep step rest lifecycle owner tail)
   (NoGeneratedChildStep _ _ excluded safeTail) action (There member) =
     o19OwnedSafeWord actor forbidden rest tail safeTail action member
-o19OwnedSafeWord actor forbidden _ (ActorYieldedRegistrationStep {child} {childComponent} step rest inserted tail)
+o19OwnedSafeWord actor forbidden _ (LegacyActorYield {child} {childComponent} step rest inserted tail)
   (NoGeneratedChildStep _ _ excluded safeTail) _ Here =
     BlockGenerated child childComponent inserted
       (\same => excluded actor childComponent (trans inserted (cong (\selected => OInsert selected (ChildOf actor) childComponent) same)))
-o19OwnedSafeWord actor forbidden _ (ActorYieldedRegistrationStep step rest inserted tail)
+o19OwnedSafeWord actor forbidden _ (LegacyActorYield step rest inserted tail)
   (NoGeneratedChildStep _ _ excluded safeTail) action (There member) =
     o19OwnedSafeWord actor forbidden rest tail safeTail action member
 
-||| Complete ORIGINAL located block-word values/ownership/licensing exclusion:
-||| the actual Begin supplies the head, the actual owned/safe body supplies
+||| CONDITIONAL legacy located block-word values/ownership/licensing exclusion:
+||| the actual Begin supplies the head; the EXPLICIT legacy/safe body supplies
 ||| every tail occurrence. No word classifier is assumed from the caller.
 export
 0 o19OriginalBlockWord :
@@ -76,12 +105,13 @@ export
   {initial, finalState : SystemState name key value world error} ->
   {source : Transitions initial finalState} ->
   (block : LocatedOpenEpisodeBlock name key world error value nameEq keyEq actor source) ->
+  LegacyActorOnly actor (blockBody block) ->
   NoGeneratedChild forbidden (blockBody block) ->
   (action : Action name key value world error) -> Elem action (o19ActionWord (actorBlockTrace block)) ->
   O19BlockWordObservation name key world error value actor forbidden action
-o19OriginalBlockWord actor forbidden block safe _ Here = BlockOwnLifecycle Refl Refl
-o19OriginalBlockWord actor forbidden block safe action (There member) =
-  o19OwnedSafeWord actor forbidden (blockBody block) (blockActorOnly block) safe action member
+o19OriginalBlockWord actor forbidden block legacy safe _ Here = BlockOwnLifecycle Refl Refl
+o19OriginalBlockWord actor forbidden block legacy safe action (There member) =
+  o19OwnedSafeWord actor forbidden (blockBody block) legacy safe action member
 
 ||| Actual ORIGINAL births with distinct licensing parents have distinct raw
 ||| child names, by original UniqueRawNameInsertions and immutable birth
@@ -104,9 +134,9 @@ o19OriginalChildrenDistinct {name} {key} {world} {error} {value} nameEq keyEq so
         (ChildOf leftParent) (ChildOf rightParent) leftComponent rightComponent leftBirth rightBirth) of
       Refl => parentsDifferent Refl
 
-||| BOTH ORIGINAL selected block observations are now projections of the
-||| exact sanctioned decomposition/safety, including BOTH NoGeneratedChild
-||| fields. No source-word ownership or licensing callback is requested.
+||| CONDITIONAL selected legacy block observations. The actual safety owns
+||| both child exclusions, but no longer implies the two legacy shape inputs.
+||| Production attached blocks must instead use the expanded observation.
 export
 0 o19SanctionedOriginalWords :
   {name, key, world, error : Type} -> {value : key -> Type} ->
@@ -116,16 +146,18 @@ export
   (blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder source) ->
   (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq source) ->
   (safety : AdjacentActorSwapSafety name key world error value protocol nameEq keyEq swap source blocks premises) ->
+  LegacyActorOnly (actorLeft swap) (blockBody (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety))) ->
+  LegacyActorOnly (actorRight swap) (blockBody (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety))) ->
   (leftAction, rightAction : Action name key value world error) ->
   Elem leftAction (o19ActionWord (actorBlockTrace (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)))) ->
   Elem rightAction (o19ActionWord (actorBlockTrace (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety)))) ->
   (O19BlockWordObservation name key world error value (actorLeft swap) (actorRight swap) leftAction,
    O19BlockWordObservation name key world error value (actorRight swap) (actorLeft swap) rightAction)
-o19SanctionedOriginalWords nameEq keyEq protocol swap source blocks premises safety leftAction rightAction leftMember rightMember =
+o19SanctionedOriginalWords nameEq keyEq protocol swap source blocks premises safety leftLegacy rightLegacy leftAction rightAction leftMember rightMember =
   (o19OriginalBlockWord (actorLeft swap) (actorRight swap) (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety))
-     (safetyLeftDoesNotGenerateRight safety) leftAction leftMember,
+     leftLegacy (safetyLeftDoesNotGenerateRight safety) leftAction leftMember,
    o19OriginalBlockWord (actorRight swap) (actorLeft swap) (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety))
-     (safetyRightDoesNotGenerateLeft safety) rightAction rightMember)
+     rightLegacy (safetyRightDoesNotGenerateLeft safety) rightAction rightMember)
 
 ||| The actual explicit insertion-plan constructor owns its exact source tag.
 ||| This is a constructor elimination, not a Refl observer of an independent
