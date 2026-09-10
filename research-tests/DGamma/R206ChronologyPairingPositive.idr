@@ -52,3 +52,17 @@ export
    transitionCount r192RemovedBirthTrace = 6)
 r206RemovedWholeWords =
   (Refl, Refl, o20ChronologyPairingLength (chronologyPairing r206RemovedChronologies), Refl)
+
+||| Both occurrence-to-occurrence matching witnesses are PRODUCED from the
+||| full paired lists. No preselected event-match hypothesis is supplied.
+export
+0 r206RemovedBilateralCoverage :
+  ((other : RegistrationEvent Nat R45Key Unit String R45Value **
+     (Elem other (rightChronology r206RemovedChronologies),
+      RegistrationEventMatch identityRegistrationGenerationBijection r206RemovedEvent other)),
+   (other : RegistrationEvent Nat R45Key Unit String R45Value **
+     (Elem other (leftChronology r206RemovedChronologies),
+      RegistrationEventMatch identityRegistrationGenerationBijection other r206RemovedEvent)))
+r206RemovedBilateralCoverage =
+  (o20ChronologyLeftCovered (chronologyPairing r206RemovedChronologies) r206RemovedEvent Here,
+   o20ChronologyRightCovered (chronologyPairing r206RemovedChronologies) r206RemovedEvent Here)
