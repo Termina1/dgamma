@@ -146,3 +146,19 @@ o20ChronologyRightCovered (ChronologyPairLeftRotate earlier event suffix later) 
       (other ** (o20ChronologyRotateMember {event} earlier suffix present, related))
 o20ChronologyRightCovered (ChronologyPairRightRotate earlier event suffix later) selected member =
   o20ChronologyRightCovered later selected (o20ChronologyUnrotateMember {event} earlier suffix member)
+
+||| Every match consumes one occurrence per side; rotations preserve count.
+||| This does not equate native trace lengths or erase skipped physical edges.
+export
+0 o20ChronologyPairingLength :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {mapping : RegistrationGenerationBijection name} ->
+  {left, right : List (RegistrationEvent name key world error value)} ->
+  O20ChronologyPairing mapping left right -> length left = length right
+o20ChronologyPairingLength ChronologyPairEnd = Refl
+o20ChronologyPairingLength (ChronologyPairMatch leftEvent rightEvent matched later) =
+  cong S (o20ChronologyPairingLength later)
+o20ChronologyPairingLength (ChronologyPairLeftRotate earlier event suffix later) =
+  trans (o20ChronologyRotationLength earlier event suffix) (o20ChronologyPairingLength later)
+o20ChronologyPairingLength (ChronologyPairRightRotate earlier event suffix later) =
+  trans (o20ChronologyPairingLength later) (sym (o20ChronologyRotationLength earlier event suffix))
