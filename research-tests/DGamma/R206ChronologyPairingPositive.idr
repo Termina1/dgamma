@@ -66,3 +66,17 @@ export
 r206RemovedBilateralCoverage =
   (o20ChronologyLeftCovered (chronologyPairing r206RemovedChronologies) r206RemovedEvent Here,
    o20ChronologyRightCovered (chronologyPairing r206RemovedChronologies) r206RemovedEvent Here)
+
+||| Apply both whole original-prefix position proofs and both actual final
+||| counter equations to the SAME complete paired words produced above.
+export
+0 r206RemovedPositionsAndCounts :
+  (o20ChronologicalPositions r45NameEq (leftChronology r206RemovedChronologies) [],
+   o20ChronologicalPositions r45NameEq (rightChronology r206RemovedChronologies) [],
+   indexedSurvivingChildCounts (leftFinalIndex r192RemovedBirthTree) =
+     o20ReplayRetainedEventCounts r45NameEq (leftChronology r206RemovedChronologies) [],
+   indexedSurvivingChildCounts (rightFinalIndex r192RemovedBirthTree) =
+     o20ReplayRetainedEventCounts r45NameEq (rightChronology r206RemovedChronologies) [])
+r206RemovedPositionsAndCounts = o20PairedChronologyPositionsAndCounts r45NameEq identityRegistrationGenerationBijection
+  r192RemovedBirthTrace r192RemovedBirthTrace (leftFinalIndex r192RemovedBirthTree) (rightFinalIndex r192RemovedBirthTree)
+  r206RemovedChronologies
