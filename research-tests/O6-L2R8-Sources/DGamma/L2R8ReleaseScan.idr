@@ -30,10 +30,10 @@ public export
   (0 found : lookupFiber {name} {key} {value} {world} {error} @{nameEq}
     child (registry (actionBeforeState occurrence)) = Just fiber) ->
   (parent : Parent name) -> (0 equation : fiberParent fiber = parent) ->
-  List (actor : name ** AttachedRelease name key world error value nameEq actor trace component)
+  List (actor : name ** DGamma.L2R3Attached.AttachedRelease name key world error value nameEq actor trace component)
 releaseAtParent nameEq keyEq component child fiber occurrence found Root equation = []
 releaseAtParent nameEq keyEq component child fiber occurrence found (ChildOf actor) equation =
-  map (\shared => (actor ** MkAttachedRelease child fiber occurrence found equation
+  map (\shared => (actor ** DGamma.L2R3Attached.MkAttachedRelease child fiber occurrence found equation
     (sharedKey shared) (inLeft shared) (inRight shared)))
     (sharedKeysObserved keyEq
       (dependencies (componentProvisions (fiberComponent fiber)))
@@ -53,7 +53,7 @@ public export
   (found : Maybe (Fiber name key value world error)) ->
   (0 equation : lookupFiber {name} {key} {value} {world} {error} @{nameEq}
     child (registry (actionBeforeState occurrence)) = found) ->
-  List (actor : name ** AttachedRelease name key world error value nameEq actor trace component)
+  List (actor : name ** DGamma.L2R3Attached.AttachedRelease name key world error value nameEq actor trace component)
 releaseAtLookup nameEq keyEq component child occurrence Nothing equation = []
 releaseAtLookup nameEq keyEq component child occurrence (Just fiber) equation =
   releaseAtParent nameEq keyEq component child fiber occurrence equation (fiberParent fiber) Refl
@@ -68,7 +68,7 @@ public export
   (step : Transition first middle) -> (rest : Transitions middle finalState) ->
   (action : Action name key value world error) ->
   (0 equation : transitionAction step = action) ->
-  List (actor : name ** AttachedRelease name key world error value nameEq actor
+  List (actor : name ** DGamma.L2R3Attached.AttachedRelease name key world error value nameEq actor
     (MoreTransitions step rest) component)
 releaseAtAction nameEq keyEq component step rest (OInsert child parent inserted) equation = []
 releaseAtAction nameEq keyEq component step rest (ORetire child) equation = []
@@ -90,9 +90,9 @@ public export
   {first, middle, finalState : SystemState name key value world error} ->
   {nameEq : DecEq name} -> {component : Component key value world error} ->
   (step : Transition first middle) -> (rest : Transitions middle finalState) ->
-  (actor : name ** AttachedRelease name key world error value nameEq actor rest component) ->
-  (actor : name ** AttachedRelease name key world error value nameEq actor (MoreTransitions step rest) component)
-releaseThroughHead step rest (actor ** release) = (actor ** MkAttachedRelease
+  (actor : name ** DGamma.L2R3Attached.AttachedRelease name key world error value nameEq actor rest component) ->
+  (actor : name ** DGamma.L2R3Attached.AttachedRelease name key world error value nameEq actor (MoreTransitions step rest) component)
+releaseThroughHead step rest (actor ** release) = (actor ** DGamma.L2R3Attached.MkAttachedRelease
   (releasedChild release) (releasedFiber release)
   (MkLocatedActionOccurrence
     (actionBeforeState (releaseOccurrence release)) (actionAfterState (releaseOccurrence release))
@@ -115,10 +115,10 @@ public export
   {trace : Transitions first finalState} ->
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (component : Component key value world error) ->
-  AvailabilityTrace name key world error value trace ->
-  List (actor : name ** AttachedRelease name key world error value nameEq actor trace component)
-scanObservedReleases nameEq keyEq component (AvailabilityEnd state) = []
-scanObservedReleases nameEq keyEq component (AvailabilityStep source (Fired ne ke action tag checked) rest later) =
+  DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value trace ->
+  List (actor : name ** DGamma.L2R3Attached.AttachedRelease name key world error value nameEq actor trace component)
+scanObservedReleases nameEq keyEq component (DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd state) = []
+scanObservedReleases nameEq keyEq component (DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep source (Fired ne ke action tag checked) rest later) =
   releaseAtAction nameEq keyEq component (Fired ne ke action tag checked) rest action Refl ++
   map (releaseThroughHead (Fired ne ke action tag checked) rest)
     (scanObservedReleases nameEq keyEq component later)
