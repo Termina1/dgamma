@@ -25,9 +25,9 @@ record AvailabilityRootExchange
   constructor MkAvailabilityRootExchange
   0 rootSwapDistinct : Not (root = transitionActor left)
   0 rootSwapAction : transitionAction right = OInsert root Root component
-  0 rootSwapCutCompatible : rootCutCompatible name key world error value
+  0 rootSwapCutCompatible : DGamma.CP5AvailabilityAwarePlacement.rootCutCompatible name key world error value
     nameEq keyEq component 0
-    (AvailabilityStep first left NoTransitions (AvailabilityEnd middle)) = True
+    (DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep first left NoTransitions (DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd middle)) = True
   rootSwapMiddle : SystemState name key value world error
   0 rootSwapEarlyChecked : checkedApplyAction @{nameEq} @{keyEq}
     (OInsert root Root component) first = Just (OInsertTag, rootSwapMiddle)
@@ -61,11 +61,11 @@ rootBirthInversions :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   {0 first, finalState : SystemState name key value world error} ->
   {0 trace : Transitions first finalState} ->
-  Nat -> AvailabilityTrace name key world error value trace -> Nat
-rootBirthInversions prior (AvailabilityEnd state) = 0
-rootBirthInversions prior (AvailabilityStep first (Fired _ _ (OInsert root Root component) _ _) rest later) =
+  Nat -> DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value trace -> Nat
+rootBirthInversions prior (DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd state) = 0
+rootBirthInversions prior (DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep first (Fired _ _ (OInsert root Root component) _ _) rest later) =
   prior + rootBirthInversions prior later
-rootBirthInversions prior (AvailabilityStep first (Fired _ _ action _ _) rest later) =
+rootBirthInversions prior (DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep first (Fired _ _ action _ _) rest later) =
   rootBirthInversions (if isLifecycleAction action then S prior else prior) later
 
 ||| Every admitted Begin/root-insert square decreases this physical inversion
@@ -83,12 +83,12 @@ export
   (exchange : AvailabilityRootExchange name key world error value nameEq keyEq root component
     (Fired {before = first} {afterState = middle} nameEq keyEq (LBegin actor) LBeginTag beforeBegin) (Fired {before = middle} {afterState = cut} nameEq keyEq (OInsert root Root component) OInsertTag beforeRoot)) ->
   {0 rest : Transitions cut finalState} ->
-  (later : AvailabilityTrace name key world error value rest) -> (prior : Nat) ->
+  (later : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value rest) -> (prior : Nat) ->
   rootBirthInversions prior
-    (AvailabilityStep first (Fired {before = first} {afterState = middle} nameEq keyEq (LBegin actor) LBeginTag beforeBegin) (MoreTransitions (Fired {before = middle} {afterState = cut} nameEq keyEq (OInsert root Root component) OInsertTag beforeRoot) rest)
-      (AvailabilityStep middle (Fired {before = middle} {afterState = cut} nameEq keyEq (OInsert root Root component) OInsertTag beforeRoot) rest later)) =
+    (DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep first (Fired {before = first} {afterState = middle} nameEq keyEq (LBegin actor) LBeginTag beforeBegin) (MoreTransitions (Fired {before = middle} {afterState = cut} nameEq keyEq (OInsert root Root component) OInsertTag beforeRoot) rest)
+      (DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep middle (Fired {before = middle} {afterState = cut} nameEq keyEq (OInsert root Root component) OInsertTag beforeRoot) rest later)) =
   S (rootBirthInversions prior
-    (AvailabilityStep first (Fired {before = first} {afterState = rootSwapMiddle exchange} nameEq keyEq (OInsert root Root component) OInsertTag (rootSwapEarlyChecked exchange)) (MoreTransitions (Fired {before = rootSwapMiddle exchange} {afterState = cut} nameEq keyEq (LBegin actor) LBeginTag (rootSwapLaterChecked exchange)) rest)
-      (AvailabilityStep (rootSwapMiddle exchange) (Fired {before = rootSwapMiddle exchange} {afterState = cut} nameEq keyEq (LBegin actor) LBeginTag (rootSwapLaterChecked exchange)) rest later)))
+    (DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep first (Fired {before = first} {afterState = rootSwapMiddle exchange} nameEq keyEq (OInsert root Root component) OInsertTag (rootSwapEarlyChecked exchange)) (MoreTransitions (Fired {before = rootSwapMiddle exchange} {afterState = cut} nameEq keyEq (LBegin actor) LBeginTag (rootSwapLaterChecked exchange)) rest)
+      (DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep (rootSwapMiddle exchange) (Fired {before = rootSwapMiddle exchange} {afterState = cut} nameEq keyEq (LBegin actor) LBeginTag (rootSwapLaterChecked exchange)) rest later)))
 beginRootExchangeDecreases nameEq keyEq actor root component first middle cut finalState
   beforeBegin beforeRoot exchange later prior = Refl
