@@ -25,7 +25,7 @@ export
   {initial, finalState : SystemState name key value world error} ->
   {global : Transitions initial finalState} ->
   (cut : Nat) -> (action : Action name key value world error) -> (ordinal : Nat) ->
-  (member : AttachedBundleOccurrence name key world error value nameEq keyEq global action ordinal) ->
+  (member : DGamma.L2R3AttachedGap.AttachedBundleOccurrence name key world error value nameEq keyEq global action ordinal) ->
   (0 noStraddling : NoBundleStraddlesCut nameEq keyEq global cut) ->
   Dec (LTE (bundleOffset member + transitionCount (memberBundle member)) cut) ->
   Either (LTE (bundleOffset member + transitionCount (memberBundle member)) cut)
