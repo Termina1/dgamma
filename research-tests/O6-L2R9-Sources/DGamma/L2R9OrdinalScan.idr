@@ -81,8 +81,8 @@ releaseOrdinalScan : {name, key, world, error : Type} -> {value : key -> Type} -
   {0 trace : Transitions first finalState} ->
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (component : Component key value world error) ->
-  AvailabilityTrace name key world error value trace -> List Nat
-releaseOrdinalScan nameEq keyEq component (AvailabilityEnd state) = []
-releaseOrdinalScan nameEq keyEq component (AvailabilityStep source (Fired ne ke action tag checked) rest later) =
+  DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value trace -> List Nat
+releaseOrdinalScan nameEq keyEq component (DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd state) = []
+releaseOrdinalScan nameEq keyEq component (DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep source (Fired ne ke action tag checked) rest later) =
   ordinalAtAction nameEq keyEq component source action ++
   map S (releaseOrdinalScan nameEq keyEq component later)
