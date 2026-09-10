@@ -84,7 +84,7 @@ export
   {first, finalState : SystemState name key value world error} ->
   {trace : Transitions first finalState} ->
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
-  (trail : AvailabilityTrace name key world error value trace) -> (ordinal, cut : Nat) ->
+  (trail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value trace) -> (ordinal, cut : Nat) ->
   (0 bounded : (ordinal <= cut) = True) ->
   (hit : AnyHit (\seed => catalogOrdinal seed == ordinal &&
     not (null (scanReleaseOrdinals nameEq keyEq (catalogComponent seed) 0 (catalogOrdinal seed) trail)))
@@ -113,7 +113,7 @@ export
   {first, finalState : SystemState name key value world error} ->
   {trace : Transitions first finalState} ->
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
-  (trail : AvailabilityTrace name key world error value trace) -> (cut : Nat) ->
+  (trail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value trace) -> (cut : Nat) ->
   (hit : AnyHit (\seed => catalogOrdinal seed <= cut &&
     keyForcedOrdinal nameEq keyEq trail (catalogOrdinal seed)) (scanRootCatalog 0 trail)) ->
   not (null (concatMap
@@ -145,7 +145,7 @@ export
   {first, finalState : SystemState name key value world error} ->
   {trace : Transitions first finalState} ->
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
-  (trail : AvailabilityTrace name key world error value trace) -> (cut : Nat) ->
+  (trail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value trace) -> (cut : Nat) ->
   (seen : Bool) -> (0 equation : any (\seed => catalogOrdinal seed <= cut &&
     keyForcedOrdinal nameEq keyEq trail (catalogOrdinal seed)) (scanRootCatalog 0 trail) = seen) ->
   (0 forced : seen = True) -> (anchor : Nat ** anchorOf nameEq keyEq trail cut = Just anchor)
