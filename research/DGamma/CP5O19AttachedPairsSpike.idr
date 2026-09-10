@@ -202,3 +202,19 @@ data O19AttachedBody :
     (core : Transitions first coreLast) -> (bundle : Transitions coreLast last) ->
     (0 scanned : O19AttachedScan name key world error value nameEq actor core (appendTransitions core bundle)) ->
     O19AttachedBody name key world error value nameEq actor (appendTransitions core bundle)
+
+||| TOTAL observer of the complete production grammar: no LegacyActorOnly,
+||| zero-gap, empty-bundle, replay-domain or final-result premise is required.
+export
+0 o19ObserveAttachedBody :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (actor : name) ->
+  {first, last : SystemState name key value world error} ->
+  (body : Transitions first last) -> ActorLifecycleOnly nameEq actor body ->
+  O19AttachedBody name key world error value nameEq actor body
+o19ObserveAttachedBody nameEq actor _ (ActorWithoutForcedRoots core shape) =
+  ObservedCoreBody core (o19AttachedCoreScan nameEq actor core core shape)
+o19ObserveAttachedBody nameEq actor _ (ActorWithForcedRoots core shape bundle ordered) =
+  ObservedBundledBody core bundle
+    (o19AttachedScanAppend core bundle (o19AttachedCoreScan nameEq actor core core shape)
+      (o19AttachedBundleScan nameEq actor core [] bundle ordered))
