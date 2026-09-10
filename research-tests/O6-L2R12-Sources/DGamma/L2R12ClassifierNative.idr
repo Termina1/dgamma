@@ -47,7 +47,7 @@ export
   {first, finalState : SystemState name key value world error} ->
   {trace : Transitions first finalState} ->
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
-  (trail : AvailabilityTrace name key world error value trace) ->
+  (trail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value trace) ->
   (aligned : AlignedTransitions name key world error value nameEq keyEq trace) ->
   (cut : SelectedSquareCut name key world error value nameEq keyEq trail) ->
   (child : name) -> (fiber : Fiber name key value world error) ->
