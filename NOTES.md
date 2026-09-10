@@ -5189,3 +5189,124 @@ frozen again during R206.
   the revised production predicate. The module declaration and every file byte
   remain unchanged; no retired TTC is deleted or trusted. Remaining imports of
   the old fixture path are explicitly blocked, not silently redirected.
+
+- **R206 U016–U026 native fixture:** `R206AttachedGrammarPositive` constructs
+  actual checked child Remove → root Insert → root Retire → root Remove edges,
+  with a real ServiceA release, empty bundle history, KeyReleased occurrence,
+  and source Root lookups for both controls. `r206AttachedControlsShape` proves
+  the production attached body grammar; `r206AttachedWords` applies the total
+  expanded observer to every actual word member. `r206AttachedNotLegacy`
+  proves non-legacy shape, a controlled forbidden child owner, and an observable
+  root input. This is a genuine body-grammar fixture, NOT a full reached-from-
+  empty/sanctioned LocatedOpenEpisodeBlock or an O19 swapping theorem.
+- **R206 visibility V1:** both occurrence-history whole-path projections changed
+  export→public export, with no type/body change (authenticated hashes in
+  O6-R206-VISIBILITY.json). Fresh defining-module PASS; all six dependents remain
+  blocked through pre-existing/unfreeze successor roots. The mandated original
+  A15 context cannot be checked, so the one newly permitted append attempt was
+  **not spent**, relocated or restated. The R204 three exhausted attempts remain
+  retired. B/A work is separately gated to trusted substrate only.
+
+- **R206 Unit B checked partial (B1–B20):** independent
+  `CP5O20ControlRebaseSpike` proves exact ordered provider-list, parent, all four
+  lifecycle and full fiber re-renaming. `o20RebaseAbsentDomain` derives new-image
+  absence from actual source absence, the old ALL-name cut, and map agreement
+  only at PRESENT source entries, using inverse laws and a source-preimage
+  contradiction. No absent-target oracle/backward-domain premise is added.
+  `o20RebaseAllNameCutConditional` preserves ambient state, exact table bindings
+  and controls at ALL raw names with three explicitly named primitive agreement
+  fields (current-present, actual parent references, actual provider references).
+  These fields are **not** discharged for the canonical history/current map:
+  R204 capital and the true chain-result D5 consumer remain blocked by
+  ActualCartesian. No public O19 conclusion or production premise changed.
+  `R206ControlRebasePositive` applies the adapter at the real six-edge
+  removed-child endpoint, uses the nonidentity absent-name swap, exercises a
+  nonempty parent/Active provider view as a metadata value, and constructively
+  refutes a map that sends the present root0 to absent1. All native PASS;
+  B4/B17/B18 needed second attempts (explicit erased error, explicit lookup
+  universes, and layout respectively); no 3/3 exhaustion or escape hatch.
+
+- **R206 Unit A native integration (A1–A18):**
+  `CP5O20ChronologyPairingSpike:o20NativeChronologiesPaired` derives both literal
+  R203 native event lists/scans and a complete permutation-pairing derivation
+  from the same E8 recursion, including all nine correspondence constructors.
+  `o20ChronologyLeftCovered`, `o20ChronologyRightCovered` and
+  `o20ChronologyPairingLength` prove bilateral occurrence coverage and equal
+  retained counts. `o20PairedChronologyPositionsAndCounts` applies R203's proofs
+  to those exact same produced lists. No independently chosen event list,
+  pair-match callback, ordinal equality or endpoint cut is a premise.
+  Existing private matching in RenamingComposition is not claimed as a new
+  mathematical discovery; this is a separate, directly checked integration
+  with R203's native scan boundary, avoiding its private/heavy projection.
+  The named interface keeps event words unrestricted and scans/matches erased.
+  These proof producers are quantity0, not a runtime native-path scheduler.
+- **Order qualification:** CP3's `RegistrationEventMatch` explicitly lacks a
+  global child-birth order constraint. Consequently the new interface records
+  permutations; it does NOT produce an ordered canonical zip. Original-prefix
+  counter/position proofs do not imply transport to a different canonical
+  prefix. No raw/scoped cast, two-path R204 A15 relocation or false zero-gap
+  assertion enters the proof. R206 micro-unit A6 is a coverage proof, not the
+  still-open predecessor-A6 ALL-name cut; R206 micro-unit A15 is a finite
+  coverage fixture, not the original R204 append seam.
+- **R206 native chronology fixtures:** the genuine six-edge removed-child
+  trace produces the exact retained singleton word on both sides, with
+  bilateral match witnesses and position/counter proof application. The real
+  eight-edge closing trace produces empty retained words but is proved not to
+  have zero physical length. Ordinary/deleted event skips are not assumed to be
+  runtime no-ops.
+  A1/A3 needed a second attempt (reserved identifier; dependent Elem consumer).
+  No exhausted3/3 seam was restarted.
+- **R206 evidence hardening:** separate receipt and disposition adversarial
+  tests now total30 PASS. In particular, a failed/rejected own invocation cannot
+  fall back to a previously authenticated seed, and missing own Building cannot
+  be laundered through a success flag. No current native outcome changed from
+  this tooling repair. `run-r206-verify.py` independently cross-checks all88
+  immutable native receipts/snapshots, source commit chain, production/frozen
+  hashes, import epochs/current source hashes, original133 accounting, byte-exact
+  retirement, archive, no staged files/owned compiler, and SupportSolution TTC.
+  This is compiler-free evidence verification, NOT an independent reviewer.
+
+## Status
+
+**R206 final native state: CHECKED-PARTIAL; supervisor gate pending.**
+
+Fully proved at fresh current source:
+- true core→attached embedding; legacy grammar embedding and conditional old
+  word/classifier/frame/external-order statements;
+- complete expanded source-word observation for core and attached-root grammar,
+  with native child-control/root Insert/Retire/Remove evidence;
+- constructive referenced-name/control re-renaming and absent-domain transport,
+  assembled into a full **conditional** ALL-name cut rebase;
+- exact-list native E8 permutation pairing, bilateral occurrence coverage,
+  retained-count equality and same-word original-prefix positions/counters;
+- native positive and negative metadata/runtime-source fixtures described above.
+
+Partial/unproduced:
+- expanded O19 pair/column classes and replay-cut source metadata; ActualCartesian
+  freshly fails its old classifier/BlockBefore call sites, blocking ReachedBlocks,
+  OperationalAssembly, CrossTrace, CurrentNameRebase and runtime chronology;
+- the canonical current/parent/provider agreements needed by the B adapter;
+- canonical ordered chronology zip and prefix transport; predecessor-A6 cut;
+  full supported/unsupported runtime skips; R198 whole runtime history producer;
+  synchronization modulo and the genuine chain-result D5 consumer.
+- original R204 A15 append restatement was not attempted: its mandated context
+  remains blocked despite the checked visibility companion. C is ineligible.
+
+Merely stated/unresolved: the existing final canonical synchronization/confluence
+endpoint targets and the four frozen obligations; **Thm73 is not closed**.
+R172 is **retired by A8/A12 (owner-signed unfreeze)**, not proved or repaired.
+No new hole, postulate, `believe_me`, `assert_total`, partial definition, public
+production premise or frozen body was added/changed. Production remains exactly
+452420c7; census **4 =1/2/0/0/1**.
+
+Validation: all144 invalidated entries have current dispositions; original133
+blocked entries =12 fresh positive PASS +3 fresh expected-negative PASS +1 fresh
+ActualCartesian FAIL +117 blocked. Seeded package PASS with no Building.
+SupportSolution TTC SHA0572d487…/mtime unchanged; no re-elaboration. All88 native
+attempts (78 accepted,10 rejected, mostly superseded) and30 evidence tests are
+retained, not misreported as distinct fresh source passes.
+
+Next: separately gated R207 expanded seven-form O19/reached-state redesign from
+`O6-R206-O19-EXPANSION-DESIGN.md`; then discharge canonical map agreement and
+runtime chronology/A6/D5 against the repaired dependency spine. Recheck blocked
+closures before using their TTCs. Supervisor owns the acceptance/push/merge.

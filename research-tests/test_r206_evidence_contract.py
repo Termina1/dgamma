@@ -7,7 +7,7 @@ class ReceiptContract(unittest.TestCase):
         self.source=b'module DGamma.Test\n%default total\n'
         self.line='DGamma.Test (/review/research/DGamma/Test.idr)'
         self.text='1/1: Building '+self.line+'\n'
-        self.r=dict(path='research/DGamma/Test.idr',sourceSHA256=hashlib.sha256(self.source).hexdigest(),transcript=self.text,buildingLines=[self.line],fresh=True,unexpectedBuilding=[],rssSamples=[dict(rssKiB=100)],maxSampleRSSKiB=100,rssLimitKiB=48*1024*1024,exit=0,expectedDiagnostic=None,symbol=None,passed=True,interrupted=False,targetMutationDetected=False,multipleOwnedCompilers=False,start='2026-09-10T02:10:00',end='2026-09-10T02:10:01',crossLaneOverlapTimestampsUTC=[],CP3Blob='eeaa70aa4414648bb2a1173d58244267997d16d7')
+        self.r=dict(path='research/DGamma/Test.idr',sourceSHA256=hashlib.sha256(self.source).hexdigest(),transcript=self.text,buildingLines=[self.line],fresh=True,unexpectedBuilding=[],rssSamples=[dict(rssKiB=100)],maxSampleRSSKiB=100,rssLimitKiB=48*1024*1024,exit=0,expectedDiagnostic=None,symbol=None,passed=True,interrupted=False,resourceStopped=False,targetMutationDetected=False,multipleOwnedCompilers=False,start='2026-09-10T02:10:00',end='2026-09-10T02:10:01',crossLaneOverlapTimestampsUTC=[],CP3Blob='eeaa70aa4414648bb2a1173d58244267997d16d7')
     def valid(self): return validate_record(self.r,self.source,self.text,self.root)
     def rejects(self):
         with self.assertRaises(AssertionError): self.valid()
@@ -38,5 +38,6 @@ class ReceiptContract(unittest.TestCase):
     def test_overlap_timestamp_only(self): self.r['crossLaneOverlapTimestampsUTC']=['2026-09-10T02:10:00.5'];self.assertTrue(self.valid())
     def test_overlap_outside_interval(self): self.r['crossLaneOverlapTimestampsUTC']=['2026-09-10T02:12:00'];self.rejects()
     def test_production_blob(self): self.r['CP3Blob']='old-baseline';self.rejects()
+    def test_resource_stop_flag(self): self.r['resourceStopped']=True;self.rejects()
 
 if __name__=='__main__': unittest.main()

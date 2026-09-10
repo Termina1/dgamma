@@ -1,0 +1,1353 @@
+[
+  {
+    "unit": "U01-1",
+    "message": "R206 U01: retire false V19 reverse inclusion; production core embeds into attached grammar",
+    "beforeCommit": "452420c73c59a6af2d204cafa6e722b3a0fff995",
+    "afterCommit": "5bb9c7f92c691d09607e9ba8a6c2661da5d09b45",
+    "timestampUTC": "2026-09-10T02:17:05.765945+00:00",
+    "hashes": {
+      "research/DGamma/CP5ActorLifecycleOnlyExtended.idr": {
+        "before": "259bbb336aab6a3babcec41ccba9fc2eca5299422a3a8e5443715f004365b380",
+        "after": "8a4230942d52ba11fa7d9a599f3c0683b8d526cf97c01c7eb1720d0d2342ef13"
+      }
+    },
+    "guardSHA256": "a50a1c490f2b61425b3dd62a116e11f06db0fdfd582acc3589f56d552080227b",
+    "noStagedFiles": true,
+    "productionUnchanged": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true,
+    "crossLaneOverlapTimestampsUTC": []
+  },
+  {
+    "unit": "ARTIFACT",
+    "message": "R206: record seal, semantic scope gate and V19 disposition; monitored evidence tools",
+    "beforeCommit": "5bb9c7f92c691d09607e9ba8a6c2661da5d09b45",
+    "afterCommit": "bfe2e8d506f2ca77f2e96086f61ed19cc2bde642",
+    "timestampUTC": "2026-09-10T02:17:06.068621+00:00",
+    "hashes": {
+      "research-tests/O6-R206-AUDIT.md": {
+        "before": null,
+        "after": "1669780add4fef0c05d7d68ecf479636ab0b52f90f790d39e08f1df98b8ef758"
+      },
+      "research-tests/O6-R206-SEMANTIC-GATE.md": {
+        "before": null,
+        "after": "4e07e545bc0f889cdb7ab27142bc66ed4c47965014b780958d077dd90297f682"
+      },
+      "research-tests/r206_common.py": {
+        "before": null,
+        "after": "73135d87b9b3aca649dfd2974eb091b674e650ef50f0580b560fb23e1334b06d"
+      },
+      "research-tests/run-r206-check.py": {
+        "before": null,
+        "after": "4f3db4d333d0c2d800ea356cbf4b53c1dda0adca310ba432b9c6e0b88c94d651"
+      },
+      "research-tests/run-r206-commit.py": {
+        "before": null,
+        "after": "a50a1c490f2b61425b3dd62a116e11f06db0fdfd582acc3589f56d552080227b"
+      },
+      "NOTES.md": {
+        "before": "936798bb8542905e6dc0dccd96e5932f54f7a08979ee12d7853524e0cbf07105",
+        "after": "62c66f37cfbf016d9d17262824f17a5b25ea85074afb21d60f46ff19c3c68f12"
+      }
+    },
+    "guardSHA256": "a50a1c490f2b61425b3dd62a116e11f06db0fdfd582acc3589f56d552080227b",
+    "noStagedFiles": true,
+    "productionUnchanged": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true,
+    "crossLaneOverlapTimestampsUTC": []
+  },
+  {
+    "unit": "U02-1",
+    "message": "R206 U02: restrict two-case O19 word classifier to explicit legacy grammar",
+    "beforeCommit": "bfe2e8d506f2ca77f2e96086f61ed19cc2bde642",
+    "afterCommit": "5b3f7ac9065a1afe3c54cd52b3bc18773a3a7df0",
+    "timestampUTC": "2026-09-10T02:18:42.924382+00:00",
+    "hashes": {
+      "research/DGamma/CP5O19OriginalBlockClassSpike.idr": {
+        "before": "bd28de8e4dafdd7a8e423d29ba136b8cbdd9b2fdb0f6249223a5b2629882645a",
+        "after": "85d70bd6a6b95fc97a3d04f34a58df8b458ff882bf959678462adcf8fce5fa91"
+      }
+    },
+    "guardSHA256": "a50a1c490f2b61425b3dd62a116e11f06db0fdfd582acc3589f56d552080227b",
+    "noStagedFiles": true,
+    "productionUnchanged": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true,
+    "crossLaneOverlapTimestampsUTC": []
+  },
+  {
+    "unit": "U03-1",
+    "message": "R206 U03: enlarged original-word observation retains child and root control metadata",
+    "beforeCommit": "5b3f7ac9065a1afe3c54cd52b3bc18773a3a7df0",
+    "afterCommit": "d7fc31f0bb13ab03c46c7115640acb15a14587e8",
+    "timestampUTC": "2026-09-10T02:21:10.185711+00:00",
+    "hashes": {
+      "research/DGamma/CP5O19OriginalBlockClassSpike.idr": {
+        "before": "85d70bd6a6b95fc97a3d04f34a58df8b458ff882bf959678462adcf8fce5fa91",
+        "after": "8561a0efc59e59af635f0e674062074a5ed3474f029a78964d3caabe63a4cb2f"
+      }
+    },
+    "guardSHA256": "a50a1c490f2b61425b3dd62a116e11f06db0fdfd582acc3589f56d552080227b",
+    "noStagedFiles": true,
+    "productionUnchanged": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true,
+    "crossLaneOverlapTimestampsUTC": []
+  },
+  {
+    "unit": "U04-1",
+    "message": "R206 U04: total five-constructor core word observation",
+    "beforeCommit": "d7fc31f0bb13ab03c46c7115640acb15a14587e8",
+    "afterCommit": "326fd50c94537fac05542c52622aaa4e02a5b80d",
+    "timestampUTC": "2026-09-10T02:22:39.069561+00:00",
+    "hashes": {
+      "research/DGamma/CP5O19OriginalBlockClassSpike.idr": {
+        "before": "8561a0efc59e59af635f0e674062074a5ed3474f029a78964d3caabe63a4cb2f",
+        "after": "4051f87f47c270ea1070b4aea2c0246c55c9ed6805c354673b2918eee23df0cd"
+      }
+    },
+    "guardSHA256": "a50a1c490f2b61425b3dd62a116e11f06db0fdfd582acc3589f56d552080227b",
+    "noStagedFiles": true,
+    "productionUnchanged": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true,
+    "crossLaneOverlapTimestampsUTC": []
+  },
+  {
+    "unit": "U05-1",
+    "message": "R206 U05: total attached root bundle word observation",
+    "beforeCommit": "326fd50c94537fac05542c52622aaa4e02a5b80d",
+    "afterCommit": "4e64ab40c0ad83c8106385045e42fd826bf40734",
+    "timestampUTC": "2026-09-10T02:23:15.690503+00:00",
+    "hashes": {
+      "research/DGamma/CP5O19OriginalBlockClassSpike.idr": {
+        "before": "4051f87f47c270ea1070b4aea2c0246c55c9ed6805c354673b2918eee23df0cd",
+        "after": "05b8b47774199a939c85dbeb1f015d0c2c4116adb8d80646158c9adc94f2adb2"
+      }
+    },
+    "guardSHA256": "a50a1c490f2b61425b3dd62a116e11f06db0fdfd582acc3589f56d552080227b",
+    "noStagedFiles": true,
+    "productionUnchanged": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true,
+    "crossLaneOverlapTimestampsUTC": []
+  },
+  {
+    "unit": "U06-2",
+    "message": "R206 U06: native prefix preserves child exclusion (reserved prefix binder corrected)",
+    "beforeCommit": "4e64ab40c0ad83c8106385045e42fd826bf40734",
+    "afterCommit": "4f1bc2eb03613f264b17c57105ae25e97655b92a",
+    "timestampUTC": "2026-09-10T02:24:32.307486+00:00",
+    "hashes": {
+      "research/DGamma/CP5O19OriginalBlockClassSpike.idr": {
+        "before": "05b8b47774199a939c85dbeb1f015d0c2c4116adb8d80646158c9adc94f2adb2",
+        "after": "b0ab94c032ef8e1759c1c7fc26ffa0a2009197b7b9de045f70dc9878856a120e"
+      }
+    },
+    "guardSHA256": "a50a1c490f2b61425b3dd62a116e11f06db0fdfd582acc3589f56d552080227b",
+    "noStagedFiles": true,
+    "productionUnchanged": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true,
+    "crossLaneOverlapTimestampsUTC": []
+  },
+  {
+    "unit": "U07-2",
+    "message": "R206 U07: native append word elimination without source-state casts",
+    "beforeCommit": "4f1bc2eb03613f264b17c57105ae25e97655b92a",
+    "afterCommit": "edeff4056c38fbe7f98590420d6a18562b2ba6f4",
+    "timestampUTC": "2026-09-10T02:25:51.515091+00:00",
+    "hashes": {
+      "research/DGamma/CP5O19OriginalBlockClassSpike.idr": {
+        "before": "b0ab94c032ef8e1759c1c7fc26ffa0a2009197b7b9de045f70dc9878856a120e",
+        "after": "41ac1b88e8e97a785815325645fd74c38a03a313ea1534b4ae692eb4d0cc7602"
+      }
+    },
+    "guardSHA256": "a50a1c490f2b61425b3dd62a116e11f06db0fdfd582acc3589f56d552080227b",
+    "noStagedFiles": true,
+    "productionUnchanged": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true,
+    "crossLaneOverlapTimestampsUTC": []
+  },
+  {
+    "unit": "U08-1",
+    "message": "R206 U08: total expanded production ActorLifecycleOnly word producer",
+    "beforeCommit": "edeff4056c38fbe7f98590420d6a18562b2ba6f4",
+    "afterCommit": "c829bf0865e086b142d8f88e6904934cb3ce3a78",
+    "timestampUTC": "2026-09-10T02:26:38.681213+00:00",
+    "hashes": {
+      "research/DGamma/CP5O19OriginalBlockClassSpike.idr": {
+        "before": "41ac1b88e8e97a785815325645fd74c38a03a313ea1534b4ae692eb4d0cc7602",
+        "after": "877d7126a9118730c93918f58516e41dd8428c92c814d3354fc0a9e4b7bb4e22"
+      }
+    },
+    "guardSHA256": "a50a1c490f2b61425b3dd62a116e11f06db0fdfd582acc3589f56d552080227b",
+    "noStagedFiles": true,
+    "productionUnchanged": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true,
+    "crossLaneOverlapTimestampsUTC": []
+  },
+  {
+    "unit": "U09-1",
+    "message": "R206 U09: explicit legacy-to-production-core inclusion",
+    "beforeCommit": "c829bf0865e086b142d8f88e6904934cb3ce3a78",
+    "afterCommit": "24163cbffe6187827979bc6cb420b32dd873657e",
+    "timestampUTC": "2026-09-10T02:27:16.222929+00:00",
+    "hashes": {
+      "research/DGamma/CP5O19OriginalBlockClassSpike.idr": {
+        "before": "877d7126a9118730c93918f58516e41dd8428c92c814d3354fc0a9e4b7bb4e22",
+        "after": "bc667ddf162eaf710d702631e79bf75d4dcc56946aa7d67479b69d68de8947b0"
+      }
+    },
+    "guardSHA256": "a50a1c490f2b61425b3dd62a116e11f06db0fdfd582acc3589f56d552080227b",
+    "noStagedFiles": true,
+    "productionUnchanged": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true,
+    "crossLaneOverlapTimestampsUTC": []
+  },
+  {
+    "unit": "U010-1",
+    "message": "R206 U010: enlarged located-block observation, no legacy completeness claim",
+    "beforeCommit": "24163cbffe6187827979bc6cb420b32dd873657e",
+    "afterCommit": "dbc947946ae0fae46cd684a7f94cea1275feeed1",
+    "timestampUTC": "2026-09-10T02:27:57.744792+00:00",
+    "hashes": {
+      "research/DGamma/CP5O19OriginalBlockClassSpike.idr": {
+        "before": "bc667ddf162eaf710d702631e79bf75d4dcc56946aa7d67479b69d68de8947b0",
+        "after": "a86c5a304311398b9894085fc253f52afbe32cc820b0038eb4ea226d473908ec"
+      }
+    },
+    "guardSHA256": "a50a1c490f2b61425b3dd62a116e11f06db0fdfd582acc3589f56d552080227b",
+    "noStagedFiles": true,
+    "productionUnchanged": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true,
+    "crossLaneOverlapTimestampsUTC": []
+  },
+  {
+    "unit": "U011-1",
+    "message": "R206 U011: enlarged lifecycle paper completeness; four-way classifier explicitly legacy-conditional",
+    "beforeCommit": "dbc947946ae0fae46cd684a7f94cea1275feeed1",
+    "afterCommit": "bb0f43ba6aad8e565533d414ad53bbd017bc0bef",
+    "timestampUTC": "2026-09-10T02:28:39.443527+00:00",
+    "hashes": {
+      "research/DGamma/CP5O19PaperBranchCompletenessSpike.idr": {
+        "before": "e19ba0492ac93363ca8964021b3dfb9046641883890f8e0b7f014a0b88f5eb58",
+        "after": "e2203f1846a77094a8113aef214f8c751815cba36cbd86a975dce8bf300e411c"
+      }
+    },
+    "guardSHA256": "a50a1c490f2b61425b3dd62a116e11f06db0fdfd582acc3589f56d552080227b",
+    "noStagedFiles": true,
+    "productionUnchanged": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true,
+    "crossLaneOverlapTimestampsUTC": []
+  },
+  {
+    "unit": "U012-1",
+    "message": "R206 U012: restrict foreign-owner and physical Begin frame to explicit legacy bodies",
+    "beforeCommit": "bb0f43ba6aad8e565533d414ad53bbd017bc0bef",
+    "afterCommit": "0c84cca808e7cd748c96a6d36c7f57c9e7d83192",
+    "timestampUTC": "2026-09-10T02:30:34.418129+00:00",
+    "hashes": {
+      "research/DGamma/CP5O20RightOpeningTransportSpike.idr": {
+        "before": "f2da10325655665842f58cd43dd7b918aa1b3e888aa07a552a086ae79fdde8dd",
+        "after": "b0dde7613401d07cfabc84069428d1f0859c0957b802725952cafbfbbc38144a"
+      }
+    },
+    "guardSHA256": "a50a1c490f2b61425b3dd62a116e11f06db0fdfd582acc3589f56d552080227b",
+    "noStagedFiles": true,
+    "productionUnchanged": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true,
+    "crossLaneOverlapTimestampsUTC": []
+  },
+  {
+    "unit": "U013-1",
+    "message": "R206 U013: total enlarged R18 head classification; external-order producer explicitly legacy-conditional",
+    "beforeCommit": "0c84cca808e7cd748c96a6d36c7f57c9e7d83192",
+    "afterCommit": "f63d14ac03b8e3b3df319525f464b9f8126b9159",
+    "timestampUTC": "2026-09-10T02:31:58.923682+00:00",
+    "hashes": {
+      "research-tests/DGamma/R18ExternalOrderProducerPositive.idr": {
+        "before": "243961e3fc5e155cbc4c77573854bb9048350545adbec97dd752891a7c748aae",
+        "after": "ada64d77c56c0a2c94829c5b6eba400a58343c2ab9e44fa3d8e798fbbf93ce92"
+      }
+    },
+    "guardSHA256": "a50a1c490f2b61425b3dd62a116e11f06db0fdfd582acc3589f56d552080227b",
+    "noStagedFiles": true,
+    "productionUnchanged": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true,
+    "crossLaneOverlapTimestampsUTC": []
+  },
+  {
+    "unit": "U014-1",
+    "message": "R206 U014: keep retained R192 no-legacy/no-zero-gap negative scoped to named legacy grammar",
+    "beforeCommit": "f63d14ac03b8e3b3df319525f464b9f8126b9159",
+    "afterCommit": "cf623b9d060b1237c90921490e55c87c02972389",
+    "timestampUTC": "2026-09-10T02:32:43.183668+00:00",
+    "hashes": {
+      "research-tests/DGamma/R192RemovedBirthCurrentNameProbe.idr": {
+        "before": "bf604f6695e9eda4f450dc05be35fbc2de7c53a8c04e0357b088c1f6888883f6",
+        "after": "baf3ed9b36a451c1ec405a453ad41c0e32be721b4583aa41ca8e574a6f55ef1b"
+      }
+    },
+    "guardSHA256": "a50a1c490f2b61425b3dd62a116e11f06db0fdfd582acc3589f56d552080227b",
+    "noStagedFiles": true,
+    "productionUnchanged": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true,
+    "crossLaneOverlapTimestampsUTC": []
+  },
+  {
+    "unit": "RETIRE",
+    "message": "R206 U015: retire strict-root-first R172 fixture by A8/A12 owner-signed unfreeze (path only)",
+    "beforeCommit": "cf623b9d060b1237c90921490e55c87c02972389",
+    "afterCommit": "8c410addace9d29a126c42ea253e869d1e88bfc6",
+    "timestampUTC": "2026-09-10T02:51:07.568711+00:00",
+    "hashes": {
+      "research-tests/DGamma/R172O17OpenParentRootReuseCandidate.idr": {
+        "before": "5702a99c11b1025ff00250660cff7b5230556a1814b30e27fadfe9b113713ac4",
+        "after": null
+      },
+      "research-tests/DGamma/retired/R172O17OpenParentRootReuseCandidate.idr": {
+        "before": null,
+        "after": "5702a99c11b1025ff00250660cff7b5230556a1814b30e27fadfe9b113713ac4"
+      }
+    },
+    "guardSHA256": "a50a1c490f2b61425b3dd62a116e11f06db0fdfd582acc3589f56d552080227b",
+    "noStagedFiles": true,
+    "productionUnchanged": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true,
+    "crossLaneOverlapTimestampsUTC": [
+      "2026-09-10T02:51:07.568945+00:00"
+    ]
+  },
+  {
+    "unit": "ARTIFACT",
+    "message": "R206: expanded-grammar redesign, honest consumer dispositions, and audit-tool hardening",
+    "beforeCommit": "8c410addace9d29a126c42ea253e869d1e88bfc6",
+    "afterCommit": "11f4ef4c0fe529b9d5b0fe632685a2494f62228a",
+    "timestampUTC": "2026-09-10T02:51:07.903236+00:00",
+    "hashes": {
+      "NOTES.md": {
+        "before": "62c66f37cfbf016d9d17262824f17a5b25ea85074afb21d60f46ff19c3c68f12",
+        "after": "0a5ee6fa0928dfd0a4f55cb5878f5cf4a411c96f17d8b016981022aa1293aeb5"
+      },
+      "research-tests/O6-R206-O19-EXPANSION-DESIGN.md": {
+        "before": null,
+        "after": "aad166a681f12243005775c2653a7c39b1f44b75070578012d2eb4304672b665"
+      },
+      "research-tests/run-r206-check.py": {
+        "before": "4f3db4d333d0c2d800ea356cbf4b53c1dda0adca310ba432b9c6e0b88c94d651",
+        "after": "6560112f55e2b477ffb0efeea08e9164f484e0c26c948514c0723017dac97175"
+      },
+      "research-tests/run-r206-closure.py": {
+        "before": null,
+        "after": "41504239f6882298d7f7a158213166b5e06f5a8bf2d7f2cea656e3590dcea731"
+      },
+      "research-tests/run-r206-report.py": {
+        "before": null,
+        "after": "a1c79b430587a875cc8c4e3516d6a780d7d343a1014cf3d8fdf86ac76fd7e4bd"
+      },
+      "research-tests/r206_evidence_contract.py": {
+        "before": null,
+        "after": "1ac1c7b361d85c8952ed3a32a4bdc8573e691072a8fa6b7a383a5242e5ff2308"
+      },
+      "research-tests/test_r206_evidence_contract.py": {
+        "before": null,
+        "after": "07b2f2077d003f78b62f7b20b900b5d2d3c36ae61772a6e3b727f94638d18e3f"
+      }
+    },
+    "guardSHA256": "a50a1c490f2b61425b3dd62a116e11f06db0fdfd582acc3589f56d552080227b",
+    "noStagedFiles": true,
+    "productionUnchanged": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true,
+    "crossLaneOverlapTimestampsUTC": []
+  },
+  {
+    "unit": "U016-1",
+    "message": "R206 U016: native attached-grammar fixture source with a provision-owning retired child",
+    "beforeCommit": "11f4ef4c0fe529b9d5b0fe632685a2494f62228a",
+    "afterCommit": "7056c7bcced0f3ed53cf9eb864a62051de6bd0ab",
+    "timestampUTC": "2026-09-10T02:53:10.737381+00:00",
+    "hashes": {
+      "research-tests/DGamma/R206AttachedGrammarPositive.idr": {
+        "before": null,
+        "after": "15ec184b99383943b0c310dcc2f968885af8fe692a88d9a824b2f436753d940b"
+      }
+    },
+    "guardSHA256": "a50a1c490f2b61425b3dd62a116e11f06db0fdfd582acc3589f56d552080227b",
+    "noStagedFiles": true,
+    "productionUnchanged": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true,
+    "crossLaneOverlapTimestampsUTC": [
+      "2026-09-10T02:53:10.737633+00:00"
+    ]
+  },
+  {
+    "unit": "U017-1",
+    "message": "R206 U017: actual checked release and same-bundle root control fixture",
+    "beforeCommit": "7056c7bcced0f3ed53cf9eb864a62051de6bd0ab",
+    "afterCommit": "0afe3951e8a8b7907bdc582ba37ddd1cf6bd9ccf",
+    "timestampUTC": "2026-09-10T02:53:13.378580+00:00",
+    "hashes": {
+      "research-tests/DGamma/R206AttachedGrammarPositive.idr": {
+        "before": "15ec184b99383943b0c310dcc2f968885af8fe692a88d9a824b2f436753d940b",
+        "after": "6932ad785e9f3b2a2502c710efa12e5836207ff6302a0545c1a2fdf69a614d2f"
+      }
+    },
+    "guardSHA256": "a50a1c490f2b61425b3dd62a116e11f06db0fdfd582acc3589f56d552080227b",
+    "noStagedFiles": true,
+    "productionUnchanged": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true,
+    "crossLaneOverlapTimestampsUTC": [
+      "2026-09-10T02:53:13.378859+00:00"
+    ]
+  },
+  {
+    "unit": "U018-1",
+    "message": "R206 U018: actual checked release and same-bundle root control fixture",
+    "beforeCommit": "0afe3951e8a8b7907bdc582ba37ddd1cf6bd9ccf",
+    "afterCommit": "03561ccfe0fea33dbe433f404cf85c8974c3a6b0",
+    "timestampUTC": "2026-09-10T02:53:15.963739+00:00",
+    "hashes": {
+      "research-tests/DGamma/R206AttachedGrammarPositive.idr": {
+        "before": "6932ad785e9f3b2a2502c710efa12e5836207ff6302a0545c1a2fdf69a614d2f",
+        "after": "31d5d474c218d67c278e792877ad2405be6888432529fe29b332e43022c962f4"
+      }
+    },
+    "guardSHA256": "a50a1c490f2b61425b3dd62a116e11f06db0fdfd582acc3589f56d552080227b",
+    "noStagedFiles": true,
+    "productionUnchanged": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true,
+    "crossLaneOverlapTimestampsUTC": [
+      "2026-09-10T02:53:15.964042+00:00"
+    ]
+  },
+  {
+    "unit": "U019-1",
+    "message": "R206 U019: actual checked release and same-bundle root control fixture",
+    "beforeCommit": "03561ccfe0fea33dbe433f404cf85c8974c3a6b0",
+    "afterCommit": "0e296850237f54a392c0df635fc537c8320032c0",
+    "timestampUTC": "2026-09-10T02:53:18.557955+00:00",
+    "hashes": {
+      "research-tests/DGamma/R206AttachedGrammarPositive.idr": {
+        "before": "31d5d474c218d67c278e792877ad2405be6888432529fe29b332e43022c962f4",
+        "after": "9dc61d544a77209b513a1db13fca152454a282e3bd5748502308242bd8f44857"
+      }
+    },
+    "guardSHA256": "a50a1c490f2b61425b3dd62a116e11f06db0fdfd582acc3589f56d552080227b",
+    "noStagedFiles": true,
+    "productionUnchanged": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true,
+    "crossLaneOverlapTimestampsUTC": [
+      "2026-09-10T02:53:18.558226+00:00"
+    ]
+  },
+  {
+    "unit": "U020-1",
+    "message": "R206 U020: actual checked release and same-bundle root control fixture",
+    "beforeCommit": "0e296850237f54a392c0df635fc537c8320032c0",
+    "afterCommit": "52e14f594008ed70dddbf6a1d27ff064dad03b60",
+    "timestampUTC": "2026-09-10T02:53:21.150235+00:00",
+    "hashes": {
+      "research-tests/DGamma/R206AttachedGrammarPositive.idr": {
+        "before": "9dc61d544a77209b513a1db13fca152454a282e3bd5748502308242bd8f44857",
+        "after": "6d004318da288314e34d7498dc081e9d90620d462321358caca9d826d033bc62"
+      }
+    },
+    "guardSHA256": "a50a1c490f2b61425b3dd62a116e11f06db0fdfd582acc3589f56d552080227b",
+    "noStagedFiles": true,
+    "productionUnchanged": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true,
+    "crossLaneOverlapTimestampsUTC": [
+      "2026-09-10T02:53:21.150595+00:00"
+    ]
+  },
+  {
+    "unit": "U021-1",
+    "message": "R206 U021: actual checked release and same-bundle root control fixture",
+    "beforeCommit": "52e14f594008ed70dddbf6a1d27ff064dad03b60",
+    "afterCommit": "967bc821ff2ea81e67d0ef6398d0fb6811dfa1c1",
+    "timestampUTC": "2026-09-10T02:53:23.752006+00:00",
+    "hashes": {
+      "research-tests/DGamma/R206AttachedGrammarPositive.idr": {
+        "before": "6d004318da288314e34d7498dc081e9d90620d462321358caca9d826d033bc62",
+        "after": "f093642e1ceb27f903a1d61d4bafb75a7374b2744a4ac4da475e00e2542f3fd7"
+      }
+    },
+    "guardSHA256": "a50a1c490f2b61425b3dd62a116e11f06db0fdfd582acc3589f56d552080227b",
+    "noStagedFiles": true,
+    "productionUnchanged": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true,
+    "crossLaneOverlapTimestampsUTC": [
+      "2026-09-10T02:53:23.752287+00:00"
+    ]
+  },
+  {
+    "unit": "U022-1",
+    "message": "R206 U022: actual checked release and same-bundle root control fixture",
+    "beforeCommit": "967bc821ff2ea81e67d0ef6398d0fb6811dfa1c1",
+    "afterCommit": "7293db162e3f7e87a89648ea7a1ad6d3144fb8ee",
+    "timestampUTC": "2026-09-10T02:53:26.334096+00:00",
+    "hashes": {
+      "research-tests/DGamma/R206AttachedGrammarPositive.idr": {
+        "before": "f093642e1ceb27f903a1d61d4bafb75a7374b2744a4ac4da475e00e2542f3fd7",
+        "after": "184c2d23e1ba0aa37c41ffa6a1c738fc5c5f14f87da423fc8fcc57a238ccce1d"
+      }
+    },
+    "guardSHA256": "a50a1c490f2b61425b3dd62a116e11f06db0fdfd582acc3589f56d552080227b",
+    "noStagedFiles": true,
+    "productionUnchanged": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true,
+    "crossLaneOverlapTimestampsUTC": [
+      "2026-09-10T02:53:26.334385+00:00"
+    ]
+  },
+  {
+    "unit": "U023-1",
+    "message": "R206 U023: actual checked release and same-bundle root control fixture",
+    "beforeCommit": "7293db162e3f7e87a89648ea7a1ad6d3144fb8ee",
+    "afterCommit": "13e5c9c3ed452904f24a90774cd14480c4b3f455",
+    "timestampUTC": "2026-09-10T02:53:28.951329+00:00",
+    "hashes": {
+      "research-tests/DGamma/R206AttachedGrammarPositive.idr": {
+        "before": "184c2d23e1ba0aa37c41ffa6a1c738fc5c5f14f87da423fc8fcc57a238ccce1d",
+        "after": "cd92ec2546a71eb6893913bd5026dfddcaffdd30863e3d0892b4e2e2caa66e20"
+      }
+    },
+    "guardSHA256": "a50a1c490f2b61425b3dd62a116e11f06db0fdfd582acc3589f56d552080227b",
+    "noStagedFiles": true,
+    "productionUnchanged": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true,
+    "crossLaneOverlapTimestampsUTC": []
+  },
+  {
+    "unit": "U024-1",
+    "message": "R206 U024: actual nonempty attached grammar with KeyReleased and same-bundle root controls",
+    "beforeCommit": "13e5c9c3ed452904f24a90774cd14480c4b3f455",
+    "afterCommit": "6c50f2ca0954d42c90ca06c28ec99f03b6346f7e",
+    "timestampUTC": "2026-09-10T02:56:25.985095+00:00",
+    "hashes": {
+      "research-tests/DGamma/R206AttachedGrammarPositive.idr": {
+        "before": "cd92ec2546a71eb6893913bd5026dfddcaffdd30863e3d0892b4e2e2caa66e20",
+        "after": "970b37c91a6899ea6bb39eb1c403caa07a536e6e2c2d4e4bc6bf76c1c86e2791"
+      }
+    },
+    "guardSHA256": "a50a1c490f2b61425b3dd62a116e11f06db0fdfd582acc3589f56d552080227b",
+    "noStagedFiles": true,
+    "productionUnchanged": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true,
+    "crossLaneOverlapTimestampsUTC": []
+  },
+  {
+    "unit": "U025-1",
+    "message": "R206 U025: total expanded theorem applied to all four actual attached-body edges",
+    "beforeCommit": "6c50f2ca0954d42c90ca06c28ec99f03b6346f7e",
+    "afterCommit": "ddd63dbaa2dced0c71be85861a6e33718c033f7f",
+    "timestampUTC": "2026-09-10T02:57:10.349697+00:00",
+    "hashes": {
+      "research-tests/DGamma/R206AttachedGrammarPositive.idr": {
+        "before": "970b37c91a6899ea6bb39eb1c403caa07a536e6e2c2d4e4bc6bf76c1c86e2791",
+        "after": "f81f51b264225f19e6992bdaf65ec005e2e9aee8a41043c4d11862c466ad1d7b"
+      }
+    },
+    "guardSHA256": "a50a1c490f2b61425b3dd62a116e11f06db0fdfd582acc3589f56d552080227b",
+    "noStagedFiles": true,
+    "productionUnchanged": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true,
+    "crossLaneOverlapTimestampsUTC": [
+      "2026-09-10T02:57:10.350078+00:00"
+    ]
+  },
+  {
+    "unit": "U026-1",
+    "message": "R206 U026: native attached body is non-legacy, controls forbidden child, and contains observable root input",
+    "beforeCommit": "ddd63dbaa2dced0c71be85861a6e33718c033f7f",
+    "afterCommit": "24e1b83c01f534d4c411341e2e4ac1738c6e930f",
+    "timestampUTC": "2026-09-10T03:00:31.727774+00:00",
+    "hashes": {
+      "research-tests/DGamma/R206AttachedGrammarPositive.idr": {
+        "before": "f81f51b264225f19e6992bdaf65ec005e2e9aee8a41043c4d11862c466ad1d7b",
+        "after": "77fd04ee8e572cbc27bc4bd8ac301588643737fee161dda24c5aa9c541f30791"
+      }
+    },
+    "guardSHA256": "a50a1c490f2b61425b3dd62a116e11f06db0fdfd582acc3589f56d552080227b",
+    "noStagedFiles": true,
+    "productionUnchanged": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true,
+    "crossLaneOverlapTimestampsUTC": []
+  },
+  {
+    "unit": "V1",
+    "message": "R206 V1: R204 A15 opacity diagnosis; public whole-path projections only",
+    "beforeCommit": "24e1b83c01f534d4c411341e2e4ac1738c6e930f",
+    "afterCommit": "734349ac1d52fadb50f7646fc06669d157df794a",
+    "timestampUTC": "2026-09-10T03:01:11.999803+00:00",
+    "hashes": {
+      "research/DGamma/CP5O20OccurrenceStampedHistorySpike.idr": {
+        "before": "ec06bdfd0d8f20ffe04a2b8d8d42cedce67b98f8fe2e957441d348ba98c15195",
+        "after": "b1c13f46384b00fd1b6f319de1690f30078859ae5061989adeca9ba96819dcfe"
+      }
+    },
+    "guardSHA256": "a50a1c490f2b61425b3dd62a116e11f06db0fdfd582acc3589f56d552080227b",
+    "noStagedFiles": true,
+    "productionUnchanged": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true,
+    "crossLaneOverlapTimestampsUTC": []
+  },
+  {
+    "unit": "B1-1",
+    "message": "R206 B1: finite referenced-name map transport on trusted substrate",
+    "beforeCommit": "734349ac1d52fadb50f7646fc06669d157df794a",
+    "afterCommit": "6aee21c85ffcb9fa3a2d1de2b6fc2dfb7c2948a0",
+    "timestampUTC": "2026-09-10T03:04:20.265141+00:00",
+    "hashes": {
+      "research/DGamma/CP5O20ControlRebaseSpike.idr": {
+        "before": null,
+        "after": "beffc2bf750e6358cbc8383921d7b3fc0379774a4a385700a45ad4febe03cb2f"
+      }
+    },
+    "guardSHA256": "a50a1c490f2b61425b3dd62a116e11f06db0fdfd582acc3589f56d552080227b",
+    "noStagedFiles": true,
+    "productionUnchanged": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true,
+    "crossLaneOverlapTimestampsUTC": []
+  },
+  {
+    "unit": "B2-1",
+    "message": "R206 B2: re-rename only the actual parent reference",
+    "beforeCommit": "6aee21c85ffcb9fa3a2d1de2b6fc2dfb7c2948a0",
+    "afterCommit": "7a01419c971929c3fee782bf4c5fd7de9ab1d40a",
+    "timestampUTC": "2026-09-10T03:06:44.318312+00:00",
+    "hashes": {
+      "research/DGamma/CP5O20ControlRebaseSpike.idr": {
+        "before": "beffc2bf750e6358cbc8383921d7b3fc0379774a4a385700a45ad4febe03cb2f",
+        "after": "724a6dbe9f61f91cf4227d9343cfad6db61a75d7e63a08376dedb4dd796051e2"
+      }
+    },
+    "guardSHA256": "a50a1c490f2b61425b3dd62a116e11f06db0fdfd582acc3589f56d552080227b",
+    "noStagedFiles": true,
+    "productionUnchanged": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true,
+    "crossLaneOverlapTimestampsUTC": []
+  },
+  {
+    "unit": "B3-1",
+    "message": "R206 B3: executable lifecycle provider-reference projection",
+    "beforeCommit": "7a01419c971929c3fee782bf4c5fd7de9ab1d40a",
+    "afterCommit": "c57369004e6caaa0268f9dd798e254db3a1aa1c5",
+    "timestampUTC": "2026-09-10T03:07:28.034704+00:00",
+    "hashes": {
+      "research/DGamma/CP5O20ControlRebaseSpike.idr": {
+        "before": "724a6dbe9f61f91cf4227d9343cfad6db61a75d7e63a08376dedb4dd796051e2",
+        "after": "3f5287bd63ffeb2eaece80a9c254eda0cb3890e080208604ea7f857c4db02b11"
+      }
+    },
+    "guardSHA256": "a50a1c490f2b61425b3dd62a116e11f06db0fdfd582acc3589f56d552080227b",
+    "noStagedFiles": true,
+    "productionUnchanged": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true,
+    "crossLaneOverlapTimestampsUTC": []
+  },
+  {
+    "unit": "B4-2",
+    "message": "R206 B4: provider-name re-renaming through all four lifecycle constructors (explicit erased error)",
+    "beforeCommit": "c57369004e6caaa0268f9dd798e254db3a1aa1c5",
+    "afterCommit": "ee464c6d749840fe8e7ea670e2519e179e23db7f",
+    "timestampUTC": "2026-09-10T03:08:54.283918+00:00",
+    "hashes": {
+      "research/DGamma/CP5O20ControlRebaseSpike.idr": {
+        "before": "3f5287bd63ffeb2eaece80a9c254eda0cb3890e080208604ea7f857c4db02b11",
+        "after": "889924a211565d9030a4ecc7ed52f7f091a6c9a7304b5d6d1c94a9be7baf6d42"
+      }
+    },
+    "guardSHA256": "a50a1c490f2b61425b3dd62a116e11f06db0fdfd582acc3589f56d552080227b",
+    "noStagedFiles": true,
+    "productionUnchanged": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true,
+    "crossLaneOverlapTimestampsUTC": []
+  },
+  {
+    "unit": "B5-1",
+    "message": "R206 B5: full fiber control re-renaming from explicit parent/provider agreements",
+    "beforeCommit": "ee464c6d749840fe8e7ea670e2519e179e23db7f",
+    "afterCommit": "2d5e7930d40994040d718886430c2082df4ba594",
+    "timestampUTC": "2026-09-10T03:09:21.459644+00:00",
+    "hashes": {
+      "research/DGamma/CP5O20ControlRebaseSpike.idr": {
+        "before": "889924a211565d9030a4ecc7ed52f7f091a6c9a7304b5d6d1c94a9be7baf6d42",
+        "after": "e4b653d9d19b67c1c5f07b9dbc4c3dfddf332ab96dc953da221cbe677de35bd6"
+      }
+    },
+    "guardSHA256": "a50a1c490f2b61425b3dd62a116e11f06db0fdfd582acc3589f56d552080227b",
+    "noStagedFiles": true,
+    "productionUnchanged": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true,
+    "crossLaneOverlapTimestampsUTC": []
+  },
+  {
+    "unit": "B6-1",
+    "message": "R206 B6: producer-owned preimage equation from actual bijection laws",
+    "beforeCommit": "2d5e7930d40994040d718886430c2082df4ba594",
+    "afterCommit": "c2ecd9acb56f25d8c6e2de025a85223d30195930",
+    "timestampUTC": "2026-09-10T03:09:39.846323+00:00",
+    "hashes": {
+      "research/DGamma/CP5O20ControlRebaseSpike.idr": {
+        "before": "e4b653d9d19b67c1c5f07b9dbc4c3dfddf332ab96dc953da221cbe677de35bd6",
+        "after": "7d12c25849d8ac6e554879f07fef69b292e54e2ec9b71e69c391e6427b21bf37"
+      }
+    },
+    "guardSHA256": "a50a1c490f2b61425b3dd62a116e11f06db0fdfd582acc3589f56d552080227b",
+    "noStagedFiles": true,
+    "productionUnchanged": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true,
+    "crossLaneOverlapTimestampsUTC": []
+  },
+  {
+    "unit": "B7-1",
+    "message": "R206 B7: absent-domain elimination for renamed controls",
+    "beforeCommit": "c2ecd9acb56f25d8c6e2de025a85223d30195930",
+    "afterCommit": "99c5832b19f54a27a4c050501c85a96a479528b2",
+    "timestampUTC": "2026-09-10T03:10:26.371832+00:00",
+    "hashes": {
+      "research/DGamma/CP5O20ControlRebaseSpike.idr": {
+        "before": "7d12c25849d8ac6e554879f07fef69b292e54e2ec9b71e69c391e6427b21bf37",
+        "after": "026401bb94b7140e290a5f932eddc35d6684786ab4fe8ec946dd06af4612196e"
+      }
+    },
+    "guardSHA256": "a50a1c490f2b61425b3dd62a116e11f06db0fdfd582acc3589f56d552080227b",
+    "noStagedFiles": true,
+    "productionUnchanged": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true,
+    "crossLaneOverlapTimestampsUTC": []
+  },
+  {
+    "unit": "B8-1",
+    "message": "R206 B8: constructive absent-image transport from present-domain agreement only",
+    "beforeCommit": "99c5832b19f54a27a4c050501c85a96a479528b2",
+    "afterCommit": "aa04719cd7110f5c77fbebd76c5425df20ac1aa8",
+    "timestampUTC": "2026-09-10T03:11:11.974848+00:00",
+    "hashes": {
+      "research/DGamma/CP5O20ControlRebaseSpike.idr": {
+        "before": "026401bb94b7140e290a5f932eddc35d6684786ab4fe8ec946dd06af4612196e",
+        "after": "36019a6d4bdbfbe0934b69a94e9b1519a402e0dee174bd25ee63bfb956612afb"
+      }
+    },
+    "guardSHA256": "a50a1c490f2b61425b3dd62a116e11f06db0fdfd582acc3589f56d552080227b",
+    "noStagedFiles": true,
+    "productionUnchanged": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true,
+    "crossLaneOverlapTimestampsUTC": []
+  },
+  {
+    "unit": "B9-1",
+    "message": "R206 B9: actual lookup discharges absent-domain observation",
+    "beforeCommit": "aa04719cd7110f5c77fbebd76c5425df20ac1aa8",
+    "afterCommit": "169a043aa72ea505ac9bd72d778519fbbaca1a6e",
+    "timestampUTC": "2026-09-10T03:11:34.055889+00:00",
+    "hashes": {
+      "research/DGamma/CP5O20ControlRebaseSpike.idr": {
+        "before": "36019a6d4bdbfbe0934b69a94e9b1519a402e0dee174bd25ee63bfb956612afb",
+        "after": "143500a8bad05cb49ccd5057e4b87b26f7d2ef66eb3c9ff8c42c265469e6811e"
+      }
+    },
+    "guardSHA256": "a50a1c490f2b61425b3dd62a116e11f06db0fdfd582acc3589f56d552080227b",
+    "noStagedFiles": true,
+    "productionUnchanged": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true,
+    "crossLaneOverlapTimestampsUTC": []
+  },
+  {
+    "unit": "B10-1",
+    "message": "R206 B10: present control rebase consumes the relation-owned target fiber",
+    "beforeCommit": "169a043aa72ea505ac9bd72d778519fbbaca1a6e",
+    "afterCommit": "58ddb5b69b1b914d674d3a28ef8e33d3d18cd789",
+    "timestampUTC": "2026-09-10T03:12:21.909489+00:00",
+    "hashes": {
+      "research/DGamma/CP5O20ControlRebaseSpike.idr": {
+        "before": "143500a8bad05cb49ccd5057e4b87b26f7d2ef66eb3c9ff8c42c265469e6811e",
+        "after": "99938c25698476bd0c8aff9ff476a018482e0670f5faf8dcad5b73b08d130c0b"
+      }
+    },
+    "guardSHA256": "a50a1c490f2b61425b3dd62a116e11f06db0fdfd582acc3589f56d552080227b",
+    "noStagedFiles": true,
+    "productionUnchanged": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true,
+    "crossLaneOverlapTimestampsUTC": []
+  },
+  {
+    "unit": "B11-1",
+    "message": "R206 B11: all-control observed partition with three explicit primitive agreements",
+    "beforeCommit": "58ddb5b69b1b914d674d3a28ef8e33d3d18cd789",
+    "afterCommit": "cd047a9e8a27b3023a2c987026da96b32f85877d",
+    "timestampUTC": "2026-09-10T03:13:12.150251+00:00",
+    "hashes": {
+      "research/DGamma/CP5O20ControlRebaseSpike.idr": {
+        "before": "99938c25698476bd0c8aff9ff476a018482e0670f5faf8dcad5b73b08d130c0b",
+        "after": "a3b9756ddced5d6b11f0a9a0b207d70b9a903dca8970e878c01a1559034c4444"
+      }
+    },
+    "guardSHA256": "a50a1c490f2b61425b3dd62a116e11f06db0fdfd582acc3589f56d552080227b",
+    "noStagedFiles": true,
+    "productionUnchanged": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true,
+    "crossLaneOverlapTimestampsUTC": []
+  },
+  {
+    "unit": "B12-1",
+    "message": "R206 B12: ordered effect-table bindings rebase, including absent-domain names",
+    "beforeCommit": "cd047a9e8a27b3023a2c987026da96b32f85877d",
+    "afterCommit": "bcdefa38e20e26ec661edf213c14baeb1d298862",
+    "timestampUTC": "2026-09-10T03:13:45.612410+00:00",
+    "hashes": {
+      "research/DGamma/CP5O20ControlRebaseSpike.idr": {
+        "before": "a3b9756ddced5d6b11f0a9a0b207d70b9a903dca8970e878c01a1559034c4444",
+        "after": "377b1a89dc55f459c7bbb8271a479e5c6140d80829db2add2ab56a9e837342e4"
+      }
+    },
+    "guardSHA256": "a50a1c490f2b61425b3dd62a116e11f06db0fdfd582acc3589f56d552080227b",
+    "noStagedFiles": true,
+    "productionUnchanged": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true,
+    "crossLaneOverlapTimestampsUTC": []
+  },
+  {
+    "unit": "B13-1",
+    "message": "R206 B13: conditional full ALL-name effect/control rebase; canonical discharge and D5 remain open",
+    "beforeCommit": "bcdefa38e20e26ec661edf213c14baeb1d298862",
+    "afterCommit": "07857c8018c5e8087387a3012ad4098cc28d1f60",
+    "timestampUTC": "2026-09-10T03:14:36.468418+00:00",
+    "hashes": {
+      "research/DGamma/CP5O20ControlRebaseSpike.idr": {
+        "before": "377b1a89dc55f459c7bbb8271a479e5c6140d80829db2add2ab56a9e837342e4",
+        "after": "5c0eeda73de4eff41136dcbb9f38892f3ff9233643ff521ea031e31b867b3aa0"
+      }
+    },
+    "guardSHA256": "a50a1c490f2b61425b3dd62a116e11f06db0fdfd582acc3589f56d552080227b",
+    "noStagedFiles": true,
+    "productionUnchanged": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true,
+    "crossLaneOverlapTimestampsUTC": []
+  },
+  {
+    "unit": "B14-1",
+    "message": "R206 B14: native present-domain agreement on real removed-child endpoint",
+    "beforeCommit": "07857c8018c5e8087387a3012ad4098cc28d1f60",
+    "afterCommit": "6eb58622e43a7f2358f8a2feb82a13663d828a44",
+    "timestampUTC": "2026-09-10T03:23:50.310835+00:00",
+    "hashes": {
+      "research-tests/DGamma/R206ControlRebasePositive.idr": {
+        "before": null,
+        "after": "32c7ebe8b26a655d533a55be779581755a24570a58a7bcc7fed5157d2b24da0f"
+      }
+    },
+    "guardSHA256": "a50a1c490f2b61425b3dd62a116e11f06db0fdfd582acc3589f56d552080227b",
+    "noStagedFiles": true,
+    "productionUnchanged": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true,
+    "crossLaneOverlapTimestampsUTC": [
+      "2026-09-10T03:23:50.311209+00:00"
+    ]
+  },
+  {
+    "unit": "B15-1",
+    "message": "R206 B15: real source root/view discharges separately named reference fields",
+    "beforeCommit": "6eb58622e43a7f2358f8a2feb82a13663d828a44",
+    "afterCommit": "f98f03067bf314eb36a9ee41fe552f6834612d1b",
+    "timestampUTC": "2026-09-10T03:25:35.292959+00:00",
+    "hashes": {
+      "research-tests/DGamma/R206ControlRebasePositive.idr": {
+        "before": "32c7ebe8b26a655d533a55be779581755a24570a58a7bcc7fed5157d2b24da0f",
+        "after": "fbea593c7b6d3324e44b7e5193af8d0bd5964c45a729818654b58ba815a8407f"
+      }
+    },
+    "guardSHA256": "a50a1c490f2b61425b3dd62a116e11f06db0fdfd582acc3589f56d552080227b",
+    "noStagedFiles": true,
+    "productionUnchanged": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true,
+    "crossLaneOverlapTimestampsUTC": [
+      "2026-09-10T03:25:35.293393+00:00"
+    ]
+  },
+  {
+    "unit": "B16-1",
+    "message": "R206 B16: full nonidentity all-name rebase at genuine removed-child endpoint",
+    "beforeCommit": "f98f03067bf314eb36a9ee41fe552f6834612d1b",
+    "afterCommit": "67ef1ee0f63d4977f9fc72433b19e24f9aac321e",
+    "timestampUTC": "2026-09-10T03:27:02.021130+00:00",
+    "hashes": {
+      "research-tests/DGamma/R206ControlRebasePositive.idr": {
+        "before": "fbea593c7b6d3324e44b7e5193af8d0bd5964c45a729818654b58ba815a8407f",
+        "after": "d1758fc45448b9fcd5931c84c6a38a0fdf78f847842fafb4937819dd8c719cae"
+      }
+    },
+    "guardSHA256": "a50a1c490f2b61425b3dd62a116e11f06db0fdfd582acc3589f56d552080227b",
+    "noStagedFiles": true,
+    "productionUnchanged": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true,
+    "crossLaneOverlapTimestampsUTC": []
+  },
+  {
+    "unit": "B17-2",
+    "message": "R206 B17: actual absent-name swap transport with explicit lookup universes",
+    "beforeCommit": "67ef1ee0f63d4977f9fc72433b19e24f9aac321e",
+    "afterCommit": "277914cd00394b282ed3f6efe3fc3ff3f80e29ba",
+    "timestampUTC": "2026-09-10T03:28:35.671515+00:00",
+    "hashes": {
+      "research-tests/DGamma/R206ControlRebasePositive.idr": {
+        "before": "d1758fc45448b9fcd5931c84c6a38a0fdf78f847842fafb4937819dd8c719cae",
+        "after": "7c98a8b11dbbd0bb994d0d64cf31c5a42d9120145d5545b65c019d3552e67dd5"
+      }
+    },
+    "guardSHA256": "a50a1c490f2b61425b3dd62a116e11f06db0fdfd582acc3589f56d552080227b",
+    "noStagedFiles": true,
+    "productionUnchanged": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true,
+    "crossLaneOverlapTimestampsUTC": []
+  },
+  {
+    "unit": "B18-2",
+    "message": "R206 B18: native nonempty parent and provider-view control values",
+    "beforeCommit": "277914cd00394b282ed3f6efe3fc3ff3f80e29ba",
+    "afterCommit": "dea42651ba76f6e9c72f0b75011c9c5da7e1d3a4",
+    "timestampUTC": "2026-09-10T03:30:43.482229+00:00",
+    "hashes": {
+      "research-tests/DGamma/R206ControlRebasePositive.idr": {
+        "before": "7c98a8b11dbbd0bb994d0d64cf31c5a42d9120145d5545b65c019d3552e67dd5",
+        "after": "0f0efe8d98ed45aa4633584a7fae487794678afe110bd0b14f51d78dc2cb3565"
+      }
+    },
+    "guardSHA256": "a50a1c490f2b61425b3dd62a116e11f06db0fdfd582acc3589f56d552080227b",
+    "noStagedFiles": true,
+    "productionUnchanged": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true,
+    "crossLaneOverlapTimestampsUTC": []
+  },
+  {
+    "unit": "B19-1",
+    "message": "R206 B19: constructive bad map for actual present-to-absent rejection control",
+    "beforeCommit": "dea42651ba76f6e9c72f0b75011c9c5da7e1d3a4",
+    "afterCommit": "d018d8d5db00d4af18e71c61b0cab7fa893fdae7",
+    "timestampUTC": "2026-09-10T03:35:21.079621+00:00",
+    "hashes": {
+      "research-tests/DGamma/R206ControlRebasePositive.idr": {
+        "before": "0f0efe8d98ed45aa4633584a7fae487794678afe110bd0b14f51d78dc2cb3565",
+        "after": "4631f457b06194e6e59f0f35d5e696effa7abd538f27f81031497bdef7e9fe5f"
+      }
+    },
+    "guardSHA256": "a50a1c490f2b61425b3dd62a116e11f06db0fdfd582acc3589f56d552080227b",
+    "noStagedFiles": true,
+    "productionUnchanged": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true,
+    "crossLaneOverlapTimestampsUTC": []
+  },
+  {
+    "unit": "B20-1",
+    "message": "R206 B20: native present-to-absent counterexample rejects missing current agreement",
+    "beforeCommit": "d018d8d5db00d4af18e71c61b0cab7fa893fdae7",
+    "afterCommit": "ebceb026652fa35c43e8fd042fedba92e4541b9b",
+    "timestampUTC": "2026-09-10T03:36:31.069669+00:00",
+    "hashes": {
+      "research-tests/DGamma/R206ControlRebasePositive.idr": {
+        "before": "4631f457b06194e6e59f0f35d5e696effa7abd538f27f81031497bdef7e9fe5f",
+        "after": "f07cdb831e6f7b7cc2844d5f0a069f9e548e460fccae415a611ad7d4ee4e3a1a"
+      }
+    },
+    "guardSHA256": "a50a1c490f2b61425b3dd62a116e11f06db0fdfd582acc3589f56d552080227b",
+    "noStagedFiles": true,
+    "productionUnchanged": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true,
+    "crossLaneOverlapTimestampsUTC": []
+  },
+  {
+    "unit": "A1-2",
+    "message": "R206 A1: exact-list permutation pairing with native match laws and no unmatched deletion",
+    "beforeCommit": "ebceb026652fa35c43e8fd042fedba92e4541b9b",
+    "afterCommit": "6e50f1d0f22b6fa74a639c85014d09a78e379cad",
+    "timestampUTC": "2026-09-10T03:38:56.029859+00:00",
+    "hashes": {
+      "research/DGamma/CP5O20ChronologyPairingSpike.idr": {
+        "before": null,
+        "after": "4a0ce465cb10588de25c51ebabacce4f95a1ceaa7c0d989822471b46f5cb1799"
+      }
+    },
+    "guardSHA256": "a50a1c490f2b61425b3dd62a116e11f06db0fdfd582acc3589f56d552080227b",
+    "noStagedFiles": true,
+    "productionUnchanged": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true,
+    "crossLaneOverlapTimestampsUTC": []
+  },
+  {
+    "unit": "A2-1",
+    "message": "R206 A2: occurrence-preserving forward rotation membership",
+    "beforeCommit": "6e50f1d0f22b6fa74a639c85014d09a78e379cad",
+    "afterCommit": "0ac489e82f46eb09946bef5839d325f31bca81ae",
+    "timestampUTC": "2026-09-10T03:39:29.044860+00:00",
+    "hashes": {
+      "research/DGamma/CP5O20ChronologyPairingSpike.idr": {
+        "before": "4a0ce465cb10588de25c51ebabacce4f95a1ceaa7c0d989822471b46f5cb1799",
+        "after": "bf7c6c2e8511c99b781c75d3c478101d7bd032d93876421dce3829142ea89c0f"
+      }
+    },
+    "guardSHA256": "a50a1c490f2b61425b3dd62a116e11f06db0fdfd582acc3589f56d552080227b",
+    "noStagedFiles": true,
+    "productionUnchanged": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true,
+    "crossLaneOverlapTimestampsUTC": []
+  },
+  {
+    "unit": "A3-2",
+    "message": "R206 A3: reverse rotation uses explicit indexed Elem consumer",
+    "beforeCommit": "0ac489e82f46eb09946bef5839d325f31bca81ae",
+    "afterCommit": "b686d48a93cc425870b3fa738940e568d011febf",
+    "timestampUTC": "2026-09-10T03:41:49.074103+00:00",
+    "hashes": {
+      "research/DGamma/CP5O20ChronologyPairingSpike.idr": {
+        "before": "bf7c6c2e8511c99b781c75d3c478101d7bd032d93876421dce3829142ea89c0f",
+        "after": "2f711b7afd000faf048b382e70f92a6bca29c5ac50bc00e023320d15ee8ec99f"
+      }
+    },
+    "guardSHA256": "a50a1c490f2b61425b3dd62a116e11f06db0fdfd582acc3589f56d552080227b",
+    "noStagedFiles": true,
+    "productionUnchanged": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true,
+    "crossLaneOverlapTimestampsUTC": []
+  },
+  {
+    "unit": "A4-1",
+    "message": "R206 A4: exact occurrence cardinality of pending rotation",
+    "beforeCommit": "b686d48a93cc425870b3fa738940e568d011febf",
+    "afterCommit": "46b129d294d881394cce859af6966554e5a258ba",
+    "timestampUTC": "2026-09-10T03:42:42.167532+00:00",
+    "hashes": {
+      "research/DGamma/CP5O20ChronologyPairingSpike.idr": {
+        "before": "2f711b7afd000faf048b382e70f92a6bca29c5ac50bc00e023320d15ee8ec99f",
+        "after": "a9007a9975ccad7c52aa5ea4e077d3cb65c2effb1dc6056d94a7129942bb8083"
+      }
+    },
+    "guardSHA256": "a50a1c490f2b61425b3dd62a116e11f06db0fdfd582acc3589f56d552080227b",
+    "noStagedFiles": true,
+    "productionUnchanged": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true,
+    "crossLaneOverlapTimestampsUTC": []
+  },
+  {
+    "unit": "A5-1",
+    "message": "R206 A5: constructive coverage of every exact left chronology occurrence",
+    "beforeCommit": "46b129d294d881394cce859af6966554e5a258ba",
+    "afterCommit": "2f9ef4d71951972607e58f1ae453df92d4a4ddde",
+    "timestampUTC": "2026-09-10T03:43:14.886879+00:00",
+    "hashes": {
+      "research/DGamma/CP5O20ChronologyPairingSpike.idr": {
+        "before": "a9007a9975ccad7c52aa5ea4e077d3cb65c2effb1dc6056d94a7129942bb8083",
+        "after": "23dbac3fe097362af8277c94f2857e9290abe7c3a8c073dbbfd325d195f5d2dd"
+      }
+    },
+    "guardSHA256": "a50a1c490f2b61425b3dd62a116e11f06db0fdfd582acc3589f56d552080227b",
+    "noStagedFiles": true,
+    "productionUnchanged": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true,
+    "crossLaneOverlapTimestampsUTC": []
+  },
+  {
+    "unit": "A6-1",
+    "message": "R206 A6 micro-unit: constructive right chronology coverage, not predecessor-cut A6",
+    "beforeCommit": "2f9ef4d71951972607e58f1ae453df92d4a4ddde",
+    "afterCommit": "37cdda9f48c0d89112e074c4091480e77524e81e",
+    "timestampUTC": "2026-09-10T03:43:53.773017+00:00",
+    "hashes": {
+      "research/DGamma/CP5O20ChronologyPairingSpike.idr": {
+        "before": "23dbac3fe097362af8277c94f2857e9290abe7c3a8c073dbbfd325d195f5d2dd",
+        "after": "0364d0f85e73f55bcf596acb096acc4b6ce7e9049240543c5774b2293e532879"
+      }
+    },
+    "guardSHA256": "a50a1c490f2b61425b3dd62a116e11f06db0fdfd582acc3589f56d552080227b",
+    "noStagedFiles": true,
+    "productionUnchanged": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true,
+    "crossLaneOverlapTimestampsUTC": []
+  },
+  {
+    "unit": "A7-1",
+    "message": "R206 A7: pairing consumes exactly one retained occurrence per side",
+    "beforeCommit": "37cdda9f48c0d89112e074c4091480e77524e81e",
+    "afterCommit": "9858212a251b868143d624273a8ae881ebd6ea71",
+    "timestampUTC": "2026-09-10T03:45:54.659626+00:00",
+    "hashes": {
+      "research/DGamma/CP5O20ChronologyPairingSpike.idr": {
+        "before": "0364d0f85e73f55bcf596acb096acc4b6ce7e9049240543c5774b2293e532879",
+        "after": "b14479e6a23d383e7e52acb1e8a644f4cb652831a32d5fa9fbf7afe108bab0cf"
+      }
+    },
+    "guardSHA256": "a50a1c490f2b61425b3dd62a116e11f06db0fdfd582acc3589f56d552080227b",
+    "noStagedFiles": true,
+    "productionUnchanged": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true,
+    "crossLaneOverlapTimestampsUTC": [
+      "2026-09-10T03:45:54.659898+00:00"
+    ]
+  },
+  {
+    "unit": "A8-1",
+    "message": "R206 A8: native E8 recursion produces both exact chronologies and complete permutation pairing",
+    "beforeCommit": "9858212a251b868143d624273a8ae881ebd6ea71",
+    "afterCommit": "5495c60aea61cb5c6f254ce40040c49835757a2a",
+    "timestampUTC": "2026-09-10T03:50:00.878789+00:00",
+    "hashes": {
+      "research/DGamma/CP5O20ChronologyPairingSpike.idr": {
+        "before": "b14479e6a23d383e7e52acb1e8a644f4cb652831a32d5fa9fbf7afe108bab0cf",
+        "after": "b8766e0eb9faa2a0b0e819f40dd343866cb0f5aa338efe1042d746fc22a2d43c"
+      }
+    },
+    "guardSHA256": "a50a1c490f2b61425b3dd62a116e11f06db0fdfd582acc3589f56d552080227b",
+    "noStagedFiles": true,
+    "productionUnchanged": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true,
+    "crossLaneOverlapTimestampsUTC": []
+  },
+  {
+    "unit": "A9-1",
+    "message": "R206 A9: quantity-deliberate named actual chronology interface",
+    "beforeCommit": "5495c60aea61cb5c6f254ce40040c49835757a2a",
+    "afterCommit": "f630b9dd88cc769cf337642d515c8140b094d88f",
+    "timestampUTC": "2026-09-10T03:51:05.153823+00:00",
+    "hashes": {
+      "research/DGamma/CP5O20ChronologyPairingSpike.idr": {
+        "before": "b8766e0eb9faa2a0b0e819f40dd343866cb0f5aa338efe1042d746fc22a2d43c",
+        "after": "31333c808496e03db91c98634ca5015fc3e8bab3a237186c8c2efac51fb506ef"
+      }
+    },
+    "guardSHA256": "a50a1c490f2b61425b3dd62a116e11f06db0fdfd582acc3589f56d552080227b",
+    "noStagedFiles": true,
+    "productionUnchanged": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true,
+    "crossLaneOverlapTimestampsUTC": []
+  },
+  {
+    "unit": "A10-1",
+    "message": "R206 A10: unconditional accepted exact-list permutation pairing producer",
+    "beforeCommit": "f630b9dd88cc769cf337642d515c8140b094d88f",
+    "afterCommit": "851fe80e610a7c873c9304e1608a3c58632194fd",
+    "timestampUTC": "2026-09-10T03:51:42.104657+00:00",
+    "hashes": {
+      "research/DGamma/CP5O20ChronologyPairingSpike.idr": {
+        "before": "31333c808496e03db91c98634ca5015fc3e8bab3a237186c8c2efac51fb506ef",
+        "after": "1813661d0c9d5eaec0cbbef967059dea6a8abc9dfcc814eb1692db2a5fe4d263"
+      }
+    },
+    "guardSHA256": "a50a1c490f2b61425b3dd62a116e11f06db0fdfd582acc3589f56d552080227b",
+    "noStagedFiles": true,
+    "productionUnchanged": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true,
+    "crossLaneOverlapTimestampsUTC": []
+  },
+  {
+    "unit": "A11-1",
+    "message": "R206 A11: wire the same paired words to complete native prefix positions and counters",
+    "beforeCommit": "851fe80e610a7c873c9304e1608a3c58632194fd",
+    "afterCommit": "b01be64c3c5eefaec230aab67ef4d76f22c45fe1",
+    "timestampUTC": "2026-09-10T03:54:28.023721+00:00",
+    "hashes": {
+      "research/DGamma/CP5O20ChronologyPairingSpike.idr": {
+        "before": "1813661d0c9d5eaec0cbbef967059dea6a8abc9dfcc814eb1692db2a5fe4d263",
+        "after": "24ccb2eff35ae46e67dbc31fdad325857e6e734392547faa747c1cae6f251884"
+      }
+    },
+    "guardSHA256": "a50a1c490f2b61425b3dd62a116e11f06db0fdfd582acc3589f56d552080227b",
+    "noStagedFiles": true,
+    "productionUnchanged": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true,
+    "crossLaneOverlapTimestampsUTC": []
+  },
+  {
+    "unit": "A12-1",
+    "message": "R206 A12: explicit retained-event coordinates for the native chronology fixture",
+    "beforeCommit": "b01be64c3c5eefaec230aab67ef4d76f22c45fe1",
+    "afterCommit": "33be78bdc3ac3ac3d438e5834d04d91c24ec4a3d",
+    "timestampUTC": "2026-09-10T03:57:12.977563+00:00",
+    "hashes": {
+      "research-tests/DGamma/R206ChronologyPairingPositive.idr": {
+        "before": null,
+        "after": "e43e5b2b18669768f54b8eb9a01918dc6400c7469eafb9b3b4b43703f7f5ed72"
+      }
+    },
+    "guardSHA256": "a50a1c490f2b61425b3dd62a116e11f06db0fdfd582acc3589f56d552080227b",
+    "noStagedFiles": true,
+    "productionUnchanged": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true,
+    "crossLaneOverlapTimestampsUTC": []
+  },
+  {
+    "unit": "A13-1",
+    "message": "R206 A13: actual six-edge accepted chronology pairing application",
+    "beforeCommit": "33be78bdc3ac3ac3d438e5834d04d91c24ec4a3d",
+    "afterCommit": "1352a1d99128db8127c388ae90c9512b0ed39499",
+    "timestampUTC": "2026-09-10T03:58:56.154325+00:00",
+    "hashes": {
+      "research-tests/DGamma/R206ChronologyPairingPositive.idr": {
+        "before": "e43e5b2b18669768f54b8eb9a01918dc6400c7469eafb9b3b4b43703f7f5ed72",
+        "after": "600d374dc2948defab84ce6e9d67055272a8ff83a3d10cbe3bb045cdca6ab005"
+      }
+    },
+    "guardSHA256": "a50a1c490f2b61425b3dd62a116e11f06db0fdfd582acc3589f56d552080227b",
+    "noStagedFiles": true,
+    "productionUnchanged": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true,
+    "crossLaneOverlapTimestampsUTC": []
+  },
+  {
+    "unit": "A14-1",
+    "message": "R206 A14: native exact singleton chronologies and nonzero physical word",
+    "beforeCommit": "1352a1d99128db8127c388ae90c9512b0ed39499",
+    "afterCommit": "9f677e88e8936dfe2d6b7646f0e4313b8c16120a",
+    "timestampUTC": "2026-09-10T03:59:45.551818+00:00",
+    "hashes": {
+      "research-tests/DGamma/R206ChronologyPairingPositive.idr": {
+        "before": "600d374dc2948defab84ce6e9d67055272a8ff83a3d10cbe3bb045cdca6ab005",
+        "after": "e328bc61f6c1a89099fe532f854642ef2a7959cdbfa3abc0f5d3fc7d2151ce08"
+      }
+    },
+    "guardSHA256": "a50a1c490f2b61425b3dd62a116e11f06db0fdfd582acc3589f56d552080227b",
+    "noStagedFiles": true,
+    "productionUnchanged": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true,
+    "crossLaneOverlapTimestampsUTC": []
+  },
+  {
+    "unit": "A15-1",
+    "message": "R206 A15 micro-unit: actual bilateral event coverage; no R204 append restatement",
+    "beforeCommit": "9f677e88e8936dfe2d6b7646f0e4313b8c16120a",
+    "afterCommit": "27b139ab392041e30ef2b8abc506b1351f872e7c",
+    "timestampUTC": "2026-09-10T04:01:22.698984+00:00",
+    "hashes": {
+      "research-tests/DGamma/R206ChronologyPairingPositive.idr": {
+        "before": "e328bc61f6c1a89099fe532f854642ef2a7959cdbfa3abc0f5d3fc7d2151ce08",
+        "after": "6e02c36018b420a5a7f1defe7533b12bcbbf083edd29dc908191836edb6aad95"
+      }
+    },
+    "guardSHA256": "a50a1c490f2b61425b3dd62a116e11f06db0fdfd582acc3589f56d552080227b",
+    "noStagedFiles": true,
+    "productionUnchanged": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true,
+    "crossLaneOverlapTimestampsUTC": []
+  },
+  {
+    "unit": "A16-1",
+    "message": "R206 A16: same-word native original-prefix positions and actual counter replay",
+    "beforeCommit": "27b139ab392041e30ef2b8abc506b1351f872e7c",
+    "afterCommit": "ee8949238fa9054c86e2f31ece3810f2565f009d",
+    "timestampUTC": "2026-09-10T04:03:05.750728+00:00",
+    "hashes": {
+      "research-tests/DGamma/R206ChronologyPairingPositive.idr": {
+        "before": "6e02c36018b420a5a7f1defe7533b12bcbbf083edd29dc908191836edb6aad95",
+        "after": "6a0448b0f98f2cdff6160ccc626cd2cd9ec0cb9670b754e4ab26cacb2cd05082"
+      }
+    },
+    "guardSHA256": "a50a1c490f2b61425b3dd62a116e11f06db0fdfd582acc3589f56d552080227b",
+    "noStagedFiles": true,
+    "productionUnchanged": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true,
+    "crossLaneOverlapTimestampsUTC": [
+      "2026-09-10T04:03:05.750999+00:00"
+    ]
+  },
+  {
+    "unit": "A17-1",
+    "message": "R206 A17: genuine closing trace produces both deleted-event scans and empty pairing",
+    "beforeCommit": "ee8949238fa9054c86e2f31ece3810f2565f009d",
+    "afterCommit": "7d0545854e659a981ca648871bed85788ae044c5",
+    "timestampUTC": "2026-09-10T04:04:16.126012+00:00",
+    "hashes": {
+      "research-tests/DGamma/R206ChronologyPairingPositive.idr": {
+        "before": "6a0448b0f98f2cdff6160ccc626cd2cd9ec0cb9670b754e4ab26cacb2cd05082",
+        "after": "d3952a49dc059e56e0b851c3c9129beb14bef7d540bacaecedcf45e4ed1c024b"
+      }
+    },
+    "guardSHA256": "a50a1c490f2b61425b3dd62a116e11f06db0fdfd582acc3589f56d552080227b",
+    "noStagedFiles": true,
+    "productionUnchanged": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true,
+    "crossLaneOverlapTimestampsUTC": [
+      "2026-09-10T04:04:16.126340+00:00"
+    ]
+  },
+  {
+    "unit": "A18-1",
+    "message": "R206 A18: deleted/ordinary event skips do not erase the real eight-edge native path",
+    "beforeCommit": "7d0545854e659a981ca648871bed85788ae044c5",
+    "afterCommit": "9782be1f907f7364965e0ceb360f11adf1df874f",
+    "timestampUTC": "2026-09-10T04:05:21.595613+00:00",
+    "hashes": {
+      "research-tests/DGamma/R206ChronologyPairingPositive.idr": {
+        "before": "d3952a49dc059e56e0b851c3c9129beb14bef7d540bacaecedcf45e4ed1c024b",
+        "after": "625312708f12837da1897f3d78b135e904ec490a87cd47c43f121bb85e425824"
+      }
+    },
+    "guardSHA256": "a50a1c490f2b61425b3dd62a116e11f06db0fdfd582acc3589f56d552080227b",
+    "noStagedFiles": true,
+    "productionUnchanged": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true,
+    "crossLaneOverlapTimestampsUTC": [
+      "2026-09-10T04:05:21.595985+00:00"
+    ]
+  }
+]

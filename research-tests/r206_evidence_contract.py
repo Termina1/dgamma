@@ -22,7 +22,7 @@ def validate_record(record, source, transcript, root):
     assert record['rssLimitKiB']==(52 if record['path'].endswith('/CP5ConfluenceLocalDiamondSpike.idr') else 48)*1024*1024, 'RSS limit'
     expected=record['expectedDiagnostic']
     diagnostic=(record['exit']==1 and expected in transcript and record['symbol'] and record['symbol'] in transcript) if expected else record['exit']==0 and 'Error:' not in transcript
-    passed=bool(fresh and diagnostic and not unexpected and not record['interrupted'] and not record['targetMutationDetected'] and not record['multipleOwnedCompilers'] and maximum<=record['rssLimitKiB'])
+    passed=bool(fresh and diagnostic and not unexpected and not record['interrupted'] and not record['resourceStopped'] and not record['targetMutationDetected'] and not record['multipleOwnedCompilers'] and maximum<=record['rssLimitKiB'])
     assert passed==record['passed'], 'outcome flag'
     assert record['end']>=record['start'], 'timestamp order'
     assert all(record['start']<=x<=record['end'] for x in record['crossLaneOverlapTimestampsUTC']), 'overlap timestamps'

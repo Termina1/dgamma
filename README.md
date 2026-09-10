@@ -4,7 +4,45 @@
 Spatiotemporal Composability”** (Shi, Zhang, Cui). Runtime functions remain
 computational data; laws and witnesses are erased with quantity `0`.
 
-## Current integration checkpoint — R205 accepted CHECKED-PARTIAL
+## Current integration checkpoint — R206 CHECKED-PARTIAL (gate pending)
+
+Production stays **byte-identical to `452420c7`**; census **4 = 1/2/0/0/1**.
+Post-unfreeze research repairs are deliberately weaker where the old claim was
+false. **Thm73/CrossTrace is not closed or freshly passing.**
+
+- V19 core→attached embedding, total expanded O19 word observation and its
+  legacy-conditional consumers: fresh PASS. R172 moved byte-exact to `retired/`.
+- B: conditional complete ALL-name rebase, including constructive absent-domain
+  transport; three primitive current/parent/provider agreements remain explicit.
+- A: unconditional exact-list **permutation** pairing of both native E8 event
+  chronologies, bilateral coverage and same-word prefix/counter proofs. This is
+  not an ordered canonical zip or a whole runtime synchronization producer.
+- All144 invalidated targets have dispositions. The original133 blocked modules
+  now have16 fresh own checks: **12 positive PASS,3 expected-negative PASS,1
+  ActualCartesian FAIL;117 remain blocked**. Seeded package PASS, no Building;
+  30 evidence/policy tests PASS. No SupportSolution re-elaboration or TTC change.
+
+[Audit](research-tests/O6-R206-AUDIT.md) ·
+[per-module current status](research-tests/O6-R206-DISPOSITION.json) ·
+[independent evidence cross-check](research-tests/O6-R206-INDEPENDENT-VERIFICATION.json) ·
+[R207 redesign obligations](research-tests/O6-R206-O19-EXPANSION-DESIGN.md).
+Historical rows below are overridden by this current disposition, not evidence
+that blocked consumers still compile. Supervisor spot-check is pending.
+
+| Paper correspondence | Idris file : representative name | Current status |
+|---|---|---|
+| Thm73 canonical actor grammar (A10/A12) | `CP5ActorLifecycleOnlyExtended:actorLifecycleCoreIntoAttached` | proved core→attached; false old attached→extended statement retired |
+| Thm73/O19 complete body-word observation | `CP5O19OriginalBlockClassSpike:o19ExpandedOriginalBlockWord` | proved over complete production core/bundle grammar; original source metadata, not replay frames |
+| Thm73/O19 old AA/OA/AO/OO classifier | `CP5O19PaperBranchCompletenessSpike:o19OriginalClasses` | proved only with two explicit `LegacyActorOnly` shapes |
+| Thm73/O20 foreign-owner and Begin frame | `CP5O20RightOpeningTransportSpike:o20ActorBodyForeignOwners` | proved legacy-conditional; `NoGeneratedChild` alone does not exclude controls |
+| Thm73/O19 external-order observations | `R18ExternalOrderProducerPositive:o19ExpandedBodyHeadNode` | expanded observer proved; old internal/external-order producers legacy-conditional |
+| Thm73/O20 ALL-name rebase | `CP5O20ControlRebaseSpike:o20RebaseAllNameCutConditional` | proved conditional; canonical agreements and actual-chain D5 still open |
+| Lemma56 / Thm73 original generated chronology | `CP5O20ChronologyPairingSpike:o20AcceptedChronologyPairing` | proved from actual E8; both exact native scans, permutation pairing, bilateral coverage |
+| Thm73 original prefix positions/counters | `CP5O20ChronologyPairingSpike:o20PairedChronologyPositionsAndCounts` | proved for those same original words; canonical prefix transport open |
+| Thm73 occurrence-history path visibility | `CP5O20OccurrenceStampedHistorySpike:o20OccurrenceHistoryLeftPath` / `o20OccurrenceHistoryRightPath` | public exports, unchanged types/bodies, fresh PASS; original R204 A15 restatement NOT attempted |
+| Thm73 operational assembly/confluence | `CP5O19ActualCartesianSpike` / `CP5ConfluenceCrossTraceSpike` | classifier/append consumer FAIL → CrossTrace blocked; C ineligible |
+
+## Previous integration checkpoint — R205 accepted CHECKED-PARTIAL
 
 Supervisor accepted `a699828e`: production rebuilt, research breakage explicit;
 [final gate and handoff](research-tests/O6-R205-OWNER-FINAL-GATE.md).

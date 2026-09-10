@@ -4,6 +4,7 @@ import sys,pathlib,json,re,collections
 sys.dont_write_bytecode=True
 sys.path.insert(0,str(pathlib.Path(__file__).resolve().parent))
 from r206_common import *
+from r206_disposition_contract import classify_module
 old=json.loads((ROOT/'research-tests/O6-R205-REBUILD-STATE.json').read_text())['modules']
 base={m['path']:m for m in old}
 current=source_paths()
@@ -37,23 +38,10 @@ for p in order:
     bad=[d for d in dependencies if not result[d]['usableAsImport']]
     epoch=max([result[d]['requiredEpoch'] for d in dependencies]+([first_current[p]] if p in changed else ['']))
     checked=bool(exact and r['fresh'] and not r['unexpectedBuilding'])
-    if exact and r['passed'] and r['end']>=epoch and not bad and not v['missingProjectImports']:
-        status='fresh PASS' if r['exit']==0 else 'fresh expected-negative PASS'
-        usable=r['exit']==0
-    elif p not in closure and base.get(p,{}).get('usableAsImport') and base[p]['sourceSHA256']==v['sourceSHA256'] and not bad:
-        status='R205 authenticated seed (not R206 fresh)';usable=True
-    elif bad or v['missingProjectImports']:
-        status='blocked by untrusted/retired import';usable=False
-    elif checked and not r['passed']:
-        status='fresh own-target FAILED';usable=False
-    elif base.get(p,{}).get('status')=='legacy, not re-checked (standing classification)':
-        status='legacy not applicable (not executed)';usable=False
-    elif base.get(p,{}).get('status','').startswith('FAILED — pre-existing'):
-        status='pre-existing R137 failure (record only)';usable=False
-    elif base.get(p,{}).get('status')=='passed expected-negative contract' and p not in closure:
-        status='R205 expected-negative (not R206 fresh)';usable=False
-    else:
-        status='unchecked / invalidated';usable=False
+    status,usable=classify_module(exact=exact,record=r,epoch=epoch,
+      blocked=bool(bad or v['missingProjectImports']),in_closure=p in closure,
+      baseline_status=base.get(p,{}).get('status',''),
+      seed_authenticated=bool(base.get(p,{}).get('usableAsImport') and base[p]['sourceSHA256']==v['sourceSHA256']))
     roots=sorted({root for d in bad for root in result[d]['blockedRootCauses']})
     if not usable and not roots: roots=[p]
     result[p]=dict(path=p,module=v['module'],sourceSHA256=v['sourceSHA256'],status=status,usableAsImport=usable,requiredEpoch=epoch,dependencies=dependencies,blockedDependencies=bad,blockedRootCauses=roots,missingProjectImports=v['missingProjectImports'],invalidationClosure=p in closure,nativeInvoked=bool(exact),freshOwnDiagnostic=checked,invocation=r['unit'] if exact else None,exactErrors=r['transcript'] if checked and not r['passed'] else None)
