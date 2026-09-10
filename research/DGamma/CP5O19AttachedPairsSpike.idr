@@ -314,3 +314,22 @@ o19AttachedForm (AttachedChildRemove child fiber found parent controlled) = Chil
 o19AttachedForm (AttachedRootInsert root component priorRoots inserted forced) = ForcedRootInsertForm
 o19AttachedForm (AttachedRootRetire root fiber priorRoots bundled found parent controlled) = BundledRootRetireForm
 o19AttachedForm (AttachedRootRemove root fiber priorRoots bundled found parent controlled) = BundledRootRemoveForm
+
+||| Root inputs at both heads MUST have the same exact action. Neither may be
+||| silently skipped. This is the external-order premise of frozen suffix replay.
+export
+0 o19AttachedRootHeadsSame :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} ->
+  {leftFirst, leftMiddle, leftLast, rightFirst, rightMiddle, rightLast : SystemState name key value world error} ->
+  (left : Transition leftFirst leftMiddle) -> (right : Transition rightFirst rightMiddle) ->
+  (leftRest : Transitions leftMiddle leftLast) -> (rightRest : Transitions rightMiddle rightLast) ->
+  RootOrchestrationStep nameEq left -> RootOrchestrationStep nameEq right ->
+  SameExternalOrchestration nameEq (MoreTransitions left leftRest) (MoreTransitions right rightRest) ->
+  transitionAction left = transitionAction right
+o19AttachedRootHeadsSame left right leftRest rightRest leftRoot rightRoot
+  (SkipLeftInternal _ _ excluded tail) = void (excluded leftRoot)
+o19AttachedRootHeadsSame left right leftRest rightRest leftRoot rightRoot
+  (SkipRightInternal _ _ excluded tail) = void (excluded rightRoot)
+o19AttachedRootHeadsSame left right leftRest rightRest leftRoot rightRoot
+  (MatchExternalInput action _ _ _ _ _ _ leftExact rightExact tail) = trans leftExact (sym rightExact)
