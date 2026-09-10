@@ -1,0 +1,34 @@
+module DGamma.R206AttachedGrammarPositive
+
+import DGamma.Core
+import DGamma.Effects
+import DGamma.Unified
+import DGamma.Calculus
+import DGamma.CalculusChecks
+import DGamma.Coeffects
+import DGamma.Metatheory
+import DGamma.CP3
+import DGamma.Section3Example
+import DGamma.CP5O19OriginalBlockClassSpike
+import DGamma.CP5O19ReplayObservationSpike
+import DGamma.CP5O19SurfaceSpike
+import DGamma.CP5ConfluenceRankObservationSpike
+import Data.List
+import Data.List.Elem
+import Data.Maybe
+import Data.Nat
+import Decidable.Equality
+import Decidable.Decidable
+
+%default total
+%unbound_implicits off
+
+||| Actual source: root parent0 and its retired inactive child1, which owns
+||| ServiceA. This fixture proves a body grammar, not a full sanctioned block.
+public export
+r206ReleaseSource : SystemState Nat ToyKey ToyValue ToyRuntime String
+r206ReleaseSource = MkSystemState (MkToyRuntime False False)
+  (insertBinding @{the (DecEq Nat) %search} 1
+    (retireFiber (freshFiber DGamma.CalculusChecks.providerComponent (ChildOf 0)))
+    (insertBinding @{the (DecEq Nat) %search} 0
+      (freshFiber DGamma.CalculusChecks.failingComponent Root) emptyContext Refl) Refl)
