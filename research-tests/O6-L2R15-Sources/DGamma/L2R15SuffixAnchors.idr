@@ -33,8 +33,8 @@ export
   {oldFirst, oldFinal, newFirst, newFinal : SystemState name key value world error} ->
   {oldTrace : Transitions oldFirst oldFinal} -> {newTrace : Transitions newFirst newFinal} ->
   (frames : NativeSuffixFrames nameEq keyEq oldTrace newTrace) ->
-  (oldTrail : AvailabilityTrace name key world error value oldTrace) ->
-  (newTrail : AvailabilityTrace name key world error value newTrace) -> (ordinal : Nat) ->
+  (oldTrail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value oldTrace) ->
+  (newTrail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value newTrace) -> (ordinal : Nat) ->
   (anchorOf nameEq keyEq oldTrail ordinal = anchorOf nameEq keyEq newTrail ordinal,
    keyForcedOrdinal nameEq keyEq oldTrail ordinal = keyForcedOrdinal nameEq keyEq newTrail ordinal)
 nativeSuffixAnchorKey nameEq keyEq frames oldTrail newTrail ordinal =
@@ -66,8 +66,8 @@ export
   {oldFirst, oldFinal, newFirst, newFinal : SystemState name key value world error} ->
   {oldTrace : Transitions oldFirst oldFinal} -> {newTrace : Transitions newFirst newFinal} ->
   (frames : NativeSuffixFrames nameEq keyEq oldTrace newTrace) ->
-  (oldTrail : AvailabilityTrace name key world error value oldTrace) ->
-  (newTrail : AvailabilityTrace name key world error value newTrace) -> (ordinal : Nat) ->
+  (oldTrail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value oldTrace) ->
+  (newTrail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value newTrace) -> (ordinal : Nat) ->
   targetPosition nameEq keyEq oldTrail ordinal = targetPosition nameEq keyEq newTrail ordinal
 nativeSuffixTarget nameEq keyEq frames oldTrail newTrail ordinal =
   cong2 max
@@ -90,8 +90,8 @@ export
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   {oldFirst, oldFinal, newFirst, newFinal : SystemState name key value world error} ->
   {oldTrace : Transitions oldFirst oldFinal} -> {newTrace : Transitions newFirst newFinal} ->
-  (oldTrail : AvailabilityTrace name key world error value oldTrace) ->
-  (newTrail : AvailabilityTrace name key world error value newTrace) -> (ordinal : Nat) ->
+  (oldTrail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value oldTrace) ->
+  (newTrail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value newTrace) -> (ordinal : Nat) ->
   (seen : Bool) ->
   (0 oldGuard : isJust (anchorOf nameEq keyEq oldTrail ordinal) = seen) ->
   (0 newGuard : isJust (anchorOf nameEq keyEq newTrail ordinal) = seen) ->
@@ -112,8 +112,8 @@ export
   {oldFirst, oldFinal, newFirst, newFinal : SystemState name key value world error} ->
   {oldTrace : Transitions oldFirst oldFinal} -> {newTrace : Transitions newFirst newFinal} ->
   (frames : NativeSuffixFrames nameEq keyEq oldTrace newTrace) ->
-  (oldTrail : AvailabilityTrace name key world error value oldTrace) ->
-  (newTrail : AvailabilityTrace name key world error value newTrace) ->
+  (oldTrail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value oldTrace) ->
+  (newTrail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value newTrace) ->
   ((ordinal : Nat) -> rootDistance nameEq keyEq oldTrail ordinal = rootDistance nameEq keyEq newTrail ordinal,
    totalDistance nameEq keyEq oldTrail = totalDistance nameEq keyEq newTrail)
 nativeSuffixDistances nameEq keyEq frames oldTrail newTrail =
