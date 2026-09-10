@@ -8,6 +8,7 @@ import DGamma.CP4ProgressNoDeadlock
 import DGamma.CP4SupportSolution
 import DGamma.CP5O20PairedRemovalSpike
 import DGamma.CP5ActorLifecycleOnlyExtended
+import DGamma.CP5O19OriginalBlockClassSpike
 import DGamma.CP5O20RightOpeningTransportSpike
 import DGamma.CP5ConfluenceLocalDiamondSpike
 import DGamma.CP5ConfluenceDeletionChainSpike
@@ -197,17 +198,19 @@ r192ExistingParentBodyRemoveExtended =
       (ExtendedChildRetireStep _ _ 1 r45ChildFresh Refl Refl Refl
         (ExtendedChildRemoveStep _ _ 1 r45ChildRetired Refl Refl Refl ExtendedLifecycleEnd)))
 
-||| Negative side of the A10 probe. The real one-edge child-retirement trace
+||| R206 migration of the retained A10 negative probe, NOT exhausted C4.
+||| The legacy grammar is now named explicitly; production admits this control.
+||| The real one-edge child-retirement trace
 ||| is neither an old actor-only body nor a ZERO physical gap. The new grammar
 ||| cannot be silently coerced back to either old safety condition.
 export
 0 r192RetirementHasNoLegacyOrZeroGapCoercion :
-  (Not (ActorLifecycleOnly 0 (MoreTransitions r178ChildRetire NoTransitions)),
+  (Not (LegacyActorOnly 0 (MoreTransitions r178ChildRetire NoTransitions)),
    Not (ZeroGapPending (MoreTransitions r178ChildRetire NoTransitions)))
 r192RetirementHasNoLegacyOrZeroGapCoercion =
   (\only => case only of
-    ActorLifecycleStep _ _ lifecycle _ _ => case lifecycle of Refl impossible
-    ActorYieldedRegistrationStep _ _ yielded _ => case yielded of Refl impossible,
+    LegacyActorStep _ _ lifecycle _ _ => case lifecycle of Refl impossible
+    LegacyActorYield _ _ yielded _ => case yielded of Refl impossible,
    \empty => case empty of Refl impossible)
 
 ||| A11 NEW-scope positive at the exact OLD countershape. It is deliberately
