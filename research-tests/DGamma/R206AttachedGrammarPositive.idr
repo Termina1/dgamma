@@ -44,3 +44,10 @@ public export
 r206ReleaseEdge : Transition r206ReleaseSource r206Released
 r206ReleaseEdge = Fired (the (DecEq Nat) %search) (the (DecEq ToyKey) %search)
   (ORemove 1) ORemoveTag Refl
+
+||| A new root2 declares precisely the newly freed ServiceA provision.
+public export
+r206RootInserted : SystemState Nat ToyKey ToyValue ToyRuntime String
+r206RootInserted = MkSystemState (MkToyRuntime False False)
+  (insertBinding @{the (DecEq Nat) %search} 2
+    (freshFiber DGamma.CalculusChecks.providerComponent Root) (registry r206Released) Refl)
