@@ -43,3 +43,22 @@ r207ObserveEveryAttachedPair = o19ObserveAttachedPair (the (DecEq Nat) %search) 
   (MoreTransitions r206ReleaseEdge (MoreTransitions r206RootInsertEdge
     (MoreTransitions r206RootRetireEdge (MoreTransitions r206RootRemoveEdge NoTransitions))))
   r206AttachedControlsShape r206AttachedControlsShape
+
+||| Two concrete non-legacy products: child Remove/forced Root Insert and
+||| same-bundle Root Retire/Root Remove. All four source edges are selected.
+export
+0 r207ConcreteAttachedPairs :
+  (O19AttachedSourcePair Nat ToyKey ToyRuntime String ToyValue (the (DecEq Nat) %search) 0 0
+    (MoreTransitions r206ReleaseEdge (MoreTransitions r206RootInsertEdge
+      (MoreTransitions r206RootRetireEdge (MoreTransitions r206RootRemoveEdge NoTransitions))))
+    (MoreTransitions r206ReleaseEdge (MoreTransitions r206RootInsertEdge
+      (MoreTransitions r206RootRetireEdge (MoreTransitions r206RootRemoveEdge NoTransitions)))) r206ReleaseEdge r206RootInsertEdge,
+   O19AttachedSourcePair Nat ToyKey ToyRuntime String ToyValue (the (DecEq Nat) %search) 0 0
+    (MoreTransitions r206ReleaseEdge (MoreTransitions r206RootInsertEdge
+      (MoreTransitions r206RootRetireEdge (MoreTransitions r206RootRemoveEdge NoTransitions))))
+    (MoreTransitions r206ReleaseEdge (MoreTransitions r206RootInsertEdge
+      (MoreTransitions r206RootRetireEdge (MoreTransitions r206RootRemoveEdge NoTransitions)))) r206RootRetireEdge r206RootRemoveEdge)
+r207ConcreteAttachedPairs =
+  (r207ObserveEveryAttachedPair r206ReleaseEdge r206RootInsertEdge OccursHere (OccursLater OccursHere),
+   r207ObserveEveryAttachedPair r206RootRetireEdge r206RootRemoveEdge
+     (OccursLater (OccursLater OccursHere)) (OccursLater (OccursLater (OccursLater OccursHere))))
