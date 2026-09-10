@@ -470,3 +470,29 @@ export
 o19AttachedOrchestrationActivationDiamond nameEq keyEq left right earlyRight aligned earlyAligned sameAction sameTag observed notLifecycle activation distinct childSafe parentSafe wellFormed independent =
   orchestrationActivationDiamondSpike nameEq keyEq left right earlyRight aligned earlyAligned sameAction sameTag
     (o19AttachedOrchestration observed notLifecycle) activation distinct childSafe parentSafe wellFormed independent
+
+||| Expanded O/O local theorem covers all 36 insertion/control products. The
+||| frozen safety package still owns actual early applicability, generation
+||| scan, freshness and licensing; none is smuggled into source observation.
+||| Local diamonds alone do NOT supply the root external-order premise.
+export
+0 o19AttachedOrchestrationDiamond :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) ->
+  {leftActor, rightActor : name} ->
+  {leftCoreFirst, leftCoreLast, rightCoreFirst, rightCoreLast, first, middle, last : SystemState name key value world error} ->
+  {leftCore : Transitions leftCoreFirst leftCoreLast} -> {rightCore : Transitions rightCoreFirst rightCoreLast} ->
+  (left : Transition first middle) -> (right : Transition middle last) ->
+  AlignedTransitions name key world error value nameEq keyEq (MoreTransitions left (MoreTransitions right NoTransitions)) ->
+  O19AttachedEdge name key world error value nameEq leftActor leftCore left ->
+  O19AttachedEdge name key world error value nameEq rightActor rightCore right ->
+  Not (isLifecycleAction (transitionAction left) = True) -> Not (isLifecycleAction (transitionAction right) = True) ->
+  Not (transitionActor left = transitionActor right) ->
+  (safety : OrchestrationSwapSafety name key world error value protocol nameEq keyEq left right) ->
+  AlignedTransitions name key world error value nameEq keyEq (MoreTransitions (earlyRight safety) NoTransitions) ->
+  LocalRelationalDiamond name key world error value nameEq keyEq left right
+o19AttachedOrchestrationDiamond nameEq keyEq protocol left right aligned leftClass rightClass leftNotLife rightNotLife distinct safety earlyAligned =
+  orchestrationOrchestrationDiamondSpike nameEq keyEq protocol left right aligned
+    (o19AttachedOrchestration leftClass leftNotLife) (o19AttachedOrchestration rightClass rightNotLife)
+    distinct safety earlyAligned
