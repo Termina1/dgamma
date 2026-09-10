@@ -38,7 +38,7 @@ export
   {first, finalState : SystemState name key value world error} ->
   {trace : Transitions first finalState} ->
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
-  (trail : AvailabilityTrace name key world error value trace) ->
+  (trail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value trace) ->
   (seen : Bool) -> (0 equation : isJust (anchorOf nameEq keyEq trail 0) = seen) ->
   rootDistance nameEq keyEq trail 0 = 0
 rootDistanceAtZero nameEq keyEq trail False equation = rewrite equation in Refl
@@ -51,7 +51,7 @@ export
   {first, finalState : SystemState name key value world error} ->
   {trace : Transitions first finalState} ->
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
-  (trail : AvailabilityTrace name key world error value trace) ->
+  (trail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value trace) ->
   (cut : SelectedSquareCut name key world error value nameEq keyEq trail) ->
   catalogOrdinal (cutEntry cut) = 0 -> Void
 selectedBirthNotZero nameEq keyEq trail cut equation =
@@ -75,7 +75,7 @@ export
   {first, finalState : SystemState name key value world error} ->
   {trace : Transitions first finalState} ->
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
-  (trail : AvailabilityTrace name key world error value trace) ->
+  (trail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value trace) ->
   (cut : SelectedSquareCut name key world error value nameEq keyEq trail) ->
   S (locatedActionOrdinal (occurrence (selectedCutLocated nameEq keyEq trail cut))) =
     locatedActionOrdinal (catalogBirthOccurrence (selectedNativeBirth cut))
