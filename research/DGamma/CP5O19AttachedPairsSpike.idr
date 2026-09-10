@@ -179,3 +179,26 @@ o19AttachedScanAppend _ trailing AttachedScanEnd rest = rest
 o19AttachedScanAppend _ trailing (AttachedScanStep step tail observed scanned) rest =
   AttachedScanStep step (appendTransitions tail trailing) observed
     (o19AttachedScanAppend tail trailing scanned rest)
+
+||| Both production body shapes retain the actual original core. A bundled
+||| scan is indexed by the literal native core/bundle append, not a copied word.
+public export
+data O19AttachedBody :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (actor : name) ->
+  {first, last : SystemState name key value world error} ->
+  Transitions first last -> Type where
+  ObservedCoreBody :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {nameEq : DecEq name} -> {actor : name} ->
+    {first, last : SystemState name key value world error} ->
+    (core : Transitions first last) ->
+    (0 scanned : O19AttachedScan name key world error value nameEq actor core core) ->
+    O19AttachedBody name key world error value nameEq actor core
+  ObservedBundledBody :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {nameEq : DecEq name} -> {actor : name} ->
+    {first, coreLast, last : SystemState name key value world error} ->
+    (core : Transitions first coreLast) -> (bundle : Transitions coreLast last) ->
+    (0 scanned : O19AttachedScan name key world error value nameEq actor core (appendTransitions core bundle)) ->
+    O19AttachedBody name key world error value nameEq actor (appendTransitions core bundle)
