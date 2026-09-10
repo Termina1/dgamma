@@ -32,8 +32,8 @@ record AvailabilityRootSnapshotExchange
   constructor MkAvailabilityRootSnapshotExchange
   0 snapshotRootDistinct : Not (root = transitionActor left)
   0 snapshotRootAction : transitionAction right = OInsert root Root component
-  0 snapshotRootCompatible : rootCutCompatible name key world error value nameEq keyEq component 0
-    (AvailabilityStep first left NoTransitions (AvailabilityEnd middle)) = True
+  0 snapshotRootCompatible : DGamma.CP5AvailabilityAwarePlacement.rootCutCompatible name key world error value nameEq keyEq component 0
+    (DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep first left NoTransitions (DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd middle)) = True
   snapshotRootMiddle : SystemState name key value world error
   snapshotRootFinal : SystemState name key value world error
   0 snapshotRootEarly : checkedApplyAction @{nameEq} @{keyEq} (OInsert root Root component) first = Just (OInsertTag, snapshotRootMiddle)
