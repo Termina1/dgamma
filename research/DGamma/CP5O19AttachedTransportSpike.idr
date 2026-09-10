@@ -57,3 +57,30 @@ o19RightControlBeforeSwap nameEq keyEq controlled _ right
       (Fired nameEq keyEq action tag checked)
       (AlignedStep action tag checked NoTransitions AlignedEnd) distinct)) found,
      movedRightAction diamond, movedRightTag diamond)
+
+||| The left control's original fiber survives the actual moved-right edge.
+||| This consumes movedPairAligned from the real diamond, never an unchecked
+||| early application. Exact fiber identity preserves parent AND provision.
+export
+0 o19LeftControlAfterSwap :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (controlled : name) ->
+  {first, middle, last : SystemState name key value world error} ->
+  (left : Transition first middle) -> (right : Transition middle last) ->
+  (diamond : LocalRelationalDiamond name key world error value nameEq keyEq left right) ->
+  (fiber : Fiber name key value world error) ->
+  lookupFiber {name} {key} {value} {world} {error} @{nameEq} controlled (registry first) = Just fiber ->
+  Not (controlled = actionOwner (transitionAction right)) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} controlled (registry (swappedMiddle diamond)) = Just fiber,
+   transitionAction (movedLeft diamond) = transitionAction left,
+   transitionTag (movedLeft diamond) = transitionTag left)
+o19LeftControlAfterSwap nameEq keyEq controlled left right
+  (MkLocalRelationalDiamond movedMiddle movedEnd earlyRight lateLeft aligned rightAction rightTag
+    leftAction leftTag rightActivation leftActivation rightOrchestration leftOrchestration safety effects controls wellFormed)
+  fiber found distinct =
+    case aligned of
+      AlignedStep action tag checked _ tail =>
+        (trans (o19AlignedForeignFiber nameEq keyEq controlled (Fired nameEq keyEq action tag checked)
+          (AlignedStep action tag checked NoTransitions AlignedEnd)
+          (\same => distinct (trans same (cong actionOwner rightAction)))) found,
+         leftAction, leftTag)
