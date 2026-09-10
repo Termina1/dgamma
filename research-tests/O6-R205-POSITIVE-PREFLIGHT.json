@@ -1,0 +1,31 @@
+{
+  "entries": [
+    {
+      "path": "research-tests/DGamma/R43JointAlignedHeadProbePositive.idr",
+      "sourceSHA256": "339db96a586c2d443d91570d43369b717ae545f42f2e463f2cfb6b76daded6c0",
+      "invocation": "V12",
+      "status": "authenticated positive compile check",
+      "authority": "research-tests/O6-R56-JOINT-HEAD-DEPENDENT-ELIMINATION-DESIGN-GATE-STOP-AUDIT.md",
+      "authoritySHA256": "83dc877f6a679c53b577dcba7cfeed86e8cf3ac807a46888738715f8dda02bd9",
+      "reason": "Positive joint-head builders and all-eight-constructor elimination, not an intended rejection."
+    },
+    {
+      "path": "research-tests/DGamma/R19CrossStateRetireReplayProbePositive.idr",
+      "sourceSHA256": "323f7baeea782bbb13f53220ac6e8e52cd2c89742317e493244c4532959ad6de",
+      "invocation": "V57",
+      "status": "authenticated positive compile check",
+      "authority": "research-tests/O6-R19-CROSS-STATE-BUNDLE-MISMATCH-AUDIT.md",
+      "authoritySHA256": "928fdef6bbcfe84d314cfc0318a7e921e31fb8f4dc4a1b030135d74db4b3f76d",
+      "reason": "Historical checkedRetireReplayAcrossLocalSwap positive theorem; Probe name triggered conservative preflight."
+    },
+    {
+      "path": "research-tests/DGamma/R198RepeatedTagStageProbe.idr",
+      "sourceSHA256": "1b9f35e13625ace25c51d8f5e35c49463d0bdc349e7610925d88f0666a5bc1fc",
+      "invocation": "V77",
+      "status": "authenticated positive compile check",
+      "authority": "research-tests/O6-R204-PER-MODULE-COSTS.md",
+      "authoritySHA256": "50570930ca1b3be86b6af4a3917109d2e3848dccaf7cc602f73b340a3032a1c6",
+      "reason": "Committed stage-state constructor fixture historically PASS(V15); rejected A3 candidates are not current source."
+    }
+  ]
+}

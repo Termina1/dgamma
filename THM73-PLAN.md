@@ -4276,3 +4276,26 @@ under its prior gate/V+dependent-revalidation requirements. Only then may
 one new two-path equality micro-unit be considered under R205 scope/budget.
 The raw R204 archive is not rewritten; D4 records the superseding ordering.
 Stand down after the D4 receipt; no R205 work is started in this shift.
+
+## R205 — production integration and post-unfreeze baseline
+
+Tier1 CP3 signed patch is COMMITTED and freshly checked; source blob
+eeaa70aa4414648bb2a1173d58244267997d16d7. The sole additional production edit is
+the explicitly gated CP3StatementChecks migration227c2f98. Package P2 is PASS
+with zero Building after163 fresh production checks +44 authenticated seeds.
+
+CanonicalSort consumer migrationa2c3ace5 passed its FIRST authorized attempt.
+New frozen hash eb0ab7b95779a4b44360b222030e7aa0f8d134c17ea4d2dfa98f3306e135df1b;
+all four hole declarations/bodies and five protected regions remain unchanged.
+No new producer, normalizer, premise, case or theorem: the two-case scan stays a
+SUBSET Core. O19Surface freshly PASS unchanged; CrossTrace remains unchecked
+behind the enlarged-grammar block-word obligation.
+
+Current disposition:543 =349 fresh expected outcomes +6 failed +133 blocked
++44 seeds +11 standing legacy exclusions. Production completeness and complete
+status accounting do NOT mean all-research-native-PASS. Every blocked path/root
+is source-hashed; no stale TTC is accepted. Five semantic roots require future
+re-proof/re-scoping; R137 is a separate pre-existing record-only diagnostic.
+No R205 A15 visibility/proof micro-unit was launched. General forced phases,
+normalizer, four lifecycle shapes, cross-bundle controls, whole synchronization,
+ALL-name rebase/D5 and Thm73 remain open. Owner final gate/re-seed decision is pending.

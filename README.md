@@ -4,22 +4,32 @@
 Spatiotemporal Composability”** (Shi, Zhang, Cui). Runtime functions remain
 computational data; laws and witnesses are erased with quantity `0`.
 
-## Current integration checkpoint — R205 production unfreeze (rebuild in progress)
+## Current integration checkpoint — R205 production rebuilt; research breakage explicit
 
 Production unfrozen on **2026-09-09** by owner decision (verbatim):
 **"Давайттак размораживай то что нужно я же все разрешил"**.
 A8/A10/A12 are now in production **Tier 1**, CP3-only signed patch committed
 `ceecde24`; CP3 blob `eeaa70aa4414648bb2a1173d58244267997d16d7`.
-This is specification integration, **not a new proof or full-package PASS**.
-Rebuild status and exact checked/unchecked/broken paths are tracked in
-`research-tests/O6-R205-REBUILD-STATE.json`; do not reuse old TTC presence as
-post-unfreeze proof evidence. Census remains **4 = 1/2/0/0/1**.
+The gated CP3StatementChecks migration is committed at `227c2f98`.
+**Package P2 PASS**: all163 affected production modules freshly checked,44
+unchanged prerequisites authenticated as seeds; the package emitted no Building.
+This is **not a new theorem or full research PASS**: main inventory543 has349
+fresh expected outcomes,6 failed modules (5 unfreeze/scope,1 pre-existing),133
+blocked imports,44 seeds and11 explicitly excluded legacy fixtures.
+
+Exact per-file hashes/statuses: [`O6-R205-REBUILD-STATE.json`](research-tests/O6-R205-REBUILD-STATE.json).
+Do not treat stale TTCs, old research “proved” rows, or unchanged source hashes as
+post-unfreeze proof evidence. Historical rows below describe their own source
+checkpoint; the current manifest overrides their validation status.
+Census remains **4 = 1/2/0/0/1**; no hole declaration/body changed.
 
 | Paper correspondence | Idris file : representative name | Status |
 |---|---|---|
-| Thm73 revised canonical input placement (A8/A12) | `src/DGamma/CP3.idr:CanonicalInputPlacement` | production definition integrated; current-cut availability and terminal earliest, not strict all-root-first; dependent revalidation pending |
-| Thm73 canonical actor block (A10/A12) | `src/DGamma/CP3.idr:ActorLifecycleCore` / `ActorLifecycleOnly` | production source-aware own-child controls plus attached same-bundle forced-root controls; dependent revalidation pending |
-| Thm73 forced/barrier least closure | `src/DGamma/CP3.idr:ForcedRootInput` / `forcedRootLeast` | existing lane-backed generic kernel rehomed by signed patch; not a global phase producer |
+| Thm73 revised canonical input placement (A8/A12) | `src/DGamma/CP3.idr:CanonicalInputPlacement` | checked production definition + statement guards; terminal earliest, not strict all-root-first; general producer open |
+| Thm73 canonical actor block (A10/A12) | `src/DGamma/CP3.idr:ActorLifecycleCore` / `ActorLifecycleOnly` | checked source-aware Core plus attached same-bundle forced-root grammar; old-domain research consumers explicitly broken |
+| Thm73 forced/barrier least closure | `src/DGamma/CP3.idr:ForcedRootInput` / `forcedRootLeast` | existing lane-backed generic kernel rehomed and checked; not a global phase producer |
+| Thm73 direct sorting consumer | `CP5ConfluenceCanonicalSortSpike:producerCanonicalSchedule` | gated migration checked; original input index retained from existing accounting; scan stays a subset Core, no new proof |
+| Thm73 O19 surface / operational body | `CP5O19SurfaceSpike` / `CP5ConfluenceCrossTraceSpike` | surface freshly PASS unchanged; CrossTrace unvalidated behind a broken imported classifier |
 
 **Tier 2 residues = research obligations:** physical native forced-phase interval
 producer; general move/invariant and global distance-frame transport; accessibility
@@ -542,7 +552,7 @@ pending owner override, not implemented or assumed. See the
 |---|---|---|
 | Thm73 support comparison, explicit A9 + original uniqueness | `CP5AcceptedSupportTruthSpike.acceptedSupportedTruthForward/Backward` | proved, conditional |
 | O18 canonical support-order matching | `CP5ConfluenceCrossTraceSpike.canonicalSupportOrdersMatchSpike` | proved, conditional |
-| Revised root placement (A8/A12) | `CP3.CanonicalInputPlacement` (formerly research `CP5AvailabilityAwarePlacement.AvailabilityAwareCanonicalInputPlacement`) | R205 owner-signed production Tier 1 integration; downstream rebuild pending; general placement/normalization producers open |
+| Revised root placement (A8/A12) | `CP3.CanonicalInputPlacement` (formerly research `CP5AvailabilityAwarePlacement.AvailabilityAwareCanonicalInputPlacement`) | R205 checked Tier1 production integration; downstream checked/broken/blocked dispositions published; general placement/normalization producers open |
 
 Five research holes remain. A8/A9 are delegated supervisor decisions pending
 owner override; production stays frozen. See the [R178 audit](research-tests/O6-R178-GRIND-SHIFT-AUDIT.md) for exact scope and remaining owner decisions.

@@ -52282,6 +52282,124 @@
       "commonSHA256": "e23d86ca96674a49e0b123b7f9e6789591ee8784e82e3082f21821527766b99b",
       "crossLaneOverlapTimestampsUTC": [],
       "transcript": "44/44: Building DGamma.CP5O20StampedOrdinalNecessitySpike (/Users/vyacheslavshebanov/Work/dgamma/research/DGamma/CP5O20StampedOrdinalNecessitySpike.idr)\n"
+    },
+    {
+      "unit": "V94-2",
+      "path": "research-tests/DGamma/R171CoreHistoryCloneNegative.idr",
+      "command": [
+        "idris2",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma/src",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma/research",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma/research-tests",
+        "--check",
+        "/Users/vyacheslavshebanov/Work/dgamma/research-tests/DGamma/R171CoreHistoryCloneNegative.idr"
+      ],
+      "start": "2026-09-10T01:07:50.454514+00:00",
+      "end": "2026-09-10T01:07:51.518718+00:00",
+      "seconds": 1.0640351669862866,
+      "exit": 1,
+      "passed": true,
+      "fresh": true,
+      "seededPackageNoBuilding": false,
+      "supervisorGateVerbatim": null,
+      "policySHA256": "2c0832221aeb6568235a593e0bd52bb959d00f60f13ad615b1c1699fa0882af6",
+      "expectedDiagnostic": "Mismatch between: coreDeletionGenerationHistory",
+      "symbol": "replaceCoreHistory",
+      "buildingLines": [
+        "DGamma.R171CoreHistoryCloneNegative (/Users/vyacheslavshebanov/Work/dgamma/research-tests/DGamma/R171CoreHistoryCloneNegative.idr)"
+      ],
+      "unexpectedBuilding": [],
+      "targetMutationDetected": false,
+      "mutatedPaths": [],
+      "interrupted": false,
+      "resourceStopped": false,
+      "multipleOwnedCompilers": false,
+      "memoryPressureStopped": false,
+      "wallTimeStopped": false,
+      "memoryPressureSamplingError": null,
+      "memoryPressureSamples": [],
+      "memoryPressurePolicy": null,
+      "pressureSamplerSHA256": "38e753aeafd68cac072a59eb37104c62e63b65fb8d062c8f3f958821869b2fa4",
+      "maxSampleRSSKiB": 0,
+      "rssLimitKiB": 50331648,
+      "rssSamples": [
+        {
+          "timestampUTC": "2026-09-10T01:07:51.501025+00:00",
+          "rssKiB": 0,
+          "ownedPids": []
+        }
+      ],
+      "sourceSHA256": "e7f5952d2f1c67e148d50ef9761bee5ad0162471d65d3f1f840ed71e8da1c42e",
+      "productionManifestSHA256": "784012de2a85fcd42bf6aa34ccdcb7bdcffec291fcf3b4f5c2e4c305ed1495f9",
+      "sourceManifestSHA256": "eb1513030d303cdd575d0fb4347c281c72970edba4a8e5a6905cc9ee257df4f2",
+      "headAtEnd": "0e8b44eaec52622a9d56d21b89d8308564d0333d",
+      "CP3Blob": "eeaa70aa4414648bb2a1173d58244267997d16d7",
+      "runnerSHA256": "33838f8091239758e158ba2980af28e5d10e57359423fa43494e8f579035027e",
+      "commonSHA256": "e23d86ca96674a49e0b123b7f9e6789591ee8784e82e3082f21821527766b99b",
+      "crossLaneOverlapTimestampsUTC": [],
+      "transcript": "1/1: Building DGamma.R171CoreHistoryCloneNegative (/Users/vyacheslavshebanov/Work/dgamma/research-tests/DGamma/R171CoreHistoryCloneNegative.idr)\nError: While processing right hand side of replaceCoreHistory. When unifying:\n    mapImpl classifiedGeneration coreDeletionGenerationHistory3131\nand:\n    mapImpl classifiedGeneration alternate\nMismatch between: coreDeletionGenerationHistory3131 and alternate.\n\nDGamma.R171CoreHistoryCloneNegative:16:37--16:88\n 12 | 0 replaceCoreHistory :\n 13 |   (core : ClosingFreeTraceCore name key world error value protocol nameEq keyEq trace) ->\n 14 |   (alternate : List (generation : RegistrationGeneration name ** DeletedGenerationClassification name key world error value nameEq trace generation)) ->\n 15 |   ClosingFreeTraceCore name key world error value protocol nameEq keyEq trace\n 16 | replaceCoreHistory core alternate = { coreDeletionGenerationHistory := alternate } core\n                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\n"
+    },
+    {
+      "unit": "V95-2",
+      "path": "research-tests/DGamma/R171StepAccountingCloneNegative.idr",
+      "command": [
+        "idris2",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma/src",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma/research",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma/research-tests",
+        "--check",
+        "/Users/vyacheslavshebanov/Work/dgamma/research-tests/DGamma/R171StepAccountingCloneNegative.idr"
+      ],
+      "start": "2026-09-10T01:07:51.692377+00:00",
+      "end": "2026-09-10T01:07:52.754640+00:00",
+      "seconds": 1.062118791975081,
+      "exit": 1,
+      "passed": true,
+      "fresh": true,
+      "seededPackageNoBuilding": false,
+      "supervisorGateVerbatim": null,
+      "policySHA256": "2c0832221aeb6568235a593e0bd52bb959d00f60f13ad615b1c1699fa0882af6",
+      "expectedDiagnostic": "Mismatch between: deletionRegistrationAccounting",
+      "symbol": "replaceStepAccounting",
+      "buildingLines": [
+        "DGamma.R171StepAccountingCloneNegative (/Users/vyacheslavshebanov/Work/dgamma/research-tests/DGamma/R171StepAccountingCloneNegative.idr)"
+      ],
+      "unexpectedBuilding": [],
+      "targetMutationDetected": false,
+      "mutatedPaths": [],
+      "interrupted": false,
+      "resourceStopped": false,
+      "multipleOwnedCompilers": false,
+      "memoryPressureStopped": false,
+      "wallTimeStopped": false,
+      "memoryPressureSamplingError": null,
+      "memoryPressureSamples": [],
+      "memoryPressurePolicy": null,
+      "pressureSamplerSHA256": "38e753aeafd68cac072a59eb37104c62e63b65fb8d062c8f3f958821869b2fa4",
+      "maxSampleRSSKiB": 0,
+      "rssLimitKiB": 50331648,
+      "rssSamples": [
+        {
+          "timestampUTC": "2026-09-10T01:07:52.737129+00:00",
+          "rssKiB": 0,
+          "ownedPids": []
+        }
+      ],
+      "sourceSHA256": "e2219ba7de6f502aa3d6b28b18f257ee9c7d3c4401da7ab6c51671205d792be6",
+      "productionManifestSHA256": "784012de2a85fcd42bf6aa34ccdcb7bdcffec291fcf3b4f5c2e4c305ed1495f9",
+      "sourceManifestSHA256": "eb1513030d303cdd575d0fb4347c281c72970edba4a8e5a6905cc9ee257df4f2",
+      "headAtEnd": "0e8b44eaec52622a9d56d21b89d8308564d0333d",
+      "CP3Blob": "eeaa70aa4414648bb2a1173d58244267997d16d7",
+      "runnerSHA256": "33838f8091239758e158ba2980af28e5d10e57359423fa43494e8f579035027e",
+      "commonSHA256": "e23d86ca96674a49e0b123b7f9e6789591ee8784e82e3082f21821527766b99b",
+      "crossLaneOverlapTimestampsUTC": [],
+      "transcript": "1/1: Building DGamma.R171StepAccountingCloneNegative (/Users/vyacheslavshebanov/Work/dgamma/research-tests/DGamma/R171StepAccountingCloneNegative.idr)\nError: While processing right hand side of replaceStepAccounting. When unifying:\n    deletionRegistrationAccounting3192 .canonicalToOriginal birth\nand:\n    alternate .canonicalToOriginal birth\nMismatch between: deletionRegistrationAccounting3192 and alternate.\n\nDGamma.R171StepAccountingCloneNegative:18:40--18:92\n 14 |   (step : DeletionChainStep name key world error value protocol nameEq keyEq trace premises candidate) ->\n 15 |   (alternate : CanonicalRegistrationCorrespondence trace (survivingTrace (deletionResult step))\n 16 |     (endpointWithdrawnGenerations (deletionEndpoint step))) ->\n 17 |   DeletionChainStep name key world error value protocol nameEq keyEq trace premises candidate\n 18 | replaceStepAccounting step alternate = { deletionRegistrationAccounting := alternate } step\n                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\n"
     }
   ]
 }

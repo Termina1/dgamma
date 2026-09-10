@@ -1,7 +1,7 @@
 {
   "timestampUTC": "2026-09-09T22:48:12.314694+00:00",
   "review": "PATCH FAITHFUL-WITH-NOTES; supervisor conveyed independent fidelity review; production ceecde24 stands",
-  "provenance": "Lane L2R15 rename map plus nine mappings independently identified in O6-L2R5-CP3-REHOME-MANIFEST.json:7\u201311,32\u201335; parent steering",
+  "provenance": "Lane L2R15 rename map plus nine mappings independently identified in O6-L2R5-CP3-REHOME-MANIFEST.json:7–11,32–35; parent steering",
   "renames": {
     "ActorLifecycleOnlyExtended": "ActorLifecycleCore",
     "OrderedForcedRootBundleC": "OrderedForcedRootBundle",
@@ -78,5 +78,379 @@
   "R11Disposition": "Parent ruling:11 legacy stale-by-path; not applicable; do not execute",
   "productionStatementChecksGate": "Exact compiler diagnostic then one gated revised-statement or retirement diff; no ungated production edits",
   "guardRenameQualification": "Authorized semantic specification migration to the existing terminal-earliest field, not an alias for strict placement.",
-  "retiredGuardConsumers": []
+  "retiredGuardConsumers": [],
+  "appliedResearchMigrations": [
+    {
+      "path": "research/DGamma/CP5AvailabilityAwarePlacement.idr",
+      "cause": "V20: ambiguous names rehomed into directly imported CP3",
+      "repair": "Fully qualify ORIGINAL research local type/function/constructor REFERENCES only. Definitions, bound field names, quantities and computational bodies unchanged except qualification.",
+      "beforeSHA256": "0e62fa35c396e9f26465c07dd24aab2e14d25c7d5c5980c28d5d313c63869c26",
+      "afterSHA256": "8bd32248021ff6c2e6b477e4b5328d54addd71d61281384bbd9f5cf087789506",
+      "exactRenames": [
+        {
+          "line": 56,
+          "old": "AvailabilityTrace",
+          "new": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace"
+        },
+        {
+          "line": 61,
+          "old": "AvailabilityTrace",
+          "new": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace"
+        },
+        {
+          "line": 62,
+          "old": "AvailabilityTrace",
+          "new": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace"
+        },
+        {
+          "line": 72,
+          "old": "AvailabilityTrace",
+          "new": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace"
+        },
+        {
+          "line": 73,
+          "old": "AvailabilityEnd",
+          "new": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd"
+        },
+        {
+          "line": 74,
+          "old": "rootDeclaredProvisionsFree",
+          "new": "DGamma.CP5AvailabilityAwarePlacement.rootDeclaredProvisionsFree"
+        },
+        {
+          "line": 75,
+          "old": "AvailabilityEnd",
+          "new": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd"
+        },
+        {
+          "line": 76,
+          "old": "AvailabilityStep",
+          "new": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep"
+        },
+        {
+          "line": 77,
+          "old": "rootDeclaredProvisionsFree",
+          "new": "DGamma.CP5AvailabilityAwarePlacement.rootDeclaredProvisionsFree"
+        },
+        {
+          "line": 78,
+          "old": "rootInputAtSource",
+          "new": "DGamma.CP5AvailabilityAwarePlacement.rootInputAtSource"
+        },
+        {
+          "line": 79,
+          "old": "rootCutCompatible",
+          "new": "DGamma.CP5AvailabilityAwarePlacement.rootCutCompatible"
+        },
+        {
+          "line": 80,
+          "old": "AvailabilityStep",
+          "new": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep"
+        },
+        {
+          "line": 81,
+          "old": "rootCutCompatible",
+          "new": "DGamma.CP5AvailabilityAwarePlacement.rootCutCompatible"
+        },
+        {
+          "line": 94,
+          "old": "AvailabilityTrace",
+          "new": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace"
+        },
+        {
+          "line": 95,
+          "old": "rootCutCompatible",
+          "new": "DGamma.CP5AvailabilityAwarePlacement.rootCutCompatible"
+        },
+        {
+          "line": 98,
+          "old": "rootCutCompatible",
+          "new": "DGamma.CP5AvailabilityAwarePlacement.rootCutCompatible"
+        },
+        {
+          "line": 115,
+          "old": "EarliestAvailableRootBirth",
+          "new": "DGamma.CP5AvailabilityAwarePlacement.EarliestAvailableRootBirth"
+        }
+      ],
+      "candidatePath": "/tmp/dgamma-r205/CP5AvailabilityAwarePlacement.candidate",
+      "attemptUnit": "L1-1",
+      "exactDiff": "--- a/research/DGamma/CP5AvailabilityAwarePlacement.idr\n+++ b/research/DGamma/CP5AvailabilityAwarePlacement.idr\n@@ -56 +56 @@\n-    AvailabilityTrace name key world error value (NoTransitions {state = state})\n+    DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value (NoTransitions {state = state})\n@@ -61,2 +61,2 @@\n-    (0 rest : Transitions middle finalState) -> AvailabilityTrace name key world error value rest ->\n-    AvailabilityTrace name key world error value (MoreTransitions step rest)\n+    (0 rest : Transitions middle finalState) -> DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value rest ->\n+    DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value (MoreTransitions step rest)\n@@ -72,10 +72,10 @@\n-  AvailabilityTrace name key world error value trace -> Bool\n-rootCutCompatible name key world error value nameEq keyEq component Z (AvailabilityEnd state) =\n-  rootDeclaredProvisionsFree name key world error value keyEq component state\n-rootCutCompatible name key world error value nameEq keyEq component (S position) (AvailabilityEnd state) = False\n-rootCutCompatible name key world error value nameEq keyEq component Z (AvailabilityStep first (Fired _ _ action _ _) rest later) =\n-  rootDeclaredProvisionsFree name key world error value keyEq component first &&\n-  not (rootInputAtSource name key world error value nameEq action first) &&\n-  rootCutCompatible name key world error value nameEq keyEq component Z later\n-rootCutCompatible name key world error value nameEq keyEq component (S position) (AvailabilityStep first step rest later) =\n-  rootCutCompatible name key world error value nameEq keyEq component position later\n+  DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value trace -> Bool\n+rootCutCompatible name key world error value nameEq keyEq component Z (DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd state) =\n+  DGamma.CP5AvailabilityAwarePlacement.rootDeclaredProvisionsFree name key world error value keyEq component state\n+rootCutCompatible name key world error value nameEq keyEq component (S position) (DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd state) = False\n+rootCutCompatible name key world error value nameEq keyEq component Z (DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep first (Fired _ _ action _ _) rest later) =\n+  DGamma.CP5AvailabilityAwarePlacement.rootDeclaredProvisionsFree name key world error value keyEq component first &&\n+  not (DGamma.CP5AvailabilityAwarePlacement.rootInputAtSource name key world error value nameEq action first) &&\n+  DGamma.CP5AvailabilityAwarePlacement.rootCutCompatible name key world error value nameEq keyEq component Z later\n+rootCutCompatible name key world error value nameEq keyEq component (S position) (DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep first step rest later) =\n+  DGamma.CP5AvailabilityAwarePlacement.rootCutCompatible name key world error value nameEq keyEq component position later\n@@ -94,2 +94,2 @@\n-  rootAvailabilityTrail : AvailabilityTrace name key world error value (beforeActionOccurrence birth)\n-  0 rootCurrentCutAvailable : rootCutCompatible name key world error value nameEq keyEq component\n+  rootAvailabilityTrail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value (beforeActionOccurrence birth)\n+  0 rootCurrentCutAvailable : DGamma.CP5AvailabilityAwarePlacement.rootCutCompatible name key world error value nameEq keyEq component\n@@ -98 +98 @@\n-    rootCutCompatible name key world error value nameEq keyEq component earlier rootAvailabilityTrail = False\n+    DGamma.CP5AvailabilityAwarePlacement.rootCutCompatible name key world error value nameEq keyEq component earlier rootAvailabilityTrail = False\n@@ -115 +115 @@\n-    EarliestAvailableRootBirth name key world error value nameEq keyEq trace root component birth\n+    DGamma.CP5AvailabilityAwarePlacement.EarliestAvailableRootBirth name key world error value nameEq keyEq trace root component birth\n",
+      "status": "PASS; guarded LEXICAL commit",
+      "passingInvocation": "L1-1"
+    },
+    {
+      "path": "research-tests/DGamma/R181O19LocatedBlocks.idr",
+      "cause": "V34: removed actor-only constructors; downstream block-order error consequent on missing blocks",
+      "repair": "Constructor renames into Core plus ActorWithoutForcedRoots wrappers around SAME two concrete native bodies. No new assertion, edge, premise, record field or theorem.",
+      "beforeSHA256": "e7bcb0e849d264b6951c053a50dd921fa6c4e22494bdba72484bcfefc0fd6a3f",
+      "afterSHA256": "ea212db6d579f63b474580aee06c9ffeb680a0edec67a4a93cf12caa14fbcaea",
+      "exactRenames": [
+        {
+          "old": "(ActorLifecycleStep _ _ Refl Refl\n    (ActorLifecycleStep _ _ Refl Refl ActorLifecycleEnd))",
+          "new": "(ActorWithoutForcedRoots r181ProviderBlockBody\n    (CoreLifecycleStep _ _ Refl Refl\n      (CoreLifecycleStep _ _ Refl Refl CoreLifecycleEnd)))"
+        },
+        {
+          "old": "(ActorLifecycleStep _ _ Refl Refl ActorLifecycleEnd) NoTransitions",
+          "new": "(ActorWithoutForcedRoots r181ConsumerBlockBody\n    (CoreLifecycleStep _ _ Refl Refl CoreLifecycleEnd)) NoTransitions"
+        }
+      ],
+      "candidatePath": "/tmp/dgamma-r205/R181O19LocatedBlocks.candidate",
+      "attemptUnit": "L2-1",
+      "exactDiff": "--- a/research-tests/DGamma/R181O19LocatedBlocks.idr\n+++ b/research-tests/DGamma/R181O19LocatedBlocks.idr\n@@ -108,2 +108,3 @@\n-  (ActorLifecycleStep _ _ Refl Refl\n-    (ActorLifecycleStep _ _ Refl Refl ActorLifecycleEnd))\n+  (ActorWithoutForcedRoots r181ProviderBlockBody\n+    (CoreLifecycleStep _ _ Refl Refl\n+      (CoreLifecycleStep _ _ Refl Refl CoreLifecycleEnd)))\n@@ -130 +131,2 @@\n-  (ActorLifecycleStep _ _ Refl Refl ActorLifecycleEnd) NoTransitions\n+  (ActorWithoutForcedRoots r181ConsumerBlockBody\n+    (CoreLifecycleStep _ _ Refl Refl CoreLifecycleEnd)) NoTransitions\n",
+      "status": "PASS; guarded LEXICAL commit",
+      "passingInvocation": "L2-1"
+    },
+    {
+      "path": "research-tests/DGamma/R174O17ProvisionCollisionCandidate.idr",
+      "cause": "V52: imported CPP3 rehomed-name ambiguity",
+      "repair": "Explicit original CP5AvailabilityAwarePlacement references; source declaration and computational behavior unchanged",
+      "beforeSHA256": "85b616df762a4e210a9846ca2f91487082ac39d9eec648bdcd3fd6ac56c1fc4e",
+      "afterSHA256": "b7d1f56080898cd8151341d77f1e0e15a4bede65edb0a8bc65be730a9e8a23d7",
+      "exactRenames": [
+        {
+          "line": 105,
+          "old": "AvailabilityTrace",
+          "new": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace"
+        },
+        {
+          "line": 106,
+          "old": "AvailabilityEnd",
+          "new": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd"
+        },
+        {
+          "line": 107,
+          "old": "AvailabilityStep",
+          "new": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep"
+        },
+        {
+          "line": 116,
+          "old": "AvailabilityTrace",
+          "new": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace"
+        },
+        {
+          "line": 117,
+          "old": "AvailabilityEnd",
+          "new": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd"
+        },
+        {
+          "line": 118,
+          "old": "AvailabilityEnd",
+          "new": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd"
+        },
+        {
+          "line": 123,
+          "old": "AvailabilityStep",
+          "new": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep"
+        },
+        {
+          "line": 137,
+          "old": "AvailabilityStep",
+          "new": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep"
+        },
+        {
+          "line": 137,
+          "old": "AvailabilityStep",
+          "new": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep"
+        },
+        {
+          "line": 137,
+          "old": "rootDeclaredProvisionsFree",
+          "new": "DGamma.CP5AvailabilityAwarePlacement.rootDeclaredProvisionsFree"
+        },
+        {
+          "line": 138,
+          "old": "rootCutCompatible",
+          "new": "DGamma.CP5AvailabilityAwarePlacement.rootCutCompatible"
+        },
+        {
+          "line": 139,
+          "old": "rootCutCompatible",
+          "new": "DGamma.CP5AvailabilityAwarePlacement.rootCutCompatible"
+        },
+        {
+          "line": 140,
+          "old": "rootCutCompatible",
+          "new": "DGamma.CP5AvailabilityAwarePlacement.rootCutCompatible"
+        },
+        {
+          "line": 141,
+          "old": "rootCutCompatible",
+          "new": "DGamma.CP5AvailabilityAwarePlacement.rootCutCompatible"
+        },
+        {
+          "line": 142,
+          "old": "rootCutCompatible",
+          "new": "DGamma.CP5AvailabilityAwarePlacement.rootCutCompatible"
+        },
+        {
+          "line": 143,
+          "old": "rootCutCompatible",
+          "new": "DGamma.CP5AvailabilityAwarePlacement.rootCutCompatible"
+        }
+      ],
+      "candidatePath": "/tmp/dgamma-r205/R174O17ProvisionCollisionCandidate.candidate",
+      "attemptUnit": "L3-1",
+      "exactDiff": "--- a/research-tests/DGamma/R174O17ProvisionCollisionCandidate.idr\n+++ b/research-tests/DGamma/R174O17ProvisionCollisionCandidate.idr\n@@ -105,3 +105,3 @@\n-  (trace : Transitions first finalState) -> AvailabilityTrace Nat ToyKey ToyRuntime String ToyValue trace\n-r178R174Annotate {first} NoTransitions = AvailabilityEnd first\n-r178R174Annotate {first} (MoreTransitions step rest) = AvailabilityStep first step rest (r178R174Annotate rest)\n+  (trace : Transitions first finalState) -> DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace Nat ToyKey ToyRuntime String ToyValue trace\n+r178R174Annotate {first} NoTransitions = DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd first\n+r178R174Annotate {first} (MoreTransitions step rest) = DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep first step rest (r178R174Annotate rest)\n@@ -116,3 +116,3 @@\n-   (appendTransitions prior later = trace, AvailabilityTrace Nat ToyKey ToyRuntime String ToyValue prior))\n-r178R174AnnotatedPrefix {first} Z trace = (first ** NoTransitions ** trace ** (Refl, AvailabilityEnd first))\n-r178R174AnnotatedPrefix {first} (S count) NoTransitions = (first ** NoTransitions ** NoTransitions ** (Refl, AvailabilityEnd first))\n+   (appendTransitions prior later = trace, DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace Nat ToyKey ToyRuntime String ToyValue prior))\n+r178R174AnnotatedPrefix {first} Z trace = (first ** NoTransitions ** trace ** (Refl, DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd first))\n+r178R174AnnotatedPrefix {first} (S count) NoTransitions = (first ** NoTransitions ** NoTransitions ** (Refl, DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd first))\n@@ -123 +123 @@\n-        (cong (MoreTransitions step) decomposition, AvailabilityStep first step prior annotations))\n+        (cong (MoreTransitions step) decomposition, DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep first step prior annotations))\n@@ -137,7 +137,7 @@\n-           (case annotations of AvailabilityStep _ _ _ (AvailabilityStep early _ _ _) => rootDeclaredProvisionsFree Nat ToyKey ToyRuntime String ToyValue %search component early; _ => False),\n-           rootCutCompatible Nat ToyKey ToyRuntime String ToyValue %search %search component 0 annotations,\n-           rootCutCompatible Nat ToyKey ToyRuntime String ToyValue %search %search component 1 annotations,\n-           rootCutCompatible Nat ToyKey ToyRuntime String ToyValue %search %search component 2 annotations,\n-           rootCutCompatible Nat ToyKey ToyRuntime String ToyValue %search %search component 3 annotations,\n-           rootCutCompatible Nat ToyKey ToyRuntime String ToyValue %search %search component 4 annotations,\n-           rootCutCompatible Nat ToyKey ToyRuntime String ToyValue %search %search component 5 annotations]\n+           (case annotations of DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep _ _ _ (DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep early _ _ _) => DGamma.CP5AvailabilityAwarePlacement.rootDeclaredProvisionsFree Nat ToyKey ToyRuntime String ToyValue %search component early; _ => False),\n+           DGamma.CP5AvailabilityAwarePlacement.rootCutCompatible Nat ToyKey ToyRuntime String ToyValue %search %search component 0 annotations,\n+           DGamma.CP5AvailabilityAwarePlacement.rootCutCompatible Nat ToyKey ToyRuntime String ToyValue %search %search component 1 annotations,\n+           DGamma.CP5AvailabilityAwarePlacement.rootCutCompatible Nat ToyKey ToyRuntime String ToyValue %search %search component 2 annotations,\n+           DGamma.CP5AvailabilityAwarePlacement.rootCutCompatible Nat ToyKey ToyRuntime String ToyValue %search %search component 3 annotations,\n+           DGamma.CP5AvailabilityAwarePlacement.rootCutCompatible Nat ToyKey ToyRuntime String ToyValue %search %search component 4 annotations,\n+           DGamma.CP5AvailabilityAwarePlacement.rootCutCompatible Nat ToyKey ToyRuntime String ToyValue %search %search component 5 annotations]\n",
+      "status": "PASS; guarded LEXICAL commit",
+      "passingInvocation": "L3-1"
+    }
+  ],
+  "protectedCanonicalSortMigration": {
+    "path": "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+    "diagnosticInvocation": "V100",
+    "status": "COMMITTED a2c3ace54a7b89de978c9eb3ab33e09c73bf95b8",
+    "beforeSHA256": "3b62ba1c3bc88503116ed22d82c667043f7f41dd483fb093cc25b677a55245cc",
+    "afterSHA256": "eb0ab7b95779a4b44360b222030e7aa0f8d134c17ea4d2dfa98f3306e135df1b",
+    "patchSHA256": "7e13c53c889ecaf8ac0389c405b807519f7c6e90cb2648dfb635ef107a998083",
+    "candidatePath": "/tmp/dgamma-r205/CanonicalSort.candidate",
+    "edits": [
+      {
+        "old": "    {initial, canonicalFinal : SystemState name key value world error} ->\n    (canonical : Transitions initial canonicalFinal) ->",
+        "new": "    {initial, inputFinal, canonicalFinal : SystemState name key value world error} ->\n    {0 inputOriginal : Transitions initial inputFinal} ->\n    (canonical : Transitions initial canonicalFinal) ->",
+        "count": 1
+      },
+      {
+        "old": "      order canonical",
+        "new": "      order inputOriginal canonical",
+        "count": 2
+      },
+      {
+        "old": "nameEq keyEq originalFinal (orderedSupportNames ordering) sortedTrace",
+        "new": "nameEq keyEq originalFinal (orderedSupportNames ordering) original sortedTrace",
+        "count": 1
+      },
+      {
+        "old": "    (orderedSupportNames ordering) trace ->\n  CanonicalRegistrationCorrespondence trace trace [] ->",
+        "new": "    (orderedSupportNames ordering) trace trace ->\n  CanonicalRegistrationCorrespondence trace trace [] ->",
+        "count": 1
+      },
+      {
+        "old": "record CanonicalWorkActorPrefix\n  (name, key, world, error : Type) (value : key -> Type) (selected : name)",
+        "new": "record CanonicalWorkActorPrefix\n  (name, key, world, error : Type) (value : key -> Type)\n  (nameEq : DecEq name) (selected : name)",
+        "count": 1
+      },
+      {
+        "old": "CanonicalWorkActorPrefix name key world error value selected",
+        "new": "CanonicalWorkActorPrefix name key world error value nameEq selected",
+        "count": 14
+      },
+      {
+        "old": "0 workPrefixActorOnly : ActorLifecycleOnly selected workActorPrefix",
+        "new": "0 workPrefixActorCore : ActorLifecycleCore nameEq selected workActorPrefix",
+        "count": 1
+      },
+      {
+        "old": "workPrefixActorOnly",
+        "new": "workPrefixActorCore",
+        "count": 3
+      },
+      {
+        "old": "0 canonicalWorkActorPrefixCons :\n  (name, key, world, error : Type) -> (value : key -> Type) -> (selected : name) ->",
+        "new": "0 canonicalWorkActorPrefixCons :\n  (name, key, world, error : Type) -> (value : key -> Type) ->\n  {nameEq : DecEq name} -> (selected : name) ->",
+        "count": 1
+      },
+      {
+        "old": "ActorLifecycleStep",
+        "new": "CoreLifecycleStep",
+        "count": 1
+      },
+      {
+        "old": "ActorYieldedRegistrationStep",
+        "new": "CoreYieldedRegistrationStep",
+        "count": 1
+      },
+      {
+        "old": "ActorLifecycleEnd",
+        "new": "CoreLifecycleEnd",
+        "count": 2
+      },
+      {
+        "old": "    (workPrefixActorCore scanned) (workActorRest scanned)",
+        "new": "    (ActorWithoutForcedRoots (workActorPrefix scanned) (workPrefixActorCore scanned)) (workActorRest scanned)",
+        "count": 1
+      },
+      {
+        "old": "0 canonicalChildPlacementFromForward :\n  {name, key, world, error : Type} -> {value : key -> Type} ->\n  {nameEq : DecEq name} -> {keyEq : DecEq key} ->\n  {originalFinal, reducedFinal : SystemState name key value world error} ->\n  {order : List name} ->\n  {initial, canonicalFinal : SystemState name key value world error} ->\n  {canonical : Transitions initial canonicalFinal} ->\n  (placement : CanonicalInputPlacement name key world error value nameEq keyEq\n    reducedFinal order canonical) ->\n  (selected, parent : name) ->\n  (selectedIn : Elem selected order) ->\n  (fiber : Fiber name key value world error) ->\n  (forward : CanonicalOutsideFiberForward name key world error value nameEq\n    selected originalFinal reducedFinal fiber) ->\n  fiberParent fiber = ChildOf parent ->\n  (component : Component key value world error **\n   birth : LocatedGeneratedRegistration selected parent component canonical **\n   (lookupFiber @{nameEq} {name = name} {key = key} {value = value}\n      {world = world} {error = error} selected\n      (registry (registrationBefore birth)) = Nothing,\n    (action : Action name key value world error) ->\n    (lifecycle : LocatedActionOccurrence action canonical) ->\n    isLifecycleAction action = True -> actionOwner action = selected ->\n    LT (registrationOrdinal birth) (locatedActionOrdinal lifecycle)))",
+        "new": "0 canonicalChildPlacementFromForward :\n  {name, key, world, error : Type} -> {value : key -> Type} ->\n  {nameEq : DecEq name} -> {keyEq : DecEq key} ->\n  {originalFinal, reducedFinal : SystemState name key value world error} ->\n  {order : List name} ->\n  {initial, inputFinal, canonicalFinal : SystemState name key value world error} ->\n  {0 inputOriginal : Transitions initial inputFinal} ->\n  {canonical : Transitions initial canonicalFinal} ->\n  (placement : CanonicalInputPlacement name key world error value nameEq keyEq\n    reducedFinal order inputOriginal canonical) ->\n  (selected, parent : name) ->\n  (selectedIn : Elem selected order) ->\n  (fiber : Fiber name key value world error) ->\n  (forward : CanonicalOutsideFiberForward name key world error value nameEq\n    selected originalFinal reducedFinal fiber) ->\n  fiberParent fiber = ChildOf parent ->\n  (component : Component key value world error **\n   birth : LocatedGeneratedRegistration selected parent component canonical **\n   (lookupFiber @{nameEq} {name = name} {key = key} {value = value}\n      {world = world} {error = error} selected\n      (registry (registrationBefore birth)) = Nothing,\n    (action : Action name key value world error) ->\n    (lifecycle : LocatedActionOccurrence action canonical) ->\n    isLifecycleAction action = True -> actionOwner action = selected ->\n    LT (registrationOrdinal birth) (locatedActionOrdinal lifecycle)))",
+        "count": 1
+      },
+      {
+        "old": "0 canonicalChildPlacementToOriginal :\n  {name, key, world, error : Type} -> {value : key -> Type} ->\n  {nameEq : DecEq name} -> {keyEq : DecEq key} ->\n  {originalFinal, reducedFinal : SystemState name key value world error} ->\n  {order : List name} ->\n  {initial, canonicalFinal : SystemState name key value world error} ->\n  {canonical : Transitions initial canonicalFinal} ->\n  (endpoint : CanonicalEndpointRelation name key world error value nameEq keyEq\n    originalFinal reducedFinal) ->\n  (originalLinearization : LinearizesSupport name key world error value nameEq\n    keyEq originalFinal order) ->\n  (placement : CanonicalInputPlacement name key world error value nameEq keyEq\n    reducedFinal order canonical) ->\n  (selected, parent : name) ->\n  (selectedIn : Elem selected order) ->\n  (fiber : Fiber name key value world error) ->\n  lookupFiber @{nameEq} selected (registry originalFinal) = Just fiber ->\n  fiberParent fiber = ChildOf parent ->\n  (component : Component key value world error **\n   birth : LocatedGeneratedRegistration selected parent component canonical **\n   (lookupFiber @{nameEq} {name = name} {key = key} {value = value}\n      {world = world} {error = error} selected\n      (registry (registrationBefore birth)) = Nothing,\n    (action : Action name key value world error) ->\n    (lifecycle : LocatedActionOccurrence action canonical) ->\n    isLifecycleAction action = True -> actionOwner action = selected ->\n    LT (registrationOrdinal birth) (locatedActionOrdinal lifecycle)))",
+        "new": "0 canonicalChildPlacementToOriginal :\n  {name, key, world, error : Type} -> {value : key -> Type} ->\n  {nameEq : DecEq name} -> {keyEq : DecEq key} ->\n  {originalFinal, reducedFinal : SystemState name key value world error} ->\n  {order : List name} ->\n  {initial, inputFinal, canonicalFinal : SystemState name key value world error} ->\n  {0 inputOriginal : Transitions initial inputFinal} ->\n  {canonical : Transitions initial canonicalFinal} ->\n  (endpoint : CanonicalEndpointRelation name key world error value nameEq keyEq\n    originalFinal reducedFinal) ->\n  (originalLinearization : LinearizesSupport name key world error value nameEq\n    keyEq originalFinal order) ->\n  (placement : CanonicalInputPlacement name key world error value nameEq keyEq\n    reducedFinal order inputOriginal canonical) ->\n  (selected, parent : name) ->\n  (selectedIn : Elem selected order) ->\n  (fiber : Fiber name key value world error) ->\n  lookupFiber @{nameEq} selected (registry originalFinal) = Just fiber ->\n  fiberParent fiber = ChildOf parent ->\n  (component : Component key value world error **\n   birth : LocatedGeneratedRegistration selected parent component canonical **\n   (lookupFiber @{nameEq} {name = name} {key = key} {value = value}\n      {world = world} {error = error} selected\n      (registry (registrationBefore birth)) = Nothing,\n    (action : Action name key value world error) ->\n    (lifecycle : LocatedActionOccurrence action canonical) ->\n    isLifecycleAction action = True -> actionOwner action = selected ->\n    LT (registrationOrdinal birth) (locatedActionOrdinal lifecycle)))",
+        "count": 1
+      },
+      {
+        "old": "0 canonicalInputPlacementToOriginal :\n  {name, key, world, error : Type} -> {value : key -> Type} ->\n  {nameEq : DecEq name} -> {keyEq : DecEq key} ->\n  {originalFinal, reducedFinal : SystemState name key value world error} ->\n  {order : List name} ->\n  {initial, canonicalFinal : SystemState name key value world error} ->\n  (endpoint : CanonicalEndpointRelation name key world error value nameEq keyEq\n    originalFinal reducedFinal) ->\n  (originalLinearization : LinearizesSupport name key world error value nameEq\n    keyEq originalFinal order) ->\n  (canonical : Transitions initial canonicalFinal) ->\n  CanonicalInputPlacement name key world error value nameEq keyEq reducedFinal\n    order canonical ->\n  CanonicalInputPlacement name key world error value nameEq keyEq originalFinal\n    order canonical",
+        "new": "0 canonicalInputPlacementToOriginal :\n  {name, key, world, error : Type} -> {value : key -> Type} ->\n  {nameEq : DecEq name} -> {keyEq : DecEq key} ->\n  {originalFinal, reducedFinal : SystemState name key value world error} ->\n  {order : List name} ->\n  {initial, inputFinal, canonicalFinal : SystemState name key value world error} ->\n  {0 inputOriginal : Transitions initial inputFinal} ->\n  (endpoint : CanonicalEndpointRelation name key world error value nameEq keyEq\n    originalFinal reducedFinal) ->\n  (originalLinearization : LinearizesSupport name key world error value nameEq\n    keyEq originalFinal order) ->\n  (canonical : Transitions initial canonicalFinal) ->\n  CanonicalInputPlacement name key world error value nameEq keyEq reducedFinal\n    order inputOriginal canonical ->\n  CanonicalInputPlacement name key world error value nameEq keyEq originalFinal\n    order inputOriginal canonical",
+        "count": 1
+      },
+      {
+        "old": "    MkCanonicalInputPlacement (allRootInputsFirst placement)\n      (rootGenerationFresh placement)\n      (rootGenerationBeforeLifecycle placement)",
+        "new": "    MkCanonicalInputPlacement (placementExternalInputsSame placement)\n      (rootGenerationEarliestAvailable placement)\n      (rootGenerationFresh placement)\n      (rootGenerationBeforeOwnLifecycle placement)",
+        "count": 1
+      },
+      {
+        "old": "      (inputPlacementToOriginal supportTransport\n        (sortedTrace sorted) (sortedInputPlacement sorted))",
+        "new": "      (MkCanonicalInputPlacement (accountedExternalInputs accounting)\n        (rootGenerationEarliestAvailable (inputPlacementToOriginal supportTransport\n          (sortedTrace sorted) (sortedInputPlacement sorted)))\n        (rootGenerationFresh (inputPlacementToOriginal supportTransport\n          (sortedTrace sorted) (sortedInputPlacement sorted)))\n        (rootGenerationBeforeOwnLifecycle (inputPlacementToOriginal supportTransport\n          (sortedTrace sorted) (sortedInputPlacement sorted)))\n        (childGenerationBeforeOwnLifecycle (inputPlacementToOriginal supportTransport\n          (sortedTrace sorted) (sortedInputPlacement sorted))))",
+        "count": 1
+      }
+    ],
+    "protectedDeclarationUnchanged": true,
+    "scope": "Thread original trace indices; retain same two-case scan as SUBSET of Core (NOT generalized producer), rename core field/constructors, wrap concrete core only at block boundary; forward new placement fields and rebuild original-indexed placement using ALREADY AVAILABLE accountedExternalInputs. No new premise, theorem, case, normalizer, cast, hole, let/with or unsafe construct.",
+    "allowedInvocations": [
+      "V100-2",
+      "V100-3",
+      "V100-4"
+    ],
+    "gateVerbatim": "APPROVED (frozen-module migration gate): apply research-tests/O6-R205-CANONICALSORT-MIGRATION-PROPOSAL.patch (SHA 7e13c53c…, 21 hunks / 18 replacement blocks) to CP5ConfluenceCanonicalSortSpike as read by the supervisor — inputOriginal threading, nameEq threading, Core constructors, ActorWithoutForcedRoots wrapping only at the block boundary (the sort's two-case scan stays a SUBSET core, no forced producer implied), removed projections replaced by the new CIP fields, final original-indexed placement rebuilt from accountedExternalInputs + inputPlacementToOriginal projections. Conditions: ≤3 lexical/elaboration attempts (V100-2..4); NO premise/theorem/case added; the O17 hole declaration+body sortClosingFreeTraceSpike must remain byte-identical; on PASS commit with a FROZEN-MIGRATION receipt (before SHA 3b62ba1c…, after SHA, hunk list) and record the new CanonicalSort hash as the post-unfreeze frozen baseline; on 3 failures revert to 3b62ba1c… bytes, mark CanonicalSort + its 224 dependents BROKEN-BY-UNFREEZE / UNCHECKED and gate.",
+    "hunks": [
+      "@@ -104,12 +104,13 @@",
+      "@@ -157,7 +158,7 @@",
+      "@@ -1292,7 +1293,7 @@",
+      "@@ -2017,33 +2018,35 @@",
+      "@@ -2053,15 +2056,15 @@",
+      "@@ -2113,7 +2116,7 @@",
+      "@@ -2122,7 +2125,7 @@",
+      "@@ -2141,7 +2144,7 @@",
+      "@@ -2150,7 +2153,7 @@",
+      "@@ -2160,7 +2163,7 @@",
+      "@@ -2200,7 +2203,7 @@",
+      "@@ -2241,7 +2244,7 @@",
+      "@@ -2700,7 +2703,7 @@",
+      "@@ -3485,7 +3488,7 @@",
+      "@@ -3578,7 +3581,7 @@",
+      "@@ -3608,7 +3611,7 @@",
+      "@@ -3631,7 +3634,7 @@",
+      "@@ -4180,10 +4183,11 @@",
+      "@@ -4213,14 +4217,15 @@",
+      "@@ -4248,21 +4253,23 @@",
+      "@@ -4798,8 +4805,15 @@"
+    ],
+    "passingInvocation": "V100-2"
+  },
+  "productionStatementMigration": {
+    "timestampUTC": "2026-09-09T23:51:12.475230+00:00",
+    "path": "src/DGamma/CP3StatementChecks.idr",
+    "beforeSHA256": "aa7b71a88c1e16304c0247880403ee68c776a5b43683759cdeffc750623d33e9",
+    "afterSHA256": "4f6fee4bd1d937a7836d7ce61ed7c91e782f6ed82b3766a7164b7f4316659fab",
+    "patchPath": "research-tests/O6-R205-CP3-STATEMENT-CHECKS-PROPOSAL.patch",
+    "patchSHA256": "63be87410c5b8f62a6cb0fb9cd1751322d6079b7df2b0aa44e1f8aead0437ce7",
+    "gateVerbatim": "APPROVED: apply research-tests/O6-R205-CP3-STATEMENT-CHECKS-PROPOSAL.patch (SHA256 202b71ec59c197af…, 45 lines, six replacements) to src/DGamma/CP3StatementChecks.idr exactly as read by the supervisor — original-trace threading at 3426/3587, core constructor guard with explicit nameEq (CoreYieldedRegistrationStep), canonicalAllRootInputsGuard → canonicalRootEarliestAvailableGuard = rootGenerationEarliestAvailable projection, own-lifecycle guard with `actionOwner action = root` → rootGenerationBeforeOwnLifecycle. This is the second and last authorized production edit of this shift (PRODUCTION receipt citing this gate and the S33 failure log; before/after hashes). Record the renamed guard in the rename map (consumers of canonicalAllRootInputsGuard become repair candidates). S31-4 PASS accepted: CP4SupportSolution datum = 160.8 GiB / 986 s (guard 200 GiB from now on, datum-based; record it in the baselines and the agent-facing cost table). Continue the closure.",
+    "sourceEditNumber": 2,
+    "lastAuthorizedProductionEdit": true,
+    "priorFailureInvocation": "S33",
+    "passingInvocation": "S34-1",
+    "preCommitCheck": "Exact gated uncommitted source allowed for ONE fresh check; guarded production migration commit requires PASS",
+    "failureInvocations": [
+      "S33",
+      "S33-2",
+      "S33-3"
+    ],
+    "textualChanges": 8,
+    "additionalGateVerbatim": "APPROVED: consolidate the explicit implicit telescope for canonicalBlockRegistrationGuard into the same second production commit — `{name, key, world, error : Type} -> {value : key -> Type} ->` before nameEq, then `{selected, child : name} -> {childComponent : Component key value world error} -> {first, middle, finalState : SystemState name key value world error} ->`, body unchanged (`= CoreYieldedRegistrationStep`), no premise added. S33-3 is the last elaboration attempt for this migration; on PASS commit with the PRODUCTION receipt listing all seven textual changes and the S33/S33-2 failure logs; on FAIL revert CP3StatementChecks to its committed bytes, mark it BROKEN-BY-UNFREEZE in the manifest, and continue the closure that does not depend on it.",
+    "status": "S34-1 PASS; second/final production migration committed227c2f98",
+    "individualProofArrowAnnotations": 2,
+    "quantityGateVerbatim": "NEW GATED MICRO-UNIT (supervisor-owned, distinct statement, not a restatement): S34 \"quantity-aligned canonicalBlockRegistrationGuard\" — the S33-3 diagnosis is exact and lexical: the guard's proof arrows must carry multiplicity 0 to alias CoreYieldedRegistrationStep (`(0 yielded : …) -> (0 only : ActorLifecycleCore …) -> …`). Apply the full approved six-replacement patch + the explicit telescope + the 0-annotations on exactly those proof arrows, body unchanged (`= CoreYieldedRegistrationStep`). ONE attempt (S34-1). On PASS: commit as the second/final production edit with the PRODUCTION receipt listing all textual changes and the S33/S33-2/S33-3 failure logs. On FAIL: revert to aa7b71a8… bytes, BROKEN-BY-UNFREEZE, no further attempts. Package P2 depends on it, so do this before the remaining research closure."
+  }
 }

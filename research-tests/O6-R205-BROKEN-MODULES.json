@@ -25,6 +25,30 @@
       "status": "FAILED \u2014 pre-existing constructor telescope; record-only supervisor gate",
       "cause": "MkGenerationScopedClosingStart expects opening-ordinal equality before generation; supervisor ordered record only, not a CP3-unfreeze attribution or repair.",
       "repair": "NONE"
+    },
+    {
+      "path": "research-tests/DGamma/R172O17OpenParentRootReuseCandidate.idr",
+      "invocation": "V111",
+      "sourceSHA256": "5702a99c11b1025ff00250660cff7b5230556a1814b30e27fadfe9b113713ac4",
+      "status": "BROKEN BY UNFREEZE \u2014 re-proof/scope obligation",
+      "cause": "Historical strict-root-first and root-before-OTHER-child conclusions are retired by A8/A12. This is NOT a refutation of the revised placement predicate.",
+      "repair": "NONE"
+    },
+    {
+      "path": "research/DGamma/CP5O20RightOpeningTransportSpike.idr",
+      "invocation": "V185",
+      "sourceSHA256": "f2da10325655665842f58cd43dd7b918aa1b3e888aa07a552a086ae79fdde8dd",
+      "status": "BROKEN BY UNFREEZE \u2014 re-proof/scope obligation",
+      "cause": "Owner-frame proof assumes old actor-only grammar: NoGeneratedChild right alone does not exclude existing-child controls or attached root owners. Need future semantic shape/control obligations; no cases/premises added.",
+      "repair": "NONE"
+    },
+    {
+      "path": "research/DGamma/CP5O19OriginalBlockClassSpike.idr",
+      "invocation": "V204",
+      "sourceSHA256": "bd28de8e4dafdd7a8e423d29ba136b8cbdd9b2fdb0f6249223a5b2629882645a",
+      "status": "BROKEN BY UNFREEZE \u2014 re-proof/scope obligation",
+      "cause": "Two-case own-lifecycle/yielded-child block-word observation does not cover new child controls/attached root orchestration; future semantic classification required, no reverse coercion.",
+      "repair": "NONE"
     }
   ]
 }

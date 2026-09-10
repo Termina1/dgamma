@@ -5042,3 +5042,58 @@ was fully reverted. New supervisor-owned S34 quantity-aligned statement then
 PASSED its sole attempt (24.023s,1.948GiB). No unsafe construct/new hole.
 SupportSolution freshly PASSED unchanged at160.766GiB/986.352s; future guarded
 checks use200GiB by accepted datum. Its pre-unfreeze isolated cost is unknown.
+
+## Status
+
+### R205 — production unfreeze; checked integration, NOT a new proof shift
+
+**Fully checked:** exact owner-signed Tier1 CP3 definition patch (`ceecde24`),
+gated quantity-aligned statement consumers (`227c2f98`),163 affected production
+modules and no-Building package P2;44 unchanged production prerequisites are
+explicit authenticated seeds, not claimed fresh. Four research consumer
+migrations passed: three non-frozen namespace/constructor changes and the exact
+gated CanonicalSort migration (`a2c3ace5`). O19Surface, LocalDiamond,
+DeletionChain, RenamingComposition and UniqueOrdinal also freshly checked.
+There is **no newly closed theorem** in this shift.
+
+**Partial:** current main inventory543 =349 fresh expected outcomes (313 positive,
+36 authenticated negative),6 failures,133 blocked imports,44 seeds,11 standing
+legacy exclusions. Five failures are old actor/placement-domain consumers;
+R137 is a separately recorded pre-existing telescope failure. CrossTrace's
+unchanged O19 body is NOT currently revalidated: its block-word import fails.
+Historical research correspondence “proved” rows belong to their recorded old
+source checkpoint, not automatic certification under revised CP3.
+
+**Merely stated / open:** general forced-phase producer and normalizer, four
+lifecycle-shape premises, cross-bundle/source-owned control and whole-history
+obligations; full synchronization/rebase/D5 and Thm73 closure. The CanonicalSort
+scan remains the old two-case SUBSET of Core, not a generalized producer.
+
+**Escape-hatch census unchanged:** `sortClosingFreeTraceSpike`,
+`selectOperationalCanonicalPermutationSpike`, `canonicalSchedulesConvergeSpike`,
+`replayedCanonicalToOriginalEndpointSpike`:4 =1/2/0/0/1, every declaration AND
+body byte-identical. No new hole, postulate, partial function, unsafe cast,
+`believe_me`, `assert_total`, `assert_smaller`, or repair let/with was added.
+No frozen deletion theorem was called by a new repair.
+
+**Quantity/API decisions:** exactly two registration-guard evidence arrows became
+0; five signed LocatedOpenEpisodeBlock fields are0. Original trace indices and
+existing dictionaries are threaded, not replaced by new semantic assumptions.
+Final original-indexed placement is packed from already-owned external accounting.
+The old strict-root-first refutation is retired by A8/A12, not presented as an
+error in the revised specification or the paper.
+
+**Resources/evidence:** initial96GiB cumulative package check stopped honestly.
+SupportSolution's unchanged source freshly passed at160.765930GiB/986.351957s;
+accepted future guard200GiB, pre-unfreeze isolated peak unknown. S31-3 compressor
+alarm was an acknowledged conservative-policy miscalibration, not proof failure.
+No lane2 compiler overlap, source mutation, or hidden guard increase.32 early
+policy snapshots were recovered EXACTLY by recorded SHA from historical git blobs;
+the recovery manifest distinguishes them from invocation-time snapshots.
+
+Next: owner review of the complete disposition baseline and lane2 re-seed gate;
+then repair/re-scope the five semantic roots in dedicated proof shifts, and
+address the pre-existing R137 fixture only under its own gate. The earlier A15
+visibility proposal was NOT executed during this production-unfreeze shift.
+See O6-R205-REBUILD-STATE.json, A8-A10-A12-ERRATA-UPDATE.md, PER-MODULE-COSTS.md,
+POST-FROZEN-BASELINE.json and the independent evidence/archive verification.
