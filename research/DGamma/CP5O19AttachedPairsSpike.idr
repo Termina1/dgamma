@@ -250,3 +250,24 @@ o19AttachedBodyOccurrence step (ObservedCoreBody {last} core scanned) occurrence
   (last ** (core ** o19AttachedScanOccurrence step scanned occurrence))
 o19AttachedBodyOccurrence step (ObservedBundledBody {coreLast} core bundle scanned) occurrence =
   (coreLast ** (core ** o19AttachedScanOccurrence step scanned occurrence))
+
+||| Cartesian PRODUCT of the seven native source classes: all 49 combinations
+||| are represented, without assuming any pair commutes. Each side retains its
+||| original core and exact native occurrence; source cuts need not be adjacent.
+public export
+record O19AttachedSourcePair
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (leftActor, rightActor : name)
+  {leftFirst, leftLast, rightFirst, rightLast, leftBefore, leftAfter,
+   rightBefore, rightAfter : SystemState name key value world error}
+  (leftBody : Transitions leftFirst leftLast) (rightBody : Transitions rightFirst rightLast)
+  (left : Transition leftBefore leftAfter) (right : Transition rightBefore rightAfter) where
+  constructor MkO19AttachedSourcePair
+  leftCoreLast : SystemState name key value world error
+  rightCoreLast : SystemState name key value world error
+  leftOriginalCore : Transitions leftFirst leftCoreLast
+  rightOriginalCore : Transitions rightFirst rightCoreLast
+  0 leftSourceMember : OccursIn left leftBody
+  0 rightSourceMember : OccursIn right rightBody
+  0 leftSourceClass : O19AttachedEdge name key world error value nameEq leftActor leftOriginalCore left
+  0 rightSourceClass : O19AttachedEdge name key world error value nameEq rightActor rightOriginalCore right
