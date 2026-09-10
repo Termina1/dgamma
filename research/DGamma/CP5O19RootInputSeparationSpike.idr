@@ -55,6 +55,16 @@ o19RootInputProductAgreement left right leftRest rightRest leftRoot rightRoot sa
       RootRetireStep fiber found parent exact => rewrite exact in RootRetireAgreement
       RootRemoveStep fiber found parent exact => rewrite exact in RootRemoveAgreement
 
+||| Each of the three admissible products names the identical root owner.
+export
+0 o19RootHeadOwnerEqual :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {left, right : Action name key value world error} ->
+  O19RootHeadAgreement left right -> actionOwner left = actionOwner right
+o19RootHeadOwnerEqual RootInsertAgreement = Refl
+o19RootHeadOwnerEqual RootRetireAgreement = Refl
+o19RootHeadOwnerEqual RootRemoveAgreement = Refl
+
 ||| Native occurrence elimination: no action-word or raw-name relabelling.
 export
 0 o19NoRootOccurrence :
