@@ -26,3 +26,18 @@ export
 o19NoRootOccurrence (NoRootOrchestrationStep step rest excluded tail) OccursHere = excluded
 o19NoRootOccurrence (NoRootOrchestrationStep step rest excluded tail) (OccursLater there) =
   o19NoRootOccurrence tail there
+
+||| Candidate structural restriction for expanded whole-block producers.
+||| It is NOT asserted to follow from AdjacentActorSwapSafety. At least one
+||| selected native body has no external input; the other may have a nonempty
+||| forced-root bundle including Retire/Remove controls. No swapped result,
+||| diamond, or replay conclusion is stored in this premise.
+public export
+0 O19AtMostOneExternalBlock :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) ->
+  {leftFirst, leftLast, rightFirst, rightLast : SystemState name key value world error} ->
+  (leftBody : Transitions leftFirst leftLast) ->
+  (rightBody : Transitions rightFirst rightLast) -> Type
+O19AtMostOneExternalBlock nameEq leftBody rightBody =
+  Either (NoRootOrchestration nameEq leftBody) (NoRootOrchestration nameEq rightBody)
