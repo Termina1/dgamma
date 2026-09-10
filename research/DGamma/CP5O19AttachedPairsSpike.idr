@@ -233,3 +233,20 @@ export
 o19AttachedScanOccurrence step (AttachedScanStep _ _ observed tail) OccursHere = observed
 o19AttachedScanOccurrence step (AttachedScanStep _ _ observed tail) (OccursLater there) =
   o19AttachedScanOccurrence step tail there
+
+||| Source-state-indexed body occurrence observation retains its ACTUAL core
+||| witness. Existentials expose original data; they do not assert replay facts.
+export
+0 o19AttachedBodyOccurrence :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {actor : name} ->
+  {first, last, before, afterState : SystemState name key value world error} ->
+  {trace : Transitions first last} -> (step : Transition before afterState) ->
+  O19AttachedBody name key world error value nameEq actor trace ->
+  OccursIn step trace ->
+  (coreLast : SystemState name key value world error **
+    (core : Transitions first coreLast ** O19AttachedEdge name key world error value nameEq actor core step))
+o19AttachedBodyOccurrence step (ObservedCoreBody {last} core scanned) occurrence =
+  (last ** (core ** o19AttachedScanOccurrence step scanned occurrence))
+o19AttachedBodyOccurrence step (ObservedBundledBody {coreLast} core bundle scanned) occurrence =
+  (coreLast ** (core ** o19AttachedScanOccurrence step scanned occurrence))
