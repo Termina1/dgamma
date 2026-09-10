@@ -24,7 +24,7 @@ export
   (afterState : SystemState name key value world error) ->
   ForeignInsertPlanView name key world error value nameEq keyEq root Root
     component ambient source tag afterState ->
-  rootDeclaredProvisionsFree name key world error value keyEq component
+  DGamma.CP5AvailabilityAwarePlacement.rootDeclaredProvisionsFree name key world error value keyEq component
     (MkSystemState ambient source) = True
 rootCurrentFromView nameEq keyEq root component ambient source _ _
   (MkForeignInsertPlanView absent guards) = guards
@@ -38,7 +38,7 @@ export
   (component : Component key value world error) ->
   (first, afterState : SystemState name key value world error) -> (tag : RuleTag) ->
   (0 checked : checkedApplyAction @{nameEq} @{keyEq} (OInsert root Root component) first = Just (tag, afterState)) ->
-  rootDeclaredProvisionsFree name key world error value keyEq component first = True
+  DGamma.CP5AvailabilityAwarePlacement.rootDeclaredProvisionsFree name key world error value keyEq component first = True
 checkedRootCurrentAvailable nameEq keyEq root component (MkSystemState ambient source) afterState tag checked =
   rootCurrentFromView nameEq keyEq root component ambient source tag afterState
     (foreignInsertPlanView nameEq keyEq root Root component ambient source tag afterState
@@ -59,10 +59,10 @@ export
   (0 rootChecked : checkedApplyAction @{nameEq} @{keyEq} (OInsert root Root component) middle = Just (OInsertTag, finalState)) ->
   (exchange : AvailabilityRootSnapshotExchange name key world error value nameEq keyEq root component
     left (Fired {before = middle} {afterState = finalState} nameEq keyEq (OInsert root Root component) OInsertTag rootChecked)) ->
-  (rootDeclaredProvisionsFree name key world error value keyEq component middle = True,
-   rootDeclaredProvisionsFree name key world error value keyEq component first = True,
-   rootCutCompatible name key world error value nameEq keyEq component 0
-     (AvailabilityStep first left NoTransitions (AvailabilityEnd middle)) = True)
+  (DGamma.CP5AvailabilityAwarePlacement.rootDeclaredProvisionsFree name key world error value keyEq component middle = True,
+   DGamma.CP5AvailabilityAwarePlacement.rootDeclaredProvisionsFree name key world error value keyEq component first = True,
+   DGamma.CP5AvailabilityAwarePlacement.rootCutCompatible name key world error value nameEq keyEq component 0
+     (DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep first left NoTransitions (DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd middle)) = True)
 admittedSwapCurrentCuts nameEq keyEq root component left rootChecked exchange =
   (checkedRootCurrentAvailable nameEq keyEq root component middle finalState OInsertTag rootChecked,
    checkedRootCurrentAvailable nameEq keyEq root component first (snapshotRootMiddle exchange)
