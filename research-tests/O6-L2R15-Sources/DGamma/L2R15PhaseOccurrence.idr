@@ -24,11 +24,11 @@ export
   {first, middle, finalState : SystemState name key value world error} ->
   (nameEq : DecEq name) -> (step : Transition first middle) ->
   (rest : Transitions middle finalState) ->
-  (trail : AvailabilityTrace name key world error value (MoreTransitions step rest)) ->
+  (trail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value (MoreTransitions step rest)) ->
   head' (phaseEvents nameEq trail) =
     Just (phaseActionOwner nameEq first (transitionAction step), isLifecycleAction (transitionAction step))
 phaseEventAtNativeHead nameEq _ _
-  (AvailabilityStep source (Fired ne ke action tag checked) rest later) = Refl
+  (DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep source (Fired ne ke action tag checked) rest later) = Refl
 
 ||| Drop the authentic native head and apply the structural tail proof.
 ||| Only the indexed trail is eliminated; the requested offset stays data.
@@ -37,13 +37,13 @@ export
   {first, middle, finalState : SystemState name key value world error} ->
   (nameEq : DecEq name) -> (step : Transition first middle) ->
   (rest : Transitions middle finalState) ->
-  (trail : AvailabilityTrace name key world error value (MoreTransitions step rest)) ->
+  (trail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value (MoreTransitions step rest)) ->
   (ordinal : Nat) -> (event : (Maybe name, Bool)) ->
-  (0 tailProof : (later : AvailabilityTrace name key world error value rest) ->
+  (0 tailProof : (later : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value rest) ->
     head' (drop ordinal (phaseEvents nameEq later)) = Just event) ->
   head' (drop (S ordinal) (phaseEvents nameEq trail)) = Just event
 phaseEventThroughNativeHead nameEq _ _
-  (AvailabilityStep source (Fired ne ke action tag checked) rest later) ordinal event tailProof =
+  (DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep source (Fired ne ke action tag checked) rest later) ordinal event tailProof =
   tailProof later
 
 ||| Any native physical prefix places the next event at its exact COUNT.
@@ -53,7 +53,7 @@ export
   {first, source, target, finalState : SystemState name key value world error} ->
   (nameEq : DecEq name) -> (before : Transitions first source) ->
   (step : Transition source target) -> (rest : Transitions target finalState) ->
-  (trail : AvailabilityTrace name key world error value
+  (trail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value
     (appendTransitions before (MoreTransitions step rest))) ->
   head' (drop (transitionCount before) (phaseEvents nameEq trail)) =
     Just (phaseActionOwner nameEq source (transitionAction step), isLifecycleAction (transitionAction step))
@@ -72,7 +72,7 @@ export
   (nameEq : DecEq name) -> (before : Transitions first source) ->
   (step : Transition source target) -> (rest : Transitions target finalState) ->
   (global : Transitions first finalState) ->
-  (trail : AvailabilityTrace name key world error value global) ->
+  (trail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value global) ->
   (0 physical : appendTransitions before (MoreTransitions step rest) = global) ->
   head' (drop (transitionCount before) (phaseEvents nameEq trail)) =
     Just (phaseActionOwner nameEq source (transitionAction step), isLifecycleAction (transitionAction step))
@@ -87,7 +87,7 @@ export
   {first, finalState : SystemState name key value world error} ->
   {trace : Transitions first finalState} ->
   (nameEq : DecEq name) ->
-  (trail : AvailabilityTrace name key world error value trace) ->
+  (trail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value trace) ->
   (action : Action name key value world error) ->
   (occurrence : LocatedActionOccurrence action trace) ->
   head' (drop (locatedActionOrdinal occurrence) (phaseEvents nameEq trail)) =
