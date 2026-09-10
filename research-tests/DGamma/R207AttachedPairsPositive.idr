@@ -62,3 +62,13 @@ r207ConcreteAttachedPairs =
   (r207ObserveEveryAttachedPair r206ReleaseEdge r206RootInsertEdge OccursHere (OccursLater OccursHere),
    r207ObserveEveryAttachedPair r206RootRetireEdge r206RootRemoveEdge
      (OccursLater (OccursLater OccursHere)) (OccursLater (OccursLater (OccursLater OccursHere))))
+
+||| The root control's early applicability is NOT a consequence of its source
+||| class: before its own insertion neither retirement nor removal can fire.
+export
+0 r207RootControlsNotEnabledBeforeBirth :
+  (checkedApplyAction @{the (DecEq Nat) %search} @{the (DecEq ToyKey) %search}
+    (ORetire 2) r206Released = Nothing,
+   checkedApplyAction @{the (DecEq Nat) %search} @{the (DecEq ToyKey) %search}
+    (ORemove 2) r206Released = Nothing)
+r207RootControlsNotEnabledBeforeBirth = (Refl, Refl)
