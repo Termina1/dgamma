@@ -31,7 +31,7 @@ record NativeDistanceSelection
   (nameEq : DecEq name) (keyEq : DecEq key)
   {0 first, finalState : SystemState name key value world error}
   {0 trace : Transitions first finalState}
-  (trail : AvailabilityTrace name key world error value trace) where
+  (trail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value trace) where
   constructor MkNativeDistanceSelection
   nativeSearch : DistanceSearch (\entry => rootDistance nameEq keyEq trail (catalogOrdinal entry)) (scanRootCatalog 0 trail)
   0 nativeSearchEquation : searchDistance (\entry => rootDistance nameEq keyEq trail (catalogOrdinal entry)) (scanRootCatalog 0 trail) = nativeSearch
@@ -56,7 +56,7 @@ selectNativeDistanceRoot : {name, key, world, error : Type} -> {value : key -> T
   {0 first, finalState : SystemState name key value world error} ->
   {0 trace : Transitions first finalState} ->
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
-  (trail : AvailabilityTrace name key world error value trace) ->
+  (trail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value trace) ->
   NativeDistanceSelection name key world error value nameEq keyEq trail
 selectNativeDistanceRoot nameEq keyEq trail = MkNativeDistanceSelection
   (searchDistance (\entry => rootDistance nameEq keyEq trail (catalogOrdinal entry)) (scanRootCatalog 0 trail)) Refl
