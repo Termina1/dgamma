@@ -40,9 +40,8 @@ import Decidable.Decidable
 public export
 ω : Nat -> Bool
 ω position =
-  case rawInsertionNameAt Nat Bool Unit String (\key => Unit) position (anchorTrace False) of
-    Nothing => True
-    Just selected => isYes (decEq @{fst fixtureDictionaries} position (selected + 3))
+  maybe True (\selected => isYes (decEq @{fst fixtureDictionaries} position (selected + 3)))
+    (rawInsertionNameAt Nat Bool Unit String (\key => Unit) position (anchorTrace False))
 
 ||| Complete-domain native computation, including every beyond-end ordinal.
 public export
@@ -57,3 +56,22 @@ omegaDataAgreement 6 = Refl
 omegaDataAgreement 7 = Refl
 omegaDataAgreement 8 = Refl
 omegaDataAgreement (S (S (S (S (S (S (S (S (S later))))))))) = Refl
+
+||| Erased decoder observes the library decider at its own call site.
+||| The Bool evidence is consumed, not an unused premise on a fresh oracle.
+public export
+0 omegaSound : (position, selected : Nat) ->
+  (0 checked : ω position = True) ->
+  (0 observed : rawInsertionNameAt Nat Bool Unit String (\key => Unit)
+    position (anchorTrace False) = Just selected) ->
+  position = selected + 3
+omegaSound position selected checked observed =
+  case the (answer : Dec (position = selected + 3) **
+    decEq @{fst fixtureDictionaries} position (selected + 3) = answer)
+    (decEq @{fst fixtureDictionaries} position (selected + 3) ** Refl) of
+      (Yes same ** decision) => same
+      (No different ** decision) =>
+        absurd (replace {p = \answer => isYes answer = True} decision
+          (replace {p = \raw => maybe True
+            (\found => isYes (decEq @{fst fixtureDictionaries} position (found + 3))) raw = True}
+            observed checked))
