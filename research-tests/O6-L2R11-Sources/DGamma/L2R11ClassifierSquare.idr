@@ -45,7 +45,7 @@ record ClassifierSquare
   0 earlyChecked : checkedApplyAction @{nameEq} @{keyEq} (OInsert root Root component) source = Just (OInsertTag, squareMiddle)
   0 laterChecked : checkedApplyAction @{nameEq} @{keyEq} action squareMiddle = Just (tag, squareFinal)
   0 squareAdmitted : AdmittedCrossing nameEq root source action
-  0 squareCurrentCut : rootDeclaredProvisionsFree name key world error value keyEq component source = True
+  0 squareCurrentCut : DGamma.CP5AvailabilityAwarePlacement.rootDeclaredProvisionsFree name key world error value keyEq component source = True
   0 squareEndpoint : RegistryExtensional name key world error value nameEq oldFinal squareFinal
 
 ||| Match a produced checked snapshot packet against a known native edge
@@ -169,7 +169,7 @@ export
   {first, finalState : SystemState name key value world error} ->
   {trace : Transitions first finalState} ->
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
-  (trail : AvailabilityTrace name key world error value trace) ->
+  (trail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value trace) ->
   (cut : SelectedSquareCut name key world error value nameEq keyEq trail) -> (child : name) ->
   (0 selectedAction : cutAction cut = ORetire child) ->
   (retiredState, oldFinal, earlyRoot : SystemState name key value world error) ->
