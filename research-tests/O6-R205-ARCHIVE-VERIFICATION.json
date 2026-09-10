@@ -1,0 +1,15 @@
+{
+  "timestampUTC": "2026-09-10T01:43:04.207912+00:00",
+  "status": "PASS",
+  "archive": "research-tests/O6-R205-RAW-EVIDENCE.tar.gz",
+  "archiveSHA256": "a94c8bb854e5cb3720758300101ebea304883ab86ae045aa6dc2722a444ce470",
+  "archiveBytes": 30701122,
+  "verifiedMembers": 4662,
+  "rawNativeInvocations": 371,
+  "allCurrentSources": 543,
+  "allMemberHashesVerified": true,
+  "allNativeOutcomesRederivedFromArchive": true,
+  "noExtraction": true,
+  "sourceHashesMatchRebuildState": true,
+  "notes": "Archive is evidence, not certification of six failed or133 blocked modules. Historical policy reconstruction provenance is included. Final artifact-only receipts after capture are deliberately outside this archive."
+}
