@@ -34,8 +34,8 @@ record CoreRestorationFixture where
   constructor MkCoreRestorationFixture
   originalRun : Transitions (smallState 0) (contiguityState 7)
   restoredRun : Transitions (smallState 0) (contiguityState 17)
-  originalTrail : AvailabilityTrace Nat Bool Unit String (\key => Unit) originalRun
-  restoredTrail : AvailabilityTrace Nat Bool Unit String (\key => Unit) restoredRun
+  originalTrail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace Nat Bool Unit String (\key => Unit) originalRun
+  restoredTrail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace Nat Bool Unit String (\key => Unit) restoredRun
   originalCore : LocatedExtendedCore Nat Bool Unit String (\key => Unit) %search 2 originalRun
   restoredCore : LocatedExtendedCore Nat Bool Unit String (\key => Unit) %search 2 restoredRun
   0 originValid : registryWellFormed @{%search} @{%search} (smallState 0) = True
