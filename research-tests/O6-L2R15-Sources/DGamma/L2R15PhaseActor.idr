@@ -32,9 +32,9 @@ export
   {first, finalState : SystemState name key value world error} ->
   {trace : Transitions first finalState} ->
   (nameEq : DecEq name) ->
-  (trail : AvailabilityTrace name key world error value trace) ->
+  (trail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value trace) ->
   (actor, observedActor : name) -> (component : Component key value world error) ->
-  (release : AttachedRelease name key world error value nameEq actor trace component) ->
+  (release : DGamma.L2R3Attached.AttachedRelease name key world error value nameEq actor trace component) ->
   (ordinal : Nat) -> (flag : Bool) ->
   (0 atOrdinal : locatedActionOrdinal (releaseOccurrence release) = ordinal) ->
   (0 event : head' (drop ordinal (phaseEvents nameEq trail)) = Just (Just observedActor, flag)) ->
@@ -53,7 +53,7 @@ export
   {first, finalState : SystemState name key value world error} ->
   {trace : Transitions first finalState} ->
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
-  (trail : AvailabilityTrace name key world error value trace) ->
+  (trail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value trace) ->
   (entry, seed : RootCatalogEntry name key world error value) -> (anchor : Nat) ->
   (0 accepted : phaseAnchorSeedCheck nameEq keyEq trail entry anchor seed = True) ->
   phaseReleaseCheck nameEq
