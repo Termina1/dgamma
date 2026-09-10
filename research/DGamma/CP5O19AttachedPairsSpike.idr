@@ -91,3 +91,29 @@ data O19AttachedEdge :
     (0 parent : fiberParent fiber = Root) ->
     (0 controlledAction : transitionAction step = ORemove controlled) ->
     O19AttachedEdge name key world error value nameEq actor core step
+
+||| Exact source-spine coverage, retaining the source state of EVERY control.
+||| Erased classifications accompany executable native transition data.
+public export
+data O19AttachedScan :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (actor : name) ->
+  {coreFirst, coreLast : SystemState name key value world error} ->
+  (core : Transitions coreFirst coreLast) ->
+  {first, last : SystemState name key value world error} ->
+  Transitions first last -> Type where
+  AttachedScanEnd :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {nameEq : DecEq name} -> {actor : name} ->
+    {coreFirst, coreLast, state : SystemState name key value world error} ->
+    {core : Transitions coreFirst coreLast} ->
+    O19AttachedScan name key world error value nameEq actor core (NoTransitions {state})
+  AttachedScanStep :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {nameEq : DecEq name} -> {actor : name} ->
+    {coreFirst, coreLast, first, middle, last : SystemState name key value world error} ->
+    {core : Transitions coreFirst coreLast} ->
+    (step : Transition first middle) -> (rest : Transitions middle last) ->
+    (0 observed : O19AttachedEdge name key world error value nameEq actor core step) ->
+    (0 tail : O19AttachedScan name key world error value nameEq actor core rest) ->
+    O19AttachedScan name key world error value nameEq actor core (MoreTransitions step rest)
