@@ -106,12 +106,12 @@ export
 0 scanCatalogBirth : {name, key, world, error : Type} -> {value : key -> Type} ->
   {first, finalState : SystemState name key value world error} ->
   {trace : Transitions first finalState} ->
-  (offset : Nat) -> (trail : AvailabilityTrace name key world error value trace) ->
+  (offset : Nat) -> (trail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value trace) ->
   (entry : RootCatalogEntry name key world error value) ->
   (0 member : Elem entry (scanRootCatalog offset trail)) ->
   CatalogBirthAt name key world error value entry offset trace
-scanCatalogBirth offset (AvailabilityEnd state) entry member = absurd member
-scanCatalogBirth offset (AvailabilityStep source (Fired ne ke action tag checked) rest later) entry member =
+scanCatalogBirth offset (DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd state) entry member = absurd member
+scanCatalogBirth offset (DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep source (Fired ne ke action tag checked) rest later) entry member =
   catalogBirthAction action (Fired ne ke action tag checked) rest offset Refl (scanRootCatalog (S offset) later)
     (\item, present => scanCatalogBirth (S offset) later item present) entry member
 
