@@ -5102,3 +5102,17 @@ R205 compiler-free adversarial audit tightened two evidence guards after P3:
 committed frozen baselines reject reverts to PRE bytes; expected negatives require
 Idris exit1, not signal termination.49/49 tests now pass; all371 native outcomes
 are unchanged under stronger re-derivation. No Idris source/statement/body changed.
+
+### R205 owner-accepted final seal
+
+Supervisor ACCEPTED a699828e as **CHECKED-PARTIAL**: production complete and
+research disposition complete, NOT all-research-PASS. Artifact-only seal and
+stand-down are authorized; no further Idris invocation/source change. Exact
+ruling: O6-R205-OWNER-FINAL-GATE.md. The133 blocked paths form overlapping root
+closures (OriginalBlockClass117), not133 independently validated modules.
+
+R206 main: re-proof/re-scope five semantic-domain consumers, starting
+OriginalBlockClass, then133 blocked rechecks. Lane2 released AFTER this seal:
+re-seed build from rebuilt main, re-check its own closure, then Tier2. This lane
+has not entered or modified lane2. Four holes and every body remain unchanged;
+full Thm73 and the listed Tier2 obligations remain open.

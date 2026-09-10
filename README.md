@@ -4,7 +4,10 @@
 Spatiotemporal Composability”** (Shi, Zhang, Cui). Runtime functions remain
 computational data; laws and witnesses are erased with quantity `0`.
 
-## Current integration checkpoint — R205 production rebuilt; research breakage explicit
+## Current integration checkpoint — R205 accepted CHECKED-PARTIAL
+
+Supervisor accepted `a699828e`: production rebuilt, research breakage explicit;
+[final gate and handoff](research-tests/O6-R205-OWNER-FINAL-GATE.md).
 
 Production unfrozen on **2026-09-09** by owner decision (verbatim):
 **"Давайттак размораживай то что нужно я же все разрешил"**.

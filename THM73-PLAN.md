@@ -4299,3 +4299,13 @@ re-proof/re-scoping; R137 is a separate pre-existing record-only diagnostic.
 No R205 A15 visibility/proof micro-unit was launched. General forced phases,
 normalizer, four lifecycle shapes, cross-bundle controls, whole synchronization,
 ALL-name rebase/D5 and Thm73 remain open. Owner final gate/re-seed decision is pending.
+
+### R205 ratified — stand down
+
+Owner/supervisor accepted a699828e as CHECKED-PARTIAL; artifact-only final seal
+and stand-down authorized. R206 main begins the five semantic-domain obligations
+with OriginalBlockClass, then133 blocked rechecks; obsolete strict-placement
+claims need re-scoping/retirement, not false re-proofs. Lane2 released after seal
+for rebuild re-seed, its own closure check, then Tier2. No R205 proof micro-unit
+or compiler follows P3. Exact ruling and overlap-count qualification are in
+O6-R205-OWNER-FINAL-GATE.md. Accepted archive remains24fd8dea…; seal lies outside it.
