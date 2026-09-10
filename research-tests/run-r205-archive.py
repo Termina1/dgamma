@@ -6,6 +6,7 @@ import sys,pathlib,json,tarfile,gzip,io,hashlib
 sys.dont_write_bytecode=True
 sys.path.insert(0,str(pathlib.Path(__file__).resolve().parent))
 from r205_common import *
+from r205_evidence_contract import validate_record
 assert compiler_scopes()==([],[],[])
 assert json.loads((OUT/'active.json').read_text())['status']=='IDLE'
 assert not git('diff','--cached','--name-only').strip()
@@ -44,8 +45,11 @@ with tarfile.open(archive,'r:gz') as tar:
         data=tar.extractfile(name).read();assert len(data)==entry['bytes'] and sha(data)==entry['sha256']
     ledger=[json.loads(x) for x in tar.extractfile('raw/ledger.jsonl').read().splitlines()]
     assert len(ledger)==371 and ledger[-1]['unit']=='P3' and ledger[-1]['passed']
+    for r in ledger:
+        validate_record(r,tar.extractfile('raw/'+r['unit']+'.source').read(),tar.extractfile('raw/'+r['unit']+'.log').read().decode(),ROOT)
+        assert json.loads(tar.extractfile('raw/'+r['unit']+'.json').read())==r
     state=json.loads(tar.extractfile('artifacts/research-tests/O6-R205-REBUILD-STATE.json').read())
     for row in state['modules']:assert entries['current-source/'+row['path']]['sha256']==row['sourceSHA256']
 manifest_path.write_bytes(manifest_bytes)
-write_json(verification_path,dict(timestampUTC=utc(),status='PASS',archive=str(archive.relative_to(ROOT)),archiveSHA256=sha(archive.read_bytes()),archiveBytes=archive.stat().st_size,verifiedMembers=len(entries)+1,rawNativeInvocations=len(ledger),allCurrentSources=543,allMemberHashesVerified=True,noExtraction=True,sourceHashesMatchRebuildState=True,notes='Archive is evidence, not certification of six failed or133 blocked modules. Historical policy reconstruction provenance is included. Final artifact-only receipts after capture are deliberately outside this archive.'))
+write_json(verification_path,dict(timestampUTC=utc(),status='PASS',archive=str(archive.relative_to(ROOT)),archiveSHA256=sha(archive.read_bytes()),archiveBytes=archive.stat().st_size,verifiedMembers=len(entries)+1,rawNativeInvocations=len(ledger),allCurrentSources=543,allMemberHashesVerified=True,allNativeOutcomesRederivedFromArchive=True,noExtraction=True,sourceHashesMatchRebuildState=True,notes='Archive is evidence, not certification of six failed or133 blocked modules. Historical policy reconstruction provenance is included. Final artifact-only receipts after capture are deliberately outside this archive.'))
 print(verification_path.read_text())

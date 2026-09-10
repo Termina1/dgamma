@@ -58,8 +58,9 @@ unchanged production seeds,11 standing legacy exclusions. All ready targets
 were attempted; native-research validation remains INCOMPLETE by design, not
 silently promoted to a full PASS. Five semantic roots and one pre-existing
 record-only fixture have exact source hashes/errors; blocked roots are explicit.
-CrossTrace is UNCHECKED behind OriginalBlockClass; O19Surface and the other five
-protected modules (apart from CrossTrace) have fresh native PASS receipts.
+CrossTrace is UNCHECKED behind OriginalBlockClass. Five of the six protected
+modules have fresh native PASS receipts: LocalDiamond, DeletionChain,
+CanonicalSort, RenamingComposition and O19Surface.
 
 Independent verifier authenticates all371 sources/logs, own Building lines,
 RSS policies/samples, script/source snapshots, exact negative contracts from
