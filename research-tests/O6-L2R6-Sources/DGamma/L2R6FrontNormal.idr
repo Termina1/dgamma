@@ -36,7 +36,7 @@ public export
 originForced : {name, key, world, error : Type} -> {value : key -> Type} ->
   {0 first, finalState : SystemState name key value world error} ->
   {0 trace : Transitions first finalState} ->
-  DecEq name -> DecEq key -> AvailabilityTrace name key world error value trace -> Maybe Nat -> Bool
+  DecEq name -> DecEq key -> DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value trace -> Maybe Nat -> Bool
 originForced nameEq keyEq trail Nothing = False
 originForced nameEq keyEq trail (Just ordinal) = isJust (anchorOf nameEq keyEq trail ordinal)
 
@@ -69,14 +69,14 @@ public export
 scanFrontDisposition : {name, key, world, error : Type} -> {value : key -> Type} ->
   {0 initial, finalState, first, lastState : SystemState name key value world error} ->
   {0 global : Transitions initial finalState} -> {0 trace : Transitions first lastState} ->
-  DecEq name -> DecEq key -> AvailabilityTrace name key world error value global ->
-  Nat -> Bool -> AvailabilityTrace name key world error value trace -> (Bool, Bool)
-scanFrontDisposition nameEq keyEq whole ordinal seen (AvailabilityEnd state) = (True, True)
+  DecEq name -> DecEq key -> DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value global ->
+  Nat -> Bool -> DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value trace -> (Bool, Bool)
+scanFrontDisposition nameEq keyEq whole ordinal seen (DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd state) = (True, True)
 scanFrontDisposition {name} {key} {world} {error} {value} nameEq keyEq whole ordinal seen
-  (AvailabilityStep source (Fired ne ke action tag checked) rest later) = frontControlHead
-    (not (seen && rootInputAtSource name key world error value nameEq action source &&
+  (DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep source (Fired ne ke action tag checked) rest later) = frontControlHead
+    (not (seen && DGamma.CP5AvailabilityAwarePlacement.rootInputAtSource name key world error value nameEq action source &&
       not (originForced nameEq keyEq whole (rootOriginAt nameEq (actionOwner action) ordinal (scanRootCatalog 0 whole)))))
-    (not (rootControlAction action && rootInputAtSource name key world error value nameEq action source &&
+    (not (rootControlAction action && DGamma.CP5AvailabilityAwarePlacement.rootInputAtSource name key world error value nameEq action source &&
       originForced nameEq keyEq whole (rootOriginAt nameEq (actionOwner action) ordinal (scanRootCatalog 0 whole))))
     (scanFrontDisposition nameEq keyEq whole (S ordinal) (seen || isLifecycleAction action) later)
 
@@ -89,7 +89,7 @@ record FrontNormal
   (nameEq : DecEq name) (keyEq : DecEq key)
   {0 first, finalState : SystemState name key value world error}
   {0 trace : Transitions first finalState}
-  (trail : AvailabilityTrace name key world error value trace) where
+  (trail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value trace) where
   constructor MkFrontNormal
   frontObserved : Bool
   0 frontEquation : fst (scanFrontDisposition nameEq keyEq trail 0 False trail) = frontObserved
@@ -104,7 +104,7 @@ record ForcedRootNeverRetired
   (nameEq : DecEq name) (keyEq : DecEq key)
   {0 first, finalState : SystemState name key value world error}
   {0 trace : Transitions first finalState}
-  (trail : AvailabilityTrace name key world error value trace) where
+  (trail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value trace) where
   constructor MkForcedRootNeverRetired
   neverRetiredObserved : Bool
   0 neverRetiredEquation : snd (scanFrontDisposition nameEq keyEq trail 0 False trail) = neverRetiredObserved
@@ -120,14 +120,14 @@ record ForcedRootRetireInBlock
   (nameEq : DecEq name) (keyEq : DecEq key)
   {first, finalState : SystemState name key value world error}
   {global : Transitions first finalState}
-  (trail : AvailabilityTrace name key world error value global)
+  (trail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value global)
   (action : Action name key value world error)
   (control : LocatedActionOccurrence action global)
   (bundleAction : Action name key value world error) (bundleOrdinal : Nat)
-  (bundle : AttachedBundleOccurrence name key world error value nameEq keyEq global bundleAction bundleOrdinal) where
+  (bundle : DGamma.L2R3AttachedGap.AttachedBundleOccurrence name key world error value nameEq keyEq global bundleAction bundleOrdinal) where
   constructor MkForcedRootRetireInBlock
   0 isRetireOrRemove : rootControlAction action = True
-  0 isActualRootControl : rootInputAtSource name key world error value nameEq action (actionBeforeState control) = True
+  0 isActualRootControl : DGamma.CP5AvailabilityAwarePlacement.rootInputAtSource name key world error value nameEq action (actionBeforeState control) = True
   controlForcedObserved : Bool
   0 controlForcedEquation : originForced nameEq keyEq trail
     (rootOriginAt nameEq (actionOwner action) (locatedActionOrdinal control) (scanRootCatalog 0 trail)) = controlForcedObserved
