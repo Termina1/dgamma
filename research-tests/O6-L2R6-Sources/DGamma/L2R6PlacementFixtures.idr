@@ -35,12 +35,12 @@ import Decidable.Equality
 public export
 record PlacementDistanceFixtures where
   constructor MkPlacementDistanceFixtures
-  originalSingleTrail : AvailabilityTrace Nat Bool Unit String (\key => Unit) smallTrace
-  originalBarrierTrail : AvailabilityTrace Nat Bool Unit String (\key => Unit) barrierTrace
+  originalSingleTrail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace Nat Bool Unit String (\key => Unit) smallTrace
+  originalBarrierTrail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace Nat Bool Unit String (\key => Unit) barrierTrace
   alternateSingleTrace : Transitions (smallState 0) (smallState 9)
-  alternateSingleTrail : AvailabilityTrace Nat Bool Unit String (\key => Unit) alternateSingleTrace
+  alternateSingleTrail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace Nat Bool Unit String (\key => Unit) alternateSingleTrace
   alternateBarrierTrace : Transitions (smallState 0) (bundlePhaseState 3)
-  alternateBarrierTrail : AvailabilityTrace Nat Bool Unit String (\key => Unit) alternateBarrierTrace
+  alternateBarrierTrail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace Nat Bool Unit String (\key => Unit) alternateBarrierTrace
   singleAnchorObserved : Maybe Nat
   barrierRAnchorObserved : Maybe Nat
   barrierSAnchorObserved : Maybe Nat
@@ -66,38 +66,38 @@ record PlacementDistanceFixtures where
 public export
 0 placementDistanceFixtures : PlacementDistanceFixtures
 placementDistanceFixtures = MkPlacementDistanceFixtures
-  (AvailabilityStep (smallState 0)
+  (DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep (smallState 0)
     (Fired {before = smallState 0} {afterState = smallState 1} %search %search (LBegin 0) LBeginTag (smallBegin0 smallNativeExecution)) _
-    (AvailabilityStep (smallState 1)
+    (DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep (smallState 1)
     (Fired {before = smallState 1} {afterState = smallState 2} %search %search (LAdvance 0) LFinishTag (smallFinish0 smallNativeExecution)) _
-    (AvailabilityStep (smallState 2)
+    (DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep (smallState 2)
     (Fired {before = smallState 2} {afterState = smallState 3} %search %search (ORetire 1) ORetireTag (smallRetire1 smallNativeExecution)) _
-    (AvailabilityStep (smallState 3)
+    (DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep (smallState 3)
     (Fired {before = smallState 3} {afterState = smallState 4} %search %search (ORemove 1) ORemoveTag (smallRemove1 smallNativeExecution)) _
-    (AvailabilityStep (smallState 4)
+    (DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep (smallState 4)
     (Fired {before = smallState 4} {afterState = smallState 5} %search %search (OInsert 3 Root (smallComponent True)) OInsertTag (smallInsert3 smallNativeExecution)) _
-    (AvailabilityStep (smallState 5)
+    (DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep (smallState 5)
     (Fired {before = smallState 5} {afterState = smallState 6} %search %search (LBegin 2) LBeginTag (smallBegin2 smallNativeExecution)) _
-    (AvailabilityStep (smallState 6)
+    (DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep (smallState 6)
     (Fired {before = smallState 6} {afterState = smallState 7} %search %search (LAdvance 2) LFinishTag (smallFinish2 smallNativeExecution)) _
-    (AvailabilityEnd (smallState 7)))))))))
-  (AvailabilityStep (barrierState 0)
+    (DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd (smallState 7)))))))))
+  (DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep (barrierState 0)
     (Fired {before = barrierState 0} {afterState = barrierState 1} %search %search (LBegin 0) LBeginTag (smallBegin0 smallNativeExecution)) _
-    (AvailabilityStep (barrierState 1)
+    (DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep (barrierState 1)
     (Fired {before = barrierState 1} {afterState = barrierState 2} %search %search (LAdvance 0) LFinishTag (smallFinish0 smallNativeExecution)) _
-    (AvailabilityStep (barrierState 2)
+    (DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep (barrierState 2)
     (Fired {before = barrierState 2} {afterState = barrierState 3} %search %search (ORetire 1) ORetireTag (smallRetire1 smallNativeExecution)) _
-    (AvailabilityStep (barrierState 3)
+    (DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep (barrierState 3)
     (Fired {before = barrierState 3} {afterState = barrierState 4} %search %search (ORemove 1) ORemoveTag (smallRemove1 smallNativeExecution)) _
-    (AvailabilityStep (barrierState 4)
+    (DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep (barrierState 4)
     (Fired {before = barrierState 4} {afterState = barrierState 5} %search %search (OInsert 3 Root (smallComponent True)) OInsertTag (smallInsert3 smallNativeExecution)) _
-    (AvailabilityStep (barrierState 5)
+    (DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep (barrierState 5)
     (Fired {before = barrierState 5} {afterState = barrierState 6} %search %search (OInsert 4 Root (smallComponent False)) OInsertTag (insertS barrierNativeExecution)) _
-    (AvailabilityStep (barrierState 6)
+    (DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep (barrierState 6)
     (Fired {before = barrierState 6} {afterState = barrierState 7} %search %search (LBegin 2) LBeginTag (beginFollowing barrierNativeExecution)) _
-    (AvailabilityStep (barrierState 7)
+    (DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep (barrierState 7)
     (Fired {before = barrierState 7} {afterState = barrierState 8} %search %search (LAdvance 2) LFinishTag (finishFollowing barrierNativeExecution)) _
-    (AvailabilityEnd (barrierState 8))))))))))
+    (DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd (barrierState 8))))))))))
   (MoreTransitions (Fired {before = smallState 0} {afterState = smallState 1} %search %search (LBegin 0) LBeginTag (smallBegin0 smallNativeExecution))
     (MoreTransitions (Fired {before = smallState 1} {afterState = smallState 2} %search %search (LAdvance 0) LFinishTag (smallFinish0 smallNativeExecution))
     (MoreTransitions (Fired {before = smallState 2} {afterState = smallState 3} %search %search (ORetire 1) ORetireTag (smallRetire1 smallNativeExecution))
@@ -105,13 +105,13 @@ placementDistanceFixtures = MkPlacementDistanceFixtures
     (MoreTransitions (Fired {before = smallState 4} {afterState = smallState 8} %search %search (LBegin 2) LBeginTag (smallEarlyBegin2 smallNativeExecution))
     (MoreTransitions (Fired {before = smallState 8} {afterState = smallState 9} %search %search (OInsert 3 Root (smallComponent True)) OInsertTag (smallLateInsert3 smallNativeExecution))
     NoTransitions))))))
-  (AvailabilityStep (smallState 0) (Fired {before = smallState 0} {afterState = smallState 1} %search %search (LBegin 0) LBeginTag (smallBegin0 smallNativeExecution)) _
-    (AvailabilityStep (smallState 1) (Fired {before = smallState 1} {afterState = smallState 2} %search %search (LAdvance 0) LFinishTag (smallFinish0 smallNativeExecution)) _
-    (AvailabilityStep (smallState 2) (Fired {before = smallState 2} {afterState = smallState 3} %search %search (ORetire 1) ORetireTag (smallRetire1 smallNativeExecution)) _
-    (AvailabilityStep (smallState 3) (Fired {before = smallState 3} {afterState = smallState 4} %search %search (ORemove 1) ORemoveTag (smallRemove1 smallNativeExecution)) _
-    (AvailabilityStep (smallState 4) (Fired {before = smallState 4} {afterState = smallState 8} %search %search (LBegin 2) LBeginTag (smallEarlyBegin2 smallNativeExecution)) _
-    (AvailabilityStep (smallState 8) (Fired {before = smallState 8} {afterState = smallState 9} %search %search (OInsert 3 Root (smallComponent True)) OInsertTag (smallLateInsert3 smallNativeExecution)) _
-    (AvailabilityEnd (smallState 9))))))))
+  (DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep (smallState 0) (Fired {before = smallState 0} {afterState = smallState 1} %search %search (LBegin 0) LBeginTag (smallBegin0 smallNativeExecution)) _
+    (DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep (smallState 1) (Fired {before = smallState 1} {afterState = smallState 2} %search %search (LAdvance 0) LFinishTag (smallFinish0 smallNativeExecution)) _
+    (DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep (smallState 2) (Fired {before = smallState 2} {afterState = smallState 3} %search %search (ORetire 1) ORetireTag (smallRetire1 smallNativeExecution)) _
+    (DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep (smallState 3) (Fired {before = smallState 3} {afterState = smallState 4} %search %search (ORemove 1) ORemoveTag (smallRemove1 smallNativeExecution)) _
+    (DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep (smallState 4) (Fired {before = smallState 4} {afterState = smallState 8} %search %search (LBegin 2) LBeginTag (smallEarlyBegin2 smallNativeExecution)) _
+    (DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep (smallState 8) (Fired {before = smallState 8} {afterState = smallState 9} %search %search (OInsert 3 Root (smallComponent True)) OInsertTag (smallLateInsert3 smallNativeExecution)) _
+    (DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd (smallState 9))))))))
   (MoreTransitions (Fired {before = smallState 0} {afterState = smallState 1} %search %search (LBegin 0) LBeginTag (smallBegin0 smallNativeExecution))
     (MoreTransitions (Fired {before = smallState 1} {afterState = smallState 2} %search %search (LAdvance 0) LFinishTag (smallFinish0 smallNativeExecution))
     (MoreTransitions (Fired {before = smallState 2} {afterState = smallState 3} %search %search (ORetire 1) ORetireTag (smallRetire1 smallNativeExecution))
@@ -120,29 +120,29 @@ placementDistanceFixtures = MkPlacementDistanceFixtures
     (MoreTransitions (Fired {before = smallState 8} {afterState = smallState 9} %search %search (OInsert 3 Root (smallComponent True)) OInsertTag (smallLateInsert3 smallNativeExecution))
     (MoreTransitions (Fired {before = bundlePhaseState 2} {afterState = bundlePhaseState 3} %search %search (OInsert 4 Root (smallComponent False)) OInsertTag (sAfterBeginR bundlePhaseNative))
     NoTransitions)))))))
-  (AvailabilityStep (smallState 0) (Fired {before = smallState 0} {afterState = smallState 1} %search %search (LBegin 0) LBeginTag (smallBegin0 smallNativeExecution)) _
-    (AvailabilityStep (smallState 1) (Fired {before = smallState 1} {afterState = smallState 2} %search %search (LAdvance 0) LFinishTag (smallFinish0 smallNativeExecution)) _
-    (AvailabilityStep (smallState 2) (Fired {before = smallState 2} {afterState = smallState 3} %search %search (ORetire 1) ORetireTag (smallRetire1 smallNativeExecution)) _
-    (AvailabilityStep (smallState 3) (Fired {before = smallState 3} {afterState = smallState 4} %search %search (ORemove 1) ORemoveTag (smallRemove1 smallNativeExecution)) _
-    (AvailabilityStep (smallState 4) (Fired {before = smallState 4} {afterState = smallState 8} %search %search (LBegin 2) LBeginTag (smallEarlyBegin2 smallNativeExecution)) _
-    (AvailabilityStep (smallState 8) (Fired {before = smallState 8} {afterState = smallState 9} %search %search (OInsert 3 Root (smallComponent True)) OInsertTag (smallLateInsert3 smallNativeExecution)) _
-    (AvailabilityStep (bundlePhaseState 2) (Fired {before = bundlePhaseState 2} {afterState = bundlePhaseState 3} %search %search (OInsert 4 Root (smallComponent False)) OInsertTag (sAfterBeginR bundlePhaseNative)) _
-    (AvailabilityEnd (bundlePhaseState 3)))))))))
+  (DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep (smallState 0) (Fired {before = smallState 0} {afterState = smallState 1} %search %search (LBegin 0) LBeginTag (smallBegin0 smallNativeExecution)) _
+    (DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep (smallState 1) (Fired {before = smallState 1} {afterState = smallState 2} %search %search (LAdvance 0) LFinishTag (smallFinish0 smallNativeExecution)) _
+    (DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep (smallState 2) (Fired {before = smallState 2} {afterState = smallState 3} %search %search (ORetire 1) ORetireTag (smallRetire1 smallNativeExecution)) _
+    (DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep (smallState 3) (Fired {before = smallState 3} {afterState = smallState 4} %search %search (ORemove 1) ORemoveTag (smallRemove1 smallNativeExecution)) _
+    (DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep (smallState 4) (Fired {before = smallState 4} {afterState = smallState 8} %search %search (LBegin 2) LBeginTag (smallEarlyBegin2 smallNativeExecution)) _
+    (DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep (smallState 8) (Fired {before = smallState 8} {afterState = smallState 9} %search %search (OInsert 3 Root (smallComponent True)) OInsertTag (smallLateInsert3 smallNativeExecution)) _
+    (DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep (bundlePhaseState 2) (Fired {before = bundlePhaseState 2} {afterState = bundlePhaseState 3} %search %search (OInsert 4 Root (smallComponent False)) OInsertTag (sAfterBeginR bundlePhaseNative)) _
+    (DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd (bundlePhaseState 3)))))))))
   (Just 4) (Just 4) (Just 4) Refl Refl Refl Refl
   0 0 1 2 Refl Refl Refl Refl Refl
   (MkPlacedBundle (OInsert 3 Root (smallComponent True)) 4 (c12CatalogR fixtureCoverage)
-    (AvailabilityStep (smallState 4) (Fired {before = smallState 4} {afterState = smallState 5} %search %search (OInsert 3 Root (smallComponent True)) OInsertTag (smallInsert3 smallNativeExecution)) _
-    (AvailabilityEnd (smallState 5)))
+    (DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep (smallState 4) (Fired {before = smallState 4} {afterState = smallState 5} %search %search (OInsert 3 Root (smallComponent True)) OInsertTag (smallInsert3 smallNativeExecution)) _
+    (DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd (smallState 5)))
     (cong fst (c12CatalogInterval fixtureCoverage))
-    (trans (cong (\offset => scanRootCatalog offset (AvailabilityStep (smallState 4) (Fired {before = smallState 4} {afterState = smallState 5} %search %search (OInsert 3 Root (smallComponent True)) OInsertTag (smallInsert3 smallNativeExecution)) _
-    (AvailabilityEnd (smallState 5))))
+    (trans (cong (\offset => scanRootCatalog offset (DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep (smallState 4) (Fired {before = smallState 4} {afterState = smallState 5} %search %search (OInsert 3 Root (smallComponent True)) OInsertTag (smallInsert3 smallNativeExecution)) _
+    (DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd (smallState 5))))
       (cong fst (c12CatalogInterval fixtureCoverage))) Refl))
   (MkPlacedBundle (OInsert 3 Root (smallComponent True)) 4 (barrierCatalogR fixtureCoverage)
-    (AvailabilityStep (smallState 4) (Fired {before = smallState 4} {afterState = smallState 5} %search %search (OInsert 3 Root (smallComponent True)) OInsertTag (smallInsert3 smallNativeExecution)) _
-    (AvailabilityStep (barrierState 5) (Fired {before = barrierState 5} {afterState = barrierState 6} %search %search (OInsert 4 Root (smallComponent False)) OInsertTag (insertS barrierNativeExecution)) _
-    (AvailabilityEnd (barrierState 6))))
+    (DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep (smallState 4) (Fired {before = smallState 4} {afterState = smallState 5} %search %search (OInsert 3 Root (smallComponent True)) OInsertTag (smallInsert3 smallNativeExecution)) _
+    (DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep (barrierState 5) (Fired {before = barrierState 5} {afterState = barrierState 6} %search %search (OInsert 4 Root (smallComponent False)) OInsertTag (insertS barrierNativeExecution)) _
+    (DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd (barrierState 6))))
     (cong fst (barrierCatalogRInterval fixtureCoverage))
-    (trans (cong (\offset => scanRootCatalog offset (AvailabilityStep (smallState 4) (Fired {before = smallState 4} {afterState = smallState 5} %search %search (OInsert 3 Root (smallComponent True)) OInsertTag (smallInsert3 smallNativeExecution)) _
-    (AvailabilityStep (barrierState 5) (Fired {before = barrierState 5} {afterState = barrierState 6} %search %search (OInsert 4 Root (smallComponent False)) OInsertTag (insertS barrierNativeExecution)) _
-    (AvailabilityEnd (barrierState 6)))))
+    (trans (cong (\offset => scanRootCatalog offset (DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep (smallState 4) (Fired {before = smallState 4} {afterState = smallState 5} %search %search (OInsert 3 Root (smallComponent True)) OInsertTag (smallInsert3 smallNativeExecution)) _
+    (DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep (barrierState 5) (Fired {before = barrierState 5} {afterState = barrierState 6} %search %search (OInsert 4 Root (smallComponent False)) OInsertTag (insertS barrierNativeExecution)) _
+    (DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd (barrierState 6)))))
       (cong fst (barrierCatalogRInterval fixtureCoverage))) Refl))
