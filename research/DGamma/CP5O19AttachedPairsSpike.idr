@@ -218,3 +218,18 @@ o19ObserveAttachedBody nameEq actor _ (ActorWithForcedRoots core shape bundle or
   ObservedBundledBody core bundle
     (o19AttachedScanAppend core bundle (o19AttachedCoreScan nameEq actor core core shape)
       (o19AttachedBundleScan nameEq actor core [] bundle ordered))
+
+||| Select the exact native edge, not an equal action at a different source
+||| cut. Thus lookup/parent evidence still refers to the selected edge's before.
+export
+0 o19AttachedScanOccurrence :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {actor : name} ->
+  {coreFirst, coreLast, first, last, before, afterState : SystemState name key value world error} ->
+  {core : Transitions coreFirst coreLast} -> {trace : Transitions first last} ->
+  (step : Transition before afterState) ->
+  O19AttachedScan name key world error value nameEq actor core trace ->
+  OccursIn step trace -> O19AttachedEdge name key world error value nameEq actor core step
+o19AttachedScanOccurrence step (AttachedScanStep _ _ observed tail) OccursHere = observed
+o19AttachedScanOccurrence step (AttachedScanStep _ _ observed tail) (OccursLater there) =
+  o19AttachedScanOccurrence step tail there
