@@ -345,3 +345,26 @@ o19CoreSafeWord nameEq actor forbidden _ (CoreChildRemoveStep {first} step rest 
   (NoGeneratedChildStep _ _ excluded safeTail) action member = case member of
     Here => ExpandedChildRemove child fiber first found parent controlled
     There later => o19CoreSafeWord nameEq actor forbidden rest tail safeTail action later
+
+||| Every attached-bundle word is a root insertion or a root control. The
+||| weaker word view does not assert transport of its original forcing reason.
+export
+0 o19BundleWord :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (actor, forbidden : name) ->
+  {first, coreEnd, bundleStart, last : SystemState name key value world error} ->
+  {core : Transitions first coreEnd} -> {priorRoots : List name} ->
+  (bundle : Transitions bundleStart last) ->
+  OrderedForcedRootBundle nameEq actor core priorRoots bundle ->
+  (action : Action name key value world error) -> Elem action (o19ActionWord bundle) ->
+  O19ExpandedBlockWordObservation name key world error value nameEq actor forbidden action
+o19BundleWord nameEq actor forbidden _ ForcedBundleEnd action absent = void (uninhabited absent)
+o19BundleWord nameEq actor forbidden _ (ForcedBundleInsert root component step rest inserted forced tail) action member = case member of
+  Here => ExpandedRootInsert root component inserted
+  There later => o19BundleWord nameEq actor forbidden rest tail action later
+o19BundleWord nameEq actor forbidden _ (ForcedBundleRetire {before} root fiber step rest bundled found parent controlled tail) action member = case member of
+  Here => ExpandedRootRetire root fiber before found parent controlled
+  There later => o19BundleWord nameEq actor forbidden rest tail action later
+o19BundleWord nameEq actor forbidden _ (ForcedBundleRemove {before} root fiber step rest bundled found parent controlled tail) action member = case member of
+  Here => ExpandedRootRemove root fiber before found parent controlled
+  There later => o19BundleWord nameEq actor forbidden rest tail action later
