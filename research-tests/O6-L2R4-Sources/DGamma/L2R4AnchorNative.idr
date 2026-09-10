@@ -30,16 +30,16 @@ nativeAnchorEvent anchors ordinal (LDivert actor) = AnchorLife actor
 nativeAnchorEvent anchors ordinal (LUnload actor) = AnchorLife actor
 nativeAnchorEvent anchors ordinal (LLeave actor) = AnchorLife actor
 
-||| Executable annotation of an ACTUAL checked AvailabilityTrace, preserving
+||| Executable annotation of an ACTUAL checked DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace, preserving
 ||| every chronological action. States/trace indices remain authenticated by
-||| AvailabilityStep; no arbitrary word can replace a lifecycle or birth.
+||| DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep; no arbitrary word can replace a lifecycle or birth.
 public export
 annotateAnchors :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   {0 first, finalState : SystemState name key value world error} ->
   {0 trace : Transitions first finalState} ->
   (anchors : Nat -> name -> Maybe Nat) -> (ordinal : Nat) ->
-  AvailabilityTrace name key world error value trace -> List (AnchorEvent name)
-annotateAnchors anchors ordinal (AvailabilityEnd state) = []
-annotateAnchors anchors ordinal (AvailabilityStep first (Fired nameEq keyEq action tag checked) rest later) =
+  DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value trace -> List (AnchorEvent name)
+annotateAnchors anchors ordinal (DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd state) = []
+annotateAnchors anchors ordinal (DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep first (Fired nameEq keyEq action tag checked) rest later) =
   nativeAnchorEvent anchors ordinal action :: annotateAnchors anchors (S ordinal) later
