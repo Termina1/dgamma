@@ -41,3 +41,23 @@ public export
   (rightBody : Transitions rightFirst rightLast) -> Type
 O19AtMostOneExternalBlock nameEq leftBody rightBody =
   Either (NoRootOrchestration nameEq leftBody) (NoRootOrchestration nameEq rightBody)
+
+||| All nine root/root products are excluded by the NAMED premise, not by a
+||| claim that two independent actors cannot carry external bundles.
+export
+0 o19SeparateRootInputOccurrences :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} ->
+  {leftFirst, leftLast, rightFirst, rightLast, leftBefore, leftAfter,
+   rightBefore, rightAfter : SystemState name key value world error} ->
+  {leftBody : Transitions leftFirst leftLast} ->
+  {rightBody : Transitions rightFirst rightLast} ->
+  {left : Transition leftBefore leftAfter} ->
+  {right : Transition rightBefore rightAfter} ->
+  O19AtMostOneExternalBlock nameEq leftBody rightBody ->
+  OccursIn left leftBody -> OccursIn right rightBody ->
+  RootOrchestrationStep nameEq left -> RootOrchestrationStep nameEq right -> Void
+o19SeparateRootInputOccurrences (Left absent) leftIn rightIn leftRoot rightRoot =
+  o19NoRootOccurrence absent leftIn leftRoot
+o19SeparateRootInputOccurrences (Right absent) leftIn rightIn leftRoot rightRoot =
+  o19NoRootOccurrence absent rightIn rightRoot
