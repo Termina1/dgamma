@@ -117,3 +117,27 @@ data O19AttachedScan :
     (0 observed : O19AttachedEdge name key world error value nameEq actor core step) ->
     (0 tail : O19AttachedScan name key world error value nameEq actor core rest) ->
     O19AttachedScan name key world error value nameEq actor core (MoreTransitions step rest)
+
+||| Total core observer. The context core index remains fixed through the scan;
+||| all five native grammar constructors are visited without source relabelling.
+export
+0 o19AttachedCoreScan :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (actor : name) ->
+  {coreFirst, coreLast, first, last : SystemState name key value world error} ->
+  (core : Transitions coreFirst coreLast) -> (trace : Transitions first last) ->
+  ActorLifecycleCore nameEq actor trace ->
+  O19AttachedScan name key world error value nameEq actor core trace
+o19AttachedCoreScan nameEq actor core _ CoreLifecycleEnd = AttachedScanEnd
+o19AttachedCoreScan nameEq actor core _ (CoreLifecycleStep step rest lifecycle owned tail) =
+  AttachedScanStep step rest (AttachedLifecycle lifecycle owned)
+    (o19AttachedCoreScan nameEq actor core rest tail)
+o19AttachedCoreScan nameEq actor core _ (CoreYieldedRegistrationStep {child} {component} step rest inserted tail) =
+  AttachedScanStep step rest (AttachedChildInsert child component inserted)
+    (o19AttachedCoreScan nameEq actor core rest tail)
+o19AttachedCoreScan nameEq actor core _ (CoreChildRetireStep step rest child fiber found parent controlled tail) =
+  AttachedScanStep step rest (AttachedChildRetire child fiber found parent controlled)
+    (o19AttachedCoreScan nameEq actor core rest tail)
+o19AttachedCoreScan nameEq actor core _ (CoreChildRemoveStep step rest child fiber found parent controlled tail) =
+  AttachedScanStep step rest (AttachedChildRemove child fiber found parent controlled)
+    (o19AttachedCoreScan nameEq actor core rest tail)
