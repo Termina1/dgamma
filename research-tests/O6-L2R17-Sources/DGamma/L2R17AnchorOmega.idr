@@ -43,3 +43,17 @@ public export
   case rawInsertionNameAt Nat Bool Unit String (\key => Unit) position (anchorTrace False) of
     Nothing => True
     Just selected => isYes (decEq @{fst fixtureDictionaries} position (selected + 3))
+
+||| Complete-domain native computation, including every beyond-end ordinal.
+public export
+0 omegaDataAgreement : (position : Nat) -> ω position = True
+omegaDataAgreement 0 = Refl
+omegaDataAgreement 1 = Refl
+omegaDataAgreement 2 = Refl
+omegaDataAgreement 3 = Refl
+omegaDataAgreement 4 = Refl
+omegaDataAgreement 5 = Refl
+omegaDataAgreement 6 = Refl
+omegaDataAgreement 7 = Refl
+omegaDataAgreement 8 = Refl
+omegaDataAgreement (S (S (S (S (S (S (S (S (S later))))))))) = Refl
