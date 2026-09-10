@@ -57,9 +57,9 @@ scanReleaseOrdinals : {name, key, world, error : Type} -> {value : key -> Type} 
   {0 first, finalState : SystemState name key value world error} ->
   {0 trace : Transitions first finalState} ->
   DecEq name -> DecEq key -> Component key value world error -> Nat -> Nat ->
-  AvailabilityTrace name key world error value trace -> List Nat
-scanReleaseOrdinals nameEq keyEq root offset cut (AvailabilityEnd state) = []
-scanReleaseOrdinals nameEq keyEq root offset cut (AvailabilityStep source (Fired ne ke action tag checked) rest later) =
+  DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value trace -> List Nat
+scanReleaseOrdinals nameEq keyEq root offset cut (DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd state) = []
+scanReleaseOrdinals nameEq keyEq root offset cut (DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep source (Fired ne ke action tag checked) rest later) =
   if offset < cut && ownChildReleaseStep nameEq keyEq root source action
      then offset :: scanReleaseOrdinals nameEq keyEq root (S offset) cut later
      else scanReleaseOrdinals nameEq keyEq root (S offset) cut later
@@ -90,7 +90,7 @@ record KeyForcedAt
   (nameEq : DecEq name) (keyEq : DecEq key)
   {0 first, finalState : SystemState name key value world error}
   {0 trace : Transitions first finalState}
-  (trail : AvailabilityTrace name key world error value trace)
+  (trail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value trace)
   (entry : RootCatalogEntry name key world error value) where
   constructor MkKeyForcedAt
   0 keyRootInCatalog : Elem entry (scanRootCatalog 0 trail)
@@ -106,7 +106,7 @@ keyForcedAt : {name, key, world, error : Type} -> {value : key -> Type} ->
   {0 first, finalState : SystemState name key value world error} ->
   {0 trace : Transitions first finalState} ->
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
-  (trail : AvailabilityTrace name key world error value trace) ->
+  (trail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value trace) ->
   (entry : RootCatalogEntry name key world error value) ->
   (0 member : Elem entry (scanRootCatalog 0 trail)) ->
   KeyForcedAt name key world error value nameEq keyEq trail entry
@@ -121,7 +121,7 @@ public export
 keyForcedOrdinal : {name, key, world, error : Type} -> {value : key -> Type} ->
   {0 first, finalState : SystemState name key value world error} ->
   {0 trace : Transitions first finalState} ->
-  DecEq name -> DecEq key -> AvailabilityTrace name key world error value trace -> Nat -> Bool
+  DecEq name -> DecEq key -> DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value trace -> Nat -> Bool
 keyForcedOrdinal nameEq keyEq trail ordinal = any
   (\entry => catalogOrdinal entry == ordinal &&
     not (null (scanReleaseOrdinals nameEq keyEq (catalogComponent entry) 0 (catalogOrdinal entry) trail)))
@@ -134,8 +134,8 @@ public export
 ForcedOnTrace : {name, key, world, error : Type} -> {value : key -> Type} ->
   {0 first, finalState : SystemState name key value world error} ->
   {0 trace : Transitions first finalState} ->
-  DecEq name -> DecEq key -> AvailabilityTrace name key world error value trace -> Nat -> Type
-ForcedOnTrace nameEq keyEq trail = ForcedRootInput
+  DecEq name -> DecEq key -> DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value trace -> Nat -> Type
+ForcedOnTrace nameEq keyEq trail = DGamma.L2R3ForcedClosure.ForcedRootInput
   (\ordinal => Elem ordinal (map catalogOrdinal (scanRootCatalog 0 trail)))
   (\ordinal => keyForcedOrdinal nameEq keyEq trail ordinal = True)
 
@@ -147,7 +147,7 @@ public export
 classifyForced : {name, key, world, error : Type} -> {value : key -> Type} ->
   {0 first, finalState : SystemState name key value world error} ->
   {0 trace : Transitions first finalState} ->
-  DecEq name -> DecEq key -> (trail : AvailabilityTrace name key world error value trace) ->
+  DecEq name -> DecEq key -> (trail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value trace) ->
   (catalog : List (RootCatalogEntry name key world error value)) ->
   (0 exact : catalog = scanRootCatalog 0 trail) -> List (name, Bool)
 classifyForced nameEq keyEq trail catalog exact = map
@@ -162,7 +162,7 @@ export
   {0 first, finalState : SystemState name key value world error} ->
   {0 trace : Transitions first finalState} ->
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
-  (trail : AvailabilityTrace name key world error value trace) ->
+  (trail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value trace) ->
   (candidate : Nat -> Type) ->
   (0 seeds : (n : Nat) -> Elem n (map catalogOrdinal (scanRootCatalog 0 trail)) ->
     keyForcedOrdinal nameEq keyEq trail n = True -> candidate n) ->
@@ -170,4 +170,4 @@ export
     Elem later (map catalogOrdinal (scanRootCatalog 0 trail)) -> LT earlier later -> candidate later) ->
   {ordinal : Nat} -> ForcedOnTrace nameEq keyEq trail ordinal -> candidate ordinal
 forcedOnTraceLeast nameEq keyEq trail candidate seeds closed forced =
-  forcedRootLeast candidate seeds closed forced
+  DGamma.L2R3ForcedClosure.forcedRootLeast candidate seeds closed forced
