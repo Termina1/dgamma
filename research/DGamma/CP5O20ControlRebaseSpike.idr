@@ -100,3 +100,18 @@ o20RebaseFiberReferences before after _ _ agreeParent agreeProviders
       leftLifecycle rightLifecycle
       (o20RebaseParentReferences before after leftParent rightParent agreeParent parents)
       retired (o20RebaseLifecycleReferences before after leftLifecycle rightLifecycle agreeProviders lifecycle)
+
+||| The old preimage of a new image equals the source name whenever the two
+||| maps agree at THAT preimage. Bijection laws produce the exact equation.
+export
+0 o20RebasePreimageCurrent :
+  {name : Type} -> (before, after : NameBijection name) -> (selected : name) ->
+  (0 agreeCurrent :
+    renameForward before (renameBackward before (renameForward after selected)) =
+    renameForward after (renameBackward before (renameForward after selected))) ->
+  renameBackward before (renameForward after selected) = selected
+o20RebasePreimageCurrent before after selected agreeCurrent =
+  trans (sym (renameLeftInverse after (renameBackward before (renameForward after selected))))
+    (trans (cong (renameBackward after)
+      (trans (sym agreeCurrent) (renameRightInverse before (renameForward after selected))))
+      (renameLeftInverse after selected))
