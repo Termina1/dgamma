@@ -5,6 +5,7 @@ import DGamma.Calculus
 import DGamma.Coeffects
 import DGamma.Metatheory
 import DGamma.CP3
+import DGamma.CP5ConfluenceLocalDiamondSpike
 import Data.List
 import Data.List.Elem
 import Data.Maybe
@@ -401,3 +402,21 @@ o19AttachedExternalKind (AttachedRootRetire root fiber priorRoots bundled found 
   Right (RootRetireStep fiber found parent controlled)
 o19AttachedExternalKind (AttachedRootRemove root fiber priorRoots bundled found parent controlled) =
   Right (RootRemoveStep fiber found parent controlled)
+
+||| All six non-lifecycle production forms are genuine paper orchestration.
+||| The negative lifecycle premise only selects the corresponding source class.
+export
+0 o19AttachedOrchestration :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {actor : name} ->
+  {coreFirst, coreLast, before, afterState : SystemState name key value world error} ->
+  {core : Transitions coreFirst coreLast} -> {step : Transition before afterState} ->
+  O19AttachedEdge name key world error value nameEq actor core step ->
+  Not (isLifecycleAction (transitionAction step) = True) -> PaperOrchestrationStep step
+o19AttachedOrchestration (AttachedLifecycle lifecycle owned) excluded = void (excluded lifecycle)
+o19AttachedOrchestration (AttachedChildInsert child component inserted) excluded = PaperInsertStep inserted
+o19AttachedOrchestration (AttachedChildRetire child fiber found parent controlled) excluded = PaperRetireStep controlled
+o19AttachedOrchestration (AttachedChildRemove child fiber found parent controlled) excluded = PaperRemoveStep controlled
+o19AttachedOrchestration (AttachedRootInsert root component priorRoots inserted forced) excluded = PaperInsertStep inserted
+o19AttachedOrchestration (AttachedRootRetire root fiber priorRoots bundled found parent controlled) excluded = PaperRetireStep controlled
+o19AttachedOrchestration (AttachedRootRemove root fiber priorRoots bundled found parent controlled) excluded = PaperRemoveStep controlled
