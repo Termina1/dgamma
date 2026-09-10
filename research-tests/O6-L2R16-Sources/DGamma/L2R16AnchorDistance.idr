@@ -47,3 +47,13 @@ anchorDistanceData crossed =
      (researchAvailability (anchorTrail crossed)),
    targetPosition (fst fixtureDictionaries) (snd fixtureDictionaries)
      (researchAvailability (anchorTrail crossed)) 8)
+
+||| CHECKED DATA AGREEMENT, not an assumed scalar frame: the native Retire
+||| crossing reduces root4's distance but increases root5's. Total stays 3.
+||| Full phase/domain witnesses are a separate obligation; this equality
+||| alone does not refute the more strongly indexed global-frame TYPE.
+export
+0 anchorDistanceAgreement :
+  (anchorDistanceData False, anchorDistanceData True) =
+  ((3, 0, 3, 8), (2, 1, 3, 7))
+anchorDistanceAgreement = Refl
