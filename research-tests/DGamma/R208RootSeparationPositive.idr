@@ -59,3 +59,17 @@ r208SixMixedRootProducts =
     (RootRemoveStep (retireFiber (freshFiber DGamma.CalculusChecks.providerComponent Root)) Refl Refl Refl)
     (RootRetireStep (freshFiber DGamma.CalculusChecks.providerComponent Root) Refl Refl Refl) same of
       RootRemoveAgreement impossible)
+
+||| The named structural premise admits a genuinely non-legacy child-control
+||| core beside a nonempty root Insert/Retire/Remove bundle. Not a claim that
+||| these fixture fragments form a complete sanctioned adjacent block pair.
+export
+0 r208OneExternalBlockWithControls :
+  O19AtMostOneExternalBlock (the (DecEq Nat) %search)
+    (MoreTransitions r206ReleaseEdge NoTransitions)
+    (MoreTransitions r206RootInsertEdge (MoreTransitions r206RootRetireEdge
+      (MoreTransitions r206RootRemoveEdge NoTransitions)))
+r208OneExternalBlockWithControls = Left (o19ExpandedCoreNoRoot
+  (CoreChildRemoveStep r206ReleaseEdge NoTransitions 1
+    (retireFiber (freshFiber DGamma.CalculusChecks.providerComponent (ChildOf 0)))
+    Refl Refl Refl CoreLifecycleEnd))
