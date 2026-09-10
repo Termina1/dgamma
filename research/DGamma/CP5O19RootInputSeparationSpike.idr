@@ -61,3 +61,42 @@ o19SeparateRootInputOccurrences (Left absent) leftIn rightIn leftRoot rightRoot 
   o19NoRootOccurrence absent leftIn leftRoot
 o19SeparateRootInputOccurrences (Right absent) leftIn rightIn leftRoot rightRoot =
   o19NoRootOccurrence absent rightIn rightRoot
+
+||| Every expanded core (including child Retire/Remove) is root-input free.
+||| The control branches compare lookups at the SAME native source state.
+export
+0 o19ExpandedCoreNoRoot :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {actor : name} ->
+  {first, last : SystemState name key value world error} ->
+  {core : Transitions first last} -> ActorLifecycleCore nameEq actor core ->
+  NoRootOrchestration nameEq core
+o19ExpandedCoreNoRoot CoreLifecycleEnd = NoRootOrchestrationEnd
+o19ExpandedCoreNoRoot (CoreLifecycleStep step rest lifecycle owned tail) =
+  NoRootOrchestrationStep step rest
+    (\root => void (uninhabited (trans (sym lifecycle) (o19AttachedRootNonLifecycle root))))
+    (o19ExpandedCoreNoRoot tail)
+o19ExpandedCoreNoRoot (CoreYieldedRegistrationStep step rest inserted tail) =
+  NoRootOrchestrationStep step rest (\root => case root of
+    RootInsertStep exact => case trans (sym inserted) exact of Refl impossible
+    RootRetireStep fiber found parent exact => case trans (sym inserted) exact of Refl impossible
+    RootRemoveStep fiber found parent exact => case trans (sym inserted) exact of Refl impossible)
+    (o19ExpandedCoreNoRoot tail)
+o19ExpandedCoreNoRoot (CoreChildRetireStep step rest child fiber found parent controlled tail) =
+  NoRootOrchestrationStep step rest (\root => case root of
+    RootInsertStep exact => case trans (sym controlled) exact of Refl impossible
+    RootRetireStep rootFiber rootFound rootParent exact =>
+      case cong actionOwner (trans (sym controlled) exact) of
+        Refl => case justInjective (trans (sym found) rootFound) of
+          Refl => case trans (sym parent) rootParent of Refl impossible
+    RootRemoveStep rootFiber rootFound rootParent exact => case trans (sym controlled) exact of Refl impossible)
+    (o19ExpandedCoreNoRoot tail)
+o19ExpandedCoreNoRoot (CoreChildRemoveStep step rest child fiber found parent controlled tail) =
+  NoRootOrchestrationStep step rest (\root => case root of
+    RootInsertStep exact => case trans (sym controlled) exact of Refl impossible
+    RootRetireStep rootFiber rootFound rootParent exact => case trans (sym controlled) exact of Refl impossible
+    RootRemoveStep rootFiber rootFound rootParent exact =>
+      case cong actionOwner (trans (sym controlled) exact) of
+        Refl => case justInjective (trans (sym found) rootFound) of
+          Refl => case trans (sym parent) rootParent of Refl impossible)
+    (o19ExpandedCoreNoRoot tail)
