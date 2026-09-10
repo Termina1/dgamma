@@ -65,10 +65,10 @@ public export
 phaseEvents : {name, key, world, error : Type} -> {value : key -> Type} ->
   {0 first, finalState : SystemState name key value world error} ->
   {0 trace : Transitions first finalState} ->
-  (nameEq : DecEq name) -> AvailabilityTrace name key world error value trace ->
+  (nameEq : DecEq name) -> DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value trace ->
   List (Maybe name, Bool)
-phaseEvents nameEq (AvailabilityEnd state) = []
-phaseEvents nameEq (AvailabilityStep source (Fired ne ke action tag checked) rest later) =
+phaseEvents nameEq (DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd state) = []
+phaseEvents nameEq (DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep source (Fired ne ke action tag checked) rest later) =
   (phaseActionOwner nameEq source action, isLifecycleAction action) :: phaseEvents nameEq later
 
 ||| Test a physical release position for a preceding lifecycle in the SAME
@@ -97,7 +97,7 @@ phaseScanOk : {name, key, world, error : Type} -> {value : key -> Type} ->
   {0 first, finalState : SystemState name key value world error} ->
   {0 trace : Transitions first finalState} ->
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
-  AvailabilityTrace name key world error value trace -> Bool
+  DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value trace -> Bool
 phaseScanOk nameEq keyEq trail = all
   (\entry => maybe True
     (\anchor => anchor <= catalogOrdinal entry && any
