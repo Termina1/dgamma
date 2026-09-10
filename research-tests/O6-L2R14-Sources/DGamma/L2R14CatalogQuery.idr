@@ -92,12 +92,12 @@ export
 0 scanCatalogActionQuery : {name, key, world, error : Type} -> {value : key -> Type} ->
   {first, finalState : SystemState name key value world error} ->
   {trace : Transitions first finalState} ->
-  (offset : Nat) -> (trail : AvailabilityTrace name key world error value trace) ->
+  (offset : Nat) -> (trail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value trace) ->
   (entry : RootCatalogEntry name key world error value) ->
   (0 member : Elem entry (scanRootCatalog offset trail)) ->
   (position : Nat ** (catalogOrdinal entry = offset + position,
     head' (drop position (nativeActionWord trail)) = Just (OInsert (catalogRoot entry) Root (catalogComponent entry))))
-scanCatalogActionQuery offset (AvailabilityEnd state) entry member = absurd member
-scanCatalogActionQuery offset (AvailabilityStep source (Fired ne ke action tag checked) rest later) entry member =
+scanCatalogActionQuery offset (DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd state) entry member = absurd member
+scanCatalogActionQuery offset (DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep source (Fired ne ke action tag checked) rest later) entry member =
   catalogQueryAtAction action offset (nativeActionWord later) (scanRootCatalog (S offset) later)
     (\item, present => scanCatalogActionQuery (S offset) later item present) entry member
