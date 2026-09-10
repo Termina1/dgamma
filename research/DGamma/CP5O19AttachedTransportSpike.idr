@@ -84,3 +84,34 @@ o19LeftControlAfterSwap nameEq keyEq controlled left right
           (AlignedStep action tag checked NoTransitions AlignedEnd)
           (\same => distinct (trans same (cong actionOwner rightAction)))) found,
          leftAction, leftTag)
+
+||| Transfer ALL seven classes to an exact replay edge. Unlike action-word
+||| relabelling, this consumes a genuine source-to-target lookup frame. The
+||| ORIGINAL core is intentionally retained here; its change is separate.
+export
+0 o19AttachedEdgeAtReplay :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {actor : name} ->
+  {coreFirst, coreLast, sourceBefore, sourceAfter, targetBefore, targetAfter : SystemState name key value world error} ->
+  {core : Transitions coreFirst coreLast} ->
+  (source : Transition sourceBefore sourceAfter) -> (target : Transition targetBefore targetAfter) ->
+  transitionAction target = transitionAction source -> transitionActor target = transitionActor source ->
+  ((controlled : name) -> (fiber : Fiber name key value world error) ->
+    lookupFiber {name} {key} {value} {world} {error} @{nameEq} controlled (registry sourceBefore) = Just fiber ->
+    lookupFiber {name} {key} {value} {world} {error} @{nameEq} controlled (registry targetBefore) = Just fiber) ->
+  O19AttachedEdge name key world error value nameEq actor core source ->
+  O19AttachedEdge name key world error value nameEq actor core target
+o19AttachedEdgeAtReplay source target action owned frame (AttachedLifecycle lifecycle owner) =
+  AttachedLifecycle (trans (cong isLifecycleAction action) lifecycle) (trans owned owner)
+o19AttachedEdgeAtReplay source target action owned frame (AttachedChildInsert child component inserted) =
+  AttachedChildInsert child component (trans action inserted)
+o19AttachedEdgeAtReplay source target action owned frame (AttachedChildRetire child fiber found parent controlled) =
+  AttachedChildRetire child fiber (frame child fiber found) parent (trans action controlled)
+o19AttachedEdgeAtReplay source target action owned frame (AttachedChildRemove child fiber found parent controlled) =
+  AttachedChildRemove child fiber (frame child fiber found) parent (trans action controlled)
+o19AttachedEdgeAtReplay source target action owned frame (AttachedRootInsert root component priorRoots inserted forced) =
+  AttachedRootInsert root component priorRoots (trans action inserted) forced
+o19AttachedEdgeAtReplay source target action owned frame (AttachedRootRetire root fiber priorRoots bundled found parent controlled) =
+  AttachedRootRetire root fiber priorRoots bundled (frame root fiber found) parent (trans action controlled)
+o19AttachedEdgeAtReplay source target action owned frame (AttachedRootRemove root fiber priorRoots bundled found parent controlled) =
+  AttachedRootRemove root fiber priorRoots bundled (frame root fiber found) parent (trans action controlled)
