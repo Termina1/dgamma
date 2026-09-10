@@ -352,3 +352,14 @@ export
 o19AttachedRootOrderObstruction left right movedRight movedLeft leftRoot movedRoot movedAction distinct relation =
   distinct (trans (o19AttachedRootHeadsSame left movedRight
     (MoreTransitions right NoTransitions) (MoreTransitions movedLeft NoTransitions) leftRoot movedRoot relation) movedAction)
+
+||| Native root orchestration excludes lifecycle, including both root controls.
+export
+0 o19AttachedRootNonLifecycle :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {before, afterState : SystemState name key value world error} ->
+  {step : Transition before afterState} -> RootOrchestrationStep nameEq step ->
+  isLifecycleAction (transitionAction step) = False
+o19AttachedRootNonLifecycle (RootInsertStep exact) = trans (cong isLifecycleAction exact) Refl
+o19AttachedRootNonLifecycle (RootRetireStep fiber found parent exact) = trans (cong isLifecycleAction exact) Refl
+o19AttachedRootNonLifecycle (RootRemoveStep fiber found parent exact) = trans (cong isLifecycleAction exact) Refl
