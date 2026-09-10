@@ -263,3 +263,21 @@ record O20PairedNativeChronologies
   0 leftChronologyScan : O20NativeActivationScan nameEq Z emptyRegistrationIndex left leftIndex leftChronology
   0 rightChronologyScan : O20NativeActivationScan nameEq Z emptyRegistrationIndex right rightIndex rightChronology
   0 chronologyPairing : O20ChronologyPairing mapping leftChronology rightChronology
+
+||| Accepted E8 correspondence supplies everything. In particular callers
+||| neither choose the two words nor supply matches for their chosen members.
+||| The result has complete permutation pairing of its OWN actual native scans.
+public export
+0 o20AcceptedChronologyPairing :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) ->
+  {leftFirst, leftFinal, rightFirst, rightFinal : SystemState name key value world error} ->
+  (left : Transitions leftFirst leftFinal) -> (right : Transitions rightFirst rightFinal) ->
+  (mapping : RegistrationGenerationBijection name) ->
+  (registrations : RegistrationCorrespondenceByGeneration nameEq mapping left right) ->
+  O20PairedNativeChronologies name key world error value nameEq mapping left right
+    (leftFinalIndex registrations) (rightFinalIndex registrations)
+o20AcceptedChronologyPairing nameEq left right mapping registrations =
+  case o20NativeChronologiesPaired (generationTraceCorrespondence registrations) of
+    (leftEvents ** (rightEvents ** (leftScan, rightScan, paired))) =>
+      MkO20PairedNativeChronologies leftEvents rightEvents leftScan rightScan paired
