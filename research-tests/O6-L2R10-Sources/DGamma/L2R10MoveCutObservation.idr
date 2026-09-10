@@ -33,10 +33,10 @@ public export
 trailSourceActions : {name, key, world, error : Type} -> {value : key -> Type} ->
   {0 initial, finalState : SystemState name key value world error} ->
   {0 trace : Transitions initial finalState} ->
-  AvailabilityTrace name key world error value trace ->
+  DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value trace ->
   List (SystemState name key value world error, Action name key value world error)
-trailSourceActions (AvailabilityEnd state) = []
-trailSourceActions (AvailabilityStep source (Fired ne ke action tag checked) rest later) =
+trailSourceActions (DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd state) = []
+trailSourceActions (DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep source (Fired ne ke action tag checked) rest later) =
   (source, action) :: trailSourceActions later
 
 ||| Typed native square REQUEST, not a square/move. The actual first-positive
@@ -51,7 +51,7 @@ record SelectedSquareCut
   (nameEq : DecEq name) (keyEq : DecEq key)
   {0 initial, finalState : SystemState name key value world error}
   {0 trace : Transitions initial finalState}
-  (0 trail : AvailabilityTrace name key world error value trace) where
+  (0 trail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value trace) where
   constructor MkSelectedSquareCut
   cutEntry : RootCatalogEntry name key world error value
   earlierEntries : List (RootCatalogEntry name key world error value)
@@ -78,7 +78,7 @@ selectedCutAtPair :
   {0 initial, finalState : SystemState name key value world error} ->
   {0 trace : Transitions initial finalState} ->
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
-  (trail : AvailabilityTrace name key world error value trace) ->
+  (trail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value trace) ->
   (entry : RootCatalogEntry name key world error value) ->
   (before, after : List (RootCatalogEntry name key world error value)) ->
   (predecessor : Nat) ->
@@ -104,7 +104,7 @@ selectedCutAtLookup :
   {0 initial, finalState : SystemState name key value world error} ->
   {0 trace : Transitions initial finalState} ->
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
-  (trail : AvailabilityTrace name key world error value trace) ->
+  (trail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value trace) ->
   (entry : RootCatalogEntry name key world error value) ->
   (before, after : List (RootCatalogEntry name key world error value)) ->
   (predecessor : Nat) ->
@@ -127,7 +127,7 @@ selectedCutAtSearch :
   {0 initial, finalState : SystemState name key value world error} ->
   {0 trace : Transitions initial finalState} ->
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
-  (trail : AvailabilityTrace name key world error value trace) ->
+  (trail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value trace) ->
   (distance : RootCatalogEntry name key world error value -> Nat) ->
   (items : List (RootCatalogEntry name key world error value)) ->
   (0 distanceEquation : (\entry => rootDistance nameEq keyEq trail (catalogOrdinal entry)) = distance) ->
@@ -155,7 +155,7 @@ observeSelectedMoveCut :
   {0 initial, finalState : SystemState name key value world error} ->
   {0 trace : Transitions initial finalState} ->
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
-  (trail : AvailabilityTrace name key world error value trace) ->
+  (trail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value trace) ->
   Maybe (SelectedSquareCut name key world error value nameEq keyEq trail)
 observeSelectedMoveCut nameEq keyEq trail =
   selectedCutAtSearch nameEq keyEq trail
