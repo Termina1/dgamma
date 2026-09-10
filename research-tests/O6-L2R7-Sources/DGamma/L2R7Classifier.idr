@@ -53,11 +53,11 @@ export
 0 forcedSeedBeforeObserved : {rootInput, keyForced : Nat -> Type} ->
   (seed, target : Nat) -> (observed : Dec (LT seed target)) ->
   (0 equation : isLT seed target = observed) -> (0 ordered : LTE seed target) ->
-  (0 prior : ForcedRootInput rootInput keyForced seed) -> (0 root : rootInput target) ->
-  ForcedRootInput rootInput keyForced target
-forcedSeedBeforeObserved seed target (Yes earlier) equation ordered prior root = OrderForces prior root earlier
+  (0 prior : DGamma.L2R3ForcedClosure.ForcedRootInput rootInput keyForced seed) -> (0 root : rootInput target) ->
+  DGamma.L2R3ForcedClosure.ForcedRootInput rootInput keyForced target
+forcedSeedBeforeObserved seed target (Yes earlier) equation ordered prior root = DGamma.L2R3ForcedClosure.OrderForces prior root earlier
 forcedSeedBeforeObserved {rootInput} {keyForced} seed target (No notEarlier) equation ordered prior root =
-  replace {p = ForcedRootInput rootInput keyForced}
+  replace {p = DGamma.L2R3ForcedClosure.ForcedRootInput rootInput keyForced}
     (antisymmetric ordered (notLTImpliesGTE notEarlier)) prior
 
 ||| A successful computed prefix-seed test gives an independent KeyForces or
@@ -67,7 +67,7 @@ export
   {0 first, finalState : SystemState name key value world error} ->
   {0 trace : Transitions first finalState} ->
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
-  (trail : AvailabilityTrace name key world error value trace) ->
+  (trail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value trace) ->
   (entry : RootCatalogEntry name key world error value) ->
   (0 member : Elem entry (scanRootCatalog 0 trail)) ->
   AnyHit (\seed => catalogOrdinal seed <= catalogOrdinal entry &&
@@ -80,7 +80,7 @@ classifyForcedHitSound nameEq keyEq trail entry member hit =
       (trans (sym (leToLte (catalogOrdinal (hitItem hit)) (catalogOrdinal entry)))
         (fst (acceptedConjunction (catalogOrdinal (hitItem hit) <= catalogOrdinal entry)
           (keyForcedOrdinal nameEq keyEq trail (catalogOrdinal (hitItem hit))) (hitAccepted hit)))))
-    (KeyForces (elemMap catalogOrdinal (hitMember hit))
+    (DGamma.L2R3ForcedClosure.KeyForces (elemMap catalogOrdinal (hitMember hit))
       (snd (acceptedConjunction (catalogOrdinal (hitItem hit) <= catalogOrdinal entry)
         (keyForcedOrdinal nameEq keyEq trail (catalogOrdinal (hitItem hit))) (hitAccepted hit))))
     (elemMap catalogOrdinal member)
@@ -92,7 +92,7 @@ export
   {0 first, finalState : SystemState name key value world error} ->
   {0 trace : Transitions first finalState} ->
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
-  (trail : AvailabilityTrace name key world error value trace) ->
+  (trail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value trace) ->
   (entry : RootCatalogEntry name key world error value) ->
   (0 member : Elem entry (scanRootCatalog 0 trail)) -> (observed : Bool) ->
   (0 equation : any (\seed => catalogOrdinal seed <= catalogOrdinal entry &&
@@ -116,9 +116,9 @@ record ForcedSeedBasis (rootInput, keyForced : Nat -> Type) (target : Nat) where
 ||| Structural induction on the independent least family produces its seed.
 export
 0 forcedSeedBasis : {rootInput, keyForced : Nat -> Type} -> {ordinal : Nat} ->
-  ForcedRootInput rootInput keyForced ordinal -> ForcedSeedBasis rootInput keyForced ordinal
-forcedSeedBasis (KeyForces {ordinal} root released) = MkForcedSeedBasis ordinal root released reflexive
-forcedSeedBasis (OrderForces prior root ordered) = MkForcedSeedBasis
+  DGamma.L2R3ForcedClosure.ForcedRootInput rootInput keyForced ordinal -> ForcedSeedBasis rootInput keyForced ordinal
+forcedSeedBasis (DGamma.L2R3ForcedClosure.KeyForces {ordinal} root released) = MkForcedSeedBasis ordinal root released reflexive
+forcedSeedBasis (DGamma.L2R3ForcedClosure.OrderForces prior root ordered) = MkForcedSeedBasis
   (basisOrdinal (forcedSeedBasis prior)) (basisRoot (forcedSeedBasis prior))
   (basisKey (forcedSeedBasis prior))
   (transitive (basisBefore (forcedSeedBasis prior)) (lteSuccLeft ordered))
@@ -161,7 +161,7 @@ export
   {0 first, finalState : SystemState name key value world error} ->
   {0 trace : Transitions first finalState} ->
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
-  (trail : AvailabilityTrace name key world error value trace) ->
+  (trail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value trace) ->
   (entry : RootCatalogEntry name key world error value) -> (observed : Bool) ->
   (0 equation : any (\seed => catalogOrdinal seed <= catalogOrdinal entry &&
     keyForcedOrdinal nameEq keyEq trail (catalogOrdinal seed)) (scanRootCatalog 0 trail) = observed) ->
@@ -180,7 +180,7 @@ record ForcedClassificationAt
   (nameEq : DecEq name) (keyEq : DecEq key)
   {0 first, finalState : SystemState name key value world error}
   {0 trace : Transitions first finalState}
-  (trail : AvailabilityTrace name key world error value trace)
+  (trail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value trace)
   (entry : RootCatalogEntry name key world error value) where
   constructor MkForcedClassificationAt
   0 classifiedMember : Elem entry (scanRootCatalog 0 trail)
@@ -200,7 +200,7 @@ observeForcedClassification : {name, key, world, error : Type} -> {value : key -
   {0 first, finalState : SystemState name key value world error} ->
   {0 trace : Transitions first finalState} ->
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
-  (trail : AvailabilityTrace name key world error value trace) ->
+  (trail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value trace) ->
   (entry : RootCatalogEntry name key world error value) ->
   (0 member : Elem entry (scanRootCatalog 0 trail)) ->
   ForcedClassificationAt name key world error value nameEq keyEq trail entry
