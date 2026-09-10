@@ -246,3 +246,20 @@ o20NativeChronologiesPaired {nameEq} {rightOrdinal} {rightIndex} {pendingRight}
                     (ChronologyPairMatch leftEvent
                       (registrationEventAt @{nameEq} rightOrdinal rightIndex child parent component) matched
                       (rewrite appendAssociative leftPrefix leftSuffix leftEvents in paired))))))
+
+||| Named actual-list interface. Runtime event words remain unrestricted;
+||| scans and matching are erased specifications. Initial scans are literally
+||| at0/empty; final indexes are the supplied correspondence's actual indexes.
+public export
+record O20PairedNativeChronologies
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (mapping : RegistrationGenerationBijection name)
+  {leftFirst, leftFinal, rightFirst, rightFinal : SystemState name key value world error}
+  (left : Transitions leftFirst leftFinal) (right : Transitions rightFirst rightFinal)
+  (leftIndex, rightIndex : RegistrationIndexState name) where
+  constructor MkO20PairedNativeChronologies
+  leftChronology : List (RegistrationEvent name key world error value)
+  rightChronology : List (RegistrationEvent name key world error value)
+  0 leftChronologyScan : O20NativeActivationScan nameEq Z emptyRegistrationIndex left leftIndex leftChronology
+  0 rightChronologyScan : O20NativeActivationScan nameEq Z emptyRegistrationIndex right rightIndex rightChronology
+  0 chronologyPairing : O20ChronologyPairing mapping leftChronology rightChronology
