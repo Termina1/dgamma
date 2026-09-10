@@ -281,3 +281,28 @@ o20AcceptedChronologyPairing nameEq left right mapping registrations =
   case o20NativeChronologiesPaired (generationTraceCorrespondence registrations) of
     (leftEvents ** (rightEvents ** (leftScan, rightScan, paired))) =>
       MkO20PairedNativeChronologies leftEvents rightEvents leftScan rightScan paired
+
+||| Wire the SAME paired words to R203's full original-prefix position and
+||| counter proofs. No unrelated event list or scalar counter is substituted.
+||| Transport to exchanged canonical prefixes remains a separate obligation.
+export
+0 o20PairedChronologyPositionsAndCounts :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (mapping : RegistrationGenerationBijection name) ->
+  {leftFirst, leftFinal, rightFirst, rightFinal : SystemState name key value world error} ->
+  (left : Transitions leftFirst leftFinal) -> (right : Transitions rightFirst rightFinal) ->
+  (leftIndex, rightIndex : RegistrationIndexState name) ->
+  (actual : O20PairedNativeChronologies name key world error value nameEq mapping left right leftIndex rightIndex) ->
+  (o20ChronologicalPositions nameEq (leftChronology actual) [],
+   o20ChronologicalPositions nameEq (rightChronology actual) [],
+   indexedSurvivingChildCounts leftIndex = o20ReplayRetainedEventCounts nameEq (leftChronology actual) [],
+   indexedSurvivingChildCounts rightIndex = o20ReplayRetainedEventCounts nameEq (rightChronology actual) [])
+o20PairedChronologyPositionsAndCounts nameEq mapping left right leftIndex rightIndex actual =
+  (o20NativeChronologicalPositions nameEq Z emptyRegistrationIndex left leftIndex
+    (leftChronology actual) (leftChronologyScan actual),
+   o20NativeChronologicalPositions nameEq Z emptyRegistrationIndex right rightIndex
+    (rightChronology actual) (rightChronologyScan actual),
+   o20NativeActivationCounts nameEq Z emptyRegistrationIndex left leftIndex
+    (leftChronology actual) (leftChronologyScan actual),
+   o20NativeActivationCounts nameEq Z emptyRegistrationIndex right rightIndex
+    (rightChronology actual) (rightChronologyScan actual))
