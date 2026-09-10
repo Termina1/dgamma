@@ -7,6 +7,7 @@ import DGamma.Metatheory
 import DGamma.CP3
 import Data.List
 import Data.List.Elem
+import Data.Maybe
 import Decidable.Equality
 
 %default total
@@ -363,3 +364,40 @@ export
 o19AttachedRootNonLifecycle (RootInsertStep exact) = trans (cong isLifecycleAction exact) Refl
 o19AttachedRootNonLifecycle (RootRetireStep fiber found parent exact) = trans (cong isLifecycleAction exact) Refl
 o19AttachedRootNonLifecycle (RootRemoveStep fiber found parent exact) = trans (cong isLifecycleAction exact) Refl
+
+||| TOTAL ORIGINAL-source external/internal classification. The child-control
+||| branches compare native lookups at the SAME before state. This is why an
+||| action-only relabelling of the R206 word observation could not prove it.
+export
+0 o19AttachedExternalKind :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {actor : name} ->
+  {coreFirst, coreLast, before, afterState : SystemState name key value world error} ->
+  {core : Transitions coreFirst coreLast} -> {step : Transition before afterState} ->
+  O19AttachedEdge name key world error value nameEq actor core step ->
+  Either (Not (RootOrchestrationStep nameEq step)) (RootOrchestrationStep nameEq step)
+o19AttachedExternalKind (AttachedLifecycle lifecycle owned) =
+  Left (\root => void (uninhabited (trans (sym lifecycle) (o19AttachedRootNonLifecycle root))))
+o19AttachedExternalKind (AttachedChildInsert child component inserted) = Left (\root => case root of
+  RootInsertStep exact => case trans (sym inserted) exact of Refl impossible
+  RootRetireStep fiber found parent exact => case trans (sym inserted) exact of Refl impossible
+  RootRemoveStep fiber found parent exact => case trans (sym inserted) exact of Refl impossible)
+o19AttachedExternalKind (AttachedChildRetire child fiber found parent controlled) = Left (\root => case root of
+  RootInsertStep exact => case trans (sym controlled) exact of Refl impossible
+  RootRetireStep rootFiber rootFound rootParent exact =>
+    case cong actionOwner (trans (sym controlled) exact) of
+      Refl => case justInjective (trans (sym found) rootFound) of
+        Refl => case trans (sym parent) rootParent of Refl impossible
+  RootRemoveStep rootFiber rootFound rootParent exact => case trans (sym controlled) exact of Refl impossible)
+o19AttachedExternalKind (AttachedChildRemove child fiber found parent controlled) = Left (\root => case root of
+  RootInsertStep exact => case trans (sym controlled) exact of Refl impossible
+  RootRetireStep rootFiber rootFound rootParent exact => case trans (sym controlled) exact of Refl impossible
+  RootRemoveStep rootFiber rootFound rootParent exact =>
+    case cong actionOwner (trans (sym controlled) exact) of
+      Refl => case justInjective (trans (sym found) rootFound) of
+        Refl => case trans (sym parent) rootParent of Refl impossible)
+o19AttachedExternalKind (AttachedRootInsert root component priorRoots inserted forced) = Right (RootInsertStep inserted)
+o19AttachedExternalKind (AttachedRootRetire root fiber priorRoots bundled found parent controlled) =
+  Right (RootRetireStep fiber found parent controlled)
+o19AttachedExternalKind (AttachedRootRemove root fiber priorRoots bundled found parent controlled) =
+  Right (RootRemoveStep fiber found parent controlled)
