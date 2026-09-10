@@ -1,0 +1,117 @@
+{
+  "timestamp": "2026-09-08T23:42:17.239310+00:00",
+  "head": "20fbd8e76b4f42f51b028c33db2496f09a5105c4",
+  "start": "77a9efe1",
+  "O19Closed": true,
+  "ratifiedMovedDeclarations": [],
+  "holes": {
+    "CanonicalSort": [
+      "?sortClosingFreeTraceSpike_rhs"
+    ],
+    "CrossTrace": [
+      "?selectOperationalCanonicalPermutationSpike_rhs",
+      "?canonicalSchedulesConvergeSpike_rhs"
+    ],
+    "DeletionChain": [],
+    "LocalDiamond": [],
+    "RenamingComposition": [
+      "?replayedCanonicalToOriginalEndpointSpike_rhs"
+    ]
+  },
+  "split": [
+    1,
+    2,
+    0,
+    0,
+    1
+  ],
+  "productionDiffVs34b21c9": "empty",
+  "CP3Blob": "2c697e532e83989de8591fa6a4378747c6a501c0",
+  "LocalDiamondDiffVsStart": "empty",
+  "LocalDiamondUnchanged": true,
+  "LocalDiamondAuthorizedVisibility": {},
+  "CanonicalSortDiffVsStart": "empty",
+  "CanonicalSortAuthorizedVisibility": {},
+  "DeletionChainDiffVsStart": "empty",
+  "CrossTraceDiffVsStart": "empty",
+  "RenamingCompositionDiffVsStart": "empty (R192 A11 manifest preserved)",
+  "adjacentFullBytes": 1470,
+  "adjacentFullSHA256": "2d01486bf953f11191b758ac3cfb5722d1d02b1a192b6e552adc8a3f58199ecf",
+  "adjacentStatementBytes": 1154,
+  "adjacentStatementSHA256": "3aae5a9fbc5b14e0411b4a91e557a6f3dc68c9a6282b9ec2b3fc658cec337adf",
+  "reviewSHA256": "61fc23ae4cea4565b442c840be39c41746ecbac73b8c2f73d04f1e3b4f4681e8",
+  "seeds": "207/207",
+  "LocalDiamondTTC": {
+    "bytes": 125368223,
+    "mtimeUTC": "2026-09-08T23:14:37.693169+00:00"
+  },
+  "changedIdrisFiles": [
+    "research-tests/DGamma/R193CandidateEnumerationPositive.idr",
+    "research-tests/DGamma/R193HistoryNameTransportPositive.idr",
+    "research-tests/DGamma/R193InstalledBlockResolverPositive.idr",
+    "research-tests/DGamma/R193VestigialHistoryTransportPositive.idr",
+    "research/DGamma/CP5O20BlockResolverFrameSpike.idr",
+    "research/DGamma/CP5O20CanonicalActionCompletenessSpike.idr",
+    "research/DGamma/CP5O20HistoryExecutionSpike.idr",
+    "research/DGamma/CP5O20HistoryNameTransportSpike.idr",
+    "research/DGamma/CP5O20LinearExtensionSpike.idr",
+    "research/DGamma/CP5O20SafeBlockSelectionSpike.idr",
+    "research/DGamma/CP5O20SelectionCompletenessSpike.idr",
+    "research/DGamma/CP5O20SelectorResolverFrameSpike.idr",
+    "research/DGamma/CP5O20SingleRoleAdvanceExtractionSpike.idr"
+  ],
+  "A11SurfaceRevision": {
+    "approval": "Supervisor exact-field need_decision reply, 2026-09-08 R192; one existing record/consumer declaration per invocation",
+    "baselineHead": "865de39fbbf857f9880315fb26e4227d7997eed4",
+    "oldFieldBytes": 1154,
+    "newFieldBytes": 1297,
+    "oldFieldSHA256": "574fcb56e55e2bc3f54d36711b23ef6ac767f9c97952c596ce5c72dd6e7123d1",
+    "newFieldSHA256": "037737c2cd0d9c29ae7d1637a7eaf19f9ea75bbc07a1546f8870b312b3af2894",
+    "oldRecordBytes": 3100,
+    "newRecordBytes": 3243,
+    "oldRecordSHA256": "b65cc059e8dea35ce9e7fdd1b580b1d2b5e0e3e03b4ed6aaddf07c6f101cf6d1",
+    "newRecordSHA256": "ac5304c1a6a6e0cea988eac4b0dcdb5756fcf1b67ede7d0db6a4d723c73b695d",
+    "unchangedFirstThreeFieldsSHA256": "e440bbeaf87224e84dc5aec8630d915e5abff4721627de970800705de0a18abf",
+    "unchangedO21DeclarationSHA256": "377b08ff82e1e4212738bb00a45a088b1f0d8fd8bc8b54bf061c96f2f4891681"
+  },
+  "sourceSHA256": {
+    "research-tests/DGamma/R193CandidateEnumerationPositive.idr": "a558d70bdaab3ead135c9e02b496dcc383ec498757605c93ba091f5934a9d6b3",
+    "research-tests/DGamma/R193HistoryNameTransportPositive.idr": "7ed322e1f411444b392f3c6a872dc411116b56b713b8b458e623f39edf4fd874",
+    "research-tests/DGamma/R193InstalledBlockResolverPositive.idr": "e2979e5f087f37d4682d8e88ae2547e74db20cd27e7a902c410b376011383374",
+    "research-tests/DGamma/R193VestigialHistoryTransportPositive.idr": "ffa274f1b704b1fd214d63b953d6289cdd1bb323e7343e7510e4f3cb94786080",
+    "research/DGamma/CP5O20BlockResolverFrameSpike.idr": "0039c30f35235e6d13eb62a36d1451752838c416c31ae51716d905e1b6ff8276",
+    "research/DGamma/CP5O20CanonicalActionCompletenessSpike.idr": "85da29a33779216f7139b021814b19e2d3fded170ee98dac75c1bd8c21064b9e",
+    "research/DGamma/CP5O20HistoryExecutionSpike.idr": "ab202644aea79d9eb4c96b3d1a765dafeef30221c53a0f3a12e2b53d0bb5328d",
+    "research/DGamma/CP5O20HistoryNameTransportSpike.idr": "97cc59805856ae14c2727b3c869c6beb551ed24f2edd5bb25c07b03836fca30f",
+    "research/DGamma/CP5O20LinearExtensionSpike.idr": "9fe05758dae553bd0f7be5633007e3e0c8b520d4b8c5a7649372c19a1138d7cc",
+    "research/DGamma/CP5O20SafeBlockSelectionSpike.idr": "a1d77431b19b6734bb15c6f095bdc073d2953327cc9c1e88e7d0bc2a33266f3f",
+    "research/DGamma/CP5O20SelectionCompletenessSpike.idr": "0142151162552a06a25fc3bb90437c666e8bd1bbe3c7be24a629937d9d30f2e3",
+    "research/DGamma/CP5O20SelectorResolverFrameSpike.idr": "d530fb03ec5bd27977fd7f6331e645d58e2ddbdff84a921df87b0979200280f8",
+    "research/DGamma/CP5O20SingleRoleAdvanceExtractionSpike.idr": "de5ecc4071e0a29d54611aa5ae4bb6d43d5aec45f5d822cd337112812ea2ab4f"
+  },
+  "protectedDeclarationSHA256": {
+    "sortClosingFreeTraceSpike": "1df8d174b9a4f119a5a52e2073a72907bdb890413f877d55886e905e1d0279d1",
+    "operationalAdjacentBlockSwapSpike": "e81d83c165b65ae6d4f6e29347b53fa6b7db83d6f5f29d6c6b07c0f9d09c11e8",
+    "selectOperationalCanonicalPermutationSpike": "b00063eacf339b58828eac5829cebc66fc7265f3518be459af0602463b6fbae7",
+    "canonicalSchedulesConvergeSpike": "0e8a177ea7bb4807cb77680cde29e75f7d37224711cc51cf7bf6636426690dd9",
+    "replayedCanonicalToOriginalEndpointSpike": "377b08ff82e1e4212738bb00a45a088b1f0d8fd8bc8b54bf061c96f2f4891681"
+  },
+  "prohibitedAdditions": {
+    "\\bbelieve_me\\b": [],
+    "\\bassert_total\\b": [],
+    "^\\s*partial\\b": [],
+    "\\?\\w+": [],
+    "\\blet\\b": [],
+    "\\bwith\\b": [],
+    "\\bprefix\\b": [],
+    "\\bdeletionTheoremProof\\b": [],
+    "\\bpostulate\\b": [],
+    "\\b[A-Za-z_]\\w*@\\s*[\\(\\[]": []
+  },
+  "noCompiler": true,
+  "lane2Compilers": [],
+  "compilerScope": "main worktree only",
+  "noStagedFiles": true,
+  "cleanTrackedTree": true,
+  "allowedUntrackedOnly": true
+}

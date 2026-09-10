@@ -1,0 +1,57 @@
+{
+  "timestampUTC": "2026-09-10T01:38:09.339203+00:00",
+  "nativeInvocations": 371,
+  "moduleCounts": {
+    "passed": 313,
+    "unchanged production prerequisite; seeded (not freshly checked)": 44,
+    "passed expected-negative contract": 36,
+    "BROKEN BY UNFREEZE — re-proof/scope obligation": 5,
+    "legacy, not re-checked (standing classification)": 11,
+    "unchecked — blocked dependency": 133,
+    "FAILED — pre-existing constructor telescope; record-only supervisor gate": 1
+  },
+  "checkedModules": 355,
+  "passedModules": 349,
+  "brokenModules": 6,
+  "uncheckedModules": 133,
+  "productionFresh": 163,
+  "productionSeeds": 44,
+  "legacyExcluded": 11,
+  "repairedResearchModules": 4,
+  "changedIdrisFiles": [
+    "research-tests/DGamma/R174O17ProvisionCollisionCandidate.idr",
+    "research-tests/DGamma/R181O19LocatedBlocks.idr",
+    "research/DGamma/CP5AvailabilityAwarePlacement.idr",
+    "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+    "src/DGamma/CP3.idr",
+    "src/DGamma/CP3StatementChecks.idr"
+  ],
+  "finalPackage": {
+    "unit": "P3",
+    "passed": true,
+    "exit": 0,
+    "seconds": 15.639295666944236,
+    "maxSampleRSSKiB": 230384,
+    "buildingLines": []
+  },
+  "nativeSeconds": 4740.557865973562,
+  "RSSStops": [
+    "P1",
+    "S31",
+    "S31-2"
+  ],
+  "pressureStops": [
+    "S31-3"
+  ],
+  "noSourceMutation": true,
+  "noOverlap": true,
+  "dispositionComplete": true,
+  "allResearchPass": false,
+  "census": [
+    1,
+    2,
+    0,
+    0,
+    1
+  ]
+}

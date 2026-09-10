@@ -1,0 +1,68 @@
+{
+  "status": "FUTURE CANDIDATE FIRST PROOF MICRO-UNIT AFTER R205 PRODUCTION UNFREEZE + REQUIRED REBUILD; separate prior gate required; NO Idris bytes edited",
+  "recordedUTC": "2026-09-09T21:47:10.592203+00:00",
+  "r204SourceFreeze": "3e6d8ff0f539ecb0425fc19b496995b4a97d6e67",
+  "authorization": "Parent mid-run steering: source-level probable opacity diagnosis only; prepare R205 visibility-only companion as candidate FIRST micro-unit under gate; recorded V on defining module plus import-closed re-validation of dependents; then at most ONE new two-path append equality micro-unit with reducible projections, not an R204 exhausted-statement retry.",
+  "path": "research/DGamma/CP5O20OccurrenceStampedHistorySpike.idr",
+  "beforeSHA256": "ec06bdfd0d8f20ffe04a2b8d8d42cedce67b98f8fe2e957441d348ba98c15195",
+  "hypotheticalAfterSHA256": "219fcfa8a8ae3324fc031e26d73d6682462be3ac88ca22216e256fccc5271193",
+  "beforeBytes": 19422,
+  "hypotheticalAfterBytes": 19436,
+  "changes": [
+    {
+      "symbol": "o20OccurrenceHistoryLeftPath",
+      "oldText": "export\n0 o20OccurrenceHistoryLeftPath :",
+      "newText": "public export\n0 o20OccurrenceHistoryLeftPath :",
+      "typeAndBodyChange": false
+    },
+    {
+      "symbol": "o20OccurrenceHistoryRightPath",
+      "oldText": "export\n0 o20OccurrenceHistoryRightPath :",
+      "newText": "public export\n0 o20OccurrenceHistoryRightPath :",
+      "typeAndBodyChange": false
+    }
+  ],
+  "actualBytesUnchanged": true,
+  "dependentClosureCountIncludingDefiningModule": 7,
+  "proposedTopologicalValidationPaths": [
+    {
+      "module": "DGamma.CP5O20OccurrenceStampedHistorySpike",
+      "path": "research/DGamma/CP5O20OccurrenceStampedHistorySpike.idr",
+      "currentSHA256": "ec06bdfd0d8f20ffe04a2b8d8d42cedce67b98f8fe2e957441d348ba98c15195"
+    },
+    {
+      "module": "DGamma.CP5O20CanonicalSynchronizationModuloSpike",
+      "path": "research/DGamma/CP5O20CanonicalSynchronizationModuloSpike.idr",
+      "currentSHA256": "ebddcdfaca9a421500bd8de9c4efdb7302ae6f4c6f9815ce333c26bfbcdd1990"
+    },
+    {
+      "module": "DGamma.CP5O20InsertOccurrenceHistorySpike",
+      "path": "research/DGamma/CP5O20InsertOccurrenceHistorySpike.idr",
+      "currentSHA256": "3c928e581c65dabf7a15b49e0dc2ba9b6004a46d69efd4c4f9f579c13e482677"
+    },
+    {
+      "module": "DGamma.R198OccurrenceStampedHistoryPositive",
+      "path": "research-tests/DGamma/R198OccurrenceStampedHistoryPositive.idr",
+      "currentSHA256": "376b419f9bad0a3a19df04e24831411ebe01d83baf6993279ff01c59f9066c40"
+    },
+    {
+      "module": "DGamma.CP5O20ChronologicalOccurrenceHistorySpike",
+      "path": "research/DGamma/CP5O20ChronologicalOccurrenceHistorySpike.idr",
+      "currentSHA256": "5967fa8438bee25461153e53b1379d1e6e7dc01995ebfddbaaa232d3a0acb183"
+    },
+    {
+      "module": "DGamma.R204InsertOccurrenceHistoryPositive",
+      "path": "research-tests/DGamma/R204InsertOccurrenceHistoryPositive.idr",
+      "currentSHA256": "54b1196cabf00d8a7540419aae993f8560c2d35149f2ed976ccf3689ffa0d842"
+    },
+    {
+      "module": "DGamma.R204NativeChronologicalBirthPositive",
+      "path": "research-tests/DGamma/R204NativeChronologicalBirthPositive.idr",
+      "currentSHA256": "8fda11ccd281eed876d83849734d79059c63e54dde9946182866699dacb71b87"
+    }
+  ],
+  "qualification": "This is a read-only candidate manifest, not an authorized source patch or scheduled compiler invocation. Reducible projections change the elaboration context, not paper/runtime hypotheses. Recompute closure and baseline hashes at R205 start; preserve one-compiler evidence/RSS rules. R204 A15 remains STOP3/3 fully reverted. No current visibility edit, source timestamp manipulation or reattempt.",
+  "R205Precedence": "R205 is production-unfreeze, not a proof shift. Follow owner-signed CP3-only7-hunk patch first, complete owner-required rebuild and new baseline, then visibility companion as first proof micro-unit under separate gate.",
+  "productionUnfreezeAuthority": "O6-R204-R205-PRODUCTION-UNFREEZE.json",
+  "D4SupersedesEarlierFirstMicroUnitShorthand": true
+}

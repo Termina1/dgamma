@@ -1,0 +1,280 @@
+{
+  "timestampUTC": "2026-09-10T01:54:29.606501+00:00",
+  "headBeforeFinalGate": "8ee84a88a06e5e200dd09ca8302a718026edb16c",
+  "start": "ba88088626a3a497db76df811c2ac08acde9c7bc",
+  "files": [
+    {
+      "path": "NOTES.md",
+      "sha256": "797167401505b736dfe7eaf544e1bd49a9bea7ba935e5882dd149e2cc39790b6"
+    },
+    {
+      "path": "README.md",
+      "sha256": "8b8968267ca0b8b5f74b331d0252a3ab08f3193741761190f37281777c2152e4"
+    },
+    {
+      "path": "THM73-PLAN.md",
+      "sha256": "68b9a9b1f4674ff2cb0354750e8a0830a34511d053d1b84b3999d5c1b76f27bc"
+    },
+    {
+      "path": "research-tests/DGamma/R174O17ProvisionCollisionCandidate.idr",
+      "sha256": "b7d1f56080898cd8151341d77f1e0e15a4bede65edb0a8bc65be730a9e8a23d7"
+    },
+    {
+      "path": "research-tests/DGamma/R181O19LocatedBlocks.idr",
+      "sha256": "ea212db6d579f63b474580aee06c9ffeb680a0edec67a4a93cf12caa14fbcaea"
+    },
+    {
+      "path": "research-tests/O6-R205-A8-A10-A12-ERRATA-UPDATE.md",
+      "sha256": "555068f03c482d05a741eeb9809c3bcd3a8f3ebb3a8a91ecb59f2f4d474ec634"
+    },
+    {
+      "path": "research-tests/O6-R205-ADVERSARIAL-EVIDENCE-REVIEW.json",
+      "sha256": "8873d0e230f5d44fd73517d22cbaffd695a1913d4c7d0ae1c0c5c15243346cbb"
+    },
+    {
+      "path": "research-tests/O6-R205-APPLY-RECEIPT.json",
+      "sha256": "d41c1a0a4e3e9965e3fd2cddb32df2343ea31098474b6e2dbc58914677441cd5"
+    },
+    {
+      "path": "research-tests/O6-R205-ARCHIVE-MANIFEST.json",
+      "sha256": "5e8e3a7aecb8ac740ad0edb0053a3aafdbbbd37aee63cf7b13038a46669831c0"
+    },
+    {
+      "path": "research-tests/O6-R205-ARCHIVE-REVISION.json",
+      "sha256": "d86e30ae07dad62e9069ed4f3fbba10f3294e8311926e07cd9dd9f1132add163"
+    },
+    {
+      "path": "research-tests/O6-R205-ARCHIVE-VERIFICATION.json",
+      "sha256": "ff8b1ed986f04a8a98a435ee976006023746daddcfe05f7d42b68133270b7317"
+    },
+    {
+      "path": "research-tests/O6-R205-AUDIT.md",
+      "sha256": "10008f0467bc5e1424c06df14774e28af311076d01f38c718128f69fe78d2388"
+    },
+    {
+      "path": "research-tests/O6-R205-BLOCKED-DEPENDENCY-ROOTS.json",
+      "sha256": "67e494ab3c8e58e73c8808ee6fc158c4bce019fdcce9e4514bd296bff6a67c02"
+    },
+    {
+      "path": "research-tests/O6-R205-BROKEN-MODULES.json",
+      "sha256": "5cd60bc7920d01ea1cf6f2368a2cf320e37ac32046e38b6ffde1286e5b32a539"
+    },
+    {
+      "path": "research-tests/O6-R205-CANONICALSORT-MIGRATION-PROPOSAL.json",
+      "sha256": "1dd8bb6cd293e6a97a5d633efd9fb1f7fe262687f8815aa0dff944740cff1ff1"
+    },
+    {
+      "path": "research-tests/O6-R205-CANONICALSORT-MIGRATION-PROPOSAL.patch",
+      "sha256": "7e13c53c889ecaf8ac0389c405b807519f7c6e90cb2648dfb635ef107a998083"
+    },
+    {
+      "path": "research-tests/O6-R205-COMMIT-RECEIPTS.json",
+      "sha256": "d83fd3146373c655729c4b59318de24cc6061e9fe6d8e46c2f4f8f7c7cbb333c"
+    },
+    {
+      "path": "research-tests/O6-R205-COMPILER-LEDGER.json",
+      "sha256": "6fd3f1be67e8d762fa1da59c42a39ee9fb7463b8d21f544de159dd4951d5eefb"
+    },
+    {
+      "path": "research-tests/O6-R205-CONTRACT-TESTS.json",
+      "sha256": "f453768a5b15ce1d9935062d62a8f21fc462b31c62825d74e585e97dcbfef515"
+    },
+    {
+      "path": "research-tests/O6-R205-CP3-STATEMENT-CHECKS-PROPOSAL.json",
+      "sha256": "3fb6ce67a9a0e7e501b366f944d0c4367165f2c2eab932ec9bb9e025875739df"
+    },
+    {
+      "path": "research-tests/O6-R205-CP3-STATEMENT-CHECKS-PROPOSAL.patch",
+      "sha256": "63be87410c5b8f62a6cb0fb9cd1751322d6079b7df2b0aa44e1f8aead0437ce7"
+    },
+    {
+      "path": "research-tests/O6-R205-CP3-TIER1-OVERLAY-COPY.md",
+      "sha256": "602f1b4ce16684c49afb5bac134ce23bff91ac179dbbc0c0615626777c410d91"
+    },
+    {
+      "path": "research-tests/O6-R205-CP3-TIER1-SIGNED-DIFF.patch",
+      "sha256": "42d957748fcc67ff534c33a6c369eded4bad65e0f37e5c72e4539b737a68fb8a"
+    },
+    {
+      "path": "research-tests/O6-R205-FINAL-SUMMARY.json",
+      "sha256": "33ac6b3cfbd87487352ec7137f8250de87d0c75f314ece8576741480aa3d3f57"
+    },
+    {
+      "path": "research-tests/O6-R205-FROZEN-MIGRATION-GATE.json",
+      "sha256": "482ab7f1cf84e4e583b331c2790978267db940f87117e7adba8276dd4553f1fc"
+    },
+    {
+      "path": "research-tests/O6-R205-GATE-LEDGER.json",
+      "sha256": "2f78435dec198b984377c5e9fbd99e711b59cce93ab9931186119d3db536c64d"
+    },
+    {
+      "path": "research-tests/O6-R205-INDEPENDENT-VERIFICATION.json",
+      "sha256": "137aa221be140f3bb24556301b154257073daeb145913e464c1a7bc75e6db342"
+    },
+    {
+      "path": "research-tests/O6-R205-INPUTS.json",
+      "sha256": "bb8c8b1b108dc9c121625cdbbeaf87d5e29113ccde61ff580b343c1ae0f745a7"
+    },
+    {
+      "path": "research-tests/O6-R205-L2R5-FIDELITY-COPY.md",
+      "sha256": "6b13cc1acb1c27047cfddfa21dfac26ac1f04d46568105f06f3e589b62c9e13c"
+    },
+    {
+      "path": "research-tests/O6-R205-LANE-INVENTORY-COPY.json",
+      "sha256": "0226ceaacb43403cd57c0a942fe62f1fb4abe89003e553df32fb79b4c634d5ec"
+    },
+    {
+      "path": "research-tests/O6-R205-LEXICAL-REPAIRS.json",
+      "sha256": "2177ef3a51f537cf7a7e5a7d9a46de6dd6ea009d0758c7f4437f18b25bc0adbe"
+    },
+    {
+      "path": "research-tests/O6-R205-NEGATIVE-PREFLIGHT.json",
+      "sha256": "6a36ca4d0f7d32d460413c53092586d75e39c9a75b965ae8ec0daf83ca2191c4"
+    },
+    {
+      "path": "research-tests/O6-R205-PER-MODULE-COSTS.md",
+      "sha256": "8b6f7b8c682404b15540a172ce4285b13c8c937a3501caadeb311c66cd2c1401"
+    },
+    {
+      "path": "research-tests/O6-R205-POSITIVE-PREFLIGHT.json",
+      "sha256": "58005be854f2cc47964584eb88e55384ee5e82635113bbe6f1b4a60adc6ed3f4"
+    },
+    {
+      "path": "research-tests/O6-R205-POST-FROZEN-BASELINE.json",
+      "sha256": "79f806ae3bf19782a6b57c80a296bd3b0f1d97371bb0878ecea9f9e724629420"
+    },
+    {
+      "path": "research-tests/O6-R205-PRE-STATE.json",
+      "sha256": "b71c30e378f8211ce7a4fd4290c5a40898a3dc170f183ee4196a3721f82bfc29"
+    },
+    {
+      "path": "research-tests/O6-R205-PRODUCTION-COSTS.json",
+      "sha256": "7b9c53435129c350a3cfde6f9d60271862168714ea1814c46559a2475834b319"
+    },
+    {
+      "path": "research-tests/O6-R205-PRODUCTION-MIGRATION-GATE.json",
+      "sha256": "d6b1d149103e77180c648ce6284b3fd32e4e223f500bc7aa3bab5cf18b46cd03"
+    },
+    {
+      "path": "research-tests/O6-R205-RAW-EVIDENCE.tar.gz",
+      "sha256": "24fd8deadc6d8b779077eb4b7ef51533b3c1d17da0bde6929d2d6674832ee0cb"
+    },
+    {
+      "path": "research-tests/O6-R205-REBUILD-POLICY.json",
+      "sha256": "2c0832221aeb6568235a593e0bd52bb959d00f60f13ad615b1c1699fa0882af6"
+    },
+    {
+      "path": "research-tests/O6-R205-REBUILD-STATE.json",
+      "sha256": "626a0a2ecceedb60e7930e4f8b86263d7b021a7071adeb00d85463c163dd8b87"
+    },
+    {
+      "path": "research-tests/O6-R205-REPAIR-MAP.json",
+      "sha256": "87434267c178bbe09f4fd26b5cdbcae0addb78a9a8a4fed11e8caa87712b9173"
+    },
+    {
+      "path": "research-tests/O6-R205-REPAIR-TABLE.md",
+      "sha256": "91d44e4719fc1035daa7dffe9262bbc3327f07a0c511c35b6765c12743558cf2"
+    },
+    {
+      "path": "research-tests/O6-R205-RESOURCE-AUDIT.json",
+      "sha256": "d0e8e8b7d48a6e69bd4b3bc11be9e3e14c1ee80da4ad47a8ac179407df970daa"
+    },
+    {
+      "path": "research-tests/O6-R205-SNAPSHOT-RECOVERY.json",
+      "sha256": "55ecf990cc6eb8560ea21cca83415e75d8ca3f2dd9329c1c8bef106da7cc0b61"
+    },
+    {
+      "path": "research-tests/O6-R205-STATEMENT-MIGRATION-STOP.json",
+      "sha256": "52e493bf22ae4887a87b477c6925ebc603e14aa5fa303d58584e5ec0f25a9825"
+    },
+    {
+      "path": "research-tests/O6-R205-SUPPORTSOLUTION-DIAGNOSIS.md",
+      "sha256": "0f7555cac772efccecd3ba54e27fddfae444263721b9df5da213de2f61a411c3"
+    },
+    {
+      "path": "research-tests/O6-R205-SUPPORTSOLUTION-STATIC-INVENTORY.json",
+      "sha256": "e324735079dc0e9415c264435e998057f8631b8edbbdcc8e8fdb3cfa0fab2aa7"
+    },
+    {
+      "path": "research-tests/O6-R205-VALIDATION-PLAN.json",
+      "sha256": "1b5b2658a1b8b7e2354fab21e1139a00fad7ed49dba6bcba19a2f8bb8b06db00"
+    },
+    {
+      "path": "research-tests/r205_common.py",
+      "sha256": "2ef3a5a34d7492f948f09eadca22313ee0fdde215dadc24f41ec799493f6f757"
+    },
+    {
+      "path": "research-tests/r205_evidence_contract.py",
+      "sha256": "8214db9dec0b497dd484eaf8d81aef998fafcf0d8740bba218325d6a024fc435"
+    },
+    {
+      "path": "research-tests/r205_pressure.py",
+      "sha256": "38e753aeafd68cac072a59eb37104c62e63b65fb8d062c8f3f958821869b2fa4"
+    },
+    {
+      "path": "research-tests/run-r205-archive.py",
+      "sha256": "8bec0df41d3f499548fdbb24c255f190d9b8e92ae77275d70292fcae7455f427"
+    },
+    {
+      "path": "research-tests/run-r205-check.py",
+      "sha256": "c206ee91697f2c33333d09170e4cda0d5694ac005d542ff776e374d660d13309"
+    },
+    {
+      "path": "research-tests/run-r205-commit.py",
+      "sha256": "30b8705b013bd2397df30ffa705822c71c2685fd03c4c8a40e2c597f19237950"
+    },
+    {
+      "path": "research-tests/run-r205-plan.py",
+      "sha256": "2d6f832604332ab2cf23d7c66e64743ddb4aab63a1aac010686c9fe65b977938"
+    },
+    {
+      "path": "research-tests/run-r205-rebuild.py",
+      "sha256": "fcd4df63c9ea98de32ad77e7a36c370f84ac95de0214c158be01d5fdf934f5c3"
+    },
+    {
+      "path": "research-tests/run-r205-report.py",
+      "sha256": "a8657bf89c24f04d60e1127cf9688a2edca0d5ba151b3da1119adf2876af65f7"
+    },
+    {
+      "path": "research-tests/run-r205-resource-audit.py",
+      "sha256": "52c33ffc5ed8140a5ef430a6ea4173c4b6d9aaec24f4956a4abc2df24d7105eb"
+    },
+    {
+      "path": "research-tests/run-r205-state.py",
+      "sha256": "04153bf820161e130f61b12cd19311f54fb46f5b24da600143ebe7cd4734f3d0"
+    },
+    {
+      "path": "research-tests/run-r205-verify.py",
+      "sha256": "74214da1b6d28093a6b8dbba0b758f039072ca617eac86b11cd2dc9c84d01048"
+    },
+    {
+      "path": "research-tests/test_r205_evidence_contract.py",
+      "sha256": "4ad32f959a1e4d1315242178e3ea1c37a75f45b096889fcdddbedfc6450af04a"
+    },
+    {
+      "path": "research-tests/test_r205_frozen.py",
+      "sha256": "d7e9f11e2ef6fa07443106812e0b2241640ade4c5532691221f876d60813e749"
+    },
+    {
+      "path": "research-tests/test_r205_pressure.py",
+      "sha256": "43e939a2c3c1dcf2b31324b023c832ebfb97862fb8713662e4cf7167211db327"
+    },
+    {
+      "path": "research/DGamma/CP5AvailabilityAwarePlacement.idr",
+      "sha256": "8bd32248021ff6c2e6b477e4b5328d54addd71d61281384bbd9f5cf087789506"
+    },
+    {
+      "path": "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+      "sha256": "eb0ab7b95779a4b44360b222030e7aa0f8d134c17ea4d2dfa98f3306e135df1b"
+    },
+    {
+      "path": "src/DGamma/CP3.idr",
+      "sha256": "0aa65041e36342a831b24a231e4d68eb74ffa17cf93e56e84b668ae4f19b95ba"
+    },
+    {
+      "path": "src/DGamma/CP3StatementChecks.idr",
+      "sha256": "4f6fee4bd1d937a7836d7ce61ed7c91e782f6ed82b3766a7164b7f4316659fab"
+    }
+  ],
+  "note": "Artifact-only final gate/seal may add or update audit files after this snapshot; all six Idris paths are frozen since P3."
+}

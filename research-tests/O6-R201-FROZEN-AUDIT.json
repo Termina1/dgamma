@@ -1,0 +1,173 @@
+{
+  "timestampUTC": "2026-09-09T16:54:55.390479+00:00",
+  "head": "390d931c7d4e0707f0c5c4a90627734d1a18310a",
+  "baseline": "13020369",
+  "productionDiffVs34b21c9": "empty",
+  "CP3Blob": "2c697e532e83989de8591fa6a4378747c6a501c0",
+  "authorizedContractSourceSHA256": {
+    "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr": "3b62ba1c3bc88503116ed22d82c667043f7f41dd483fb093cc25b677a55245cc",
+    "research/DGamma/CP5ConfluenceCrossTraceSpike.idr": "666d18626e49cbb0d6ac2f7624fe9f6b3519d539dbb574670f420bacd9fc69bb",
+    "research/DGamma/CP5ConfluenceDeletionChainSpike.idr": "91e8fd290cc4fedae9656ce5b4ae3ea0b38509f6e0250f51b4a7aa2aea09067b",
+    "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr": "9f9216170853624cff30449696f2540da0ed48e0b42504533aa587cb70dfc037",
+    "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr": "833bd3450bc8a4214e0334fd2ad95d7f837bc636f40f2e33c408333395602713"
+  },
+  "O19BodyBytes": 1286,
+  "O19BodySHA256": "cbd0954303c35141af0309e515bdb9e98e988e7c23be70b9764d8c1ce18fd396",
+  "adjacentFullBytes": 1470,
+  "adjacentFullSHA256": "2d01486bf953f11191b758ac3cfb5722d1d02b1a192b6e552adc8a3f58199ecf",
+  "adjacentStatementBytes": 1154,
+  "adjacentStatementSHA256": "3aae5a9fbc5b14e0411b4a91e557a6f3dc68c9a6282b9ec2b3fc658cec337adf",
+  "holes": {
+    "CanonicalSort": [
+      "?sortClosingFreeTraceSpike_rhs"
+    ],
+    "CrossTrace": [
+      "?selectOperationalCanonicalPermutationSpike_rhs",
+      "?canonicalSchedulesConvergeSpike_rhs"
+    ],
+    "DeletionChain": [],
+    "LocalDiamond": [],
+    "RenamingComposition": [
+      "?replayedCanonicalToOriginalEndpointSpike_rhs"
+    ]
+  },
+  "census": [
+    1,
+    2,
+    0,
+    0,
+    1
+  ],
+  "seeds": "207/207 retained (presence, not a fresh package PASS)",
+  "protectedDeclarations": {
+    "sortClosingFreeTraceSpike": "1df8d174b9a4f119a5a52e2073a72907bdb890413f877d55886e905e1d0279d1",
+    "selectOperationalCanonicalPermutationSpike": "b00063eacf339b58828eac5829cebc66fc7265f3518be459af0602463b6fbae7",
+    "canonicalSchedulesConvergeSpike": "0e8a177ea7bb4807cb77680cde29e75f7d37224711cc51cf7bf6636426690dd9",
+    "replayedCanonicalToOriginalEndpointSpike": "377b08ff82e1e4212738bb00a45a088b1f0d8fd8bc8b54bf061c96f2f4891681"
+  },
+  "prohibitedAdditions": {
+    "\\bbelieve_me\\b": [],
+    "\\bassert_total\\b": [],
+    "^\\s*partial\\b": [],
+    "\\?\\w+": [],
+    "\\blet\\b": [],
+    "\\bwith\\b": [],
+    "\\bprefix\\b": [],
+    "\\bdeletionTheoremProof\\b": [],
+    "\\bpostulate\\b": []
+  },
+  "changedIdrisFiles": [
+    "research-tests/DGamma/R201DeletionRetainedBirthPositive.idr",
+    "research-tests/DGamma/R201PhysicalInsertStagePositive.idr",
+    "research/DGamma/CP5O20DeletionRetainedBirthSpike.idr",
+    "research/DGamma/CP5O20DeletionRetainedUnloadSpike.idr",
+    "research/DGamma/CP5O20PhysicalInsertPositionSpike.idr",
+    "research/DGamma/CP5O20PhysicalInsertStageSpike.idr"
+  ],
+  "noMainCompiler": true,
+  "lane2Compilers": [],
+  "foreignCompilerObservedAtUTC": [
+    "2026-09-09T16:54:55.400811+00:00"
+  ],
+  "noStagedFiles": true,
+  "cleanTrackedTree": true,
+  "allowedUntrackedOnly": false,
+  "untracked": [
+    "paper/cordis-paper.pdf",
+    "paper/cordis-paper.txt",
+    "research-tests/O6-R201-A19-OWNER-REPLY.md",
+    "research-tests/O6-R201-DECLARATIONS.md",
+    "research-tests/O6-R201-SELF-REVIEW.md",
+    "review-o6-body-adversarial.md"
+  ],
+  "reviewSHA256": "61fc23ae4cea4565b442c840be39c41746ecbac73b8c2f73d04f1e3b4f4681e8",
+  "ReplayedCanonicalEndpointBridge": {
+    "recordBytes": 3243,
+    "recordSHA256": "ac5304c1a6a6e0cea988eac4b0dcdb5756fcf1b67ede7d0db6a4d723c73b695d",
+    "R192ManifestExact": true
+  },
+  "supersededCandidateSourceSHA256": {
+    "research/DGamma/CP5O20CanonicalSynchronizationGoalSpike.idr": "36cdc8db587a43193dacda173f46f3a40b524a6f31786f8fb57978729457e583",
+    "research/DGamma/CP5O20StampedHistoryFoldSpike.idr": "e3f44d6e995f02bbc826d076960d01ef175031d8b9d0c85b8e806fecd9538d55"
+  },
+  "declaredNewSourceNames": {
+    "research-tests/DGamma/R201DeletionRetainedBirthPositive.idr": [
+      "r201HistoricalNonselectedBirthAndUnloads"
+    ],
+    "research-tests/DGamma/R201PhysicalInsertStagePositive.idr": [
+      "r201NativeChildInsertStages"
+    ],
+    "research/DGamma/CP5O20DeletionRetainedBirthSpike.idr": [
+      "O20RetainedGenerationBirth",
+      "o20DeletionRetainedBirth",
+      "o20DeletionRetainedBirthAccounted",
+      "o20DeletionRetainedBirthFromAccount",
+      "o20DeletionRetainedBirthGeneration",
+      "o20DeletionStepGenerationRenaming",
+      "o20RetainedBirthClassified"
+    ],
+    "research/DGamma/CP5O20DeletionRetainedUnloadSpike.idr": [
+      "O20DeletionRetainedUnloads",
+      "O20RegisteredUnloadFree",
+      "o20DeletionRegisteredUnloadFree",
+      "o20DeletionRetainedUnloads",
+      "o20EmptyUnloadImpossible",
+      "o20EpisodeDeletedNotForeignUnload",
+      "o20EpisodeSubsequenceRetainsForeignUnload",
+      "o20RegisteredActionNotUnload",
+      "o20RegisteredSubsequenceRetainsUnload",
+      "o20RegisteredUnloadFreeHead",
+      "o20RegisteredUnloadFreeTail",
+      "o20RegisteredUnloadFreeTrace",
+      "o20RegisteredUnloadHeadExcludes",
+      "o20RegisteredUnloadImpossible",
+      "o20RegisteredUnloadSplit",
+      "o20RegisteredUnloadSplitHead",
+      "o20UnloadOccursPastDeletedHead",
+      "o20UnloadOccursThroughKeptHead"
+    ],
+    "research/DGamma/CP5O20PhysicalInsertPositionSpike.idr": [
+      "O20PhysicalInsertOriginPositions",
+      "o20PermutedCanonicalInsertOrigins",
+      "o20PhysicalInsertOriginsFromPackets",
+      "o20ReplayedInsertPositionsAtLookup",
+      "o20SupportedReplayedInsertOrigins"
+    ],
+    "research/DGamma/CP5O20PhysicalInsertStageSpike.idr": [
+      "O20PhysicalInsertAttachment",
+      "o20AlignedPhysicalHeadChecked",
+      "o20AttachedGeneratedInsertStage",
+      "o20CheckedInsertFromActionEquation",
+      "o20InsertStageAtCheckedStates",
+      "o20InsertStageAtRightState",
+      "o20InsertStageFromAlignedHeads",
+      "o20InsertStageFromCheckedRegistries",
+      "o20InsertStageFromPlans",
+      "o20InsertStageFromRightPlan",
+      "o20LocatedInsertStage",
+      "o20PermutedCanonicalPhysicalInsertAttachment",
+      "o20PhysicalInsertAttachmentFromOrigins"
+    ]
+  },
+  "retainedNewDeclarations": 45,
+  "fixtureExpectationCorrection": {
+    "authorization": "Supervisor ACK via contact_supervisor: caps count MICRO-UNITS; A19-2 authorized to change ONLY expected incoming/outgoing live-generation lists to actual append/scan order; no producer changes. A20 permitted inside clock.",
+    "beforeSHA256": "190e9297ef1a8b9b51383bdc7f5b413726d771cc57881e1c945fd47377ab9bf8",
+    "afterSHA256": "20c9523be8b09f7448eddf49417cb4baae29fd2a6e91b821584432d4134ced34",
+    "replacements": [
+      [
+        "[(2, MkRegistrationGeneration 2 2), (1, MkRegistrationGeneration 1 1), (0, MkRegistrationGeneration 0 0)]",
+        "[(0, MkRegistrationGeneration 0 0), (1, MkRegistrationGeneration 1 1), (2, MkRegistrationGeneration 2 2)]"
+      ],
+      [
+        "[(3, MkRegistrationGeneration 3 4), (2, MkRegistrationGeneration 2 2), (1, MkRegistrationGeneration 1 1), (0, MkRegistrationGeneration 0 0)]",
+        "[(0, MkRegistrationGeneration 0 0), (1, MkRegistrationGeneration 1 1), (2, MkRegistrationGeneration 2 2), (3, MkRegistrationGeneration 3 4)]"
+      ],
+      [
+        "[(1, MkRegistrationGeneration 1 2), (0, MkRegistrationGeneration 0 0)]",
+        "[(0, MkRegistrationGeneration 0 0), (1, MkRegistrationGeneration 1 2)]"
+      ]
+    ],
+    "classification": "fixture-expectation error, NOT producer defect"
+  }
+}

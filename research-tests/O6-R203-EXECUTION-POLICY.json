@@ -1,0 +1,7 @@
+{
+  "authorization": "SUPERVISOR RULE CHANGE: CROSS-LANE HEAVY LOCK ABOLISHED",
+  "runnerSHA256": "b0e115d4ac48239a2cd33fc93ec207aadf5d704a3d778702cebaaafb044a061d",
+  "shift": "R203",
+  "oneCompilerPerLane": true,
+  "authorizationSource": "R203 task: no cross-lane lock/windows; one main compiler; timestamps only"
+}

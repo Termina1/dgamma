@@ -1,0 +1,17 @@
+{
+  "startUTC": "2026-09-09T17:02:00+00:00",
+  "timeoutUTC": "2026-09-09T21:02:00+00:00",
+  "newProofCutoffUTC": "2026-09-09T20:22:00+00:00",
+  "validationStartCutoffUTC": "2026-09-09T20:37:00+00:00",
+  "gateCutoffUTC": "2026-09-09T20:47:00+00:00",
+  "baseline": "bc791641",
+  "uniqueOrdinalGate": "APPROVED by R202 task; unchanged-source 48GiB; prior 42.7-44.8GiB",
+  "firstRecord": "R201 FINAL GATE at fbe3ae90 ACCEPTED as a checked partial milestone; D4 sealed at bc791641; reviewer launched.",
+  "readFirstCorrection": "Owner confirmed missing R201-GRIND-SHIFT-AUDIT/OWNER-FINAL-GATE were naming error. Read SUPERVISOR-GATE + DECLARATIONS/MICRO-UNITS/SELF-REVIEW + A19-FIXTURE-RULING instead.",
+  "caps": {
+    "B": 14,
+    "A": 16,
+    "C": 6,
+    "D": 4
+  }
+}

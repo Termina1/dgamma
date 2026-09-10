@@ -1,0 +1,485 @@
+module DGamma.CP5O20ProgramRoleWordSpike
+
+import DGamma.Core
+import DGamma.Calculus
+import DGamma.Coeffects
+import DGamma.Metatheory
+import DGamma.CP3
+import DGamma.CP4DeletionSelectedForeignOrchestration
+import DGamma.CP5O20OwnCutSafetySpike
+import DGamma.CP4ProgressPotential
+import DGamma.CP5ConfluenceLocalDiamondSpike
+import DGamma.CP5O20BeginObservationSpike
+import DGamma.CP5O20CanonicalActionCompletenessSpike
+import DGamma.CP5O19AdvanceObservationSpike
+import DGamma.CP5O19AdjacentReplayProducerSpike
+import DGamma.CP5O20NativeAdvanceAttachmentSpike
+import DGamma.CP5O20SingleRoleAdvanceExtractionSpike
+import DGamma.CP5O20PairedAdvanceSpike
+import Data.List
+import Data.List.Elem
+import Data.Maybe
+import Decidable.Equality
+import Decidable.Decidable
+
+%default total
+%unbound_implicits off
+
+||| Expected successful remaining activation tags for a finite program.
+||| Empty and singleton programs finish on one Advance; longer programs emit
+||| Iter until their final Finish. This function alone does not certify a run.
+public export
+o20ProgramRoleWord : {step : Type} -> List step -> List RuleTag
+o20ProgramRoleWord [] = [LFinishTag]
+o20ProgramRoleWord [current] = [LFinishTag]
+o20ProgramRoleWord (current :: next :: later) = LIterTag :: o20ProgramRoleWord (next :: later)
+
+||| Executable per-fiber successful-activation remainder. Inactive includes
+||| its next Begin, Reloading includes its remaining Advances, and all other
+||| phases/absence give the empty word. Applicability is not asserted by this
+||| observer (in particular an inactive failure need not admit Begin).
+public export
+o20FiberRoleRemainder :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  Maybe (Fiber name key value world error) -> List RuleTag
+o20FiberRoleRemainder Nothing = []
+o20FiberRoleRemainder (Just (MkFiber component parent retiredFlag table (Inactive outcome))) =
+  LBeginTag :: o20ProgramRoleWord (componentProgram component)
+o20FiberRoleRemainder (Just (MkFiber component parent retiredFlag table (Reloading remaining accumulator view))) =
+  o20ProgramRoleWord remaining
+o20FiberRoleRemainder (Just (MkFiber component parent retiredFlag table (Active accumulator view))) = []
+o20FiberRoleRemainder (Just (MkFiber component parent retiredFlag table (Unloading accumulator view outcome))) = []
+
+||| An observed ACTUAL Begin consumes exactly the head Begin of its fiber's
+||| remainder. The after lookup is produced by native replacement and the
+||| observation's own endpoint equation, not an assumed target lookup.
+export
+0 o20ObservedBeginRoleConsumption :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (before, afterState : SystemState name key value world error) ->
+  O20BeginObservation name key world error value nameEq keyEq actor before afterState ->
+  (o20FiberRoleRemainder
+    (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor (registry before)) =
+   LBeginTag :: o20FiberRoleRemainder
+    (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor (registry afterState)))
+o20ObservedBeginRoleConsumption nameEq keyEq actor before afterState
+  (MkO20BeginObservation component parent table view found resolved afterExact) =
+    rewrite sym afterExact in
+    rewrite lookupReplacedFiber @{nameEq} actor
+      (MkFiber component parent False table (Inactive Nothing))
+      (MkFiber component parent False table (Reloading (componentProgram component) id view))
+      (registry before) found in
+    rewrite found in Refl
+
+||| Evaluator determinism attaches the SAME observed successful Advance to
+||| BOTH its actual tag and actual endpoint. No reconstructed-state equality
+||| or caller tag equation is input; native source/callback observations own it.
+export
+0 o20ActualAdvanceObservedResult :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (ambient : world) -> (fibers : Registry name key value world error) ->
+  (afterState : SystemState name key value world error) -> (tag : RuleTag) ->
+  (component : Component key value world error) -> (parent : Parent name) -> (retiredFlag : Bool) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (step : StepEffect key value world error (dependencies (componentDependencies component)) (componentProvisions component)) ->
+  (rest : List (StepEffect key value world error (dependencies (componentDependencies component)) (componentProvisions component))) ->
+  (older : LocalState key value world (componentProvisions component) -> LocalState key value world (componentProvisions component)) ->
+  (view : View name (dependencies (componentDependencies component))) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor fibers = Just (MkFiber component parent retiredFlag table (Reloading (step :: rest) older view))) ->
+  (targetFiber {name} {key} {value} {world} {error} @{nameEq} @{keyEq} (MkFiber component parent retiredFlag table (Reloading (step :: rest) older view)) fibers = Just view) ->
+  (checkedApplyAction {name} {key} {value} {world} {error} @{nameEq} @{keyEq} (LAdvance actor) (MkSystemState ambient fibers) = Just (tag, afterState)) ->
+  (observed : O20NativeStepValues name key world error value nameEq keyEq (MkSystemState ambient fibers) component table step view) ->
+  ((tag, afterState) = ((case rest of [] => LFinishTag; _ :: _ => LIterTag),
+    MkSystemState (localWorld (stepObservedAfter (nativeCallback observed)))
+    (replaceBinding @{nameEq} actor
+      (MkFiber component parent retiredFlag (localTable (stepObservedAfter (nativeCallback observed)))
+        (o20SuccessfulAdvanceLifecycle {name} {key} {value} {world} {error} rest
+          (pushLocalUndo {key} {value} {world} @{keyEq} (componentProvisions component) older (stepObservedUndo (nativeCallback observed))) view)) fibers)))
+o20ActualAdvanceObservedResult nameEq keyEq actor ambient fibers afterState tag component parent retiredFlag table step rest older view
+  found target checked (MkO20NativeStepValues capability resolved callback) =
+    justInjective (trans
+      (sym (checkedActionProjects nameEq keyEq (LAdvance actor) (MkSystemState ambient fibers) afterState tag checked))
+      (o20ObservedAdvanceRawEquation nameEq keyEq actor ambient fibers component parent retiredFlag table step rest older view
+        capability (stepObservedAfter callback) (stepObservedUndo callback) found target resolved (stepObservedRan callback)))
+
+||| Every observed successful NONEMPTY native Advance consumes exactly its
+||| actual head role. Both tag and target come from one evaluator equation;
+||| the actual target lookup is proved by replacement. No successor role
+||| equation or lookup is supplied. Empty-program Finish is separate.
+export
+0 o20ObservedAdvanceRoleConsumption :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (ambient : world) -> (fibers : Registry name key value world error) ->
+  (afterState : SystemState name key value world error) -> (tag : RuleTag) ->
+  (component : Component key value world error) -> (parent : Parent name) -> (retiredFlag : Bool) ->
+  (table : OwnedTable key value (componentProvisions component)) ->
+  (step : StepEffect key value world error (dependencies (componentDependencies component)) (componentProvisions component)) ->
+  (rest : List (StepEffect key value world error (dependencies (componentDependencies component)) (componentProvisions component))) ->
+  (older : LocalState key value world (componentProvisions component) -> LocalState key value world (componentProvisions component)) ->
+  (view : View name (dependencies (componentDependencies component))) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor fibers = Just (MkFiber component parent retiredFlag table (Reloading (step :: rest) older view))) ->
+  (targetFiber {name} {key} {value} {world} {error} @{nameEq} @{keyEq} (MkFiber component parent retiredFlag table (Reloading (step :: rest) older view)) fibers = Just view) ->
+  (checkedApplyAction {name} {key} {value} {world} {error} @{nameEq} @{keyEq} (LAdvance actor) (MkSystemState ambient fibers) = Just (tag, afterState)) ->
+  (observed : O20NativeStepValues name key world error value nameEq keyEq (MkSystemState ambient fibers) component table step view) ->
+  (o20FiberRoleRemainder
+    (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor fibers) =
+   tag :: o20FiberRoleRemainder
+    (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor (registry afterState)))
+o20ObservedAdvanceRoleConsumption nameEq keyEq actor ambient fibers afterState tag component parent retiredFlag table step [] older view found target checked observed =
+    rewrite cong fst (o20ActualAdvanceObservedResult nameEq keyEq actor ambient fibers afterState tag component parent retiredFlag table step [] older view found target checked observed) in
+    rewrite cong snd (o20ActualAdvanceObservedResult nameEq keyEq actor ambient fibers afterState tag component parent retiredFlag table step [] older view found target checked observed) in
+    rewrite lookupReplacedFiber @{nameEq} actor
+      (MkFiber component parent retiredFlag table (Reloading (step :: []) older view))
+      (MkFiber component parent retiredFlag (localTable (stepObservedAfter (nativeCallback observed)))
+        (o20SuccessfulAdvanceLifecycle []
+          (pushLocalUndo @{keyEq} (componentProvisions component) older (stepObservedUndo (nativeCallback observed))) view)) fibers found in
+    rewrite found in Refl
+o20ObservedAdvanceRoleConsumption nameEq keyEq actor ambient fibers afterState tag component parent retiredFlag table step (next :: more) older view found target checked observed =
+    rewrite cong fst (o20ActualAdvanceObservedResult nameEq keyEq actor ambient fibers afterState tag component parent retiredFlag table step (next :: more) older view found target checked observed) in
+    rewrite cong snd (o20ActualAdvanceObservedResult nameEq keyEq actor ambient fibers afterState tag component parent retiredFlag table step (next :: more) older view found target checked observed) in
+    rewrite lookupReplacedFiber @{nameEq} actor
+      (MkFiber component parent retiredFlag table (Reloading (step :: (next :: more)) older view))
+      (MkFiber component parent retiredFlag (localTable (stepObservedAfter (nativeCallback observed)))
+        (o20SuccessfulAdvanceLifecycle (next :: more)
+          (pushLocalUndo @{keyEq} (componentProvisions component) older (stepObservedUndo (nativeCallback observed))) view)) fibers found in
+    rewrite found in Refl
+
+||| At the actual Iter source packet, produce capability/callback values and
+||| the exact role consumption. Only the one Iter constructor is eliminated;
+||| no caller success value, shared program or successor lookup is required.
+export
+0 o20IterRoleAtSource :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (before, afterState : SystemState name key value world error) ->
+  (checkedApplyAction {name} {key} {value} {world} {error} @{nameEq} @{keyEq}
+    (LAdvance actor) before = Just (LIterTag, afterState)) ->
+  PaperAdvanceSource name key world error value nameEq keyEq actor LIterTag before ->
+  (o20FiberRoleRemainder
+    (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor (registry before)) =
+   LIterTag :: o20FiberRoleRemainder
+    (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor (registry afterState)))
+o20IterRoleAtSource nameEq keyEq actor _ afterState checked
+  (AdvanceSourceIter {ambient} {fibers} {component} {parent} {retiredFlag} {table}
+    {step} {next} {more} {accumulator} {view} Refl found target) =
+    o20ObservedAdvanceRoleConsumption nameEq keyEq actor ambient fibers afterState LIterTag
+      component parent retiredFlag table step (next :: more) accumulator view found target checked
+      (o20IterNativeValues nameEq keyEq actor (MkSystemState ambient fibers) afterState
+        component parent retiredFlag table step next more accumulator view found checked)
+
+||| Empty-program Finish consumes its single Finish role. Its actual target
+||| is attached by native evaluator determinism, and its actual lookup comes
+||| from replacement. There is no callback in this branch.
+export
+0 o20EmptyFinishRoleConsumption :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (ambient : world) -> (fibers : Registry name key value world error) ->
+  (afterState : SystemState name key value world error) ->
+  (component : Component key value world error) -> (parent : Parent name) ->
+  (retiredFlag : Bool) -> (table : OwnedTable key value (componentProvisions component)) ->
+  (older : LocalState key value world (componentProvisions component) -> LocalState key value world (componentProvisions component)) ->
+  (view : View name (dependencies (componentDependencies component))) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor fibers =
+    Just (MkFiber component parent retiredFlag table (Reloading [] older view))) ->
+  (targetFiber {name} {key} {value} {world} {error} @{nameEq} @{keyEq}
+    (MkFiber component parent retiredFlag table (Reloading [] older view)) fibers = Just view) ->
+  (checkedApplyAction {name} {key} {value} {world} {error} @{nameEq} @{keyEq}
+    (LAdvance actor) (MkSystemState ambient fibers) = Just (LFinishTag, afterState)) ->
+  (o20FiberRoleRemainder
+    (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor fibers) =
+   LFinishTag :: o20FiberRoleRemainder
+    (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor (registry afterState)))
+o20EmptyFinishRoleConsumption nameEq keyEq actor ambient fibers afterState
+  component parent retiredFlag table older view found target checked =
+    rewrite cong snd (justInjective (trans
+      (sym (checkedActionProjects nameEq keyEq (LAdvance actor)
+        (MkSystemState ambient fibers) afterState LFinishTag checked))
+      (the (applyAction @{nameEq} @{keyEq} (LAdvance actor) (MkSystemState ambient fibers) =
+        Just (LFinishTag, MkSystemState ambient (replaceBinding @{nameEq} actor
+          (MkFiber component parent retiredFlag table (Active older view)) fibers)))
+        (rewrite found in rewrite target in
+          rewrite trans (viewEqSameNameList nameEq view view)
+            (sameNameListReflexive nameEq (DGamma.Calculus.viewProviders view)) in Refl)))) in
+    rewrite lookupReplacedFiber @{nameEq} actor
+      (MkFiber component parent retiredFlag table (Reloading [] older view))
+      (MkFiber component parent retiredFlag table (Active older view)) fibers found in
+    rewrite found in Refl
+
+||| The two actual Finish source constructors each consume exactly Finish.
+||| Empty has no callback; singleton produces its own native success values.
+||| This is single-role source elimination, not an Either callback adapter.
+export
+0 o20FinishRoleAtSource :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) ->
+  (before, afterState : SystemState name key value world error) ->
+  (checkedApplyAction {name} {key} {value} {world} {error} @{nameEq} @{keyEq}
+    (LAdvance actor) before = Just (LFinishTag, afterState)) ->
+  PaperAdvanceSource name key world error value nameEq keyEq actor LFinishTag before ->
+  (o20FiberRoleRemainder
+    (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor (registry before)) =
+   LFinishTag :: o20FiberRoleRemainder
+    (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor (registry afterState)))
+o20FinishRoleAtSource nameEq keyEq actor _ afterState checked
+  (AdvanceSourceFinishEmpty {ambient} {fibers} {component} {parent} {retiredFlag} {table}
+    {accumulator} {view} Refl found target) =
+    o20EmptyFinishRoleConsumption nameEq keyEq actor ambient fibers afterState
+      component parent retiredFlag table accumulator view found target checked
+o20FinishRoleAtSource nameEq keyEq actor _ afterState checked
+  (AdvanceSourceFinishOne {ambient} {fibers} {component} {parent} {retiredFlag} {table}
+    {step} {accumulator} {view} Refl found target) =
+    o20ObservedAdvanceRoleConsumption nameEq keyEq actor ambient fibers afterState LFinishTag
+      component parent retiredFlag table step [] accumulator view found target checked
+      (o20FinishOneNativeValues nameEq keyEq actor (MkSystemState ambient fibers) afterState
+        component parent retiredFlag table step accumulator view found checked)
+
+||| EVERY actual paper activation consumes its own native tag from the
+||| owner's remainder. Native source and callback observations are produced
+||| internally; neither a pre-cut relation nor successor word is assumed.
+export
+0 o20ActualPaperRoleConsumption :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (before, afterState : SystemState name key value world error) ->
+  (action : Action name key value world error) -> (tag : RuleTag) ->
+  (checked : (checkedApplyAction {name} {key} {value} {world} {error} @{nameEq} @{keyEq}
+    action before = Just (tag, afterState))) ->
+  PaperActivationStep (Fired {name} {key} {value} {world} {error}
+    {before} {afterState} nameEq keyEq action tag checked) ->
+  (o20FiberRoleRemainder
+    (lookupFiber {name} {key} {value} {world} {error} @{nameEq} (actionOwner action) (registry before)) =
+   tag :: o20FiberRoleRemainder
+    (lookupFiber {name} {key} {value} {world} {error} @{nameEq} (actionOwner action) (registry afterState)))
+o20ActualPaperRoleConsumption {name} {key} {value} {world} {error}
+  nameEq keyEq before afterState action tag checked
+  (PaperBeginStep {actor} actionExact tagExact) =
+    replace {p = \selected => (o20FiberRoleRemainder (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected (registry before)) = tag :: o20FiberRoleRemainder (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected (registry afterState)))}
+      (sym (cong actionOwner actionExact))
+      (replace {p = \observedTag => (o20FiberRoleRemainder (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor (registry before)) = observedTag :: o20FiberRoleRemainder (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor (registry afterState)))}
+        (sym tagExact)
+        (o20ObservedBeginRoleConsumption nameEq keyEq actor before afterState
+        (o20ObserveActualBegin nameEq keyEq actor before afterState (MkBeginStep (trans (sym (cong (\observedAction => checkedApplyAction {name} {key} {value} {world} {error} @{nameEq} @{keyEq} observedAction before) actionExact))
+          (trans checked (cong (\observedTag => Just (observedTag, afterState)) tagExact)))))))
+
+o20ActualPaperRoleConsumption {name} {key} {value} {world} {error}
+  nameEq keyEq before afterState action tag checked
+  (PaperIterStep {actor} actionExact tagExact) =
+    replace {p = \selected => (o20FiberRoleRemainder (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected (registry before)) = tag :: o20FiberRoleRemainder (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected (registry afterState)))}
+      (sym (cong actionOwner actionExact))
+      (replace {p = \observedTag => (o20FiberRoleRemainder (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor (registry before)) = observedTag :: o20FiberRoleRemainder (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor (registry afterState)))}
+        (sym tagExact)
+        (o20IterRoleAtSource nameEq keyEq actor before afterState (trans (sym (cong (\observedAction => checkedApplyAction {name} {key} {value} {world} {error} @{nameEq} @{keyEq} observedAction before) actionExact))
+          (trans checked (cong (\observedTag => Just (observedTag, afterState)) tagExact)))
+        (paperAdvanceSource nameEq keyEq actor LIterTag
+          (checkedActionProjects nameEq keyEq (LAdvance actor) before afterState LIterTag (trans (sym (cong (\observedAction => checkedApplyAction {name} {key} {value} {world} {error} @{nameEq} @{keyEq} observedAction before) actionExact))
+          (trans checked (cong (\observedTag => Just (observedTag, afterState)) tagExact)))) (Left Refl))))
+
+o20ActualPaperRoleConsumption {name} {key} {value} {world} {error}
+  nameEq keyEq before afterState action tag checked
+  (PaperFinishStep {actor} actionExact tagExact) =
+    replace {p = \selected => (o20FiberRoleRemainder (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected (registry before)) = tag :: o20FiberRoleRemainder (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected (registry afterState)))}
+      (sym (cong actionOwner actionExact))
+      (replace {p = \observedTag => (o20FiberRoleRemainder (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor (registry before)) = observedTag :: o20FiberRoleRemainder (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor (registry afterState)))}
+        (sym tagExact)
+        (o20FinishRoleAtSource nameEq keyEq actor before afterState (trans (sym (cong (\observedAction => checkedApplyAction {name} {key} {value} {world} {error} @{nameEq} @{keyEq} observedAction before) actionExact))
+          (trans checked (cong (\observedTag => Just (observedTag, afterState)) tagExact)))
+        (paperAdvanceSource nameEq keyEq actor LFinishTag
+          (checkedActionProjects nameEq keyEq (LAdvance actor) before afterState LFinishTag (trans (sym (cong (\observedAction => checkedApplyAction {name} {key} {value} {world} {error} @{nameEq} @{keyEq} observedAction before) actionExact))
+          (trans checked (cong (\observedTag => Just (observedTag, afterState)) tagExact)))) (Right Refl))))
+
+||| The complete lifecycle-tag subsequence of ONE actual actor-only body.
+||| Genuine yielded Insert edges are omitted from this projection, NOT from
+||| the native trace and NOT declared zero transitions. No decider is used.
+public export
+0 o20ActorLifecycleRoleWord :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, finalState : SystemState name key value world error} ->
+  {selected : name} -> {trace : Transitions first finalState} ->
+  ActorLifecycleOnly selected trace -> List RuleTag
+o20ActorLifecycleRoleWord ActorLifecycleEnd = []
+o20ActorLifecycleRoleWord (ActorLifecycleStep step rest lifecycle owner later) =
+  transitionTag step :: o20ActorLifecycleRoleWord later
+o20ActorLifecycleRoleWord (ActorYieldedRegistrationStep step rest inserted later) =
+  o20ActorLifecycleRoleWord later
+
+||| Native orchestration role evidence determines the primitive lifecycle
+||| discriminator. No action/tag equality is eliminated in the patterns.
+export
+0 o20OrchestrationRoleNonLifecycle :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {before, afterState : SystemState name key value world error} ->
+  {step : Transition before afterState} ->
+  PaperOrchestrationStep step ->
+  (isLifecycleAction (transitionAction step) = False)
+o20OrchestrationRoleNonLifecycle (PaperInsertStep exact) =
+  trans (cong isLifecycleAction exact) Refl
+o20OrchestrationRoleNonLifecycle (PaperRetireStep exact) =
+  trans (cong isLifecycleAction exact) Refl
+o20OrchestrationRoleNonLifecycle (PaperRemoveStep exact) =
+  trans (cong isLifecycleAction exact) Refl
+
+||| Consume one whole-word canonical role at a lifecycle node. This theorem
+||| returns only the role-remainder equation, NOT a callback-domain adapter.
+||| The orchestration branch contradicts the node's own lifecycle equation.
+export
+0 o20CanonicalLifecycleRoleConsumption :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (before, afterState : SystemState name key value world error) ->
+  (action : Action name key value world error) -> (tag : RuleTag) ->
+  (checked : (checkedApplyAction {name} {key} {value} {world} {error} @{nameEq} @{keyEq}
+    action before = Just (tag, afterState))) ->
+  Either
+    (PaperActivationStep (Fired {name} {key} {value} {world} {error} {before} {afterState} nameEq keyEq action tag checked))
+    (PaperOrchestrationStep (Fired {name} {key} {value} {world} {error} {before} {afterState} nameEq keyEq action tag checked)) ->
+  (isLifecycleAction action = True) ->
+  (o20FiberRoleRemainder
+    (lookupFiber {name} {key} {value} {world} {error} @{nameEq} (actionOwner action) (registry before)) =
+   tag :: o20FiberRoleRemainder
+    (lookupFiber {name} {key} {value} {world} {error} @{nameEq} (actionOwner action) (registry afterState)))
+o20CanonicalLifecycleRoleConsumption nameEq keyEq before afterState action tag checked (Left paperRole) lifecycle =
+  o20ActualPaperRoleConsumption nameEq keyEq before afterState action tag checked paperRole
+o20CanonicalLifecycleRoleConsumption nameEq keyEq before afterState action tag checked (Right orchestrationRole) lifecycle =
+  absurd (trans (sym (o20OrchestrationRoleNonLifecycle orchestrationRole)) lifecycle)
+
+||| An ACTUAL Insert preserves every already-present fiber's role remainder.
+||| Freshness produces distinctness internally, then the native local-update
+||| frame produces the target lookup. The insertion is a genuine edge.
+export
+0 o20InsertPreservesPresentRole :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected, child : name) ->
+  (parent : Parent name) -> (component : Component key value world error) ->
+  (before, afterState : SystemState name key value world error) -> (tag : RuleTag) ->
+  (checkedApplyAction {name} {key} {value} {world} {error} @{nameEq} @{keyEq}
+    (OInsert child parent component) before = Just (tag, afterState)) ->
+  (fiber : Fiber name key value world error) ->
+  (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected (registry before) = Just fiber) ->
+  (o20FiberRoleRemainder
+    (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected (registry before)) =
+   o20FiberRoleRemainder
+    (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected (registry afterState)))
+o20InsertPreservesPresentRole {name} {key} {value} {world} {error}
+  nameEq keyEq selected child parent component (MkSystemState ambient fibers) afterState tag checked fiber found =
+    sym (cong o20FiberRoleRemainder
+      (systemLocalUpdateForeign nameEq selected child
+        (\same => nothingIsNotJust (trans
+          (sym (foreignInsertViewAbsent (foreignInsertPlanView nameEq keyEq child parent component ambient fibers tag afterState
+            (checkedActionProjects nameEq keyEq (OInsert child parent component) (MkSystemState ambient fibers) afterState tag checked))))
+          (trans (cong (\actor => lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor fibers) (sym same)) found)))
+        (MkSystemState ambient fibers) afterState
+        (applyActionLocalUpdate nameEq keyEq (OInsert child parent component)
+          (MkSystemState ambient fibers) afterState tag
+          (checkedActionProjects nameEq keyEq (OInsert child parent component) (MkSystemState ambient fibers) afterState tag checked))))
+
+||| A native actor-body yielded insertion leaves that installed actor's
+||| remainder unchanged. Source presence, child distinctness and the frame
+||| are all produced; no target lookup or role equation enters as a premise.
+export
+0 o20YieldedInsertRoleFrame :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected, child : name) ->
+  (component : Component key value world error) ->
+  (before, afterState : SystemState name key value world error) ->
+  (action : Action name key value world error) -> (tag : RuleTag) ->
+  (checkedApplyAction {name} {key} {value} {world} {error} @{nameEq} @{keyEq}
+    action before = Just (tag, afterState)) ->
+  (action = OInsert child (ChildOf selected) component) ->
+  (installedAt {name} {key} {value} {world} {error} @{nameEq} selected before = True) ->
+  (o20FiberRoleRemainder
+    (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected (registry before)) =
+   o20FiberRoleRemainder
+    (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected (registry afterState)))
+o20YieldedInsertRoleFrame {name} {key} {value} {world} {error}
+  nameEq keyEq selected child component before afterState action tag checked inserted installed =
+    o20InsertPreservesPresentRole nameEq keyEq selected child (ChildOf selected) component before afterState tag
+      (trans (sym (cong (\observedAction => checkedApplyAction {name} {key} {value} {world} {error} @{nameEq} @{keyEq} observedAction before) inserted)) checked)
+      (presentFiber (o20InstalledEndPresentLookup nameEq keyEq selected
+        (the (Transitions before before) NoTransitions) (InstalledEnd installed)))
+      (presentFound (o20InstalledEndPresentLookup nameEq keyEq selected
+        (the (Transitions before before) NoTransitions) (InstalledEnd installed)))
+
+||| Whole actual installed actor-body induction: its native lifecycle word
+||| followed by its ACTUAL endpoint remainder equals its source remainder.
+||| Each head is handled simultaneously with the certificates of that same
+||| native node. Lifecycle consumption and yielded-insert frames are produced
+||| internally; no successor word/equation or arbitrary skip is assumed.
+export
+0 o20ActorRoleWordInvariant :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (selected : name) ->
+  {first, finalState : SystemState name key value world error} ->
+  (trace : Transitions first finalState) ->
+  (actors : ActorLifecycleOnly selected trace) ->
+  O20CanonicalTraceRoles trace ->
+  InstalledTrace name key world error value nameEq keyEq selected trace ->
+  (o20FiberRoleRemainder
+    (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected (registry first)) =
+   o20ActorLifecycleRoleWord actors ++ o20FiberRoleRemainder
+    (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected (registry finalState)))
+o20ActorRoleWordInvariant nameEq keyEq selected _ ActorLifecycleEnd O20RolesEnd (InstalledEnd installed) = Refl
+o20ActorRoleWordInvariant {name} {key} {value} {world} {error} {first}
+  nameEq keyEq selected _ (ActorLifecycleStep _ _ lifecycle owner actorLater)
+  (O20RolesStep role roleLater)
+  (InstalledStep {middle} action tag checked rest installed installedLater) =
+    trans
+      (replace {p = \actor =>
+        (o20FiberRoleRemainder (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor (registry first)) =
+         tag :: o20FiberRoleRemainder (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor (registry middle)))}
+        (trans (sym (o19TransitionActorOwner (Fired {name} {key} {value} {world} {error}
+          {before = first} {afterState = middle} nameEq keyEq action tag checked))) owner)
+        (o20CanonicalLifecycleRoleConsumption nameEq keyEq first middle action tag checked role lifecycle))
+      (cong (tag ::) (o20ActorRoleWordInvariant nameEq keyEq selected rest actorLater roleLater installedLater))
+o20ActorRoleWordInvariant {first}
+  nameEq keyEq selected _ (ActorYieldedRegistrationStep {child} {childComponent} _ _ inserted actorLater)
+  (O20RolesStep role roleLater)
+  (InstalledStep {middle} action tag checked rest installed installedLater) =
+    trans (o20YieldedInsertRoleFrame nameEq keyEq selected child childComponent first middle action tag checked inserted installed)
+      (o20ActorRoleWordInvariant nameEq keyEq selected rest actorLater roleLater installedLater)
+
+||| Split complete role certificates at a supplied ACTUAL trace cut. Both
+||| segment certificates are produced by structural head/tail induction.
+export
+0 o20RolesAppendSplit :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {first, middle, finalState : SystemState name key value world error} ->
+  (earlier : Transitions first middle) -> (later : Transitions middle finalState) ->
+  O20CanonicalTraceRoles (appendTransitions earlier later) ->
+  (O20CanonicalTraceRoles earlier, O20CanonicalTraceRoles later)
+o20RolesAppendSplit NoTransitions later roles = (O20RolesEnd, roles)
+o20RolesAppendSplit (MoreTransitions step rest) later (O20RolesStep role roles) =
+  (O20RolesStep role (fst (o20RolesAppendSplit rest later roles)),
+   snd (o20RolesAppendSplit rest later roles))
+
+||| Every actual located canonical block satisfies the whole native role
+||| invariant. Body roles are extracted from the supplied whole-word roles at
+||| this block's OWN decomposition, not taken as another caller premise.
+||| Its endpoint remainder is retained explicitly, not silently set to zero.
+export
+0 o20LocatedBlockRoleWordInvariant :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} -> {selected : name} ->
+  {initial, finalState : SystemState name key value world error} ->
+  {trace : Transitions initial finalState} ->
+  (block : LocatedOpenEpisodeBlock name key world error value nameEq keyEq selected trace) ->
+  O20CanonicalTraceRoles trace ->
+  (o20FiberRoleRemainder
+    (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected (registry (blockStart block))) =
+   o20ActorLifecycleRoleWord (blockActorOnly block) ++ o20FiberRoleRemainder
+    (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected (registry (blockEnd block))))
+o20LocatedBlockRoleWordInvariant {nameEq} {keyEq} {selected} block roles =
+  o20ActorRoleWordInvariant nameEq keyEq selected (blockBody block) (blockActorOnly block)
+    (fst (o20RolesAppendSplit (blockBody block) (traceAfterBlock block)
+      (snd (o20RolesAppendSplit (prefixToBlockOpening block)
+        (appendTransitions (blockBody block) (traceAfterBlock block))
+        (replace {p = O20CanonicalTraceRoles}
+          (sym (trans
+            (appendTransitionsAssociative (traceBeforeBlock block)
+              (MoreTransitions (beginTransition (blockOpening block)) NoTransitions)
+              (appendTransitions (blockBody block) (traceAfterBlock block)))
+            (blockDecomposition block))) roles)))))
+    (blockBodyInstalled block)

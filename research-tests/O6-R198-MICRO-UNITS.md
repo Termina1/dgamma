@@ -1,0 +1,55 @@
+# R198 micro-unit ledger
+
+A26 attempted micro-units/33 native invocations,25 retained declarations; B16 units/16 native invocations,16 retained.41 source commits. A3 STOP3/3 fully reverted; no fourth attempt. A20-1 compiler PASS was rejected by git diff --check; only EOF whitespace changed before fresh A20-2 PASS. C0; R197 D5 still exhausted/untouched. D documentation only.
+
+| Unit | Attempt | Outcome | Source SHA256 | Guarded commit |
+|---|---:|---|---|---|
+| A1 | 1 | PASS | `b8fb8e50ae6995222f0162a21f9404e4fdd936c71aea563e5417547dbe8746ef` | `7bf60612bda1b0f56f7e102a49fc515caf01041f` |
+| A2 | 1 | PASS | `1b9f35e13625ace25c51d8f5e35c49463d0bdc349e7610925d88f0666a5bc1fc` | `48019e930b0b55d130050cd4d06330b643516299` |
+| A3 | 1 | REJECTED; full revert | `0c0dcd969096003b6d19d9f6b9d326a9bea2a6244defb73856db3a2dbb49d030` | `not committed` |
+| A3 | 2 | REJECTED; full revert | `aa011de646ce56ea087cda05b3cf1769acf74c1f66e7f4010a9ff9dbc44cb940` | `not committed` |
+| A3 | 3 | REJECTED; full revert | `08a99d1dc6d161b12efe7a6c8306f8e35870fecc25ae18e61b50f2cfdc877369` | `not committed` |
+| A4 | 1 | REJECTED; bounded repair | `703034f9e4203db8e4019854e3267e21647f05859c5888d15e0ee3b809977464` | `not committed` |
+| A4 | 2 | PASS | `06acc31324d41f4a5728a132f7d64e7f309f8535aba46d0e8d3575c5eb328f64` | `02f85b3f650fbcf18c91c56be3824126eea2f774` |
+| A5 | 1 | PASS | `b44b7abc9cd6ea1ce2e404e42d95c2fb5ab4d6fbbcb4b4a76a4703907c9de05e` | `b1e0f379e3d8e96ac2b596a42cc82f8be53b5f84` |
+| A6 | 1 | PASS | `34a348e6d1296bd0eba2618e1472afe80bde7a0cdefbdcdd10249b86e1ef0b45` | `7794b70db7215a8edec68967b3039bfb79ce7333` |
+| A7 | 1 | PASS | `70e487de3652afb33c1af26770f0bbe370d07df6d13ccb4f468dbf43f4e42b83` | `21db036b5938c356b19553ef47d18b7db373b236` |
+| A8 | 1 | PASS | `bfe819867b47d7e27e40b295fdb012c28781d15c6ab74f62c050c9ec0573cc99` | `3e4f2f9b31027c7ecdb39a0993481cf8927363fa` |
+| A9 | 1 | REJECTED; bounded repair | `0d7697d23b6263715dd1ebed44404f3d2ac6c37f83545286d8679824d03523f9` | `not committed` |
+| A9 | 2 | REJECTED; bounded repair | `242cc75f02f2563bafcbf13e9d670676688aed220b69249667663171a842e713` | `not committed` |
+| A9 | 3 | PASS | `d535a8404a0744c7ad50219b25064ea57e96ee4354cceebd1526d9369992432b` | `857d002f7ce58c8886129ecfae7fa0cbbeda6e46` |
+| A10 | 1 | PASS | `3c0ec28f9399ea639d3bdd6cb5a75dce9c03b58375e91f3d8d71d72ac1d40a81` | `502da0b30400bb641be2d7bff8d4935974b035f3` |
+| A11 | 1 | PASS | `5ecef1cbb4615fc8ac7d9de1743e940d8e8629684ed709edfb8e8f81f8fea3e0` | `2c707c16e8c26bcc8cbf5ec3c50d235b4fb18dda` |
+| A12 | 1 | PASS | `f6a42a470819cdc5be2b9a55dde76cbb9a417be6c1328be5ec9c5a5103c86053` | `4804184b6ce4e9740427d1254b09a901dc4e538e` |
+| A13 | 1 | PASS | `7c5193d66acf8dca069b5dd43c0385a69238768a86cad5dd63325c66890cf83e` | `a219c7faf0aa4dfa00c23ccc2dadb61d96ecb81e` |
+| A14 | 1 | PASS | `f7eeebfbd17a092979c2c1ac2c9864c7640231afbab24ba4508b769ce564d301` | `911bdf83e582a22f06d8444928dfd74994b4badc` |
+| A15 | 1 | PASS | `a610e11e746081c036cde189cc8b6e244b4c6130ec4a039216533df84540d8f8` | `dba2a40a5e2da1c7b44dcd5bcaaa68900a8776cf` |
+| A16 | 1 | PASS | `5c969f88484d83bda77f0ca37d06d813e8123cb623899175014b9369ca69b14f` | `53f4b91572f99c6d5d46e4ecec1bea7319bb20e4` |
+| A17 | 1 | PASS | `6107ca2007e2bb0b9a54f6e52a5e2771846f858b1e8d18ffb708faa00181afa6` | `c827e27863db4bfdcf45a6c9ed5fcdcb536636d2` |
+| A18 | 1 | PASS | `2629156710cad363c887d2abe165cb88c82a62366bca3287140114b500d17af4` | `5bc922c8c01edb4fa972bd0c1239fa235988688f` |
+| A19 | 1 | PASS | `fe0baecaa4aa5e96e40f5d5e37df26387a199944b3bada9fdd7ecf4cfc968f48` | `bc8deb6fdbeefc3b7cc2a409963ee7248ed21eba` |
+| A20 | 1 | PASS; whitespace guard refused commit | `56969f89c719b06226fe1691bfb635e141be0e5096c536e31652c60dd54d3159` | `not committed` |
+| A20 | 2 | PASS | `0885d5a723c61783b5355be28fd37f45b9c9d9ca0e77b2b4ecf9ddc7b6c8b3ec` | `72f1c91f5ad1c1ec396c02a1f97e6c5ba48238fe` |
+| A21 | 1 | PASS | `7b560b7c0be5ee17b9bb23cb01a5f07de39dd6daf81a24fb968dd878fc057f01` | `f90525848fbb2efe7efe8f06b3a6c55ffb0ee14d` |
+| A22 | 1 | PASS | `376b419f9bad0a3a19df04e24831411ebe01d83baf6993279ff01c59f9066c40` | `88927a29c5f288dadb181b912eb9e002251eaaac` |
+| A23 | 1 | REJECTED; bounded repair | `81e11428205bb7fb73302ca4ab3ab2b2864d43c1106e14cfb015fd006ea6a50a` | `not committed` |
+| A23 | 2 | PASS | `ebddcdfaca9a421500bd8de9c4efdb7302ae6f4c6f9815ce333c26bfbcdd1990` | `41bda6e7d646a034596877f9aaad37d0271b40c9` |
+| A24 | 1 | PASS | `f6d754a352924be5ab15b51b35c13769bac8bb323b232bb6c5eb131878b367ba` | `23ac8ce0067eab47404b183317c4aacb4a71ca98` |
+| A25 | 1 | PASS | `d4f220215ac95abd7bab40379f4a75ef806012432434ea5186e2f0abd9afed14` | `70ef502e2b6a8e42cc468bd42dfb67741c3a50cc` |
+| A26 | 1 | PASS | `ec06bdfd0d8f20ffe04a2b8d8d42cedce67b98f8fe2e957441d348ba98c15195` | `3de574590e5419242dd4d3256d917742701cd5f8` |
+| B1 | 1 | PASS | `e36a58605747cbe0927edbb0eb02cf5d5b1691ed6939a9e5d2d55170d266978d` | `46c13f801c647ae5807762e4ad51a88041ec2a7a` |
+| B2 | 1 | PASS | `88901ab9cff3132b6bec471827e320646c5602464d50f40b36d3283a66e1e392` | `fea0241c82f36a991b9fa44623274b14ed257748` |
+| B3 | 1 | PASS | `23de473f7ab39c1a6a817e0664aa78ae8fb23d8e3ca8a65b6164b0ea3417edb9` | `32801cae0311b07f4b3d3a757c0fb9222af1561a` |
+| B4 | 1 | PASS | `dd9bb593eff84d7a6b06ce581f4669442e42d8ecebd3be03402407306812a9f7` | `d69e77d02128678267a7af6010eb5a31b3bcf088` |
+| B5 | 1 | PASS | `a28ea37b08534277a21ba8821049cabe13d04dae631abf3e590bfe81b946bd2c` | `faefb388908e416f50b1ddc8101dee27aaaa6fdd` |
+| B6 | 1 | PASS | `ee4c0eb855a5c17bba249e54617215adf831ecc809a40db4d161c6cffeda0c8b` | `148a6600b6c5aa3f6c9856b840813a5218f00309` |
+| B7 | 1 | PASS | `6f11a8a5c41ffa5a02742a42dc5d0c60a1342b9b7e45c6817fa49b7f21b1d399` | `d17b36ca4c79bee1f50d3891c073b752a8fd1ee0` |
+| B8 | 1 | PASS | `f7e96c30fde6b01db2a8cf0e4029047554c9f71dbc5342db0ed9904896e2b3f0` | `c43cf0e247ae8750ec977eb8da7977702e50c4ad` |
+| B9 | 1 | PASS | `0a194cc695e083efca9ecbfb142bc340663b29ccbb60b5a34fbca75752bddc90` | `64ae8b5560c150d30ec7df6d3cc2dca40a090d60` |
+| B10 | 1 | PASS | `87dbdf1e56fac08a680d352432db72a828a6594117ac5e33c10cb504f1e35299` | `ae2d55cf615493590946450938788821d4e3f843` |
+| B11 | 1 | PASS | `88c3099e407a28859819eb3d750cd5629d39a0faa5325d8b2935fc4dbd06ab5a` | `7269147d3dce2337fabc4183ef5ba079d4d8d0a0` |
+| B12 | 1 | PASS | `f2eafc7cd98a28dcb57536dfb6e01cfc012db00f1868541b57a70e5f701f2671` | `50b9b618660b11cfd330f00861536b7d14d285dc` |
+| B13 | 1 | PASS | `5047253ecf9173a133aeb0f405a775308120f94463380572d45203dd7274c22b` | `2f98e9138763ba597a3a318692dabf3291894df5` |
+| B14 | 1 | PASS | `159f2b1245a2be42d01d54ca18d172fd009eb667e949924cb98eb60ea9c56f0c` | `52ae12b3a64b62656cc0e4ca19ee082e96736bb4` |
+| B15 | 1 | PASS | `5959b3972990778479c7cbba9942ea85d141663a8666a09340cad9ed3835fe27` | `ed1c30a0d38432e42c7255830207f3c32e98f5c4` |
+| B16 | 1 | PASS | `2c91f5af5bde8fd5575c022d90b5fd2797449aced8007bbf28d9da62113b28e3` | `ae510d70fc3f0f9e7f13105ec7334de115070f2a` |

@@ -1,0 +1,18 @@
+{
+  "startUTC": "2026-09-09T20:39:00+00:00",
+  "timeoutUTC": "2026-09-10T00:39:00+00:00",
+  "newProofCutoffUTC": "2026-09-09T23:59:00+00:00",
+  "validationStartCutoffUTC": "2026-09-10T00:14:00+00:00",
+  "gateCutoffUTC": "2026-09-10T00:24:00+00:00",
+  "baseline": "9b532666",
+  "uniqueOrdinalGate": "APPROVED by R204 task; unchanged-source 48GiB; prior44.8GiB",
+  "firstRecord": "R203 FINAL GATE at a1abf6d1 ACCEPTED as a checked partial milestone; D4 sealed at 9b532666; reviewer launched; two P2 repairs authorized (fixture let aliases; RSS measurement wording).",
+  "readFirstCorrection": "O6-R203-SELF-REVIEW.md absent; read O6-R203-AUTHOR-REVIEW.md.",
+  "caps": {
+    "0": 2,
+    "B": 14,
+    "A": 16,
+    "C": 6,
+    "D": 4
+  }
+}

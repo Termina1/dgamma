@@ -125,3 +125,71 @@ export
   Not (BeforeIn (actorLeft (chosenOrderSwap (orientedChoice choice))) (actorRight (chosenOrderSwap (orientedChoice choice))) goalOrder)
 o20OrientedCannotReverse choice =
   o20BeforeAsymmetric (orientedGoalUnique choice) (orientedGoalReverse choice)
+
+||| Matched-head branch of the ACTUAL target-order checker. Both primitive
+||| decisions are authenticated separately; only membership is eliminated.
+export
+0 o20BeforeMatchedMemberObserved :
+  {name : Type} -> (nameEq : DecEq name) -> (left, right : name) -> (rest : List name) ->
+  (decEq @{nameEq} left left = Yes Refl) ->
+  (observed : Dec (Elem right rest)) -> (isElem @{nameEq} right rest = observed) ->
+  Elem right rest -> (isJust (o20CheckBefore nameEq left right (left :: rest)) = True)
+o20BeforeMatchedMemberObserved nameEq left right rest same (Yes member) exact present =
+  rewrite same in rewrite exact in Refl
+o20BeforeMatchedMemberObserved nameEq left right rest same (No absent) exact present =
+  void (absent present)
+
+||| Producer-owned name-decision boundary for target-order completeness.
+||| The caller supplies structural membership/induction facts, not a success
+||| assertion for this head. No visibility change to the native checker.
+export
+0 o20BeforeOwnerDecisionObserved :
+  {name : Type} -> (nameEq : DecEq name) -> (left, right, head : name) -> (rest : List name) ->
+  (observed : Dec (left = head)) -> (decEq @{nameEq} left head = observed) ->
+  Elem right rest ->
+  (Not (left = head) -> (isJust (map (BeforeThere {other = head}) (o20CheckBefore nameEq left right rest)) = True)) ->
+  (isJust (o20CheckBefore nameEq left right (head :: rest)) = True)
+o20BeforeOwnerDecisionObserved nameEq left right _ rest (Yes Refl) exact member smaller =
+  o20BeforeMatchedMemberObserved nameEq left right rest exact (isElem @{nameEq} right rest) Refl member
+o20BeforeOwnerDecisionObserved nameEq left right head rest (No different) exact member smaller =
+  rewrite exact in smaller different
+
+||| Exact observed target-order success is preserved by the native orientation
+||| producer. This equation is proved at its defining module, not by exposing
+||| or changing an imported declaration's visibility.
+export
+0 o20OrientChoiceObserved :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {protocol : RegistrationProtocol key value world error} ->
+  (nameEq : DecEq name) -> {keyEq : DecEq key} ->
+  {sourceOrder : List name} -> (goalOrder : List name) ->
+  (goalUnique : UniqueKeys goalOrder) ->
+  {initial, finalState : SystemState name key value world error} -> {trace : Transitions initial finalState} ->
+  {blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder trace} ->
+  {premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq trace} ->
+  (choice : O20ChosenSafeSwap name key world error value protocol nameEq keyEq sourceOrder trace blocks premises) ->
+  (observed : Maybe (BeforeIn (actorRight (chosenOrderSwap choice)) (actorLeft (chosenOrderSwap choice)) goalOrder)) ->
+  (o20CheckBefore nameEq (actorRight (chosenOrderSwap choice)) (actorLeft (chosenOrderSwap choice)) goalOrder = observed) ->
+  (isJust observed = True) -> (isJust (o20OrientChosenSafeSwap nameEq goalOrder goalUnique choice) = True)
+o20OrientChoiceObserved nameEq goalOrder goalUnique choice Nothing exact Refl impossible
+o20OrientChoiceObserved nameEq goalOrder goalUnique choice (Just reverseOrder) exact present =
+  rewrite exact in Refl
+
+||| Exact native selector expression, exposed at its owning module without
+||| changing visibility or selecting a second, independently computed packet.
+export
+0 o20OrientedSelectorOwnedEquation :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) -> (sourceOrder, goalOrder : List name) ->
+  (goalUnique : UniqueKeys goalOrder) ->
+  {initial, finalState : SystemState name key value world error} -> (trace : Transitions initial finalState) ->
+  (blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder trace) ->
+  (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq trace) ->
+  (unique : UniqueRawNameInsertions name key world error value nameEq keyEq trace) ->
+  (o20SelectOrientedSafeBlocks nameEq keyEq protocol sourceOrder goalOrder goalUnique trace blocks premises unique =
+   head' (mapMaybe
+    (\candidate => o20CheckCandidate nameEq keyEq protocol sourceOrder trace blocks premises unique candidate >>=
+      o20OrientChosenSafeSwap nameEq goalOrder goalUnique)
+    (o20AdjacentCandidates nameEq sourceOrder [] sourceOrder Refl)))
+o20OrientedSelectorOwnedEquation nameEq keyEq protocol sourceOrder goalOrder goalUnique trace blocks premises unique = Refl

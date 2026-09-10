@@ -1,0 +1,10 @@
+{
+  "status": "PASS",
+  "anchorCommit": "1fd9bbcb60bfb3168ebc001d33d908377268fbd2",
+  "archiveSHA256": "32739ef5480e7263699f6d78431520b6d9540d6250c388a18c98c7b0cdc389d0",
+  "nativeRecordsVerified": 276,
+  "sourceSnapshotsVerified": 276,
+  "rawLogsVerified": 276,
+  "sourceReceiptsArchived": 13,
+  "qualification": "Read-only post-creation verification; not claimed inside the archive or as parent reviewer acceptance"
+}

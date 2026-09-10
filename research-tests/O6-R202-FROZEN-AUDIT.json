@@ -1,0 +1,174 @@
+{
+  "timestampUTC": "2026-09-09T18:20:00.570470+00:00",
+  "head": "564fd694bda163c835ea9927b53f70d37eb82bb4",
+  "baseline": "bc791641",
+  "productionDiffVs34b21c9": "empty",
+  "CP3Blob": "2c697e532e83989de8591fa6a4378747c6a501c0",
+  "authorizedContractSourceSHA256": {
+    "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr": "3b62ba1c3bc88503116ed22d82c667043f7f41dd483fb093cc25b677a55245cc",
+    "research/DGamma/CP5ConfluenceCrossTraceSpike.idr": "666d18626e49cbb0d6ac2f7624fe9f6b3519d539dbb574670f420bacd9fc69bb",
+    "research/DGamma/CP5ConfluenceDeletionChainSpike.idr": "91e8fd290cc4fedae9656ce5b4ae3ea0b38509f6e0250f51b4a7aa2aea09067b",
+    "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr": "9f9216170853624cff30449696f2540da0ed48e0b42504533aa587cb70dfc037",
+    "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr": "833bd3450bc8a4214e0334fd2ad95d7f837bc636f40f2e33c408333395602713"
+  },
+  "O19BodyBytes": 1286,
+  "O19BodySHA256": "cbd0954303c35141af0309e515bdb9e98e988e7c23be70b9764d8c1ce18fd396",
+  "adjacentFullBytes": 1470,
+  "adjacentFullSHA256": "2d01486bf953f11191b758ac3cfb5722d1d02b1a192b6e552adc8a3f58199ecf",
+  "adjacentStatementBytes": 1154,
+  "adjacentStatementSHA256": "3aae5a9fbc5b14e0411b4a91e557a6f3dc68c9a6282b9ec2b3fc658cec337adf",
+  "holes": {
+    "CanonicalSort": [
+      "?sortClosingFreeTraceSpike_rhs"
+    ],
+    "CrossTrace": [
+      "?selectOperationalCanonicalPermutationSpike_rhs",
+      "?canonicalSchedulesConvergeSpike_rhs"
+    ],
+    "DeletionChain": [],
+    "LocalDiamond": [],
+    "RenamingComposition": [
+      "?replayedCanonicalToOriginalEndpointSpike_rhs"
+    ]
+  },
+  "census": [
+    1,
+    2,
+    0,
+    0,
+    1
+  ],
+  "seeds": "207/207 retained (presence, not a fresh package PASS)",
+  "protectedDeclarations": {
+    "sortClosingFreeTraceSpike": "1df8d174b9a4f119a5a52e2073a72907bdb890413f877d55886e905e1d0279d1",
+    "selectOperationalCanonicalPermutationSpike": "b00063eacf339b58828eac5829cebc66fc7265f3518be459af0602463b6fbae7",
+    "canonicalSchedulesConvergeSpike": "0e8a177ea7bb4807cb77680cde29e75f7d37224711cc51cf7bf6636426690dd9",
+    "replayedCanonicalToOriginalEndpointSpike": "377b08ff82e1e4212738bb00a45a088b1f0d8fd8bc8b54bf061c96f2f4891681"
+  },
+  "prohibitedAdditions": {
+    "\\bbelieve_me\\b": [],
+    "\\bassert_total\\b": [],
+    "^\\s*partial\\b": [],
+    "\\?\\w+": [],
+    "\\blet\\b": [],
+    "\\bwith\\b": [],
+    "\\bprefix\\b": [],
+    "\\bdeletionTheoremProof\\b": [],
+    "\\bpostulate\\b": []
+  },
+  "changedIdrisFiles": [
+    "research-tests/DGamma/R202NativeInsertScansPositive.idr",
+    "research-tests/DGamma/R202RetainedClosingIndexPositive.idr",
+    "research/DGamma/CP5O20ActivationPositionStepSpike.idr",
+    "research/DGamma/CP5O20NativeInsertEnvironmentSpike.idr",
+    "research/DGamma/CP5O20RetainedClosingIndexSpike.idr"
+  ],
+  "noMainCompiler": true,
+  "lane2Compilers": [],
+  "foreignCompilerObservedAtUTC": [],
+  "noStagedFiles": true,
+  "cleanTrackedTree": true,
+  "allowedUntrackedOnly": false,
+  "untracked": [
+    "paper/cordis-paper.pdf",
+    "paper/cordis-paper.txt",
+    "research-tests/O6-R202-DECLARATIONS.md",
+    "research-tests/O6-R202-SELF-REVIEW.md",
+    "research-tests/run-r202-archive.py",
+    "research-tests/run-r202-independent-verify.py",
+    "research-tests/run-r202-verify-archive.py",
+    "review-o6-body-adversarial.md"
+  ],
+  "reviewSHA256": "61fc23ae4cea4565b442c840be39c41746ecbac73b8c2f73d04f1e3b4f4681e8",
+  "ReplayedCanonicalEndpointBridge": {
+    "recordBytes": 3243,
+    "recordSHA256": "ac5304c1a6a6e0cea988eac4b0dcdb5756fcf1b67ede7d0db6a4d723c73b695d",
+    "R192ManifestExact": true
+  },
+  "supersededCandidateSourceSHA256": {
+    "research/DGamma/CP5O20CanonicalSynchronizationGoalSpike.idr": "36cdc8db587a43193dacda173f46f3a40b524a6f31786f8fb57978729457e583",
+    "research/DGamma/CP5O20StampedHistoryFoldSpike.idr": "e3f44d6e995f02bbc826d076960d01ef175031d8b9d0c85b8e806fecd9538d55"
+  },
+  "declaredNewSourceNames": {
+    "research-tests/DGamma/R202NativeInsertScansPositive.idr": [
+      "r202ClassifiedActivationPositions",
+      "r202NativeChildBirthScans"
+    ],
+    "research-tests/DGamma/R202RetainedClosingIndexPositive.idr": [
+      "r202HistoricalForeignClosingJoin"
+    ],
+    "research/DGamma/CP5O20ActivationPositionStepSpike.idr": [
+      "o20ActivationKeySelf",
+      "o20ActivationOrdinalSelf",
+      "o20DeletedBirthKeepsActivationPosition",
+      "o20DeletedBirthPreservesObservedPosition",
+      "o20EventActivationPositionKnown",
+      "o20IncrementActivationCount",
+      "o20SurvivingBirthActivationUpdate",
+      "o20SurvivingBirthAdvancesObservedPosition"
+    ],
+    "research/DGamma/CP5O20NativeInsertEnvironmentSpike.idr": [
+      "O20PrefixScannedInsertAttachment",
+      "o20NativePrefixScan",
+      "o20NativeScanCount",
+      "o20PermutedCanonicalPrefixScannedInsert",
+      "o20PrefixScannedInsertCut",
+      "o20PrefixScannedInsertFromOrigins"
+    ],
+    "research/DGamma/CP5O20RetainedClosingIndexSpike.idr": [
+      "o20ClosingActionAtAppend",
+      "o20DeletedBirthClosingIndex",
+      "o20DeletionRetainedNamedBirth",
+      "o20ForeignSegmentRetainedClosingBirth",
+      "o20ForeignSubsequenceUnloadIndex",
+      "o20IndexedUnloadOccurs",
+      "o20MappedSuccessorPredecessor",
+      "o20RegisteredSegmentRetainedClosingBirth",
+      "o20RegisteredSubsequenceUnloadIndex",
+      "o20SelectedCenterBirthContradictsNonselection",
+      "o20SubsequenceReflectsSourceOrder",
+      "o20UnloadBeyondBirthCut",
+      "o20UnloadOccurrenceIndex"
+    ]
+  },
+  "retainedNewDeclarations": 30,
+  "rejectedDevelopmentInvocations": [
+    "B2-1",
+    "A8-1",
+    "A13-1",
+    "A16-1"
+  ],
+  "policyLabelCorrection": {
+    "timestampUTC": "2026-09-09T17:24:59.557814+00:00",
+    "kind": "metadata-only inherited shift label correction",
+    "beforeSHA256": "a0cef1ec8902eef684f801efe9067a491a84f9423afd46c8222e4fadb5f55dd0",
+    "afterSHA256": "326af44b44117437defe7b0401c13d26cab238a1fd95556296b60a66bfb911cf",
+    "onlyChangedKey": "shift",
+    "before": "R201",
+    "after": "R202",
+    "priorInvocations": [
+      "B1-1",
+      "B2-1",
+      "B2-2",
+      "B3-1",
+      "B4-1",
+      "B5-1",
+      "B6-1",
+      "B7-1",
+      "B8-1",
+      "B9-1",
+      "B10-1",
+      "B11-1",
+      "B12-1",
+      "B13-1",
+      "B14-1",
+      "A1-1",
+      "A2-1",
+      "A3-1",
+      "A4-1",
+      "A5-1",
+      "A6-1"
+    ],
+    "qualification": "No runner/source/log/invocation records changed. All prior records authenticate against the retained old policy bytes; all later records use R202 label. Enforcement fields are identical."
+  }
+}

@@ -1,0 +1,2152 @@
+{
+  "status": "APPROVED second continuous helper rebuild; append-only",
+  "helperManifestSHA256": "93ef4450009443c19cef8791b8ee6a91cd920da582d4f6f308df7e5f1b4c611a",
+  "originalBContinuationSHA256": "bcbc36528127e2291cc90bf37c86259a038499652646891dc1cbf1cbe08d6e7d",
+  "originalBCompleteSHA256": "910cbe687f6aa8bab81c8c892fffc514d2a8473b4d14f44af2aebe5e62b01cce",
+  "helperPath": "research/DGamma/CP5ConfluenceDeletionChainSpike.idr",
+  "helperSourceSHA256": "91e8fd290cc4fedae9656ce5b4ae3ea0b38509f6e0250f51b4a7aa2aea09067b",
+  "affectedSourcesIncludingHelper": 127,
+  "checkCount": 127,
+  "items": [
+    {
+      "unit": "W1",
+      "path": "research-tests/DGamma/R19SuffixFreeFullAdjacentCertificatePositive.idr",
+      "sourceHash": "4f30ab58cae44bc89bf3c9cc940d3ab63bf1f0af99494cfd157d6db21617bd80",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 2.089138917159289,
+      "estimatedSampleRSSKiB": 727504,
+      "dependencies": [
+        "research/DGamma/CP5ConfluenceDeletionChainSpike.idr",
+        "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr"
+      ]
+    },
+    {
+      "unit": "W2",
+      "path": "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+      "sourceHash": "3b62ba1c3bc88503116ed22d82c667043f7f41dd483fb093cc25b677a55245cc",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 53.999528584070504,
+      "estimatedSampleRSSKiB": 20121856,
+      "dependencies": [
+        "research/DGamma/CP5ConfluenceDeletionChainSpike.idr",
+        "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+        "research/DGamma/CP5UniqueRawNameOrdinalCapital.idr"
+      ]
+    },
+    {
+      "unit": "W3",
+      "path": "research/DGamma/CP5SupportedBirthCoverageSpike.idr",
+      "sourceHash": "f97d76d8e94cdf529995779becefec69bc19694217f732a5ef27bf0198473e6a",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 2.0838503330014646,
+      "estimatedSampleRSSKiB": 371264,
+      "dependencies": [
+        "research/DGamma/CP5ConfluenceDeletionChainSpike.idr"
+      ]
+    },
+    {
+      "unit": "W4",
+      "path": "research/DGamma/CP5UniqueRawNameDeletion.idr",
+      "sourceHash": "f8adb83a079e5345a7e4655a5f6c878756f16b76ddc7e7bb16156fc284506c50",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 3.1684569590725005,
+      "estimatedSampleRSSKiB": 776528,
+      "dependencies": [
+        "research/DGamma/CP5ConfluenceDeletionChainSpike.idr",
+        "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr"
+      ]
+    },
+    {
+      "unit": "W5",
+      "path": "research-tests/DGamma/R172O17OpenParentRootReuseCandidate.idr",
+      "sourceHash": "5702a99c11b1025ff00250660cff7b5230556a1814b30e27fadfe9b113713ac4",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 49.86872629215941,
+      "estimatedSampleRSSKiB": 4526768,
+      "dependencies": [
+        "research-tests/DGamma/R45BareDiamondDisciplineCounterexamplePositive.idr",
+        "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+        "research/DGamma/CP5ConfluenceDeletionChainSpike.idr",
+        "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr"
+      ]
+    },
+    {
+      "unit": "W6",
+      "path": "research-tests/DGamma/R4VestigialSimultaneous.idr",
+      "sourceHash": "04a1fee5b70d6a555b7d20bac2e88c9a10df85c4a9b9d1c53a7664fc01af5347",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 2.0798710407689214,
+      "estimatedSampleRSSKiB": 3952912,
+      "dependencies": [
+        "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+        "research/DGamma/CP5ConfluenceDeletionChainSpike.idr"
+      ]
+    },
+    {
+      "unit": "W7",
+      "path": "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr",
+      "sourceHash": "833bd3450bc8a4214e0334fd2ad95d7f837bc636f40f2e33c408333395602713",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 9.355070583056659,
+      "estimatedSampleRSSKiB": 2129840,
+      "dependencies": [
+        "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+        "research/DGamma/CP5ConfluenceDeletionChainSpike.idr",
+        "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+        "research/DGamma/CP5SupportedBirthCoverageSpike.idr"
+      ]
+    },
+    {
+      "unit": "W8",
+      "path": "research/DGamma/CP5RankedEarlyApplicabilitySpike.idr",
+      "sourceHash": "d54aefae02a4a03b1ea710cb79aaa224887eaec6bae7921203995238aa8e5e87",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 2.0800767079927027,
+      "estimatedSampleRSSKiB": 820416,
+      "dependencies": [
+        "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+        "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr"
+      ]
+    },
+    {
+      "unit": "W9",
+      "path": "research-tests/DGamma/R8BridgeAuthenticatedDirectionPositive.idr",
+      "sourceHash": "03c095c04ba02a43ccb1383c293e06834d93a4a1a6e0efe178430daa9b791196",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 2.0944599169306457,
+      "estimatedSampleRSSKiB": 2275888,
+      "dependencies": [
+        "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+        "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+        "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr"
+      ]
+    },
+    {
+      "unit": "W10",
+      "path": "research-tests/DGamma/R8BridgeWrongBirthNegative.idr",
+      "sourceHash": "8f1c1b789f927956a2f8f19c9d0e3f2961d5c94737d9a80a3e522d64b05894be",
+      "expectedDiagnostic": "Mismatch between",
+      "symbol": "replaceBridgeRightOccurrenceWithoutGenerationEquation",
+      "estimatedSeconds": 1.0603914996609092,
+      "estimatedSampleRSSKiB": 0,
+      "dependencies": [
+        "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+        "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+        "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr"
+      ]
+    },
+    {
+      "unit": "W11",
+      "path": "research-tests/DGamma/R8PublicScheduleCannotReachBridgeNegative.idr",
+      "sourceHash": "8ed4fd143d7839258695ca6562f037a6f13fb50ad7a73c8d180068e9825545c3",
+      "expectedDiagnostic": "Mismatch between",
+      "symbol": "publicScheduleCannotEnterAuthenticatedBridge",
+      "estimatedSeconds": 3.1131928330287337,
+      "estimatedSampleRSSKiB": 650000,
+      "dependencies": [
+        "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+        "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+        "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr"
+      ]
+    },
+    {
+      "unit": "W12",
+      "path": "research-tests/DGamma/R8WrongOccurrenceBridgeNegative.idr",
+      "sourceHash": "da7ed3cf2b884f39b4148c19cad4d759a9cd249c144cf6f608f1a7a84dd6f8cc",
+      "expectedDiagnostic": "first and second",
+      "symbol": "detachBridgeOccurrenceRelation",
+      "estimatedSeconds": 1.0563717079348862,
+      "estimatedSampleRSSKiB": 0,
+      "dependencies": [
+        "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+        "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+        "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr"
+      ]
+    },
+    {
+      "unit": "W13",
+      "path": "research/DGamma/CP5AcceptedRetirementTransportSpike.idr",
+      "sourceHash": "61425c3baa0d88cda8d907fed3131a8915a4e636788843e07b2efc58150686f4",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 3.12140933284536,
+      "estimatedSampleRSSKiB": 2951088,
+      "dependencies": [
+        "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr"
+      ]
+    },
+    {
+      "unit": "W14",
+      "path": "research/DGamma/CP5MatchedBirthMetadataSpike.idr",
+      "sourceHash": "2537e53d485e8834ec72c4086288a665f44d1b39def130e90f3c557e7695a68d",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 4.167217249982059,
+      "estimatedSampleRSSKiB": 3975200,
+      "dependencies": [
+        "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr"
+      ]
+    },
+    {
+      "unit": "W15",
+      "path": "research/DGamma/CP5O19AdjacentReplayProducerSpike.idr",
+      "sourceHash": "d07435985a00c7e49ebf0deca0325262249b4c0db80689c550ed4bb716e6690c",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 3.1200757496990263,
+      "estimatedSampleRSSKiB": 3004320,
+      "dependencies": [
+        "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+        "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+        "research/DGamma/CP5RankedEarlyApplicabilitySpike.idr"
+      ]
+    },
+    {
+      "unit": "W16",
+      "path": "research/DGamma/CP5O20CanonicalBirthDispositionSpike.idr",
+      "sourceHash": "4d6ca33c7dc637e9cb95f63e0eefd1824a659f1b37311c4a9be2ecfc7b7f354a",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 3.1166581250727177,
+      "estimatedSampleRSSKiB": 3012848,
+      "dependencies": [
+        "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+        "research/DGamma/CP5ConfluenceDeletionChainSpike.idr",
+        "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+        "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr",
+        "research/DGamma/CP5SupportedBirthCoverageSpike.idr"
+      ]
+    },
+    {
+      "unit": "W17",
+      "path": "research/DGamma/CP5O21EndpointIdentitySpike.idr",
+      "sourceHash": "5a1d3fe32fb110a905ad5d59885637710fc13fcccd81c1d6f9ad67472f515e38",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 3.1164061659947038,
+      "estimatedSampleRSSKiB": 2892832,
+      "dependencies": [
+        "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+        "research/DGamma/CP5ConfluenceDeletionChainSpike.idr",
+        "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+        "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr"
+      ]
+    },
+    {
+      "unit": "W18",
+      "path": "research/DGamma/CP5RootBirthCoverageSpike.idr",
+      "sourceHash": "5a1c5367e25d51199623e9d4fb488995060db6a2bd447a04dfe0c2609f381592",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 3.1272175419144332,
+      "estimatedSampleRSSKiB": 2945008,
+      "dependencies": [
+        "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr",
+        "research/DGamma/CP5SupportedBirthCoverageSpike.idr"
+      ]
+    },
+    {
+      "unit": "W19",
+      "path": "research-tests/DGamma/R179O21CurrentBirthIdentityPositive.idr",
+      "sourceHash": "e8d1f64fdf8dab1b2af4dd76dc69f6138c45ad849cc64c14b1d46a030d34d901",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 2.1018223338760436,
+      "estimatedSampleRSSKiB": 2936640,
+      "dependencies": [
+        "research/DGamma/CP5O21EndpointIdentitySpike.idr"
+      ]
+    },
+    {
+      "unit": "W20",
+      "path": "research-tests/DGamma/R179O21WrongOriginalBirthNegative.idr",
+      "sourceHash": "f2d7e6825c7fece1c36787ba1f2d248a59197df7d94b1fece6b651714046055b",
+      "expectedDiagnostic": "Mismatch between: other and left.",
+      "symbol": "wrongOriginalBirth",
+      "estimatedSeconds": 1.066706916783005,
+      "estimatedSampleRSSKiB": 0,
+      "dependencies": [
+        "research/DGamma/CP5O21EndpointIdentitySpike.idr"
+      ]
+    },
+    {
+      "unit": "W21",
+      "path": "research/DGamma/CP5AllSupportedMetadataSpike.idr",
+      "sourceHash": "b954d17f1e34052475d68abdeee9eb620f648ca2e02266485a1a865bf7ca54cc",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 3.1110352077521384,
+      "estimatedSampleRSSKiB": 2944208,
+      "dependencies": [
+        "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr",
+        "research/DGamma/CP5MatchedBirthMetadataSpike.idr",
+        "research/DGamma/CP5RootBirthCoverageSpike.idr"
+      ]
+    },
+    {
+      "unit": "W22",
+      "path": "research/DGamma/CP5O19OpeningPropagationSpike.idr",
+      "sourceHash": "4ff197170659e1936efec83cc84d55f01b584cf8aebb9b92fc3c7b975f384966",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 2.0776157081127167,
+      "estimatedSampleRSSKiB": 1353840,
+      "dependencies": [
+        "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+        "research/DGamma/CP5O19AdjacentReplayProducerSpike.idr",
+        "research/DGamma/CP5RankedEarlyApplicabilitySpike.idr"
+      ]
+    },
+    {
+      "unit": "W23",
+      "path": "research/DGamma/CP5O19ReplayObservationSpike.idr",
+      "sourceHash": "37b28d64c25692733b7b9f3a99c71ca0cd8035e06b0d74746b28a2a9ed9a6c8a",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 3.1373451249673963,
+      "estimatedSampleRSSKiB": 2886992,
+      "dependencies": [
+        "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+        "research/DGamma/CP5O19AdjacentReplayProducerSpike.idr",
+        "research/DGamma/CP5RankedEarlyApplicabilitySpike.idr"
+      ]
+    },
+    {
+      "unit": "W24",
+      "path": "research/DGamma/CP5O20GenerationOnlyHistorySpike.idr",
+      "sourceHash": "bb3b1e3c31c50d62a93eb3411224e17aaa71c483dd460ec91e32f3ab15fbf3a4",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 3.152815666049719,
+      "estimatedSampleRSSKiB": 3006112,
+      "dependencies": [
+        "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+        "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+        "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr",
+        "research/DGamma/CP5O20CanonicalBirthDispositionSpike.idr",
+        "research/DGamma/CP5SupportedBirthCoverageSpike.idr"
+      ]
+    },
+    {
+      "unit": "W25",
+      "path": "research/DGamma/CP5O19AdvanceObservationSpike.idr",
+      "sourceHash": "ce984fd7e9a5166a11b8150a164d0a1699648a171845436d206e08d1a51b33f6",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 3.1182743329554796,
+      "estimatedSampleRSSKiB": 2522400,
+      "dependencies": [
+        "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+        "research/DGamma/CP5O19OpeningPropagationSpike.idr",
+        "research/DGamma/CP5RankedEarlyApplicabilitySpike.idr"
+      ]
+    },
+    {
+      "unit": "W26",
+      "path": "research/DGamma/CP5O19CartesianCursorSpike.idr",
+      "sourceHash": "e18c09da9ef390fc7324b2b1d1fe9e5015a09365f1b4755df7f7c55bef07324d",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 2.073008832987398,
+      "estimatedSampleRSSKiB": 677568,
+      "dependencies": [
+        "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+        "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+        "research/DGamma/CP5O19AdjacentReplayProducerSpike.idr",
+        "research/DGamma/CP5O19ReplayObservationSpike.idr",
+        "research/DGamma/CP5RankedEarlyApplicabilitySpike.idr"
+      ]
+    },
+    {
+      "unit": "W27",
+      "path": "research/DGamma/CP5O19InsertObservationSpike.idr",
+      "sourceHash": "19d825b490b27545c77eb3846e9af46236f95eabcd632a1e143a4969a331dbc5",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 2.072310124989599,
+      "estimatedSampleRSSKiB": 1537040,
+      "dependencies": [
+        "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+        "research/DGamma/CP5O19OpeningPropagationSpike.idr",
+        "research/DGamma/CP5RankedEarlyApplicabilitySpike.idr"
+      ]
+    },
+    {
+      "unit": "W28",
+      "path": "research/DGamma/CP5SupportClauseTransportSpike.idr",
+      "sourceHash": "0819aed5a885a9645f84a7b6ccccd9e1f1e15576b901b6c96a699bd8dbc3141e",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 3.138631667010486,
+      "estimatedSampleRSSKiB": 3020112,
+      "dependencies": [
+        "research/DGamma/CP5AllSupportedMetadataSpike.idr"
+      ]
+    },
+    {
+      "unit": "W29",
+      "path": "research/DGamma/CP5AcceptedSupportTruthSpike.idr",
+      "sourceHash": "fb8f77b4bcb57375ce80c70c6462c0642765eb45d217d40d8ab71ad51941f60d",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 2.077307708095759,
+      "estimatedSampleRSSKiB": 253296,
+      "dependencies": [
+        "research/DGamma/CP5AcceptedRetirementTransportSpike.idr",
+        "research/DGamma/CP5AllSupportedMetadataSpike.idr",
+        "research/DGamma/CP5SupportClauseTransportSpike.idr"
+      ]
+    },
+    {
+      "unit": "W30",
+      "path": "research/DGamma/CP5O19ActivationRowSpike.idr",
+      "sourceHash": "8a8b69c143a456967eccb6ebef741c2c6f38f9d8b1b77e0686744a2fd938b677",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 3.126179332844913,
+      "estimatedSampleRSSKiB": 2287056,
+      "dependencies": [
+        "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+        "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+        "research/DGamma/CP5O19AdjacentReplayProducerSpike.idr",
+        "research/DGamma/CP5O19CartesianCursorSpike.idr",
+        "research/DGamma/CP5O19OpeningPropagationSpike.idr",
+        "research/DGamma/CP5O19ReplayObservationSpike.idr",
+        "research/DGamma/CP5RankedEarlyApplicabilitySpike.idr"
+      ]
+    },
+    {
+      "unit": "W31",
+      "path": "research/DGamma/CP5O20SingleRoleAdvanceExtractionSpike.idr",
+      "sourceHash": "de5ecc4071e0a29d54611aa5ae4bb6d43d5aec45f5d822cd337112812ea2ab4f",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 2.0828499170020223,
+      "estimatedSampleRSSKiB": 413456,
+      "dependencies": [
+        "research/DGamma/CP5O19AdvanceObservationSpike.idr"
+      ]
+    },
+    {
+      "unit": "W32",
+      "path": "research/DGamma/CP5O19SurfaceSpike.idr",
+      "sourceHash": "da358a498847ed06b666c1e1d42fffed10afc7d6f699c94e4681d7b302ff5561",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 5.212534749880433,
+      "estimatedSampleRSSKiB": 3038096,
+      "dependencies": [
+        "research/DGamma/CP5AcceptedSupportTruthSpike.idr",
+        "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+        "research/DGamma/CP5ConfluenceDeletionChainSpike.idr",
+        "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+        "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr",
+        "research/DGamma/CP5RankedEarlyApplicabilitySpike.idr"
+      ]
+    },
+    {
+      "unit": "W33",
+      "path": "research/DGamma/CP5O20SupportedBirthBridgeSpike.idr",
+      "sourceHash": "fb7bf6b4750d729da2794ff38bc1ec8d51cffbb838a24db8f7db822914b4e93a",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 3.11868550023064,
+      "estimatedSampleRSSKiB": 2543088,
+      "dependencies": [
+        "research/DGamma/CP5AcceptedSupportTruthSpike.idr",
+        "research/DGamma/CP5AllSupportedMetadataSpike.idr",
+        "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+        "research/DGamma/CP5ConfluenceDeletionChainSpike.idr",
+        "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+        "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr",
+        "research/DGamma/CP5O21EndpointIdentitySpike.idr"
+      ]
+    },
+    {
+      "unit": "W34",
+      "path": "research/DGamma/CP5O19OrdinalPlanSpike.idr",
+      "sourceHash": "d41ea744af5a5efc99983ce29793493c9414c1fe17fa480b14ca3ff0ed9135b7",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 46.68541037477553,
+      "estimatedSampleRSSKiB": 21427008,
+      "dependencies": [
+        "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+        "research/DGamma/CP5O19AdjacentReplayProducerSpike.idr",
+        "research/DGamma/CP5O19SurfaceSpike.idr",
+        "research/DGamma/CP5UniqueRawNameOrdinalCapital.idr"
+      ]
+    },
+    {
+      "unit": "W35",
+      "path": "research/DGamma/CP5O20BirthBridgeRemainderSpike.idr",
+      "sourceHash": "8a759194ca994ed430352eaafb738d03c99e0801d73744e0fd6c63c8974d123d",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 3.131579583045095,
+      "estimatedSampleRSSKiB": 3010848,
+      "dependencies": [
+        "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+        "research/DGamma/CP5ConfluenceDeletionChainSpike.idr",
+        "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+        "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr",
+        "research/DGamma/CP5O20SupportedBirthBridgeSpike.idr"
+      ]
+    },
+    {
+      "unit": "W36",
+      "path": "research/DGamma/CP5O20CanonicalOrdinalAttachmentSpike.idr",
+      "sourceHash": "e66a3d751e914936d3db5ce0a9f3faf940b5f7a97af32108f048441a14f878d3",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 3.1363258748315275,
+      "estimatedSampleRSSKiB": 3006528,
+      "dependencies": [
+        "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+        "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+        "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr",
+        "research/DGamma/CP5O20SupportedBirthBridgeSpike.idr"
+      ]
+    },
+    {
+      "unit": "W37",
+      "path": "research/DGamma/CP5O20SupportedEndpointCapitalSpike.idr",
+      "sourceHash": "de506cd1e996c95c10c26e9bb21fc1f18d0210504bd614933e10caa0a8032aa6",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 4.150025791954249,
+      "estimatedSampleRSSKiB": 2887040,
+      "dependencies": [
+        "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+        "research/DGamma/CP5ConfluenceDeletionChainSpike.idr",
+        "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+        "research/DGamma/CP5O20SupportedBirthBridgeSpike.idr"
+      ]
+    },
+    {
+      "unit": "W38",
+      "path": "research/DGamma/CP5O19CartesianSitePlanSpike.idr",
+      "sourceHash": "e4f2918ecd0dfdd77d3c84d0762a127a28b233944b8960df54f51c86e9329ad3",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 3.1398082091473043,
+      "estimatedSampleRSSKiB": 2884320,
+      "dependencies": [
+        "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+        "research/DGamma/CP5O19AdjacentReplayProducerSpike.idr",
+        "research/DGamma/CP5O19OrdinalPlanSpike.idr",
+        "research/DGamma/CP5O19ReplayObservationSpike.idr",
+        "research/DGamma/CP5O19SurfaceSpike.idr"
+      ]
+    },
+    {
+      "unit": "W39",
+      "path": "research/DGamma/CP5O20EpisodeSynchronizationSpike.idr",
+      "sourceHash": "bfe759297ee32dbde9dc192b528b98854ce9bab474690f537f6aa4b2af9ff80c",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 3.144701082725078,
+      "estimatedSampleRSSKiB": 2884928,
+      "dependencies": [
+        "research/DGamma/CP5AcceptedSupportTruthSpike.idr",
+        "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+        "research/DGamma/CP5ConfluenceDeletionChainSpike.idr",
+        "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+        "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr",
+        "research/DGamma/CP5O19SurfaceSpike.idr",
+        "research/DGamma/CP5O20SupportedBirthBridgeSpike.idr",
+        "research/DGamma/CP5O20SupportedEndpointCapitalSpike.idr"
+      ]
+    },
+    {
+      "unit": "W40",
+      "path": "research/DGamma/CP5O20RootOrdinalBoundarySpike.idr",
+      "sourceHash": "bb9d8da6173b7e0bc2d4b770b3147ed3c01a9d8c7866dfeb2758facb3d5935ac",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 3.1089685410261154,
+      "estimatedSampleRSSKiB": 3008448,
+      "dependencies": [
+        "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+        "research/DGamma/CP5O20CanonicalOrdinalAttachmentSpike.idr"
+      ]
+    },
+    {
+      "unit": "W41",
+      "path": "research-tests/DGamma/R195RootOrdinalBoundaryPositive.idr",
+      "sourceHash": "ea13e281a2f4d709db972da1bfb6012837c69bc78769ca179ece7dd3ada83295",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 3.1158204171806574,
+      "estimatedSampleRSSKiB": 2348208,
+      "dependencies": [
+        "research-tests/DGamma/R45BareDiamondDisciplineCounterexamplePositive.idr",
+        "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+        "research/DGamma/CP5O20RootOrdinalBoundarySpike.idr"
+      ]
+    },
+    {
+      "unit": "W42",
+      "path": "research/DGamma/CP5O19CartesianNumericSpike.idr",
+      "sourceHash": "b499ed0c2b270eb9db3e9b85026103caa3b3773ffae653a4135eb38806a77e78",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 3.1489533339627087,
+      "estimatedSampleRSSKiB": 2891088,
+      "dependencies": [
+        "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+        "research/DGamma/CP5O19CartesianSitePlanSpike.idr"
+      ]
+    },
+    {
+      "unit": "W43",
+      "path": "research/DGamma/CP5O20PairedPrefixProducerSpike.idr",
+      "sourceHash": "c57be81f7d44b33ab240a0f01b77a78aa2bf00e4adda57d609705d0151f05dd0",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 3.106511333025992,
+      "estimatedSampleRSSKiB": 3755760,
+      "dependencies": [
+        "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr",
+        "research/DGamma/CP5O20EpisodeSynchronizationSpike.idr"
+      ]
+    },
+    {
+      "unit": "W44",
+      "path": "research/DGamma/CP5O19GridCertificationSpike.idr",
+      "sourceHash": "73ce4aa48cba8b7508be08585d88fa2beae9d3730babcea9f7e044e9f37792ec",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 2.0782611668109894,
+      "estimatedSampleRSSKiB": 1328688,
+      "dependencies": [
+        "research/DGamma/CP5O19CartesianNumericSpike.idr"
+      ]
+    },
+    {
+      "unit": "W45",
+      "path": "research/DGamma/CP5O20CanonicalPairSelectionSpike.idr",
+      "sourceHash": "12b232af559ebbbdb89d1a8efbeaa913afa8a80f90420aae49fb12faa28fb97e",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 3.1113639581017196,
+      "estimatedSampleRSSKiB": 2691664,
+      "dependencies": [
+        "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+        "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+        "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr",
+        "research/DGamma/CP5O19SurfaceSpike.idr",
+        "research/DGamma/CP5O20EpisodeSynchronizationSpike.idr",
+        "research/DGamma/CP5O20PairedPrefixProducerSpike.idr"
+      ]
+    },
+    {
+      "unit": "W46",
+      "path": "research/DGamma/CP5O20BeginObservationSpike.idr",
+      "sourceHash": "4be19259b79e50c4366e5cc86f391f826f796b87eed8cda30ceec12f4bb3a777",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 3.1288550002500415,
+      "estimatedSampleRSSKiB": 3017360,
+      "dependencies": [
+        "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+        "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+        "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr",
+        "research/DGamma/CP5O19SurfaceSpike.idr",
+        "research/DGamma/CP5O20CanonicalPairSelectionSpike.idr",
+        "research/DGamma/CP5O20EpisodeSynchronizationSpike.idr",
+        "research/DGamma/CP5O20PairedPrefixProducerSpike.idr"
+      ]
+    },
+    {
+      "unit": "W47",
+      "path": "research/DGamma/CP5O19ResolvedOpeningRowSpike.idr",
+      "sourceHash": "2e3108bae048b31c7acfb3998f4c1396b821789ba11753972cf09e3608724781",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 4.148985415697098,
+      "estimatedSampleRSSKiB": 2907120,
+      "dependencies": [
+        "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+        "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+        "research/DGamma/CP5O19ActivationRowSpike.idr",
+        "research/DGamma/CP5O19AdjacentReplayProducerSpike.idr",
+        "research/DGamma/CP5O19CartesianCursorSpike.idr",
+        "research/DGamma/CP5O19InsertObservationSpike.idr",
+        "research/DGamma/CP5O19OpeningPropagationSpike.idr",
+        "research/DGamma/CP5O19ReplayObservationSpike.idr",
+        "research/DGamma/CP5O20BeginObservationSpike.idr",
+        "research/DGamma/CP5RankedEarlyApplicabilitySpike.idr"
+      ]
+    },
+    {
+      "unit": "W48",
+      "path": "research/DGamma/CP5O19SourceShapeSpike.idr",
+      "sourceHash": "b7ade648e85d35b309a086aa458000cca7646806a027bbd0a22e77d508273ce0",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 3.127214999869466,
+      "estimatedSampleRSSKiB": 2887024,
+      "dependencies": [
+        "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+        "research/DGamma/CP5O19AdjacentReplayProducerSpike.idr",
+        "research/DGamma/CP5O20BeginObservationSpike.idr",
+        "research/DGamma/CP5RankedEarlyApplicabilitySpike.idr"
+      ]
+    },
+    {
+      "unit": "W49",
+      "path": "research/DGamma/CP5O20AllNameSynchronizationSpike.idr",
+      "sourceHash": "eb34b80def8d87fb099c8a06d9836d33f27f6faa3bc47ca198c5b79275fdf2dd",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 3.120284958742559,
+      "estimatedSampleRSSKiB": 2942960,
+      "dependencies": [
+        "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr",
+        "research/DGamma/CP5O19SurfaceSpike.idr",
+        "research/DGamma/CP5O20BeginObservationSpike.idr",
+        "research/DGamma/CP5O20EpisodeSynchronizationSpike.idr",
+        "research/DGamma/CP5O20PairedPrefixProducerSpike.idr"
+      ]
+    },
+    {
+      "unit": "W50",
+      "path": "research/DGamma/CP5O20RightOpeningTransportSpike.idr",
+      "sourceHash": "f2da10325655665842f58cd43dd7b918aa1b3e888aa07a552a086ae79fdde8dd",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 3.134087875019759,
+      "estimatedSampleRSSKiB": 3414736,
+      "dependencies": [
+        "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+        "research/DGamma/CP5O19AdjacentReplayProducerSpike.idr",
+        "research/DGamma/CP5O19OpeningPropagationSpike.idr",
+        "research/DGamma/CP5O19SurfaceSpike.idr",
+        "research/DGamma/CP5O20BeginObservationSpike.idr",
+        "research/DGamma/CP5RankedEarlyApplicabilitySpike.idr"
+      ]
+    },
+    {
+      "unit": "W51",
+      "path": "research/DGamma/CP5O19ActivationInsertionRowSpike.idr",
+      "sourceHash": "92182efb39ab89edde5663af0ad0aa4e9d00c6780c30a09c632740737ea0f625",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 4.16225608298555,
+      "estimatedSampleRSSKiB": 2884976,
+      "dependencies": [
+        "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+        "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+        "research/DGamma/CP5O19ActivationRowSpike.idr",
+        "research/DGamma/CP5O19AdjacentReplayProducerSpike.idr",
+        "research/DGamma/CP5O19CartesianCursorSpike.idr",
+        "research/DGamma/CP5O19InsertObservationSpike.idr",
+        "research/DGamma/CP5O19OpeningPropagationSpike.idr",
+        "research/DGamma/CP5O19ReplayObservationSpike.idr",
+        "research/DGamma/CP5O19ResolvedOpeningRowSpike.idr",
+        "research/DGamma/CP5O20BeginObservationSpike.idr",
+        "research/DGamma/CP5RankedEarlyApplicabilitySpike.idr"
+      ]
+    },
+    {
+      "unit": "W52",
+      "path": "research/DGamma/CP5O19ActivationResolutionSpike.idr",
+      "sourceHash": "699caa76e3935afa24f43da04c07f8b1d5ae23603f6112e034c3888eefec8f46",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 3.148059915751219,
+      "estimatedSampleRSSKiB": 3870144,
+      "dependencies": [
+        "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+        "research/DGamma/CP5O19AdvanceObservationSpike.idr",
+        "research/DGamma/CP5O19OpeningPropagationSpike.idr",
+        "research/DGamma/CP5O19ResolvedOpeningRowSpike.idr",
+        "research/DGamma/CP5O20BeginObservationSpike.idr",
+        "research/DGamma/CP5RankedEarlyApplicabilitySpike.idr"
+      ]
+    },
+    {
+      "unit": "W53",
+      "path": "research/DGamma/CP5O20IndexedReloadingSourceSpike.idr",
+      "sourceHash": "8442fb2fafdce06376d9951569ba580563403f47a29b4eec79ba89f338611cdc",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 2.0758883338421583,
+      "estimatedSampleRSSKiB": 236128,
+      "dependencies": [
+        "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr",
+        "research/DGamma/CP5O20AllNameSynchronizationSpike.idr"
+      ]
+    },
+    {
+      "unit": "W54",
+      "path": "research/DGamma/CP5O20SharedBeginAdapterSpike.idr",
+      "sourceHash": "a58a6442b7ea0189f1211b553e90910ae10f90d4176b3c6a243787c776559f0b",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 3.116573290899396,
+      "estimatedSampleRSSKiB": 2951920,
+      "dependencies": [
+        "research/DGamma/CP5O20AllNameSynchronizationSpike.idr",
+        "research/DGamma/CP5O20BeginObservationSpike.idr"
+      ]
+    },
+    {
+      "unit": "W55",
+      "path": "research/DGamma/CP5O20SupportedBridgeAssemblySpike.idr",
+      "sourceHash": "7beda3aac1fa38d338e588fda5dd42c0a561d0018974a74920d2c3cef3eaf64a",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 3.123664957936853,
+      "estimatedSampleRSSKiB": 3006512,
+      "dependencies": [
+        "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+        "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+        "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr",
+        "research/DGamma/CP5O20AllNameSynchronizationSpike.idr",
+        "research/DGamma/CP5O20EpisodeSynchronizationSpike.idr",
+        "research/DGamma/CP5O20SupportedBirthBridgeSpike.idr"
+      ]
+    },
+    {
+      "unit": "W56",
+      "path": "research/DGamma/CP5O19BodyMetadataSpike.idr",
+      "sourceHash": "31cab0146abc3bb241645ce8cc4124fc147ffa2da60acdc67413a19e424eea3e",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 4.167324665933847,
+      "estimatedSampleRSSKiB": 1919744,
+      "dependencies": [
+        "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+        "research/DGamma/CP5O19ActivationResolutionSpike.idr",
+        "research/DGamma/CP5O19AdjacentReplayProducerSpike.idr",
+        "research/DGamma/CP5O19CartesianCursorSpike.idr",
+        "research/DGamma/CP5O19SourceShapeSpike.idr",
+        "research/DGamma/CP5O19SurfaceSpike.idr",
+        "research/DGamma/CP5O20BeginObservationSpike.idr",
+        "research/DGamma/CP5RankedEarlyApplicabilitySpike.idr"
+      ]
+    },
+    {
+      "unit": "W57",
+      "path": "research/DGamma/CP5O19InsertionInsertionRowSpike.idr",
+      "sourceHash": "7b37cdd0c88f10d122b21d7e187e32ecc333b7d2f58d22577243e1666c1019a9",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 3.1191056249663234,
+      "estimatedSampleRSSKiB": 4307648,
+      "dependencies": [
+        "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+        "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+        "research/DGamma/CP5O19ActivationInsertionRowSpike.idr",
+        "research/DGamma/CP5O19ActivationRowSpike.idr",
+        "research/DGamma/CP5O19AdjacentReplayProducerSpike.idr",
+        "research/DGamma/CP5O19CartesianCursorSpike.idr",
+        "research/DGamma/CP5O19InsertObservationSpike.idr",
+        "research/DGamma/CP5O19OpeningPropagationSpike.idr",
+        "research/DGamma/CP5O19ReplayObservationSpike.idr",
+        "research/DGamma/CP5O19ResolvedOpeningRowSpike.idr",
+        "research/DGamma/CP5O20BeginObservationSpike.idr",
+        "research/DGamma/CP5RankedEarlyApplicabilitySpike.idr"
+      ]
+    },
+    {
+      "unit": "W58",
+      "path": "research/DGamma/CP5O20PairedAdvanceSpike.idr",
+      "sourceHash": "fdf25d8461cf9cdbc7dafdfa07da2d402f6b56dcbc53599422c850f641c69f7d",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 3.12366958335042,
+      "estimatedSampleRSSKiB": 2127456,
+      "dependencies": [
+        "research/DGamma/CP5O20AllNameSynchronizationSpike.idr",
+        "research/DGamma/CP5O20EpisodeSynchronizationSpike.idr",
+        "research/DGamma/CP5O20PairedPrefixProducerSpike.idr",
+        "research/DGamma/CP5O20SharedBeginAdapterSpike.idr"
+      ]
+    },
+    {
+      "unit": "W59",
+      "path": "research/DGamma/CP5O19CartesianInsertionSpike.idr",
+      "sourceHash": "930f87e85893a3589aef0dabf536727271efaed7ac9b3c074c51435be6b863e3",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 5.182633708231151,
+      "estimatedSampleRSSKiB": 2897440,
+      "dependencies": [
+        "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+        "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+        "research/DGamma/CP5O19ActivationInsertionRowSpike.idr",
+        "research/DGamma/CP5O19ActivationRowSpike.idr",
+        "research/DGamma/CP5O19AdjacentReplayProducerSpike.idr",
+        "research/DGamma/CP5O19CartesianCursorSpike.idr",
+        "research/DGamma/CP5O19InsertObservationSpike.idr",
+        "research/DGamma/CP5O19InsertionInsertionRowSpike.idr",
+        "research/DGamma/CP5O19OpeningPropagationSpike.idr",
+        "research/DGamma/CP5O19ReplayObservationSpike.idr",
+        "research/DGamma/CP5O19ResolvedOpeningRowSpike.idr",
+        "research/DGamma/CP5O20BeginObservationSpike.idr",
+        "research/DGamma/CP5RankedEarlyApplicabilitySpike.idr"
+      ]
+    },
+    {
+      "unit": "W60",
+      "path": "research/DGamma/CP5O19MixedActivationRowSpike.idr",
+      "sourceHash": "86e87881c31d7c9de8dabd188ca5a9e0681e7f0b3ca33f459df1233d9a6bb154",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 4.14717649994418,
+      "estimatedSampleRSSKiB": 2530336,
+      "dependencies": [
+        "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+        "research/DGamma/CP5O19ActivationRowSpike.idr",
+        "research/DGamma/CP5O19AdjacentReplayProducerSpike.idr",
+        "research/DGamma/CP5O19AdvanceObservationSpike.idr",
+        "research/DGamma/CP5O19BodyMetadataSpike.idr",
+        "research/DGamma/CP5O19CartesianCursorSpike.idr",
+        "research/DGamma/CP5O19ReplayObservationSpike.idr",
+        "research/DGamma/CP5O19ResolvedOpeningRowSpike.idr",
+        "research/DGamma/CP5O19SurfaceSpike.idr",
+        "research/DGamma/CP5O20BeginObservationSpike.idr",
+        "research/DGamma/CP5RankedEarlyApplicabilitySpike.idr"
+      ]
+    },
+    {
+      "unit": "W61",
+      "path": "research/DGamma/CP5O20NativeAdvanceAttachmentSpike.idr",
+      "sourceHash": "830070d2b9d1ee560ebc5f421aeca83c8610cf47653e674658e322f3424e156e",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 3.121820291969925,
+      "estimatedSampleRSSKiB": 2956032,
+      "dependencies": [
+        "research/DGamma/CP5O19AdvanceObservationSpike.idr",
+        "research/DGamma/CP5O20PairedAdvanceSpike.idr",
+        "research/DGamma/CP5O20SingleRoleAdvanceExtractionSpike.idr"
+      ]
+    },
+    {
+      "unit": "W62",
+      "path": "research/DGamma/CP5O20PairedExecutionSpike.idr",
+      "sourceHash": "d4170671fe9677cb6e44fda33b56a447c3c69f9f897ccea85757f18ed11fe02b",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 3.1324685411527753,
+      "estimatedSampleRSSKiB": 2951088,
+      "dependencies": [
+        "research/DGamma/CP5O20AllNameSynchronizationSpike.idr",
+        "research/DGamma/CP5O20PairedAdvanceSpike.idr",
+        "research/DGamma/CP5O20SharedBeginAdapterSpike.idr"
+      ]
+    },
+    {
+      "unit": "W63",
+      "path": "research/DGamma/CP5O19MixedRowDispatcherSpike.idr",
+      "sourceHash": "0e7b9bd94c16e63f6b43540b68cc96fec9c55be7b14a98b2c3167394bdfb1bc3",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 3.112782625015825,
+      "estimatedSampleRSSKiB": 2535424,
+      "dependencies": [
+        "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+        "research/DGamma/CP5O19ActivationInsertionRowSpike.idr",
+        "research/DGamma/CP5O19ActivationRowSpike.idr",
+        "research/DGamma/CP5O19CartesianCursorSpike.idr",
+        "research/DGamma/CP5O19CartesianInsertionSpike.idr",
+        "research/DGamma/CP5O19MixedActivationRowSpike.idr",
+        "research/DGamma/CP5O19SurfaceSpike.idr"
+      ]
+    },
+    {
+      "unit": "W64",
+      "path": "research/DGamma/CP5O19PairObservationSpike.idr",
+      "sourceHash": "4b9a3683695048f358372686b0e9128f065481e709dfd1b6946b5c312ad70267",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 3.1172961252741516,
+      "estimatedSampleRSSKiB": 2404464,
+      "dependencies": [
+        "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+        "research/DGamma/CP5O19ActivationInsertionRowSpike.idr",
+        "research/DGamma/CP5O19AdjacentReplayProducerSpike.idr",
+        "research/DGamma/CP5O19CartesianCursorSpike.idr",
+        "research/DGamma/CP5O19CartesianInsertionSpike.idr",
+        "research/DGamma/CP5O19MixedActivationRowSpike.idr",
+        "research/DGamma/CP5O19ResolvedOpeningRowSpike.idr",
+        "research/DGamma/CP5O19SurfaceSpike.idr"
+      ]
+    },
+    {
+      "unit": "W65",
+      "path": "research/DGamma/CP5O20CanonicalPairedExtractionSpike.idr",
+      "sourceHash": "947c8fb7c2aba9cd88966051812042bb976d0003b6f1e97a35dc62e81c474c04",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 3.130647333804518,
+      "estimatedSampleRSSKiB": 2887040,
+      "dependencies": [
+        "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+        "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+        "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr",
+        "research/DGamma/CP5O19SurfaceSpike.idr",
+        "research/DGamma/CP5O20AllNameSynchronizationSpike.idr",
+        "research/DGamma/CP5O20CanonicalPairSelectionSpike.idr",
+        "research/DGamma/CP5O20EpisodeSynchronizationSpike.idr",
+        "research/DGamma/CP5O20PairedExecutionSpike.idr",
+        "research/DGamma/CP5O20PairedPrefixProducerSpike.idr"
+      ]
+    },
+    {
+      "unit": "W66",
+      "path": "research/DGamma/CP5O20PairedRemovalSpike.idr",
+      "sourceHash": "dd56deb5581b70101d86a698f0c1daecd6e071a9339a3b58150410378ff1734c",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 2.0900514172390103,
+      "estimatedSampleRSSKiB": 294448,
+      "dependencies": [
+        "research/DGamma/CP5O20AllNameSynchronizationSpike.idr",
+        "research/DGamma/CP5O20EpisodeSynchronizationSpike.idr",
+        "research/DGamma/CP5O20PairedExecutionSpike.idr",
+        "research/DGamma/CP5O20PairedPrefixProducerSpike.idr"
+      ]
+    },
+    {
+      "unit": "W67",
+      "path": "research-tests/DGamma/R192RemovedBirthCurrentNameProbe.idr",
+      "sourceHash": "bf604f6695e9eda4f450dc05be35fbc2de7c53a8c04e0357b088c1f6888883f6",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 12.500785207841545,
+      "estimatedSampleRSSKiB": 1890160,
+      "dependencies": [
+        "research-tests/DGamma/R178GeneratedOrchestrationFixtures.idr",
+        "research-tests/DGamma/R45BareDiamondDisciplineCounterexamplePositive.idr",
+        "research/DGamma/CP5ActorLifecycleOnlyExtended.idr",
+        "research/DGamma/CP5ConfluenceDeletionChainSpike.idr",
+        "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+        "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr",
+        "research/DGamma/CP5O20PairedRemovalSpike.idr",
+        "research/DGamma/CP5O20RightOpeningTransportSpike.idr"
+      ]
+    },
+    {
+      "unit": "W68",
+      "path": "research/DGamma/CP5O19CartesianLengthSpike.idr",
+      "sourceHash": "c4777415986740c0cc980650162ff2a657d9490d116499971dd6f1191146af4f",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 3.1377952499315143,
+      "estimatedSampleRSSKiB": 2884752,
+      "dependencies": [
+        "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+        "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+        "research/DGamma/CP5O19CartesianCursorSpike.idr",
+        "research/DGamma/CP5O19MixedRowDispatcherSpike.idr",
+        "research/DGamma/CP5O19ReplayObservationSpike.idr"
+      ]
+    },
+    {
+      "unit": "W69",
+      "path": "research/DGamma/CP5O19OriginalBlockClassSpike.idr",
+      "sourceHash": "bd28de8e4dafdd7a8e423d29ba136b8cbdd9b2fdb0f6249223a5b2629882645a",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 3.14836945803836,
+      "estimatedSampleRSSKiB": 4265200,
+      "dependencies": [
+        "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+        "research/DGamma/CP5O19AdjacentReplayProducerSpike.idr",
+        "research/DGamma/CP5O19PairObservationSpike.idr",
+        "research/DGamma/CP5O19ReplayObservationSpike.idr",
+        "research/DGamma/CP5O19SurfaceSpike.idr"
+      ]
+    },
+    {
+      "unit": "W70",
+      "path": "research/DGamma/CP5O20HistoryNameTransportSpike.idr",
+      "sourceHash": "97cc59805856ae14c2727b3c869c6beb551ed24f2edd5bb25c07b03836fca30f",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 3.135167666245252,
+      "estimatedSampleRSSKiB": 2938576,
+      "dependencies": [
+        "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr",
+        "research/DGamma/CP5O20AllNameSynchronizationSpike.idr",
+        "research/DGamma/CP5O20PairedRemovalSpike.idr"
+      ]
+    },
+    {
+      "unit": "W71",
+      "path": "research-tests/DGamma/R193HistoryNameTransportPositive.idr",
+      "sourceHash": "7ed322e1f411444b392f3c6a872dc411116b56b713b8b458e623f39edf4fd874",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 2.0995549163781106,
+      "estimatedSampleRSSKiB": 2459136,
+      "dependencies": [
+        "research-tests/DGamma/R178GeneratedOrchestrationFixtures.idr",
+        "research-tests/DGamma/R192RemovedBirthCurrentNameProbe.idr",
+        "research-tests/DGamma/R45BareDiamondDisciplineCounterexamplePositive.idr",
+        "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr",
+        "research/DGamma/CP5O20HistoryNameTransportSpike.idr"
+      ]
+    },
+    {
+      "unit": "W72",
+      "path": "research-tests/DGamma/R193VestigialHistoryTransportPositive.idr",
+      "sourceHash": "ffa274f1b704b1fd214d63b953d6289cdd1bb323e7343e7510e4f3cb94786080",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 3.119552541989833,
+      "estimatedSampleRSSKiB": 4314528,
+      "dependencies": [
+        "research-tests/DGamma/R178GeneratedOrchestrationFixtures.idr",
+        "research-tests/DGamma/R192RemovedBirthCurrentNameProbe.idr",
+        "research-tests/DGamma/R45BareDiamondDisciplineCounterexamplePositive.idr",
+        "research/DGamma/CP5ConfluenceDeletionChainSpike.idr",
+        "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr",
+        "research/DGamma/CP5O20HistoryNameTransportSpike.idr"
+      ]
+    },
+    {
+      "unit": "W73",
+      "path": "research/DGamma/CP5O19CartesianWordRowSpike.idr",
+      "sourceHash": "ba318753411a59cbdf251401cd5482f06f3a2a074469b2ff2391e3616076b6b3",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 5.1931859171018,
+      "estimatedSampleRSSKiB": 3012384,
+      "dependencies": [
+        "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+        "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+        "research/DGamma/CP5O19AdjacentReplayProducerSpike.idr",
+        "research/DGamma/CP5O19CartesianCursorSpike.idr",
+        "research/DGamma/CP5O19CartesianLengthSpike.idr",
+        "research/DGamma/CP5O19CartesianSitePlanSpike.idr",
+        "research/DGamma/CP5O19MixedActivationRowSpike.idr",
+        "research/DGamma/CP5O19MixedRowDispatcherSpike.idr",
+        "research/DGamma/CP5O19PairObservationSpike.idr",
+        "research/DGamma/CP5O19ReplayObservationSpike.idr",
+        "research/DGamma/CP5O19SurfaceSpike.idr",
+        "research/DGamma/CP5RankedEarlyApplicabilitySpike.idr"
+      ]
+    },
+    {
+      "unit": "W74",
+      "path": "research/DGamma/CP5O19PaperBranchCompletenessSpike.idr",
+      "sourceHash": "e19ba0492ac93363ca8964021b3dfb9046641883890f8e0b7f014a0b88f5eb58",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 4.192895874846727,
+      "estimatedSampleRSSKiB": 4261568,
+      "dependencies": [
+        "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+        "research/DGamma/CP5O19AdjacentReplayProducerSpike.idr",
+        "research/DGamma/CP5O19OriginalBlockClassSpike.idr",
+        "research/DGamma/CP5O19PairObservationSpike.idr",
+        "research/DGamma/CP5O19ReplayObservationSpike.idr",
+        "research/DGamma/CP5O19SurfaceSpike.idr"
+      ]
+    },
+    {
+      "unit": "W75",
+      "path": "research/DGamma/CP5O20EndpointRebaseBoundarySpike.idr",
+      "sourceHash": "a33194709140d8ede3acf264e65a54d7c6d8b91d8c5eff113221b5ef1559c4ec",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 3.1347360000945628,
+      "estimatedSampleRSSKiB": 3020384,
+      "dependencies": [
+        "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr",
+        "research/DGamma/CP5O20AllNameSynchronizationSpike.idr",
+        "research/DGamma/CP5O20EpisodeSynchronizationSpike.idr",
+        "research/DGamma/CP5O20HistoryNameTransportSpike.idr"
+      ]
+    },
+    {
+      "unit": "W76",
+      "path": "research/DGamma/CP5O20HistoryExecutionSpike.idr",
+      "sourceHash": "ab202644aea79d9eb4c96b3d1a765dafeef30221c53a0f3a12e2b53d0bb5328d",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 3.1394303338602185,
+      "estimatedSampleRSSKiB": 2344576,
+      "dependencies": [
+        "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr",
+        "research/DGamma/CP5O20HistoryNameTransportSpike.idr",
+        "research/DGamma/CP5O20PairedAdvanceSpike.idr",
+        "research/DGamma/CP5O20SharedBeginAdapterSpike.idr"
+      ]
+    },
+    {
+      "unit": "W77",
+      "path": "research-tests/DGamma/R195ClosingHistoryRetentionPositive.idr",
+      "sourceHash": "9a59d7a42e73257024bac9b784773e5dd8c21d58f16d5e0acffb90197506f36a",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 2.081449208781123,
+      "estimatedSampleRSSKiB": 2223280,
+      "dependencies": [
+        "research-tests/DGamma/R178GeneratedOrchestrationFixtures.idr",
+        "research-tests/DGamma/R193VestigialHistoryTransportPositive.idr",
+        "research-tests/DGamma/R45BareDiamondDisciplineCounterexamplePositive.idr",
+        "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+        "research/DGamma/CP5O20GenerationOnlyHistorySpike.idr"
+      ]
+    },
+    {
+      "unit": "W78",
+      "path": "research-tests/DGamma/R195EndpointRebaseBoundaryPositive.idr",
+      "sourceHash": "831eb3e4ccd8528945ed68cef9aa42c2351501c358c7e5167f4e42d01d2474ee",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 2.105401874985546,
+      "estimatedSampleRSSKiB": 2464736,
+      "dependencies": [
+        "research-tests/DGamma/R178GeneratedOrchestrationFixtures.idr",
+        "research-tests/DGamma/R192RemovedBirthCurrentNameProbe.idr",
+        "research-tests/DGamma/R193VestigialHistoryTransportPositive.idr",
+        "research-tests/DGamma/R45BareDiamondDisciplineCounterexamplePositive.idr",
+        "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr",
+        "research/DGamma/CP5O20AllNameSynchronizationSpike.idr",
+        "research/DGamma/CP5O20EndpointRebaseBoundarySpike.idr",
+        "research/DGamma/CP5O20HistoryNameTransportSpike.idr",
+        "research/DGamma/CP5O20PairedRemovalSpike.idr"
+      ]
+    },
+    {
+      "unit": "W79",
+      "path": "research/DGamma/CP5O19CartesianColumnsSpike.idr",
+      "sourceHash": "68a586fa59d9103bd19902fe676f0f5bcd2daef8728163134ee03a9c004574c2",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 8.326614667195827,
+      "estimatedSampleRSSKiB": 2903840,
+      "dependencies": [
+        "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+        "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+        "research/DGamma/CP5O19AdjacentReplayProducerSpike.idr",
+        "research/DGamma/CP5O19CartesianCursorSpike.idr",
+        "research/DGamma/CP5O19CartesianLengthSpike.idr",
+        "research/DGamma/CP5O19CartesianSitePlanSpike.idr",
+        "research/DGamma/CP5O19CartesianWordRowSpike.idr",
+        "research/DGamma/CP5O19MixedRowDispatcherSpike.idr",
+        "research/DGamma/CP5O19PairObservationSpike.idr",
+        "research/DGamma/CP5O19ReplayObservationSpike.idr",
+        "research/DGamma/CP5O19SurfaceSpike.idr"
+      ]
+    },
+    {
+      "unit": "W80",
+      "path": "research/DGamma/CP5O20ActualHistoryAdvanceSpike.idr",
+      "sourceHash": "e6e951d72f5df5d6c495797ed0c905a86282de955e85e78d89dcf6e5ce623a68",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 3.12286675022915,
+      "estimatedSampleRSSKiB": 743456,
+      "dependencies": [
+        "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+        "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr",
+        "research/DGamma/CP5O19AdvanceObservationSpike.idr",
+        "research/DGamma/CP5O20HistoryExecutionSpike.idr",
+        "research/DGamma/CP5O20HistoryNameTransportSpike.idr",
+        "research/DGamma/CP5O20IndexedReloadingSourceSpike.idr",
+        "research/DGamma/CP5O20NativeAdvanceAttachmentSpike.idr",
+        "research/DGamma/CP5O20NativeTargetAttachmentSpike.idr",
+        "research/DGamma/CP5O20PairedAdvanceSpike.idr",
+        "research/DGamma/CP5O20SingleRoleAdvanceExtractionSpike.idr"
+      ]
+    },
+    {
+      "unit": "W81",
+      "path": "research/DGamma/CP5O19ActualCartesianSpike.idr",
+      "sourceHash": "f4461949739257d30d103bc30abdc7c756291cd5625126fe55764dc68536e863",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 4.192255959380418,
+      "estimatedSampleRSSKiB": 3012800,
+      "dependencies": [
+        "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+        "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+        "research/DGamma/CP5O19AdjacentReplayProducerSpike.idr",
+        "research/DGamma/CP5O19CartesianColumnsSpike.idr",
+        "research/DGamma/CP5O19CartesianCursorSpike.idr",
+        "research/DGamma/CP5O19CartesianLengthSpike.idr",
+        "research/DGamma/CP5O19CartesianNumericSpike.idr",
+        "research/DGamma/CP5O19CartesianSitePlanSpike.idr",
+        "research/DGamma/CP5O19CartesianWordRowSpike.idr",
+        "research/DGamma/CP5O19MixedRowDispatcherSpike.idr",
+        "research/DGamma/CP5O19OrdinalPlanSpike.idr",
+        "research/DGamma/CP5O19PairObservationSpike.idr",
+        "research/DGamma/CP5O19PaperBranchCompletenessSpike.idr",
+        "research/DGamma/CP5O19ReplayObservationSpike.idr",
+        "research/DGamma/CP5O19SurfaceSpike.idr"
+      ]
+    },
+    {
+      "unit": "W82",
+      "path": "research/DGamma/CP5O19WholeBlockSpike.idr",
+      "sourceHash": "434bfe16afc9703a4309c28823a25313b8bad0bc4ffa0ffe5e4281c8bccfae2a",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 3.1375217912718654,
+      "estimatedSampleRSSKiB": 2873232,
+      "dependencies": [
+        "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+        "research/DGamma/CP5O19ActualCartesianSpike.idr",
+        "research/DGamma/CP5O19CartesianColumnsSpike.idr",
+        "research/DGamma/CP5O19CartesianCursorSpike.idr",
+        "research/DGamma/CP5O19CartesianNumericSpike.idr",
+        "research/DGamma/CP5O19GridCertificationSpike.idr",
+        "research/DGamma/CP5O19OrdinalPlanSpike.idr",
+        "research/DGamma/CP5O19ReplayObservationSpike.idr",
+        "research/DGamma/CP5O19SurfaceSpike.idr"
+      ]
+    },
+    {
+      "unit": "W83",
+      "path": "research/DGamma/CP5O19SameChainAssemblySpike.idr",
+      "sourceHash": "21d35a598e82475b86212dacba8603853807c7c1ce12e02147c9190be861ba9e",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 3.113350708037615,
+      "estimatedSampleRSSKiB": 2877840,
+      "dependencies": [
+        "research/DGamma/CP5ConfluenceDeletionChainSpike.idr",
+        "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+        "research/DGamma/CP5O19ActualCartesianSpike.idr",
+        "research/DGamma/CP5O19CartesianColumnsSpike.idr",
+        "research/DGamma/CP5O19CartesianCursorSpike.idr",
+        "research/DGamma/CP5O19CartesianNumericSpike.idr",
+        "research/DGamma/CP5O19GridCertificationSpike.idr",
+        "research/DGamma/CP5O19OrdinalPlanSpike.idr",
+        "research/DGamma/CP5O19ReplayObservationSpike.idr",
+        "research/DGamma/CP5O19SurfaceSpike.idr",
+        "research/DGamma/CP5O19WholeBlockSpike.idr"
+      ]
+    },
+    {
+      "unit": "W84",
+      "path": "research/DGamma/CP5O19ReachedBlocksSpike.idr",
+      "sourceHash": "c08eaaecb907453078cc51f3e5467b7ed5f505cfea2f56ac868674f3cce3dab5",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 225.28352000005543,
+      "estimatedSampleRSSKiB": 4472128,
+      "dependencies": [
+        "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+        "research/DGamma/CP5O19ActualCartesianSpike.idr",
+        "research/DGamma/CP5O19AdjacentReplayProducerSpike.idr",
+        "research/DGamma/CP5O19CartesianColumnsSpike.idr",
+        "research/DGamma/CP5O19CartesianCursorSpike.idr",
+        "research/DGamma/CP5O19CartesianLengthSpike.idr",
+        "research/DGamma/CP5O19CartesianNumericSpike.idr",
+        "research/DGamma/CP5O19GridCertificationSpike.idr",
+        "research/DGamma/CP5O19OrdinalPlanSpike.idr",
+        "research/DGamma/CP5O19OriginalBlockClassSpike.idr",
+        "research/DGamma/CP5O19PaperBranchCompletenessSpike.idr",
+        "research/DGamma/CP5O19ReplayObservationSpike.idr",
+        "research/DGamma/CP5O19SameChainAssemblySpike.idr",
+        "research/DGamma/CP5O19SurfaceSpike.idr",
+        "research/DGamma/CP5O19WholeBlockSpike.idr"
+      ]
+    },
+    {
+      "unit": "W85",
+      "path": "research/DGamma/CP5O19ReachedDecompositionSpike.idr",
+      "sourceHash": "0225f751cada40b3cae91466ae968ce77a0608dba3981e8e53ce7b509854673a",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 3.1369811668992043,
+      "estimatedSampleRSSKiB": 2548800,
+      "dependencies": [
+        "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+        "research/DGamma/CP5O19ActualCartesianSpike.idr",
+        "research/DGamma/CP5O19AdjacentReplayProducerSpike.idr",
+        "research/DGamma/CP5O19CartesianColumnsSpike.idr",
+        "research/DGamma/CP5O19CartesianCursorSpike.idr",
+        "research/DGamma/CP5O19CartesianLengthSpike.idr",
+        "research/DGamma/CP5O19CartesianNumericSpike.idr",
+        "research/DGamma/CP5O19GridCertificationSpike.idr",
+        "research/DGamma/CP5O19OrdinalPlanSpike.idr",
+        "research/DGamma/CP5O19OriginalBlockClassSpike.idr",
+        "research/DGamma/CP5O19PaperBranchCompletenessSpike.idr",
+        "research/DGamma/CP5O19ReachedBlocksSpike.idr",
+        "research/DGamma/CP5O19ReplayObservationSpike.idr",
+        "research/DGamma/CP5O19SameChainAssemblySpike.idr",
+        "research/DGamma/CP5O19SurfaceSpike.idr",
+        "research/DGamma/CP5O19WholeBlockSpike.idr"
+      ]
+    },
+    {
+      "unit": "W86",
+      "path": "research/DGamma/CP5O19OperationalAssemblySpike.idr",
+      "sourceHash": "04d8d73abdb595ade4c62ef4d05a5804993100ebbe34b12ce35219447b424163",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 3.115487167146057,
+      "estimatedSampleRSSKiB": 2947472,
+      "dependencies": [
+        "research/DGamma/CP5ConfluenceDeletionChainSpike.idr",
+        "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+        "research/DGamma/CP5O19ActualCartesianSpike.idr",
+        "research/DGamma/CP5O19CartesianColumnsSpike.idr",
+        "research/DGamma/CP5O19CartesianCursorSpike.idr",
+        "research/DGamma/CP5O19CartesianNumericSpike.idr",
+        "research/DGamma/CP5O19GridCertificationSpike.idr",
+        "research/DGamma/CP5O19OrdinalPlanSpike.idr",
+        "research/DGamma/CP5O19ReachedDecompositionSpike.idr",
+        "research/DGamma/CP5O19ReplayObservationSpike.idr",
+        "research/DGamma/CP5O19SameChainAssemblySpike.idr",
+        "research/DGamma/CP5O19SurfaceSpike.idr",
+        "research/DGamma/CP5O19WholeBlockSpike.idr"
+      ]
+    },
+    {
+      "unit": "W87",
+      "path": "research/DGamma/CP5O20CanonicalActionCompletenessSpike.idr",
+      "sourceHash": "85da29a33779216f7139b021814b19e2d3fded170ee98dac75c1bd8c21064b9e",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 3.1331015420146286,
+      "estimatedSampleRSSKiB": 2569664,
+      "dependencies": [
+        "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+        "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+        "research/DGamma/CP5O19OriginalBlockClassSpike.idr",
+        "research/DGamma/CP5O19PaperBranchCompletenessSpike.idr",
+        "research/DGamma/CP5O19ReachedDecompositionSpike.idr",
+        "research/DGamma/CP5O19SurfaceSpike.idr"
+      ]
+    },
+    {
+      "unit": "W88",
+      "path": "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
+      "sourceHash": "666d18626e49cbb0d6ac2f7624fe9f6b3519d539dbb574670f420bacd9fc69bb",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 4.176305250264704,
+      "estimatedSampleRSSKiB": 3008784,
+      "dependencies": [
+        "research/DGamma/CP5AcceptedSupportTruthSpike.idr",
+        "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+        "research/DGamma/CP5ConfluenceDeletionChainSpike.idr",
+        "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+        "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr",
+        "research/DGamma/CP5O19OperationalAssemblySpike.idr",
+        "research/DGamma/CP5O19SurfaceSpike.idr",
+        "research/DGamma/CP5RankedEarlyApplicabilitySpike.idr"
+      ]
+    },
+    {
+      "unit": "W89",
+      "path": "research-tests/DGamma/R16EndpointControlsImpossibilityPositive.idr",
+      "sourceHash": "265f280458f3556074634c6d6b3ea2023bd00b259320ece83ba368a52a690d7d",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 3.1390102496370673,
+      "estimatedSampleRSSKiB": 3008080,
+      "dependencies": [
+        "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+        "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
+        "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr"
+      ]
+    },
+    {
+      "unit": "W90",
+      "path": "research-tests/DGamma/R178WrongGenerationMatchingNegative.idr",
+      "sourceHash": "279dcbdf318c96e4db87e55e6a7386062e83c644adb50454fd20c45de9da2c76",
+      "expectedDiagnostic": "otherRenaming and sameInputs .generatedGenerationBijection",
+      "symbol": "wrongGenerationMatching",
+      "estimatedSeconds": 1.064848667010665,
+      "estimatedSampleRSSKiB": 0,
+      "dependencies": [
+        "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+        "research/DGamma/CP5ConfluenceCrossTraceSpike.idr"
+      ]
+    },
+    {
+      "unit": "W91",
+      "path": "research-tests/DGamma/R181O19BundlePrerequisites.idr",
+      "sourceHash": "f50b7a6b2fb8d89e5b1f5ce7fcb3d6661510f8c57aa3c886ffcaa9570bdda8ee",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 68.6246297499165,
+      "estimatedSampleRSSKiB": 7215744,
+      "dependencies": [
+        "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
+        "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr"
+      ]
+    },
+    {
+      "unit": "W92",
+      "path": "research-tests/DGamma/R6MixedScheduleNegative.idr",
+      "sourceHash": "a60281516ef822e049902ad41a5d592fdbe987394a510a470548d58d881cae9a",
+      "expectedDiagnostic": "Mismatch between: leftCapital and otherLeft.",
+      "symbol": "mixedLeftSchedule",
+      "estimatedSeconds": 1.0539562082849443,
+      "estimatedSampleRSSKiB": 0,
+      "dependencies": [
+        "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+        "research/DGamma/CP5ConfluenceCrossTraceSpike.idr"
+      ]
+    },
+    {
+      "unit": "W93",
+      "path": "research-tests/DGamma/R6OuterSchedulesPositive.idr",
+      "sourceHash": "4249828c58bf3f69f9aabd36761481b916e01bdf69bf25dcdaa993599f11dffc",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 2.08356074988842,
+      "estimatedSampleRSSKiB": 2939152,
+      "dependencies": [
+        "research/DGamma/CP5ConfluenceCrossTraceSpike.idr"
+      ]
+    },
+    {
+      "unit": "W94",
+      "path": "research-tests/DGamma/R8FullPipeline.idr",
+      "sourceHash": "7583af47a1b91494f1b08858f0951792cf987ea3456146c25b0dc06800a28519",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 99.7328976248391,
+      "estimatedSampleRSSKiB": 40218064,
+      "dependencies": [
+        "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+        "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
+        "research/DGamma/CP5ConfluenceDeletionChainSpike.idr",
+        "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+        "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr",
+        "research/DGamma/CP5UniqueRawNameDeletion.idr"
+      ]
+    },
+    {
+      "unit": "W95",
+      "path": "research-tests/DGamma/R8WrongTraceBridgeNegative.idr",
+      "sourceHash": "b8b535d2b83971994e36d29f70eee7b38a37242b8b651e421023cb8d2df8a2a0",
+      "expectedDiagnostic": "operationalTargetFinal and otherFinal",
+      "symbol": "wrongTraceBridge",
+      "estimatedSeconds": 1.0585607918910682,
+      "estimatedSampleRSSKiB": 0,
+      "dependencies": [
+        "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+        "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
+        "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+        "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr"
+      ]
+    },
+    {
+      "unit": "W96",
+      "path": "research/DGamma/CP5O20RootReplayLawProducerSpike.idr",
+      "sourceHash": "9ab8009be9ec23e3fd25ca4ad08f64c8d11a9eca06098b715895ed0dfe43a394",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 3.1250291662290692,
+      "estimatedSampleRSSKiB": 3059840,
+      "dependencies": [
+        "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+        "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
+        "research/DGamma/CP5ConfluenceDeletionChainSpike.idr",
+        "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+        "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr",
+        "research/DGamma/CP5O19SurfaceSpike.idr",
+        "research/DGamma/CP5O20RootOrdinalBoundarySpike.idr"
+      ]
+    },
+    {
+      "unit": "W97",
+      "path": "research/DGamma/CP5O20SafeBlockSelectionSpike.idr",
+      "sourceHash": "a1d77431b19b6734bb15c6f095bdc073d2953327cc9c1e88e7d0bc2a33266f3f",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 10.374971250072122,
+      "estimatedSampleRSSKiB": 4255584,
+      "dependencies": [
+        "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+        "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
+        "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+        "research/DGamma/CP5RankedEarlyApplicabilitySpike.idr"
+      ]
+    },
+    {
+      "unit": "W98",
+      "path": "research/DGamma/CP5UniqueRawNameCanonicalCapital.idr",
+      "sourceHash": "78aab87219d33aed1485ccd95c9a4d213704b542dbd7e549a7226b1381cb5559",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 3.1186625831760466,
+      "estimatedSampleRSSKiB": 2737472,
+      "dependencies": [
+        "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+        "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
+        "research/DGamma/CP5ConfluenceDeletionChainSpike.idr",
+        "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+        "research/DGamma/CP5UniqueRawNameDeletion.idr"
+      ]
+    },
+    {
+      "unit": "W99",
+      "path": "research-tests/DGamma/R16ConfluenceTheoremAssemblyPositive.idr",
+      "sourceHash": "a023cef7449b651b5fbf8a488403a7c025f270e68baefd68275c25c65ea4bfa0",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 2.0806919587776065,
+      "estimatedSampleRSSKiB": 1045840,
+      "dependencies": [
+        "research-tests/DGamma/R8FullPipeline.idr",
+        "research/DGamma/CP5ConfluenceDeletionChainSpike.idr",
+        "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr"
+      ]
+    },
+    {
+      "unit": "W100",
+      "path": "research-tests/DGamma/R182O19RevisedSafetyNegative.idr",
+      "sourceHash": "a78c28f3fe7a1b29900c6b3d0522f9a0c8e1476169867e964818b6a697d22e54",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 3.1250773747451603,
+      "estimatedSampleRSSKiB": 4684240,
+      "dependencies": [
+        "research-tests/DGamma/R181O19BundlePrerequisites.idr",
+        "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
+        "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+        "research/DGamma/CP5RankedEarlyApplicabilitySpike.idr"
+      ]
+    },
+    {
+      "unit": "W101",
+      "path": "research/DGamma/CP5O20LinearExtensionSpike.idr",
+      "sourceHash": "9fe05758dae553bd0f7be5633007e3e0c8b520d4b8c5a7649372c19a1138d7cc",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 3.125051375012845,
+      "estimatedSampleRSSKiB": 2894784,
+      "dependencies": [
+        "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
+        "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+        "research/DGamma/CP5O20SafeBlockSelectionSpike.idr"
+      ]
+    },
+    {
+      "unit": "W102",
+      "path": "research-tests/DGamma/R182O19RevisedSafetyPositive.idr",
+      "sourceHash": "a49817fc2666c8cef04fbff3c059ecfd421da3424c5ed20be010d9e132ff301f",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 17.63465354219079,
+      "estimatedSampleRSSKiB": 2810832,
+      "dependencies": [
+        "research-tests/DGamma/R172O17OpenParentRootReuseCandidate.idr",
+        "research-tests/DGamma/R182O19RevisedSafetyNegative.idr",
+        "research-tests/DGamma/R39RelationalMapAlgebraPositive.idr",
+        "research-tests/DGamma/R45BareDiamondDisciplineCounterexamplePositive.idr",
+        "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
+        "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+        "research/DGamma/CP5RankedEarlyApplicabilitySpike.idr"
+      ]
+    },
+    {
+      "unit": "W103",
+      "path": "research/DGamma/CP5O20BlockMeasureSpike.idr",
+      "sourceHash": "868ccd417293ef6672ac9b11c913aa1b06efb07e287b5a085378372aa3e1714e",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 3.1425803750753403,
+      "estimatedSampleRSSKiB": 2958240,
+      "dependencies": [
+        "research/DGamma/CP5O19SurfaceSpike.idr",
+        "research/DGamma/CP5O20LinearExtensionSpike.idr"
+      ]
+    },
+    {
+      "unit": "W104",
+      "path": "research/DGamma/CP5O20SupportedReferenceSpike.idr",
+      "sourceHash": "03a342e661c92658fc60ae28da49203063db74aaa3e5dc4df80b23701b7aad42",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 3.123758291825652,
+      "estimatedSampleRSSKiB": 2331776,
+      "dependencies": [
+        "research/DGamma/CP5AcceptedSupportTruthSpike.idr",
+        "research/DGamma/CP5AllSupportedMetadataSpike.idr",
+        "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+        "research/DGamma/CP5ConfluenceDeletionChainSpike.idr",
+        "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+        "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr",
+        "research/DGamma/CP5O19ReachedBlocksSpike.idr",
+        "research/DGamma/CP5O19SurfaceSpike.idr",
+        "research/DGamma/CP5O20LinearExtensionSpike.idr"
+      ]
+    },
+    {
+      "unit": "W105",
+      "path": "research-tests/DGamma/R182O19ActualCrossingPositive.idr",
+      "sourceHash": "aaf2979e131a7d8c4a56f9368a0caea3245ddb5bf792d253c1800a2c9e82d40c",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 177.48212358308956,
+      "estimatedSampleRSSKiB": 8512256,
+      "dependencies": [
+        "research-tests/DGamma/R182O19RevisedSafetyNegative.idr",
+        "research-tests/DGamma/R182O19RevisedSafetyPositive.idr",
+        "research-tests/DGamma/R45BareDiamondDisciplineCounterexamplePositive.idr",
+        "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
+        "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+        "research/DGamma/CP5O19AdjacentReplayProducerSpike.idr",
+        "research/DGamma/CP5RankedEarlyApplicabilitySpike.idr"
+      ]
+    },
+    {
+      "unit": "W106",
+      "path": "research-tests/DGamma/R191CanonicalChildRetirementGap.idr",
+      "sourceHash": "316518f801b9e1067e483b2bc59717c4ce9a2acd35087d194220b64fbf5f5b06",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 5.206917209085077,
+      "estimatedSampleRSSKiB": 4404448,
+      "dependencies": [
+        "research-tests/DGamma/R172O17OpenParentRootReuseCandidate.idr",
+        "research-tests/DGamma/R182O19RevisedSafetyPositive.idr",
+        "research-tests/DGamma/R45BareDiamondDisciplineCounterexamplePositive.idr",
+        "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+        "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+        "research/DGamma/CP5O19SurfaceSpike.idr"
+      ]
+    },
+    {
+      "unit": "W107",
+      "path": "research/DGamma/CP5O20OperationalProgressSpike.idr",
+      "sourceHash": "82cbd1b7dbfa5a2d28a3fd77682a59171a30c552f5bac1341bf5c7c7cb5de2ff",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 3.1482984158210456,
+      "estimatedSampleRSSKiB": 2668208,
+      "dependencies": [
+        "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+        "research/DGamma/CP5O19OperationalAssemblySpike.idr",
+        "research/DGamma/CP5O19SurfaceSpike.idr",
+        "research/DGamma/CP5O20BlockMeasureSpike.idr",
+        "research/DGamma/CP5O20LinearExtensionSpike.idr",
+        "research/DGamma/CP5O20SafeBlockSelectionSpike.idr",
+        "research/DGamma/CP5UniqueRawNameCanonicalCapital.idr"
+      ]
+    },
+    {
+      "unit": "W108",
+      "path": "research/DGamma/CP5O20SelectorResolverFrameSpike.idr",
+      "sourceHash": "d530fb03ec5bd27977fd7f6331e645d58e2ddbdff84a921df87b0979200280f8",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 3.1466707503423095,
+      "estimatedSampleRSSKiB": 2984320,
+      "dependencies": [
+        "research/DGamma/CP5O19ActivationResolutionSpike.idr",
+        "research/DGamma/CP5O20BeginObservationSpike.idr",
+        "research/DGamma/CP5O20RightOpeningTransportSpike.idr",
+        "research/DGamma/CP5O20SupportedReferenceSpike.idr",
+        "research/DGamma/CP5RankedEarlyApplicabilitySpike.idr"
+      ]
+    },
+    {
+      "unit": "W109",
+      "path": "research-tests/DGamma/R182O19SecondCrossingPositive.idr",
+      "sourceHash": "4b5a8bd07b4bb72b6a293ee8253c7a627c18365cec7f78131b3fc1ccd222be2e",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 3.112055125180632,
+      "estimatedSampleRSSKiB": 4564432,
+      "dependencies": [
+        "research-tests/DGamma/R182O19ActualCrossingPositive.idr",
+        "research-tests/DGamma/R182O19RevisedSafetyNegative.idr",
+        "research-tests/DGamma/R182O19RevisedSafetyPositive.idr",
+        "research-tests/DGamma/R45BareDiamondDisciplineCounterexamplePositive.idr",
+        "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
+        "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+        "research/DGamma/CP5O19AdjacentReplayProducerSpike.idr",
+        "research/DGamma/CP5RankedEarlyApplicabilitySpike.idr"
+      ]
+    },
+    {
+      "unit": "W110",
+      "path": "research-tests/DGamma/R192ExtendedChildBlockProbe.idr",
+      "sourceHash": "4b0ff1f9ad16b3031440e57f683eb3e7e5095b4a4191b6db97a0a1067dde4a6b",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 3.1419934583827853,
+      "estimatedSampleRSSKiB": 3669088,
+      "dependencies": [
+        "research-tests/DGamma/R191CanonicalChildRetirementGap.idr",
+        "research-tests/DGamma/R45BareDiamondDisciplineCounterexamplePositive.idr",
+        "research/DGamma/CP5ActorLifecycleOnlyExtended.idr",
+        "research/DGamma/CP5O20RightOpeningTransportSpike.idr"
+      ]
+    },
+    {
+      "unit": "W111",
+      "path": "research/DGamma/CP5O20BlockResolverFrameSpike.idr",
+      "sourceHash": "0039c30f35235e6d13eb62a36d1451752838c416c31ae51716d905e1b6ff8276",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 3.136045124847442,
+      "estimatedSampleRSSKiB": 2889744,
+      "dependencies": [
+        "research/DGamma/CP5O19ActivationResolutionSpike.idr",
+        "research/DGamma/CP5O19AdjacentReplayProducerSpike.idr",
+        "research/DGamma/CP5O19InsertObservationSpike.idr",
+        "research/DGamma/CP5O19SurfaceSpike.idr",
+        "research/DGamma/CP5O20BeginObservationSpike.idr",
+        "research/DGamma/CP5O20RightOpeningTransportSpike.idr",
+        "research/DGamma/CP5O20SelectorResolverFrameSpike.idr",
+        "research/DGamma/CP5O20SupportedReferenceSpike.idr",
+        "research/DGamma/CP5RankedEarlyApplicabilitySpike.idr"
+      ]
+    },
+    {
+      "unit": "W112",
+      "path": "research/DGamma/CP5O20OperationalDescentSpike.idr",
+      "sourceHash": "e8569aa5bdd3af9b4e486dc75476891df18b25b67673080a54e79c948f904907",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 3.1225640000775456,
+      "estimatedSampleRSSKiB": 1033568,
+      "dependencies": [
+        "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+        "research/DGamma/CP5O19SurfaceSpike.idr",
+        "research/DGamma/CP5O20BlockMeasureSpike.idr",
+        "research/DGamma/CP5O20LinearExtensionSpike.idr",
+        "research/DGamma/CP5O20OperationalProgressSpike.idr",
+        "research/DGamma/CP5O20SafeBlockSelectionSpike.idr"
+      ]
+    },
+    {
+      "unit": "W113",
+      "path": "research-tests/DGamma/R182O19RemainingCrossingFacts.idr",
+      "sourceHash": "8e8c9cbfd1b9b23fe0f06a6c83394833503db795b9c5eb454d8654b98db50e6d",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 4.170629959087819,
+      "estimatedSampleRSSKiB": 4551216,
+      "dependencies": [
+        "research-tests/DGamma/R182O19ActualCrossingPositive.idr",
+        "research-tests/DGamma/R182O19RevisedSafetyNegative.idr",
+        "research-tests/DGamma/R182O19RevisedSafetyPositive.idr",
+        "research-tests/DGamma/R182O19SecondCrossingPositive.idr",
+        "research-tests/DGamma/R45BareDiamondDisciplineCounterexamplePositive.idr",
+        "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
+        "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+        "research/DGamma/CP5O19AdjacentReplayProducerSpike.idr",
+        "research/DGamma/CP5O19ReplayObservationSpike.idr",
+        "research/DGamma/CP5RankedEarlyApplicabilitySpike.idr"
+      ]
+    },
+    {
+      "unit": "W114",
+      "path": "research-tests/DGamma/R193InstalledBlockResolverPositive.idr",
+      "sourceHash": "e2979e5f087f37d4682d8e88ae2547e74db20cd27e7a902c410b376011383374",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 13.495742500294,
+      "estimatedSampleRSSKiB": 2144608,
+      "dependencies": [
+        "research/DGamma/CP5O19SurfaceSpike.idr",
+        "research/DGamma/CP5O20BeginObservationSpike.idr",
+        "research/DGamma/CP5O20BlockResolverFrameSpike.idr",
+        "research/DGamma/CP5O20RightOpeningTransportSpike.idr",
+        "research/DGamma/CP5RankedEarlyApplicabilitySpike.idr"
+      ]
+    },
+    {
+      "unit": "W115",
+      "path": "research/DGamma/CP5O20ReferenceDescentSpike.idr",
+      "sourceHash": "ed709dfc3f80f018433cc820d8d624a9039148c790a9c562251404a7826d7037",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 3.1206655842252076,
+      "estimatedSampleRSSKiB": 1698032,
+      "dependencies": [
+        "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+        "research/DGamma/CP5ConfluenceDeletionChainSpike.idr",
+        "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+        "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr",
+        "research/DGamma/CP5O19SurfaceSpike.idr",
+        "research/DGamma/CP5O20LinearExtensionSpike.idr",
+        "research/DGamma/CP5O20OperationalDescentSpike.idr",
+        "research/DGamma/CP5O20OperationalProgressSpike.idr",
+        "research/DGamma/CP5O20SafeBlockSelectionSpike.idr",
+        "research/DGamma/CP5O20SupportedReferenceSpike.idr",
+        "research/DGamma/CP5UniqueRawNameCanonicalCapital.idr"
+      ]
+    },
+    {
+      "unit": "W116",
+      "path": "research/DGamma/CP5O20SelectionCompletenessSpike.idr",
+      "sourceHash": "0142151162552a06a25fc3bb90437c666e8bd1bbe3c7be24a629937d9d30f2e3",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 4.178450583014637,
+      "estimatedSampleRSSKiB": 3006544,
+      "dependencies": [
+        "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
+        "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+        "research/DGamma/CP5O19SurfaceSpike.idr",
+        "research/DGamma/CP5O20LinearExtensionSpike.idr",
+        "research/DGamma/CP5O20OperationalDescentSpike.idr",
+        "research/DGamma/CP5O20OperationalProgressSpike.idr",
+        "research/DGamma/CP5O20RightOpeningTransportSpike.idr",
+        "research/DGamma/CP5O20SafeBlockSelectionSpike.idr",
+        "research/DGamma/CP5RankedEarlyApplicabilitySpike.idr"
+      ]
+    },
+    {
+      "unit": "W117",
+      "path": "research-tests/DGamma/R182O19ThirdCrossingConstruction.idr",
+      "sourceHash": "2b8061e171c818e1117078199b37e5f8e98a965cefe056f3861b99d68c0a6556",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 8.312335166148841,
+      "estimatedSampleRSSKiB": 4557184,
+      "dependencies": [
+        "research-tests/DGamma/R182O19ActualCrossingPositive.idr",
+        "research-tests/DGamma/R182O19RemainingCrossingFacts.idr",
+        "research-tests/DGamma/R182O19RevisedSafetyNegative.idr",
+        "research-tests/DGamma/R182O19RevisedSafetyPositive.idr",
+        "research-tests/DGamma/R182O19SecondCrossingPositive.idr",
+        "research-tests/DGamma/R45BareDiamondDisciplineCounterexamplePositive.idr",
+        "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
+        "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+        "research/DGamma/CP5O19AdjacentReplayProducerSpike.idr",
+        "research/DGamma/CP5O19ReplayObservationSpike.idr",
+        "research/DGamma/CP5RankedEarlyApplicabilitySpike.idr"
+      ]
+    },
+    {
+      "unit": "W118",
+      "path": "research-tests/DGamma/R193CandidateEnumerationPositive.idr",
+      "sourceHash": "a558d70bdaab3ead135c9e02b496dcc383ec498757605c93ba091f5934a9d6b3",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 2.0997703331522644,
+      "estimatedSampleRSSKiB": 3965216,
+      "dependencies": [
+        "research/DGamma/CP5O19SurfaceSpike.idr",
+        "research/DGamma/CP5O20LinearExtensionSpike.idr",
+        "research/DGamma/CP5O20SafeBlockSelectionSpike.idr",
+        "research/DGamma/CP5O20SelectionCompletenessSpike.idr"
+      ]
+    },
+    {
+      "unit": "W119",
+      "path": "research/DGamma/CP5O20FiniteInversionSpike.idr",
+      "sourceHash": "ab10772adf34d8968086fba73732ec29bfa4943ecfa9ac667c4741564abd57c8",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 3.146649083122611,
+      "estimatedSampleRSSKiB": 2713760,
+      "dependencies": [
+        "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+        "research/DGamma/CP5O19SurfaceSpike.idr",
+        "research/DGamma/CP5O20LinearExtensionSpike.idr",
+        "research/DGamma/CP5O20OperationalDescentSpike.idr",
+        "research/DGamma/CP5O20ReferenceDescentSpike.idr",
+        "research/DGamma/CP5O20SupportedReferenceSpike.idr"
+      ]
+    },
+    {
+      "unit": "W120",
+      "path": "research/DGamma/CP5O20InversionChildSafetySpike.idr",
+      "sourceHash": "1cd98e908f0328d60ba1db1be243f7e6d2f26e4efcf7b538fd548e4c7adbda10",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 3.1386105832643807,
+      "estimatedSampleRSSKiB": 2820064,
+      "dependencies": [
+        "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+        "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
+        "research/DGamma/CP5ConfluenceDeletionChainSpike.idr",
+        "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+        "research/DGamma/CP5O19SurfaceSpike.idr",
+        "research/DGamma/CP5O20ReferenceDescentSpike.idr",
+        "research/DGamma/CP5O20SafeBlockSelectionSpike.idr",
+        "research/DGamma/CP5O20SupportedBirthBridgeSpike.idr",
+        "research/DGamma/CP5O20SupportedReferenceSpike.idr"
+      ]
+    },
+    {
+      "unit": "W121",
+      "path": "research-tests/DGamma/R182O19ThirdCrossingPositive.idr",
+      "sourceHash": "d6ad60c9f2528c665185a1f86c945245392a7bdeffd9af1e41f1fece13c50ac2",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 16.638052459340543,
+      "estimatedSampleRSSKiB": 6136080,
+      "dependencies": [
+        "research-tests/DGamma/R182O19ActualCrossingPositive.idr",
+        "research-tests/DGamma/R182O19RemainingCrossingFacts.idr",
+        "research-tests/DGamma/R182O19RevisedSafetyNegative.idr",
+        "research-tests/DGamma/R182O19RevisedSafetyPositive.idr",
+        "research-tests/DGamma/R182O19SecondCrossingPositive.idr",
+        "research-tests/DGamma/R182O19ThirdCrossingConstruction.idr",
+        "research-tests/DGamma/R45BareDiamondDisciplineCounterexamplePositive.idr",
+        "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
+        "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+        "research/DGamma/CP5O19AdjacentReplayProducerSpike.idr",
+        "research/DGamma/CP5O19ReplayObservationSpike.idr",
+        "research/DGamma/CP5RankedEarlyApplicabilitySpike.idr"
+      ]
+    },
+    {
+      "unit": "W122",
+      "path": "research/DGamma/CP5O20OwnCutSafetySpike.idr",
+      "sourceHash": "2a69531b2171beba161f006c2d57b7cfb7d4607cf3f169d2022df14fe9530cd4",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 11.439452584367245,
+      "estimatedSampleRSSKiB": 2926512,
+      "dependencies": [
+        "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+        "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
+        "research/DGamma/CP5ConfluenceDeletionChainSpike.idr",
+        "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+        "research/DGamma/CP5O19BodyMetadataSpike.idr",
+        "research/DGamma/CP5O19SurfaceSpike.idr",
+        "research/DGamma/CP5O20BeginObservationSpike.idr",
+        "research/DGamma/CP5O20BlockResolverFrameSpike.idr",
+        "research/DGamma/CP5O20FiniteInversionSpike.idr",
+        "research/DGamma/CP5O20InversionChildSafetySpike.idr",
+        "research/DGamma/CP5O20LinearExtensionSpike.idr",
+        "research/DGamma/CP5O20OperationalDescentSpike.idr",
+        "research/DGamma/CP5O20OperationalProgressSpike.idr",
+        "research/DGamma/CP5O20ReferenceDescentSpike.idr",
+        "research/DGamma/CP5O20RightOpeningTransportSpike.idr",
+        "research/DGamma/CP5O20SafeBlockSelectionSpike.idr",
+        "research/DGamma/CP5O20SelectionCompletenessSpike.idr",
+        "research/DGamma/CP5O20SupportedReferenceSpike.idr",
+        "research/DGamma/CP5RankedEarlyApplicabilitySpike.idr"
+      ]
+    },
+    {
+      "unit": "W123",
+      "path": "research-tests/DGamma/R182O19FourthCrossingFacts.idr",
+      "sourceHash": "a31711c68efefef45c55fd6a9e7af0e16a21ebee1aa4672fb8ed1579ffe88b5e",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 4.146586791146547,
+      "estimatedSampleRSSKiB": 3930048,
+      "dependencies": [
+        "research-tests/DGamma/R182O19ActualCrossingPositive.idr",
+        "research-tests/DGamma/R182O19RemainingCrossingFacts.idr",
+        "research-tests/DGamma/R182O19RevisedSafetyNegative.idr",
+        "research-tests/DGamma/R182O19RevisedSafetyPositive.idr",
+        "research-tests/DGamma/R182O19SecondCrossingPositive.idr",
+        "research-tests/DGamma/R182O19ThirdCrossingConstruction.idr",
+        "research-tests/DGamma/R182O19ThirdCrossingPositive.idr",
+        "research-tests/DGamma/R45BareDiamondDisciplineCounterexamplePositive.idr",
+        "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
+        "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+        "research/DGamma/CP5O19AdjacentReplayProducerSpike.idr",
+        "research/DGamma/CP5O19ReplayObservationSpike.idr",
+        "research/DGamma/CP5RankedEarlyApplicabilitySpike.idr"
+      ]
+    },
+    {
+      "unit": "W124",
+      "path": "research-tests/DGamma/R182O19FourthCrossingConstruction.idr",
+      "sourceHash": "4cf75f53ac1b9844f28dfc76032d14bcecc3444e04d2927186a75b02f52f26ef",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 39.514606666751206,
+      "estimatedSampleRSSKiB": 5516928,
+      "dependencies": [
+        "research-tests/DGamma/R182O19ActualCrossingPositive.idr",
+        "research-tests/DGamma/R182O19FourthCrossingFacts.idr",
+        "research-tests/DGamma/R182O19RemainingCrossingFacts.idr",
+        "research-tests/DGamma/R182O19RevisedSafetyNegative.idr",
+        "research-tests/DGamma/R182O19RevisedSafetyPositive.idr",
+        "research-tests/DGamma/R182O19SecondCrossingPositive.idr",
+        "research-tests/DGamma/R182O19ThirdCrossingConstruction.idr",
+        "research-tests/DGamma/R182O19ThirdCrossingPositive.idr",
+        "research-tests/DGamma/R45BareDiamondDisciplineCounterexamplePositive.idr",
+        "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
+        "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+        "research/DGamma/CP5O19AdjacentReplayProducerSpike.idr",
+        "research/DGamma/CP5O19ReplayObservationSpike.idr",
+        "research/DGamma/CP5RankedEarlyApplicabilitySpike.idr"
+      ]
+    },
+    {
+      "unit": "W125",
+      "path": "research-tests/DGamma/R182O19FourCrossingsPositive.idr",
+      "sourceHash": "ead634d2e10fe4a21a9ba505c2f9c2abc5ae4a640e40eac45f97d116349afb4e",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 116.23296579206362,
+      "estimatedSampleRSSKiB": 17793424,
+      "dependencies": [
+        "research-tests/DGamma/R182O19ActualCrossingPositive.idr",
+        "research-tests/DGamma/R182O19FourthCrossingConstruction.idr",
+        "research-tests/DGamma/R182O19FourthCrossingFacts.idr",
+        "research-tests/DGamma/R182O19RemainingCrossingFacts.idr",
+        "research-tests/DGamma/R182O19RevisedSafetyNegative.idr",
+        "research-tests/DGamma/R182O19RevisedSafetyPositive.idr",
+        "research-tests/DGamma/R182O19SecondCrossingPositive.idr",
+        "research-tests/DGamma/R182O19ThirdCrossingConstruction.idr",
+        "research-tests/DGamma/R182O19ThirdCrossingPositive.idr",
+        "research-tests/DGamma/R45BareDiamondDisciplineCounterexamplePositive.idr",
+        "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
+        "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+        "research/DGamma/CP5O19AdjacentReplayProducerSpike.idr",
+        "research/DGamma/CP5O19ReplayObservationSpike.idr",
+        "research/DGamma/CP5RankedEarlyApplicabilitySpike.idr"
+      ]
+    },
+    {
+      "unit": "W126",
+      "path": "research-tests/DGamma/R182O19AllFourCrossingsPositive.idr",
+      "sourceHash": "1fd0c49cfeb33b053221efa3be78986740ec2b6bfb61dff34901babbe249cb22",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 28.047335291747004,
+      "estimatedSampleRSSKiB": 8600672,
+      "dependencies": [
+        "research-tests/DGamma/R182O19ActualCrossingPositive.idr",
+        "research-tests/DGamma/R182O19FourCrossingsPositive.idr",
+        "research-tests/DGamma/R182O19FourthCrossingConstruction.idr",
+        "research-tests/DGamma/R182O19FourthCrossingFacts.idr",
+        "research-tests/DGamma/R182O19RemainingCrossingFacts.idr",
+        "research-tests/DGamma/R182O19RevisedSafetyNegative.idr",
+        "research-tests/DGamma/R182O19RevisedSafetyPositive.idr",
+        "research-tests/DGamma/R182O19SecondCrossingPositive.idr",
+        "research-tests/DGamma/R182O19ThirdCrossingConstruction.idr",
+        "research-tests/DGamma/R182O19ThirdCrossingPositive.idr",
+        "research-tests/DGamma/R45BareDiamondDisciplineCounterexamplePositive.idr",
+        "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
+        "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+        "research/DGamma/CP5O19AdjacentReplayProducerSpike.idr",
+        "research/DGamma/CP5O19ReplayObservationSpike.idr",
+        "research/DGamma/CP5RankedEarlyApplicabilitySpike.idr"
+      ]
+    },
+    {
+      "unit": "W127",
+      "path": "package",
+      "sourceHash": "aee761a37757cb047ddbf0f846bc23ce830ed755422f96852d08eb435c368727",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "estimatedSeconds": 16.667576250154525,
+      "estimatedSampleRSSKiB": 229552,
+      "dependencies": []
+    }
+  ],
+  "qualification": "One helper source check C3, then126 affected source checks plus package. Unaffected LocalDiamond and 42.715GiB B6 retain their preceding authenticated checks and are NOT rerun; no historical target in this window exceeds40GiB. All48GiB. C2 retry only after completion."
+}

@@ -1,0 +1,24 @@
+{
+  "timestampUTC": "2026-09-09T23:51:12.475230+00:00",
+  "path": "src/DGamma/CP3StatementChecks.idr",
+  "beforeSHA256": "aa7b71a88c1e16304c0247880403ee68c776a5b43683759cdeffc750623d33e9",
+  "afterSHA256": "4f6fee4bd1d937a7836d7ce61ed7c91e782f6ed82b3766a7164b7f4316659fab",
+  "patchPath": "research-tests/O6-R205-CP3-STATEMENT-CHECKS-PROPOSAL.patch",
+  "patchSHA256": "63be87410c5b8f62a6cb0fb9cd1751322d6079b7df2b0aa44e1f8aead0437ce7",
+  "gateVerbatim": "APPROVED: apply research-tests/O6-R205-CP3-STATEMENT-CHECKS-PROPOSAL.patch (SHA256 202b71ec59c197af…, 45 lines, six replacements) to src/DGamma/CP3StatementChecks.idr exactly as read by the supervisor — original-trace threading at 3426/3587, core constructor guard with explicit nameEq (CoreYieldedRegistrationStep), canonicalAllRootInputsGuard → canonicalRootEarliestAvailableGuard = rootGenerationEarliestAvailable projection, own-lifecycle guard with `actionOwner action = root` → rootGenerationBeforeOwnLifecycle. This is the second and last authorized production edit of this shift (PRODUCTION receipt citing this gate and the S33 failure log; before/after hashes). Record the renamed guard in the rename map (consumers of canonicalAllRootInputsGuard become repair candidates). S31-4 PASS accepted: CP4SupportSolution datum = 160.8 GiB / 986 s (guard 200 GiB from now on, datum-based; record it in the baselines and the agent-facing cost table). Continue the closure.",
+  "sourceEditNumber": 2,
+  "lastAuthorizedProductionEdit": true,
+  "priorFailureInvocation": "S33",
+  "passingInvocation": "S34-1",
+  "preCommitCheck": "Exact gated uncommitted source allowed for ONE fresh check; guarded production migration commit requires PASS",
+  "failureInvocations": [
+    "S33",
+    "S33-2",
+    "S33-3"
+  ],
+  "textualChanges": 8,
+  "additionalGateVerbatim": "APPROVED: consolidate the explicit implicit telescope for canonicalBlockRegistrationGuard into the same second production commit — `{name, key, world, error : Type} -> {value : key -> Type} ->` before nameEq, then `{selected, child : name} -> {childComponent : Component key value world error} -> {first, middle, finalState : SystemState name key value world error} ->`, body unchanged (`= CoreYieldedRegistrationStep`), no premise added. S33-3 is the last elaboration attempt for this migration; on PASS commit with the PRODUCTION receipt listing all seven textual changes and the S33/S33-2 failure logs; on FAIL revert CP3StatementChecks to its committed bytes, mark it BROKEN-BY-UNFREEZE in the manifest, and continue the closure that does not depend on it.",
+  "status": "S34-1 PASS; second/final production migration committed227c2f98",
+  "individualProofArrowAnnotations": 2,
+  "quantityGateVerbatim": "NEW GATED MICRO-UNIT (supervisor-owned, distinct statement, not a restatement): S34 \"quantity-aligned canonicalBlockRegistrationGuard\" — the S33-3 diagnosis is exact and lexical: the guard's proof arrows must carry multiplicity 0 to alias CoreYieldedRegistrationStep (`(0 yielded : …) -> (0 only : ActorLifecycleCore …) -> …`). Apply the full approved six-replacement patch + the explicit telescope + the 0-annotations on exactly those proof arrows, body unchanged (`= CoreYieldedRegistrationStep`). ONE attempt (S34-1). On PASS: commit as the second/final production edit with the PRODUCTION receipt listing all textual changes and the S33/S33-2/S33-3 failure logs. On FAIL: revert to aa7b71a8… bytes, BROKEN-BY-UNFREEZE, no further attempts. Package P2 depends on it, so do this before the remaining research closure."
+}

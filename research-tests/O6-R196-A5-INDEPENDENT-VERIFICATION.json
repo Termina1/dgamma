@@ -1,0 +1,24 @@
+{
+  "timestampUTC": "2026-09-09T04:15:27.314226+00:00",
+  "head": "512affedc97c10b59d969a4e1bf5bc83b7cfea94",
+  "status": "PASS",
+  "invocations": 5,
+  "expectedPASS": 4,
+  "sourceReceipts": 4,
+  "artifactReceipts": 1,
+  "BCompleted": 0,
+  "BTotal": 120,
+  "resourceStops": [],
+  "mutations": [],
+  "compilerOverlap": false,
+  "sourceReceiptsAuthenticated": true,
+  "sourceSnapshotsAuthenticated": true,
+  "sampledRSSQualification": "One-second own-worktree samples, not OS high-water; zero means no live sample captured",
+  "microUnitAttempts": {
+    "A1": 1,
+    "A2": 1,
+    "A4": 2,
+    "A3": 1
+  },
+  "noStagedFiles": true
+}

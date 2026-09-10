@@ -1,0 +1,9 @@
+{
+  "first": "B16-1",
+  "committed": "B16-2",
+  "firstSHA256": "f81316dc9ab123c003007525507c915280e06e95e2876a880254fb038621c71b",
+  "committedSHA256": "b92c234ef87e99fb139363183a3e841b2a171ecd7616123ae1cc270ff6c6637f",
+  "classification": "Both native PASS; first superseded by explicit-index pattern cleanup only",
+  "exactTransformation": "replace generationEq source _ premises by generationEq _ _ premises; replace generationEq source target sourcePremises by generationEq _ _ sourcePremises",
+  "sourceTypeUnchanged": true
+}

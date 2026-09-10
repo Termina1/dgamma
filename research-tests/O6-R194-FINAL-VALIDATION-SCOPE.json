@@ -1,0 +1,26 @@
+{
+  "sourceFreezeHead": "408bd21e832cd231a727dfb8347c9a15d019f4e0",
+  "planPreparationHead": "a7ec1bddca6d4add96b2483575c1bde314ea9e48",
+  "timestampUTC": "2026-09-09T01:17:07.191431+00:00",
+  "finalChecks": 59,
+  "positiveChecks": 52,
+  "expectedNegatives": 7,
+  "changedIdrisTargets": [
+    "research/DGamma/CP5O20ActualHistoryAdvanceSpike.idr",
+    "research/DGamma/CP5O20CanonicalOrdinalAttachmentSpike.idr",
+    "research/DGamma/CP5O20IndexedReloadingSourceSpike.idr",
+    "research/DGamma/CP5O20NativeAdvanceAttachmentSpike.idr",
+    "research/DGamma/CP5O20NativeTargetAttachmentSpike.idr",
+    "research/DGamma/CP5O20OperationalProgressSpike.idr",
+    "research/DGamma/CP5O20OwnCutSafetySpike.idr"
+  ],
+  "planSHA256": "91b9ca0a7f9fba27236d7ac0b4a9941daf2ed03cb04f3a9046845b1df9bb5494",
+  "exclusions": [],
+  "baselineQualification": "All52 inherited targets exist and remain byte-pinned to main b81362d8. Checking them certifies main only, never ongoing lane2 results.",
+  "withdrawnUnrunPreflightPlanSHA256": "73ddfc58ea6e13473f31a61366fcbad931a18cc69b62b1de6ceb58985fa31bfe",
+  "ownerRuling": "O6-R194-PREFLIGHT-RULING.md",
+  "defaultRSSGiB": 48,
+  "pinnedUnchangedLocalDiamondRSSGiB": 52,
+  "sharedHeavyLock": "/tmp/dgamma-heavy.lock",
+  "substitutions": {}
+}

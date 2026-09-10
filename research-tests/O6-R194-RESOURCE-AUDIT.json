@@ -1,0 +1,184 @@
+{
+  "status": "PASS",
+  "timestampUTC": "2026-09-09T01:46:51.371852+00:00",
+  "invocationCount": 111,
+  "knownOrObservedHeavyCount": 11,
+  "heavyChecks": [
+    {
+      "unit": "V2",
+      "path": "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr",
+      "peakRSSKiB": 50461904,
+      "acquired": {
+        "event": "acquired",
+        "lane": "R194-main",
+        "pid": 84595,
+        "timestampUTC": "2026-09-09T01:21:09.132346+00:00",
+        "unit": "V2",
+        "path": "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr"
+      },
+      "releaseObserved": true
+    },
+    {
+      "unit": "V4",
+      "path": "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
+      "peakRSSKiB": 20099168,
+      "acquired": {
+        "event": "acquired",
+        "lane": "R194-main",
+        "pid": 16621,
+        "timestampUTC": "2026-09-09T01:30:38.357511+00:00",
+        "unit": "V4",
+        "path": "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr"
+      },
+      "releaseObserved": true
+    },
+    {
+      "unit": "V25",
+      "path": "research-tests/DGamma/R8BridgeAuthenticatedDirectionPositive.idr",
+      "peakRSSKiB": 2275792,
+      "acquired": {
+        "event": "acquired",
+        "lane": "R194-main",
+        "pid": 25576,
+        "timestampUTC": "2026-09-09T01:33:14.869213+00:00",
+        "unit": "V25",
+        "path": "research-tests/DGamma/R8BridgeAuthenticatedDirectionPositive.idr"
+      },
+      "releaseObserved": true
+    },
+    {
+      "unit": "V26",
+      "path": "research-tests/DGamma/R8BridgeWrongBirthNegative.idr",
+      "peakRSSKiB": 0,
+      "acquired": {
+        "event": "acquired",
+        "lane": "R194-main",
+        "pid": 25755,
+        "timestampUTC": "2026-09-09T01:33:17.216828+00:00",
+        "unit": "V26",
+        "path": "research-tests/DGamma/R8BridgeWrongBirthNegative.idr"
+      },
+      "releaseObserved": true
+    },
+    {
+      "unit": "V27",
+      "path": "research-tests/DGamma/R8WrongOccurrenceBridgeNegative.idr",
+      "peakRSSKiB": 0,
+      "acquired": {
+        "event": "acquired",
+        "lane": "R194-main",
+        "pid": 25809,
+        "timestampUTC": "2026-09-09T01:33:18.401863+00:00",
+        "unit": "V27",
+        "path": "research-tests/DGamma/R8WrongOccurrenceBridgeNegative.idr"
+      },
+      "releaseObserved": true
+    },
+    {
+      "unit": "V28",
+      "path": "research-tests/DGamma/R8WrongTraceBridgeNegative.idr",
+      "peakRSSKiB": 0,
+      "acquired": {
+        "event": "acquired",
+        "lane": "R194-main",
+        "pid": 25817,
+        "timestampUTC": "2026-09-09T01:33:19.566188+00:00",
+        "unit": "V28",
+        "path": "research-tests/DGamma/R8WrongTraceBridgeNegative.idr"
+      },
+      "releaseObserved": true
+    },
+    {
+      "unit": "V29",
+      "path": "research-tests/DGamma/R8PublicScheduleCannotReachBridgeNegative.idr",
+      "peakRSSKiB": 649744,
+      "acquired": {
+        "event": "acquired",
+        "lane": "R194-main",
+        "pid": 25865,
+        "timestampUTC": "2026-09-09T01:33:20.723650+00:00",
+        "unit": "V29",
+        "path": "research-tests/DGamma/R8PublicScheduleCannotReachBridgeNegative.idr"
+      },
+      "releaseObserved": true
+    },
+    {
+      "unit": "V33",
+      "path": "research-tests/DGamma/R8FullPipeline.idr",
+      "peakRSSKiB": 39119744,
+      "acquired": {
+        "event": "acquired",
+        "lane": "R194-main",
+        "pid": 26309,
+        "timestampUTC": "2026-09-09T01:33:29.434327+00:00",
+        "unit": "V33",
+        "path": "research-tests/DGamma/R8FullPipeline.idr"
+      },
+      "releaseObserved": true
+    },
+    {
+      "unit": "V48",
+      "path": "research/DGamma/CP5O19ReachedBlocksSpike.idr",
+      "peakRSSKiB": 3922288,
+      "acquired": {
+        "event": "acquired",
+        "lane": "R194-main",
+        "pid": 35470,
+        "timestampUTC": "2026-09-09T01:36:09.073211+00:00",
+        "unit": "V48",
+        "path": "research/DGamma/CP5O19ReachedBlocksSpike.idr"
+      },
+      "releaseObserved": true
+    },
+    {
+      "unit": "V51",
+      "path": "research-tests/DGamma/R182O19FourCrossingsPositive.idr",
+      "peakRSSKiB": 16187168,
+      "acquired": {
+        "event": "acquired",
+        "lane": "R194-main",
+        "pid": 47734,
+        "timestampUTC": "2026-09-09T01:40:00.856114+00:00",
+        "unit": "V51",
+        "path": "research-tests/DGamma/R182O19FourCrossingsPositive.idr"
+      },
+      "releaseObserved": true
+    },
+    {
+      "unit": "V52",
+      "path": "research-tests/DGamma/R182O19AllFourCrossingsPositive.idr",
+      "peakRSSKiB": 10206224,
+      "acquired": {
+        "event": "acquired",
+        "lane": "R194-main",
+        "pid": 54776,
+        "timestampUTC": "2026-09-09T01:41:58.235708+00:00",
+        "unit": "V52",
+        "path": "research-tests/DGamma/R182O19AllFourCrossingsPositive.idr"
+      },
+      "releaseObserved": true
+    }
+  ],
+  "maxSampleRSSKiB": 50461904,
+  "noLiveSampleUnits": [
+    "A1-1",
+    "A2-1",
+    "A3-1",
+    "A23-1",
+    "A24-1",
+    "V15",
+    "V23",
+    "V24",
+    "V26",
+    "V27",
+    "V28",
+    "V32",
+    "V34",
+    "V36"
+  ],
+  "staleLockCleanups": [],
+  "interruptions": 0,
+  "targetMutations": 0,
+  "allKnownOrObservedHeavyChecksLockedAndReleased": true,
+  "qualification": "1-second retained RSS samples, not OS high-water. Zero means no live sample captured. No lane2 process was counted or killed."
+}

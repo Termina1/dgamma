@@ -1,0 +1,53 @@
+--- a/src/DGamma/CP3StatementChecks.idr
++++ b/src/DGamma/CP3StatementChecks.idr
+@@ -3426 +3426 @@
+-    (namedAfter (rootAdvance1 original)) order canonicalTrace ->
++    (namedAfter (rootAdvance1 original)) order (namedRoleChangingTrace original) canonicalTrace ->
+@@ -3541 +3541,2 @@
+-||| Canonical parent blocks explicitly admit their yielded child O-Insert.
++||| Revised canonical actor CORES admit their yielded child O-Insert.
++||| This is the core constructor guard, not a reverse attached-to-core coercion.
+@@ -3543,0 +3545,5 @@
++  {name, key, world, error : Type} -> {value : key -> Type} ->
++  {nameEq : DecEq name} ->
++  {selected, child : name} ->
++  {childComponent : Component key value world error} ->
++  {first, middle, finalState : SystemState name key value world error} ->
+@@ -3546,5 +3552,5 @@
+-  transitionAction transition =
+-    OInsert child (ChildOf selected) childComponent ->
+-  ActorLifecycleOnly selected rest ->
+-  ActorLifecycleOnly selected (MoreTransitions transition rest)
+-canonicalBlockRegistrationGuard = ActorYieldedRegistrationStep
++  (0 yielded : transitionAction transition =
++    OInsert child (ChildOf selected) childComponent) ->
++  (0 only : ActorLifecycleCore nameEq selected rest) ->
++  ActorLifecycleCore nameEq selected (MoreTransitions transition rest)
++canonicalBlockRegistrationGuard = CoreYieldedRegistrationStep
+@@ -3587 +3593 @@
+-    (supportOrder schedule) (canonicalTrace schedule)
++    (supportOrder schedule) trace (canonicalTrace schedule)
+@@ -3590,2 +3596,4 @@
+-public export
+-0 canonicalAllRootInputsGuard :
++||| A8/A12 replaces the retired strict all-root-first projection by the exact
++||| production current-cut/terminal-earliest field; no global normalizer inferred.
++public export
++0 canonicalRootEarliestAvailableGuard :
+@@ -3595,3 +3603,7 @@
+-  RootInputsBeforeLifecycle nameEq (canonicalTrace schedule)
+-canonicalAllRootInputsGuard schedule =
+-  allRootInputsFirst (inputPlacement schedule)
++  {root : name} -> {component : Component key value world error} ->
++  (birth : LocatedActionOccurrence (OInsert root Root component)
++    (canonicalTrace schedule)) ->
++  EarliestAvailableRootBirth name key world error value nameEq keyEq
++    (canonicalTrace schedule) root component birth
++canonicalRootEarliestAvailableGuard schedule =
++  rootGenerationEarliestAvailable (inputPlacement schedule)
+@@ -3624 +3636 @@
+-  isLifecycleAction action = True ->
++  isLifecycleAction action = True -> actionOwner action = root ->
+@@ -3627 +3639 @@
+-  rootGenerationBeforeLifecycle (inputPlacement schedule)
++  rootGenerationBeforeOwnLifecycle (inputPlacement schedule)

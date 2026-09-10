@@ -1,0 +1,230 @@
+{
+  "timestampUTC": "2026-09-10T01:22:21.537831+00:00",
+  "recovered": [
+    {
+      "invocation": "S1",
+      "path": "S1.policy.json",
+      "sha256": "406c5b0a53eb8e012dce34ad297f6cdb40aa18ecfbdf4c54a05db063a0613987",
+      "reconstructedFromCommit": "e0a34f8f14a7fc6c44187b1125e2f9de3e8229aa",
+      "kind": "Exact bytes recovered by recorded hash from historical git blob, NOT falsely claimed to have been saved during invocation"
+    },
+    {
+      "invocation": "S1-2",
+      "path": "S1-2.policy.json",
+      "sha256": "406c5b0a53eb8e012dce34ad297f6cdb40aa18ecfbdf4c54a05db063a0613987",
+      "reconstructedFromCommit": "e0a34f8f14a7fc6c44187b1125e2f9de3e8229aa",
+      "kind": "Exact bytes recovered by recorded hash from historical git blob, NOT falsely claimed to have been saved during invocation"
+    },
+    {
+      "invocation": "S2",
+      "path": "S2.policy.json",
+      "sha256": "406c5b0a53eb8e012dce34ad297f6cdb40aa18ecfbdf4c54a05db063a0613987",
+      "reconstructedFromCommit": "e0a34f8f14a7fc6c44187b1125e2f9de3e8229aa",
+      "kind": "Exact bytes recovered by recorded hash from historical git blob, NOT falsely claimed to have been saved during invocation"
+    },
+    {
+      "invocation": "S3",
+      "path": "S3.policy.json",
+      "sha256": "406c5b0a53eb8e012dce34ad297f6cdb40aa18ecfbdf4c54a05db063a0613987",
+      "reconstructedFromCommit": "e0a34f8f14a7fc6c44187b1125e2f9de3e8229aa",
+      "kind": "Exact bytes recovered by recorded hash from historical git blob, NOT falsely claimed to have been saved during invocation"
+    },
+    {
+      "invocation": "S4",
+      "path": "S4.policy.json",
+      "sha256": "406c5b0a53eb8e012dce34ad297f6cdb40aa18ecfbdf4c54a05db063a0613987",
+      "reconstructedFromCommit": "e0a34f8f14a7fc6c44187b1125e2f9de3e8229aa",
+      "kind": "Exact bytes recovered by recorded hash from historical git blob, NOT falsely claimed to have been saved during invocation"
+    },
+    {
+      "invocation": "S5",
+      "path": "S5.policy.json",
+      "sha256": "406c5b0a53eb8e012dce34ad297f6cdb40aa18ecfbdf4c54a05db063a0613987",
+      "reconstructedFromCommit": "e0a34f8f14a7fc6c44187b1125e2f9de3e8229aa",
+      "kind": "Exact bytes recovered by recorded hash from historical git blob, NOT falsely claimed to have been saved during invocation"
+    },
+    {
+      "invocation": "S6",
+      "path": "S6.policy.json",
+      "sha256": "406c5b0a53eb8e012dce34ad297f6cdb40aa18ecfbdf4c54a05db063a0613987",
+      "reconstructedFromCommit": "e0a34f8f14a7fc6c44187b1125e2f9de3e8229aa",
+      "kind": "Exact bytes recovered by recorded hash from historical git blob, NOT falsely claimed to have been saved during invocation"
+    },
+    {
+      "invocation": "S7",
+      "path": "S7.policy.json",
+      "sha256": "406c5b0a53eb8e012dce34ad297f6cdb40aa18ecfbdf4c54a05db063a0613987",
+      "reconstructedFromCommit": "e0a34f8f14a7fc6c44187b1125e2f9de3e8229aa",
+      "kind": "Exact bytes recovered by recorded hash from historical git blob, NOT falsely claimed to have been saved during invocation"
+    },
+    {
+      "invocation": "S8",
+      "path": "S8.policy.json",
+      "sha256": "406c5b0a53eb8e012dce34ad297f6cdb40aa18ecfbdf4c54a05db063a0613987",
+      "reconstructedFromCommit": "e0a34f8f14a7fc6c44187b1125e2f9de3e8229aa",
+      "kind": "Exact bytes recovered by recorded hash from historical git blob, NOT falsely claimed to have been saved during invocation"
+    },
+    {
+      "invocation": "S9",
+      "path": "S9.policy.json",
+      "sha256": "406c5b0a53eb8e012dce34ad297f6cdb40aa18ecfbdf4c54a05db063a0613987",
+      "reconstructedFromCommit": "e0a34f8f14a7fc6c44187b1125e2f9de3e8229aa",
+      "kind": "Exact bytes recovered by recorded hash from historical git blob, NOT falsely claimed to have been saved during invocation"
+    },
+    {
+      "invocation": "S10",
+      "path": "S10.policy.json",
+      "sha256": "406c5b0a53eb8e012dce34ad297f6cdb40aa18ecfbdf4c54a05db063a0613987",
+      "reconstructedFromCommit": "e0a34f8f14a7fc6c44187b1125e2f9de3e8229aa",
+      "kind": "Exact bytes recovered by recorded hash from historical git blob, NOT falsely claimed to have been saved during invocation"
+    },
+    {
+      "invocation": "S11",
+      "path": "S11.policy.json",
+      "sha256": "406c5b0a53eb8e012dce34ad297f6cdb40aa18ecfbdf4c54a05db063a0613987",
+      "reconstructedFromCommit": "e0a34f8f14a7fc6c44187b1125e2f9de3e8229aa",
+      "kind": "Exact bytes recovered by recorded hash from historical git blob, NOT falsely claimed to have been saved during invocation"
+    },
+    {
+      "invocation": "S12",
+      "path": "S12.policy.json",
+      "sha256": "406c5b0a53eb8e012dce34ad297f6cdb40aa18ecfbdf4c54a05db063a0613987",
+      "reconstructedFromCommit": "e0a34f8f14a7fc6c44187b1125e2f9de3e8229aa",
+      "kind": "Exact bytes recovered by recorded hash from historical git blob, NOT falsely claimed to have been saved during invocation"
+    },
+    {
+      "invocation": "S13",
+      "path": "S13.policy.json",
+      "sha256": "406c5b0a53eb8e012dce34ad297f6cdb40aa18ecfbdf4c54a05db063a0613987",
+      "reconstructedFromCommit": "e0a34f8f14a7fc6c44187b1125e2f9de3e8229aa",
+      "kind": "Exact bytes recovered by recorded hash from historical git blob, NOT falsely claimed to have been saved during invocation"
+    },
+    {
+      "invocation": "S14",
+      "path": "S14.policy.json",
+      "sha256": "406c5b0a53eb8e012dce34ad297f6cdb40aa18ecfbdf4c54a05db063a0613987",
+      "reconstructedFromCommit": "e0a34f8f14a7fc6c44187b1125e2f9de3e8229aa",
+      "kind": "Exact bytes recovered by recorded hash from historical git blob, NOT falsely claimed to have been saved during invocation"
+    },
+    {
+      "invocation": "S15",
+      "path": "S15.policy.json",
+      "sha256": "406c5b0a53eb8e012dce34ad297f6cdb40aa18ecfbdf4c54a05db063a0613987",
+      "reconstructedFromCommit": "e0a34f8f14a7fc6c44187b1125e2f9de3e8229aa",
+      "kind": "Exact bytes recovered by recorded hash from historical git blob, NOT falsely claimed to have been saved during invocation"
+    },
+    {
+      "invocation": "S16",
+      "path": "S16.policy.json",
+      "sha256": "406c5b0a53eb8e012dce34ad297f6cdb40aa18ecfbdf4c54a05db063a0613987",
+      "reconstructedFromCommit": "e0a34f8f14a7fc6c44187b1125e2f9de3e8229aa",
+      "kind": "Exact bytes recovered by recorded hash from historical git blob, NOT falsely claimed to have been saved during invocation"
+    },
+    {
+      "invocation": "S17",
+      "path": "S17.policy.json",
+      "sha256": "406c5b0a53eb8e012dce34ad297f6cdb40aa18ecfbdf4c54a05db063a0613987",
+      "reconstructedFromCommit": "e0a34f8f14a7fc6c44187b1125e2f9de3e8229aa",
+      "kind": "Exact bytes recovered by recorded hash from historical git blob, NOT falsely claimed to have been saved during invocation"
+    },
+    {
+      "invocation": "S18",
+      "path": "S18.policy.json",
+      "sha256": "406c5b0a53eb8e012dce34ad297f6cdb40aa18ecfbdf4c54a05db063a0613987",
+      "reconstructedFromCommit": "e0a34f8f14a7fc6c44187b1125e2f9de3e8229aa",
+      "kind": "Exact bytes recovered by recorded hash from historical git blob, NOT falsely claimed to have been saved during invocation"
+    },
+    {
+      "invocation": "S19",
+      "path": "S19.policy.json",
+      "sha256": "406c5b0a53eb8e012dce34ad297f6cdb40aa18ecfbdf4c54a05db063a0613987",
+      "reconstructedFromCommit": "e0a34f8f14a7fc6c44187b1125e2f9de3e8229aa",
+      "kind": "Exact bytes recovered by recorded hash from historical git blob, NOT falsely claimed to have been saved during invocation"
+    },
+    {
+      "invocation": "S20",
+      "path": "S20.policy.json",
+      "sha256": "406c5b0a53eb8e012dce34ad297f6cdb40aa18ecfbdf4c54a05db063a0613987",
+      "reconstructedFromCommit": "e0a34f8f14a7fc6c44187b1125e2f9de3e8229aa",
+      "kind": "Exact bytes recovered by recorded hash from historical git blob, NOT falsely claimed to have been saved during invocation"
+    },
+    {
+      "invocation": "S21",
+      "path": "S21.policy.json",
+      "sha256": "406c5b0a53eb8e012dce34ad297f6cdb40aa18ecfbdf4c54a05db063a0613987",
+      "reconstructedFromCommit": "e0a34f8f14a7fc6c44187b1125e2f9de3e8229aa",
+      "kind": "Exact bytes recovered by recorded hash from historical git blob, NOT falsely claimed to have been saved during invocation"
+    },
+    {
+      "invocation": "S22",
+      "path": "S22.policy.json",
+      "sha256": "406c5b0a53eb8e012dce34ad297f6cdb40aa18ecfbdf4c54a05db063a0613987",
+      "reconstructedFromCommit": "e0a34f8f14a7fc6c44187b1125e2f9de3e8229aa",
+      "kind": "Exact bytes recovered by recorded hash from historical git blob, NOT falsely claimed to have been saved during invocation"
+    },
+    {
+      "invocation": "S23",
+      "path": "S23.policy.json",
+      "sha256": "406c5b0a53eb8e012dce34ad297f6cdb40aa18ecfbdf4c54a05db063a0613987",
+      "reconstructedFromCommit": "e0a34f8f14a7fc6c44187b1125e2f9de3e8229aa",
+      "kind": "Exact bytes recovered by recorded hash from historical git blob, NOT falsely claimed to have been saved during invocation"
+    },
+    {
+      "invocation": "S24",
+      "path": "S24.policy.json",
+      "sha256": "406c5b0a53eb8e012dce34ad297f6cdb40aa18ecfbdf4c54a05db063a0613987",
+      "reconstructedFromCommit": "e0a34f8f14a7fc6c44187b1125e2f9de3e8229aa",
+      "kind": "Exact bytes recovered by recorded hash from historical git blob, NOT falsely claimed to have been saved during invocation"
+    },
+    {
+      "invocation": "S25",
+      "path": "S25.policy.json",
+      "sha256": "406c5b0a53eb8e012dce34ad297f6cdb40aa18ecfbdf4c54a05db063a0613987",
+      "reconstructedFromCommit": "e0a34f8f14a7fc6c44187b1125e2f9de3e8229aa",
+      "kind": "Exact bytes recovered by recorded hash from historical git blob, NOT falsely claimed to have been saved during invocation"
+    },
+    {
+      "invocation": "S26",
+      "path": "S26.policy.json",
+      "sha256": "406c5b0a53eb8e012dce34ad297f6cdb40aa18ecfbdf4c54a05db063a0613987",
+      "reconstructedFromCommit": "e0a34f8f14a7fc6c44187b1125e2f9de3e8229aa",
+      "kind": "Exact bytes recovered by recorded hash from historical git blob, NOT falsely claimed to have been saved during invocation"
+    },
+    {
+      "invocation": "S27",
+      "path": "S27.policy.json",
+      "sha256": "406c5b0a53eb8e012dce34ad297f6cdb40aa18ecfbdf4c54a05db063a0613987",
+      "reconstructedFromCommit": "e0a34f8f14a7fc6c44187b1125e2f9de3e8229aa",
+      "kind": "Exact bytes recovered by recorded hash from historical git blob, NOT falsely claimed to have been saved during invocation"
+    },
+    {
+      "invocation": "S28",
+      "path": "S28.policy.json",
+      "sha256": "406c5b0a53eb8e012dce34ad297f6cdb40aa18ecfbdf4c54a05db063a0613987",
+      "reconstructedFromCommit": "e0a34f8f14a7fc6c44187b1125e2f9de3e8229aa",
+      "kind": "Exact bytes recovered by recorded hash from historical git blob, NOT falsely claimed to have been saved during invocation"
+    },
+    {
+      "invocation": "S29",
+      "path": "S29.policy.json",
+      "sha256": "406c5b0a53eb8e012dce34ad297f6cdb40aa18ecfbdf4c54a05db063a0613987",
+      "reconstructedFromCommit": "e0a34f8f14a7fc6c44187b1125e2f9de3e8229aa",
+      "kind": "Exact bytes recovered by recorded hash from historical git blob, NOT falsely claimed to have been saved during invocation"
+    },
+    {
+      "invocation": "S30",
+      "path": "S30.policy.json",
+      "sha256": "406c5b0a53eb8e012dce34ad297f6cdb40aa18ecfbdf4c54a05db063a0613987",
+      "reconstructedFromCommit": "e0a34f8f14a7fc6c44187b1125e2f9de3e8229aa",
+      "kind": "Exact bytes recovered by recorded hash from historical git blob, NOT falsely claimed to have been saved during invocation"
+    },
+    {
+      "invocation": "S31",
+      "path": "S31.policy.json",
+      "sha256": "406c5b0a53eb8e012dce34ad297f6cdb40aa18ecfbdf4c54a05db063a0613987",
+      "reconstructedFromCommit": "e0a34f8f14a7fc6c44187b1125e2f9de3e8229aa",
+      "kind": "Exact bytes recovered by recorded hash from historical git blob, NOT falsely claimed to have been saved during invocation"
+    }
+  ],
+  "unavailable": []
+}

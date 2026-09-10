@@ -1,0 +1,55 @@
+# R201 micro-unit ledger
+
+B26 micro-units/26 invocations, A19 micro-units/21 invocations.45 retained declarations and immediate guarded source commits. A5-1 is a signature text-generation error; A19-1 is the wrong append-order fixture expectation, NOT a producer defect. Both pass on attempt2. No exhausted/reverted unit; C0/ineligible. Owner clarified caps count micro-units and authorized the exact A19 correction. A20 not started; freeze after A19 explicitly permitted.
+
+| Unit | Attempt | Outcome | Source SHA256 | Guarded commit |
+|---|---:|---|---|---|
+| B1 | 1 | PASS | `db9a5c88f19af5c6f54f6f882add2e90a1d82da88d7d530df3fbe0ec90b58994` | `5658699cd5eaf028defbd150550b809d6f0d97f4` |
+| B2 | 1 | PASS | `21d678fb863273331a5acf5662f616f5855d80bf31e6b3f842d8cec4c5552ed2` | `bdcd343303a51c958faf83f9e24cbdf3b5e3e007` |
+| B3 | 1 | PASS | `400ef358bcc6776b687240cbeb7abe3e83bcf62b5aea52849f74916077f8b6fe` | `03c6e7b655d5c1b3aef56d4f8055ca12278baef7` |
+| B4 | 1 | PASS | `5014acd443d2b3ee101a0002aa5767d4234ad2c110d1afe2ae85cea9bc486304` | `95ac8dab6dac6594536126c5e3aab59dcc7aaf1f` |
+| B5 | 1 | PASS | `f31345eb5937cda2463aff46e6b69cedde9e29e6982fa98b6821ee6e6a1ba617` | `96bd7c395b1b12bd26b839bfabc3d0caff69f0fd` |
+| B6 | 1 | PASS | `9307da42e43a4a7b62fd2a8ff15cda884d3283a81d51dd07bd135d28a4bf2542` | `040cd596fc713276cadf78c2942a57342f9b95ba` |
+| B7 | 1 | PASS | `73d4aaad0f63dee0b90de702514f77d6bada11628298b352e8ce7d2450f71b33` | `68aa93accf97d5de004267113074c5391627d9ad` |
+| B8 | 1 | PASS | `10572fbd4c293ca96b02a09829c2e2e38d1160f7a4d22e2841c45ed34a64fde1` | `6a224d0bb5bdf7729c6b3e4f43c5b38fb859a2b3` |
+| B9 | 1 | PASS | `a7f0affc06018e5d6ffb8ade32f847832c632bc1abe7d8be81391b7e50054abd` | `4a59f1785790f8fee7c89e714bea3ccc7aaa14ae` |
+| B10 | 1 | PASS | `27dc4a8c6581fd30208bf091d2f765b11101875dce091f83832e0017e4fcda7c` | `c0b764562a25ae31db51b9f713f082c6d63a0613` |
+| B11 | 1 | PASS | `5684b3af1c572374114d1f65355b906a248255d030f39872c205b396d9c40bc3` | `006c85e20525989c00b107147cfcf13b56c8c691` |
+| B12 | 1 | PASS | `0fa008061d0197ad48bb079c962a0f5587850c33ca50491da9e9c8a890c96432` | `a7e3a4eacf89e065c75ed23b00d9142453f80111` |
+| B13 | 1 | PASS | `11bafc754639bc8fb59a2ca5cf7b16353ccf9032a61449581c893e17fa4aa598` | `669cea8771fd3742c2e65d602f62a712bf128908` |
+| B14 | 1 | PASS | `ae6a7fce141b24d0643f72ee24b8c9ac9562d5ec7f2cb999a7ce6b4964cd0339` | `3f1943f884347410c6a3e63b72a072aded4a2bc5` |
+| B15 | 1 | PASS | `7584345edc3afeb9dfcb1c6fa18c8524123adb824aa3d925327aa5cf14ee6898` | `3a39d2a271b162c09c8b787c56da543ba892f581` |
+| B16 | 1 | PASS | `de234c91c152802690119790572ddeae0eb09453b226eb4697ea185d59f56fcb` | `52179b8da931cdbacf7baf31cd0ff9e8c01a1869` |
+| B17 | 1 | PASS | `24d6ca731ae554aedc12ff29b92ef592b01d08570b5b2ea1f446b3dcc581f7d8` | `b1f33a2a5430a619776b93902945ef3e7e090611` |
+| B18 | 1 | PASS | `d35078ebfdd052caccb7f79f6f43bc97a568de871074a6b40cfac6058db8d9ec` | `695946c8f7c60583fe10beec14bb47ebf2cf33b6` |
+| B19 | 1 | PASS | `9c3075b9cf4a0f9c14099b2615051ffcbd4f50b3c40fe8f6b16fa1aa7073a6a1` | `e370e7a156bba6dc9baf5e5c845bc2edac455d40` |
+| B20 | 1 | PASS | `61a307189dc11aa9c3464783bbb70e90487d368ff0987a839eb581bac7e868ae` | `cd935c23c646970a60aa6ba040c482ac03303956` |
+| B21 | 1 | PASS | `c43725f35b8965a2db484822fb9297f660360d7f4c1f51a23ca68868187bf4e2` | `7f447fef96208f83ac8c3e64cee2259da89cc78e` |
+| B22 | 1 | PASS | `d4ecb91c93f5a4c5cf9b28d1e952ba2de6fe3a5f5a6a75795e555ff3664424f6` | `40f0f440bce107085e592849e6e0ffb9884ae750` |
+| B23 | 1 | PASS | `ba673cdc2f1f2c3b42d4db1e08c1e54e1136af40d41d5437c91c0e9db75a8345` | `447e1327931b4705fbeead953ab48856e93d5c46` |
+| B24 | 1 | PASS | `79a7bb16d367507126eb4ca1523ae7b1fd1c5a945b4bd979e718e6ce433c62ac` | `f9bac5f3c806b98406b7a0b707f791754955053f` |
+| B25 | 1 | PASS | `c9990e3f575c94d9f9d80129d0969dc546ad8957eeb5ad79005e412e5db83521` | `9f924e36adfd67acdec91144239e970ad644ef24` |
+| B26 | 1 | PASS | `e2250c50c8736d596c4b944b01601a0f5bf947737470c83faef8ca8051bf7dac` | `119fb5409e0c709ea9dd635e4cb32ae6d2fa8c3a` |
+| A1 | 1 | PASS | `36c1cc0b8f6de808e8cde792713894eba9b7afd2ee064de915965a909188c577` | `160541d4a8f80ebc24a480ec1e49a08ee9dbaede` |
+| A2 | 1 | PASS | `50729013fa0e4a67cfe089652e8287afdfda5730c36096e482c774e02652d579` | `72c2e3752e5bd1f7ea8dfb989119bd3363233f9a` |
+| A3 | 1 | PASS | `61ef40af32b5138aff930d1dd2ec60305ba8c97fcbc9364138f541142cace64d` | `9ad7bd50cd6d7d602d984a44eef40ef6f36287f5` |
+| A4 | 1 | PASS | `3d268d7f6c85c10ce599dd7ba18973d22d84c170b7fde58c211e3811d55620c8` | `fa29a918f5d13d1c0257a847e3cb5af5046dd4ac` |
+| A5 | 1 | REJECTED | `0fe9862f515b345b1ba667ed1107f2296f45f5ce365684a263044edf763a6b0a` | `none` |
+| A5 | 2 | PASS | `9c8d6ebbbada94b78822edc43554dc239c21716ad0615d7809658ea4fe8fe06a` | `c9f92f472be4ed9fba8444fda2f81068152fbe39` |
+| A6 | 1 | PASS | `19993e03f7c6ce1c49557001e12e8900faf94783ba308b5dc43d93d958bc6ad1` | `8666fd5e0ceaaa97bae33118636dfa4d0f83a448` |
+| A7 | 1 | PASS | `b78a0c598000f7f7c1c95433e72a4b2019d5a7b762ac0c2a377a715f6221a582` | `792c02d55d942423b7384f6fb9fd58cd95725dbb` |
+| A8 | 1 | PASS | `e16cb3cfa2f4d3155f418d476e1eeb1ef62a74ea78ef7a13dd2bca7bf34f8116` | `0653e03614f7ef753cb49403882c20863d04e48b` |
+| A9 | 1 | PASS | `f1133d705417722d54c76dbc17bdb8a7366c9f91ee1bc57011bcaef569fdff05` | `13f5fad90e0ec9cf01a12ac8cafaec378f8695a1` |
+| A10 | 1 | PASS | `cdf7bc92a79c811b415d9a558508d2828bd4376ade2f1b99521bbbdec26cf362` | `33484b034f58a844de3d304bb605fc2cc774a2cc` |
+| A11 | 1 | PASS | `64f908e57ab536e5418924c4e0e96ab133df555f65d43b4cca52a7bfcf054b9e` | `ad30fe42b0647426674f2fb97243acfb6504cf18` |
+| A12 | 1 | PASS | `158661c23da0c4f776ae9c944bfe9d2459b369aa7587143fe06607962dc3c0fd` | `1b612f1c328e80c0729a5d0e626a51a2a9e0512f` |
+| A13 | 1 | PASS | `57a8d0745e41c411e9fd6a9a2e7f6282fb5c44ef8a7d52f8c756048f7dabf0c8` | `1958e39cefd70cf5eebd5a76df5397a6232653e4` |
+| A14 | 1 | PASS | `690300b70f2dca0d4168718b2a3587bbafda9c0d7b8af7c44389312ab5050785` | `22614ddf4d6e39b4191f7fc731c5dbaf73226c43` |
+| A15 | 1 | PASS | `339be09a5c78e05c1f1a6f985086b889bebbbcb79bb2c8ed1adfdd18c7d4f65b` | `2f9ed6b02e1e705b3ed475c19ed4f0fabefbd9e6` |
+| A16 | 1 | PASS | `5908c80b2694589b912e131ba860d90a618cd2f11c0a9b7286e7e296c410689c` | `0b7f05539e53a65c0fb6188591a602aa7435237f` |
+| A17 | 1 | PASS | `ced42fdca74d62ba09250bb0533956c885dbd0ed7233d1aa5f1492e2c7d659ec` | `05eabc51aeb98594d1c6fd7f486d383efd8c2de9` |
+| A18 | 1 | PASS | `e8c266f11f3c8fc0456e017111d8e8d9dd86600a0803825cdc0907a2e51b1c68` | `9ae83b238e93bc78e64de302a87c91d61164c501` |
+| A19 | 1 | REJECTED | `190e9297ef1a8b9b51383bdc7f5b413726d771cc57881e1c945fd47377ab9bf8` | `none` |
+| A19 | 2 | PASS | `20c9523be8b09f7448eddf49417cb4baae29fd2a6e91b821584432d4134ced34` | `df921f18dc241bf815ff933328185001e525d668` |
+
+A19 authorization and byte-exact list-only correction: `O6-R201-A19-FIXTURE-RULING.json`. Every source receipt is inside the raw archive; artifact publication and final-gate receipts deliberately follow its anchor.

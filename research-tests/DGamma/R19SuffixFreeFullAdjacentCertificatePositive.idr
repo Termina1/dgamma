@@ -339,6 +339,8 @@ scopedFullSuffixFreeAdjacentCertificateProducer nameEq keyEq protocol actor left
               (MoreTransitions left (MoreTransitions right NoTransitions))
             fold = MkAdjacentSwapOperationalOccurrenceFold Refl Refl occurrence
               (swapTwoAdvanceOrdinal leftAdvance leftIter rightAdvance rightIter)
+              (\rootOccurrence => case twoAdvanceOccurrenceAction
+                leftAdvance rightAdvance rootOccurrence of Refl impossible)
         in (diamond ** MkScopedFullSuffixFreeAdjacentCertificate finalState
           NoTransitions trace Refl Refl
           (sameExternalOrchestrationReflexiveSpike nameEq trace)

@@ -1,0 +1,31 @@
+{
+  "ref": "origin/cp5-thm73-lane-a8a10",
+  "refCommit": "a0e50ce016cc6a05fd8ee453803d975d7fdfa905",
+  "items": {
+    "O6-L2R15-CP3-TIER1-SIGNED-DIFF.patch": {
+      "copiedTo": "research-tests/O6-R205-CP3-TIER1-SIGNED-DIFF.patch",
+      "sha256": "42d957748fcc67ff534c33a6c369eded4bad65e0f37e5c72e4539b737a68fb8a",
+      "bytes": 31798,
+      "lines": 546
+    },
+    "O6-L2R15-CP3-DIFF-DRAFT-OVERLAY.md": {
+      "copiedTo": "research-tests/O6-R205-CP3-TIER1-OVERLAY-COPY.md",
+      "sha256": "602f1b4ce16684c49afb5bac134ce23bff91ac179dbbc0c0615626777c410d91",
+      "bytes": 89161,
+      "lines": 1311
+    },
+    "O6-L2R15-CP3-REBUILD-INVENTORY.json": {
+      "copiedTo": "research-tests/O6-R205-LANE-INVENTORY-COPY.json",
+      "sha256": "0226ceaacb43403cd57c0a942fe62f1fb4abe89003e553df32fb79b4c634d5ec",
+      "bytes": 502470,
+      "lines": 14353
+    },
+    "O6-L2R5-CP3-DIFF-DRAFT.md": {
+      "copiedTo": "research-tests/O6-R205-L2R5-FIDELITY-COPY.md",
+      "sha256": "6b13cc1acb1c27047cfddfa21dfac26ac1f04d46568105f06f3e589b62c9e13c",
+      "bytes": 80844,
+      "lines": 870
+    }
+  },
+  "previousRefCommit": "6f85af32e54d5c2709c6b76d2cdda833ea362ec1"
+}

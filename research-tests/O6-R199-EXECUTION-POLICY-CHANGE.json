@@ -1,0 +1,35 @@
+{
+  "authorization": "SUPERVISOR RULE CHANGE: CROSS-LANE HEAVY LOCK ABOLISHED",
+  "received": {
+    "event": "OWNER POLICY CHANGE; pause orchestration at next safe native boundary",
+    "timestampUTC": "2026-09-09T12:30:17.941534+00:00",
+    "driverPID": 30152,
+    "lastCompleted": "V10",
+    "action": "SIGSTOP own Python driver only; no compiler signalled; current checker releases its own old lock on completion",
+    "decision": "Cross-lane heavy lock abolished. One compiler per lane, own RSS guards52GiB LocalDiamond/48GiB otherwise, no lane2 signalling/lock access. Concurrent heavy checks across lanes now permitted; new overlaps record timestamps only. Continue immutable final validation with no repeated targets."
+  },
+  "effectiveUTC": "2026-09-09T12:36:56.499127+00:00",
+  "effectiveAfterUnit": "V11",
+  "completedAtBoundary": [
+    "V1",
+    "V2",
+    "V3",
+    "V4",
+    "V5",
+    "V6",
+    "V7",
+    "V8",
+    "V9",
+    "V10",
+    "V11"
+  ],
+  "lastNativeEndUTC": "2026-09-09T12:35:17.403538+00:00",
+  "oldOwnLockReleasedUTC": "2026-09-09T12:35:17.405344+00:00",
+  "runnerBeforeSHA256": "e065170b3413aeb9d4510901685e96a26aee64162e35d37e308636e87f55e447",
+  "runnerAfterSHA256": "0c3f35a2a711e38e80a91d45304f2b550d9cd082d4d2b608883ac9aaf2525a1e",
+  "driverBeforeSHA256": "0316e4e50a7f3f7686cc5fa1007e483db378ac7969ebb77bab6a32e7d7206b95",
+  "driverAfterSHA256": "9f95ad5b6277e12842c2bd8ff8bed92cb523d6a9c734b5e5d2b3a859a591ba13",
+  "planSHA256": "cd367286435987976d77d3ce7b44eee67caa127ac5b6a915deaf206138678503",
+  "sourceFreezeHead": "a240d3726ccfa36988562791fcb6fd1e76564f02",
+  "qualification": "Next-safe-boundary continuation of the same final validation, no source/plan change or repeated target. Only the old Python scheduler is replaced; no compiler is signalled. Existing own check released its old lock; subsequent checks never touch shared lock paths. Permission is owner-issued; instrumentation changes at this boundary. Per-lane serialization and RSS limits unchanged; overlap observations are sampled timestamps, not a complete OS scheduler trace."
+}

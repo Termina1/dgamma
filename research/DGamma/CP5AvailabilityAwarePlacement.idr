@@ -53,13 +53,13 @@ data AvailabilityTrace :
   AvailabilityEnd :
     {name, key, world, error : Type} -> {value : key -> Type} ->
     (state : SystemState name key value world error) ->
-    AvailabilityTrace name key world error value (NoTransitions {state = state})
+    DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value (NoTransitions {state = state})
   AvailabilityStep :
     {name, key, world, error : Type} -> {value : key -> Type} ->
     {0 middle, finalState : SystemState name key value world error} ->
     (first : SystemState name key value world error) -> (step : Transition first middle) ->
-    (0 rest : Transitions middle finalState) -> AvailabilityTrace name key world error value rest ->
-    AvailabilityTrace name key world error value (MoreTransitions step rest)
+    (0 rest : Transitions middle finalState) -> DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value rest ->
+    DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value (MoreTransitions step rest)
 
 ||| A compatible cut preserves declaration availability at EVERY crossed
 ||| state and crosses NO root input. The endpoint state is checked too;
@@ -69,16 +69,16 @@ rootCutCompatible :
   (name, key, world, error : Type) -> (value : key -> Type) ->
   (nameEq : DecEq name) -> (keyEq : DecEq key) -> Component key value world error -> Nat ->
   {0 first, finalState : SystemState name key value world error} -> {0 trace : Transitions first finalState} ->
-  AvailabilityTrace name key world error value trace -> Bool
-rootCutCompatible name key world error value nameEq keyEq component Z (AvailabilityEnd state) =
-  rootDeclaredProvisionsFree name key world error value keyEq component state
-rootCutCompatible name key world error value nameEq keyEq component (S position) (AvailabilityEnd state) = False
-rootCutCompatible name key world error value nameEq keyEq component Z (AvailabilityStep first (Fired _ _ action _ _) rest later) =
-  rootDeclaredProvisionsFree name key world error value keyEq component first &&
-  not (rootInputAtSource name key world error value nameEq action first) &&
-  rootCutCompatible name key world error value nameEq keyEq component Z later
-rootCutCompatible name key world error value nameEq keyEq component (S position) (AvailabilityStep first step rest later) =
-  rootCutCompatible name key world error value nameEq keyEq component position later
+  DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value trace -> Bool
+rootCutCompatible name key world error value nameEq keyEq component Z (DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd state) =
+  DGamma.CP5AvailabilityAwarePlacement.rootDeclaredProvisionsFree name key world error value keyEq component state
+rootCutCompatible name key world error value nameEq keyEq component (S position) (DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd state) = False
+rootCutCompatible name key world error value nameEq keyEq component Z (DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep first (Fired _ _ action _ _) rest later) =
+  DGamma.CP5AvailabilityAwarePlacement.rootDeclaredProvisionsFree name key world error value keyEq component first &&
+  not (DGamma.CP5AvailabilityAwarePlacement.rootInputAtSource name key world error value nameEq action first) &&
+  DGamma.CP5AvailabilityAwarePlacement.rootCutCompatible name key world error value nameEq keyEq component Z later
+rootCutCompatible name key world error value nameEq keyEq component (S position) (DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep first step rest later) =
+  DGamma.CP5AvailabilityAwarePlacement.rootCutCompatible name key world error value nameEq keyEq component position later
 
 ||| Earliest means admissible HERE and no strictly earlier compatible cut in
 ||| this ACTUAL located birth's prefix, not an arbitrary executable schedule.
@@ -91,11 +91,11 @@ record EarliestAvailableRootBirth
   (0 component : Component key value world error)
   (0 birth : LocatedActionOccurrence (OInsert root Root component) trace) where
   constructor MkEarliestAvailableRootBirth
-  rootAvailabilityTrail : AvailabilityTrace name key world error value (beforeActionOccurrence birth)
-  0 rootCurrentCutAvailable : rootCutCompatible name key world error value nameEq keyEq component
+  rootAvailabilityTrail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value (beforeActionOccurrence birth)
+  0 rootCurrentCutAvailable : DGamma.CP5AvailabilityAwarePlacement.rootCutCompatible name key world error value nameEq keyEq component
     (locatedActionOrdinal birth) rootAvailabilityTrail = True
   0 noEarlierCompatibleRootCut : (earlier : Nat) -> LT earlier (locatedActionOrdinal birth) ->
-    rootCutCompatible name key world error value nameEq keyEq component earlier rootAvailabilityTrail = False
+    DGamma.CP5AvailabilityAwarePlacement.rootCutCompatible name key world error value nameEq keyEq component earlier rootAvailabilityTrail = False
 
 ||| R178 A8 REPLACEMENT specification, not an adapter to frozen CP3.
 ||| Integration needs an OWNER choice of research-tower fork or production
@@ -112,7 +112,7 @@ record AvailabilityAwareCanonicalInputPlacement
   0 rootGenerationEarliestAvailable :
     {root : name} -> {component : Component key value world error} ->
     (birth : LocatedActionOccurrence (OInsert root Root component) trace) ->
-    EarliestAvailableRootBirth name key world error value nameEq keyEq trace root component birth
+    DGamma.CP5AvailabilityAwarePlacement.EarliestAvailableRootBirth name key world error value nameEq keyEq trace root component birth
   0 availableRootGenerationFresh :
     {root : name} -> {component : Component key value world error} ->
     (birth : LocatedActionOccurrence (OInsert root Root component) trace) ->

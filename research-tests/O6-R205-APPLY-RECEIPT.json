@@ -1,0 +1,23 @@
+{
+  "timestampUTC": "2026-09-09T22:49:02.920017+00:00",
+  "productionCommit": "ceecde24b1b0fdd29e796d3f59cbdd8fe0668a56",
+  "CP3Blob": "eeaa70aa4414648bb2a1173d58244267997d16d7",
+  "CP3SHA256": "0aa65041e36342a831b24a231e4d68eb74ffa17cf93e56e84b668ae4f19b95ba",
+  "patchSHA256": "42d957748fcc67ff534c33a6c369eded4bad65e0f37e5c72e4539b737a68fb8a",
+  "hunks": [
+    "@@ -1778,30 +1778,213 @@",
+    "@@ -1818,8 +2001,9 @@",
+    "@@ -1833,13 +2017,12 @@",
+    "@@ -1868,22 +2051,24 @@",
+    "@@ -2089,34 +2274,6 @@",
+    "@@ -3149,37 +3306,184 @@",
+    "@@ -3263,7 +3567,7 @@"
+  ],
+  "changedPaths": [
+    "src/DGamma/CP3.idr"
+  ],
+  "packageUnchanged": true,
+  "ownerQuote": "Давайттак размораживай то что нужно я же все разрешил",
+  "transcriptionReview": "Independent patch fidelity review conveyed by parent: PATCH FAITHFUL-WITH-NOTES; production commit stands",
+  "buildStatus": "P1 running; application is NOT build certification"
+}

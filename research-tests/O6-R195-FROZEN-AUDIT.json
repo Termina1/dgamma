@@ -1,0 +1,103 @@
+{
+  "timestamp": "2026-09-09T03:32:31.460022+00:00",
+  "head": "21269c8e935125e8101b2ebd62592bb36a0c7f07",
+  "start": "981e6137",
+  "O19Closed": true,
+  "ratifiedMovedDeclarations": [],
+  "holes": {
+    "CanonicalSort": [
+      "?sortClosingFreeTraceSpike_rhs"
+    ],
+    "CrossTrace": [
+      "?selectOperationalCanonicalPermutationSpike_rhs",
+      "?canonicalSchedulesConvergeSpike_rhs"
+    ],
+    "DeletionChain": [],
+    "LocalDiamond": [],
+    "RenamingComposition": [
+      "?replayedCanonicalToOriginalEndpointSpike_rhs"
+    ]
+  },
+  "split": [
+    1,
+    2,
+    0,
+    0,
+    1
+  ],
+  "productionDiffVs34b21c9": "empty",
+  "CP3Blob": "2c697e532e83989de8591fa6a4378747c6a501c0",
+  "LocalDiamondDiffVsStart": "empty",
+  "LocalDiamondUnchanged": true,
+  "LocalDiamondAuthorizedVisibility": {},
+  "CanonicalSortDiffVsStart": "empty",
+  "CanonicalSortAuthorizedVisibility": {},
+  "DeletionChainDiffVsStart": "empty",
+  "CrossTraceDiffVsStart": "empty",
+  "RenamingCompositionDiffVsStart": "empty (R192 A11 manifest preserved)",
+  "adjacentFullBytes": 1470,
+  "adjacentFullSHA256": "2d01486bf953f11191b758ac3cfb5722d1d02b1a192b6e552adc8a3f58199ecf",
+  "adjacentStatementBytes": 1154,
+  "adjacentStatementSHA256": "3aae5a9fbc5b14e0411b4a91e557a6f3dc68c9a6282b9ec2b3fc658cec337adf",
+  "reviewSHA256": "61fc23ae4cea4565b442c840be39c41746ecbac73b8c2f73d04f1e3b4f4681e8",
+  "seeds": "207/207",
+  "LocalDiamondTTC": {
+    "bytes": 125368223,
+    "mtimeUTC": "2026-09-09T03:18:12.407245+00:00"
+  },
+  "changedIdrisFiles": [
+    "research-tests/DGamma/R195ClosingHistoryRetentionPositive.idr",
+    "research-tests/DGamma/R195EndpointRebaseBoundaryPositive.idr",
+    "research-tests/DGamma/R195RootOrdinalBoundaryPositive.idr",
+    "research/DGamma/CP5O20EndpointRebaseBoundarySpike.idr",
+    "research/DGamma/CP5O20GenerationOnlyHistorySpike.idr",
+    "research/DGamma/CP5O20RootOrdinalBoundarySpike.idr"
+  ],
+  "A11SurfaceRevision": {
+    "approval": "Supervisor exact-field need_decision reply, 2026-09-08 R192; one existing record/consumer declaration per invocation",
+    "baselineHead": "865de39fbbf857f9880315fb26e4227d7997eed4",
+    "oldFieldBytes": 1154,
+    "newFieldBytes": 1297,
+    "oldFieldSHA256": "574fcb56e55e2bc3f54d36711b23ef6ac767f9c97952c596ce5c72dd6e7123d1",
+    "newFieldSHA256": "037737c2cd0d9c29ae7d1637a7eaf19f9ea75bbc07a1546f8870b312b3af2894",
+    "oldRecordBytes": 3100,
+    "newRecordBytes": 3243,
+    "oldRecordSHA256": "b65cc059e8dea35ce9e7fdd1b580b1d2b5e0e3e03b4ed6aaddf07c6f101cf6d1",
+    "newRecordSHA256": "ac5304c1a6a6e0cea988eac4b0dcdb5756fcf1b67ede7d0db6a4d723c73b695d",
+    "unchangedFirstThreeFieldsSHA256": "e440bbeaf87224e84dc5aec8630d915e5abff4721627de970800705de0a18abf",
+    "unchangedO21DeclarationSHA256": "377b08ff82e1e4212738bb00a45a088b1f0d8fd8bc8b54bf061c96f2f4891681"
+  },
+  "sourceSHA256": {
+    "research-tests/DGamma/R195ClosingHistoryRetentionPositive.idr": "9a59d7a42e73257024bac9b784773e5dd8c21d58f16d5e0acffb90197506f36a",
+    "research-tests/DGamma/R195EndpointRebaseBoundaryPositive.idr": "831eb3e4ccd8528945ed68cef9aa42c2351501c358c7e5167f4e42d01d2474ee",
+    "research-tests/DGamma/R195RootOrdinalBoundaryPositive.idr": "ea13e281a2f4d709db972da1bfb6012837c69bc78769ca179ece7dd3ada83295",
+    "research/DGamma/CP5O20EndpointRebaseBoundarySpike.idr": "a33194709140d8ede3acf264e65a54d7c6d8b91d8c5eff113221b5ef1559c4ec",
+    "research/DGamma/CP5O20GenerationOnlyHistorySpike.idr": "bb3b1e3c31c50d62a93eb3411224e17aaa71c483dd460ec91e32f3ab15fbf3a4",
+    "research/DGamma/CP5O20RootOrdinalBoundarySpike.idr": "bb9d8da6173b7e0bc2d4b770b3147ed3c01a9d8c7866dfeb2758facb3d5935ac"
+  },
+  "protectedDeclarationSHA256": {
+    "sortClosingFreeTraceSpike": "1df8d174b9a4f119a5a52e2073a72907bdb890413f877d55886e905e1d0279d1",
+    "operationalAdjacentBlockSwapSpike": "e81d83c165b65ae6d4f6e29347b53fa6b7db83d6f5f29d6c6b07c0f9d09c11e8",
+    "selectOperationalCanonicalPermutationSpike": "b00063eacf339b58828eac5829cebc66fc7265f3518be459af0602463b6fbae7",
+    "canonicalSchedulesConvergeSpike": "0e8a177ea7bb4807cb77680cde29e75f7d37224711cc51cf7bf6636426690dd9",
+    "replayedCanonicalToOriginalEndpointSpike": "377b08ff82e1e4212738bb00a45a088b1f0d8fd8bc8b54bf061c96f2f4891681"
+  },
+  "prohibitedAdditions": {
+    "\\bbelieve_me\\b": [],
+    "\\bassert_total\\b": [],
+    "^\\s*partial\\b": [],
+    "\\?\\w+": [],
+    "\\blet\\b": [],
+    "\\bwith\\b": [],
+    "\\bprefix\\b": [],
+    "\\bdeletionTheoremProof\\b": [],
+    "\\bpostulate\\b": [],
+    "\\b[A-Za-z_]\\w*@\\s*[\\(\\[]": []
+  },
+  "noCompiler": true,
+  "lane2Compilers": [],
+  "compilerScope": "main worktree only",
+  "noStagedFiles": true,
+  "cleanTrackedTree": true,
+  "allowedUntrackedOnly": true
+}

@@ -1,0 +1,367 @@
+{
+  "preparedUTC": "2026-09-09T22:25:07.438693+00:00",
+  "throughCommit": "ee37c24ab9e4b133b1cc4b55c8d306b229542233",
+  "receipts": [
+    {
+      "beforeCommitHash": "af2df90b1b5c870c6535b67dc62ee53d506bc387",
+      "artifactHashes": {
+        "research-tests/O6-R203-GRIND-SHIFT-AUDIT.md": {
+          "before": "3537f00773964ed2c13d1dd57e355ea155832b34397a300b560b03f95c401beb",
+          "after": "bc34ad5ab037f62b9ecbc792cd211eeb5e4e55ba7623775008a36fbc77666ff4"
+        },
+        "research-tests/O6-R203-RESOURCE-AUDIT.json": {
+          "before": "d5563fc7fb1a1bc5865cd65864628c2df5bde456120517dc0574a179b7da1a1e",
+          "after": "8d4a642ceb04893dc5b2786abc8be1660b937d6ac2b9fb9ef5cab9066fbe7492"
+        },
+        "research-tests/O6-R204-PREFLIGHT.md": {
+          "before": null,
+          "after": "e7137035d0cc1209200bd2eb66c70b160f33365b7d9507cbc5e13bc3b4a8f8c9"
+        },
+        "research-tests/O6-R204-GRIND-SHIFT-AUDIT.md": {
+          "before": null,
+          "after": "717c324203904e30bbfc3dd108e9659320cef35b537cfad5bc97cc8c135938c3"
+        },
+        "research-tests/O6-R204-MICRO-UNITS.md": {
+          "before": null,
+          "after": "6351a728bbf99690e3210c3d693e567f800cf1ec5ee5f2ff4031d5a4151a2d05"
+        },
+        "research-tests/O6-R204-EXECUTION-POLICY.json": {
+          "before": null,
+          "after": "d2140ff1c7ecbd2eb134b4203deb4338ff730f1f8c5f2e7c83e02918661b7660"
+        },
+        "research-tests/O6-R204-SHIFT.json": {
+          "before": null,
+          "after": "199685f51ac79a61b025803bce87e1f6d82f2c1c85110e1d79e62c5ee219c470"
+        },
+        "research-tests/run-r204-check.py": {
+          "before": null,
+          "after": "2982ab0c695977ca70d778f79493ddf8a2d623ad026a44fec07bbebbaac6285f"
+        },
+        "research-tests/run-r204-commit.py": {
+          "before": null,
+          "after": "2f399b768111d5f25870bce9371146e0e7f8fe43469439ce90d5960171eb7a18"
+        },
+        "research-tests/run-r204-artifact-commit.py": {
+          "before": null,
+          "after": "1755be6ef4bbe775a4a867e6224aff13d854b605349890c39537e07b3f8d8746"
+        }
+      },
+      "message": "R204 Unit 0b: R203 review P2 RSS measurement wording and repair receipts",
+      "event": "GUARDED ARTIFACT COMMIT",
+      "unit": "U0a-2",
+      "attempt": "not encoded (validation or compiler-free artifact)",
+      "invocation": "U0a-2",
+      "sourceInvocation": "U0a-2",
+      "sourceHash": "6946cbd30558b3013a418e0d3cb7ff85ef3698e3e7cd6555545079df6b596618",
+      "resultingCommitHash": "c254d5a1aabff86c6eda22eca33afba10859a944",
+      "timestampUTC": "2026-09-09T20:44:30.066203+00:00",
+      "paths": [
+        "research-tests/O6-R203-GRIND-SHIFT-AUDIT.md",
+        "research-tests/O6-R203-RESOURCE-AUDIT.json",
+        "research-tests/O6-R204-PREFLIGHT.md",
+        "research-tests/O6-R204-GRIND-SHIFT-AUDIT.md",
+        "research-tests/O6-R204-MICRO-UNITS.md",
+        "research-tests/O6-R204-EXECUTION-POLICY.json",
+        "research-tests/O6-R204-SHIFT.json",
+        "research-tests/run-r204-check.py",
+        "research-tests/run-r204-commit.py",
+        "research-tests/run-r204-artifact-commit.py"
+      ],
+      "guardChecksPassed": [
+        "fresh PASS",
+        "exit 0",
+        "not interrupted",
+        "no expected diagnostic",
+        "exact source SHA256",
+        "artifact paths only",
+        "no source delta",
+        "no pre-staged files",
+        "no own-worktree compiler (lane2 excluded)",
+        "git diff --check",
+        "git commit success",
+        "no post-staged files"
+      ]
+    },
+    {
+      "beforeCommitHash": "3e6d8ff0f539ecb0425fc19b496995b4a97d6e67",
+      "artifactHashes": {
+        "NOTES.md": {
+          "before": "c42a4113d024105d4a244bc90f5a950717aeeaed2f7b66d174315060c52bd127",
+          "after": "3a8ef65c85977797cc6632359aa98060927259befd3ec8c517888e5249b5c107"
+        },
+        "README.md": {
+          "before": "aa46c8a649914d5af832334b6784ac88cd0c4656f95df99ea22653110ef6b09c",
+          "after": "0707e71132ad764c94e2da759015a0b5e04590552b637fb66229f26cde761e2f"
+        },
+        "THM73-PLAN.md": {
+          "before": "2706766156032009deaeed63b3d6a5b5956a77c4af2efe0eadb11fae94879941",
+          "after": "0d0e034c2624fbf0ae50495dd169c7d3f6636eee5034b06612de547d1553dcbf"
+        },
+        "research-tests/O6-R204-GRIND-SHIFT-AUDIT.md": {
+          "before": "717c324203904e30bbfc3dd108e9659320cef35b537cfad5bc97cc8c135938c3",
+          "after": "88441246221211295746acbf9a339b4955dde3a75d2514244aa201d55fc13f2c"
+        },
+        "research-tests/O6-R204-MICRO-UNITS.md": {
+          "before": "6351a728bbf99690e3210c3d693e567f800cf1ec5ee5f2ff4031d5a4151a2d05",
+          "after": "3f26554bca753b5d056a6161e7309e75060b96ffc43885b5fe5a720a66d0263e"
+        },
+        "research-tests/O6-R204-A15-STOP-AUDIT.md": {
+          "before": null,
+          "after": "6868b316424c457754daf9e0186aa4486c6e5964c71ef104f71e0154a19e6978"
+        },
+        "research-tests/O6-R204-CONTRACT-TESTS.json": {
+          "before": null,
+          "after": "2437ae36da9323af953551a33f88c3d2a47b543728b79b8fe56536e623e87456"
+        },
+        "research-tests/O6-R204-DECLARATIONS.md": {
+          "before": null,
+          "after": "448d08c12159ec99b84338ed397ecd35d0665ee3539472a66793478c975518a4"
+        },
+        "research-tests/O6-R204-FINAL-VALIDATION-PLAN.json": {
+          "before": null,
+          "after": "0ecb6cf829d07bc1a172eb5d0746fc6d1910e7ad8582f0390e559a6a540041ab"
+        },
+        "research-tests/O6-R204-POLICY-CONTRACT-TESTS.json": {
+          "before": null,
+          "after": "b432b4f09873062458e4f56268aa0568ff001c4f802e8d794f263e3f3ca37b28"
+        },
+        "research-tests/O6-R204-PRE-INDEPENDENT.json": {
+          "before": null,
+          "after": "e95116918c797183e3c51e3a9b7bfd011a8499b660db99ecb062a6e0d65afd92"
+        },
+        "research-tests/O6-R204-REVIEW-REPAIRS.json": {
+          "before": null,
+          "after": "7903adaeb814b1ccb12717a316a4714e4165bfb67ed61084ec6e284932266cc7"
+        },
+        "research-tests/O6-R204-SOURCE-FREEZE.json": {
+          "before": null,
+          "after": "ebf643e9700fc191f84b2e05e1b06958db2cb20f9c0c94e1d024212cc7cf1591"
+        },
+        "research-tests/O6-R204-VALIDATION-SCOPE.json": {
+          "before": null,
+          "after": "0825a7684416b4fec41f613201392027ea2c9edb6b0f6d08fee13a8d8019815b"
+        },
+        "research-tests/r204_evidence_contract.py": {
+          "before": null,
+          "after": "c72cfd2ce035a71d538a1bc294310f69a4d4afce321104bdfae9ac243ea990bb"
+        },
+        "research-tests/run-r204-archive.py": {
+          "before": null,
+          "after": "195f42ea0761bf84cb29a330a8eda15c144f5887ea4ea5706470625e55951d63"
+        },
+        "research-tests/run-r204-final-validation.py": {
+          "before": null,
+          "after": "d47a6ba6b7594b20e49ba123d326f1af35c4746142e52a7c25a51bcbfcbdf52d"
+        },
+        "research-tests/run-r204-frozen-audit.py": {
+          "before": null,
+          "after": "d46972f4d18a1e5ed5ebf49768d326fa6e0167247c2808d81826d41ad31c0325"
+        },
+        "research-tests/run-r204-independent-verify.py": {
+          "before": null,
+          "after": "194687570e2966b6ab264df765178779d345e8892be45da7f75711c8305d0cc2"
+        },
+        "research-tests/run-r204-plan.py": {
+          "before": null,
+          "after": "2cfaddbb74d385555195dd61823cd5dcd9b9374619381ba5f4d24ea31b8d3084"
+        },
+        "research-tests/run-r204-resource-audit.py": {
+          "before": null,
+          "after": "effe8711a919ab910144526fb1182e2067e358d629002720927dc6140fce9cfa"
+        },
+        "research-tests/run-r204-test-contracts.py": {
+          "before": null,
+          "after": "c0ccd7d4bed88042b27e3df64a571249ab30947760092f45267abc9be5b63294"
+        },
+        "research-tests/run-r204-verify-archive.py": {
+          "before": null,
+          "after": "7b79e80bc79da401bc41793a603c450d370235129cc92b843a9329c1ba1af1e4"
+        },
+        "research-tests/test_r204_evidence_contract.py": {
+          "before": null,
+          "after": "39d50044d6d26b5a9c657a8f56e5184ed03454bb0761e43faa3c043490d4bd2a"
+        },
+        "research-tests/test_r204_policy_contract.py": {
+          "before": null,
+          "after": "a435373bee8d4c97fa7a2d8bd0d38fa0f8b54100963ca22b39cd488ce005d20d"
+        }
+      },
+      "message": "R204 D1: seal checked partial sources, repairs, 190-target plan and evidence contracts",
+      "event": "GUARDED ARTIFACT COMMIT",
+      "unit": "A16",
+      "attempt": "1",
+      "invocation": "A16-1",
+      "sourceInvocation": "A16-1",
+      "sourceHash": "8fda11ccd281eed876d83849734d79059c63e54dde9946182866699dacb71b87",
+      "resultingCommitHash": "56d1269b9e1f70fa055d89b15137583b2d7fd262",
+      "timestampUTC": "2026-09-09T21:39:22.624092+00:00",
+      "paths": [
+        "NOTES.md",
+        "README.md",
+        "THM73-PLAN.md",
+        "research-tests/O6-R204-GRIND-SHIFT-AUDIT.md",
+        "research-tests/O6-R204-MICRO-UNITS.md",
+        "research-tests/O6-R204-A15-STOP-AUDIT.md",
+        "research-tests/O6-R204-CONTRACT-TESTS.json",
+        "research-tests/O6-R204-DECLARATIONS.md",
+        "research-tests/O6-R204-FINAL-VALIDATION-PLAN.json",
+        "research-tests/O6-R204-POLICY-CONTRACT-TESTS.json",
+        "research-tests/O6-R204-PRE-INDEPENDENT.json",
+        "research-tests/O6-R204-REVIEW-REPAIRS.json",
+        "research-tests/O6-R204-SOURCE-FREEZE.json",
+        "research-tests/O6-R204-VALIDATION-SCOPE.json",
+        "research-tests/r204_evidence_contract.py",
+        "research-tests/run-r204-archive.py",
+        "research-tests/run-r204-final-validation.py",
+        "research-tests/run-r204-frozen-audit.py",
+        "research-tests/run-r204-independent-verify.py",
+        "research-tests/run-r204-plan.py",
+        "research-tests/run-r204-resource-audit.py",
+        "research-tests/run-r204-test-contracts.py",
+        "research-tests/run-r204-verify-archive.py",
+        "research-tests/test_r204_evidence_contract.py",
+        "research-tests/test_r204_policy_contract.py"
+      ],
+      "guardChecksPassed": [
+        "fresh PASS",
+        "exit 0",
+        "not interrupted",
+        "no expected diagnostic",
+        "exact source SHA256",
+        "artifact paths only",
+        "no source delta",
+        "no pre-staged files",
+        "no own-worktree compiler (lane2 excluded)",
+        "git diff --check",
+        "git commit success",
+        "no post-staged files"
+      ]
+    },
+    {
+      "beforeCommitHash": "56d1269b9e1f70fa055d89b15137583b2d7fd262",
+      "artifactHashes": {
+        "NOTES.md": {
+          "before": "3a8ef65c85977797cc6632359aa98060927259befd3ec8c517888e5249b5c107",
+          "after": "f6940caa8ba30039498f3cfc3667d612d8a269102e12af208666a83a96e7d50e"
+        },
+        "README.md": {
+          "before": "0707e71132ad764c94e2da759015a0b5e04590552b637fb66229f26cde761e2f",
+          "after": "4999751c64bc9e19abc8278484aba6a7d4d48ae329d6c6ef6d4d6d32b5efc075"
+        },
+        "THM73-PLAN.md": {
+          "before": "0d0e034c2624fbf0ae50495dd169c7d3f6636eee5034b06612de547d1553dcbf",
+          "after": "0eb3ac7b6a01dc33e3512ca3c4a6008016185bda01c5cf09aa261222c25a61a3"
+        },
+        "research-tests/O6-R204-GRIND-SHIFT-AUDIT.md": {
+          "before": "88441246221211295746acbf9a339b4955dde3a75d2514244aa201d55fc13f2c",
+          "after": "672876fd77dc0132a23d922e01dee95fa86a089e59ec312c4f26dc96e08a0b11"
+        },
+        "research-tests/O6-R204-MICRO-UNITS.md": {
+          "before": "3f26554bca753b5d056a6161e7309e75060b96ffc43885b5fe5a720a66d0263e",
+          "after": "eaff5a7a51ece08173c3be266cce9fdc2a54bcb5dad6c42b095bfeb51973a217"
+        },
+        "research-tests/O6-R204-ARCHIVE-VERIFICATION.json": {
+          "before": null,
+          "after": "7304bff297f5c818aade78905187b0a88dc05aa895589e92b9122ce3e9319fe4"
+        },
+        "research-tests/O6-R204-AUTHOR-REVIEW.md": {
+          "before": null,
+          "after": "84519f97543052b846aeb238aa59dc8c2a814cb4bc9456d8c41d9cf098f86ab6"
+        },
+        "research-tests/O6-R204-COMPILER-EVIDENCE.tar.gz": {
+          "before": null,
+          "after": "2d7f4d93aeca8cd006a790383d1ee081cf8db089efea29e55bb3f724fbccf8f8"
+        },
+        "research-tests/O6-R204-COMPILER-LEDGER.json": {
+          "before": null,
+          "after": "fb07e76df6e0ac8ce5bf831aa4c6fe59ed7511708e27a51fbeee58bdf53b56c5"
+        },
+        "research-tests/O6-R204-EVIDENCE-VERIFICATION.json": {
+          "before": null,
+          "after": "236183c0a8227d4db8fbcc9df8f3baec20d7da4c2a9e293300268520e068ffb0"
+        },
+        "research-tests/O6-R204-FINAL-VALIDATION-RESULT.json": {
+          "before": null,
+          "after": "5c6e9fe72d9c256aea11be96479f1e0a20a87cec165d2c5e330e806684a61c32"
+        },
+        "research-tests/O6-R204-FROZEN-AUDIT.json": {
+          "before": null,
+          "after": "2b961349f33a6a05c4f72c147b6f0f95e4ca00551f40005c1a173993c46724ed"
+        },
+        "research-tests/O6-R204-INDEPENDENT-VERIFICATION.json": {
+          "before": null,
+          "after": "0171d78edd8dc832a5838c4b8aefdee41cb0c5497c87f89ffc283ec7d85902ab"
+        },
+        "research-tests/O6-R204-PER-MODULE-COSTS.md": {
+          "before": null,
+          "after": "50570930ca1b3be86b6af4a3917109d2e3848dccaf7cc602f73b340a3032a1c6"
+        },
+        "research-tests/O6-R204-R205-HANDOFF.md": {
+          "before": null,
+          "after": "a0d0592cff52233e3b7b5016c6d067b0b06fbcc9144e1cc691c4f8bb3e0d91c5"
+        },
+        "research-tests/O6-R204-R205-VISIBILITY-CANDIDATE.json": {
+          "before": null,
+          "after": "43126ee917ed33937d0c649d0788bd303b18c057d9dd4b0bd3a753f475ad1095"
+        },
+        "research-tests/O6-R204-RESOURCE-AUDIT.json": {
+          "before": null,
+          "after": "716ec01ae29ca62890d48e1b472f195c16808296d0e0fa1f9e878c8f5304ea94"
+        },
+        "research-tests/O6-R204-ROOT-CONTRACT-COSTS.json": {
+          "before": null,
+          "after": "725b3891e2016c10477fe959762f2a69ddda9c3416d5adcc1fda77e15624f0f1"
+        },
+        "research-tests/O6-R204-SHIFT-AUDIT.json": {
+          "before": null,
+          "after": "5c9042d494a23b4c7801418b21ededf4db3e32788139d11f83335da2011852d2"
+        }
+      },
+      "message": "R204 D2: publish 190-check partial milestone, authenticated archive and R205 gated handoff",
+      "event": "GUARDED ARTIFACT COMMIT",
+      "unit": "V190",
+      "attempt": "not encoded (validation or compiler-free artifact)",
+      "invocation": "V190",
+      "sourceInvocation": "V190",
+      "sourceHash": "aee761a37757cb047ddbf0f846bc23ce830ed755422f96852d08eb435c368727",
+      "resultingCommitHash": "ee37c24ab9e4b133b1cc4b55c8d306b229542233",
+      "timestampUTC": "2026-09-09T22:22:47.827501+00:00",
+      "paths": [
+        "NOTES.md",
+        "README.md",
+        "THM73-PLAN.md",
+        "research-tests/O6-R204-GRIND-SHIFT-AUDIT.md",
+        "research-tests/O6-R204-MICRO-UNITS.md",
+        "research-tests/O6-R204-ARCHIVE-VERIFICATION.json",
+        "research-tests/O6-R204-AUTHOR-REVIEW.md",
+        "research-tests/O6-R204-COMPILER-EVIDENCE.tar.gz",
+        "research-tests/O6-R204-COMPILER-LEDGER.json",
+        "research-tests/O6-R204-EVIDENCE-VERIFICATION.json",
+        "research-tests/O6-R204-FINAL-VALIDATION-RESULT.json",
+        "research-tests/O6-R204-FROZEN-AUDIT.json",
+        "research-tests/O6-R204-INDEPENDENT-VERIFICATION.json",
+        "research-tests/O6-R204-PER-MODULE-COSTS.md",
+        "research-tests/O6-R204-R205-HANDOFF.md",
+        "research-tests/O6-R204-R205-VISIBILITY-CANDIDATE.json",
+        "research-tests/O6-R204-RESOURCE-AUDIT.json",
+        "research-tests/O6-R204-ROOT-CONTRACT-COSTS.json",
+        "research-tests/O6-R204-SHIFT-AUDIT.json"
+      ],
+      "guardChecksPassed": [
+        "fresh PASS",
+        "exit 0",
+        "not interrupted",
+        "no expected diagnostic",
+        "exact source SHA256",
+        "artifact paths only",
+        "no source delta",
+        "no pre-staged files",
+        "no own-worktree compiler (lane2 excluded)",
+        "git diff --check",
+        "git commit success",
+        "no post-staged files"
+      ]
+    }
+  ],
+  "qualification": "Authenticated U0b/D1/D2 receipts; D2 follows the raw archive anchor. This file precedes its own D3 and future D4 receipts, which it does not claim to contain."
+}

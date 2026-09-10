@@ -1,0 +1,22 @@
+{
+  "timestampUTC": "2026-09-10T01:51:18.588874+00:00",
+  "scope": "Compiler-free evidence hardening only; no native invocation or Idris source change",
+  "tests": 49,
+  "findings": [
+    {
+      "id": "E1",
+      "finding": "COMMITTED baseline formerly allowed reverting to PRE bytes",
+      "fix": "COMMITTED now unconditionally selects new frozen hash; approved pre-apply still allowed; nine mutation tests",
+      "affectedNativeOutcomes": []
+    },
+    {
+      "id": "E2",
+      "finding": "Nonzero exit could in principle accept a signal-terminated negative after diagnostic",
+      "fix": "Require normal Idris error exit1; two mutation tests; all existing expected negatives already exit1",
+      "affectedNativeOutcomes": []
+    }
+  ],
+  "sourceDiffPaths": [],
+  "nativeInvocations": 371,
+  "sourceMutation": false
+}

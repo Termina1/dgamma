@@ -1,0 +1,44 @@
+module DGamma.R193HistoryNameTransportPositive
+
+import DGamma.Calculus
+import DGamma.Coeffects
+import DGamma.Metatheory
+import DGamma.CP3
+import DGamma.CP5O20HistoryNameTransportSpike
+import DGamma.CP5ConfluenceRenamingCompositionSpike
+import DGamma.R45BareDiamondDisciplineCounterexamplePositive
+import DGamma.R178GeneratedOrchestrationFixtures
+import DGamma.R192RemovedBirthCurrentNameProbe
+import Data.Nat
+import Decidable.Equality
+
+%default total
+%unbound_implicits off
+
+||| Both actual removed-child births match by generation, even though the
+||| accepted endpoint raw bijection swaps their absent names1 and2. No new
+||| evaluator equation, independent canonical capital or raw-name cast.
+public export
+0 r193RemovedHistoryPair :
+  O20HistoryBirthPair Nat R45Key Unit String R45Value
+    (generatedGenerationBijection r192RemovedSameInputs)
+    r192RemovedBirthTrace r192RemovedBirthTrace 1 1
+r193RemovedHistoryPair =
+  MkO20HistoryBirthPair (registrationGeneration r192RemovedOriginalBirth)
+    (registrationGeneration r192RemovedOriginalBirth)
+    (o20GeneratedHistoryBirth r192RemovedOriginalBirth)
+    (o20GeneratedHistoryBirth r192RemovedOriginalBirth) Refl
+
+||| The previous obstruction is now handled on its genuine history-only
+||| branch: target1 has an actual opposite birth, while current image2 still
+||| has none. This neither fabricates support nor treats absence as vestigial.
+export
+0 r193RemovedHistoryBranch :
+  ((o20HistoricalTarget (generatedGenerationBijection r192RemovedSameInputs)
+      (historyLeftStamp r193RemovedHistoryPair) = 1),
+   Not (LocatedGeneratedRegistration
+     (renameForward (expectedBridgeBijection r192RemovedSameInputs) 1)
+     (renameForward (expectedBridgeBijection r192RemovedSameInputs) 0)
+     r45Child r192RemovedBirthTrace))
+r193RemovedHistoryBranch =
+  (o20HistoryTargetOwned r193RemovedHistoryPair, r192E8CurrentDoesNotGiveHistoricalBirth)

@@ -1,0 +1,88 @@
+{
+  "status": "PASS; owner-accepted CHECKED PARTIAL; D4 artifact-only seal",
+  "preparedUTC": "2026-09-09T20:29:26.671151+00:00",
+  "sourceFreezeHead": "f0c80a3707f854cb708645797c0e754a97cd33b2",
+  "archiveAnchorCommit": "d50bd0265ca832f23acf17a245a36e87e1781b5e",
+  "shiftStartUTC": "2026-09-09T18:28:00+00:00",
+  "finalValidationEndUTC": "2026-09-09T20:25:03.260245+00:00",
+  "caps": {
+    "B": 16,
+    "A": 16,
+    "C": 6,
+    "D": 4
+  },
+  "usedProofUnits": {
+    "B": 16,
+    "A": 16,
+    "C": 0
+  },
+  "proofInvocations": 43,
+  "proofPASS": 33,
+  "proofFailures": 10,
+  "sourceCommits": 32,
+  "supersededPASS": [
+    "B16-1"
+  ],
+  "finalChecks": 182,
+  "finalSourceTargets": 181,
+  "finalPositiveSourceChecks": 174,
+  "finalExpectedNegatives": 7,
+  "seededPackagePASS": true,
+  "coldBuild": false,
+  "totalInvocations": 225,
+  "totalExpectedPASS": 215,
+  "productionDiffVs34b21c9": "empty",
+  "CP3Blob": "2c697e532e83989de8591fa6a4378747c6a501c0",
+  "frozenCensus": [
+    1,
+    2,
+    0,
+    0,
+    1
+  ],
+  "frozenSourceSHA256": {
+    "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr": "3b62ba1c3bc88503116ed22d82c667043f7f41dd483fb093cc25b677a55245cc",
+    "research/DGamma/CP5ConfluenceCrossTraceSpike.idr": "666d18626e49cbb0d6ac2f7624fe9f6b3519d539dbb574670f420bacd9fc69bb",
+    "research/DGamma/CP5ConfluenceDeletionChainSpike.idr": "91e8fd290cc4fedae9656ce5b4ae3ea0b38509f6e0250f51b4a7aa2aea09067b",
+    "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr": "9f9216170853624cff30449696f2540da0ed48e0b42504533aa587cb70dfc037",
+    "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr": "833bd3450bc8a4214e0334fd2ad95d7f837bc636f40f2e33c408333395602713"
+  },
+  "additionalProtectedSourceSHA256": {
+    "research/DGamma/CP5O19SurfaceSpike.idr": "da358a498847ed06b666c1e1d42fffed10afc7d6f699c94e4681d7b302ff5561",
+    "research/DGamma/CP5UniqueRawNameOrdinalCapital.idr": "153a13f6f3476990acf7e681fb19ff2d000c0499218409d323ea1a45c1d956c6"
+  },
+  "ReplayedCanonicalEndpointBridge": {
+    "recordBytes": 3243,
+    "recordSHA256": "ac5304c1a6a6e0cea988eac4b0dcdb5756fcf1b67ede7d0db6a4d723c73b695d",
+    "R192ManifestExact": true
+  },
+  "supersededCandidateSourceSHA256": {
+    "research/DGamma/CP5O20CanonicalSynchronizationGoalSpike.idr": "36cdc8db587a43193dacda173f46f3a40b524a6f31786f8fb57978729457e583",
+    "research/DGamma/CP5O20StampedHistoryFoldSpike.idr": "e3f44d6e995f02bbc826d076960d01ef175031d8b9d0c85b8e806fecd9538d55"
+  },
+  "adjacentFullSHA256": "2d01486bf953f11191b758ac3cfb5722d1d02b1a192b6e552adc8a3f58199ecf",
+  "adjacentStatementSHA256": "3aae5a9fbc5b14e0411b4a91e557a6f3dc68c9a6282b9ec2b3fc658cec337adf",
+  "O19BodySHA256": "cbd0954303c35141af0309e515bdb9e98e988e7c23be70b9764d8c1ce18fd396",
+  "noMainCompiler": true,
+  "noStagedFiles": true,
+  "noLockOperations": true,
+  "sourceMutations": [],
+  "resourceStops": [],
+  "unexpectedBuilds": [],
+  "crossLaneOverlapUnits": 96,
+  "crossLaneOverlapEvidence": "Timestamp-only lists in RESOURCE-AUDIT and raw archive; no foreign commands/PIDs",
+  "archiveSHA256": "344979cca8db95bb5510e9a8867cfc72309e6f869422fc86616858104103e985",
+  "archiveFiles": 1170,
+  "archiveBytes": 1382914,
+  "maxLocalDiamondSampleRSSKiB": 50502192,
+  "maxOtherSampleRSSKiB": 44799888,
+  "maxUniqueOrdinalSampleRSSKiB": 44799888,
+  "resourceQualification": "One-second own-process-tree RSS samples, NOT OS high-water; zero means no live sample",
+  "AStatus": "Partial: actual original native activation histories/all prefix positions and explicit physical disappearance proved; canonical transport/ALL-name predecessor/runtime histories/synchronization open",
+  "BStatus": "Partial: whole retained closing birth and actual classified-generation selection coverage proved; present-vestigial adapter/per-class ALL-name rebase/D5 open",
+  "CStatus": "Ineligible; unchanged",
+  "humanReviewStatus": "Independent read-only reviewer being launched; completion not claimed",
+  "ownerAcceptedCommit": "a1abf6d19030b472ebcb35dc493c37c42c21a983",
+  "ownerD4Authorized": true,
+  "standingStyleReview": "No let aliases: reviewer to inspect A5 erased bindings and A13 local helper. Any plain-alias body-only companion repair belongs to R204 under gate; no waiver or R203 repair."
+}

@@ -1,0 +1,46 @@
+{
+  "status": "PASS",
+  "timestampUTC": "2026-09-09T19:39:31.125257+00:00",
+  "head": "f0c80a3707f854cb708645797c0e754a97cd33b2",
+  "invocations": 43,
+  "allCompilerLifetimesCovered": true,
+  "sameLaneCompilerIntervalsNonoverlapping": true,
+  "crossLaneOverlapTimestampsUTC": {
+    "B1-1": [
+      "2026-09-09T18:30:57.360603+00:00",
+      "2026-09-09T18:30:58.397254+00:00",
+      "2026-09-09T18:30:59.436783+00:00",
+      "2026-09-09T18:31:00.477403+00:00"
+    ],
+    "B12-1": [
+      "2026-09-09T18:47:36.711727+00:00"
+    ],
+    "B16-1": [
+      "2026-09-09T18:56:33.063037+00:00"
+    ]
+  },
+  "noLockOperations": true,
+  "ownerPolicySHA256": "ee848fcecf68e88695b0db37bb4a7db4a59e5a669e70b8fa1f857196abca4d21",
+  "resourceStops": [],
+  "sourceMutations": [],
+  "extraBuildingRejectedUnits": [],
+  "zeroSampleUnits": [
+    "B9-1",
+    "A5-1",
+    "A6-1",
+    "A7-1",
+    "A8-1",
+    "A8-2",
+    "A9-1",
+    "A10-1",
+    "A10-2",
+    "A11-1",
+    "A12-1",
+    "A14-1"
+  ],
+  "sampleQualification": "Own-worktree one-second RSS samples are NOT OS high-water; zero means no live sample captured, not zero actual peak",
+  "maxLocalDiamondSampleRSSKiB": 0,
+  "maxOtherSampleRSSKiB": 4446240,
+  "maxUniqueOrdinalSampleRSSKiB": 0,
+  "sharedLockPathNotInspected": true
+}

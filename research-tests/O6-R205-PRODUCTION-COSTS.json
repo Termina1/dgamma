@@ -1,0 +1,17 @@
+{
+  "timestampUTC": "2026-09-09T23:52:55.631594+00:00",
+  "module": "DGamma.CP4SupportSolution",
+  "sourceSHA256": "812d874baff27ce025c17ad09527e285079b6ee26a50fec2c4b231723593fda0",
+  "sourceUnchanged": true,
+  "freshInvocation": "S31-4",
+  "freshPASS": true,
+  "seconds": 986.3519574580714,
+  "maxSampleRSSKiB": 168575296,
+  "maxSampleRSSGiB": 160.76593017578125,
+  "futureGuardGiB": 200,
+  "authority": "Supervisor accepted160.8GiB/986s datum; guard200GiB from now on",
+  "preUnfreezeIsolatedPeak": "UNKNOWN",
+  "minPressureFreePercent": 57,
+  "swapoutsDelta": 0,
+  "repairNeeded": false
+}

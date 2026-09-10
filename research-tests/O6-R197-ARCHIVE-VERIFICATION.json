@@ -1,0 +1,15 @@
+{
+  "status": "PASS",
+  "anchorCommit": "73b2d1c04ae1959150590532b587a539d1c7e37d",
+  "archiveSHA256": "7c35a811000ac6d33d541da1a73045ae141ec70a3419e60d2d45f04b2d5712f2",
+  "allArchiveFilesVerified": 977,
+  "nativeRecordsVerified": 189,
+  "sourceSnapshotsVerified": 189,
+  "rawLogsVerified": 189,
+  "sourceReceiptsArchived": 33,
+  "artifactReceiptsArchived": 2,
+  "expectedPASS": 178,
+  "rejectedSnapshotsRetained": 11,
+  "finalChecksVerified": 144,
+  "qualification": "Read-only post-creation verification; not claimed inside its own archive or as parent/reviewer acceptance. Anchor deliberately excludes future publication/gate receipts."
+}

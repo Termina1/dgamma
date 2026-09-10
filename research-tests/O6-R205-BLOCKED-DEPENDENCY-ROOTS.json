@@ -1,0 +1,11 @@
+{
+  "timestampUTC": "2026-09-10T01:24:54.832808+00:00",
+  "countsMayOverlap": true,
+  "counts": {
+    "research-tests/DGamma/R172O17OpenParentRootReuseCandidate.idr": 28,
+    "research-tests/DGamma/R18ExternalOrderProducerPositive.idr": 7,
+    "research/DGamma/CP5ActorLifecycleOnlyExtended.idr": 22,
+    "research/DGamma/CP5O19OriginalBlockClassSpike.idr": 117,
+    "research/DGamma/CP5O20RightOpeningTransportSpike.idr": 45
+  }
+}

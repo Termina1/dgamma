@@ -399,3 +399,151 @@ o20MapMaybeSelectionComplete check (head :: rest) head Here selectedPresent =
 o20MapMaybeSelectionComplete check (head :: rest) selected (There later) selectedPresent =
   o20HeadMapMaybeObserved check head rest (check head) Refl
     (Right (o20MapMaybeSelectionComplete check rest selected later selectedPresent))
+
+||| Exact constructor equation owned by the native candidate producer. This
+||| exposes its SAME swap/safety packet to completeness consumers without
+||| changing visibility or equating independently computed observations.
+export
+0 o20CandidateOwnedEquation :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  (protocol : RegistrationProtocol key value world error) -> (sourceOrder : List name) ->
+  {initial, finalState : SystemState name key value world error} ->
+  (trace : Transitions initial finalState) ->
+  (blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder trace) ->
+  (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq trace) ->
+  (unique : UniqueRawNameInsertions name key world error value nameEq keyEq trace) ->
+  (targetOrder : List name) -> (swap : AdjacentActorOrderSwap name sourceOrder targetOrder) ->
+  (o20CheckCandidate nameEq keyEq protocol sourceOrder trace blocks premises unique (targetOrder ** swap) =
+   map (\safety => MkO20ChosenSafeSwap targetOrder swap safety unique)
+    (o20CheckSafetyAtMembers nameEq keyEq protocol swap trace blocks premises
+      (Builtin.fst (o20ChosenActorFacts swap))
+      (Builtin.fst (Builtin.snd (o20ChosenActorFacts swap)))
+      (Builtin.snd (Builtin.snd (o20ChosenActorFacts swap)))))
+o20CandidateOwnedEquation nameEq keyEq protocol sourceOrder trace blocks premises unique targetOrder swap = Refl
+
+||| A REAL enumerated candidate, retaining its own swap and membership rather
+||| than equating it to a separately constructed proof-carrying swap record.
+public export
+record O20EnumeratedPair
+  (name : Type) (sourceOrder : List name)
+  (candidates : List (targetOrder : List name ** AdjacentActorOrderSwap name sourceOrder targetOrder))
+  (left, right : name) where
+  constructor MkO20EnumeratedPair
+  enumeratedTarget : List name
+  enumeratedSwap : AdjacentActorOrderSwap name sourceOrder enumeratedTarget
+  0 enumeratedMember : Elem (enumeratedTarget ** enumeratedSwap) candidates
+  0 enumeratedLeftExact : (actorLeft enumeratedSwap = left)
+  0 enumeratedRightExact : (actorRight enumeratedSwap = right)
+
+||| Structural location of a neighboring pair. A location always has two
+||| physical cells; later locations recurse into the actual nonempty tail.
+public export
+data O20Neighbours : (name : Type) -> name -> name -> List name -> Type where
+  O20NeighboursHere : {name : Type} -> {left, right : name} -> {later : List name} ->
+    O20Neighbours name left right (left :: right :: later)
+  O20NeighboursLater : {name : Type} -> {left, right, head, next : name} -> {later : List name} ->
+    O20Neighbours name left right (next :: later) ->
+    O20Neighbours name left right (head :: next :: later)
+
+||| Lift the ACTUAL candidate's own membership; no equality of proof fields.
+export
+0 o20EnumeratedPairThere :
+  {name : Type} -> {sourceOrder : List name} ->
+  {candidates : List (targetOrder : List name ** AdjacentActorOrderSwap name sourceOrder targetOrder)} ->
+  {head : (targetOrder : List name ** AdjacentActorOrderSwap name sourceOrder targetOrder)} ->
+  {left, right : name} -> O20EnumeratedPair name sourceOrder candidates left right ->
+  O20EnumeratedPair name sourceOrder (head :: candidates) left right
+o20EnumeratedPairThere packet = MkO20EnumeratedPair
+  (enumeratedTarget packet) (enumeratedSwap packet) (There (enumeratedMember packet))
+  (enumeratedLeftExact packet) (enumeratedRightExact packet)
+
+||| Native head decision owns the candidate's exact constructor and proof
+||| fields. A distinct neighboring pair cannot be discarded by enumeration.
+export
+0 o20EnumeratedHeadObserved :
+  {name : Type} -> (nameEq : DecEq name) -> (sourceOrder, earlier : List name) ->
+  (left, right : name) -> (later : List name) ->
+  (exact : (sourceOrder = earlier ++ (left :: right :: later))) ->
+  (observed : Dec (left = right)) -> (decEq @{nameEq} left right = observed) ->
+  Not (left = right) ->
+  O20EnumeratedPair name sourceOrder
+    (o20AdjacentCandidates nameEq sourceOrder earlier (left :: right :: later) exact) left right
+o20EnumeratedHeadObserved nameEq sourceOrder earlier left right later exact (Yes same) checked distinct =
+  void (distinct same)
+o20EnumeratedHeadObserved nameEq sourceOrder earlier left right later exact (No different) checked distinct =
+  rewrite checked in MkO20EnumeratedPair (earlier ++ (right :: left :: later))
+    (MkAdjacentActorOrderSwap earlier left right later exact Refl different) Here Refl Refl
+
+||| The exact native tail call remains enumerated after either head decision:
+||| equal names skip; distinct names prepend one ACTUAL candidate.
+export
+0 o20EnumeratedTailObserved :
+  {name : Type} -> (nameEq : DecEq name) -> (sourceOrder, earlier : List name) ->
+  (head, next : name) -> (later : List name) ->
+  (exact : (sourceOrder = earlier ++ (head :: next :: later))) ->
+  (observed : Dec (head = next)) -> (decEq @{nameEq} head next = observed) ->
+  (left, right : name) ->
+  O20EnumeratedPair name sourceOrder
+    (o20AdjacentCandidates nameEq sourceOrder (earlier ++ [head]) (next :: later)
+      (trans exact (appendAssociative earlier [head] (next :: later)))) left right ->
+  O20EnumeratedPair name sourceOrder
+    (o20AdjacentCandidates nameEq sourceOrder earlier (head :: next :: later) exact) left right
+o20EnumeratedTailObserved nameEq sourceOrder earlier head next later exact (Yes same) checked left right packet =
+  rewrite checked in packet
+o20EnumeratedTailObserved nameEq sourceOrder earlier head next later exact (No different) checked left right packet =
+  rewrite checked in o20EnumeratedPairThere packet
+
+||| COMPLETE finite candidate enumeration at every distinct actual adjacent
+||| location. Structural location induction follows the producer's EXACT tail
+||| call; no guessed swap equality, successful search premise or fixed suffix.
+export
+0 o20AdjacentCandidatesComplete :
+  {name : Type} -> (nameEq : DecEq name) -> (sourceOrder, earlier, later : List name) ->
+  (exact : (sourceOrder = earlier ++ later)) -> (left, right : name) -> Not (left = right) ->
+  O20Neighbours name left right later ->
+  O20EnumeratedPair name sourceOrder (o20AdjacentCandidates nameEq sourceOrder earlier later exact) left right
+o20AdjacentCandidatesComplete nameEq sourceOrder earlier [] exact left right distinct location impossible
+o20AdjacentCandidatesComplete nameEq sourceOrder earlier [last] exact left right distinct location impossible
+o20AdjacentCandidatesComplete nameEq sourceOrder earlier (first :: second :: rest) exact _ _ distinct O20NeighboursHere =
+  o20EnumeratedHeadObserved nameEq sourceOrder earlier first second rest exact
+    (decEq @{nameEq} first second) Refl distinct
+o20AdjacentCandidatesComplete nameEq sourceOrder earlier (head :: next :: rest) exact left right distinct (O20NeighboursLater location) =
+  o20EnumeratedTailObserved nameEq sourceOrder earlier head next rest exact
+    (decEq @{nameEq} head next) Refl left right
+    (o20AdjacentCandidatesComplete nameEq sourceOrder (earlier ++ [head]) (next :: rest)
+      (trans exact (appendAssociative earlier [head] (next :: rest))) left right distinct location)
+
+||| A physical adjacent split induces the structural location, without any
+||| multi-block BeforeIn analysis or computed decomposition equality.
+export
+0 o20NeighboursAtSplit : {name : Type} -> (earlier : List name) -> (left, right : name) ->
+  (later : List name) -> O20Neighbours name left right (earlier ++ (left :: right :: later))
+o20NeighboursAtSplit [] left right later = O20NeighboursHere
+o20NeighboursAtSplit [head] left right later = O20NeighboursLater O20NeighboursHere
+o20NeighboursAtSplit (head :: next :: rest) left right later =
+  O20NeighboursLater (o20NeighboursAtSplit (next :: rest) left right later)
+
+||| Every pure adjacent swap owns an actual source-list neighboring location.
+||| The transport changes only the list index, never a computed swap packet.
+export
+0 o20SwapNeighbours : {name : Type} -> {sourceOrder, targetOrder : List name} ->
+  (swap : AdjacentActorOrderSwap name sourceOrder targetOrder) ->
+  O20Neighbours name (actorLeft swap) (actorRight swap) sourceOrder
+o20SwapNeighbours {name} swap =
+  replace {p = \order => O20Neighbours name (actorLeft swap) (actorRight swap) order}
+    (sym (actorBeforeExact swap))
+    (o20NeighboursAtSplit (actorPrefix swap) (actorLeft swap) (actorRight swap) (actorSuffix swap))
+
+||| COMPLETE native enumeration from any pure neighboring swap. The returned
+||| candidate carries its own safety slots and exact actor-name equations;
+||| its proof fields are never equated to the input swap's proof fields.
+export
+0 o20EnumerateSwap : {name : Type} -> (nameEq : DecEq name) ->
+  {sourceOrder, targetOrder : List name} ->
+  (swap : AdjacentActorOrderSwap name sourceOrder targetOrder) ->
+  O20EnumeratedPair name sourceOrder (o20AdjacentCandidates nameEq sourceOrder [] sourceOrder Refl)
+    (actorLeft swap) (actorRight swap)
+o20EnumerateSwap {sourceOrder} nameEq swap =
+  o20AdjacentCandidatesComplete nameEq sourceOrder [] sourceOrder Refl
+    (actorLeft swap) (actorRight swap) (actorDistinct swap) (o20SwapNeighbours swap)

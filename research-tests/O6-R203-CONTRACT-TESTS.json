@@ -1,0 +1,13 @@
+{
+  "status": "PASS",
+  "tests": 24,
+  "timestampUTC": "2026-09-09T19:43:39.600905+00:00",
+  "command": [
+    "python3",
+    "-I",
+    "research-tests/test_r203_evidence_contract.py"
+  ],
+  "logSHA256": "efb2e7a76141d80e205ba5dd687769adf0981f4e0470fa594bd51662c0836ff7",
+  "testSourceSHA256": "8555291b551ca690bbf73e0a5b003a470de104eb9ddd1f2b8c0136400b122b8b",
+  "contractSourceSHA256": "b1937a21bcd0c01657cab2ae0f7cbe186f5b11c9d2b751999c5430ef0832cf78"
+}

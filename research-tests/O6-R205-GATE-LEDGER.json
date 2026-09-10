@@ -1,0 +1,37 @@
+[
+  {
+    "timestampUTC": "2026-09-09T23:29:19.182754+00:00",
+    "gate": "S31-4 NEW supervisor-owned override of final-attempt/pressure rule",
+    "verbatim": "NEW GATE (supervisor-owned): the S31-3 stop was caused by MY mis-calibrated pressure rule, not by the compiler — compressor occupancy rising from 40k to 51k pages (≈40 MiB) with Swapouts flat and memory_pressure at 97% free is noise on a 256 GiB machine, and the peak (147.6 GiB, still under the 200 GiB guard, 476 s) is consistent with the historical ~138 GiB from-scratch datum for this tree. AUTHORIZED: ONE additional attempt S31-4, same 200 GiB guard, wall clock 60 min, corrected pressure rule: STOP only if (a) `memory_pressure -Q` leaves the normal level (free < 15%) in two consecutive 5-s samples, or (b) Swapouts increase in three consecutive samples; compressor page counts are recorded but are NOT a stop condition. Record this ruling verbatim (miscalibration acknowledged) in the ledger. If S31-4 exceeds, the RESOURCE-BLOCKED disposition stands with no further attempts this shift; the R206 handoff then carries the gated decomposition proposal from your diagnosis as the next step.",
+    "correction": "Raw vm_stat page size16384 bytes;50942−40069=10873 pages=169.890625MiB, not approx40MiB. Ruling quoted verbatim; native measured counters remain authoritative."
+  },
+  {
+    "timestampUTC": "2026-09-10T01:31:38.752520+00:00",
+    "gate": "Second/final production edit; S33 stop and distinct S34 quantity statement",
+    "source": "research-tests/O6-R205-PRODUCTION-MIGRATION-GATE.json",
+    "verbatim": [
+      "APPROVED: apply research-tests/O6-R205-CP3-STATEMENT-CHECKS-PROPOSAL.patch (SHA256 202b71ec59c197af…, 45 lines, six replacements) to src/DGamma/CP3StatementChecks.idr exactly as read by the supervisor — original-trace threading at 3426/3587, core constructor guard with explicit nameEq (CoreYieldedRegistrationStep), canonicalAllRootInputsGuard → canonicalRootEarliestAvailableGuard = rootGenerationEarliestAvailable projection, own-lifecycle guard with `actionOwner action = root` → rootGenerationBeforeOwnLifecycle. This is the second and last authorized production edit of this shift (PRODUCTION receipt citing this gate and the S33 failure log; before/after hashes). Record the renamed guard in the rename map (consumers of canonicalAllRootInputsGuard become repair candidates). S31-4 PASS accepted: CP4SupportSolution datum = 160.8 GiB / 986 s (guard 200 GiB from now on, datum-based; record it in the baselines and the agent-facing cost table). Continue the closure.",
+      "APPROVED: consolidate the explicit implicit telescope for canonicalBlockRegistrationGuard into the same second production commit — `{name, key, world, error : Type} -> {value : key -> Type} ->` before nameEq, then `{selected, child : name} -> {childComponent : Component key value world error} -> {first, middle, finalState : SystemState name key value world error} ->`, body unchanged (`= CoreYieldedRegistrationStep`), no premise added. S33-3 is the last elaboration attempt for this migration; on PASS commit with the PRODUCTION receipt listing all seven textual changes and the S33/S33-2 failure logs; on FAIL revert CP3StatementChecks to its committed bytes, mark it BROKEN-BY-UNFREEZE in the manifest, and continue the closure that does not depend on it.",
+      "NEW GATED MICRO-UNIT (supervisor-owned, distinct statement, not a restatement): S34 \"quantity-aligned canonicalBlockRegistrationGuard\" — the S33-3 diagnosis is exact and lexical: the guard's proof arrows must carry multiplicity 0 to alias CoreYieldedRegistrationStep (`(0 yielded : …) -> (0 only : ActorLifecycleCore …) -> …`). Apply the full approved six-replacement patch + the explicit telescope + the 0-annotations on exactly those proof arrows, body unchanged (`= CoreYieldedRegistrationStep`). ONE attempt (S34-1). On PASS: commit as the second/final production edit with the PRODUCTION receipt listing all textual changes and the S33/S33-2/S33-3 failure logs. On FAIL: revert to aa7b71a8… bytes, BROKEN-BY-UNFREEZE, no further attempts. Package P2 depends on it, so do this before the remaining research closure."
+    ],
+    "beforeSHA256": "aa7b71a88c1e16304c0247880403ee68c776a5b43683759cdeffc750623d33e9",
+    "afterSHA256": "4f6fee4bd1d937a7836d7ce61ed7c91e782f6ed82b3766a7164b7f4316659fab",
+    "passingInvocation": "S34-1"
+  },
+  {
+    "timestampUTC": "2026-09-10T01:31:38.752520+00:00",
+    "gate": "Exact protected CanonicalSort consumer migration",
+    "source": "research-tests/O6-R205-FROZEN-MIGRATION-GATE.json",
+    "verbatim": [
+      "APPROVED (frozen-module migration gate): apply research-tests/O6-R205-CANONICALSORT-MIGRATION-PROPOSAL.patch (SHA 7e13c53c…, 21 hunks / 18 replacement blocks) to CP5ConfluenceCanonicalSortSpike as read by the supervisor — inputOriginal threading, nameEq threading, Core constructors, ActorWithoutForcedRoots wrapping only at the block boundary (the sort's two-case scan stays a SUBSET core, no forced producer implied), removed projections replaced by the new CIP fields, final original-indexed placement rebuilt from accountedExternalInputs + inputPlacementToOriginal projections. Conditions: ≤3 lexical/elaboration attempts (V100-2..4); NO premise/theorem/case added; the O17 hole declaration+body sortClosingFreeTraceSpike must remain byte-identical; on PASS commit with a FROZEN-MIGRATION receipt (before SHA 3b62ba1c…, after SHA, hunk list) and record the new CanonicalSort hash as the post-unfreeze frozen baseline; on 3 failures revert to 3b62ba1c… bytes, mark CanonicalSort + its 224 dependents BROKEN-BY-UNFREEZE / UNCHECKED and gate."
+    ],
+    "beforeSHA256": "3b62ba1c3bc88503116ed22d82c667043f7f41dd483fb093cc25b677a55245cc",
+    "afterSHA256": "eb0ab7b95779a4b44360b222030e7aa0f8d134c17ea4d2dfa98f3306e135df1b",
+    "passingInvocation": "V100-2"
+  },
+  {
+    "timestampUTC": "2026-09-10T01:31:38.752520+00:00",
+    "gate": "Standing R11 and R137 dispositions",
+    "summary": "Supervisor: eleven historical R11 fixtures legacy/not re-checked, suite never executed. R137 pre-existing telescope diagnostic recorded only, no repair. Parent patch-fidelity review FAITHFUL-WITH-NOTES accepted all seven signed CP3 hunks; repair map includes nine omitted renames."
+  }
+]

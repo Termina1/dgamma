@@ -1,0 +1,15 @@
+{
+  "status": "Explicit non-native timing correction; archive/native evidence unchanged",
+  "timestampUTC": "2026-09-09T08:40:24.366074+00:00",
+  "archiveSHA256": "7c35a811000ac6d33d541da1a73045ae141ec70a3419e60d2d45f04b2d5712f2",
+  "correctedMember": "dgamma-r197/provider-limit-resume.json",
+  "incorrectOriginalInterpretation": "Publication/gate were after the original UTC window",
+  "recordedPublicationUTC": "2026-09-09T08:38:29.683029+00:00",
+  "recordedProofCutoffUTC": "2026-09-09T09:38:00+00:00",
+  "recordedGateDeadlineUTC": "2026-09-09T10:03:00+00:00",
+  "bindingRuling": "Supervisor explicitly CLOSED all proof/source/native work on revival; only compiler-free E3/final gate authorized",
+  "correction": "The binding closed-work instruction does not establish UTC lateness. Printed timestamps precede the recorded cutoffs; no missed UTC deadline or extended clock is claimed. The archive remains immutable, including the erroneous initial non-native interpretation; this correction is authoritative.",
+  "nativeResultsChanged": false,
+  "planChanged": false,
+  "noAdditionalNativeInvocation": true
+}

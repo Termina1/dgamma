@@ -1,0 +1,20 @@
+{
+  "authorization": "Supervisor ACK via contact_supervisor: caps count MICRO-UNITS; A19-2 authorized to change ONLY expected incoming/outgoing live-generation lists to actual append/scan order; no producer changes. A20 permitted inside clock.",
+  "beforeSHA256": "190e9297ef1a8b9b51383bdc7f5b413726d771cc57881e1c945fd47377ab9bf8",
+  "afterSHA256": "20c9523be8b09f7448eddf49417cb4baae29fd2a6e91b821584432d4134ced34",
+  "replacements": [
+    [
+      "[(2, MkRegistrationGeneration 2 2), (1, MkRegistrationGeneration 1 1), (0, MkRegistrationGeneration 0 0)]",
+      "[(0, MkRegistrationGeneration 0 0), (1, MkRegistrationGeneration 1 1), (2, MkRegistrationGeneration 2 2)]"
+    ],
+    [
+      "[(3, MkRegistrationGeneration 3 4), (2, MkRegistrationGeneration 2 2), (1, MkRegistrationGeneration 1 1), (0, MkRegistrationGeneration 0 0)]",
+      "[(0, MkRegistrationGeneration 0 0), (1, MkRegistrationGeneration 1 1), (2, MkRegistrationGeneration 2 2), (3, MkRegistrationGeneration 3 4)]"
+    ],
+    [
+      "[(1, MkRegistrationGeneration 1 2), (0, MkRegistrationGeneration 0 0)]",
+      "[(0, MkRegistrationGeneration 0 0), (1, MkRegistrationGeneration 1 2)]"
+    ]
+  ],
+  "classification": "fixture-expectation error, NOT producer defect"
+}

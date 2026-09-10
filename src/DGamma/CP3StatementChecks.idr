@@ -3423,7 +3423,7 @@ public export
   LifecycleActorsCovered order canonicalTrace ->
   CanonicalInputPlacement Nat RegistrationTestKey Unit String
     RegistrationTestValue DGamma.CP3StatementChecks.registrationTestNameEq DGamma.CP3StatementChecks.registrationTestKeyEq
-    (namedAfter (rootAdvance1 original)) order canonicalTrace ->
+    (namedAfter (rootAdvance1 original)) order (namedRoleChangingTrace original) canonicalTrace ->
   (endpoint : CanonicalEndpointRelation Nat RegistrationTestKey Unit String
     RegistrationTestValue DGamma.CP3StatementChecks.registrationTestNameEq DGamma.CP3StatementChecks.registrationTestKeyEq
     (namedAfter (rootAdvance1 original)) canonicalFinal) ->
@@ -3538,16 +3538,22 @@ supportLemma68UniqueGuard claim nameEq keyEq protocol state reached discipline a
   uniqueSupportSolution
     (claim nameEq keyEq protocol state reached discipline acyclic)
 
-||| Canonical parent blocks explicitly admit their yielded child O-Insert.
+||| Revised canonical actor CORES admit their yielded child O-Insert.
+||| This is the core constructor guard, not a reverse attached-to-core coercion.
 public export
 0 canonicalBlockRegistrationGuard :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} ->
+  {selected, child : name} ->
+  {childComponent : Component key value world error} ->
+  {first, middle, finalState : SystemState name key value world error} ->
   (transition : Transition first middle) ->
   (rest : Transitions middle finalState) ->
-  transitionAction transition =
-    OInsert child (ChildOf selected) childComponent ->
-  ActorLifecycleOnly selected rest ->
-  ActorLifecycleOnly selected (MoreTransitions transition rest)
-canonicalBlockRegistrationGuard = ActorYieldedRegistrationStep
+  (0 yielded : transitionAction transition =
+    OInsert child (ChildOf selected) childComponent) ->
+  (0 only : ActorLifecycleCore nameEq selected rest) ->
+  ActorLifecycleCore nameEq selected (MoreTransitions transition rest)
+canonicalBlockRegistrationGuard = CoreYieldedRegistrationStep
 
 ||| Regression guards for Equation 62 and Theorem 73's canonical fields.
 public export
@@ -3584,17 +3590,23 @@ public export
   {trace : Transitions initial originalFinal} ->
   (schedule : CanonicalSchedule name key world error value protocol nameEq keyEq trace) ->
   CanonicalInputPlacement name key world error value nameEq keyEq originalFinal
-    (supportOrder schedule) (canonicalTrace schedule)
+    (supportOrder schedule) trace (canonicalTrace schedule)
 canonicalInputPlacementGuard schedule = inputPlacement schedule
 
+||| A8/A12 replaces the retired strict all-root-first projection by the exact
+||| production current-cut/terminal-earliest field; no global normalizer inferred.
 public export
-0 canonicalAllRootInputsGuard :
+0 canonicalRootEarliestAvailableGuard :
   {initial, originalFinal : SystemState name key value world error} ->
   {trace : Transitions initial originalFinal} ->
   (schedule : CanonicalSchedule name key world error value protocol nameEq keyEq trace) ->
-  RootInputsBeforeLifecycle nameEq (canonicalTrace schedule)
-canonicalAllRootInputsGuard schedule =
-  allRootInputsFirst (inputPlacement schedule)
+  {root : name} -> {component : Component key value world error} ->
+  (birth : LocatedActionOccurrence (OInsert root Root component)
+    (canonicalTrace schedule)) ->
+  EarliestAvailableRootBirth name key world error value nameEq keyEq
+    (canonicalTrace schedule) root component birth
+canonicalRootEarliestAvailableGuard schedule =
+  rootGenerationEarliestAvailable (inputPlacement schedule)
 
 public export
 0 canonicalRootGenerationFreshGuard :
@@ -3621,10 +3633,10 @@ public export
     (canonicalTrace schedule)) ->
   {action : Action name key value world error} ->
   (lifecycle : LocatedActionOccurrence action (canonicalTrace schedule)) ->
-  isLifecycleAction action = True ->
+  isLifecycleAction action = True -> actionOwner action = root ->
   LT (locatedActionOrdinal birth) (locatedActionOrdinal lifecycle)
 canonicalRootGenerationPlacementGuard schedule =
-  rootGenerationBeforeLifecycle (inputPlacement schedule)
+  rootGenerationBeforeOwnLifecycle (inputPlacement schedule)
 
 public export
 0 canonicalExternalInputsGuard :

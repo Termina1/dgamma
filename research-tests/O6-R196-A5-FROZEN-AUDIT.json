@@ -1,0 +1,76 @@
+{
+  "timestampUTC": "2026-09-09T04:15:27.078552+00:00",
+  "head": "512affedc97c10b59d969a4e1bf5bc83b7cfea94",
+  "baseline": "58f88c63ea70bca97bc974648f8e4939055fffd7",
+  "productionDiffVs34b21c9": "empty",
+  "CP3Blob": "2c697e532e83989de8591fa6a4378747c6a501c0",
+  "authorizedContractSourceSHA256": {
+    "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr": "9f9216170853624cff30449696f2540da0ed48e0b42504533aa587cb70dfc037",
+    "research-tests/DGamma/R19SuffixFreeFullAdjacentCertificatePositive.idr": "4f30ab58cae44bc89bf3c9cc940d3ab63bf1f0af99494cfd157d6db21617bd80",
+    "research/DGamma/CP5ConfluenceDeletionChainSpike.idr": "7fadaf6b3e71030290813393d8954afee0da79ec93b293fcfcd977deb4562578"
+  },
+  "O19BodyBytes": 1286,
+  "O19BodySHA256": "cbd0954303c35141af0309e515bdb9e98e988e7c23be70b9764d8c1ce18fd396",
+  "adjacentFullBytes": 1470,
+  "adjacentFullSHA256": "2d01486bf953f11191b758ac3cfb5722d1d02b1a192b6e552adc8a3f58199ecf",
+  "adjacentStatementBytes": 1154,
+  "adjacentStatementSHA256": "3aae5a9fbc5b14e0411b4a91e557a6f3dc68c9a6282b9ec2b3fc658cec337adf",
+  "holes": {
+    "CanonicalSort": [
+      "?sortClosingFreeTraceSpike_rhs"
+    ],
+    "CrossTrace": [
+      "?selectOperationalCanonicalPermutationSpike_rhs",
+      "?canonicalSchedulesConvergeSpike_rhs"
+    ],
+    "DeletionChain": [],
+    "LocalDiamond": [],
+    "RenamingComposition": [
+      "?replayedCanonicalToOriginalEndpointSpike_rhs"
+    ]
+  },
+  "census": [
+    1,
+    2,
+    0,
+    0,
+    1
+  ],
+  "seeds": "207/207 retained (presence, not a fresh package PASS)",
+  "protectedDeclarations": {
+    "sortClosingFreeTraceSpike": "1df8d174b9a4f119a5a52e2073a72907bdb890413f877d55886e905e1d0279d1",
+    "selectOperationalCanonicalPermutationSpike": "b00063eacf339b58828eac5829cebc66fc7265f3518be459af0602463b6fbae7",
+    "canonicalSchedulesConvergeSpike": "0e8a177ea7bb4807cb77680cde29e75f7d37224711cc51cf7bf6636426690dd9",
+    "replayedCanonicalToOriginalEndpointSpike": "377b08ff82e1e4212738bb00a45a088b1f0d8fd8bc8b54bf061c96f2f4891681"
+  },
+  "prohibitedAdditions": {
+    "\\bbelieve_me\\b": [],
+    "\\bassert_total\\b": [],
+    "^\\s*partial\\b": [],
+    "\\?\\w+": [],
+    "\\blet\\b": [],
+    "\\bwith\\b": [],
+    "\\bprefix\\b": [],
+    "\\bdeletionTheoremProof\\b": [],
+    "\\bpostulate\\b": []
+  },
+  "changedIdrisFiles": [
+    "research-tests/DGamma/R19SuffixFreeFullAdjacentCertificatePositive.idr",
+    "research/DGamma/CP5ConfluenceDeletionChainSpike.idr",
+    "research/DGamma/CP5ConfluenceLocalDiamondSpike.idr"
+  ],
+  "noMainCompiler": true,
+  "lane2Compilers": [],
+  "noStagedFiles": true,
+  "cleanTrackedTree": false,
+  "allowedUntrackedOnly": false,
+  "untracked": [
+    "paper/cordis-paper.pdf",
+    "paper/cordis-paper.txt",
+    "research-tests/O6-R196-A4-SYNTAX-AMENDMENT.json",
+    "research-tests/run-r196-archive.py",
+    "research-tests/run-r196-independent-verify.py",
+    "review-o6-body-adversarial.md"
+  ],
+  "reviewSHA256": "61fc23ae4cea4565b442c840be39c41746ecbac73b8c2f73d04f1e3b4f4681e8"
+}
