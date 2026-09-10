@@ -106,3 +106,22 @@ r206AttachedControlsShape = ActorWithForcedRoots
       Here Refl Refl Refl
       (ForcedBundleRemove 2 (retireFiber (freshFiber DGamma.CalculusChecks.providerComponent Root))
         r206RootRemoveEdge NoTransitions Here Refl Refl Refl ForcedBundleEnd)))
+
+||| Apply the total expanded word theorem to ALL four actual edges. Forbidden1
+||| is genuinely controlled at the head despite authentic NoGeneratedChild1.
+export
+0 r206AttachedWords :
+  (action : Action Nat ToyKey ToyValue ToyRuntime String) ->
+  Elem action (o19ActionWord
+    (MoreTransitions r206ReleaseEdge (MoreTransitions r206RootInsertEdge
+      (MoreTransitions r206RootRetireEdge (MoreTransitions r206RootRemoveEdge NoTransitions))))) ->
+  O19ExpandedBlockWordObservation Nat ToyKey ToyRuntime String ToyValue
+    (the (DecEq Nat) %search) 0 1 action
+r206AttachedWords = o19ExpandedOwnedSafeWord (the (DecEq Nat) %search) 0 1
+  (MoreTransitions r206ReleaseEdge (MoreTransitions r206RootInsertEdge
+    (MoreTransitions r206RootRetireEdge (MoreTransitions r206RootRemoveEdge NoTransitions))))
+  r206AttachedControlsShape
+  (NoGeneratedChildStep _ _ (\parent, component, same => case same of Refl impossible)
+    (NoGeneratedChildStep _ _ (\parent, component, same => case same of Refl impossible)
+      (NoGeneratedChildStep _ _ (\parent, component, same => case same of Refl impossible)
+        (NoGeneratedChildStep _ _ (\parent, component, same => case same of Refl impossible) NoGeneratedChildEnd))))
