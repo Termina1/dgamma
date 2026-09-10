@@ -141,3 +141,24 @@ o19AttachedCoreScan nameEq actor core _ (CoreChildRetireStep step rest child fib
 o19AttachedCoreScan nameEq actor core _ (CoreChildRemoveStep step rest child fiber found parent controlled tail) =
   AttachedScanStep step rest (AttachedChildRemove child fiber found parent controlled)
     (o19AttachedCoreScan nameEq actor core rest tail)
+
+||| Total bundle observer preserves the EXACT core forcing reason and evolving
+||| prior-root membership, in addition to native source lookup/parent facts.
+export
+0 o19AttachedBundleScan :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (actor : name) ->
+  {coreFirst, coreLast, first, last : SystemState name key value world error} ->
+  (core : Transitions coreFirst coreLast) -> (priorRoots : List name) ->
+  (trace : Transitions first last) -> OrderedForcedRootBundle nameEq actor core priorRoots trace ->
+  O19AttachedScan name key world error value nameEq actor core trace
+o19AttachedBundleScan nameEq actor core priorRoots _ ForcedBundleEnd = AttachedScanEnd
+o19AttachedBundleScan nameEq actor core priorRoots _ (ForcedBundleInsert root component step rest inserted forced tail) =
+  AttachedScanStep step rest (AttachedRootInsert root component priorRoots inserted forced)
+    (o19AttachedBundleScan nameEq actor core (root :: priorRoots) rest tail)
+o19AttachedBundleScan nameEq actor core priorRoots _ (ForcedBundleRetire root fiber step rest bundled found parent controlled tail) =
+  AttachedScanStep step rest (AttachedRootRetire root fiber priorRoots bundled found parent controlled)
+    (o19AttachedBundleScan nameEq actor core priorRoots rest tail)
+o19AttachedBundleScan nameEq actor core priorRoots _ (ForcedBundleRemove root fiber step rest bundled found parent controlled tail) =
+  AttachedScanStep step rest (AttachedRootRemove root fiber priorRoots bundled found parent controlled)
+    (o19AttachedBundleScan nameEq actor core priorRoots rest tail)
