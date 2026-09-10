@@ -5434,3 +5434,15 @@ SupportSolution TTC/hash/mtime and all production/frozen bytes unchanged.
 See O6-R207-AUDIT.md and O6-R207-DISPOSITION.json; independent evidence script
 PASS is not the still-required external review. D2 exact producer inventory is
 committed at8c2267e3 for lane2; D3 stores final evidence, D4 remains reserved.
+
+
+### R207 D4 — owner accepted, scope unchanged
+
+The supervisor accepted D3 `2195899b` as **CHECKED-PARTIAL**, reports pushing it,
+and authorized the docs-only D4/4 seal. Verbatim ruling:
+`research-tests/O6-R207-OWNER-FINAL-GATE.md`. Compiler-free post-D3 verification
+PASS authenticates39 guarded receipts/36 source commits and unchanged native
+results. External read-only reviewer was launched; completion/acceptance is NOT
+claimed. No source, tool, archive, hole, native invocation or cap changed in D4.
+The archived exact36 producer statements and R208 residue matrix are the handoff.
+The D4 receipt is supplied after commit; then stand down as directed.

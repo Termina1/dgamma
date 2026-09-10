@@ -1265,3 +1265,12 @@ Final previous117 disposition: **13 PASS /2 fresh FAIL /102 blocked**.
 CrossTrace and the historical R193 resolver fixture are the two current fresh
 failures. Twelve changed/new sources PASS; seeded package PASS without rebuild;
 38 evidence tests PASS. [Machine disposition](research-tests/O6-R207-DISPOSITION.json).
+
+
+### R207 D4 — owner accepted checked-partial
+
+Owner accepted/pushed D3 `2195899b` and authorized a docs-only D4 seal.
+[Verbatim ruling](research-tests/O6-R207-OWNER-FINAL-GATE.md) ·
+[Post-D3 evidence verification](research-tests/O6-R207-POST-D3-VERIFICATION.json).
+External read-only review was launched and is not claimed complete. Open
+proofs, failed/blocked frontier and census remain unchanged; no new native run.

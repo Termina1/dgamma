@@ -177,3 +177,13 @@ cannot cyclically occur inside itself. Later receipt-only audits remain exact.
 External read-only reviewer will be launched by the parent at this gate.
 **CHECKED-PARTIAL candidate; no independent reviewer acceptance or final owner
 ruling is claimed yet.**
+
+
+### D4 final owner seal
+
+D3 `2195899b` is owner-ACCEPTED CHECKED-PARTIAL and reported pushed. The exact
+ruling and post-D3 verification are committed in the docs-only D4/4 seal.
+External read-only reviewer launched, not yet reported complete. This section
+supersedes the pending-owner status above without claiming completed external
+review or any stronger theorem. No source/tool/archive/native result changes;
+PFINAL is still the last native invocation. Final receipt returned after D4.

@@ -1,0 +1,54 @@
+{
+  "timestampUTC": "2026-09-10T05:53:34.256826+00:00",
+  "head": "2195899befadbb687363df14800e2f105bf9d271",
+  "kind": "compiler-free independent evidence cross-check; not an external reviewer",
+  "passed": true,
+  "nativeReceipts": 62,
+  "nativeAcceptedOutcomes": 50,
+  "nativeRejectedOutcomes": 12,
+  "nativePackage": {
+    "unit": "PFINAL",
+    "passed": true,
+    "buildingLines": [],
+    "seconds": 15.675461332779378
+  },
+  "proofBudgetMax": 3,
+  "unitCaps": {
+    "U0": 10,
+    "E": 26,
+    "VREST": 1,
+    "A": 16,
+    "B": 16,
+    "C": 6,
+    "D": 4
+  },
+  "invalidationClosure": 121,
+  "invalidatedUnknown": 0,
+  "previous117StatusCounts": {
+    "blocked by untrusted/retired import": 102,
+    "fresh PASS": 13,
+    "fresh own-target FAILED": 2
+  },
+  "productionByteIdentity": true,
+  "frozenUnchanged": true,
+  "census": [
+    1,
+    2,
+    0,
+    0,
+    1
+  ],
+  "supportSolutionTTC": {
+    "path": "build/ttc/2025081600/DGamma/CP4SupportSolution.ttc",
+    "sha256": "0572d487cd7d341c091a94b5fa1d6d6685eade50c2b618f38ffc19fca7dce340",
+    "mtimeNS": 1788997534601237763,
+    "size": 2122510
+  },
+  "guardedCommitReceipts": 39,
+  "sourceCommitReceipts": 36,
+  "noStagedFiles": true,
+  "noOwnedCompiler": true,
+  "archiveSHA256": "d7b665bcefe41f759b7885c7fb366ee826496a415b1716efb3071af077db0711",
+  "archiveMembers": 465,
+  "reviewGate": "External read-only reviewer and supervisor gate required; this script is NOT that review"
+}
