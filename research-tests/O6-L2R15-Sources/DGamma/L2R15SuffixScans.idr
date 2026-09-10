@@ -53,13 +53,13 @@ export
   (action : Action name key value world error) -> (tag : RuleTag) ->
   (0 checked : checkedApplyAction @{nameEq} @{keyEq} action first = Just (tag, middle)) ->
   (rest : Transitions middle finalState) ->
-  (trail : AvailabilityTrace name key world error value
+  (trail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value
     (MoreTransitions (Fired {before = first} {afterState = middle} nameEq keyEq action tag checked) rest)) ->
-  (later : AvailabilityTrace name key world error value rest **
+  (later : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value rest **
     ((offset : Nat) -> scanRootCatalog offset trail =
        rootCatalogStep offset action (scanRootCatalog (S offset) later)))
 nativeHeadScanEquations nameEq keyEq _ _ _ _
-  (AvailabilityStep source (Fired _ _ action tag checked) rest later) =
+  (DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep source (Fired _ _ action tag checked) rest later) =
   (later ** (\offset => Refl))
 
 ||| Arbitrary-length native suffix CATALOG transport from actual frames.
@@ -71,10 +71,10 @@ export
   {oldFirst, oldFinal, newFirst, newFinal : SystemState name key value world error} ->
   {oldTrace : Transitions oldFirst oldFinal} -> {newTrace : Transitions newFirst newFinal} ->
   NativeSuffixFrames nameEq keyEq oldTrace newTrace ->
-  (oldTrail : AvailabilityTrace name key world error value oldTrace) ->
-  (newTrail : AvailabilityTrace name key world error value newTrace) -> (offset : Nat) ->
+  (oldTrail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value oldTrace) ->
+  (newTrail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value newTrace) -> (offset : Nat) ->
   scanRootCatalog offset oldTrail = scanRootCatalog offset newTrail
-nativeSuffixCatalog nameEq keyEq SuffixFramesEnd (AvailabilityEnd _) (AvailabilityEnd _) offset = Refl
+nativeSuffixCatalog nameEq keyEq SuffixFramesEnd (DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd _) (DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd _) offset = Refl
 nativeSuffixCatalog nameEq keyEq (SuffixFramesRoot {oldRest} {newRest} actor component oldChecked newChecked valid frame later) oldTrail newTrail offset =
   trans (snd (nativeHeadScanEquations nameEq keyEq (OInsert actor Root component) OInsertTag oldChecked oldRest oldTrail) offset)
     (trans (cong (rootCatalogStep offset (OInsert actor Root component))
@@ -96,15 +96,15 @@ export
   (action : Action name key value world error) -> (tag : RuleTag) ->
   (0 checked : checkedApplyAction @{nameEq} @{keyEq} action first = Just (tag, middle)) ->
   (rest : Transitions middle finalState) ->
-  (trail : AvailabilityTrace name key world error value
+  (trail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value
     (MoreTransitions (Fired {before = first} {afterState = middle} nameEq keyEq action tag checked) rest)) ->
   (component : Component key value world error) -> (offset, cut : Nat) ->
   (0 inactive : ownChildReleaseStep nameEq keyEq component first action = False) ->
-  (later : AvailabilityTrace name key world error value rest **
+  (later : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value rest **
     scanReleaseOrdinals nameEq keyEq component offset cut trail =
       scanReleaseOrdinals nameEq keyEq component (S offset) cut later)
 nativeNonReleaseTail nameEq keyEq _ _ _ _
-  (AvailabilityStep source (Fired _ _ action tag checked) rest later) component offset cut inactive =
+  (DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep source (Fired _ _ action tag checked) rest later) component offset cut inactive =
   (later ** (rewrite inactive in rewrite andFalseFalse (offset < cut) in Refl))
 
 ||| Native Root/Retire suffixes preserve the exact release scan for EVERY
@@ -116,12 +116,12 @@ export
   {oldFirst, oldFinal, newFirst, newFinal : SystemState name key value world error} ->
   {oldTrace : Transitions oldFirst oldFinal} -> {newTrace : Transitions newFirst newFinal} ->
   NativeSuffixFrames nameEq keyEq oldTrace newTrace ->
-  (oldTrail : AvailabilityTrace name key world error value oldTrace) ->
-  (newTrail : AvailabilityTrace name key world error value newTrace) ->
+  (oldTrail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value oldTrace) ->
+  (newTrail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value newTrace) ->
   (component : Component key value world error) -> (offset, cut : Nat) ->
   scanReleaseOrdinals nameEq keyEq component offset cut oldTrail =
     scanReleaseOrdinals nameEq keyEq component offset cut newTrail
-nativeSuffixReleases nameEq keyEq SuffixFramesEnd (AvailabilityEnd _) (AvailabilityEnd _) component offset cut = Refl
+nativeSuffixReleases nameEq keyEq SuffixFramesEnd (DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd _) (DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd _) component offset cut = Refl
 nativeSuffixReleases nameEq keyEq (SuffixFramesRoot {oldRest} {newRest} actor inserted oldChecked newChecked valid frame later) oldTrail newTrail component offset cut =
   trans (snd (nativeNonReleaseTail nameEq keyEq (OInsert actor Root inserted) OInsertTag oldChecked oldRest oldTrail component offset cut Refl))
     (trans (nativeSuffixReleases nameEq keyEq later (fst (nativeNonReleaseTail nameEq keyEq (OInsert actor Root inserted) OInsertTag oldChecked oldRest oldTrail component offset cut Refl)) (fst (nativeNonReleaseTail nameEq keyEq (OInsert actor Root inserted) OInsertTag newChecked newRest newTrail component offset cut Refl)) component (S offset) cut)
