@@ -29,9 +29,9 @@ record LocatedExtendedCore
   beforeCore : Transitions initial coreStart
   nativeCore : Transitions coreStart coreEnd
   afterCore : Transitions coreEnd finalState
-  beforeCoreTrail : AvailabilityTrace name key world error value beforeCore
-  coreTrail : AvailabilityTrace name key world error value nativeCore
-  afterCoreTrail : AvailabilityTrace name key world error value afterCore
+  beforeCoreTrail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value beforeCore
+  coreTrail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value nativeCore
+  afterCoreTrail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value afterCore
   0 coreActorOnly : ActorLifecycleOnlyExtended nameEq actor nativeCore
   0 corePhysicalSplit : appendTransitions beforeCore (appendTransitions nativeCore afterCore) = global
 
@@ -47,8 +47,8 @@ GeneralCoreContiguityRestored : {name, key, world, error : Type} -> {value : key
   {initial, oldFinal, newFinal : SystemState name key value world error} ->
   {oldTrace : Transitions initial oldFinal} -> {newTrace : Transitions initial newFinal} ->
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
-  AvailabilityTrace name key world error value oldTrace ->
-  AvailabilityTrace name key world error value newTrace -> Type
+  DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value oldTrace ->
+  DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value newTrace -> Type
 GeneralCoreContiguityRestored {name} {key} {world} {error} {value} {initial} {oldFinal} {newFinal}
   {oldTrace} {newTrace} nameEq keyEq oldTrail newTrail =
   (0 valid : registryWellFormed @{nameEq} @{keyEq} initial = True) ->
