@@ -121,6 +121,100 @@
       "exactDiff": "--- a/research-tests/DGamma/R181O19LocatedBlocks.idr\n+++ b/research-tests/DGamma/R181O19LocatedBlocks.idr\n@@ -108,2 +108,3 @@\n-  (ActorLifecycleStep _ _ Refl Refl\n-    (ActorLifecycleStep _ _ Refl Refl ActorLifecycleEnd))\n+  (ActorWithoutForcedRoots r181ProviderBlockBody\n+    (CoreLifecycleStep _ _ Refl Refl\n+      (CoreLifecycleStep _ _ Refl Refl CoreLifecycleEnd)))\n@@ -130 +131,2 @@\n-  (ActorLifecycleStep _ _ Refl Refl ActorLifecycleEnd) NoTransitions\n+  (ActorWithoutForcedRoots r181ConsumerBlockBody\n+    (CoreLifecycleStep _ _ Refl Refl CoreLifecycleEnd)) NoTransitions\n",
       "status": "PASS; guarded LEXICAL commit",
       "passingInvocation": "L2-1"
+    },
+    {
+      "path": "research-tests/DGamma/R174O17ProvisionCollisionCandidate.idr",
+      "cause": "V52: imported CPP3 rehomed-name ambiguity",
+      "repair": "Explicit original CP5AvailabilityAwarePlacement references; source declaration and computational behavior unchanged",
+      "beforeSHA256": "85b616df762a4e210a9846ca2f91487082ac39d9eec648bdcd3fd6ac56c1fc4e",
+      "afterSHA256": "b7d1f56080898cd8151341d77f1e0e15a4bede65edb0a8bc65be730a9e8a23d7",
+      "exactRenames": [
+        {
+          "line": 105,
+          "old": "AvailabilityTrace",
+          "new": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace"
+        },
+        {
+          "line": 106,
+          "old": "AvailabilityEnd",
+          "new": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd"
+        },
+        {
+          "line": 107,
+          "old": "AvailabilityStep",
+          "new": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep"
+        },
+        {
+          "line": 116,
+          "old": "AvailabilityTrace",
+          "new": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace"
+        },
+        {
+          "line": 117,
+          "old": "AvailabilityEnd",
+          "new": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd"
+        },
+        {
+          "line": 118,
+          "old": "AvailabilityEnd",
+          "new": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd"
+        },
+        {
+          "line": 123,
+          "old": "AvailabilityStep",
+          "new": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep"
+        },
+        {
+          "line": 137,
+          "old": "AvailabilityStep",
+          "new": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep"
+        },
+        {
+          "line": 137,
+          "old": "AvailabilityStep",
+          "new": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep"
+        },
+        {
+          "line": 137,
+          "old": "rootDeclaredProvisionsFree",
+          "new": "DGamma.CP5AvailabilityAwarePlacement.rootDeclaredProvisionsFree"
+        },
+        {
+          "line": 138,
+          "old": "rootCutCompatible",
+          "new": "DGamma.CP5AvailabilityAwarePlacement.rootCutCompatible"
+        },
+        {
+          "line": 139,
+          "old": "rootCutCompatible",
+          "new": "DGamma.CP5AvailabilityAwarePlacement.rootCutCompatible"
+        },
+        {
+          "line": 140,
+          "old": "rootCutCompatible",
+          "new": "DGamma.CP5AvailabilityAwarePlacement.rootCutCompatible"
+        },
+        {
+          "line": 141,
+          "old": "rootCutCompatible",
+          "new": "DGamma.CP5AvailabilityAwarePlacement.rootCutCompatible"
+        },
+        {
+          "line": 142,
+          "old": "rootCutCompatible",
+          "new": "DGamma.CP5AvailabilityAwarePlacement.rootCutCompatible"
+        },
+        {
+          "line": 143,
+          "old": "rootCutCompatible",
+          "new": "DGamma.CP5AvailabilityAwarePlacement.rootCutCompatible"
+        }
+      ],
+      "candidatePath": "/tmp/dgamma-r205/R174O17ProvisionCollisionCandidate.candidate",
+      "attemptUnit": "L3-1",
+      "exactDiff": "--- a/research-tests/DGamma/R174O17ProvisionCollisionCandidate.idr\n+++ b/research-tests/DGamma/R174O17ProvisionCollisionCandidate.idr\n@@ -105,3 +105,3 @@\n-  (trace : Transitions first finalState) -> AvailabilityTrace Nat ToyKey ToyRuntime String ToyValue trace\n-r178R174Annotate {first} NoTransitions = AvailabilityEnd first\n-r178R174Annotate {first} (MoreTransitions step rest) = AvailabilityStep first step rest (r178R174Annotate rest)\n+  (trace : Transitions first finalState) -> DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace Nat ToyKey ToyRuntime String ToyValue trace\n+r178R174Annotate {first} NoTransitions = DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd first\n+r178R174Annotate {first} (MoreTransitions step rest) = DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep first step rest (r178R174Annotate rest)\n@@ -116,3 +116,3 @@\n-   (appendTransitions prior later = trace, AvailabilityTrace Nat ToyKey ToyRuntime String ToyValue prior))\n-r178R174AnnotatedPrefix {first} Z trace = (first ** NoTransitions ** trace ** (Refl, AvailabilityEnd first))\n-r178R174AnnotatedPrefix {first} (S count) NoTransitions = (first ** NoTransitions ** NoTransitions ** (Refl, AvailabilityEnd first))\n+   (appendTransitions prior later = trace, DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace Nat ToyKey ToyRuntime String ToyValue prior))\n+r178R174AnnotatedPrefix {first} Z trace = (first ** NoTransitions ** trace ** (Refl, DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd first))\n+r178R174AnnotatedPrefix {first} (S count) NoTransitions = (first ** NoTransitions ** NoTransitions ** (Refl, DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd first))\n@@ -123 +123 @@\n-        (cong (MoreTransitions step) decomposition, AvailabilityStep first step prior annotations))\n+        (cong (MoreTransitions step) decomposition, DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep first step prior annotations))\n@@ -137,7 +137,7 @@\n-           (case annotations of AvailabilityStep _ _ _ (AvailabilityStep early _ _ _) => rootDeclaredProvisionsFree Nat ToyKey ToyRuntime String ToyValue %search component early; _ => False),\n-           rootCutCompatible Nat ToyKey ToyRuntime String ToyValue %search %search component 0 annotations,\n-           rootCutCompatible Nat ToyKey ToyRuntime String ToyValue %search %search component 1 annotations,\n-           rootCutCompatible Nat ToyKey ToyRuntime String ToyValue %search %search component 2 annotations,\n-           rootCutCompatible Nat ToyKey ToyRuntime String ToyValue %search %search component 3 annotations,\n-           rootCutCompatible Nat ToyKey ToyRuntime String ToyValue %search %search component 4 annotations,\n-           rootCutCompatible Nat ToyKey ToyRuntime String ToyValue %search %search component 5 annotations]\n+           (case annotations of DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep _ _ _ (DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep early _ _ _) => DGamma.CP5AvailabilityAwarePlacement.rootDeclaredProvisionsFree Nat ToyKey ToyRuntime String ToyValue %search component early; _ => False),\n+           DGamma.CP5AvailabilityAwarePlacement.rootCutCompatible Nat ToyKey ToyRuntime String ToyValue %search %search component 0 annotations,\n+           DGamma.CP5AvailabilityAwarePlacement.rootCutCompatible Nat ToyKey ToyRuntime String ToyValue %search %search component 1 annotations,\n+           DGamma.CP5AvailabilityAwarePlacement.rootCutCompatible Nat ToyKey ToyRuntime String ToyValue %search %search component 2 annotations,\n+           DGamma.CP5AvailabilityAwarePlacement.rootCutCompatible Nat ToyKey ToyRuntime String ToyValue %search %search component 3 annotations,\n+           DGamma.CP5AvailabilityAwarePlacement.rootCutCompatible Nat ToyKey ToyRuntime String ToyValue %search %search component 4 annotations,\n+           DGamma.CP5AvailabilityAwarePlacement.rootCutCompatible Nat ToyKey ToyRuntime String ToyValue %search %search component 5 annotations]\n",
+      "status": "PASS; guarded LEXICAL commit",
+      "passingInvocation": "L3-1"
     }
   ]
 }

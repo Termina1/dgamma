@@ -1,7 +1,7 @@
 {
   "path": "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
   "diagnosticInvocation": "V100",
-  "status": "APPROVED frozen-module migration; source not yet applied",
+  "status": "COMMITTED a2c3ace54a7b89de978c9eb3ab33e09c73bf95b8",
   "beforeSHA256": "3b62ba1c3bc88503116ed22d82c667043f7f41dd483fb093cc25b677a55245cc",
   "afterSHA256": "eb0ab7b95779a4b44360b222030e7aa0f8d134c17ea4d2dfa98f3306e135df1b",
   "patchSHA256": "7e13c53c889ecaf8ac0389c405b807519f7c6e90cb2648dfb635ef107a998083",
@@ -128,5 +128,6 @@
     "@@ -4213,14 +4217,15 @@",
     "@@ -4248,21 +4253,23 @@",
     "@@ -4798,8 +4805,15 @@"
-  ]
+  ],
+  "passingInvocation": "V100-2"
 }
