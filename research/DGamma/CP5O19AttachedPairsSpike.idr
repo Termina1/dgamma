@@ -420,3 +420,26 @@ o19AttachedOrchestration (AttachedChildRemove child fiber found parent controlle
 o19AttachedOrchestration (AttachedRootInsert root component priorRoots inserted forced) excluded = PaperInsertStep inserted
 o19AttachedOrchestration (AttachedRootRetire root fiber priorRoots bundled found parent controlled) excluded = PaperRetireStep controlled
 o19AttachedOrchestration (AttachedRootRemove root fiber priorRoots bundled found parent controlled) excluded = PaperRemoveStep controlled
+
+||| Expanded A/O local theorem: all six attached orchestration forms consume
+||| the SAME frozen diamond surface. Owner/licensing/independence premises are
+||| explicit primitive obligations, not yet consequences of block safety.
+export
+0 o19AttachedActivationOrchestrationDiamond :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {actor : name} -> {coreFirst, coreLast, first, middle, last : SystemState name key value world error} ->
+  {core : Transitions coreFirst coreLast} ->
+  (left : Transition first middle) -> (right : Transition middle last) ->
+  AlignedTransitions name key world error value nameEq keyEq (MoreTransitions left (MoreTransitions right NoTransitions)) ->
+  PaperActivationStep left -> O19AttachedEdge name key world error value nameEq actor core right ->
+  Not (isLifecycleAction (transitionAction right) = True) ->
+  Not (transitionActor left = transitionActor right) ->
+  ((child, parent : name) -> (component : Component key value world error) ->
+    transitionAction right = OInsert child (ChildOf parent) component -> Not (transitionActor left = parent)) ->
+  registryWellFormed @{nameEq} @{keyEq} first = True ->
+  TraceIndependent name key world error value keyEq (MoreTransitions left (MoreTransitions right NoTransitions)) ->
+  LocalRelationalDiamond name key world error value nameEq keyEq left right
+o19AttachedActivationOrchestrationDiamond nameEq keyEq left right aligned activation observed notLifecycle distinct licensing wellFormed independent =
+  activationOrchestrationDiamondSpike nameEq keyEq left right aligned activation
+    (o19AttachedOrchestration observed notLifecycle) distinct licensing wellFormed independent
