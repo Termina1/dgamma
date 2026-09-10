@@ -57,15 +57,15 @@ record PacketPassage
   passageOldPacket : CoreNativePacket oldStates
   passageNewPacket : CoreNativePacket newStates
   passagePrefix : Transitions initial (oldStates 0)
-  passagePrefixTrail : AvailabilityTrace Nat Bool Unit String (\key => Unit) passagePrefix
+  passagePrefixTrail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace Nat Bool Unit String (\key => Unit) passagePrefix
   passageRoot : Nat
   passageComponent : Component Bool (\key => Unit) Unit String
   0 passageEarlyRoot : checkedApplyAction @{fst fixtureDictionaries} @{snd fixtureDictionaries}
     (OInsert passageRoot Root passageComponent) (oldStates 0) = Just (OInsertTag, newStates 0)
   passageOldSuffix : Transitions (oldStates 5) oldFinal
-  passageOldSuffixTrail : AvailabilityTrace Nat Bool Unit String (\key => Unit) passageOldSuffix
+  passageOldSuffixTrail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace Nat Bool Unit String (\key => Unit) passageOldSuffix
   passageNewSuffix : Transitions (newStates 5) newFinal
-  passageNewSuffixTrail : AvailabilityTrace Nat Bool Unit String (\key => Unit) passageNewSuffix
+  passageNewSuffixTrail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace Nat Bool Unit String (\key => Unit) passageNewSuffix
   passageSuffixWord : List (Action Nat Bool (\key => Unit) Unit String)
   0 passageOldAfterWord : nativeActionWord passageOldSuffixTrail =
     OInsert passageRoot Root passageComponent :: passageSuffixWord
@@ -85,8 +85,8 @@ record PacketContiguityResult
   constructor MkPacketContiguityResult
   packetOriginalRun : Transitions initial oldFinal
   packetRestoredRun : Transitions initial newFinal
-  packetOriginalTrail : AvailabilityTrace Nat Bool Unit String (\key => Unit) packetOriginalRun
-  packetRestoredTrail : AvailabilityTrace Nat Bool Unit String (\key => Unit) packetRestoredRun
+  packetOriginalTrail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace Nat Bool Unit String (\key => Unit) packetOriginalRun
+  packetRestoredTrail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace Nat Bool Unit String (\key => Unit) packetRestoredRun
   packetOriginalCore : LocatedExtendedCore Nat Bool Unit String (\key => Unit) (fst fixtureDictionaries) 2 packetOriginalRun
   packetRestoredCore : LocatedExtendedCore Nat Bool Unit String (\key => Unit) (fst fixtureDictionaries) 2 packetRestoredRun
   0 packetOriginValid : registryWellFormed @{fst fixtureDictionaries} @{snd fixtureDictionaries} initial = True
@@ -109,8 +109,8 @@ export
   {initial, finalState : SystemState Nat Bool (\key => Unit) Unit String} ->
   (packet : CoreNativePacket states) ->
   (before : Transitions initial (states 0)) -> (after : Transitions (states 5) finalState) ->
-  (beforeTrail : AvailabilityTrace Nat Bool Unit String (\key => Unit) before) ->
-  (afterTrail : AvailabilityTrace Nat Bool Unit String (\key => Unit) after) ->
+  (beforeTrail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace Nat Bool Unit String (\key => Unit) before) ->
+  (afterTrail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace Nat Bool Unit String (\key => Unit) after) ->
   LocatedExtendedCore Nat Bool Unit String (\key => Unit) (fst fixtureDictionaries) 2
     (appendTransitions before (appendTransitions (assembledTrace (assembleCoreNative states packet)) after))
 locatePacketCore states packet before after beforeTrail afterTrail =
@@ -146,12 +146,12 @@ coreContiguityFromPackets oldStates newStates passage endpoints = MkPacketContig
   (appendTransitions (passagePrefix passage) (appendTransitions (assembledTrace (assembleCoreNative oldStates (passageOldPacket passage))) (passageOldSuffix passage)))
   (appendTransitions (appendTransitions (passagePrefix passage) (MoreTransitions (Fired {before = oldStates 0} {afterState = newStates 0} (fst fixtureDictionaries) (snd fixtureDictionaries) (OInsert (passageRoot passage) Root (passageComponent passage)) OInsertTag (passageEarlyRoot passage)) NoTransitions)) (appendTransitions (assembledTrace (assembleCoreNative newStates (passageNewPacket passage))) (passageNewSuffix passage)))
   (appendAvailability (passagePrefixTrail passage) (appendAvailability (assembledTrail (assembleCoreNative oldStates (passageOldPacket passage))) (passageOldSuffixTrail passage)))
-  (appendAvailability (appendAvailability (passagePrefixTrail passage) (AvailabilityStep (oldStates 0) (Fired {before = oldStates 0} {afterState = newStates 0} (fst fixtureDictionaries) (snd fixtureDictionaries) (OInsert (passageRoot passage) Root (passageComponent passage)) OInsertTag (passageEarlyRoot passage)) NoTransitions (AvailabilityEnd (newStates 0)))) (appendAvailability (assembledTrail (assembleCoreNative newStates (passageNewPacket passage))) (passageNewSuffixTrail passage)))
+  (appendAvailability (appendAvailability (passagePrefixTrail passage) (DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep (oldStates 0) (Fired {before = oldStates 0} {afterState = newStates 0} (fst fixtureDictionaries) (snd fixtureDictionaries) (OInsert (passageRoot passage) Root (passageComponent passage)) OInsertTag (passageEarlyRoot passage)) NoTransitions (DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd (newStates 0)))) (appendAvailability (assembledTrail (assembleCoreNative newStates (passageNewPacket passage))) (passageNewSuffixTrail passage)))
   (locatePacketCore oldStates (passageOldPacket passage) (passagePrefix passage) (passageOldSuffix passage) (passagePrefixTrail passage) (passageOldSuffixTrail passage))
-  (locatePacketCore newStates (passageNewPacket passage) (appendTransitions (passagePrefix passage) (MoreTransitions (Fired {before = oldStates 0} {afterState = newStates 0} (fst fixtureDictionaries) (snd fixtureDictionaries) (OInsert (passageRoot passage) Root (passageComponent passage)) OInsertTag (passageEarlyRoot passage)) NoTransitions)) (passageNewSuffix passage) (appendAvailability (passagePrefixTrail passage) (AvailabilityStep (oldStates 0) (Fired {before = oldStates 0} {afterState = newStates 0} (fst fixtureDictionaries) (snd fixtureDictionaries) (OInsert (passageRoot passage) Root (passageComponent passage)) OInsertTag (passageEarlyRoot passage)) NoTransitions (AvailabilityEnd (newStates 0)))) (passageNewSuffixTrail passage))
+  (locatePacketCore newStates (passageNewPacket passage) (appendTransitions (passagePrefix passage) (MoreTransitions (Fired {before = oldStates 0} {afterState = newStates 0} (fst fixtureDictionaries) (snd fixtureDictionaries) (OInsert (passageRoot passage) Root (passageComponent passage)) OInsertTag (passageEarlyRoot passage)) NoTransitions)) (passageNewSuffix passage) (appendAvailability (passagePrefixTrail passage) (DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep (oldStates 0) (Fired {before = oldStates 0} {afterState = newStates 0} (fst fixtureDictionaries) (snd fixtureDictionaries) (OInsert (passageRoot passage) Root (passageComponent passage)) OInsertTag (passageEarlyRoot passage)) NoTransitions (DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd (newStates 0)))) (passageNewSuffixTrail passage))
   (passageSourceValid passage) (passageForeign passage) (passageOldAfterWord passage)
-  (trans (nativeWordAppend (appendAvailability (passagePrefixTrail passage) (AvailabilityStep (oldStates 0) (Fired {before = oldStates 0} {afterState = newStates 0} (fst fixtureDictionaries) (snd fixtureDictionaries) (OInsert (passageRoot passage) Root (passageComponent passage)) OInsertTag (passageEarlyRoot passage)) NoTransitions (AvailabilityEnd (newStates 0)))) (appendAvailability (assembledTrail (assembleCoreNative newStates (passageNewPacket passage))) (passageNewSuffixTrail passage)))
-    (trans (cong2 (++) (nativeWordAppend (passagePrefixTrail passage) (AvailabilityStep (oldStates 0) (Fired {before = oldStates 0} {afterState = newStates 0} (fst fixtureDictionaries) (snd fixtureDictionaries) (OInsert (passageRoot passage) Root (passageComponent passage)) OInsertTag (passageEarlyRoot passage)) NoTransitions (AvailabilityEnd (newStates 0))))
+  (trans (nativeWordAppend (appendAvailability (passagePrefixTrail passage) (DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep (oldStates 0) (Fired {before = oldStates 0} {afterState = newStates 0} (fst fixtureDictionaries) (snd fixtureDictionaries) (OInsert (passageRoot passage) Root (passageComponent passage)) OInsertTag (passageEarlyRoot passage)) NoTransitions (DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd (newStates 0)))) (appendAvailability (assembledTrail (assembleCoreNative newStates (passageNewPacket passage))) (passageNewSuffixTrail passage)))
+    (trans (cong2 (++) (nativeWordAppend (passagePrefixTrail passage) (DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep (oldStates 0) (Fired {before = oldStates 0} {afterState = newStates 0} (fst fixtureDictionaries) (snd fixtureDictionaries) (OInsert (passageRoot passage) Root (passageComponent passage)) OInsertTag (passageEarlyRoot passage)) NoTransitions (DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd (newStates 0))))
       (trans (nativeWordAppend (assembledTrail (assembleCoreNative newStates (passageNewPacket passage))) (passageNewSuffixTrail passage))
         (cong2 (++) (fst (packetCoreWords oldStates newStates (passageOldPacket passage) (passageNewPacket passage))) (passageNewAfterWord passage))))
       (sym (appendAssociative (nativeActionWord (passagePrefixTrail passage)) [(OInsert (passageRoot passage) Root (passageComponent passage))]
