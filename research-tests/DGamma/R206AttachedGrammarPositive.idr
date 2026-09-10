@@ -70,3 +70,12 @@ public export
 r206RootRetireEdge : Transition r206RootInserted r206RootRetired
 r206RootRetireEdge = Fired (the (DecEq Nat) %search) (the (DecEq ToyKey) %search)
   (ORetire 2) ORetireTag Refl
+
+||| Native checked same-bundle O-Remove; the exact evaluator destination is
+||| retained instead of assuming it equals an independently rebuilt context.
+public export
+r206RootRemoveEdge : Transition r206RootRetired
+  (MkSystemState (MkToyRuntime False False)
+    (deleteBinding @{the (DecEq Nat) %search} 2 (registry r206RootRetired)))
+r206RootRemoveEdge = Fired (the (DecEq Nat) %search) (the (DecEq ToyKey) %search)
+  (ORemove 2) ORemoveTag Refl
