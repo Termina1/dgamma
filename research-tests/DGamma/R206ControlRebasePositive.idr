@@ -2,6 +2,8 @@ module DGamma.R206ControlRebasePositive
 
 import DGamma.Core
 import DGamma.Calculus
+import DGamma.CalculusChecks
+import DGamma.Section3Example
 import DGamma.Coeffects
 import DGamma.Metatheory
 import DGamma.CP3
@@ -78,3 +80,24 @@ r206RemovedAbsentTransport = (Refl, Refl,
   o20RebaseAbsentDomain r45NameEq identityNameBijection r192AbsentBijection
     r192RemovedBirthFinal r192RemovedBirthFinal (o20IdentityAllNameCut r45NameEq r192RemovedBirthFinal)
     r206RemovedCurrentAgreement 1 Refl)
+
+||| Nonempty parent/provider metadata fixture: ChildOf0 and an actual
+||| single-provider Active view. This is a control VALUE, not a checked trace.
+||| The map still differs at1/2; finite references cannot be replaced by a
+||| falsely asserted global equality of the two name functions.
+export
+0 r206NonemptyReferenceControls :
+  (ParentRelatedBy r192AbsentBijection (ChildOf 0) (ChildOf 0),
+   LifecycleRelatedBy {name = Nat} {key = ToyKey} {value = ToyValue}
+     {world = ToyRuntime} {error = String} {deps = [ServiceA]} {provision = toyEmptySpec}
+     r192AbsentBijection (Active id (ProviderView 0 EmptyView)) (Active id (ProviderView 0 EmptyView)))
+r206NonemptyReferenceControls =
+  (o20RebaseParentReferences identityNameBijection r192AbsentBijection (ChildOf 0) (ChildOf 0)
+    (\selected, reference => case reference of Refl => Refl) (ChildrenRelated Refl),
+   o20RebaseLifecycleReferences {name = Nat} {key = ToyKey} {value = ToyValue}
+     {world = ToyRuntime} {error = String} {deps = [ServiceA]} {provision = toyEmptySpec}
+     identityNameBijection r192AbsentBijection (Active id (ProviderView 0 EmptyView)) (Active id (ProviderView 0 EmptyView))
+     (\selected, member => case member of
+       Here => Refl
+       There later => absurd later)
+     (o20IdentityLifecycle {error = String} (Active id (ProviderView 0 EmptyView))))
