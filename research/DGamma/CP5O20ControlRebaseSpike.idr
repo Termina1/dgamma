@@ -123,3 +123,36 @@ export
   {renaming : NameBijection name} -> (right : Maybe (Fiber name key value world error)) ->
   MaybeFiberRelatedBy renaming Nothing right -> right = Nothing
 o20RebaseAbsentControlRight _ RenamedAbsent = Refl
+
+||| Observe the old preimage in the ACTUAL source registry. Its absent branch
+||| uses the old cut; its present branch contradicts source absence using B6.
+||| Agreement is needed only for present source entries, not all raw names.
+export
+0 o20RebaseAbsentObserved :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (before, after : NameBijection name) ->
+  (left, right : SystemState name key value world error) ->
+  O20AllNameCut name key world error value nameEq before left right ->
+  (0 agreeCurrent : (point : name) -> (fiber : Fiber name key value world error) ->
+    lookupFiber {name} {key} {value} {world} {error} @{nameEq} point (registry left) = Just fiber ->
+    renameForward before point = renameForward after point) ->
+  (selected : name) -> (observed : Maybe (Fiber name key value world error)) ->
+  (0 preimageFound : lookupFiber {name} {key} {value} {world} {error} @{nameEq}
+    (renameBackward before (renameForward after selected)) (registry left) = observed) ->
+  (0 absent : lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected (registry left) = Nothing) ->
+  lookupFiber {name} {key} {value} {world} {error} @{nameEq} (renameForward after selected) (registry right) = Nothing
+o20RebaseAbsentObserved {name} {key} {world} {error} {value} nameEq before after left right old agreeCurrent selected Nothing preimageFound absent =
+  trans (sym (cong (\point => lookupFiber {name} {key} {value} {world} {error} @{nameEq} point (registry right))
+    (renameRightInverse before (renameForward after selected))))
+    (o20RebaseAbsentControlRight
+      (lookupFiber {name} {key} {value} {world} {error} @{nameEq}
+        (renameForward before (renameBackward before (renameForward after selected))) (registry right))
+      (replace {p = \observed => MaybeFiberRelatedBy before observed
+        (lookupFiber {name} {key} {value} {world} {error} @{nameEq}
+          (renameForward before (renameBackward before (renameForward after selected))) (registry right))}
+        preimageFound (allNameControls old (renameBackward before (renameForward after selected)))))
+o20RebaseAbsentObserved {name} {key} {world} {error} {value} nameEq before after left right old agreeCurrent selected (Just fiber) preimageFound absent =
+  void (nothingIsNotJust (trans (sym absent)
+    (trans (sym (cong (\point => lookupFiber {name} {key} {value} {world} {error} @{nameEq} point (registry left))
+      (o20RebasePreimageCurrent before after selected
+        (agreeCurrent (renameBackward before (renameForward after selected)) fiber preimageFound)))) preimageFound)))
