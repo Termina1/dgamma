@@ -123,3 +123,13 @@ r206MovedCurrentBijection = MkNameBijection
     Z => Refl
     S Z => Refl
     S (S later) => Refl)
+
+||| NEGATIVE theorem, also native PASS: dropping present-domain agreement
+||| would send the real present root0 to absence, so a full cut is impossible.
+export
+0 r206RejectsMovedCurrentCut :
+  Not (O20AllNameCut Nat R45Key Unit String R45Value r45NameEq r206MovedCurrentBijection
+    r192RemovedBirthFinal r192RemovedBirthFinal)
+r206RejectsMovedCurrentCut cut =
+  o20PresentAbsentImpossible {name = Nat} {key = R45Key} {value = R45Value}
+    {world = Unit} {error = String} {renaming = r206MovedCurrentBijection} (allNameControls cut 0)
