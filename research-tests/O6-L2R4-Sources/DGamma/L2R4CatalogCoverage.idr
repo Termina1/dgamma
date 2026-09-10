@@ -27,9 +27,9 @@ export
   (region : Transitions gapFirst gapFinal) -> (offset : Nat) ->
   (0 catalog : (ordinal : Nat) -> (action : Action name key value world error) ->
     nativeActionAt region ordinal = Just action ->
-    AttachedBundleOccurrence name key world error value nameEq keyEq global action (offset + ordinal)) ->
-  AttachedNormalForm name key world error value nameEq keyEq global region offset
-catalogNormalForm region offset catalog = MkAttachedNormalForm
+    DGamma.L2R3AttachedGap.AttachedBundleOccurrence name key world error value nameEq keyEq global action (offset + ordinal)) ->
+  DGamma.L2R3AttachedGap.AttachedNormalForm name key world error value nameEq keyEq global region offset
+catalogNormalForm region offset catalog = DGamma.L2R3AttachedGap.MkAttachedNormalForm
   (\action, occurrence, root => catalog (locatedActionOrdinal occurrence) action (occurrenceObserved occurrence))
 
 ||| Structural catalog extension: a real head member plus tail lookup
@@ -42,20 +42,20 @@ export
   {first, finalState, before, middle, gapFinal : SystemState name key value world error} ->
   {global : Transitions first finalState} ->
   (step : Transition before middle) -> (rest : Transitions middle gapFinal) -> (offset : Nat) ->
-  (0 head : AttachedBundleOccurrence name key world error value nameEq keyEq global (transitionAction step) offset) ->
+  (0 head : DGamma.L2R3AttachedGap.AttachedBundleOccurrence name key world error value nameEq keyEq global (transitionAction step) offset) ->
   (0 tail : (n : Nat) -> (action : Action name key value world error) ->
     nativeActionAt rest n = Just action ->
-    AttachedBundleOccurrence name key world error value nameEq keyEq global action (S offset + n)) ->
+    DGamma.L2R3AttachedGap.AttachedBundleOccurrence name key world error value nameEq keyEq global action (S offset + n)) ->
   (ordinal : Nat) -> (action : Action name key value world error) ->
   nativeActionAt (MoreTransitions step rest) ordinal = Just action ->
-  AttachedBundleOccurrence name key world error value nameEq keyEq global action (offset + ordinal)
+  DGamma.L2R3AttachedGap.AttachedBundleOccurrence name key world error value nameEq keyEq global action (offset + ordinal)
 catalogConsObserved {name} {key} {world} {error} {value} {nameEq} {keyEq} {global}
   step rest offset head tail Z action exact =
-    replace {p = AttachedBundleOccurrence name key world error value nameEq keyEq global action}
+    replace {p = DGamma.L2R3AttachedGap.AttachedBundleOccurrence name key world error value nameEq keyEq global action}
       (sym (plusZeroRightNeutral offset))
-      (replace {p = \act => AttachedBundleOccurrence name key world error value nameEq keyEq global act offset}
+      (replace {p = \act => DGamma.L2R3AttachedGap.AttachedBundleOccurrence name key world error value nameEq keyEq global act offset}
         (justInjective exact) head)
 catalogConsObserved {name} {key} {world} {error} {value} {nameEq} {keyEq} {global}
   step rest offset head tail (S n) action exact =
-    replace {p = AttachedBundleOccurrence name key world error value nameEq keyEq global action}
+    replace {p = DGamma.L2R3AttachedGap.AttachedBundleOccurrence name key world error value nameEq keyEq global action}
       (plusSuccRightSucc offset n) (tail n action exact)
