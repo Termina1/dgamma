@@ -34,7 +34,7 @@ export
   {initial, finalState : SystemState name key value world error} ->
   {trace : Transitions initial finalState} ->
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
-  (trail : AvailabilityTrace name key world error value trace) ->
+  (trail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value trace) ->
   (0 zero : totalDistance nameEq keyEq trail = 0) ->
   (0 front : FrontNormal name key world error value nameEq keyEq trail) ->
   (0 never : ForcedRootNeverRetired name key world error value nameEq keyEq trail) ->
@@ -56,8 +56,8 @@ export
   {initial, oldFinal, middleFinal : SystemState name key value world error} ->
   {oldTrace : Transitions initial oldFinal} -> {middleTrace : Transitions initial middleFinal} ->
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
-  (oldTrail : AvailabilityTrace name key world error value oldTrace) ->
-  (middleTrail : AvailabilityTrace name key world error value middleTrace) ->
+  (oldTrail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value oldTrace) ->
+  (middleTrail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value middleTrace) ->
   (0 move : AdmittedDistanceMove name key world error value nameEq keyEq oldTrail middleTrail) ->
   (result : PhaseIterationResult name key world error value nameEq keyEq middleTrail) ->
   PhaseIterationResult name key world error value nameEq keyEq oldTrail
