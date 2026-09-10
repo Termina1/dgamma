@@ -28,13 +28,13 @@ export
   {nameEq : DecEq name} -> {keyEq : DecEq key} ->
   {first, finalState : SystemState name key value world error} ->
   {trace : Transitions first finalState} ->
-  {trail : AvailabilityTrace name key world error value trace} -> {anchor : Nat} ->
+  {trail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value trace} -> {anchor : Nat} ->
   (placed : PlacedBundle name key world error value nameEq keyEq trail anchor) ->
   (entry : RootCatalogEntry name key world error value) ->
   (birth : CatalogBirthAt name key world error value entry (bundleOffset (placedMember placed)) (memberBundle (placedMember placed))) ->
-  AttachedBundleOccurrence name key world error value nameEq keyEq trace
+  DGamma.L2R3AttachedGap.AttachedBundleOccurrence name key world error value nameEq keyEq trace
     (OInsert (catalogRoot entry) Root (catalogComponent entry)) (catalogOrdinal entry)
-placedBirthFromDecoded placed entry birth = MkAttachedBundleOccurrence
+placedBirthFromDecoded placed entry birth = DGamma.L2R3AttachedGap.MkAttachedBundleOccurrence
   (bundleActor (placedMember placed)) (containingBlock (placedMember placed))
   (coreEnd (placedMember placed)) (memberCore (placedMember placed)) (memberExtended (placedMember placed))
   (memberBundle (placedMember placed)) (memberForced (placedMember placed)) (memberSplit (placedMember placed))
@@ -55,11 +55,11 @@ export
   {nameEq : DecEq name} -> {keyEq : DecEq key} ->
   {first, finalState : SystemState name key value world error} ->
   {trace : Transitions first finalState} ->
-  {trail : AvailabilityTrace name key world error value trace} -> {anchor : Nat} ->
+  {trail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value trace} -> {anchor : Nat} ->
   (placed : PlacedBundle name key world error value nameEq keyEq trail anchor) ->
   (entry : RootCatalogEntry name key world error value) ->
   (0 member : Elem entry (placedRootsAt nameEq keyEq trail anchor)) ->
-  AttachedBundleOccurrence name key world error value nameEq keyEq trace
+  DGamma.L2R3AttachedGap.AttachedBundleOccurrence name key world error value nameEq keyEq trace
     (OInsert (catalogRoot entry) Root (catalogComponent entry)) (catalogOrdinal entry)
 placedCatalogCoverage placed entry member = placedBirthFromDecoded placed entry
   (scanCatalogBirth (bundleOffset (placedMember placed)) (placedBundleTrail placed) entry
@@ -95,13 +95,13 @@ export
   {nameEq : DecEq name} -> {keyEq : DecEq key} ->
   {first, finalState : SystemState name key value world error} ->
   {trace : Transitions first finalState} ->
-  {trail : AvailabilityTrace name key world error value trace} -> {anchor : Nat} ->
+  {trail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value trace} -> {anchor : Nat} ->
   (placed : PlacedBundle name key world error value nameEq keyEq trail anchor) ->
   (entry : RootCatalogEntry name key world error value) ->
   (0 member : Elem entry (scanRootCatalog 0 trail)) -> (observed : Bool) ->
   (0 equation : (anchorOf nameEq keyEq trail (catalogOrdinal entry) == Just anchor) = observed) ->
   (0 accepted : observed = True) ->
-  AttachedBundleOccurrence name key world error value nameEq keyEq trace
+  DGamma.L2R3AttachedGap.AttachedBundleOccurrence name key world error value nameEq keyEq trace
     (OInsert (catalogRoot entry) Root (catalogComponent entry)) (catalogOrdinal entry)
 placedRootCoverage {nameEq} {keyEq} {trail} {anchor} placed entry member observed equation accepted =
   placedCatalogCoverage placed entry
