@@ -156,3 +156,22 @@ o20RebaseAbsentObserved {name} {key} {world} {error} {value} nameEq before after
     (trans (sym (cong (\point => lookupFiber {name} {key} {value} {world} {error} @{nameEq} point (registry left))
       (o20RebasePreimageCurrent before after selected
         (agreeCurrent (renameBackward before (renameForward after selected)) fiber preimageFound)))) preimageFound)))
+
+||| Discharge the observed-preimage equation by the actual lookup. No absent
+||| target callback or second/backward domain-agreement premise is required.
+export
+0 o20RebaseAbsentDomain :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (before, after : NameBijection name) ->
+  (left, right : SystemState name key value world error) ->
+  O20AllNameCut name key world error value nameEq before left right ->
+  (0 agreeCurrent : (point : name) -> (fiber : Fiber name key value world error) ->
+    lookupFiber {name} {key} {value} {world} {error} @{nameEq} point (registry left) = Just fiber ->
+    renameForward before point = renameForward after point) ->
+  (selected : name) ->
+  (0 absent : lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected (registry left) = Nothing) ->
+  lookupFiber {name} {key} {value} {world} {error} @{nameEq} (renameForward after selected) (registry right) = Nothing
+o20RebaseAbsentDomain {name} {key} {world} {error} {value} nameEq before after left right old agreeCurrent selected absent =
+  o20RebaseAbsentObserved nameEq before after left right old agreeCurrent selected
+    (lookupFiber {name} {key} {value} {world} {error} @{nameEq}
+      (renameBackward before (renameForward after selected)) (registry left)) Refl absent
