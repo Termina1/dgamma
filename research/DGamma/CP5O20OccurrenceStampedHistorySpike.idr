@@ -214,9 +214,10 @@ o20ModuloSynchronizationHistoryCut {nameEq} {initial} mapping synchronization em
       (\selected, stamp, found => absurd found) (\selected, stamp, found => absurd found))
 
 ||| The actual LEFT native path contained in an occurrence-stamped history.
+||| R206 exposes both whole-path bodies for reduction (R204 A15 opacity diagnosis).
 ||| No equation to the supplied-word trace token is claimed; that word supplies
 ||| original action/tag/ordinal labels, not a freely asserted replay equality.
-export
+public export
 0 o20OccurrenceHistoryLeftPath :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   {nameEq : DecEq name} -> {keyEq : DecEq key} ->
@@ -238,7 +239,7 @@ o20OccurrenceHistoryLeftPath
 ||| The actual RIGHT native path contained in an occurrence-stamped history.
 ||| No equation to the supplied-word trace token is claimed; that word supplies
 ||| original action/tag/ordinal labels, not a freely asserted replay equality.
-export
+public export
 0 o20OccurrenceHistoryRightPath :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   {nameEq : DecEq name} -> {keyEq : DecEq key} ->
