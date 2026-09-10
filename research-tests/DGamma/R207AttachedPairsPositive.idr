@@ -88,3 +88,26 @@ r207AttachedRootInputOrderMatters same =
     (MoreTransitions r206RootRemoveEdge NoTransitions) (RootInsertStep Refl)
     (RootRetireStep (freshFiber DGamma.CalculusChecks.providerComponent Root) Refl Refl Refl) same of
     Refl impossible
+
+||| Runtime form tags compute from the actual four new native edge classes.
+||| Root insertion keeps the REAL empty-history KeyReleased occurrence.
+export
+0 r207NativeAttachedFormTags :
+  (o19AttachedForm {nameEq = the (DecEq Nat) %search} {actor = 0}
+    {core = MoreTransitions r206ReleaseEdge NoTransitions} {step = r206ReleaseEdge}
+    (AttachedChildRemove 1 (retireFiber (freshFiber DGamma.CalculusChecks.providerComponent (ChildOf 0)))
+      Refl Refl Refl) = ChildRemoveForm,
+   o19AttachedForm {nameEq = the (DecEq Nat) %search} {actor = 0}
+    {core = MoreTransitions r206ReleaseEdge NoTransitions} {step = r206RootInsertEdge}
+    (AttachedRootInsert 2 DGamma.CalculusChecks.providerComponent [] Refl
+      (KeyReleased (MkAttachedRelease 1
+        (retireFiber (freshFiber DGamma.CalculusChecks.providerComponent (ChildOf 0)))
+        (MkLocatedActionOccurrence r206ReleaseSource r206Released NoTransitions r206ReleaseEdge NoTransitions Refl Refl)
+        Refl Refl ServiceA Here Here))) = ForcedRootInsertForm,
+   o19AttachedForm {nameEq = the (DecEq Nat) %search} {actor = 0}
+    {core = MoreTransitions r206ReleaseEdge NoTransitions} {step = r206RootRetireEdge}
+    (AttachedRootRetire 2 (freshFiber DGamma.CalculusChecks.providerComponent Root) [2] Here Refl Refl Refl) = BundledRootRetireForm,
+   o19AttachedForm {nameEq = the (DecEq Nat) %search} {actor = 0}
+    {core = MoreTransitions r206ReleaseEdge NoTransitions} {step = r206RootRemoveEdge}
+    (AttachedRootRemove 2 (retireFiber (freshFiber DGamma.CalculusChecks.providerComponent Root)) [2] Here Refl Refl Refl) = BundledRootRemoveForm)
+r207NativeAttachedFormTags = (Refl, Refl, Refl, Refl)
