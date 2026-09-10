@@ -5132,3 +5132,60 @@ frozen again during R206.
   postulate or cast. This lane-baseline research statement/body migration was
   explicitly authorized by the R206 gate and prioritized for lane2 cache trust.
   Other research Extended data/located-block declarations are unchanged.
+
+- **R206 OriginalBlockClass re-proof:** `LegacyActorOnly` names the restricted
+  lifecycle/yield-only spine. `o19LegacyActorCore` proves its production-core
+  inclusion; `ActorWithoutForcedRoots` wraps it. `o19OwnedSafeWord`,
+  `o19OriginalBlockWord` and `o19SanctionedOriginalWords` now explicitly require
+  that restricted shape. Their previous conclusions were false over the
+  enlarged production grammar. The existing pair assembler remains conditional
+  on the old two-case observation, never on a fabricated control-to-insert cast.
+  The new total `o19ExpandedOwnedSafeWord` and
+  `o19ExpandedOriginalBlockWord` cover both production wrappers, all five core
+  constructors and all four bundle constructors. Child controls retain actual
+  original lookup/ChildOf metadata; root controls retain lookup/Root metadata.
+  The weaker word observation does not expose forcing reason/prior-root history
+  and makes no replay-cut transport claim; those remain in the input grammar.
+- **R206 PaperBranchCompleteness:** `o19OriginalPaperBranch` now accepts the
+  expanded observation. All non-lifecycle control/root cases are eliminated by
+  their exact action tags; lifecycle completeness retains its original proof.
+  `o19OriginalClasses` is honestly **conditional on two explicit legacy body
+  shapes**, not an unconditional classifier of production attached blocks.
+  These are research statement repairs authorized by O6-R206-SEMANTIC-GATE.md,
+  not strengthened public O19 premises or a proof of the frozen O19 body.
+- **R206 downstream frontier:** the CP3 draft predicted exactly this consumer
+  re-proof obligation. Old Cartesian pair classes and action-word-only reached
+  reconstruction do not establish child-control source lookups or AttachedReason
+  at the moved cut. New failures and blocked transitive dependents are recorded
+  separately; stale TTCs are not fresh passes. The separately gated R207 design
+  is O6-R206-O19-EXPANSION-DESIGN.md. CrossTrace fresh PASS is not promised by
+  the R206 semantic scope ruling; the four frozen holes remain unchanged.
+
+- **R206 RightOpeningTransport:** `o20ActorBodyForeignOwners`,
+  `o20PhysicalLeftBlockOwnerFrame` and `o20RightBeginAcrossActualLeftBlock`
+  now require `LegacyActorOnly`, preserving exactly their old conclusions on
+  the domain where the existing proof is sound. The unrestricted production
+  conclusion is not asserted: NoGeneratedChild alone does not exclude controls
+  of an already-existing opposite actor or attached root owners. No owner-frame
+  oracle was inserted into the frozen public O19 safety fields.
+
+- **R206 R18 classifier:** the old internal-node classification and its
+  external-order producers now consume `LegacyActorOnly` explicitly. The new
+  `o19ExpandedBodyHeadNode` covers the enlarged production grammar but does not
+  claim attached root orchestration is internal. Root input order cannot be
+  discarded in the old internal-pair proof.
+- **R206 R192 retained negative:** closure validation exposed the stale type in
+  `r192RetirementHasNoLegacyOrZeroGapCoercion`. It now says NOT
+  `LegacyActorOnly` for the genuine one-edge child retirement, plus the unchanged
+  NOT ZeroGapPending conclusion. The production grammar does admit this control.
+  This is migration of an existing retained A10 negative, NOT a restatement or
+  retry of exhausted R192 A9/B10/C4. All other R192 declarations are unchanged.
+
+- **R206 U015 R172:**
+  `research-tests/DGamma/R172O17OpenParentRootReuseCandidate.idr` moved BYTE-EXACT
+  to `research-tests/DGamma/retired/R172O17OpenParentRootReuseCandidate.idr`.
+  **retired by A8/A12 (owner-signed unfreeze)**. Its strict-root-first and
+  root-before-OTHER-child claims are not re-proved and are not refutations of
+  the revised production predicate. The module declaration and every file byte
+  remain unchanged; no retired TTC is deleted or trusted. Remaining imports of
+  the old fixture path are explicitly blocked, not silently redirected.

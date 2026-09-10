@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """Detached R206 exact-source check; one owned compiler, no shared locks.
-Usage: python3 -I research-tests/run-r205-check.py INVOCATION PATH
-P1 package96 GiB resource-stopped. Gated per-module production: CP3,
-CP3StatementChecks, CP4*64GiB; other production48. Research LocalDiamond52,
-UniqueOrdinal48, others48. P2 package96 must be a no-Building seeded check.
-Only our spawned process group can be terminated. RSS is maximum sampled
+Usage: python3 -I research-tests/run-r206-check.py INVOCATION PATH
+Fresh own Building only; package is seeded and must produce no Building.
+LocalDiamond52GiB, all other permitted targets48GiB. Production is never a
+fresh target; in particular SupportSolution/TTC is not touched. Only the
+spawned own process group can be terminated. RSS is maximum sampled
 command-matching compiler RSS, not OS high-water or aggregate tree memory.
 """
 import sys, pathlib, os, signal, time, subprocess, json, re
@@ -19,7 +19,7 @@ own,foreign,unknown=compiler_scopes(); assert not own and not unknown, 'Own/unkn
 assert_frozen()
 assert not git('diff','--cached','--name-only').strip()
 assert not git('diff', START, '--', 'src/', 'dgamma.ipkg'), 'Production frozen at seal'
-assert path!='src/DGamma/CP4SupportSolution.idr', 'Never re-elaborate or touch SupportSolution TTC'
+assert not path.startswith('src/'), 'Production validation is seeded package only; never touch SupportSolution TTC'
 production_paths=[p for p in source_paths() if p.startswith('src/')]+['dgamma.ipkg']
 production={p:sha((ROOT/p).read_bytes()) for p in production_paths}
 current_paths=source_paths()
@@ -27,10 +27,17 @@ source_manifest={p:sha((ROOT/p).read_bytes()) for p in current_paths}
 source=ROOT/('dgamma.ipkg' if path=='package' else path)
 assert source.is_file() and source.stat().st_size>0
 snapshot=source.read_bytes()
+source_manifest[str(source.relative_to(ROOT))]=sha(snapshot)
 source_dirs=['src'] if path.startswith('src/') else ['src','research'] if path.startswith('research/') else ['src','research','research-tests']
 command=['idris2','--build',str(source)] if path=='package' else ['idris2']+[arg for directory in source_dirs for arg in ['--source-dir',str(ROOT/directory)]]+['--check',str(source)]
 expected=None; symbol=None
-assert utc() < '2026-09-10T05:30:00' or unit.startswith(('V','P')), 'No new proof in last40min'
+contracts=json.loads((ROOT/'research-tests/O6-R205-NEGATIVE-PREFLIGHT.json').read_text())['contracts']
+if path in contracts:
+    contract=contracts[path]
+    assert contract['sourceSHA256']==sha(snapshot), 'Changed negative contract requires new gate'
+    expected=contract['expectedDiagnostic'];symbol=contract['symbol']
+assert utc() < ('2026-09-10T05:45:00' if unit.startswith(('V','P')) else '2026-09-10T05:30:00'), 'R206 proof/validation cutoff'
+assert not unit.startswith('C'), 'Unit C ineligible: A/B not closed'
 if path!='package':
     if path in PROTECTED_PATHS or any(w in path for w in ['CP5L2R','L2R','ActorLifecycleOnlyExtended','CP5AvailabilityAware']):
         assert snapshot == subprocess.check_output(['git','show',START+':'+path],cwd=ROOT) or path=='research/DGamma/CP5ActorLifecycleOnlyExtended.idr'
@@ -40,6 +47,8 @@ if path!='package':
             return set(re.findall(r'^(?:[01] )?([A-Za-z_]\w*)\s*:',data.decode(),re.M)+re.findall(r'^(?:record|data)\s+([A-Za-z_]\w*)',data.decode(),re.M))
         added=declarations(snapshot)-declarations(old.stdout if old.returncode==0 else b'')
         assert len(added)<=1, 'One new top-level declaration per invocation'
+        cap_unit=re.fullmatch(r'(U0|A|B)(\d+)-\d+',unit)
+        assert 1<=int(cap_unit[2])<=26, 'Micro-unit cap26'
         previous=[r for r in records() if r['unit'].rsplit('-',1)[0]==unit.rsplit('-',1)[0]]
         assert len(previous)<3, 'Three invocations per micro-unit'
     source.touch()
@@ -92,7 +101,7 @@ post_mutation=[p for p,h in source_manifest.items() if not (ROOT/p).exists() or 
 mutation=sorted(set(mutation+post_mutation))
 diagnostic_ok=(process.returncode==1 and expected in text and symbol and symbol in text) if expected else (process.returncode==0 and 'Error:' not in text)
 passed=bool(fresh and diagnostic_ok and not interrupted and not mutation and not unexpected and not multiple and maximum<=limit)
-record=dict(unit=unit,path=path,command=command,start=start,end=utc(),seconds=time.monotonic()-clock,exit=process.returncode,passed=passed,fresh=fresh,seededPackageNoBuilding=seeded_package,expectedDiagnostic=expected,symbol=symbol,buildingLines=building,unexpectedBuilding=unexpected,targetMutationDetected=bool(mutation),mutatedPaths=mutation,interrupted=interrupted,resourceStopped=resource,multipleOwnedCompilers=multiple,maxSampleRSSKiB=maximum,rssLimitKiB=limit,rssSamples=samples,sourceSHA256=sha(snapshot),sourceManifestSHA256=sha((OUT/(unit+'.sources.json')).read_bytes()),headAtEnd=git('rev-parse','HEAD').strip(),CP3Blob=git('hash-object','src/DGamma/CP3.idr').strip(),runnerSHA256=sha(pathlib.Path(__file__).read_bytes()),commonSHA256=sha((ROOT/'research-tests/r206_common.py').read_bytes()),crossLaneOverlapTimestampsUTC=overlaps,transcript=text)
+record=dict(unit=unit,path=path,command=command,start=start,end=utc(),seconds=time.monotonic()-clock,exit=process.returncode,passed=passed,fresh=fresh,seededPackageNoBuilding=seeded_package,expectedDiagnostic=expected,symbol=symbol,buildingLines=building,unexpectedBuilding=unexpected,targetMutationDetected=bool(mutation),mutatedPaths=mutation,interrupted=interrupted,resourceStopped=resource,multipleOwnedCompilers=multiple,maxSampleRSSKiB=maximum,rssLimitKiB=limit,rssSamples=samples,sourceSHA256=sha(snapshot),sourceManifestSHA256=sha((OUT/(unit+'.sources.json')).read_bytes()),headAtEnd=git('rev-parse','HEAD').strip(),CP3Blob=git('hash-object','src/DGamma/CP3.idr').strip(),runnerSHA256=sha((OUT/(unit+'.runner.py')).read_bytes()),commonSHA256=sha((OUT/(unit+'.common.py')).read_bytes()),crossLaneOverlapTimestampsUTC=overlaps,transcript=text)
 write_json(OUT/(unit+'.json'),record)
 with (OUT/'ledger.jsonl').open('a') as f: f.write(json.dumps(record)+'\n')
 write_json(OUT/'active.json',dict(status='IDLE',lastInvocation=unit,end=record['end']))
