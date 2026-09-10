@@ -4,12 +4,17 @@ import DGamma.Calculus
 import DGamma.Metatheory
 import DGamma.CP3
 import DGamma.CP3StatementChecks
+import DGamma.CP5O19OriginalBlockClassSpike
+import DGamma.CP5O19SurfaceSpike
+import DGamma.CP5O19ReplayObservationSpike
+import DGamma.CP5ConfluenceRankObservationSpike
+import Data.List.Elem
 import DGamma.CP5ConfluenceLocalDiamondSpike
 import Decidable.Equality
 
 %default total
 
-||| Exact node classification supplied by `LocatedOpenEpisodeBlock`: the opening
+||| R206 RESTRICTED legacy node classification: the opening
 ||| and ordinary body steps are lifecycle actions; yielded registrations are
 ||| child insertions and therefore are not externally-rooted inputs.
 public export
@@ -49,17 +54,17 @@ movedO19BlockNode (O19LifecycleNode lifecycle) movedAction =
 movedO19BlockNode (O19YieldedChildNode childAction) movedAction =
   O19YieldedChildNode (trans movedAction childAction)
 
-||| Exact projection from the accepted block-body producer. This covers both
+||| Exact projection from the EXPLICIT legacy body predicate. This covers both
 ||| ordinary lifecycle nodes and yielded child registrations without a caller
 ||| selecting the classification.
 0 o19BodyHeadNode :
-  ActorLifecycleOnly selected (MoreTransitions transition rest) ->
+  LegacyActorOnly selected (MoreTransitions transition rest) ->
   O19BlockNode selected transition
 o19BodyHeadNode
-  (ActorLifecycleStep transition rest lifecycle selectedActor restOnly) =
+  (LegacyActorStep transition rest lifecycle selectedActor restOnly) =
     O19LifecycleNode lifecycle
 o19BodyHeadNode
-  (ActorYieldedRegistrationStep transition rest childAction restOnly) =
+  (LegacyActorYield transition rest childAction restOnly) =
     O19YieldedChildNode childAction
 
 ||| The separately stored block opening is L-Begin, hence is the third genuine
@@ -100,16 +105,16 @@ o19InternalPairExternal nameEq keyEq left right diamond leftNode rightNode =
              (o19BlockNodeInternal movedLeftNode)
              SameExternalOrchestrationEnd)))
 
-||| Genuine block-body producer: the classifications are projections of the two
-||| `ActorLifecycleOnly` witnesses, not extra premises supplied to O6.
+||| CONDITIONAL legacy block-body producer. Production attached bodies do not
+||| imply either LegacyActorOnly witness; root inputs cannot be skipped as internal.
 0 genuineO19BodyBodyExternalProducer :
   (nameEq : DecEq name) ->
   (left : Transition first middle) ->
   (right : Transition middle originalFinal) ->
   (diamond : LocalRelationalDiamond name key world error value nameEq keyEq
     left right) ->
-  ActorLifecycleOnly leftActor (MoreTransitions left leftRest) ->
-  ActorLifecycleOnly rightActor (MoreTransitions right rightRest) ->
+  LegacyActorOnly leftActor (MoreTransitions left leftRest) ->
+  LegacyActorOnly rightActor (MoreTransitions right rightRest) ->
   SameExternalOrchestration nameEq
     (MoreTransitions left (MoreTransitions right NoTransitions))
     (MoreTransitions (movedRight diamond)
@@ -145,7 +150,7 @@ genuineO19BeginBeginExternalProducer nameEq leftOpening rightOpening diamond =
   (right : Transition middle originalFinal) ->
   (diamond : LocalRelationalDiamond name key world error value nameEq keyEq
     (beginTransition leftOpening) right) ->
-  ActorLifecycleOnly rightActor (MoreTransitions right rightRest) ->
+  LegacyActorOnly rightActor (MoreTransitions right rightRest) ->
   SameExternalOrchestration nameEq
     (MoreTransitions (beginTransition leftOpening)
       (MoreTransitions right NoTransitions))
@@ -162,7 +167,7 @@ genuineO19BeginBodyExternalProducer nameEq leftOpening right diamond rightOnly =
   (rightOpening : BeginStep nameEq keyEq rightActor middle originalFinal) ->
   (diamond : LocalRelationalDiamond name key world error value nameEq keyEq
     left (beginTransition rightOpening)) ->
-  ActorLifecycleOnly leftActor (MoreTransitions left leftRest) ->
+  LegacyActorOnly leftActor (MoreTransitions left leftRest) ->
   SameExternalOrchestration nameEq
     (MoreTransitions left
       (MoreTransitions (beginTransition rightOpening) NoTransitions))
@@ -440,3 +445,17 @@ genuineO17RootInternalExternalProducer nameEq keyEq left right diamond
            (SkipLeftInternal right NoTransitions
              (o19BlockNodeInternal rightNode)
              SameExternalOrchestrationEnd))
+
+||| R206 total enlarged body-head classifier. Unlike the legacy internal-node
+||| classifier, this preserves actual root/child controls and does NOT imply
+||| that every production block edge is internal external-orchestration-wise.
+0 o19ExpandedBodyHeadNode :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (selected, forbidden : name) ->
+  {first, middle, last : SystemState name key value world error} ->
+  (step : Transition first middle) -> (rest : Transitions middle last) ->
+  ActorLifecycleOnly nameEq selected (MoreTransitions step rest) ->
+  NoGeneratedChild forbidden (MoreTransitions step rest) ->
+  O19ExpandedBlockWordObservation name key world error value nameEq selected forbidden (transitionAction step)
+o19ExpandedBodyHeadNode nameEq selected forbidden step rest only safe =
+  o19ExpandedOwnedSafeWord nameEq selected forbidden (MoreTransitions step rest) only safe (transitionAction step) Here
