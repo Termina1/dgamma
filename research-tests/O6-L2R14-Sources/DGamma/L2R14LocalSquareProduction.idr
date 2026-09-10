@@ -46,7 +46,7 @@ public export
   (0 nativeLateRoot : checkedApplyAction @{fst fixtureDictionaries} @{snd fixtureDictionaries}
     (OInsert (passageRoot passage) Root (passageComponent passage)) (oldStates 5) = Just (OInsertTag, lateRootState)) ->
   (oldRemainder : Transitions lateRootState oldFinal) ->
-  (oldRemainderTrail : AvailabilityTrace Nat Bool Unit String (\key => Unit) oldRemainder) ->
+  (oldRemainderTrail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace Nat Bool Unit String (\key => Unit) oldRemainder) ->
   (0 nativeSuffixSplit : MoreTransitions
     (Fired {before = oldStates 5} {afterState = lateRootState} (fst fixtureDictionaries) (snd fixtureDictionaries)
       (OInsert (passageRoot passage) Root (passageComponent passage)) OInsertTag nativeLateRoot)
