@@ -1,18 +1,16 @@
 {
-  "timestampUTC": "2026-09-10T02:57:58.554617+00:00",
+  "timestampUTC": "2026-09-10T05:26:59.139088+00:00",
   "total": 200,
   "counts": {
-    "BLOCKED-DEPENDENCY": 4,
     "BLOCKED-ON-R206": 6,
-    "PASSED": 97,
-    "REPAIRED": 89,
-    "UNCHECKED": 4
+    "PASSED": 105,
+    "REPAIRED": 89
   },
-  "checked": 186,
-  "passed": 97,
+  "checked": 194,
+  "passed": 105,
   "repaired": 89,
   "broken": 0,
-  "blocked": 10,
+  "blocked": 6,
   "fullyGreen": false,
   "modules": [
     {
@@ -5960,9 +5958,13 @@
         "DGamma.L2R9RestoredPackets"
       ],
       "externalBlockers": [],
-      "status": "UNCHECKED",
-      "invocations": [],
-      "exactErrors": []
+      "status": "PASSED",
+      "invocations": [
+        "V1169"
+      ],
+      "exactErrors": [],
+      "lastReceipt": "V1169",
+      "freshOwnBuilding": true
     },
     {
       "module": "DGamma.L2R12PacketFixture",
@@ -6009,9 +6011,13 @@
         "DGamma.L2R9RestoredPackets"
       ],
       "externalBlockers": [],
-      "status": "UNCHECKED",
-      "invocations": [],
-      "exactErrors": []
+      "status": "PASSED",
+      "invocations": [
+        "V1170"
+      ],
+      "exactErrors": [],
+      "lastReceipt": "V1170",
+      "freshOwnBuilding": true
     },
     {
       "module": "DGamma.L2R14LocalShapeFixture",
@@ -6058,9 +6064,13 @@
         "DGamma.L2R9RestoredPackets"
       ],
       "externalBlockers": [],
-      "status": "UNCHECKED",
-      "invocations": [],
-      "exactErrors": []
+      "status": "PASSED",
+      "invocations": [
+        "V1171"
+      ],
+      "exactErrors": [],
+      "lastReceipt": "V1171",
+      "freshOwnBuilding": true
     },
     {
       "module": "DGamma.L2R13PacketEndpointFixture",
@@ -6115,12 +6125,13 @@
         "DGamma.L2R9RestoredPackets"
       ],
       "externalBlockers": [],
-      "status": "BLOCKED-DEPENDENCY",
-      "invocations": [],
+      "status": "PASSED",
+      "invocations": [
+        "V1172"
+      ],
       "exactErrors": [],
-      "blockedOwn": [
-        "DGamma.L2R12PacketFixture"
-      ]
+      "lastReceipt": "V1172",
+      "freshOwnBuilding": true
     },
     {
       "module": "DGamma.L2R13CoreRestoration",
@@ -6176,13 +6187,13 @@
         "DGamma.L2R9RestoredPackets"
       ],
       "externalBlockers": [],
-      "status": "BLOCKED-DEPENDENCY",
-      "invocations": [],
+      "status": "PASSED",
+      "invocations": [
+        "V1173"
+      ],
       "exactErrors": [],
-      "blockedOwn": [
-        "DGamma.L2R12PacketFixture",
-        "DGamma.L2R13PacketEndpointFixture"
-      ]
+      "lastReceipt": "V1173",
+      "freshOwnBuilding": true
     },
     {
       "module": "DGamma.L2R14LocalSquareFixture",
@@ -6242,13 +6253,13 @@
         "DGamma.L2R9RestoredPackets"
       ],
       "externalBlockers": [],
-      "status": "BLOCKED-DEPENDENCY",
-      "invocations": [],
+      "status": "PASSED",
+      "invocations": [
+        "V1174"
+      ],
       "exactErrors": [],
-      "blockedOwn": [
-        "DGamma.L2R12PacketFixture",
-        "DGamma.L2R14LocalShapeFixture"
-      ]
+      "lastReceipt": "V1174",
+      "freshOwnBuilding": true
     },
     {
       "module": "DGamma.L2R15LocalSquareFixture",
@@ -6314,13 +6325,13 @@
         "DGamma.L2R9RestoredPackets"
       ],
       "externalBlockers": [],
-      "status": "BLOCKED-DEPENDENCY",
-      "invocations": [],
+      "status": "PASSED",
+      "invocations": [
+        "V1175"
+      ],
       "exactErrors": [],
-      "blockedOwn": [
-        "DGamma.L2R12PacketFixture",
-        "DGamma.L2R14LocalShapeFixture"
-      ]
+      "lastReceipt": "V1175",
+      "freshOwnBuilding": true
     },
     {
       "module": "DGamma.L2R14IterationFixtures",
@@ -6399,9 +6410,13 @@
         "DGamma.L2R9PredecessorClass"
       ],
       "externalBlockers": [],
-      "status": "UNCHECKED",
-      "invocations": [],
-      "exactErrors": []
+      "status": "PASSED",
+      "invocations": [
+        "V1176"
+      ],
+      "exactErrors": [],
+      "lastReceipt": "V1176",
+      "freshOwnBuilding": true
     }
   ]
 }

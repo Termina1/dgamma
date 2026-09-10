@@ -19,14 +19,24 @@ assert record['passed'] and record['fresh'] and not record['interrupted'] and no
 assert record['exit'] == 0 and not record['expectedDiagnostic']
 assert json.loads(pathlib.Path('/tmp/dgamma-l2r16/ledger.jsonl').read_text().splitlines()[-1])['unit'] == unit, 'No intervening compiler invocation'
 source_attempt = unit
-assert not unit.startswith('V'), 'Source commit requires bounded proof PASS'
+visibility = None
+if unit.startswith('V'):
+    visibility = json.loads(pathlib.Path('/tmp/dgamma-l2r16/VISIBILITY-COMPANION-AUTHORITY.json').read_text())
+    assert unit == visibility['validation'] and record['path'] == visibility['path']
+    assert record['sourceSHA256'] == visibility['afterSHA256']
+    source_attempt = visibility['sourceAttempt']
+
 assert record['buildingCount'] == 1
 assert record['maxSampleRSSKiB'] <= record['rssLimitKiB']
 old = subprocess.run(['git','show','HEAD:'+record['path']],cwd=ROOT,capture_output=True)
+if visibility:
+    assert old.returncode == 0 and hashlib.sha256(old.stdout).hexdigest() == visibility['beforeSHA256']
+    assert old.stdout.decode().count(visibility['oldText']) == 1
+    assert (ROOT/record['path']).read_text() == old.stdout.decode().replace(visibility['oldText'], visibility['newText'])
 def declarations(data):
     text = data.decode()
     return set(re.findall(r'^(?:[01] )?([A-Za-z_]\w*)\s*:',text,re.M) + re.findall(r'^(?:record|data)\s+([A-Za-z_]\w*)',text,re.M))
-assert len(declarations((ROOT/record['path']).read_bytes())-declarations(old.stdout if old.returncode == 0 else b'')) == (1 if unit.startswith(('T','S1-','S2-')) else 0), 'One new declaration for T2; zero for lexical repair'
+assert len(declarations((ROOT/record['path']).read_bytes())-declarations(old.stdout if old.returncode == 0 else b'')) == (1 if source_attempt.startswith(('T','S1-','S2-')) else 0), 'One new declaration for T2; zero for lexical repair'
 assert record['path'] in pathlib.Path('/tmp/dgamma-l2r16/TARGETS.txt').read_text().splitlines() or record['path'].startswith('research-tests/O6-L2R16-Sources/'), 'Lane-owned source only'
 assert record['path'] != 'research/DGamma/CP5ActorLifecycleOnlyExtended.idr'
 source = ROOT/record['path']
@@ -46,7 +56,7 @@ subprocess.run(['git','diff','--check'],cwd=ROOT,check=True)
 subprocess.run(['git','add','--',*commitPaths],cwd=ROOT,check=True)
 subprocess.run(['git','commit','-m',message],cwd=ROOT,check=True)
 assert not subprocess.check_output(['git','diff','--cached','--name-only'],cwd=ROOT,text=True).strip()
-receipt = dict(paths=commitPaths,sourceHashes={record['path']:record['sourceSHA256'],**{x['path']:x['sourceSHA256'] for x in record.get('bundleSources',[])}},event='GUARDED COMMIT', unit=source_attempt.rsplit('-',1)[0], attempt=source_attempt.rsplit('-',1)[1], invocation=unit, sourceAttempt=source_attempt, rstripOnlyRevalidation=False, sourceHash=record['sourceSHA256'], resultingCommitHash=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(), timestampUTC=datetime.datetime.now(datetime.timezone.utc).isoformat(), guardChecksPassed=['fresh PASS','exit 0','not interrupted','no expected diagnostic','exact source SHA256',('one new declaration' if unit.startswith('T') else (unit.split('-')[0]+' authorized semantic restatement' if unit.startswith('S') else 'zero new declarations; lexical repair')),'no intervening compiler invocation','no pre-staged files','no compiler','git diff --check','git commit success','no post-staged files'])
+receipt = dict(paths=commitPaths,sourceHashes={record['path']:record['sourceSHA256'],**{x['path']:x['sourceSHA256'] for x in record.get('bundleSources',[])}},event='GUARDED COMMIT', unit=source_attempt.rsplit('-',1)[0], attempt=source_attempt.rsplit('-',1)[1], invocation=unit, sourceAttempt=source_attempt, rstripOnlyRevalidation=False, sourceHash=record['sourceSHA256'], resultingCommitHash=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(), timestampUTC=datetime.datetime.now(datetime.timezone.utc).isoformat(), guardChecksPassed=['fresh PASS','exit 0','not interrupted','no expected diagnostic','exact source SHA256',('authorized visibility-only companion; zero declaration/body/type changes' if visibility else 'one new declaration' if unit.startswith('T') else (unit.split('-')[0]+' authorized semantic restatement' if unit.startswith('S') else 'zero new declarations; lexical repair')),'no intervening compiler invocation','no pre-staged files','no compiler','git diff --check','git commit success','no post-staged files'])
 with pathlib.Path('/tmp/dgamma-l2r16/commit-receipts.jsonl').open('a') as ledger:
     ledger.write(json.dumps(receipt)+'\n')
 print('GUARDED COMMIT',json.dumps(receipt),flush=True)

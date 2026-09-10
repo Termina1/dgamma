@@ -86,6 +86,10 @@ assert not any(p['classification']=='lane2' for p in initial_procs),'Own compile
 heavy_plan=json.loads((OUT/'HEAVY-TARGETS.json').read_text())
 heavy=path in heavy_plan['declared48GiB']
 rss_limit=(48 if heavy else 18)*1024*1024
+finish_plan=json.loads((OUT/'FINISH-TIMING-PLAN.json').read_text())
+deadline_stop=finish_plan['longChecksStopUTC'] if heavy else finish_plan['allChecksStopUTC']
+assert datetime.datetime.now(datetime.timezone.utc).isoformat()<deadline_stop, 'Lane finish guard: validation reserve'
+deadline_interrupted=False
 command=['idris2','--source-dir',str(ROOT/'src'),'--source-dir',str(ROOT/'research')]
 if path.startswith('research-tests/'):command+=['--source-dir',str(ROOT/'research-tests')]
 source_root = target.parent.parent
@@ -114,10 +118,14 @@ try:
    global interrupted
    interrupted=True
    # Only this exact wrapper-owned process group is ever signalled.
-   os.killpg(process.pid,signal.SIGTERM)
+   try:os.killpg(process.pid,signal.SIGTERM)
+   except ProcessLookupError:pass  # It finished during the preceding sample.
   signal.signal(signal.SIGTERM,stop);signal.signal(signal.SIGINT,stop)
   while process.poll() is None:
    time.sleep(0.25)
+   if datetime.datetime.now(datetime.timezone.utc).isoformat()>=deadline_stop and not interrupted:
+    deadline_interrupted=True
+    stop(signal.SIGTERM,None)
    if not sources_unchanged(target,snapshot,bundle) and not interrupted:
     source_mutation=True
     stop(signal.SIGTERM,None)
@@ -138,7 +146,7 @@ try:
  bundle_fresh=all(bool(re.search(r'^\d+/\d+: Building DGamma\.'+re.escape(p.stem)+r' \('+re.escape(str(p))+r'\)$',text,re.M)) for p,data in bundle)
  buildingLines=re.findall(r'^\d+/\d+: Building .+$',text,re.M)
  passed=fresh and len(buildingLines)==1 and bundle_fresh and not interrupted and (process.returncode==0 and 'Error:' not in text if not diagnostic else process.returncode!=0 and diagnostic in text and bool(symbol) and symbol in text)
- record=dict(buildingLines=buildingLines,buildingCount=len(buildingLines),bundleSources=bundle_records,bundleFresh=bundle_fresh,unit=unit,path=path,command=command,start=started,end=datetime.datetime.now(datetime.timezone.utc).isoformat(),seconds=time.monotonic()-clock,exit=process.returncode,fresh=fresh,passed=passed,interrupted=interrupted,maxSampleRSSKiB=maximum,sourceSHA256=hashlib.sha256(snapshot).hexdigest(),expectedDiagnostic=diagnostic,symbol=symbol,transcript=text,overlapTimestampsOnly=True,separateCompilerObservations=list(foreign.values()),declaredHeavy=heavy,rssLimitKiB=rss_limit,targetMtimeTouch=touch_record,sourceMutationObserved=source_mutation)
+ record=dict(buildingLines=buildingLines,buildingCount=len(buildingLines),bundleSources=bundle_records,bundleFresh=bundle_fresh,unit=unit,path=path,command=command,start=started,end=datetime.datetime.now(datetime.timezone.utc).isoformat(),seconds=time.monotonic()-clock,exit=process.returncode,fresh=fresh,passed=passed,interrupted=interrupted,maxSampleRSSKiB=maximum,sourceSHA256=hashlib.sha256(snapshot).hexdigest(),expectedDiagnostic=diagnostic,symbol=symbol,transcript=text,overlapTimestampsOnly=True,separateCompilerObservations=list(foreign.values()),declaredHeavy=heavy,rssLimitKiB=rss_limit,targetMtimeTouch=touch_record,sourceMutationObserved=source_mutation,deadlineStopUTC=deadline_stop,deadlineInterrupted=deadline_interrupted)
  (OUT/(unit+'.json')).write_text(json.dumps(record,indent=2)+'\n')
  with (OUT/'ledger.jsonl').open('a') as ledger:ledger.write(json.dumps(record)+'\n')
  print(text,flush=True);print('RESULT',json.dumps({k:v for k,v in record.items() if k!='transcript'}),flush=True)

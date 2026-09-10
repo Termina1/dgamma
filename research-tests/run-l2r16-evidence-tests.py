@@ -46,4 +46,34 @@ class EvidenceContract(unittest.TestCase):
  def test_nonzero_exit_cannot_claim_pass(self):
   r=example();r['exit']=1
   with self.assertRaises(AssertionError):v.record_valid(r,DATA,LOG,[])
+ def test_unsafe_body_rejected_even_with_matching_hash(self):
+  data=DATA.replace(b'equal = Refl',b'equal = believe_me Refl');r=example();r['sourceSHA256']=v.sha(data)
+  with self.assertRaises(AssertionError):v.record_valid(r,data,LOG,[])
+ def test_new_hole_rejected(self):
+  data=DATA.replace(b'equal = Refl',b'equal = ?proof');r=example();r['sourceSHA256']=v.sha(data)
+  with self.assertRaises(AssertionError):v.record_valid(r,data,LOG,[])
+ def test_new_with_construct_rejected(self):
+  data=DATA+b'other = with value\n';r=example();r['sourceSHA256']=v.sha(data)
+  with self.assertRaises(AssertionError):v.record_valid(r,data,LOG,[])
+ def test_visibility_only_exact_gate(self):
+  before=b'export\n0 equal : Z = Z\nequal = Refl\n';after=before.replace(b'export',b'public export',1)
+  gate=dict(beforeSHA256=v.sha(before),afterSHA256=v.sha(after),oldText='export\n0 equal',newText='public export\n0 equal')
+  self.assertTrue(v.visibility_only(before,after,gate))
+ def test_visibility_gate_rejects_body_change_even_with_updated_digest(self):
+  before=b'export\n0 equal : Z = Z\nequal = Refl\n';after=before.replace(b'export',b'public export',1).replace(b'equal = Refl',b'equal = anotherProof')
+  gate=dict(beforeSHA256=v.sha(before),afterSHA256=v.sha(after),oldText='export\n0 equal',newText='public export\n0 equal')
+  with self.assertRaises(AssertionError):v.visibility_only(before,after,gate)
+ def test_preflight_consumes_missing_request(self):self.assertTrue(v.bounded_requests([1,3],[2],3))
+ def test_preflight_does_not_allow_fourth_attempt(self):
+  with self.assertRaises(AssertionError):v.bounded_requests([1,3,4],[2],3)
+ def test_request_id_cannot_be_reused(self):
+  with self.assertRaises(AssertionError):v.bounded_requests([1,2],[2],3)
+ def test_missing_request_requires_evidence(self):
+  with self.assertRaises(AssertionError):v.bounded_requests([1,3],[],3)
+ def test_interrupted_buffered_no_build_is_failure_not_fake_receipt(self):
+  r=example();r.update(transcript='',buildingLines=[],buildingCount=0,fresh=False,passed=False,exit=-15,interrupted=True,maxSampleRSSKiB=r['rssLimitKiB']+100)
+  self.assertFalse(v.record_valid(r,DATA,'',[]))
+ def test_deadline_interruption_cannot_pass(self):
+  r=example();r.update(deadlineInterrupted=True,deadlineStopUTC=r['start'])
+  with self.assertRaises(AssertionError):v.record_valid(r,DATA,LOG,[])
 if __name__=='__main__':unittest.main(verbosity=2)
