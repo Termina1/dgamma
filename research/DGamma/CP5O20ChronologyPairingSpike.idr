@@ -60,3 +60,16 @@ data O20ChronologyPairing :
     (suffix : List (RegistrationEvent name key world error value)) ->
     (0 later : O20ChronologyPairing mapping left (event :: (earlier ++ suffix))) ->
     O20ChronologyPairing mapping left (earlier ++ (event :: suffix))
+
+||| Move the selected occurrence through the single-event rotation. Elem
+||| witnesses, rather than value equality or decidable event equality, are used.
+export
+0 o20ChronologyRotateMember :
+  {element : Type} -> {selected, event : element} -> (earlier, suffix : List element) ->
+  Elem selected (event :: (earlier ++ suffix)) -> Elem selected (earlier ++ (event :: suffix))
+o20ChronologyRotateMember [] suffix member = member
+o20ChronologyRotateMember (head :: rest) suffix Here =
+  There (o20ChronologyRotateMember rest suffix Here)
+o20ChronologyRotateMember (head :: rest) suffix (There Here) = Here
+o20ChronologyRotateMember (head :: rest) suffix (There (There later)) =
+  There (o20ChronologyRotateMember rest suffix (There later))
