@@ -44,7 +44,7 @@ export
   {first, finalState : SystemState name key value world error} ->
   {trace : Transitions first finalState} ->
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
-  (trail : AvailabilityTrace name key world error value trace) ->
+  (trail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value trace) ->
   (entry : RootCatalogEntry name key world error value) ->
   (0 member : Elem entry (scanRootCatalog 0 trail)) ->
   (0 accepted : phaseScanOk nameEq keyEq trail = True) ->
@@ -57,7 +57,7 @@ export
        (actor : name ** (flag : Bool **
          (head' (drop (pred anchor) (phaseEvents nameEq trail)) = Just (Just actor, flag),
           phaseReleaseCheck nameEq actor 0 (pred anchor) False (phaseEvents nameEq trail) = True))),
-       (packet : (actor : name ** AttachedRelease name key world error value nameEq actor trace (catalogComponent seed)) **
+       (packet : (actor : name ** DGamma.L2R3Attached.AttachedRelease name key world error value nameEq actor trace (catalogComponent seed)) **
          locatedActionOrdinal (releaseOccurrence (snd packet)) = pred anchor))),
     CatalogBirthAt name key world error value entry 0 trace))
 produceForcedPhaseOrigins nameEq keyEq trail entry member accepted classified =
@@ -76,7 +76,7 @@ export
   {trace : Transitions first finalState} ->
   (nameEq : DecEq name) -> (actor : name) ->
   (component : Component key value world error) ->
-  (release : AttachedRelease name key world error value nameEq actor trace component) ->
+  (release : DGamma.L2R3Attached.AttachedRelease name key world error value nameEq actor trace component) ->
   phaseActionOwner nameEq (actionBeforeState (releaseOccurrence release))
     (ORemove (releasedChild release)) = Just actor
 phaseReleaseNativeOwner nameEq actor component release =
@@ -90,7 +90,7 @@ export
   {first, finalState : SystemState name key value world error} ->
   {trace : Transitions first finalState} ->
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
-  (trail : AvailabilityTrace name key world error value trace) ->
+  (trail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value trace) ->
   (entry, seed : RootCatalogEntry name key world error value) -> (anchor : Nat) ->
   (0 equation : anchorOf nameEq keyEq trail (catalogOrdinal entry) = Just anchor) ->
   (0 member : Elem entry (scanRootCatalog 0 trail)) ->
