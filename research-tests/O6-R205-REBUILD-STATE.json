@@ -1,10 +1,10 @@
 {
-  "timestampUTC": "2026-09-10T01:15:39.570596+00:00",
+  "timestampUTC": "2026-09-10T01:38:09.112488+00:00",
   "status": "INCOMPLETE — native research has explicit breakage/blocked imports",
   "productionRebuildComplete": true,
   "dispositionTraversalComplete": true,
   "allApplicableNativeChecksPass": false,
-  "head": "0e8b44eaec52622a9d56d21b89d8308564d0333d",
+  "head": "43e0fac6b85d435a48b3732817478c46fc9fcd28",
   "CP3Blob": "eeaa70aa4414648bb2a1173d58244267997d16d7",
   "patchSHA256": "42d957748fcc67ff534c33a6c369eded4bad65e0f37e5c72e4539b737a68fb8a",
   "lane2CompilerRelease": "SUPERVISOR GATE REQUIRED; no release inferred from production or disposition completeness",
@@ -45,6 +45,16 @@
       "exit": 0,
       "seconds": 15.633612040895969,
       "maxSampleRSSKiB": 230416,
+      "rssLimitKiB": 100663296,
+      "buildingLines": [],
+      "resourceStopped": false
+    },
+    {
+      "unit": "P3",
+      "passed": true,
+      "exit": 0,
+      "seconds": 15.639295666944236,
+      "maxSampleRSSKiB": 230384,
       "rssLimitKiB": 100663296,
       "buildingLines": [],
       "resourceStopped": false

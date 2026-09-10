@@ -1,5 +1,5 @@
 {
-  "timestampUTC": "2026-09-10T01:31:38.862009+00:00",
+  "timestampUTC": "2026-09-10T01:38:09.291513+00:00",
   "entries": [
     {
       "path": "package",
@@ -26,6 +26,20 @@
           "exit": 0,
           "seconds": 15.633612040895969,
           "sampledPeakKiB": 230416,
+          "guardKiB": 100663296,
+          "resourceStopped": false,
+          "memoryPressureStopped": false,
+          "wallTimeStopped": false,
+          "ownBuildingLines": 0
+        },
+        {
+          "unit": "P3",
+          "sourceSHA256": "aee761a37757cb047ddbf0f846bc23ce830ed755422f96852d08eb435c368727",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "seconds": 15.639295666944236,
+          "sampledPeakKiB": 230384,
           "guardKiB": 100663296,
           "resourceStopped": false,
           "memoryPressureStopped": false,
@@ -8386,8 +8400,8 @@
       "qualification": "A stopped check is a lower bound on needed resources, not a completed-check peak. Zero samples means the short-lived compiler escaped one-second sampling."
     }
   ],
-  "totalInvocations": 370,
-  "passedInvocations": 350,
+  "totalInvocations": 371,
+  "passedInvocations": 351,
   "resourceStops": [
     "P1",
     "S31",

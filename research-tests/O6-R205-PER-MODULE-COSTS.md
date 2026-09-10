@@ -1,6 +1,6 @@
 # R205 per-invocation sampled costs
 
-One compiler at a time. KiB are one-second SAMPLED RSS maxima, not OS high-water marks; zero means no compiler RSS sample was captured. Stops are NOT PASS.
+One compiler at a time. KiB are one-second SAMPLED RSS maxima, not OS high-water; zero means no compiler RSS sample was captured. Stops are not PASS.
 
 | Invocation | Target | Seconds | Sample peak KiB | Guard KiB | Outcome |
 |---|---|---:|---:|---:|---|
@@ -374,9 +374,10 @@ One compiler at a time. KiB are one-second SAMPLED RSS maxima, not OS high-water
 | V221 | `research/DGamma/CP5O20StampedOrdinalNecessitySpike.idr` | 2.101 | 275184 | 50331648 | PASS |
 | V94-2 | `research-tests/DGamma/R171CoreHistoryCloneNegative.idr` | 1.064 | 0 | 50331648 | PASS expected rejection |
 | V95-2 | `research-tests/DGamma/R171StepAccountingCloneNegative.idr` | 1.062 | 0 | 50331648 | PASS expected rejection |
+| P3 | `package` | 15.639 | 230384 | 100663296 | PASS |
 
-## Future check policy
+## Future policy
 
-**CP4SupportSolution: 200 GiB**, datum-based supervisor approval after S31-4 PASS at160.765930GiB/986.351957s. Guard on free<15% for two successive samples or Swapouts increasing three successive samples; compressor occupancy is recorded only. Source unchanged; pre-unfreeze isolated peak UNKNOWN. No causal claim about bundle/coverage additions.
+**SupportSolution200GiB**, accepted after unchanged-source S31-4 PASS160.765930GiB/986.351957s. Two samples free<15% or three successive Swapouts increases stop; compressor occupancy recorded only. Pre-unfreeze isolated peak UNKNOWN, no CP3 causation claim.
 
-LocalDiamond52GiB; other research48GiB. Production CP3/CP3StatementChecks/CP4*64GiB except the explicit SupportSolution200GiB datum; other production48GiB. Package96GiB. Never silently increase a guard.
+LocalDiamond52GiB; other research48GiB. Production CP3/CP3StatementChecks/CP4*64GiB except SupportSolution200GiB; other production48GiB. Package96GiB. Never silently raise guards.

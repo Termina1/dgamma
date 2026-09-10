@@ -52400,6 +52400,155 @@
       "commonSHA256": "e23d86ca96674a49e0b123b7f9e6789591ee8784e82e3082f21821527766b99b",
       "crossLaneOverlapTimestampsUTC": [],
       "transcript": "1/1: Building DGamma.R171StepAccountingCloneNegative (/Users/vyacheslavshebanov/Work/dgamma/research-tests/DGamma/R171StepAccountingCloneNegative.idr)\nError: While processing right hand side of replaceStepAccounting. When unifying:\n    deletionRegistrationAccounting3192 .canonicalToOriginal birth\nand:\n    alternate .canonicalToOriginal birth\nMismatch between: deletionRegistrationAccounting3192 and alternate.\n\nDGamma.R171StepAccountingCloneNegative:18:40--18:92\n 14 |   (step : DeletionChainStep name key world error value protocol nameEq keyEq trace premises candidate) ->\n 15 |   (alternate : CanonicalRegistrationCorrespondence trace (survivingTrace (deletionResult step))\n 16 |     (endpointWithdrawnGenerations (deletionEndpoint step))) ->\n 17 |   DeletionChainStep name key world error value protocol nameEq keyEq trace premises candidate\n 18 | replaceStepAccounting step alternate = { deletionRegistrationAccounting := alternate } step\n                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\n"
+    },
+    {
+      "unit": "P3",
+      "path": "package",
+      "command": [
+        "idris2",
+        "--build",
+        "/Users/vyacheslavshebanov/Work/dgamma/dgamma.ipkg"
+      ],
+      "start": "2026-09-10T01:31:39.648763+00:00",
+      "end": "2026-09-10T01:31:55.288412+00:00",
+      "seconds": 15.639295666944236,
+      "exit": 0,
+      "passed": true,
+      "fresh": true,
+      "seededPackageNoBuilding": true,
+      "supervisorGateVerbatim": null,
+      "policySHA256": "2c0832221aeb6568235a593e0bd52bb959d00f60f13ad615b1c1699fa0882af6",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "buildingLines": [],
+      "unexpectedBuilding": [],
+      "targetMutationDetected": false,
+      "mutatedPaths": [],
+      "interrupted": false,
+      "resourceStopped": false,
+      "multipleOwnedCompilers": false,
+      "memoryPressureStopped": false,
+      "wallTimeStopped": false,
+      "memoryPressureSamplingError": null,
+      "memoryPressureSamples": [],
+      "memoryPressurePolicy": null,
+      "pressureSamplerSHA256": "38e753aeafd68cac072a59eb37104c62e63b65fb8d062c8f3f958821869b2fa4",
+      "maxSampleRSSKiB": 230384,
+      "rssLimitKiB": 100663296,
+      "rssSamples": [
+        {
+          "timestampUTC": "2026-09-10T01:31:40.688263+00:00",
+          "rssKiB": 201040,
+          "ownedPids": [
+            98760
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-10T01:31:41.728047+00:00",
+          "rssKiB": 201040,
+          "ownedPids": [
+            98760
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-10T01:31:42.765472+00:00",
+          "rssKiB": 201040,
+          "ownedPids": [
+            98760
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-10T01:31:43.799594+00:00",
+          "rssKiB": 201040,
+          "ownedPids": [
+            98760
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-10T01:31:44.841838+00:00",
+          "rssKiB": 201040,
+          "ownedPids": [
+            98760
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-10T01:31:45.896990+00:00",
+          "rssKiB": 201040,
+          "ownedPids": [
+            98760
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-10T01:31:46.930179+00:00",
+          "rssKiB": 201040,
+          "ownedPids": [
+            98760
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-10T01:31:47.964692+00:00",
+          "rssKiB": 209424,
+          "ownedPids": [
+            98760
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-10T01:31:49.003962+00:00",
+          "rssKiB": 209424,
+          "ownedPids": [
+            98760
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-10T01:31:50.042976+00:00",
+          "rssKiB": 209424,
+          "ownedPids": [
+            98760
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-10T01:31:51.105231+00:00",
+          "rssKiB": 217808,
+          "ownedPids": [
+            98760
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-10T01:31:52.148384+00:00",
+          "rssKiB": 228288,
+          "ownedPids": [
+            98760
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-10T01:31:53.182568+00:00",
+          "rssKiB": 230384,
+          "ownedPids": [
+            98760
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-10T01:31:54.220705+00:00",
+          "rssKiB": 209840,
+          "ownedPids": [
+            98760
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-10T01:31:55.255396+00:00",
+          "rssKiB": 0,
+          "ownedPids": []
+        }
+      ],
+      "sourceSHA256": "aee761a37757cb047ddbf0f846bc23ce830ed755422f96852d08eb435c368727",
+      "productionManifestSHA256": "784012de2a85fcd42bf6aa34ccdcb7bdcffec291fcf3b4f5c2e4c305ed1495f9",
+      "sourceManifestSHA256": "eb1513030d303cdd575d0fb4347c281c72970edba4a8e5a6905cc9ee257df4f2",
+      "headAtEnd": "43e0fac6b85d435a48b3732817478c46fc9fcd28",
+      "CP3Blob": "eeaa70aa4414648bb2a1173d58244267997d16d7",
+      "runnerSHA256": "33838f8091239758e158ba2980af28e5d10e57359423fa43494e8f579035027e",
+      "commonSHA256": "e23d86ca96674a49e0b123b7f9e6789591ee8784e82e3082f21821527766b99b",
+      "crossLaneOverlapTimestampsUTC": [],
+      "transcript": ""
     }
   ]
 }

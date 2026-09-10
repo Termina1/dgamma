@@ -49,3 +49,23 @@ NEW supervisor-owned S34 quantity-aligned statement: exactly two proof arrows ma
 Research V19 classified BROKEN BY UNFREEZE: the old forward inclusion would become an invalid attached→core claim, not a lexical arity fix. No repair attempted. V20/L1 qualified17 local references to resolve rehomed CP3 name collisions (PASS1.070s). V34/L2 renamed core constructors and wrapped exactly the SAME native concrete bodies with ActorWithoutForcedRoots (PASS3.138s); Refl physical block order retained, no associativity proof added. Two non-frozen lexical modules repaired/committed; no theorem/premise/body cases added. Frozen LocalDiamond V43 fresh PASS484.375143s, peak50508816KiB; source/adjacent body unchanged. Broken-module hash is directly re-derived from current bytes (corrected initial metadata transcription; no source change).
 
 Frozen CanonicalSort exact gate PASS on FIRST authorized elaboration V100-2:53.236392s,22012192KiB,one own Building. FROZEN-MIGRATION commita2c3ace5; sourceeb0ab7b95779a4b44360b222030e7aa0f8d134c17ea4d2dfa98f3306e135df1b. Original-indexed placement rebuilt from existing accountedExternalInputs; scan remains old two-case SUBSET of Core, not a forced/full-core producer. O17 declaration+body and other frozen regions unchanged. New baseline O6-R205-POST-FROZEN-BASELINE.json. The21-hunk approved patch copy is SHA-authenticated for context-only whitespace exception, no source exception. L3 R17416 original-name qualifications PASS6.299865s,999600KiB.
+
+Final native invocation P3 is the THIRD/last package attempt: PASS15.639296s,
+230384KiB sampled RSS,exit0,zero Building. No native compiler invocation after
+P3 is planned. Full current-source disposition371 invocation receipts /355
+checked modules:349 expected outcomes,6 failures,133 blocked,44 authenticated
+unchanged production seeds,11 standing legacy exclusions. All ready targets
+were attempted; native-research validation remains INCOMPLETE by design, not
+silently promoted to a full PASS. Five semantic roots and one pre-existing
+record-only fixture have exact source hashes/errors; blocked roots are explicit.
+CrossTrace is UNCHECKED behind OriginalBlockClass; O19Surface and the other five
+protected modules (apart from CrossTrace) have fresh native PASS receipts.
+
+Independent verifier authenticates all371 sources/logs, own Building lines,
+RSS policies/samples, script/source snapshots, exact negative contracts from
+invocation-time snapshots, serialized dependency order, final source/TTC hashes,
+census and the approved frozen exception.32 early policy snapshots were restored
+by exact recorded hash from historical git blobs, with explicit reconstruction
+provenance; none remain missing.38 compiler-free contract/pressure tests PASS.
+All six changed Idris files and their before/after hashes/commits/receipts are
+listed in O6-R205-REPAIR-TABLE.md. No new theorem, semantic re-proof or escape.
