@@ -42,14 +42,14 @@ nativePairTrail : {name, key, world, error : Type} -> {value : key -> Type} ->
   (leftAction, rightAction : Action name key value world error) -> (leftTag, rightTag : RuleTag) ->
   (0 left : checkedApplyAction @{nameEq} @{keyEq} leftAction first = Just (leftTag, middle)) ->
   (0 right : checkedApplyAction @{nameEq} @{keyEq} rightAction middle = Just (rightTag, last)) ->
-  AvailabilityTrace name key world error value
+  DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value
     (MoreTransitions (Fired {before = first} {afterState = middle} nameEq keyEq leftAction leftTag left)
       (MoreTransitions (Fired {before = middle} {afterState = last} nameEq keyEq rightAction rightTag right) NoTransitions))
 nativePairTrail nameEq keyEq first middle last leftAction rightAction leftTag rightTag left right =
-  AvailabilityStep first (Fired {before = first} {afterState = middle} nameEq keyEq leftAction leftTag left)
+  DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep first (Fired {before = first} {afterState = middle} nameEq keyEq leftAction leftTag left)
     (MoreTransitions (Fired {before = middle} {afterState = last} nameEq keyEq rightAction rightTag right) NoTransitions)
-    (AvailabilityStep middle (Fired {before = middle} {afterState = last} nameEq keyEq rightAction rightTag right)
-      NoTransitions (AvailabilityEnd last))
+    (DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep middle (Fired {before = middle} {afterState = last} nameEq keyEq rightAction rightTag right)
+      NoTransitions (DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd last))
 
 ||| GENUINE local terminal-square move producer. Both whole native traces,
 ||| physical occurrences/adjacency, action words, current cuts, endpoint and
@@ -66,7 +66,7 @@ public export
   (source, oldMiddle, oldFinal : SystemState name key value world error) ->
   (action : Action name key value world error) -> (crossTag : RuleTag) ->
   (before : Transitions initial source) ->
-  (prefixTrail : AvailabilityTrace name key world error value before) ->
+  (prefixTrail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value before) ->
   (0 oldChecked : checkedApplyAction @{nameEq} @{keyEq} action source = Just (crossTag, oldMiddle)) ->
   (0 oldRoot : checkedApplyAction @{nameEq} @{keyEq} (OInsert root Root component) oldMiddle = Just (OInsertTag, oldFinal)) ->
   (square : ClassifierSquare name key world error value nameEq keyEq root component source action crossTag oldFinal) ->
