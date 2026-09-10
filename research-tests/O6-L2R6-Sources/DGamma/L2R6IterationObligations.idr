@@ -32,11 +32,11 @@ record PhaseIterationResult
   (nameEq : DecEq name) (keyEq : DecEq key)
   {initial, oldFinal : SystemState name key value world error}
   {oldTrace : Transitions initial oldFinal}
-  (oldTrail : AvailabilityTrace name key world error value oldTrace) where
+  (oldTrail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value oldTrace) where
   constructor MkPhaseIterationResult
   iterationFinal : SystemState name key value world error
   iterationTrace : Transitions initial iterationFinal
-  iterationTrail : AvailabilityTrace name key world error value iterationTrace
+  iterationTrail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value iterationTrace
   0 finiteIteration : DistanceIteration nameEq keyEq oldTrail iterationTrail
   0 iterationDistanceZero : totalDistance nameEq keyEq iterationTrail = 0
   0 extensionalIterationEnd : RegistryExtensional name key world error value nameEq oldFinal iterationFinal
@@ -54,7 +54,7 @@ record PhaseIterationResult
 public export
 GeneralAdmittedMoveExistence : {name, key, world, error : Type} -> {value : key -> Type} ->
   {initial, finalState : SystemState name key value world error} -> {trace : Transitions initial finalState} ->
-  DecEq name -> DecEq key -> AvailabilityTrace name key world error value trace -> Type
+  DecEq name -> DecEq key -> DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value trace -> Type
 GeneralAdmittedMoveExistence {name} {key} {world} {error} {value} {initial} nameEq keyEq trail =
   (0 valid : registryWellFormed @{nameEq} @{keyEq} initial = True) ->
   (0 front : FrontNormal name key world error value nameEq keyEq trail) ->
@@ -70,7 +70,7 @@ GeneralAdmittedMoveExistence {name} {key} {world} {error} {value} {initial} name
   (0 positive : LT 0 (rootDistance nameEq keyEq trail (catalogOrdinal entry))) ->
   (nextFinal : SystemState name key value world error **
    nextTrace : Transitions initial nextFinal **
-   nextTrail : AvailabilityTrace name key world error value nextTrace **
+   nextTrail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value nextTrace **
    move : AdmittedDistanceMove name key world error value nameEq keyEq trail nextTrail **
    (movedRoot move = catalogRoot entry,
     S (length (prefixWord move)) = catalogOrdinal entry,
@@ -86,7 +86,7 @@ GeneralAdmittedMoveExistence {name} {key} {world} {error} {value} {initial} name
 public export
 GeneralDistanceIteration : {name, key, world, error : Type} -> {value : key -> Type} ->
   {initial, finalState : SystemState name key value world error} -> {trace : Transitions initial finalState} ->
-  DecEq name -> DecEq key -> AvailabilityTrace name key world error value trace -> Type
+  DecEq name -> DecEq key -> DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value trace -> Type
 GeneralDistanceIteration {name} {key} {world} {error} {value} {initial} nameEq keyEq trail =
   (0 valid : registryWellFormed @{nameEq} @{keyEq} initial = True) ->
   (0 front : FrontNormal name key world error value nameEq keyEq trail) ->
