@@ -98,3 +98,27 @@ export
 o20ChronologyRotationLength [] event suffix = Refl
 o20ChronologyRotationLength (head :: rest) event suffix =
   cong S (o20ChronologyRotationLength rest event suffix)
+
+||| Every occurrence in the EXACT left list gets a right-list occurrence and
+||| the original component/generation/activation/position match certificate.
+export
+0 o20ChronologyLeftCovered :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {mapping : RegistrationGenerationBijection name} ->
+  {left, right : List (RegistrationEvent name key world error value)} ->
+  O20ChronologyPairing mapping left right ->
+  (selected : RegistrationEvent name key world error value) -> Elem selected left ->
+  (other : RegistrationEvent name key world error value **
+    (Elem other right, RegistrationEventMatch mapping selected other))
+o20ChronologyLeftCovered ChronologyPairEnd selected member = absurd member
+o20ChronologyLeftCovered (ChronologyPairMatch leftEvent rightEvent matched later) _ Here =
+  (rightEvent ** (Here, matched))
+o20ChronologyLeftCovered (ChronologyPairMatch leftEvent rightEvent matched later) selected (There member) =
+  case o20ChronologyLeftCovered later selected member of
+    (other ** (present, related)) => (other ** (There present, related))
+o20ChronologyLeftCovered (ChronologyPairLeftRotate earlier event suffix later) selected member =
+  o20ChronologyLeftCovered later selected (o20ChronologyUnrotateMember {event} earlier suffix member)
+o20ChronologyLeftCovered (ChronologyPairRightRotate earlier event suffix later) selected member =
+  case o20ChronologyLeftCovered later selected member of
+    (other ** (present, related)) =>
+      (other ** (o20ChronologyRotateMember {event} earlier suffix present, related))
