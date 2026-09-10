@@ -101,10 +101,10 @@ export
   {first, coreEnd, bundleStart, finalState : SystemState name key value world error} ->
   {core : Transitions first coreEnd} -> {priorRoots : List name} ->
   {bundle : Transitions bundleStart finalState} ->
-  OrderedForcedRootBundle nameEq selected core priorRoots bundle ->
+  DGamma.L2R3Attached.OrderedForcedRootBundle nameEq selected core priorRoots bundle ->
   (ordinal : Nat) -> LT ordinal (transitionCount bundle) ->
   RootInsertionAt name key world error value bundle ordinal
-orderedBundleRootAt ForcedBundleEnd ordinal upper = absurd upper
+orderedBundleRootAt DGamma.L2R3Attached.ForcedBundleEnd ordinal upper = absurd upper
 orderedBundleRootAt (ForcedBundleStep root component step rest inserted forced tail) ordinal upper =
   rootHeadOrdinal root component step rest inserted (orderedBundleRootAt tail) ordinal upper
 
@@ -118,7 +118,7 @@ export
   {first, finalState : SystemState name key value world error} ->
   {global : Transitions first finalState} ->
   {action : Action name key value world error} -> {ordinal : Nat} ->
-  (member : AttachedBundleOccurrence name key world error value nameEq keyEq global action ordinal) ->
+  (member : DGamma.L2R3AttachedGap.AttachedBundleOccurrence name key world error value nameEq keyEq global action ordinal) ->
   (local : Nat) -> LT local (transitionCount (memberBundle member)) ->
   RootInsertionAt name key world error value global (bundleOffset member + local)
 attachedRootAtOffset member local upper =
@@ -152,7 +152,7 @@ export
   {first, finalState : SystemState name key value world error} ->
   {global : Transitions first finalState} ->
   {action : Action name key value world error} -> {ordinal : Nat} ->
-  (member : AttachedBundleOccurrence name key world error value nameEq keyEq global action ordinal) ->
+  (member : DGamma.L2R3AttachedGap.AttachedBundleOccurrence name key world error value nameEq keyEq global action ordinal) ->
   (cut : Nat) -> LT (bundleOffset member) cut ->
   LT cut (bundleOffset member + transitionCount (memberBundle member)) ->
   RootInsertionAt name key world error value global cut
