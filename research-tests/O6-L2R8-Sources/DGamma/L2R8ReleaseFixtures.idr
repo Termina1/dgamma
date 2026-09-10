@@ -29,8 +29,8 @@ record ObservedReleaseFixtures where
   constructor MkObservedReleaseFixtures
   singleTrace : Transitions (smallState 0) (smallState 7)
   barrierNativeTrace : Transitions (barrierState 0) (barrierState 8)
-  singleTrail : AvailabilityTrace Nat Bool Unit String (\key => Unit) singleTrace
-  barrierTrail : AvailabilityTrace Nat Bool Unit String (\key => Unit) barrierNativeTrace
+  singleTrail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace Nat Bool Unit String (\key => Unit) singleTrace
+  barrierTrail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace Nat Bool Unit String (\key => Unit) barrierNativeTrace
   singleOrdinals : List Nat
   barrierOrdinals : List Nat
   0 singleNewEquation : filter (< 4) (map (\release => locatedActionOrdinal (releaseOccurrence (snd release)))
