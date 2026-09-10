@@ -34,6 +34,27 @@ data O19RootHeadAgreement :
     {root : name} -> O19RootHeadAgreement {name} {key} {world} {error} {value}
       (ORemove root) (ORemove root)
 
+||| SameExternalOrchestration determines the root/root product WITHOUT a
+||| block-separation assumption: only the three exact diagonal products can
+||| be related. Thus all six mixed products are excluded even for one owner;
+||| each diagonal also forces identical root names (and Insert components).
+export
+0 o19RootInputProductAgreement :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} ->
+  {leftFirst, leftMiddle, leftLast, rightFirst, rightMiddle, rightLast : SystemState name key value world error} ->
+  (left : Transition leftFirst leftMiddle) -> (right : Transition rightFirst rightMiddle) ->
+  (leftRest : Transitions leftMiddle leftLast) -> (rightRest : Transitions rightMiddle rightLast) ->
+  RootOrchestrationStep nameEq left -> RootOrchestrationStep nameEq right ->
+  SameExternalOrchestration nameEq (MoreTransitions left leftRest) (MoreTransitions right rightRest) ->
+  O19RootHeadAgreement (transitionAction left) (transitionAction right)
+o19RootInputProductAgreement left right leftRest rightRest leftRoot rightRoot same =
+  rewrite sym (o19AttachedRootHeadsSame left right leftRest rightRest leftRoot rightRoot same) in
+    case leftRoot of
+      RootInsertStep exact => rewrite exact in RootInsertAgreement
+      RootRetireStep fiber found parent exact => rewrite exact in RootRetireAgreement
+      RootRemoveStep fiber found parent exact => rewrite exact in RootRemoveAgreement
+
 ||| Native occurrence elimination: no action-word or raw-name relabelling.
 export
 0 o19NoRootOccurrence :
