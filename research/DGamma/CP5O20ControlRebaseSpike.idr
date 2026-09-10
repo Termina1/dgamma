@@ -175,3 +175,20 @@ o20RebaseAbsentDomain {name} {key} {world} {error} {value} nameEq before after l
   o20RebaseAbsentObserved nameEq before after left right old agreeCurrent selected
     (lookupFiber {name} {key} {value} {world} {error} @{nameEq}
       (renameBackward before (renameForward after selected)) (registry left)) Refl absent
+
+||| Consumer shape for an actually present source fiber. The old relation
+||| owns the matching target fiber; no separately observed target is guessed.
+export
+0 o20RebasePresentMaybeReferences :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (before, after : NameBijection name) ->
+  (left : Fiber name key value world error) ->
+  (right : Maybe (Fiber name key value world error)) ->
+  (0 agreeParent : (selected : name) -> fiberParent left = ChildOf selected ->
+    renameForward before selected = renameForward after selected) ->
+  (0 agreeProviders : (selected : name) -> Elem selected (o20LifecycleControlNames (fiberLifecycle left)) ->
+    renameForward before selected = renameForward after selected) ->
+  MaybeFiberRelatedBy before (Just left) right -> MaybeFiberRelatedBy after (Just left) right
+o20RebasePresentMaybeReferences before after left _ agreeParent agreeProviders
+  (RenamedPresent {right} related) =
+    RenamedPresent (o20RebaseFiberReferences before after left right agreeParent agreeProviders related)
