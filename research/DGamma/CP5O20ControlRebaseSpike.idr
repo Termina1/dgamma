@@ -115,3 +115,11 @@ o20RebasePreimageCurrent before after selected agreeCurrent =
     (trans (cong (renameBackward after)
       (trans (sym agreeCurrent) (renameRightInverse before (renameForward after selected))))
       (renameLeftInverse after selected))
+
+||| The old all-name relation transports actual absence without a domain oracle.
+export
+0 o20RebaseAbsentControlRight :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {renaming : NameBijection name} -> (right : Maybe (Fiber name key value world error)) ->
+  MaybeFiberRelatedBy renaming Nothing right -> right = Nothing
+o20RebaseAbsentControlRight _ RenamedAbsent = Refl
