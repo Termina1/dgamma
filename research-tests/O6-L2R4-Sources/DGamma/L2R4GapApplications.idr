@@ -66,7 +66,7 @@ smallGapViaNormalForm = attachedZeroGapInNormalForm
   (smallOffsetObserved attachedFixtureObservations)
   (replace {p = RemainingGapHeadIsRoot %search} (smallGapObserved attachedFixtureObservations)
     (c12ResidualCovered fixtureCoverage))
-  (replace {p = \gap => AttachedNormalForm Nat Bool Unit String (\key => Unit) %search %search smallTrace gap 5}
+  (replace {p = \gap => DGamma.L2R3AttachedGap.AttachedNormalForm Nat Bool Unit String (\key => Unit) %search %search smallTrace gap 5}
     (smallGapObserved attachedFixtureObservations) (c12ResidualNF fixtureCoverage))
   (\action, ordinal, member => separateBundleObserved 5 action ordinal member smallNoBundleStraddles
     (isLTE (bundleOffset member + transitionCount (memberBundle member)) 5))
@@ -88,7 +88,7 @@ barrierGapViaNormalForm = attachedZeroGapInNormalForm
   (barrierOffsetObserved attachedFixtureObservations)
   (replace {p = RemainingGapHeadIsRoot %search} (barrierGapObserved attachedFixtureObservations)
     (barrierResidualCovered fixtureCoverage))
-  (replace {p = \gap => AttachedNormalForm Nat Bool Unit String (\key => Unit) %search %search barrierTrace gap 6}
+  (replace {p = \gap => DGamma.L2R3AttachedGap.AttachedNormalForm Nat Bool Unit String (\key => Unit) %search %search barrierTrace gap 6}
     (barrierGapObserved attachedFixtureObservations) (barrierResidualNF fixtureCoverage))
   (\action, ordinal, member => separateBundleObserved 6 action ordinal member barrierNoBundleStraddles
     (isLTE (bundleOffset member + transitionCount (memberBundle member)) 6))
