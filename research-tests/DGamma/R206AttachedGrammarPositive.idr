@@ -64,3 +64,9 @@ r206RootRetired : SystemState Nat ToyKey ToyValue ToyRuntime String
 r206RootRetired = MkSystemState (MkToyRuntime False False)
   (replaceBinding @{the (DecEq Nat) %search} 2
     (retireFiber (freshFiber DGamma.CalculusChecks.providerComponent Root)) (registry r206RootInserted))
+
+||| Native checked same-bundle O-Retire.
+public export
+r206RootRetireEdge : Transition r206RootInserted r206RootRetired
+r206RootRetireEdge = Fired (the (DecEq Nat) %search) (the (DecEq ToyKey) %search)
+  (ORetire 2) ORetireTag Refl
