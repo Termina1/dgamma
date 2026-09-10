@@ -22,6 +22,7 @@ import DGamma.L2R16AnchorNative
 import DGamma.L2R16AnchorTrace
 import DGamma.L2R16AnchorTrail
 import DGamma.L2R16ProductionBridge
+import Data.DPair
 import Data.Bool
 import Data.List
 import Data.List.Elem
@@ -48,10 +49,10 @@ runNative source (action :: rest) =
     (checkedApplyAction @{fst fixtureDictionaries} @{snd fixtureDictionaries} action source ** Refl) of
       (Nothing ** observed) => (source ** NoTransitions)
       (Just (tag, middle) ** observed) =>
-        (fst (runNative middle rest) **
-          MoreTransitions (Fired {before = source} {afterState = middle}
-            (fst fixtureDictionaries) (snd fixtureDictionaries) action tag observed)
-            (snd (runNative middle rest)))
+        DPair.bimap id
+          (MoreTransitions (Fired {before = source} {afterState = middle}
+            (fst fixtureDictionaries) (snd fixtureDictionaries) action tag observed))
+          (runNative middle rest)
 
 ||| Two installed actors and their own key-disjoint children. This is an
 ||| explicit initial registry, NOT bundle-history evidence. Every production
@@ -89,3 +90,12 @@ twinsSegment swapped start count = runNative (twinsCut swapped start)
   (Data.List.take count (Data.List.drop start (if swapped
     then snd (snd twinsInput) ++ fst (snd twinsInput)
     else fst (snd twinsInput) ++ snd (snd twinsInput))))
+
+||| Native success, not merely intended action lists: both actual checked
+||| runs contain all ten steps, and the explicit initial registry is valid.
+public export
+0 twinsNativeShape : (swapped : Bool) ->
+  (registryWellFormed @{fst fixtureDictionaries} @{snd fixtureDictionaries} (fst twinsInput) = True,
+   transitionCount (snd (twinsSegment swapped 0 10)) = 10)
+twinsNativeShape False = (Refl, Refl)
+twinsNativeShape True = (Refl, Refl)
