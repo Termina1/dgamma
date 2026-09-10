@@ -67,7 +67,7 @@ export
   {first, finalState : SystemState name key value world error} ->
   {trace : Transitions first finalState} ->
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
-  (trail : AvailabilityTrace name key world error value trace) ->
+  (trail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value trace) ->
   (entry, seed : RootCatalogEntry name key world error value) -> (anchor : Nat) ->
   (0 accepted : phaseAnchorSeedCheck nameEq keyEq trail entry anchor seed = True) ->
   (LTE (catalogOrdinal seed) (catalogOrdinal entry),
@@ -89,7 +89,7 @@ export
   {first, finalState : SystemState name key value world error} ->
   {trace : Transitions first finalState} ->
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
-  (trail : AvailabilityTrace name key world error value trace) ->
+  (trail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value trace) ->
   (entry, seed : RootCatalogEntry name key world error value) -> (anchor : Nat) ->
   (0 accepted : phaseAnchorSeedCheck nameEq keyEq trail entry anchor seed = True) ->
   (actor : name ** (flag : Bool **
