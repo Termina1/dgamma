@@ -80,3 +80,23 @@ o20RebaseLifecycleReferences before after (Unloading leftAccumulator leftView le
   (Unloading rightAccumulator rightView rightOutcome) agreeProviders (RenamedUnloading accumulators views outcomes) =
     RenamedUnloading accumulators
       (trans (o20RebaseMappedNames before after (viewProviders leftView) agreeProviders) views) outcomes
+
+||| Full fiber control rebase, with separate NAMED primitive parent/provider
+||| agreements. Neither agreement is silently inferred from current-name data.
+export
+0 o20RebaseFiberReferences :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (before, after : NameBijection name) ->
+  (left, right : Fiber name key value world error) ->
+  (0 agreeParent : (selected : name) -> fiberParent left = ChildOf selected ->
+    renameForward before selected = renameForward after selected) ->
+  (0 agreeProviders : (selected : name) -> Elem selected (o20LifecycleControlNames (fiberLifecycle left)) ->
+    renameForward before selected = renameForward after selected) ->
+  FiberRelatedBy before left right -> FiberRelatedBy after left right
+o20RebaseFiberReferences before after _ _ agreeParent agreeProviders
+  (RenamedFibers leftParent rightParent leftRetired rightRetired leftTable rightTable
+    leftLifecycle rightLifecycle parents retired lifecycle) =
+    RenamedFibers leftParent rightParent leftRetired rightRetired leftTable rightTable
+      leftLifecycle rightLifecycle
+      (o20RebaseParentReferences before after leftParent rightParent agreeParent parents)
+      retired (o20RebaseLifecycleReferences before after leftLifecycle rightLifecycle agreeProviders lifecycle)
