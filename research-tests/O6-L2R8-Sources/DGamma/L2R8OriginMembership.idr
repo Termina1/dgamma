@@ -78,7 +78,7 @@ record OriginObservation
   (name, key, world, error : Type) (value : key -> Type) (nameEq : DecEq name)
   {0 first, finalState : SystemState name key value world error}
   {0 trace : Transitions first finalState}
-  (trail : AvailabilityTrace name key world error value trace) (actor : name) (cut : Nat) where
+  (trail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value trace) (actor : name) (cut : Nat) where
   constructor MkOriginObservation
   originObserved : Maybe Nat
   0 originEquation : rootOriginAt nameEq actor cut (scanRootCatalog 0 trail) = originObserved
@@ -93,7 +93,7 @@ public export
 observeRootOrigin : {name, key, world, error : Type} -> {value : key -> Type} ->
   {0 first, finalState : SystemState name key value world error} ->
   {0 trace : Transitions first finalState} ->
-  (nameEq : DecEq name) -> (trail : AvailabilityTrace name key world error value trace) ->
+  (nameEq : DecEq name) -> (trail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value trace) ->
   (actor : name) -> (cut : Nat) -> OriginObservation name key world error value nameEq trail actor cut
 observeRootOrigin nameEq trail actor cut = MkOriginObservation
   (rootOriginAt nameEq actor cut (scanRootCatalog 0 trail)) Refl
