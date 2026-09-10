@@ -134,3 +134,24 @@ export
 o19AttachedReleaseAtReplay release replayOccurrence found =
   MkAttachedRelease (releasedChild release) (releasedFiber release) replayOccurrence found
     (releaseParent release) (sharedProvision release) (childDeclares release) (rootDeclares release)
+
+||| Transport BOTH forcing reasons. KeyReleased consumes a located replay
+||| occurrence and exact source fiber; EarlierForcedRoot keeps membership in
+||| the SAME prior-root history. No guessed generation or final replay result.
+export
+0 o19AttachedReasonAtReplay :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {actor : name} ->
+  {first, last, replayFirst, replayLast : SystemState name key value world error} ->
+  {core : Transitions first last} -> {replayCore : Transitions replayFirst replayLast} ->
+  {priorRoots : List name} -> {component : Component key value world error} ->
+  ((release : AttachedRelease name key world error value nameEq actor core component) ->
+    (replayOccurrence : LocatedActionOccurrence (ORemove (releasedChild release)) replayCore **
+      lookupFiber {name} {key} {value} {world} {error} @{nameEq} (releasedChild release)
+        (registry (actionBeforeState replayOccurrence)) = Just (releasedFiber release))) ->
+  AttachedReason nameEq actor core priorRoots component ->
+  AttachedReason nameEq actor replayCore priorRoots component
+o19AttachedReasonAtReplay relocate (KeyReleased release) =
+  case relocate release of
+    (occurrence ** found) => KeyReleased (o19AttachedReleaseAtReplay release occurrence found)
+o19AttachedReasonAtReplay relocate (EarlierForcedRoot earlier) = EarlierForcedRoot earlier
