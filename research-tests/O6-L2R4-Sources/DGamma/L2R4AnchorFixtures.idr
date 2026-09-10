@@ -37,9 +37,9 @@ import Decidable.Equality
 public export
 record AnchorFixtureEvidence where
   constructor MkAnchorFixtureEvidence
-  singleTrail : AvailabilityTrace Nat Bool Unit String (\key => Unit)
+  singleTrail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace Nat Bool Unit String (\key => Unit)
     (rootPhaseTrace (smallPhase smallRootPhaseEvidence))
-  bundleTrail : AvailabilityTrace Nat Bool Unit String (\key => Unit)
+  bundleTrail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace Nat Bool Unit String (\key => Unit)
     (appendTransitions (beforeActionOccurrence smallRootBirth) (rootPhaseTrace (sPhase bundlePhaseEvidence)))
   singleEvents : List (AnchorEvent Nat)
   bundleEvents : List (AnchorEvent Nat)
@@ -54,7 +54,7 @@ record AnchorFixtureEvidence where
     annotateAnchors (\ordinal, root => Just 4) 0 smallAvailabilityTrail ++
     annotateAnchors (\ordinal, root => Just 4) 4 (middleTrail bundlePhaseEvidence)
   0 releaseCut : locatedActionOrdinal smallRootBirth = 4
-  0 rLegalEarliest : EarliestAvailableRootBirth Nat Bool Unit String (\key => Unit)
+  0 rLegalEarliest : DGamma.CP5AvailabilityAwarePlacement.EarliestAvailableRootBirth Nat Bool Unit String (\key => Unit)
     %search %search smallTrace 3 (smallComponent True) smallRootBirth
   0 rAttachedAnchor : bundleOffset (c12CatalogR fixtureCoverage) = 4
   0 sBarrierAnchor : bundleOffset (barrierCatalogS fixtureCoverage) = 4
@@ -74,13 +74,13 @@ public export
 0 anchorFixtureEvidence : AnchorFixtureEvidence
 anchorFixtureEvidence = MkAnchorFixtureEvidence
   (smallMovedTrail smallRootPhaseEvidence)
-  (AvailabilityStep (smallState 0)
+  (DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep (smallState 0)
     (Fired {before = smallState 0} {afterState = smallState 1} %search %search (LBegin 0) LBeginTag (smallBegin0 smallNativeExecution)) _
-    (AvailabilityStep (smallState 1)
+    (DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep (smallState 1)
       (Fired {before = smallState 1} {afterState = smallState 2} %search %search (LAdvance 0) LFinishTag (smallFinish0 smallNativeExecution)) _
-      (AvailabilityStep (smallState 2)
+      (DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep (smallState 2)
         (Fired {before = smallState 2} {afterState = smallState 3} %search %search (ORetire 1) ORetireTag (smallRetire1 smallNativeExecution)) _
-        (AvailabilityStep (smallState 3)
+        (DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep (smallState 3)
           (Fired {before = smallState 3} {afterState = smallState 4} %search %search (ORemove 1) ORemoveTag (smallRemove1 smallNativeExecution)) _
           (movedTrail bundlePhaseEvidence)))))
   [AnchorLife 0, AnchorLife 0, AnchorOther, AnchorRelease 4, AnchorBirth 3 (Just 4), AnchorLife 2]
