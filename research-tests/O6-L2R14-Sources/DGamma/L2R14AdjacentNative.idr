@@ -71,16 +71,16 @@ export
   {first, finalState : SystemState name key value world error} ->
   {trace : Transitions first finalState} ->
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
-  (trail : AvailabilityTrace name key world error value trace) ->
+  (trail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value trace) ->
   (aligned : AlignedTransitions name key world error value nameEq keyEq trace) ->
   (action : Action name key value world error) ->
   (0 query : head' (nativeActionWord trail) = Just action) ->
   AlignedSourceAction name key world error value nameEq keyEq trace first action 0
-alignedNativeHead nameEq keyEq (AvailabilityEnd state) aligned action query = absurd query
-alignedNativeHead nameEq keyEq (AvailabilityStep source (Fired ne ke head tag checked) rest later)
+alignedNativeHead nameEq keyEq (DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd state) aligned action query = absurd query
+alignedNativeHead nameEq keyEq (DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep source (Fired ne ke head tag checked) rest later)
   aligned action query =
   locateAlignedSourceAction nameEq keyEq
-    (AvailabilityStep source (Fired ne ke head tag checked) rest later) aligned 0 source action
+    (DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep source (Fired ne ke head tag checked) rest later) aligned 0 source action
     (cong (\selected => Just (source, selected)) (injective query))
 
 ||| Construct both adjacent native edges at the exact checked head. The
@@ -92,7 +92,7 @@ export
   (headAction : Action name key value world error) -> (tag : RuleTag) ->
   (0 checked : checkedApplyAction @{nameEq} @{keyEq} headAction first = Just (tag, middle)) ->
   (rest : Transitions middle finalState) ->
-  (later : AvailabilityTrace name key world error value rest) ->
+  (later : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value rest) ->
   (tailAligned : AlignedTransitions name key world error value nameEq keyEq rest) ->
   (source : SystemState name key value world error) ->
   (leftAction, rightAction : Action name key value world error) ->
@@ -124,7 +124,7 @@ export
   (headAction : Action name key value world error) -> (tag : RuleTag) ->
   (0 checked : checkedApplyAction @{nameEq} @{keyEq} headAction first = Just (tag, middle)) ->
   (rest : Transitions middle finalState) ->
-  (later : AvailabilityTrace name key world error value rest) ->
+  (later : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value rest) ->
   (tailAligned : AlignedTransitions name key world error value nameEq keyEq rest) ->
   (0 tailDecoder : (position : Nat) -> (source : SystemState name key value world error) ->
     (leftAction, rightAction : Action name key value world error) ->
@@ -154,7 +154,7 @@ export
   {first, middle, finalState : SystemState name key value world error} ->
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (step : Transition first middle) -> (rest : Transitions middle finalState) ->
-  (later : AvailabilityTrace name key world error value rest) ->
+  (later : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value rest) ->
   (aligned : AlignedTransitions name key world error value nameEq keyEq (MoreTransitions step rest)) ->
   (0 tailDecoder : AlignedTransitions name key world error value nameEq keyEq rest ->
     (position : Nat) -> (source : SystemState name key value world error) ->
@@ -164,8 +164,8 @@ export
     AlignedAdjacentNative name key world error value nameEq keyEq rest source leftAction rightAction position) ->
   (position : Nat) -> (source : SystemState name key value world error) ->
   (leftAction, rightAction : Action name key value world error) ->
-  (0 query : head' (drop position (trailSourceActions (AvailabilityStep first step rest later))) = Just (source, leftAction)) ->
-  (0 rightQuery : head' (drop (S position) (nativeActionWord (AvailabilityStep first step rest later))) = Just rightAction) ->
+  (0 query : head' (drop position (trailSourceActions (DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep first step rest later))) = Just (source, leftAction)) ->
+  (0 rightQuery : head' (drop (S position) (nativeActionWord (DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep first step rest later))) = Just rightAction) ->
   AlignedAdjacentNative name key world error value nameEq keyEq (MoreTransitions step rest)
     source leftAction rightAction position
 adjacentNativeAtStep nameEq keyEq _ _ later (AlignedStep headAction tag checked rest tail)
@@ -183,16 +183,16 @@ export
   {first, finalState : SystemState name key value world error} ->
   {trace : Transitions first finalState} ->
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
-  (trail : AvailabilityTrace name key world error value trace) ->
+  (trail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value trace) ->
   (aligned : AlignedTransitions name key world error value nameEq keyEq trace) ->
   (position : Nat) -> (source : SystemState name key value world error) ->
   (leftAction, rightAction : Action name key value world error) ->
   (0 query : head' (drop position (trailSourceActions trail)) = Just (source, leftAction)) ->
   (0 rightQuery : head' (drop (S position) (nativeActionWord trail)) = Just rightAction) ->
   AlignedAdjacentNative name key world error value nameEq keyEq trace source leftAction rightAction position
-locateAlignedAdjacent nameEq keyEq (AvailabilityEnd state) aligned position source leftAction rightAction query rightQuery =
+locateAlignedAdjacent nameEq keyEq (DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd state) aligned position source leftAction rightAction query rightQuery =
   absurd (sourceQueryEmpty position (source, leftAction) query)
-locateAlignedAdjacent nameEq keyEq (AvailabilityStep first step rest later) aligned
+locateAlignedAdjacent nameEq keyEq (DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep first step rest later) aligned
   position source leftAction rightAction query rightQuery =
   adjacentNativeAtStep nameEq keyEq step rest later aligned
     (\tail, ordinal, wantedSource, left, right, leftEquation, rightEquation =>
@@ -208,7 +208,7 @@ export
   {first, finalState : SystemState name key value world error} ->
   {trace : Transitions first finalState} ->
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
-  (trail : AvailabilityTrace name key world error value trace) ->
+  (trail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value trace) ->
   (aligned : AlignedTransitions name key world error value nameEq keyEq trace) ->
   (cut : SelectedSquareCut name key world error value nameEq keyEq trail) ->
   AlignedAdjacentNative name key world error value nameEq keyEq trace (cutSource cut) (cutAction cut)
