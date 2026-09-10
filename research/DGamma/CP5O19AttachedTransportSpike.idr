@@ -115,3 +115,22 @@ o19AttachedEdgeAtReplay source target action owned frame (AttachedRootRetire roo
   AttachedRootRetire root fiber priorRoots bundled (frame root fiber found) parent (trans action controlled)
 o19AttachedEdgeAtReplay source target action owned frame (AttachedRootRemove root fiber priorRoots bundled found parent controlled) =
   AttachedRootRemove root fiber priorRoots bundled (frame root fiber found) parent (trans action controlled)
+
+||| Relocate KeyReleased's REAL removal occurrence. The same released fiber
+||| carries its parent, component and shared provision key to the new source;
+||| a matching action without this exact lookup would not suffice.
+export
+0 o19AttachedReleaseAtReplay :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {actor : name} ->
+  {first, last, replayFirst, replayLast : SystemState name key value world error} ->
+  {core : Transitions first last} -> {replayCore : Transitions replayFirst replayLast} ->
+  {component : Component key value world error} ->
+  (release : AttachedRelease name key world error value nameEq actor core component) ->
+  (replayOccurrence : LocatedActionOccurrence (ORemove (releasedChild release)) replayCore) ->
+  lookupFiber {name} {key} {value} {world} {error} @{nameEq} (releasedChild release)
+    (registry (actionBeforeState replayOccurrence)) = Just (releasedFiber release) ->
+  AttachedRelease name key world error value nameEq actor replayCore component
+o19AttachedReleaseAtReplay release replayOccurrence found =
+  MkAttachedRelease (releasedChild release) (releasedFiber release) replayOccurrence found
+    (releaseParent release) (sharedProvision release) (childDeclares release) (rootDeclares release)
