@@ -101,3 +101,25 @@ r206NonemptyReferenceControls =
        Here => Refl
        There later => absurd later)
      (o20IdentityLifecycle {error = String} (Active id (ProviderView 0 EmptyView))))
+
+||| Negative-control map: a constructive bijection moves the live root0 to
+||| absent name1. Unlike the positive map, present-domain agreement is false.
+public export
+r206MovedCurrentBijection : NameBijection Nat
+r206MovedCurrentBijection = MkNameBijection
+  (\selected => case selected of
+    Z => 1
+    S Z => 0
+    S (S later) => S (S later))
+  (\selected => case selected of
+    Z => 1
+    S Z => 0
+    S (S later) => S (S later))
+  (\selected => case selected of
+    Z => Refl
+    S Z => Refl
+    S (S later) => Refl)
+  (\selected => case selected of
+    Z => Refl
+    S Z => Refl
+    S (S later) => Refl)
