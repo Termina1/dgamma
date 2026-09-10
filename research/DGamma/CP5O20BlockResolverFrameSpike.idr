@@ -14,6 +14,7 @@ import DGamma.CP5O20SelectorResolverFrameSpike
 import DGamma.CP5O20SupportedReferenceSpike
 import DGamma.CP5O20BeginObservationSpike
 import DGamma.CP5O19SurfaceSpike
+import DGamma.CP5O19OriginalBlockClassSpike
 import DGamma.CP5RankedEarlyApplicabilitySpike
 import Data.List.Elem
 import Data.Maybe
@@ -126,9 +127,9 @@ o20NativeInsertionResolverFrame nameEq keyEq deps child parent component before 
   o20ResolverObservationFrame nameEq keyEq deps (registry before) (registry afterState)
     (o19ResolutionAfterCheckedInsert nameEq keyEq deps child parent component before afterState tag checked)
 
-||| Whole physical actor-body resolver preservation. InstalledTrace supplies
+||| LEGACY-CONDITIONAL physical actor-body resolver preservation. InstalledTrace supplies
 ||| survival AND transports every native owner's immutable component to the
-||| real endpoint. ActorLifecycleOnly classifies every head; yielded native
+||| real endpoint. LegacyActorOnly classifies every head; yielded native
 ||| insertions are inert without a child-provision-disjointness assumption.
 ||| Only endpoint declaration disjointness remains as the semantic input.
 export
@@ -138,7 +139,7 @@ export
   {first, finalState : SystemState name key value world error} ->
   (body : Transitions first finalState) ->
   InstalledTrace name key world error value nameEq keyEq actor body ->
-  ActorLifecycleOnly actor body ->
+  LegacyActorOnly actor body ->
   (lastFiber : Fiber name key value world error) ->
   (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor (registry finalState) = Just lastFiber) ->
   ((wanted : key) -> Elem wanted deps -> Not (Elem wanted (dependencies (componentProvisions (fiberComponent lastFiber))))) ->
@@ -147,14 +148,14 @@ export
 o20InstalledActorBodyResolver nameEq keyEq actor deps NoTransitions installed only lastFiber lastFound excluded = Refl
 o20InstalledActorBodyResolver {first} {finalState} nameEq keyEq actor deps _
   (InstalledStep {middle} action tag checked rest installed tailInstalled)
-  (ActorLifecycleStep _ _ lifecycle owned only) lastFiber lastFound excluded =
+  (LegacyActorStep _ _ lifecycle owned only) lastFiber lastFound excluded =
     trans (o20InstalledActorBodyResolver nameEq keyEq actor deps rest tailInstalled only lastFiber lastFound excluded)
       (o20InstalledHeadResolver nameEq keyEq actor deps first middle finalState action tag checked
         (trans (sym (o19TransitionActorOwner (Fired nameEq keyEq action tag checked))) owned) rest
         installed tailInstalled lastFiber lastFound excluded)
 o20InstalledActorBodyResolver {name} {key} {world} {error} {value} {first} nameEq keyEq actor deps _
   (InstalledStep {middle} action tag checked rest installed tailInstalled)
-  (ActorYieldedRegistrationStep {child} {childComponent} _ _ yielded only) lastFiber lastFound excluded =
+  (LegacyActorYield {child} {childComponent} _ _ yielded only) lastFiber lastFound excluded =
     trans (o20InstalledActorBodyResolver nameEq keyEq actor deps rest tailInstalled only lastFiber lastFound excluded)
       (o20NativeInsertionResolverFrame nameEq keyEq deps child (ChildOf actor) childComponent first middle tag
         (replace {p = \candidate => checkedApplyAction {name} {key} {value} {world} {error} @{nameEq} @{keyEq} candidate first = Just (tag, middle)} yielded checked))
@@ -233,7 +234,7 @@ export
   BeginStep nameEq keyEq actor before start ->
   (body : Transitions start finalState) ->
   InstalledTrace name key world error value nameEq keyEq actor body ->
-  ActorLifecycleOnly actor body ->
+  LegacyActorOnly actor body ->
   (lastFiber : Fiber name key value world error) ->
   (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor (registry finalState) = Just lastFiber) ->
   ((wanted : key) -> Elem wanted deps -> Not (Elem wanted (dependencies (componentProvisions (fiberComponent lastFiber))))) ->
@@ -270,7 +271,7 @@ export
   (rightObserved : O20BeginObservation name key world error value nameEq keyEq right rightBefore rightStart) ->
   (body : Transitions leftStart leftEnd) ->
   InstalledTrace name key world error value nameEq keyEq left body ->
-  ActorLifecycleOnly left body -> NoGeneratedChild right body ->
+  LegacyActorOnly left body -> NoGeneratedChild right body ->
   (gap : Transitions leftEnd rightBefore) -> ZeroGapPending gap ->
   (registryWellFormed {name} {key} {value} {world} {error} @{nameEq} @{keyEq} leftBefore = True) ->
   (lastFiber : Fiber name key value world error) ->
@@ -298,7 +299,7 @@ export
   (rightOpening : BeginStep nameEq keyEq right rightBefore rightStart) ->
   (body : Transitions leftStart leftEnd) ->
   InstalledTrace name key world error value nameEq keyEq left body ->
-  ActorLifecycleOnly left body -> NoGeneratedChild right body ->
+  LegacyActorOnly left body -> NoGeneratedChild right body ->
   (gap : Transitions leftEnd rightBefore) -> ZeroGapPending gap ->
   (registryWellFormed {name} {key} {value} {world} {error} @{nameEq} @{keyEq} leftBefore = True) ->
   (lastFiber : Fiber name key value world error) ->
@@ -328,7 +329,7 @@ export
   (rightOpening : BeginStep nameEq keyEq right rightBefore rightStart) ->
   (body : Transitions leftStart leftEnd) ->
   InstalledTrace name key world error value nameEq keyEq left body ->
-  ActorLifecycleOnly left body -> NoGeneratedChild right body ->
+  LegacyActorOnly left body -> NoGeneratedChild right body ->
   (gap : Transitions leftEnd rightBefore) -> ZeroGapPending gap ->
   (registryWellFormed {name} {key} {value} {world} {error} @{nameEq} @{keyEq} leftBefore = True) ->
   (lastFiber : Fiber name key value world error) ->
@@ -350,3 +351,93 @@ o20IncomparableInstalledEarlierBegin nameEq keyEq left right distinct reference 
         leftFound rightFound leftSupported rightSupported noPath wanted
         (replace {p = \component => Elem wanted (dependencies (componentDependencies component))} rightStatic needed)
         (replace {p = \component => Elem wanted (dependencies (componentProvisions component))} leftStatic provided))
+
+||| OPEN R207: all FIVE expanded-production claims, TYPE ONLY. No value of
+||| this record, postulate, or hole is supplied. The checked functions above
+||| are legacy-restricted, as is their current RightOpeningTransport consumer.
+||| Native child/root control and forcing-reason transport are NOT inferred
+||| from the old two-constructor proof. Exact pre-migration types are archived
+||| in O6-R207-BLOCK-RESOLVER-NEEDS.json; nameEq is explicit for today's grammar.
+public export
+record O20ExpandedBlockResolverObligation where
+  constructor MkO20ExpandedBlockResolverObligation
+  0 o20InstalledActorBodyResolverExpandedObligation :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) -> (deps : List key) ->
+    {first, finalState : SystemState name key value world error} ->
+    (body : Transitions first finalState) ->
+    InstalledTrace name key world error value nameEq keyEq actor body ->
+    ActorLifecycleOnly nameEq actor body ->
+    (lastFiber : Fiber name key value world error) ->
+    (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor (registry finalState) = Just lastFiber) ->
+    ((wanted : key) -> Elem wanted deps -> Not (Elem wanted (dependencies (componentProvisions (fiberComponent lastFiber))))) ->
+    (resolveView {name} {key} {value} {world} {error} @{nameEq} @{keyEq} deps (registry finalState) =
+     resolveView {name} {key} {value} {world} {error} @{nameEq} @{keyEq} deps (registry first))
+  0 o20WholeInstalledBlockResolverExpandedObligation :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    (nameEq : DecEq name) -> (keyEq : DecEq key) -> (actor : name) -> (deps : List key) ->
+    (before, start, finalState : SystemState name key value world error) ->
+    BeginStep nameEq keyEq actor before start ->
+    (body : Transitions start finalState) ->
+    InstalledTrace name key world error value nameEq keyEq actor body ->
+    ActorLifecycleOnly nameEq actor body ->
+    (lastFiber : Fiber name key value world error) ->
+    (lookupFiber {name} {key} {value} {world} {error} @{nameEq} actor (registry finalState) = Just lastFiber) ->
+    ((wanted : key) -> Elem wanted deps -> Not (Elem wanted (dependencies (componentProvisions (fiberComponent lastFiber))))) ->
+    (resolveView {name} {key} {value} {world} {error} @{nameEq} @{keyEq} deps (registry finalState) =
+     resolveView {name} {key} {value} {world} {error} @{nameEq} @{keyEq} deps (registry before))
+  0 o20DisjointBlockObservedEarlierBeginExpandedObligation :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    (nameEq : DecEq name) -> (keyEq : DecEq key) -> (left, right : name) -> Not (right = left) ->
+    (leftBefore, leftStart, leftEnd, rightBefore, rightStart : SystemState name key value world error) ->
+    BeginStep nameEq keyEq left leftBefore leftStart ->
+    (rightObserved : O20BeginObservation name key world error value nameEq keyEq right rightBefore rightStart) ->
+    (body : Transitions leftStart leftEnd) ->
+    InstalledTrace name key world error value nameEq keyEq left body ->
+    ActorLifecycleOnly nameEq left body -> NoGeneratedChild right body ->
+    (gap : Transitions leftEnd rightBefore) -> ZeroGapPending gap ->
+    (registryWellFormed {name} {key} {value} {world} {error} @{nameEq} @{keyEq} leftBefore = True) ->
+    (lastFiber : Fiber name key value world error) ->
+    (lookupFiber {name} {key} {value} {world} {error} @{nameEq} left (registry leftEnd) = Just lastFiber) ->
+    ((wanted : key) -> Elem wanted (dependencies (componentDependencies (beginObservedComponent rightObserved))) ->
+      Not (Elem wanted (dependencies (componentProvisions (fiberComponent lastFiber))))) ->
+    CheckedEarlyApplication name key world error value nameEq keyEq leftBefore (LBegin right) LBeginTag
+  0 o20DisjointBlockActualEarlierBeginExpandedObligation :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    (nameEq : DecEq name) -> (keyEq : DecEq key) -> (left, right : name) -> Not (right = left) ->
+    (leftBefore, leftStart, leftEnd, rightBefore, rightStart : SystemState name key value world error) ->
+    BeginStep nameEq keyEq left leftBefore leftStart ->
+    (rightOpening : BeginStep nameEq keyEq right rightBefore rightStart) ->
+    (body : Transitions leftStart leftEnd) ->
+    InstalledTrace name key world error value nameEq keyEq left body ->
+    ActorLifecycleOnly nameEq left body -> NoGeneratedChild right body ->
+    (gap : Transitions leftEnd rightBefore) -> ZeroGapPending gap ->
+    (registryWellFormed {name} {key} {value} {world} {error} @{nameEq} @{keyEq} leftBefore = True) ->
+    (lastFiber : Fiber name key value world error) ->
+    (lookupFiber {name} {key} {value} {world} {error} @{nameEq} left (registry leftEnd) = Just lastFiber) ->
+    ((wanted : key) -> Elem wanted (dependencies (componentDependencies (beginObservedComponent (o20ObserveActualBegin nameEq keyEq right rightBefore rightStart rightOpening)))) ->
+      Not (Elem wanted (dependencies (componentProvisions (fiberComponent lastFiber))))) ->
+    CheckedEarlyApplication name key world error value nameEq keyEq leftBefore (LBegin right) LBeginTag
+  0 o20IncomparableInstalledEarlierBeginExpandedObligation :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    (nameEq : DecEq name) -> (keyEq : DecEq key) -> (left, right : name) -> Not (right = left) ->
+    (reference : SystemState name key value world error) ->
+    (referenceLeft, referenceRight : Fiber name key value world error) ->
+    (leftBefore, leftStart, leftEnd, rightBefore, rightStart : SystemState name key value world error) ->
+    BeginStep nameEq keyEq left leftBefore leftStart ->
+    (rightOpening : BeginStep nameEq keyEq right rightBefore rightStart) ->
+    (body : Transitions leftStart leftEnd) ->
+    InstalledTrace name key world error value nameEq keyEq left body ->
+    ActorLifecycleOnly nameEq left body -> NoGeneratedChild right body ->
+    (gap : Transitions leftEnd rightBefore) -> ZeroGapPending gap ->
+    (registryWellFormed {name} {key} {value} {world} {error} @{nameEq} @{keyEq} leftBefore = True) ->
+    (lastFiber : Fiber name key value world error) ->
+    (lookupFiber {name} {key} {value} {world} {error} @{nameEq} left (registry leftEnd) = Just lastFiber) ->
+    (fiberComponent lastFiber = fiberComponent referenceLeft) ->
+    (beginObservedComponent (o20ObserveActualBegin nameEq keyEq right rightBefore rightStart rightOpening) = fiberComponent referenceRight) ->
+    (lookupFiber {name} {key} {value} {world} {error} @{nameEq} left (registry reference) = Just referenceLeft) ->
+    (lookupFiber {name} {key} {value} {world} {error} @{nameEq} right (registry reference) = Just referenceRight) ->
+    (isSupported {name} {key} {value} {world} {error} @{nameEq} @{keyEq} left reference = True) ->
+    (isSupported {name} {key} {value} {world} {error} @{nameEq} @{keyEq} right reference = True) ->
+    Not (O20SupportedPath name key world error value nameEq keyEq reference left right) ->
+    CheckedEarlyApplication name key world error value nameEq keyEq leftBefore (LBegin right) LBeginTag
