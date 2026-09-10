@@ -22,7 +22,7 @@ production_delta=git('diff','--name-only','--','src/','dgamma.ipkg').splitlines(
 migration_path=ROOT/'research-tests/O6-R205-PRODUCTION-MIGRATION-GATE.json'
 migration=json.loads(migration_path.read_text()) if migration_path.exists() else None
 if production_delta:
-    assert unit=='S33-2' and migration and production_delta==[migration['path']]==[path]
+    assert migration and unit==migration['passingInvocation'] and unit in ['S33-2','S33-3','S34-1'] and production_delta==[migration['path']]==[path]
     assert sha((ROOT/path).read_bytes())==migration['afterSHA256']
     assert sha(subprocess.check_output(['git','show','HEAD:'+path],cwd=ROOT))==migration['beforeSHA256']
 production_paths=[p for p in source_paths() if p.startswith('src/')]+['dgamma.ipkg']

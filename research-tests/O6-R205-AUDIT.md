@@ -41,3 +41,7 @@ An artifact commit list included an unchanged helper; strict staged-path equalit
 rejected before any source apply/check. All staged artifacts were immediately
 unstaged. Guard now filters byte-unchanged requested paths and rolls staging
 back on any subsequent assertion/commit error; no source, test or gate weakened.
+
+S33-3 FAIL17.800s,1465424KiB,one own Building:sole remaining constructor-alias mismatch between quantity0 proof arrows and unrestricted guard arrows. Per explicit last-attempt ruling, CP3StatementChecks fully restored to committed bytes (aa7b71a8…); STOP3/3, NO production migration commit. Original current-source S33 API errors remain the blocker; S33-2/3 are superseded candidate evidence. No fourth attempt. Package P2 ineligible pending this production repair; independent closure continues.
+
+NEW supervisor-owned S34 quantity-aligned statement: exactly two proof arrows made quantity0; previous S33 body unchanged. S34-1 PASS24.022734s,2042880KiB,one own Building. Second/final production edit committed227c2f98 with all eight targeted replacements, three failed S33 logs and all gates in PRODUCTION receipt. S33 STOP/revert remains historical; S34 is explicitly authorized, not a hidden fourth retry. Final CPP3StatementChecks SHA4f6fee4bd1d937a7836d7ce61ed7c91e782f6ed82b3766a7164b7f4316659fab.

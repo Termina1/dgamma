@@ -27919,6 +27919,549 @@
       "commonSHA256": "5220f707db8ebde81468b851f26d48209d8732206d89910159f5c2dd81b08bab",
       "crossLaneOverlapTimestampsUTC": [],
       "transcript": "80/80: Building DGamma.CP4DeletionSelectedForeignLifecycleStep (/Users/vyacheslavshebanov/Work/dgamma/src/DGamma/CP4DeletionSelectedForeignLifecycleStep.idr)\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  relation is shadowing DGamma.Core.Equivalence.relation\n\nDGamma.CP4DeletionSelectedForeignLifecycleStep:27:3--30:62\n 27 | 0 partialRelatedAtLeftRun :\n 28 |   (leftRun : leftResult = Just leftOutput) ->\n 29 |   PartialRelated state relation leftResult rightResult ->\n 30 |   PartialRelated state relation (Just leftOutput) rightResult\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  relation is shadowing DGamma.Core.Equivalence.relation\n\nDGamma.CP4DeletionSelectedForeignLifecycleStep:44:3--45:80\n 44 | 0 partialDefinedRelation :\n 45 |   PartialRelated state relation (Just left) (Just right) -> relation left right\n\n"
+    },
+    {
+      "unit": "S33-2",
+      "path": "src/DGamma/CP3StatementChecks.idr",
+      "command": [
+        "idris2",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma/src",
+        "--check",
+        "/Users/vyacheslavshebanov/Work/dgamma/src/DGamma/CP3StatementChecks.idr"
+      ],
+      "start": "2026-09-09T23:53:55.087843+00:00",
+      "end": "2026-09-09T23:54:12.843510+00:00",
+      "seconds": 17.755597500130534,
+      "exit": 1,
+      "passed": false,
+      "fresh": true,
+      "seededPackageNoBuilding": false,
+      "supervisorGateVerbatim": null,
+      "policySHA256": "2c0832221aeb6568235a593e0bd52bb959d00f60f13ad615b1c1699fa0882af6",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "buildingLines": [
+        "DGamma.CP3StatementChecks (/Users/vyacheslavshebanov/Work/dgamma/src/DGamma/CP3StatementChecks.idr)"
+      ],
+      "unexpectedBuilding": [],
+      "targetMutationDetected": false,
+      "mutatedPaths": [],
+      "interrupted": false,
+      "resourceStopped": false,
+      "multipleOwnedCompilers": false,
+      "memoryPressureStopped": false,
+      "wallTimeStopped": false,
+      "memoryPressureSamplingError": null,
+      "memoryPressureSamples": [],
+      "memoryPressurePolicy": null,
+      "pressureSamplerSHA256": "38e753aeafd68cac072a59eb37104c62e63b65fb8d062c8f3f958821869b2fa4",
+      "maxSampleRSSKiB": 1398384,
+      "rssLimitKiB": 67108864,
+      "rssSamples": [
+        {
+          "timestampUTC": "2026-09-09T23:53:56.130138+00:00",
+          "rssKiB": 392688,
+          "ownedPids": [
+            90137
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T23:53:57.173741+00:00",
+          "rssKiB": 425008,
+          "ownedPids": [
+            90137
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T23:53:58.208577+00:00",
+          "rssKiB": 454640,
+          "ownedPids": [
+            90137
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T23:53:59.247442+00:00",
+          "rssKiB": 508080,
+          "ownedPids": [
+            90137
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T23:54:00.285090+00:00",
+          "rssKiB": 575088,
+          "ownedPids": [
+            90137
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T23:54:01.350466+00:00",
+          "rssKiB": 640512,
+          "ownedPids": [
+            90137
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T23:54:02.384851+00:00",
+          "rssKiB": 901872,
+          "ownedPids": [
+            90137
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T23:54:03.426556+00:00",
+          "rssKiB": 1012544,
+          "ownedPids": [
+            90137
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T23:54:04.463108+00:00",
+          "rssKiB": 1205456,
+          "ownedPids": [
+            90137
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T23:54:05.502159+00:00",
+          "rssKiB": 1238864,
+          "ownedPids": [
+            90137
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T23:54:06.563089+00:00",
+          "rssKiB": 1377392,
+          "ownedPids": [
+            90137
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T23:54:07.602217+00:00",
+          "rssKiB": 1377424,
+          "ownedPids": [
+            90137
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T23:54:08.642482+00:00",
+          "rssKiB": 1377424,
+          "ownedPids": [
+            90137
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T23:54:09.683798+00:00",
+          "rssKiB": 1398384,
+          "ownedPids": [
+            90137
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T23:54:10.725853+00:00",
+          "rssKiB": 1398384,
+          "ownedPids": [
+            90137
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T23:54:11.785577+00:00",
+          "rssKiB": 1398384,
+          "ownedPids": [
+            90137
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T23:54:12.822318+00:00",
+          "rssKiB": 0,
+          "ownedPids": []
+        }
+      ],
+      "sourceSHA256": "2d2bd1811a5330646f3530d659c9f4db5adcdce51c9d6340a9bd08c4bf9d2fea",
+      "productionManifestSHA256": "459fdaee43c00be444a17c37867e46ba7656b6e29d7a710045cb0f37def8743c",
+      "sourceManifestSHA256": "1299126108e97cdc5af0dc3f5cb69f62da408cd322bd81f8ec260e9fd5f34527",
+      "headAtEnd": "224b3b32cf11b0a83802c1ad5b0e4d622d20f6f9",
+      "CP3Blob": "eeaa70aa4414648bb2a1173d58244267997d16d7",
+      "runnerSHA256": "c6c2f412c1e44c4713eae4dfa83e28030eaab38d87751887ed89e00042aa8a4d",
+      "commonSHA256": "5220f707db8ebde81468b851f26d48209d8732206d89910159f5c2dd81b08bab",
+      "crossLaneOverlapTimestampsUTC": [],
+      "transcript": "12/12: Building DGamma.CP3StatementChecks (/Users/vyacheslavshebanov/Work/dgamma/src/DGamma/CP3StatementChecks.idr)\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  generatedChild is shadowing DGamma.CP3.GeneratedDuring.generatedChild\n\nDGamma.CP3StatementChecks:646:1--647:101\n 646 | namedRoleChangingTrace : (evidence : RoleChangingNamedTrace generatedChild) ->\n 647 |   Transitions DGamma.CP3StatementChecks.registrationTestInitial (namedAfter (rootAdvance1 evidence))\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  generatedChild is shadowing DGamma.CP3.GeneratedDuring.generatedChild\n\nDGamma.CP3StatementChecks:660:1--662:41\n 660 | namedRoleTail9 : (evidence : RoleChangingNamedTrace generatedChild) ->\n 661 |   Transitions (namedAfter (rootBegin1 evidence))\n 662 |     (namedAfter (rootAdvance1 evidence))\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  generatedChild is shadowing DGamma.CP3.GeneratedDuring.generatedChild\n\nDGamma.CP3StatementChecks:666:1--668:41\n 666 | namedRoleTail8 : (evidence : RoleChangingNamedTrace generatedChild) ->\n 667 |   Transitions (namedAfter (parentAdvance evidence))\n 668 |     (namedAfter (rootAdvance1 evidence))\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  generatedChild is shadowing DGamma.CP3.GeneratedDuring.generatedChild\n\nDGamma.CP3StatementChecks:672:1--674:41\n 672 | namedRoleTail7 : (evidence : RoleChangingNamedTrace generatedChild) ->\n 673 |   Transitions (namedAfter (rootInsert1 evidence))\n 674 |     (namedAfter (rootAdvance1 evidence))\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  generatedChild is shadowing DGamma.CP3.GeneratedDuring.generatedChild\n\nDGamma.CP3StatementChecks:678:1--680:41\n 678 | namedRoleTail6 : (evidence : RoleChangingNamedTrace generatedChild) ->\n 679 |   Transitions (namedAfter (childRemove evidence))\n 680 |     (namedAfter (rootAdvance1 evidence))\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  generatedChild is shadowing DGamma.CP3.GeneratedDuring.generatedChild\n\nDGamma.CP3StatementChecks:684:1--686:41\n 684 | namedRoleTail5 : (evidence : RoleChangingNamedTrace generatedChild) ->\n 685 |   Transitions (namedAfter (childRetire evidence))\n 686 |     (namedAfter (rootAdvance1 evidence))\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  generatedChild is shadowing DGamma.CP3.GeneratedDuring.generatedChild\n\nDGamma.CP3StatementChecks:690:1--692:41\n 690 | namedRoleTail4 : (evidence : RoleChangingNamedTrace generatedChild) ->\n 691 |   Transitions (namedAfter (childInsert evidence))\n 692 |     (namedAfter (rootAdvance1 evidence))\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  generatedChild is shadowing DGamma.CP3.GeneratedDuring.generatedChild\n\nDGamma.CP3StatementChecks:696:1--698:41\n 696 | namedRoleTail3 : (evidence : RoleChangingNamedTrace generatedChild) ->\n 697 |   Transitions (namedAfter (parentBegin evidence))\n 698 |     (namedAfter (rootAdvance1 evidence))\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  generatedChild is shadowing DGamma.CP3.GeneratedDuring.generatedChild\n\nDGamma.CP3StatementChecks:702:1--704:41\n 702 | namedRoleTail2 : (evidence : RoleChangingNamedTrace generatedChild) ->\n 703 |   Transitions (namedAfter (rootInsert0 evidence))\n 704 |     (namedAfter (rootAdvance1 evidence))\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  generatedChild is shadowing DGamma.CP3.GeneratedDuring.generatedChild\n\nDGamma.CP3StatementChecks:754:3--756:45\n 754 | 0 freshChoiceParentSurvives :\n 755 |   (evidence : RoleChangingNamedTrace generatedChild) ->\n 756 |   NoParentUnload 0 (namedRoleTail4 evidence)\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  generatedChild is shadowing DGamma.CP3.GeneratedDuring.generatedChild\n\nDGamma.CP3StatementChecks:778:3--784:30\n 778 | 0 freshChoiceSurvivingRegistration :\n 779 |   (evidence : RoleChangingNamedTrace generatedChild) ->\n 780 |   SurvivingRegistration\n 781 |     (registrationEventAt @{DGamma.CP3StatementChecks.registrationTestNameEq}\n 782 |       2 DGamma.CP3StatementChecks.freshChoiceParentIndex generatedChild 0\n 783 |       DGamma.CP3StatementChecks.registrationTestChild)\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  generatedChild is shadowing DGamma.CP3.GeneratedDuring.generatedChild\n\nDGamma.CP3StatementChecks:915:3--917:51\n 915 | 0 roleChildRetiredEvidence :\n 916 |   (evidence : RoleChangingNamedTrace generatedChild) ->\n 917 |   RoleChildRetiredEvidence generatedChild evidence\n\nError: While processing type of canonicalBlockRegistrationGuard. Can't bind implicit DGamma.CP3StatementChecks.{value:43674} of type ({arg:11097} : ?DGamma.CP3StatementChecks.{key:43673}_[nameEq[0]]) -> Type\n\nDGamma.CP3StatementChecks:3541:1--3551:71\n 3541 | ||| Revised canonical actor CORES admit their yielded child O-Insert.\n 3542 | ||| This is the core constructor guard, not a reverse attached-to-core coercion.\n 3543 | public export\n 3544 | 0 canonicalBlockRegistrationGuard :\n 3545 |   {nameEq : DecEq name} ->\n 3546 |   (transition : Transition first middle) ->\n\n"
+    },
+    {
+      "unit": "S33-3",
+      "path": "src/DGamma/CP3StatementChecks.idr",
+      "command": [
+        "idris2",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma/src",
+        "--check",
+        "/Users/vyacheslavshebanov/Work/dgamma/src/DGamma/CP3StatementChecks.idr"
+      ],
+      "start": "2026-09-09T23:56:58.075413+00:00",
+      "end": "2026-09-09T23:57:15.875557+00:00",
+      "seconds": 17.800041374750435,
+      "exit": 1,
+      "passed": false,
+      "fresh": true,
+      "seededPackageNoBuilding": false,
+      "supervisorGateVerbatim": null,
+      "policySHA256": "2c0832221aeb6568235a593e0bd52bb959d00f60f13ad615b1c1699fa0882af6",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "buildingLines": [
+        "DGamma.CP3StatementChecks (/Users/vyacheslavshebanov/Work/dgamma/src/DGamma/CP3StatementChecks.idr)"
+      ],
+      "unexpectedBuilding": [],
+      "targetMutationDetected": false,
+      "mutatedPaths": [],
+      "interrupted": false,
+      "resourceStopped": false,
+      "multipleOwnedCompilers": false,
+      "memoryPressureStopped": false,
+      "wallTimeStopped": false,
+      "memoryPressureSamplingError": null,
+      "memoryPressureSamples": [],
+      "memoryPressurePolicy": null,
+      "pressureSamplerSHA256": "38e753aeafd68cac072a59eb37104c62e63b65fb8d062c8f3f958821869b2fa4",
+      "maxSampleRSSKiB": 1465424,
+      "rssLimitKiB": 67108864,
+      "rssSamples": [
+        {
+          "timestampUTC": "2026-09-09T23:56:59.112013+00:00",
+          "rssKiB": 392640,
+          "ownedPids": [
+            18850
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T23:57:00.149541+00:00",
+          "rssKiB": 425200,
+          "ownedPids": [
+            18850
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T23:57:01.193246+00:00",
+          "rssKiB": 449888,
+          "ownedPids": [
+            18850
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T23:57:02.234841+00:00",
+          "rssKiB": 516688,
+          "ownedPids": [
+            18850
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T23:57:03.279856+00:00",
+          "rssKiB": 579184,
+          "ownedPids": [
+            18850
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T23:57:04.341776+00:00",
+          "rssKiB": 649120,
+          "ownedPids": [
+            18850
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T23:57:05.385886+00:00",
+          "rssKiB": 921776,
+          "ownedPids": [
+            18850
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T23:57:06.423637+00:00",
+          "rssKiB": 1013104,
+          "ownedPids": [
+            18850
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T23:57:07.465659+00:00",
+          "rssKiB": 1256624,
+          "ownedPids": [
+            18850
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T23:57:08.510602+00:00",
+          "rssKiB": 1257376,
+          "ownedPids": [
+            18850
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T23:57:09.573716+00:00",
+          "rssKiB": 1434080,
+          "ownedPids": [
+            18850
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T23:57:10.611184+00:00",
+          "rssKiB": 1436080,
+          "ownedPids": [
+            18850
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T23:57:11.655180+00:00",
+          "rssKiB": 1436080,
+          "ownedPids": [
+            18850
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T23:57:12.697373+00:00",
+          "rssKiB": 1464320,
+          "ownedPids": [
+            18850
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T23:57:13.741522+00:00",
+          "rssKiB": 1465424,
+          "ownedPids": [
+            18850
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T23:57:14.804241+00:00",
+          "rssKiB": 1465424,
+          "ownedPids": [
+            18850
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-09T23:57:15.854514+00:00",
+          "rssKiB": 0,
+          "ownedPids": []
+        }
+      ],
+      "sourceSHA256": "8a1349e3fefb906315103911be071aa963c0fd6f126672b975469ce0795e28bc",
+      "productionManifestSHA256": "822513e62bc96ff75551e45abd5cc90c8418e6ee08e30109623fd72270e73f37",
+      "sourceManifestSHA256": "de65cacb797d34be66942c237e22b33454a6ff0b3d6717aa4d7e7bf8fa40b66e",
+      "headAtEnd": "224b3b32cf11b0a83802c1ad5b0e4d622d20f6f9",
+      "CP3Blob": "eeaa70aa4414648bb2a1173d58244267997d16d7",
+      "runnerSHA256": "8ea42367b0093aec0441c57c11a02172ff825a78356ba84938ab42006b513ce3",
+      "commonSHA256": "5220f707db8ebde81468b851f26d48209d8732206d89910159f5c2dd81b08bab",
+      "crossLaneOverlapTimestampsUTC": [],
+      "transcript": "12/12: Building DGamma.CP3StatementChecks (/Users/vyacheslavshebanov/Work/dgamma/src/DGamma/CP3StatementChecks.idr)\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  generatedChild is shadowing DGamma.CP3.GeneratedDuring.generatedChild\n\nDGamma.CP3StatementChecks:646:1--647:101\n 646 | namedRoleChangingTrace : (evidence : RoleChangingNamedTrace generatedChild) ->\n 647 |   Transitions DGamma.CP3StatementChecks.registrationTestInitial (namedAfter (rootAdvance1 evidence))\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  generatedChild is shadowing DGamma.CP3.GeneratedDuring.generatedChild\n\nDGamma.CP3StatementChecks:660:1--662:41\n 660 | namedRoleTail9 : (evidence : RoleChangingNamedTrace generatedChild) ->\n 661 |   Transitions (namedAfter (rootBegin1 evidence))\n 662 |     (namedAfter (rootAdvance1 evidence))\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  generatedChild is shadowing DGamma.CP3.GeneratedDuring.generatedChild\n\nDGamma.CP3StatementChecks:666:1--668:41\n 666 | namedRoleTail8 : (evidence : RoleChangingNamedTrace generatedChild) ->\n 667 |   Transitions (namedAfter (parentAdvance evidence))\n 668 |     (namedAfter (rootAdvance1 evidence))\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  generatedChild is shadowing DGamma.CP3.GeneratedDuring.generatedChild\n\nDGamma.CP3StatementChecks:672:1--674:41\n 672 | namedRoleTail7 : (evidence : RoleChangingNamedTrace generatedChild) ->\n 673 |   Transitions (namedAfter (rootInsert1 evidence))\n 674 |     (namedAfter (rootAdvance1 evidence))\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  generatedChild is shadowing DGamma.CP3.GeneratedDuring.generatedChild\n\nDGamma.CP3StatementChecks:678:1--680:41\n 678 | namedRoleTail6 : (evidence : RoleChangingNamedTrace generatedChild) ->\n 679 |   Transitions (namedAfter (childRemove evidence))\n 680 |     (namedAfter (rootAdvance1 evidence))\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  generatedChild is shadowing DGamma.CP3.GeneratedDuring.generatedChild\n\nDGamma.CP3StatementChecks:684:1--686:41\n 684 | namedRoleTail5 : (evidence : RoleChangingNamedTrace generatedChild) ->\n 685 |   Transitions (namedAfter (childRetire evidence))\n 686 |     (namedAfter (rootAdvance1 evidence))\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  generatedChild is shadowing DGamma.CP3.GeneratedDuring.generatedChild\n\nDGamma.CP3StatementChecks:690:1--692:41\n 690 | namedRoleTail4 : (evidence : RoleChangingNamedTrace generatedChild) ->\n 691 |   Transitions (namedAfter (childInsert evidence))\n 692 |     (namedAfter (rootAdvance1 evidence))\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  generatedChild is shadowing DGamma.CP3.GeneratedDuring.generatedChild\n\nDGamma.CP3StatementChecks:696:1--698:41\n 696 | namedRoleTail3 : (evidence : RoleChangingNamedTrace generatedChild) ->\n 697 |   Transitions (namedAfter (parentBegin evidence))\n 698 |     (namedAfter (rootAdvance1 evidence))\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  generatedChild is shadowing DGamma.CP3.GeneratedDuring.generatedChild\n\nDGamma.CP3StatementChecks:702:1--704:41\n 702 | namedRoleTail2 : (evidence : RoleChangingNamedTrace generatedChild) ->\n 703 |   Transitions (namedAfter (rootInsert0 evidence))\n 704 |     (namedAfter (rootAdvance1 evidence))\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  generatedChild is shadowing DGamma.CP3.GeneratedDuring.generatedChild\n\nDGamma.CP3StatementChecks:754:3--756:45\n 754 | 0 freshChoiceParentSurvives :\n 755 |   (evidence : RoleChangingNamedTrace generatedChild) ->\n 756 |   NoParentUnload 0 (namedRoleTail4 evidence)\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  generatedChild is shadowing DGamma.CP3.GeneratedDuring.generatedChild\n\nDGamma.CP3StatementChecks:778:3--784:30\n 778 | 0 freshChoiceSurvivingRegistration :\n 779 |   (evidence : RoleChangingNamedTrace generatedChild) ->\n 780 |   SurvivingRegistration\n 781 |     (registrationEventAt @{DGamma.CP3StatementChecks.registrationTestNameEq}\n 782 |       2 DGamma.CP3StatementChecks.freshChoiceParentIndex generatedChild 0\n 783 |       DGamma.CP3StatementChecks.registrationTestChild)\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  generatedChild is shadowing DGamma.CP3.GeneratedDuring.generatedChild\n\nDGamma.CP3StatementChecks:915:3--917:51\n 915 | 0 roleChildRetiredEvidence :\n 916 |   (evidence : RoleChangingNamedTrace generatedChild) ->\n 917 |   RoleChildRetiredEvidence generatedChild evidence\n\nError: While processing right hand side of canonicalBlockRegistrationGuard. When unifying:\n    (step : Transition first middle) -> (rest : Transitions middle finalState) -> (0 _ : transitionAction step = OInsert ?child (ChildOf ?selected) ?component) -> (0 _ : ActorLifecycleCore ?nameEq ?selected rest) -> ActorLifecycleCore ?nameEq ?selected (MoreTransitions step rest)\nand:\n    (transition : Transition first middle) -> (rest : Transitions middle finalState) -> transitionAction transition = OInsert child (ChildOf selected) childComponent -> ActorLifecycleCore nameEq selected rest -> ActorLifecycleCore nameEq selected (MoreTransitions transition rest)\nMismatch between: (0 _ : transitionAction step = OInsert ?child (ChildOf ?selected) ?component) -> (0 _ : ActorLifecycleCore ?nameEq ?selected rest) -> ActorLifecycleCore ?nameEq ?selected (MoreTransitions step rest) and transitionAction step = OInsert child (ChildOf selected) childComponent -> ActorLifecycleCore nameEq selected rest -> ActorLifecycleCore nameEq selected (MoreTransitions step rest).\n\nDGamma.CP3StatementChecks:3556:35--3556:62\n 3552 |   transitionAction transition =\n 3553 |     OInsert child (ChildOf selected) childComponent ->\n 3554 |   ActorLifecycleCore nameEq selected rest ->\n 3555 |   ActorLifecycleCore nameEq selected (MoreTransitions transition rest)\n 3556 | canonicalBlockRegistrationGuard = CoreYieldedRegistrationStep\n                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\n"
+    },
+    {
+      "unit": "S34-1",
+      "path": "src/DGamma/CP3StatementChecks.idr",
+      "command": [
+        "idris2",
+        "--source-dir",
+        "/Users/vyacheslavshebanov/Work/dgamma/src",
+        "--check",
+        "/Users/vyacheslavshebanov/Work/dgamma/src/DGamma/CP3StatementChecks.idr"
+      ],
+      "start": "2026-09-10T00:02:21.930724+00:00",
+      "end": "2026-09-10T00:02:45.953927+00:00",
+      "seconds": 24.02273420803249,
+      "exit": 0,
+      "passed": true,
+      "fresh": true,
+      "seededPackageNoBuilding": false,
+      "supervisorGateVerbatim": null,
+      "policySHA256": "2c0832221aeb6568235a593e0bd52bb959d00f60f13ad615b1c1699fa0882af6",
+      "expectedDiagnostic": null,
+      "symbol": null,
+      "buildingLines": [
+        "DGamma.CP3StatementChecks (/Users/vyacheslavshebanov/Work/dgamma/src/DGamma/CP3StatementChecks.idr)"
+      ],
+      "unexpectedBuilding": [],
+      "targetMutationDetected": false,
+      "mutatedPaths": [],
+      "interrupted": false,
+      "resourceStopped": false,
+      "multipleOwnedCompilers": false,
+      "memoryPressureStopped": false,
+      "wallTimeStopped": false,
+      "memoryPressureSamplingError": null,
+      "memoryPressureSamples": [],
+      "memoryPressurePolicy": null,
+      "pressureSamplerSHA256": "38e753aeafd68cac072a59eb37104c62e63b65fb8d062c8f3f958821869b2fa4",
+      "maxSampleRSSKiB": 2042880,
+      "rssLimitKiB": 67108864,
+      "rssSamples": [
+        {
+          "timestampUTC": "2026-09-10T00:02:22.969470+00:00",
+          "rssKiB": 392656,
+          "ownedPids": [
+            66273
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-10T00:02:24.003536+00:00",
+          "rssKiB": 418960,
+          "ownedPids": [
+            66273
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-10T00:02:25.047732+00:00",
+          "rssKiB": 451904,
+          "ownedPids": [
+            66273
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-10T00:02:26.084006+00:00",
+          "rssKiB": 516208,
+          "ownedPids": [
+            66273
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-10T00:02:27.127259+00:00",
+          "rssKiB": 582464,
+          "ownedPids": [
+            66273
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-10T00:02:28.183743+00:00",
+          "rssKiB": 649200,
+          "ownedPids": [
+            66273
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-10T00:02:29.222724+00:00",
+          "rssKiB": 912816,
+          "ownedPids": [
+            66273
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-10T00:02:30.262845+00:00",
+          "rssKiB": 1025200,
+          "ownedPids": [
+            66273
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-10T00:02:31.300263+00:00",
+          "rssKiB": 1216064,
+          "ownedPids": [
+            66273
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-10T00:02:32.338085+00:00",
+          "rssKiB": 1279376,
+          "ownedPids": [
+            66273
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-10T00:02:33.395487+00:00",
+          "rssKiB": 1382080,
+          "ownedPids": [
+            66273
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-10T00:02:34.440256+00:00",
+          "rssKiB": 1383808,
+          "ownedPids": [
+            66273
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-10T00:02:35.483173+00:00",
+          "rssKiB": 1383808,
+          "ownedPids": [
+            66273
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-10T00:02:36.526564+00:00",
+          "rssKiB": 1411008,
+          "ownedPids": [
+            66273
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-10T00:02:37.565643+00:00",
+          "rssKiB": 1411056,
+          "ownedPids": [
+            66273
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-10T00:02:38.630324+00:00",
+          "rssKiB": 1411056,
+          "ownedPids": [
+            66273
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-10T00:02:39.664216+00:00",
+          "rssKiB": 1514208,
+          "ownedPids": [
+            66273
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-10T00:02:40.701328+00:00",
+          "rssKiB": 1622368,
+          "ownedPids": [
+            66273
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-10T00:02:41.745045+00:00",
+          "rssKiB": 1622384,
+          "ownedPids": [
+            66273
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-10T00:02:42.785263+00:00",
+          "rssKiB": 1789200,
+          "ownedPids": [
+            66273
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-10T00:02:43.849700+00:00",
+          "rssKiB": 1934544,
+          "ownedPids": [
+            66273
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-10T00:02:44.889806+00:00",
+          "rssKiB": 2042880,
+          "ownedPids": [
+            66273
+          ]
+        },
+        {
+          "timestampUTC": "2026-09-10T00:02:45.932805+00:00",
+          "rssKiB": 0,
+          "ownedPids": []
+        }
+      ],
+      "sourceSHA256": "4f6fee4bd1d937a7836d7ce61ed7c91e782f6ed82b3766a7164b7f4316659fab",
+      "productionManifestSHA256": "784012de2a85fcd42bf6aa34ccdcb7bdcffec291fcf3b4f5c2e4c305ed1495f9",
+      "sourceManifestSHA256": "ea561724656b28aab1685e64790789523b573e3f6998234bd9405d9d0c3bd81a",
+      "headAtEnd": "224b3b32cf11b0a83802c1ad5b0e4d622d20f6f9",
+      "CP3Blob": "eeaa70aa4414648bb2a1173d58244267997d16d7",
+      "runnerSHA256": "2c7efd3a83a0d8e150d4b6069b4d8e314aaa3e993e49734984f8627e131ebe3e",
+      "commonSHA256": "5220f707db8ebde81468b851f26d48209d8732206d89910159f5c2dd81b08bab",
+      "crossLaneOverlapTimestampsUTC": [],
+      "transcript": "12/12: Building DGamma.CP3StatementChecks (/Users/vyacheslavshebanov/Work/dgamma/src/DGamma/CP3StatementChecks.idr)\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  generatedChild is shadowing DGamma.CP3.GeneratedDuring.generatedChild\n\nDGamma.CP3StatementChecks:646:1--647:101\n 646 | namedRoleChangingTrace : (evidence : RoleChangingNamedTrace generatedChild) ->\n 647 |   Transitions DGamma.CP3StatementChecks.registrationTestInitial (namedAfter (rootAdvance1 evidence))\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  generatedChild is shadowing DGamma.CP3.GeneratedDuring.generatedChild\n\nDGamma.CP3StatementChecks:660:1--662:41\n 660 | namedRoleTail9 : (evidence : RoleChangingNamedTrace generatedChild) ->\n 661 |   Transitions (namedAfter (rootBegin1 evidence))\n 662 |     (namedAfter (rootAdvance1 evidence))\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  generatedChild is shadowing DGamma.CP3.GeneratedDuring.generatedChild\n\nDGamma.CP3StatementChecks:666:1--668:41\n 666 | namedRoleTail8 : (evidence : RoleChangingNamedTrace generatedChild) ->\n 667 |   Transitions (namedAfter (parentAdvance evidence))\n 668 |     (namedAfter (rootAdvance1 evidence))\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  generatedChild is shadowing DGamma.CP3.GeneratedDuring.generatedChild\n\nDGamma.CP3StatementChecks:672:1--674:41\n 672 | namedRoleTail7 : (evidence : RoleChangingNamedTrace generatedChild) ->\n 673 |   Transitions (namedAfter (rootInsert1 evidence))\n 674 |     (namedAfter (rootAdvance1 evidence))\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  generatedChild is shadowing DGamma.CP3.GeneratedDuring.generatedChild\n\nDGamma.CP3StatementChecks:678:1--680:41\n 678 | namedRoleTail6 : (evidence : RoleChangingNamedTrace generatedChild) ->\n 679 |   Transitions (namedAfter (childRemove evidence))\n 680 |     (namedAfter (rootAdvance1 evidence))\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  generatedChild is shadowing DGamma.CP3.GeneratedDuring.generatedChild\n\nDGamma.CP3StatementChecks:684:1--686:41\n 684 | namedRoleTail5 : (evidence : RoleChangingNamedTrace generatedChild) ->\n 685 |   Transitions (namedAfter (childRetire evidence))\n 686 |     (namedAfter (rootAdvance1 evidence))\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  generatedChild is shadowing DGamma.CP3.GeneratedDuring.generatedChild\n\nDGamma.CP3StatementChecks:690:1--692:41\n 690 | namedRoleTail4 : (evidence : RoleChangingNamedTrace generatedChild) ->\n 691 |   Transitions (namedAfter (childInsert evidence))\n 692 |     (namedAfter (rootAdvance1 evidence))\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  generatedChild is shadowing DGamma.CP3.GeneratedDuring.generatedChild\n\nDGamma.CP3StatementChecks:696:1--698:41\n 696 | namedRoleTail3 : (evidence : RoleChangingNamedTrace generatedChild) ->\n 697 |   Transitions (namedAfter (parentBegin evidence))\n 698 |     (namedAfter (rootAdvance1 evidence))\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  generatedChild is shadowing DGamma.CP3.GeneratedDuring.generatedChild\n\nDGamma.CP3StatementChecks:702:1--704:41\n 702 | namedRoleTail2 : (evidence : RoleChangingNamedTrace generatedChild) ->\n 703 |   Transitions (namedAfter (rootInsert0 evidence))\n 704 |     (namedAfter (rootAdvance1 evidence))\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  generatedChild is shadowing DGamma.CP3.GeneratedDuring.generatedChild\n\nDGamma.CP3StatementChecks:754:3--756:45\n 754 | 0 freshChoiceParentSurvives :\n 755 |   (evidence : RoleChangingNamedTrace generatedChild) ->\n 756 |   NoParentUnload 0 (namedRoleTail4 evidence)\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  generatedChild is shadowing DGamma.CP3.GeneratedDuring.generatedChild\n\nDGamma.CP3StatementChecks:778:3--784:30\n 778 | 0 freshChoiceSurvivingRegistration :\n 779 |   (evidence : RoleChangingNamedTrace generatedChild) ->\n 780 |   SurvivingRegistration\n 781 |     (registrationEventAt @{DGamma.CP3StatementChecks.registrationTestNameEq}\n 782 |       2 DGamma.CP3StatementChecks.freshChoiceParentIndex generatedChild 0\n 783 |       DGamma.CP3StatementChecks.registrationTestChild)\n\nWarning: We are about to implicitly bind the following lowercase names.\nYou may be unintentionally shadowing the associated global definitions:\n  generatedChild is shadowing DGamma.CP3.GeneratedDuring.generatedChild\n\nDGamma.CP3StatementChecks:915:3--917:51\n 915 | 0 roleChildRetiredEvidence :\n 916 |   (evidence : RoleChangingNamedTrace generatedChild) ->\n 917 |   RoleChildRetiredEvidence generatedChild evidence\n\n"
     }
   ]
 }

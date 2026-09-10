@@ -5030,3 +5030,15 @@ O6-R205-REPAIR-MAP.json. Standing11 R11 legacy fixtures are not applicable and
 will not be run. Frozen modules and all four hole declarations remain byte-exact
 unless separately gated. Census4=1/2/0/0/1 is a hole count, NOT proof certification
 for broken consumers. No escape hatch/new hole was added.
+
+R205 second/final gated production migration: CP3StatementChecks at227c2f98.
+The old canonicalAllRootInputsGuard is **retired by the A8/A12 revision
+(owner-signed unfreeze)**, replaced by the exact production terminal-earliest
+projection, not an alias/coercion to strict root-first. Own-lifecycle guard
+requires actionOwner action=root; registration guard targets ActorLifecycleCore
+with explicit implicit telescope and quantity0 evidence arrows. S33 original
+API errors and two rejected elaboration candidates remain archived; S33 STOP3/3
+was fully reverted. New supervisor-owned S34 quantity-aligned statement then
+PASSED its sole attempt (24.023s,1.948GiB). No unsafe construct/new hole.
+SupportSolution freshly PASSED unchanged at160.766GiB/986.352s; future guarded
+checks use200GiB by accepted datum. Its pre-unfreeze isolated cost is unknown.

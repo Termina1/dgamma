@@ -1,0 +1,14 @@
+{
+  "timestampUTC": "2026-09-09T23:58:49.654165+00:00",
+  "path": "src/DGamma/CP3StatementChecks.idr",
+  "status": "STOP3/3; FULL REVERT per explicit supervisor rule; BROKEN-BY-UNFREEZE at committed old API",
+  "rejectedCandidateSHA256": "8a1349e3fefb906315103911be071aa963c0fd6f126672b975469ce0795e28bc",
+  "restoredSHA256": "aa7b71a88c1e16304c0247880403ee68c776a5b43683759cdeffc750623d33e9",
+  "restoredExactHEAD": true,
+  "attempts": [
+    "S33",
+    "S33-2",
+    "S33-3"
+  ],
+  "finalCandidateError": "canonicalBlockRegistrationGuard constructor alias has quantity0 proof arrows, old guard arrows unrestricted; no type/body fix after last-attempt gate"
+}

@@ -1,5 +1,5 @@
 {
-  "timestampUTC": "2026-09-09T23:52:55.603615+00:00",
+  "timestampUTC": "2026-09-10T00:03:00.817398+00:00",
   "entries": [
     {
       "path": "package",
@@ -69,10 +69,46 @@
           "guardKiB": 67108864,
           "resourceStopped": false,
           "ownBuildingLines": 1
+        },
+        {
+          "unit": "S33-2",
+          "sourceSHA256": "2d2bd1811a5330646f3530d659c9f4db5adcdce51c9d6340a9bd08c4bf9d2fea",
+          "passed": false,
+          "fresh": true,
+          "exit": 1,
+          "seconds": 17.755597500130534,
+          "sampledPeakKiB": 1398384,
+          "guardKiB": 67108864,
+          "resourceStopped": false,
+          "ownBuildingLines": 1
+        },
+        {
+          "unit": "S33-3",
+          "sourceSHA256": "8a1349e3fefb906315103911be071aa963c0fd6f126672b975469ce0795e28bc",
+          "passed": false,
+          "fresh": true,
+          "exit": 1,
+          "seconds": 17.800041374750435,
+          "sampledPeakKiB": 1465424,
+          "guardKiB": 67108864,
+          "resourceStopped": false,
+          "ownBuildingLines": 1
+        },
+        {
+          "unit": "S34-1",
+          "sourceSHA256": "4f6fee4bd1d937a7836d7ce61ed7c91e782f6ed82b3766a7164b7f4316659fab",
+          "passed": true,
+          "fresh": true,
+          "exit": 0,
+          "seconds": 24.02273420803249,
+          "sampledPeakKiB": 2042880,
+          "guardKiB": 67108864,
+          "resourceStopped": false,
+          "ownBuildingLines": 1
         }
       ],
-      "maximumObservedSampleKiB": 1442528,
-      "maximumSuccessfulSampleKiB": 0,
+      "maximumObservedSampleKiB": 2042880,
+      "maximumSuccessfulSampleKiB": 2042880,
       "preUnfreezeIsolatedPeak": "Not investigated in R205; no growth claim",
       "qualification": "A stopped check is a lower bound on needed resources, not a completed-check peak. Zero samples means the short-lived compiler escaped one-second sampling."
     },
@@ -3074,8 +3110,8 @@
       "qualification": "A stopped check is a lower bound on needed resources, not a completed-check peak. Zero samples means the short-lived compiler escaped one-second sampling."
     }
   ],
-  "totalInvocations": 148,
-  "passedInvocations": 142,
+  "totalInvocations": 151,
+  "passedInvocations": 143,
   "resourceStops": [
     "P1",
     "S31",

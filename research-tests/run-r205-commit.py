@@ -82,6 +82,6 @@ assert not git('diff','--cached','--name-only').strip()
 receipt=dict(kind=kind,message=message,ownerDecisionVerbatim=OWNER if kind=='PRODUCTION' else None,beforeCommit=parent,afterCommit=git('rev-parse','HEAD').strip(),timestampUTC=utc(),hashes=hashes,guardSHA256=sha(pathlib.Path(__file__).read_bytes()),noStagedFiles=True,frozenUnchanged=True,whitespaceGuard=True)
 OUT.mkdir(exist_ok=True)
 if kind=='PRODUCTION-MIGRATION':
-    receipt.update(gateVerbatim=gate['gateVerbatim'],priorFailureInvocation='S33',passingInvocation=gate['passingInvocation'],secondAndLastProductionEdit=True)
+    receipt.update(gateVerbatim=gate['gateVerbatim'],additionalGateVerbatim=gate.get('additionalGateVerbatim'),quantityGateVerbatim=gate.get('quantityGateVerbatim'),textualChangeDetails=json.loads((ROOT/'research-tests/O6-R205-CP3-STATEMENT-CHECKS-PROPOSAL.json').read_text())['edits'],priorFailureInvocations=gate.get('failureInvocations',['S33']),passingInvocation=gate['passingInvocation'],textualChanges=gate.get('textualChanges',6),secondAndLastProductionEdit=True)
 with (OUT/'commit-receipts.jsonl').open('a') as f: f.write(json.dumps(receipt,ensure_ascii=False)+'\n')
 print(json.dumps(receipt,ensure_ascii=False,indent=2))
