@@ -14,6 +14,26 @@ import Decidable.Equality
 %default total
 %unbound_implicits off
 
+||| The three diagonal root-input products. There is deliberately NO
+||| constructor for the six mixed Insert/Retire/Remove products, nor for
+||| distinct owners in a diagonal product.
+public export
+data O19RootHeadAgreement :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  Action name key value world error -> Action name key value world error -> Type where
+  RootInsertAgreement :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {root : name} -> {component : Component key value world error} ->
+    O19RootHeadAgreement (OInsert root Root component) (OInsert root Root component)
+  RootRetireAgreement :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {root : name} -> O19RootHeadAgreement {name} {key} {world} {error} {value}
+      (ORetire root) (ORetire root)
+  RootRemoveAgreement :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {root : name} -> O19RootHeadAgreement {name} {key} {world} {error} {value}
+      (ORemove root) (ORemove root)
+
 ||| Native occurrence elimination: no action-word or raw-name relabelling.
 export
 0 o19NoRootOccurrence :
