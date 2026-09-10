@@ -69,4 +69,10 @@ class Plan(unittest.TestCase):
     def test_omitted_target(self):
         self.plan['targets']=[]
         with self.assertRaises(AssertionError):self.check()
+    def test_exact_source_override(self):
+        path='research/DGamma/B.idr';before=hashlib.sha256(self.sources[path]).hexdigest();self.sources[path]+=b'-- explicit gated migration\n';after=hashlib.sha256(self.sources[path]).hexdigest()
+        self.assertEqual(len(validate_plan(self.plan,self.sources.__getitem__,{path:dict(beforeSHA256=before,afterSHA256=after)})),2)
+    def test_override_cannot_hide_wrong_prestate(self):
+        path='research/DGamma/B.idr';after=hashlib.sha256(self.sources[path]).hexdigest()
+        with self.assertRaises(AssertionError):validate_plan(self.plan,self.sources.__getitem__,{path:dict(beforeSHA256='wrong',afterSHA256=after)})
 if __name__=='__main__': unittest.main()

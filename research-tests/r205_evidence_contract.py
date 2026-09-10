@@ -42,13 +42,17 @@ def validate_record(record,source,log,root):
     assert all(record['start']<=t<=record['end'] for t in record['crossLaneOverlapTimestampsUTC'])
     return passed
 
-def validate_plan(plan,read_source):
+def validate_plan(plan,read_source,source_overrides=None):
     ordered=plan['allModulesTopological']; modules={i['module']:i['path'] for i in ordered}
     assert len(modules)==len(ordered)
     seen=set()
     for item in ordered:
         data=read_source(item['path'])
-        assert hashlib.sha256(data).hexdigest()==item['sourceSHA256']
+        override=(source_overrides or {}).get(item['path'])
+        if override:
+            assert override['beforeSHA256']==item['sourceSHA256']
+            assert hashlib.sha256(data).hexdigest()==override['afterSHA256']
+        else:assert hashlib.sha256(data).hexdigest()==item['sourceSHA256']
         imports=re.findall(r'^import\s+(?:public\s+)?([\w.]+)',data.decode(),re.M)
         assert imports==item['imports']
         deps={modules[m] for m in imports if m in modules}

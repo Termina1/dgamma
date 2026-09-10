@@ -43,6 +43,12 @@ if path!='package':
     targets=json.loads((ROOT/'research-tests/O6-R205-REBUILD-POLICY.json').read_text())['productionTargets'] if path.startswith('src/') else plan['targets']
     item=next(i for i in targets if i['path']==path)
     expected_source=migration['afterSHA256'] if migration and path==migration['path'] and sha(snapshot)==migration['afterSHA256'] else item['sourceSHA256']
+    lexical_manifest=ROOT/'research-tests/O6-R205-LEXICAL-REPAIRS.json'
+    if lexical_manifest.exists():
+        lexical=next((r for r in json.loads(lexical_manifest.read_text())['entries'] if r['path']==path and r['afterSHA256']==sha(snapshot)),None)
+        if lexical:
+            assert path not in PROTECTED_PATHS and lexical['beforeSHA256']==item['sourceSHA256']
+            expected_source=lexical['afterSHA256']
     assert expected_source==sha(snapshot), 'Changed target needs a new recorded lexical plan'
     expected=item.get('expectedDiagnostic'); symbol=item.get('symbol')
     if not expected and path in negative_preflight['contracts']:
