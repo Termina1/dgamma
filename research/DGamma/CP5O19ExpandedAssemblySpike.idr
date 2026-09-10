@@ -133,3 +133,31 @@ export
   SameExternalOrchestration nameEq source (cursorTrace (columnCursor (expandedRun expanded)))
 o19ExpandedTargetSameExternalInputs nameEq keyEq protocol swap source blocks premises safety unique expanded =
   o19FiniteSameExternalInputs nameEq (cursorDerivation (columnCursor (expandedRun expanded)))
+
+||| CONDITIONAL operational assembly from the exact R207 WholeBlock and
+||| Reached packages. Consumes expandedRun, o19ActualWholeBlockObligation,
+||| o19ActualTargetBlockObligation and o19ActualTargetBlocksFollowOrderObligation.
+||| Derived fields all refer to that SAME run. This function has extra package
+||| arguments: it is NOT an inhabitant of O19OperationalUnconditionalObligation.
+export
+0 o19ExpandedOperationalFromPackages :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (protocol : RegistrationProtocol key value world error) ->
+  {sourceOrder, targetOrder : List name} -> (swap : AdjacentActorOrderSwap name sourceOrder targetOrder) ->
+  {initial, sourceFinal : SystemState name key value world error} -> (source : Transitions initial sourceFinal) ->
+  (blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder source) ->
+  (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq source) ->
+  (safety : AdjacentActorSwapSafety name key world error value protocol nameEq keyEq swap source blocks premises) ->
+  (unique : UniqueRawNameInsertions name key world error value nameEq keyEq source) ->
+  (expanded : O19WholeBlockUnconditionalObligation name key world error value nameEq keyEq protocol swap source blocks premises safety unique) ->
+  (reached : O19ReachedUnconditionalObligation name key world error value nameEq keyEq protocol swap source blocks premises safety unique expanded) ->
+  OperationalAdjacentBlockSwap name key world error value protocol nameEq keyEq swap source blocks premises safety
+o19ExpandedOperationalFromPackages nameEq keyEq protocol swap source blocks premises safety unique expanded reached =
+  MkOperationalAdjacentBlockSwap
+    (cursorFinal (columnCursor (expandedRun expanded)))
+    (cursorTrace (columnCursor (expandedRun expanded)))
+    (certifiedWholeBlock (o19ActualWholeBlockObligation expanded))
+    (o19ExpandedTargetDecomposition nameEq keyEq protocol swap source blocks premises safety unique expanded reached)
+    (o19ExpandedTargetEndpoint nameEq keyEq protocol swap source blocks premises safety unique expanded)
+    (fst (o19ExpandedTargetPremises nameEq keyEq protocol swap source blocks premises safety unique expanded))
+    (o19ExpandedTargetSameExternalInputs nameEq keyEq protocol swap source blocks premises safety unique expanded)
