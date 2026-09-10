@@ -252,3 +252,65 @@ o19OriginalClassesConditional {name} {key} {world} {error} {value} nameEq keyEq 
           (snd (alignedAppendSplit (beforeActionOccurrence rightOrigin) (MoreTransitions (locatedTransition rightOrigin) (afterActionOccurrence rightOrigin))
             (replace {p = AlignedTransitions name key world error value nameEq keyEq} (sym (actionOccurrenceDecomposition rightOrigin)) (replayAligned premises))))))
         (trans (locatedAction rightOrigin) rightInsert))
+
+||| R206 honest enlarged ORIGINAL word observation. Child controls retain
+||| their actual source lookup and owner-parent metadata; attached roots retain
+||| root tags/source metadata. These are NOT replay-frame facts at a new cut.
+public export
+data O19ExpandedBlockWordObservation :
+  (name, key, world, error : Type) -> (value : key -> Type) ->
+  (nameEq : DecEq name) -> (actor, forbidden : name) ->
+  Action name key value world error -> Type where
+  ExpandedLegacy :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {nameEq : DecEq name} -> {actor, forbidden : name} ->
+    {action : Action name key value world error} ->
+    O19BlockWordObservation name key world error value actor forbidden action ->
+    O19ExpandedBlockWordObservation name key world error value nameEq actor forbidden action
+  ExpandedChildRetire :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {nameEq : DecEq name} -> {actor, forbidden : name} ->
+    {action : Action name key value world error} ->
+    (controlled : name) -> (fiber : Fiber name key value world error) ->
+    (before : SystemState name key value world error) ->
+    (0 found : lookupFiber {name} {key} {value} {world} {error} @{nameEq} controlled (registry before) = Just fiber) ->
+    (0 parent : fiberParent fiber = ChildOf actor) ->
+    (0 actionExact : action = ORetire controlled) ->
+    O19ExpandedBlockWordObservation name key world error value nameEq actor forbidden action
+  ExpandedChildRemove :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {nameEq : DecEq name} -> {actor, forbidden : name} ->
+    {action : Action name key value world error} ->
+    (controlled : name) -> (fiber : Fiber name key value world error) ->
+    (before : SystemState name key value world error) ->
+    (0 found : lookupFiber {name} {key} {value} {world} {error} @{nameEq} controlled (registry before) = Just fiber) ->
+    (0 parent : fiberParent fiber = ChildOf actor) ->
+    (0 actionExact : action = ORemove controlled) ->
+    O19ExpandedBlockWordObservation name key world error value nameEq actor forbidden action
+  ExpandedRootRetire :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {nameEq : DecEq name} -> {actor, forbidden : name} ->
+    {action : Action name key value world error} ->
+    (controlled : name) -> (fiber : Fiber name key value world error) ->
+    (before : SystemState name key value world error) ->
+    (0 found : lookupFiber {name} {key} {value} {world} {error} @{nameEq} controlled (registry before) = Just fiber) ->
+    (0 parent : fiberParent fiber = Root) ->
+    (0 actionExact : action = ORetire controlled) ->
+    O19ExpandedBlockWordObservation name key world error value nameEq actor forbidden action
+  ExpandedRootRemove :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {nameEq : DecEq name} -> {actor, forbidden : name} ->
+    {action : Action name key value world error} ->
+    (controlled : name) -> (fiber : Fiber name key value world error) ->
+    (before : SystemState name key value world error) ->
+    (0 found : lookupFiber {name} {key} {value} {world} {error} @{nameEq} controlled (registry before) = Just fiber) ->
+    (0 parent : fiberParent fiber = Root) ->
+    (0 actionExact : action = ORemove controlled) ->
+    O19ExpandedBlockWordObservation name key world error value nameEq actor forbidden action
+  ExpandedRootInsert :
+    {name, key, world, error : Type} -> {value : key -> Type} ->
+    {nameEq : DecEq name} -> {actor, forbidden : name} ->
+    {action : Action name key value world error} ->
+    (root : name) -> (component : Component key value world error) ->
+    (0 inserted : action = OInsert root Root component) ->
+    O19ExpandedBlockWordObservation name key world error value nameEq actor forbidden action
