@@ -294,6 +294,24 @@
       "authority": "read-only literal contract:research-tests/run-r178-boundaries.py:52",
       "sourceSHA256": "f10e5121016016d28f56a6bd3f59f0852a5be191322091c3075c9ff3b2252215",
       "qualification": "Intended rejection contract recovered before R205 execution; fresh exact-target diagnostic+symbol still required, import failure does NOT satisfy it."
+    },
+    "research-tests/DGamma/R171CoreHistoryCloneNegative.idr": {
+      "expectedDiagnostic": "Mismatch between: coreDeletionGenerationHistory",
+      "symbol": "replaceCoreHistory",
+      "sourceSHA256": "e7f5952d2f1c67e148d50ef9761bee5ad0162471d65d3f1f840ed71e8da1c42e",
+      "authority": "research-tests/O6-R171-GRIND-SHIFT-AUDIT.md:75-76,93-95,393-394; exact historical rejection intent",
+      "authoritySHA256": "73fc87a23602aaabf6bde7eea4db92508b83bc1f9c8032ceab8b0a2a6b730ff3",
+      "introducedAfterInvocation": "V94",
+      "qualification": "Original preflight FAIL retained immutable; source unchanged. Require fresh recheck under authenticated historical field-mismatch plus declaration-symbol contract, never reinterpret dependency errors."
+    },
+    "research-tests/DGamma/R171StepAccountingCloneNegative.idr": {
+      "expectedDiagnostic": "Mismatch between: deletionRegistrationAccounting",
+      "symbol": "replaceStepAccounting",
+      "sourceSHA256": "e2219ba7de6f502aa3d6b28b18f257ee9c7d3c4401da7ab6c51671205d792be6",
+      "authority": "research-tests/O6-R171-GRIND-SHIFT-AUDIT.md:75-76,93-95,393-394; exact historical rejection intent",
+      "authoritySHA256": "73fc87a23602aaabf6bde7eea4db92508b83bc1f9c8032ceab8b0a2a6b730ff3",
+      "introducedAfterInvocation": "V95",
+      "qualification": "Original preflight FAIL retained immutable; source unchanged. Require fresh recheck under authenticated historical field-mismatch plus declaration-symbol contract, never reinterpret dependency errors."
     }
   },
   "R11Executed": false,

@@ -1,23 +1,23 @@
 {
-  "timestampUTC": "2026-09-10T00:57:41.046099+00:00",
+  "timestampUTC": "2026-09-10T01:04:16.206073+00:00",
   "status": "INCOMPLETE",
-  "head": "877b97a13f263fc282ff914be390ed8e214853d8",
+  "head": "6b92da27e0664a1a4022660eea12b9015c87175d",
   "CP3Blob": "eeaa70aa4414648bb2a1173d58244267997d16d7",
   "patchSHA256": "42d957748fcc67ff534c33a6c369eded4bad65e0f37e5c72e4539b737a68fb8a",
   "lane2CompilerRelease": "NOT RELEASED: remain idle until supervisor confirms COMPLETE",
   "counts": {
-    "passed": 233,
+    "passed": 313,
     "unchanged production prerequisite; seeded (not freshly checked)": 44,
-    "passed expected-negative contract": 26,
-    "FAILED — lexical/semantic classification required": 5,
+    "passed expected-negative contract": 34,
+    "FAILED — lexical/semantic classification required": 8,
     "legacy, not re-checked (standing classification)": 11,
-    "unchecked — blocked dependency": 224
+    "unchecked — blocked dependency": 133
   },
-  "checked": 264,
-  "passed": 259,
+  "checked": 355,
+  "passed": 347,
   "lexicallyRepaired": 0,
-  "broken": 5,
-  "unchecked": 224,
+  "broken": 8,
+  "unchecked": 133,
   "legacyNotApplicable": 11,
   "unaffectedProductionSeeds": 44,
   "packageInvocations": [
@@ -3443,15 +3443,10 @@
       "module": "DGamma.R174O17ProvisionCollisionUnique",
       "sourceSHA256": "46a3a71a33fdd8bf75d576f428f3770e95ea8acfe8ca407805edf53e75d8a531",
       "plannedSHA256": "46a3a71a33fdd8bf75d576f428f3770e95ea8acfe8ca407805edf53e75d8a531",
-      "status": "unchecked — blocked dependency",
-      "reason": {
-        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
-        "dependencies": [
-          "research-tests/DGamma/R174O17ProvisionCollisionCandidate.idr"
-        ]
-      },
-      "invocation": null,
-      "peakRSSKiB": null,
+      "status": "passed",
+      "reason": null,
+      "invocation": "V73",
+      "peakRSSKiB": 0,
       "exactErrors": null,
       "protected": false
     },
@@ -3460,15 +3455,10 @@
       "module": "DGamma.R174O17SortedProvisionGuard",
       "sourceSHA256": "fc3117ea219c83232e94c15ba1bd6886161d7eac1d0de424b230cd62e86d5f14",
       "plannedSHA256": "fc3117ea219c83232e94c15ba1bd6886161d7eac1d0de424b230cd62e86d5f14",
-      "status": "unchecked — blocked dependency",
-      "reason": {
-        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
-        "dependencies": [
-          "research-tests/DGamma/R174O17ProvisionCollisionCandidate.idr"
-        ]
-      },
-      "invocation": null,
-      "peakRSSKiB": null,
+      "status": "passed",
+      "reason": null,
+      "invocation": "V74",
+      "peakRSSKiB": 0,
       "exactErrors": null,
       "protected": false
     },
@@ -3861,15 +3851,10 @@
       "module": "DGamma.R10CoherentBothHalvesCapitalNegative",
       "sourceSHA256": "86228bbdf46811291cb77f8aa5b55ef6df1941eef1d956e4eaf5f209eb2ac8d6",
       "plannedSHA256": "86228bbdf46811291cb77f8aa5b55ef6df1941eef1d956e4eaf5f209eb2ac8d6",
-      "status": "unchecked — blocked dependency",
-      "reason": {
-        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
-        "dependencies": [
-          "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr"
-        ]
-      },
-      "invocation": null,
-      "peakRSSKiB": null,
+      "status": "passed expected-negative contract",
+      "reason": null,
+      "invocation": "V104",
+      "peakRSSKiB": 0,
       "exactErrors": null,
       "protected": false
     },
@@ -3878,15 +3863,10 @@
       "module": "DGamma.R10ProvenanceProjectionPositive",
       "sourceSHA256": "5df6dafb9a7d0fea6613f66bbe80e8c784fd44436df18c9fbe08a96dfe438353",
       "plannedSHA256": "5df6dafb9a7d0fea6613f66bbe80e8c784fd44436df18c9fbe08a96dfe438353",
-      "status": "unchecked — blocked dependency",
-      "reason": {
-        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
-        "dependencies": [
-          "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr"
-        ]
-      },
-      "invocation": null,
-      "peakRSSKiB": null,
+      "status": "passed",
+      "reason": null,
+      "invocation": "V105",
+      "peakRSSKiB": 3523920,
       "exactErrors": null,
       "protected": false
     },
@@ -3895,15 +3875,10 @@
       "module": "DGamma.R10SortedMapCloneNegative",
       "sourceSHA256": "d21be6667598a36e1d261c9119f694c752cefb475bd907d1aed46d106d1de2d9",
       "plannedSHA256": "d21be6667598a36e1d261c9119f694c752cefb475bd907d1aed46d106d1de2d9",
-      "status": "unchecked — blocked dependency",
-      "reason": {
-        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
-        "dependencies": [
-          "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr"
-        ]
-      },
-      "invocation": null,
-      "peakRSSKiB": null,
+      "status": "passed expected-negative contract",
+      "reason": null,
+      "invocation": "V106",
+      "peakRSSKiB": 0,
       "exactErrors": null,
       "protected": false
     },
@@ -3960,16 +3935,11 @@
       "module": "DGamma.R172O17OpenParentRootReuseCandidate",
       "sourceSHA256": "5702a99c11b1025ff00250660cff7b5230556a1814b30e27fadfe9b113713ac4",
       "plannedSHA256": "5702a99c11b1025ff00250660cff7b5230556a1814b30e27fadfe9b113713ac4",
-      "status": "unchecked — blocked dependency",
-      "reason": {
-        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
-        "dependencies": [
-          "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr"
-        ]
-      },
-      "invocation": null,
-      "peakRSSKiB": null,
-      "exactErrors": null,
+      "status": "FAILED — lexical/semantic classification required",
+      "reason": null,
+      "invocation": "V111",
+      "peakRSSKiB": 1692096,
+      "exactErrors": "2/2: Building DGamma.R172O17OpenParentRootReuseCandidate (/Users/vyacheslavshebanov/Work/dgamma/research-tests/DGamma/R172O17OpenParentRootReuseCandidate.idr)\nError: While processing right hand side of r172ReuseConclusionRootFirst. Undefined name allRootInputsFirst. \n\nDGamma.R172O17OpenParentRootReuseCandidate:429:39--429:57\n 425 | 0 r172ReuseConclusionRootFirst :\n 426 |   (sorted : SortedClosingFreeTrace Nat R45Key Unit String R45Value\n 427 |     r45Protocol r45NameEq r45KeyEq r172ReuseTrace r172ReuseOrdering) ->\n 428 |   RootInputsBeforeLifecycle r45NameEq (sortedTrace sorted)\n 429 | r172ReuseConclusionRootFirst sorted = allRootInputsFirst (sortedInputPlacement sorted)\n                                             ^^^^^^^^^^^^^^^^^^\n\nError: While processing right hand side of r172ReuseConclusionRootBeforeChild. Undefined name rootGenerationBeforeLifecycle. \n\nDGamma.R172O17OpenParentRootReuseCandidate:649:18--649:47\n 645 |     r45Protocol r45NameEq r45KeyEq r172ReuseTrace r172ReuseOrdering) ->\n 646 |   (birth : LocatedGeneratedRegistration 1 0 r45Child (sortedTrace sorted)) ->\n 647 |   LT (locatedActionOrdinal (r172ReuseConclusionRootBirth sorted)) (registrationOrdinal birth)\n 648 | r172ReuseConclusionRootBeforeChild sorted birth = r172ReuseLTETransitive\n 649 |   (lteSuccRight (rootGenerationBeforeLifecycle (sortedInputPlacement sorted)\n                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nDid you mean any of: rootGenerationBeforeOwnLifecycle, childGenerationBeforeOwnLifecycle, or RootInputsBeforeLifecycle?",
       "protected": false
     },
     {
@@ -3977,15 +3947,10 @@
       "module": "DGamma.R173CanonicalBlockWorklistFixtures",
       "sourceSHA256": "94faea2a817d304ca4456d4cd6c0e82bc966703270ee8cf9ed65d41edbfb929a",
       "plannedSHA256": "94faea2a817d304ca4456d4cd6c0e82bc966703270ee8cf9ed65d41edbfb929a",
-      "status": "unchecked — blocked dependency",
-      "reason": {
-        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
-        "dependencies": [
-          "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr"
-        ]
-      },
-      "invocation": null,
-      "peakRSSKiB": null,
+      "status": "passed",
+      "reason": null,
+      "invocation": "V112",
+      "peakRSSKiB": 2461488,
       "exactErrors": null,
       "protected": false
     },
@@ -4006,15 +3971,10 @@
       "module": "DGamma.R176UnsealedOriginUniqueNegative",
       "sourceSHA256": "2bdc055a4ababa20c056efc110c039b5950c3181346f7095ef350805a24173ac",
       "plannedSHA256": "2bdc055a4ababa20c056efc110c039b5950c3181346f7095ef350805a24173ac",
-      "status": "unchecked — blocked dependency",
-      "reason": {
-        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
-        "dependencies": [
-          "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr"
-        ]
-      },
-      "invocation": null,
-      "peakRSSKiB": null,
+      "status": "passed expected-negative contract",
+      "reason": null,
+      "invocation": "V114",
+      "peakRSSKiB": 0,
       "exactErrors": null,
       "protected": false
     },
@@ -4035,15 +3995,10 @@
       "module": "DGamma.R4VestigialSimultaneous",
       "sourceSHA256": "04a1fee5b70d6a555b7d20bac2e88c9a10df85c4a9b9d1c53a7664fc01af5347",
       "plannedSHA256": "04a1fee5b70d6a555b7d20bac2e88c9a10df85c4a9b9d1c53a7664fc01af5347",
-      "status": "unchecked — blocked dependency",
-      "reason": {
-        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
-        "dependencies": [
-          "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr"
-        ]
-      },
-      "invocation": null,
-      "peakRSSKiB": null,
+      "status": "passed",
+      "reason": null,
+      "invocation": "V116",
+      "peakRSSKiB": 3953616,
       "exactErrors": null,
       "protected": false
     },
@@ -4052,15 +4007,10 @@
       "module": "DGamma.R8AuthenticationProjectionPositive",
       "sourceSHA256": "98538e898b93ff0dcaef25e07342b003bda90fc7760db41becaa7377b8eb00a0",
       "plannedSHA256": "98538e898b93ff0dcaef25e07342b003bda90fc7760db41becaa7377b8eb00a0",
-      "status": "unchecked — blocked dependency",
-      "reason": {
-        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
-        "dependencies": [
-          "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr"
-        ]
-      },
-      "invocation": null,
-      "peakRSSKiB": null,
+      "status": "passed",
+      "reason": null,
+      "invocation": "V117",
+      "peakRSSKiB": 2399744,
       "exactErrors": null,
       "protected": false
     },
@@ -4069,15 +4019,10 @@
       "module": "DGamma.CP5ConfluenceRenamingCompositionSpike",
       "sourceSHA256": "833bd3450bc8a4214e0334fd2ad95d7f837bc636f40f2e33c408333395602713",
       "plannedSHA256": "833bd3450bc8a4214e0334fd2ad95d7f837bc636f40f2e33c408333395602713",
-      "status": "unchecked — blocked dependency",
-      "reason": {
-        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
-        "dependencies": [
-          "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr"
-        ]
-      },
-      "invocation": null,
-      "peakRSSKiB": null,
+      "status": "passed",
+      "reason": null,
+      "invocation": "V118",
+      "peakRSSKiB": 3399984,
       "exactErrors": null,
       "protected": true
     },
@@ -4086,15 +4031,10 @@
       "module": "DGamma.CP5RankedEarlyApplicabilitySpike",
       "sourceSHA256": "d54aefae02a4a03b1ea710cb79aaa224887eaec6bae7921203995238aa8e5e87",
       "plannedSHA256": "d54aefae02a4a03b1ea710cb79aaa224887eaec6bae7921203995238aa8e5e87",
-      "status": "unchecked — blocked dependency",
-      "reason": {
-        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
-        "dependencies": [
-          "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr"
-        ]
-      },
-      "invocation": null,
-      "peakRSSKiB": null,
+      "status": "passed",
+      "reason": null,
+      "invocation": "V119",
+      "peakRSSKiB": 926352,
       "exactErrors": null,
       "protected": false
     },
@@ -4131,8 +4071,7 @@
       "reason": {
         "reason": "blocked by unchecked/failed import; stale TTC not consumed",
         "dependencies": [
-          "research-tests/DGamma/R172O17OpenParentRootReuseCandidate.idr",
-          "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr"
+          "research-tests/DGamma/R172O17OpenParentRootReuseCandidate.idr"
         ]
       },
       "invocation": null,
@@ -4162,16 +4101,10 @@
       "module": "DGamma.R179RankedTraceSelectionPositive",
       "sourceSHA256": "625f5492e1fc2df3d1f995e2d33d7ffd83495140b79ca41d627260e8c65ee873",
       "plannedSHA256": "625f5492e1fc2df3d1f995e2d33d7ffd83495140b79ca41d627260e8c65ee873",
-      "status": "unchecked — blocked dependency",
-      "reason": {
-        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
-        "dependencies": [
-          "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
-          "research/DGamma/CP5RankedEarlyApplicabilitySpike.idr"
-        ]
-      },
-      "invocation": null,
-      "peakRSSKiB": null,
+      "status": "passed",
+      "reason": null,
+      "invocation": "V124",
+      "peakRSSKiB": 3075488,
       "exactErrors": null,
       "protected": false
     },
@@ -4221,16 +4154,10 @@
       "module": "DGamma.R4ScannerProducerConsumers",
       "sourceSHA256": "ce2f926f902814235fdcae58297691538fcb960e9026cc6a7dff16379efff0f0",
       "plannedSHA256": "ce2f926f902814235fdcae58297691538fcb960e9026cc6a7dff16379efff0f0",
-      "status": "unchecked — blocked dependency",
-      "reason": {
-        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
-        "dependencies": [
-          "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
-          "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr"
-        ]
-      },
-      "invocation": null,
-      "peakRSSKiB": null,
+      "status": "passed",
+      "reason": null,
+      "invocation": "V128",
+      "peakRSSKiB": 3950848,
       "exactErrors": null,
       "protected": false
     },
@@ -4239,15 +4166,10 @@
       "module": "DGamma.R6ScannerRetainedFixturesPositive",
       "sourceSHA256": "718921ef78b32a174229a19835c8f032ac5ead243a7ed999164ca9973f1e71b8",
       "plannedSHA256": "718921ef78b32a174229a19835c8f032ac5ead243a7ed999164ca9973f1e71b8",
-      "status": "unchecked — blocked dependency",
-      "reason": {
-        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
-        "dependencies": [
-          "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr"
-        ]
-      },
-      "invocation": null,
-      "peakRSSKiB": null,
+      "status": "passed",
+      "reason": null,
+      "invocation": "V129",
+      "peakRSSKiB": 2943200,
       "exactErrors": null,
       "protected": false
     },
@@ -4256,15 +4178,10 @@
       "module": "DGamma.R6ScannerThirdOrdering",
       "sourceSHA256": "ec802acfbed95295ba25031e14fdbe6d3bfb94578c2014e8c035cd4036ee2cda",
       "plannedSHA256": "ec802acfbed95295ba25031e14fdbe6d3bfb94578c2014e8c035cd4036ee2cda",
-      "status": "unchecked — blocked dependency",
-      "reason": {
-        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
-        "dependencies": [
-          "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr"
-        ]
-      },
-      "invocation": null,
-      "peakRSSKiB": null,
+      "status": "passed",
+      "reason": null,
+      "invocation": "V130",
+      "peakRSSKiB": 2941888,
       "exactErrors": null,
       "protected": false
     },
@@ -4273,15 +4190,10 @@
       "module": "DGamma.R6ScannerWrongGenerationNegative",
       "sourceSHA256": "45611c6a82862b5269092f106bd6870b3aaa49c9cf7cd2538eea7e985f3aa6b8",
       "plannedSHA256": "45611c6a82862b5269092f106bd6870b3aaa49c9cf7cd2538eea7e985f3aa6b8",
-      "status": "unchecked — blocked dependency",
-      "reason": {
-        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
-        "dependencies": [
-          "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr"
-        ]
-      },
-      "invocation": null,
-      "peakRSSKiB": null,
+      "status": "passed expected-negative contract",
+      "reason": null,
+      "invocation": "V131",
+      "peakRSSKiB": 0,
       "exactErrors": null,
       "protected": false
     },
@@ -4290,16 +4202,10 @@
       "module": "DGamma.R8BridgeAuthenticatedDirectionPositive",
       "sourceSHA256": "03c095c04ba02a43ccb1383c293e06834d93a4a1a6e0efe178430daa9b791196",
       "plannedSHA256": "03c095c04ba02a43ccb1383c293e06834d93a4a1a6e0efe178430daa9b791196",
-      "status": "unchecked — blocked dependency",
-      "reason": {
-        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
-        "dependencies": [
-          "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
-          "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr"
-        ]
-      },
-      "invocation": null,
-      "peakRSSKiB": null,
+      "status": "passed",
+      "reason": null,
+      "invocation": "V132",
+      "peakRSSKiB": 2275888,
       "exactErrors": null,
       "protected": false
     },
@@ -4308,16 +4214,10 @@
       "module": "DGamma.R8BridgeWrongBirthNegative",
       "sourceSHA256": "8f1c1b789f927956a2f8f19c9d0e3f2961d5c94737d9a80a3e522d64b05894be",
       "plannedSHA256": "8f1c1b789f927956a2f8f19c9d0e3f2961d5c94737d9a80a3e522d64b05894be",
-      "status": "unchecked — blocked dependency",
-      "reason": {
-        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
-        "dependencies": [
-          "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
-          "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr"
-        ]
-      },
-      "invocation": null,
-      "peakRSSKiB": null,
+      "status": "passed expected-negative contract",
+      "reason": null,
+      "invocation": "V133",
+      "peakRSSKiB": 0,
       "exactErrors": null,
       "protected": false
     },
@@ -4326,16 +4226,10 @@
       "module": "DGamma.R8PublicScheduleCannotReachBridgeNegative",
       "sourceSHA256": "8ed4fd143d7839258695ca6562f037a6f13fb50ad7a73c8d180068e9825545c3",
       "plannedSHA256": "8ed4fd143d7839258695ca6562f037a6f13fb50ad7a73c8d180068e9825545c3",
-      "status": "unchecked — blocked dependency",
-      "reason": {
-        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
-        "dependencies": [
-          "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
-          "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr"
-        ]
-      },
-      "invocation": null,
-      "peakRSSKiB": null,
+      "status": "passed expected-negative contract",
+      "reason": null,
+      "invocation": "V134",
+      "peakRSSKiB": 650064,
       "exactErrors": null,
       "protected": false
     },
@@ -4344,16 +4238,10 @@
       "module": "DGamma.R8WrongOccurrenceBridgeNegative",
       "sourceSHA256": "da7ed3cf2b884f39b4148c19cad4d759a9cd249c144cf6f608f1a7a84dd6f8cc",
       "plannedSHA256": "da7ed3cf2b884f39b4148c19cad4d759a9cd249c144cf6f608f1a7a84dd6f8cc",
-      "status": "unchecked — blocked dependency",
-      "reason": {
-        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
-        "dependencies": [
-          "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
-          "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr"
-        ]
-      },
-      "invocation": null,
-      "peakRSSKiB": null,
+      "status": "passed expected-negative contract",
+      "reason": null,
+      "invocation": "V135",
+      "peakRSSKiB": 0,
       "exactErrors": null,
       "protected": false
     },
@@ -4362,15 +4250,10 @@
       "module": "DGamma.CP5AcceptedRetirementTransportSpike",
       "sourceSHA256": "61425c3baa0d88cda8d907fed3131a8915a4e636788843e07b2efc58150686f4",
       "plannedSHA256": "61425c3baa0d88cda8d907fed3131a8915a4e636788843e07b2efc58150686f4",
-      "status": "unchecked — blocked dependency",
-      "reason": {
-        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
-        "dependencies": [
-          "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr"
-        ]
-      },
-      "invocation": null,
-      "peakRSSKiB": null,
+      "status": "passed",
+      "reason": null,
+      "invocation": "V136",
+      "peakRSSKiB": 2938416,
       "exactErrors": null,
       "protected": false
     },
@@ -4379,15 +4262,10 @@
       "module": "DGamma.CP5MatchedBirthMetadataSpike",
       "sourceSHA256": "2537e53d485e8834ec72c4086288a665f44d1b39def130e90f3c557e7695a68d",
       "plannedSHA256": "2537e53d485e8834ec72c4086288a665f44d1b39def130e90f3c557e7695a68d",
-      "status": "unchecked — blocked dependency",
-      "reason": {
-        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
-        "dependencies": [
-          "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr"
-        ]
-      },
-      "invocation": null,
-      "peakRSSKiB": null,
+      "status": "passed",
+      "reason": null,
+      "invocation": "V137",
+      "peakRSSKiB": 2947968,
       "exactErrors": null,
       "protected": false
     },
@@ -4396,16 +4274,10 @@
       "module": "DGamma.CP5O19AdjacentReplayProducerSpike",
       "sourceSHA256": "d07435985a00c7e49ebf0deca0325262249b4c0db80689c550ed4bb716e6690c",
       "plannedSHA256": "d07435985a00c7e49ebf0deca0325262249b4c0db80689c550ed4bb716e6690c",
-      "status": "unchecked — blocked dependency",
-      "reason": {
-        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
-        "dependencies": [
-          "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
-          "research/DGamma/CP5RankedEarlyApplicabilitySpike.idr"
-        ]
-      },
-      "invocation": null,
-      "peakRSSKiB": null,
+      "status": "passed",
+      "reason": null,
+      "invocation": "V138",
+      "peakRSSKiB": 3004352,
       "exactErrors": null,
       "protected": false
     },
@@ -4414,16 +4286,10 @@
       "module": "DGamma.CP5O20CanonicalBirthDispositionSpike",
       "sourceSHA256": "4d6ca33c7dc637e9cb95f63e0eefd1824a659f1b37311c4a9be2ecfc7b7f354a",
       "plannedSHA256": "4d6ca33c7dc637e9cb95f63e0eefd1824a659f1b37311c4a9be2ecfc7b7f354a",
-      "status": "unchecked — blocked dependency",
-      "reason": {
-        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
-        "dependencies": [
-          "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
-          "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr"
-        ]
-      },
-      "invocation": null,
-      "peakRSSKiB": null,
+      "status": "passed",
+      "reason": null,
+      "invocation": "V139",
+      "peakRSSKiB": 3004416,
       "exactErrors": null,
       "protected": false
     },
@@ -4432,15 +4298,10 @@
       "module": "DGamma.CP5O20DeletionRetainedBirthSpike",
       "sourceSHA256": "73d4aaad0f63dee0b90de702514f77d6bada11628298b352e8ce7d2450f71b33",
       "plannedSHA256": "73d4aaad0f63dee0b90de702514f77d6bada11628298b352e8ce7d2450f71b33",
-      "status": "unchecked — blocked dependency",
-      "reason": {
-        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
-        "dependencies": [
-          "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr"
-        ]
-      },
-      "invocation": null,
-      "peakRSSKiB": null,
+      "status": "passed",
+      "reason": null,
+      "invocation": "V140",
+      "peakRSSKiB": 3004544,
       "exactErrors": null,
       "protected": false
     },
@@ -4449,16 +4310,10 @@
       "module": "DGamma.CP5O21EndpointIdentitySpike",
       "sourceSHA256": "5a1d3fe32fb110a905ad5d59885637710fc13fcccd81c1d6f9ad67472f515e38",
       "plannedSHA256": "5a1d3fe32fb110a905ad5d59885637710fc13fcccd81c1d6f9ad67472f515e38",
-      "status": "unchecked — blocked dependency",
-      "reason": {
-        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
-        "dependencies": [
-          "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
-          "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr"
-        ]
-      },
-      "invocation": null,
-      "peakRSSKiB": null,
+      "status": "passed",
+      "reason": null,
+      "invocation": "V141",
+      "peakRSSKiB": 3015040,
       "exactErrors": null,
       "protected": false
     },
@@ -4467,15 +4322,10 @@
       "module": "DGamma.CP5RootBirthCoverageSpike",
       "sourceSHA256": "5a1c5367e25d51199623e9d4fb488995060db6a2bd447a04dfe0c2609f381592",
       "plannedSHA256": "5a1c5367e25d51199623e9d4fb488995060db6a2bd447a04dfe0c2609f381592",
-      "status": "unchecked — blocked dependency",
-      "reason": {
-        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
-        "dependencies": [
-          "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr"
-        ]
-      },
-      "invocation": null,
-      "peakRSSKiB": null,
+      "status": "passed",
+      "reason": null,
+      "invocation": "V142",
+      "peakRSSKiB": 261376,
       "exactErrors": null,
       "protected": false
     },
@@ -4496,15 +4346,10 @@
       "module": "DGamma.R179O21CurrentBirthIdentityPositive",
       "sourceSHA256": "e8d1f64fdf8dab1b2af4dd76dc69f6138c45ad849cc64c14b1d46a030d34d901",
       "plannedSHA256": "e8d1f64fdf8dab1b2af4dd76dc69f6138c45ad849cc64c14b1d46a030d34d901",
-      "status": "unchecked — blocked dependency",
-      "reason": {
-        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
-        "dependencies": [
-          "research/DGamma/CP5O21EndpointIdentitySpike.idr"
-        ]
-      },
-      "invocation": null,
-      "peakRSSKiB": null,
+      "status": "passed",
+      "reason": null,
+      "invocation": "V144",
+      "peakRSSKiB": 2934736,
       "exactErrors": null,
       "protected": false
     },
@@ -4513,15 +4358,10 @@
       "module": "DGamma.R179O21WrongOriginalBirthNegative",
       "sourceSHA256": "f2d7e6825c7fece1c36787ba1f2d248a59197df7d94b1fece6b651714046055b",
       "plannedSHA256": "f2d7e6825c7fece1c36787ba1f2d248a59197df7d94b1fece6b651714046055b",
-      "status": "unchecked — blocked dependency",
-      "reason": {
-        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
-        "dependencies": [
-          "research/DGamma/CP5O21EndpointIdentitySpike.idr"
-        ]
-      },
-      "invocation": null,
-      "peakRSSKiB": null,
+      "status": "passed expected-negative contract",
+      "reason": null,
+      "invocation": "V145",
+      "peakRSSKiB": 0,
       "exactErrors": null,
       "protected": false
     },
@@ -4598,17 +4438,10 @@
       "module": "DGamma.CP5AllSupportedMetadataSpike",
       "sourceSHA256": "b954d17f1e34052475d68abdeee9eb620f648ca2e02266485a1a865bf7ca54cc",
       "plannedSHA256": "b954d17f1e34052475d68abdeee9eb620f648ca2e02266485a1a865bf7ca54cc",
-      "status": "unchecked — blocked dependency",
-      "reason": {
-        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
-        "dependencies": [
-          "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr",
-          "research/DGamma/CP5MatchedBirthMetadataSpike.idr",
-          "research/DGamma/CP5RootBirthCoverageSpike.idr"
-        ]
-      },
-      "invocation": null,
-      "peakRSSKiB": null,
+      "status": "passed",
+      "reason": null,
+      "invocation": "V150",
+      "peakRSSKiB": 2947040,
       "exactErrors": null,
       "protected": false
     },
@@ -4617,16 +4450,10 @@
       "module": "DGamma.CP5O19OpeningPropagationSpike",
       "sourceSHA256": "4ff197170659e1936efec83cc84d55f01b584cf8aebb9b92fc3c7b975f384966",
       "plannedSHA256": "4ff197170659e1936efec83cc84d55f01b584cf8aebb9b92fc3c7b975f384966",
-      "status": "unchecked — blocked dependency",
-      "reason": {
-        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
-        "dependencies": [
-          "research/DGamma/CP5O19AdjacentReplayProducerSpike.idr",
-          "research/DGamma/CP5RankedEarlyApplicabilitySpike.idr"
-        ]
-      },
-      "invocation": null,
-      "peakRSSKiB": null,
+      "status": "passed",
+      "reason": null,
+      "invocation": "V151",
+      "peakRSSKiB": 1314928,
       "exactErrors": null,
       "protected": false
     },
@@ -4635,16 +4462,10 @@
       "module": "DGamma.CP5O19ReplayObservationSpike",
       "sourceSHA256": "37b28d64c25692733b7b9f3a99c71ca0cd8035e06b0d74746b28a2a9ed9a6c8a",
       "plannedSHA256": "37b28d64c25692733b7b9f3a99c71ca0cd8035e06b0d74746b28a2a9ed9a6c8a",
-      "status": "unchecked — blocked dependency",
-      "reason": {
-        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
-        "dependencies": [
-          "research/DGamma/CP5O19AdjacentReplayProducerSpike.idr",
-          "research/DGamma/CP5RankedEarlyApplicabilitySpike.idr"
-        ]
-      },
-      "invocation": null,
-      "peakRSSKiB": null,
+      "status": "passed",
+      "reason": null,
+      "invocation": "V152",
+      "peakRSSKiB": 2884976,
       "exactErrors": null,
       "protected": false
     },
@@ -4653,17 +4474,10 @@
       "module": "DGamma.CP5O20GenerationOnlyHistorySpike",
       "sourceSHA256": "bb3b1e3c31c50d62a93eb3411224e17aaa71c483dd460ec91e32f3ab15fbf3a4",
       "plannedSHA256": "bb3b1e3c31c50d62a93eb3411224e17aaa71c483dd460ec91e32f3ab15fbf3a4",
-      "status": "unchecked — blocked dependency",
-      "reason": {
-        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
-        "dependencies": [
-          "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
-          "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr",
-          "research/DGamma/CP5O20CanonicalBirthDispositionSpike.idr"
-        ]
-      },
-      "invocation": null,
-      "peakRSSKiB": null,
+      "status": "passed",
+      "reason": null,
+      "invocation": "V153",
+      "peakRSSKiB": 3004432,
       "exactErrors": null,
       "protected": false
     },
@@ -4672,15 +4486,10 @@
       "module": "DGamma.CP5O20RetainedClosingIndexSpike",
       "sourceSHA256": "9912e5f95b88a6d480f7b88b07e3a2ea04a9c0263a9b824cd7229bb6dd21fc30",
       "plannedSHA256": "9912e5f95b88a6d480f7b88b07e3a2ea04a9c0263a9b824cd7229bb6dd21fc30",
-      "status": "unchecked — blocked dependency",
-      "reason": {
-        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
-        "dependencies": [
-          "research/DGamma/CP5O20DeletionRetainedBirthSpike.idr"
-        ]
-      },
-      "invocation": null,
-      "peakRSSKiB": null,
+      "status": "passed",
+      "reason": null,
+      "invocation": "V154",
+      "peakRSSKiB": 744768,
       "exactErrors": null,
       "protected": false
     },
@@ -4689,17 +4498,10 @@
       "module": "DGamma.CP5O20SupportedInsertPositionSpike",
       "sourceSHA256": "77e76ab00b03da019a13a80e229fbdf4218a800e2c51f1305717f9e3727b03f1",
       "plannedSHA256": "77e76ab00b03da019a13a80e229fbdf4218a800e2c51f1305717f9e3727b03f1",
-      "status": "unchecked — blocked dependency",
-      "reason": {
-        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
-        "dependencies": [
-          "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
-          "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr",
-          "research/DGamma/CP5O20CanonicalBirthDispositionSpike.idr"
-        ]
-      },
-      "invocation": null,
-      "peakRSSKiB": null,
+      "status": "passed",
+      "reason": null,
+      "invocation": "V155",
+      "peakRSSKiB": 3012000,
       "exactErrors": null,
       "protected": false
     },
@@ -4726,16 +4528,10 @@
       "module": "DGamma.CP5O19AdvanceObservationSpike",
       "sourceSHA256": "ce984fd7e9a5166a11b8150a164d0a1699648a171845436d206e08d1a51b33f6",
       "plannedSHA256": "ce984fd7e9a5166a11b8150a164d0a1699648a171845436d206e08d1a51b33f6",
-      "status": "unchecked — blocked dependency",
-      "reason": {
-        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
-        "dependencies": [
-          "research/DGamma/CP5O19OpeningPropagationSpike.idr",
-          "research/DGamma/CP5RankedEarlyApplicabilitySpike.idr"
-        ]
-      },
-      "invocation": null,
-      "peakRSSKiB": null,
+      "status": "passed",
+      "reason": null,
+      "invocation": "V157",
+      "peakRSSKiB": 2524528,
       "exactErrors": null,
       "protected": false
     },
@@ -4744,18 +4540,10 @@
       "module": "DGamma.CP5O19CartesianCursorSpike",
       "sourceSHA256": "e18c09da9ef390fc7324b2b1d1fe9e5015a09365f1b4755df7f7c55bef07324d",
       "plannedSHA256": "e18c09da9ef390fc7324b2b1d1fe9e5015a09365f1b4755df7f7c55bef07324d",
-      "status": "unchecked — blocked dependency",
-      "reason": {
-        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
-        "dependencies": [
-          "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
-          "research/DGamma/CP5O19AdjacentReplayProducerSpike.idr",
-          "research/DGamma/CP5O19ReplayObservationSpike.idr",
-          "research/DGamma/CP5RankedEarlyApplicabilitySpike.idr"
-        ]
-      },
-      "invocation": null,
-      "peakRSSKiB": null,
+      "status": "passed",
+      "reason": null,
+      "invocation": "V158",
+      "peakRSSKiB": 677568,
       "exactErrors": null,
       "protected": false
     },
@@ -4764,16 +4552,10 @@
       "module": "DGamma.CP5O19InsertObservationSpike",
       "sourceSHA256": "19d825b490b27545c77eb3846e9af46236f95eabcd632a1e143a4969a331dbc5",
       "plannedSHA256": "19d825b490b27545c77eb3846e9af46236f95eabcd632a1e143a4969a331dbc5",
-      "status": "unchecked — blocked dependency",
-      "reason": {
-        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
-        "dependencies": [
-          "research/DGamma/CP5O19OpeningPropagationSpike.idr",
-          "research/DGamma/CP5RankedEarlyApplicabilitySpike.idr"
-        ]
-      },
-      "invocation": null,
-      "peakRSSKiB": null,
+      "status": "passed",
+      "reason": null,
+      "invocation": "V159",
+      "peakRSSKiB": 1795888,
       "exactErrors": null,
       "protected": false
     },
@@ -4782,15 +4564,10 @@
       "module": "DGamma.CP5SupportClauseTransportSpike",
       "sourceSHA256": "0819aed5a885a9645f84a7b6ccccd9e1f1e15576b901b6c96a699bd8dbc3141e",
       "plannedSHA256": "0819aed5a885a9645f84a7b6ccccd9e1f1e15576b901b6c96a699bd8dbc3141e",
-      "status": "unchecked — blocked dependency",
-      "reason": {
-        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
-        "dependencies": [
-          "research/DGamma/CP5AllSupportedMetadataSpike.idr"
-        ]
-      },
-      "invocation": null,
-      "peakRSSKiB": null,
+      "status": "passed",
+      "reason": null,
+      "invocation": "V160",
+      "peakRSSKiB": 3019296,
       "exactErrors": null,
       "protected": false
     },
@@ -4818,17 +4595,10 @@
       "module": "DGamma.CP5AcceptedSupportTruthSpike",
       "sourceSHA256": "fb8f77b4bcb57375ce80c70c6462c0642765eb45d217d40d8ab71ad51941f60d",
       "plannedSHA256": "fb8f77b4bcb57375ce80c70c6462c0642765eb45d217d40d8ab71ad51941f60d",
-      "status": "unchecked — blocked dependency",
-      "reason": {
-        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
-        "dependencies": [
-          "research/DGamma/CP5AcceptedRetirementTransportSpike.idr",
-          "research/DGamma/CP5AllSupportedMetadataSpike.idr",
-          "research/DGamma/CP5SupportClauseTransportSpike.idr"
-        ]
-      },
-      "invocation": null,
-      "peakRSSKiB": null,
+      "status": "passed",
+      "reason": null,
+      "invocation": "V162",
+      "peakRSSKiB": 624880,
       "exactErrors": null,
       "protected": false
     },
@@ -4837,20 +4607,10 @@
       "module": "DGamma.CP5O19ActivationRowSpike",
       "sourceSHA256": "8a8b69c143a456967eccb6ebef741c2c6f38f9d8b1b77e0686744a2fd938b677",
       "plannedSHA256": "8a8b69c143a456967eccb6ebef741c2c6f38f9d8b1b77e0686744a2fd938b677",
-      "status": "unchecked — blocked dependency",
-      "reason": {
-        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
-        "dependencies": [
-          "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
-          "research/DGamma/CP5O19AdjacentReplayProducerSpike.idr",
-          "research/DGamma/CP5O19CartesianCursorSpike.idr",
-          "research/DGamma/CP5O19OpeningPropagationSpike.idr",
-          "research/DGamma/CP5O19ReplayObservationSpike.idr",
-          "research/DGamma/CP5RankedEarlyApplicabilitySpike.idr"
-        ]
-      },
-      "invocation": null,
-      "peakRSSKiB": null,
+      "status": "passed",
+      "reason": null,
+      "invocation": "V163",
+      "peakRSSKiB": 2287328,
       "exactErrors": null,
       "protected": false
     },
@@ -4859,15 +4619,10 @@
       "module": "DGamma.CP5O20SingleRoleAdvanceExtractionSpike",
       "sourceSHA256": "de5ecc4071e0a29d54611aa5ae4bb6d43d5aec45f5d822cd337112812ea2ab4f",
       "plannedSHA256": "de5ecc4071e0a29d54611aa5ae4bb6d43d5aec45f5d822cd337112812ea2ab4f",
-      "status": "unchecked — blocked dependency",
-      "reason": {
-        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
-        "dependencies": [
-          "research/DGamma/CP5O19AdvanceObservationSpike.idr"
-        ]
-      },
-      "invocation": null,
-      "peakRSSKiB": null,
+      "status": "passed",
+      "reason": null,
+      "invocation": "V164",
+      "peakRSSKiB": 1021424,
       "exactErrors": null,
       "protected": false
     },
@@ -4876,18 +4631,10 @@
       "module": "DGamma.CP5O19SurfaceSpike",
       "sourceSHA256": "da358a498847ed06b666c1e1d42fffed10afc7d6f699c94e4681d7b302ff5561",
       "plannedSHA256": "da358a498847ed06b666c1e1d42fffed10afc7d6f699c94e4681d7b302ff5561",
-      "status": "unchecked — blocked dependency",
-      "reason": {
-        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
-        "dependencies": [
-          "research/DGamma/CP5AcceptedSupportTruthSpike.idr",
-          "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
-          "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr",
-          "research/DGamma/CP5RankedEarlyApplicabilitySpike.idr"
-        ]
-      },
-      "invocation": null,
-      "peakRSSKiB": null,
+      "status": "passed",
+      "reason": null,
+      "invocation": "V165",
+      "peakRSSKiB": 1876208,
       "exactErrors": null,
       "protected": true
     },
@@ -4896,19 +4643,10 @@
       "module": "DGamma.CP5O20SupportedBirthBridgeSpike",
       "sourceSHA256": "fb7bf6b4750d729da2794ff38bc1ec8d51cffbb838a24db8f7db822914b4e93a",
       "plannedSHA256": "fb7bf6b4750d729da2794ff38bc1ec8d51cffbb838a24db8f7db822914b4e93a",
-      "status": "unchecked — blocked dependency",
-      "reason": {
-        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
-        "dependencies": [
-          "research/DGamma/CP5AcceptedSupportTruthSpike.idr",
-          "research/DGamma/CP5AllSupportedMetadataSpike.idr",
-          "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
-          "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr",
-          "research/DGamma/CP5O21EndpointIdentitySpike.idr"
-        ]
-      },
-      "invocation": null,
-      "peakRSSKiB": null,
+      "status": "passed",
+      "reason": null,
+      "invocation": "V166",
+      "peakRSSKiB": 2400912,
       "exactErrors": null,
       "protected": false
     },
@@ -4917,20 +4655,10 @@
       "module": "DGamma.R179O20SupportedBirthPositive",
       "sourceSHA256": "010bf6fcfa480156240a4365ab8f7378fc6edf0cc253f6bf9066bbaeb8ce2f4c",
       "plannedSHA256": "010bf6fcfa480156240a4365ab8f7378fc6edf0cc253f6bf9066bbaeb8ce2f4c",
-      "status": "unchecked — blocked dependency",
-      "reason": {
-        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
-        "dependencies": [
-          "research/DGamma/CP5AcceptedSupportTruthSpike.idr",
-          "research/DGamma/CP5AllSupportedMetadataSpike.idr",
-          "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
-          "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr",
-          "research/DGamma/CP5O20SupportedBirthBridgeSpike.idr",
-          "research/DGamma/CP5O21EndpointIdentitySpike.idr"
-        ]
-      },
-      "invocation": null,
-      "peakRSSKiB": null,
+      "status": "passed",
+      "reason": null,
+      "invocation": "V167",
+      "peakRSSKiB": 2314912,
       "exactErrors": null,
       "protected": false
     },
@@ -4939,16 +4667,10 @@
       "module": "DGamma.CP5O19OrdinalPlanSpike",
       "sourceSHA256": "d41ea744af5a5efc99983ce29793493c9414c1fe17fa480b14ca3ff0ed9135b7",
       "plannedSHA256": "d41ea744af5a5efc99983ce29793493c9414c1fe17fa480b14ca3ff0ed9135b7",
-      "status": "unchecked — blocked dependency",
-      "reason": {
-        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
-        "dependencies": [
-          "research/DGamma/CP5O19AdjacentReplayProducerSpike.idr",
-          "research/DGamma/CP5O19SurfaceSpike.idr"
-        ]
-      },
-      "invocation": null,
-      "peakRSSKiB": null,
+      "status": "passed",
+      "reason": null,
+      "invocation": "V168",
+      "peakRSSKiB": 20469968,
       "exactErrors": null,
       "protected": false
     },
@@ -4957,17 +4679,10 @@
       "module": "DGamma.CP5O20BirthBridgeRemainderSpike",
       "sourceSHA256": "8a759194ca994ed430352eaafb738d03c99e0801d73744e0fd6c63c8974d123d",
       "plannedSHA256": "8a759194ca994ed430352eaafb738d03c99e0801d73744e0fd6c63c8974d123d",
-      "status": "unchecked — blocked dependency",
-      "reason": {
-        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
-        "dependencies": [
-          "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
-          "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr",
-          "research/DGamma/CP5O20SupportedBirthBridgeSpike.idr"
-        ]
-      },
-      "invocation": null,
-      "peakRSSKiB": null,
+      "status": "passed",
+      "reason": null,
+      "invocation": "V169",
+      "peakRSSKiB": 3006640,
       "exactErrors": null,
       "protected": false
     },
@@ -4976,17 +4691,10 @@
       "module": "DGamma.CP5O20CanonicalOrdinalAttachmentSpike",
       "sourceSHA256": "e66a3d751e914936d3db5ce0a9f3faf940b5f7a97af32108f048441a14f878d3",
       "plannedSHA256": "e66a3d751e914936d3db5ce0a9f3faf940b5f7a97af32108f048441a14f878d3",
-      "status": "unchecked — blocked dependency",
-      "reason": {
-        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
-        "dependencies": [
-          "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
-          "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr",
-          "research/DGamma/CP5O20SupportedBirthBridgeSpike.idr"
-        ]
-      },
-      "invocation": null,
-      "peakRSSKiB": null,
+      "status": "passed",
+      "reason": null,
+      "invocation": "V170",
+      "peakRSSKiB": 3006496,
       "exactErrors": null,
       "protected": false
     },
@@ -4995,16 +4703,10 @@
       "module": "DGamma.CP5O20SupportedEndpointCapitalSpike",
       "sourceSHA256": "de506cd1e996c95c10c26e9bb21fc1f18d0210504bd614933e10caa0a8032aa6",
       "plannedSHA256": "de506cd1e996c95c10c26e9bb21fc1f18d0210504bd614933e10caa0a8032aa6",
-      "status": "unchecked — blocked dependency",
-      "reason": {
-        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
-        "dependencies": [
-          "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
-          "research/DGamma/CP5O20SupportedBirthBridgeSpike.idr"
-        ]
-      },
-      "invocation": null,
-      "peakRSSKiB": null,
+      "status": "passed",
+      "reason": null,
+      "invocation": "V171",
+      "peakRSSKiB": 641856,
       "exactErrors": null,
       "protected": false
     },
@@ -5013,18 +4715,10 @@
       "module": "DGamma.CP5O19CartesianSitePlanSpike",
       "sourceSHA256": "e4f2918ecd0dfdd77d3c84d0762a127a28b233944b8960df54f51c86e9329ad3",
       "plannedSHA256": "e4f2918ecd0dfdd77d3c84d0762a127a28b233944b8960df54f51c86e9329ad3",
-      "status": "unchecked — blocked dependency",
-      "reason": {
-        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
-        "dependencies": [
-          "research/DGamma/CP5O19AdjacentReplayProducerSpike.idr",
-          "research/DGamma/CP5O19OrdinalPlanSpike.idr",
-          "research/DGamma/CP5O19ReplayObservationSpike.idr",
-          "research/DGamma/CP5O19SurfaceSpike.idr"
-        ]
-      },
-      "invocation": null,
-      "peakRSSKiB": null,
+      "status": "passed",
+      "reason": null,
+      "invocation": "V172",
+      "peakRSSKiB": 2886448,
       "exactErrors": null,
       "protected": false
     },
@@ -5033,20 +4727,10 @@
       "module": "DGamma.CP5O20EpisodeSynchronizationSpike",
       "sourceSHA256": "bfe759297ee32dbde9dc192b528b98854ce9bab474690f537f6aa4b2af9ff80c",
       "plannedSHA256": "bfe759297ee32dbde9dc192b528b98854ce9bab474690f537f6aa4b2af9ff80c",
-      "status": "unchecked — blocked dependency",
-      "reason": {
-        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
-        "dependencies": [
-          "research/DGamma/CP5AcceptedSupportTruthSpike.idr",
-          "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
-          "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr",
-          "research/DGamma/CP5O19SurfaceSpike.idr",
-          "research/DGamma/CP5O20SupportedBirthBridgeSpike.idr",
-          "research/DGamma/CP5O20SupportedEndpointCapitalSpike.idr"
-        ]
-      },
-      "invocation": null,
-      "peakRSSKiB": null,
+      "status": "passed",
+      "reason": null,
+      "invocation": "V173",
+      "peakRSSKiB": 3004512,
       "exactErrors": null,
       "protected": false
     },
@@ -5055,15 +4739,10 @@
       "module": "DGamma.CP5O20RootOrdinalBoundarySpike",
       "sourceSHA256": "bb9d8da6173b7e0bc2d4b770b3147ed3c01a9d8c7866dfeb2758facb3d5935ac",
       "plannedSHA256": "bb9d8da6173b7e0bc2d4b770b3147ed3c01a9d8c7866dfeb2758facb3d5935ac",
-      "status": "unchecked — blocked dependency",
-      "reason": {
-        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
-        "dependencies": [
-          "research/DGamma/CP5O20CanonicalOrdinalAttachmentSpike.idr"
-        ]
-      },
-      "invocation": null,
-      "peakRSSKiB": null,
+      "status": "passed",
+      "reason": null,
+      "invocation": "V174",
+      "peakRSSKiB": 661248,
       "exactErrors": null,
       "protected": false
     },
@@ -5072,15 +4751,10 @@
       "module": "DGamma.R195RootOrdinalBoundaryPositive",
       "sourceSHA256": "ea13e281a2f4d709db972da1bfb6012837c69bc78769ca179ece7dd3ada83295",
       "plannedSHA256": "ea13e281a2f4d709db972da1bfb6012837c69bc78769ca179ece7dd3ada83295",
-      "status": "unchecked — blocked dependency",
-      "reason": {
-        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
-        "dependencies": [
-          "research/DGamma/CP5O20RootOrdinalBoundarySpike.idr"
-        ]
-      },
-      "invocation": null,
-      "peakRSSKiB": null,
+      "status": "passed",
+      "reason": null,
+      "invocation": "V175",
+      "peakRSSKiB": 2472224,
       "exactErrors": null,
       "protected": false
     },
@@ -5089,15 +4763,10 @@
       "module": "DGamma.CP5O19CartesianNumericSpike",
       "sourceSHA256": "b499ed0c2b270eb9db3e9b85026103caa3b3773ffae653a4135eb38806a77e78",
       "plannedSHA256": "b499ed0c2b270eb9db3e9b85026103caa3b3773ffae653a4135eb38806a77e78",
-      "status": "unchecked — blocked dependency",
-      "reason": {
-        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
-        "dependencies": [
-          "research/DGamma/CP5O19CartesianSitePlanSpike.idr"
-        ]
-      },
-      "invocation": null,
-      "peakRSSKiB": null,
+      "status": "passed",
+      "reason": null,
+      "invocation": "V176",
+      "peakRSSKiB": 2891088,
       "exactErrors": null,
       "protected": false
     },
@@ -5106,16 +4775,10 @@
       "module": "DGamma.CP5O20PairedPrefixProducerSpike",
       "sourceSHA256": "c57be81f7d44b33ab240a0f01b77a78aa2bf00e4adda57d609705d0151f05dd0",
       "plannedSHA256": "c57be81f7d44b33ab240a0f01b77a78aa2bf00e4adda57d609705d0151f05dd0",
-      "status": "unchecked — blocked dependency",
-      "reason": {
-        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
-        "dependencies": [
-          "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr",
-          "research/DGamma/CP5O20EpisodeSynchronizationSpike.idr"
-        ]
-      },
-      "invocation": null,
-      "peakRSSKiB": null,
+      "status": "passed",
+      "reason": null,
+      "invocation": "V177",
+      "peakRSSKiB": 3977168,
       "exactErrors": null,
       "protected": false
     },
@@ -5124,15 +4787,10 @@
       "module": "DGamma.CP5O19GridCertificationSpike",
       "sourceSHA256": "73ce4aa48cba8b7508be08585d88fa2beae9d3730babcea9f7e044e9f37792ec",
       "plannedSHA256": "73ce4aa48cba8b7508be08585d88fa2beae9d3730babcea9f7e044e9f37792ec",
-      "status": "unchecked — blocked dependency",
-      "reason": {
-        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
-        "dependencies": [
-          "research/DGamma/CP5O19CartesianNumericSpike.idr"
-        ]
-      },
-      "invocation": null,
-      "peakRSSKiB": null,
+      "status": "passed",
+      "reason": null,
+      "invocation": "V178",
+      "peakRSSKiB": 2081712,
       "exactErrors": null,
       "protected": false
     },
@@ -5141,19 +4799,10 @@
       "module": "DGamma.CP5O20CanonicalPairSelectionSpike",
       "sourceSHA256": "12b232af559ebbbdb89d1a8efbeaa913afa8a80f90420aae49fb12faa28fb97e",
       "plannedSHA256": "12b232af559ebbbdb89d1a8efbeaa913afa8a80f90420aae49fb12faa28fb97e",
-      "status": "unchecked — blocked dependency",
-      "reason": {
-        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
-        "dependencies": [
-          "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
-          "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr",
-          "research/DGamma/CP5O19SurfaceSpike.idr",
-          "research/DGamma/CP5O20EpisodeSynchronizationSpike.idr",
-          "research/DGamma/CP5O20PairedPrefixProducerSpike.idr"
-        ]
-      },
-      "invocation": null,
-      "peakRSSKiB": null,
+      "status": "passed",
+      "reason": null,
+      "invocation": "V179",
+      "peakRSSKiB": 4104960,
       "exactErrors": null,
       "protected": false
     },
@@ -5162,16 +4811,10 @@
       "module": "DGamma.R188O19GridCertificationPositive",
       "sourceSHA256": "5cc4c1dd3ac81b8453bbb84d25cdf1dee19ff82ad1616aa8f38e6c2cd6ec8a07",
       "plannedSHA256": "5cc4c1dd3ac81b8453bbb84d25cdf1dee19ff82ad1616aa8f38e6c2cd6ec8a07",
-      "status": "unchecked — blocked dependency",
-      "reason": {
-        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
-        "dependencies": [
-          "research/DGamma/CP5O19CartesianNumericSpike.idr",
-          "research/DGamma/CP5O19GridCertificationSpike.idr"
-        ]
-      },
-      "invocation": null,
-      "peakRSSKiB": null,
+      "status": "passed",
+      "reason": null,
+      "invocation": "V180",
+      "peakRSSKiB": 2924160,
       "exactErrors": null,
       "protected": false
     },
@@ -5180,20 +4823,10 @@
       "module": "DGamma.CP5O20BeginObservationSpike",
       "sourceSHA256": "4be19259b79e50c4366e5cc86f391f826f796b87eed8cda30ceec12f4bb3a777",
       "plannedSHA256": "4be19259b79e50c4366e5cc86f391f826f796b87eed8cda30ceec12f4bb3a777",
-      "status": "unchecked — blocked dependency",
-      "reason": {
-        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
-        "dependencies": [
-          "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
-          "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr",
-          "research/DGamma/CP5O19SurfaceSpike.idr",
-          "research/DGamma/CP5O20CanonicalPairSelectionSpike.idr",
-          "research/DGamma/CP5O20EpisodeSynchronizationSpike.idr",
-          "research/DGamma/CP5O20PairedPrefixProducerSpike.idr"
-        ]
-      },
-      "invocation": null,
-      "peakRSSKiB": null,
+      "status": "passed",
+      "reason": null,
+      "invocation": "V181",
+      "peakRSSKiB": 2884736,
       "exactErrors": null,
       "protected": false
     },
@@ -5202,23 +4835,10 @@
       "module": "DGamma.CP5O19ResolvedOpeningRowSpike",
       "sourceSHA256": "2e3108bae048b31c7acfb3998f4c1396b821789ba11753972cf09e3608724781",
       "plannedSHA256": "2e3108bae048b31c7acfb3998f4c1396b821789ba11753972cf09e3608724781",
-      "status": "unchecked — blocked dependency",
-      "reason": {
-        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
-        "dependencies": [
-          "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
-          "research/DGamma/CP5O19ActivationRowSpike.idr",
-          "research/DGamma/CP5O19AdjacentReplayProducerSpike.idr",
-          "research/DGamma/CP5O19CartesianCursorSpike.idr",
-          "research/DGamma/CP5O19InsertObservationSpike.idr",
-          "research/DGamma/CP5O19OpeningPropagationSpike.idr",
-          "research/DGamma/CP5O19ReplayObservationSpike.idr",
-          "research/DGamma/CP5O20BeginObservationSpike.idr",
-          "research/DGamma/CP5RankedEarlyApplicabilitySpike.idr"
-        ]
-      },
-      "invocation": null,
-      "peakRSSKiB": null,
+      "status": "passed",
+      "reason": null,
+      "invocation": "V182",
+      "peakRSSKiB": 3002272,
       "exactErrors": null,
       "protected": false
     },
@@ -5227,17 +4847,10 @@
       "module": "DGamma.CP5O19SourceShapeSpike",
       "sourceSHA256": "b7ade648e85d35b309a086aa458000cca7646806a027bbd0a22e77d508273ce0",
       "plannedSHA256": "b7ade648e85d35b309a086aa458000cca7646806a027bbd0a22e77d508273ce0",
-      "status": "unchecked — blocked dependency",
-      "reason": {
-        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
-        "dependencies": [
-          "research/DGamma/CP5O19AdjacentReplayProducerSpike.idr",
-          "research/DGamma/CP5O20BeginObservationSpike.idr",
-          "research/DGamma/CP5RankedEarlyApplicabilitySpike.idr"
-        ]
-      },
-      "invocation": null,
-      "peakRSSKiB": null,
+      "status": "passed",
+      "reason": null,
+      "invocation": "V183",
+      "peakRSSKiB": 3010816,
       "exactErrors": null,
       "protected": false
     },
@@ -5246,19 +4859,10 @@
       "module": "DGamma.CP5O20AllNameSynchronizationSpike",
       "sourceSHA256": "eb34b80def8d87fb099c8a06d9836d33f27f6faa3bc47ca198c5b79275fdf2dd",
       "plannedSHA256": "eb34b80def8d87fb099c8a06d9836d33f27f6faa3bc47ca198c5b79275fdf2dd",
-      "status": "unchecked — blocked dependency",
-      "reason": {
-        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
-        "dependencies": [
-          "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr",
-          "research/DGamma/CP5O19SurfaceSpike.idr",
-          "research/DGamma/CP5O20BeginObservationSpike.idr",
-          "research/DGamma/CP5O20EpisodeSynchronizationSpike.idr",
-          "research/DGamma/CP5O20PairedPrefixProducerSpike.idr"
-        ]
-      },
-      "invocation": null,
-      "peakRSSKiB": null,
+      "status": "passed",
+      "reason": null,
+      "invocation": "V184",
+      "peakRSSKiB": 2942528,
       "exactErrors": null,
       "protected": false
     },
@@ -5267,20 +4871,11 @@
       "module": "DGamma.CP5O20RightOpeningTransportSpike",
       "sourceSHA256": "f2da10325655665842f58cd43dd7b918aa1b3e888aa07a552a086ae79fdde8dd",
       "plannedSHA256": "f2da10325655665842f58cd43dd7b918aa1b3e888aa07a552a086ae79fdde8dd",
-      "status": "unchecked — blocked dependency",
-      "reason": {
-        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
-        "dependencies": [
-          "research/DGamma/CP5O19AdjacentReplayProducerSpike.idr",
-          "research/DGamma/CP5O19OpeningPropagationSpike.idr",
-          "research/DGamma/CP5O19SurfaceSpike.idr",
-          "research/DGamma/CP5O20BeginObservationSpike.idr",
-          "research/DGamma/CP5RankedEarlyApplicabilitySpike.idr"
-        ]
-      },
-      "invocation": null,
-      "peakRSSKiB": null,
-      "exactErrors": null,
+      "status": "FAILED — lexical/semantic classification required",
+      "reason": null,
+      "invocation": "V185",
+      "peakRSSKiB": 663520,
+      "exactErrors": "38/38: Building DGamma.CP5O20RightOpeningTransportSpike (/Users/vyacheslavshebanov/Work/dgamma/research/DGamma/CP5O20RightOpeningTransportSpike.idr)\nError: While processing type of o20ActorBodyForeignOwners. When unifying:\n    name\nand:\n    DecEq ?name\nMismatch between: name and DecEq ?name.\n\nDGamma.CP5O20RightOpeningTransportSpike:75:64--75:68\n 71 | 0 o20ActorBodyForeignOwners :\n 72 |   {name, key, world, error : Type} -> {value : key -> Type} ->\n 73 |   (left, right : name) -> Not (right = left) ->\n 74 |   {first, finalState : SystemState name key value world error} ->\n 75 |   (trace : Transitions first finalState) -> ActorLifecycleOnly left trace ->\n                                                                     ^^^^\n\nError: No type declaration for DGamma.CP5O20RightOpeningTransportSpike.o20ActorBodyForeignOwners.\n\nDGamma.CP5O20RightOpeningTransportSpike:80:1--80:123\n 76 |   NoGeneratedChild right trace ->\n 77 |   {before, afterState : SystemState name key value world error} ->\n 78 |   (chosen : Transition before afterState) -> OccursIn chosen trace ->\n 79 |   Not (right = actionOwner (transitionAction chosen))\n 80 | o20ActorBodyForeignOwners left right distinct NoTransitions ActorLifecycleEnd NoGeneratedChildEnd chosen occurs impossible\n      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\nError: While processing type of o20PhysicalLeftBlockOwnerFrame. When unifying:\n    name\nand:\n    DecEq ?name\nMismatch between: name and DecEq ?name.\n\nDGamma.CP5O20RightOpeningTransportSpike:128:22--128:26\n 124 |   (leftBefore, leftStart, leftEnd, rightBefore : SystemState name key value world error) ->\n 125 |   BeginStep nameEq keyEq left leftBefore leftStart ->\n 126 |   (body : Transitions leftStart leftEnd) ->\n 127 |   AlignedTransitions name key world error value nameEq keyEq body ->\n 128 |   ActorLifecycleOnly left body -> NoGeneratedChild right body ->\n                            ^^^^\n\nError: No type declaration for DGamma.CP5O20RightOpeningTransportSpike.o20PhysicalLeftBlockOwnerFrame.\n\nDGamma.CP5O20RightOpeningTransportSpike:132:1--138:55\n 132 | o20PhysicalLeftBlockOwnerFrame nameEq keyEq left right distinct leftBefore leftStart leftEnd rightBefore opening body aligned only excluded gap empty =\n 133 |   trans (sym (systemLocalUpdateForeign nameEq right left distinct leftBefore leftStart\n 134 |     (applyActionLocalUpdate nameEq keyEq (LBegin left) leftBefore leftStart LBeginTag\n 135 |       (checkedActionProjects nameEq keyEq (LBegin left) leftBefore leftStart LBeginTag (beginEquation opening)))))\n 136 |     (trans (o20ForeignTraceOwnerFrame nameEq keyEq right body aligned\n 137 |       (o20ActorBodyForeignOwners left right distinct body only excluded))\n\nError: While processing type of o20RightBeginAcrossActualLeftBlock. When unifying:\n    name\nand:\n    DecEq ?name\nMismatch between: name and DecEq ?name.\n\nDGamma.CP5O20RightOpeningTransportSpike:153:22--153:26\n 149 |   BeginStep nameEq keyEq left leftBefore leftStart ->\n 150 |   (rightOpening : BeginStep nameEq keyEq right rightBefore rightStart) ->\n 151 |   (body : Transitions leftStart leftEnd) ->\n 152 |   AlignedTransitions name key world error value nameEq keyEq body ->\n 153 |   ActorLifecycleOnly left body -> NoGeneratedChild right body ->\n                            ^^^^\n\nError: No type declaration for DGamma.CP5O20RightOpeningTransportSpike.o20RightBeginAcrossActualLeftBlock.\n\nDGamma.CP5O20RightOpeningTransportSpike:163:1--167:18\n 163 | o20RightBeginAcrossActualLeftBlock nameEq keyEq left right distinct leftBefore leftStart leftEnd rightBefore rightStart leftOpening rightOpening body aligned only excluded gap empty wellFormed resolverFrame =\n 164 |   o20RightBeginAtEarlierObservation nameEq keyEq right leftBefore rightBefore rightStart\n 165 |     (o20ObserveActualBegin nameEq keyEq right rightBefore rightStart rightOpening) wellFormed\n 166 |     (o20PhysicalLeftBlockOwnerFrame nameEq keyEq left right distinct leftBefore leftStart leftEnd rightBefore leftOpening body aligned only excluded gap empty)\n 167 |     resolverFrame\n",
       "protected": false
     },
     {
@@ -5288,24 +4883,10 @@
       "module": "DGamma.CP5O19ActivationInsertionRowSpike",
       "sourceSHA256": "92182efb39ab89edde5663af0ad0aa4e9d00c6780c30a09c632740737ea0f625",
       "plannedSHA256": "92182efb39ab89edde5663af0ad0aa4e9d00c6780c30a09c632740737ea0f625",
-      "status": "unchecked — blocked dependency",
-      "reason": {
-        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
-        "dependencies": [
-          "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
-          "research/DGamma/CP5O19ActivationRowSpike.idr",
-          "research/DGamma/CP5O19AdjacentReplayProducerSpike.idr",
-          "research/DGamma/CP5O19CartesianCursorSpike.idr",
-          "research/DGamma/CP5O19InsertObservationSpike.idr",
-          "research/DGamma/CP5O19OpeningPropagationSpike.idr",
-          "research/DGamma/CP5O19ReplayObservationSpike.idr",
-          "research/DGamma/CP5O19ResolvedOpeningRowSpike.idr",
-          "research/DGamma/CP5O20BeginObservationSpike.idr",
-          "research/DGamma/CP5RankedEarlyApplicabilitySpike.idr"
-        ]
-      },
-      "invocation": null,
-      "peakRSSKiB": null,
+      "status": "passed",
+      "reason": null,
+      "invocation": "V186",
+      "peakRSSKiB": 2884960,
       "exactErrors": null,
       "protected": false
     },
@@ -5314,19 +4895,10 @@
       "module": "DGamma.CP5O19ActivationResolutionSpike",
       "sourceSHA256": "699caa76e3935afa24f43da04c07f8b1d5ae23603f6112e034c3888eefec8f46",
       "plannedSHA256": "699caa76e3935afa24f43da04c07f8b1d5ae23603f6112e034c3888eefec8f46",
-      "status": "unchecked — blocked dependency",
-      "reason": {
-        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
-        "dependencies": [
-          "research/DGamma/CP5O19AdvanceObservationSpike.idr",
-          "research/DGamma/CP5O19OpeningPropagationSpike.idr",
-          "research/DGamma/CP5O19ResolvedOpeningRowSpike.idr",
-          "research/DGamma/CP5O20BeginObservationSpike.idr",
-          "research/DGamma/CP5RankedEarlyApplicabilitySpike.idr"
-        ]
-      },
-      "invocation": null,
-      "peakRSSKiB": null,
+      "status": "passed",
+      "reason": null,
+      "invocation": "V187",
+      "peakRSSKiB": 3905696,
       "exactErrors": null,
       "protected": false
     },
@@ -5335,16 +4907,10 @@
       "module": "DGamma.CP5O20IndexedReloadingSourceSpike",
       "sourceSHA256": "8442fb2fafdce06376d9951569ba580563403f47a29b4eec79ba89f338611cdc",
       "plannedSHA256": "8442fb2fafdce06376d9951569ba580563403f47a29b4eec79ba89f338611cdc",
-      "status": "unchecked — blocked dependency",
-      "reason": {
-        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
-        "dependencies": [
-          "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr",
-          "research/DGamma/CP5O20AllNameSynchronizationSpike.idr"
-        ]
-      },
-      "invocation": null,
-      "peakRSSKiB": null,
+      "status": "passed",
+      "reason": null,
+      "invocation": "V188",
+      "peakRSSKiB": 237440,
       "exactErrors": null,
       "protected": false
     },
@@ -5353,16 +4919,10 @@
       "module": "DGamma.CP5O20SharedBeginAdapterSpike",
       "sourceSHA256": "a58a6442b7ea0189f1211b553e90910ae10f90d4176b3c6a243787c776559f0b",
       "plannedSHA256": "a58a6442b7ea0189f1211b553e90910ae10f90d4176b3c6a243787c776559f0b",
-      "status": "unchecked — blocked dependency",
-      "reason": {
-        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
-        "dependencies": [
-          "research/DGamma/CP5O20AllNameSynchronizationSpike.idr",
-          "research/DGamma/CP5O20BeginObservationSpike.idr"
-        ]
-      },
-      "invocation": null,
-      "peakRSSKiB": null,
+      "status": "passed",
+      "reason": null,
+      "invocation": "V189",
+      "peakRSSKiB": 2944384,
       "exactErrors": null,
       "protected": false
     },
@@ -5371,19 +4931,10 @@
       "module": "DGamma.CP5O20SupportedBridgeAssemblySpike",
       "sourceSHA256": "7beda3aac1fa38d338e588fda5dd42c0a561d0018974a74920d2c3cef3eaf64a",
       "plannedSHA256": "7beda3aac1fa38d338e588fda5dd42c0a561d0018974a74920d2c3cef3eaf64a",
-      "status": "unchecked — blocked dependency",
-      "reason": {
-        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
-        "dependencies": [
-          "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
-          "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr",
-          "research/DGamma/CP5O20AllNameSynchronizationSpike.idr",
-          "research/DGamma/CP5O20EpisodeSynchronizationSpike.idr",
-          "research/DGamma/CP5O20SupportedBirthBridgeSpike.idr"
-        ]
-      },
-      "invocation": null,
-      "peakRSSKiB": null,
+      "status": "passed",
+      "reason": null,
+      "invocation": "V190",
+      "peakRSSKiB": 3006480,
       "exactErrors": null,
       "protected": false
     },
@@ -5392,21 +4943,10 @@
       "module": "DGamma.CP5O19BodyMetadataSpike",
       "sourceSHA256": "31cab0146abc3bb241645ce8cc4124fc147ffa2da60acdc67413a19e424eea3e",
       "plannedSHA256": "31cab0146abc3bb241645ce8cc4124fc147ffa2da60acdc67413a19e424eea3e",
-      "status": "unchecked — blocked dependency",
-      "reason": {
-        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
-        "dependencies": [
-          "research/DGamma/CP5O19ActivationResolutionSpike.idr",
-          "research/DGamma/CP5O19AdjacentReplayProducerSpike.idr",
-          "research/DGamma/CP5O19CartesianCursorSpike.idr",
-          "research/DGamma/CP5O19SourceShapeSpike.idr",
-          "research/DGamma/CP5O19SurfaceSpike.idr",
-          "research/DGamma/CP5O20BeginObservationSpike.idr",
-          "research/DGamma/CP5RankedEarlyApplicabilitySpike.idr"
-        ]
-      },
-      "invocation": null,
-      "peakRSSKiB": null,
+      "status": "passed",
+      "reason": null,
+      "invocation": "V191",
+      "peakRSSKiB": 2413840,
       "exactErrors": null,
       "protected": false
     },
@@ -5415,25 +4955,10 @@
       "module": "DGamma.CP5O19InsertionInsertionRowSpike",
       "sourceSHA256": "7b37cdd0c88f10d122b21d7e187e32ecc333b7d2f58d22577243e1666c1019a9",
       "plannedSHA256": "7b37cdd0c88f10d122b21d7e187e32ecc333b7d2f58d22577243e1666c1019a9",
-      "status": "unchecked — blocked dependency",
-      "reason": {
-        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
-        "dependencies": [
-          "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
-          "research/DGamma/CP5O19ActivationInsertionRowSpike.idr",
-          "research/DGamma/CP5O19ActivationRowSpike.idr",
-          "research/DGamma/CP5O19AdjacentReplayProducerSpike.idr",
-          "research/DGamma/CP5O19CartesianCursorSpike.idr",
-          "research/DGamma/CP5O19InsertObservationSpike.idr",
-          "research/DGamma/CP5O19OpeningPropagationSpike.idr",
-          "research/DGamma/CP5O19ReplayObservationSpike.idr",
-          "research/DGamma/CP5O19ResolvedOpeningRowSpike.idr",
-          "research/DGamma/CP5O20BeginObservationSpike.idr",
-          "research/DGamma/CP5RankedEarlyApplicabilitySpike.idr"
-        ]
-      },
-      "invocation": null,
-      "peakRSSKiB": null,
+      "status": "passed",
+      "reason": null,
+      "invocation": "V192",
+      "peakRSSKiB": 3002352,
       "exactErrors": null,
       "protected": false
     },
@@ -5442,18 +4967,10 @@
       "module": "DGamma.CP5O20PairedAdvanceSpike",
       "sourceSHA256": "fdf25d8461cf9cdbc7dafdfa07da2d402f6b56dcbc53599422c850f641c69f7d",
       "plannedSHA256": "fdf25d8461cf9cdbc7dafdfa07da2d402f6b56dcbc53599422c850f641c69f7d",
-      "status": "unchecked — blocked dependency",
-      "reason": {
-        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
-        "dependencies": [
-          "research/DGamma/CP5O20AllNameSynchronizationSpike.idr",
-          "research/DGamma/CP5O20EpisodeSynchronizationSpike.idr",
-          "research/DGamma/CP5O20PairedPrefixProducerSpike.idr",
-          "research/DGamma/CP5O20SharedBeginAdapterSpike.idr"
-        ]
-      },
-      "invocation": null,
-      "peakRSSKiB": null,
+      "status": "passed",
+      "reason": null,
+      "invocation": "V193",
+      "peakRSSKiB": 2128000,
       "exactErrors": null,
       "protected": false
     },
@@ -5462,26 +4979,10 @@
       "module": "DGamma.CP5O19CartesianInsertionSpike",
       "sourceSHA256": "930f87e85893a3589aef0dabf536727271efaed7ac9b3c074c51435be6b863e3",
       "plannedSHA256": "930f87e85893a3589aef0dabf536727271efaed7ac9b3c074c51435be6b863e3",
-      "status": "unchecked — blocked dependency",
-      "reason": {
-        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
-        "dependencies": [
-          "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
-          "research/DGamma/CP5O19ActivationInsertionRowSpike.idr",
-          "research/DGamma/CP5O19ActivationRowSpike.idr",
-          "research/DGamma/CP5O19AdjacentReplayProducerSpike.idr",
-          "research/DGamma/CP5O19CartesianCursorSpike.idr",
-          "research/DGamma/CP5O19InsertObservationSpike.idr",
-          "research/DGamma/CP5O19InsertionInsertionRowSpike.idr",
-          "research/DGamma/CP5O19OpeningPropagationSpike.idr",
-          "research/DGamma/CP5O19ReplayObservationSpike.idr",
-          "research/DGamma/CP5O19ResolvedOpeningRowSpike.idr",
-          "research/DGamma/CP5O20BeginObservationSpike.idr",
-          "research/DGamma/CP5RankedEarlyApplicabilitySpike.idr"
-        ]
-      },
-      "invocation": null,
-      "peakRSSKiB": null,
+      "status": "passed",
+      "reason": null,
+      "invocation": "V194",
+      "peakRSSKiB": 2996560,
       "exactErrors": null,
       "protected": false
     },
@@ -5490,24 +4991,10 @@
       "module": "DGamma.CP5O19MixedActivationRowSpike",
       "sourceSHA256": "86e87881c31d7c9de8dabd188ca5a9e0681e7f0b3ca33f459df1233d9a6bb154",
       "plannedSHA256": "86e87881c31d7c9de8dabd188ca5a9e0681e7f0b3ca33f459df1233d9a6bb154",
-      "status": "unchecked — blocked dependency",
-      "reason": {
-        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
-        "dependencies": [
-          "research/DGamma/CP5O19ActivationRowSpike.idr",
-          "research/DGamma/CP5O19AdjacentReplayProducerSpike.idr",
-          "research/DGamma/CP5O19AdvanceObservationSpike.idr",
-          "research/DGamma/CP5O19BodyMetadataSpike.idr",
-          "research/DGamma/CP5O19CartesianCursorSpike.idr",
-          "research/DGamma/CP5O19ReplayObservationSpike.idr",
-          "research/DGamma/CP5O19ResolvedOpeningRowSpike.idr",
-          "research/DGamma/CP5O19SurfaceSpike.idr",
-          "research/DGamma/CP5O20BeginObservationSpike.idr",
-          "research/DGamma/CP5RankedEarlyApplicabilitySpike.idr"
-        ]
-      },
-      "invocation": null,
-      "peakRSSKiB": null,
+      "status": "passed",
+      "reason": null,
+      "invocation": "V195",
+      "peakRSSKiB": 2363008,
       "exactErrors": null,
       "protected": false
     },
@@ -5516,17 +5003,10 @@
       "module": "DGamma.CP5O20NativeAdvanceAttachmentSpike",
       "sourceSHA256": "830070d2b9d1ee560ebc5f421aeca83c8610cf47653e674658e322f3424e156e",
       "plannedSHA256": "830070d2b9d1ee560ebc5f421aeca83c8610cf47653e674658e322f3424e156e",
-      "status": "unchecked — blocked dependency",
-      "reason": {
-        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
-        "dependencies": [
-          "research/DGamma/CP5O19AdvanceObservationSpike.idr",
-          "research/DGamma/CP5O20PairedAdvanceSpike.idr",
-          "research/DGamma/CP5O20SingleRoleAdvanceExtractionSpike.idr"
-        ]
-      },
-      "invocation": null,
-      "peakRSSKiB": null,
+      "status": "passed",
+      "reason": null,
+      "invocation": "V196",
+      "peakRSSKiB": 2965280,
       "exactErrors": null,
       "protected": false
     },
@@ -5535,17 +5015,10 @@
       "module": "DGamma.CP5O20PairedExecutionSpike",
       "sourceSHA256": "d4170671fe9677cb6e44fda33b56a447c3c69f9f897ccea85757f18ed11fe02b",
       "plannedSHA256": "d4170671fe9677cb6e44fda33b56a447c3c69f9f897ccea85757f18ed11fe02b",
-      "status": "unchecked — blocked dependency",
-      "reason": {
-        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
-        "dependencies": [
-          "research/DGamma/CP5O20AllNameSynchronizationSpike.idr",
-          "research/DGamma/CP5O20PairedAdvanceSpike.idr",
-          "research/DGamma/CP5O20SharedBeginAdapterSpike.idr"
-        ]
-      },
-      "invocation": null,
-      "peakRSSKiB": null,
+      "status": "passed",
+      "reason": null,
+      "invocation": "V197",
+      "peakRSSKiB": 2944864,
       "exactErrors": null,
       "protected": false
     },
@@ -5554,20 +5027,10 @@
       "module": "DGamma.CP5O19MixedRowDispatcherSpike",
       "sourceSHA256": "0e7b9bd94c16e63f6b43540b68cc96fec9c55be7b14a98b2c3167394bdfb1bc3",
       "plannedSHA256": "0e7b9bd94c16e63f6b43540b68cc96fec9c55be7b14a98b2c3167394bdfb1bc3",
-      "status": "unchecked — blocked dependency",
-      "reason": {
-        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
-        "dependencies": [
-          "research/DGamma/CP5O19ActivationInsertionRowSpike.idr",
-          "research/DGamma/CP5O19ActivationRowSpike.idr",
-          "research/DGamma/CP5O19CartesianCursorSpike.idr",
-          "research/DGamma/CP5O19CartesianInsertionSpike.idr",
-          "research/DGamma/CP5O19MixedActivationRowSpike.idr",
-          "research/DGamma/CP5O19SurfaceSpike.idr"
-        ]
-      },
-      "invocation": null,
-      "peakRSSKiB": null,
+      "status": "passed",
+      "reason": null,
+      "invocation": "V198",
+      "peakRSSKiB": 2279024,
       "exactErrors": null,
       "protected": false
     },
@@ -5576,21 +5039,10 @@
       "module": "DGamma.CP5O19PairObservationSpike",
       "sourceSHA256": "4b9a3683695048f358372686b0e9128f065481e709dfd1b6946b5c312ad70267",
       "plannedSHA256": "4b9a3683695048f358372686b0e9128f065481e709dfd1b6946b5c312ad70267",
-      "status": "unchecked — blocked dependency",
-      "reason": {
-        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
-        "dependencies": [
-          "research/DGamma/CP5O19ActivationInsertionRowSpike.idr",
-          "research/DGamma/CP5O19AdjacentReplayProducerSpike.idr",
-          "research/DGamma/CP5O19CartesianCursorSpike.idr",
-          "research/DGamma/CP5O19CartesianInsertionSpike.idr",
-          "research/DGamma/CP5O19MixedActivationRowSpike.idr",
-          "research/DGamma/CP5O19ResolvedOpeningRowSpike.idr",
-          "research/DGamma/CP5O19SurfaceSpike.idr"
-        ]
-      },
-      "invocation": null,
-      "peakRSSKiB": null,
+      "status": "passed",
+      "reason": null,
+      "invocation": "V199",
+      "peakRSSKiB": 2404480,
       "exactErrors": null,
       "protected": false
     },
@@ -5599,22 +5051,10 @@
       "module": "DGamma.CP5O20CanonicalPairedExtractionSpike",
       "sourceSHA256": "947c8fb7c2aba9cd88966051812042bb976d0003b6f1e97a35dc62e81c474c04",
       "plannedSHA256": "947c8fb7c2aba9cd88966051812042bb976d0003b6f1e97a35dc62e81c474c04",
-      "status": "unchecked — blocked dependency",
-      "reason": {
-        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
-        "dependencies": [
-          "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
-          "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr",
-          "research/DGamma/CP5O19SurfaceSpike.idr",
-          "research/DGamma/CP5O20AllNameSynchronizationSpike.idr",
-          "research/DGamma/CP5O20CanonicalPairSelectionSpike.idr",
-          "research/DGamma/CP5O20EpisodeSynchronizationSpike.idr",
-          "research/DGamma/CP5O20PairedExecutionSpike.idr",
-          "research/DGamma/CP5O20PairedPrefixProducerSpike.idr"
-        ]
-      },
-      "invocation": null,
-      "peakRSSKiB": null,
+      "status": "passed",
+      "reason": null,
+      "invocation": "V200",
+      "peakRSSKiB": 3010736,
       "exactErrors": null,
       "protected": false
     },
@@ -5623,18 +5063,10 @@
       "module": "DGamma.CP5O20PairedRemovalSpike",
       "sourceSHA256": "dd56deb5581b70101d86a698f0c1daecd6e071a9339a3b58150410378ff1734c",
       "plannedSHA256": "dd56deb5581b70101d86a698f0c1daecd6e071a9339a3b58150410378ff1734c",
-      "status": "unchecked — blocked dependency",
-      "reason": {
-        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
-        "dependencies": [
-          "research/DGamma/CP5O20AllNameSynchronizationSpike.idr",
-          "research/DGamma/CP5O20EpisodeSynchronizationSpike.idr",
-          "research/DGamma/CP5O20PairedExecutionSpike.idr",
-          "research/DGamma/CP5O20PairedPrefixProducerSpike.idr"
-        ]
-      },
-      "invocation": null,
-      "peakRSSKiB": null,
+      "status": "passed",
+      "reason": null,
+      "invocation": "V201",
+      "peakRSSKiB": 257152,
       "exactErrors": null,
       "protected": false
     },
@@ -5648,8 +5080,6 @@
         "reason": "blocked by unchecked/failed import; stale TTC not consumed",
         "dependencies": [
           "research/DGamma/CP5ActorLifecycleOnlyExtended.idr",
-          "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr",
-          "research/DGamma/CP5O20PairedRemovalSpike.idr",
           "research/DGamma/CP5O20RightOpeningTransportSpike.idr"
         ]
       },
@@ -5663,18 +5093,10 @@
       "module": "DGamma.CP5O19CartesianLengthSpike",
       "sourceSHA256": "c4777415986740c0cc980650162ff2a657d9490d116499971dd6f1191146af4f",
       "plannedSHA256": "c4777415986740c0cc980650162ff2a657d9490d116499971dd6f1191146af4f",
-      "status": "unchecked — blocked dependency",
-      "reason": {
-        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
-        "dependencies": [
-          "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
-          "research/DGamma/CP5O19CartesianCursorSpike.idr",
-          "research/DGamma/CP5O19MixedRowDispatcherSpike.idr",
-          "research/DGamma/CP5O19ReplayObservationSpike.idr"
-        ]
-      },
-      "invocation": null,
-      "peakRSSKiB": null,
+      "status": "passed",
+      "reason": null,
+      "invocation": "V203",
+      "peakRSSKiB": 3004448,
       "exactErrors": null,
       "protected": false
     },
@@ -5683,19 +5105,11 @@
       "module": "DGamma.CP5O19OriginalBlockClassSpike",
       "sourceSHA256": "bd28de8e4dafdd7a8e423d29ba136b8cbdd9b2fdb0f6249223a5b2629882645a",
       "plannedSHA256": "bd28de8e4dafdd7a8e423d29ba136b8cbdd9b2fdb0f6249223a5b2629882645a",
-      "status": "unchecked — blocked dependency",
-      "reason": {
-        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
-        "dependencies": [
-          "research/DGamma/CP5O19AdjacentReplayProducerSpike.idr",
-          "research/DGamma/CP5O19PairObservationSpike.idr",
-          "research/DGamma/CP5O19ReplayObservationSpike.idr",
-          "research/DGamma/CP5O19SurfaceSpike.idr"
-        ]
-      },
-      "invocation": null,
-      "peakRSSKiB": null,
-      "exactErrors": null,
+      "status": "FAILED — lexical/semantic classification required",
+      "reason": null,
+      "invocation": "V204",
+      "peakRSSKiB": 684464,
+      "exactErrors": "54/54: Building DGamma.CP5O19OriginalBlockClassSpike (/Users/vyacheslavshebanov/Work/dgamma/research/DGamma/CP5O19OriginalBlockClassSpike.idr)\nError: While processing type of o19OwnedSafeWord. When unifying:\n    name\nand:\n    DecEq ?name\nMismatch between: name and DecEq ?name.\n\nDGamma.CP5O19OriginalBlockClassSpike:51:58--51:63\n 47 | export\n 48 | 0 o19OwnedSafeWord :\n 49 |   {name, key, world, error : Type} -> {value : key -> Type} ->\n 50 |   (actor, forbidden : name) -> {first, last : SystemState name key value world error} ->\n 51 |   (trace : Transitions first last) -> ActorLifecycleOnly actor trace -> NoGeneratedChild forbidden trace ->\n                                                               ^^^^^\n\nError: No type declaration for DGamma.CP5O19OriginalBlockClassSpike.o19OwnedSafeWord.\n\nDGamma.CP5O19OriginalBlockClassSpike:54:1--54:115\n 50 |   (actor, forbidden : name) -> {first, last : SystemState name key value world error} ->\n 51 |   (trace : Transitions first last) -> ActorLifecycleOnly actor trace -> NoGeneratedChild forbidden trace ->\n 52 |   (action : Action name key value world error) -> Elem action (o19ActionWord trace) ->\n 53 |   O19BlockWordObservation name key world error value actor forbidden action\n 54 | o19OwnedSafeWord actor forbidden _ ActorLifecycleEnd NoGeneratedChildEnd action absent = void (uninhabited absent)\n      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\nError: While processing right hand side of o19OriginalBlockWord. Undefined name o19OwnedSafeWord. \n\nDGamma.CP5O19OriginalBlockClassSpike:84:3--84:19\n 80 |   (action : Action name key value world error) -> Elem action (o19ActionWord (actorBlockTrace block)) ->\n 81 |   O19BlockWordObservation name key world error value actor forbidden action\n 82 | o19OriginalBlockWord actor forbidden block safe _ Here = BlockOwnLifecycle Refl Refl\n 83 | o19OriginalBlockWord actor forbidden block safe action (There member) =\n 84 |   o19OwnedSafeWord actor forbidden (blockBody block) (blockActorOnly block) safe action member\n        ^^^^^^^^^^^^^^^^\n",
       "protected": false
     },
     {
@@ -5703,17 +5117,10 @@
       "module": "DGamma.CP5O20HistoryNameTransportSpike",
       "sourceSHA256": "97cc59805856ae14c2727b3c869c6beb551ed24f2edd5bb25c07b03836fca30f",
       "plannedSHA256": "97cc59805856ae14c2727b3c869c6beb551ed24f2edd5bb25c07b03836fca30f",
-      "status": "unchecked — blocked dependency",
-      "reason": {
-        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
-        "dependencies": [
-          "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr",
-          "research/DGamma/CP5O20AllNameSynchronizationSpike.idr",
-          "research/DGamma/CP5O20PairedRemovalSpike.idr"
-        ]
-      },
-      "invocation": null,
-      "peakRSSKiB": null,
+      "status": "passed",
+      "reason": null,
+      "invocation": "V205",
+      "peakRSSKiB": 2941808,
       "exactErrors": null,
       "protected": false
     },
@@ -5726,9 +5133,7 @@
       "reason": {
         "reason": "blocked by unchecked/failed import; stale TTC not consumed",
         "dependencies": [
-          "research-tests/DGamma/R192RemovedBirthCurrentNameProbe.idr",
-          "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr",
-          "research/DGamma/CP5O20HistoryNameTransportSpike.idr"
+          "research-tests/DGamma/R192RemovedBirthCurrentNameProbe.idr"
         ]
       },
       "invocation": null,
@@ -5745,9 +5150,7 @@
       "reason": {
         "reason": "blocked by unchecked/failed import; stale TTC not consumed",
         "dependencies": [
-          "research-tests/DGamma/R192RemovedBirthCurrentNameProbe.idr",
-          "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr",
-          "research/DGamma/CP5O20HistoryNameTransportSpike.idr"
+          "research-tests/DGamma/R192RemovedBirthCurrentNameProbe.idr"
         ]
       },
       "invocation": null,
@@ -5760,25 +5163,10 @@
       "module": "DGamma.CP5O19CartesianWordRowSpike",
       "sourceSHA256": "ba318753411a59cbdf251401cd5482f06f3a2a074469b2ff2391e3616076b6b3",
       "plannedSHA256": "ba318753411a59cbdf251401cd5482f06f3a2a074469b2ff2391e3616076b6b3",
-      "status": "unchecked — blocked dependency",
-      "reason": {
-        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
-        "dependencies": [
-          "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
-          "research/DGamma/CP5O19AdjacentReplayProducerSpike.idr",
-          "research/DGamma/CP5O19CartesianCursorSpike.idr",
-          "research/DGamma/CP5O19CartesianLengthSpike.idr",
-          "research/DGamma/CP5O19CartesianSitePlanSpike.idr",
-          "research/DGamma/CP5O19MixedActivationRowSpike.idr",
-          "research/DGamma/CP5O19MixedRowDispatcherSpike.idr",
-          "research/DGamma/CP5O19PairObservationSpike.idr",
-          "research/DGamma/CP5O19ReplayObservationSpike.idr",
-          "research/DGamma/CP5O19SurfaceSpike.idr",
-          "research/DGamma/CP5RankedEarlyApplicabilitySpike.idr"
-        ]
-      },
-      "invocation": null,
-      "peakRSSKiB": null,
+      "status": "passed",
+      "reason": null,
+      "invocation": "V208",
+      "peakRSSKiB": 3012800,
       "exactErrors": null,
       "protected": false
     },
@@ -5791,11 +5179,7 @@
       "reason": {
         "reason": "blocked by unchecked/failed import; stale TTC not consumed",
         "dependencies": [
-          "research/DGamma/CP5O19AdjacentReplayProducerSpike.idr",
-          "research/DGamma/CP5O19OriginalBlockClassSpike.idr",
-          "research/DGamma/CP5O19PairObservationSpike.idr",
-          "research/DGamma/CP5O19ReplayObservationSpike.idr",
-          "research/DGamma/CP5O19SurfaceSpike.idr"
+          "research/DGamma/CP5O19OriginalBlockClassSpike.idr"
         ]
       },
       "invocation": null,
@@ -5808,18 +5192,10 @@
       "module": "DGamma.CP5O20EndpointRebaseBoundarySpike",
       "sourceSHA256": "a33194709140d8ede3acf264e65a54d7c6d8b91d8c5eff113221b5ef1559c4ec",
       "plannedSHA256": "a33194709140d8ede3acf264e65a54d7c6d8b91d8c5eff113221b5ef1559c4ec",
-      "status": "unchecked — blocked dependency",
-      "reason": {
-        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
-        "dependencies": [
-          "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr",
-          "research/DGamma/CP5O20AllNameSynchronizationSpike.idr",
-          "research/DGamma/CP5O20EpisodeSynchronizationSpike.idr",
-          "research/DGamma/CP5O20HistoryNameTransportSpike.idr"
-        ]
-      },
-      "invocation": null,
-      "peakRSSKiB": null,
+      "status": "passed",
+      "reason": null,
+      "invocation": "V210",
+      "peakRSSKiB": 3022608,
       "exactErrors": null,
       "protected": false
     },
@@ -5828,18 +5204,10 @@
       "module": "DGamma.CP5O20HistoryExecutionSpike",
       "sourceSHA256": "ab202644aea79d9eb4c96b3d1a765dafeef30221c53a0f3a12e2b53d0bb5328d",
       "plannedSHA256": "ab202644aea79d9eb4c96b3d1a765dafeef30221c53a0f3a12e2b53d0bb5328d",
-      "status": "unchecked — blocked dependency",
-      "reason": {
-        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
-        "dependencies": [
-          "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr",
-          "research/DGamma/CP5O20HistoryNameTransportSpike.idr",
-          "research/DGamma/CP5O20PairedAdvanceSpike.idr",
-          "research/DGamma/CP5O20SharedBeginAdapterSpike.idr"
-        ]
-      },
-      "invocation": null,
-      "peakRSSKiB": null,
+      "status": "passed",
+      "reason": null,
+      "invocation": "V211",
+      "peakRSSKiB": 3042992,
       "exactErrors": null,
       "protected": false
     },
@@ -5852,8 +5220,7 @@
       "reason": {
         "reason": "blocked by unchecked/failed import; stale TTC not consumed",
         "dependencies": [
-          "research-tests/DGamma/R193VestigialHistoryTransportPositive.idr",
-          "research/DGamma/CP5O20GenerationOnlyHistorySpike.idr"
+          "research-tests/DGamma/R193VestigialHistoryTransportPositive.idr"
         ]
       },
       "invocation": null,
@@ -5871,12 +5238,7 @@
         "reason": "blocked by unchecked/failed import; stale TTC not consumed",
         "dependencies": [
           "research-tests/DGamma/R192RemovedBirthCurrentNameProbe.idr",
-          "research-tests/DGamma/R193VestigialHistoryTransportPositive.idr",
-          "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr",
-          "research/DGamma/CP5O20AllNameSynchronizationSpike.idr",
-          "research/DGamma/CP5O20EndpointRebaseBoundarySpike.idr",
-          "research/DGamma/CP5O20HistoryNameTransportSpike.idr",
-          "research/DGamma/CP5O20PairedRemovalSpike.idr"
+          "research-tests/DGamma/R193VestigialHistoryTransportPositive.idr"
         ]
       },
       "invocation": null,
@@ -5893,8 +5255,7 @@
       "reason": {
         "reason": "blocked by unchecked/failed import; stale TTC not consumed",
         "dependencies": [
-          "research-tests/DGamma/R193VestigialHistoryTransportPositive.idr",
-          "research/DGamma/CP5O20RetainedClosingIndexSpike.idr"
+          "research-tests/DGamma/R193VestigialHistoryTransportPositive.idr"
         ]
       },
       "invocation": null,
@@ -5925,24 +5286,10 @@
       "module": "DGamma.CP5O19CartesianColumnsSpike",
       "sourceSHA256": "68a586fa59d9103bd19902fe676f0f5bcd2daef8728163134ee03a9c004574c2",
       "plannedSHA256": "68a586fa59d9103bd19902fe676f0f5bcd2daef8728163134ee03a9c004574c2",
-      "status": "unchecked — blocked dependency",
-      "reason": {
-        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
-        "dependencies": [
-          "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
-          "research/DGamma/CP5O19AdjacentReplayProducerSpike.idr",
-          "research/DGamma/CP5O19CartesianCursorSpike.idr",
-          "research/DGamma/CP5O19CartesianLengthSpike.idr",
-          "research/DGamma/CP5O19CartesianSitePlanSpike.idr",
-          "research/DGamma/CP5O19CartesianWordRowSpike.idr",
-          "research/DGamma/CP5O19MixedRowDispatcherSpike.idr",
-          "research/DGamma/CP5O19PairObservationSpike.idr",
-          "research/DGamma/CP5O19ReplayObservationSpike.idr",
-          "research/DGamma/CP5O19SurfaceSpike.idr"
-        ]
-      },
-      "invocation": null,
-      "peakRSSKiB": null,
+      "status": "passed",
+      "reason": null,
+      "invocation": "V216",
+      "peakRSSKiB": 2428400,
       "exactErrors": null,
       "protected": false
     },
@@ -5951,22 +5298,10 @@
       "module": "DGamma.CP5O20ActualHistoryAdvanceSpike",
       "sourceSHA256": "e6e951d72f5df5d6c495797ed0c905a86282de955e85e78d89dcf6e5ce623a68",
       "plannedSHA256": "e6e951d72f5df5d6c495797ed0c905a86282de955e85e78d89dcf6e5ce623a68",
-      "status": "unchecked — blocked dependency",
-      "reason": {
-        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
-        "dependencies": [
-          "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr",
-          "research/DGamma/CP5O19AdvanceObservationSpike.idr",
-          "research/DGamma/CP5O20HistoryExecutionSpike.idr",
-          "research/DGamma/CP5O20HistoryNameTransportSpike.idr",
-          "research/DGamma/CP5O20IndexedReloadingSourceSpike.idr",
-          "research/DGamma/CP5O20NativeAdvanceAttachmentSpike.idr",
-          "research/DGamma/CP5O20PairedAdvanceSpike.idr",
-          "research/DGamma/CP5O20SingleRoleAdvanceExtractionSpike.idr"
-        ]
-      },
-      "invocation": null,
-      "peakRSSKiB": null,
+      "status": "passed",
+      "reason": null,
+      "invocation": "V217",
+      "peakRSSKiB": 745552,
       "exactErrors": null,
       "protected": false
     },
@@ -5975,21 +5310,10 @@
       "module": "DGamma.CP5O20StampedHistoryFoldSpike",
       "sourceSHA256": "e3f44d6e995f02bbc826d076960d01ef175031d8b9d0c85b8e806fecd9538d55",
       "plannedSHA256": "e3f44d6e995f02bbc826d076960d01ef175031d8b9d0c85b8e806fecd9538d55",
-      "status": "unchecked — blocked dependency",
-      "reason": {
-        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
-        "dependencies": [
-          "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr",
-          "research/DGamma/CP5O20AllNameSynchronizationSpike.idr",
-          "research/DGamma/CP5O20HistoryExecutionSpike.idr",
-          "research/DGamma/CP5O20HistoryNameTransportSpike.idr",
-          "research/DGamma/CP5O20PairedAdvanceSpike.idr",
-          "research/DGamma/CP5O20PairedExecutionSpike.idr",
-          "research/DGamma/CP5O20PairedRemovalSpike.idr"
-        ]
-      },
-      "invocation": null,
-      "peakRSSKiB": null,
+      "status": "passed",
+      "reason": null,
+      "invocation": "V218",
+      "peakRSSKiB": 2174368,
       "exactErrors": null,
       "protected": false
     },
@@ -6002,20 +5326,7 @@
       "reason": {
         "reason": "blocked by unchecked/failed import; stale TTC not consumed",
         "dependencies": [
-          "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
-          "research/DGamma/CP5O19AdjacentReplayProducerSpike.idr",
-          "research/DGamma/CP5O19CartesianColumnsSpike.idr",
-          "research/DGamma/CP5O19CartesianCursorSpike.idr",
-          "research/DGamma/CP5O19CartesianLengthSpike.idr",
-          "research/DGamma/CP5O19CartesianNumericSpike.idr",
-          "research/DGamma/CP5O19CartesianSitePlanSpike.idr",
-          "research/DGamma/CP5O19CartesianWordRowSpike.idr",
-          "research/DGamma/CP5O19MixedRowDispatcherSpike.idr",
-          "research/DGamma/CP5O19OrdinalPlanSpike.idr",
-          "research/DGamma/CP5O19PairObservationSpike.idr",
-          "research/DGamma/CP5O19PaperBranchCompletenessSpike.idr",
-          "research/DGamma/CP5O19ReplayObservationSpike.idr",
-          "research/DGamma/CP5O19SurfaceSpike.idr"
+          "research/DGamma/CP5O19PaperBranchCompletenessSpike.idr"
         ]
       },
       "invocation": null,
@@ -6028,19 +5339,10 @@
       "module": "DGamma.CP5O20OccurrenceStampedHistorySpike",
       "sourceSHA256": "ec06bdfd0d8f20ffe04a2b8d8d42cedce67b98f8fe2e957441d348ba98c15195",
       "plannedSHA256": "ec06bdfd0d8f20ffe04a2b8d8d42cedce67b98f8fe2e957441d348ba98c15195",
-      "status": "unchecked — blocked dependency",
-      "reason": {
-        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
-        "dependencies": [
-          "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr",
-          "research/DGamma/CP5O20AllNameSynchronizationSpike.idr",
-          "research/DGamma/CP5O20HistoryNameTransportSpike.idr",
-          "research/DGamma/CP5O20PairedAdvanceSpike.idr",
-          "research/DGamma/CP5O20StampedHistoryFoldSpike.idr"
-        ]
-      },
-      "invocation": null,
-      "peakRSSKiB": null,
+      "status": "passed",
+      "reason": null,
+      "invocation": "V220",
+      "peakRSSKiB": 2938112,
       "exactErrors": null,
       "protected": false
     },
@@ -6049,17 +5351,10 @@
       "module": "DGamma.CP5O20StampedOrdinalNecessitySpike",
       "sourceSHA256": "5ecef1cbb4615fc8ac7d9de1743e940d8e8629684ed709edfb8e8f81f8fea3e0",
       "plannedSHA256": "5ecef1cbb4615fc8ac7d9de1743e940d8e8629684ed709edfb8e8f81f8fea3e0",
-      "status": "unchecked — blocked dependency",
-      "reason": {
-        "reason": "blocked by unchecked/failed import; stale TTC not consumed",
-        "dependencies": [
-          "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr",
-          "research/DGamma/CP5O20HistoryNameTransportSpike.idr",
-          "research/DGamma/CP5O20StampedHistoryFoldSpike.idr"
-        ]
-      },
-      "invocation": null,
-      "peakRSSKiB": null,
+      "status": "passed",
+      "reason": null,
+      "invocation": "V221",
+      "peakRSSKiB": 275184,
       "exactErrors": null,
       "protected": false
     },
@@ -6072,14 +5367,7 @@
       "reason": {
         "reason": "blocked by unchecked/failed import; stale TTC not consumed",
         "dependencies": [
-          "research/DGamma/CP5O19ActualCartesianSpike.idr",
-          "research/DGamma/CP5O19CartesianColumnsSpike.idr",
-          "research/DGamma/CP5O19CartesianCursorSpike.idr",
-          "research/DGamma/CP5O19CartesianNumericSpike.idr",
-          "research/DGamma/CP5O19GridCertificationSpike.idr",
-          "research/DGamma/CP5O19OrdinalPlanSpike.idr",
-          "research/DGamma/CP5O19ReplayObservationSpike.idr",
-          "research/DGamma/CP5O19SurfaceSpike.idr"
+          "research/DGamma/CP5O19ActualCartesianSpike.idr"
         ]
       },
       "invocation": null,
@@ -6097,13 +5385,6 @@
         "reason": "blocked by unchecked/failed import; stale TTC not consumed",
         "dependencies": [
           "research/DGamma/CP5O19ActualCartesianSpike.idr",
-          "research/DGamma/CP5O19CartesianColumnsSpike.idr",
-          "research/DGamma/CP5O19CartesianCursorSpike.idr",
-          "research/DGamma/CP5O19CartesianNumericSpike.idr",
-          "research/DGamma/CP5O19GridCertificationSpike.idr",
-          "research/DGamma/CP5O19OrdinalPlanSpike.idr",
-          "research/DGamma/CP5O19ReplayObservationSpike.idr",
-          "research/DGamma/CP5O19SurfaceSpike.idr",
           "research/DGamma/CP5O19WholeBlockSpike.idr"
         ]
       },
@@ -6122,18 +5403,9 @@
         "reason": "blocked by unchecked/failed import; stale TTC not consumed",
         "dependencies": [
           "research/DGamma/CP5O19ActualCartesianSpike.idr",
-          "research/DGamma/CP5O19AdjacentReplayProducerSpike.idr",
-          "research/DGamma/CP5O19CartesianColumnsSpike.idr",
-          "research/DGamma/CP5O19CartesianCursorSpike.idr",
-          "research/DGamma/CP5O19CartesianLengthSpike.idr",
-          "research/DGamma/CP5O19CartesianNumericSpike.idr",
-          "research/DGamma/CP5O19GridCertificationSpike.idr",
-          "research/DGamma/CP5O19OrdinalPlanSpike.idr",
           "research/DGamma/CP5O19OriginalBlockClassSpike.idr",
           "research/DGamma/CP5O19PaperBranchCompletenessSpike.idr",
-          "research/DGamma/CP5O19ReplayObservationSpike.idr",
           "research/DGamma/CP5O19SameChainAssemblySpike.idr",
-          "research/DGamma/CP5O19SurfaceSpike.idr",
           "research/DGamma/CP5O19WholeBlockSpike.idr"
         ]
       },
@@ -6152,19 +5424,10 @@
         "reason": "blocked by unchecked/failed import; stale TTC not consumed",
         "dependencies": [
           "research/DGamma/CP5O19ActualCartesianSpike.idr",
-          "research/DGamma/CP5O19AdjacentReplayProducerSpike.idr",
-          "research/DGamma/CP5O19CartesianColumnsSpike.idr",
-          "research/DGamma/CP5O19CartesianCursorSpike.idr",
-          "research/DGamma/CP5O19CartesianLengthSpike.idr",
-          "research/DGamma/CP5O19CartesianNumericSpike.idr",
-          "research/DGamma/CP5O19GridCertificationSpike.idr",
-          "research/DGamma/CP5O19OrdinalPlanSpike.idr",
           "research/DGamma/CP5O19OriginalBlockClassSpike.idr",
           "research/DGamma/CP5O19PaperBranchCompletenessSpike.idr",
           "research/DGamma/CP5O19ReachedBlocksSpike.idr",
-          "research/DGamma/CP5O19ReplayObservationSpike.idr",
           "research/DGamma/CP5O19SameChainAssemblySpike.idr",
-          "research/DGamma/CP5O19SurfaceSpike.idr",
           "research/DGamma/CP5O19WholeBlockSpike.idr"
         ]
       },
@@ -6183,15 +5446,8 @@
         "reason": "blocked by unchecked/failed import; stale TTC not consumed",
         "dependencies": [
           "research/DGamma/CP5O19ActualCartesianSpike.idr",
-          "research/DGamma/CP5O19CartesianColumnsSpike.idr",
-          "research/DGamma/CP5O19CartesianCursorSpike.idr",
-          "research/DGamma/CP5O19CartesianNumericSpike.idr",
-          "research/DGamma/CP5O19GridCertificationSpike.idr",
-          "research/DGamma/CP5O19OrdinalPlanSpike.idr",
           "research/DGamma/CP5O19ReachedDecompositionSpike.idr",
-          "research/DGamma/CP5O19ReplayObservationSpike.idr",
           "research/DGamma/CP5O19SameChainAssemblySpike.idr",
-          "research/DGamma/CP5O19SurfaceSpike.idr",
           "research/DGamma/CP5O19WholeBlockSpike.idr"
         ]
       },
@@ -6209,11 +5465,9 @@
       "reason": {
         "reason": "blocked by unchecked/failed import; stale TTC not consumed",
         "dependencies": [
-          "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
           "research/DGamma/CP5O19OriginalBlockClassSpike.idr",
           "research/DGamma/CP5O19PaperBranchCompletenessSpike.idr",
-          "research/DGamma/CP5O19ReachedDecompositionSpike.idr",
-          "research/DGamma/CP5O19SurfaceSpike.idr"
+          "research/DGamma/CP5O19ReachedDecompositionSpike.idr"
         ]
       },
       "invocation": null,
@@ -6230,12 +5484,7 @@
       "reason": {
         "reason": "blocked by unchecked/failed import; stale TTC not consumed",
         "dependencies": [
-          "research/DGamma/CP5AcceptedSupportTruthSpike.idr",
-          "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
-          "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr",
-          "research/DGamma/CP5O19OperationalAssemblySpike.idr",
-          "research/DGamma/CP5O19SurfaceSpike.idr",
-          "research/DGamma/CP5RankedEarlyApplicabilitySpike.idr"
+          "research/DGamma/CP5O19OperationalAssemblySpike.idr"
         ]
       },
       "invocation": null,
@@ -6269,7 +5518,6 @@
       "reason": {
         "reason": "blocked by unchecked/failed import; stale TTC not consumed",
         "dependencies": [
-          "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
           "research/DGamma/CP5ConfluenceCrossTraceSpike.idr"
         ]
       },
@@ -6287,7 +5535,6 @@
       "reason": {
         "reason": "blocked by unchecked/failed import; stale TTC not consumed",
         "dependencies": [
-          "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
           "research/DGamma/CP5ConfluenceCrossTraceSpike.idr"
         ]
       },
@@ -6305,7 +5552,6 @@
       "reason": {
         "reason": "blocked by unchecked/failed import; stale TTC not consumed",
         "dependencies": [
-          "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
           "research/DGamma/CP5ConfluenceCrossTraceSpike.idr"
         ]
       },
@@ -6359,12 +5605,6 @@
         "dependencies": [
           "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
           "research/DGamma/CP5O19ActualCartesianSpike.idr",
-          "research/DGamma/CP5O19CartesianColumnsSpike.idr",
-          "research/DGamma/CP5O19CartesianCursorSpike.idr",
-          "research/DGamma/CP5O19CartesianNumericSpike.idr",
-          "research/DGamma/CP5O19GridCertificationSpike.idr",
-          "research/DGamma/CP5O19OrdinalPlanSpike.idr",
-          "research/DGamma/CP5O19ReplayObservationSpike.idr",
           "research/DGamma/CP5O19WholeBlockSpike.idr"
         ]
       },
@@ -6382,7 +5622,6 @@
       "reason": {
         "reason": "blocked by unchecked/failed import; stale TTC not consumed",
         "dependencies": [
-          "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
           "research/DGamma/CP5ConfluenceCrossTraceSpike.idr"
         ]
       },
@@ -6417,7 +5656,6 @@
       "reason": {
         "reason": "blocked by unchecked/failed import; stale TTC not consumed",
         "dependencies": [
-          "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
           "research/DGamma/CP5ConfluenceCrossTraceSpike.idr"
         ]
       },
@@ -6435,7 +5673,6 @@
       "reason": {
         "reason": "blocked by unchecked/failed import; stale TTC not consumed",
         "dependencies": [
-          "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
           "research/DGamma/CP5ConfluenceCrossTraceSpike.idr"
         ]
       },
@@ -6470,7 +5707,6 @@
       "reason": {
         "reason": "blocked by unchecked/failed import; stale TTC not consumed",
         "dependencies": [
-          "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
           "research/DGamma/CP5ConfluenceCrossTraceSpike.idr"
         ]
       },
@@ -6522,7 +5758,6 @@
       "reason": {
         "reason": "blocked by unchecked/failed import; stale TTC not consumed",
         "dependencies": [
-          "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
           "research/DGamma/CP5ConfluenceCrossTraceSpike.idr"
         ]
       },
@@ -6591,9 +5826,7 @@
       "reason": {
         "reason": "blocked by unchecked/failed import; stale TTC not consumed",
         "dependencies": [
-          "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
-          "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
-          "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr"
+          "research/DGamma/CP5ConfluenceCrossTraceSpike.idr"
         ]
       },
       "invocation": null,
@@ -6627,9 +5860,7 @@
       "reason": {
         "reason": "blocked by unchecked/failed import; stale TTC not consumed",
         "dependencies": [
-          "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
-          "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
-          "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr"
+          "research/DGamma/CP5ConfluenceCrossTraceSpike.idr"
         ]
       },
       "invocation": null,
@@ -6748,9 +5979,7 @@
       "reason": {
         "reason": "blocked by unchecked/failed import; stale TTC not consumed",
         "dependencies": [
-          "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
-          "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
-          "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr"
+          "research/DGamma/CP5ConfluenceCrossTraceSpike.idr"
         ]
       },
       "invocation": null,
@@ -6767,11 +5996,7 @@
       "reason": {
         "reason": "blocked by unchecked/failed import; stale TTC not consumed",
         "dependencies": [
-          "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
-          "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
-          "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr",
-          "research/DGamma/CP5O20CanonicalOrdinalAttachmentSpike.idr",
-          "research/DGamma/CP5O20StampedHistoryFoldSpike.idr"
+          "research/DGamma/CP5ConfluenceCrossTraceSpike.idr"
         ]
       },
       "invocation": null,
@@ -6788,12 +6013,7 @@
       "reason": {
         "reason": "blocked by unchecked/failed import; stale TTC not consumed",
         "dependencies": [
-          "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
-          "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
-          "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr",
-          "research/DGamma/CP5O20CanonicalOrdinalAttachmentSpike.idr",
-          "research/DGamma/CP5O20HistoryNameTransportSpike.idr",
-          "research/DGamma/CP5O20OccurrenceStampedHistorySpike.idr"
+          "research/DGamma/CP5ConfluenceCrossTraceSpike.idr"
         ]
       },
       "invocation": null,
@@ -6810,11 +6030,7 @@
       "reason": {
         "reason": "blocked by unchecked/failed import; stale TTC not consumed",
         "dependencies": [
-          "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
-          "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
-          "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr",
-          "research/DGamma/CP5O19SurfaceSpike.idr",
-          "research/DGamma/CP5O20RootOrdinalBoundarySpike.idr"
+          "research/DGamma/CP5ConfluenceCrossTraceSpike.idr"
         ]
       },
       "invocation": null,
@@ -6831,9 +6047,7 @@
       "reason": {
         "reason": "blocked by unchecked/failed import; stale TTC not consumed",
         "dependencies": [
-          "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
-          "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
-          "research/DGamma/CP5RankedEarlyApplicabilitySpike.idr"
+          "research/DGamma/CP5ConfluenceCrossTraceSpike.idr"
         ]
       },
       "invocation": null,
@@ -6850,7 +6064,6 @@
       "reason": {
         "reason": "blocked by unchecked/failed import; stale TTC not consumed",
         "dependencies": [
-          "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
           "research/DGamma/CP5ConfluenceCrossTraceSpike.idr"
         ]
       },
@@ -6885,7 +6098,6 @@
       "reason": {
         "reason": "blocked by unchecked/failed import; stale TTC not consumed",
         "dependencies": [
-          "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
           "research/DGamma/CP5UniqueRawNameCanonicalCapital.idr"
         ]
       },
@@ -6903,7 +6115,6 @@
       "reason": {
         "reason": "blocked by unchecked/failed import; stale TTC not consumed",
         "dependencies": [
-          "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
           "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
           "research/DGamma/CP5UniqueRawNameCanonicalCapital.idr"
         ]
@@ -6923,8 +6134,7 @@
         "reason": "blocked by unchecked/failed import; stale TTC not consumed",
         "dependencies": [
           "research-tests/DGamma/R181O19BundlePrerequisites.idr",
-          "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
-          "research/DGamma/CP5RankedEarlyApplicabilitySpike.idr"
+          "research/DGamma/CP5ConfluenceCrossTraceSpike.idr"
         ]
       },
       "invocation": null,
@@ -6944,9 +6154,7 @@
           "research-tests/DGamma/R192RemovedBirthCurrentNameProbe.idr",
           "research-tests/DGamma/R193VestigialHistoryTransportPositive.idr",
           "research-tests/DGamma/R195EndpointRebaseBoundaryPositive.idr",
-          "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
           "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
-          "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr",
           "research/DGamma/CP5O20CanonicalMaybeControlSpike.idr"
         ]
       },
@@ -6964,11 +6172,8 @@
       "reason": {
         "reason": "blocked by unchecked/failed import; stale TTC not consumed",
         "dependencies": [
-          "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
           "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
-          "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr",
-          "research/DGamma/CP5O20CanonicalMaybeControlSpike.idr",
-          "research/DGamma/CP5O20StampedOrdinalNecessitySpike.idr"
+          "research/DGamma/CP5O20CanonicalMaybeControlSpike.idr"
         ]
       },
       "invocation": null,
@@ -7003,11 +6208,7 @@
       "reason": {
         "reason": "blocked by unchecked/failed import; stale TTC not consumed",
         "dependencies": [
-          "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
           "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
-          "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr",
-          "research/DGamma/CP5O20CanonicalOrdinalAttachmentSpike.idr",
-          "research/DGamma/CP5O20RootOrdinalBoundarySpike.idr",
           "research/DGamma/CP5O20RootReplayLawProducerSpike.idr"
         ]
       },
@@ -7027,8 +6228,7 @@
         "dependencies": [
           "research-tests/DGamma/R172O17OpenParentRootReuseCandidate.idr",
           "research-tests/DGamma/R182O19RevisedSafetyNegative.idr",
-          "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
-          "research/DGamma/CP5RankedEarlyApplicabilitySpike.idr"
+          "research/DGamma/CP5ConfluenceCrossTraceSpike.idr"
         ]
       },
       "invocation": null,
@@ -7048,7 +6248,6 @@
           "research-tests/DGamma/R193VestigialHistoryTransportPositive.idr",
           "research-tests/DGamma/R195ClosingHistoryRetentionPositive.idr",
           "research/DGamma/CP5O20CanonicalActionCompletenessSpike.idr",
-          "research/DGamma/CP5O20GenerationOnlyHistorySpike.idr",
           "research/DGamma/CP5O20RootStageAttachmentSpike.idr"
         ]
       },
@@ -7069,9 +6268,7 @@
           "research-tests/DGamma/R192RemovedBirthCurrentNameProbe.idr",
           "research-tests/DGamma/R193VestigialHistoryTransportPositive.idr",
           "research-tests/DGamma/R195EndpointRebaseBoundaryPositive.idr",
-          "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
           "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
-          "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr",
           "research/DGamma/CP5O20DeletionDisappearanceSpike.idr"
         ]
       },
@@ -7089,7 +6286,6 @@
       "reason": {
         "reason": "blocked by unchecked/failed import; stale TTC not consumed",
         "dependencies": [
-          "research/DGamma/CP5O19SurfaceSpike.idr",
           "research/DGamma/CP5O20LinearExtensionSpike.idr"
         ]
       },
@@ -7107,8 +6303,6 @@
       "reason": {
         "reason": "blocked by unchecked/failed import; stale TTC not consumed",
         "dependencies": [
-          "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
-          "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr",
           "research/DGamma/CP5O20DeletionDisappearanceSpike.idr"
         ]
       },
@@ -7126,12 +6320,7 @@
       "reason": {
         "reason": "blocked by unchecked/failed import; stale TTC not consumed",
         "dependencies": [
-          "research/DGamma/CP5AcceptedSupportTruthSpike.idr",
-          "research/DGamma/CP5AllSupportedMetadataSpike.idr",
-          "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
-          "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr",
           "research/DGamma/CP5O19ReachedBlocksSpike.idr",
-          "research/DGamma/CP5O19SurfaceSpike.idr",
           "research/DGamma/CP5O20LinearExtensionSpike.idr"
         ]
       },
@@ -7151,9 +6340,7 @@
         "dependencies": [
           "research-tests/DGamma/R182O19RevisedSafetyNegative.idr",
           "research-tests/DGamma/R182O19RevisedSafetyPositive.idr",
-          "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
-          "research/DGamma/CP5O19AdjacentReplayProducerSpike.idr",
-          "research/DGamma/CP5RankedEarlyApplicabilitySpike.idr"
+          "research/DGamma/CP5ConfluenceCrossTraceSpike.idr"
         ]
       },
       "invocation": null,
@@ -7173,8 +6360,7 @@
           "research-tests/DGamma/R172O17OpenParentRootReuseCandidate.idr",
           "research-tests/DGamma/R182O19RevisedSafetyNegative.idr",
           "research-tests/DGamma/R182O19RevisedSafetyPositive.idr",
-          "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
-          "research/DGamma/CP5RankedEarlyApplicabilitySpike.idr"
+          "research/DGamma/CP5ConfluenceCrossTraceSpike.idr"
         ]
       },
       "invocation": null,
@@ -7191,9 +6377,7 @@
       "reason": {
         "reason": "blocked by unchecked/failed import; stale TTC not consumed",
         "dependencies": [
-          "research-tests/DGamma/R182O19RevisedSafetyPositive.idr",
-          "research/DGamma/CP5O19SurfaceSpike.idr",
-          "research/DGamma/CP5O20AllNameSynchronizationSpike.idr"
+          "research-tests/DGamma/R182O19RevisedSafetyPositive.idr"
         ]
       },
       "invocation": null,
@@ -7211,9 +6395,7 @@
         "reason": "blocked by unchecked/failed import; stale TTC not consumed",
         "dependencies": [
           "research-tests/DGamma/R172O17OpenParentRootReuseCandidate.idr",
-          "research-tests/DGamma/R182O19RevisedSafetyPositive.idr",
-          "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
-          "research/DGamma/CP5O19SurfaceSpike.idr"
+          "research-tests/DGamma/R182O19RevisedSafetyPositive.idr"
         ]
       },
       "invocation": null,
@@ -7230,10 +6412,7 @@
       "reason": {
         "reason": "blocked by unchecked/failed import; stale TTC not consumed",
         "dependencies": [
-          "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
           "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
-          "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr",
-          "research/DGamma/CP5O19SurfaceSpike.idr",
           "research/DGamma/CP5O20CanonicalActionCompletenessSpike.idr",
           "research/DGamma/CP5O20SupportedReferenceSpike.idr"
         ]
@@ -7252,7 +6431,6 @@
       "reason": {
         "reason": "blocked by unchecked/failed import; stale TTC not consumed",
         "dependencies": [
-          "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr",
           "research/DGamma/CP5O20DiscardedSelectionCoverageSpike.idr"
         ]
       },
@@ -7271,7 +6449,6 @@
         "reason": "blocked by unchecked/failed import; stale TTC not consumed",
         "dependencies": [
           "research/DGamma/CP5O19OperationalAssemblySpike.idr",
-          "research/DGamma/CP5O19SurfaceSpike.idr",
           "research/DGamma/CP5O20BlockMeasureSpike.idr",
           "research/DGamma/CP5O20LinearExtensionSpike.idr",
           "research/DGamma/CP5O20SafeBlockSelectionSpike.idr",
@@ -7292,11 +6469,8 @@
       "reason": {
         "reason": "blocked by unchecked/failed import; stale TTC not consumed",
         "dependencies": [
-          "research/DGamma/CP5O19ActivationResolutionSpike.idr",
-          "research/DGamma/CP5O20BeginObservationSpike.idr",
           "research/DGamma/CP5O20RightOpeningTransportSpike.idr",
-          "research/DGamma/CP5O20SupportedReferenceSpike.idr",
-          "research/DGamma/CP5RankedEarlyApplicabilitySpike.idr"
+          "research/DGamma/CP5O20SupportedReferenceSpike.idr"
         ]
       },
       "invocation": null,
@@ -7316,9 +6490,7 @@
           "research-tests/DGamma/R182O19ActualCrossingPositive.idr",
           "research-tests/DGamma/R182O19RevisedSafetyNegative.idr",
           "research-tests/DGamma/R182O19RevisedSafetyPositive.idr",
-          "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
-          "research/DGamma/CP5O19AdjacentReplayProducerSpike.idr",
-          "research/DGamma/CP5RankedEarlyApplicabilitySpike.idr"
+          "research/DGamma/CP5ConfluenceCrossTraceSpike.idr"
         ]
       },
       "invocation": null,
@@ -7338,12 +6510,7 @@
           "research-tests/DGamma/R182O19ActualCrossingPositive.idr",
           "research-tests/DGamma/R182O19RevisedSafetyNegative.idr",
           "research-tests/DGamma/R182O19RevisedSafetyPositive.idr",
-          "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
-          "research/DGamma/CP5O19ActivationRowSpike.idr",
-          "research/DGamma/CP5O19AdjacentReplayProducerSpike.idr",
-          "research/DGamma/CP5O19CartesianCursorSpike.idr",
-          "research/DGamma/CP5O19OpeningPropagationSpike.idr",
-          "research/DGamma/CP5RankedEarlyApplicabilitySpike.idr"
+          "research/DGamma/CP5ConfluenceCrossTraceSpike.idr"
         ]
       },
       "invocation": null,
@@ -7364,14 +6531,7 @@
           "research-tests/DGamma/R182O19AdjacencyNegative.idr",
           "research-tests/DGamma/R182O19RevisedSafetyNegative.idr",
           "research-tests/DGamma/R182O19RevisedSafetyPositive.idr",
-          "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
-          "research/DGamma/CP5O19ActivationInsertionRowSpike.idr",
-          "research/DGamma/CP5O19ActivationRowSpike.idr",
-          "research/DGamma/CP5O19AdjacentReplayProducerSpike.idr",
-          "research/DGamma/CP5O19CartesianCursorSpike.idr",
-          "research/DGamma/CP5O19OpeningPropagationSpike.idr",
-          "research/DGamma/CP5O19ResolvedOpeningRowSpike.idr",
-          "research/DGamma/CP5RankedEarlyApplicabilitySpike.idr"
+          "research/DGamma/CP5ConfluenceCrossTraceSpike.idr"
         ]
       },
       "invocation": null,
@@ -7391,14 +6551,7 @@
           "research-tests/DGamma/R182O19ActualCrossingPositive.idr",
           "research-tests/DGamma/R182O19RevisedSafetyNegative.idr",
           "research-tests/DGamma/R182O19RevisedSafetyPositive.idr",
-          "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
-          "research/DGamma/CP5O19ActivationRowSpike.idr",
-          "research/DGamma/CP5O19AdjacentReplayProducerSpike.idr",
-          "research/DGamma/CP5O19CartesianCursorSpike.idr",
-          "research/DGamma/CP5O19InsertionInsertionRowSpike.idr",
-          "research/DGamma/CP5O19OpeningPropagationSpike.idr",
-          "research/DGamma/CP5O19ResolvedOpeningRowSpike.idr",
-          "research/DGamma/CP5RankedEarlyApplicabilitySpike.idr"
+          "research/DGamma/CP5ConfluenceCrossTraceSpike.idr"
         ]
       },
       "invocation": null,
@@ -7418,13 +6571,7 @@
           "research-tests/DGamma/R182O19ActualCrossingPositive.idr",
           "research-tests/DGamma/R182O19RevisedSafetyNegative.idr",
           "research-tests/DGamma/R182O19RevisedSafetyPositive.idr",
-          "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
-          "research/DGamma/CP5O19ActivationRowSpike.idr",
-          "research/DGamma/CP5O19AdjacentReplayProducerSpike.idr",
-          "research/DGamma/CP5O19CartesianCursorSpike.idr",
-          "research/DGamma/CP5O19OpeningPropagationSpike.idr",
-          "research/DGamma/CP5O19ResolvedOpeningRowSpike.idr",
-          "research/DGamma/CP5RankedEarlyApplicabilitySpike.idr"
+          "research/DGamma/CP5ConfluenceCrossTraceSpike.idr"
         ]
       },
       "invocation": null,
@@ -7462,11 +6609,7 @@
       "reason": {
         "reason": "blocked by unchecked/failed import; stale TTC not consumed",
         "dependencies": [
-          "research-tests/DGamma/R191CanonicalChildRetirementGap.idr",
-          "research/DGamma/CP5O19SurfaceSpike.idr",
-          "research/DGamma/CP5O20AllNameSynchronizationSpike.idr",
-          "research/DGamma/CP5O20PairedAdvanceSpike.idr",
-          "research/DGamma/CP5O20PairedExecutionSpike.idr"
+          "research-tests/DGamma/R191CanonicalChildRetirementGap.idr"
         ]
       },
       "invocation": null,
@@ -7505,14 +6648,7 @@
           "research-tests/DGamma/R191CanonicalChildRetirementGap.idr",
           "research-tests/DGamma/R193VestigialHistoryTransportPositive.idr",
           "research-tests/DGamma/R195ClosingHistoryRetentionPositive.idr",
-          "research-tests/DGamma/R195EndpointRebaseBoundaryPositive.idr",
-          "research/DGamma/CP5O19SurfaceSpike.idr",
-          "research/DGamma/CP5O20AllNameSynchronizationSpike.idr",
-          "research/DGamma/CP5O20GenerationOnlyHistorySpike.idr",
-          "research/DGamma/CP5O20HistoryNameTransportSpike.idr",
-          "research/DGamma/CP5O20PairedAdvanceSpike.idr",
-          "research/DGamma/CP5O20PairedExecutionSpike.idr",
-          "research/DGamma/CP5O20StampedHistoryFoldSpike.idr"
+          "research-tests/DGamma/R195EndpointRebaseBoundaryPositive.idr"
         ]
       },
       "invocation": null,
@@ -7532,15 +6668,7 @@
           "research-tests/DGamma/R191CanonicalChildRetirementGap.idr",
           "research-tests/DGamma/R193VestigialHistoryTransportPositive.idr",
           "research-tests/DGamma/R195ClosingHistoryRetentionPositive.idr",
-          "research-tests/DGamma/R195EndpointRebaseBoundaryPositive.idr",
-          "research/DGamma/CP5O19SurfaceSpike.idr",
-          "research/DGamma/CP5O20AllNameSynchronizationSpike.idr",
-          "research/DGamma/CP5O20GenerationOnlyHistorySpike.idr",
-          "research/DGamma/CP5O20HistoryNameTransportSpike.idr",
-          "research/DGamma/CP5O20OccurrenceStampedHistorySpike.idr",
-          "research/DGamma/CP5O20PairedAdvanceSpike.idr",
-          "research/DGamma/CP5O20PairedExecutionSpike.idr",
-          "research/DGamma/CP5O20StampedHistoryFoldSpike.idr"
+          "research-tests/DGamma/R195EndpointRebaseBoundaryPositive.idr"
         ]
       },
       "invocation": null,
@@ -7559,7 +6687,6 @@
         "dependencies": [
           "research-tests/DGamma/R193VestigialHistoryTransportPositive.idr",
           "research-tests/DGamma/R195EndpointRebaseBoundaryPositive.idr",
-          "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr",
           "research/DGamma/CP5O20DiscardedBirthOriginSpike.idr",
           "research/DGamma/CP5O20DiscardedSelectionCoverageSpike.idr"
         ]
@@ -7578,15 +6705,9 @@
       "reason": {
         "reason": "blocked by unchecked/failed import; stale TTC not consumed",
         "dependencies": [
-          "research/DGamma/CP5O19ActivationResolutionSpike.idr",
-          "research/DGamma/CP5O19AdjacentReplayProducerSpike.idr",
-          "research/DGamma/CP5O19InsertObservationSpike.idr",
-          "research/DGamma/CP5O19SurfaceSpike.idr",
-          "research/DGamma/CP5O20BeginObservationSpike.idr",
           "research/DGamma/CP5O20RightOpeningTransportSpike.idr",
           "research/DGamma/CP5O20SelectorResolverFrameSpike.idr",
-          "research/DGamma/CP5O20SupportedReferenceSpike.idr",
-          "research/DGamma/CP5RankedEarlyApplicabilitySpike.idr"
+          "research/DGamma/CP5O20SupportedReferenceSpike.idr"
         ]
       },
       "invocation": null,
@@ -7603,7 +6724,6 @@
       "reason": {
         "reason": "blocked by unchecked/failed import; stale TTC not consumed",
         "dependencies": [
-          "research/DGamma/CP5O19SurfaceSpike.idr",
           "research/DGamma/CP5O20BlockMeasureSpike.idr",
           "research/DGamma/CP5O20LinearExtensionSpike.idr",
           "research/DGamma/CP5O20OperationalProgressSpike.idr",
@@ -7628,10 +6748,7 @@
           "research-tests/DGamma/R182O19RevisedSafetyNegative.idr",
           "research-tests/DGamma/R182O19RevisedSafetyPositive.idr",
           "research-tests/DGamma/R182O19SecondCrossingPositive.idr",
-          "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
-          "research/DGamma/CP5O19AdjacentReplayProducerSpike.idr",
-          "research/DGamma/CP5O19ReplayObservationSpike.idr",
-          "research/DGamma/CP5RankedEarlyApplicabilitySpike.idr"
+          "research/DGamma/CP5ConfluenceCrossTraceSpike.idr"
         ]
       },
       "invocation": null,
@@ -7648,11 +6765,8 @@
       "reason": {
         "reason": "blocked by unchecked/failed import; stale TTC not consumed",
         "dependencies": [
-          "research/DGamma/CP5O19SurfaceSpike.idr",
-          "research/DGamma/CP5O20BeginObservationSpike.idr",
           "research/DGamma/CP5O20BlockResolverFrameSpike.idr",
-          "research/DGamma/CP5O20RightOpeningTransportSpike.idr",
-          "research/DGamma/CP5RankedEarlyApplicabilitySpike.idr"
+          "research/DGamma/CP5O20RightOpeningTransportSpike.idr"
         ]
       },
       "invocation": null,
@@ -7671,9 +6785,7 @@
         "dependencies": [
           "research-tests/DGamma/R193VestigialHistoryTransportPositive.idr",
           "research-tests/DGamma/R195EndpointRebaseBoundaryPositive.idr",
-          "research-tests/DGamma/R200DiscardedCoverageBasePositive.idr",
-          "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr",
-          "research/DGamma/CP5O20DeletionRetainedBirthSpike.idr"
+          "research-tests/DGamma/R200DiscardedCoverageBasePositive.idr"
         ]
       },
       "invocation": null,
@@ -7690,9 +6802,6 @@
       "reason": {
         "reason": "blocked by unchecked/failed import; stale TTC not consumed",
         "dependencies": [
-          "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
-          "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr",
-          "research/DGamma/CP5O19SurfaceSpike.idr",
           "research/DGamma/CP5O20LinearExtensionSpike.idr",
           "research/DGamma/CP5O20OperationalDescentSpike.idr",
           "research/DGamma/CP5O20OperationalProgressSpike.idr",
@@ -7716,13 +6825,11 @@
         "reason": "blocked by unchecked/failed import; stale TTC not consumed",
         "dependencies": [
           "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
-          "research/DGamma/CP5O19SurfaceSpike.idr",
           "research/DGamma/CP5O20LinearExtensionSpike.idr",
           "research/DGamma/CP5O20OperationalDescentSpike.idr",
           "research/DGamma/CP5O20OperationalProgressSpike.idr",
           "research/DGamma/CP5O20RightOpeningTransportSpike.idr",
-          "research/DGamma/CP5O20SafeBlockSelectionSpike.idr",
-          "research/DGamma/CP5RankedEarlyApplicabilitySpike.idr"
+          "research/DGamma/CP5O20SafeBlockSelectionSpike.idr"
         ]
       },
       "invocation": null,
@@ -7744,10 +6851,7 @@
           "research-tests/DGamma/R182O19RevisedSafetyNegative.idr",
           "research-tests/DGamma/R182O19RevisedSafetyPositive.idr",
           "research-tests/DGamma/R182O19SecondCrossingPositive.idr",
-          "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
-          "research/DGamma/CP5O19AdjacentReplayProducerSpike.idr",
-          "research/DGamma/CP5O19ReplayObservationSpike.idr",
-          "research/DGamma/CP5RankedEarlyApplicabilitySpike.idr"
+          "research/DGamma/CP5ConfluenceCrossTraceSpike.idr"
         ]
       },
       "invocation": null,
@@ -7764,7 +6868,6 @@
       "reason": {
         "reason": "blocked by unchecked/failed import; stale TTC not consumed",
         "dependencies": [
-          "research/DGamma/CP5O19SurfaceSpike.idr",
           "research/DGamma/CP5O20LinearExtensionSpike.idr",
           "research/DGamma/CP5O20SafeBlockSelectionSpike.idr",
           "research/DGamma/CP5O20SelectionCompletenessSpike.idr"
@@ -7784,7 +6887,6 @@
       "reason": {
         "reason": "blocked by unchecked/failed import; stale TTC not consumed",
         "dependencies": [
-          "research/DGamma/CP5O19SurfaceSpike.idr",
           "research/DGamma/CP5O20LinearExtensionSpike.idr",
           "research/DGamma/CP5O20OperationalDescentSpike.idr",
           "research/DGamma/CP5O20ReferenceDescentSpike.idr",
@@ -7805,12 +6907,9 @@
       "reason": {
         "reason": "blocked by unchecked/failed import; stale TTC not consumed",
         "dependencies": [
-          "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
           "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
-          "research/DGamma/CP5O19SurfaceSpike.idr",
           "research/DGamma/CP5O20ReferenceDescentSpike.idr",
           "research/DGamma/CP5O20SafeBlockSelectionSpike.idr",
-          "research/DGamma/CP5O20SupportedBirthBridgeSpike.idr",
           "research/DGamma/CP5O20SupportedReferenceSpike.idr"
         ]
       },
@@ -7834,10 +6933,7 @@
           "research-tests/DGamma/R182O19RevisedSafetyPositive.idr",
           "research-tests/DGamma/R182O19SecondCrossingPositive.idr",
           "research-tests/DGamma/R182O19ThirdCrossingConstruction.idr",
-          "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
-          "research/DGamma/CP5O19AdjacentReplayProducerSpike.idr",
-          "research/DGamma/CP5O19ReplayObservationSpike.idr",
-          "research/DGamma/CP5RankedEarlyApplicabilitySpike.idr"
+          "research/DGamma/CP5ConfluenceCrossTraceSpike.idr"
         ]
       },
       "invocation": null,
@@ -7854,11 +6950,7 @@
       "reason": {
         "reason": "blocked by unchecked/failed import; stale TTC not consumed",
         "dependencies": [
-          "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
           "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
-          "research/DGamma/CP5O19BodyMetadataSpike.idr",
-          "research/DGamma/CP5O19SurfaceSpike.idr",
-          "research/DGamma/CP5O20BeginObservationSpike.idr",
           "research/DGamma/CP5O20BlockResolverFrameSpike.idr",
           "research/DGamma/CP5O20FiniteInversionSpike.idr",
           "research/DGamma/CP5O20InversionChildSafetySpike.idr",
@@ -7869,8 +6961,7 @@
           "research/DGamma/CP5O20RightOpeningTransportSpike.idr",
           "research/DGamma/CP5O20SafeBlockSelectionSpike.idr",
           "research/DGamma/CP5O20SelectionCompletenessSpike.idr",
-          "research/DGamma/CP5O20SupportedReferenceSpike.idr",
-          "research/DGamma/CP5RankedEarlyApplicabilitySpike.idr"
+          "research/DGamma/CP5O20SupportedReferenceSpike.idr"
         ]
       },
       "invocation": null,
@@ -7894,10 +6985,7 @@
           "research-tests/DGamma/R182O19SecondCrossingPositive.idr",
           "research-tests/DGamma/R182O19ThirdCrossingConstruction.idr",
           "research-tests/DGamma/R182O19ThirdCrossingPositive.idr",
-          "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
-          "research/DGamma/CP5O19AdjacentReplayProducerSpike.idr",
-          "research/DGamma/CP5O19ReplayObservationSpike.idr",
-          "research/DGamma/CP5RankedEarlyApplicabilitySpike.idr"
+          "research/DGamma/CP5ConfluenceCrossTraceSpike.idr"
         ]
       },
       "invocation": null,
@@ -7914,14 +7002,8 @@
       "reason": {
         "reason": "blocked by unchecked/failed import; stale TTC not consumed",
         "dependencies": [
-          "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
           "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
-          "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr",
-          "research/DGamma/CP5O19SurfaceSpike.idr",
-          "research/DGamma/CP5O20BeginObservationSpike.idr",
-          "research/DGamma/CP5O20CanonicalPairSelectionSpike.idr",
           "research/DGamma/CP5O20OwnCutSafetySpike.idr",
-          "research/DGamma/CP5O20SharedBeginAdapterSpike.idr",
           "research/DGamma/CP5O20SupportedReferenceSpike.idr"
         ]
       },
@@ -7939,12 +7021,8 @@
       "reason": {
         "reason": "blocked by unchecked/failed import; stale TTC not consumed",
         "dependencies": [
-          "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
           "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
-          "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr",
-          "research/DGamma/CP5O20CanonicalOrdinalAttachmentSpike.idr",
-          "research/DGamma/CP5O20OwnCutSafetySpike.idr",
-          "research/DGamma/CP5O20SupportedInsertPositionSpike.idr"
+          "research/DGamma/CP5O20OwnCutSafetySpike.idr"
         ]
       },
       "invocation": null,
@@ -7961,14 +7039,8 @@
       "reason": {
         "reason": "blocked by unchecked/failed import; stale TTC not consumed",
         "dependencies": [
-          "research/DGamma/CP5O19AdjacentReplayProducerSpike.idr",
-          "research/DGamma/CP5O19AdvanceObservationSpike.idr",
-          "research/DGamma/CP5O20BeginObservationSpike.idr",
           "research/DGamma/CP5O20CanonicalActionCompletenessSpike.idr",
-          "research/DGamma/CP5O20NativeAdvanceAttachmentSpike.idr",
-          "research/DGamma/CP5O20OwnCutSafetySpike.idr",
-          "research/DGamma/CP5O20PairedAdvanceSpike.idr",
-          "research/DGamma/CP5O20SingleRoleAdvanceExtractionSpike.idr"
+          "research/DGamma/CP5O20OwnCutSafetySpike.idr"
         ]
       },
       "invocation": null,
@@ -7985,7 +7057,6 @@
       "reason": {
         "reason": "blocked by unchecked/failed import; stale TTC not consumed",
         "dependencies": [
-          "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr",
           "research/DGamma/CP5O20DeletionDisappearanceSpike.idr",
           "research/DGamma/CP5O20OwnCutSafetySpike.idr"
         ]
@@ -8012,10 +7083,7 @@
           "research-tests/DGamma/R182O19SecondCrossingPositive.idr",
           "research-tests/DGamma/R182O19ThirdCrossingConstruction.idr",
           "research-tests/DGamma/R182O19ThirdCrossingPositive.idr",
-          "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
-          "research/DGamma/CP5O19AdjacentReplayProducerSpike.idr",
-          "research/DGamma/CP5O19ReplayObservationSpike.idr",
-          "research/DGamma/CP5RankedEarlyApplicabilitySpike.idr"
+          "research/DGamma/CP5ConfluenceCrossTraceSpike.idr"
         ]
       },
       "invocation": null,
@@ -8034,8 +7102,6 @@
         "dependencies": [
           "research-tests/DGamma/R191CanonicalChildRetirementGap.idr",
           "research-tests/DGamma/R193VestigialHistoryTransportPositive.idr",
-          "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
-          "research/DGamma/CP5O19SurfaceSpike.idr",
           "research/DGamma/CP5O20CanonicalActionCompletenessSpike.idr",
           "research/DGamma/CP5O20ProgramRoleWordSpike.idr"
         ]
@@ -8054,16 +7120,11 @@
       "reason": {
         "reason": "blocked by unchecked/failed import; stale TTC not consumed",
         "dependencies": [
-          "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
           "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
-          "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr",
-          "research/DGamma/CP5O19SurfaceSpike.idr",
           "research/DGamma/CP5O20CanonicalActionCompletenessSpike.idr",
           "research/DGamma/CP5O20CanonicalBlockComponentSpike.idr",
-          "research/DGamma/CP5O20CanonicalPairSelectionSpike.idr",
           "research/DGamma/CP5O20CanonicalWordCoverageSpike.idr",
-          "research/DGamma/CP5O20ProgramRoleWordSpike.idr",
-          "research/DGamma/CP5O20SharedBeginAdapterSpike.idr"
+          "research/DGamma/CP5O20ProgramRoleWordSpike.idr"
         ]
       },
       "invocation": null,
@@ -8080,12 +7141,8 @@
       "reason": {
         "reason": "blocked by unchecked/failed import; stale TTC not consumed",
         "dependencies": [
-          "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
           "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
-          "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr",
-          "research/DGamma/CP5O20CanonicalOrdinalAttachmentSpike.idr",
-          "research/DGamma/CP5O20PhysicalInsertPositionSpike.idr",
-          "research/DGamma/CP5O20StampedHistoryFoldSpike.idr"
+          "research/DGamma/CP5O20PhysicalInsertPositionSpike.idr"
         ]
       },
       "invocation": null,
@@ -8111,10 +7168,7 @@
           "research-tests/DGamma/R182O19SecondCrossingPositive.idr",
           "research-tests/DGamma/R182O19ThirdCrossingConstruction.idr",
           "research-tests/DGamma/R182O19ThirdCrossingPositive.idr",
-          "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
-          "research/DGamma/CP5O19AdjacentReplayProducerSpike.idr",
-          "research/DGamma/CP5O19ReplayObservationSpike.idr",
-          "research/DGamma/CP5RankedEarlyApplicabilitySpike.idr"
+          "research/DGamma/CP5ConfluenceCrossTraceSpike.idr"
         ]
       },
       "invocation": null,
@@ -8132,8 +7186,7 @@
         "reason": "blocked by unchecked/failed import; stale TTC not consumed",
         "dependencies": [
           "research-tests/DGamma/R191CanonicalChildRetirementGap.idr",
-          "research/DGamma/CP5O20PhysicalInsertStageSpike.idr",
-          "research/DGamma/CP5O20StampedHistoryFoldSpike.idr"
+          "research/DGamma/CP5O20PhysicalInsertStageSpike.idr"
         ]
       },
       "invocation": null,
@@ -8150,10 +7203,7 @@
       "reason": {
         "reason": "blocked by unchecked/failed import; stale TTC not consumed",
         "dependencies": [
-          "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
-          "research/DGamma/CP5O19AdjacentReplayProducerSpike.idr",
           "research/DGamma/CP5O20CanonicalBlockWordAgreementSpike.idr",
-          "research/DGamma/CP5O20PairedRemovalSpike.idr",
           "research/DGamma/CP5O20ProgramRoleWordSpike.idr"
         ]
       },
@@ -8171,14 +7221,9 @@
       "reason": {
         "reason": "blocked by unchecked/failed import; stale TTC not consumed",
         "dependencies": [
-          "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
           "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
-          "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr",
-          "research/DGamma/CP5O20CanonicalOrdinalAttachmentSpike.idr",
           "research/DGamma/CP5O20PhysicalInsertPositionSpike.idr",
-          "research/DGamma/CP5O20PhysicalInsertStageSpike.idr",
-          "research/DGamma/CP5O20StampedHistoryFoldSpike.idr",
-          "research/DGamma/CP5O20StampedOrdinalNecessitySpike.idr"
+          "research/DGamma/CP5O20PhysicalInsertStageSpike.idr"
         ]
       },
       "invocation": null,
@@ -8205,10 +7250,7 @@
           "research-tests/DGamma/R182O19SecondCrossingPositive.idr",
           "research-tests/DGamma/R182O19ThirdCrossingConstruction.idr",
           "research-tests/DGamma/R182O19ThirdCrossingPositive.idr",
-          "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
-          "research/DGamma/CP5O19AdjacentReplayProducerSpike.idr",
-          "research/DGamma/CP5O19ReplayObservationSpike.idr",
-          "research/DGamma/CP5RankedEarlyApplicabilitySpike.idr"
+          "research/DGamma/CP5ConfluenceCrossTraceSpike.idr"
         ]
       },
       "invocation": null,
@@ -8227,8 +7269,6 @@
         "dependencies": [
           "research-tests/DGamma/R191CanonicalChildRetirementGap.idr",
           "research-tests/DGamma/R193VestigialHistoryTransportPositive.idr",
-          "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
-          "research/DGamma/CP5O19SurfaceSpike.idr",
           "research/DGamma/CP5O20BlockEndRemainderSpike.idr",
           "research/DGamma/CP5O20CanonicalActionCompletenessSpike.idr",
           "research/DGamma/CP5O20ProgramRoleWordSpike.idr"
@@ -8250,8 +7290,7 @@
         "dependencies": [
           "research-tests/DGamma/R191CanonicalChildRetirementGap.idr",
           "research-tests/DGamma/R193VestigialHistoryTransportPositive.idr",
-          "research/DGamma/CP5O20NativeInsertEnvironmentSpike.idr",
-          "research/DGamma/CP5O20StampedOrdinalNecessitySpike.idr"
+          "research/DGamma/CP5O20NativeInsertEnvironmentSpike.idr"
         ]
       },
       "invocation": null,
@@ -8268,18 +7307,13 @@
       "reason": {
         "reason": "blocked by unchecked/failed import; stale TTC not consumed",
         "dependencies": [
-          "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
           "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
-          "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr",
-          "research/DGamma/CP5O19SurfaceSpike.idr",
           "research/DGamma/CP5O20BlockEndRemainderSpike.idr",
           "research/DGamma/CP5O20CanonicalActionCompletenessSpike.idr",
           "research/DGamma/CP5O20CanonicalBlockComponentSpike.idr",
           "research/DGamma/CP5O20CanonicalBlockWordAgreementSpike.idr",
-          "research/DGamma/CP5O20CanonicalPairSelectionSpike.idr",
           "research/DGamma/CP5O20CanonicalWordCoverageSpike.idr",
-          "research/DGamma/CP5O20ProgramRoleWordSpike.idr",
-          "research/DGamma/CP5O20SharedBeginAdapterSpike.idr"
+          "research/DGamma/CP5O20ProgramRoleWordSpike.idr"
         ]
       },
       "invocation": null,
@@ -8296,16 +7330,10 @@
       "reason": {
         "reason": "blocked by unchecked/failed import; stale TTC not consumed",
         "dependencies": [
-          "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
           "research/DGamma/CP5ConfluenceCrossTraceSpike.idr",
-          "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr",
-          "research/DGamma/CP5O20CanonicalOrdinalAttachmentSpike.idr",
           "research/DGamma/CP5O20NativeInsertEnvironmentSpike.idr",
-          "research/DGamma/CP5O20OccurrenceStampedHistorySpike.idr",
           "research/DGamma/CP5O20PhysicalInsertPositionSpike.idr",
-          "research/DGamma/CP5O20PhysicalInsertStageSpike.idr",
-          "research/DGamma/CP5O20StampedHistoryFoldSpike.idr",
-          "research/DGamma/CP5O20StampedOrdinalNecessitySpike.idr"
+          "research/DGamma/CP5O20PhysicalInsertStageSpike.idr"
         ]
       },
       "invocation": null,
@@ -8322,11 +7350,8 @@
       "reason": {
         "reason": "blocked by unchecked/failed import; stale TTC not consumed",
         "dependencies": [
-          "research/DGamma/CP5O19GridCertificationSpike.idr",
-          "research/DGamma/CP5O20DeletionRetainedBirthSpike.idr",
           "research/DGamma/CP5O20DiscardedSelectionCoverageSpike.idr",
-          "research/DGamma/CP5O20NativeInsertEnvironmentSpike.idr",
-          "research/DGamma/CP5O20RetainedClosingIndexSpike.idr"
+          "research/DGamma/CP5O20NativeInsertEnvironmentSpike.idr"
         ]
       },
       "invocation": null,
@@ -8345,10 +7370,7 @@
         "dependencies": [
           "research-tests/DGamma/R193VestigialHistoryTransportPositive.idr",
           "research-tests/DGamma/R200DiscardedCoverageBasePositive.idr",
-          "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr",
-          "research/DGamma/CP5O20InsertOccurrenceHistorySpike.idr",
-          "research/DGamma/CP5O20OccurrenceStampedHistorySpike.idr",
-          "research/DGamma/CP5O20StampedHistoryFoldSpike.idr"
+          "research/DGamma/CP5O20InsertOccurrenceHistorySpike.idr"
         ]
       },
       "invocation": null,
@@ -8365,10 +7387,7 @@
       "reason": {
         "reason": "blocked by unchecked/failed import; stale TTC not consumed",
         "dependencies": [
-          "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
-          "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr",
           "research/DGamma/CP5O20DeletionDisappearanceSpike.idr",
-          "research/DGamma/CP5O20DeletionRetainedBirthSpike.idr",
           "research/DGamma/CP5O20DiscardedBirthOriginSpike.idr",
           "research/DGamma/CP5O20DiscardedSelectionCoverageSpike.idr",
           "research/DGamma/CP5O20WholeClosingJoinSpike.idr"
@@ -8388,11 +7407,8 @@
       "reason": {
         "reason": "blocked by unchecked/failed import; stale TTC not consumed",
         "dependencies": [
-          "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr",
           "research/DGamma/CP5O20InsertOccurrenceHistorySpike.idr",
-          "research/DGamma/CP5O20NativeInsertEnvironmentSpike.idr",
-          "research/DGamma/CP5O20OccurrenceStampedHistorySpike.idr",
-          "research/DGamma/CP5O20StampedOrdinalNecessitySpike.idr"
+          "research/DGamma/CP5O20NativeInsertEnvironmentSpike.idr"
         ]
       },
       "invocation": null,
@@ -8409,7 +7425,6 @@
       "reason": {
         "reason": "blocked by unchecked/failed import; stale TTC not consumed",
         "dependencies": [
-          "research/DGamma/CP5O20RetainedClosingIndexSpike.idr",
           "research/DGamma/CP5O20WholeClosingJoinSpike.idr"
         ]
       },
@@ -8427,7 +7442,6 @@
       "reason": {
         "reason": "blocked by unchecked/failed import; stale TTC not consumed",
         "dependencies": [
-          "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr",
           "research/DGamma/CP5O20DiscardedBirthOriginSpike.idr",
           "research/DGamma/CP5O20WholeClosingJoinSpike.idr"
         ]
@@ -8465,7 +7479,6 @@
         "reason": "blocked by unchecked/failed import; stale TTC not consumed",
         "dependencies": [
           "research-tests/DGamma/R192RemovedBirthCurrentNameProbe.idr",
-          "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr",
           "research/DGamma/CP5O20ChronologicalOccurrenceHistorySpike.idr"
         ]
       },
@@ -8484,7 +7497,6 @@
         "reason": "blocked by unchecked/failed import; stale TTC not consumed",
         "dependencies": [
           "research-tests/DGamma/R193VestigialHistoryTransportPositive.idr",
-          "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr",
           "research/DGamma/CP5O20ChainCurrentDisappearanceSpike.idr",
           "research/DGamma/CP5O20DiscardedBirthOriginSpike.idr"
         ]
@@ -8503,15 +7515,9 @@
       "reason": {
         "reason": "blocked by unchecked/failed import; stale TTC not consumed",
         "dependencies": [
-          "research/DGamma/CP5ConfluenceCanonicalSortSpike.idr",
-          "research/DGamma/CP5ConfluenceRenamingCompositionSpike.idr",
           "research/DGamma/CP5O20ChainCurrentDisappearanceSpike.idr",
-          "research/DGamma/CP5O20HistoryNameTransportSpike.idr",
           "research/DGamma/CP5O20NativeInsertEnvironmentSpike.idr",
-          "research/DGamma/CP5O20RootOrdinalBoundarySpike.idr",
-          "research/DGamma/CP5O20RootReplayLawProducerSpike.idr",
-          "research/DGamma/CP5O20StampedOrdinalNecessitySpike.idr",
-          "research/DGamma/CP5O20SupportedEndpointCapitalSpike.idr"
+          "research/DGamma/CP5O20RootReplayLawProducerSpike.idr"
         ]
       },
       "invocation": null,

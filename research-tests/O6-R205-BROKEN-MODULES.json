@@ -9,6 +9,22 @@
       "cause": "Old actorLifecycleOnlyIntoExtended domain now denotes attached core+forced roots, not the old strict grammar. Arity repair alone would claim an unjustified attached-to-core reverse inclusion; explicitly forbidden by fidelity table.",
       "nativeError": "ActorLifecycleOnly selected trace: name versus DecEq; no type declaration for actorLifecycleOnlyIntoExtended",
       "repair": "NONE: no reverse coercion, new premise, constructor cases or re-proof attempted."
+    },
+    {
+      "path": "research-tests/DGamma/R18ExternalOrderProducerPositive.idr",
+      "invocation": "V55",
+      "sourceSHA256": "243961e3fc5e155cbc4c77573854bb9048350545adbec97dd752891a7c748aae",
+      "status": "BROKEN BY UNFREEZE \u2014 re-proof/scope obligation",
+      "cause": "Old two-case O19 body-head classifier no longer covers enlarged actor grammar. No narrowing, extra cases, premise or reverse attached-to-core cast attempted.",
+      "repair": "NONE"
+    },
+    {
+      "path": "research-tests/DGamma/R137O8GenerationIntervalRatification.idr",
+      "invocation": "V143",
+      "sourceSHA256": "3f037841fb3d58e0a9a92c766be9ee24a20e778536cfa7b0a506b12b44fe3677",
+      "status": "FAILED \u2014 pre-existing constructor telescope; record-only supervisor gate",
+      "cause": "MkGenerationScopedClosingStart expects opening-ordinal equality before generation; supervisor ordered record only, not a CP3-unfreeze attribution or repair.",
+      "repair": "NONE"
     }
   ]
 }
