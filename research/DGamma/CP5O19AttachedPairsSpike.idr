@@ -292,3 +292,9 @@ o19ObserveAttachedPair nameEq leftActor rightActor leftBody rightBody leftShape 
       case o19AttachedBodyOccurrence right (o19ObserveAttachedBody nameEq rightActor rightBody rightShape) rightIn of
         (rightEnd ** (rightCore ** rightClass)) =>
           MkO19AttachedSourcePair leftEnd rightEnd leftCore rightCore leftIn rightIn leftClass rightClass
+
+||| Executable seven-way source tag; the product of two tags names every
+||| A10/A12 matrix entry explicitly, including all root/control orientations.
+public export
+data O19AttachedForm = ActorLifecycleForm | ChildInsertForm | ChildRetireForm |
+  ChildRemoveForm | ForcedRootInsertForm | BundledRootRetireForm | BundledRootRemoveForm
