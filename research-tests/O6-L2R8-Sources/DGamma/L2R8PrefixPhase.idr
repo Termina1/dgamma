@@ -31,7 +31,7 @@ record PlacedPrefixPhaseInvariant
   (nameEq : DecEq name) (keyEq : DecEq key)
   {initial, finalState : SystemState name key value world error}
   {trace : Transitions initial finalState}
-  (trail : AvailabilityTrace name key world error value trace)
+  (trail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value trace)
   (selected : RootCatalogEntry name key world error value) where
   constructor MkPlacedPrefixPhaseInvariant
   0 selectedMember : Elem selected (scanRootCatalog 0 trail)
