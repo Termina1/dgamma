@@ -31,7 +31,7 @@ record AttachedBundleOccurrence
   memberCore : Transitions (attachedStart containingBlock) coreEnd
   0 memberExtended : ActorLifecycleOnlyExtended nameEq bundleActor memberCore
   memberBundle : Transitions coreEnd (attachedEnd containingBlock)
-  0 memberForced : OrderedForcedRootBundle nameEq bundleActor memberCore [] memberBundle
+  0 memberForced : DGamma.L2R3Attached.OrderedForcedRootBundle nameEq bundleActor memberCore [] memberBundle
   0 memberSplit : appendTransitions memberCore memberBundle = attachedBody containingBlock
   bundleOccurrence : LocatedActionOccurrence action memberBundle
   bundleOffset : Nat
@@ -55,7 +55,7 @@ record AttachedNormalForm
   0 rootInBundle : (action : Action name key value world error) ->
     (occurrence : LocatedActionOccurrence action gap) ->
     RootOrchestrationStep nameEq (locatedTransition occurrence) ->
-    AttachedBundleOccurrence name key world error value nameEq keyEq global action
+    DGamma.L2R3AttachedGap.AttachedBundleOccurrence name key world error value nameEq keyEq global action
       (gapOffset + locatedActionOrdinal occurrence)
 
 ||| A nonempty gap extends strictly beyond its physical starting cut.
@@ -86,7 +86,7 @@ export
   {global : Transitions initial finalState} ->
   {action : Action name key value world error} ->
   (offset, remaining : Nat) ->
-  (member : AttachedBundleOccurrence name key world error value nameEq keyEq global action (offset + 0)) ->
+  (member : DGamma.L2R3AttachedGap.AttachedBundleOccurrence name key world error value nameEq keyEq global action (offset + 0)) ->
   Either (LTE (bundleOffset member + transitionCount (memberBundle member)) offset)
     (LTE (offset + S remaining) (bundleOffset member)) -> Void
 rootHeadCannotBeBundled offset remaining member separated =
@@ -107,9 +107,9 @@ export
   {global : Transitions initial finalState} ->
   (gap : Transitions gapFirst gapFinal) -> (offset : Nat) ->
   (0 covered : RemainingGapHeadIsRoot nameEq gap) ->
-  (0 normal : AttachedNormalForm name key world error value nameEq keyEq global gap offset) ->
+  (0 normal : DGamma.L2R3AttachedGap.AttachedNormalForm name key world error value nameEq keyEq global gap offset) ->
   (0 separated : (action : Action name key value world error) -> (ordinal : Nat) ->
-    (member : AttachedBundleOccurrence name key world error value nameEq keyEq global action ordinal) ->
+    (member : DGamma.L2R3AttachedGap.AttachedBundleOccurrence name key world error value nameEq keyEq global action ordinal) ->
     Either (LTE (bundleOffset member + transitionCount (memberBundle member)) offset)
       (LTE (offset + transitionCount gap) (bundleOffset member))) ->
   transitionCount gap = 0
@@ -140,9 +140,9 @@ export
   (0 physical : transitionCount gap = transitionCount (attachedBetweenBlocks ordered)) ->
   (0 offsetPhysical : offset = transitionCount (attachedBefore earlier) + S (transitionCount (attachedBody earlier))) ->
   (0 covered : RemainingGapHeadIsRoot nameEq gap) ->
-  (0 normal : AttachedNormalForm name key world error value nameEq keyEq global gap offset) ->
+  (0 normal : DGamma.L2R3AttachedGap.AttachedNormalForm name key world error value nameEq keyEq global gap offset) ->
   (0 separated : (action : Action name key value world error) -> (ordinal : Nat) ->
-    (member : AttachedBundleOccurrence name key world error value nameEq keyEq global action ordinal) ->
+    (member : DGamma.L2R3AttachedGap.AttachedBundleOccurrence name key world error value nameEq keyEq global action ordinal) ->
     Either (LTE (bundleOffset member + transitionCount (memberBundle member)) offset)
       (LTE (offset + transitionCount gap) (bundleOffset member))) ->
   transitionCount (attachedBetweenBlocks ordered) = 0
