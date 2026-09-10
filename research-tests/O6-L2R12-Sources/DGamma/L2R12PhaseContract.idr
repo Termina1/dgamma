@@ -31,7 +31,7 @@ ForcedRootPhaseFromObservedAgreement :
   {first, finalState : SystemState name key value world error} ->
   {trace : Transitions first finalState} ->
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
-  (trail : AvailabilityTrace name key world error value trace) ->
+  (trail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value trace) ->
   (entry : RootCatalogEntry name key world error value) -> Type
 ForcedRootPhaseFromObservedAgreement {name} {key} {world} {error} {value}
   nameEq keyEq trail entry =
