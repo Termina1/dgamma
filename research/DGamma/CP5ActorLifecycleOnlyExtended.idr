@@ -64,20 +64,17 @@ data ActorLifecycleOnlyExtended :
     (0 only : ActorLifecycleOnlyExtended nameEq selected rest) ->
     ActorLifecycleOnlyExtended nameEq selected (MoreTransitions step rest)
 
-||| Only the SOUND old->research inclusion. This does not move any physical
-||| action or imply that a current inter-block gap is already empty.
+||| R206: the pre-unfreeze ActorOnly-to-Extended statement is retired.
+||| Production core embeds into the attached grammar WITHOUT forced roots.
+||| There is no attached-to-core coercion: bundles are real native edges.
 export
-0 actorLifecycleOnlyIntoExtended :
+0 actorLifecycleCoreIntoAttached :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   (nameEq : DecEq name) -> {selected : name} ->
   {first, finalState : SystemState name key value world error} ->
   {trace : Transitions first finalState} ->
-  ActorLifecycleOnly selected trace -> ActorLifecycleOnlyExtended nameEq selected trace
-actorLifecycleOnlyIntoExtended nameEq ActorLifecycleEnd = ExtendedLifecycleEnd
-actorLifecycleOnlyIntoExtended nameEq (ActorLifecycleStep step rest lifecycle owned only) =
-  ExtendedLifecycleStep step rest lifecycle owned (actorLifecycleOnlyIntoExtended nameEq only)
-actorLifecycleOnlyIntoExtended nameEq (ActorYieldedRegistrationStep step rest yielded only) =
-  ExtendedYieldedRegistrationStep step rest yielded (actorLifecycleOnlyIntoExtended nameEq only)
+  ActorLifecycleCore nameEq selected trace -> ActorLifecycleOnly nameEq selected trace
+actorLifecycleCoreIntoAttached {trace} nameEq core = ActorWithoutForcedRoots trace core
 
 ||| Exact physical block research copy. Only the actor-body grammar differs
 ||| from CP3; source/destination, installedness, original trace decomposition,
