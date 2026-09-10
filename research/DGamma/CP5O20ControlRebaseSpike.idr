@@ -247,3 +247,33 @@ o20RebaseEffectsObserved nameEq before after left right old agreeCurrent selecte
   rewrite found in rewrite o20RebaseAbsentDomain nameEq before after left right old agreeCurrent selected found in Refl
 o20RebaseEffectsObserved nameEq before after left right old agreeCurrent selected (Just fiber) found =
   rewrite sym (agreeCurrent selected fiber found) in synchronizedTables (allNameEffects old) selected
+
+||| CONDITIONAL ALL-name rebase on the actual two states. These three named
+||| primitive agreements must still be produced for the canonical/history map.
+||| No canonical agreement, D5 bridge, new public O19 premise or stored goal is
+||| asserted. Unsupported/absent/retired raw names remain in the quantified domain.
+export
+0 o20RebaseAllNameCutConditional :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (before, after : NameBijection name) ->
+  (left, right : SystemState name key value world error) ->
+  O20AllNameCut name key world error value nameEq before left right ->
+  (0 agreeCurrent : (point : name) -> (fiber : Fiber name key value world error) ->
+    lookupFiber {name} {key} {value} {world} {error} @{nameEq} point (registry left) = Just fiber ->
+    renameForward before point = renameForward after point) ->
+  (0 agreeParent : (point : name) -> (fiber : Fiber name key value world error) ->
+    lookupFiber {name} {key} {value} {world} {error} @{nameEq} point (registry left) = Just fiber ->
+    (parent : name) -> fiberParent fiber = ChildOf parent ->
+    renameForward before parent = renameForward after parent) ->
+  (0 agreeProviders : (point : name) -> (fiber : Fiber name key value world error) ->
+    lookupFiber {name} {key} {value} {world} {error} @{nameEq} point (registry left) = Just fiber ->
+    (provider : name) -> Elem provider (o20LifecycleControlNames (fiberLifecycle fiber)) ->
+    renameForward before provider = renameForward after provider) ->
+  O20AllNameCut name key world error value nameEq after left right
+o20RebaseAllNameCutConditional {name} {key} {world} {error} {value} nameEq before after left right old agreeCurrent agreeParent agreeProviders =
+  MkO20AllNameCut
+    (MkRenamedRuntimeEffects (synchronizedAmbient (allNameEffects old))
+      (\selected => o20RebaseEffectsObserved nameEq before after left right old agreeCurrent selected
+        (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected (registry left)) Refl))
+    (\selected => o20RebaseControlObserved nameEq before after left right old agreeCurrent agreeParent agreeProviders selected
+      (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected (registry left)) Refl)
