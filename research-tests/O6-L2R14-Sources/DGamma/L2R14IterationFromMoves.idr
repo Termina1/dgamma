@@ -23,8 +23,8 @@ export
   {nameEq : DecEq name} -> {keyEq : DecEq key} ->
   {initial, oldFinal, newFinal : SystemState name key value world error} ->
   {oldTrace : Transitions initial oldFinal} -> {newTrace : Transitions initial newFinal} ->
-  {oldTrail : AvailabilityTrace name key world error value oldTrace} ->
-  {newTrail : AvailabilityTrace name key world error value newTrace} ->
+  {oldTrail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value oldTrace} ->
+  {newTrail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value newTrace} ->
   (left, right : AdmittedDistanceMove name key world error value nameEq keyEq oldTrail newTrail) ->
   (beforeDistance left = beforeDistance right, afterDistance left = afterDistance right)
 admittedMoveMeasuresUnique left right =
