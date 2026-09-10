@@ -36,7 +36,8 @@ import Decidable.Decidable
 ||| Every ACTUAL raw insertion is at its name's unique position. The
 ||| non-insertion cases are discharged by the native action scan itself.
 ||| This is finite fixture evidence, not a general unique-name producer.
-export
+||| Public because consumers reduce its computed result.
+public export
 0 anchorInsertionAt : (crossed : Bool) -> (selected, position : Nat) ->
   (0 observed : rawInsertionNameAt Nat Bool Unit String (\key => Unit) position (anchorTrace crossed) = Just selected) ->
   position = (if selected == 4 then (if crossed then 6 else 7) else 8)
