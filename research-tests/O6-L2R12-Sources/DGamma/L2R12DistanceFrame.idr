@@ -27,8 +27,8 @@ export
   {initial, oldFinal, newFinal : SystemState name key value world error} ->
   {oldTrace : Transitions initial oldFinal} -> {newTrace : Transitions initial newFinal} ->
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
-  (oldTrail : AvailabilityTrace name key world error value oldTrace) ->
-  (newTrail : AvailabilityTrace name key world error value newTrace) ->
+  (oldTrail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value oldTrace) ->
+  (newTrail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value newTrace) ->
   (position, target, untouched : Nat) -> (0 bounded : LTE target position) ->
   (0 oldFrame : totalDistance nameEq keyEq oldTrail = minus (S position) target + untouched) ->
   (0 newFrame : totalDistance nameEq keyEq newTrail = minus position target + untouched) ->
