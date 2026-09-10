@@ -430,3 +430,20 @@ o19LegacyActorCore nameEq (LegacyActorStep step rest lifecycle owner tail) =
   CoreLifecycleStep step rest lifecycle owner (o19LegacyActorCore nameEq tail)
 o19LegacyActorCore nameEq (LegacyActorYield step rest inserted tail) =
   CoreYieldedRegistrationStep step rest inserted (o19LegacyActorCore nameEq tail)
+
+||| Unconditional original located-block word observation for the enlarged
+||| production grammar. The opening remains owned lifecycle; body controls
+||| and attached roots are preserved as distinct concrete alternatives.
+export
+0 o19ExpandedOriginalBlockWord :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {keyEq : DecEq key} -> (actor, forbidden : name) ->
+  {initial, finalState : SystemState name key value world error} ->
+  {source : Transitions initial finalState} ->
+  (block : LocatedOpenEpisodeBlock name key world error value nameEq keyEq actor source) ->
+  NoGeneratedChild forbidden (blockBody block) ->
+  (action : Action name key value world error) -> Elem action (o19ActionWord (actorBlockTrace block)) ->
+  O19ExpandedBlockWordObservation name key world error value nameEq actor forbidden action
+o19ExpandedOriginalBlockWord actor forbidden block safe _ Here = ExpandedLegacy (BlockOwnLifecycle Refl Refl)
+o19ExpandedOriginalBlockWord {nameEq} actor forbidden block safe action (There member) =
+  o19ExpandedOwnedSafeWord nameEq actor forbidden (blockBody block) (blockActorOnly block) safe action member
