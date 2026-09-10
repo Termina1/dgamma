@@ -52,10 +52,10 @@ parentOrdinalLink {name} {key} {world} {error} {value} {trace}
   trans (mapFusion
     {a = SharedKey (dependencies (componentProvisions (fiberComponent fiber)))
       (dependencies (componentProvisions component))}
-    {b = (selected : name ** AttachedRelease name key world error value nameEq selected trace component)}
+    {b = (selected : name ** DGamma.L2R3Attached.AttachedRelease name key world error value nameEq selected trace component)}
     {c = Nat}
     (\release => locatedActionOrdinal (releaseOccurrence (snd release)))
-    (\shared => (actor ** MkAttachedRelease child fiber occurrence found equation
+    (\shared => (actor ** DGamma.L2R3Attached.MkAttachedRelease child fiber occurrence found equation
       (sharedKey shared) (inLeft shared) (inRight shared)))
     (sharedKeysObserved keyEq
       (dependencies (componentProvisions (fiberComponent fiber)))
@@ -120,7 +120,7 @@ export
   {first, middle, finalState : SystemState name key value world error} ->
   {nameEq : DecEq name} -> {component : Component key value world error} ->
   (step : Transition first middle) -> (rest : Transitions middle finalState) ->
-  (release : (actor : name ** AttachedRelease name key world error value nameEq actor rest component)) ->
+  (release : (actor : name ** DGamma.L2R3Attached.AttachedRelease name key world error value nameEq actor rest component)) ->
   locatedActionOrdinal (releaseOccurrence (snd (releaseThroughHead step rest release))) =
     S (locatedActionOrdinal (releaseOccurrence (snd release)))
 releaseShiftOrdinal step rest (actor ** release) = Refl
@@ -131,7 +131,7 @@ export
   {first, middle, finalState : SystemState name key value world error} ->
   {nameEq : DecEq name} -> {component : Component key value world error} ->
   (step : Transition first middle) -> (rest : Transitions middle finalState) ->
-  (releases : List (actor : name ** AttachedRelease name key world error value nameEq actor rest component)) ->
+  (releases : List (actor : name ** DGamma.L2R3Attached.AttachedRelease name key world error value nameEq actor rest component)) ->
   map (\release => locatedActionOrdinal (releaseOccurrence (snd release)))
     (map (releaseThroughHead step rest) releases) =
   map S (map (\release => locatedActionOrdinal (releaseOccurrence (snd release))) releases)
@@ -149,13 +149,13 @@ export
   {trace : Transitions first finalState} ->
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (component : Component key value world error) ->
-  (trail : AvailabilityTrace name key world error value trace) ->
+  (trail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value trace) ->
   map (\release => locatedActionOrdinal (releaseOccurrence (snd release)))
     (scanObservedReleases nameEq keyEq component trail) =
   releaseOrdinalScan nameEq keyEq component trail
-releaseOrdinalLink nameEq keyEq component (AvailabilityEnd state) = Refl
+releaseOrdinalLink nameEq keyEq component (DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd state) = Refl
 releaseOrdinalLink {name} {key} {world} {error} {value}
-  nameEq keyEq component (AvailabilityStep source (Fired ne ke action tag checked) rest later) =
+  nameEq keyEq component (DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep source (Fired ne ke action tag checked) rest later) =
   trans (mapAppend
     (\release => locatedActionOrdinal (releaseOccurrence (snd release)))
     (releaseAtAction nameEq keyEq component (Fired ne ke action tag checked) rest action Refl)
