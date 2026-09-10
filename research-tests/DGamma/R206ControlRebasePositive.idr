@@ -53,3 +53,14 @@ r206RemovedReferenceAgreements =
    (\selected, fiber, found, provider, member => case selected of
     Z => case justInjective found of Refl => absurd member
     S later => void (nothingIsNotJust found)))
+
+||| Positive full ALL-name endpoint cut under the genuinely nonidentity map.
+||| The historical child was removed; this is NOT canonical capital or D5.
+export
+0 r206RemovedAllNameRebase :
+  O20AllNameCut Nat R45Key Unit String R45Value r45NameEq r192AbsentBijection
+    r192RemovedBirthFinal r192RemovedBirthFinal
+r206RemovedAllNameRebase = o20RebaseAllNameCutConditional r45NameEq identityNameBijection r192AbsentBijection
+  r192RemovedBirthFinal r192RemovedBirthFinal
+  (o20IdentityAllNameCut r45NameEq r192RemovedBirthFinal)
+  r206RemovedCurrentAgreement (fst r206RemovedReferenceAgreements) (snd r206RemovedReferenceAgreements)
