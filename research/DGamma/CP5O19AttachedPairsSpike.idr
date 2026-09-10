@@ -443,3 +443,30 @@ export
 o19AttachedActivationOrchestrationDiamond nameEq keyEq left right aligned activation observed notLifecycle distinct licensing wellFormed independent =
   activationOrchestrationDiamondSpike nameEq keyEq left right aligned activation
     (o19AttachedOrchestration observed notLifecycle) distinct licensing wellFormed independent
+
+||| Expanded O/A local theorem, including both child controls and all bundle
+||| forms. The early activation and its source agreement remain REAL premises;
+||| source labels alone never transport a guard to the pre-orchestration cut.
+export
+0 o19AttachedOrchestrationActivationDiamond :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) ->
+  {actor : name} -> {coreFirst, coreLast, first, middle, last, earlyLast : SystemState name key value world error} ->
+  {core : Transitions coreFirst coreLast} ->
+  (left : Transition first middle) -> (right : Transition middle last) -> (earlyRight : Transition first earlyLast) ->
+  AlignedTransitions name key world error value nameEq keyEq (MoreTransitions left (MoreTransitions right NoTransitions)) ->
+  AlignedTransitions name key world error value nameEq keyEq (MoreTransitions earlyRight NoTransitions) ->
+  transitionAction earlyRight = transitionAction right -> transitionTag earlyRight = transitionTag right ->
+  O19AttachedEdge name key world error value nameEq actor core left ->
+  Not (isLifecycleAction (transitionAction left) = True) -> PaperActivationStep right ->
+  Not (transitionActor left = transitionActor right) ->
+  ((child : name) -> (parent : Parent name) -> (component : Component key value world error) ->
+    transitionAction left = OInsert child parent component -> Not (transitionActor right = child)) ->
+  ((child, parent : name) -> (component : Component key value world error) ->
+    transitionAction left = OInsert child (ChildOf parent) component -> Not (transitionActor right = parent)) ->
+  registryWellFormed @{nameEq} @{keyEq} first = True ->
+  TraceIndependent name key world error value keyEq (MoreTransitions left (MoreTransitions right NoTransitions)) ->
+  LocalRelationalDiamond name key world error value nameEq keyEq left right
+o19AttachedOrchestrationActivationDiamond nameEq keyEq left right earlyRight aligned earlyAligned sameAction sameTag observed notLifecycle activation distinct childSafe parentSafe wellFormed independent =
+  orchestrationActivationDiamondSpike nameEq keyEq left right earlyRight aligned earlyAligned sameAction sameTag
+    (o19AttachedOrchestration observed notLifecycle) activation distinct childSafe parentSafe wellFormed independent
