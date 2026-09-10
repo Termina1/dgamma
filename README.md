@@ -1235,3 +1235,33 @@ standing “no let aliases” rule will be checked for the disclosed A5 bindings
 helper; any necessary body-only repair is deferred to R204 under gate. No waiver,
 reviewer completion or A/B/D5/convergence closure is claimed.
 [Verbatim ruling](research-tests/O6-R203-OWNER-FINAL-GATE.md).
+
+
+## R207 — attached-source expansion and honest O19 frontier
+
+Source milestone `d45f3c4b` is **partial**, final validation complete; independent
+review/gate pending.
+Production and frozen theorem bodies are unchanged; Thm73 remains open.
+
+| Paper / obligation | Idris file:name | Status |
+|---|---|---|
+| Thm73 O19 actual Cartesian / physical blocks | `CP5O19ActualCartesianSpike:o19CartesianActualBlocks`; `CP5O19WholeBlockSpike:o19ActualWholeBlock` | **Proved conditionally** on explicit selected-body `LegacyActorOnly`; native append/count lemmas repaired |
+| Thm73 O19 production-grammar source cases | `CP5O19AttachedPairsSpike:o19ObserveAttachedBody`, `o19ObserveAttachedPair`, `o19AttachedExternalKind` | **Proved** total native-source classification: seven forms / 49 products; not replay commutation |
+| Lemma71 / O19 expanded local swaps | `CP5O19AttachedPairsSpike:o19AttachedActivationOrchestrationDiamond`, `o19AttachedOrchestrationActivationDiamond`, `o19AttachedOrchestrationDiamond` | **Proved conditionally** on existing primitive diamond premises; block-level discharge OPEN |
+| Thm73 fixed root-input order | `CP5O19AttachedPairsSpike:o19AttachedRootOrderObstruction` | **Proved** local obstruction; not a sanctioned-block counterexample |
+| Thm73 O19 reached / operational result | `CP5O19ReachedDecompositionSpike:o19ActualTargetDecomposition`; `CP5O19OperationalAssemblySpike:o19ActualOperationalBlockSwap` | **Proved conditionally** on legacy bodies throughout the decomposition |
+| Thm73 expanded unconditional O19 result | `O19WholeBlockUnconditionalObligation`, `O19ReachedUnconditionalObligation`, `O19ReachedDecompositionUnconditionalObligation`, `O19OperationalUnconditionalObligation` | **TYPE-only OPEN obligations**, no inhabitant/hole/postulate |
+| Thm73 lifecycle / resolver consumers | `CP5O20CanonicalActionCompletenessSpike:o20DecomposedLifecyclePaper`; `CP5O20BlockResolverFrameSpike:o20InstalledActorBodyResolver` | Lifecycle classification unchanged/unconditional; resolver family **legacy-conditional**, five expanded TYPE-only obligations |
+| Thm73 canonical zip / A15 / rebase-D5 / convergence | Existing A/B/V/C targets | **OPEN**, genuine runtime context depends on frozen CrossTrace's unproduced unconditional O19 result |
+
+Native regression: `research-tests/DGamma/R207AttachedPairsPositive.idr`.
+[Exact original requirements](research-tests/O6-R207-CROSSTRACE-NEEDS.json) ·
+[49-product residues](research-tests/O6-R207-R208-RESIDUES.md) ·
+[Audit](research-tests/O6-R207-AUDIT.md).
+A checked package is not a proof of blocked research targets. Census remains
+**4 = 1/2/0/0/1**; no new escape hatch was introduced.
+
+Final previous117 disposition: **13 PASS /2 fresh FAIL /102 blocked**.
+CrossTrace and the historical R193 resolver fixture are the two current fresh
+failures. Twelve changed/new sources PASS; seeded package PASS without rebuild;
+38 evidence tests PASS. [Machine disposition](research-tests/O6-R207-DISPOSITION.json).

@@ -1,0 +1,124 @@
+{
+  "crossTraceDeclaredNames": [
+    "CanonicalConvergenceResult",
+    "IntermediateVestigialStaticInterfaceRegression",
+    "MkCanonicalConvergenceResult",
+    "MkIntermediateVestigialStaticInterfaceRegression",
+    "MkPermutedCanonicalExecution",
+    "PermutedCanonicalExecution",
+    "canonicalConvergenceFromBridge",
+    "canonicalSchedulesConvergeSpike",
+    "canonicalSupportOrderBackwardFromTruth",
+    "canonicalSupportOrderForwardFromTruth",
+    "canonicalSupportOrdersFromTruth",
+    "canonicalSupportOrdersMatchSpike",
+    "composedPermutationEndpoint",
+    "confluenceResultFromCanonicalCapital",
+    "convergenceBridge",
+    "intermediateVestigialStaticInterfaceRegression",
+    "operationalAdjacentBlockSwapSpike",
+    "operationalPermutationEndpoint",
+    "operationalPermutationOccurrenceCorrespondence",
+    "operationalPermutationReplayCorrespondence",
+    "operationalPermutationSameExternalInputs",
+    "originalEndpointsConvergeSpike",
+    "pathThroughWithdrawnIntermediate",
+    "permutationOccurrenceCorrespondence",
+    "permutationReplayCorrespondence",
+    "permutationSameExternalInputs",
+    "permutedCanonicalExecutionFromOperational",
+    "permutedLeftExecution",
+    "preciseWithdrawnBirth",
+    "preciseWithdrawnBirthCurrent",
+    "preciseWithdrawnBirthDeleted",
+    "selectOperationalCanonicalPermutationSpike",
+    "withdrawnIntermediateAbsentRight",
+    "withdrawnIntermediateNotAnActor"
+  ],
+  "entries": [
+    {
+      "path": "research/DGamma/CP5O20SafeBlockSelectionSpike.idr",
+      "sourceBeforeSHA256": "a1d77431b19b6734bb15c6f095bdc073d2953327cc9c1e88e7d0bc2a33266f3f",
+      "crossTraceDeclaredNamesUsed": [],
+      "status": "PASS U07-2: unused direct import replaced by direct defining O19Surface; no theorem change",
+      "sourceAfterSHA256": "d04aa8a21e796e0c458e674711fd681821af083af95eb806f53e51f31fb7a006",
+      "nativeAttempts": [
+        "U07-1: removed import failed because O19Surface definitions were previously reached transitively",
+        "U07-2: direct O19Surface import; fresh own PASS"
+      ]
+    },
+    {
+      "path": "research/DGamma/CP5O20LinearExtensionSpike.idr",
+      "sourceBeforeSHA256": "9fe05758dae553bd0f7be5633007e3e0c8b520d4b8c5a7649372c19a1138d7cc",
+      "crossTraceDeclaredNamesUsed": [],
+      "status": "PASS U08-1: unused direct import replaced by direct defining O19Surface; no theorem change",
+      "sourceAfterSHA256": "0e8b7dfe9ed8f3e31b68b33afbfd8fee844a6deef5f93891e9391bdf42529c77",
+      "nativeAttempts": [
+        "U08-1: direct O19Surface import; fresh own PASS"
+      ]
+    },
+    {
+      "path": "research/DGamma/CP5O20CanonicalWordCoverageSpike.idr",
+      "sourceBeforeSHA256": "f02e46e0b710a2aff31bf4da87fad9bed53160fee28675a2b4b5c27f557c468c",
+      "crossTraceDeclaredNamesUsed": [],
+      "status": "PASS U09-1: unused direct CrossTrace import removed; defining O19Surface was already direct",
+      "sourceAfterSHA256": "18ba6698a2ea77601e82ceb556dcc1871fe977640b55066915f20b5fff2210cb",
+      "nativeAttempts": [
+        "U09-1: fresh own PASS; no theorem/body change"
+      ]
+    },
+    {
+      "path": "research/DGamma/CP5O20SelectionCompletenessSpike.idr",
+      "sourceBeforeSHA256": "0142151162552a06a25fc3bb90437c666e8bd1bbe3c7be24a629937d9d30f2e3",
+      "crossTraceDeclaredNamesUsed": [],
+      "status": "NOT EDITED / NOT CHECKED: its OperationalProgress/BlockResolver prerequisites remain blocked or fail; no speculative import edit retained"
+    },
+    {
+      "path": "research/DGamma/CP5O20PhysicalInsertPositionSpike.idr",
+      "sourceBeforeSHA256": "9c8d6ebbbada94b78822edc43554dc239c21716ad0615d7809658ea4fe8fe06a",
+      "crossTraceDeclaredNamesUsed": [
+        "PermutedCanonicalExecution",
+        "permutationOccurrenceCorrespondence"
+      ],
+      "status": "KEEP: real frozen export use"
+    },
+    {
+      "path": "research/DGamma/CP5O20PhysicalInsertStageSpike.idr",
+      "sourceBeforeSHA256": "e8c266f11f3c8fc0456e017111d8e8d9dd86600a0803825cdc0907a2e51b1c68",
+      "crossTraceDeclaredNamesUsed": [
+        "PermutedCanonicalExecution",
+        "permutationOccurrenceCorrespondence"
+      ],
+      "status": "KEEP: real frozen export use"
+    },
+    {
+      "path": "research/DGamma/CP5O20NativeInsertEnvironmentSpike.idr",
+      "sourceBeforeSHA256": "c09c80856bb3f1e374b18c4bfb4d8439df1d5e9f59a3761f67018cbec5ccef41",
+      "crossTraceDeclaredNamesUsed": [
+        "PermutedCanonicalExecution",
+        "permutationOccurrenceCorrespondence"
+      ],
+      "status": "KEEP: real frozen export use"
+    },
+    {
+      "path": "research/DGamma/CP5O20InsertOccurrenceHistorySpike.idr",
+      "sourceBeforeSHA256": "3c928e581c65dabf7a15b49e0dc2ba9b6004a46d69efd4c4f9f579c13e482677",
+      "crossTraceDeclaredNamesUsed": [
+        "PermutedCanonicalExecution",
+        "permutationOccurrenceCorrespondence"
+      ],
+      "status": "KEEP: real frozen export use"
+    },
+    {
+      "path": "research/DGamma/CP5O20RootReplayLawProducerSpike.idr",
+      "sourceBeforeSHA256": "6542bfbdf05d2112ea663686b9ad5bdd18cd3e7f89a77ab8498340d254e4eedd",
+      "crossTraceDeclaredNamesUsed": [
+        "PermutedCanonicalExecution",
+        "operationalPermutationOccurrenceCorrespondence",
+        "permutationOccurrenceCorrespondence"
+      ],
+      "status": "KEEP: real frozen export use"
+    }
+  ],
+  "qualification": "Token inventory includes top-level values, records, constructors, and record projections defined by frozen CrossTrace. Absence does not imply all transitive definitions were already directly imported; native checks decide."
+}

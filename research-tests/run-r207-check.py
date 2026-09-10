@@ -36,7 +36,8 @@ if path in contracts:
     contract=contracts[path]
     assert contract['sourceSHA256']==sha(snapshot), 'Changed negative contract requires new gate'
     expected=contract['expectedDiagnostic'];symbol=contract['symbol']
-assert utc() < ('2026-09-10T08:18:00' if unit.startswith(('V','P')) else '2026-09-10T08:03:00'), 'R207 proof/validation cutoff'
+is_validation = unit.startswith(('V','P')) and not unit.startswith('VREST')
+assert utc() < ('2026-09-10T08:18:00' if is_validation else '2026-09-10T08:03:00'), 'R207 proof/validation cutoff'
 assert not unit.startswith('C'), 'Unit C ineligible: A/B not closed'
 if path!='package':
     if path in PROTECTED_PATHS or any(w in path for w in ['CP5L2R','L2R','ActorLifecycleOnlyExtended','CP5AvailabilityAware']):

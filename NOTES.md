@@ -5312,3 +5312,125 @@ Next: separately gated R207 expanded seven-form O19/reached-state redesign from
 `O6-R206-O19-EXPANSION-DESIGN.md`, **ActualCartesian FIRST**; then discharge canonical map agreement and
 runtime chronology/A6/D5 against the repaired dependency spine. Recheck blocked
 closures before using their TTCs. Supervisor owns the acceptance/push/merge.
+
+
+## R207 design and deviation ledger
+
+- **Authority and scope:** starting seal `fec95252`; source milestone
+  `d45f3c4b`. Production, all frozen modules/regions and all four hole
+  declarations remain byte-identical. `O6-R207-SEMANTIC-GATE.md` records the
+  narrower conditional migration and final U010 approval. No E-cap extension,
+  frozen import pruning, deleted TTC revival, or A15 relocation is authorized.
+- **ActualCartesian:** its legacy-dependent family explicitly takes BOTH
+  selected source bodies' `LegacyActorOnly` proofs. The two native physical
+  append/count statements are re-proved without that restriction. This is not
+  an expanded unconditional O19 producer.
+- **WholeBlock:** finite product count, nonempty chain and whole-block result
+  are proved for that same conditional run. Their expanded requirements are
+  preserved in one TYPE-only record, whose hypothetical expanded cursor is
+  shared by all fields. The record has no constructed value.
+- **ReachedBlocks:** every source decomposition body now explicitly supplies
+  legacy evidence. Word reconstruction and untouched blocks carry their own
+  legacy proof; no state-indexed attached grammar is inferred from a word.
+  The native embedding uses `ActorWithoutForcedRoots` / `o19LegacyActorCore`.
+  BlockBefore association, boundary counts and all site-order cases were
+  re-proved. Target-block/order claims for a hypothetical expanded run are
+  separately stated in `O19ReachedUnconditionalObligation`, not inhabited.
+- **ReachedDecomposition / OperationalAssembly:** complete same-cursor
+  decomposition, endpoint, full invariant bundle, uniqueness and external
+  input relation remain checked **legacy-conditional** theorems. The erased
+  decomposition specification and literal original operational function type
+  are TYPE-only obligations. CrossTrace has no new parameter: its original
+  unconditional call now honestly fails. Exact 36 original types are archived.
+- **Attached pairs:** the new total source observer handles lifecycle, yielded
+  child Insert, owned child Retire/Remove, forced root Insert and same-bundle
+  root Retire/Remove. Its native OccursIn evidence preserves original source
+  lookup/parent facts, core, prior-root membership and forcing reason. The
+  product represents all49 cases without putting a diamond, guard, swapped
+  trace or commutation assumption into the observation. The executable form
+  tag does not inspect erased proofs. Native observer/proof producers are
+  quantity0 research capital, not a claimed runtime scheduler.
+- **Local versus reached:** external/internal source classification is proved;
+  source-to-replay metadata transport is not. A/O, O/A and O/O adapters apply
+  the existing frozen primitive surfaces with their real applicability,
+  alignment, licensing, independence and safety premises still explicit.
+  They do not establish those premises from block safety.
+- **Root-order warning:** exact root heads cannot be skipped or exchanged
+  under SameExternalOrchestration. The nine root/root products need a reached
+  impossibility/separation theorem, or may reveal a false unconditional
+  interface. The fixture proves a native local obstruction only; no sanctioned
+  whole-block counterexample is claimed. NoGeneratedChild excludes new child
+  Insert, not controls of existing children or attached roots.
+- **Canonical lifecycle migration:** wrap the original BlockOwnLifecycle in
+  ExpandedLegacy. No theorem premise changed.
+- **Unused imports:** only three lexically audited MAIN modules were pruned:
+  SafeBlockSelection and LinearExtension now directly import defining
+  O19Surface, and CanonicalWordCoverage already did. Their theorem bodies and
+  types are unchanged. Five runtime history modules genuinely use frozen
+  PermutedCanonicalExecution / occurrence correspondence and were untouched.
+  SelectionCompleteness was not speculatively edited. Native checks, not
+  lexical absence alone, decide whether a transitive import can be removed.
+- **BlockResolverFrame:** a fresh failure exposed five pre-unfreeze grammar
+  consumers. The supervisor authorized U010; all five are now checked against
+  LegacyActorOnly, matching RightOpeningTransport. Their expanded signatures
+  explicitly thread nameEq in one TYPE-only record; pre-migration text is
+  archived in O6-R207-BLOCK-RESOLVER-NEEDS.json. Expanded control/resolver
+  transport is not claimed. This does not silently weaken a frozen theorem.
+- **Escape-hatch census:** no new hole, postulate, believe_me, assert_total,
+  assert_smaller, partial definition, forbidden cast, or frozen deletion proof
+  call. The new TYPE-only records/family state goals but have NO inhabitants;
+  defining their constructors is not proving their fields. All changed Idris
+  modules retain `%default total`.
+- **Validation discipline:** source changes and import-closed dependents only,
+  plus seeded package; no full-tree pass. A root's earlier PASS is invalidated
+  if its import snapshot/ancestor epoch predates a current source change. This
+  prevents future fixtures from retaining a PASS after an imported module's
+  later declaration changes. The R207 fixture was actually checked after E21
+  completed its dependency. Four adversarial tests cover this rule, alongside
+  and inherited-disposition checks (38 total). Evidence verification is not
+  the independent human/agent reviewer. SupportSolution TTC is authenticated
+  against R206 hash AND mtime; it is never re-elaborated.
+
+## Status
+
+**R207 final evidence is CHECKED-PARTIAL; external review/owner gate pending.**
+
+Fully proved at fresh source: total seven-form/native49-product source
+observations; external/internal classification and root-order obstruction;
+conditional expanded local adapters; conditional legacy Cartesian, whole,
+reached and operational families; native BlockBefore equations; unconditional
+canonical lifecycle classification; conditional legacy resolver frames; five
+native attached grammar/guard/order/tag regressions.
+
+Partial/unproduced: original-to-replay child/root control metadata and forcing
+reason; root/root separation compatible with input order; expanded pair/column
+producer; unconditional expanded Cartesian/reached/operational result. The
+frozen CrossTrace boundary freshly fails, rather than receiving legacy
+premises or a stale TTC. Canonical current/parent/provider agreement, D5,
+ordered canonical zip, predecessor-A6 cuts/skips, R198 runtime histories and
+synchronization remain OPEN. The sole authorized new-premise A15 restatement
+is NOT ATTEMPTED in its blocked original context. C is INELIGIBLE.
+
+Merely stated: four new O19 TYPE-only obligation interfaces and one five-field
+expanded resolver interface; all existing final endpoint/confluence goals.
+The original four frozen holes remain **4 =1/2/0/0/1**. Thm73 is NOT closed.
+R172 remains retired by the earlier owner-signed unfreeze, not re-proved.
+
+Next: first test/prove the exact reached root-order separation obligation (do
+not assume a generic two-bundle crossing is valid), then source-to-replay
+control/AttachedReason transport and the full expanded producer chain in
+O6-R207-R208-RESIDUES.md. Only after the frozen boundary truly typechecks,
+recheck original V/B/A contexts and attempt their authorized seams. Supervisor
+owns independent review, acceptance, push/merge and any further scope gate.
+
+
+R207 final validation:12 changed/new sources all fresh PASS;121 import-closed
+entries =16 fresh positive PASS +2 fresh FAIL +102 blocked +1 inherited retired.
+Previous117 =13 PASS/2 FAIL/102 blocked. Current BROKEN roots are frozen
+CrossTrace and the old-arity R193InstalledBlockResolverPositive fixture, retained
+unchanged after the cap. PFINAL seeded package PASS15.675s/no Building;62 native
+records (50 accepted/12 rejected outcomes) and38 adversarial tests retained.
+SupportSolution TTC/hash/mtime and all production/frozen bytes unchanged.
+See O6-R207-AUDIT.md and O6-R207-DISPOSITION.json; independent evidence script
+PASS is not the still-required external review. D2 exact producer inventory is
+committed at8c2267e3 for lane2; D3 stores final evidence, D4 remains reserved.

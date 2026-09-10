@@ -1,0 +1,804 @@
+[
+  {
+    "unit": "ARTIFACT",
+    "message": "R207 D1: accepted baseline and guarded main-lane evidence tooling",
+    "beforeCommit": "fec9525287d83303aba90efe95829da5993299ac",
+    "afterCommit": "c1466f006ac7df2e861f6985b9ba589ceea12fa2",
+    "timestampUTC": "2026-09-10T04:48:37.961546+00:00",
+    "hashes": {
+      "research-tests/O6-R207-AUDIT.md": {
+        "before": null,
+        "after": "282d5383445f1bb39834835e038b3d358257ea1e9af0d4a1e017b6f176d77655"
+      },
+      "research-tests/r207_common.py": {
+        "before": null,
+        "after": "17ade0b7b6f51f0d5e336766c55fbe70b6a3857a66cab856e7970d4e36a43cee"
+      },
+      "research-tests/run-r207-check.py": {
+        "before": null,
+        "after": "bb20ff318af39420072730a4d9949d5779683421a1960c2322ebe72b610b9eb0"
+      },
+      "research-tests/run-r207-commit.py": {
+        "before": null,
+        "after": "fbd6d5d9ef75de8bd72beda3b8c0c39599621680d92198b440a93789f7835e05"
+      }
+    },
+    "guardSHA256": "fbd6d5d9ef75de8bd72beda3b8c0c39599621680d92198b440a93789f7835e05",
+    "noStagedFiles": true,
+    "productionUnchanged": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true,
+    "crossLaneOverlapTimestampsUTC": [
+      "2026-09-10T04:48:37.961807+00:00"
+    ]
+  },
+  {
+    "unit": "U01-1",
+    "message": "R207 U01: re-prove ActualCartesian conditionally and migrate native BlockBefore association",
+    "beforeCommit": "c1466f006ac7df2e861f6985b9ba589ceea12fa2",
+    "afterCommit": "973595b80dc3848e321fcf0267062ebb7bc56619",
+    "timestampUTC": "2026-09-10T04:50:01.238263+00:00",
+    "hashes": {
+      "research/DGamma/CP5O19ActualCartesianSpike.idr": {
+        "before": "f4461949739257d30d103bc30abdc7c756291cd5625126fe55764dc68536e863",
+        "after": "8a64d7cfe6e6fe698d0759784e07b9e8c2e5f487609eb2a0092585f9901aa9c9"
+      }
+    },
+    "guardSHA256": "fbd6d5d9ef75de8bd72beda3b8c0c39599621680d92198b440a93789f7835e05",
+    "noStagedFiles": true,
+    "productionUnchanged": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true,
+    "crossLaneOverlapTimestampsUTC": [
+      "2026-09-10T04:50:01.238627+00:00"
+    ]
+  },
+  {
+    "unit": "E1-1",
+    "message": "R207 E1: seven native source-edge classes preserve original core and bundle evidence",
+    "beforeCommit": "973595b80dc3848e321fcf0267062ebb7bc56619",
+    "afterCommit": "6ba2ad03be0e98977c2fe5acf048e4e30c94d1fa",
+    "timestampUTC": "2026-09-10T04:53:34.127252+00:00",
+    "hashes": {
+      "research/DGamma/CP5O19AttachedPairsSpike.idr": {
+        "before": null,
+        "after": "605220038396ee0140e1585fdee3f52d8cef04fbe8c0d3d721ae54c340b8aa05"
+      }
+    },
+    "guardSHA256": "fbd6d5d9ef75de8bd72beda3b8c0c39599621680d92198b440a93789f7835e05",
+    "noStagedFiles": true,
+    "productionUnchanged": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true,
+    "crossLaneOverlapTimestampsUTC": [
+      "2026-09-10T04:53:34.127610+00:00"
+    ]
+  },
+  {
+    "unit": "E2-1",
+    "message": "R207 E2: exact native attached-spine scan interface",
+    "beforeCommit": "6ba2ad03be0e98977c2fe5acf048e4e30c94d1fa",
+    "afterCommit": "7731246601eb8db7100a11bb9747f795391111df",
+    "timestampUTC": "2026-09-10T04:54:38.538625+00:00",
+    "hashes": {
+      "research/DGamma/CP5O19AttachedPairsSpike.idr": {
+        "before": "605220038396ee0140e1585fdee3f52d8cef04fbe8c0d3d721ae54c340b8aa05",
+        "after": "5976e90066a85d6f25e3c011610a8092df7fe15d3a1a81665061fa619fdcb316"
+      }
+    },
+    "guardSHA256": "fbd6d5d9ef75de8bd72beda3b8c0c39599621680d92198b440a93789f7835e05",
+    "noStagedFiles": true,
+    "productionUnchanged": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true,
+    "crossLaneOverlapTimestampsUTC": [
+      "2026-09-10T04:54:38.538894+00:00"
+    ]
+  },
+  {
+    "unit": "E3-1",
+    "message": "R207 E3: total native attached grammar scan lemma",
+    "beforeCommit": "7731246601eb8db7100a11bb9747f795391111df",
+    "afterCommit": "28d5e5b811c148c4736085f540009f1f521edab7",
+    "timestampUTC": "2026-09-10T04:54:40.149302+00:00",
+    "hashes": {
+      "research/DGamma/CP5O19AttachedPairsSpike.idr": {
+        "before": "5976e90066a85d6f25e3c011610a8092df7fe15d3a1a81665061fa619fdcb316",
+        "after": "abe70ce94cfc1431c2367fb844d6305b05d64af2d55eac6b840a5118ed5c131f"
+      }
+    },
+    "guardSHA256": "fbd6d5d9ef75de8bd72beda3b8c0c39599621680d92198b440a93789f7835e05",
+    "noStagedFiles": true,
+    "productionUnchanged": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true,
+    "crossLaneOverlapTimestampsUTC": [
+      "2026-09-10T04:54:40.149664+00:00"
+    ]
+  },
+  {
+    "unit": "E4-1",
+    "message": "R207 E4: total native attached grammar scan lemma",
+    "beforeCommit": "28d5e5b811c148c4736085f540009f1f521edab7",
+    "afterCommit": "6bf34766a53c61114835bf9ff977c5ef28f4480b",
+    "timestampUTC": "2026-09-10T04:54:41.706169+00:00",
+    "hashes": {
+      "research/DGamma/CP5O19AttachedPairsSpike.idr": {
+        "before": "abe70ce94cfc1431c2367fb844d6305b05d64af2d55eac6b840a5118ed5c131f",
+        "after": "826d59bc98c7e79c8fac0622f37a569d4591474c37ebb99f5b76d44dfdd56fd3"
+      }
+    },
+    "guardSHA256": "fbd6d5d9ef75de8bd72beda3b8c0c39599621680d92198b440a93789f7835e05",
+    "noStagedFiles": true,
+    "productionUnchanged": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true,
+    "crossLaneOverlapTimestampsUTC": [
+      "2026-09-10T04:54:41.706549+00:00"
+    ]
+  },
+  {
+    "unit": "E5-1",
+    "message": "R207 E5: total native attached grammar scan lemma",
+    "beforeCommit": "6bf34766a53c61114835bf9ff977c5ef28f4480b",
+    "afterCommit": "692505e9e5ae911bad7f0cbaad4313bf8ae13bb9",
+    "timestampUTC": "2026-09-10T04:54:43.269709+00:00",
+    "hashes": {
+      "research/DGamma/CP5O19AttachedPairsSpike.idr": {
+        "before": "826d59bc98c7e79c8fac0622f37a569d4591474c37ebb99f5b76d44dfdd56fd3",
+        "after": "180e23a52b25165531d0ca1acbd9d53caa1e160f8f3b8397ccb4a5a78ba9a01d"
+      }
+    },
+    "guardSHA256": "fbd6d5d9ef75de8bd72beda3b8c0c39599621680d92198b440a93789f7835e05",
+    "noStagedFiles": true,
+    "productionUnchanged": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true,
+    "crossLaneOverlapTimestampsUTC": [
+      "2026-09-10T04:54:43.270031+00:00"
+    ]
+  },
+  {
+    "unit": "E6-1",
+    "message": "R207 E6: total native attached grammar scan lemma",
+    "beforeCommit": "692505e9e5ae911bad7f0cbaad4313bf8ae13bb9",
+    "afterCommit": "db662dab9682541fadfcadc587a4e60122c5803b",
+    "timestampUTC": "2026-09-10T04:55:56.317966+00:00",
+    "hashes": {
+      "research/DGamma/CP5O19AttachedPairsSpike.idr": {
+        "before": "180e23a52b25165531d0ca1acbd9d53caa1e160f8f3b8397ccb4a5a78ba9a01d",
+        "after": "525ca0eb415276265294f3a583485bb5ccd16c8bbd2492bf8cc44d7d5b948a10"
+      }
+    },
+    "guardSHA256": "fbd6d5d9ef75de8bd72beda3b8c0c39599621680d92198b440a93789f7835e05",
+    "noStagedFiles": true,
+    "productionUnchanged": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true,
+    "crossLaneOverlapTimestampsUTC": [
+      "2026-09-10T04:55:56.318241+00:00"
+    ]
+  },
+  {
+    "unit": "E7-1",
+    "message": "R207 E7: total native attached grammar scan lemma",
+    "beforeCommit": "db662dab9682541fadfcadc587a4e60122c5803b",
+    "afterCommit": "e59b74e0001ad47661f85c7eca196622c56d63cc",
+    "timestampUTC": "2026-09-10T04:55:57.849816+00:00",
+    "hashes": {
+      "research/DGamma/CP5O19AttachedPairsSpike.idr": {
+        "before": "525ca0eb415276265294f3a583485bb5ccd16c8bbd2492bf8cc44d7d5b948a10",
+        "after": "2d62830f8d2087cff9e986099584b1ecc01ed401b9685e554cc75ce6302cf7dc"
+      }
+    },
+    "guardSHA256": "fbd6d5d9ef75de8bd72beda3b8c0c39599621680d92198b440a93789f7835e05",
+    "noStagedFiles": true,
+    "productionUnchanged": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true,
+    "crossLaneOverlapTimestampsUTC": [
+      "2026-09-10T04:55:57.850117+00:00"
+    ]
+  },
+  {
+    "unit": "E8-1",
+    "message": "R207 E8: total native attached grammar scan lemma",
+    "beforeCommit": "e59b74e0001ad47661f85c7eca196622c56d63cc",
+    "afterCommit": "adbe4572bc7e1db4d0de48a4ea5f2fb5854ef07b",
+    "timestampUTC": "2026-09-10T04:55:59.391813+00:00",
+    "hashes": {
+      "research/DGamma/CP5O19AttachedPairsSpike.idr": {
+        "before": "2d62830f8d2087cff9e986099584b1ecc01ed401b9685e554cc75ce6302cf7dc",
+        "after": "51c77f07e684a9cbbe16d63f7e396e310b922a4e3b47707cacd68a9c28c647c9"
+      }
+    },
+    "guardSHA256": "fbd6d5d9ef75de8bd72beda3b8c0c39599621680d92198b440a93789f7835e05",
+    "noStagedFiles": true,
+    "productionUnchanged": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true,
+    "crossLaneOverlapTimestampsUTC": [
+      "2026-09-10T04:55:59.392174+00:00"
+    ]
+  },
+  {
+    "unit": "E9-1",
+    "message": "R207 E9: total native attached grammar scan lemma",
+    "beforeCommit": "adbe4572bc7e1db4d0de48a4ea5f2fb5854ef07b",
+    "afterCommit": "2cfea2f3b355382da38a900097463b407f26ff96",
+    "timestampUTC": "2026-09-10T04:56:00.933275+00:00",
+    "hashes": {
+      "research/DGamma/CP5O19AttachedPairsSpike.idr": {
+        "before": "51c77f07e684a9cbbe16d63f7e396e310b922a4e3b47707cacd68a9c28c647c9",
+        "after": "8bca86166bfd6aa3b8295bd1ea11f602229525b208ec9cfb24d29ce8a023c696"
+      }
+    },
+    "guardSHA256": "fbd6d5d9ef75de8bd72beda3b8c0c39599621680d92198b440a93789f7835e05",
+    "noStagedFiles": true,
+    "productionUnchanged": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true,
+    "crossLaneOverlapTimestampsUTC": [
+      "2026-09-10T04:56:00.933648+00:00"
+    ]
+  },
+  {
+    "unit": "E10-1",
+    "message": "R207 E10: total native attached grammar scan lemma",
+    "beforeCommit": "2cfea2f3b355382da38a900097463b407f26ff96",
+    "afterCommit": "658e98823ff6f891f880d53bab36eb3588f9000b",
+    "timestampUTC": "2026-09-10T04:57:30.098614+00:00",
+    "hashes": {
+      "research/DGamma/CP5O19AttachedPairsSpike.idr": {
+        "before": "8bca86166bfd6aa3b8295bd1ea11f602229525b208ec9cfb24d29ce8a023c696",
+        "after": "0350c7a00cbb931e2c433395b3b7f72eea8fdca2f22f4cd6cda5f4143e68b13b"
+      }
+    },
+    "guardSHA256": "fbd6d5d9ef75de8bd72beda3b8c0c39599621680d92198b440a93789f7835e05",
+    "noStagedFiles": true,
+    "productionUnchanged": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true,
+    "crossLaneOverlapTimestampsUTC": [
+      "2026-09-10T04:57:30.098900+00:00"
+    ]
+  },
+  {
+    "unit": "E11-1",
+    "message": "R207 E11: total native attached grammar scan lemma",
+    "beforeCommit": "658e98823ff6f891f880d53bab36eb3588f9000b",
+    "afterCommit": "0ac1c382e54197956905856661ac512d05815820",
+    "timestampUTC": "2026-09-10T04:57:31.668314+00:00",
+    "hashes": {
+      "research/DGamma/CP5O19AttachedPairsSpike.idr": {
+        "before": "0350c7a00cbb931e2c433395b3b7f72eea8fdca2f22f4cd6cda5f4143e68b13b",
+        "after": "0f721b772995b56a619b69edf2acdc432383ce941b844aaf18abb879e3b7eee1"
+      }
+    },
+    "guardSHA256": "fbd6d5d9ef75de8bd72beda3b8c0c39599621680d92198b440a93789f7835e05",
+    "noStagedFiles": true,
+    "productionUnchanged": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true,
+    "crossLaneOverlapTimestampsUTC": [
+      "2026-09-10T04:57:31.668602+00:00"
+    ]
+  },
+  {
+    "unit": "E12-1",
+    "message": "R207 E12: total native attached grammar scan lemma",
+    "beforeCommit": "0ac1c382e54197956905856661ac512d05815820",
+    "afterCommit": "a554623fc50118b6c838c26539ba2b693af56f34",
+    "timestampUTC": "2026-09-10T04:57:33.230736+00:00",
+    "hashes": {
+      "research/DGamma/CP5O19AttachedPairsSpike.idr": {
+        "before": "0f721b772995b56a619b69edf2acdc432383ce941b844aaf18abb879e3b7eee1",
+        "after": "d20c6b228899c0d639638cdb075b30d075e51ca5513ccbfa09580b47a5d7ded4"
+      }
+    },
+    "guardSHA256": "fbd6d5d9ef75de8bd72beda3b8c0c39599621680d92198b440a93789f7835e05",
+    "noStagedFiles": true,
+    "productionUnchanged": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true,
+    "crossLaneOverlapTimestampsUTC": [
+      "2026-09-10T04:57:33.231045+00:00"
+    ]
+  },
+  {
+    "unit": "E13-1",
+    "message": "R207 E13: total native attached grammar scan lemma",
+    "beforeCommit": "a554623fc50118b6c838c26539ba2b693af56f34",
+    "afterCommit": "f25b0c41c299bb0a70e76a6debb7a8361833af16",
+    "timestampUTC": "2026-09-10T04:57:34.792456+00:00",
+    "hashes": {
+      "research/DGamma/CP5O19AttachedPairsSpike.idr": {
+        "before": "d20c6b228899c0d639638cdb075b30d075e51ca5513ccbfa09580b47a5d7ded4",
+        "after": "737db3f49ebf50590e4a68215525394cd21e4c5e0eb3896bef9b0a0bbfb4923c"
+      }
+    },
+    "guardSHA256": "fbd6d5d9ef75de8bd72beda3b8c0c39599621680d92198b440a93789f7835e05",
+    "noStagedFiles": true,
+    "productionUnchanged": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true,
+    "crossLaneOverlapTimestampsUTC": [
+      "2026-09-10T04:57:34.792763+00:00"
+    ]
+  },
+  {
+    "unit": "E14-1",
+    "message": "R207 E14: total native attached grammar scan lemma",
+    "beforeCommit": "f25b0c41c299bb0a70e76a6debb7a8361833af16",
+    "afterCommit": "c34319da4b97456ccefba230722e80fcfb9c98fd",
+    "timestampUTC": "2026-09-10T04:58:41.266414+00:00",
+    "hashes": {
+      "research/DGamma/CP5O19AttachedPairsSpike.idr": {
+        "before": "737db3f49ebf50590e4a68215525394cd21e4c5e0eb3896bef9b0a0bbfb4923c",
+        "after": "bda8b6c735dbc1add55197a156bab3c1800773e1339a6256cb67f60e0cce8123"
+      }
+    },
+    "guardSHA256": "fbd6d5d9ef75de8bd72beda3b8c0c39599621680d92198b440a93789f7835e05",
+    "noStagedFiles": true,
+    "productionUnchanged": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true,
+    "crossLaneOverlapTimestampsUTC": [
+      "2026-09-10T04:58:41.266743+00:00"
+    ]
+  },
+  {
+    "unit": "E15-1",
+    "message": "R207 E15: total native attached grammar scan lemma",
+    "beforeCommit": "c34319da4b97456ccefba230722e80fcfb9c98fd",
+    "afterCommit": "33819e697fc4b68f6ea276f0cf00ee682f76610d",
+    "timestampUTC": "2026-09-10T04:58:42.845564+00:00",
+    "hashes": {
+      "research/DGamma/CP5O19AttachedPairsSpike.idr": {
+        "before": "bda8b6c735dbc1add55197a156bab3c1800773e1339a6256cb67f60e0cce8123",
+        "after": "24c6d19c85482e33cb0b7dd867351429c670e8a533ca587d6961bbfaa0f0d463"
+      }
+    },
+    "guardSHA256": "fbd6d5d9ef75de8bd72beda3b8c0c39599621680d92198b440a93789f7835e05",
+    "noStagedFiles": true,
+    "productionUnchanged": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true,
+    "crossLaneOverlapTimestampsUTC": [
+      "2026-09-10T04:58:42.845822+00:00"
+    ]
+  },
+  {
+    "unit": "E16-1",
+    "message": "R207 E16: total native attached grammar scan lemma",
+    "beforeCommit": "33819e697fc4b68f6ea276f0cf00ee682f76610d",
+    "afterCommit": "26f64bcb7b6269620fdceaa1120867568afcaafb",
+    "timestampUTC": "2026-09-10T04:58:44.371332+00:00",
+    "hashes": {
+      "research/DGamma/CP5O19AttachedPairsSpike.idr": {
+        "before": "24c6d19c85482e33cb0b7dd867351429c670e8a533ca587d6961bbfaa0f0d463",
+        "after": "55dcef8d15347c439c8e79c8eeb4a76b85a9de516fdc2a9bdd50787630abd003"
+      }
+    },
+    "guardSHA256": "fbd6d5d9ef75de8bd72beda3b8c0c39599621680d92198b440a93789f7835e05",
+    "noStagedFiles": true,
+    "productionUnchanged": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true,
+    "crossLaneOverlapTimestampsUTC": [
+      "2026-09-10T04:58:44.371698+00:00"
+    ]
+  },
+  {
+    "unit": "E17-1",
+    "message": "R207 E17: total native external classification including child and root controls",
+    "beforeCommit": "26f64bcb7b6269620fdceaa1120867568afcaafb",
+    "afterCommit": "fed3c480987f7859b700d01aa52af148040b7b70",
+    "timestampUTC": "2026-09-10T05:00:00.925296+00:00",
+    "hashes": {
+      "research/DGamma/CP5O19AttachedPairsSpike.idr": {
+        "before": "55dcef8d15347c439c8e79c8eeb4a76b85a9de516fdc2a9bdd50787630abd003",
+        "after": "025af1a22bd31efe34311e6431fcf18dc1870eb5a1979dd2d99b3892712ebec1"
+      }
+    },
+    "guardSHA256": "fbd6d5d9ef75de8bd72beda3b8c0c39599621680d92198b440a93789f7835e05",
+    "noStagedFiles": true,
+    "productionUnchanged": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true,
+    "crossLaneOverlapTimestampsUTC": [
+      "2026-09-10T05:00:00.925624+00:00"
+    ]
+  },
+  {
+    "unit": "E18-1",
+    "message": "R207 E18: all attached control and insertion forms give paper orchestration",
+    "beforeCommit": "fed3c480987f7859b700d01aa52af148040b7b70",
+    "afterCommit": "b13c8aad49b0ef33e4d9d53a159587fbd07d2404",
+    "timestampUTC": "2026-09-10T05:00:59.432948+00:00",
+    "hashes": {
+      "research/DGamma/CP5O19AttachedPairsSpike.idr": {
+        "before": "025af1a22bd31efe34311e6431fcf18dc1870eb5a1979dd2d99b3892712ebec1",
+        "after": "1951dffa3b1763e867a263e09e87854bc8e64034712949b1f042a841fae3b955"
+      }
+    },
+    "guardSHA256": "fbd6d5d9ef75de8bd72beda3b8c0c39599621680d92198b440a93789f7835e05",
+    "noStagedFiles": true,
+    "productionUnchanged": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true,
+    "crossLaneOverlapTimestampsUTC": [
+      "2026-09-10T05:00:59.433250+00:00"
+    ]
+  },
+  {
+    "unit": "E19-1",
+    "message": "R207 E19: total native attached grammar scan lemma",
+    "beforeCommit": "b13c8aad49b0ef33e4d9d53a159587fbd07d2404",
+    "afterCommit": "df5d3bf0d41ebe2a577f71fa185307895cabbdca",
+    "timestampUTC": "2026-09-10T05:01:02.119934+00:00",
+    "hashes": {
+      "research/DGamma/CP5O19AttachedPairsSpike.idr": {
+        "before": "1951dffa3b1763e867a263e09e87854bc8e64034712949b1f042a841fae3b955",
+        "after": "9f47c44b9bf9eb2ad76423e95d8a09db6a4a849841b1a10699d9754f748c3006"
+      }
+    },
+    "guardSHA256": "fbd6d5d9ef75de8bd72beda3b8c0c39599621680d92198b440a93789f7835e05",
+    "noStagedFiles": true,
+    "productionUnchanged": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true,
+    "crossLaneOverlapTimestampsUTC": [
+      "2026-09-10T05:01:02.120235+00:00"
+    ]
+  },
+  {
+    "unit": "E20-1",
+    "message": "R207 E20: total native attached grammar scan lemma",
+    "beforeCommit": "df5d3bf0d41ebe2a577f71fa185307895cabbdca",
+    "afterCommit": "c5bc4f44d670f1dbf87bf7880d50fe752b9fd31d",
+    "timestampUTC": "2026-09-10T05:01:04.697020+00:00",
+    "hashes": {
+      "research/DGamma/CP5O19AttachedPairsSpike.idr": {
+        "before": "9f47c44b9bf9eb2ad76423e95d8a09db6a4a849841b1a10699d9754f748c3006",
+        "after": "1fcdc581547f3583cfd89ce567cabdb35f0273c76fc369dd6722c0e82e4895b7"
+      }
+    },
+    "guardSHA256": "fbd6d5d9ef75de8bd72beda3b8c0c39599621680d92198b440a93789f7835e05",
+    "noStagedFiles": true,
+    "productionUnchanged": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true,
+    "crossLaneOverlapTimestampsUTC": [
+      "2026-09-10T05:01:04.697323+00:00"
+    ]
+  },
+  {
+    "unit": "E21-1",
+    "message": "R207 E21: total native attached grammar scan lemma",
+    "beforeCommit": "c5bc4f44d670f1dbf87bf7880d50fe752b9fd31d",
+    "afterCommit": "9e213950d9975da528709a70eaa0096affc306d5",
+    "timestampUTC": "2026-09-10T05:01:07.267010+00:00",
+    "hashes": {
+      "research/DGamma/CP5O19AttachedPairsSpike.idr": {
+        "before": "1fcdc581547f3583cfd89ce567cabdb35f0273c76fc369dd6722c0e82e4895b7",
+        "after": "9399e57e115de5d7e5449b39e8f47c3e773ed2ca57419ff3a21f78db08e2b9ff"
+      }
+    },
+    "guardSHA256": "fbd6d5d9ef75de8bd72beda3b8c0c39599621680d92198b440a93789f7835e05",
+    "noStagedFiles": true,
+    "productionUnchanged": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true,
+    "crossLaneOverlapTimestampsUTC": [
+      "2026-09-10T05:01:07.267359+00:00"
+    ]
+  },
+  {
+    "unit": "E22-1",
+    "message": "R207 E22: total pair observer applied to native attached-control fixture",
+    "beforeCommit": "9e213950d9975da528709a70eaa0096affc306d5",
+    "afterCommit": "eec3c1dc1a456f8e7be385864bf8b97db6198763",
+    "timestampUTC": "2026-09-10T05:04:51.408781+00:00",
+    "hashes": {
+      "research-tests/DGamma/R207AttachedPairsPositive.idr": {
+        "before": null,
+        "after": "76f5a4036076b508fd690f88698ea498a3ab8ae640dc74e77d2b3fbd54565504"
+      }
+    },
+    "guardSHA256": "fbd6d5d9ef75de8bd72beda3b8c0c39599621680d92198b440a93789f7835e05",
+    "noStagedFiles": true,
+    "productionUnchanged": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true,
+    "crossLaneOverlapTimestampsUTC": [
+      "2026-09-10T05:04:51.409035+00:00"
+    ]
+  },
+  {
+    "unit": "E23-1",
+    "message": "R207 E23: total native attached grammar scan lemma",
+    "beforeCommit": "eec3c1dc1a456f8e7be385864bf8b97db6198763",
+    "afterCommit": "900033365c842c57f07755b7202a1bfb3b4a311e",
+    "timestampUTC": "2026-09-10T05:04:54.097941+00:00",
+    "hashes": {
+      "research-tests/DGamma/R207AttachedPairsPositive.idr": {
+        "before": "76f5a4036076b508fd690f88698ea498a3ab8ae640dc74e77d2b3fbd54565504",
+        "after": "49a76cbe9bb14f2f21770a299a0da6f2c94a647a4bcaeb45dfbac72ecf2c3754"
+      }
+    },
+    "guardSHA256": "fbd6d5d9ef75de8bd72beda3b8c0c39599621680d92198b440a93789f7835e05",
+    "noStagedFiles": true,
+    "productionUnchanged": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true,
+    "crossLaneOverlapTimestampsUTC": [
+      "2026-09-10T05:04:54.098207+00:00"
+    ]
+  },
+  {
+    "unit": "E24-1",
+    "message": "R207 E24: total native attached grammar scan lemma",
+    "beforeCommit": "900033365c842c57f07755b7202a1bfb3b4a311e",
+    "afterCommit": "a91eeded69dcf1ec2c22fcd8cfcdd935d56ada85",
+    "timestampUTC": "2026-09-10T05:04:56.700527+00:00",
+    "hashes": {
+      "research-tests/DGamma/R207AttachedPairsPositive.idr": {
+        "before": "49a76cbe9bb14f2f21770a299a0da6f2c94a647a4bcaeb45dfbac72ecf2c3754",
+        "after": "4279cb49a9c498efd19787e73e09f570b9cfacb04da6b21dc9b41bccf545b478"
+      }
+    },
+    "guardSHA256": "fbd6d5d9ef75de8bd72beda3b8c0c39599621680d92198b440a93789f7835e05",
+    "noStagedFiles": true,
+    "productionUnchanged": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true,
+    "crossLaneOverlapTimestampsUTC": [
+      "2026-09-10T05:04:56.700973+00:00"
+    ]
+  },
+  {
+    "unit": "E25-1",
+    "message": "R207 E25: total native attached grammar scan lemma",
+    "beforeCommit": "a91eeded69dcf1ec2c22fcd8cfcdd935d56ada85",
+    "afterCommit": "47cde5a64fc6ae0c6b0026439b964e842b7bc310",
+    "timestampUTC": "2026-09-10T05:04:59.291625+00:00",
+    "hashes": {
+      "research-tests/DGamma/R207AttachedPairsPositive.idr": {
+        "before": "4279cb49a9c498efd19787e73e09f570b9cfacb04da6b21dc9b41bccf545b478",
+        "after": "c81aec6e9e373a85d8102b09618a10b404bfe62a91593f7d0a17775566ee9c5e"
+      }
+    },
+    "guardSHA256": "fbd6d5d9ef75de8bd72beda3b8c0c39599621680d92198b440a93789f7835e05",
+    "noStagedFiles": true,
+    "productionUnchanged": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true,
+    "crossLaneOverlapTimestampsUTC": [
+      "2026-09-10T05:04:59.291953+00:00"
+    ]
+  },
+  {
+    "unit": "E26-1",
+    "message": "R207 E26: total native attached grammar scan lemma",
+    "beforeCommit": "47cde5a64fc6ae0c6b0026439b964e842b7bc310",
+    "afterCommit": "c26f885963610c1203ff0df62d2d5922ef3cae56",
+    "timestampUTC": "2026-09-10T05:05:01.882182+00:00",
+    "hashes": {
+      "research-tests/DGamma/R207AttachedPairsPositive.idr": {
+        "before": "c81aec6e9e373a85d8102b09618a10b404bfe62a91593f7d0a17775566ee9c5e",
+        "after": "34468e4b8e5e2cd5b670ee74d4da219e125f0edd2c7d1ed4b782d4a3f8ed4e72"
+      }
+    },
+    "guardSHA256": "fbd6d5d9ef75de8bd72beda3b8c0c39599621680d92198b440a93789f7835e05",
+    "noStagedFiles": true,
+    "productionUnchanged": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true,
+    "crossLaneOverlapTimestampsUTC": [
+      "2026-09-10T05:05:01.882520+00:00"
+    ]
+  },
+  {
+    "unit": "U02-1",
+    "message": "R207 U02: legacy WholeBlock twins and uninhabited-by-this-module expanded obligation type",
+    "beforeCommit": "c26f885963610c1203ff0df62d2d5922ef3cae56",
+    "afterCommit": "775782bbacc07164d663547d3120a66b1c6851aa",
+    "timestampUTC": "2026-09-10T05:07:30.144083+00:00",
+    "hashes": {
+      "research/DGamma/CP5O19WholeBlockSpike.idr": {
+        "before": "434bfe16afc9703a4309c28823a25313b8bad0bc4ffa0ffe5e4281c8bccfae2a",
+        "after": "b9cc304563d5f806ab549aadd778752f2ea7fb7350e1913dfd42121be694f1d6"
+      }
+    },
+    "guardSHA256": "fbd6d5d9ef75de8bd72beda3b8c0c39599621680d92198b440a93789f7835e05",
+    "noStagedFiles": true,
+    "productionUnchanged": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true,
+    "crossLaneOverlapTimestampsUTC": [
+      "2026-09-10T05:07:30.144370+00:00"
+    ]
+  },
+  {
+    "unit": "U03-3",
+    "message": "R207 U03: prove legacy reached blocks and expose uninhabited expanded obligation",
+    "beforeCommit": "775782bbacc07164d663547d3120a66b1c6851aa",
+    "afterCommit": "e6e4454efee9a2ea5402985e96650af692cd3be0",
+    "timestampUTC": "2026-09-10T05:18:34.653072+00:00",
+    "hashes": {
+      "research/DGamma/CP5O19ReachedBlocksSpike.idr": {
+        "before": "c08eaaecb907453078cc51f3e5467b7ed5f505cfea2f56ac868674f3cce3dab5",
+        "after": "e1ac7216aca770ec776514203d04c3670709d914ac406162db2361482a92cc50"
+      }
+    },
+    "guardSHA256": "fbd6d5d9ef75de8bd72beda3b8c0c39599621680d92198b440a93789f7835e05",
+    "noStagedFiles": true,
+    "productionUnchanged": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true,
+    "crossLaneOverlapTimestampsUTC": [
+      "2026-09-10T05:18:34.653452+00:00"
+    ]
+  },
+  {
+    "unit": "U04-3",
+    "message": "R207 U04: re-prove legacy reached decomposition and state expanded cursor obligation",
+    "beforeCommit": "e6e4454efee9a2ea5402985e96650af692cd3be0",
+    "afterCommit": "45149c4ac25c5f3b26dac3be208a91d29a707da8",
+    "timestampUTC": "2026-09-10T05:21:36.481611+00:00",
+    "hashes": {
+      "research/DGamma/CP5O19ReachedDecompositionSpike.idr": {
+        "before": "0225f751cada40b3cae91466ae968ce77a0608dba3981e8e53ce7b509854673a",
+        "after": "0e8e4b6a69fd668c6d95ff4bc13e67401db178f6eb990f87f568e71219efc486"
+      }
+    },
+    "guardSHA256": "fbd6d5d9ef75de8bd72beda3b8c0c39599621680d92198b440a93789f7835e05",
+    "noStagedFiles": true,
+    "productionUnchanged": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true,
+    "crossLaneOverlapTimestampsUTC": [
+      "2026-09-10T05:21:36.482010+00:00"
+    ]
+  },
+  {
+    "unit": "U05-1",
+    "message": "R207 U05: legacy operational assembly plus exact unconditional TYPE-only obligation",
+    "beforeCommit": "45149c4ac25c5f3b26dac3be208a91d29a707da8",
+    "afterCommit": "11fec11e6bc1cba3e467bb997da234c68430075f",
+    "timestampUTC": "2026-09-10T05:22:06.392923+00:00",
+    "hashes": {
+      "research/DGamma/CP5O19OperationalAssemblySpike.idr": {
+        "before": "04d8d73abdb595ade4c62ef4d05a5804993100ebbe34b12ce35219447b424163",
+        "after": "b9a30e47860a003aca7a656a6ede0066a0c20030e2928fcc8d6bf93731d68496"
+      }
+    },
+    "guardSHA256": "fbd6d5d9ef75de8bd72beda3b8c0c39599621680d92198b440a93789f7835e05",
+    "noStagedFiles": true,
+    "productionUnchanged": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true,
+    "crossLaneOverlapTimestampsUTC": [
+      "2026-09-10T05:22:06.393305+00:00"
+    ]
+  },
+  {
+    "unit": "U06-1",
+    "message": "R207 U06: migrate canonical lifecycle classifier to expanded observation without new premise",
+    "beforeCommit": "11fec11e6bc1cba3e467bb997da234c68430075f",
+    "afterCommit": "c68ab412b012466b64a2a8aaab959c774264b6a6",
+    "timestampUTC": "2026-09-10T05:27:44.301674+00:00",
+    "hashes": {
+      "research/DGamma/CP5O20CanonicalActionCompletenessSpike.idr": {
+        "before": "85da29a33779216f7139b021814b19e2d3fded170ee98dac75c1bd8c21064b9e",
+        "after": "fd9776c145fcf44090cc660e2e0b9160e55c7bf5c036330a732250b3c23d36e4"
+      }
+    },
+    "guardSHA256": "fbd6d5d9ef75de8bd72beda3b8c0c39599621680d92198b440a93789f7835e05",
+    "noStagedFiles": true,
+    "productionUnchanged": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true,
+    "crossLaneOverlapTimestampsUTC": [
+      "2026-09-10T05:27:44.302059+00:00"
+    ]
+  },
+  {
+    "unit": "U07-2",
+    "message": "R207 U07: replace unused CrossTrace import with defining O19Surface in SafeBlockSelection",
+    "beforeCommit": "c68ab412b012466b64a2a8aaab959c774264b6a6",
+    "afterCommit": "eda77b9927e72d642422a091adbcf6f3e18c185f",
+    "timestampUTC": "2026-09-10T05:31:39.115094+00:00",
+    "hashes": {
+      "research/DGamma/CP5O20SafeBlockSelectionSpike.idr": {
+        "before": "a1d77431b19b6734bb15c6f095bdc073d2953327cc9c1e88e7d0bc2a33266f3f",
+        "after": "d04aa8a21e796e0c458e674711fd681821af083af95eb806f53e51f31fb7a006"
+      }
+    },
+    "guardSHA256": "fbd6d5d9ef75de8bd72beda3b8c0c39599621680d92198b440a93789f7835e05",
+    "noStagedFiles": true,
+    "productionUnchanged": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true,
+    "crossLaneOverlapTimestampsUTC": []
+  },
+  {
+    "unit": "U08-1",
+    "message": "R207 U08: replace unused CrossTrace import by defining O19Surface in LinearExtension",
+    "beforeCommit": "eda77b9927e72d642422a091adbcf6f3e18c185f",
+    "afterCommit": "42611188bcb0551041f60396839b9de60b2f1499",
+    "timestampUTC": "2026-09-10T05:34:12.224763+00:00",
+    "hashes": {
+      "research/DGamma/CP5O20LinearExtensionSpike.idr": {
+        "before": "9fe05758dae553bd0f7be5633007e3e0c8b520d4b8c5a7649372c19a1138d7cc",
+        "after": "0e8b7dfe9ed8f3e31b68b33afbfd8fee844a6deef5f93891e9391bdf42529c77"
+      }
+    },
+    "guardSHA256": "fbd6d5d9ef75de8bd72beda3b8c0c39599621680d92198b440a93789f7835e05",
+    "noStagedFiles": true,
+    "productionUnchanged": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true,
+    "crossLaneOverlapTimestampsUTC": []
+  },
+  {
+    "unit": "U09-1",
+    "message": "R207 U09: remove lexically unused CrossTrace import from CanonicalWordCoverage",
+    "beforeCommit": "42611188bcb0551041f60396839b9de60b2f1499",
+    "afterCommit": "b72b9abe1da1ba1c9264261046640e3f9ce35f25",
+    "timestampUTC": "2026-09-10T05:37:03.134141+00:00",
+    "hashes": {
+      "research/DGamma/CP5O20CanonicalWordCoverageSpike.idr": {
+        "before": "f02e46e0b710a2aff31bf4da87fad9bed53160fee28675a2b4b5c27f557c468c",
+        "after": "18ba6698a2ea77601e82ceb556dcc1871fe977640b55066915f20b5fff2210cb"
+      }
+    },
+    "guardSHA256": "fbd6d5d9ef75de8bd72beda3b8c0c39599621680d92198b440a93789f7835e05",
+    "noStagedFiles": true,
+    "productionUnchanged": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true,
+    "crossLaneOverlapTimestampsUTC": []
+  },
+  {
+    "unit": "U010-1",
+    "message": "R207 U010: legacy resolver-frame migration with five expanded TYPE-only obligations",
+    "beforeCommit": "b72b9abe1da1ba1c9264261046640e3f9ce35f25",
+    "afterCommit": "d45f3c4ba2849285e5ed71e0ea487a7bf1bb007a",
+    "timestampUTC": "2026-09-10T05:40:11.829756+00:00",
+    "hashes": {
+      "research/DGamma/CP5O20BlockResolverFrameSpike.idr": {
+        "before": "0039c30f35235e6d13eb62a36d1451752838c416c31ae51716d905e1b6ff8276",
+        "after": "0d34ff909276ed7344c672a8d62e687300842b2489ce6594f4eb4fd89b13ade0"
+      }
+    },
+    "guardSHA256": "fbd6d5d9ef75de8bd72beda3b8c0c39599621680d92198b440a93789f7835e05",
+    "noStagedFiles": true,
+    "productionUnchanged": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true,
+    "crossLaneOverlapTimestampsUTC": [
+      "2026-09-10T05:40:11.830165+00:00"
+    ]
+  },
+  {
+    "unit": "ARTIFACT",
+    "message": "R207 D2: publish exact CrossTrace producer requirements for lane2 Unit X",
+    "beforeCommit": "d45f3c4ba2849285e5ed71e0ea487a7bf1bb007a",
+    "afterCommit": "8c2267e3b41ec92636993b0ec129b1353b36a3b4",
+    "timestampUTC": "2026-09-10T05:44:48.329075+00:00",
+    "hashes": {
+      "research-tests/O6-R207-CROSSTRACE-NEEDS.json": {
+        "before": null,
+        "after": "e11612192fd38a5a15d7e9ee05acb5c084910cc790d0672d8d2e07ea08009f73"
+      }
+    },
+    "guardSHA256": "fbd6d5d9ef75de8bd72beda3b8c0c39599621680d92198b440a93789f7835e05",
+    "noStagedFiles": true,
+    "productionUnchanged": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true,
+    "crossLaneOverlapTimestampsUTC": []
+  }
+]
