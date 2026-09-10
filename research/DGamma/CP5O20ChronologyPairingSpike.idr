@@ -89,3 +89,12 @@ o20ChronologyUnrotateMember (head :: rest) suffix (There later) =
       Elem selected (event :: items) -> Elem selected (event :: (head :: items))
     beneath Here = Here
     beneath (There older) = There (There older)
+
+||| A rotation has exactly the same number of concrete event occurrences.
+export
+0 o20ChronologyRotationLength :
+  {element : Type} -> (earlier : List element) -> (event : element) -> (suffix : List element) ->
+  length (earlier ++ (event :: suffix)) = S (length (earlier ++ suffix))
+o20ChronologyRotationLength [] event suffix = Refl
+o20ChronologyRotationLength (head :: rest) event suffix =
+  cong S (o20ChronologyRotationLength rest event suffix)
