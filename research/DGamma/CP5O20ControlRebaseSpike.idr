@@ -29,3 +29,16 @@ o20RebaseMappedNames before after (head :: rest) agree =
   rewrite sym (agree head Here) in
     cong (renameForward before head ::)
       (o20RebaseMappedNames before after rest (\selected, member => agree selected (There member)))
+
+||| Parent re-renaming needs only the actually referenced parent name. Root
+||| has no parent reference; no global current-name agreement is assumed.
+export
+0 o20RebaseParentReferences :
+  {name : Type} -> (before, after : NameBijection name) ->
+  (left, right : Parent name) ->
+  (0 agreeParent : (selected : name) -> left = ChildOf selected ->
+    renameForward before selected = renameForward after selected) ->
+  ParentRelatedBy before left right -> ParentRelatedBy after left right
+o20RebaseParentReferences before after Root Root agreeParent RootsRelated = RootsRelated
+o20RebaseParentReferences before after (ChildOf parent) (ChildOf target) agreeParent (ChildrenRelated renamed) =
+  ChildrenRelated (trans (sym (agreeParent parent Refl)) renamed)
