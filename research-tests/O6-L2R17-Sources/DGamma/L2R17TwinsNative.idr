@@ -69,3 +69,12 @@ twinsInput =
             emptyContext Refl) Refl) Refl) Refl),
    [LBegin 0, LAdvance 0, ORetire 1, ORemove 1, OInsert 4 Root (anchorComponent True)],
    [LBegin 2, LAdvance 2, ORetire 3, ORemove 3, OInsert 5 Root (anchorComponent False)])
+
+||| Actual computed cut in either block ordering; a rejected request halts
+||| rather than inventing a state. The block constructors certify success.
+public export
+twinsCut : Bool -> Nat -> SystemState Nat Bool (\key => Unit) Unit String
+twinsCut swapped position = fst (runNative (fst twinsInput)
+  (Data.List.take position (if swapped
+    then snd (snd twinsInput) ++ fst (snd twinsInput)
+    else fst (snd twinsInput) ++ snd (snd twinsInput))))
