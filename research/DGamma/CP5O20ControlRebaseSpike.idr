@@ -54,3 +54,29 @@ o20LifecycleControlNames (Inactive outcome) = []
 o20LifecycleControlNames (Reloading remaining accumulator view) = viewProviders view
 o20LifecycleControlNames (Active accumulator view) = viewProviders view
 o20LifecycleControlNames (Unloading accumulator view outcome) = viewProviders view
+
+||| Rebase all four concrete control phases using only their actual provider
+||| references. Programs, accumulators and outcomes are preserved unchanged.
+export
+0 o20RebaseLifecycleReferences :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {deps : List key} -> {provision : CoeffectSpec key} ->
+  (before, after : NameBijection name) ->
+  (left, right : Lifecycle key value world error name deps provision) ->
+  (0 agreeProviders : (selected : name) -> Elem selected (o20LifecycleControlNames left) ->
+    renameForward before selected = renameForward after selected) ->
+  LifecycleRelatedBy before left right -> LifecycleRelatedBy after left right
+o20RebaseLifecycleReferences before after (Inactive leftOutcome) (Inactive rightOutcome)
+  agreeProviders (RenamedInactive outcomes) = RenamedInactive outcomes
+o20RebaseLifecycleReferences before after (Reloading leftRemaining leftAccumulator leftView)
+  (Reloading rightRemaining rightAccumulator rightView) agreeProviders (RenamedReloading remaining accumulators views) =
+    RenamedReloading remaining accumulators
+      (trans (o20RebaseMappedNames before after (viewProviders leftView) agreeProviders) views)
+o20RebaseLifecycleReferences {error} before after (Active leftAccumulator leftView)
+  (Active rightAccumulator rightView) agreeProviders (RenamedActive accumulators views) =
+    RenamedActive {error = error} accumulators
+      (trans (o20RebaseMappedNames before after (viewProviders leftView) agreeProviders) views)
+o20RebaseLifecycleReferences before after (Unloading leftAccumulator leftView leftOutcome)
+  (Unloading rightAccumulator rightView rightOutcome) agreeProviders (RenamedUnloading accumulators views outcomes) =
+    RenamedUnloading accumulators
+      (trans (o20RebaseMappedNames before after (viewProviders leftView) agreeProviders) views) outcomes
