@@ -192,3 +192,38 @@ export
 o20RebasePresentMaybeReferences before after left _ agreeParent agreeProviders
   (RenamedPresent {right} related) =
     RenamedPresent (o20RebaseFiberReferences before after left right agreeParent agreeProviders related)
+
+||| Actual observed-source partition. Current, parent and provider agreements
+||| are three explicitly named primitive premises, never stored endpoint goals.
+export
+0 o20RebaseControlObserved :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (before, after : NameBijection name) ->
+  (left, right : SystemState name key value world error) ->
+  O20AllNameCut name key world error value nameEq before left right ->
+  (0 agreeCurrent : (point : name) -> (fiber : Fiber name key value world error) ->
+    lookupFiber {name} {key} {value} {world} {error} @{nameEq} point (registry left) = Just fiber ->
+    renameForward before point = renameForward after point) ->
+  (0 agreeParent : (point : name) -> (fiber : Fiber name key value world error) ->
+    lookupFiber {name} {key} {value} {world} {error} @{nameEq} point (registry left) = Just fiber ->
+    (parent : name) -> fiberParent fiber = ChildOf parent ->
+    renameForward before parent = renameForward after parent) ->
+  (0 agreeProviders : (point : name) -> (fiber : Fiber name key value world error) ->
+    lookupFiber {name} {key} {value} {world} {error} @{nameEq} point (registry left) = Just fiber ->
+    (provider : name) -> Elem provider (o20LifecycleControlNames (fiberLifecycle fiber)) ->
+    renameForward before provider = renameForward after provider) ->
+  (selected : name) -> (observed : Maybe (Fiber name key value world error)) ->
+  (0 found : lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected (registry left) = observed) ->
+  MaybeFiberRelatedBy after
+    (lookupFiber {name} {key} {value} {world} {error} @{nameEq} selected (registry left))
+    (lookupFiber {name} {key} {value} {world} {error} @{nameEq} (renameForward after selected) (registry right))
+o20RebaseControlObserved nameEq before after left right old agreeCurrent agreeParent agreeProviders selected Nothing found =
+  rewrite found in rewrite o20RebaseAbsentDomain nameEq before after left right old agreeCurrent selected found in RenamedAbsent
+o20RebaseControlObserved {name} {key} {world} {error} {value} nameEq before after left right old agreeCurrent agreeParent agreeProviders selected (Just fiber) found =
+  rewrite found in rewrite sym (agreeCurrent selected fiber found) in
+    o20RebasePresentMaybeReferences before after fiber
+      (lookupFiber {name} {key} {value} {world} {error} @{nameEq} (renameForward before selected) (registry right))
+      (agreeParent selected fiber found) (agreeProviders selected fiber found)
+      (replace {p = \observed => MaybeFiberRelatedBy before observed
+        (lookupFiber {name} {key} {value} {world} {error} @{nameEq} (renameForward before selected) (registry right))}
+        found (allNameControls old selected))
