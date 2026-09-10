@@ -4,7 +4,7 @@
 Spatiotemporal Composability”** (Shi, Zhang, Cui). Runtime functions remain
 computational data; laws and witnesses are erased with quantity `0`.
 
-## Current integration checkpoint — R206 CHECKED-PARTIAL (gate pending)
+## Current integration checkpoint — R206 accepted CHECKED-PARTIAL
 
 Production stays **byte-identical to `452420c7`**; census **4 = 1/2/0/0/1**.
 Post-unfreeze research repairs are deliberately weaker where the old claim was
@@ -27,7 +27,8 @@ false. **Thm73/CrossTrace is not closed or freshly passing.**
 [independent evidence cross-check](research-tests/O6-R206-INDEPENDENT-VERIFICATION.json) ·
 [R207 redesign obligations](research-tests/O6-R206-O19-EXPANSION-DESIGN.md).
 Historical rows below are overridden by this current disposition, not evidence
-that blocked consumers still compile. Supervisor spot-check is pending.
+that blocked consumers still compile. Supervisor accepted/pushed `2d21f6ea` and
+approved the docs-only D4 seal: [ruling/handoff](research-tests/O6-R206-OWNER-FINAL-GATE.md).
 
 | Paper correspondence | Idris file : representative name | Current status |
 |---|---|---|

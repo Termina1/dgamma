@@ -151,6 +151,10 @@ result=dict(timestampUTC=utc(),head=last,kind='compiler-free independent evidenc
     census=frozen()['census'],supportSolutionTTC=support,sourceCommitReceipts=len(commits),noStagedFiles=True,noOwnedCompiler=True,
     crossLaneOverlapTimestampsUTC=sorted({t for r in rs for t in r['crossLaneOverlapTimestampsUTC']}),
     archiveSHA256=manifest['archiveSHA256'],archiveMembers=len(actual),
-    reviewGate='Supervisor spot-check still required; no external reviewer claimed')
-write_json(ROOT/'research-tests/O6-R206-INDEPENDENT-VERIFICATION.json',result)
+    reviewGate=('Supervisor ACCEPTED CHECKED-PARTIAL at2d21f6ea; see O6-R206-OWNER-FINAL-GATE.md; no external reviewer claimed'
+      if (ROOT/'research-tests/O6-R206-OWNER-FINAL-GATE.md').exists() and
+         'R206 FINAL GATE RULING: ACCEPTED as CHECKED-PARTIAL' in (ROOT/'research-tests/O6-R206-OWNER-FINAL-GATE.md').read_text()
+      else 'Supervisor spot-check still required; no external reviewer claimed'))
+if '--read-only' not in sys.argv:
+    write_json(ROOT/'research-tests/O6-R206-INDEPENDENT-VERIFICATION.json',result)
 print(json.dumps({k:v for k,v in result.items() if k not in ['microUnits','crossLaneOverlapTimestampsUTC']},indent=2))

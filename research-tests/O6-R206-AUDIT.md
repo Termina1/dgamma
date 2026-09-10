@@ -132,13 +132,14 @@ R204 A15 relocation. **C INELIGIBLE** because A/B endpoint obligations are open.
 - Independent compiler-free cross-check PASS: all88 source/runner/common/manifest/
   transcript snapshots; source commit chain; frozen/source hashes; dependency
   epochs and current direct-import source hashes; original133 accounting; archive.
-  This is NOT an external reviewer; supervisor spot-check remains required.
+  This is NOT an external reviewer; the supervisor's accepted spot-check/ruling
+  in `O6-R206-OWNER-FINAL-GATE.md` supplies this shift's review gate.
 - One owned compiler at a time; no lock/window, foreign signals or lane2 entry.
   513 overlap timestamps recorded. Peak sampled compiler RSS9,759,296KiB atU026;
   this is sampled RSS, NOT OS high-water/aggregate memory. No resource stop.
 - Unit0=26 slots (25 proof units+retirement), B20/26, A18/26, visibility1/2,
-  C0/6. Documentation/evidence has two earlier artifact commits, one final
-  artifact commit planned, and one gate/seal commit reserved (cap4).
+  C0/6. Documentation/evidence has two earlier artifact commits, final artifact
+  commit2d21f6ea, and the authorized D4 gate/seal commit (cap4).
 
 ## Current checked source commits
 
@@ -171,7 +172,9 @@ Production and dgamma.ipkg are byte-identical to452420c7. All frozen body/type
 hashes equal the R205 post-unfreeze baseline; census **4 =1/2/0/0/1**. No hole
 body, production field, public theorem premise or escape hatch changed.
 
-Final disposition: **CHECKED-PARTIAL, supervisor gate pending**. Next is the
-separately gated R207 expanded O19 pair/reached-state redesign, then canonical
-history/current agreement and true D5/runtime synchronization discharge. Parent
-owns push and any lane merge.
+Final disposition: **ACCEPTED CHECKED-PARTIAL at2d21f6ea**, pushed by supervisor;
+D4 docs-only seal authorized. See `O6-R206-OWNER-FINAL-GATE.md`. R207 must start
+with the expanded O19/ActualCartesian re-proof; retirement-dependent consumers
+still require their own honest disposition. Then original A15, canonical B
+agreement and true D5/runtime synchronization. Parent owns seal push and any lane
+merge. No Idris source or native invocation changed after acceptance.

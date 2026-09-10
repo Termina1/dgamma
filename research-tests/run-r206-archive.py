@@ -15,8 +15,9 @@ for name in ['ledger.jsonl','commit-receipts.jsonl','evidence-tests.log','suppor
 for p in OUT.glob('*-closure*.json'):files['closure/'+p.name]=p.read_bytes()
 for p in OUT.glob('commit-receipts.jsonl'):assert p.exists()
 for p in sorted((ROOT/'research-tests').glob('*r206*.py')):files['tools/'+p.name]=p.read_bytes()
-for name in ['r205_common.py','O6-R205-POST-FROZEN-BASELINE.json','O6-R206-SEMANTIC-GATE.md','O6-R206-VISIBILITY.json','O6-R206-O19-EXPANSION-DESIGN.md']:
-    files['context/'+name]=(ROOT/'research-tests'/name).read_bytes()
+for name in ['r205_common.py','O6-R205-POST-FROZEN-BASELINE.json','O6-R206-SEMANTIC-GATE.md','O6-R206-VISIBILITY.json','O6-R206-O19-EXPANSION-DESIGN.md','O6-R206-OWNER-FINAL-GATE.md']:
+    p=ROOT/'research-tests'/name
+    if p.exists():files['context/'+name]=p.read_bytes()
 archive=ROOT/'research-tests/O6-R206-EVIDENCE.tar.gz'
 with tarfile.open(archive,'w:gz') as tf:
     for name,data in sorted(files.items()):

@@ -1,5 +1,5 @@
 {
-  "timestampUTC": "2026-09-10T04:35:36.873717+00:00",
+  "timestampUTC": "2026-09-10T04:42:57.986158+00:00",
   "startBaseline": "452420c73c59a6af2d204cafa6e722b3a0fff995",
   "productionByteIdentity": true,
   "frozen": {
@@ -257,8 +257,8 @@
     "stillBlocked": 117,
     "statusCounts": {
       "blocked by untrusted/retired import": 117,
-      "fresh expected-negative PASS": 3,
       "fresh PASS": 12,
+      "fresh expected-negative PASS": 3,
       "fresh own-target FAILED": 1
     },
     "entries": [

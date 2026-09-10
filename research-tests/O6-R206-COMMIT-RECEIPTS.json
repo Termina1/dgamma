@@ -1349,5 +1349,94 @@
     "crossLaneOverlapTimestampsUTC": [
       "2026-09-10T04:05:21.595985+00:00"
     ]
+  },
+  {
+    "unit": "ARTIFACT",
+    "message": "R206 checked-partial: native repairs, conditional rebase, exact chronologies, complete evidence",
+    "beforeCommit": "9782be1f907f7364965e0ceb360f11adf1df874f",
+    "afterCommit": "2d21f6eaeb0b531a4f18dd5cbff843240ac59ac0",
+    "timestampUTC": "2026-09-10T04:35:40.905961+00:00",
+    "hashes": {
+      "NOTES.md": {
+        "before": "0a5ee6fa0928dfd0a4f55cb5878f5cf4a411c96f17d8b016981022aa1293aeb5",
+        "after": "cdf2862feba2259bdce6bf73261c669d8f83cab680ac372095f3cf2c8ff1fc80"
+      },
+      "README.md": {
+        "before": "3ca7d0bfd389606d6a3d9adb7f09942a81626465daf80528e1120094d09083bc",
+        "after": "9a1c180eafccf2194621f0e5a6c9e41bac4f82af85408e1ea0734f90eab00c94"
+      },
+      "research-tests/O6-R206-AUDIT.md": {
+        "before": "1669780add4fef0c05d7d68ecf479636ab0b52f90f790d39e08f1df98b8ef758",
+        "after": "a4138fa9257a72e7ca844a45688979fb0f63a2a48c983c25ce5b1a0a09f341bd"
+      },
+      "research-tests/O6-R206-SEMANTIC-GATE.md": {
+        "before": "4e07e545bc0f889cdb7ab27142bc66ed4c47965014b780958d077dd90297f682",
+        "after": "362015c48a95d45232c806b1368a1b4cafa4ca0f76f8851192cfc086a9bc5626"
+      },
+      "research-tests/r206_evidence_contract.py": {
+        "before": "1ac1c7b361d85c8952ed3a32a4bdc8573e691072a8fa6b7a383a5242e5ff2308",
+        "after": "ec050ea6991a4ed12297c13583fb7d29da21697856aa090c54fabb405a52e959"
+      },
+      "research-tests/run-r206-report.py": {
+        "before": "a1c79b430587a875cc8c4e3516d6a780d7d343a1014cf3d8fdf86ac76fd7e4bd",
+        "after": "26051df4339e8fa9deda1d4f3c945b0e3e010d933529b364cf09512d74037e66"
+      },
+      "research-tests/test_r206_evidence_contract.py": {
+        "before": "07b2f2077d003f78b62f7b20b900b5d2d3c36ae61772a6e3b727f94638d18e3f",
+        "after": "f63a92a0c462fb9f48ec42b6e7d6d09a7f30c4a261cd7fc5aa537a493e35fa21"
+      },
+      "research-tests/O6-R206-ARCHIVE-MANIFEST.json": {
+        "before": null,
+        "after": "85d17eac99909200a101bcc89f33676b14e58a1c3ece680650a4d9d5b9a813ee"
+      },
+      "research-tests/O6-R206-COMMIT-RECEIPTS.json": {
+        "before": null,
+        "after": "5395580fa674eb530d0f53a6b38543cf232377fb3ef0f82880636582a1ed91cb"
+      },
+      "research-tests/O6-R206-COMPILER-LEDGER.json": {
+        "before": null,
+        "after": "823d5ffcdf912d4286737ed300a556d40834c43da11095fb3fa8728e1ddc63a5"
+      },
+      "research-tests/O6-R206-DISPOSITION.json": {
+        "before": null,
+        "after": "01f04930ccf1ed00bba6b73e05c37778c589082ea17136a8d795f3a42e11b67f"
+      },
+      "research-tests/O6-R206-EVIDENCE.tar.gz": {
+        "before": null,
+        "after": "95011ba2af788fd2d5a08c8177449e255b7b8a28ce0f7139af8e512c9977fa6a"
+      },
+      "research-tests/O6-R206-INDEPENDENT-VERIFICATION.json": {
+        "before": null,
+        "after": "50fcaabb8819509f4041c3146c17087ff7811eba6a0853a25f43c10c24f591d7"
+      },
+      "research-tests/O6-R206-VISIBILITY.json": {
+        "before": null,
+        "after": "3933afafd8d6fbe298e80847df870289f630564224ab303bcbf4a6aed24df322"
+      },
+      "research-tests/r206_disposition_contract.py": {
+        "before": null,
+        "after": "f67d3cd825639535dabb90ad635204220ac4de01079b3ff39910ccc40defd930"
+      },
+      "research-tests/run-r206-archive.py": {
+        "before": null,
+        "after": "d91c278741e64ab88ccf154d3f46aebee705b246fe6fa2d3c1d66f91717f1715"
+      },
+      "research-tests/run-r206-verify.py": {
+        "before": null,
+        "after": "17a5127be2362b803c5591571d3ab31c28a7e1818ff49bdd122f92b2caf2d973"
+      },
+      "research-tests/test_r206_disposition_contract.py": {
+        "before": null,
+        "after": "b7e4ef1484981a01207b6e16a4f14c9e227d9de4ac19b2aabdc13e9c2c51449c"
+      }
+    },
+    "guardSHA256": "a50a1c490f2b61425b3dd62a116e11f06db0fdfd582acc3589f56d552080227b",
+    "noStagedFiles": true,
+    "productionUnchanged": true,
+    "frozenUnchanged": true,
+    "whitespaceGuard": true,
+    "crossLaneOverlapTimestampsUTC": [
+      "2026-09-10T04:35:40.906239+00:00"
+    ]
   }
 ]

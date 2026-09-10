@@ -5268,7 +5268,9 @@ frozen again during R206.
 
 ## Status
 
-**R206 final native state: CHECKED-PARTIAL; supervisor gate pending.**
+**R206 ACCEPTED CHECKED-PARTIAL at2d21f6ea; docs-only D4 seal authorized.**
+Supervisor spot-check/ruling: `O6-R206-OWNER-FINAL-GATE.md`. No external reviewer
+is claimed; that ruling supplies this shift's review gate.
 
 Fully proved at fresh current source:
 - true core→attached embedding; legacy grammar embedding and conditional old
@@ -5307,6 +5309,6 @@ attempts (78 accepted,10 rejected, mostly superseded) and30 evidence tests are
 retained, not misreported as distinct fresh source passes.
 
 Next: separately gated R207 expanded seven-form O19/reached-state redesign from
-`O6-R206-O19-EXPANSION-DESIGN.md`; then discharge canonical map agreement and
+`O6-R206-O19-EXPANSION-DESIGN.md`, **ActualCartesian FIRST**; then discharge canonical map agreement and
 runtime chronology/A6/D5 against the repaired dependency spine. Recheck blocked
 closures before using their TTCs. Supervisor owns the acceptance/push/merge.

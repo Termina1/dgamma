@@ -1,6 +1,6 @@
 {
-  "timestampUTC": "2026-09-10T04:35:40.288669+00:00",
-  "head": "9782be1f907f7364965e0ceb360f11adf1df874f",
+  "timestampUTC": "2026-09-10T04:43:01.968791+00:00",
+  "head": "2d21f6eaeb0b531a4f18dd5cbff843240ac59ac0",
   "kind": "compiler-free independent evidence cross-check; not an external reviewer",
   "passed": true,
   "nativeReceipts": 88,
@@ -82,8 +82,8 @@
   "invalidatedUnknown": 0,
   "original133StatusCounts": {
     "blocked by untrusted/retired import": 117,
-    "fresh PASS": 12,
     "fresh expected-negative PASS": 3,
+    "fresh PASS": 12,
     "fresh own-target FAILED": 1
   },
   "productionByteIdentity": true,
@@ -101,7 +101,7 @@
     "mtimeNS": 1788997534601237763,
     "size": 2122510
   },
-  "sourceCommitReceipts": 67,
+  "sourceCommitReceipts": 68,
   "noStagedFiles": true,
   "noOwnedCompiler": true,
   "crossLaneOverlapTimestampsUTC": [
@@ -619,7 +619,7 @@
     "2026-09-10T04:09:24.855966+00:00",
     "2026-09-10T04:09:25.914181+00:00"
   ],
-  "archiveSHA256": "95011ba2af788fd2d5a08c8177449e255b7b8a28ce0f7139af8e512c9977fa6a",
-  "archiveMembers": 644,
-  "reviewGate": "Supervisor spot-check still required; no external reviewer claimed"
+  "archiveSHA256": "f33d1cf7873b4628c73cf2883c7c9606c55d4202bf1c50c0987a35caa10cbb2a",
+  "archiveMembers": 645,
+  "reviewGate": "Supervisor ACCEPTED CHECKED-PARTIAL at2d21f6ea; see O6-R206-OWNER-FINAL-GATE.md; no external reviewer claimed"
 }
