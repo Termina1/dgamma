@@ -1,0 +1,48 @@
+module DGamma.CP5O19ExpandedAssemblySpike
+
+import DGamma.Core
+import DGamma.Calculus
+import DGamma.Coeffects
+import DGamma.Metatheory
+import DGamma.CP3
+import DGamma.CP5UniqueRawNameInsertions
+import DGamma.CP5ConfluenceLocalDiamondSpike
+import DGamma.CP5O19SurfaceSpike
+import DGamma.CP5O19ReplayObservationSpike
+import DGamma.CP5O19OrdinalPlanSpike
+import DGamma.CP5O19CartesianNumericSpike
+import DGamma.CP5ConfluenceRankObservationSpike
+import DGamma.CP5O19CartesianCursorSpike
+import DGamma.CP5O19CartesianColumnsSpike
+import DGamma.CP5O19WholeBlockSpike
+import DGamma.CP5O19ReachedBlocksSpike
+import DGamma.CP5O19ReachedDecompositionSpike
+import DGamma.CP5O19SameChainAssemblySpike
+import DGamma.CP5O19OperationalAssemblySpike
+import Data.List
+import Data.List.Elem
+import Decidable.Equality
+
+%default total
+%unbound_implicits off
+
+||| CONDITIONAL on the R207 packaged expandedRun (not a Legacy body).
+||| Its actual finite derivation gives native origins; source decomposition
+||| and the exact actor transposition give coverage. This does not produce
+||| expandedRun and does not inhabit the universal Operational obligation.
+export
+0 o19ExpandedTargetLifecycleCoverage :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (protocol : RegistrationProtocol key value world error) ->
+  {sourceOrder, targetOrder : List name} -> (swap : AdjacentActorOrderSwap name sourceOrder targetOrder) ->
+  {initial, sourceFinal : SystemState name key value world error} -> (source : Transitions initial sourceFinal) ->
+  (blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder source) ->
+  (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq source) ->
+  (safety : AdjacentActorSwapSafety name key world error value protocol nameEq keyEq swap source blocks premises) ->
+  (unique : UniqueRawNameInsertions name key world error value nameEq keyEq source) ->
+  (expanded : O19WholeBlockUnconditionalObligation name key world error value nameEq keyEq protocol swap source blocks premises safety unique) ->
+  LifecycleActorsCovered targetOrder (cursorTrace (columnCursor (expandedRun expanded)))
+o19ExpandedTargetLifecycleCoverage nameEq keyEq protocol swap source blocks premises safety unique expanded =
+  o19LifecycleCoverageFromOrigins source (cursorTrace (columnCursor (expandedRun expanded)))
+    (replayActionOrigin (finiteDerivationOccurrenceCorrespondence (cursorDerivation (columnCursor (expandedRun expanded)))))
+    (o19SwapActorMembership swap) (decomposedLifecycleCoverage blocks)
