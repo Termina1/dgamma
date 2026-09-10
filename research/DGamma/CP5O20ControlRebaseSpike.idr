@@ -42,3 +42,15 @@ export
 o20RebaseParentReferences before after Root Root agreeParent RootsRelated = RootsRelated
 o20RebaseParentReferences before after (ChildOf parent) (ChildOf target) agreeParent (ChildrenRelated renamed) =
   ChildrenRelated (trans (sym (agreeParent parent Refl)) renamed)
+
+||| Executable finite provider references carried by the actual control phase.
+||| Inactive has none; Reloading/Active/Unloading retain their concrete view.
+public export
+o20LifecycleControlNames :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {deps : List key} -> {provision : CoeffectSpec key} ->
+  Lifecycle key value world error name deps provision -> List name
+o20LifecycleControlNames (Inactive outcome) = []
+o20LifecycleControlNames (Reloading remaining accumulator view) = viewProviders view
+o20LifecycleControlNames (Active accumulator view) = viewProviders view
+o20LifecycleControlNames (Unloading accumulator view outcome) = viewProviders view
