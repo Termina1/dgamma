@@ -17,10 +17,10 @@ export
 0 nativeWordCount : {name, key, world, error : Type} -> {value : key -> Type} ->
   {first, finalState : SystemState name key value world error} ->
   {trace : Transitions first finalState} ->
-  (trail : AvailabilityTrace name key world error value trace) ->
+  (trail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value trace) ->
   length (nativeActionWord trail) = transitionCount trace
-nativeWordCount (AvailabilityEnd state) = Refl
-nativeWordCount (AvailabilityStep source (Fired ne ke action tag checked) rest later) =
+nativeWordCount (DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd state) = Refl
+nativeWordCount (DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep source (Fired ne ke action tag checked) rest later) =
   cong S (nativeWordCount later)
 
 ||| Executable native trail concatenation. No transition is replayed or
@@ -29,12 +29,12 @@ public export
 appendAvailability : {name, key, world, error : Type} -> {value : key -> Type} ->
   {0 first, middle, finalState : SystemState name key value world error} ->
   {0 left : Transitions first middle} -> {0 right : Transitions middle finalState} ->
-  AvailabilityTrace name key world error value left ->
-  AvailabilityTrace name key world error value right ->
-  AvailabilityTrace name key world error value (appendTransitions left right)
-appendAvailability (AvailabilityEnd state) rightTrail = rightTrail
-appendAvailability {right} (AvailabilityStep source step rest later) rightTrail =
-  AvailabilityStep source step (appendTransitions rest right) (appendAvailability later rightTrail)
+  DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value left ->
+  DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value right ->
+  DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value (appendTransitions left right)
+appendAvailability (DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd state) rightTrail = rightTrail
+appendAvailability {right} (DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep source step rest later) rightTrail =
+  DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep source step (appendTransitions rest right) (appendAvailability later rightTrail)
 
 ||| GENERAL action-word transport through native concatenation. This proves
 ||| the physical decomposition connector, not core restoration after a swap.
@@ -42,10 +42,10 @@ export
 0 nativeWordAppend : {name, key, world, error : Type} -> {value : key -> Type} ->
   {first, middle, finalState : SystemState name key value world error} ->
   {left : Transitions first middle} -> {right : Transitions middle finalState} ->
-  (leftTrail : AvailabilityTrace name key world error value left) ->
-  (rightTrail : AvailabilityTrace name key world error value right) ->
+  (leftTrail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value left) ->
+  (rightTrail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value right) ->
   nativeActionWord (appendAvailability leftTrail rightTrail) =
     nativeActionWord leftTrail ++ nativeActionWord rightTrail
-nativeWordAppend (AvailabilityEnd state) rightTrail = Refl
-nativeWordAppend (AvailabilityStep source (Fired ne ke action tag checked) rest later) rightTrail =
+nativeWordAppend (DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd state) rightTrail = Refl
+nativeWordAppend (DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep source (Fired ne ke action tag checked) rest later) rightTrail =
   cong (action ::) (nativeWordAppend later rightTrail)
