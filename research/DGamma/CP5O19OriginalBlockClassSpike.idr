@@ -314,3 +314,34 @@ data O19ExpandedBlockWordObservation :
     (root : name) -> (component : Component key value world error) ->
     (0 inserted : action = OInsert root Root component) ->
     O19ExpandedBlockWordObservation name key world error value nameEq actor forbidden action
+
+||| Complete production CORE observation, including both owned-child controls.
+||| NoGeneratedChild only excludes generated insertions, never existing children.
+export
+0 o19CoreSafeWord :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (actor, forbidden : name) ->
+  {first, last : SystemState name key value world error} ->
+  (trace : Transitions first last) -> ActorLifecycleCore nameEq actor trace ->
+  NoGeneratedChild forbidden trace ->
+  (action : Action name key value world error) -> Elem action (o19ActionWord trace) ->
+  O19ExpandedBlockWordObservation name key world error value nameEq actor forbidden action
+o19CoreSafeWord nameEq actor forbidden _ CoreLifecycleEnd NoGeneratedChildEnd action absent =
+  void (uninhabited absent)
+o19CoreSafeWord nameEq actor forbidden _ (CoreLifecycleStep step rest lifecycle owner tail)
+  (NoGeneratedChildStep _ _ excluded safeTail) action member = case member of
+    Here => ExpandedLegacy (BlockOwnLifecycle lifecycle (trans (sym (o19TransitionActorOwner step)) owner))
+    There later => o19CoreSafeWord nameEq actor forbidden rest tail safeTail action later
+o19CoreSafeWord nameEq actor forbidden _ (CoreYieldedRegistrationStep {child} {component} step rest inserted tail)
+  (NoGeneratedChildStep _ _ excluded safeTail) action member = case member of
+    Here => ExpandedLegacy (BlockGenerated child component inserted
+      (\same => excluded actor component (trans inserted (cong (\selected => OInsert selected (ChildOf actor) component) same))))
+    There later => o19CoreSafeWord nameEq actor forbidden rest tail safeTail action later
+o19CoreSafeWord nameEq actor forbidden _ (CoreChildRetireStep {first} step rest child fiber found parent controlled tail)
+  (NoGeneratedChildStep _ _ excluded safeTail) action member = case member of
+    Here => ExpandedChildRetire child fiber first found parent controlled
+    There later => o19CoreSafeWord nameEq actor forbidden rest tail safeTail action later
+o19CoreSafeWord nameEq actor forbidden _ (CoreChildRemoveStep {first} step rest child fiber found parent controlled tail)
+  (NoGeneratedChildStep _ _ excluded safeTail) action member = case member of
+    Here => ExpandedChildRemove child fiber first found parent controlled
+    There later => o19CoreSafeWord nameEq actor forbidden rest tail safeTail action later
