@@ -64,3 +64,17 @@ r206RemovedAllNameRebase = o20RebaseAllNameCutConditional r45NameEq identityName
   r192RemovedBirthFinal r192RemovedBirthFinal
   (o20IdentityAllNameCut r45NameEq r192RemovedBirthFinal)
   r206RemovedCurrentAgreement (fst r206RemovedReferenceAgreements) (snd r206RemovedReferenceAgreements)
+
+||| The map really changes raw name1 to2, but the actual absent image is
+||| proved by the new inverse/domain transport, not assumed or supplied.
+export
+0 r206RemovedAbsentTransport :
+  (renameForward r192AbsentBijection 1 = 2,
+   lookupFiber {name = Nat} {key = R45Key} {value = R45Value} {world = Unit} {error = String}
+     @{r45NameEq} 1 (registry r192RemovedBirthFinal) = Nothing,
+   lookupFiber {name = Nat} {key = R45Key} {value = R45Value} {world = Unit} {error = String}
+     @{r45NameEq} (renameForward r192AbsentBijection 1) (registry r192RemovedBirthFinal) = Nothing)
+r206RemovedAbsentTransport = (Refl, Refl,
+  o20RebaseAbsentDomain r45NameEq identityNameBijection r192AbsentBijection
+    r192RemovedBirthFinal r192RemovedBirthFinal (o20IdentityAllNameCut r45NameEq r192RemovedBirthFinal)
+    r206RemovedCurrentAgreement 1 Refl)
