@@ -298,3 +298,19 @@ o19ObserveAttachedPair nameEq leftActor rightActor leftBody rightBody leftShape 
 public export
 data O19AttachedForm = ActorLifecycleForm | ChildInsertForm | ChildRetireForm |
   ChildRemoveForm | ForcedRootInsertForm | BundledRootRetireForm | BundledRootRemoveForm
+
+||| Erased equations/metadata are not inspected to compute a source form.
+public export
+o19AttachedForm :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {actor : name} ->
+  {coreFirst, coreLast, before, afterState : SystemState name key value world error} ->
+  {core : Transitions coreFirst coreLast} -> {step : Transition before afterState} ->
+  O19AttachedEdge name key world error value nameEq actor core step -> O19AttachedForm
+o19AttachedForm (AttachedLifecycle lifecycle owned) = ActorLifecycleForm
+o19AttachedForm (AttachedChildInsert child component inserted) = ChildInsertForm
+o19AttachedForm (AttachedChildRetire child fiber found parent controlled) = ChildRetireForm
+o19AttachedForm (AttachedChildRemove child fiber found parent controlled) = ChildRemoveForm
+o19AttachedForm (AttachedRootInsert root component priorRoots inserted forced) = ForcedRootInsertForm
+o19AttachedForm (AttachedRootRetire root fiber priorRoots bundled found parent controlled) = BundledRootRetireForm
+o19AttachedForm (AttachedRootRemove root fiber priorRoots bundled found parent controlled) = BundledRootRemoveForm
