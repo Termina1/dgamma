@@ -35,7 +35,7 @@ o20DecomposedLifecyclePaper {name} {key} {world} {error} {value} nameEq keyEq pr
   o19OriginalPaperBranch nameEq keyEq (actionOwner action) (actionOwner action) trace
     (decomposedBlock blocks (actionOwner action)
       (o19LocatedLifecycleCovered trace (decomposedLifecycleCoverage blocks) action occurrence lifecycle))
-    occurrence (BlockOwnLifecycle lifecycle Refl)
+    occurrence (ExpandedLegacy (BlockOwnLifecycle lifecycle Refl))
     (snd (alignedAppendSplit (beforeActionOccurrence occurrence)
       (MoreTransitions (locatedTransition occurrence) (afterActionOccurrence occurrence))
       (replace {p = AlignedTransitions name key world error value nameEq keyEq}
