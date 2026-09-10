@@ -368,3 +368,15 @@ o19BundleWord nameEq actor forbidden _ (ForcedBundleRetire {before} root fiber s
 o19BundleWord nameEq actor forbidden _ (ForcedBundleRemove {before} root fiber step rest bundled found parent controlled tail) action member = case member of
   Here => ExpandedRootRemove root fiber before found parent controlled
   There later => o19BundleWord nameEq actor forbidden rest tail action later
+
+||| Restrict authentic generated-child exclusion to the actual native prefix.
+export
+0 o19NoGeneratedPrefix :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (forbidden : name) -> {first, middle, last : SystemState name key value world error} ->
+  (prior : Transitions first middle) -> (suffix : Transitions middle last) ->
+  NoGeneratedChild forbidden (appendTransitions prior suffix) ->
+  NoGeneratedChild forbidden prior
+o19NoGeneratedPrefix forbidden NoTransitions suffix safe = NoGeneratedChildEnd
+o19NoGeneratedPrefix forbidden (MoreTransitions step rest) suffix (NoGeneratedChildStep _ _ excluded safeTail) =
+  NoGeneratedChildStep step rest excluded (o19NoGeneratedPrefix forbidden rest suffix safeTail)
