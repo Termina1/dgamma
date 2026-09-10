@@ -46,3 +46,31 @@ o19ExpandedTargetLifecycleCoverage nameEq keyEq protocol swap source blocks prem
   o19LifecycleCoverageFromOrigins source (cursorTrace (columnCursor (expandedRun expanded)))
     (replayActionOrigin (finiteDerivationOccurrenceCorrespondence (cursorDerivation (columnCursor (expandedRun expanded)))))
     (o19SwapActorMembership swap) (decomposedLifecycleCoverage blocks)
+
+||| Inhabit the R207 erased decomposition TYPE FAMILY for the SAME supplied
+||| WholeBlock and Reached packages. The two selector/order fields are used
+||| literally; disjointness and lifecycle coverage are DERIVED here. Neither
+||| package is produced, so this is a conditional producer, not closure of O19.
+export
+0 o19ExpandedTargetDecomposition :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (protocol : RegistrationProtocol key value world error) ->
+  {sourceOrder, targetOrder : List name} -> (swap : AdjacentActorOrderSwap name sourceOrder targetOrder) ->
+  {initial, sourceFinal : SystemState name key value world error} -> (source : Transitions initial sourceFinal) ->
+  (blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder source) ->
+  (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq source) ->
+  (safety : AdjacentActorSwapSafety name key world error value protocol nameEq keyEq swap source blocks premises) ->
+  (unique : UniqueRawNameInsertions name key world error value nameEq keyEq source) ->
+  (expanded : O19WholeBlockUnconditionalObligation name key world error value nameEq keyEq protocol swap source blocks premises safety unique) ->
+  (reached : O19ReachedUnconditionalObligation name key world error value nameEq keyEq protocol swap source blocks premises safety unique expanded) ->
+  O19ReachedDecompositionUnconditionalObligation nameEq keyEq protocol swap source blocks premises safety unique expanded
+o19ExpandedTargetDecomposition nameEq keyEq protocol swap source blocks premises safety unique expanded reached =
+  MkActorBlockDecomposition
+    (o19ActualTargetBlockObligation reached)
+    (o19ActualTargetBlocksFollowOrderObligation reached)
+    (\early, late, earlyIn, lateIn, ordered =>
+      o19OrderedBlockRangesDisjoint (cursorTrace (columnCursor (expandedRun expanded)))
+        (o19ActualTargetBlockObligation reached early earlyIn)
+        (o19ActualTargetBlockObligation reached late lateIn)
+        (o19ActualTargetBlocksFollowOrderObligation reached early late earlyIn lateIn ordered))
+    (o19ExpandedTargetLifecycleCoverage nameEq keyEq protocol swap source blocks premises safety unique expanded)
