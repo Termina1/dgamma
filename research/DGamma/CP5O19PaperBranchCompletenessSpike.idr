@@ -309,13 +309,13 @@ export
   (block : LocatedOpenEpisodeBlock name key world error value nameEq keyEq selected source) ->
   {action : Action name key value world error} ->
   (origin : LocatedActionOccurrence action source) ->
-  O19BlockWordObservation name key world error value selected forbidden action ->
+  O19ExpandedBlockWordObservation name key world error value nameEq selected forbidden action ->
   AlignedTransitions name key world error value nameEq keyEq
     (MoreTransitions (locatedTransition origin) (afterActionOccurrence origin)) ->
   (isLifecycleAction action = True) -> PaperActivationStep (locatedTransition origin)
 o19OriginalPaperBranch {finalState} nameEq keyEq selected forbidden source block
   (MkLocatedActionOccurrence before afterState earlier _ later actionExact decomposition)
-  (BlockOwnLifecycle ownLifecycle owner) (AlignedStep checkedAction tag checked _ alignedTail) lifecycle =
+  (ExpandedLegacy (BlockOwnLifecycle ownLifecycle owner)) (AlignedStep checkedAction tag checked _ alignedTail) lifecycle =
     o19LifecyclePaperChecked nameEq keyEq checkedAction tag before afterState checked
       (trans (cong isLifecycleAction actionExact) lifecycle)
       (\same => fst (o19NoUnloadAtCut selected earlier (Fired nameEq keyEq checkedAction tag checked) later
@@ -332,14 +332,29 @@ o19OriginalPaperBranch {finalState} nameEq keyEq selected forbidden source block
           (replace {p = \actor => unloadingEndpoint {name} {key} {value} {world} {error} @{nameEq} actor afterState = True}
             (trans (cong actionOwner actionExact) owner) unloading))))
 o19OriginalPaperBranch nameEq keyEq selected forbidden source block origin
-  (BlockGenerated child component inserted safe) aligned lifecycle =
+  (ExpandedLegacy (BlockGenerated child component inserted safe)) aligned lifecycle =
     void (uninhabited (trans (sym (trans (cong isLifecycleAction inserted) Refl)) lifecycle))
 
-||| UNCONDITIONAL ORIGINAL four-orientation classifier. Every input is an
-||| existing O19 premise or an original location/word membership requested by
-||| the approved static interface. Both Conditional paper-branch hypotheses
-||| are now PRODUCED from the selected actual block; no paper, future row,
-||| reached safety/decomposition, callback, or early-guard oracle remains.
+o19OriginalPaperBranch nameEq keyEq selected forbidden source block origin
+  (ExpandedChildRetire controlled fiber before found parent exact) aligned lifecycle =
+    void (uninhabited (trans (sym (trans (cong isLifecycleAction exact) Refl)) lifecycle))
+o19OriginalPaperBranch nameEq keyEq selected forbidden source block origin
+  (ExpandedChildRemove controlled fiber before found parent exact) aligned lifecycle =
+    void (uninhabited (trans (sym (trans (cong isLifecycleAction exact) Refl)) lifecycle))
+o19OriginalPaperBranch nameEq keyEq selected forbidden source block origin
+  (ExpandedRootRetire controlled fiber before found parent exact) aligned lifecycle =
+    void (uninhabited (trans (sym (trans (cong isLifecycleAction exact) Refl)) lifecycle))
+o19OriginalPaperBranch nameEq keyEq selected forbidden source block origin
+  (ExpandedRootRemove controlled fiber before found parent exact) aligned lifecycle =
+    void (uninhabited (trans (sym (trans (cong isLifecycleAction exact) Refl)) lifecycle))
+o19OriginalPaperBranch nameEq keyEq selected forbidden source block origin
+  (ExpandedRootInsert root component inserted) aligned lifecycle =
+    void (uninhabited (trans (sym (trans (cong isLifecycleAction inserted) Refl)) lifecycle))
+
+||| R206 CONDITIONAL legacy four-orientation classifier. Both legacy block
+||| shapes are now explicit: the production attached grammar does not imply
+||| them. Lifecycle paper-branch completeness still holds for the enlarged
+||| observation and is produced here; no new replay/guard oracle is stored.
 export
 0 o19OriginalClasses :
   {name, key, world, error : Type} -> {value : key -> Type} ->
@@ -350,26 +365,28 @@ export
   (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq source) ->
   (safety : AdjacentActorSwapSafety name key world error value protocol nameEq keyEq swap source blocks premises) ->
   UniqueRawNameInsertions name key world error value nameEq keyEq source ->
+  LegacyActorOnly (actorLeft swap) (blockBody (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety))) ->
+  LegacyActorOnly (actorRight swap) (blockBody (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety))) ->
   {leftAction, rightAction : Action name key value world error} ->
   (leftOrigin : LocatedActionOccurrence leftAction source) -> (rightOrigin : LocatedActionOccurrence rightAction source) ->
   Elem leftAction (o19ActionWord (actorBlockTrace (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)))) ->
   Elem rightAction (o19ActionWord (actorBlockTrace (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety)))) ->
   O19SourcePairObservation name key world error value (actorLeft swap) (actorRight swap)
     (locatedTransition leftOrigin) (locatedTransition rightOrigin)
-o19OriginalClasses {leftAction} {rightAction} nameEq keyEq protocol swap source blocks premises safety unique
+o19OriginalClasses {leftAction} {rightAction} nameEq keyEq protocol swap source blocks premises safety unique leftLegacy rightLegacy
   leftOrigin rightOrigin leftMember rightMember =
     o19OriginalClassesConditional nameEq keyEq protocol swap source premises unique leftOrigin rightOrigin
-      (o19SanctionedOriginalWords nameEq keyEq protocol swap source blocks premises safety leftAction rightAction leftMember rightMember)
+      (o19SanctionedOriginalWords nameEq keyEq protocol swap source blocks premises safety leftLegacy rightLegacy leftAction rightAction leftMember rightMember)
       (o19OriginalPaperBranch nameEq keyEq (actorLeft swap) (actorRight swap) source
         (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)) leftOrigin
-        (o19OriginalBlockWord (actorLeft swap) (actorRight swap) (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)) (safetyLeftDoesNotGenerateRight safety) leftAction leftMember)
+        (o19ExpandedOriginalBlockWord (actorLeft swap) (actorRight swap) (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)) (safetyLeftDoesNotGenerateRight safety) leftAction leftMember)
         (snd (alignedAppendSplit (beforeActionOccurrence leftOrigin)
           (MoreTransitions (locatedTransition leftOrigin) (afterActionOccurrence leftOrigin))
           (replace {p = AlignedTransitions name key world error value nameEq keyEq}
             (sym (actionOccurrenceDecomposition leftOrigin)) (replayAligned premises)))))
       (o19OriginalPaperBranch nameEq keyEq (actorRight swap) (actorLeft swap) source
         (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety)) rightOrigin
-        (o19OriginalBlockWord (actorRight swap) (actorLeft swap) (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety)) (safetyRightDoesNotGenerateLeft safety) rightAction rightMember)
+        (o19ExpandedOriginalBlockWord (actorRight swap) (actorLeft swap) (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety)) (safetyRightDoesNotGenerateLeft safety) rightAction rightMember)
         (snd (alignedAppendSplit (beforeActionOccurrence rightOrigin)
           (MoreTransitions (locatedTransition rightOrigin) (afterActionOccurrence rightOrigin))
           (replace {p = AlignedTransitions name key world error value nameEq keyEq}
