@@ -333,3 +333,22 @@ o19AttachedRootHeadsSame left right leftRest rightRest leftRoot rightRoot
   (SkipRightInternal _ _ excluded tail) = void (excluded rightRoot)
 o19AttachedRootHeadsSame left right leftRest rightRest leftRoot rightRoot
   (MatchExternalInput action _ _ _ _ _ _ leftExact rightExact tail) = trans leftExact (sym rightExact)
+
+||| Every distinct-root-action crossing is an ACTUAL obstruction to the frozen
+||| pairExternalOrder premise, regardless of local effect commutation. This
+||| does not assert that such a pair is sanctioned by whole-block safety.
+export
+0 o19AttachedRootOrderObstruction :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} ->
+  {first, middle, last, movedFirst, movedMiddle, movedLast : SystemState name key value world error} ->
+  (left : Transition first middle) -> (right : Transition middle last) ->
+  (movedRight : Transition movedFirst movedMiddle) -> (movedLeft : Transition movedMiddle movedLast) ->
+  RootOrchestrationStep nameEq left -> RootOrchestrationStep nameEq movedRight ->
+  (transitionAction movedRight = transitionAction right) ->
+  Not (transitionAction left = transitionAction right) ->
+  Not (SameExternalOrchestration nameEq (MoreTransitions left (MoreTransitions right NoTransitions))
+    (MoreTransitions movedRight (MoreTransitions movedLeft NoTransitions)))
+o19AttachedRootOrderObstruction left right movedRight movedLeft leftRoot movedRoot movedAction distinct relation =
+  distinct (trans (o19AttachedRootHeadsSame left movedRight
+    (MoreTransitions right NoTransitions) (MoreTransitions movedLeft NoTransitions) leftRoot movedRoot relation) movedAction)
