@@ -52,3 +52,10 @@ record AnchorNativeExecution where
     (ORetire 3) (anchorState 10) = Just (ORetireTag, anchorState 11)
   0 aLateRoot5 : checkedApplyAction @{fst fixtureDictionaries} @{snd fixtureDictionaries}
     (OInsert 5 Root (anchorComponent False)) (anchorState 11) = Just (OInsertTag, anchorState 12)
+
+||| All twelve ACTUAL checked edges and the initial registry invariant.
+||| This proof inhabits the preceding record; no execution is postulated.
+public export
+0 anchorNative : AnchorNativeExecution
+anchorNative = MkAnchorNativeExecution
+  Refl Refl Refl Refl Refl Refl Refl Refl Refl Refl Refl Refl Refl
