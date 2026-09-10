@@ -1,0 +1,14 @@
+{
+  "timestampUTC": "2026-09-10T00:29:00.548332+00:00",
+  "entries": [
+    {
+      "path": "research/DGamma/CP5ActorLifecycleOnlyExtended.idr",
+      "sourceSHA256": "259bbb336aab6a3babcec41ccba9fc2eca5299422a3a8e5443715f004365b380",
+      "invocation": "V19",
+      "status": "BROKEN BY UNFREEZE \u2014 re-proof/scope obligation",
+      "cause": "Old actorLifecycleOnlyIntoExtended domain now denotes attached core+forced roots, not the old strict grammar. Arity repair alone would claim an unjustified attached-to-core reverse inclusion; explicitly forbidden by fidelity table.",
+      "nativeError": "ActorLifecycleOnly selected trace: name versus DecEq; no type declaration for actorLifecycleOnlyIntoExtended",
+      "repair": "NONE: no reverse coercion, new premise, constructor cases or re-proof attempted."
+    }
+  ]
+}

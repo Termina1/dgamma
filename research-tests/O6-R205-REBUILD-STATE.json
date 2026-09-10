@@ -1,22 +1,22 @@
 {
-  "timestampUTC": "2026-09-10T00:22:33.736837+00:00",
+  "timestampUTC": "2026-09-10T00:29:00.627018+00:00",
   "status": "INCOMPLETE",
-  "head": "b7d51e2912381beec28c24e0f3241bd60b4c5cc6",
+  "head": "fd80334d288f033fd5e0e56daa4baeae9a165d9a",
   "CP3Blob": "eeaa70aa4414648bb2a1173d58244267997d16d7",
   "patchSHA256": "42d957748fcc67ff534c33a6c369eded4bad65e0f37e5c72e4539b737a68fb8a",
   "lane2CompilerRelease": "NOT RELEASED: remain idle until supervisor confirms COMPLETE",
   "counts": {
-    "passed": 193,
+    "passed": 195,
     "unchanged production prerequisite; seeded (not freshly checked)": 44,
     "passed expected-negative contract": 10,
-    "FAILED — lexical/semantic classification required": 3,
+    "FAILED — lexical/semantic classification required": 1,
     "unchecked": 282,
     "legacy, not re-checked (standing classification)": 11
   },
   "checked": 206,
-  "passed": 203,
+  "passed": 205,
   "lexicallyRepaired": 0,
-  "broken": 3,
+  "broken": 1,
   "unchecked": 282,
   "legacyNotApplicable": 11,
   "unaffectedProductionSeeds": 44,
@@ -585,13 +585,13 @@
     {
       "path": "research/DGamma/CP5AvailabilityAwarePlacement.idr",
       "module": "DGamma.CP5AvailabilityAwarePlacement",
-      "sourceSHA256": "0e62fa35c396e9f26465c07dd24aab2e14d25c7d5c5980c28d5d313c63869c26",
+      "sourceSHA256": "8bd32248021ff6c2e6b477e4b5328d54addd71d61281384bbd9f5cf087789506",
       "plannedSHA256": "0e62fa35c396e9f26465c07dd24aab2e14d25c7d5c5980c28d5d313c63869c26",
-      "status": "FAILED — lexical/semantic classification required",
+      "status": "passed",
       "reason": null,
-      "invocation": "V20",
+      "invocation": "L1-1",
       "peakRSSKiB": 0,
-      "exactErrors": "1/1: Building DGamma.CP5AvailabilityAwarePlacement (/Users/vyacheslavshebanov/Work/dgamma/research/DGamma/CP5AvailabilityAwarePlacement.idr)\nError: While processing constructor AvailabilityStep. Ambiguous elaboration. Possible results:\n    DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value rest\n    DGamma.CP3.AvailabilityTrace name key world error value rest\n\nDGamma.CP5AvailabilityAwarePlacement:61:49--61:66\n 57 |   AvailabilityStep :\n 58 |     {name, key, world, error : Type} -> {value : key -> Type} ->\n 59 |     {0 middle, finalState : SystemState name key value world error} ->\n 60 |     (first : SystemState name key value world error) -> (step : Transition first middle) ->\n 61 |     (0 rest : Transitions middle finalState) -> AvailabilityTrace name key world error value rest ->\n                                                      ^^^^^^^^^^^^^^^^^\n\nError: While processing type of rootCutCompatible. Ambiguous elaboration. Possible results:\n    DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value trace\n    DGamma.CP3.AvailabilityTrace name key world error value trace\n\nDGamma.CP5AvailabilityAwarePlacement:72:3--72:20\n 68 | rootCutCompatible :\n 69 |   (name, key, world, error : Type) -> (value : key -> Type) ->\n 70 |   (nameEq : DecEq name) -> (keyEq : DecEq key) -> Component key value world error -> Nat ->\n 71 |   {0 first, finalState : SystemState name key value world error} -> {0 trace : Transitions first finalState} ->\n 72 |   AvailabilityTrace name key world error value trace -> Bool\n        ^^^^^^^^^^^^^^^^^\n\nError: No type declaration for DGamma.CP5AvailabilityAwarePlacement.rootCutCompatible.\n\nDGamma.CP5AvailabilityAwarePlacement:73:1--74:78\n 73 | rootCutCompatible name key world error value nameEq keyEq component Z (AvailabilityEnd state) =\n 74 |   rootDeclaredProvisionsFree name key world error value keyEq component state\nDid you mean: DGamma.CP3.rootCutCompatible?\nError: While processing constructor MkEarliestAvailableRootBirth. Ambiguous elaboration. Possible results:\n    DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value (DGamma.CP3.LocatedActionOccurrence.beforeActionOccurrence birth)\n    DGamma.CP3.AvailabilityTrace name key world error value (DGamma.CP3.LocatedActionOccurrence.beforeActionOccurrence birth)\n\nDGamma.CP5AvailabilityAwarePlacement:94:27--94:44\n 90 |   (0 trace : Transitions initial finalState) (0 root : name)\n 91 |   (0 component : Component key value world error)\n 92 |   (0 birth : LocatedActionOccurrence (OInsert root Root component) trace) where\n 93 |   constructor MkEarliestAvailableRootBirth\n 94 |   rootAvailabilityTrail : AvailabilityTrace name key world error value (beforeActionOccurrence birth)\n                                ^^^^^^^^^^^^^^^^^\n\nError: While processing constructor MkAvailabilityAwareCanonicalInputPlacement. Ambiguous elaboration. Possible results:\n    DGamma.CP5AvailabilityAwarePlacement.EarliestAvailableRootBirth name key world error value nameEq keyEq trace root component birth\n    DGamma.CP3.EarliestAvailableRootBirth name key world error value nameEq keyEq trace root component birth\n\nDGamma.CP5AvailabilityAwarePlacement:115:5--115:31\n 111 |   0 placementExternalInputsSame : SameExternalOrchestration nameEq original trace\n 112 |   0 rootGenerationEarliestAvailable :\n 113 |     {root : name} -> {component : Component key value world error} ->\n 114 |     (birth : LocatedActionOccurrence (OInsert root Root component) trace) ->\n 115 |     EarliestAvailableRootBirth name key world error value nameEq keyEq trace root component birth\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^\n",
+      "exactErrors": null,
       "protected": false
     },
     {
@@ -1689,13 +1689,13 @@
     {
       "path": "research-tests/DGamma/R181O19LocatedBlocks.idr",
       "module": "DGamma.R181O19LocatedBlocks",
-      "sourceSHA256": "e7bcb0e849d264b6951c053a50dd921fa6c4e22494bdba72484bcfefc0fd6a3f",
+      "sourceSHA256": "ea212db6d579f63b474580aee06c9ffeb680a0edec67a4a93cf12caa14fbcaea",
       "plannedSHA256": "e7bcb0e849d264b6951c053a50dd921fa6c4e22494bdba72484bcfefc0fd6a3f",
-      "status": "FAILED — lexical/semantic classification required",
+      "status": "passed",
       "reason": null,
-      "invocation": "V34",
-      "peakRSSKiB": 552144,
-      "exactErrors": "4/4: Building DGamma.R181O19LocatedBlocks (/Users/vyacheslavshebanov/Work/dgamma/research-tests/DGamma/R181O19LocatedBlocks.idr)\nError: While processing right hand side of r181ProviderLocatedBlock. Undefined name ActorLifecycleStep. \n\nDGamma.R181O19LocatedBlocks:108:4--108:22\n 104 | r181ProviderLocatedBlock = MkLocatedOpenEpisodeBlock\n 105 |   r179ObservedRootSource r179ObservedProviderBegin r179ObservedProviderFinished\n 106 |   r181BeforeProviderBlock (MkBeginStep (Builtin.fst r179ObservedProviderEdges))\n 107 |   r181ProviderBlockBody (Builtin.fst r181BlockBodiesInstalled)\n 108 |   (ActorLifecycleStep _ _ Refl Refl\n          ^^^^^^^^^^^^^^^^^^\nDid you mean any of: ActorLifecycleCore, ActorLifecycleOnly, CoreLifecycleStep, CoveredLifecycleStep, or NoLifecycleByStep?\nError: While processing right hand side of r181ConsumerLocatedBlock. Undefined name ActorLifecycleStep. \n\nDGamma.R181O19LocatedBlocks:130:4--130:22\n 126 |     (MoreTransitions (beginTransition (MkBeginStep (Builtin.fst r179ObservedProviderEdges)))\n 127 |       r181ProviderBlockBody))\n 128 |   r180ConsumerBeginFromPrerequisites r181ConsumerBlockBody\n 129 |   (Builtin.snd r181BlockBodiesInstalled)\n 130 |   (ActorLifecycleStep _ _ Refl Refl ActorLifecycleEnd) NoTransitions\n          ^^^^^^^^^^^^^^^^^^\nDid you mean any of: ActorLifecycleCore, ActorLifecycleOnly, CoreLifecycleStep, CoveredLifecycleStep, or NoLifecycleByStep?\nError: While processing right hand side of r181ProviderBeforeConsumer. Can't solve constraint between: r181ConsumerLocatedBlock .blockPreStart and r181ProviderLocatedBlock .blockEnd.\n\nDGamma.R181O19LocatedBlocks:146:44--146:57\n 142 | public export\n 143 | 0 r181ProviderBeforeConsumer : BlockBefore Nat ToyKey ToyRuntime String ToyValue\n 144 |   (the (DecEq Nat) %search) (the (DecEq ToyKey) %search) r181WholeTrace 0 1\n 145 |   r181ProviderLocatedBlock r181ConsumerLocatedBlock\n 146 | r181ProviderBeforeConsumer = MkBlockBefore NoTransitions Refl\n                                                  ^^^^^^^^^^^^^\n",
+      "invocation": "L2-1",
+      "peakRSSKiB": 552128,
+      "exactErrors": null,
       "protected": false
     },
     {
@@ -6646,7 +6646,9 @@
   "supersededCandidateInvocations": [
     "S33",
     "S33-2",
-    "S33-3"
+    "S33-3",
+    "V20",
+    "V34"
   ],
   "qualification": "TTCs emitted by stopped P1 are not evidence. Source hashes and every checked/unchecked/broken path retained. Resource or semantic breakage is not a repaired proof; no stale cache PASS claims."
 }
