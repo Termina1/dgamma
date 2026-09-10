@@ -5116,3 +5116,19 @@ OriginalBlockClass, then133 blocked rechecks. Lane2 released AFTER this seal:
 re-seed build from rebuilt main, re-check its own closure, then Tier2. This lane
 has not entered or modified lane2. Four holes and every body remain unchanged;
 full Thm73 and the listed Tier2 obligations remain open.
+
+## R206 post-unfreeze re-proofs
+
+R205 FINAL GATE at a699828e ACCEPTED checked-partial; sealed at 452420c7;
+production unfrozen by owner decision (CP3 blob eeaa70aa…, CP3StatementChecks
+migrated); CanonicalSort re-baselined eb0ab7b9…; lane 2 released. Production is
+frozen again during R206.
+
+- **V19, CP5ActorLifecycleOnlyExtended:** retired
+  `actorLifecycleOnlyIntoExtended`. Its old domain now includes actual attached
+  roots; an attached-to-core/Extended reverse inclusion is false. The checked
+  replacement `actorLifecycleCoreIntoAttached` embeds a production core via
+  `ActorWithoutForcedRoots`, with unchanged trace indices and no new premise,
+  postulate or cast. This lane-baseline research statement/body migration was
+  explicitly authorized by the R206 gate and prioritized for lane2 cache trust.
+  Other research Extended data/located-block declarations are unchanged.
