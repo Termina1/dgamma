@@ -160,7 +160,7 @@ o19SwapActorMembership swap selected member =
         (o19SwapTailMember tailMember))
       (replace {p = Elem selected} (actorBeforeExact swap) member))
 
-||| FULL lifecycle coverage for the SAME actual Cartesian reached trace.
+||| LEGACY-CONDITIONAL lifecycle coverage for the SAME actual Cartesian reached trace.
 ||| The finite chain supplies real origins; the source decomposition supplies
 ||| coverage; the exact actor transposition supplies enumeration membership.
 export
@@ -173,18 +173,20 @@ export
   (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq source) ->
   (safety : AdjacentActorSwapSafety name key world error value protocol nameEq keyEq swap source blocks premises) ->
   (unique : UniqueRawNameInsertions name key world error value nameEq keyEq source) ->
+  (legacyBlocks : (selected : name) -> (member : Elem selected sourceOrder) ->
+    LegacyActorOnly selected (blockBody (decomposedBlock blocks selected member))) ->
   LifecycleActorsCovered targetOrder
-    (cursorTrace (columnCursor (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique)))
-o19ActualTargetLifecycleCoverage nameEq keyEq protocol swap source blocks premises safety unique =
+    (cursorTrace (columnCursor (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique (legacyBlocks (actorLeft swap) (safetyLeftInOrder safety)) (legacyBlocks (actorRight swap) (safetyRightInOrder safety)))))
+o19ActualTargetLifecycleCoverage nameEq keyEq protocol swap source blocks premises safety unique legacyBlocks =
   o19LifecycleCoverageFromOrigins source
-    (cursorTrace (columnCursor (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique)))
+    (cursorTrace (columnCursor (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique (legacyBlocks (actorLeft swap) (safetyLeftInOrder safety)) (legacyBlocks (actorRight swap) (safetyRightInOrder safety)))))
     (replayActionOrigin (finiteDerivationOccurrenceCorrespondence
-      (cursorDerivation (columnCursor (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique)))))
+      (cursorDerivation (columnCursor (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique (legacyBlocks (actorLeft swap) (safetyLeftInOrder safety)) (legacyBlocks (actorRight swap) (safetyRightInOrder safety)))))))
     (o19SwapActorMembership swap) (decomposedLifecycleCoverage blocks)
 
-||| COMPLETE ActorBlockDecomposition on the SAME actual reached trace.
+||| LEGACY-CONDITIONAL ActorBlockDecomposition on the SAME actual reached trace.
 ||| Every individual block, physical order, disjointness and lifecycle
-||| coverage field is constructed from original O19 inputs only.
+||| coverage field is constructed from original O19 inputs plus legacy body evidence.
 export
 0 o19ActualTargetDecomposition :
   {name, key, world, error : Type} -> {value : key -> Type} ->
@@ -195,16 +197,37 @@ export
   (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq source) ->
   (safety : AdjacentActorSwapSafety name key world error value protocol nameEq keyEq swap source blocks premises) ->
   (unique : UniqueRawNameInsertions name key world error value nameEq keyEq source) ->
+  (legacyBlocks : (selected : name) -> (member : Elem selected sourceOrder) ->
+    LegacyActorOnly selected (blockBody (decomposedBlock blocks selected member))) ->
   ActorBlockDecomposition name key world error value nameEq keyEq targetOrder
-    (cursorTrace (columnCursor (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique)))
-o19ActualTargetDecomposition nameEq keyEq protocol swap source blocks premises safety unique =
+    (cursorTrace (columnCursor (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique (legacyBlocks (actorLeft swap) (safetyLeftInOrder safety)) (legacyBlocks (actorRight swap) (safetyRightInOrder safety)))))
+o19ActualTargetDecomposition nameEq keyEq protocol swap source blocks premises safety unique legacyBlocks =
   MkActorBlockDecomposition
-    (o19ActualTargetBlock nameEq keyEq protocol swap source blocks premises safety unique)
-    (o19ActualTargetBlocksFollowOrder nameEq keyEq protocol swap source blocks premises safety unique)
+    (o19ActualTargetBlock nameEq keyEq protocol swap source blocks premises safety unique legacyBlocks)
+    (o19ActualTargetBlocksFollowOrder nameEq keyEq protocol swap source blocks premises safety unique legacyBlocks)
     (\early, late, earlyIn, lateIn, ordered =>
       o19OrderedBlockRangesDisjoint
-        (cursorTrace (columnCursor (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique)))
-        (o19ActualTargetBlock nameEq keyEq protocol swap source blocks premises safety unique early earlyIn)
-        (o19ActualTargetBlock nameEq keyEq protocol swap source blocks premises safety unique late lateIn)
-        (o19ActualTargetBlocksFollowOrder nameEq keyEq protocol swap source blocks premises safety unique early late earlyIn lateIn ordered))
-    (o19ActualTargetLifecycleCoverage nameEq keyEq protocol swap source blocks premises safety unique)
+        (cursorTrace (columnCursor (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique (legacyBlocks (actorLeft swap) (safetyLeftInOrder safety)) (legacyBlocks (actorRight swap) (safetyRightInOrder safety)))))
+        (o19ActualTargetBlock nameEq keyEq protocol swap source blocks premises safety unique legacyBlocks early earlyIn)
+        (o19ActualTargetBlock nameEq keyEq protocol swap source blocks premises safety unique legacyBlocks late lateIn)
+        (o19ActualTargetBlocksFollowOrder nameEq keyEq protocol swap source blocks premises safety unique legacyBlocks early late earlyIn lateIn ordered))
+    (o19ActualTargetLifecycleCoverage nameEq keyEq protocol swap source blocks premises safety unique legacyBlocks)
+
+||| OPEN R207 expanded-production obligation, not an inhabitant. This states
+||| the full reached decomposition for the SAME hypothetical expanded run.
+||| The original exact signature is archived in O6-R207-CROSSTRACE-NEEDS.json.
+public export
+0 O19ReachedDecompositionUnconditionalObligation :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (protocol : RegistrationProtocol key value world error) ->
+  {sourceOrder, targetOrder : List name} -> (swap : AdjacentActorOrderSwap name sourceOrder targetOrder) ->
+  {initial, sourceFinal : SystemState name key value world error} -> (source : Transitions initial sourceFinal) ->
+  (blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder source) ->
+  (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq source) ->
+  (safety : AdjacentActorSwapSafety name key world error value protocol nameEq keyEq swap source blocks premises) ->
+  (unique : UniqueRawNameInsertions name key world error value nameEq keyEq source) ->
+  (expanded : O19WholeBlockUnconditionalObligation name key world error value nameEq keyEq protocol swap source blocks premises safety unique) -> Type
+O19ReachedDecompositionUnconditionalObligation {name} {key} {world} {error} {value} {targetOrder}
+  nameEq keyEq protocol swap source blocks premises safety unique expanded =
+  ActorBlockDecomposition name key world error value nameEq keyEq targetOrder
+    (cursorTrace (columnCursor (expandedRun expanded)))
