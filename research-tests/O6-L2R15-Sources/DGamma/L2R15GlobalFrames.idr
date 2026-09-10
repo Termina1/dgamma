@@ -43,14 +43,14 @@ GlobalDistanceFramesFromNativeSuffix : {name, key, world, error : Type} -> {valu
   (source, oldMiddle, oldLocalEnd : SystemState name key value world error) ->
   (action : Action name key value world error) -> (tag : RuleTag) ->
   (before : Transitions initial source) ->
-  (prefixTrail : AvailabilityTrace name key world error value before) ->
+  (prefixTrail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value before) ->
   (0 oldChecked : checkedApplyAction @{nameEq} @{keyEq} action source = Just (tag, oldMiddle)) ->
   (0 oldRoot : checkedApplyAction @{nameEq} @{keyEq} (OInsert root Root component) oldMiddle = Just (OInsertTag, oldLocalEnd)) ->
   (square : ClassifierSquare name key world error value nameEq keyEq root component source action tag oldLocalEnd) ->
   (oldSuffix : Transitions oldLocalEnd oldEnd) ->
   (newSuffix : Transitions (squareFinal square) newEnd) ->
-  (oldSuffixTrail : AvailabilityTrace name key world error value oldSuffix) ->
-  (newSuffixTrail : AvailabilityTrace name key world error value newSuffix) ->
+  (oldSuffixTrail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value oldSuffix) ->
+  (newSuffixTrail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value newSuffix) ->
   (frames : NativeSuffixFrames nameEq keyEq oldSuffix newSuffix) -> Type
 GlobalDistanceFramesFromNativeSuffix {name} {key} {world} {error} {value} {initial}
   nameEq keyEq root component source oldMiddle oldLocalEnd action tag before prefixTrail
