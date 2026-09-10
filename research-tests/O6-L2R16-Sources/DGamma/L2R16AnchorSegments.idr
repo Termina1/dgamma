@@ -56,3 +56,13 @@ anchorSegment 1 =
   DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep (anchorState 8) (Fired {before = anchorState 8} {afterState = anchorState 9} (fst fixtureDictionaries) (snd fixtureDictionaries) (OInsert 5 Root (anchorComponent False)) OInsertTag (aRoot5 anchorNative)) (NoTransitions) (DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd (anchorState 9))
 anchorSegment (S (S later)) =
   DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep (anchorState 11) (Fired {before = anchorState 11} {afterState = anchorState 12} (fst fixtureDictionaries) (snd fixtureDictionaries) (OInsert 5 Root (anchorComponent False)) OInsertTag (aLateRoot5 anchorNative)) (NoTransitions) (DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd (anchorState 12))
+
+||| The FULL remaining native suffix frame hypothesis is genuinely met:
+||| root5 is valid at both actual sources and its provision scan agrees.
+||| This is local/suffix framing, not a claimed global distance frame.
+public export
+0 anchorSuffixFrames : NativeSuffixFrames (fst fixtureDictionaries) (snd fixtureDictionaries)
+  (MoreTransitions (Fired {before = anchorState 8} {afterState = anchorState 9} (fst fixtureDictionaries) (snd fixtureDictionaries) (OInsert 5 Root (anchorComponent False)) OInsertTag (aRoot5 anchorNative)) (NoTransitions))
+  (MoreTransitions (Fired {before = anchorState 11} {afterState = anchorState 12} (fst fixtureDictionaries) (snd fixtureDictionaries) (OInsert 5 Root (anchorComponent False)) OInsertTag (aLateRoot5 anchorNative)) (NoTransitions))
+anchorSuffixFrames = SuffixFramesRoot 5 (anchorComponent False)
+  (aRoot5 anchorNative) (aLateRoot5 anchorNative) Refl Refl SuffixFramesEnd
