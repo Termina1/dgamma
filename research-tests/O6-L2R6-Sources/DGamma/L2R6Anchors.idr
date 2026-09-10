@@ -32,7 +32,7 @@ public export
 anchorOf : {name, key, world, error : Type} -> {value : key -> Type} ->
   {0 first, finalState : SystemState name key value world error} ->
   {0 trace : Transitions first finalState} ->
-  DecEq name -> DecEq key -> AvailabilityTrace name key world error value trace -> Nat -> Maybe Nat
+  DecEq name -> DecEq key -> DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value trace -> Nat -> Maybe Nat
 anchorOf nameEq keyEq trail ordinal = lastReleaseCut (concatMap
   (\entry => scanReleaseOrdinals nameEq keyEq (catalogComponent entry) 0 (catalogOrdinal entry) trail)
   (filter (\entry => catalogOrdinal entry <= ordinal) (scanRootCatalog 0 trail)))
@@ -46,7 +46,7 @@ record AnchorAssignment
   (nameEq : DecEq name) (keyEq : DecEq key)
   {0 first, finalState : SystemState name key value world error}
   {0 trace : Transitions first finalState}
-  (trail : AvailabilityTrace name key world error value trace)
+  (trail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value trace)
   (entry : RootCatalogEntry name key world error value) where
   constructor MkAnchorAssignment
   anchorKeyObservation : KeyForcedAt name key world error value nameEq keyEq trail entry
@@ -65,7 +65,7 @@ anchorAssignment : {name, key, world, error : Type} -> {value : key -> Type} ->
   {0 first, finalState : SystemState name key value world error} ->
   {0 trace : Transitions first finalState} ->
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
-  (trail : AvailabilityTrace name key world error value trace) ->
+  (trail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value trace) ->
   (entry : RootCatalogEntry name key world error value) ->
   (0 member : Elem entry (scanRootCatalog 0 trail)) ->
   AnchorAssignment name key world error value nameEq keyEq trail entry
@@ -81,7 +81,7 @@ public export
 placedRootsAt : {name, key, world, error : Type} -> {value : key -> Type} ->
   {0 first, finalState : SystemState name key value world error} ->
   {0 trace : Transitions first finalState} ->
-  DecEq name -> DecEq key -> AvailabilityTrace name key world error value trace -> Nat ->
+  DecEq name -> DecEq key -> DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value trace -> Nat ->
   List (RootCatalogEntry name key world error value)
 placedRootsAt nameEq keyEq trail anchor = filter
   (\entry => anchorOf nameEq keyEq trail (catalogOrdinal entry) == Just anchor) (scanRootCatalog 0 trail)
@@ -97,12 +97,12 @@ record PlacedBundle
   (nameEq : DecEq name) (keyEq : DecEq key)
   {first, finalState : SystemState name key value world error}
   {trace : Transitions first finalState}
-  (trail : AvailabilityTrace name key world error value trace) (anchor : Nat) where
+  (trail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value trace) (anchor : Nat) where
   constructor MkPlacedBundle
   representativeAction : Action name key value world error
   representativeOrdinal : Nat
-  placedMember : AttachedBundleOccurrence name key world error value nameEq keyEq trace representativeAction representativeOrdinal
-  placedBundleTrail : AvailabilityTrace name key world error value (memberBundle placedMember)
+  placedMember : DGamma.L2R3AttachedGap.AttachedBundleOccurrence name key world error value nameEq keyEq trace representativeAction representativeOrdinal
+  placedBundleTrail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value (memberBundle placedMember)
   0 placedImmediatelyAfterRelease : bundleOffset placedMember = anchor
   0 placedCatalogExact : scanRootCatalog (bundleOffset placedMember) placedBundleTrail = placedRootsAt nameEq keyEq trail anchor
 
@@ -114,7 +114,7 @@ public export
 targetPosition : {name, key, world, error : Type} -> {value : key -> Type} ->
   {0 first, finalState : SystemState name key value world error} ->
   {0 trace : Transitions first finalState} ->
-  DecEq name -> DecEq key -> AvailabilityTrace name key world error value trace -> Nat -> Nat
+  DecEq name -> DecEq key -> DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value trace -> Nat -> Nat
 targetPosition nameEq keyEq trail ordinal = max
   (fromMaybe 0 (anchorOf nameEq keyEq trail ordinal) +
     length (filter (\earlier => catalogOrdinal earlier < ordinal &&
@@ -132,7 +132,7 @@ public export
 rootDistance : {name, key, world, error : Type} -> {value : key -> Type} ->
   {0 first, finalState : SystemState name key value world error} ->
   {0 trace : Transitions first finalState} ->
-  DecEq name -> DecEq key -> AvailabilityTrace name key world error value trace -> Nat -> Nat
+  DecEq name -> DecEq key -> DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value trace -> Nat -> Nat
 rootDistance nameEq keyEq trail ordinal = if isJust (anchorOf nameEq keyEq trail ordinal)
   then minus ordinal (targetPosition nameEq keyEq trail ordinal) else 0
 
@@ -142,7 +142,7 @@ public export
 totalDistance : {name, key, world, error : Type} -> {value : key -> Type} ->
   {0 first, finalState : SystemState name key value world error} ->
   {0 trace : Transitions first finalState} ->
-  DecEq name -> DecEq key -> AvailabilityTrace name key world error value trace -> Nat
+  DecEq name -> DecEq key -> DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value trace -> Nat
 totalDistance nameEq keyEq trail = sum
   (map (\entry => rootDistance nameEq keyEq trail (catalogOrdinal entry)) (scanRootCatalog 0 trail))
 
@@ -154,7 +154,7 @@ record DistanceObservation
   (nameEq : DecEq name) (keyEq : DecEq key)
   {0 first, finalState : SystemState name key value world error}
   {0 trace : Transitions first finalState}
-  (trail : AvailabilityTrace name key world error value trace) (ordinal : Nat) where
+  (trail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value trace) (ordinal : Nat) where
   constructor MkDistanceObservation
   targetObserved : Nat
   0 targetEquation : targetPosition nameEq keyEq trail ordinal = targetObserved
@@ -170,7 +170,7 @@ distanceObservation : {name, key, world, error : Type} -> {value : key -> Type} 
   {0 first, finalState : SystemState name key value world error} ->
   {0 trace : Transitions first finalState} ->
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
-  (trail : AvailabilityTrace name key world error value trace) -> (ordinal : Nat) ->
+  (trail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value trace) -> (ordinal : Nat) ->
   DistanceObservation name key world error value nameEq keyEq trail ordinal
 distanceObservation nameEq keyEq trail ordinal = MkDistanceObservation
   (targetPosition nameEq keyEq trail ordinal) Refl
