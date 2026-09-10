@@ -78,3 +78,14 @@ twinsCut swapped position = fst (runNative (fst twinsInput)
   (Data.List.take position (if swapped
     then snd (snd twinsInput) ++ fst (snd twinsInput)
     else fst (snd twinsInput) ++ snd (snd twinsInput))))
+
+||| Every segment carries its ACTUAL reached endpoint and native proof.
+||| Literal block boundaries below reduce against independently run cuts.
+public export
+twinsSegment : (swapped : Bool) -> (start, count : Nat) ->
+  (target : SystemState Nat Bool (\key => Unit) Unit String **
+    Transitions (twinsCut swapped start) target)
+twinsSegment swapped start count = runNative (twinsCut swapped start)
+  (Data.List.take count (Data.List.drop start (if swapped
+    then snd (snd twinsInput) ++ fst (snd twinsInput)
+    else fst (snd twinsInput) ++ snd (snd twinsInput))))
