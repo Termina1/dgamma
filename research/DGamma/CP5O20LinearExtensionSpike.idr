@@ -6,7 +6,7 @@ import DGamma.Calculus
 import DGamma.CP3
 import DGamma.CP5ConfluenceLocalDiamondSpike
 import DGamma.CP5UniqueRawNameInsertions
-import DGamma.CP5ConfluenceCrossTraceSpike
+import DGamma.CP5O19SurfaceSpike
 import DGamma.CP5O20SafeBlockSelectionSpike
 import Data.List
 import Data.List.Elem
