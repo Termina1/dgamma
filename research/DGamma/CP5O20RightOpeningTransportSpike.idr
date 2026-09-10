@@ -8,6 +8,7 @@ import DGamma.CP5ConfluenceLocalDiamondSpike
 import DGamma.CP5O20BeginObservationSpike
 import DGamma.CP5O19OpeningPropagationSpike
 import DGamma.CP5O19AdjacentReplayProducerSpike
+import DGamma.CP5O19OriginalBlockClassSpike
 import DGamma.CP5O19SurfaceSpike
 import DGamma.CP5RankedEarlyApplicabilitySpike
 import Decidable.Equality
@@ -65,31 +66,32 @@ o20ForeignTraceOwnerFrame {first} nameEq keyEq actor _
       (o20ForeignTraceOwnerFrame nameEq keyEq actor rest alignedRest
         (\step, occurs => foreign step (OccursLater occurs)))
 
-||| The actual actor-only body and authentic child exclusion PRODUCE every
-||| foreign-owner fact. No trace-wide owner-disjointness oracle remains.
+||| R206 restricted legacy body and child exclusion produce foreign owners.
+||| This is NOT true for unrestricted production bodies: NoGeneratedChild
+||| does not exclude existing-child controls or attached root owners.
 export
 0 o20ActorBodyForeignOwners :
   {name, key, world, error : Type} -> {value : key -> Type} ->
   (left, right : name) -> Not (right = left) ->
   {first, finalState : SystemState name key value world error} ->
-  (trace : Transitions first finalState) -> ActorLifecycleOnly left trace ->
+  (trace : Transitions first finalState) -> LegacyActorOnly left trace ->
   NoGeneratedChild right trace ->
   {before, afterState : SystemState name key value world error} ->
   (chosen : Transition before afterState) -> OccursIn chosen trace ->
   Not (right = actionOwner (transitionAction chosen))
-o20ActorBodyForeignOwners left right distinct NoTransitions ActorLifecycleEnd NoGeneratedChildEnd chosen occurs impossible
+o20ActorBodyForeignOwners left right distinct NoTransitions LegacyActorEnd NoGeneratedChildEnd chosen occurs impossible
 o20ActorBodyForeignOwners left right distinct (MoreTransitions step rest)
-  (ActorLifecycleStep _ _ lifecycle owned only) (NoGeneratedChildStep _ _ excluded safeRest) _ OccursHere same =
+  (LegacyActorStep _ _ lifecycle owned only) (NoGeneratedChildStep _ _ excluded safeRest) _ OccursHere same =
     distinct (trans same (trans (sym (o19TransitionActorOwner step)) owned))
 o20ActorBodyForeignOwners left right distinct (MoreTransitions step rest)
-  (ActorYieldedRegistrationStep {childComponent} _ _ yielded only) (NoGeneratedChildStep _ _ excluded safeRest) _ OccursHere same =
+  (LegacyActorYield {childComponent} _ _ yielded only) (NoGeneratedChildStep _ _ excluded safeRest) _ OccursHere same =
     excluded left childComponent (trans yielded
       (cong (\child => OInsert child (ChildOf left) childComponent) (sym (trans same (cong actionOwner yielded)))))
 o20ActorBodyForeignOwners left right distinct (MoreTransitions step rest)
-  (ActorLifecycleStep _ _ lifecycle owned only) (NoGeneratedChildStep _ _ excluded safeRest) chosen (OccursLater occurs) same =
+  (LegacyActorStep _ _ lifecycle owned only) (NoGeneratedChildStep _ _ excluded safeRest) chosen (OccursLater occurs) same =
     o20ActorBodyForeignOwners left right distinct rest only safeRest chosen occurs same
 o20ActorBodyForeignOwners left right distinct (MoreTransitions step rest)
-  (ActorYieldedRegistrationStep _ _ yielded only) (NoGeneratedChildStep _ _ excluded safeRest) chosen (OccursLater occurs) same =
+  (LegacyActorYield _ _ yielded only) (NoGeneratedChildStep _ _ excluded safeRest) chosen (OccursLater occurs) same =
     o20ActorBodyForeignOwners left right distinct rest only safeRest chosen occurs same
 
 ||| The sole intended extra physical hypothesis for eventual accepted-selector
@@ -116,7 +118,8 @@ o20EmptyGapKeepsLookup nameEq actor NoTransitions empty = Refl
 o20EmptyGapKeepsLookup nameEq actor (MoreTransitions step rest) Refl impossible
 
 ||| Physical pre-left -> left Begin -> left body -> actual gap -> pre-right
-||| owner frame. Body owner-disjointness is DERIVED; gap assumption is named.
+||| owner frame CONDITIONAL on the explicit legacy body shape. Expanded-body
+||| child/root control owner-disjointness remains an additional proof debt.
 export
 0 o20PhysicalLeftBlockOwnerFrame :
   {name, key, world, error : Type} -> {value : key -> Type} ->
@@ -125,7 +128,7 @@ export
   BeginStep nameEq keyEq left leftBefore leftStart ->
   (body : Transitions leftStart leftEnd) ->
   AlignedTransitions name key world error value nameEq keyEq body ->
-  ActorLifecycleOnly left body -> NoGeneratedChild right body ->
+  LegacyActorOnly left body -> NoGeneratedChild right body ->
   (gap : Transitions leftEnd rightBefore) -> ZeroGapPending gap ->
   (lookupFiber {name} {key} {value} {world} {error} @{nameEq} right (registry leftBefore) =
    lookupFiber {name} {key} {value} {world} {error} @{nameEq} right (registry rightBefore))
@@ -138,7 +141,7 @@ o20PhysicalLeftBlockOwnerFrame nameEq keyEq left right distinct leftBefore leftS
       (o20EmptyGapKeepsLookup nameEq right gap empty))
 
 ||| Actual right-first Begin at the pre-left cut, from BOTH real openings and
-||| the complete physical segment. Owner transport is derived. The remaining
+||| the complete LEGACY physical segment. Owner transport is derived. The remaining
 ||| primitive dependency-resolver frame is EXPLICIT and NOT hidden in ZeroGap.
 ||| Deriving that frame from accepted incomparability remains unproved.
 export
@@ -150,7 +153,7 @@ export
   (rightOpening : BeginStep nameEq keyEq right rightBefore rightStart) ->
   (body : Transitions leftStart leftEnd) ->
   AlignedTransitions name key world error value nameEq keyEq body ->
-  ActorLifecycleOnly left body -> NoGeneratedChild right body ->
+  LegacyActorOnly left body -> NoGeneratedChild right body ->
   (gap : Transitions leftEnd rightBefore) -> ZeroGapPending gap ->
   (registryWellFormed @{nameEq} @{keyEq} leftBefore = True) ->
   (resolveView {name} {key} {value} {world} {error} @{nameEq} @{keyEq}
