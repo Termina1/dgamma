@@ -69,7 +69,7 @@ export
   (headAction : Action name key value world error) -> (tag : RuleTag) ->
   (0 checked : checkedApplyAction @{nameEq} @{keyEq} headAction first = Just (tag, middle)) ->
   (rest : Transitions middle finalState) ->
-  (later : AvailabilityTrace name key world error value rest) ->
+  (later : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value rest) ->
   (0 tailDecoder : (ordinal : Nat) -> (source : SystemState name key value world error) ->
     (action : Action name key value world error) ->
     head' (drop ordinal (trailSourceActions later)) = Just (source, action) ->
@@ -102,7 +102,7 @@ export
   {first, middle, finalState : SystemState name key value world error} ->
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (step : Transition first middle) -> (rest : Transitions middle finalState) ->
-  (later : AvailabilityTrace name key world error value rest) ->
+  (later : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value rest) ->
   (aligned : AlignedTransitions name key world error value nameEq keyEq (MoreTransitions step rest)) ->
   (0 tailDecoder : AlignedTransitions name key world error value nameEq keyEq rest ->
     (ordinal : Nat) -> (source : SystemState name key value world error) ->
@@ -111,7 +111,7 @@ export
     AlignedSourceAction name key world error value nameEq keyEq rest source action ordinal) ->
   (ordinal : Nat) -> (source : SystemState name key value world error) ->
   (action : Action name key value world error) ->
-  (0 query : head' (drop ordinal (trailSourceActions (AvailabilityStep first step rest later))) = Just (source, action)) ->
+  (0 query : head' (drop ordinal (trailSourceActions (DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep first step rest later))) = Just (source, action)) ->
   AlignedSourceAction name key world error value nameEq keyEq (MoreTransitions step rest) source action ordinal
 alignedSourceAtStep nameEq keyEq _ _ later
   (AlignedStep headAction tag checked rest tail) tailDecoder ordinal source action query =
@@ -127,15 +127,15 @@ export
   {first, finalState : SystemState name key value world error} ->
   {trace : Transitions first finalState} ->
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
-  (trail : AvailabilityTrace name key world error value trace) ->
+  (trail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value trace) ->
   (aligned : AlignedTransitions name key world error value nameEq keyEq trace) ->
   (ordinal : Nat) -> (source : SystemState name key value world error) ->
   (action : Action name key value world error) ->
   (0 query : head' (drop ordinal (trailSourceActions trail)) = Just (source, action)) ->
   AlignedSourceAction name key world error value nameEq keyEq trace source action ordinal
-locateAlignedSourceAction nameEq keyEq (AvailabilityEnd state) aligned ordinal source action query =
+locateAlignedSourceAction nameEq keyEq (DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd state) aligned ordinal source action query =
   absurd (sourceQueryEmpty ordinal (source, action) query)
-locateAlignedSourceAction nameEq keyEq (AvailabilityStep first step rest later) aligned ordinal source action query =
+locateAlignedSourceAction nameEq keyEq (DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep first step rest later) aligned ordinal source action query =
   alignedSourceAtStep nameEq keyEq step rest later aligned
     (\tail, position, wantedSource, wantedAction, equation =>
       locateAlignedSourceAction nameEq keyEq later tail position wantedSource wantedAction equation)
@@ -149,7 +149,7 @@ export
   {first, finalState : SystemState name key value world error} ->
   {trace : Transitions first finalState} ->
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
-  (trail : AvailabilityTrace name key world error value trace) ->
+  (trail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value trace) ->
   (aligned : AlignedTransitions name key world error value nameEq keyEq trace) ->
   (cut : SelectedSquareCut name key world error value nameEq keyEq trail) ->
   AlignedSourceAction name key world error value nameEq keyEq trace
