@@ -72,3 +72,19 @@ export
    checkedApplyAction @{the (DecEq Nat) %search} @{the (DecEq ToyKey) %search}
     (ORemove 2) r206Released = Nothing)
 r207RootControlsNotEnabledBeforeBirth = (Refl, Refl)
+
+||| Actual root insertion cannot be silently skipped to match the following
+||| root retirement as the first input. Both native suffixes really execute;
+||| this is an external-order fixture, NOT a sanctioned-block counterexample.
+export
+0 r207AttachedRootInputOrderMatters :
+  Not (SameExternalOrchestration (the (DecEq Nat) %search)
+    (MoreTransitions r206RootInsertEdge (MoreTransitions r206RootRetireEdge
+      (MoreTransitions r206RootRemoveEdge NoTransitions)))
+    (MoreTransitions r206RootRetireEdge (MoreTransitions r206RootRemoveEdge NoTransitions)))
+r207AttachedRootInputOrderMatters same =
+  case o19AttachedRootHeadsSame r206RootInsertEdge r206RootRetireEdge
+    (MoreTransitions r206RootRetireEdge (MoreTransitions r206RootRemoveEdge NoTransitions))
+    (MoreTransitions r206RootRemoveEdge NoTransitions) (RootInsertStep Refl)
+    (RootRetireStep (freshFiber DGamma.CalculusChecks.providerComponent Root) Refl Refl Refl) same of
+    Refl impossible
