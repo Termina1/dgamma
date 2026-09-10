@@ -105,8 +105,9 @@ r181ProviderLocatedBlock = MkLocatedOpenEpisodeBlock
   r179ObservedRootSource r179ObservedProviderBegin r179ObservedProviderFinished
   r181BeforeProviderBlock (MkBeginStep (Builtin.fst r179ObservedProviderEdges))
   r181ProviderBlockBody (Builtin.fst r181BlockBodiesInstalled)
-  (ActorLifecycleStep _ _ Refl Refl
-    (ActorLifecycleStep _ _ Refl Refl ActorLifecycleEnd))
+  (ActorWithoutForcedRoots r181ProviderBlockBody
+    (CoreLifecycleStep _ _ Refl Refl
+      (CoreLifecycleStep _ _ Refl Refl CoreLifecycleEnd)))
   (MoreTransitions (beginTransition r180ConsumerBeginFromPrerequisites) r181ConsumerBlockBody)
   (NoLifecycleByStep _ _ (\life => case life of Refl impossible)
     (NoLifecycleByStep _ _ (\life => case life of Refl impossible) NoLifecycleByEnd))
@@ -127,7 +128,8 @@ r181ConsumerLocatedBlock = MkLocatedOpenEpisodeBlock
       r181ProviderBlockBody))
   r180ConsumerBeginFromPrerequisites r181ConsumerBlockBody
   (Builtin.snd r181BlockBodiesInstalled)
-  (ActorLifecycleStep _ _ Refl Refl ActorLifecycleEnd) NoTransitions
+  (ActorWithoutForcedRoots r181ConsumerBlockBody
+    (CoreLifecycleStep _ _ Refl Refl CoreLifecycleEnd)) NoTransitions
   (NoLifecycleByStep _ _ (\life => case life of Refl impossible)
     (NoLifecycleByStep _ _ (\life => case life of Refl impossible)
       (NoLifecycleByStep _ _ (\life, same => case same of Refl impossible)
