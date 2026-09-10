@@ -25,8 +25,8 @@ record OrdinalFixtures where
   constructor MkOrdinalFixtures
   singleTrace : Transitions (smallState 0) (smallState 7)
   barrierNativeTrace : Transitions (barrierState 0) (barrierState 8)
-  singleTrail : AvailabilityTrace Nat Bool Unit String (\key => Unit) singleTrace
-  barrierTrail : AvailabilityTrace Nat Bool Unit String (\key => Unit) barrierNativeTrace
+  singleTrail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace Nat Bool Unit String (\key => Unit) singleTrace
+  barrierTrail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace Nat Bool Unit String (\key => Unit) barrierNativeTrace
   0 singleOmegaComputed : releaseOrdinalScan %search %search (smallComponent True) singleTrail = [3]
   0 barrierOmegaComputed : releaseOrdinalScan %search %search (smallComponent True) barrierTrail = [3]
   0 singleOldComputed : scanReleaseOrdinals %search %search (smallComponent True) 0 4 singleTrail = [3]
