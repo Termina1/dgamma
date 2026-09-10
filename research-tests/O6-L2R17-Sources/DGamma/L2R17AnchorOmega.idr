@@ -75,3 +75,21 @@ omegaSound position selected checked observed =
           (replace {p = \raw => maybe True
             (\found => isYes (decEq @{fst fixtureDictionaries} position (found + 3))) raw = True}
             observed checked))
+
+||| Actual inhabitant of the full quantified insertion contract, consuming
+||| computed True for both arbitrary occurrences. Counts, not dependent
+||| states or token equality, meet at the same arithmetic inverse.
+public export
+0 anchorUniqueFromOmega :
+  UniqueRawNameInsertions Nat Bool Unit String (\key => Unit)
+    (fst fixtureDictionaries) (snd fixtureDictionaries) (anchorTrace False)
+anchorUniqueFromOmega = MkUniqueRawNameInsertions
+  (\selected, leftParent, rightParent, leftComponent, rightComponent, left, right =>
+    trans (omegaSound (locatedActionOrdinal left) selected
+      (omegaDataAgreement (locatedActionOrdinal left))
+      (rawInsertionNameAtLocated Nat Bool Unit String (\key => Unit)
+        (anchorTrace False) selected leftParent leftComponent left))
+      (sym (omegaSound (locatedActionOrdinal right) selected
+        (omegaDataAgreement (locatedActionOrdinal right))
+        (rawInsertionNameAtLocated Nat Bool Unit String (\key => Unit)
+          (anchorTrace False) selected rightParent rightComponent right))))
