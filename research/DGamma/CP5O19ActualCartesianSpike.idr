@@ -20,6 +20,7 @@ import DGamma.CP5O19CartesianWordRowSpike
 import DGamma.CP5O19CartesianNumericSpike
 import DGamma.CP5O19CartesianSitePlanSpike
 import DGamma.CP5O19OrdinalPlanSpike
+import DGamma.CP5O19OriginalBlockClassSpike
 import DGamma.CP5O19PaperBranchCompletenessSpike
 import DGamma.CP5O19CartesianColumnsSpike
 import Data.List
@@ -45,6 +46,8 @@ export
   (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq source) ->
   (safety : AdjacentActorSwapSafety name key world error value protocol nameEq keyEq swap source blocks premises) ->
   UniqueRawNameInsertions name key world error value nameEq keyEq source ->
+  (leftLegacy : LegacyActorOnly (actorLeft swap) (blockBody (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)))) ->
+  (rightLegacy : LegacyActorOnly (actorRight swap) (blockBody (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety)))) ->
   (earlier : Transitions initial before) -> (firstLeft : Transition before leftAfter) -> (leftRest : Transitions leftAfter leftEnd) ->
   (gap : Transitions leftEnd rightBefore) -> (rightSpine : Transitions rightBefore rightAfter) -> (later : Transitions rightAfter sourceFinal) ->
   (appendTransitions earlier (appendTransitions (MoreTransitions firstLeft leftRest) (appendTransitions gap (appendTransitions rightSpine later))) = source) ->
@@ -53,13 +56,13 @@ export
   (o19ActionWord rightSpine = o19ActionWord (actorBlockTrace (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety)))) ->
   O19ColumnRun name key world error value protocol nameEq keyEq source earlier
     (o19ActionWord (MoreTransitions firstLeft leftRest)) (o19ActionWord rightSpine) (o19ActionWord later)
-o19CartesianAdjacentObserved nameEq keyEq protocol swap source blocks premises safety unique earlier firstLeft leftRest
+o19CartesianAdjacentObserved nameEq keyEq protocol swap source blocks premises safety unique leftLegacy rightLegacy earlier firstLeft leftRest
   NoTransitions rightSpine later decomposition adjacent leftWord rightWord =
     o19CartesianSourceSpines nameEq keyEq protocol swap source blocks premises safety unique earlier firstLeft leftRest rightSpine later decomposition
       (\leftOrigin, rightOrigin, leftMember, rightMember =>
-        o19OriginalClasses nameEq keyEq protocol swap source blocks premises safety unique leftOrigin rightOrigin
+        o19OriginalClasses nameEq keyEq protocol swap source blocks premises safety unique leftLegacy rightLegacy leftOrigin rightOrigin
           (replace {p = Elem _} leftWord leftMember) (replace {p = Elem _} rightWord rightMember))
-o19CartesianAdjacentObserved nameEq keyEq protocol swap source blocks premises safety unique earlier firstLeft leftRest
+o19CartesianAdjacentObserved nameEq keyEq protocol swap source blocks premises safety unique leftLegacy rightLegacy earlier firstLeft leftRest
   (MoreTransitions step rest) rightSpine later decomposition adjacent leftWord rightWord = void (uninhabited adjacent)
 
 ||| Actual five-piece source equation from BlockBefore, not a caller's
@@ -80,16 +83,13 @@ export
         (appendTransitions (actorBlockTrace rightBlock) (traceAfterBlock rightBlock)))) = source)
 o19ActualBlockSpines leftBlock rightBlock ordered =
   trans (sym (appendTransitionsAssociative (traceBeforeBlock leftBlock)
-    (MoreTransitions (beginTransition (blockOpening leftBlock)) NoTransitions)
-    (appendTransitions (blockBody leftBlock)
-      (appendTransitions (betweenBlocks ordered) (appendTransitions (actorBlockTrace rightBlock) (traceAfterBlock rightBlock))))))
-  (trans (sym (appendTransitionsAssociative (prefixToBlockOpening leftBlock) (blockBody leftBlock)
+    (actorBlockTrace leftBlock)
     (appendTransitions (betweenBlocks ordered) (appendTransitions (actorBlockTrace rightBlock) (traceAfterBlock rightBlock)))))
-  (trans (cong (appendTransitions (prefixThroughBlock leftBlock))
+  (trans (cong (appendTransitions (appendTransitions (traceBeforeBlock leftBlock) (actorBlockTrace leftBlock)))
     (sym (appendTransitionsAssociative (betweenBlocks ordered)
       (MoreTransitions (beginTransition (blockOpening rightBlock)) NoTransitions)
       (appendTransitions (blockBody rightBlock) (traceAfterBlock rightBlock)))))
-  (trans (sym (appendTransitionsAssociative (prefixThroughBlock leftBlock)
+  (trans (sym (appendTransitionsAssociative (appendTransitions (traceBeforeBlock leftBlock) (actorBlockTrace leftBlock))
     (appendTransitions (betweenBlocks ordered) (MoreTransitions (beginTransition (blockOpening rightBlock)) NoTransitions))
     (appendTransitions (blockBody rightBlock) (traceAfterBlock rightBlock))))
   (trans (cong (\leading => appendTransitions leading (appendTransitions (blockBody rightBlock) (traceAfterBlock rightBlock)))
@@ -97,12 +97,12 @@ o19ActualBlockSpines leftBlock rightBlock ordered =
   (trans (appendTransitionsAssociative (traceBeforeBlock rightBlock)
     (MoreTransitions (beginTransition (blockOpening rightBlock)) NoTransitions)
     (appendTransitions (blockBody rightBlock) (traceAfterBlock rightBlock)))
-    (blockDecomposition rightBlock))))))
+    (blockDecomposition rightBlock)))))
 
-||| The ACTUAL O19 Cartesian loop, with NO internal classification, cut,
+||| R207 LEGACY-CONDITIONAL O19 Cartesian loop, with NO internal cut,
 ||| row, or decomposition premise. All spines come from the selected original
 ||| blocks, the gap is the sanctioned actual adjacency, and A12 produces every
-||| original class. This yields the actual reached bundle/unique/relative
+||| original class under the TWO explicit legacy shapes. This yields the actual reached bundle/unique/relative
 ||| finite chain/product count, NOT yet the ordinal WholeBlockSwapDerivation
 ||| or the target installed ActorBlockDecomposition.
 export
@@ -115,13 +115,15 @@ export
   (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq source) ->
   (safety : AdjacentActorSwapSafety name key world error value protocol nameEq keyEq swap source blocks premises) ->
   UniqueRawNameInsertions name key world error value nameEq keyEq source ->
+  (leftLegacy : LegacyActorOnly (actorLeft swap) (blockBody (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)))) ->
+  (rightLegacy : LegacyActorOnly (actorRight swap) (blockBody (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety)))) ->
   O19ColumnRun name key world error value protocol nameEq keyEq source
     (traceBeforeBlock (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)))
     (o19ActionWord (actorBlockTrace (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety))))
     (o19ActionWord (actorBlockTrace (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety))))
     (o19ActionWord (traceAfterBlock (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety))))
-o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique =
-  o19CartesianAdjacentObserved nameEq keyEq protocol swap source blocks premises safety unique
+o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique leftLegacy rightLegacy =
+  o19CartesianAdjacentObserved nameEq keyEq protocol swap source blocks premises safety unique leftLegacy rightLegacy
     (traceBeforeBlock (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)))
     (beginTransition (blockOpening (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety))))
     (blockBody (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)))
@@ -134,7 +136,7 @@ o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safet
 
 ||| Instantiate the true GLOBAL origin-plan producer on the SAME actual
 ||| O19 Cartesian chain, starting at identity. No rows, cuts, static classes
-||| or source-ordinal equations are supplied by the caller. This exact plan
+||| or source-ordinal equations are supplied; both legacy shapes are explicit. This plan
 ||| is not yet a proof of selected-block-local Cartesian bounds/coverage.
 export
 0 o19ActualGlobalOriginPlan :
@@ -146,12 +148,14 @@ export
   (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq source) ->
   (safety : AdjacentActorSwapSafety name key world error value protocol nameEq keyEq swap source blocks premises) ->
   (unique : UniqueRawNameInsertions name key world error value nameEq keyEq source) ->
+  (leftLegacy : LegacyActorOnly (actorLeft swap) (blockBody (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)))) ->
+  (rightLegacy : LegacyActorOnly (actorRight swap) (blockBody (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety)))) ->
   O19GlobalPlanResult name key world error value protocol nameEq keyEq source
     (identityActionRegistrationReplayCorrespondence source)
-    (cursorDerivation (columnCursor (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique)))
-o19ActualGlobalOriginPlan nameEq keyEq protocol swap source blocks premises safety unique =
+    (cursorDerivation (columnCursor (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique leftLegacy rightLegacy)))
+o19ActualGlobalOriginPlan nameEq keyEq protocol swap source blocks premises safety unique leftLegacy rightLegacy =
   o19BuildGlobalOriginPlan (identityActionRegistrationReplayCorrespondence source) (o19IdentityOrdinalMap source)
-    (cursorDerivation (columnCursor (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique)))
+    (cursorDerivation (columnCursor (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique leftLegacy rightLegacy)))
 
 ||| The AUTHENTIC global-origin list has the actual selected-block product
 ||| cardinality. This consumes the SAME plan's count and SAME run's product
@@ -167,12 +171,14 @@ export
   (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq source) ->
   (safety : AdjacentActorSwapSafety name key world error value protocol nameEq keyEq swap source blocks premises) ->
   (unique : UniqueRawNameInsertions name key world error value nameEq keyEq source) ->
-  (length (globalCrossingPositions (o19ActualGlobalOriginPlan nameEq keyEq protocol swap source blocks premises safety unique)) =
+  (leftLegacy : LegacyActorOnly (actorLeft swap) (blockBody (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)))) ->
+  (rightLegacy : LegacyActorOnly (actorRight swap) (blockBody (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety)))) ->
+  (length (globalCrossingPositions (o19ActualGlobalOriginPlan nameEq keyEq protocol swap source blocks premises safety unique leftLegacy rightLegacy)) =
     actorBlockTransitionCount (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)) *
     actorBlockTransitionCount (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety)))
-o19ActualGlobalOriginProductCount nameEq keyEq protocol swap source blocks premises safety unique =
-  trans (globalCrossingCount (o19ActualGlobalOriginPlan nameEq keyEq protocol swap source blocks premises safety unique))
-    (trans (columnNodeCount (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique))
+o19ActualGlobalOriginProductCount nameEq keyEq protocol swap source blocks premises safety unique leftLegacy rightLegacy =
+  trans (globalCrossingCount (o19ActualGlobalOriginPlan nameEq keyEq protocol swap source blocks premises safety unique leftLegacy rightLegacy))
+    (trans (columnNodeCount (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique leftLegacy rightLegacy))
       (cong2 (*)
         (o19ActionWordLength (actorBlockTrace (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety))))
         (o19ActionWordLength (actorBlockTrace (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety))))))
@@ -191,12 +197,14 @@ export
   (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq source) ->
   (safety : AdjacentActorSwapSafety name key world error value protocol nameEq keyEq swap source blocks premises) ->
   (unique : UniqueRawNameInsertions name key world error value nameEq keyEq source) ->
-  (globalCrossingPositions (o19ActualGlobalOriginPlan nameEq keyEq protocol swap source blocks premises safety unique) =
+  (leftLegacy : LegacyActorOnly (actorLeft swap) (blockBody (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)))) ->
+  (rightLegacy : LegacyActorOnly (actorRight swap) (blockBody (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety)))) ->
+  (globalCrossingPositions (o19ActualGlobalOriginPlan nameEq keyEq protocol swap source blocks premises safety unique leftLegacy rightLegacy) =
     o19OriginsAtSites (ordinalOrigin (o19IdentityOrdinalMap source))
-      (o19CrossingSites (cursorDerivation (columnCursor (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique)))))
-o19ActualGlobalOriginSites nameEq keyEq protocol swap source blocks premises safety unique =
+      (o19CrossingSites (cursorDerivation (columnCursor (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique leftLegacy rightLegacy)))))
+o19ActualGlobalOriginSites nameEq keyEq protocol swap source blocks premises safety unique leftLegacy rightLegacy =
   o19GlobalPlanSites (identityActionRegistrationReplayCorrespondence source) (o19IdentityOrdinalMap source)
-    (cursorDerivation (columnCursor (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique)))
+    (cursorDerivation (columnCursor (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique leftLegacy rightLegacy)))
 
 ||| Actual empty-gap site adapter, discharging static classes with A12.
 export
@@ -210,21 +218,23 @@ export
   (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq source) ->
   (safety : AdjacentActorSwapSafety name key world error value protocol nameEq keyEq swap source blocks premises) ->
   (unique : UniqueRawNameInsertions name key world error value nameEq keyEq source) ->
+  (leftLegacy : LegacyActorOnly (actorLeft swap) (blockBody (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)))) ->
+  (rightLegacy : LegacyActorOnly (actorRight swap) (blockBody (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety)))) ->
   (earlier : Transitions initial before) -> (firstLeft : Transition before leftAfter) -> (leftRest : Transitions leftAfter leftEnd) ->
   (gap : Transitions leftEnd rightBefore) -> (rightSpine : Transitions rightBefore rightAfter) -> (later : Transitions rightAfter sourceFinal) ->
   (decomposition : appendTransitions earlier (appendTransitions (MoreTransitions firstLeft leftRest) (appendTransitions gap (appendTransitions rightSpine later))) = source) ->
   (adjacent : transitionCount gap = 0) ->
   (leftWord : o19ActionWord (MoreTransitions firstLeft leftRest) = o19ActionWord (actorBlockTrace (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)))) ->
   (rightWord : o19ActionWord rightSpine = o19ActionWord (actorBlockTrace (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety)))) ->
-  (o19CrossingSites (cursorDerivation (columnCursor (o19CartesianAdjacentObserved nameEq keyEq protocol swap source blocks premises safety unique earlier firstLeft leftRest gap rightSpine later decomposition adjacent leftWord rightWord))) =
+  (o19CrossingSites (cursorDerivation (columnCursor (o19CartesianAdjacentObserved nameEq keyEq protocol swap source blocks premises safety unique leftLegacy rightLegacy earlier firstLeft leftRest gap rightSpine later decomposition adjacent leftWord rightWord))) =
     o19ColumnSites (transitionCount earlier) (transitionCount (MoreTransitions firstLeft leftRest)) (transitionCount rightSpine))
-o19CartesianAdjacentObservedSites nameEq keyEq protocol swap source blocks premises safety unique earlier firstLeft leftRest
+o19CartesianAdjacentObservedSites nameEq keyEq protocol swap source blocks premises safety unique leftLegacy rightLegacy earlier firstLeft leftRest
   NoTransitions rightSpine later decomposition adjacent leftWord rightWord =
     o19CartesianSourceSpinesSites nameEq keyEq protocol swap source blocks premises safety unique earlier firstLeft leftRest rightSpine later decomposition
       (\leftOrigin, rightOrigin, leftMember, rightMember =>
-        o19OriginalClasses nameEq keyEq protocol swap source blocks premises safety unique leftOrigin rightOrigin
+        o19OriginalClasses nameEq keyEq protocol swap source blocks premises safety unique leftLegacy rightLegacy leftOrigin rightOrigin
           (replace {p = Elem _} leftWord leftMember) (replace {p = Elem _} rightWord rightMember))
-o19CartesianAdjacentObservedSites nameEq keyEq protocol swap source blocks premises safety unique earlier firstLeft leftRest
+o19CartesianAdjacentObservedSites nameEq keyEq protocol swap source blocks premises safety unique leftLegacy rightLegacy earlier firstLeft leftRest
   (MoreTransitions step rest) rightSpine later decomposition adjacent leftWord rightWord = void (uninhabited adjacent)
 
 ||| B3 ACTUAL O19 site closed form: no internal class/cut/site premise.
@@ -238,12 +248,14 @@ export
   (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq source) ->
   (safety : AdjacentActorSwapSafety name key world error value protocol nameEq keyEq swap source blocks premises) ->
   (unique : UniqueRawNameInsertions name key world error value nameEq keyEq source) ->
-  (o19CrossingSites (cursorDerivation (columnCursor (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique))) =
+  (leftLegacy : LegacyActorOnly (actorLeft swap) (blockBody (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)))) ->
+  (rightLegacy : LegacyActorOnly (actorRight swap) (blockBody (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety)))) ->
+  (o19CrossingSites (cursorDerivation (columnCursor (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique leftLegacy rightLegacy))) =
     o19ColumnSites (transitionCount (traceBeforeBlock (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety))))
       (actorBlockTransitionCount (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)))
       (actorBlockTransitionCount (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety))))
-o19CartesianActualBlocksSites nameEq keyEq protocol swap source blocks premises safety unique =
-  o19CartesianAdjacentObservedSites nameEq keyEq protocol swap source blocks premises safety unique
+o19CartesianActualBlocksSites nameEq keyEq protocol swap source blocks premises safety unique leftLegacy rightLegacy =
+  o19CartesianAdjacentObservedSites nameEq keyEq protocol swap source blocks premises safety unique leftLegacy rightLegacy
     (traceBeforeBlock (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)))
     (beginTransition (blockOpening (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety))))
     (blockBody (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)))
@@ -267,15 +279,17 @@ export
   (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq source) ->
   (safety : AdjacentActorSwapSafety name key world error value protocol nameEq keyEq swap source blocks premises) ->
   (unique : UniqueRawNameInsertions name key world error value nameEq keyEq source) ->
-  (globalCrossingPositions (o19ActualGlobalOriginPlan nameEq keyEq protocol swap source blocks premises safety unique) =
+  (leftLegacy : LegacyActorOnly (actorLeft swap) (blockBody (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)))) ->
+  (rightLegacy : LegacyActorOnly (actorRight swap) (blockBody (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety)))) ->
+  (globalCrossingPositions (o19ActualGlobalOriginPlan nameEq keyEq protocol swap source blocks premises safety unique leftLegacy rightLegacy) =
     o19OriginsAtSites (ordinalOrigin (o19IdentityOrdinalMap source))
       (o19ColumnSites (transitionCount (traceBeforeBlock (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety))))
         (actorBlockTransitionCount (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)))
         (actorBlockTransitionCount (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety)))))
-o19ActualGlobalCartesianSites nameEq keyEq protocol swap source blocks premises safety unique =
-  trans (o19ActualGlobalOriginSites nameEq keyEq protocol swap source blocks premises safety unique)
+o19ActualGlobalCartesianSites nameEq keyEq protocol swap source blocks premises safety unique leftLegacy rightLegacy =
+  trans (o19ActualGlobalOriginSites nameEq keyEq protocol swap source blocks premises safety unique leftLegacy rightLegacy)
     (cong (o19OriginsAtSites (ordinalOrigin (o19IdentityOrdinalMap source)))
-      (o19CartesianActualBlocksSites nameEq keyEq protocol swap source blocks premises safety unique))
+      (o19CartesianActualBlocksSites nameEq keyEq protocol swap source blocks premises safety unique leftLegacy rightLegacy))
 
 ||| Authenticate the right block's ORIGINAL start from the actual ordered
 ||| opening-prefix equation and the actual sanctioned empty gap. This is a
@@ -294,16 +308,13 @@ o19AdjacentBlockStartCount leftBlock rightBlock ordered adjacent =
   successorEqualityInjective
     (trans (sym (transitionPrefixLength (traceBeforeBlock rightBlock) (beginTransition (blockOpening rightBlock))))
     (trans (cong transitionCount (blocksOrderedInGlobal ordered))
-    (trans (o19TransitionCountAppend (prefixThroughBlock leftBlock)
+    (trans (o19TransitionCountAppend (appendTransitions (traceBeforeBlock leftBlock) (actorBlockTrace leftBlock))
       (appendTransitions (betweenBlocks ordered) (MoreTransitions (beginTransition (blockOpening rightBlock)) NoTransitions)))
-    (trans (cong (\count => transitionCount (prefixThroughBlock leftBlock) + count)
+    (trans (cong (\count => transitionCount (appendTransitions (traceBeforeBlock leftBlock) (actorBlockTrace leftBlock)) + count)
       (transitionPrefixLength (betweenBlocks ordered) (beginTransition (blockOpening rightBlock))))
-    (trans (cong (\gapCount => transitionCount (prefixThroughBlock leftBlock) + S gapCount) adjacent)
-    (trans (plusCommutative (transitionCount (prefixThroughBlock leftBlock)) 1)
-      (cong S (trans (o19TransitionCountAppend (prefixToBlockOpening leftBlock) (blockBody leftBlock))
-        (trans (cong (\openingCount => openingCount + transitionCount (blockBody leftBlock))
-          (transitionPrefixLength (traceBeforeBlock leftBlock) (beginTransition (blockOpening leftBlock))))
-          (plusSuccRightSucc (transitionCount (traceBeforeBlock leftBlock)) (transitionCount (blockBody leftBlock))))))))))))
+    (trans (cong (\gapCount => transitionCount (appendTransitions (traceBeforeBlock leftBlock) (actorBlockTrace leftBlock)) + S gapCount) adjacent)
+    (trans (plusCommutative (transitionCount (appendTransitions (traceBeforeBlock leftBlock) (actorBlockTrace leftBlock))) 1)
+      (cong S (o19TransitionCountAppend (traceBeforeBlock leftBlock) (actorBlockTrace leftBlock)))))))))
 
 ||| SAME ACTUAL B13 source origins = the explicit Cartesian grid of the
 ||| ACTUAL selected source-block coordinates. Both map bands come from the
@@ -318,13 +329,15 @@ export
   (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq source) ->
   (safety : AdjacentActorSwapSafety name key world error value protocol nameEq keyEq swap source blocks premises) ->
   (unique : UniqueRawNameInsertions name key world error value nameEq keyEq source) ->
-  (globalCrossingPositions (o19ActualGlobalOriginPlan nameEq keyEq protocol swap source blocks premises safety unique) =
+  (leftLegacy : LegacyActorOnly (actorLeft swap) (blockBody (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)))) ->
+  (rightLegacy : LegacyActorOnly (actorRight swap) (blockBody (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety)))) ->
+  (globalCrossingPositions (o19ActualGlobalOriginPlan nameEq keyEq protocol swap source blocks premises safety unique leftLegacy rightLegacy) =
     o19GridPairs (transitionCount (traceBeforeBlock (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety))))
       (transitionCount (traceBeforeBlock (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety))))
       (actorBlockTransitionCount (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)))
       (actorBlockTransitionCount (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety))))
-o19ActualGlobalGrid nameEq keyEq protocol swap source blocks premises safety unique =
-  trans (o19ActualGlobalCartesianSites nameEq keyEq protocol swap source blocks premises safety unique)
+o19ActualGlobalGrid nameEq keyEq protocol swap source blocks premises safety unique leftLegacy rightLegacy =
+  trans (o19ActualGlobalCartesianSites nameEq keyEq protocol swap source blocks premises safety unique leftLegacy rightLegacy)
     (o19NumericColumnGrid (ordinalOrigin (o19IdentityOrdinalMap source))
       (transitionCount (traceBeforeBlock (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety))))
       (actorBlockTransitionCount (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)))
@@ -356,16 +369,18 @@ export
   (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq source) ->
   (safety : AdjacentActorSwapSafety name key world error value protocol nameEq keyEq swap source blocks premises) ->
   (unique : UniqueRawNameInsertions name key world error value nameEq keyEq source) ->
+  (leftLegacy : LegacyActorOnly (actorLeft swap) (blockBody (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)))) ->
+  (rightLegacy : LegacyActorOnly (actorRight swap) (blockBody (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety)))) ->
   BlockCrossingOriginPlan name key world error value protocol nameEq keyEq source
     (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety))
     (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety))
     (identityActionRegistrationReplayCorrespondence source)
-    (cursorDerivation (columnCursor (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique)))
+    (cursorDerivation (columnCursor (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique leftLegacy rightLegacy)))
     (o19GridPairs Z Z (actorBlockTransitionCount (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety))) (actorBlockTransitionCount (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety))))
-o19ActualLocalOriginPlan nameEq keyEq protocol swap source blocks premises safety unique =
+o19ActualLocalOriginPlan nameEq keyEq protocol swap source blocks premises safety unique leftLegacy rightLegacy =
   o19LocalizeGlobalPlan (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)) (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety))
-    (globalCrossingPlan (o19ActualGlobalOriginPlan nameEq keyEq protocol swap source blocks premises safety unique)) (o19GridPairs Z Z (actorBlockTransitionCount (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety))) (actorBlockTransitionCount (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety))))
-    (trans (o19ActualGlobalGrid nameEq keyEq protocol swap source blocks premises safety unique)
+    (globalCrossingPlan (o19ActualGlobalOriginPlan nameEq keyEq protocol swap source blocks premises safety unique leftLegacy rightLegacy)) (o19GridPairs Z Z (actorBlockTransitionCount (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety))) (actorBlockTransitionCount (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety))))
+    (trans (o19ActualGlobalGrid nameEq keyEq protocol swap source blocks premises safety unique leftLegacy rightLegacy)
       (sym (trans (o19GridPairsShift (transitionCount (traceBeforeBlock (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)))) (transitionCount (traceBeforeBlock (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety)))) Z Z (actorBlockTransitionCount (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety))) (actorBlockTransitionCount (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety))))
         (cong2 (\leftSource, rightSource => o19GridPairs leftSource rightSource (actorBlockTransitionCount (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety))) (actorBlockTransitionCount (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety))))
           (plusZeroRightNeutral (transitionCount (traceBeforeBlock (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety))))) (plusZeroRightNeutral (transitionCount (traceBeforeBlock (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety)))))))))
