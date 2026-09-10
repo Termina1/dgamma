@@ -41,3 +41,14 @@ public export
     (leftFinalIndex r192RemovedBirthTree) (rightFinalIndex r192RemovedBirthTree)
 r206RemovedChronologies = o20AcceptedChronologyPairing r45NameEq
   r192RemovedBirthTrace r192RemovedBirthTrace identityRegistrationGenerationBijection r192RemovedBirthTree
+
+||| BOTH produced words are the actual retained event, not arbitrary singleton
+||| placeholders. Pairing proves equal event counts; the real trace has6 edges.
+export
+0 r206RemovedWholeWords :
+  (leftChronology r206RemovedChronologies = [r206RemovedEvent],
+   rightChronology r206RemovedChronologies = [r206RemovedEvent],
+   length (leftChronology r206RemovedChronologies) = length (rightChronology r206RemovedChronologies),
+   transitionCount r192RemovedBirthTrace = 6)
+r206RemovedWholeWords =
+  (Refl, Refl, o20ChronologyPairingLength (chronologyPairing r206RemovedChronologies), Refl)
