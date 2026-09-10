@@ -94,3 +94,24 @@ export
 o19ExpandedTargetEndpoint nameEq keyEq protocol swap source blocks premises safety unique expanded =
   o19FiniteEndpoint nameEq keyEq (cursorDerivation (columnCursor (expandedRun expanded)))
     (replayFinalWellFormed premises)
+
+||| Project the ENTIRE replay bundle and raw insertion uniqueness from the
+||| SAME expandedRun cursor. This conditional adapter introduces no Legacy
+||| restriction and no weakened substitute for the original capital.
+export
+0 o19ExpandedTargetPremises :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  (nameEq : DecEq name) -> (keyEq : DecEq key) -> (protocol : RegistrationProtocol key value world error) ->
+  {sourceOrder, targetOrder : List name} -> (swap : AdjacentActorOrderSwap name sourceOrder targetOrder) ->
+  {initial, sourceFinal : SystemState name key value world error} -> (source : Transitions initial sourceFinal) ->
+  (blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder source) ->
+  (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq source) ->
+  (safety : AdjacentActorSwapSafety name key world error value protocol nameEq keyEq swap source blocks premises) ->
+  (unique : UniqueRawNameInsertions name key world error value nameEq keyEq source) ->
+  (expanded : O19WholeBlockUnconditionalObligation name key world error value nameEq keyEq protocol swap source blocks premises safety unique) ->
+  (ReplayInvariantBundle name key world error value protocol nameEq keyEq
+      (cursorTrace (columnCursor (expandedRun expanded))),
+   UniqueRawNameInsertions name key world error value nameEq keyEq
+      (cursorTrace (columnCursor (expandedRun expanded))))
+o19ExpandedTargetPremises nameEq keyEq protocol swap source blocks premises safety unique expanded =
+  (cursorBundle (columnCursor (expandedRun expanded)), cursorUnique (columnCursor (expandedRun expanded)))
