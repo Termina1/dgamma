@@ -155,3 +155,34 @@ o19AttachedReasonAtReplay relocate (KeyReleased release) =
   case relocate release of
     (occurrence ** found) => KeyReleased (o19AttachedReleaseAtReplay release occurrence found)
 o19AttachedReasonAtReplay relocate (EarlierForcedRoot earlier) = EarlierForcedRoot earlier
+
+||| Reindex the seven edge classes by a genuinely replayed core. This is the
+||| second half of transport, after o19AttachedEdgeAtReplay moved the edge.
+||| Only the forcing-release occurrence map is consumed; prior-root histories
+||| and every already-transported source lookup are kept unchanged.
+export
+0 o19AttachedEdgeChangeCore :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {actor : name} ->
+  {first, last, replayFirst, replayLast, before, afterState : SystemState name key value world error} ->
+  {core : Transitions first last} -> {replayCore : Transitions replayFirst replayLast} ->
+  {step : Transition before afterState} ->
+  ((component : Component key value world error) ->
+    (release : AttachedRelease name key world error value nameEq actor core component) ->
+    (replayOccurrence : LocatedActionOccurrence (ORemove (releasedChild release)) replayCore **
+      lookupFiber {name} {key} {value} {world} {error} @{nameEq} (releasedChild release)
+        (registry (actionBeforeState replayOccurrence)) = Just (releasedFiber release))) ->
+  O19AttachedEdge name key world error value nameEq actor core step ->
+  O19AttachedEdge name key world error value nameEq actor replayCore step
+o19AttachedEdgeChangeCore relocate (AttachedLifecycle lifecycle owned) = AttachedLifecycle lifecycle owned
+o19AttachedEdgeChangeCore relocate (AttachedChildInsert child component inserted) = AttachedChildInsert child component inserted
+o19AttachedEdgeChangeCore relocate (AttachedChildRetire child fiber found parent controlled) =
+  AttachedChildRetire child fiber found parent controlled
+o19AttachedEdgeChangeCore relocate (AttachedChildRemove child fiber found parent controlled) =
+  AttachedChildRemove child fiber found parent controlled
+o19AttachedEdgeChangeCore relocate (AttachedRootInsert root component priorRoots inserted forced) =
+  AttachedRootInsert root component priorRoots inserted (o19AttachedReasonAtReplay (relocate component) forced)
+o19AttachedEdgeChangeCore relocate (AttachedRootRetire root fiber priorRoots bundled found parent controlled) =
+  AttachedRootRetire root fiber priorRoots bundled found parent controlled
+o19AttachedEdgeChangeCore relocate (AttachedRootRemove root fiber priorRoots bundled found parent controlled) =
+  AttachedRootRemove root fiber priorRoots bundled found parent controlled
