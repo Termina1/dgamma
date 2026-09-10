@@ -71,4 +71,3 @@ record AvailabilitySortedClosingFreeTrace
     endpointWithdrawnGenerations sortedEndpoint = []
   sortedRegistrationTree : CanonicalRegistrationCorrespondence original
     sortedTrace (endpointWithdrawnGenerations sortedEndpoint)
-
