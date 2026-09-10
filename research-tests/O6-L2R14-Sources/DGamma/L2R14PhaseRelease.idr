@@ -93,9 +93,9 @@ export
   {trace : Transitions first finalState} ->
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
   (component : Component key value world error) ->
-  (trail : AvailabilityTrace name key world error value trace) -> (ordinal : Nat) ->
+  (trail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value trace) -> (ordinal : Nat) ->
   (0 member : Elem ordinal (releaseOrdinalScan nameEq keyEq component trail)) ->
-  (packet : (actor : name ** AttachedRelease name key world error value nameEq actor trace component) **
+  (packet : (actor : name ** DGamma.L2R3Attached.AttachedRelease name key world error value nameEq actor trace component) **
     locatedActionOrdinal (releaseOccurrence (snd packet)) = ordinal)
 phaseReleaseAtOrdinal nameEq keyEq component trail ordinal member =
   (fst (phaseMapMember (\packet => locatedActionOrdinal (releaseOccurrence (snd packet)))
@@ -113,10 +113,10 @@ export
   {first, finalState : SystemState name key value world error} ->
   {trace : Transitions first finalState} ->
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
-  (trail : AvailabilityTrace name key world error value trace) ->
+  (trail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value trace) ->
   (entry, seed : RootCatalogEntry name key world error value) -> (anchor : Nat) ->
   (0 accepted : phaseAnchorSeedCheck nameEq keyEq trail entry anchor seed = True) ->
-  (packet : (actor : name ** AttachedRelease name key world error value nameEq actor trace (catalogComponent seed)) **
+  (packet : (actor : name ** DGamma.L2R3Attached.AttachedRelease name key world error value nameEq actor trace (catalogComponent seed)) **
     locatedActionOrdinal (releaseOccurrence (snd packet)) = pred anchor)
 phaseSeedRelease nameEq keyEq trail entry seed anchor accepted =
   phaseReleaseAtOrdinal nameEq keyEq (catalogComponent seed) trail (pred anchor)
