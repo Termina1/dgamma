@@ -1,0 +1,27 @@
+{
+  "passed": true,
+  "checkedHead": "c87de09a30a0beb41074f2fff55db1e59f6033e3",
+  "archiveVerified": false,
+  "records": 273,
+  "freshPasses": 186,
+  "guardedSourceCommits": 89,
+  "repairGroups": 86,
+  "otherRepairsCapped40": 2,
+  "semanticRestatements": [
+    "S1",
+    "S2",
+    "S3"
+  ],
+  "T2MicroUnits": [],
+  "recheckCounts": {
+    "BLOCKED-DEPENDENCY": 4,
+    "BLOCKED-ON-R206": 6,
+    "PASSED": 97,
+    "REPAIRED": 89,
+    "UNCHECKED": 4
+  },
+  "noStagedFiles": true,
+  "ownCompilerRunning": false,
+  "supportSolutionSeedUntouched": true,
+  "humanMathematicalReview": "parent-owned; not performed by this independent script"
+}

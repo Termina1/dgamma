@@ -1,0 +1,14 @@
+{
+  "mergeCommit": "28da551de112f123eb5dc8f997945c26b919d281",
+  "productionCommit": "452420c73c59a6af2d204cafa6e722b3a0fff995",
+  "sourceTree": "6fe1416d6b5e61a52b4ad2cde53aba7875824cd1",
+  "productionSourceTree": "6fe1416d6b5e61a52b4ad2cde53aba7875824cd1",
+  "availabilityBlob": "bd5de5388207643280d3384a1e6a716d80013e6c",
+  "productionAvailabilityBlob": "bd5de5388207643280d3384a1e6a716d80013e6c",
+  "allL2R1Through15SourceTreesByteIdentical": true,
+  "secondAuthorizedMerge": "b16591547b55dd05f13c1ac95da8f2b69433b50b",
+  "secondParent": "bfe2e8d506f2ca77f2e96086f61ed19cc2bde642",
+  "mainOwnedV19SHA256": "8a4230942d52ba11fa7d9a599f3c0683b8d526cf97c01c7eb1720d0d2342ef13",
+  "freshV19Receipt": "V1001",
+  "firstRecord": "L2R15 FINAL GATE at a0e50ce0 ACCEPTED (Tier 1 signed handoff); production unfrozen by the owner in R205 (CP3 blob eeaa70aa\u2026, CP3StatementChecks migrated, CanonicalSort re-baselined eb0ab7b9\u2026, sealed at 452420c7); lane 2 released.\n"
+}
