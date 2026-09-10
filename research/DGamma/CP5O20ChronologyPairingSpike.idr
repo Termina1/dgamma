@@ -73,3 +73,19 @@ o20ChronologyRotateMember (head :: rest) suffix Here =
 o20ChronologyRotateMember (head :: rest) suffix (There Here) = Here
 o20ChronologyRotateMember (head :: rest) suffix (There (There later)) =
   There (o20ChronologyRotateMember rest suffix (There later))
+
+||| Reverse occurrence transport observes the recursively produced Elem
+||| witness. No event equality test or occurrence collapse is introduced.
+export
+0 o20ChronologyUnrotateMember :
+  {element : Type} -> {selected, event : element} -> (earlier, suffix : List element) ->
+  Elem selected (earlier ++ (event :: suffix)) -> Elem selected (event :: (earlier ++ suffix))
+o20ChronologyUnrotateMember [] suffix member = member
+o20ChronologyUnrotateMember (head :: rest) suffix Here = There Here
+o20ChronologyUnrotateMember (head :: rest) suffix (There later) =
+  beneath (o20ChronologyUnrotateMember rest suffix later)
+  where
+    0 beneath : {item : Type} -> {selected, event, head : item} -> {items : List item} ->
+      Elem selected (event :: items) -> Elem selected (event :: (head :: items))
+    beneath Here = Here
+    beneath (There older) = There (There older)
