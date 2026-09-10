@@ -65,7 +65,7 @@ export
 0 locateSourceAtStep : {name, key, world, error : Type} -> {value : key -> Type} ->
   {first, middle, finalState : SystemState name key value world error} ->
   (step : Transition first middle) -> (rest : Transitions middle finalState) ->
-  (later : AvailabilityTrace name key world error value rest) ->
+  (later : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value rest) ->
   (0 tailDecoder : (position : Nat) -> (wantedSource : SystemState name key value world error) ->
     (wantedAction : Action name key value world error) ->
     (0 found : head' (drop position (trailSourceActions later)) = Just (wantedSource, wantedAction)) ->
@@ -89,14 +89,14 @@ export
 0 locateSourceAction : {name, key, world, error : Type} -> {value : key -> Type} ->
   {first, finalState : SystemState name key value world error} ->
   {trace : Transitions first finalState} ->
-  (trail : AvailabilityTrace name key world error value trace) ->
+  (trail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value trace) ->
   (ordinal : Nat) -> (source : SystemState name key value world error) ->
   (action : Action name key value world error) ->
   (0 equation : head' (drop ordinal (trailSourceActions trail)) = Just (source, action)) ->
   LocatedSourceAction name key world error value trace source action ordinal
-locateSourceAction (AvailabilityEnd state) ordinal source action equation =
+locateSourceAction (DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd state) ordinal source action equation =
   absurd (sourceQueryEmpty ordinal (source, action) equation)
-locateSourceAction (AvailabilityStep before (Fired ne ke head tag checked) rest later)
+locateSourceAction (DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep before (Fired ne ke head tag checked) rest later)
   ordinal source action equation =
   locateSourceAtStep (Fired ne ke head tag checked) rest later (locateSourceAction later)
     ordinal source action equation
@@ -109,7 +109,7 @@ export
   {first, finalState : SystemState name key value world error} ->
   {trace : Transitions first finalState} ->
   (nameEq : DecEq name) -> (keyEq : DecEq key) ->
-  (trail : AvailabilityTrace name key world error value trace) ->
+  (trail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value trace) ->
   (cut : SelectedSquareCut name key world error value nameEq keyEq trail) ->
   LocatedSourceAction name key world error value trace (cutSource cut) (cutAction cut)
     (pred (catalogOrdinal (cutEntry cut)))
