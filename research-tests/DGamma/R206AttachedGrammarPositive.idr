@@ -57,3 +57,10 @@ public export
 r206RootInsertEdge : Transition r206Released r206RootInserted
 r206RootInsertEdge = Fired (the (DecEq Nat) %search) (the (DecEq ToyKey) %search)
   (OInsert 2 Root DGamma.CalculusChecks.providerComponent) OInsertTag Refl
+
+||| Same-bundle root retirement preserves its actual Root parent metadata.
+public export
+r206RootRetired : SystemState Nat ToyKey ToyValue ToyRuntime String
+r206RootRetired = MkSystemState (MkToyRuntime False False)
+  (replaceBinding @{the (DecEq Nat) %search} 2
+    (retireFiber (freshFiber DGamma.CalculusChecks.providerComponent Root)) (registry r206RootInserted))
