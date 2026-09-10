@@ -80,3 +80,14 @@ export
 r206RemovedPositionsAndCounts = o20PairedChronologyPositionsAndCounts r45NameEq identityRegistrationGenerationBijection
   r192RemovedBirthTrace r192RemovedBirthTrace (leftFinalIndex r192RemovedBirthTree) (rightFinalIndex r192RemovedBirthTree)
   r206RemovedChronologies
+
+||| Actual eight-edge closing history exercises BOTH deleted-birth branches.
+||| The scanner keeps physical steps while excluding the closed activation's
+||| registration from retained-event matching.
+public export
+0 r206ClosedChronologies :
+  O20PairedNativeChronologies Nat R45Key Unit String R45Value r45NameEq
+    identityRegistrationGenerationBijection r193HistoricalClosedTrace r193HistoricalClosedTrace
+    (leftFinalIndex r193HistoricalTree) (rightFinalIndex r193HistoricalTree)
+r206ClosedChronologies = o20AcceptedChronologyPairing r45NameEq
+  r193HistoricalClosedTrace r193HistoricalClosedTrace identityRegistrationGenerationBijection r193HistoricalTree
