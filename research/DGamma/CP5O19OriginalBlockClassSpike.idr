@@ -380,3 +380,19 @@ export
 o19NoGeneratedPrefix forbidden NoTransitions suffix safe = NoGeneratedChildEnd
 o19NoGeneratedPrefix forbidden (MoreTransitions step rest) suffix (NoGeneratedChildStep _ _ excluded safeTail) =
   NoGeneratedChildStep step rest excluded (o19NoGeneratedPrefix forbidden rest suffix safeTail)
+
+||| Consumer-shaped elimination of an actual native append word membership.
+||| This avoids inventing a source-state view from a copied action label.
+export
+0 o19NativeWordAppendCases :
+  {name, key, world, error : Type} -> {value : key -> Type} -> {result : Type} ->
+  {first, middle, last : SystemState name key value world error} ->
+  (prior : Transitions first middle) -> (later : Transitions middle last) ->
+  (action : Action name key value world error) ->
+  (Elem action (o19ActionWord prior) -> result) ->
+  (Elem action (o19ActionWord later) -> result) ->
+  Elem action (o19ActionWord (appendTransitions prior later)) -> result
+o19NativeWordAppendCases NoTransitions later action inPrior inLater member = inLater member
+o19NativeWordAppendCases (MoreTransitions step rest) later _ inPrior inLater Here = inPrior Here
+o19NativeWordAppendCases (MoreTransitions step rest) later action inPrior inLater (There member) =
+  o19NativeWordAppendCases rest later action (\there => inPrior (There there)) inLater member
