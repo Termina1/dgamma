@@ -57,9 +57,9 @@ public export
 nativeActionWord : {name, key, world, error : Type} -> {value : key -> Type} ->
   {0 first, finalState : SystemState name key value world error} ->
   {0 trace : Transitions first finalState} ->
-  AvailabilityTrace name key world error value trace -> List (Action name key value world error)
-nativeActionWord (AvailabilityEnd state) = []
-nativeActionWord (AvailabilityStep source (Fired ne ke action tag checked) rest later) = action :: nativeActionWord later
+  DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value trace -> List (Action name key value world error)
+nativeActionWord (DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd state) = []
+nativeActionWord (DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep source (Fired ne ke action tag checked) rest later) = action :: nativeActionWord later
 
 ||| ONE actual adjacent action interchange between two checked runs from the
 ||| same initial state. Actual located source/crossing and moved birth, exact
@@ -73,8 +73,8 @@ record AdmittedDistanceMove
   (nameEq : DecEq name) (keyEq : DecEq key)
   {initial, oldFinal, newFinal : SystemState name key value world error}
   {oldTrace : Transitions initial oldFinal} {newTrace : Transitions initial newFinal}
-  (oldTrail : AvailabilityTrace name key world error value oldTrace)
-  (newTrail : AvailabilityTrace name key world error value newTrace) where
+  (oldTrail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value oldTrace)
+  (newTrail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value newTrace) where
   constructor MkAdmittedDistanceMove
   movedRoot : name
   movedComponent : Component key value world error
@@ -89,8 +89,8 @@ record AdmittedDistanceMove
   0 oldRootForced : ForcedOnTrace nameEq keyEq oldTrail (S (length prefixWord))
   0 oldWordExact : nativeActionWord oldTrail = prefixWord ++ crossedAction :: OInsert movedRoot Root movedComponent :: suffixWord
   0 newWordExact : nativeActionWord newTrail = prefixWord ++ OInsert movedRoot Root movedComponent :: crossedAction :: suffixWord
-  0 oldCurrentCut : rootDeclaredProvisionsFree name key world error value keyEq movedComponent (actionAfterState crossedOccurrence) = True
-  0 newCurrentCut : rootDeclaredProvisionsFree name key world error value keyEq movedComponent (actionBeforeState movedBirthOccurrence) = True
+  0 oldCurrentCut : DGamma.CP5AvailabilityAwarePlacement.rootDeclaredProvisionsFree name key world error value keyEq movedComponent (actionAfterState crossedOccurrence) = True
+  0 newCurrentCut : DGamma.CP5AvailabilityAwarePlacement.rootDeclaredProvisionsFree name key world error value keyEq movedComponent (actionBeforeState movedBirthOccurrence) = True
   beforeDistance : Nat
   afterDistance : Nat
   0 beforeDistanceEquation : totalDistance nameEq keyEq oldTrail = beforeDistance
@@ -107,21 +107,21 @@ data DistanceIteration :
   DecEq name -> DecEq key ->
   {initial, oldFinal, newFinal : SystemState name key value world error} ->
   {oldTrace : Transitions initial oldFinal} -> {newTrace : Transitions initial newFinal} ->
-  AvailabilityTrace name key world error value oldTrace ->
-  AvailabilityTrace name key world error value newTrace -> Type where
+  DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value oldTrace ->
+  DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value newTrace -> Type where
   IterationDone : {name, key, world, error : Type} -> {value : key -> Type} ->
     {nameEq : DecEq name} -> {keyEq : DecEq key} ->
     {initial, finalState : SystemState name key value world error} ->
     {trace : Transitions initial finalState} ->
-    (trail : AvailabilityTrace name key world error value trace) -> DistanceIteration nameEq keyEq trail trail
+    (trail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value trace) -> DistanceIteration nameEq keyEq trail trail
   IterationMove : {name, key, world, error : Type} -> {value : key -> Type} ->
     {nameEq : DecEq name} -> {keyEq : DecEq key} ->
     {initial, oldFinal, middleFinal, newFinal : SystemState name key value world error} ->
     {oldTrace : Transitions initial oldFinal} -> {middleTrace : Transitions initial middleFinal} ->
     {newTrace : Transitions initial newFinal} ->
-    {oldTrail : AvailabilityTrace name key world error value oldTrace} ->
-    {middleTrail : AvailabilityTrace name key world error value middleTrace} ->
-    {newTrail : AvailabilityTrace name key world error value newTrace} ->
+    {oldTrail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value oldTrace} ->
+    {middleTrail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value middleTrace} ->
+    {newTrail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value newTrace} ->
     (0 move : AdmittedDistanceMove name key world error value nameEq keyEq oldTrail middleTrail) ->
     (0 later : DistanceIteration nameEq keyEq middleTrail newTrail) ->
     DistanceIteration nameEq keyEq oldTrail newTrail
@@ -134,8 +134,8 @@ export
   {nameEq : DecEq name} -> {keyEq : DecEq key} ->
   {initial, oldFinal, newFinal : SystemState name key value world error} ->
   {oldTrace : Transitions initial oldFinal} -> {newTrace : Transitions initial newFinal} ->
-  {oldTrail : AvailabilityTrace name key world error value oldTrace} ->
-  {newTrail : AvailabilityTrace name key world error value newTrace} ->
+  {oldTrail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value oldTrace} ->
+  {newTrail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value newTrace} ->
   DistanceIteration nameEq keyEq oldTrail newTrail -> RegistryExtensional name key world error value nameEq oldFinal newFinal
 iterationEndpoint (IterationDone trail) = MkRegistryExtensional Refl (\wanted => Refl)
 iterationEndpoint (IterationMove move later) = extensionalTransitive (moveEndpoints move) (iterationEndpoint later)
