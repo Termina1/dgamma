@@ -91,3 +91,14 @@ public export
     (leftFinalIndex r193HistoricalTree) (rightFinalIndex r193HistoricalTree)
 r206ClosedChronologies = o20AcceptedChronologyPairing r45NameEq
   r193HistoricalClosedTrace r193HistoricalClosedTrace identityRegistrationGenerationBijection r193HistoricalTree
+
+||| Positive/negative native control: both retained words are empty, but the
+||| ACTUAL source path has8 edges and cannot be treated as a zero physical gap.
+export
+0 r206DeletedSkipsArePhysical :
+  (leftChronology r206ClosedChronologies = [],
+   rightChronology r206ClosedChronologies = [],
+   transitionCount r193HistoricalClosedTrace = 8,
+   Not (transitionCount r193HistoricalClosedTrace = Z))
+r206DeletedSkipsArePhysical =
+  (Refl, Refl, Refl, (\zero => case zero of Refl impossible))
