@@ -31,9 +31,9 @@ import Decidable.Equality
 public export
 record PlacedCoverageFixtures where
   constructor MkPlacedCoverageFixtures
-  coveredSingleR : AttachedBundleOccurrence Nat Bool Unit String (\key => Unit) %search %search smallTrace (OInsert 3 Root (smallComponent True)) 4
-  coveredBarrierR : AttachedBundleOccurrence Nat Bool Unit String (\key => Unit) %search %search barrierTrace (OInsert 3 Root (smallComponent True)) 4
-  coveredBarrierS : AttachedBundleOccurrence Nat Bool Unit String (\key => Unit) %search %search barrierTrace (OInsert 4 Root (smallComponent False)) 5
+  coveredSingleR : DGamma.L2R3AttachedGap.AttachedBundleOccurrence Nat Bool Unit String (\key => Unit) %search %search smallTrace (OInsert 3 Root (smallComponent True)) 4
+  coveredBarrierR : DGamma.L2R3AttachedGap.AttachedBundleOccurrence Nat Bool Unit String (\key => Unit) %search %search barrierTrace (OInsert 3 Root (smallComponent True)) 4
+  coveredBarrierS : DGamma.L2R3AttachedGap.AttachedBundleOccurrence Nat Bool Unit String (\key => Unit) %search %search barrierTrace (OInsert 4 Root (smallComponent False)) 5
 
 ||| All three actual native occurrences come from the GENERAL catalog
 ||| equality/decoder theorem, with exact original ordinals4/4/5. No fixture
