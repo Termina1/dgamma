@@ -14,6 +14,7 @@ import DGamma.CP5O19CartesianColumnsSpike
 import DGamma.CP5O19CartesianNumericSpike
 import DGamma.CP5O19OrdinalPlanSpike
 import DGamma.CP5O19ActualCartesianSpike
+import DGamma.CP5O19OriginalBlockClassSpike
 import DGamma.CP5O19GridCertificationSpike
 import Data.List
 import Data.List.Elem
@@ -54,7 +55,7 @@ o19ObserveNonEmptyChain (FiniteAdjacentSwapStep source earlier left right later 
   MkO19NonEmptyChain
     (NonEmptyAdjacentSwap source earlier left right later orientation diamond result target rest) Refl Refl
 
-||| The SAME actual-chain node count, via its own global plan product law.
+||| R207 legacy-restricted twin: SAME actual-chain count, with both shapes explicit.
 export
 0 o19ActualFiniteProductCount :
   {name, key, world, error : Type} -> {value : key -> Type} ->
@@ -65,14 +66,16 @@ export
   (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq source) ->
   (safety : AdjacentActorSwapSafety name key world error value protocol nameEq keyEq swap source blocks premises) ->
   (unique : UniqueRawNameInsertions name key world error value nameEq keyEq source) ->
-  (finiteAdjacentSwapNodeCount (cursorDerivation (columnCursor (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique))) =
+  (leftLegacy : LegacyActorOnly (actorLeft swap) (blockBody (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)))) ->
+  (rightLegacy : LegacyActorOnly (actorRight swap) (blockBody (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety)))) ->
+  (finiteAdjacentSwapNodeCount (cursorDerivation (columnCursor (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique leftLegacy rightLegacy))) =
     actorBlockTransitionCount (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)) *
     actorBlockTransitionCount (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety)))
-o19ActualFiniteProductCount nameEq keyEq protocol swap source blocks premises safety unique =
-  trans (sym (globalCrossingCount (o19ActualGlobalOriginPlan nameEq keyEq protocol swap source blocks premises safety unique)))
-    (o19ActualGlobalOriginProductCount nameEq keyEq protocol swap source blocks premises safety unique)
+o19ActualFiniteProductCount nameEq keyEq protocol swap source blocks premises safety unique leftLegacy rightLegacy =
+  trans (sym (globalCrossingCount (o19ActualGlobalOriginPlan nameEq keyEq protocol swap source blocks premises safety unique leftLegacy rightLegacy)))
+    (o19ActualGlobalOriginProductCount nameEq keyEq protocol swap source blocks premises safety unique leftLegacy rightLegacy)
 
-||| Both selected blocks contain Begin, hence both counts are successors.
+||| R207 legacy-restricted twin: both selected blocks contain Begin.
 ||| Their SAME-chain product law excludes zero nodes and retains exact replay.
 export
 0 o19ActualNonEmptyChain :
@@ -84,13 +87,15 @@ export
   (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq source) ->
   (safety : AdjacentActorSwapSafety name key world error value protocol nameEq keyEq swap source blocks premises) ->
   (unique : UniqueRawNameInsertions name key world error value nameEq keyEq source) ->
+  (leftLegacy : LegacyActorOnly (actorLeft swap) (blockBody (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)))) ->
+  (rightLegacy : LegacyActorOnly (actorRight swap) (blockBody (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety)))) ->
   O19NonEmptyChain name key world error value protocol nameEq keyEq
-    (cursorDerivation (columnCursor (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique)))
-o19ActualNonEmptyChain nameEq keyEq protocol swap source blocks premises safety unique =
+    (cursorDerivation (columnCursor (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique leftLegacy rightLegacy)))
+o19ActualNonEmptyChain nameEq keyEq protocol swap source blocks premises safety unique leftLegacy rightLegacy =
   o19ObserveNonEmptyChain
-    (cursorDerivation (columnCursor (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique)))
+    (cursorDerivation (columnCursor (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique leftLegacy rightLegacy)))
     (\zero => uninhabited
-      (trans (sym (o19ActualFiniteProductCount nameEq keyEq protocol swap source blocks premises safety unique)) zero))
+      (trans (sym (o19ActualFiniteProductCount nameEq keyEq protocol swap source blocks premises safety unique leftLegacy rightLegacy)) zero))
 
 ||| Whole-block certificate plus its SAME-chain authentication, constructed
 ||| together so later assembly never substitutes a separately replayed chain.
@@ -175,13 +180,47 @@ export
   (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq source) ->
   (safety : AdjacentActorSwapSafety name key world error value protocol nameEq keyEq swap source blocks premises) ->
   (unique : UniqueRawNameInsertions name key world error value nameEq keyEq source) ->
+  (leftLegacy : LegacyActorOnly (actorLeft swap) (blockBody (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)))) ->
+  (rightLegacy : LegacyActorOnly (actorRight swap) (blockBody (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety)))) ->
   O19WholeBlockResult name key world error value protocol nameEq keyEq swap source blocks premises safety
-    (cursorTrace (columnCursor (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique)))
-    (cursorDerivation (columnCursor (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique)))
-o19ActualWholeBlock nameEq keyEq protocol swap source blocks premises safety unique =
+    (cursorTrace (columnCursor (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique leftLegacy rightLegacy)))
+    (cursorDerivation (columnCursor (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique leftLegacy rightLegacy)))
+o19ActualWholeBlock nameEq keyEq protocol swap source blocks premises safety unique leftLegacy rightLegacy =
   o19WholeFromObservedChain nameEq keyEq protocol swap source blocks premises safety
-    (cursorTrace (columnCursor (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique)))
-    (cursorDerivation (columnCursor (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique)))
-    (o19ActualNonEmptyChain nameEq keyEq protocol swap source blocks premises safety unique)
-    (o19ActualFiniteProductCount nameEq keyEq protocol swap source blocks premises safety unique)
-    (o19ActualLocalOriginPlan nameEq keyEq protocol swap source blocks premises safety unique)
+    (cursorTrace (columnCursor (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique leftLegacy rightLegacy)))
+    (cursorDerivation (columnCursor (o19CartesianActualBlocks nameEq keyEq protocol swap source blocks premises safety unique leftLegacy rightLegacy)))
+    (o19ActualNonEmptyChain nameEq keyEq protocol swap source blocks premises safety unique leftLegacy rightLegacy)
+    (o19ActualFiniteProductCount nameEq keyEq protocol swap source blocks premises safety unique leftLegacy rightLegacy)
+    (o19ActualLocalOriginPlan nameEq keyEq protocol swap source blocks premises safety unique leftLegacy rightLegacy)
+
+||| OPEN: needs the expanded unconditional producer / the reached separation
+||| theorem. TYPE ONLY, with NO inhabitant. These are the three ORIGINAL
+||| unconditional WholeBlock conclusions jointly indexed by the SAME required
+||| expanded run, rather than invoking a nonexistent unconditional function.
+||| Exact original value types are in O6-R207-CROSSTRACE-NEEDS.json.
+public export
+record O19WholeBlockUnconditionalObligation
+  (name, key, world, error : Type) (value : key -> Type)
+  (nameEq : DecEq name) (keyEq : DecEq key)
+  (protocol : RegistrationProtocol key value world error)
+  {sourceOrder, targetOrder : List name} (swap : AdjacentActorOrderSwap name sourceOrder targetOrder)
+  {initial, sourceFinal : SystemState name key value world error} (source : Transitions initial sourceFinal)
+  (blocks : ActorBlockDecomposition name key world error value nameEq keyEq sourceOrder source)
+  (premises : ReplayInvariantBundle name key world error value protocol nameEq keyEq source)
+  (safety : AdjacentActorSwapSafety name key world error value protocol nameEq keyEq swap source blocks premises)
+  (unique : UniqueRawNameInsertions name key world error value nameEq keyEq source) where
+  constructor MkO19WholeBlockUnconditionalObligation
+  0 expandedRun : O19ColumnRun name key world error value protocol nameEq keyEq source
+    (traceBeforeBlock (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)))
+    (o19ActionWord (actorBlockTrace (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety))))
+    (o19ActionWord (actorBlockTrace (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety))))
+    (o19ActionWord (traceAfterBlock (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety))))
+  0 o19ActualFiniteProductCountObligation :
+    finiteAdjacentSwapNodeCount (cursorDerivation (columnCursor expandedRun)) =
+      actorBlockTransitionCount (decomposedBlock blocks (actorLeft swap) (safetyLeftInOrder safety)) *
+      actorBlockTransitionCount (decomposedBlock blocks (actorRight swap) (safetyRightInOrder safety))
+  0 o19ActualNonEmptyChainObligation :
+    O19NonEmptyChain name key world error value protocol nameEq keyEq (cursorDerivation (columnCursor expandedRun))
+  0 o19ActualWholeBlockObligation :
+    O19WholeBlockResult name key world error value protocol nameEq keyEq swap source blocks premises safety
+      (cursorTrace (columnCursor expandedRun)) (cursorDerivation (columnCursor expandedRun))
