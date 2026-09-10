@@ -52,3 +52,20 @@ runNative source (action :: rest) =
           MoreTransitions (Fired {before = source} {afterState = middle}
             (fst fixtureDictionaries) (snd fixtureDictionaries) action tag observed)
             (snd (runNative middle rest)))
+
+||| Two installed actors and their own key-disjoint children. This is an
+||| explicit initial registry, NOT bundle-history evidence. Every production
+||| ActorWithForcedRoots wrapper below starts its own priorRoots at [].
+public export
+twinsInput : (SystemState Nat Bool (\key => Unit) Unit String,
+  List (Action Nat Bool (\key => Unit) Unit String),
+  List (Action Nat Bool (\key => Unit) Unit String))
+twinsInput =
+  (MkSystemState ()
+    (insertBinding @{fst fixtureDictionaries} 1 (freshFiber (anchorComponent True) (ChildOf 0))
+      (insertBinding @{fst fixtureDictionaries} 3 (freshFiber (anchorComponent False) (ChildOf 2))
+        (insertBinding @{fst fixtureDictionaries} 0 (freshFiber (smallComponent False) Root)
+          (insertBinding @{fst fixtureDictionaries} 2 (freshFiber (smallComponent False) Root)
+            emptyContext Refl) Refl) Refl) Refl),
+   [LBegin 0, LAdvance 0, ORetire 1, ORemove 1, OInsert 4 Root (anchorComponent True)],
+   [LBegin 2, LAdvance 2, ORetire 3, ORemove 3, OInsert 5 Root (anchorComponent False)])
