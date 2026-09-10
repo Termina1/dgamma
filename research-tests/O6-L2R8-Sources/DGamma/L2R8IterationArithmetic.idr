@@ -21,8 +21,8 @@ public export
   {nameEq : DecEq name} -> {keyEq : DecEq key} ->
   {initial, oldFinal, newFinal : SystemState name key value world error} ->
   {oldTrace : Transitions initial oldFinal} -> {newTrace : Transitions initial newFinal} ->
-  {oldTrail : AvailabilityTrace name key world error value oldTrace} ->
-  {newTrail : AvailabilityTrace name key world error value newTrace} ->
+  {oldTrail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value oldTrace} ->
+  {newTrail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value newTrace} ->
   DistanceIteration nameEq keyEq oldTrail newTrail -> Nat
 iterationSteps (IterationDone trail) = 0
 iterationSteps (IterationMove move later) = S (iterationSteps later)
@@ -35,8 +35,8 @@ export
   {nameEq : DecEq name} -> {keyEq : DecEq key} ->
   {initial, oldFinal, newFinal : SystemState name key value world error} ->
   {oldTrace : Transitions initial oldFinal} -> {newTrace : Transitions initial newFinal} ->
-  {oldTrail : AvailabilityTrace name key world error value oldTrace} ->
-  {newTrail : AvailabilityTrace name key world error value newTrace} ->
+  {oldTrail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value oldTrace} ->
+  {newTrail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value newTrace} ->
   (iteration : DistanceIteration nameEq keyEq oldTrail newTrail) ->
   totalDistance nameEq keyEq oldTrail = iterationSteps iteration + totalDistance nameEq keyEq newTrail
 iterationDistanceBalance (IterationDone trail) = Refl
@@ -53,8 +53,8 @@ export
   {nameEq : DecEq name} -> {keyEq : DecEq key} ->
   {initial, oldFinal, newFinal : SystemState name key value world error} ->
   {oldTrace : Transitions initial oldFinal} -> {newTrace : Transitions initial newFinal} ->
-  {oldTrail : AvailabilityTrace name key world error value oldTrace} ->
-  {newTrail : AvailabilityTrace name key world error value newTrace} ->
+  {oldTrail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value oldTrace} ->
+  {newTrail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value newTrace} ->
   (iteration : DistanceIteration nameEq keyEq oldTrail newTrail) ->
   (0 zero : totalDistance nameEq keyEq newTrail = 0) ->
   iterationSteps iteration = totalDistance nameEq keyEq oldTrail
@@ -70,8 +70,8 @@ export
   {nameEq : DecEq name} -> {keyEq : DecEq key} ->
   {initial, oldFinal, newFinal : SystemState name key value world error} ->
   {oldTrace : Transitions initial oldFinal} -> {newTrace : Transitions initial newFinal} ->
-  {oldTrail : AvailabilityTrace name key world error value oldTrace} ->
-  {newTrail : AvailabilityTrace name key world error value newTrace} ->
+  {oldTrail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value oldTrace} ->
+  {newTrail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value newTrace} ->
   (iteration : DistanceIteration nameEq keyEq oldTrail newTrail) ->
   LTE (iterationSteps iteration) (totalDistance nameEq keyEq oldTrail)
 iterationLengthBound {nameEq} {keyEq} {newTrail} iteration =
