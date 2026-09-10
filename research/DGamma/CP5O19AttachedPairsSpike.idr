@@ -162,3 +162,20 @@ o19AttachedBundleScan nameEq actor core priorRoots _ (ForcedBundleRetire root fi
 o19AttachedBundleScan nameEq actor core priorRoots _ (ForcedBundleRemove root fiber step rest bundled found parent controlled tail) =
   AttachedScanStep step rest (AttachedRootRemove root fiber priorRoots bundled found parent controlled)
     (o19AttachedBundleScan nameEq actor core priorRoots rest tail)
+
+||| Compose scans along the actual dependent append, keeping the SAME original
+||| core index. No equality between independently replayed states is needed.
+export
+0 o19AttachedScanAppend :
+  {name, key, world, error : Type} -> {value : key -> Type} ->
+  {nameEq : DecEq name} -> {actor : name} ->
+  {coreFirst, coreLast, first, middle, last : SystemState name key value world error} ->
+  {core : Transitions coreFirst coreLast} ->
+  (leading : Transitions first middle) -> (trailing : Transitions middle last) ->
+  O19AttachedScan name key world error value nameEq actor core leading ->
+  O19AttachedScan name key world error value nameEq actor core trailing ->
+  O19AttachedScan name key world error value nameEq actor core (appendTransitions leading trailing)
+o19AttachedScanAppend _ trailing AttachedScanEnd rest = rest
+o19AttachedScanAppend _ trailing (AttachedScanStep step tail observed scanned) rest =
+  AttachedScanStep step (appendTransitions tail trailing) observed
+    (o19AttachedScanAppend tail trailing scanned rest)
