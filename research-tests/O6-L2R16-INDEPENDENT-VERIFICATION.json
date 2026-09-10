@@ -1,0 +1,50 @@
+{
+  "passed": true,
+  "checkedHead": "9a864c05093ab91d1e53f53bf0e6ec0cddbb1732",
+  "archiveVerified": true,
+  "records": 319,
+  "freshPasses": 224,
+  "guardedSourceCommits": 107,
+  "repairGroups": 87,
+  "preflightOnlyRequests": [
+    "T17-2"
+  ],
+  "failedUnitsFullyReverted": [
+    "T12"
+  ],
+  "otherRepairsCapped40": 3,
+  "semanticRestatements": [
+    "S1",
+    "S2",
+    "S3"
+  ],
+  "T2MicroUnits": [
+    "T1",
+    "T2",
+    "T3",
+    "T4",
+    "T5",
+    "T6",
+    "T7",
+    "T8",
+    "T9",
+    "T10",
+    "T11",
+    "T12",
+    "T13",
+    "T14",
+    "T15",
+    "T16",
+    "T17",
+    "T18"
+  ],
+  "recheckCounts": {
+    "BLOCKED-ON-R206": 6,
+    "PASSED": 105,
+    "REPAIRED": 89
+  },
+  "noStagedFiles": true,
+  "ownCompilerRunning": false,
+  "supportSolutionSeedUntouched": true,
+  "humanMathematicalReview": "parent-owned; not performed by this independent script"
+}

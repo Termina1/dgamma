@@ -1,0 +1,3579 @@
+{
+  "capAuthority": "QUALIFICATION-RULING.json: qualification-only modules exempt from40, at most2 attempts",
+  "modules": [
+    {
+      "path": "research/DGamma/CP5L2R1RootExchange.idr",
+      "unit": "R1",
+      "names": [
+        {
+          "name": "rootCutCompatible",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.rootCutCompatible",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 2
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 7
+        },
+        {
+          "name": "AvailabilityEnd",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd",
+          "occurrences": 2
+        }
+      ]
+    },
+    {
+      "path": "research-tests/DGamma/L2R1AvailabilityCollision.idr",
+      "unit": "R2",
+      "names": [
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityEnd",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "research-tests/O6-L2R4-Sources/DGamma/L2R4AnchorNative.idr",
+      "unit": "R3",
+      "names": [
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 2
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 2
+        },
+        {
+          "name": "AvailabilityEnd",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "research-tests/O6-L2R5-Sources/DGamma/L2R5RootCatalog.idr",
+      "unit": "R4",
+      "names": [
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 3
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 2
+        },
+        {
+          "name": "AvailabilityEnd",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd",
+          "occurrences": 2
+        }
+      ]
+    },
+    {
+      "path": "research-tests/O6-L2R7-Sources/DGamma/L2R7AttachedC.idr",
+      "unit": "R6",
+      "names": [
+        {
+          "name": "AttachedReason",
+          "qualified": "DGamma.L2R3Attached.AttachedReason",
+          "occurrences": 1
+        },
+        {
+          "name": "OrderedForcedRootBundle",
+          "qualified": "DGamma.L2R3Attached.OrderedForcedRootBundle",
+          "occurrences": 1
+        },
+        {
+          "name": "ForcedBundleEnd",
+          "qualified": "DGamma.L2R3Attached.ForcedBundleEnd",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "research-tests/O6-L2R3-Sources/DGamma/L2R3AttachedGap.idr",
+      "unit": "R8",
+      "names": [
+        {
+          "name": "OrderedForcedRootBundle",
+          "qualified": "DGamma.L2R3Attached.OrderedForcedRootBundle",
+          "occurrences": 1
+        },
+        {
+          "name": "AttachedBundleOccurrence",
+          "qualified": "DGamma.L2R3AttachedGap.AttachedBundleOccurrence",
+          "occurrences": 1
+        },
+        {
+          "name": "AttachedBundleOccurrence",
+          "qualified": "DGamma.L2R3AttachedGap.AttachedBundleOccurrence",
+          "occurrences": 1
+        },
+        {
+          "name": "AttachedNormalForm",
+          "qualified": "DGamma.L2R3AttachedGap.AttachedNormalForm",
+          "occurrences": 1
+        },
+        {
+          "name": "AttachedBundleOccurrence",
+          "qualified": "DGamma.L2R3AttachedGap.AttachedBundleOccurrence",
+          "occurrences": 1
+        },
+        {
+          "name": "AttachedNormalForm",
+          "qualified": "DGamma.L2R3AttachedGap.AttachedNormalForm",
+          "occurrences": 1
+        },
+        {
+          "name": "AttachedBundleOccurrence",
+          "qualified": "DGamma.L2R3AttachedGap.AttachedBundleOccurrence",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "research-tests/O6-L2R6-Sources/DGamma/L2R6ForcedScan.idr",
+      "unit": "R9",
+      "names": [
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityEnd",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "ForcedRootInput",
+          "qualified": "DGamma.L2R3ForcedClosure.ForcedRootInput",
+          "occurrences": 1
+        },
+        {
+          "name": "forcedRootLeast",
+          "qualified": "DGamma.L2R3ForcedClosure.forcedRootLeast",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "research-tests/O6-L2R2-Sources/DGamma/L2R2RootSnapshot.idr",
+      "unit": "R10",
+      "names": [
+        {
+          "name": "rootCutCompatible",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.rootCutCompatible",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityEnd",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "research-tests/O6-L2R3-Sources/DGamma/L2R3BarrierExecution.idr",
+      "unit": "R11",
+      "names": [
+        {
+          "name": "rootDeclaredProvisionsFree",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.rootDeclaredProvisionsFree",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "research-tests/O6-L2R4-Sources/DGamma/L2R4Localization.idr",
+      "unit": "R12",
+      "names": [
+        {
+          "name": "OrderedForcedRootBundle",
+          "qualified": "DGamma.L2R3Attached.OrderedForcedRootBundle",
+          "occurrences": 1
+        },
+        {
+          "name": "ForcedBundleEnd",
+          "qualified": "DGamma.L2R3Attached.ForcedBundleEnd",
+          "occurrences": 1
+        },
+        {
+          "name": "AttachedBundleOccurrence",
+          "qualified": "DGamma.L2R3AttachedGap.AttachedBundleOccurrence",
+          "occurrences": 1
+        },
+        {
+          "name": "AttachedBundleOccurrence",
+          "qualified": "DGamma.L2R3AttachedGap.AttachedBundleOccurrence",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "research-tests/O6-L2R4-Sources/DGamma/L2R4CatalogCoverage.idr",
+      "unit": "R13",
+      "names": [
+        {
+          "name": "AttachedBundleOccurrence",
+          "qualified": "DGamma.L2R3AttachedGap.AttachedBundleOccurrence",
+          "occurrences": 1
+        },
+        {
+          "name": "AttachedNormalForm",
+          "qualified": "DGamma.L2R3AttachedGap.AttachedNormalForm",
+          "occurrences": 1
+        },
+        {
+          "name": "MkAttachedNormalForm",
+          "qualified": "DGamma.L2R3AttachedGap.MkAttachedNormalForm",
+          "occurrences": 1
+        },
+        {
+          "name": "AttachedBundleOccurrence",
+          "qualified": "DGamma.L2R3AttachedGap.AttachedBundleOccurrence",
+          "occurrences": 1
+        },
+        {
+          "name": "AttachedBundleOccurrence",
+          "qualified": "DGamma.L2R3AttachedGap.AttachedBundleOccurrence",
+          "occurrences": 1
+        },
+        {
+          "name": "AttachedBundleOccurrence",
+          "qualified": "DGamma.L2R3AttachedGap.AttachedBundleOccurrence",
+          "occurrences": 1
+        },
+        {
+          "name": "AttachedBundleOccurrence",
+          "qualified": "DGamma.L2R3AttachedGap.AttachedBundleOccurrence",
+          "occurrences": 1
+        },
+        {
+          "name": "AttachedBundleOccurrence",
+          "qualified": "DGamma.L2R3AttachedGap.AttachedBundleOccurrence",
+          "occurrences": 1
+        },
+        {
+          "name": "AttachedBundleOccurrence",
+          "qualified": "DGamma.L2R3AttachedGap.AttachedBundleOccurrence",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "research-tests/O6-L2R5-Sources/DGamma/L2R5CurrentCut.idr",
+      "unit": "R14",
+      "names": [
+        {
+          "name": "rootDeclaredProvisionsFree",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.rootDeclaredProvisionsFree",
+          "occurrences": 1
+        },
+        {
+          "name": "rootDeclaredProvisionsFree",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.rootDeclaredProvisionsFree",
+          "occurrences": 1
+        },
+        {
+          "name": "rootDeclaredProvisionsFree",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.rootDeclaredProvisionsFree",
+          "occurrences": 1
+        },
+        {
+          "name": "rootDeclaredProvisionsFree",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.rootDeclaredProvisionsFree",
+          "occurrences": 1
+        },
+        {
+          "name": "rootCutCompatible",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.rootCutCompatible",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityEnd",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "research-tests/O6-L2R7-Sources/DGamma/L2R7Classifier.idr",
+      "unit": "R15",
+      "names": [
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "ForcedRootInput",
+          "qualified": "DGamma.L2R3ForcedClosure.ForcedRootInput",
+          "occurrences": 1
+        },
+        {
+          "name": "ForcedRootInput",
+          "qualified": "DGamma.L2R3ForcedClosure.ForcedRootInput",
+          "occurrences": 1
+        },
+        {
+          "name": "OrderForces",
+          "qualified": "DGamma.L2R3ForcedClosure.OrderForces",
+          "occurrences": 1
+        },
+        {
+          "name": "ForcedRootInput",
+          "qualified": "DGamma.L2R3ForcedClosure.ForcedRootInput",
+          "occurrences": 1
+        },
+        {
+          "name": "KeyForces",
+          "qualified": "DGamma.L2R3ForcedClosure.KeyForces",
+          "occurrences": 1
+        },
+        {
+          "name": "ForcedRootInput",
+          "qualified": "DGamma.L2R3ForcedClosure.ForcedRootInput",
+          "occurrences": 1
+        },
+        {
+          "name": "KeyForces",
+          "qualified": "DGamma.L2R3ForcedClosure.KeyForces",
+          "occurrences": 1
+        },
+        {
+          "name": "OrderForces",
+          "qualified": "DGamma.L2R3ForcedClosure.OrderForces",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "research-tests/O6-L2R2-Sources/DGamma/L2R2RootPhase.idr",
+      "unit": "R16",
+      "names": [
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityEnd",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityEnd",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityEnd",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityEnd",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityEnd",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityEnd",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "research-tests/O6-L2R5-Sources/DGamma/L2R5CatalogFixtures.idr",
+      "unit": "R17",
+      "names": [
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityEnd",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityEnd",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityEnd",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityEnd",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "research-tests/O6-L2R7-Sources/DGamma/L2R7CatalogBirth.idr",
+      "unit": "R18",
+      "names": [
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityEnd",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "research-tests/O6-L2R3-Sources/DGamma/L2R3SmallAttached.idr",
+      "unit": "R19",
+      "names": [
+        {
+          "name": "AttachedRelease",
+          "qualified": "DGamma.L2R3Attached.AttachedRelease",
+          "occurrences": 1
+        },
+        {
+          "name": "MkAttachedRelease",
+          "qualified": "DGamma.L2R3Attached.MkAttachedRelease",
+          "occurrences": 1
+        },
+        {
+          "name": "KeyReleased",
+          "qualified": "DGamma.L2R3Attached.KeyReleased",
+          "occurrences": 1
+        },
+        {
+          "name": "ForcedBundleEnd",
+          "qualified": "DGamma.L2R3Attached.ForcedBundleEnd",
+          "occurrences": 1
+        },
+        {
+          "name": "KeyReleased",
+          "qualified": "DGamma.L2R3Attached.KeyReleased",
+          "occurrences": 1
+        },
+        {
+          "name": "ForcedBundleEnd",
+          "qualified": "DGamma.L2R3Attached.ForcedBundleEnd",
+          "occurrences": 1
+        },
+        {
+          "name": "AttachedBundleOccurrence",
+          "qualified": "DGamma.L2R3AttachedGap.AttachedBundleOccurrence",
+          "occurrences": 1
+        },
+        {
+          "name": "MkAttachedBundleOccurrence",
+          "qualified": "DGamma.L2R3AttachedGap.MkAttachedBundleOccurrence",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "research-tests/O6-L2R6-Sources/DGamma/L2R6Anchors.idr",
+      "unit": "R20",
+      "names": [
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AttachedBundleOccurrence",
+          "qualified": "DGamma.L2R3AttachedGap.AttachedBundleOccurrence",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "research-tests/O6-L2R6-Sources/DGamma/L2R6ForcedFixtures.idr",
+      "unit": "R21",
+      "names": [
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityEnd",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityEnd",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityEnd",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd",
+          "occurrences": 1
+        },
+        {
+          "name": "KeyForces",
+          "qualified": "DGamma.L2R3ForcedClosure.KeyForces",
+          "occurrences": 1
+        },
+        {
+          "name": "KeyForces",
+          "qualified": "DGamma.L2R3ForcedClosure.KeyForces",
+          "occurrences": 1
+        },
+        {
+          "name": "OrderForces",
+          "qualified": "DGamma.L2R3ForcedClosure.OrderForces",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "research-tests/O6-L2R8-Sources/DGamma/L2R8ReleaseScan.idr",
+      "unit": "R22",
+      "names": [
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityEnd",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AttachedRelease",
+          "qualified": "DGamma.L2R3Attached.AttachedRelease",
+          "occurrences": 1
+        },
+        {
+          "name": "MkAttachedRelease",
+          "qualified": "DGamma.L2R3Attached.MkAttachedRelease",
+          "occurrences": 1
+        },
+        {
+          "name": "AttachedRelease",
+          "qualified": "DGamma.L2R3Attached.AttachedRelease",
+          "occurrences": 1
+        },
+        {
+          "name": "AttachedRelease",
+          "qualified": "DGamma.L2R3Attached.AttachedRelease",
+          "occurrences": 1
+        },
+        {
+          "name": "AttachedRelease",
+          "qualified": "DGamma.L2R3Attached.AttachedRelease",
+          "occurrences": 1
+        },
+        {
+          "name": "AttachedRelease",
+          "qualified": "DGamma.L2R3Attached.AttachedRelease",
+          "occurrences": 1
+        },
+        {
+          "name": "MkAttachedRelease",
+          "qualified": "DGamma.L2R3Attached.MkAttachedRelease",
+          "occurrences": 1
+        },
+        {
+          "name": "AttachedRelease",
+          "qualified": "DGamma.L2R3Attached.AttachedRelease",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "research-tests/O6-L2R3-Sources/DGamma/L2R3BundlePhase.idr",
+      "unit": "R23",
+      "names": [
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 3
+        },
+        {
+          "name": "AvailabilityEnd",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 3
+        },
+        {
+          "name": "AvailabilityEnd",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 2
+        },
+        {
+          "name": "AvailabilityEnd",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 3
+        },
+        {
+          "name": "AvailabilityEnd",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "research-tests/O6-L2R6-Sources/DGamma/L2R6FrontNormal.idr",
+      "unit": "R24",
+      "names": [
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityEnd",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "rootInputAtSource",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.rootInputAtSource",
+          "occurrences": 1
+        },
+        {
+          "name": "rootInputAtSource",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.rootInputAtSource",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "rootInputAtSource",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.rootInputAtSource",
+          "occurrences": 1
+        },
+        {
+          "name": "AttachedBundleOccurrence",
+          "qualified": "DGamma.L2R3AttachedGap.AttachedBundleOccurrence",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "research-tests/O6-L2R9-Sources/DGamma/L2R9OrdinalScan.idr",
+      "unit": "R25",
+      "names": [
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityEnd",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "research-tests/O6-L2R12-Sources/DGamma/L2R12DistanceFrame.idr",
+      "unit": "R26",
+      "names": [
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "research-tests/O6-L2R7-Sources/DGamma/L2R7PlacedCoverage.idr",
+      "unit": "R27",
+      "names": [
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AttachedBundleOccurrence",
+          "qualified": "DGamma.L2R3AttachedGap.AttachedBundleOccurrence",
+          "occurrences": 1
+        },
+        {
+          "name": "MkAttachedBundleOccurrence",
+          "qualified": "DGamma.L2R3AttachedGap.MkAttachedBundleOccurrence",
+          "occurrences": 1
+        },
+        {
+          "name": "AttachedBundleOccurrence",
+          "qualified": "DGamma.L2R3AttachedGap.AttachedBundleOccurrence",
+          "occurrences": 1
+        },
+        {
+          "name": "AttachedBundleOccurrence",
+          "qualified": "DGamma.L2R3AttachedGap.AttachedBundleOccurrence",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "research-tests/O6-L2R8-Sources/DGamma/L2R8OriginMembership.idr",
+      "unit": "R28",
+      "names": [
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "research-tests/O6-L2R9-Sources/DGamma/L2R9OrdinalLink.idr",
+      "unit": "R29",
+      "names": [
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityEnd",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AttachedRelease",
+          "qualified": "DGamma.L2R3Attached.AttachedRelease",
+          "occurrences": 1
+        },
+        {
+          "name": "MkAttachedRelease",
+          "qualified": "DGamma.L2R3Attached.MkAttachedRelease",
+          "occurrences": 1
+        },
+        {
+          "name": "AttachedRelease",
+          "qualified": "DGamma.L2R3Attached.AttachedRelease",
+          "occurrences": 1
+        },
+        {
+          "name": "AttachedRelease",
+          "qualified": "DGamma.L2R3Attached.AttachedRelease",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "research-tests/O6-L2R3-Sources/DGamma/L2R3FixtureCoverage.idr",
+      "unit": "R30",
+      "names": [
+        {
+          "name": "KeyReleased",
+          "qualified": "DGamma.L2R3Attached.KeyReleased",
+          "occurrences": 1
+        },
+        {
+          "name": "EarlierForcedRoot",
+          "qualified": "DGamma.L2R3Attached.EarlierForcedRoot",
+          "occurrences": 1
+        },
+        {
+          "name": "ForcedBundleEnd",
+          "qualified": "DGamma.L2R3Attached.ForcedBundleEnd",
+          "occurrences": 1
+        },
+        {
+          "name": "KeyReleased",
+          "qualified": "DGamma.L2R3Attached.KeyReleased",
+          "occurrences": 1
+        },
+        {
+          "name": "EarlierForcedRoot",
+          "qualified": "DGamma.L2R3Attached.EarlierForcedRoot",
+          "occurrences": 1
+        },
+        {
+          "name": "ForcedBundleEnd",
+          "qualified": "DGamma.L2R3Attached.ForcedBundleEnd",
+          "occurrences": 1
+        },
+        {
+          "name": "AttachedBundleOccurrence",
+          "qualified": "DGamma.L2R3AttachedGap.AttachedBundleOccurrence",
+          "occurrences": 1
+        },
+        {
+          "name": "AttachedBundleOccurrence",
+          "qualified": "DGamma.L2R3AttachedGap.AttachedBundleOccurrence",
+          "occurrences": 1
+        },
+        {
+          "name": "AttachedBundleOccurrence",
+          "qualified": "DGamma.L2R3AttachedGap.AttachedBundleOccurrence",
+          "occurrences": 1
+        },
+        {
+          "name": "AttachedNormalForm",
+          "qualified": "DGamma.L2R3AttachedGap.AttachedNormalForm",
+          "occurrences": 1
+        },
+        {
+          "name": "AttachedNormalForm",
+          "qualified": "DGamma.L2R3AttachedGap.AttachedNormalForm",
+          "occurrences": 1
+        },
+        {
+          "name": "MkAttachedBundleOccurrence",
+          "qualified": "DGamma.L2R3AttachedGap.MkAttachedBundleOccurrence",
+          "occurrences": 1
+        },
+        {
+          "name": "MkAttachedBundleOccurrence",
+          "qualified": "DGamma.L2R3AttachedGap.MkAttachedBundleOccurrence",
+          "occurrences": 1
+        },
+        {
+          "name": "MkAttachedNormalForm",
+          "qualified": "DGamma.L2R3AttachedGap.MkAttachedNormalForm",
+          "occurrences": 1
+        },
+        {
+          "name": "MkAttachedNormalForm",
+          "qualified": "DGamma.L2R3AttachedGap.MkAttachedNormalForm",
+          "occurrences": 1
+        },
+        {
+          "name": "AttachedBundleOccurrence",
+          "qualified": "DGamma.L2R3AttachedGap.AttachedBundleOccurrence",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "research-tests/O6-L2R9-Sources/DGamma/L2R9NativeSelection.idr",
+      "unit": "R31",
+      "names": [
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "research-tests/O6-L2R15-Sources/DGamma/L2R15SuffixScans.idr",
+      "unit": "R32",
+      "names": [
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityEnd",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd",
+          "occurrences": 2
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityEnd",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd",
+          "occurrences": 2
+        }
+      ]
+    },
+    {
+      "path": "research-tests/O6-L2R3-Sources/DGamma/L2R3Separation.idr",
+      "unit": "R33",
+      "names": [
+        {
+          "name": "AttachedBundleOccurrence",
+          "qualified": "DGamma.L2R3AttachedGap.AttachedBundleOccurrence",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "research-tests/O6-L2R6-Sources/DGamma/L2R6Iteration.idr",
+      "unit": "R34",
+      "names": [
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityEnd",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "rootDeclaredProvisionsFree",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.rootDeclaredProvisionsFree",
+          "occurrences": 1
+        },
+        {
+          "name": "rootDeclaredProvisionsFree",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.rootDeclaredProvisionsFree",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "research-tests/O6-L2R14-Sources/DGamma/L2R14CatalogQuery.idr",
+      "unit": "R35",
+      "names": [
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityEnd",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "research-tests/O6-L2R14-Sources/DGamma/L2R14IterationFromMoves.idr",
+      "unit": "R36",
+      "names": [
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "research-tests/O6-L2R4-Sources/DGamma/L2R4FixtureCoverage.idr",
+      "unit": "R37",
+      "names": [
+        {
+          "name": "AttachedNormalForm",
+          "qualified": "DGamma.L2R3AttachedGap.AttachedNormalForm",
+          "occurrences": 1
+        },
+        {
+          "name": "AttachedNormalForm",
+          "qualified": "DGamma.L2R3AttachedGap.AttachedNormalForm",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "research-tests/O6-L2R7-Sources/DGamma/L2R7AnchorTransport.idr",
+      "unit": "R38",
+      "names": [
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "research-tests/O6-L2R8-Sources/DGamma/L2R8CoreContract.idr",
+      "unit": "R39",
+      "names": [
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "research-tests/O6-L2R8-Sources/DGamma/L2R8IterationArithmetic.idr",
+      "unit": "R40",
+      "names": [
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "research-tests/O6-L2R8-Sources/DGamma/L2R8NativeWords.idr",
+      "unit": "R41",
+      "names": [
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityEnd",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityEnd",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityEnd",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "research-tests/O6-L2R8-Sources/DGamma/L2R8ReleaseFixtures.idr",
+      "unit": "R42",
+      "names": [
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "research-tests/O6-L2R10-Sources/DGamma/L2R10PhaseScan.idr",
+      "unit": "R43",
+      "names": [
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityEnd",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "research-tests/O6-L2R9-Sources/DGamma/L2R9OrdinalFixtures.idr",
+      "unit": "R44",
+      "names": [
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "research-tests/O6-L2R9-Sources/DGamma/L2R9OrdinalTrails.idr",
+      "unit": "R45",
+      "names": [
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 7
+        },
+        {
+          "name": "AvailabilityEnd",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 8
+        },
+        {
+          "name": "AvailabilityEnd",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "research-tests/O6-L2R12-Sources/DGamma/L2R12PhaseAccepted.idr",
+      "unit": "R46",
+      "names": [
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "research-tests/O6-L2R15-Sources/DGamma/L2R15PhaseOccurrence.idr",
+      "unit": "R47",
+      "names": [
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "research-tests/O6-L2R4-Sources/DGamma/L2R4GapApplications.idr",
+      "unit": "R48",
+      "names": [
+        {
+          "name": "AttachedNormalForm",
+          "qualified": "DGamma.L2R3AttachedGap.AttachedNormalForm",
+          "occurrences": 1
+        },
+        {
+          "name": "AttachedNormalForm",
+          "qualified": "DGamma.L2R3AttachedGap.AttachedNormalForm",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "research-tests/O6-L2R10-Sources/DGamma/L2R10MoveCutObservation.idr",
+      "unit": "R49",
+      "names": [
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityEnd",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "research-tests/O6-L2R13-Sources/DGamma/L2R13ForcedAnchor.idr",
+      "unit": "R50",
+      "names": [
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "research-tests/O6-L2R11-Sources/DGamma/L2R11LocatedCut.idr",
+      "unit": "R51",
+      "names": [
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityEnd",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "research-tests/O6-L2R15-Sources/DGamma/L2R15SuffixAnchors.idr",
+      "unit": "R52",
+      "names": [
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "research-tests/O6-L2R12-Sources/DGamma/L2R12AlignedCut.idr",
+      "unit": "R53",
+      "names": [
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityEnd",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "research-tests/O6-L2R12-Sources/DGamma/L2R12SelectedAdjacency.idr",
+      "unit": "R54",
+      "names": [
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "research-tests/O6-L2R4-Sources/DGamma/L2R4AnchorFixtures.idr",
+      "unit": "R55",
+      "names": [
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "EarliestAvailableRootBirth",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.EarliestAvailableRootBirth",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "research-tests/O6-L2R11-Sources/DGamma/L2R11PhaseDecode.idr",
+      "unit": "R56",
+      "names": [
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityEnd",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityEnd",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "research-tests/O6-L2R13-Sources/DGamma/L2R13PhaseEntry.idr",
+      "unit": "R57",
+      "names": [
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "research-tests/O6-L2R9-Sources/DGamma/L2R9CoreRestoration.idr",
+      "unit": "R58",
+      "names": [
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "research-tests/O6-L2R14-Sources/DGamma/L2R14PhaseSeed.idr",
+      "unit": "R59",
+      "names": [
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "research-tests/O6-L2R6-Sources/DGamma/L2R6PlacementFixtures.idr",
+      "unit": "R60",
+      "names": [
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityEnd",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityEnd",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityEnd",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityEnd",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityEnd",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityEnd",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityEnd",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityEnd",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "research-tests/O6-L2R14-Sources/DGamma/L2R14AdjacentNative.idr",
+      "unit": "R61",
+      "names": [
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityEnd",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityEnd",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "research-tests/O6-L2R6-Sources/DGamma/L2R6FrontFixtures.idr",
+      "unit": "R62",
+      "names": [
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityEnd",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityEnd",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd",
+          "occurrences": 1
+        },
+        {
+          "name": "AttachedNormalForm",
+          "qualified": "DGamma.L2R3AttachedGap.AttachedNormalForm",
+          "occurrences": 1
+        },
+        {
+          "name": "AttachedNormalForm",
+          "qualified": "DGamma.L2R3AttachedGap.AttachedNormalForm",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "research-tests/O6-L2R6-Sources/DGamma/L2R6Phase.idr",
+      "unit": "R63",
+      "names": [
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AttachedRelease",
+          "qualified": "DGamma.L2R3Attached.AttachedRelease",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "research-tests/O6-L2R11-Sources/DGamma/L2R11OpaqueCore.idr",
+      "unit": "R64",
+      "names": [
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 5
+        },
+        {
+          "name": "AvailabilityEnd",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "research-tests/O6-L2R14-Sources/DGamma/L2R14PhaseRelease.idr",
+      "unit": "R65",
+      "names": [
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AttachedRelease",
+          "qualified": "DGamma.L2R3Attached.AttachedRelease",
+          "occurrences": 1
+        },
+        {
+          "name": "AttachedRelease",
+          "qualified": "DGamma.L2R3Attached.AttachedRelease",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "research-tests/O6-L2R7-Sources/DGamma/L2R7CoverageFixtures.idr",
+      "unit": "R66",
+      "names": [
+        {
+          "name": "AttachedBundleOccurrence",
+          "qualified": "DGamma.L2R3AttachedGap.AttachedBundleOccurrence",
+          "occurrences": 1
+        },
+        {
+          "name": "AttachedBundleOccurrence",
+          "qualified": "DGamma.L2R3AttachedGap.AttachedBundleOccurrence",
+          "occurrences": 1
+        },
+        {
+          "name": "AttachedBundleOccurrence",
+          "qualified": "DGamma.L2R3AttachedGap.AttachedBundleOccurrence",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "research-tests/O6-L2R8-Sources/DGamma/L2R8PrefixPhase.idr",
+      "unit": "R67",
+      "names": [
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "research-tests/O6-L2R9-Sources/DGamma/L2R9PredecessorExclusion.idr",
+      "unit": "R68",
+      "names": [
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "research-tests/O6-L2R14-Sources/DGamma/L2R14PhaseOrigins.idr",
+      "unit": "R69",
+      "names": [
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AttachedRelease",
+          "qualified": "DGamma.L2R3Attached.AttachedRelease",
+          "occurrences": 1
+        },
+        {
+          "name": "AttachedRelease",
+          "qualified": "DGamma.L2R3Attached.AttachedRelease",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "research-tests/O6-L2R6-Sources/DGamma/L2R6IterationFixtures.idr",
+      "unit": "R70",
+      "names": [
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityEnd",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityEnd",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityEnd",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityEnd",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityEnd",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd",
+          "occurrences": 1
+        },
+        {
+          "name": "KeyForces",
+          "qualified": "DGamma.L2R3ForcedClosure.KeyForces",
+          "occurrences": 1
+        },
+        {
+          "name": "KeyForces",
+          "qualified": "DGamma.L2R3ForcedClosure.KeyForces",
+          "occurrences": 1
+        },
+        {
+          "name": "KeyForces",
+          "qualified": "DGamma.L2R3ForcedClosure.KeyForces",
+          "occurrences": 1
+        },
+        {
+          "name": "OrderForces",
+          "qualified": "DGamma.L2R3ForcedClosure.OrderForces",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "research-tests/O6-L2R12-Sources/DGamma/L2R12PacketContiguity.idr",
+      "unit": "R71",
+      "names": [
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityEnd",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityEnd",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityEnd",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityEnd",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "research-tests/O6-L2R7-Sources/DGamma/L2R7NFObligation.idr",
+      "unit": "R72",
+      "names": [
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AttachedNormalForm",
+          "qualified": "DGamma.L2R3AttachedGap.AttachedNormalForm",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "research-tests/O6-L2R11-Sources/DGamma/L2R11ClassifierSquare.idr",
+      "unit": "R73",
+      "names": [
+        {
+          "name": "rootDeclaredProvisionsFree",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.rootDeclaredProvisionsFree",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "research-tests/O6-L2R15-Sources/DGamma/L2R15PhaseActor.idr",
+      "unit": "R74",
+      "names": [
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AttachedRelease",
+          "qualified": "DGamma.L2R3Attached.AttachedRelease",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "research-tests/O6-L2R6-Sources/DGamma/L2R6IterationObligations.idr",
+      "unit": "R75",
+      "names": [
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "research-tests/O6-L2R10-Sources/DGamma/L2R10UniqueMoveDomain.idr",
+      "unit": "R76",
+      "names": [
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "research-tests/O6-L2R15-Sources/DGamma/L2R15PhaseIterationAssembly.idr",
+      "unit": "R77",
+      "names": [
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "research-tests/O6-L2R12-Sources/DGamma/L2R12ClassifierNative.idr",
+      "unit": "R78",
+      "names": [
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "research-tests/O6-L2R12-Sources/DGamma/L2R12PhaseContract.idr",
+      "unit": "R79",
+      "names": [
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "research-tests/O6-L2R13-Sources/DGamma/L2R13TerminalMove.idr",
+      "unit": "R80",
+      "names": [
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityEnd",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "research-tests/O6-L2R13-Sources/DGamma/L2R13ExtendMove.idr",
+      "unit": "R81",
+      "names": [
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityEnd",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityEnd",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityEnd",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 2
+        },
+        {
+          "name": "AvailabilityEnd",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd",
+          "occurrences": 2
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityEnd",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityEnd",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 2
+        },
+        {
+          "name": "AvailabilityEnd",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd",
+          "occurrences": 2
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 2
+        },
+        {
+          "name": "AvailabilityEnd",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd",
+          "occurrences": 2
+        }
+      ]
+    },
+    {
+      "path": "research-tests/O6-L2R13-Sources/DGamma/L2R13PacketEndpointTransport.idr",
+      "unit": "R82",
+      "names": [
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "research-tests/O6-L2R14-Sources/DGamma/L2R14LocalSquareProduction.idr",
+      "unit": "R83",
+      "names": [
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "research-tests/O6-L2R12-Sources/DGamma/L2R12PhaseNativeFixtures.idr",
+      "unit": "R84",
+      "names": [
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityStep",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep",
+          "occurrences": 3
+        },
+        {
+          "name": "AvailabilityEnd",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "research-tests/O6-L2R15-Sources/DGamma/L2R15LocalSquareProduction.idr",
+      "unit": "R85",
+      "names": [
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "path": "research-tests/O6-L2R15-Sources/DGamma/L2R15GlobalFrames.idr",
+      "unit": "R86",
+      "names": [
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        },
+        {
+          "name": "AvailabilityTrace",
+          "qualified": "DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace",
+          "occurrences": 1
+        }
+      ]
+    }
+  ]
+}

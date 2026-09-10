@@ -4,7 +4,7 @@ This is the live successor to `O6-L2R15-CP3-DIFF-DRAFT-OVERLAY.md`. The signed L
 
 **Labels:** “production checked” means the stated consumer/fixture typechecks against the actual merged CP3 API; it does not mean this lane rebuilt CP3 or the package. “research-copy checked” retains its exact nominal research types. A checked TYPE is not an inhabitant. Closure counts and final receipts are in the recheck state/audit, including blocked and unfinished modules.
 
-**Final inherited validation:** 194/200 fresh green (105 unchanged +89 repaired), six external R206 blockers. All eight deferred fixtures/dependents passed; no UNCHECKED target remains. All twelve new modules have a separate final-validation plan.
+**Final inherited validation:** 194/200 fresh green (105 unchanged +89 repaired), six external R206 blockers. All eight deferred fixtures/dependents passed; no UNCHECKED target remains. All twelve new modules freshly passed final validation V1177–V1188 by05:29:10 UTC.
 
 ## 1. Production and research correspondence
 
