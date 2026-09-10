@@ -125,3 +125,19 @@ r206AttachedWords = o19ExpandedOwnedSafeWord (the (DecEq Nat) %search) 0 1
     (NoGeneratedChildStep _ _ (\parent, component, same => case same of Refl impossible)
       (NoGeneratedChildStep _ _ (\parent, component, same => case same of Refl impossible)
         (NoGeneratedChildStep _ _ (\parent, component, same => case same of Refl impossible) NoGeneratedChildEnd))))
+
+||| The genuine production body cannot inhabit the explicit legacy restriction.
+||| Its first actual owner is forbidden child1; its insertion is observable ROOT
+||| orchestration, refuting any claim that all attached body edges are internal.
+export
+0 r206AttachedNotLegacy :
+  (Not (LegacyActorOnly 0
+    (MoreTransitions r206ReleaseEdge (MoreTransitions r206RootInsertEdge
+      (MoreTransitions r206RootRetireEdge (MoreTransitions r206RootRemoveEdge NoTransitions))))),
+   actionOwner (transitionAction r206ReleaseEdge) = 1,
+   RootOrchestrationStep (the (DecEq Nat) %search) r206RootInsertEdge)
+r206AttachedNotLegacy =
+  (\legacy => case legacy of
+    LegacyActorStep _ _ lifecycle _ _ => case lifecycle of Refl impossible
+    LegacyActorYield _ _ inserted _ => case inserted of Refl impossible,
+   Refl, RootInsertStep Refl)
