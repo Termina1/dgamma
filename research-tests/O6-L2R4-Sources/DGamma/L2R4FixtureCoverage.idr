@@ -37,8 +37,8 @@ record FixtureRootRegions where
       (OInsert 4 Root (smallComponent False)) OInsertTag (insertS barrierNativeExecution)) NoTransitions)
   0 smallRegionCount : transitionCount smallRegion = 1
   0 barrierRegionCount : transitionCount barrierRegion = 2
-  0 smallRegionNF : AttachedNormalForm Nat Bool Unit String (\key => Unit) %search %search smallTrace smallRegion 4
-  0 barrierRegionNF : AttachedNormalForm Nat Bool Unit String (\key => Unit) %search %search barrierTrace barrierRegion 4
+  0 smallRegionNF : DGamma.L2R3AttachedGap.AttachedNormalForm Nat Bool Unit String (\key => Unit) %search %search smallTrace smallRegion 4
+  0 barrierRegionNF : DGamma.L2R3AttachedGap.AttachedNormalForm Nat Bool Unit String (\key => Unit) %search %search barrierTrace barrierRegion 4
 
 ||| NONVACUOUS general occurrence coverage on both native pre-attachment
 ||| windows. Catalog completeness is built by cons induction from the A22
