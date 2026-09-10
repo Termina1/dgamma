@@ -74,4 +74,3 @@ record AvailabilityCanonicalSupportTransport
       order source canonical ->
     AvailabilityAwareCanonicalInputPlacement name key world error value nameEq keyEq originalFinal
       order source canonical
-
