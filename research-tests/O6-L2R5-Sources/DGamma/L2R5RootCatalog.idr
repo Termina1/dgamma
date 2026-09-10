@@ -45,10 +45,10 @@ public export
 scanRootCatalog : {name, key, world, error : Type} -> {value : key -> Type} ->
   {0 first, finalState : SystemState name key value world error} ->
   {0 trace : Transitions first finalState} ->
-  (offset : Nat) -> AvailabilityTrace name key world error value trace ->
+  (offset : Nat) -> DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value trace ->
   List (RootCatalogEntry name key world error value)
-scanRootCatalog offset (AvailabilityEnd state) = []
-scanRootCatalog offset (AvailabilityStep first (Fired nameEq keyEq action tag checked) rest later) =
+scanRootCatalog offset (DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd state) = []
+scanRootCatalog offset (DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep first (Fired nameEq keyEq action tag checked) rest later) =
   rootCatalogStep offset action (scanRootCatalog (S offset) later)
 
 ||| A catalog member with producer-owned action and ordinal equations. This
@@ -115,7 +115,7 @@ export
   {name, key, world, error : Type} -> {value : key -> Type} ->
   {first, middle, finalState : SystemState name key value world error} ->
   (step : Transition first middle) -> (rest : Transitions middle finalState) ->
-  (later : AvailabilityTrace name key world error value rest) -> (offset : Nat) ->
+  (later : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value rest) -> (offset : Nat) ->
   (0 tail : (ordinal : Nat) -> (root : name) -> (component : Component key value world error) ->
     nativeActionAt rest ordinal = Just (OInsert root Root component) ->
     RootCatalogContains name key world error value (scanRootCatalog (S offset) later) (S offset + ordinal) (OInsert root Root component)) ->
@@ -144,11 +144,11 @@ export
   {name, key, world, error : Type} -> {value : key -> Type} ->
   {first, finalState : SystemState name key value world error} ->
   {trace : Transitions first finalState} ->
-  (offset : Nat) -> (trail : AvailabilityTrace name key world error value trace) ->
+  (offset : Nat) -> (trail : DGamma.CP5AvailabilityAwarePlacement.AvailabilityTrace name key world error value trace) ->
   (ordinal : Nat) -> (root : name) -> (component : Component key value world error) ->
   nativeActionAt trace ordinal = Just (OInsert root Root component) ->
   RootCatalogContains name key world error value (scanRootCatalog offset trail) (offset + ordinal) (OInsert root Root component)
-scanRootLookupComplete offset (AvailabilityEnd state) ordinal root component exact = void (nothingIsNotJust exact)
-scanRootLookupComplete offset (AvailabilityStep first (Fired nameEq keyEq action tag checked) rest later) ordinal root component exact =
+scanRootLookupComplete offset (DGamma.CP5AvailabilityAwarePlacement.AvailabilityEnd state) ordinal root component exact = void (nothingIsNotJust exact)
+scanRootLookupComplete offset (DGamma.CP5AvailabilityAwarePlacement.AvailabilityStep first (Fired nameEq keyEq action tag checked) rest later) ordinal root component exact =
   rootCatalogConsComplete (Fired nameEq keyEq action tag checked) rest later offset
     (scanRootLookupComplete (S offset) later) ordinal root component exact
