@@ -27,6 +27,7 @@ import DGamma.L2R16AnchorPhases
 import Data.Bool
 import Data.List
 import Data.List.Elem
+import Data.List.Quantifiers
 import Data.Maybe
 import Data.Nat
 import Decidable.Equality
@@ -45,3 +46,19 @@ public export
     (fst fixtureDictionaries) (snd fixtureDictionaries) (researchAvailability (anchorTrail crossed)))
 anchorFrontNever False = (MkFrontNormal True Refl Refl, MkForcedRootNeverRetired True Refl Refl)
 anchorFrontNever True = (MkFrontNormal True Refl Refl, MkForcedRootNeverRetired True Refl Refl)
+
+||| Authenticate the ACTUAL whole catalog using explicit All data instead
+||| of a dependent case-elimination consumer. Each entry has its native
+||| phase and is not earlier than the moved root at ordinal7. Generic
+||| indexAll supplies the two quantified antecedents without re-casing the
+||| opaque dependent entry. No uniqueness premise is assembled here.
+public export
+0 anchorCatalogCoverage :
+  All (\entry => (ForcedRootPhase Nat Bool Unit String (\key => Unit)
+      (fst fixtureDictionaries) (snd fixtureDictionaries)
+      (researchAvailability (anchorTrail False)) entry,
+    LT (catalogOrdinal entry) 7 -> Void))
+    (scanRootCatalog 0 (researchAvailability (anchorTrail False)))
+anchorCatalogCoverage =
+  [(anchorPhase False True, \earlier => absurd earlier),
+   (anchorPhase False False, \earlier => absurd earlier)]
